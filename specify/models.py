@@ -114,8 +114,23 @@ class Collectingevent(models.Model):
         db_table = u'collectingevent'
 
     def __unicode__(self):
-        return "collecting event at %s (%s)" % (self.locality, self.verbatimlocality)
+        name = []
+        if self.locality and len(self.locality.__unicode__()) > 0:
+            name.append(self.locality.__unicode__())
+        if self.verbatimlocality and len(self.verbatimlocality) > 0:
+            if len(name) == 0:
+                name.append(self.verbatimlocality)
+            else:
+                name.append('(%s)' % self.verbatimlocality)
 
+        dates = [d.isoformat() for d in (self.startdate, self.enddate)
+                 if d is not None]
+        if len(dates) > 0:
+            name.append(" - ".join(dates))
+        if len(name) > 0:
+            return " ".join(name)
+        else:
+            return "[no name]"
 
 class Collector(models.Model):
     collectorid = models.IntegerField(primary_key=True, db_column='CollectorID')
@@ -204,7 +219,10 @@ class Taxon(models.Model):
         ordering = ['fullname']
 
     def __unicode__(self):
-        return "%s (%s)" % (self.fullname, self.commonname)
+        name = [self.fullname]
+        if self.commonname and len(self.commonname) > 0:
+            name.append("(%s)" % self.commonname)
+        return " ".join(name)
 
 class Determination(models.Model):
     determinationid = models.IntegerField(primary_key=True, db_column='DeterminationID')
@@ -235,4 +253,18 @@ class Determination(models.Model):
         ordering = ['taxon']
 
     def __unicode__(self):
-        return self.taxon.__unicode__()
+        taxon_objs = (self.taxon, self.preferredtaxon)
+        if taxon_objs[0] == taxon_objs[1]:
+            # preferred is the same as regular
+            taxon_objs = (self.taxon, )
+
+        taxons = filter(
+            lambda s: len(s) > 0,
+            [t.__unicode__() for t in taxon_objs
+             if t is not None])
+
+        if len(taxons) == 2:
+            return "%s (preferred: %s)" % tuple(taxons)
+        if len(taxons) == 1:
+            return taxons[0]
+        return "[no taxon]"
