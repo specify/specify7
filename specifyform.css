@@ -1,0 +1,32 @@
+body {
+    font-family: verdana;
+}
+
+/* table { */
+/*     border: solid; */
+/* } */
+
+/* td { */
+/*     border: solid; */
+/*     border-width: 1px; */
+/* } */
+
+textarea {
+    width: 98%;
+}
+
+input[type="text"] {
+    width: 98%;
+}
+
+select {
+    width: 100%;
+}
+
+.separator {
+    background-color: lightGray;
+}
+
+.form-label {
+      text-align: right;
+}
