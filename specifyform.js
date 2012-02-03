@@ -88,7 +88,7 @@ function renderView(viewName, views, schemaLocalization) {
                             var localizedLabel =
                                 getLocalizedLabelFor(fieldName);
 
-                            var td = $('<td>');
+                            var td = $('<td>').append(checkbox);
                             if (givenLabel) {
                                 td.append($('<label>')
                                           .text(givenLabel)
@@ -98,7 +98,7 @@ function renderView(viewName, views, schemaLocalization) {
                                           .text(localizedLabel)
                                          );
                             }
-                            return td.append(checkbox)
+                            return td;
                         },
                         textareabrief: function() {
                             return $('<td>')
