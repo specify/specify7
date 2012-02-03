@@ -1,4 +1,16 @@
 var language = "en";
+var getLocalizedStr = function(alternatives) {
+    var str = $(alternatives)
+        .children('str[language="'+language+'"]');
+    if (str.length < 1) {
+        str = $(alternatives)
+            .children('str[language="en"]');
+    }
+    if (str.length < 1) {
+        str = $(alternatives).children('str').first();
+    }
+    return str.children('text').text().replace(/\\n/g, "\n");
+}
 
 function renderView(viewName, views, schemaLocalization) {
 
@@ -16,26 +28,30 @@ function renderView(viewName, views, schemaLocalization) {
         return table;
     }
 
+    function getLocalizationForModel(modelName) {
+        return $(schemaLocalization)
+            .find('container[name="'+modelName.toLowerCase()+'"]').first();
+    }
+
     function processView(view, depth) {
         if (!view) return $('<div>');
         depth = depth || 1;
 
-        var modelName = $(view).attr('class').split('.').pop();
-        var localization = $(schemaLocalization)
-            .find('container[format="'+modelName+'"]').first();
+        var viewModel = $(view).attr('class').split('.').pop();
 
-        var getLocalizedStr = function(alternatives) {
-            var str = $(alternatives)
-                .children('str[language="'+language+'"]');
-            if (str.length < 1) {
-                str = $(alternatives)
-                .children('str[language="en"]');
-            }
-            if (str.length < 1) {
-                str = $(alternatives).children('str').first();
-            }
-            return str.length ?
-                $(str).children('text').first().text() : null;
+        var getLocalizedLabelFor = function (fieldname) {
+            var path = fieldname.split('.');
+            var field = path.pop();
+            var model = path.pop();
+            var localization = model ?
+                getLocalizationForModel(model) :
+                getLocalizationForModel(viewModel);
+
+            return getLocalizedStr(
+                $(localization).children('items')
+                    .children('item[name="'+field+'"]')
+                    .children('names')
+            );
         }
 
         var processCell = function(cell) {
@@ -46,17 +62,12 @@ function renderView(viewName, views, schemaLocalization) {
                     var forCellName = $(view)
                         .find('cell[id="'+labelfor+'"]')
                         .first().attr('name');
-
-                    var localizedLabel = getLocalizedStr(
-                        $(localization).children('items')
-                            .children('desc[name="'+forCellName+'"]')
-                            .children('names'));
-
+                    var localizedLabel = getLocalizedLabelFor(forCellName);
                     var label = $('<label>');
-                    if (localizedLabel) {
-                        label.text(localizedLabel);
-                    } else if (givenLabel) {
+                    if (givenLabel) {
                         label.text(givenLabel)
+                    } else if (localizedLabel) {
+                        label.text(localizedLabel);
                     } else if (forCellName) {
                         label.text(forCellName);
                     }
@@ -74,19 +85,17 @@ function renderView(viewName, views, schemaLocalization) {
                             var checkbox = $('<input type="checkbox" />')
                                 .attr('name', fieldName);
                             var givenLabel = $(cell).attr('label');
-                            var localizedLabel = getLocalizedStr(
-                                $(localization).children('items')
-                                    .children('desc[name="'+fieldName+'"]')
-                                    .children('names'));
+                            var localizedLabel =
+                                getLocalizedLabelFor(fieldName);
 
                             var td = $('<td>');
-                            if (localizedLabel) {
-                                td.append($('<label>')
-                                          .text(localizedLabel)
-                                         );
-                            } else if (givenLabel) {
+                            if (givenLabel) {
                                 td.append($('<label>')
                                           .text(givenLabel)
+                                         );
+                            } else if (localizedLabel) {
+                                td.append($('<label>')
+                                          .text(localizedLabel)
                                          );
                             }
                             return td.append(checkbox)
@@ -115,11 +124,9 @@ function renderView(viewName, views, schemaLocalization) {
                 },
                 subview: function() {
                     var viewname = $(cell).attr('viewname');
-                    var subview = $(views)
-                        .find('viewdef[name="'+viewname+'"]').first();
                     var td = $('<td>');
-                    if (subview.length)
-                        td.append(processView(subview, depth+1));
+                    views[viewname] &&
+                        td.append(processView(views[viewname], depth+1));
                     return td;
                 },
                 panel: function() {
@@ -156,9 +163,9 @@ function renderView(viewName, views, schemaLocalization) {
                 });
             });
 
-        var localizedName =
-            getLocalizedStr($(localization).children('names'))
-            || $(view).attr('name');
+        var localizedName = getLocalizedStr(
+            getLocalizationForModel(viewModel).children('names')
+        ) || $(view).attr('name');
 
         return $('<div>').
             append($('<h'+depth+'>').
@@ -166,16 +173,53 @@ function renderView(viewName, views, schemaLocalization) {
             append(table);
     }
 
-    var view = $(views).find('viewdef[name="'+viewName+'"]').first();
-    return processView(view);
+    return processView(views[viewName]);
+}
+
+function breakOutViews(viewset) {
+    var views = {};
+    $.each($(viewset).find('viewdef'), function(i, view) {
+        views[$(view).attr('name')] = view;
+    });
+    return views;
 }
 
 $(function () {
-    $.get('schema_localization.xml', function(schemaLocalization) {
-        $.get('views.xml', function(views) {
-            $('body').append(
-                renderView('Collection Object', views, schemaLocalization)
-            );
-        });
+    var schemaLocalization;
+
+    $.get('schema_localization.xml', function(data) {
+        schemaLocalization = data;
+        loadViews();
     });
+
+    var loadViews = function() {
+        var viewsetNames = [
+            //        'system.views.xml',
+            //        'editorpanel.views.xml',
+            //        'preferences.views.xml',
+            //        'global.views.xml',
+            //        'search.views.xml',
+            'views.xml',
+            //        'manager.botany.views.xml',
+        ];
+
+        var viewsets = {}, completed = 0;
+        $.each(viewsetNames, function(i, name) {
+            $.get(name, function(viewset) {
+                completed++;
+                viewsets[name] = viewset;
+                if (completed == viewsetNames.length) {
+                    var orderedViews = $.merge(
+                        [{}], viewsetNames.map(function(name) {
+                            return breakOutViews(viewsets[name]);
+                        }));
+                    var views = $.extend.apply($, orderedViews);
+                    $('body').append(
+                        renderView('Collection Object', views,
+                                   schemaLocalization)
+                    );
+                }
+            });
+        });
+    }
 });
