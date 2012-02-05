@@ -31,11 +31,11 @@ class Accession(models.Model):
     verbatimdate = models.CharField(max_length=150, db_column='VerbatimDate', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    repositoryagreementid = models.ForeignKey(Repositoryagreement, null=True, db_column='RepositoryAgreementID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    repositoryagreementid = models.ForeignKey('specify.Repositoryagreement', null=True, db_column='RepositoryAgreementID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
     class Meta:
         db_table = u'accession'
 
@@ -46,11 +46,11 @@ class Accessionagent(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(unique=True, max_length=150, db_column='Role')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    repositoryagreementid = models.ForeignKey(Repositoryagreement, null=True, db_column='RepositoryAgreementID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    repositoryagreementid = models.ForeignKey('specify.Repositoryagreement', null=True, db_column='RepositoryAgreementID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
     class Meta:
         db_table = u'accessionagent'
 
@@ -61,10 +61,10 @@ class Accessionattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    accessionid = models.ForeignKey(Accession, db_column='AccessionID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    accessionid = models.ForeignKey('specify.Accession', db_column='AccessionID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'accessionattachment'
 
@@ -74,11 +74,11 @@ class Accessionauthorization(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    permitid = models.ForeignKey(Permit, db_column='PermitID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    repositoryagreementid = models.ForeignKey(Repositoryagreement, null=True, db_column='RepositoryAgreementID', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    permitid = models.ForeignKey('specify.Permit', db_column='PermitID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    repositoryagreementid = models.ForeignKey('specify.Repositoryagreement', null=True, db_column='RepositoryAgreementID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'accessionauthorization'
 
@@ -109,9 +109,9 @@ class Address(models.Model):
     startdate = models.DateField(null=True, db_column='StartDate', blank=True)
     state = models.CharField(max_length=192, db_column='State', blank=True)
     typeofaddr = models.CharField(max_length=96, db_column='TypeOfAddr', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
     class Meta:
         db_table = u'address'
 
@@ -127,9 +127,9 @@ class Addressofrecord(models.Model):
     postalcode = models.CharField(max_length=96, db_column='PostalCode', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     state = models.CharField(max_length=192, db_column='State', blank=True)
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'addressofrecord'
 
@@ -157,14 +157,14 @@ class Agent(models.Model):
     title = models.CharField(max_length=150, db_column='Title', blank=True)
     url = models.TextField(db_column='URL', blank=True)
     parentorganizationid = models.ForeignKey('self', null=True, db_column='ParentOrganizationID', blank=True)
-    institutionccid = models.ForeignKey(Institution, null=True, db_column='InstitutionCCID', blank=True)
+    institutionccid = models.ForeignKey('specify.Institution', null=True, db_column='InstitutionCCID', blank=True)
     modifiedbyagentid = models.ForeignKey('self', null=True, db_column='ModifiedByAgentID', blank=True)
-    institutiontcid = models.ForeignKey(Institution, null=True, db_column='InstitutionTCID', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, null=True, db_column='SpecifyUserID', blank=True)
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
-    collectionccid = models.ForeignKey(Collection, null=True, db_column='CollectionCCID', blank=True)
+    institutiontcid = models.ForeignKey('specify.Institution', null=True, db_column='InstitutionTCID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', null=True, db_column='SpecifyUserID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
+    collectionccid = models.ForeignKey('specify.Collection', null=True, db_column='CollectionCCID', blank=True)
     createdbyagentid = models.ForeignKey('self', null=True, db_column='CreatedByAgentID', blank=True)
-    collectiontcid = models.ForeignKey(Collection, null=True, db_column='CollectionTCID', blank=True)
+    collectiontcid = models.ForeignKey('specify.Collection', null=True, db_column='CollectionTCID', blank=True)
     class Meta:
         db_table = u'agent'
 
@@ -175,10 +175,10 @@ class Agentattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'agentattachment'
 
@@ -189,10 +189,10 @@ class Agentgeography(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(max_length=192, db_column='Role', blank=True)
-    geographyid = models.ForeignKey(Geography, db_column='GeographyID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    geographyid = models.ForeignKey('specify.Geography', db_column='GeographyID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'agentgeography'
 
@@ -203,9 +203,9 @@ class Agentspecialty(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordernumber = models.IntegerField(unique=True, db_column='OrderNumber')
     specialtyname = models.CharField(max_length=192, db_column='SpecialtyName')
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'agentspecialty'
 
@@ -219,9 +219,9 @@ class Agentvariant(models.Model):
     name = models.CharField(max_length=765, db_column='Name', blank=True)
     vartype = models.IntegerField(db_column='VarType')
     variant = models.CharField(max_length=6, db_column='Variant', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
     class Meta:
         db_table = u'agentvariant'
 
@@ -235,10 +235,10 @@ class Appraisal(models.Model):
     appraisalvalue = models.DecimalField(decimal_places=2, null=True, max_digits=14, db_column='AppraisalValue', blank=True)
     monetaryunittype = models.CharField(max_length=24, db_column='MonetaryUnitType', blank=True)
     notes = models.TextField(db_column='Notes', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'appraisal'
 
@@ -259,10 +259,10 @@ class Attachment(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
     visibility = models.IntegerField(null=True, db_column='Visibility', blank=True)
-    attachmentimageattributeid = models.ForeignKey(Attachmentimageattribute, null=True, db_column='AttachmentImageAttributeID', blank=True)
-    visibilitysetbyid = models.ForeignKey(Specifyuser, null=True, db_column='VisibilitySetByID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentimageattributeid = models.ForeignKey('specify.Attachmentimageattribute', null=True, db_column='AttachmentImageAttributeID', blank=True)
+    visibilitysetbyid = models.ForeignKey('specify.Specifyuser', null=True, db_column='VisibilitySetByID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'attachment'
 
@@ -279,9 +279,9 @@ class Attachmentimageattribute(models.Model):
     timestamplastsend = models.DateTimeField(null=True, db_column='TimestampLastSend', blank=True)
     timestamplastupdatecheck = models.DateTimeField(null=True, db_column='TimestampLastUpdateCheck', blank=True)
     width = models.IntegerField(null=True, db_column='Width', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    morphbankviewid = models.ForeignKey(Morphbankview, null=True, db_column='MorphBankViewID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    morphbankviewid = models.ForeignKey('specify.Morphbankview', null=True, db_column='MorphBankViewID', blank=True)
     imagetype = models.CharField(max_length=240, db_column='ImageType', blank=True)
     number1 = models.FloatField(null=True, db_column='Number1', blank=True)
     number2 = models.FloatField(null=True, db_column='Number2', blank=True)
@@ -301,9 +301,9 @@ class Attachmentmetadata(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     value = models.CharField(max_length=384, db_column='Value')
-    attachmentid = models.ForeignKey(Attachment, null=True, db_column='AttachmentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', null=True, db_column='AttachmentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'attachmentmetadata'
 
@@ -313,9 +313,9 @@ class Attachmenttag(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     tag = models.CharField(max_length=192, db_column='Tag')
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'attachmenttag'
 
@@ -327,10 +327,10 @@ class Attributedef(models.Model):
     datatype = models.IntegerField(null=True, db_column='DataType', blank=True)
     fieldname = models.CharField(max_length=96, db_column='FieldName', blank=True)
     tabletype = models.IntegerField(null=True, db_column='TableType', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preptypeid = models.ForeignKey(Preptype, null=True, db_column='PrepTypeID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preptypeid = models.ForeignKey('specify.Preptype', null=True, db_column='PrepTypeID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'attributedef'
 
@@ -341,10 +341,10 @@ class Author(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordernumber = models.IntegerField(unique=True, db_column='OrderNumber')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
     class Meta:
         db_table = u'author'
 
@@ -358,26 +358,26 @@ class Autonumberingscheme(models.Model):
     schemeclassname = models.CharField(max_length=192, db_column='SchemeClassName', blank=True)
     schemename = models.CharField(max_length=192, db_column='SchemeName', blank=True)
     tablenumber = models.IntegerField(db_column='TableNumber')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'autonumberingscheme'
 
 class AutonumschColl(models.Model):
-    collectionid = models.ForeignKey(Collection, db_column='CollectionID')
-    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, db_column='AutoNumberingSchemeID')
+    collectionid = models.ForeignKey('specify.Collection', db_column='CollectionID')
+    autonumberingschemeid = models.ForeignKey('specify.Autonumberingscheme', db_column='AutoNumberingSchemeID')
     class Meta:
         db_table = u'autonumsch_coll'
 
 class AutonumschDiv(models.Model):
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, db_column='AutoNumberingSchemeID')
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    autonumberingschemeid = models.ForeignKey('specify.Autonumberingscheme', db_column='AutoNumberingSchemeID')
     class Meta:
         db_table = u'autonumsch_div'
 
 class AutonumschDsp(models.Model):
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, db_column='AutoNumberingSchemeID')
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    autonumberingschemeid = models.ForeignKey('specify.Autonumberingscheme', db_column='AutoNumberingSchemeID')
     class Meta:
         db_table = u'autonumsch_dsp'
 
@@ -401,9 +401,9 @@ class Borrow(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'borrow'
 
@@ -415,10 +415,10 @@ class Borrowagent(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(unique=True, max_length=96, db_column='Role')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    borrowid = models.ForeignKey(Borrow, db_column='BorrowID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    borrowid = models.ForeignKey('specify.Borrow', db_column='BorrowID')
     class Meta:
         db_table = u'borrowagent'
 
@@ -435,9 +435,9 @@ class Borrowmaterial(models.Model):
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     quantityresolved = models.IntegerField(null=True, db_column='QuantityResolved', blank=True)
     quantityreturned = models.IntegerField(null=True, db_column='QuantityReturned', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    borrowid = models.ForeignKey(Borrow, db_column='BorrowID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    borrowid = models.ForeignKey('specify.Borrow', db_column='BorrowID')
     class Meta:
         db_table = u'borrowmaterial'
 
@@ -450,10 +450,10 @@ class Borrowreturnmaterial(models.Model):
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     returneddate = models.DateField(null=True, db_column='ReturnedDate', blank=True)
-    borrowmaterialid = models.ForeignKey(Borrowmaterial, db_column='BorrowMaterialID')
-    returnedbyid = models.ForeignKey(Agent, null=True, db_column='ReturnedByID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    borrowmaterialid = models.ForeignKey('specify.Borrowmaterial', db_column='BorrowMaterialID')
+    returnedbyid = models.ForeignKey('specify.Agent', null=True, db_column='ReturnedByID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'borrowreturnmaterial'
 
@@ -476,13 +476,13 @@ class Collectingevent(models.Model):
     verbatimdate = models.CharField(max_length=150, db_column='VerbatimDate', blank=True)
     verbatimlocality = models.TextField(db_column='VerbatimLocality', blank=True)
     visibility = models.IntegerField(null=True, db_column='Visibility', blank=True)
-    collectingtripid = models.ForeignKey(Collectingtrip, null=True, db_column='CollectingTripID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    localityid = models.ForeignKey(Locality, null=True, db_column='LocalityID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    collectingeventattributeid = models.ForeignKey(Collectingeventattribute, null=True, db_column='CollectingEventAttributeID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    visibilitysetbyid = models.ForeignKey(Specifyuser, null=True, db_column='VisibilitySetByID', blank=True)
+    collectingtripid = models.ForeignKey('specify.Collectingtrip', null=True, db_column='CollectingTripID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', null=True, db_column='LocalityID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    collectingeventattributeid = models.ForeignKey('specify.Collectingeventattribute', null=True, db_column='CollectingEventAttributeID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    visibilitysetbyid = models.ForeignKey('specify.Specifyuser', null=True, db_column='VisibilitySetByID', blank=True)
     sgrstatus = models.IntegerField(null=True, db_column='SGRStatus', blank=True)
     class Meta:
         db_table = u'collectingevent'
@@ -495,10 +495,10 @@ class Collectingeventattachment(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     ordinal = models.IntegerField(db_column='Ordinal')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    collectingeventid = models.ForeignKey(Collectingevent, db_column='CollectingEventID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    collectingeventid = models.ForeignKey('specify.Collectingevent', db_column='CollectingEventID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectingeventattachment'
 
@@ -510,10 +510,10 @@ class Collectingeventattr(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     doublevalue = models.FloatField(null=True, db_column='DoubleValue', blank=True)
     strvalue = models.CharField(max_length=765, db_column='StrValue', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    collectingeventid = models.ForeignKey(Collectingevent, db_column='CollectingEventID')
-    attributedefid = models.ForeignKey(Attributedef, db_column='AttributeDefID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    collectingeventid = models.ForeignKey('specify.Collectingevent', db_column='CollectingEventID')
+    attributedefid = models.ForeignKey('specify.Attributedef', db_column='AttributeDefID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectingeventattr'
 
@@ -558,10 +558,10 @@ class Collectingeventattribute(models.Model):
     yesno3 = models.BooleanField(null=True, db_column='YesNo3', blank=True)
     yesno4 = models.BooleanField(null=True, db_column='YesNo4', blank=True)
     yesno5 = models.BooleanField(null=True, db_column='YesNo5', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    hosttaxonid = models.ForeignKey(Taxon, null=True, db_column='HostTaxonID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    hosttaxonid = models.ForeignKey('specify.Taxon', null=True, db_column='HostTaxonID', blank=True)
     class Meta:
         db_table = u'collectingeventattribute'
 
@@ -579,9 +579,9 @@ class Collectingtrip(models.Model):
     startdate = models.DateField(null=True, db_column='StartDate', blank=True)
     startdateverbatim = models.CharField(max_length=150, db_column='StartDateVerbatim', blank=True)
     starttime = models.IntegerField(null=True, db_column='StartTime', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectingtrip'
 
@@ -590,8 +590,8 @@ class Collection(models.Model):
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     catalogformatnumname = models.CharField(max_length=192, db_column='CatalogFormatNumName')
     code = models.CharField(max_length=150, db_column='Code', blank=True)
     collectionid = models.IntegerField(null=True, db_column='collectionId', blank=True)
@@ -613,8 +613,8 @@ class Collection(models.Model):
     scope = models.TextField(db_column='Scope', blank=True)
     webportaluri = models.CharField(max_length=765, db_column='WebPortalURI', blank=True)
     websiteuri = models.CharField(max_length=765, db_column='WebSiteURI', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    institutionnetworkid = models.ForeignKey(Institution, null=True, db_column='InstitutionNetworkID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    institutionnetworkid = models.ForeignKey('specify.Institution', null=True, db_column='InstitutionNetworkID', blank=True)
     class Meta:
         db_table = u'collection'
 
@@ -655,19 +655,19 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(null=True, db_column='YesNo4', blank=True)
     yesno5 = models.BooleanField(null=True, db_column='YesNo5', blank=True)
     yesno6 = models.BooleanField(null=True, db_column='YesNo6', blank=True)
-    containerownerid = models.ForeignKey(Container, null=True, db_column='ContainerOwnerID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    paleocontextid = models.ForeignKey(Paleocontext, null=True, db_column='PaleoContextID', blank=True)
-    catalogerid = models.ForeignKey(Agent, null=True, db_column='CatalogerID', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    fieldnotebookpageid = models.ForeignKey(Fieldnotebookpage, null=True, db_column='FieldNotebookPageID', blank=True)
-    visibilitysetbyid = models.ForeignKey(Specifyuser, null=True, db_column='VisibilitySetByID', blank=True)
-    appraisalid = models.ForeignKey(Appraisal, null=True, db_column='AppraisalID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    collectionid = models.ForeignKey(Collection, db_column='CollectionID')
-    collectingeventid = models.ForeignKey(Collectingevent, null=True, db_column='CollectingEventID', blank=True)
-    collectionobjectattributeid = models.ForeignKey(Collectionobjectattribute, null=True, db_column='CollectionObjectAttributeID', blank=True)
-    containerid = models.ForeignKey(Container, null=True, db_column='ContainerID', blank=True)
+    containerownerid = models.ForeignKey('specify.Container', null=True, db_column='ContainerOwnerID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    paleocontextid = models.ForeignKey('specify.Paleocontext', null=True, db_column='PaleoContextID', blank=True)
+    catalogerid = models.ForeignKey('specify.Agent', null=True, db_column='CatalogerID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    fieldnotebookpageid = models.ForeignKey('specify.Fieldnotebookpage', null=True, db_column='FieldNotebookPageID', blank=True)
+    visibilitysetbyid = models.ForeignKey('specify.Specifyuser', null=True, db_column='VisibilitySetByID', blank=True)
+    appraisalid = models.ForeignKey('specify.Appraisal', null=True, db_column='AppraisalID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', db_column='CollectionID')
+    collectingeventid = models.ForeignKey('specify.Collectingevent', null=True, db_column='CollectingEventID', blank=True)
+    collectionobjectattributeid = models.ForeignKey('specify.Collectionobjectattribute', null=True, db_column='CollectionObjectAttributeID', blank=True)
+    containerid = models.ForeignKey('specify.Container', null=True, db_column='ContainerID', blank=True)
     sgrstatus = models.IntegerField(null=True, db_column='SGRStatus', blank=True)
     class Meta:
         db_table = u'collectionobject'
@@ -680,10 +680,10 @@ class Collectionobjectattachment(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectionobjectattachment'
 
@@ -695,10 +695,10 @@ class Collectionobjectattr(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     doublevalue = models.FloatField(null=True, db_column='DoubleValue', blank=True)
     strvalue = models.CharField(max_length=765, db_column='StrValue', blank=True)
-    attributedefid = models.ForeignKey(Attributedef, db_column='AttributeDefID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attributedefid = models.ForeignKey('specify.Attributedef', db_column='AttributeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectionobjectattr'
 
@@ -773,8 +773,8 @@ class Collectionobjectattribute(models.Model):
     yesno5 = models.BooleanField(null=True, db_column='YesNo5', blank=True)
     yesno6 = models.BooleanField(null=True, db_column='YesNo6', blank=True)
     yesno7 = models.BooleanField(null=True, db_column='YesNo7', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collectionobjectattribute'
 
@@ -786,10 +786,10 @@ class Collectionobjectcitation(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     isfigured = models.BooleanField(null=True, db_column='IsFigured', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
     class Meta:
         db_table = u'collectionobjectcitation'
 
@@ -806,11 +806,11 @@ class Collectionrelationship(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     text1 = models.CharField(max_length=96, db_column='Text1', blank=True)
     text2 = models.CharField(max_length=96, db_column='Text2', blank=True)
-    rightsidecollectionid = models.ForeignKey(Collectionobject, db_column='RightSideCollectionID')
-    collectionreltypeid = models.ForeignKey(Collectionreltype, null=True, db_column='CollectionRelTypeID', blank=True)
-    leftsidecollectionid = models.ForeignKey(Collectionobject, db_column='LeftSideCollectionID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    rightsidecollectionid = models.ForeignKey('specify.Collectionobject', db_column='RightSideCollectionID')
+    collectionreltypeid = models.ForeignKey('specify.Collectionreltype', null=True, db_column='CollectionRelTypeID', blank=True)
+    leftsidecollectionid = models.ForeignKey('specify.Collectionobject', db_column='LeftSideCollectionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'collectionrelationship'
 
@@ -821,10 +821,10 @@ class Collectionreltype(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     name = models.CharField(max_length=96, db_column='Name', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    rightsidecollectionid = models.ForeignKey(Collection, null=True, db_column='RightSideCollectionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    leftsidecollectionid = models.ForeignKey(Collection, null=True, db_column='LeftSideCollectionID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    rightsidecollectionid = models.ForeignKey('specify.Collection', null=True, db_column='RightSideCollectionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    leftsidecollectionid = models.ForeignKey('specify.Collection', null=True, db_column='LeftSideCollectionID', blank=True)
     class Meta:
         db_table = u'collectionreltype'
 
@@ -836,11 +836,11 @@ class Collector(models.Model):
     isprimary = models.BooleanField(db_column='IsPrimary')
     ordernumber = models.IntegerField(db_column='OrderNumber')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
-    collectingeventid = models.ForeignKey(Collectingevent, db_column='CollectingEventID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
+    collectingeventid = models.ForeignKey('specify.Collectingevent', db_column='CollectingEventID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'collector'
 
@@ -854,9 +854,9 @@ class Commonnametx(models.Model):
     language = models.CharField(max_length=6, db_column='Language', blank=True)
     name = models.CharField(max_length=765, db_column='Name', blank=True)
     variant = models.CharField(max_length=6, db_column='Variant', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    taxonid = models.ForeignKey(Taxon, db_column='TaxonID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    taxonid = models.ForeignKey('specify.Taxon', db_column='TaxonID')
     class Meta:
         db_table = u'commonnametx'
 
@@ -872,10 +872,10 @@ class Commonnametxcitation(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    commonnametxid = models.ForeignKey(Commonnametx, db_column='CommonNameTxID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    commonnametxid = models.ForeignKey('specify.Commonnametx', db_column='CommonNameTxID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
     class Meta:
         db_table = u'commonnametxcitation'
 
@@ -897,10 +897,10 @@ class Conservdescription(models.Model):
     source = models.TextField(db_column='Source', blank=True)
     units = models.CharField(max_length=48, db_column='Units', blank=True)
     width = models.FloatField(null=True, db_column='Width', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, null=True, db_column='CollectionObjectID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', null=True, db_column='CollectionObjectID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'conservdescription'
 
@@ -911,10 +911,10 @@ class Conservdescriptionattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    conservdescriptionid = models.ForeignKey(Conservdescription, db_column='ConservDescriptionID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
+    conservdescriptionid = models.ForeignKey('specify.Conservdescription', db_column='ConservDescriptionID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
     class Meta:
         db_table = u'conservdescriptionattachment'
 
@@ -940,12 +940,12 @@ class Conservevent(models.Model):
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     treatmentcompdate = models.DateField(null=True, db_column='TreatmentCompDate', blank=True)
     treatmentreport = models.TextField(db_column='TreatmentReport', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    curatorid = models.ForeignKey(Agent, null=True, db_column='CuratorID', blank=True)
-    treatedbyagentid = models.ForeignKey(Agent, null=True, db_column='TreatedByAgentID', blank=True)
-    conservdescriptionid = models.ForeignKey(Conservdescription, db_column='ConservDescriptionID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    examinedbyagentid = models.ForeignKey(Agent, null=True, db_column='ExaminedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    curatorid = models.ForeignKey('specify.Agent', null=True, db_column='CuratorID', blank=True)
+    treatedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='TreatedByAgentID', blank=True)
+    conservdescriptionid = models.ForeignKey('specify.Conservdescription', db_column='ConservDescriptionID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    examinedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ExaminedByAgentID', blank=True)
     class Meta:
         db_table = u'conservevent'
 
@@ -956,10 +956,10 @@ class Conserveventattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    conserveventid = models.ForeignKey(Conservevent, db_column='ConservEventID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    conserveventid = models.ForeignKey('specify.Conservevent', db_column='ConservEventID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
     class Meta:
         db_table = u'conserveventattachment'
 
@@ -973,10 +973,10 @@ class Container(models.Model):
     name = models.CharField(max_length=192, db_column='Name', blank=True)
     number = models.IntegerField(null=True, db_column='Number', blank=True)
     type = models.IntegerField(null=True, db_column='Type', blank=True)
-    storageid = models.ForeignKey(Storage, null=True, db_column='StorageID', blank=True)
+    storageid = models.ForeignKey('specify.Storage', null=True, db_column='StorageID', blank=True)
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'container'
 
@@ -986,8 +986,8 @@ class Datatype(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     name = models.CharField(max_length=150, db_column='Name', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'datatype'
 
@@ -1006,9 +1006,9 @@ class Deaccession(models.Model):
     type = models.CharField(max_length=192, db_column='Type', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'deaccession'
 
@@ -1019,10 +1019,10 @@ class Deaccessionagent(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(unique=True, max_length=150, db_column='Role')
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    deaccessionid = models.ForeignKey(Deaccession, db_column='DeaccessionID')
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    deaccessionid = models.ForeignKey('specify.Deaccession', db_column='DeaccessionID')
     class Meta:
         db_table = u'deaccessionagent'
 
@@ -1033,10 +1033,10 @@ class Deaccessionpreparation(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preparationid = models.ForeignKey(Preparation, null=True, db_column='PreparationID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    deaccessionid = models.ForeignKey(Deaccession, db_column='DeaccessionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preparationid = models.ForeignKey('specify.Preparation', null=True, db_column='PreparationID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    deaccessionid = models.ForeignKey('specify.Deaccession', db_column='DeaccessionID')
     class Meta:
         db_table = u'deaccessionpreparation'
 
@@ -1067,12 +1067,12 @@ class Determination(models.Model):
     varqualifier = models.CharField(max_length=48, db_column='VarQualifier', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    taxonid = models.ForeignKey(Taxon, null=True, db_column='TaxonID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preferredtaxonid = models.ForeignKey(Taxon, null=True, db_column='PreferredTaxonID', blank=True)
-    determinerid = models.ForeignKey(Agent, null=True, db_column='DeterminerID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
+    taxonid = models.ForeignKey('specify.Taxon', null=True, db_column='TaxonID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preferredtaxonid = models.ForeignKey('specify.Taxon', null=True, db_column='PreferredTaxonID', blank=True)
+    determinerid = models.ForeignKey('specify.Agent', null=True, db_column='DeterminerID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
     class Meta:
         db_table = u'determination'
 
@@ -1083,10 +1083,10 @@ class Determinationcitation(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    determinationid = models.ForeignKey(Determination, db_column='DeterminationID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    determinationid = models.ForeignKey('specify.Determination', db_column='DeterminationID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'determinationcitation'
 
@@ -1095,18 +1095,18 @@ class Discipline(models.Model):
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     disciplineid = models.IntegerField(null=True, db_column='disciplineId', blank=True)
     name = models.CharField(max_length=192, db_column='Name', blank=True)
     regnumber = models.CharField(max_length=72, db_column='RegNumber', blank=True)
     type = models.CharField(max_length=192, db_column='Type', blank=True)
-    datatypeid = models.ForeignKey(Datatype, db_column='DataTypeID')
-    geographytreedefid = models.ForeignKey(Geographytreedef, db_column='GeographyTreeDefID')
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    lithostrattreedefid = models.ForeignKey(Lithostrattreedef, null=True, db_column='LithoStratTreeDefID', blank=True)
-    taxontreedefid = models.ForeignKey(Taxontreedef, null=True, db_column='TaxonTreeDefID', blank=True)
-    geologictimeperiodtreedefid = models.ForeignKey(Geologictimeperiodtreedef, db_column='GeologicTimePeriodTreeDefID')
+    datatypeid = models.ForeignKey('specify.Datatype', db_column='DataTypeID')
+    geographytreedefid = models.ForeignKey('specify.Geographytreedef', db_column='GeographyTreeDefID')
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    lithostrattreedefid = models.ForeignKey('specify.Lithostrattreedef', null=True, db_column='LithoStratTreeDefID', blank=True)
+    taxontreedefid = models.ForeignKey('specify.Taxontreedef', null=True, db_column='TaxonTreeDefID', blank=True)
+    geologictimeperiodtreedefid = models.ForeignKey('specify.Geologictimeperiodtreedef', db_column='GeologicTimePeriodTreeDefID')
     class Meta:
         db_table = u'discipline'
 
@@ -1115,8 +1115,8 @@ class Division(models.Model):
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     abbrev = models.CharField(max_length=192, db_column='Abbrev', blank=True)
     altname = models.CharField(max_length=384, db_column='AltName', blank=True)
     description = models.TextField(db_column='Description', blank=True)
@@ -1127,8 +1127,8 @@ class Division(models.Model):
     regnumber = models.CharField(max_length=72, db_column='RegNumber', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     uri = models.CharField(max_length=765, db_column='Uri', blank=True)
-    addressid = models.ForeignKey(Address, null=True, db_column='AddressID', blank=True)
-    institutionid = models.ForeignKey(Institution, db_column='InstitutionID')
+    addressid = models.ForeignKey('specify.Address', null=True, db_column='AddressID', blank=True)
+    institutionid = models.ForeignKey('specify.Institution', db_column='InstitutionID')
     class Meta:
         db_table = u'division'
 
@@ -1162,10 +1162,10 @@ class Dnasequence(models.Model):
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     yesno3 = models.BooleanField(null=True, db_column='YesNo3', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, null=True, db_column='CollectionObjectID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', null=True, db_column='CollectionObjectID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
     class Meta:
         db_table = u'dnasequence'
 
@@ -1176,10 +1176,10 @@ class Dnasequenceattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    dnasequencingrunid = models.ForeignKey(Dnasequencingrun, db_column='DnaSequencingRunID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    dnasequencingrunid = models.ForeignKey('specify.Dnasequencingrun', db_column='DnaSequencingRunID')
     class Meta:
         db_table = u'dnasequenceattachment'
 
@@ -1213,11 +1213,11 @@ class Dnasequencingrun(models.Model):
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     yesno3 = models.BooleanField(null=True, db_column='YesNo3', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    dnasequenceid = models.ForeignKey(Dnasequence, db_column='DNASequenceID')
-    runbyagentid = models.ForeignKey(Agent, null=True, db_column='RunByAgentID', blank=True)
-    preparedbyagentid = models.ForeignKey(Agent, null=True, db_column='PreparedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    dnasequenceid = models.ForeignKey('specify.Dnasequence', db_column='DNASequenceID')
+    runbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='RunByAgentID', blank=True)
+    preparedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='PreparedByAgentID', blank=True)
     class Meta:
         db_table = u'dnasequencingrun'
 
@@ -1233,10 +1233,10 @@ class Dnasequencingruncitation(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
-    dnasequencingrunid = models.ForeignKey(Dnasequencingrun, db_column='DNASequencingRunID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
+    dnasequencingrunid = models.ForeignKey('specify.Dnasequencingrun', db_column='DNASequencingRunID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'dnasequencingruncitation'
 
@@ -1257,12 +1257,12 @@ class Exchangein(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    receivedfromorganizationid = models.ForeignKey(Agent, db_column='ReceivedFromOrganizationID')
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    catalogedbyid = models.ForeignKey(Agent, db_column='CatalogedByID')
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    receivedfromorganizationid = models.ForeignKey('specify.Agent', db_column='ReceivedFromOrganizationID')
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    catalogedbyid = models.ForeignKey('specify.Agent', db_column='CatalogedByID')
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'exchangein'
 
@@ -1277,11 +1277,11 @@ class Exchangeinprep(models.Model):
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     text1 = models.TextField(db_column='Text1', blank=True)
     text2 = models.TextField(db_column='Text2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    preparationid = models.ForeignKey(Preparation, null=True, db_column='PreparationID', blank=True)
-    exchangeinid = models.ForeignKey(Exchangein, null=True, db_column='ExchangeInID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    preparationid = models.ForeignKey('specify.Preparation', null=True, db_column='PreparationID', blank=True)
+    exchangeinid = models.ForeignKey('specify.Exchangein', null=True, db_column='ExchangeInID', blank=True)
     class Meta:
         db_table = u'exchangeinprep'
 
@@ -1302,12 +1302,12 @@ class Exchangeout(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    catalogedbyid = models.ForeignKey(Agent, db_column='CatalogedByID')
-    senttoorganizationid = models.ForeignKey(Agent, db_column='SentToOrganizationID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    catalogedbyid = models.ForeignKey('specify.Agent', db_column='CatalogedByID')
+    senttoorganizationid = models.ForeignKey('specify.Agent', db_column='SentToOrganizationID')
     class Meta:
         db_table = u'exchangeout'
 
@@ -1322,11 +1322,11 @@ class Exchangeoutprep(models.Model):
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     text1 = models.TextField(db_column='Text1', blank=True)
     text2 = models.TextField(db_column='Text2', blank=True)
-    exchangeoutid = models.ForeignKey(Exchangeout, null=True, db_column='ExchangeOutID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preparationid = models.ForeignKey(Preparation, null=True, db_column='PreparationID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    exchangeoutid = models.ForeignKey('specify.Exchangeout', null=True, db_column='ExchangeOutID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preparationid = models.ForeignKey('specify.Preparation', null=True, db_column='PreparationID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'exchangeoutprep'
 
@@ -1336,9 +1336,9 @@ class Exsiccata(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     title = models.CharField(max_length=765, db_column='Title')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'exsiccata'
 
@@ -1349,10 +1349,10 @@ class Exsiccataitem(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     fascicle = models.CharField(max_length=48, db_column='Fascicle', blank=True)
     number = models.CharField(max_length=48, db_column='Number', blank=True)
-    exsiccataid = models.ForeignKey(Exsiccata, db_column='ExsiccataID')
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    exsiccataid = models.ForeignKey('specify.Exsiccata', db_column='ExsiccataID')
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'exsiccataitem'
 
@@ -1366,11 +1366,11 @@ class Fieldnotebook(models.Model):
     storage = models.CharField(max_length=192, db_column='Storage', blank=True)
     name = models.CharField(max_length=96, db_column='Name', blank=True)
     startdate = models.DateField(null=True, db_column='StartDate', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    collectionid = models.ForeignKey(Collection, db_column='CollectionID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', db_column='CollectionID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
     class Meta:
         db_table = u'fieldnotebook'
 
@@ -1381,10 +1381,10 @@ class Fieldnotebookattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    fieldnotebookid = models.ForeignKey(Fieldnotebook, db_column='FieldNotebookID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    fieldnotebookid = models.ForeignKey('specify.Fieldnotebook', db_column='FieldNotebookID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'fieldnotebookattachment'
 
@@ -1396,10 +1396,10 @@ class Fieldnotebookpage(models.Model):
     description = models.CharField(max_length=384, db_column='Description', blank=True)
     pagenumber = models.CharField(max_length=96, db_column='PageNumber')
     scandate = models.DateField(null=True, db_column='ScanDate', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    fieldnotebookpagesetid = models.ForeignKey(Fieldnotebookpageset, null=True, db_column='FieldNotebookPageSetID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    fieldnotebookpagesetid = models.ForeignKey('specify.Fieldnotebookpageset', null=True, db_column='FieldNotebookPageSetID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
     class Meta:
         db_table = u'fieldnotebookpage'
 
@@ -1410,10 +1410,10 @@ class Fieldnotebookpageattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    fieldnotebookpageid = models.ForeignKey(Fieldnotebookpage, db_column='FieldNotebookPageID')
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    fieldnotebookpageid = models.ForeignKey('specify.Fieldnotebookpage', db_column='FieldNotebookPageID')
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
     class Meta:
         db_table = u'fieldnotebookpageattachment'
 
@@ -1427,11 +1427,11 @@ class Fieldnotebookpageset(models.Model):
     method = models.CharField(max_length=192, db_column='Method', blank=True)
     ordernumber = models.IntegerField(null=True, db_column='OrderNumber', blank=True)
     startdate = models.DateField(null=True, db_column='StartDate', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    fieldnotebookid = models.ForeignKey(Fieldnotebook, null=True, db_column='FieldNotebookID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    fieldnotebookid = models.ForeignKey('specify.Fieldnotebook', null=True, db_column='FieldNotebookID', blank=True)
     class Meta:
         db_table = u'fieldnotebookpageset'
 
@@ -1442,10 +1442,10 @@ class Fieldnotebookpagesetattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    fieldnotebookpagesetid = models.ForeignKey(Fieldnotebookpageset, db_column='FieldNotebookPageSetID')
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    fieldnotebookpagesetid = models.ForeignKey('specify.Fieldnotebookpageset', db_column='FieldNotebookPageSetID')
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'fieldnotebookpagesetattachment'
 
@@ -1469,10 +1469,10 @@ class Geocoorddetail(models.Model):
     protocol = models.CharField(max_length=192, db_column='Protocol', blank=True)
     source = models.CharField(max_length=192, db_column='Source', blank=True)
     validation = models.CharField(max_length=192, db_column='Validation', blank=True)
-    localityid = models.ForeignKey(Locality, null=True, db_column='LocalityID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', null=True, db_column='LocalityID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
     class Meta:
         db_table = u'geocoorddetail'
 
@@ -1501,12 +1501,12 @@ class Geography(models.Model):
     text1 = models.CharField(max_length=96, db_column='Text1', blank=True)
     text2 = models.CharField(max_length=96, db_column='Text2', blank=True)
     timestampversion = models.DateTimeField(null=True, db_column='TimestampVersion', blank=True)
-    geographytreedefitemid = models.ForeignKey(Geographytreedefitem, db_column='GeographyTreeDefItemID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    geographytreedefitemid = models.ForeignKey('specify.Geographytreedefitem', db_column='GeographyTreeDefItemID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
     acceptedid = models.ForeignKey('self', null=True, db_column='AcceptedID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    geographytreedefid = models.ForeignKey(Geographytreedef, db_column='GeographyTreeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    geographytreedefid = models.ForeignKey('specify.Geographytreedef', db_column='GeographyTreeDefID')
     class Meta:
         db_table = u'geography'
 
@@ -1518,8 +1518,8 @@ class Geographytreedef(models.Model):
     fullnamedirection = models.IntegerField(null=True, db_column='FullNameDirection', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'geographytreedef'
 
@@ -1537,9 +1537,9 @@ class Geographytreedefitem(models.Model):
     textafter = models.CharField(max_length=192, db_column='TextAfter', blank=True)
     textbefore = models.CharField(max_length=192, db_column='TextBefore', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
-    geographytreedefid = models.ForeignKey(Geographytreedef, db_column='GeographyTreeDefID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    geographytreedefid = models.ForeignKey('specify.Geographytreedef', db_column='GeographyTreeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     parentitemid = models.ForeignKey('self', null=True, db_column='ParentItemID', blank=True)
     class Meta:
         db_table = u'geographytreedefitem'
@@ -1566,11 +1566,11 @@ class Geologictimeperiod(models.Model):
     text1 = models.CharField(max_length=384, db_column='Text1', blank=True)
     text2 = models.CharField(max_length=384, db_column='Text2', blank=True)
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
-    geologictimeperiodtreedefid = models.ForeignKey(Geologictimeperiodtreedef, db_column='GeologicTimePeriodTreeDefID')
+    geologictimeperiodtreedefid = models.ForeignKey('specify.Geologictimeperiodtreedef', db_column='GeologicTimePeriodTreeDefID')
     acceptedid = models.ForeignKey('self', null=True, db_column='AcceptedID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    geologictimeperiodtreedefitemid = models.ForeignKey(Geologictimeperiodtreedefitem, db_column='GeologicTimePeriodTreeDefItemID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    geologictimeperiodtreedefitemid = models.ForeignKey('specify.Geologictimeperiodtreedefitem', db_column='GeologicTimePeriodTreeDefItemID')
     class Meta:
         db_table = u'geologictimeperiod'
 
@@ -1582,8 +1582,8 @@ class Geologictimeperiodtreedef(models.Model):
     fullnamedirection = models.IntegerField(null=True, db_column='FullNameDirection', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'geologictimeperiodtreedef'
 
@@ -1602,9 +1602,9 @@ class Geologictimeperiodtreedefitem(models.Model):
     textbefore = models.CharField(max_length=192, db_column='TextBefore', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
     parentitemid = models.ForeignKey('self', null=True, db_column='ParentItemID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    geologictimeperiodtreedefid = models.ForeignKey(Geologictimeperiodtreedef, db_column='GeologicTimePeriodTreeDefID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    geologictimeperiodtreedefid = models.ForeignKey('specify.Geologictimeperiodtreedef', db_column='GeologicTimePeriodTreeDefID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'geologictimeperiodtreedefitem'
 
@@ -1629,11 +1629,11 @@ class Gift(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
     class Meta:
         db_table = u'gift'
 
@@ -1644,11 +1644,11 @@ class Giftagent(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(unique=True, max_length=150, db_column='Role')
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    giftid = models.ForeignKey(Gift, db_column='GiftID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    giftid = models.ForeignKey('specify.Gift', db_column='GiftID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'giftagent'
 
@@ -1662,11 +1662,11 @@ class Giftpreparation(models.Model):
     outcomments = models.TextField(db_column='OutComments', blank=True)
     quantity = models.IntegerField(null=True, db_column='Quantity', blank=True)
     receivedcomments = models.TextField(db_column='ReceivedComments', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    giftid = models.ForeignKey(Gift, null=True, db_column='GiftID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preparationid = models.ForeignKey(Preparation, null=True, db_column='PreparationID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    giftid = models.ForeignKey('specify.Gift', null=True, db_column='GiftID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preparationid = models.ForeignKey('specify.Preparation', null=True, db_column='PreparationID', blank=True)
     class Meta:
         db_table = u'giftpreparation'
 
@@ -1677,11 +1677,11 @@ class Groupperson(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordernumber = models.IntegerField(unique=True, db_column='OrderNumber')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    memberid = models.ForeignKey(Agent, db_column='MemberID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    groupid = models.ForeignKey(Agent, db_column='GroupID')
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    memberid = models.ForeignKey('specify.Agent', db_column='MemberID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    groupid = models.ForeignKey('specify.Agent', db_column='GroupID')
     class Meta:
         db_table = u'groupperson'
 
@@ -1704,9 +1704,9 @@ class Inforequest(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     replydate = models.DateField(null=True, db_column='ReplyDate', blank=True)
     requestdate = models.DateField(null=True, db_column='RequestDate', blank=True)
-    agentid = models.ForeignKey(Agent, null=True, db_column='AgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', null=True, db_column='AgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'inforequest'
 
@@ -1715,8 +1715,8 @@ class Institution(models.Model):
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     altname = models.CharField(max_length=384, db_column='AltName', blank=True)
     code = models.CharField(max_length=192, db_column='Code', blank=True)
     copyright = models.TextField(db_column='Copyright', blank=True)
@@ -1739,8 +1739,8 @@ class Institution(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     termsofuse = models.TextField(db_column='TermsOfUse', blank=True)
     uri = models.CharField(max_length=765, db_column='Uri', blank=True)
-    storagetreedefid = models.ForeignKey(Storagetreedef, null=True, db_column='StorageTreeDefID', blank=True)
-    addressid = models.ForeignKey(Address, null=True, db_column='AddressID', blank=True)
+    storagetreedefid = models.ForeignKey('specify.Storagetreedef', null=True, db_column='StorageTreeDefID', blank=True)
+    addressid = models.ForeignKey('specify.Address', null=True, db_column='AddressID', blank=True)
     currentmanagedrelversion = models.CharField(max_length=24, db_column='CurrentManagedRelVersion', blank=True)
     currentmanagedschemaversion = models.CharField(max_length=24, db_column='CurrentManagedSchemaVersion', blank=True)
     isreleasemanagedglobally = models.BooleanField(null=True, db_column='IsReleaseManagedGlobally', blank=True)
@@ -1765,9 +1765,9 @@ class Institutionnetwork(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     termsofuse = models.TextField(db_column='TermsOfUse', blank=True)
     uri = models.CharField(max_length=765, db_column='Uri', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    addressid = models.ForeignKey(Address, null=True, db_column='AddressID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    addressid = models.ForeignKey('specify.Address', null=True, db_column='AddressID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'institutionnetwork'
 
@@ -1782,8 +1782,8 @@ class Journal(models.Model):
     journalname = models.CharField(max_length=765, db_column='JournalName', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     text1 = models.CharField(max_length=96, db_column='Text1', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'journal'
 
@@ -1795,10 +1795,10 @@ class Latlonpolygon(models.Model):
     description = models.TextField(db_column='Description', blank=True)
     ispolyline = models.BooleanField(db_column='IsPolyline')
     name = models.CharField(max_length=192, db_column='Name')
-    localityid = models.ForeignKey(Locality, null=True, db_column='LocalityID', blank=True)
-    spvisualqueryid = models.ForeignKey(Spvisualquery, null=True, db_column='SpVisualQueryID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', null=True, db_column='LocalityID', blank=True)
+    spvisualqueryid = models.ForeignKey('specify.Spvisualquery', null=True, db_column='SpVisualQueryID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'latlonpolygon'
 
@@ -1808,7 +1808,7 @@ class Latlonpolygonpnt(models.Model):
     latitude = models.DecimalField(decimal_places=10, max_digits=14, db_column='Latitude')
     longitude = models.DecimalField(decimal_places=10, max_digits=14, db_column='Longitude')
     ordinal = models.IntegerField(db_column='Ordinal')
-    latlonpolygonid = models.ForeignKey(Latlonpolygon, db_column='LatLonPolygonID')
+    latlonpolygonid = models.ForeignKey('specify.Latlonpolygon', db_column='LatLonPolygonID')
     class Meta:
         db_table = u'latlonpolygonpnt'
 
@@ -1832,10 +1832,10 @@ class Lithostrat(models.Model):
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     acceptedid = models.ForeignKey('self', null=True, db_column='AcceptedID', blank=True)
-    lithostrattreedefitemid = models.ForeignKey(Lithostrattreedefitem, db_column='LithoStratTreeDefItemID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    lithostrattreedefid = models.ForeignKey(Lithostrattreedef, db_column='LithoStratTreeDefID')
+    lithostrattreedefitemid = models.ForeignKey('specify.Lithostrattreedefitem', db_column='LithoStratTreeDefItemID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    lithostrattreedefid = models.ForeignKey('specify.Lithostrattreedef', db_column='LithoStratTreeDefID')
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
     class Meta:
         db_table = u'lithostrat'
@@ -1848,8 +1848,8 @@ class Lithostrattreedef(models.Model):
     fullnamedirection = models.IntegerField(null=True, db_column='FullNameDirection', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'lithostrattreedef'
 
@@ -1867,10 +1867,10 @@ class Lithostrattreedefitem(models.Model):
     textafter = models.CharField(max_length=192, db_column='TextAfter', blank=True)
     textbefore = models.CharField(max_length=192, db_column='TextBefore', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     parentitemid = models.ForeignKey('self', null=True, db_column='ParentItemID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    lithostrattreedefid = models.ForeignKey(Lithostrattreedef, db_column='LithoStratTreeDefID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    lithostrattreedefid = models.ForeignKey('specify.Lithostrattreedef', db_column='LithoStratTreeDefID')
     class Meta:
         db_table = u'lithostrattreedefitem'
 
@@ -1900,11 +1900,11 @@ class Loan(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
     class Meta:
         db_table = u'loan'
 
@@ -1915,11 +1915,11 @@ class Loanagent(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     role = models.CharField(unique=True, max_length=150, db_column='Role')
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    loanid = models.ForeignKey(Loan, db_column='LoanID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    loanid = models.ForeignKey('specify.Loan', db_column='LoanID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'loanagent'
 
@@ -1930,10 +1930,10 @@ class Loanattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    loanid = models.ForeignKey(Loan, db_column='LoanID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    loanid = models.ForeignKey('specify.Loan', db_column='LoanID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'loanattachment'
 
@@ -1950,11 +1950,11 @@ class Loanpreparation(models.Model):
     quantityresolved = models.IntegerField(null=True, db_column='QuantityResolved', blank=True)
     quantityreturned = models.IntegerField(null=True, db_column='QuantityReturned', blank=True)
     receivedcomments = models.TextField(db_column='ReceivedComments', blank=True)
-    loanid = models.ForeignKey(Loan, db_column='LoanID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preparationid = models.ForeignKey(Preparation, null=True, db_column='PreparationID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
+    loanid = models.ForeignKey('specify.Loan', db_column='LoanID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preparationid = models.ForeignKey('specify.Preparation', null=True, db_column='PreparationID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
     class Meta:
         db_table = u'loanpreparation'
 
@@ -1967,12 +1967,12 @@ class Loanreturnpreparation(models.Model):
     quantityreturned = models.IntegerField(null=True, db_column='QuantityReturned', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     returneddate = models.DateField(null=True, db_column='ReturnedDate', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    deaccessionpreparationid = models.ForeignKey(Deaccessionpreparation, null=True, db_column='DeaccessionPreparationID', blank=True)
-    receivedbyid = models.ForeignKey(Agent, null=True, db_column='ReceivedByID', blank=True)
-    loanpreparationid = models.ForeignKey(Loanpreparation, db_column='LoanPreparationID')
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    deaccessionpreparationid = models.ForeignKey('specify.Deaccessionpreparation', null=True, db_column='DeaccessionPreparationID', blank=True)
+    receivedbyid = models.ForeignKey('specify.Agent', null=True, db_column='ReceivedByID', blank=True)
+    loanpreparationid = models.ForeignKey('specify.Loanpreparation', db_column='LoanPreparationID')
     class Meta:
         db_table = u'loanreturnpreparation'
 
@@ -2011,11 +2011,11 @@ class Locality(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     verbatimelevation = models.CharField(max_length=150, db_column='VerbatimElevation', blank=True)
     visibility = models.IntegerField(null=True, db_column='Visibility', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    geographyid = models.ForeignKey(Geography, null=True, db_column='GeographyID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    visibilitysetbyid = models.ForeignKey(Specifyuser, null=True, db_column='VisibilitySetByID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    geographyid = models.ForeignKey('specify.Geography', null=True, db_column='GeographyID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    visibilitysetbyid = models.ForeignKey('specify.Specifyuser', null=True, db_column='VisibilitySetByID', blank=True)
     sgrstatus = models.IntegerField(null=True, db_column='SGRStatus', blank=True)
     class Meta:
         db_table = u'locality'
@@ -2027,10 +2027,10 @@ class Localityattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    localityid = models.ForeignKey(Locality, db_column='LocalityID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', db_column='LocalityID')
     class Meta:
         db_table = u'localityattachment'
 
@@ -2040,11 +2040,11 @@ class Localitycitation(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    localityid = models.ForeignKey(Locality, db_column='LocalityID')
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    localityid = models.ForeignKey('specify.Locality', db_column='LocalityID')
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
     class Meta:
         db_table = u'localitycitation'
 
@@ -2089,9 +2089,9 @@ class Localitydetail(models.Model):
     waterbody = models.CharField(max_length=192, db_column='WaterBody', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    localityid = models.ForeignKey(Locality, null=True, db_column='LocalityID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', null=True, db_column='LocalityID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'localitydetail'
 
@@ -2102,10 +2102,10 @@ class Localitynamealias(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     name = models.CharField(max_length=765, db_column='Name')
     source = models.CharField(max_length=192, db_column='Source')
-    localityid = models.ForeignKey(Locality, db_column='LocalityID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    localityid = models.ForeignKey('specify.Locality', db_column='LocalityID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'localitynamealias'
 
@@ -2123,8 +2123,8 @@ class Morphbankview(models.Model):
     specimenpart = models.CharField(max_length=384, db_column='SpecimenPart', blank=True)
     viewangle = models.CharField(max_length=384, db_column='ViewAngle', blank=True)
     viewname = models.CharField(max_length=384, db_column='ViewName', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'morphbankview'
 
@@ -2137,9 +2137,9 @@ class Otheridentifier(models.Model):
     identifier = models.CharField(max_length=192, db_column='Identifier')
     institution = models.CharField(max_length=192, db_column='Institution', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
     class Meta:
         db_table = u'otheridentifier'
 
@@ -2159,12 +2159,12 @@ class Paleocontext(models.Model):
     topdistance = models.FloatField(null=True, db_column='TopDistance', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    lithostratid = models.ForeignKey(Lithostrat, null=True, db_column='LithoStratID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    chronosstratid = models.ForeignKey(Geologictimeperiod, null=True, db_column='ChronosStratID', blank=True)
-    biostratid = models.ForeignKey(Geologictimeperiod, null=True, db_column='BioStratID', blank=True)
-    chronosstratendid = models.ForeignKey(Geologictimeperiod, null=True, db_column='ChronosStratEndID', blank=True)
+    lithostratid = models.ForeignKey('specify.Lithostrat', null=True, db_column='LithoStratID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    chronosstratid = models.ForeignKey('specify.Geologictimeperiod', null=True, db_column='ChronosStratID', blank=True)
+    biostratid = models.ForeignKey('specify.Geologictimeperiod', null=True, db_column='BioStratID', blank=True)
+    chronosstratendid = models.ForeignKey('specify.Geologictimeperiod', null=True, db_column='ChronosStratEndID', blank=True)
     class Meta:
         db_table = u'paleocontext'
 
@@ -2186,10 +2186,10 @@ class Permit(models.Model):
     type = models.CharField(max_length=150, db_column='Type', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    issuedtoid = models.ForeignKey(Agent, null=True, db_column='IssuedToID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    issuedbyid = models.ForeignKey(Agent, null=True, db_column='IssuedByID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    issuedtoid = models.ForeignKey('specify.Agent', null=True, db_column='IssuedToID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    issuedbyid = models.ForeignKey('specify.Agent', null=True, db_column='IssuedByID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'permit'
 
@@ -2200,10 +2200,10 @@ class Permitattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    permitid = models.ForeignKey(Permit, db_column='PermitID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    permitid = models.ForeignKey('specify.Permit', db_column='PermitID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'permitattachment'
 
@@ -2223,9 +2223,9 @@ class Picklist(models.Model):
     sorttype = models.IntegerField(null=True, db_column='SortType', blank=True)
     tablename = models.CharField(max_length=192, db_column='TableName', blank=True)
     type = models.IntegerField(db_column='Type')
-    collectionid = models.ForeignKey(Collection, db_column='CollectionID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', db_column='CollectionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'picklist'
 
@@ -2237,9 +2237,9 @@ class Picklistitem(models.Model):
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     title = models.CharField(max_length=192, db_column='Title')
     value = models.CharField(max_length=192, db_column='Value', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    picklistid = models.ForeignKey(Picklist, db_column='PickListID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    picklistid = models.ForeignKey('specify.Picklist', db_column='PickListID')
     class Meta:
         db_table = u'picklistitem'
 
@@ -2264,13 +2264,13 @@ class Preparation(models.Model):
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     yesno3 = models.BooleanField(null=True, db_column='YesNo3', blank=True)
-    storageid = models.ForeignKey(Storage, null=True, db_column='StorageID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
-    preparationattributeid = models.ForeignKey(Preparationattribute, null=True, db_column='PreparationAttributeID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    preparedbyid = models.ForeignKey(Agent, null=True, db_column='PreparedByID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    preptypeid = models.ForeignKey(Preptype, db_column='PrepTypeID')
+    storageid = models.ForeignKey('specify.Storage', null=True, db_column='StorageID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
+    preparationattributeid = models.ForeignKey('specify.Preparationattribute', null=True, db_column='PreparationAttributeID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    preparedbyid = models.ForeignKey('specify.Agent', null=True, db_column='PreparedByID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    preptypeid = models.ForeignKey('specify.Preptype', db_column='PrepTypeID')
     class Meta:
         db_table = u'preparation'
 
@@ -2282,10 +2282,10 @@ class Preparationattachment(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    preparationid = models.ForeignKey(Preparation, db_column='PreparationID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
+    preparationid = models.ForeignKey('specify.Preparation', db_column='PreparationID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
     class Meta:
         db_table = u'preparationattachment'
 
@@ -2297,10 +2297,10 @@ class Preparationattr(models.Model):
     collectionmemberid = models.IntegerField(db_column='CollectionMemberID')
     doublevalue = models.FloatField(null=True, db_column='DoubleValue', blank=True)
     strvalue = models.CharField(max_length=765, db_column='StrValue', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    attributedefid = models.ForeignKey(Attributedef, db_column='AttributeDefID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    preparationid = models.ForeignKey(Preparation, db_column='PreparationId')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    attributedefid = models.ForeignKey('specify.Attributedef', db_column='AttributeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    preparationid = models.ForeignKey('specify.Preparation', db_column='PreparationId')
     class Meta:
         db_table = u'preparationattr'
 
@@ -2351,8 +2351,8 @@ class Preparationattribute(models.Model):
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
     yesno3 = models.BooleanField(null=True, db_column='YesNo3', blank=True)
     yesno4 = models.BooleanField(null=True, db_column='YesNo4', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'preparationattribute'
 
@@ -2363,9 +2363,9 @@ class Preptype(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     isloanable = models.BooleanField(db_column='IsLoanable')
     name = models.CharField(max_length=192, db_column='Name')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    collectionid = models.ForeignKey(Collection, db_column='CollectionID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', db_column='CollectionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'preptype'
 
@@ -2390,15 +2390,15 @@ class Project(models.Model):
     url = models.TextField(db_column='URL', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    projectagentid = models.ForeignKey(Agent, null=True, db_column='ProjectAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    projectagentid = models.ForeignKey('specify.Agent', null=True, db_column='ProjectAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'project'
 
 class ProjectColobj(models.Model):
-    projectid = models.ForeignKey(Project, db_column='ProjectID')
-    collectionobjectid = models.ForeignKey(Collectionobject, db_column='CollectionObjectID')
+    projectid = models.ForeignKey('specify.Project', db_column='ProjectID')
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', db_column='CollectionObjectID')
     class Meta:
         db_table = u'project_colobj'
 
@@ -2415,18 +2415,18 @@ class Recordset(models.Model):
     ownerpermissionlevel = models.IntegerField(null=True, db_column='OwnerPermissionLevel', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     type = models.IntegerField(db_column='Type')
-    inforequestid = models.ForeignKey(Inforequest, null=True, db_column='InfoRequestID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    spprincipalid = models.ForeignKey(Spprincipal, null=True, db_column='SpPrincipalID', blank=True)
+    inforequestid = models.ForeignKey('specify.Inforequest', null=True, db_column='InfoRequestID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    spprincipalid = models.ForeignKey('specify.Spprincipal', null=True, db_column='SpPrincipalID', blank=True)
     class Meta:
         db_table = u'recordset'
 
 class Recordsetitem(models.Model):
     recordsetitemid = models.IntegerField(primary_key=True, db_column='RecordSetItemID')
     recordid = models.IntegerField(db_column='RecordId')
-    recordsetid = models.ForeignKey(Recordset, db_column='RecordSetID')
+    recordsetid = models.ForeignKey('specify.Recordset', db_column='RecordSetID')
     class Meta:
         db_table = u'recordsetitem'
 
@@ -2454,10 +2454,10 @@ class Referencework(models.Model):
     workdate = models.CharField(max_length=75, db_column='WorkDate', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     containedrfparentid = models.ForeignKey('self', null=True, db_column='ContainedRFParentID', blank=True)
-    journalid = models.ForeignKey(Journal, null=True, db_column='JournalID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    journalid = models.ForeignKey('specify.Journal', null=True, db_column='JournalID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'referencework'
 
@@ -2479,11 +2479,11 @@ class Repositoryagreement(models.Model):
     text3 = models.CharField(max_length=765, db_column='Text3', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    addressofrecordid = models.ForeignKey(Addressofrecord, null=True, db_column='AddressOfRecordID', blank=True)
-    agentid = models.ForeignKey(Agent, db_column='AgentID')
-    divisionid = models.ForeignKey(Division, db_column='DivisionID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    addressofrecordid = models.ForeignKey('specify.Addressofrecord', null=True, db_column='AddressOfRecordID', blank=True)
+    agentid = models.ForeignKey('specify.Agent', db_column='AgentID')
+    divisionid = models.ForeignKey('specify.Division', db_column='DivisionID')
     class Meta:
         db_table = u'repositoryagreement'
 
@@ -2494,10 +2494,10 @@ class Repositoryagreementattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    repositoryagreementid = models.ForeignKey(Repositoryagreement, db_column='RepositoryAgreementID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    repositoryagreementid = models.ForeignKey('specify.Repositoryagreement', db_column='RepositoryAgreementID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'repositoryagreementattachment'
 
@@ -2519,22 +2519,22 @@ class Shipment(models.Model):
     weight = models.CharField(max_length=150, db_column='Weight', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    exchangeoutid = models.ForeignKey(Exchangeout, null=True, db_column='ExchangeOutID', blank=True)
-    loanid = models.ForeignKey(Loan, null=True, db_column='LoanID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    shipperid = models.ForeignKey(Agent, null=True, db_column='ShipperID', blank=True)
-    shippedbyid = models.ForeignKey(Agent, null=True, db_column='ShippedByID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    shippedtoid = models.ForeignKey(Agent, null=True, db_column='ShippedToID', blank=True)
-    giftid = models.ForeignKey(Gift, null=True, db_column='GiftID', blank=True)
-    borrowid = models.ForeignKey(Borrow, null=True, db_column='BorrowID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    exchangeoutid = models.ForeignKey('specify.Exchangeout', null=True, db_column='ExchangeOutID', blank=True)
+    loanid = models.ForeignKey('specify.Loan', null=True, db_column='LoanID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    shipperid = models.ForeignKey('specify.Agent', null=True, db_column='ShipperID', blank=True)
+    shippedbyid = models.ForeignKey('specify.Agent', null=True, db_column='ShippedByID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    shippedtoid = models.ForeignKey('specify.Agent', null=True, db_column='ShippedToID', blank=True)
+    giftid = models.ForeignKey('specify.Gift', null=True, db_column='GiftID', blank=True)
+    borrowid = models.ForeignKey('specify.Borrow', null=True, db_column='BorrowID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'shipment'
 
 class SpSchemaMapping(models.Model):
-    spexportschemamappingid = models.ForeignKey(Spexportschemamapping, db_column='SpExportSchemaMappingID')
-    spexportschemaid = models.ForeignKey(Spexportschema, db_column='SpExportSchemaID')
+    spexportschemamappingid = models.ForeignKey('specify.Spexportschemamapping', db_column='SpExportSchemaMappingID')
+    spexportschemaid = models.ForeignKey('specify.Spexportschema', db_column='SpExportSchemaID')
     class Meta:
         db_table = u'sp_schema_mapping'
 
@@ -2551,11 +2551,11 @@ class Spappresource(models.Model):
     mimetype = models.CharField(max_length=765, db_column='MimeType', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     ownerpermissionlevel = models.IntegerField(null=True, db_column='OwnerPermissionLevel', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    spprincipalid = models.ForeignKey(Spprincipal, null=True, db_column='SpPrincipalID', blank=True)
-    spappresourcedirid = models.ForeignKey(Spappresourcedir, db_column='SpAppResourceDirID')
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    spprincipalid = models.ForeignKey('specify.Spprincipal', null=True, db_column='SpPrincipalID', blank=True)
+    spappresourcedirid = models.ForeignKey('specify.Spappresourcedir', db_column='SpAppResourceDirID')
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'spappresource'
 
@@ -2565,10 +2565,10 @@ class Spappresourcedata(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     data = models.TextField(blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    spviewsetobjid = models.ForeignKey(Spviewsetobj, null=True, db_column='SpViewSetObjID', blank=True)
-    spappresourceid = models.ForeignKey(Spappresource, null=True, db_column='SpAppResourceID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    spviewsetobjid = models.ForeignKey('specify.Spviewsetobj', null=True, db_column='SpViewSetObjID', blank=True)
+    spappresourceid = models.ForeignKey('specify.Spappresource', null=True, db_column='SpAppResourceID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spappresourcedata'
 
@@ -2580,11 +2580,11 @@ class Spappresourcedir(models.Model):
     disciplinetype = models.CharField(max_length=192, db_column='DisciplineType', blank=True)
     ispersonal = models.BooleanField(db_column='IsPersonal')
     usertype = models.CharField(max_length=192, db_column='UserType', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, null=True, db_column='DisciplineID', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, null=True, db_column='SpecifyUserID', blank=True)
-    collectionid = models.ForeignKey(Collection, null=True, db_column='CollectionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', null=True, db_column='DisciplineID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', null=True, db_column='SpecifyUserID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', null=True, db_column='CollectionID', blank=True)
     class Meta:
         db_table = u'spappresourcedir'
 
@@ -2599,8 +2599,8 @@ class Spauditlog(models.Model):
     recordid = models.IntegerField(null=True, db_column='RecordId', blank=True)
     recordversion = models.IntegerField(db_column='RecordVersion')
     tablenum = models.IntegerField(db_column='TableNum')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spauditlog'
 
@@ -2612,9 +2612,9 @@ class Spauditlogfield(models.Model):
     fieldname = models.CharField(max_length=96, db_column='FieldName')
     newvalue = models.CharField(max_length=192, db_column='NewValue')
     oldvalue = models.CharField(max_length=192, db_column='OldValue')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    spauditlogid = models.ForeignKey(Spauditlog, null=True, db_column='SpAuditLogID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    spauditlogid = models.ForeignKey('specify.Spauditlog', null=True, db_column='SpAuditLogID', blank=True)
     class Meta:
         db_table = u'spauditlogfield'
 
@@ -2633,14 +2633,14 @@ class Specifyuser(models.Model):
     name = models.CharField(unique=True, max_length=192, db_column='Name')
     password = models.CharField(max_length=765, db_column='Password')
     usertype = models.CharField(max_length=96, db_column='UserType', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'specifyuser'
 
 class SpecifyuserSpprincipal(models.Model):
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    spprincipalid = models.ForeignKey(Spprincipal, db_column='SpPrincipalID')
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    spprincipalid = models.ForeignKey('specify.Spprincipal', db_column='SpPrincipalID')
     class Meta:
         db_table = u'specifyuser_spprincipal'
 
@@ -2652,9 +2652,9 @@ class Spexportschema(models.Model):
     description = models.CharField(max_length=765, db_column='Description', blank=True)
     schemaname = models.CharField(max_length=240, db_column='SchemaName', blank=True)
     schemaversion = models.CharField(max_length=240, db_column='SchemaVersion', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spexportschema'
 
@@ -2667,10 +2667,10 @@ class Spexportschemaitem(models.Model):
     description = models.CharField(max_length=765, db_column='Description', blank=True)
     fieldname = models.CharField(max_length=192, db_column='FieldName', blank=True)
     formatter = models.CharField(max_length=96, db_column='Formatter', blank=True)
-    splocalecontaineritemid = models.ForeignKey(Splocalecontaineritem, null=True, db_column='SpLocaleContainerItemID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    spexportschemaid = models.ForeignKey(Spexportschema, db_column='SpExportSchemaID')
+    splocalecontaineritemid = models.ForeignKey('specify.Splocalecontaineritem', null=True, db_column='SpLocaleContainerItemID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    spexportschemaid = models.ForeignKey('specify.Spexportschema', db_column='SpExportSchemaID')
     class Meta:
         db_table = u'spexportschemaitem'
 
@@ -2680,11 +2680,11 @@ class Spexportschemaitemmapping(models.Model):
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     remarks = models.CharField(max_length=765, db_column='Remarks', blank=True)
-    spqueryfieldid = models.ForeignKey(Spqueryfield, null=True, db_column='SpQueryFieldID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    spexportschemamappingid = models.ForeignKey(Spexportschemamapping, null=True, db_column='SpExportSchemaMappingID', blank=True)
-    exportschemaitemid = models.ForeignKey(Spexportschemaitem, null=True, db_column='ExportSchemaItemID', blank=True)
+    spqueryfieldid = models.ForeignKey('specify.Spqueryfield', null=True, db_column='SpQueryFieldID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    spexportschemamappingid = models.ForeignKey('specify.Spexportschemamapping', null=True, db_column='SpExportSchemaMappingID', blank=True)
+    exportschemaitemid = models.ForeignKey('specify.Spexportschemaitem', null=True, db_column='ExportSchemaItemID', blank=True)
     class Meta:
         db_table = u'spexportschemaitemmapping'
 
@@ -2696,8 +2696,8 @@ class Spexportschemamapping(models.Model):
     description = models.CharField(max_length=765, db_column='Description', blank=True)
     mappingname = models.CharField(max_length=150, db_column='MappingName', blank=True)
     timestampexported = models.DateTimeField(null=True, db_column='TimeStampExported', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     collectionmemberid = models.IntegerField(null=True, db_column='CollectionMemberID', blank=True)
     class Meta:
         db_table = u'spexportschemamapping'
@@ -2712,8 +2712,8 @@ class Spfieldvaluedefault(models.Model):
     idvalue = models.IntegerField(null=True, db_column='IdValue', blank=True)
     strvalue = models.CharField(max_length=192, db_column='StrValue', blank=True)
     tablename = models.CharField(max_length=96, db_column='TableName', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'spfieldvaluedefault'
 
@@ -2732,9 +2732,9 @@ class Splocalecontainer(models.Model):
     aggregator = models.CharField(max_length=192, db_column='Aggregator', blank=True)
     defaultui = models.CharField(max_length=192, db_column='DefaultUI', blank=True)
     schematype = models.IntegerField(db_column='SchemaType')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, db_column='DisciplineID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', db_column='DisciplineID')
     class Meta:
         db_table = u'splocalecontainer'
 
@@ -2752,9 +2752,9 @@ class Splocalecontaineritem(models.Model):
     type = models.CharField(max_length=96, db_column='Type', blank=True)
     isrequired = models.BooleanField(null=True, db_column='IsRequired', blank=True)
     weblinkname = models.CharField(max_length=96, db_column='WebLinkName', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    splocalecontainerid = models.ForeignKey(Splocalecontainer, db_column='SpLocaleContainerID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    splocalecontainerid = models.ForeignKey('specify.Splocalecontainer', db_column='SpLocaleContainerID')
     class Meta:
         db_table = u'splocalecontaineritem'
 
@@ -2767,12 +2767,12 @@ class Splocaleitemstr(models.Model):
     language = models.CharField(max_length=6, db_column='Language')
     text = models.CharField(max_length=765, db_column='Text')
     variant = models.CharField(max_length=6, db_column='Variant', blank=True)
-    splocalecontaineritemdescid = models.ForeignKey(Splocalecontaineritem, null=True, db_column='SpLocaleContainerItemDescID', blank=True)
-    splocalecontainerdescid = models.ForeignKey(Splocalecontainer, null=True, db_column='SpLocaleContainerDescID', blank=True)
-    splocalecontainernameid = models.ForeignKey(Splocalecontainer, null=True, db_column='SpLocaleContainerNameID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    splocalecontaineritemnameid = models.ForeignKey(Splocalecontaineritem, null=True, db_column='SpLocaleContainerItemNameID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    splocalecontaineritemdescid = models.ForeignKey('specify.Splocalecontaineritem', null=True, db_column='SpLocaleContainerItemDescID', blank=True)
+    splocalecontainerdescid = models.ForeignKey('specify.Splocalecontainer', null=True, db_column='SpLocaleContainerDescID', blank=True)
+    splocalecontainernameid = models.ForeignKey('specify.Splocalecontainer', null=True, db_column='SpLocaleContainerNameID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    splocalecontaineritemnameid = models.ForeignKey('specify.Splocalecontaineritem', null=True, db_column='SpLocaleContainerItemNameID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'splocaleitemstr'
 
@@ -2795,15 +2795,15 @@ class Spprincipal(models.Model):
     name = models.CharField(max_length=192, db_column='Name')
     priority = models.IntegerField(db_column='Priority')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     usergroupscopeid = models.IntegerField(null=True, db_column='userGroupScopeID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spprincipal'
 
 class SpprincipalSppermission(models.Model):
-    sppermissionid = models.ForeignKey(Sppermission, db_column='SpPermissionID')
-    spprincipalid = models.ForeignKey(Spprincipal, db_column='SpPrincipalID')
+    sppermissionid = models.ForeignKey('specify.Sppermission', db_column='SpPermissionID')
+    spprincipalid = models.ForeignKey('specify.Spprincipal', db_column='SpPrincipalID')
     class Meta:
         db_table = u'spprincipal_sppermission'
 
@@ -2822,9 +2822,9 @@ class Spquery(models.Model):
     searchsynonymy = models.BooleanField(null=True, db_column='SearchSynonymy', blank=True)
     selectdistinct = models.BooleanField(null=True, db_column='SelectDistinct', blank=True)
     sqlstr = models.CharField(max_length=192, db_column='SqlStr', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'spquery'
 
@@ -2850,9 +2850,9 @@ class Spqueryfield(models.Model):
     startvalue = models.CharField(max_length=192, db_column='StartValue')
     stringid = models.TextField(db_column='StringId')
     tablelist = models.TextField(db_column='TableList')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    spqueryid = models.ForeignKey(Spquery, null=True, db_column='SpQueryID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    spqueryid = models.ForeignKey('specify.Spquery', null=True, db_column='SpQueryID', blank=True)
     allownulls = models.BooleanField(null=True, db_column='AllowNulls', blank=True)
     class Meta:
         db_table = u'spqueryfield'
@@ -2866,12 +2866,12 @@ class Spreport(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     repeatcount = models.IntegerField(null=True, db_column='RepeatCount', blank=True)
     repeatfield = models.CharField(max_length=765, db_column='RepeatField', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    appresourceid = models.ForeignKey(Spappresource, db_column='AppResourceID')
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    workbenchtemplateid = models.ForeignKey(Workbenchtemplate, null=True, db_column='WorkbenchTemplateID', blank=True)
-    spqueryid = models.ForeignKey(Spquery, null=True, db_column='SpQueryID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    appresourceid = models.ForeignKey('specify.Spappresource', db_column='AppResourceID')
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    workbenchtemplateid = models.ForeignKey('specify.Workbenchtemplate', null=True, db_column='WorkbenchTemplateID', blank=True)
+    spqueryid = models.ForeignKey('specify.Spquery', null=True, db_column='SpQueryID', blank=True)
     class Meta:
         db_table = u'spreport'
 
@@ -2887,11 +2887,11 @@ class Sptasksemaphore(models.Model):
     scope = models.IntegerField(null=True, db_column='Scope', blank=True)
     taskname = models.CharField(max_length=96, db_column='TaskName', blank=True)
     usagecount = models.IntegerField(null=True, db_column='UsageCount', blank=True)
-    ownerid = models.ForeignKey(Specifyuser, null=True, db_column='OwnerID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    collectionid = models.ForeignKey(Collection, null=True, db_column='CollectionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    disciplineid = models.ForeignKey(Discipline, null=True, db_column='DisciplineID', blank=True)
+    ownerid = models.ForeignKey('specify.Specifyuser', null=True, db_column='OwnerID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    collectionid = models.ForeignKey('specify.Collection', null=True, db_column='CollectionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    disciplineid = models.ForeignKey('specify.Discipline', null=True, db_column='DisciplineID', blank=True)
     class Meta:
         db_table = u'sptasksemaphore'
 
@@ -2905,8 +2905,8 @@ class Spversion(models.Model):
     schemaversion = models.CharField(max_length=48, db_column='SchemaVersion', blank=True)
     isdbclosed = models.BooleanField(null=True, db_column='IsDBClosed', blank=True)
     dbclosedby = models.CharField(max_length=96, db_column='DbClosedBy', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spversion'
 
@@ -2920,9 +2920,9 @@ class Spviewsetobj(models.Model):
     level = models.IntegerField(db_column='Level')
     metadata = models.CharField(max_length=765, db_column='MetaData', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    spappresourcedirid = models.ForeignKey(Spappresourcedir, db_column='SpAppResourceDirID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    spappresourcedirid = models.ForeignKey('specify.Spappresourcedir', db_column='SpAppResourceDirID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'spviewsetobj'
 
@@ -2933,9 +2933,9 @@ class Spvisualquery(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     description = models.TextField(db_column='Description', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'spvisualquery'
 
@@ -2957,12 +2957,12 @@ class Storage(models.Model):
     text1 = models.CharField(max_length=96, db_column='Text1', blank=True)
     text2 = models.CharField(max_length=96, db_column='Text2', blank=True)
     timestampversion = models.DateTimeField(null=True, db_column='TimestampVersion', blank=True)
-    storagetreedefitemid = models.ForeignKey(Storagetreedefitem, db_column='StorageTreeDefItemID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    storagetreedefitemid = models.ForeignKey('specify.Storagetreedefitem', db_column='StorageTreeDefItemID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
     acceptedid = models.ForeignKey('self', null=True, db_column='AcceptedID', blank=True)
-    storagetreedefid = models.ForeignKey(Storagetreedef, db_column='StorageTreeDefID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    storagetreedefid = models.ForeignKey('specify.Storagetreedef', db_column='StorageTreeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'storage'
 
@@ -2974,8 +2974,8 @@ class Storagetreedef(models.Model):
     fullnamedirection = models.IntegerField(null=True, db_column='FullNameDirection', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     remarks = models.TextField(db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'storagetreedef'
 
@@ -2993,10 +2993,10 @@ class Storagetreedefitem(models.Model):
     textafter = models.CharField(max_length=192, db_column='TextAfter', blank=True)
     textbefore = models.CharField(max_length=192, db_column='TextBefore', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
-    storagetreedefid = models.ForeignKey(Storagetreedef, db_column='StorageTreeDefID')
+    storagetreedefid = models.ForeignKey('specify.Storagetreedef', db_column='StorageTreeDefID')
     parentitemid = models.ForeignKey('self', null=True, db_column='ParentItemID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'storagetreedefitem'
 
@@ -3041,15 +3041,15 @@ class Taxon(models.Model):
     unitname4 = models.CharField(max_length=150, db_column='UnitName4', blank=True)
     usfwscode = models.CharField(max_length=48, db_column='UsfwsCode', blank=True)
     visibility = models.IntegerField(null=True, db_column='Visibility', blank=True)
-    taxontreedefid = models.ForeignKey(Taxontreedef, db_column='TaxonTreeDefID')
+    taxontreedefid = models.ForeignKey('specify.Taxontreedef', db_column='TaxonTreeDefID')
     acceptedid = models.ForeignKey('self', null=True, db_column='AcceptedID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    visibilitysetbyid = models.ForeignKey(Specifyuser, null=True, db_column='VisibilitySetByID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    visibilitysetbyid = models.ForeignKey('specify.Specifyuser', null=True, db_column='VisibilitySetByID', blank=True)
     parentid = models.ForeignKey('self', null=True, db_column='ParentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     hybridparent2id = models.ForeignKey('self', null=True, db_column='HybridParent2ID', blank=True)
     hybridparent1id = models.ForeignKey('self', null=True, db_column='HybridParent1ID', blank=True)
-    taxontreedefitemid = models.ForeignKey(Taxontreedefitem, db_column='TaxonTreeDefItemID')
+    taxontreedefitemid = models.ForeignKey('specify.Taxontreedefitem', db_column='TaxonTreeDefItemID')
     class Meta:
         db_table = u'taxon'
 
@@ -3060,10 +3060,10 @@ class Taxonattachment(models.Model):
     version = models.IntegerField(null=True, db_column='Version', blank=True)
     ordinal = models.IntegerField(null=True, db_column='Ordinal', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
-    attachmentid = models.ForeignKey(Attachment, db_column='AttachmentID')
-    taxonid = models.ForeignKey(Taxon, db_column='TaxonID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    attachmentid = models.ForeignKey('specify.Attachment', db_column='AttachmentID')
+    taxonid = models.ForeignKey('specify.Taxon', db_column='TaxonID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'taxonattachment'
 
@@ -3079,10 +3079,10 @@ class Taxoncitation(models.Model):
     text2 = models.TextField(db_column='Text2', blank=True)
     yesno1 = models.BooleanField(null=True, db_column='YesNo1', blank=True)
     yesno2 = models.BooleanField(null=True, db_column='YesNo2', blank=True)
-    referenceworkid = models.ForeignKey(Referencework, db_column='ReferenceWorkID')
-    taxonid = models.ForeignKey(Taxon, db_column='TaxonID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    referenceworkid = models.ForeignKey('specify.Referencework', db_column='ReferenceWorkID')
+    taxonid = models.ForeignKey('specify.Taxon', db_column='TaxonID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'taxoncitation'
 
@@ -3094,8 +3094,8 @@ class Taxontreedef(models.Model):
     fullnamedirection = models.IntegerField(null=True, db_column='FullNameDirection', blank=True)
     name = models.CharField(max_length=192, db_column='Name')
     remarks = models.CharField(max_length=765, db_column='Remarks', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'taxontreedef'
 
@@ -3114,10 +3114,10 @@ class Taxontreedefitem(models.Model):
     textafter = models.CharField(max_length=192, db_column='TextAfter', blank=True)
     textbefore = models.CharField(max_length=192, db_column='TextBefore', blank=True)
     title = models.CharField(max_length=192, db_column='Title', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     parentitemid = models.ForeignKey('self', null=True, db_column='ParentItemID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    taxontreedefid = models.ForeignKey(Taxontreedef, db_column='TaxonTreeDefID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    taxontreedefid = models.ForeignKey('specify.Taxontreedef', db_column='TaxonTreeDefID')
     class Meta:
         db_table = u'taxontreedefitem'
 
@@ -3138,11 +3138,11 @@ class Treatmentevent(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True)
     treatmentnumber = models.CharField(max_length=96, db_column='TreatmentNumber', blank=True)
     type = models.CharField(max_length=96, db_column='Type', blank=True)
-    divisionid = models.ForeignKey(Division, null=True, db_column='DivisionID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    accessionid = models.ForeignKey(Accession, null=True, db_column='AccessionID', blank=True)
-    collectionobjectid = models.ForeignKey(Collectionobject, null=True, db_column='CollectionObjectID', blank=True)
+    divisionid = models.ForeignKey('specify.Division', null=True, db_column='DivisionID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    accessionid = models.ForeignKey('specify.Accession', null=True, db_column='AccessionID', blank=True)
+    collectionobjectid = models.ForeignKey('specify.Collectionobject', null=True, db_column='CollectionObjectID', blank=True)
     class Meta:
         db_table = u'treatmentevent'
 
@@ -3161,11 +3161,11 @@ class Workbench(models.Model):
     ownerpermissionlevel = models.IntegerField(null=True, db_column='OwnerPermissionLevel', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     srcfilepath = models.CharField(max_length=765, db_column='SrcFilePath', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    spprincipalid = models.ForeignKey(Spprincipal, null=True, db_column='SpPrincipalID', blank=True)
-    workbenchtemplateid = models.ForeignKey(Workbenchtemplate, db_column='WorkbenchTemplateID')
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    spprincipalid = models.ForeignKey('specify.Spprincipal', null=True, db_column='SpPrincipalID', blank=True)
+    workbenchtemplateid = models.ForeignKey('specify.Workbenchtemplate', db_column='WorkbenchTemplateID')
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     exportedfromtablename = models.CharField(max_length=384, db_column='ExportedFromTableName', blank=True)
     class Meta:
         db_table = u'workbench'
@@ -3175,8 +3175,8 @@ class Workbenchdataitem(models.Model):
     celldata = models.TextField(db_column='CellData', blank=True)
     rownumber = models.IntegerField(null=True, db_column='RowNumber', blank=True)
     validationstatus = models.IntegerField(null=True, db_column='ValidationStatus', blank=True)
-    workbenchtemplatemappingitemid = models.ForeignKey(Workbenchtemplatemappingitem, db_column='WorkbenchTemplateMappingItemID')
-    workbenchrowid = models.ForeignKey(Workbenchrow, db_column='WorkbenchRowID')
+    workbenchtemplatemappingitemid = models.ForeignKey('specify.Workbenchtemplatemappingitem', db_column='WorkbenchTemplateMappingItemID')
+    workbenchrowid = models.ForeignKey('specify.Workbenchrow', db_column='WorkbenchRowID')
     class Meta:
         db_table = u'workbenchdataitem'
 
@@ -3191,7 +3191,7 @@ class Workbenchrow(models.Model):
     long2text = models.CharField(max_length=150, db_column='Long2Text', blank=True)
     rownumber = models.IntegerField(null=True, db_column='RowNumber', blank=True)
     uploadstatus = models.IntegerField(null=True, db_column='UploadStatus', blank=True)
-    workbenchid = models.ForeignKey(Workbench, db_column='WorkbenchID')
+    workbenchid = models.ForeignKey('specify.Workbench', db_column='WorkbenchID')
     recordid = models.IntegerField(null=True, db_column='RecordID', blank=True)
     sgrstatus = models.IntegerField(null=True, db_column='SGRStatus', blank=True)
     class Meta:
@@ -3206,9 +3206,9 @@ class Workbenchrowexportedrelationship(models.Model):
     relationshipname = models.CharField(max_length=360, db_column='RelationshipName', blank=True)
     sequence = models.IntegerField(null=True, db_column='Sequence', blank=True)
     tablename = models.CharField(max_length=360, db_column='TableName', blank=True)
-    workbenchrowid = models.ForeignKey(Workbenchrow, db_column='WorkbenchRowID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
+    workbenchrowid = models.ForeignKey('specify.Workbenchrow', db_column='WorkbenchRowID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
     class Meta:
         db_table = u'workbenchrowexportedrelationship'
 
@@ -3218,7 +3218,7 @@ class Workbenchrowimage(models.Model):
     cardimagedata = models.TextField(db_column='CardImageData', blank=True)
     cardimagefullpath = models.CharField(max_length=765, db_column='CardImageFullPath', blank=True)
     imageorder = models.IntegerField(null=True, db_column='ImageOrder', blank=True)
-    workbenchrowid = models.ForeignKey(Workbenchrow, db_column='WorkbenchRowID')
+    workbenchrowid = models.ForeignKey('specify.Workbenchrow', db_column='WorkbenchRowID')
     class Meta:
         db_table = u'workbenchrowimage'
 
@@ -3230,9 +3230,9 @@ class Workbenchtemplate(models.Model):
     name = models.CharField(max_length=192, db_column='Name', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     srcfilepath = models.CharField(max_length=765, db_column='SrcFilePath', blank=True)
-    specifyuserid = models.ForeignKey(Specifyuser, db_column='SpecifyUserID')
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    specifyuserid = models.ForeignKey('specify.Specifyuser', db_column='SpecifyUserID')
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     class Meta:
         db_table = u'workbenchtemplate'
 
@@ -3257,9 +3257,9 @@ class Workbenchtemplatemappingitem(models.Model):
     tableid = models.IntegerField(null=True, db_column='TableId', blank=True)
     tablename = models.CharField(max_length=192, db_column='TableName', blank=True)
     vieworder = models.IntegerField(null=True, db_column='ViewOrder', blank=True)
-    createdbyagentid = models.ForeignKey(Agent, null=True, db_column='CreatedByAgentID', blank=True)
-    workbenchtemplateid = models.ForeignKey(Workbenchtemplate, db_column='WorkbenchTemplateID')
-    modifiedbyagentid = models.ForeignKey(Agent, null=True, db_column='ModifiedByAgentID', blank=True)
+    createdbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='CreatedByAgentID', blank=True)
+    workbenchtemplateid = models.ForeignKey('specify.Workbenchtemplate', db_column='WorkbenchTemplateID')
+    modifiedbyagentid = models.ForeignKey('specify.Agent', null=True, db_column='ModifiedByAgentID', blank=True)
     iseditable = models.BooleanField(null=True, db_column='IsEditable', blank=True)
     class Meta:
         db_table = u'workbenchtemplatemappingitem'
