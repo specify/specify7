@@ -1091,7 +1091,7 @@ class Determinationcitation(models.Model):
         db_table = u'determinationcitation'
 
 class Discipline(models.Model):
-    usergroupscopeid = models.IntegerField(unique=True, db_column='UserGroupScopeId')
+    usergroupscopeid = models.IntegerField(primary_key=True, db_column='UserGroupScopeId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
