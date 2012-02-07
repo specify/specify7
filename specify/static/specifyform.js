@@ -28,15 +28,13 @@ function renderView(viewName, views, schemaLocalization, uri) {
     // on the columnDef attr of a viewDef.
     function processColumnDef(columnDef) {
         var table = $('<table>');
-        $.each(
-            columnDef.split(','),
-            function(i, def) {
-                if (i%2==0) {
-                    var col = $('<col>').appendTo(table);
-                    var width = /(\d+)px/.exec(def);
-                    width && col.attr('width', width[1]+'px');
-                }
-            });
+        $(columnDef.split(',')).each(function(i, def) {
+            if (i%2==0) {
+                var col = $('<col>').appendTo(table);
+                var width = /(\d+)px/.exec(def);
+                width && col.attr('width', width[1]+'px');
+            }
+        });
         return table;
     }
 
@@ -162,14 +160,14 @@ function renderView(viewName, views, schemaLocalization, uri) {
                     },
                     panel: function() {
                         var table = processColumnDef($(cell).attr('coldef'));
-                        $.each($(cell).children('rows').children('row'),
-                               function(i, row) {
-                                   var tr = $('<tr>').appendTo(table);
-                                   $.each($(row).children('cell'),
-                                          function(i, cell) {
-                                              tr.append(processCell(cell));
-                                          });
-                               });
+                        $(cell).children('rows').children('row').each(
+                            function(i, row) {
+                                var tr = $('<tr>').appendTo(table);
+                                $(row).children('cell').each(
+                                    function(i, cell) {
+                                        tr.append(processCell(cell));
+                                    });
+                            });
                         return $('<td>').append(table);
                     }
                 };
@@ -192,7 +190,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                 $(view).children('rows').children('row'),
                 function(i, row) {
                     var tr = $('<tr>').appendTo(table);
-                    $.each($(row).children('cell'), function(i, cell) {
+                    $(row).children('cell').each(function(i, cell) {
                         tr.append(processCell(cell));
                     });
                 });
@@ -215,7 +213,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
 // Allows the views to be merrged easily.
 function breakOutViews(viewset) {
     var views = {};
-    $.each($(viewset).find('viewdef'), function(i, view) {
+    $(viewset).find('viewdef').each(function(i, view) {
         views[$(view).attr('name')] = view;
     });
     return views;
@@ -246,7 +244,7 @@ $(function () {
         ];
 
         var viewsets = {}, completed = 0;
-        $.each(viewsetNames, function(i, name) {
+        $(viewsetNames).each(function(i, name) {
             $.get(name, function(viewset) {
                 completed++;
                 viewsets[name] = viewset;
