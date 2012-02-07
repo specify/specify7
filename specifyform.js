@@ -22,7 +22,7 @@ var getLocalizedStr = function(alternatives) {
 // Produce a DOM structure for the view given by viewName.
 // [views] is an object mapping view names to <viewdef> DOM nodes
 // [schemaLocalization] is a DOM structure
-function renderView(viewName, views, schemaLocalization) {
+function renderView(viewName, views, schemaLocalization, uri) {
 
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewDef.
@@ -49,7 +49,7 @@ function renderView(viewName, views, schemaLocalization) {
     // Return a <div> DOM node containing the processed view.
     // Subviews result in recursive calls where depth is
     // incremented each time
-    function processView(view, depth) {
+    function processView(view, uri, depth) { $.get(uri, function(data) {
         if (!view) return $('<div>');
         depth = depth || 1;
 
@@ -95,11 +95,12 @@ function renderView(viewName, views, schemaLocalization) {
                         text: function() {
                             return $('<td>')
                                 .append($('<input type="text" />')
-                                        .attr('name', fieldName));
+                                        .attr('name', fieldName)
+                                        .val(data[fieldName]));
                         },
                         checkbox: function() {
                             var checkbox = $('<input type="checkbox" />')
-                                .attr('name', fieldName);
+                                .attr('name', fieldName).val(data[fieldName]);
                             var givenLabel = $(cell).attr('label');
                             var localizedLabel =
                                 getLocalizedLabelFor(fieldName);
@@ -120,7 +121,8 @@ function renderView(viewName, views, schemaLocalization) {
                             return $('<td>')
                                 .append($('<textarea />)')
                                         .attr({rows: $(cell).attr('rows'),
-                                               name: fieldName}));
+                                               name: fieldName})
+                                        .val(data[fieldName]));
                         },
                         querycbx: function() {
                             return $('<td>').append(
@@ -139,10 +141,14 @@ function renderView(viewName, views, schemaLocalization) {
                     return $('<td>').append(elem.addClass('separator'));
                 },
                 subview: function() {
+                    var fieldName = $(cell).attr('name');
                     var viewname = $(cell).attr('viewname');
                     var td = $('<td>');
-                    views[viewname] &&
-                        td.append(processView(views[viewname], depth+1));
+                    if (views[viewname]) {
+                        var subview = processView(views[viewname], data[fieldName], depth+1)
+                            .attr('name', fieldName);
+                        td.append(subview);
+                    }
                     return td;
                 },
                 panel: function() {
@@ -186,13 +192,12 @@ function renderView(viewName, views, schemaLocalization) {
             getLocalizationForModel(viewModel).children('names')
         ) || $(view).attr('name');
 
-        return $('<div>').
-            append($('<h'+depth+'>').
-                   text(localizedName)).
-            append(table);
-    }
+        return $('<form>')
+            .append($('<h'+depth+'>').text(localizedName))
+            .append(table);
+    });}
 
-    return processView(views[viewName]);
+    return processView(views[viewName], uri);
 }
 
 
@@ -210,6 +215,7 @@ function breakOutViews(viewset) {
 // Main entry point.
 $(function () {
     var schemaLocalization;
+    var uri = "http://localhost:8000/api/specify/collectionobject/12/";
 
     $.get('schema_localization.xml', function(data) {
         schemaLocalization = data;
@@ -243,7 +249,7 @@ $(function () {
                     var views = $.extend.apply($, orderedViews);
                     $('body').append(
                         renderView('Collection Object', views,
-                                   schemaLocalization)
+                                   schemaLocalization, uri)
                     );
                 }
             });
