@@ -1,4 +1,10 @@
 var language = "en";
+
+// Given a DOM containing alternative localizations,
+// return the one for the language selected above,
+// or failing that, for "en", or failing that,
+// just return the first one.
+
 var getLocalizedStr = function(alternatives) {
     var str = $(alternatives)
         .children('str[language="'+language+'"]');
@@ -12,8 +18,14 @@ var getLocalizedStr = function(alternatives) {
     return str.children('text').text().replace(/\\n/g, "\n");
 }
 
+
+// Produce a DOM structure for the view given by viewName.
+// [views] is an object mapping view names to <viewdef> DOM nodes
+// [schemaLocalization] is a DOM structure
 function renderView(viewName, views, schemaLocalization) {
 
+    // Return a table DOM node with <col> defined based
+    // on the columnDef attr of a viewDef.
     function processColumnDef(columnDef) {
         var table = $('<table>');
         $.each(
@@ -28,11 +40,15 @@ function renderView(viewName, views, schemaLocalization) {
         return table;
     }
 
+    // Search the schema_localization DOM for the given modelName.
     function getLocalizationForModel(modelName) {
         return $(schemaLocalization)
             .find('container[name="'+modelName.toLowerCase()+'"]').first();
     }
 
+    // Return a <div> DOM node containing the processed view.
+    // Subviews result in recursive calls where depth is
+    // incremented each time
     function processView(view, depth) {
         if (!view) return $('<div>');
         depth = depth || 1;
@@ -154,6 +170,9 @@ function renderView(viewName, views, schemaLocalization) {
             $(view).find('columnDef').first().text()
         );
 
+        // Iterate over the rows and cells of the view
+        // processing each in turn and appending them
+        // to the generated <table>.
         $.each(
             $(view).children('rows').children('row'),
             function(i, row) {
@@ -176,6 +195,10 @@ function renderView(viewName, views, schemaLocalization) {
     return processView(views[viewName]);
 }
 
+
+// Processes the viewset DOM to create an object
+// mapping viewDef names to the viewDef DOM nodes.
+// Allows the views to be merrged easily.
 function breakOutViews(viewset) {
     var views = {};
     $.each($(viewset).find('viewdef'), function(i, view) {
@@ -184,6 +207,7 @@ function breakOutViews(viewset) {
     return views;
 }
 
+// Main entry point.
 $(function () {
     var schemaLocalization;
 
@@ -192,6 +216,9 @@ $(function () {
         loadViews();
     });
 
+    // Load all views and merge them such that
+    // those listed first are overriden by
+    // the ones listed later.
     var loadViews = function() {
         var viewsetNames = [
             //        'system.views.xml',
