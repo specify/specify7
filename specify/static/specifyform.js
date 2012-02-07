@@ -49,153 +49,162 @@ function renderView(viewName, views, schemaLocalization, uri) {
     // Return a <div> DOM node containing the processed view.
     // Subviews result in recursive calls where depth is
     // incremented each time
-    function processView(view, uri, depth) { $.get(uri, function(data) {
-        if (!view) return $('<div>');
+    function processView(view, uri, depth) {
         depth = depth || 1;
+        if (!view) return $('<div>');
+        var form = $('<form>');
 
-        var viewModel = $(view).attr('class').split('.').pop();
+        $.get(uri, function(data) {
+            var viewModel = $(view).attr('class').split('.').pop();
 
-        var getLocalizedLabelFor = function (fieldname) {
-            var path = fieldname.split('.');
-            var field = path.pop();
-            var model = path.pop();
-            var localization = model ?
-                getLocalizationForModel(model) :
-                getLocalizationForModel(viewModel);
+            var getLocalizedLabelFor = function (fieldname) {
+                var path = fieldname.split('.');
+                var field = path.pop();
+                var model = path.pop();
+                var localization = model ?
+                    getLocalizationForModel(model) :
+                    getLocalizationForModel(viewModel);
 
-            return getLocalizedStr(
-                $(localization).children('items')
-                    .children('item[name="'+field+'"]')
-                    .children('names')
-            );
-        }
+                return getLocalizedStr(
+                    $(localization).children('items')
+                        .children('item[name="'+field+'"]')
+                        .children('names')
+                );
+            }
 
-        var processCell = function(cell) {
-            var typeDispatch = {
-                label: function() {
-                    var givenLabel = $(cell).attr('label');
-                    var labelfor = $(cell).attr('labelfor');
-                    var forCellName = $(view)
-                        .find('cell[id="'+labelfor+'"]')
-                        .first().attr('name');
-                    var localizedLabel = getLocalizedLabelFor(forCellName);
-                    var label = $('<label>');
-                    if (givenLabel) {
-                        label.text(givenLabel)
-                    } else if (localizedLabel) {
-                        label.text(localizedLabel);
-                    } else if (forCellName) {
-                        label.text(forCellName);
-                    }
-                    return $('<td>').append(label).addClass('form-label');
-                },
-                field: function() {
-                    var fieldName = $(cell).attr('name');
-                    var uitypeDispatch = {
-                        text: function() {
-                            return $('<td>')
-                                .append($('<input type="text" />')
-                                        .attr('name', fieldName)
-                                        .val(data[fieldName]));
-                        },
-                        checkbox: function() {
-                            var checkbox = $('<input type="checkbox" />')
-                                .attr('name', fieldName).val(data[fieldName]);
-                            var givenLabel = $(cell).attr('label');
-                            var localizedLabel =
-                                getLocalizedLabelFor(fieldName);
-
-                            var td = $('<td>').append(checkbox);
-                            if (givenLabel) {
-                                td.append($('<label>')
-                                          .text(givenLabel)
-                                         );
-                            } else if (localizedLabel) {
-                                td.append($('<label>')
-                                          .text(localizedLabel)
-                                         );
-                            }
-                            return td;
-                        },
-                        textareabrief: function() {
-                            return $('<td>')
-                                .append($('<textarea />)')
-                                        .attr({rows: $(cell).attr('rows'),
-                                               name: fieldName})
-                                        .val(data[fieldName]));
-                        },
-                        querycbx: function() {
-                            return $('<td>').append(
-                                $('<select>').attr('name', fieldName)
-                            );
+            var processCell = function(cell) {
+                var typeDispatch = {
+                    label: function() {
+                        var givenLabel = $(cell).attr('label');
+                        var labelfor = $(cell).attr('labelfor');
+                        var forCellName = $(view)
+                            .find('cell[id="'+labelfor+'"]')
+                            .first().attr('name');
+                        var localizedLabel = getLocalizedLabelFor(forCellName);
+                        var label = $('<label>');
+                        if (givenLabel) {
+                            label.text(givenLabel)
+                        } else if (localizedLabel) {
+                            label.text(localizedLabel);
+                        } else if (forCellName) {
+                            label.text(forCellName);
                         }
-                    };
-                    var dispatch = uitypeDispatch[$(cell).attr('uitype')]
-                        || uitypeDispatch.text;
-                    return dispatch();
-                },
-                separator: function() {
-                    var label = $(cell).attr('label');
-                    var elem = label ?
-                        $('<h'+(depth+1)+'>').text(label) : $('<hr>');
-                    return $('<td>').append(elem.addClass('separator'));
-                },
-                subview: function() {
-                    var fieldName = $(cell).attr('name');
-                    var viewname = $(cell).attr('viewname');
-                    var td = $('<td>');
-                    if (views[viewname]) {
-                        var subview = processView(views[viewname], data[fieldName], depth+1)
-                            .attr('name', fieldName);
-                        td.append(subview);
+                        return $('<td>').append(label).addClass('form-label');
+                    },
+                    field: function() {
+                        var fieldName = $(cell).attr('name');
+                        var fieldData = data[fieldName.toLowerCase()];
+                        var uitypeDispatch = {
+                            text: function() {
+                                return $('<td>')
+                                    .append($('<input type="text" />')
+                                            .attr('name', fieldName)
+                                            .val(fieldData));
+                            },
+                            checkbox: function() {
+                                var checkbox = $('<input type="checkbox" />')
+                                    .attr('name', fieldName)
+                                    .val(fieldData);
+                                var givenLabel = $(cell).attr('label');
+                                var localizedLabel =
+                                    getLocalizedLabelFor(fieldName);
+
+                                var td = $('<td>').append(checkbox);
+                                if (givenLabel) {
+                                    td.append($('<label>')
+                                              .text(givenLabel)
+                                             );
+                                } else if (localizedLabel) {
+                                    td.append($('<label>')
+                                              .text(localizedLabel)
+                                             );
+                                }
+                                return td;
+                            },
+                            textareabrief: function() {
+                                return $('<td>')
+                                    .append($('<textarea />)')
+                                            .attr({rows: $(cell).attr('rows'),
+                                                   name: fieldName})
+                                            .val(fieldData));
+                            },
+                            querycbx: function() {
+                                return $('<td>').append(
+                                    $('<select>').attr('name', fieldName)
+                                );
+                            }
+                        };
+                        var dispatch = uitypeDispatch[$(cell).attr('uitype')]
+                            || uitypeDispatch.text;
+                        return dispatch();
+                    },
+                    separator: function() {
+                        var label = $(cell).attr('label');
+                        var elem = label ?
+                            $('<h'+(depth+1)+'>').text(label) : $('<hr>');
+                        return $('<td>').append(elem.addClass('separator'));
+                    },
+                    subview: function() {
+                        var fieldName = $(cell).attr('name');
+                        var fieldData = data[fieldName.toLowerCase()];
+                        var urls = $.isArray(fieldData) ? fieldData : [fieldData];
+                        var viewname = $(cell).attr('viewname');
+                        var td = $('<td>');
+                        if (views[viewname]) {
+                            $(urls).each(function (i, url) {
+                                var subview =
+                                    processView(views[viewname], url, depth+1)
+                                    .attr('name', fieldName);
+                                td.append(subview);
+                            });
+                        }
+                        return td;
+                    },
+                    panel: function() {
+                        var table = processColumnDef($(cell).attr('coldef'));
+                        $.each($(cell).children('rows').children('row'),
+                               function(i, row) {
+                                   var tr = $('<tr>').appendTo(table);
+                                   $.each($(row).children('cell'),
+                                          function(i, cell) {
+                                              tr.append(processCell(cell));
+                                          });
+                               });
+                        return $('<td>').append(table);
                     }
-                    return td;
-                },
-                panel: function() {
-                    var table = processColumnDef($(cell).attr('coldef'));
-                    $.each($(cell).children('rows').children('row'),
-                           function(i, row) {
-                               var tr = $('<tr>').appendTo(table);
-                               $.each($(row).children('cell'),
-                                      function(i, cell) {
-                                          tr.append(processCell(cell));
-                                      });
-                           });
-                    return $('<td>').append(table);
-                }
-            };
+                };
 
-            var process = typeDispatch[$(cell).attr('type')];
-            var td = process ? process() : $('<td>');
-            var colspan = $(cell).attr('colspan');
-            colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
-            return td;
-        }
+                var process = typeDispatch[$(cell).attr('type')];
+                var td = process ? process() : $('<td>');
+                var colspan = $(cell).attr('colspan');
+                colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+                return td;
+            }
 
-        var table = processColumnDef(
-            $(view).find('columnDef').first().text()
-        );
+            var table = processColumnDef(
+                $(view).find('columnDef').first().text()
+            );
 
-        // Iterate over the rows and cells of the view
-        // processing each in turn and appending them
-        // to the generated <table>.
-        $.each(
-            $(view).children('rows').children('row'),
-            function(i, row) {
-                var tr = $('<tr>').appendTo(table);
-                $.each($(row).children('cell'), function(i, cell) {
-                    tr.append(processCell(cell));
+            // Iterate over the rows and cells of the view
+            // processing each in turn and appending them
+            // to the generated <table>.
+            $.each(
+                $(view).children('rows').children('row'),
+                function(i, row) {
+                    var tr = $('<tr>').appendTo(table);
+                    $.each($(row).children('cell'), function(i, cell) {
+                        tr.append(processCell(cell));
+                    });
                 });
-            });
 
-        var localizedName = getLocalizedStr(
-            getLocalizationForModel(viewModel).children('names')
-        ) || $(view).attr('name');
+            var localizedName = getLocalizedStr(
+                getLocalizationForModel(viewModel).children('names')
+            ) || $(view).attr('name');
 
-        return $('<form>')
-            .append($('<h'+depth+'>').text(localizedName))
-            .append(table);
-    });}
+            form.append($('<h'+depth+'>').text(localizedName)).append(table);
+        });
+        return form;
+    }
 
     return processView(views[viewName], uri);
 }
@@ -215,7 +224,7 @@ function breakOutViews(viewset) {
 // Main entry point.
 $(function () {
     var schemaLocalization;
-    var uri = "http://localhost:8000/api/specify/collectionobject/12/";
+    var uri = "http://localhost:8000/api/specify/collectionobject/102/";
 
     $.get('schema_localization.xml', function(data) {
         schemaLocalization = data;
