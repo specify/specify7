@@ -68,7 +68,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         .children('item[name="'+field+'"]')
                         .children('names')
                 );
-            }
+            };
 
             var processCell = function(cell) {
                 var typeDispatch = {
@@ -177,7 +177,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                 var colspan = $(cell).attr('colspan');
                 colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
                 return td;
-            }
+            };
 
             var table = processColumnDef(
                 $(view).find('columnDef').first().text()
@@ -224,7 +224,7 @@ $(function () {
     var schemaLocalization;
     var uri = "http://localhost:8000/api/specify/collectionobject/102/";
 
-    $.get('schema_localization.xml', function(data) {
+    $.get('/static/schema_localization.xml', function(data) {
         schemaLocalization = data;
         loadViews();
     });
@@ -239,7 +239,7 @@ $(function () {
             //        'preferences.views.xml',
             //        'global.views.xml',
             //        'search.views.xml',
-            'views.xml',
+            '/static/views.xml'
             //        'manager.botany.views.xml',
         ];
 
@@ -255,11 +255,12 @@ $(function () {
                         }));
                     var views = $.extend.apply($, orderedViews);
                     $('body').append(
-                        renderView('Collection Object', views,
-                                   schemaLocalization, uri)
+                        renderView(view, views,
+				   schemaLocalization,
+				   '/api/specify/'+view.replace(' ', '').toLowerCase()+'/'+id+'/')
                     );
                 }
             });
         });
-    }
+    };
 });
