@@ -24,12 +24,14 @@ def make_fk_field(field):
     return ForeignKey(relname, field.name, null=field.null)
 
 def build_resource(model):
-    fk_fields = dict((field.name, make_fk_field(field))
-                     for field in model._meta.fields if field.rel)
+    fk_fields = dict(
+        (field.name, make_fk_field(field))
+        for field in model._meta.fields if field.rel)
 
-    to_many_fields = dict((fieldname, make_to_many_field(model, related))
-                          for related, fieldname in
-                          to_many_relationships.get(model.__name__, {}).items())
+    rels = to_many_relationships.get(model.__name__, {}).items()
+    to_many_fields = dict(
+        (fieldname, make_to_many_field(model, related))
+        for related, fieldname in rels)
 
     class Meta:
         queryset = model.objects.all()
