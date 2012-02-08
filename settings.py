@@ -2,6 +2,7 @@
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+TASTYPIE_FULL_DEBUG = True
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
