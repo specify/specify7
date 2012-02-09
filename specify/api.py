@@ -12,13 +12,21 @@ to_many_relationships = {
     'Collectingevent': {
         'Collector': 'collectors',
         },
+    'Picklist': {
+        'Picklistitem': 'items',
+        }
     }
 
 inlined_fields = [
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
+    'Picklist.items',
 ]
+
+filter_fields = {
+    'Picklist': {'name': ('exact',)},
+}
 
 def make_to_many_field(model, related, fieldname):
     related_model = getattr(models, related)
@@ -45,6 +53,7 @@ def build_resource(model):
         for related, fieldname in rels)
 
     class Meta:
+        filtering = filter_fields.get(model.__name__, {})
         queryset = model.objects.all()
 
     attrs = {'Meta': Meta}

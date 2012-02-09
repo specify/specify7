@@ -4,7 +4,6 @@ var language = "en";
 // return the one for the language selected above,
 // or failing that, for "en", or failing that,
 // just return the first one.
-
 var getLocalizedStr = function(alternatives) {
     var str = $(alternatives)
         .children('str[language="'+language+'"]');
@@ -142,6 +141,46 @@ function renderView(viewName, views, schemaLocalization, uri) {
                                           .attr({rows: $(cell).attr('rows'),
                                                  name: fieldName})
                                           .val(fieldData));
+                            };
+                            break;
+                        case "combobox":
+                            var pickListName = getSchemaInfoFor(fieldName)
+                                .attr('pickListName');
+                            if (!pickListName) {
+                                onDataAvailable = function () {};
+                                break;
+                            }
+                            var pickListUri = "/api/specify/picklist/?name="
+                                + pickListName;
+
+                            var futureData, futureDataCallback;
+                            $.get(pickListUri, function (picklistResults) {
+                                var picklist = picklistResults.objects[0];
+                                var select = $('<select>').attr('name', fieldName);
+                                var items = {};
+                                $(picklist.items).each(function(i, item) {
+                                    items[item.value] = item;
+                                    $('<option>').text(item.value).appendTo(select);
+                                });
+                                var setOption = function (data) {
+                                    if (!items[data]) {
+                                        $('<option>')
+                                            .attr('value', data)
+                                            .text(data+" (current value not in picklist)")
+                                            .appendTo(select);
+                                    }
+                                    select.val(data);
+                                    td.append(select);
+                                };
+                                if (futureData != undefined)
+                                    setOption(futureData);
+                                else
+                                    futureDataCallback = setOption;
+                            });
+                            onDataAvailable = function(fieldData) {
+                                futureData = fieldData;
+                                if (futureDataCallback)
+                                    futureDataCallback(futureData);
                             };
                             break;
                         case "querycbx":
