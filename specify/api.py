@@ -8,7 +8,10 @@ to_many_relationships = {
     'Collectionobject': {
         'Determination': 'determinations',
         'Preparation': 'preparations',
-        }
+        },
+    'Collectingevent': {
+        'Collector': 'collectors',
+        },
     }
 
 def make_to_many_field(model, related):
@@ -35,7 +38,7 @@ def build_resource(model):
 
     class Meta:
         queryset = model.objects.all()
-    
+
     attrs = {'Meta': Meta}
     attrs.update(fk_fields)
     attrs.update(to_many_fields)

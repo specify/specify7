@@ -16,8 +16,19 @@ var getLocalizedStr = function(alternatives) {
         str = $(alternatives).children('str').first();
     }
     return str.children('text').text().replace(/\\n/g, "\n");
-}
+};
 
+
+function fillinData(data, fieldName, dispatch) {
+    var path = $.isArray(fieldName)? fieldName : fieldName.split('.');
+    if (path.length == 1) {
+        dispatch(data[path[0].toLowerCase()]);
+        return;
+    }
+    $.get(data[path[0]], function(data) {
+        fillinData(data, path.slice(1), dispatch);
+    });
+}
 
 // Produce a DOM structure for the view given by viewName.
 // [views] is an object mapping view names to <viewdef> DOM nodes
@@ -47,15 +58,16 @@ function renderView(viewName, views, schemaLocalization, uri) {
     // Return a <div> DOM node containing the processed view.
     // Subviews result in recursive calls where depth is
     // incremented each time
-    function processView(view, uri, depth) {
+    function processView(view, uri, depth, supressHeader) {
         depth = depth || 1;
         if (!view) return $('<div>');
-        var form = $('<form>');
+        var form = $('<form>').append($('<p>loading...</p>'));
 
         $.get(uri, function(data) {
+            form.empty();
             var viewModel = $(view).attr('class').split('.').pop();
 
-            var getLocalizedLabelFor = function (fieldname) {
+            var getSchemaInfoFor = function(fieldname) {
                 var path = fieldname.split('.');
                 var field = path.pop();
                 var model = path.pop();
@@ -63,11 +75,13 @@ function renderView(viewName, views, schemaLocalization, uri) {
                     getLocalizationForModel(model) :
                     getLocalizationForModel(viewModel);
 
+                return $(localization).children('items')
+                    .children('item[name="'+field+'"]');
+            };
+
+            var getLocalizedLabelFor = function (fieldname) {
                 return getLocalizedStr(
-                    $(localization).children('items')
-                        .children('item[name="'+field+'"]')
-                        .children('names')
-                );
+                    getSchemaInfoFor(fieldname).children('names'));
             };
 
             var processCell = function(cell) {
@@ -81,7 +95,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         var localizedLabel = getLocalizedLabelFor(forCellName);
                         var label = $('<label>');
                         if (givenLabel) {
-                            label.text(givenLabel)
+                            label.text(givenLabel);
                         } else if (localizedLabel) {
                             label.text(localizedLabel);
                         } else if (forCellName) {
@@ -90,16 +104,15 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         return $('<td>').append(label).addClass('form-label');
                     },
                     field: function() {
+                        var td = $('<td>loading...</td>');
                         var fieldName = $(cell).attr('name');
-                        var fieldData = data[fieldName.toLowerCase()];
                         var uitypeDispatch = {
-                            text: function() {
-                                return $('<td>')
-                                    .append($('<input type="text" />')
-                                            .attr('name', fieldName)
-                                            .val(fieldData));
+                            text: function(fieldData) {
+                                td.append($('<input type="text" />')
+                                          .attr('name', fieldName)
+                                          .val(fieldData));
                             },
-                            checkbox: function() {
+                            checkbox: function(fieldData) {
                                 var checkbox = $('<input type="checkbox" />')
                                     .attr('name', fieldName)
                                     .val(fieldData);
@@ -107,7 +120,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                                 var localizedLabel =
                                     getLocalizedLabelFor(fieldName);
 
-                                var td = $('<td>').append(checkbox);
+                                td.append(checkbox);
                                 if (givenLabel) {
                                     td.append($('<label>')
                                               .text(givenLabel)
@@ -117,24 +130,23 @@ function renderView(viewName, views, schemaLocalization, uri) {
                                               .text(localizedLabel)
                                              );
                                 }
-                                return td;
                             },
-                            textareabrief: function() {
-                                return $('<td>')
-                                    .append($('<textarea />)')
-                                            .attr({rows: $(cell).attr('rows'),
-                                                   name: fieldName})
-                                            .val(fieldData));
+                            textareabrief: function(fieldData) {
+                                td.append($('<textarea />)')
+                                          .attr({rows: $(cell).attr('rows'),
+                                                 name: fieldName})
+                                          .val(fieldData));
                             },
-                            querycbx: function() {
-                                return $('<td>').append(
+                            querycbx: function(fieldData) {
+                                td.append(
                                     $('<select>').attr('name', fieldName)
                                 );
                             }
                         };
                         var dispatch = uitypeDispatch[$(cell).attr('uitype')]
                             || uitypeDispatch.text;
-                        return dispatch();
+                        fillinData(data, fieldName, function(data){ td.empty(); dispatch(data);});
+                        return td;
                     },
                     separator: function() {
                         var label = $(cell).attr('label');
@@ -143,18 +155,30 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         return $('<td>').append(elem.addClass('separator'));
                     },
                     subview: function() {
+                        var td = $('<td>');
+                        var viewname = $(cell).attr('viewname');
+                        if (!views[viewname]) return td;
+
                         var fieldName = $(cell).attr('name');
                         var fieldData = data[fieldName.toLowerCase()];
-                        var urls = $.isArray(fieldData) ? fieldData : [fieldData];
-                        var viewname = $(cell).attr('viewname');
-                        var td = $('<td>');
-                        if (views[viewname]) {
-                            $(urls).each(function (i, url) {
-                                var subview =
-                                    processView(views[viewname], url, depth+1)
-                                    .attr('name', fieldName);
-                                td.append(subview);
+                        var schemaInfo = getSchemaInfoFor(fieldName);
+                        switch (schemaInfo.attr('type')) {
+                        case 'OneToMany':
+                            var localizedName = getLocalizedStr(schemaInfo.children('names'));
+                            td.append($('<h'+(depth+1)+'>').text(localizedName));
+                            $(fieldData).each(function (i, url) {
+                                td.append(
+                                    processView(views[viewname], url, depth+1, true)
+                                    .attr('name', fieldName)
+                                );
                             });
+                            break;
+                        case 'ManyToOne':
+                            td.append(
+                                processView(views[viewname], fieldData, depth+1)
+                                    .attr('name', fieldName)
+                            );
+                            break;
                         }
                         return td;
                     },
@@ -195,11 +219,14 @@ function renderView(viewName, views, schemaLocalization, uri) {
                     });
                 });
 
-            var localizedName = getLocalizedStr(
-                getLocalizationForModel(viewModel).children('names')
-            ) || $(view).attr('name');
+            if (!supressHeader){
+                var localizedName = getLocalizedStr(
+                    getLocalizationForModel(viewModel).children('names')
+                ) || $(view).attr('name');
 
-            form.append($('<h'+depth+'>').text(localizedName)).append(table);
+                form.append($('<h'+depth+'>').text(localizedName));
+            }
+            form.append(table);
         });
         return form;
     }
@@ -256,8 +283,8 @@ $(function () {
                     var views = $.extend.apply($, orderedViews);
                     $('body').append(
                         renderView(view, views,
-				   schemaLocalization,
-				   '/api/specify/'+view.replace(' ', '').toLowerCase()+'/'+id+'/')
+                                   schemaLocalization,
+                                   '/api/specify/'+view.replace(' ', '').toLowerCase()+'/'+id+'/')
                     );
                 }
             });
