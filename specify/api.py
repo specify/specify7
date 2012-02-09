@@ -2,7 +2,7 @@ from tastypie.resources import ModelResource
 from tastypie.fields import ForeignKey, ToManyField
 from django.db.models import get_models
 
-from specify import models
+from djangospecify.specify import models
 
 to_many_relationships = {
     'Collectionobject': {
