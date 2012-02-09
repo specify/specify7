@@ -14,6 +14,11 @@ to_many_relationships = {
         },
     }
 
+inlined_fields = [
+    'Collector.agent',
+#    'Collectionobject.collectionobjectattribute',
+]
+
 def make_to_many_field(model, related):
     related_model = getattr(models, related)
     def get_related_objs(bundle):
@@ -24,7 +29,8 @@ def make_to_many_field(model, related):
 
 def make_fk_field(field):
     relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)
-    return ForeignKey(relname, field.name, null=field.null)
+    full = '.'.join((field.model.__name__, field.name)) in inlined_fields
+    return ForeignKey(relname, field.name, null=field.null, full=full)
 
 def build_resource(model):
     fk_fields = dict(

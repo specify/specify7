@@ -22,9 +22,16 @@ var getLocalizedStr = function(alternatives) {
 function fillinData(data, fieldName, dispatch) {
     var path = $.isArray(fieldName)? fieldName : fieldName.split('.');
     if (path.length == 1) {
+	// the field we want is right in the data object
         dispatch(data[path[0].toLowerCase()]);
         return;
     }
+    if ($.isPlainObject(data[path[0]])) {
+	// data contains an embedded object that has our field
+	fillinData(data[path[0]], path.slice(1), dispatch);
+	return;
+    }
+    // we have to fetch a subobject which contains our field
     $.get(data[path[0]], function(data) {
         fillinData(data, path.slice(1), dispatch);
     });
@@ -193,7 +200,14 @@ function renderView(viewName, views, schemaLocalization, uri) {
                                     });
                             });
                         return $('<td>').append(table);
-                    }
+                    },
+		    command: function() {
+			var button = $('<input type="submit">').attr({
+			    value: $(cell).attr('label'),
+			    name: $(cell).attr('name')
+			});
+			return $('<td>').append(button);
+		    }
                 };
 
                 var process = typeDispatch[$(cell).attr('type')];
