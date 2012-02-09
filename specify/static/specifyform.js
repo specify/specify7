@@ -65,31 +65,31 @@ function renderView(viewName, views, schemaLocalization, uri) {
     // Return a <div> DOM node containing the processed view.
     // Subviews result in recursive calls where depth is
     // incremented each time
-    function processView(view, uri, depth, supressHeader) {
+    function processView(view, data, depth, suppressHeader) {
         depth = depth || 1;
         if (!view) return $('<div>');
         var form = $('<form>').append($('<p>loading...</p>'));
+        var viewModel = $(view).attr('class').split('.').pop();
 
-        $.get(uri, function(data) {
+        var getSchemaInfoFor = function(fieldname) {
+            var path = fieldname.split('.');
+            var field = path.pop();
+            var model = path.pop();
+            var localization = model ?
+                getLocalizationForModel(model) :
+                getLocalizationForModel(viewModel);
+
+            return $(localization).children('items')
+                .children('item[name="'+field+'"]');
+        };
+
+        var getLocalizedLabelFor = function (fieldname) {
+            return getLocalizedStr(
+                getSchemaInfoFor(fieldname).children('names'));
+        };
+
+        var buildView = function(data) {
             form.empty();
-            var viewModel = $(view).attr('class').split('.').pop();
-
-            var getSchemaInfoFor = function(fieldname) {
-                var path = fieldname.split('.');
-                var field = path.pop();
-                var model = path.pop();
-                var localization = model ?
-                    getLocalizationForModel(model) :
-                    getLocalizationForModel(viewModel);
-
-                return $(localization).children('items')
-                    .children('item[name="'+field+'"]');
-            };
-
-            var getLocalizedLabelFor = function (fieldname) {
-                return getLocalizedStr(
-                    getSchemaInfoFor(fieldname).children('names'));
-            };
 
             var processCell = function(cell) {
                 var typeDispatch = {
@@ -173,9 +173,9 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         case 'OneToMany':
                             var localizedName = getLocalizedStr(schemaInfo.children('names'));
                             td.append($('<h'+(depth+1)+'>').text(localizedName));
-                            $(fieldData).each(function (i, url) {
+                            $(fieldData).each(function (i, data) {
                                 td.append(
-                                    processView(views[viewname], url, depth+1, true)
+                                    processView(views[viewname], data, depth+1, true)
                                     .attr('name', fieldName)
                                 );
                             });
@@ -233,7 +233,7 @@ function renderView(viewName, views, schemaLocalization, uri) {
                     });
                 });
 
-            if (!supressHeader){
+            if (!suppressHeader){
                 var localizedName = getLocalizedStr(
                     getLocalizationForModel(viewModel).children('names')
                 ) || $(view).attr('name');
@@ -241,7 +241,10 @@ function renderView(viewName, views, schemaLocalization, uri) {
                 form.append($('<h'+depth+'>').text(localizedName));
             }
             form.append(table);
-        });
+        };
+
+        if ($.isPlainObject(data)) buildView(data);
+        else $.get(data, buildView);
         return form;
     }
 
