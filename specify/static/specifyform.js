@@ -113,13 +113,10 @@ function renderView(viewName, views, schemaLocalization, uri) {
                     field: function() {
                         var td = $('<td>loading...</td>');
                         var fieldName = $(cell).attr('name');
-                        var uitypeDispatch = {
-                            text: function(fieldData) {
-                                td.append($('<input type="text" />')
-                                          .attr('name', fieldName)
-                                          .val(fieldData));
-                            },
-                            checkbox: function(fieldData) {
+                        var onDataAvailable;
+                        switch ($(cell).attr('uitype')) {
+                        case "checkbox":
+                            onDataAvailable = function(fieldData) {
                                 var checkbox = $('<input type="checkbox" />')
                                     .attr('name', fieldName)
                                     .val(fieldData);
@@ -137,22 +134,36 @@ function renderView(viewName, views, schemaLocalization, uri) {
                                               .text(localizedLabel)
                                              );
                                 }
-                            },
-                            textareabrief: function(fieldData) {
+                            };
+                            break;
+                        case "textareabrief":
+                            onDataAvailable = function(fieldData) {
                                 td.append($('<textarea />)')
                                           .attr({rows: $(cell).attr('rows'),
                                                  name: fieldName})
                                           .val(fieldData));
-                            },
-                            querycbx: function(fieldData) {
+                            };
+                            break;
+                        case "querycbx":
+                            onDataAvailable = function(fieldData) {
                                 td.append(
                                     $('<select>').attr('name', fieldName)
                                 );
-                            }
+                            };
+                            break;
+                        case "text":
+                        default:
+                            onDataAvailable = function(fieldData) {
+                                td.append($('<input type="text" />')
+                                          .attr('name', fieldName)
+                                          .val(fieldData));
+                            };
+                            break;
                         };
-                        var dispatch = uitypeDispatch[$(cell).attr('uitype')]
-                            || uitypeDispatch.text;
-                        fillinData(data, fieldName, function(data){ td.empty(); dispatch(data);});
+                        fillinData(data, fieldName, function(data) {
+                            td.empty();
+                            onDataAvailable(data);
+                        });
                         return td;
                     },
                     separator: function() {
