@@ -16,16 +16,18 @@ to_many_relationships = {
 
 inlined_fields = [
     'Collector.agent',
-#    'Collectionobject.collectionobjectattribute',
+    'Collectingevent.collectors',
+    'Collectionobject.collectionobjectattribute',
 ]
 
-def make_to_many_field(model, related):
+def make_to_many_field(model, related, fieldname):
     related_model = getattr(models, related)
     def get_related_objs(bundle):
         filter_args = {model.__name__.lower(): bundle.obj}
         return related_model.objects.filter(**filter_args)
     related_resource = "%s.%s%s" % (__name__, related, "Resource")
-    return ToManyField(related_resource, get_related_objs)
+    full = '.'.join((model.__name__, fieldname)) in inlined_fields
+    return ToManyField(related_resource, get_related_objs, full=full)
 
 def make_fk_field(field):
     relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)
@@ -39,7 +41,7 @@ def build_resource(model):
 
     rels = to_many_relationships.get(model.__name__, {}).items()
     to_many_fields = dict(
-        (fieldname, make_to_many_field(model, related))
+        (fieldname, make_to_many_field(model, related, fieldname))
         for related, fieldname in rels)
 
     class Meta:
