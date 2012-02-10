@@ -146,10 +146,8 @@ function renderView(viewName, views, schemaLocalization, uri) {
                         case "combobox":
                             var pickListName = getSchemaInfoFor(fieldName)
                                 .attr('pickListName');
-                            if (!pickListName) {
-                                onDataAvailable = function () {};
-                                break;
-                            }
+                            if (!pickListName) break;
+
                             var pickListUri = "/api/specify/picklist/?name="
                                 + pickListName;
 
@@ -191,18 +189,20 @@ function renderView(viewName, views, schemaLocalization, uri) {
                             };
                             break;
                         case "text":
-                        default:
                             onDataAvailable = function(fieldData) {
                                 td.append($('<input type="text" />')
                                           .attr('name', fieldName)
                                           .val(fieldData));
                             };
                             break;
+                        default:
+                            td.text("unsupported uitype: " + $(cell).attr('uitype'));
                         };
-                        fillinData(data, fieldName, function(data) {
-                            td.empty();
-                            onDataAvailable(data);
-                        });
+                        if (onDataAvailable)
+                            fillinData(data, fieldName, function(data) {
+                                td.empty();
+                                onDataAvailable(data);
+                            });
                         return td;
                     },
                     separator: function() {
@@ -261,7 +261,8 @@ function renderView(viewName, views, schemaLocalization, uri) {
                 };
 
                 var process = typeDispatch[$(cell).attr('type')];
-                var td = process ? process() : $('<td>');
+                var td = process ? process() : $('<td>').text("unsupported cell type: "
+                                                             + $(cell).attr('type'));
                 var colspan = $(cell).attr('colspan');
                 colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
                 return td;
