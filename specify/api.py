@@ -1,5 +1,6 @@
 from tastypie.resources import ModelResource
 from tastypie.fields import ForeignKey, ToManyField
+from tastypie.authorization import Authorization
 from django.db.models import get_models
 
 from djangospecify.specify import models
@@ -55,6 +56,7 @@ def build_resource(model):
     class Meta:
         filtering = filter_fields.get(model.__name__, {})
         queryset = model.objects.all()
+        authorization = Authorization()
 
     attrs = {'Meta': Meta}
     attrs.update(fk_fields)
