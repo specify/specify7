@@ -18,42 +18,26 @@ var getLocalizedStr = function(alternatives) {
 };
 
 
-function fillinData(data, fieldName, dispatch) {
-    var path = $.isArray(fieldName)? fieldName : fieldName.split('.');
-    if (path.length == 1) {
-	// the field we want is right in the data object
-        dispatch(data[path[0].toLowerCase()]);
-        return;
-    }
-    if ($.isPlainObject(data[path[0]])) {
-	// data contains an embedded object that has our field
-	fillinData(data[path[0]], path.slice(1), dispatch);
-	return;
-    }
-    // we have to fetch a subobject which contains our field
-    $.get(data[path[0]], function(data) {
-        fillinData(data, path.slice(1), dispatch);
+// Return a table DOM node with <col> defined based
+// on the columnDef attr of a viewDef.
+function processColumnDef(columnDef) {
+    var table = $('<table>');
+    $(columnDef.split(',')).each(function(i, def) {
+        if (i%2==0) {
+            var col = $('<col>').appendTo(table);
+            var width = /(\d+)px/.exec(def);
+            width && col.attr('width', width[1]+'px');
+        }
     });
+    return table;
 }
 
-// Produce a DOM structure for the view given by viewName.
+// Return a <form> DOM node containing the processed view.
+// Subviews result in recursive calls where depth is
+// incremented each time
 // [views] is an object mapping view names to <viewdef> DOM nodes
 // [schemaLocalization] is a DOM structure
-function renderView(viewName, views, schemaLocalization, uri) {
-
-    // Return a table DOM node with <col> defined based
-    // on the columnDef attr of a viewDef.
-    function processColumnDef(columnDef) {
-        var table = $('<table>');
-        $(columnDef.split(',')).each(function(i, def) {
-            if (i%2==0) {
-                var col = $('<col>').appendTo(table);
-                var width = /(\d+)px/.exec(def);
-                width && col.attr('width', width[1]+'px');
-            }
-        });
-        return table;
-    }
+function processView(viewName, views, schemaLocalization, depth, suppressHeader) {
 
     // Search the schema_localization DOM for the given modelName.
     function getLocalizationForModel(modelName) {
@@ -61,247 +45,225 @@ function renderView(viewName, views, schemaLocalization, uri) {
             .find('container[name="'+modelName.toLowerCase()+'"]').first();
     }
 
-    // Return a <div> DOM node containing the processed view.
-    // Subviews result in recursive calls where depth is
-    // incremented each time
-    function processView(view, data, depth, suppressHeader) {
-        depth = depth || 1;
-        if (!view) return $('<div>');
-        var form = $('<form>').append($('<p>loading...</p>'));
-        var viewModel = $(view).attr('class').split('.').pop();
+    depth = depth || 1;
+    var view = views[viewName];
+    if (!view) return $('<div>');
+    var viewModel = $(view).attr('class').split('.').pop();
 
-        var getSchemaInfoFor = function(fieldname) {
-            var path = fieldname.split('.');
-            var field = path.pop();
-            var model = path.pop();
-            var localization = model ?
-                getLocalizationForModel(model) :
-                getLocalizationForModel(viewModel);
+    var getSchemaInfoFor = function(fieldname) {
+        var path = fieldname.split('.');
+        var field = path.pop();
+        var model = path.pop();
+        var localization = model ?
+            getLocalizationForModel(model) :
+            getLocalizationForModel(viewModel);
 
-            return $(localization).children('items')
-                .children('item[name="'+field+'"]');
-        };
+        return $(localization).children('items')
+            .children('item[name="'+field+'"]');
+    };
 
-        var getLocalizedLabelFor = function (fieldname) {
-            return getLocalizedStr(
-                getSchemaInfoFor(fieldname).children('names'));
-        };
+    var getLocalizedLabelFor = function (fieldname) {
+        return getLocalizedStr(
+            getSchemaInfoFor(fieldname).children('names'));
+    };
 
-        var buildView = function(data) {
-            form.empty();
-
-            var processCell = function(cell) {
-                var typeDispatch = {
-                    label: function() {
-                        var givenLabel = $(cell).attr('label');
-                        var labelfor = $(cell).attr('labelfor');
-                        var forCellName = $(view)
-                            .find('cell[id="'+labelfor+'"]')
-                            .first().attr('name');
-                        var localizedLabel = getLocalizedLabelFor(forCellName);
-                        var label = $('<label>');
-                        if (givenLabel) {
-                            label.text(givenLabel);
-                        } else if (localizedLabel) {
-                            label.text(localizedLabel);
-                        } else if (forCellName) {
-                            label.text(forCellName);
-                        }
-                        return $('<td>').append(label).addClass('form-label');
-                    },
-                    field: function() {
-                        var td = $('<td>loading...</td>');
-                        var fieldName = $(cell).attr('name');
-                        var onDataAvailable;
-                        switch ($(cell).attr('uitype')) {
-                        case "checkbox":
-                            onDataAvailable = function(fieldData) {
-                                var checkbox = $('<input type="checkbox" />')
-                                    .attr('name', fieldName)
-                                    .val(fieldData);
-                                var givenLabel = $(cell).attr('label');
-                                var localizedLabel =
-                                    getLocalizedLabelFor(fieldName);
-
-                                td.append(checkbox);
-                                if (givenLabel) {
-                                    td.append($('<label>')
-                                              .text(givenLabel)
-                                             );
-                                } else if (localizedLabel) {
-                                    td.append($('<label>')
-                                              .text(localizedLabel)
-                                             );
-                                }
-                            };
-                            break;
-                        case "textareabrief":
-                            onDataAvailable = function(fieldData) {
-                                td.append($('<textarea />)')
-                                          .attr({rows: $(cell).attr('rows'),
-                                                 name: fieldName})
-                                          .val(fieldData));
-                            };
-                            break;
-                        case "combobox":
-                            var pickListName = getSchemaInfoFor(fieldName)
-                                .attr('pickListName');
-                            if (!pickListName) break;
-
-                            var pickListUri = "/api/specify/picklist/?name="
-                                + pickListName;
-
-                            var futureData, futureDataCallback;
-                            $.get(pickListUri, function (picklistResults) {
-                                var picklist = picklistResults.objects[0];
-                                var select = $('<select>').attr('name', fieldName);
-                                var items = {};
-                                $(picklist.items).each(function(i, item) {
-                                    items[item.value] = item;
-                                    $('<option>').text(item.value).appendTo(select);
-                                });
-                                var setOption = function (data) {
-                                    if (!items[data]) {
-                                        $('<option>')
-                                            .attr('value', data)
-                                            .text(data+" (current value not in picklist)")
-                                            .appendTo(select);
-                                    }
-                                    select.val(data);
-                                    td.append(select);
-                                };
-                                if (futureData != undefined)
-                                    setOption(futureData);
-                                else
-                                    futureDataCallback = setOption;
-                            });
-                            onDataAvailable = function(fieldData) {
-                                futureData = fieldData;
-                                if (futureDataCallback)
-                                    futureDataCallback(futureData);
-                            };
-                            break;
-                        case "querycbx":
-                            onDataAvailable = function(fieldData) {
-                                td.append(
-                                    $('<select>').attr('name', fieldName)
-                                );
-                            };
-                            break;
-                        case "text":
-                            onDataAvailable = function(fieldData) {
-                                td.append($('<input type="text" />')
-                                          .attr('name', fieldName)
-                                          .val(fieldData));
-                            };
-                            break;
-                        default:
-                            td.text("unsupported uitype: " + $(cell).attr('uitype'));
-                        };
-                        if (onDataAvailable)
-                            fillinData(data, fieldName, function(data) {
-                                td.empty();
-                                onDataAvailable(data);
-                            });
-                        return td;
-                    },
-                    separator: function() {
-                        var label = $(cell).attr('label');
-                        var elem = label ?
-                            $('<h'+(depth+1)+'>').text(label) : $('<hr>');
-                        return $('<td>').append(elem.addClass('separator'));
-                    },
-                    subview: function() {
-                        var td = $('<td>');
-                        var viewname = $(cell).attr('viewname');
-                        if (!views[viewname]) return td;
-
-                        var fieldName = $(cell).attr('name');
-                        var fieldData = data[fieldName.toLowerCase()];
-                        var schemaInfo = getSchemaInfoFor(fieldName);
-                        switch (schemaInfo.attr('type')) {
-                        case 'OneToMany':
-                            var localizedName = getLocalizedStr(schemaInfo.children('names'));
-                            td.append($('<h'+(depth+1)+'>').text(localizedName));
-                            $(fieldData).each(function (i, data) {
-                                td.append(
-                                    processView(views[viewname], data, depth+1, true)
-                                    .attr('name', fieldName)
-                                );
-                            });
-                            break;
-                        case 'ManyToOne':
-                            td.append(
-                                processView(views[viewname], fieldData, depth+1)
-                                    .attr('name', fieldName)
-                            );
-                            break;
-                        }
-                        return td;
-                    },
-                    panel: function() {
-                        var table = processColumnDef($(cell).attr('coldef'));
-                        $(cell).children('rows').children('row').each(
-                            function(i, row) {
-                                var tr = $('<tr>').appendTo(table);
-                                $(row).children('cell').each(
-                                    function(i, cell) {
-                                        tr.append(processCell(cell));
-                                    });
-                            });
-                        return $('<td>').append(table);
-                    },
-		    command: function() {
-			var button = $('<input type="submit">').attr({
-			    value: $(cell).attr('label'),
-			    name: $(cell).attr('name')
-			});
-			return $('<td>').append(button);
-		    }
-                };
-
-                var process = typeDispatch[$(cell).attr('type')];
-                var td = process ? process() : $('<td>').text("unsupported cell type: "
-                                                             + $(cell).attr('type'));
-                var colspan = $(cell).attr('colspan');
-                colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+    var processCell = function(cell) {
+        var typeDispatch = {
+            label: function() {
+                var givenLabel = $(cell).attr('label');
+                var labelfor = $(cell).attr('labelfor');
+                var forCellName = $(view)
+                    .find('cell[id="'+labelfor+'"]')
+                    .first().attr('name');
+                var localizedLabel = getLocalizedLabelFor(forCellName);
+                var label = $('<label>');
+                if (givenLabel) {
+                    label.text(givenLabel);
+                } else if (localizedLabel) {
+                    label.text(localizedLabel);
+                } else if (forCellName) {
+                    label.text(forCellName);
+                }
+                return $('<td>').append(label).addClass('form-label');
+            },
+            field: function() {
+                var td = $('<td>');
+                var fieldName = $(cell).attr('name');
+                var control;
+                switch ($(cell).attr('uitype')) {
+                case "checkbox":
+                    var givenLabel = $(cell).attr('label');
+                    var localizedLabel = getLocalizedLabelFor(fieldName);
+                    control = $('<input type="checkbox" />').appendTo(td);
+                    if (givenLabel)td.append($('<label>').text(givenLabel));
+                    else if (localizedLabel) td.append($('<label>').text(localizedLabel));
+                    break;
+                case "textareabrief":
+                    control = $('<textarea>)').attr('rows', $(cell).attr('rows')).appendTo(td);
+                    break;
+                case "combobox":
+                    var pickListName = getSchemaInfoFor(fieldName).attr('pickListName');
+                    control = $('<select>').appendTo(td);
+                    pickListName && control.addClass('specify-picklist:' + pickListName);
+                    break;
+                case "querycbx":
+                    control = $('<select>').appendTo(td);
+                    break;
+                case "text":
+                    control = $('<input type="text" />').appendTo(td);
+                    break;
+                default:
+                    td.text("unsupported uitype: " + $(cell).attr('uitype'));
+                }
+                control && control.attr('name', fieldName).addClass('specify-field');
                 return td;
-            };
-
-            var table = processColumnDef(
-                $(view).find('columnDef').first().text()
-            );
-
-            // Iterate over the rows and cells of the view
-            // processing each in turn and appending them
-            // to the generated <table>.
-            $.each(
-                $(view).children('rows').children('row'),
-                function(i, row) {
-                    var tr = $('<tr>').appendTo(table);
-                    $(row).children('cell').each(function(i, cell) {
-                        tr.append(processCell(cell));
+            },
+            separator: function() {
+                var label = $(cell).attr('label');
+                var elem = label ?
+                    $('<h'+(depth+1)+'>').text(label) : $('<hr>');
+                return $('<td>').append(elem.addClass('separator'));
+            },
+            subview: function() {
+                var td = $('<td>');
+                var fieldName = $(cell).attr('name');
+                var schemaInfo = getSchemaInfoFor(fieldName);
+                switch (schemaInfo.attr('type')) {
+                case 'OneToMany':
+                    var localizedName = getLocalizedStr(schemaInfo.children('names'));
+                    td.append($('<h'+(depth+1)+'>').text(localizedName));
+                    td.addClass('specify-one-to-many');
+                    break;
+                case 'ManyToOne':
+                    td.addClass('specify-many-to-one');
+                    break;
+                }
+                td.addClass('specify-field-name:' + fieldName);
+                td.addClass('specify-view-name:' + $(cell).attr('viewname'));
+                return td;
+            },
+            panel: function() {
+                var table = processColumnDef($(cell).attr('coldef'));
+                $(cell).children('rows').children('row').each(
+                    function(i, row) {
+                        var tr = $('<tr>').appendTo(table);
+                        $(row).children('cell').each(
+                            function(i, cell) {
+                                tr.append(processCell(cell));
+                            });
                     });
-                });
-
-            if (!suppressHeader){
-                var localizedName = getLocalizedStr(
-                    getLocalizationForModel(viewModel).children('names')
-                ) || $(view).attr('name');
-
-                form.append($('<h'+depth+'>').text(localizedName));
-            }
-            form.append(table);
+                return $('<td>').append(table);
+            },
+	    command: function() {
+		var button = $('<input type="submit">').attr({
+		    value: $(cell).attr('label'),
+		    name: $(cell).attr('name')
+		});
+		return $('<td>').append(button);
+	    }
         };
 
-        if ($.isPlainObject(data)) buildView(data);
-        else $.get(data, buildView);
-        return form;
-    }
+        var process = typeDispatch[$(cell).attr('type')];
+        var td = process ? process() : $('<td>').text("unsupported cell type: "
+                                                      + $(cell).attr('type'));
+        var colspan = $(cell).attr('colspan');
+        colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+        return td;
+    };
 
-    return processView(views[viewName], uri);
+    var table = processColumnDef($(view).find('columnDef').first().text());
+
+    // Iterate over the rows and cells of the view
+    // processing each in turn and appending them
+    // to the generated <table>.
+    $(view).children('rows').children('row').each(function(i, row) {
+        var tr = $('<tr>').appendTo(table);
+        $(row).children('cell').each(function(i, cell) {
+            tr.append(processCell(cell));
+        });
+    });
+
+    if (!suppressHeader){
+        var localizedName = getLocalizedStr(
+            getLocalizationForModel(viewModel).children('names')
+        ) || $(view).attr('name');
+
+        return $('<form>').append($('<h'+depth+'>').text(localizedName)).append(table);
+    } else {
+        return $('<form>').append(table);
+    }
 }
 
+function fillinData(data, fieldName, dispatch) {
+    var path = $.isArray(fieldName)? fieldName : fieldName.split('.');
+    if (path.length == 1) {
+        // the field we want is right in the data object
+        dispatch(data[path[0].toLowerCase()]);
+        return;
+    }
+    if ($.isPlainObject(data[path[0]])) {
+        // data contains an embedded object that has our field
+        fillinData(data[path[0]], path.slice(1), dispatch);
+        return;
+    }
+    // we have to fetch a subobject which contains our field
+    $.get(data[path[0]], function(data) {
+        fillinData(data, path.slice(1), dispatch);
+    });
+}
+
+function populateForm(viewName, dataOrUri, views, schemaLocalization, depth, isOneToMany) {
+    depth = depth || 1;
+    function getparam(node, paramName) {
+        var classes = $(node).attr('class');
+        if (!classes) return "";
+        var re = new RegExp(paramName + ':([^\\\s]+)');
+
+        var value = "";
+        $(classes.split(/\s+/)).each(function (i, className) {
+            var match = re.exec(className);
+            if (match) value = match[1];
+        });
+        return value;
+    }
+
+    var form = processView(viewName, views, schemaLocalization, depth, isOneToMany);
+
+    var populate = function(data) {
+        form.find('.specify-field').each(function (i, control) {
+            fillinData(data, $(control).attr('name'), function(value) {
+                $(control).val(value);
+            });
+        });
+
+        form.find('.specify-many-to-one').each(function (i, node) {
+            var viewName = getparam(node, 'specify-view-name');
+            var fieldName = getparam(node, 'specify-field-name');
+            var subform = populateForm(getparam(node, 'specify-view-name'),
+                                       data[fieldName.toLowerCase()], views, schemaLocalization,
+                                       depth + 1);
+            subform.appendTo(node);
+        });
+
+        form.find('.specify-one-to-many').each(function (i, node) {
+            var viewName = getparam(node, 'specify-view-name');
+            var fieldName = getparam(node, 'specify-field-name');
+            $(data[fieldName.toLowerCase()]).each(function (i, data) {
+                var subform = populateForm(getparam(node, 'specify-view-name'),
+                                           data, views, schemaLocalization,
+                                           depth + 1, true);
+                subform.appendTo(node);
+            });
+        });
+    };
+
+    if ($.isPlainObject(dataOrUri))
+        populate(dataOrUri)
+    else
+        $.get(dataOrUri, populate);
+
+    return form;
+}
 
 // Processes the viewset DOM to create an object
 // mapping viewDef names to the viewDef DOM nodes.
@@ -349,11 +311,7 @@ $(function () {
                             return breakOutViews(viewsets[name]);
                         }));
                     var views = $.extend.apply($, orderedViews);
-                    $('body').append(
-                        renderView(view, views,
-                                   schemaLocalization,
-                                   '/api/specify/'+view.replace(' ', '').toLowerCase()+'/'+id+'/')
-                    );
+                    $('body').append(populateForm(view, uri, views, schemaLocalization));
                 }
             });
         });
