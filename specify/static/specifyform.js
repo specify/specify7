@@ -212,28 +212,68 @@ function fillinData(data, fieldName, dispatch) {
     });
 }
 
+function getparam(node, paramName) {
+    var classes = $(node).attr('class');
+    if (!classes) return "";
+    var re = new RegExp(paramName + ':([^\\\s]+)');
+
+    var value = "";
+    $(classes.split(/\s+/)).each(function (i, className) {
+        var match = re.exec(className);
+        if (match) value = match[1];
+    });
+    return value;
+}
+
+function populatePickList(control, data) {
+    var pickListName = getparam(control, 'specify-picklist');
+    if (pickListName) {
+        var futureData, futureDataCallback;
+        var pickListUri = "/api/specify/picklist/?name=" + pickListName;
+        $.get(pickListUri, function (picklistResults) {
+            var picklist = picklistResults.objects[0];
+            var items = {};
+            $(picklist.items).each(function(i, item) {
+                items[item.value] = item;
+                $('<option>').text(item.value).appendTo(control);
+            });
+            var setOption = function (data) {
+                if (!items[data]) {
+                    $('<option>')
+                        .attr('value', data)
+                        .text(data+" (current value not in picklist)")
+                        .appendTo(control);
+                }
+                control.val(data);
+            };
+            if (futureData != undefined)
+                setOption(futureData);
+            else
+                futureDataCallback = setOption;
+        });
+        fillinData(data, control.attr('name'), function(value) {
+            if (futureDataCallback != undefined)
+                futureDataCallback(value);
+            else futureData = value;
+        });
+    }
+}
+
 function populateForm(viewName, dataOrUri, views, schemaLocalization, depth, isOneToMany) {
     depth = depth || 1;
-    function getparam(node, paramName) {
-        var classes = $(node).attr('class');
-        if (!classes) return "";
-        var re = new RegExp(paramName + ':([^\\\s]+)');
-
-        var value = "";
-        $(classes.split(/\s+/)).each(function (i, className) {
-            var match = re.exec(className);
-            if (match) value = match[1];
-        });
-        return value;
-    }
 
     var form = processView(viewName, views, schemaLocalization, depth, isOneToMany);
 
     var populate = function(data) {
-        form.find('.specify-field').each(function (i, control) {
-            fillinData(data, $(control).attr('name'), function(value) {
-                $(control).val(value);
-            });
+        form.find('.specify-field').each(function (i, node) {
+            var control = $(node);
+            if (node.nodeName == 'SELECT') {
+                populatePickList(control, data);
+             } else {
+                fillinData(data, control.attr('name'), function(value) {
+                    control.val(value);
+                });
+            }
         });
 
         form.find('.specify-many-to-one').each(function (i, node) {
