@@ -45,9 +45,9 @@
 
     // Return a <form> DOM node containing the processed view.
     specify.processView = function (viewName, depth, suppressHeader) {
-        if (!viewDefs[viewName]) return $('<form>');
+        if (!viewDefs[viewName.toLowerCase()]) return $('<form>');
         depth = depth || 1;
-        var view = $(viewDefs[viewName]);
+        var view = $(viewDefs[viewName.toLowerCase()]);
         var viewModel = view.attr('class').split('.').pop();
 
         // Search the schema_localization DOM for the given modelName.
@@ -216,8 +216,12 @@
     // Allows the views to be merged easily.
     function breakOutViews(viewset) {
         var views = {};
-        $(viewset).find('viewdef').each(function(i, view) {
-            views[$(view).attr('name')] = view;
+        $(viewset).find('view').each(function (i, viewNode) {
+            $(viewNode).find('altview').each(function (i, altview) {
+                var viewdefName = $(altview).attr('viewdef');
+                var viewdef = $(viewset).find('viewdef[name="'+viewdefName+'"][type="form"]').first();
+                viewdef.is("*") && (views[$(viewNode).attr('name').toLowerCase()] = viewdef);
+            });
         });
         return views;
     }
