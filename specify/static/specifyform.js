@@ -29,7 +29,6 @@
         return str.children('text').text().replace(/\\n/g, "\n");
     };
 
-
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewDef.
     function processColumnDef(columnDef) {
@@ -77,19 +76,14 @@
             var cell = $(cellNode);
             var byType = {
                 label: function() {
-                    var givenLabel = cell.attr('label');
                     var labelfor = cell.attr('labelfor');
-                    var forCellName = view
-                        .find('cell[id="'+labelfor+'"]')
-                        .first().attr('name');
-                    var localizedLabel = getLocalizedLabelFor(forCellName);
+                    var forCellName = view.find('cell[id="'+labelfor+'"]').first().attr('name');
                     var label = $('<label>');
-                    if (givenLabel) {
-                        label.text(givenLabel);
-                    } else if (localizedLabel) {
-                        label.text(localizedLabel);
-                    } else if (forCellName) {
-                        label.text(forCellName);
+                    if (cell.attr('label'))
+                        label.text(cell.attr('label'));
+                    else {
+                        var localizedLabel = getLocalizedLabelFor(forCellName);
+                        label.text(localizedLabel || forCellName);
                     }
                     return $('<td>').append(label).addClass('form-label');
                 },
@@ -98,11 +92,13 @@
                     var fieldName = cell.attr('name');
                     var byUIType =  {
                         checkbox: function() {
-                            var givenLabel = cell.attr('label');
-                            var localizedLabel = getLocalizedLabelFor(fieldName);
                             control = $('<input type="checkbox" />').appendTo(td);
-                            if (givenLabel)td.append($('<label>').text(givenLabel));
-                            else if (localizedLabel) td.append($('<label>').text(localizedLabel));
+                            if (cell.attr('label'))
+                                td.append($('<label>').text(cell.attr('label')));
+                            else {
+                                var localizedLabel = getLocalizedLabelFor(fieldName);
+                                localizedLabel && td.append($('<label>').text(localizedLabel));
+                            }
                             return control;
                         },
                         textareabrief: function() {
@@ -121,6 +117,14 @@
                         },
                         text: function() {
                             control = $('<input type="text" />').appendTo(td);
+                            return control;
+                        },
+                        formattedtext: function() {
+                            control = $('<input type="text" />').appendTo(td);
+                            return control;
+                        },
+                        label: function() {
+                            control = $('<input type="text" readonly />').appendTo(td);
                             return control;
                         },
                         other: function() {
@@ -234,7 +238,6 @@
     };
 
 } (window.specify = window.specify || {}, jQuery));
-
 
 // Main entry point.
 $(function () {
