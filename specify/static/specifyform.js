@@ -1,4 +1,15 @@
 (function (specify, $, undefined) {
+    var schemaLocalization, viewDefs;
+    var viewsetNames = [
+        //        'system.views.xml',
+        //        'editorpanel.views.xml',
+        //        'preferences.views.xml',
+        //        'global.views.xml',
+        //        'search.views.xml',
+        '/static/views.xml'
+        //        'manager.botany.views.xml',
+    ];
+
     specify.language = "en";
 
     // Given a DOM containing alternative localizations,
@@ -34,14 +45,10 @@
     }
 
     // Return a <form> DOM node containing the processed view.
-    // Subviews result in recursive calls where depth is
-    // incremented each time
-    // [views] is an object mapping view names to <viewdef> DOM nodes
-    // [schemaLocalization] is a DOM structure
-    specify.processView = function (viewName, views, schemaLocalization, depth, suppressHeader) {
-        if (!views[viewName]) return $('<form>');
+    specify.processView = function (viewName, depth, suppressHeader) {
+        if (!viewDefs[viewName]) return $('<form>');
         depth = depth || 1;
-        var view = $(views[viewName]);
+        var view = $(viewDefs[viewName]);
         var viewModel = view.attr('class').split('.').pop();
 
         // Search the schema_localization DOM for the given modelName.
@@ -200,18 +207,9 @@
         }
     }
 
-} (window.specify = window.specify || {}, jQuery));
-
-
-
-// Main entry point.
-$(function () {
-    var schemaLocalization;
-    var uri = "http://localhost:8000/api/specify/collectionobject/102/";
-
     // Processes the viewset DOM to create an object
     // mapping viewDef names to the viewDef DOM nodes.
-    // Allows the views to be merrged easily.
+    // Allows the views to be merged easily.
     function breakOutViews(viewset) {
         var views = {};
         $(viewset).find('viewdef').each(function(i, view) {
@@ -220,39 +218,29 @@ $(function () {
         return views;
     }
 
-    $.get('/static/schema_localization.xml', function(data) {
-        schemaLocalization = data;
-        loadViews();
-    });
-
-    // Load all views and merge them such that
-    // those listed first are overriden by
-    // the ones listed later.
-    var loadViews = function() {
-        var viewsetNames = [
-            //        'system.views.xml',
-            //        'editorpanel.views.xml',
-            //        'preferences.views.xml',
-            //        'global.views.xml',
-            //        'search.views.xml',
-            '/static/views.xml'
-            //        'manager.botany.views.xml',
-        ];
-
-        var viewsets = {}, completed = 0;
+    specify.loadViews = function() {
+        var loaders = [$.get('/static/schema_localization.xml',
+                             function(data) { schemaLocalization = data; })];
+        var viewsets = {};
         $(viewsetNames).each(function(i, name) {
-            $.get(name, function(viewset) {
-                completed++;
-                viewsets[name] = viewset;
-                if (completed == viewsetNames.length) {
-                    var orderedViews = $.merge(
-                        [{}], viewsetNames.map(function(name) {
-                            return breakOutViews(viewsets[name]);
-                        }));
-                    var views = $.extend.apply($, orderedViews);
-                    $('body').append(specify.populateForm(view, uri, views, schemaLocalization));
-                }
-            });
+            loaders.push($.get(name, function(viewset) { viewsets[name] = viewset; }));
         });
+        return $.when.apply($, loaders).then(function() {
+            var orderedViews = viewsetNames.map(
+                function(name) { return breakOutViews(viewsets[name]) });
+
+            viewDefs = $.extend.apply($, $.merge([{}], orderedViews));
+        }).promise();
     };
+
+} (window.specify = window.specify || {}, jQuery));
+
+
+// Main entry point.
+$(function () {
+    var uri = "http://localhost:8000/api/specify/collectionobject/102/";
+
+    specify.loadViews().then(function () {
+        $('body').append(specify.populateForm(view, uri));
+    });
 });

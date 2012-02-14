@@ -55,10 +55,10 @@
         });
     }
 
-    specify.populateForm = function (viewName, dataOrUri, views, schemaLocalization, depth, isOneToMany) {
+    specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
         depth = depth || 1;
 
-        var form = specify.processView(viewName, views, schemaLocalization, depth, isOneToMany);
+        var form = specify.processView(viewName, depth, isOneToMany);
 
         var populate = function(data) {
             form.find('.specify-field').each(function (i, node) {
@@ -77,7 +77,6 @@
                 var fieldName = getparam(node, 'specify-field-name');
                 var subform = specify.populateForm(getparam(node, 'specify-view-name'),
                                                    data[fieldName.toLowerCase()],
-                                                   views, schemaLocalization,
                                                    depth + 1);
                 subform.appendTo(node);
             });
@@ -87,8 +86,7 @@
                 var fieldName = getparam(node, 'specify-field-name');
                 $(data[fieldName.toLowerCase()]).each(function (i, data) {
                     var subform = specify.populateForm(getparam(node, 'specify-view-name'),
-                                                       data, views, schemaLocalization,
-                                                       depth + 1, true);
+                                                       data, depth + 1, true);
                     subform.appendTo(node);
                 });
             });
