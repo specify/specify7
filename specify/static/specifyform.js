@@ -245,7 +245,7 @@
 
 // Main entry point.
 $(function () {
-    var uri = "http://localhost:8000/api/specify/collectionobject/102/";
+    var uri = "/api/specify/"+view+"/"+id+"/";
 
     specify.loadViews().then(function () {
         $('body').append(specify.populateForm(view, uri));
