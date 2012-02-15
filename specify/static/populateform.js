@@ -18,21 +18,8 @@
         });
     }
 
-    function getparam(node, paramName) {
-        var classes = $(node).attr('class');
-        if (!classes) return "";
-        var re = new RegExp(paramName + ':([^\\\s]+)');
-
-        var value = "";
-        $(classes.split(/\s+/)).each(function (i, className) {
-            var match = re.exec(className);
-            if (match) value = match[1];
-        });
-        return value;
-    }
-
     function populatePickList(control, data) {
-        var pickListName = getparam(control, 'specify-picklist');
+        var pickListName = control.data('specify-picklist');
         if (!pickListName) return;
         var pickListUri = "/api/specify/picklist/?name=" + pickListName;
         var picklistJQXHR = $.get(pickListUri);
@@ -55,6 +42,29 @@
         });
     }
 
+    function setupQueryCBX(control, data) {
+        control.hide();
+        var input = $('<input type="text">').insertAfter(control);
+        input.autocomplete({
+            minLength: 3,
+            source: function(request, response) {
+                var jqxhr = $.get('/api/specify/locality/', {'localityname__icontains': request.term});
+                jqxhr.success(function(data) {
+                    response(
+                        data.objects.map(function(locality) {
+                            return {label: locality.localityname, value: locality.localityname};
+                        })
+                    );
+                });
+                jqxhr.error(function() { response([]); });
+            },
+        });
+
+        $.get(data[control.attr('name')], function(itemdata) {
+            input.val(itemdata.localityname);
+        });
+    }
+
     specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
         depth = depth || 1;
 
@@ -65,7 +75,10 @@
                 var control = $(node);
                 if (node.nodeName == 'SELECT') {
                     populatePickList(control, data);
-                } else {
+                } else if (control.is('.specify-querycbx')) {
+                    setupQueryCBX(control, data);
+                }
+                else {
                     fillinData(data, control.attr('name'), function(value) {
                         control.val(value);
                     });
@@ -73,21 +86,20 @@
             });
 
             form.find('.specify-many-to-one').each(function (i, node) {
-                var viewName = getparam(node, 'specify-view-name');
-                var fieldName = getparam(node, 'specify-field-name');
-                var subform = specify.populateForm(getparam(node, 'specify-view-name'),
-                                                   data[fieldName.toLowerCase()],
-                                                   depth + 1);
-                subform.appendTo(node);
+                var container = $(node);
+                var viewName = container.data('specify-view-name');
+                var fieldName = container.data('specify-field-name').toLowerCase();
+                var subform = specify.populateForm(viewName, data[fieldName], depth + 1);
+                subform.appendTo(container);
             });
 
             form.find('.specify-one-to-many').each(function (i, node) {
-                var viewName = getparam(node, 'specify-view-name');
-                var fieldName = getparam(node, 'specify-field-name');
-                $(data[fieldName.toLowerCase()]).each(function (i, data) {
-                    var subform = specify.populateForm(getparam(node, 'specify-view-name'),
-                                                       data, depth + 1, true);
-                    subform.appendTo(node);
+                var container = $(node);
+                var viewName = container.data('specify-view-name');
+                var fieldName = container.data('specify-field-name').toLowerCase();
+                $(data[fieldName]).each(function (i, data) {
+                    var subform = specify.populateForm(viewName, data, depth + 1, true);
+                    subform.appendTo(container);
                 });
             });
         };

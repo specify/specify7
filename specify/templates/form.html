@@ -1,15 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!doctype html>
+<html>
 <head>
-  <title>Conforming XHTML 1.0 Strict Template</title>
-  <link rel="stylesheet" type="text/css" href="/static/specifyform.css" />
-  <script type="text/javascript" src="/static/jquery-1.7.1.min.js"></script>
-  <script type="text/javascript" src="/static/specifyform.js"></script>
-  <script type="text/javascript" src="/static/populateform.js"></script>
-  <script type="text/javascript">
+  <meta charset="utf-8">
+  <title>Specify Form View</title>
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/static/specifyform.css">
+
+  <script src="https://www.google.com/jsapi"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+  <script src="/static/specifyform.js"></script>
+  <script src="/static/populateform.js"></script>
+  <script>
 //<![CDATA[
 var view = "{{ params.view }}";
 var id = "{{ params.id }}";

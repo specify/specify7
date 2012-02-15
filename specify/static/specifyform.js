@@ -92,7 +92,7 @@
                     var fieldName = cell.attr('name');
                     var byUIType =  {
                         checkbox: function() {
-                            control = $('<input type="checkbox" />').appendTo(td);
+                            control = $('<input type="checkbox">').appendTo(td);
                             if (cell.attr('label'))
                                 td.append($('<label>').text(cell.attr('label')));
                             else {
@@ -108,23 +108,24 @@
                         combobox: function() {
                             var pickListName = getSchemaInfoFor(fieldName).attr('pickListName');
                             control = $('<select>').appendTo(td);
-                            pickListName && control.addClass('specify-picklist:' + pickListName);
+                            pickListName && control.attr('data-specify-picklist', pickListName);
                             return control;
                         },
                         querycbx: function() {
-                            control = $('<select>').appendTo(td);
+                            control = $('<input type="text">').appendTo(td);
+                            control.addClass('specify-querycbx');
                             return control;
                         },
                         text: function() {
-                            control = $('<input type="text" />').appendTo(td);
+                            control = $('<input type="text">').appendTo(td);
                             return control;
                         },
                         formattedtext: function() {
-                            control = $('<input type="text" />').appendTo(td);
+                            control = $('<input type="text">').appendTo(td);
                             return control;
                         },
                         label: function() {
-                            control = $('<input type="text" readonly />').appendTo(td);
+                            control = $('<input type="text" readonly>').appendTo(td);
                             return control;
                         },
                         other: function() {
@@ -133,6 +134,8 @@
                     };
                     var control = (byUIType[cell.attr('uitype')] || byUIType.other)();
                     control && control.attr('name', fieldName).addClass('specify-field');
+                    var initialize = cell.attr('initialize');
+                    initialize && control && control.attr('data-specify-initialize', initialize);
                     return td;
                 },
                 separator: function() {
@@ -154,8 +157,8 @@
                         td.addClass('specify-many-to-one');
                         break;
                     }
-                    td.addClass('specify-field-name:' + fieldName);
-                    td.addClass('specify-view-name:' + cell.attr('viewname'));
+                    td.attr('data-specify-field-name', fieldName);
+                    td.attr('data-specify-view-name', cell.attr('viewname'));
                     return td;
                 },
                 panel: function() {

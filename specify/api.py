@@ -27,6 +27,7 @@ inlined_fields = [
 
 filter_fields = {
     'Picklist': {'name': ('exact',)},
+    'Locality': {'localityname': ('icontains',)},
 }
 
 def make_to_many_field(model, related, fieldname):
