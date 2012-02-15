@@ -245,12 +245,3 @@
     };
 
 } (window.specify = window.specify || {}, jQuery));
-
-// Main entry point.
-$(function () {
-    var uri = "/api/specify/"+view+"/"+id+"/";
-
-    specify.loadViews().then(function () {
-        $('body').append(specify.populateForm(view, uri));
-    });
-});

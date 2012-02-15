@@ -1,8 +1,9 @@
 (function (specify, $, undefined) {
+    var typesearches;
 
     function fillinData(data, fieldName, dispatch) {
-        var path = $.isArray(fieldName)? fieldName : fieldName.split('.');
-        if (path.length == 1) {
+        var path = $.isArray(fieldName) ? fieldName : fieldName.split('.');
+        if (path.length === 1) {
             // the field we want is right in the data object
             dispatch(data[path[0].toLowerCase()]);
             return;
@@ -13,7 +14,7 @@
             return;
         }
         // we have to fetch a subobject which contains our field
-        $.get(data[path[0]], function(data) {
+        $.get(data[path[0]], function (data) {
             fillinData(data, path.slice(1), dispatch);
         });
     }
@@ -23,11 +24,11 @@
         if (!pickListName) return;
         var pickListUri = "/api/specify/picklist/?name=" + pickListName;
         var picklistJQXHR = $.get(pickListUri);
-        fillinData(data, control.attr('name'), function(value) {
+        fillinData(data, control.attr('name'), function (value) {
             picklistJQXHR.success(function (picklistResults) {
                 var picklist = picklistResults.objects[0];
                 var items = {};
-                $(picklist.items).each(function(i, item) {
+                $(picklist.items).each(function (i, item) {
                     items[item.value] = item;
                     $('<option>').text(item.value).appendTo(control);
                 });
@@ -42,26 +43,54 @@
         });
     }
 
+    function parseSpecifyProperties(props) {
+        var result = {};
+        $(props.split(';')).each(function (i, item) {
+            var match = /([^=]+)=(.+)/.exec(item);
+            var key = match[1], value = match[2];
+            key && value && (result[key] = value);
+        });
+        return result;
+    }
+
+
     function setupQueryCBX(control, data) {
         control.hide();
+        var init = parseSpecifyProperties(control.data('specify-initialize'));
+        var typesearch = typesearches.find('[name="'+init.name+'"]');
+        var searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains';
+        var displaycols = typesearch.attr('displaycols').toLowerCase().split(',');
+        var format = typesearch.attr('format');
+        var uri = '/api/specify/' + init.name.toLowerCase() + '/';
         var input = $('<input type="text">').insertAfter(control);
+
+        var formatInterpolate = function (obj) {
+            var str = format;
+            var vals = displaycols.map(function (col)  { return obj[col]; });
+            $(vals).each(function (i, val) { str = str.replace(/%s/, val); });
+            return str;
+        };
+
         input.autocomplete({
             minLength: 3,
-            source: function(request, response) {
-                var jqxhr = $.get('/api/specify/locality/', {'localityname__icontains': request.term});
-                jqxhr.success(function(data) {
+            source: function (request, response) {
+                var query = {};
+                query[searchfield] = request.term;
+                var jqxhr = $.get(uri, query);
+                jqxhr.success(function (data) {
                     response(
-                        data.objects.map(function(locality) {
-                            return {label: locality.localityname, value: locality.localityname};
+                        data.objects.map(function (obj) {
+                            var display = formatInterpolate(obj);
+                            return {label: display, value: display};
                         })
                     );
                 });
-                jqxhr.error(function() { response([]); });
+                jqxhr.error(function () { response([]); });
             },
         });
 
-        $.get(data[control.attr('name')], function(itemdata) {
-            input.val(itemdata.localityname);
+        $.get(data[control.attr('name')], function (obj) {
+            input.val(formatInterpolate(obj));
         });
     }
 
@@ -79,7 +108,7 @@
                     setupQueryCBX(control, data);
                 }
                 else {
-                    fillinData(data, control.attr('name'), function(value) {
+                    fillinData(data, control.attr('name'), function (value) {
                         control.val(value);
                     });
                 }
@@ -112,4 +141,19 @@
         return form;
     }
 
+    specify.loadTypeSearches = function () {
+        return $.get('/static/typesearch_def.xml', function (data) { typesearches = $(data); });
+    };
+
 } (window.specify = window.specify || {}, jQuery));
+
+
+// Main entry point.
+$(function () {
+    var uri = "/api/specify/"+view+"/"+id+"/";
+
+    $.when(specify.loadViews(), specify.loadTypeSearches())
+        .then(function () {
+            $('body').append(specify.populateForm(view, uri));
+        });
+});
