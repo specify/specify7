@@ -1,4 +1,4 @@
-from tastypie.resources import ModelResource
+import tastypie.resources
 from tastypie.fields import ForeignKey, ToManyField
 from tastypie.authorization import Authorization
 from django.db.models import get_models
@@ -41,6 +41,15 @@ for node in typesearches('typesearch'):
     if field not in filters: filters[field] = []
     querytypes = filters[field]
     if 'icontains' not in querytypes: querytypes.append('icontains')
+
+class ModelResource(tastypie.resources.ModelResource):
+    def _build_reverse_url(self, name, args=None, kwargs=None):
+        """Hard code the URL lookups to make things fast."""
+        if name == 'api_dispatch_detail':
+            return '/api/%(api_name)s/%(resource_name)s/%(pk)d/' % kwargs
+
+        return super(ModelResource, self)._build_reverse_url(name, args=args, kwargs=kwargs)
+
 
 def make_to_many_field(model, related, fieldname):
     related_model = getattr(models, related)
