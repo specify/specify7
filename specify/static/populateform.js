@@ -89,7 +89,7 @@
             },
         });
 
-        $.get(data[control.attr('name')], function (obj) {
+        $.get(data[control.attr('name').toLowerCase()], function (obj) {
             input.val(formatInterpolate(obj));
         });
     }
