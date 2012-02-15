@@ -2,6 +2,8 @@ from tastypie.resources import ModelResource
 from tastypie.fields import ForeignKey, ToManyField
 from tastypie.authorization import Authorization
 from django.db.models import get_models
+from pyquery import PyQuery
+import os
 
 from djangospecify.specify import models
 
@@ -26,9 +28,19 @@ inlined_fields = [
 ]
 
 filter_fields = {
-    'Picklist': {'name': ('exact',)},
-    'Locality': {'localityname': ('icontains',)},
+    'Picklist': {'name': ['exact',]},
 }
+
+typesearches = PyQuery(filename=os.path.join(os.path.dirname(__file__), "static", "typesearch_def.xml"))
+for node in typesearches('typesearch'):
+    typesearch = PyQuery(node)
+    model = typesearch.attr('name').capitalize()
+    field = typesearch.attr('searchfield').lower()
+    if model not in filter_fields: filter_fields[model] = {}
+    filters = filter_fields[model]
+    if field not in filters: filters[field] = []
+    querytypes = filters[field]
+    if 'icontains' not in querytypes: querytypes.append('icontains')
 
 def make_to_many_field(model, related, fieldname):
     related_model = getattr(models, related)
