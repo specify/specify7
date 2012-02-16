@@ -81,14 +81,18 @@
                     response(
                         data.objects.map(function (obj) {
                             var display = formatInterpolate(obj);
-                            return {label: display, value: display};
+                            return {label: display, value: display, uri: obj.resource_uri};
                         })
                     );
                 });
                 jqxhr.error(function () { response([]); });
             },
+            select: function (event, ui) {
+                control.val(ui.item.uri);
+            },
         });
 
+        control.val(data[control.attr('name').toLowerCase()]);
         $.get(data[control.attr('name').toLowerCase()], function (obj) {
             input.val(formatInterpolate(obj));
         });
