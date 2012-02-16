@@ -104,16 +104,19 @@
         var form = specify.processView(viewName, depth, isOneToMany);
 
         var populate = function(data) {
+            form.data('specify-uri', data.resource_uri);
             form.find('.specify-field').each(function (i, node) {
                 var control = $(node);
                 if (node.nodeName == 'SELECT') {
                     populatePickList(control, data);
                 } else if (control.is('.specify-querycbx')) {
                     setupQueryCBX(control, data);
-                }
-                else {
+                } else {
                     fillinData(data, control.attr('name'), function (value) {
-                        control.val(value);
+                        if (control.is('input[type="checkbox"]'))
+                            control.prop('checked', value);
+                        else
+                            control.val(value);
                     });
                 }
             });
