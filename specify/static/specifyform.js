@@ -180,9 +180,7 @@
         // to the generated <table>.
         view.children('rows').children('row').each(function () {
             var tr = $('<tr>').appendTo(table);
-            $(this).children('cell').each(function () {
-                tr.append(processCell(this));
-            });
+            $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
         });
 
         if (!suppressHeader){
