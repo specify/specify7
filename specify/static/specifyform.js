@@ -156,7 +156,7 @@
                     return $('<td>').append(table);
                 },
 	        command: function() {
-		    var button = $('<input type="submit">').attr({
+		    var button = $('<input type="button">').attr({
 		        value: cell.attr('label'),
 		        name: cell.attr('name')
 		    });

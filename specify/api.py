@@ -58,7 +58,7 @@ def make_to_many_field(model, related, fieldname):
         return related_model.objects.filter(**filter_args)
     related_resource = "%s.%s%s" % (__name__, related, "Resource")
     full = '.'.join((model.__name__, fieldname)) in inlined_fields
-    return ToManyField(related_resource, get_related_objs, full=full)
+    return ToManyField(related_resource, get_related_objs, null=True, full=full)
 
 def make_fk_field(field):
     relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)

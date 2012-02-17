@@ -198,6 +198,15 @@ $(function () {
 
     $.when(specify.loadViews(), specify.loadTypeSearches())
         .then(function () {
-            $('body').append(specify.populateForm(window.view, uri));
+            var mainForm = specify.populateForm(window.view, uri);
+            $('div').append(mainForm);
+            $('input[type="submit"]').click(function () {
+                var btn = $(this);
+                btn.prop('disabled', true);
+                specify.putForm(mainForm, true).then(function () {
+                    btn.prop('disabled', false);
+                    window.location.reload(true);
+                });
+            });
         });
 });
