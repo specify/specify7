@@ -33,10 +33,10 @@
     // on the columnDef attr of a viewDef.
     function processColumnDef(columnDef) {
         var table = $('<table>');
-        $(columnDef.split(',')).each(function(i, def) {
+        $(columnDef.split(',')).each(function(i) {
             if (i%2==0) {
                 var col = $('<col>').appendTo(table);
-                var width = /(\d+)px/.exec(def);
+                var width = /(\d+)px/.exec(this);
                 width && col.attr('width', width[1]+'px');
             }
         });
@@ -163,14 +163,12 @@
                 },
                 panel: function() {
                     var table = processColumnDef(cell.attr('coldef'));
-                    cell.children('rows').children('row').each(
-                        function(i, row) {
-                            var tr = $('<tr>').appendTo(table);
-                            $(row).children('cell').each(
-                                function(i, cell) {
-                                    tr.append(processCell(cell));
-                                });
+                    cell.children('rows').children('row').each(function () {
+                        var tr = $('<tr>').appendTo(table);
+                        $(this).children('cell').each(function() {
+                            tr.append(processCell(this));
                         });
+                    });
                     return $('<td>').append(table);
                 },
 	        command: function() {
@@ -196,10 +194,10 @@
         // Iterate over the rows and cells of the view
         // processing each in turn and appending them
         // to the generated <table>.
-        view.children('rows').children('row').each(function(i, row) {
+        view.children('rows').children('row').each(function () {
             var tr = $('<tr>').appendTo(table);
-            $(row).children('cell').each(function(i, cell) {
-                tr.append(processCell(cell));
+            $(this).children('cell').each(function () {
+                tr.append(processCell(this));
             });
         });
 
@@ -219,11 +217,12 @@
     // Allows the views to be merged easily.
     function breakOutViews(viewset) {
         var views = {};
-        $(viewset).find('view').each(function (i, viewNode) {
-            $(viewNode).find('altview').each(function (i, altview) {
-                var viewdefName = $(altview).attr('viewdef');
+        $(viewset).find('view').each(function () {
+            var view = $(this);
+            view.find('altview').each(function () {
+                var viewdefName = $(this).attr('viewdef');
                 var viewdef = $(viewset).find('viewdef[name="'+viewdefName+'"][type="form"]').first();
-                viewdef.is("*") && (views[$(viewNode).attr('name').toLowerCase()] = viewdef);
+                viewdef.is("*") && (views[view.attr('name').toLowerCase()] = viewdef);
             });
         });
         return views;
@@ -233,12 +232,12 @@
         var loaders = [$.get('/static/schema_localization.xml',
                              function(data) { schemaLocalization = data; })];
         var viewsets = {};
-        $(viewsetNames).each(function(i, name) {
+        $(viewsetNames).each(function (i, name) {
             loaders.push($.get(name, function(viewset) { viewsets[name] = viewset; }));
         });
         return $.when.apply($, loaders).then(function() {
             var orderedViews = viewsetNames.map(
-                function(name) { return breakOutViews(viewsets[name]) });
+                function(name) { return breakOutViews(viewsets[name]); });
 
             viewDefs = $.extend.apply($, $.merge([{}], orderedViews));
         }).promise();

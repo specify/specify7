@@ -28,9 +28,9 @@
             picklistJQXHR.success(function (picklistResults) {
                 var picklist = picklistResults.objects[0];
                 var items = {};
-                $(picklist.items).each(function (i, item) {
-                    items[item.value] = item;
-                    $('<option>').text(item.value).appendTo(control);
+                $(picklist.items).each(function () {
+                    items[this.value] = this;
+                    $('<option>').text(this.value).appendTo(control);
                 });
                 if (!items[value]) {
                     $('<option>')
@@ -45,8 +45,8 @@
 
     function parseSpecifyProperties(props) {
         var result = {};
-        $(props.split(';')).each(function (i, item) {
-            var match = /([^=]+)=(.+)/.exec(item);
+        $(props.split(';')).each(function () {
+            var match = /([^=]+)=(.+)/.exec(this);
             var key = match[1], value = match[2];
             key && value && (result[key] = value);
         });
@@ -67,7 +67,7 @@
         var formatInterpolate = function (obj) {
             var str = format;
             var vals = displaycols.map(function (col)  { return obj[col]; });
-            $(vals).each(function (i, val) { str = str.replace(/%s/, val); });
+            $(vals).each(function () { str = str.replace(/%s/, this); });
             return str;
         };
 
@@ -109,9 +109,9 @@
 
         var populate = function(data) {
             form.data('specify-uri', data.resource_uri);
-            form.find('.specify-field').each(function (i, node) {
-                var control = $(node);
-                if (node.nodeName == 'SELECT') {
+            form.find('.specify-field').each(function () {
+                var control = $(this);
+                if (control.prop('nodeName') === 'SELECT') {
                     populatePickList(control, data);
                 } else if (control.is('.specify-querycbx')) {
                     setupQueryCBX(control, data);
@@ -125,20 +125,20 @@
                 }
             });
 
-            form.find('.specify-many-to-one').each(function (i, node) {
-                var container = $(node);
+            form.find('.specify-many-to-one').each(function () {
+                var container = $(this);
                 var viewName = container.data('specify-view-name');
                 var fieldName = container.data('specify-field-name').toLowerCase();
                 var subform = specify.populateForm(viewName, data[fieldName], depth + 1);
                 subform.appendTo(container);
             });
 
-            form.find('.specify-one-to-many').each(function (i, node) {
-                var container = $(node);
+            form.find('.specify-one-to-many').each(function () {
+                var container = $(this);
                 var viewName = container.data('specify-view-name');
                 var fieldName = container.data('specify-field-name').toLowerCase();
-                $(data[fieldName]).each(function (i, data) {
-                    var subform = specify.populateForm(viewName, data, depth + 1, true);
+                $(data[fieldName]).each(function () {
+                    var subform = specify.populateForm(viewName, this, depth + 1, true);
                     subform.appendTo(container);
                 });
             });
