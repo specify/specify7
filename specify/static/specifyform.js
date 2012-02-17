@@ -7,7 +7,7 @@
         //        'global.views.xml',
         //        'search.views.xml',
         '/static/views.xml'
-        //        'manager.botany.views.xml',
+               // '/static/vascplant.views.xml',
     ];
 
     specify.language = "en";
@@ -79,7 +79,7 @@
                     var labelfor = cell.attr('labelfor');
                     var forCellName = view.find('cell[id="'+labelfor+'"]').first().attr('name');
                     var label = $('<label>');
-                    if (cell.attr('label'))
+                    if (cell.attr('label') !== undefined)
                         label.text(cell.attr('label'));
                     else {
                         var localizedLabel = getLocalizedLabelFor(forCellName);

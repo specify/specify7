@@ -62,7 +62,7 @@
         var displaycols = typesearch.attr('displaycols').toLowerCase().split(',');
         var format = typesearch.attr('format');
         var uri = '/api/specify/' + init.name.toLowerCase() + '/';
-        var input = $('<input type="text">').insertAfter(control);
+        var input = $('<input type="text">').insertBefore(control);
 
         var formatInterpolate = function (obj) {
             var str = format;
@@ -92,10 +92,14 @@
             },
         });
 
-        control.val(data[control.attr('name').toLowerCase()]);
-        $.get(data[control.attr('name').toLowerCase()], function (obj) {
-            input.val(formatInterpolate(obj));
-        });
+        var related = data[control.attr('name').toLowerCase()];
+
+        if (related) {
+            control.val(related);
+            $.get(related, function (obj) {
+                input.val(formatInterpolate(obj));
+            });
+        }
     }
 
     specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
