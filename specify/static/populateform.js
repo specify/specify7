@@ -1,4 +1,5 @@
 (function (specify, $, undefined) {
+    "use strict";
     var typesearches;
 
     function fillinData(data, fieldName, dispatch) {
@@ -21,13 +22,12 @@
 
     function populatePickList(control, data) {
         var pickListName = control.data('specify-picklist');
-        if (!pickListName) return;
-        var pickListUri = "/api/specify/picklist/?name=" + pickListName;
-        var picklistJQXHR = $.get(pickListUri);
+        if (!pickListName) { return; }
+        var pickListUri = "/api/specify/picklist/?name=" + pickListName,
+        picklistJQXHR = $.get(pickListUri);
         fillinData(data, control.attr('name'), function (value) {
             picklistJQXHR.success(function (picklistResults) {
-                var picklist = picklistResults.objects[0];
-                var items = {};
+                var picklist = picklistResults.objects[0], items = {};
                 $(picklist.items).each(function () {
                     items[this.value] = this;
                     $('<option>').text(this.value).appendTo(control);
@@ -46,9 +46,9 @@
     function parseSpecifyProperties(props) {
         var result = {};
         $(props.split(';')).each(function () {
-            var match = /([^=]+)=(.+)/.exec(this);
-            var key = match[1], value = match[2];
-            key && value && (result[key] = value);
+            var match = /([^=]+)=(.+)/.exec(this),
+            key = match[1], value = match[2];
+            if (key && value) { result[key] = value; }
         });
         return result;
     }
@@ -56,17 +56,17 @@
 
     function setupQueryCBX(control, data) {
         control.hide();
-        var init = parseSpecifyProperties(control.data('specify-initialize'));
-        var typesearch = typesearches.find('[name="'+init.name+'"]');
-        var searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains';
-        var displaycols = typesearch.attr('displaycols').toLowerCase().split(',');
-        var format = typesearch.attr('format');
-        var uri = '/api/specify/' + init.name.toLowerCase() + '/';
-        var input = $('<input type="text">').insertBefore(control);
+        var init = parseSpecifyProperties(control.data('specify-initialize')),
+        typesearch = typesearches.find('[name="'+init.name+'"]'),
+        searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains',
+        displaycols = typesearch.attr('displaycols').toLowerCase().split(','),
+        format = typesearch.attr('format'),
+        uri = '/api/specify/' + init.name.toLowerCase() + '/',
+        input = $('<input type="text">').insertBefore(control),
 
-        var formatInterpolate = function (obj) {
-            var str = format;
-            var vals = displaycols.map(function (col)  { return obj[col]; });
+        formatInterpolate = function (obj) {
+            var str = format,
+            vals = displaycols.map(function (col)  { return obj[col]; });
             $(vals).each(function () { str = str.replace(/%s/, this); });
             return str;
         };
@@ -89,7 +89,7 @@
             },
             select: function (event, ui) {
                 control.val(ui.item.uri);
-            },
+            }
         });
 
         var related = data[control.attr('name').toLowerCase()];
@@ -105,9 +105,9 @@
     specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
         depth = depth || 1;
 
-        var form = specify.processView(viewName, depth, isOneToMany);
+        var form = specify.processView(viewName, depth, isOneToMany),
 
-        var populate = function(data) {
+        populate = function(data) {
             form.data('specify-uri', data.resource_uri);
             form.find('.specify-field').each(function () {
                 var control = $(this);
@@ -117,26 +117,27 @@
                     setupQueryCBX(control, data);
                 } else {
                     fillinData(data, control.attr('name'), function (value) {
-                        if (control.is('input[type="checkbox"]'))
+                        if (control.is('input[type="checkbox"]')) {
                             control.prop('checked', value);
-                        else
+                        } else {
                             control.val(value);
+                        }
                     });
                 }
             });
 
             form.find('.specify-many-to-one').each(function () {
-                var container = $(this);
-                var viewName = container.data('specify-view-name');
-                var fieldName = container.data('specify-field-name').toLowerCase();
-                var subform = specify.populateForm(viewName, data[fieldName], depth + 1);
+                var container = $(this),
+                viewName = container.data('specify-view-name'),
+                fieldName = container.data('specify-field-name').toLowerCase(),
+                subform = specify.populateForm(viewName, data[fieldName], depth + 1);
                 subform.appendTo(container);
             });
 
             form.find('.specify-one-to-many').each(function () {
-                var container = $(this);
-                var viewName = container.data('specify-view-name');
-                var fieldName = container.data('specify-field-name').toLowerCase();
+                var container = $(this),
+                viewName = container.data('specify-view-name'),
+                fieldName = container.data('specify-field-name').toLowerCase();
                 $(data[fieldName]).each(function () {
                     var subform = specify.populateForm(viewName, this, depth + 1, true);
                     subform.appendTo(container);
@@ -144,13 +145,13 @@
             });
         };
 
-        if ($.isPlainObject(dataOrUri))
-            populate(dataOrUri)
-        else
+        if ($.isPlainObject(dataOrUri)) {
+            populate(dataOrUri);
+        } else {
             $.get(dataOrUri, populate);
-
+        }
         return form;
-    }
+    };
 
     specify.loadTypeSearches = function () {
         return $.get('/static/typesearch_def.xml', function (data) { typesearches = $(data); });
@@ -161,10 +162,11 @@
 
 // Main entry point.
 $(function () {
+    "use strict";
     var uri = "/api/specify/"+view+"/"+id+"/";
 
     $.when(specify.loadViews(), specify.loadTypeSearches())
         .then(function () {
-            $('body').append(specify.populateForm(view, uri));
+            $('body').append(specify.populateForm(window.view, uri));
         });
 });
