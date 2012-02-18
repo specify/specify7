@@ -2,6 +2,7 @@ import tastypie.resources
 from tastypie.fields import ForeignKey, ToManyField
 from tastypie.authorization import Authorization
 from django.db.models import get_models
+from django.core.exceptions import ObjectDoesNotExist
 from pyquery import PyQuery
 import os
 
@@ -50,6 +51,18 @@ class ModelResource(tastypie.resources.ModelResource):
 
         return super(ModelResource, self)._build_reverse_url(name, args=args, kwargs=kwargs)
 
+    def obj_update(self, bundle, request=None, **kwargs):
+        if not bundle.obj or not bundle.obj.pk:
+            try:
+                bundle.obj = self.obj_get(request, **kwargs)
+            except ObjectDoesNotExist:
+                raise NotFound("A model instance matching the provided arguments could not be found.")
+
+        bundle = self.full_hydrate(bundle)
+
+        # Save the main object.
+        bundle.obj.save()
+        return bundle
 
 def make_to_many_field(model, related, fieldname):
     related_model = getattr(models, related)
