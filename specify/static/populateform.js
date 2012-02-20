@@ -158,7 +158,7 @@
                 subform.appendTo(container);
             });
 
-            // fill in the on to manys
+            // fill in the one to manys
             form.find('.specify-one-to-many').each(function () {
                 var container = $(this),
                 viewName = container.data('specify-view-name'),
@@ -168,11 +168,7 @@
                 $(data[fieldName]).each(function () {
                     // again, recursive fill
                     var subform = specify.populateForm(viewName, this, depth + 1, true);
-                    if (container.hasClass('specify-formtable')) {
-                        subform.appendTo(container.find('tbody'));
-                    } else {
-                        subform.appendTo(container);
-                    }
+                    subform.appendTo(container.hasClass('specify-formtable') ? container.find('tbody') : container);
                 });
             });
         };

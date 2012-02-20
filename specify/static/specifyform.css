@@ -34,7 +34,7 @@ select {
 }
 
 .separator {
-    background-color: lightGray;
+    border-bottom: solid 1px;
 }
 
 .form-label {
