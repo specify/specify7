@@ -14,7 +14,7 @@ for r in resources: api.register(r())
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', TemplateView.as_view(template_name="index.html")),
-    url(r'^specify/', include('djangospecify.specify.urls')),
+    url(r'^specify/', include('specify.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

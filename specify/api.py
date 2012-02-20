@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from pyquery import PyQuery
 import os
 
-from djangospecify.specify import models
+from specify import models
 
 to_many_relationships = {
     'Collectionobject': {

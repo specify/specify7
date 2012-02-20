@@ -12,12 +12,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'kuplant',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'root',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'hibernateboolsbackend.backends.mysql',
+        'NAME': 'kuplant',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -102,7 +102,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'djangospecify.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -123,7 +123,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 #    'django_extensions',
     'tastypie',
-    'djangospecify.specify',
+    'specify',
 )
 
 AJAX_LOOKUP_CHANNELS = {
