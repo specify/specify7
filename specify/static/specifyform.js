@@ -1,6 +1,6 @@
 (function (specify, $, undefined) {
     "use strict";
-    var schemaLocalization, viewDefs,
+    var schemaLocalization, views, viewdefs,
     viewsetNames = [
         //        'system.views.xml',
         //        'editorpanel.views.xml',
@@ -29,7 +29,7 @@
     };
 
     // Return a table DOM node with <col> defined based
-    // on the columnDef attr of a viewDef.
+    // on the columnDef attr of a viewdef.
     function processColumnDef(columnDef) {
         var table = $('<table>');
         $(columnDef.split(',')).each(function(i) {
@@ -42,42 +42,55 @@
         return table;
     }
 
+    function getDefaultViewdef(view) {
+        return viewdefs[view.find('altview[default="true"]').first().attr('viewdef').toLowerCase()];
+    }
+
+    function getModelForViewdef(viewdef) {
+        return viewdef.attr('class').split('.').pop();
+    }
+
     // Return a <form> DOM node containing the processed view.
     specify.processView = function (viewName, depth, suppressHeader) {
-        if (!viewDefs[viewName.toLowerCase()]) { return $('<form>'); }
+        if (!views[viewName.toLowerCase()]) { return $('<form>'); }
         depth = depth || 1;
-        var view = $(viewDefs[viewName.toLowerCase()]),
-        viewModel = view.attr('class').split('.').pop();
+        var viewdef = getDefaultViewdef($(views[viewName.toLowerCase()])),
+        viewModel = getModelForViewdef(viewdef);
 
         // Search the schema_localization DOM for the given modelName.
         function getLocalizationForModel(modelName) {
             return $(schemaLocalization).find('container[name="'+modelName.toLowerCase()+'"]').first();
         }
 
-        var getSchemaInfoFor = function(fieldname) {
+        var getSchemaInfoFor = function(fieldname, inViewdef) {
+            inViewdef = inViewdef || viewdef;
             var path = fieldname.split('.'), field = path.pop(), model = path.pop(),
-            localization = model ? getLocalizationForModel(model) : getLocalizationForModel(viewModel);
+            localization = model ? getLocalizationForModel(model) :
+                getLocalizationForModel(getModelForViewdef(inViewdef));
             return $(localization).children('items').children('item[name="'+field+'"]');
         },
 
-        getLocalizedLabelFor = function (fieldname) {
-            return getLocalizedStr(getSchemaInfoFor(fieldname).children('names'));
+        getLocalizedLabelFor = function (fieldname, inViewdef) {
+            return getLocalizedStr(getSchemaInfoFor(fieldname, inViewdef).children('names'));
+        },
+
+        getLabelCellText = function(cell, inViewdef) {
+            inViewdef = inViewdef || viewdef;
+            var labelfor = cell.attr('labelfor'),
+            forCellName = inViewdef.find('cell[id="'+labelfor+'"]').first().attr('name');
+            if (cell.attr('label') !== undefined) {
+                return cell.attr('label');
+            } else {
+                var localizedLabel = getLocalizedLabelFor(forCellName, inViewdef);
+                return localizedLabel || forCellName;
+            }
         },
 
         processCell = function(cellNode) {
             var cell = $(cellNode),
             byType = {
                 label: function() {
-                    var labelfor = cell.attr('labelfor'),
-                    forCellName = view.find('cell[id="'+labelfor+'"]').first().attr('name'),
-                    label = $('<label>');
-                    if (cell.attr('label') !== undefined) {
-                        label.text(cell.attr('label'));
-                    } else {
-                        var localizedLabel = getLocalizedLabelFor(forCellName);
-                        label.text(localizedLabel || forCellName);
-                    }
-                    return $('<td>').append(label).addClass('form-label');
+                    return $('<td class="form-label">').append($('<label>').text(getLabelCellText(cell)));
                 },
                 field: function() {
                     var td = $('<td>'),
@@ -124,7 +137,7 @@
                 },
                 separator: function() {
                     var label = cell.attr('label'),
-                    elem = label ? $('<h'+(depth+1)+'>').text(label) : $('<hr>');
+                    elem = label ? $('<h3>').text(label) : $('<hr>');
                     return $('<td>').append(elem.addClass('separator'));
                 },
                 subview: function() {
@@ -134,8 +147,31 @@
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
                         var localizedName = getLocalizedStr(schemaInfo.children('names'));
-                        td.append($('<h'+(depth+1)+'>').text(localizedName));
+                        td.append($('<h3>').text(localizedName)
+                                  .append($('<a href="#">Add</a>'))
+                                  .append($('<a href="#">Delete</a>'))
+                                 );
                         td.addClass('specify-one-to-many');
+                        var view = views[cell.attr('viewname').toLowerCase()];
+                        if (view === undefined) break;
+                        var subviewdef = getDefaultViewdef(view);
+                        if (subviewdef.attr('type') === 'formtable') {
+                            td.addClass('specify-formtable');
+                            var viewdef = viewdefs[subviewdef.find('definition').text().toLowerCase()],
+                            table = $('<table>').appendTo(td),
+                            header = $('<tr>').appendTo($('<thead>').appendTo(table));
+                            viewdef.find('cell').each(function () {
+                                var cell = $(this);
+                                if (cell.attr('type') === 'label') {
+                                    header.append($('<th>').text(getLabelCellText(cell, viewdef)));
+                                } else if (cell.attr('label') !== undefined) {
+                                    header.append($('<th>').text(cell.attr('label')));
+                                } else {
+                                    header.append($('<th>'));
+                                }
+                            });
+                            table.append('<tbody>');
+                        }
                         break;
                     case 'ManyToOne':
                         td.addClass('specify-many-to-one');
@@ -171,43 +207,57 @@
             colspan = cell.attr('colspan');
             colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
             return td;
-        },
+        };
 
-        table = processColumnDef(view.find('columnDef').first().text());
+        if (viewdef.attr('type') === 'form') {
+            var table = processColumnDef(viewdef.find('columnDef').first().text());
 
-        // Iterate over the rows and cells of the view
-        // processing each in turn and appending them
-        // to the generated <table>.
-        view.children('rows').children('row').each(function () {
-            var tr = $('<tr>').appendTo(table);
-            $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
-        });
+            // Iterate over the rows and cells of the view
+            // processing each in turn and appending them
+            // to the generated <table>.
+            viewdef.children('rows').children('row').each(function () {
+                var tr = $('<tr>').appendTo(table);
+                $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
+            });
 
-        if (!suppressHeader){
-            var localizedName = getLocalizedStr(
-                getLocalizationForModel(viewModel).children('names')
-            ) || view.attr('name');
+            if (!suppressHeader){
+                var localizedName = getLocalizedStr(
+                    getLocalizationForModel(viewModel).children('names')
+                ) || viewdef.attr('name');
 
-            return $('<form>').append($('<h'+depth+'>').text(localizedName)).append(table);
-        } else {
-            return $('<form>').append(table);
+                return $('<form>').append($('<h3>').text(localizedName)).append(table);
+            } else {
+                return $('<form>').append(table);
+            }
+        } else if (viewdef.attr('type') === 'formtable') {
+            var tr = $('<tr class="specify-formtable-row">'),
+            formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
+            formViewdef.find('cell[type="field"]').each(function () {
+                processCell(this).appendTo(tr);
+            });
+            return tr;
         }
     };
 
     // Processes the viewset DOM to create an object
-    // mapping viewDef names to the viewDef DOM nodes.
+    // mapping viewdef names to the viewdef DOM nodes.
     // Allows the views to be merged easily.
     function breakOutViews(viewset) {
         var views = {};
         $(viewset).find('view').each(function () {
             var view = $(this);
-            view.find('altview').each(function () {
-                var viewdefName = $(this).attr('viewdef'),
-                viewdef = $(viewset).find('viewdef[name="'+viewdefName+'"][type="form"]').first();
-                viewdef.is("*") && (views[view.attr('name').toLowerCase()] = viewdef);
-            });
+            views[view.attr('name').toLowerCase()] = view;
         });
         return views;
+    }
+
+    function breakOutViewdefs(viewset) {
+        var viewdefs = {};
+        $(viewset).find('viewdef').each(function () {
+            var viewdef = $(this);
+            viewdefs[viewdef.attr('name').toLowerCase()] = viewdef;
+        });
+        return viewdefs;
     }
 
     specify.loadViews = function() {
@@ -219,10 +269,11 @@
             loaders.push($.get(name, function(viewset) { viewsets[name] = viewset; }));
         });
         return $.when.apply($, loaders).then(function() {
-            var orderedViews = viewsetNames.map(
-                function(name) { return breakOutViews(viewsets[name]); });
+            viewdefs = $.extend.apply($, $.merge([{}], viewsetNames.map(
+                function(name) { return breakOutViewdefs(viewsets[name]); })));
 
-            viewDefs = $.extend.apply($, $.merge([{}], orderedViews));
+            views = $.extend.apply($, $.merge([{}], viewsetNames.map(
+                function(name) { return breakOutViews(viewsets[name]); })));
         }).promise();
     };
 

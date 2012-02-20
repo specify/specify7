@@ -7,7 +7,7 @@
         form.find('.specify-field').each(function () {
             var field = $(this);
             // skip fields in subforms
-            if (!field.parents('form').first().is(form)) { return; }
+            if (!field.parents('form, .specify-formtable-row').first().is(form)) { return; }
             if (field.is('input[type="checkbox"]')) {
                 data[field.attr('name').toLowerCase()] = field.prop('checked');
             } else {
@@ -16,10 +16,13 @@
         });
         if (recursive) {
             form.find('.specify-one-to-many, .specify-many-to-one').each(function () {
-                var subformContainer = $(this);
+                var container = $(this);
                 // skip sub-subforms
-                if (!subformContainer.parents('form').first().is(form)) { return; }
-                subformContainer.children('form').each(function () {
+                if (!container.parents('form, .specify-formtable-row').first().is(form)) { return; }
+                var items = container.hasClass('specify-formtable') ?
+                    container.children('table').find('tbody tr') :
+                    container.children('form');
+                items.each(function () {
                     var subform = $(this);
                     deferreds.push.apply(deferreds, specify.putForm(subform, recursive));
                 });

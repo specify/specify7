@@ -168,7 +168,11 @@
                 $(data[fieldName]).each(function () {
                     // again, recursive fill
                     var subform = specify.populateForm(viewName, this, depth + 1, true);
-                    subform.appendTo(container);
+                    if (container.hasClass('specify-formtable')) {
+                        subform.appendTo(container.find('tbody'));
+                    } else {
+                        subform.appendTo(container);
+                    }
                 });
             });
         };

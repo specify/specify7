@@ -11,6 +11,16 @@ body {
 /*     border-width: 1px; */
 /* } */
 
+.specify-one-to-many > h3,
+.specify-many-to-one > form > h3 {
+    border-bottom: solid 1px;
+}
+
+.specify-one-to-many > h3 > a {
+    margin-left: 1em;
+    font-size: 0.5em;
+}
+
 textarea {
     width: 98%;
 }

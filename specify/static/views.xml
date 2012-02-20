@@ -74,7 +74,6 @@
                 <altview name="Collectors Icon Edit"  viewdef="CollectorsIconView" mode="edit"/>  -->
                 <altview name="Collectors Table View" viewdef="Collectors Table"   mode="view"/>
                 <altview name="Collectors Table Edit" viewdef="Collectors Table"   mode="edit" default="true"/>
-                <altview name="Collectors View" viewdef="Collectors"   mode="view"/>
             </altviews>
         </view>
             
