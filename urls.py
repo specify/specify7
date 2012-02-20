@@ -1,11 +1,10 @@
 from django.conf.urls.defaults import patterns, include, url
-from ajax_select import urls as ajax_select_urls
 from tastypie.api import Api
 from specify.api import resources
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 # Generate the tastypie specify resources urls
 api = Api(api_name='specify')
@@ -20,9 +19,9 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    (r'^admin/lookups/', include(ajax_select_urls)),
-    (r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
+    #(r'^admin/lookups/', include(ajax_select_urls)),
+    #(r'^admin/', include(admin.site.urls)),
 
     # Tastypie specify urls
     (r'^api/', include(api.urls)),

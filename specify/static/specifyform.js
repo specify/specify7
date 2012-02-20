@@ -7,7 +7,7 @@
         //        'preferences.views.xml',
         //        'global.views.xml',
         //        'search.views.xml',
-        '/static/views.xml'
+        '/static/resources/views.xml'
                // '/static/vascplant.views.xml',
     ];
 
@@ -261,7 +261,7 @@
     }
 
     specify.loadViews = function() {
-        var loaders = [$.get('/static/schema_localization.xml',
+        var loaders = [$.get('/static/resources/schema_localization.xml',
                              function(data) { schemaLocalization = data; })
                       ],
         viewsets = {};

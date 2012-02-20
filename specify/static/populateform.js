@@ -185,7 +185,7 @@
 
     // typesearches define how the querycbx's work.
     specify.loadTypeSearches = function () {
-        return $.get('/static/typesearch_def.xml', function (data) { typesearches = $(data); });
+        return $.get('/static/resources/typesearch_def.xml', function (data) { typesearches = $(data); });
     };
 
 } (window.specify = window.specify || {}, jQuery));
