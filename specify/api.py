@@ -32,7 +32,9 @@ filter_fields = {
     'Picklist': {'name': ['exact',]},
 }
 
-typesearches = PyQuery(filename=os.path.join(os.path.dirname(__file__), "static", "typesearch_def.xml"))
+typesearches = PyQuery(filename=os.path.join(os.path.dirname(__file__),
+                                             "static", "resources",
+                                             "typesearch_def.xml"))
 for node in typesearches('typesearch'):
     typesearch = PyQuery(node)
     model = typesearch.attr('name').capitalize()
