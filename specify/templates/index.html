@@ -1,21 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-  <title>Conforming XHTML 1.0 Strict Template</title>
+  <title>Specify jQuery Demo</title>
+  <link rel="stylesheet" href="/static/css/specifyform.css">
 </head>
 
 <body>
-  <h2>Specify JQuery Demo</h2>
+  <h2>Specify jQuery Demo</h2>
 
   <h3>Some examples:</h3>
   <ul>
-    <li><a href="/specify/view/collectionobject/12/">Collection Object</a></li>
-    <li><a href="/specify/view/collectionobject/102/">Collection Object</a></li>
-    <li><a href="/specify/view/collectingevent/12/">Collecting Event</a></li>
+    <li><a href="/specify/view/collectionobject/12/">A Collection Object</a></li>
+    <li><a href="/specify/view/collectionobject/102/">Another Collection Object</a></li>
+    <li><a href="/specify/view/collectingevent/12/">A Collecting Event</a></li>
+    <li><a href="/specify/view/agent/132/">An Agent</a></li>
+    <li><a href="/specify/view/taxon/11760/">A Taxon</a></li>
   </ul>
-  <p>Edit the location bar to try it for any object you like.</p>
+
+  <p>The database this is running on top of is just for testing, so
+  feel free to modify the contents using the save button.
+  </p>
+
+  <p>You can also edit the location bar to jump to arbitrary objects.</p>
+
+  <h3>The Code:</h3>
+
+  <p>The code is available on
+    github <a href="https://github.com/benanhalt/djangospecify">here</a>.
+    There are instructions there on how to run the demo locally. Of
+    primary interest is the jQuery front end, which at this point
+    consists of three files:
+  </p>
+
+  <ul>
+    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/specifyform.js">
+        specifyform.js</a> processes existing Specify resources to
+        build DOMs in the browser for displaying Specify views</li>
+    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/populateform.js">
+        populateform.js</a> pulls data from the RESTful back end and
+        uses the functionality in <code>specifyform.js</code> to build
+        and populate a view for a particular object.</li>
+    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/putform.js">
+        putform.js</a> extracts data from a view and updates the back end via HTTP PUT.</li>
+  </ul>
 </body>
 </html>
