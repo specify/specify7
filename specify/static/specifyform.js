@@ -103,9 +103,13 @@
                             label && td.append($('<label>').text(label));
                             return control;
                         },
-                        textareabrief: function() {
-                            var control = $('<textarea>)').attr('rows', cell.attr('rows')).appendTo(td);
+                        textarea: function () {
+                            var control = $('<textarea>)').appendTo(td);
+                            cell.attr('rows') && control.attr('rows', cell.attr('rows'));
                             return control;
+                        },
+                        textareabrief: function() {
+                            return $('<textarea>)').attr('rows', cell.attr('rows') || 1).appendTo(td);
                         },
                         combobox: function() {
                             var pickListName = getSchemaInfoFor(fieldName).attr('pickListName'),
