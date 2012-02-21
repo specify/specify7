@@ -29,7 +29,7 @@ Set database, username and password:
 ------------------------------------
 Edit the settings.py and configure the DATABASES section:
 
-    DATABASES =
+    DATABASES = {
         'default': {
             'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql',
             'NAME': 'kuplant', # name of a Specify 6.4 database
@@ -38,6 +38,7 @@ Edit the settings.py and configure the DATABASES section:
             'HOST': '',    # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',    # Set to empty string for default. Not used with sqlite3.
         }
+    }
 
 Run the test server:
 --------------------
