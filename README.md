@@ -1,30 +1,29 @@
-
 Install the Python MySQL drivers and the PyQuery library.
 ---------------------------------------------------------
 On Ubuntu:
 
-   sudo apt-get install python-mysqldb python-pyquery
+    sudo apt-get install python-mysqldb python-pyquery
 
 Install the Python package installer, pip:
---------------------------___-------------
+------------------------------------------
 On Ubuntu:
 
-   sudo apt-get install python-pip
+    sudo apt-get install python-pip
 
 Install Django 1.3
 ------------------
 On Ubuntu 11.10 or later:
 
-   sudo apt-get install python-django
+    sudo apt-get install python-django
 
 On others, use pip:
 
-   sudo pip install Django
+    sudo pip install Django
 
 Install tastypie:
 -----------------
 
-   sudo pip install django-tastypie
+    sudo pip install django-tastypie
 
 Set database, username and password:
 ------------------------------------
