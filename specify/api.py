@@ -2,7 +2,10 @@ import tastypie.resources
 from tastypie.fields import ForeignKey, ToManyField
 from tastypie.authorization import Authorization
 from django.db.models import get_models
+from django.db import transaction
+from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseBadRequest
 from pyquery import PyQuery
 import os
 
@@ -45,6 +48,15 @@ for node in typesearches('typesearch'):
     querytypes = filters[field]
     if 'icontains' not in querytypes: querytypes.append('icontains')
 
+class OptimisticLockException(Exception): pass
+
+class MissingVersionException(OptimisticLockException): pass
+
+class StaleObjectException(OptimisticLockException): pass
+
+class HttpResponseConflict(HttpResponse):
+    status_code = 409
+
 class ModelResource(tastypie.resources.ModelResource):
     def _build_reverse_url(self, name, args=None, kwargs=None):
         """Hard code the URL lookups to make things fast."""
@@ -53,6 +65,15 @@ class ModelResource(tastypie.resources.ModelResource):
 
         return super(ModelResource, self)._build_reverse_url(name, args=args, kwargs=kwargs)
 
+    def dispatch(self, request_type, request, **kwargs):
+        try:
+            return super(ModelResource, self).dispatch(request_type, request, **kwargs)
+        except StaleObjectException:
+            return HttpResponseConflict()
+        except MissingVersionException:
+            return HttpResponseBadRequest('Missing version information.')
+
+    @transaction.commit_on_success
     def obj_update(self, bundle, request=None, **kwargs):
         if not bundle.obj or not bundle.obj.pk:
             try:
@@ -63,7 +84,23 @@ class ModelResource(tastypie.resources.ModelResource):
         bundle = self.full_hydrate(bundle)
 
         # Save the main object.
-        bundle.obj.save()
+        try:
+            bundle.obj._meta.get_field('version')
+        except FieldDoesNotExist:
+            bundle.obj.save(force_update=True)
+            return bundle
+
+        manager = bundle.obj.__class__._base_manager
+        try:
+            version = bundle.data['version']
+        except KeyError:
+            raise MissingVersionException()
+        updated = manager.filter(pk=bundle.obj.pk, version=version)\
+            .update(version=version+1)
+        if not updated:
+            raise StaleObjectException()
+        bundle.obj.version = version + 1
+        bundle.obj.save(force_update=True)
         return bundle
 
 def make_to_many_field(model, related, fieldname):

@@ -2,7 +2,7 @@
 
     specify.putForm = function (formNode, recursive) {
         var form = $(formNode),
-        data = {resource_uri: form.data('specify-uri')},
+        data = {resource_uri: form.data('specify-uri'), version: form.data('specify-object-version')},
         deferreds = [];
         form.find('.specify-field').each(function () {
             var field = $(this);

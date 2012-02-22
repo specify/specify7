@@ -130,6 +130,7 @@
 
         populate = function(data) {
             form.data('specify-uri', data.resource_uri);
+	    form.data('specify-object-version', data.version);
             // fill in all the fields
             form.find('.specify-field').each(function () {
                 var control = $(this);
