@@ -1,3 +1,10 @@
+Quick Start Instructions
+========================
+
+After downloading or cloning this repository, follow these instructions to 
+run the Django development server.
+
+
 Install the Python MySQL drivers and the PyQuery library.
 ---------------------------------------------------------
 On Ubuntu:
@@ -45,3 +52,4 @@ Run the test server:
 
     python manage.py runserver
 
+If running in an IDE debugger, add the --noreload option to the runserver command.
