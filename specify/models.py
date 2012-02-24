@@ -1058,7 +1058,6 @@ class Determination(models.Model):
     number1 = models.FloatField(null=True, db_column='Number1', blank=True)
     number2 = models.FloatField(null=True, db_column='Number2', blank=True)
     qualifier = models.CharField(max_length=48, db_column='Qualifier', blank=True)
-    varqualifer = models.CharField(max_length=48, db_column='VarQualifer', blank=True)
     remarks = models.TextField(db_column='Remarks', blank=True)
     subspqualifier = models.CharField(max_length=48, db_column='SubSpQualifier', blank=True)
     text1 = models.TextField(db_column='Text1', blank=True)

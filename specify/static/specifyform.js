@@ -2,13 +2,12 @@
     "use strict";
     var schemaLocalization, views, viewdefs,
     viewsetNames = [
-        //        'system.views.xml',
-        //        'editorpanel.views.xml',
-        //        'preferences.views.xml',
-        //        'global.views.xml',
-        //        'search.views.xml',
-        '/static/resources/views.xml'
-               // '/static/vascplant.views.xml',
+        '/static/resources/system.views.xml',
+        '/static/resources/editorpanel.views.xml',
+        '/static/resources/preferences.views.xml',
+        '/static/resources/global.views.xml',
+        '/static/resources/search.views.xml',
+        '/static/resources/fish.views.xml',
     ];
 
     specify.language = "en";
@@ -43,7 +42,9 @@
     }
 
     function getDefaultViewdef(view) {
-        return viewdefs[view.find('altview[default="true"]').first().attr('viewdef').toLowerCase()];
+        var defaultView = view.find('altview[default="true"]').first().attr('viewdef') ||
+            view.find('altview').first().attr('viewdef');
+        return viewdefs[defaultView.toLowerCase()];
     }
 
     function getModelForViewdef(viewdef) {
@@ -113,8 +114,10 @@
                         },
                         combobox: function() {
                             var pickListName = getSchemaInfoFor(fieldName).attr('pickListName'),
+                            isRequired = getSchemaInfoFor(fieldName).attr('isRequired') === 'true',
                             control = $('<select>').appendTo(td);
                             pickListName && control.attr('data-specify-picklist', pickListName);
+                            isRequired && control.addClass('required');
                             return control;
                         },
                         querycbx: function() {

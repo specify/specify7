@@ -44,11 +44,16 @@
                     items[this.value] = this;
                     $('<option>').text(this.value).appendTo(control);
                 });
+                if (!control.hasClass('required')) {
+                    $('<option>').appendTo(control);
+                }
                 if (!items[value]) {
-                    $('<option>')
-                        .attr('value', value)
-                        .text(value + " (current value not in picklist)")
-                        .appendTo(control);
+                    if (control.hasClass('required') || value !== '') {
+                        $('<option>')
+                            .attr('value', value)
+                            .text(value + " (current value not in picklist)")
+                            .appendTo(control);
+                    }
                 }
                 control.val(value);
             });
@@ -77,6 +82,7 @@
         format = typesearch.attr('format'),
         uri = '/api/specify/' + init.name.toLowerCase() + '/', // uri to query values
         input = $('<input type="text">').insertBefore(control), // autocomplete field
+        link = $('<a href="#">[+]</a>').insertAfter(control),
 
         // format the query results according to formatter in the typesearch
         formatInterpolate = function (obj) {
@@ -104,6 +110,7 @@
             },
             select: function (event, ui) {
                 control.val(ui.item.uri);
+                link.attr('href', ui.item.uri.replace(/api\/specify/, 'specify/view'));
             }
         });
 
@@ -111,6 +118,7 @@
         var related = data[control.attr('name').toLowerCase()];
         if (related) {
             control.val(related);
+            link.attr('href', related.replace(/api\/specify/, 'specify/view'));
             $.get(related, function (obj) {
                 input.val(formatInterpolate(obj));
             });
@@ -121,6 +129,8 @@
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
     specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
+        if (!dataOrUri) return $('<form>');
+
         depth = depth || 1;
 
         // Build the form DOM. These could be prebuilt and persisted somewhere,

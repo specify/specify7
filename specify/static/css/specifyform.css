@@ -1,5 +1,6 @@
 body {
     font-family: verdana;
+    font-size: 10px;
 }
 
 /* table { */
@@ -26,7 +27,7 @@ textarea {
 }
 
 input[type="text"] {
-    width: 98%;
+    width: 90%;
 }
 
 select {

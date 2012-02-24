@@ -13,9 +13,9 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'hibernateboolsbackend.backends.mysql',
-        'NAME': 'kuplant',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'old_kufish',
+        'USER': 'Master',
+        'PASSWORD': 'Master',
         'HOST': '',
         'PORT': '',
     }
