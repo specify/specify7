@@ -204,7 +204,7 @@ $(function () {
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);
-                specify.putForm(mainForm, true).then(function () {
+                $.when.apply($, specify.putForm(mainForm, true)).then(function () {
                     btn.prop('disabled', false);
                     window.location.reload(true);
                 });

@@ -34,7 +34,7 @@
             processData: false,
             data: JSON.stringify(data)
         }).promise());
-        return $.when.apply($, deferreds);
+        return deferreds;
     };
 
 } (window.specify = window.specify || {}, jQuery));
