@@ -50,7 +50,7 @@ working directory.
 Set database, username, and password.
 -------------------------------------
 Edit the `settings.py` file and configure the `DATABASES` section as follows,
-choosing appropriate values for `NAME`, `USER`, and `PASSWORD`.
+choosing appropriate values for `NAME`, `USER`, and `PASSWORD`:
 
     DATABASES = {
         'default': {

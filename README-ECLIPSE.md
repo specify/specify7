@@ -49,6 +49,24 @@ Choose 'Import Existing Projects', click 'Next >', and then choose
 'Select All' on the 'Import Projects' dialog. Click 'Finish' to
 complete the import.
 
+Set database, username, and password.
+-------------------------------------
+Edit the `settings.py` file in the djangospecify project and configure
+the `DATABASES` section as follows, choosing appropriate values for
+`NAME`, `USER`, and `PASSWORD`:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql',
+            'NAME': 'kuplant',   # name of a Specify 6.4 mysql database
+            'USER': 'Master',    # mysql user with full privileges to that DB
+            'PASSWORD': 'MasterPassword',
+            'HOST': '',    # Set to empty string for localhost.
+            'PORT': '',    # Set to empty string for default.
+        }
+    }
+
+
 Run the djangospecify project to start the test server.
 -------------------------------------------------------
 Select the djangospecify project from the Package Explorer and then
