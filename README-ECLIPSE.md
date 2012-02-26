@@ -74,5 +74,5 @@ Select the djangospecify project from the Package Explorer and then
 
 Visit the running app with your browser.
 ----------------------------------------
-Paste this URL in your browsers location bar:
+Paste this URL in your browser's location bar:
 [http://127.0.0.1:8000](http://127.0.0.1:8000)
