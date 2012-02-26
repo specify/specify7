@@ -1,49 +1,65 @@
 Quick Start Instructions
 ========================
 
-After downloading or cloning this repository, follow these instructions to 
-run the Django development server.
+After completing these instructions you will be able to run the test
+server and interact with the Django based Specify webapp in your
+browser on your local machine.
 
 
-Install the Python MySQL drivers and the PyQuery library.
----------------------------------------------------------
+Install Python MySQL drivers, PyQuery library, and pip:
+-------------------------------------------------------
 On Ubuntu:
 
-    sudo apt-get install python-mysqldb python-pyquery
+    sudo apt-get install python-mysqldb python-pyquery python-pip
 
-Install the Python package installer, pip:
-------------------------------------------
-On Ubuntu:
-
-    sudo apt-get install python-pip
 
 Install Django 1.3
 ------------------
-On Ubuntu 11.10 or later:
-
-    sudo apt-get install python-django
-
-On others, use pip:
 
     sudo pip install Django
+
+If you are running Ubuntu 11.10 or later and prefer to use the Ubuntu
+package that will work too.
+
+    sudo apt-get install python-django
 
 Install tastypie:
 -----------------
 
     sudo pip install django-tastypie
 
+The choice is yours.
+--------------------
+At this point you can switch over to the [Eclipse
+instructions](README-ECLIPSE.md) if you want to use Eclipse for your
+development, or continue with these instructions and work from the
+command line.
+
+Get the djangospecify source code.
+----------------------------------
+Clone this repository:
+
+    git clone git@github.com:benanhalt/djangospecify.git
+
+You will now have a djangospecify directory containing the source
+tree. From this point all commands will be with respect to that as the
+working directory.
+
+    cd djangospecify
+
 Set database, username and password:
 ------------------------------------
-Edit the settings.py and configure the DATABASES section:
+Edit the settings.py file and configure the DATABASES section as follows,
+choosing appropriate values for 'NAME', 'USER', and 'PASSWORD'.
 
     DATABASES = {
         'default': {
             'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql',
-            'NAME': 'kuplant', # name of a Specify 6.4 database
-            'USER': 'root',    # user with access to that DB
-            'PASSWORD': 'root',
-            'HOST': '',    # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',    # Set to empty string for default. Not used with sqlite3.
+            'NAME': 'kuplant',   # name of a Specify 6.4 mysql database
+            'USER': 'Master',    # mysql user with full priveleges to that DB
+            'PASSWORD': 'MasterPassword',
+            'HOST': '',    # Set to empty string for localhost.
+            'PORT': '',    # Set to empty string for default.
         }
     }
 
@@ -52,4 +68,8 @@ Run the test server:
 
     python manage.py runserver
 
-If running in an IDE debugger, add the --noreload option to the runserver command.
+
+Visit the running app with your browser.
+----------------------------------------
+Paste this URL in your browsers location bar:
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
