@@ -28,25 +28,25 @@
         });
     }
 
-    function populatePickList(control, data) {
+    specify.populatePickList = function(control, data) {
         var pickListName = control.data('specify-picklist');
         if (!pickListName) { return; }
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
-        picklistJQXHR = $.get(pickListUri); // begin fetching the picklist
-
-        fillinData(data, control.attr('name'), function (value) {
+        picklistJQXHR = $.get(pickListUri), // begin fetching the picklist
+        onData = function (value) {
             // When the selected value is available from fillinData
             // add a success callback to the picklist fetch that
             // will fill in the options and select the current value.
             picklistJQXHR.success(function (picklistResults) {
                 var picklist = picklistResults.objects[0], items = {};
+                if (!control.hasClass('required')) {
+                    $('<option>').appendTo(control);
+                }
                 $(picklist.items).each(function () {
                     items[this.value] = this;
                     $('<option>').text(this.value).appendTo(control);
                 });
-                if (!control.hasClass('required')) {
-                    $('<option>').appendTo(control);
-                }
+                if (value === undefined) return;
                 if (!items[value]) {
                     if (control.hasClass('required') || value !== '') {
                         $('<option>')
@@ -57,8 +57,11 @@
                 }
                 control.val(value);
             });
-        });
-    }
+        };
+
+        if (data) { fillinData(data, control.attr('name'), onData); }
+        else { onData();}
+    };
 
     // helper function that pulls name value pairs out of property strings
     function parseSpecifyProperties(props) {
@@ -71,7 +74,7 @@
         return result;
     }
 
-    function setupQueryCBX(control, data) {
+    specify.setupQueryCBX = function (control, data) {
         // The main querycbx control is hidden and the user interacts
         // with an autocomplete field.
         control.hide();
@@ -114,16 +117,18 @@
             }
         });
 
-        // fill in the initial value
-        var related = data[control.attr('name').toLowerCase()];
-        if (related) {
-            control.val(related);
-            link.attr('href', related.replace(/api\/specify/, 'specify/view'));
-            $.get(related, function (obj) {
-                input.val(formatInterpolate(obj));
-            });
+        if (data) {
+            // fill in the initial value
+            var related = data[control.attr('name').toLowerCase()];
+            if (related) {
+                control.val(related);
+                link.attr('href', related.replace(/api\/specify/, 'specify/view'));
+                $.get(related, function (obj) {
+                    input.val(formatInterpolate(obj));
+                });
+            }
         }
-    }
+    };
 
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
@@ -145,9 +150,9 @@
             form.find('.specify-field').each(function () {
                 var control = $(this);
                 if (control.prop('nodeName') === 'SELECT') {
-                    populatePickList(control, data);
+                    specify.populatePickList(control, data);
                 } else if (control.is('.specify-querycbx')) {
-                    setupQueryCBX(control, data);
+                    specify.setupQueryCBX(control, data);
                 } else {
                     fillinData(data, control.attr('name'), function (value) {
                         if (control.is('input[type="checkbox"]')) {
@@ -200,24 +205,3 @@
     };
 
 } (window.specify = window.specify || {}, jQuery));
-
-
-// Main entry point.
-$(function () {
-    "use strict";
-    var uri = "/api/specify/"+view+"/"+id+"/";
-
-    $.when(specify.loadViews(), specify.loadTypeSearches())
-        .then(function () {
-            var mainForm = specify.populateForm(window.view, uri);
-            $('div').append(mainForm);
-            $('input[type="submit"]').click(function () {
-                var btn = $(this);
-                btn.prop('disabled', true);
-                $.when.apply($, specify.putForm(mainForm, true)).then(function () {
-                    btn.prop('disabled', false);
-                    window.location.reload(true);
-                });
-            });
-        });
-});

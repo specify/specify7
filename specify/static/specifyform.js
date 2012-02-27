@@ -154,14 +154,15 @@
                     schemaInfo = getSchemaInfoFor(fieldName);
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
-                        var localizedName = getLocalizedStr(schemaInfo.children('names'));
+                        var view = views[cell.attr('viewname').toLowerCase()];
+                        if (view === undefined) break;
+                        var localizedName = getLocalizedStr(schemaInfo.children('names')),
+                        modelName = view.attr('class').split('.').pop().toLowerCase();
                         td.append($('<h3>').text(localizedName)
-                                  .append($('<a href="#">Add</a>'))
+                                  .append($('<a href="new/'+modelName+'/">Add</a>'))
                                   .append($('<a href="#">Delete</a>'))
                                  );
                         td.addClass('specify-one-to-many');
-                        var view = views[cell.attr('viewname').toLowerCase()];
-                        if (view === undefined) break;
                         var subviewdef = getDefaultViewdef(view);
                         if (subviewdef.attr('type') === 'formtable') {
                             td.addClass('specify-formtable');
@@ -283,6 +284,16 @@
             views = $.extend.apply($, $.merge([{}], viewsetNames.map(
                 function(name) { return breakOutViews(viewsets[name]); })));
         }).promise();
+    };
+
+    specify.buildFormForModel = function(modelName) {
+        var viewForModel;
+        $.each(views, function (name, view) {
+            if (view.attr('class').split('.').pop().toLowerCase() === modelName) {
+                viewForModel = name;
+            }
+        });
+        return specify.processView(viewForModel);
     };
 
 } (window.specify = window.specify || {}, jQuery));
