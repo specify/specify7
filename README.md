@@ -6,11 +6,11 @@ server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
 
-Install Python MySQL drivers, PyQuery library, and pip.
--------------------------------------------------------
+Install the Python MySQL drivers, and the package installer, pip.
+-----------------------------------------------------------------
 On Ubuntu:
 
-    sudo apt-get install python-mysqldb python-pyquery python-pip
+    sudo apt-get install python-mysqldb python-pip
 
 
 Install Django 1.3.

@@ -6,7 +6,7 @@ from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
-from pyquery import PyQuery
+from xml.etree import ElementTree
 import os
 
 from specify import models
@@ -35,13 +35,13 @@ filter_fields = {
     'Picklist': {'name': ['exact',]},
 }
 
-typesearches = PyQuery(filename=os.path.join(os.path.dirname(__file__),
-                                             "static", "resources",
-                                             "typesearch_def.xml"))
-for node in typesearches('typesearch'):
-    typesearch = PyQuery(node)
-    model = typesearch.attr('name').capitalize()
-    field = typesearch.attr('searchfield').lower()
+typesearches = ElementTree.parse(os.path.join(os.path.dirname(__file__),
+                                              "static", "resources",
+                                              "typesearch_def.xml"))
+
+for typesearch in typesearches.findall('typesearch'):
+    model = typesearch.attrib['name'].capitalize()
+    field = typesearch.attrib['searchfield'].lower()
     if model not in filter_fields: filter_fields[model] = {}
     filters = filter_fields[model]
     if field not in filters: filters[field] = []
