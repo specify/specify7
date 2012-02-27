@@ -29,7 +29,7 @@ Open the 'Eclipse -> File -> Import...' dialog and choose the 'Git ->
 Projects from Git' option and click 'Next >'.
 
 In the 'Select a Git Repository' dialog click the 'Clone...' button on
-the right. Paste `git@github.com:benanhalt/djangospecify.git`
+the right. Paste `https://github.com/benanhalt/djangospecify.git`
 into the 'URI' field on the 'Source Git Repository' dialog. Several
 fields will auto-fill.
 
