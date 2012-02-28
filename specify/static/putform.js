@@ -1,9 +1,7 @@
 (function (specify, $, undefined) {
 
-    specify.putForm = function (formNode, recursive) {
-        var form = $(formNode),
-        data = {resource_uri: form.data('specify-uri'), version: form.data('specify-object-version')},
-        deferreds = [];
+    specify.harvestForm = function (formNode) {
+        var form = $(formNode), data = {};
         form.find('.specify-field').each(function () {
             var field = $(this);
             // skip fields in subforms
@@ -14,6 +12,15 @@
                 data[field.attr('name').toLowerCase()] = field.val();
             }
         });
+        return data;
+    };
+
+    specify.putForm = function (formNode, recursive) {
+        var form = $(formNode),
+        data = specify.harvestForm(form),
+        deferreds = [];
+        data.resource_uri = form.data('specify-uri');
+        data.version = form.data('specify-object-version');
         if (recursive) {
             form.find('.specify-one-to-many, .specify-many-to-one').each(function () {
                 var container = $(this);

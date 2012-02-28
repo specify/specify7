@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import TemplateView
 from tastypie.api import Api
-from specify.api import resources
+import specify.api
+import specify.postapi
 
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
@@ -9,7 +10,10 @@ from specify.api import resources
 
 # Generate the tastypie specify resources urls
 api = Api(api_name='specify')
-for r in resources: api.register(r())
+for r in specify.api.resources: api.register(r())
+
+post_api = Api(api_name='specify')
+for r in specify.postapi.resources: post_api.register(r())
 
 urlpatterns = patterns('',
     # Examples:
@@ -26,4 +30,5 @@ urlpatterns = patterns('',
 
     # Tastypie specify urls
     (r'^api/', include(api.urls)),
+    (r'^api/new/', include(post_api.urls)),
 )

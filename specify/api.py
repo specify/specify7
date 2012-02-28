@@ -1,5 +1,5 @@
 import tastypie.resources
-from tastypie.fields import ForeignKey, ToManyField
+import tastypie.fields
 from tastypie.authorization import Authorization
 from django.db.models import get_models
 from django.db import transaction
@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
 from xml.etree import ElementTree
 import os
+from datetime import datetime
 
 from specify import models
 
@@ -56,6 +57,12 @@ class StaleObjectException(OptimisticLockException): pass
 
 class HttpResponseConflict(HttpResponse):
     status_code = 409
+
+class ForeignKey(tastypie.fields.ForeignKey):
+    def resource_from_uri(self, fk_resource, uri, request=None, related_obj=None, related_name=None):
+        if not uri:
+            return None
+        return super(ForeignKey, self).resource_from_uri(fk_resource, uri, request, related_obj, related_name)
 
 class ModelResource(tastypie.resources.ModelResource):
     def _build_reverse_url(self, name, args=None, kwargs=None):
@@ -110,7 +117,7 @@ def make_to_many_field(model, related, fieldname):
         return related_model.objects.filter(**filter_args)
     related_resource = "%s.%s%s" % (__name__, related, "Resource")
     full = '.'.join((model.__name__, fieldname)) in inlined_fields
-    return ToManyField(related_resource, get_related_objs, null=True, full=full)
+    return tastypie.fields.ToManyField(related_resource, get_related_objs, null=True, full=full)
 
 def make_fk_field(field):
     relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)

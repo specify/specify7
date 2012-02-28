@@ -124,6 +124,7 @@ INSTALLED_APPS = (
 #    'django_extensions',
     'tastypie',
     'specify',
+    'businessrules',
 )
 
 AJAX_LOOKUP_CHANNELS = {
