@@ -24,9 +24,10 @@ $(function () {
 
     $.when(specify.loadViews(), specify.loadTypeSearches()).then(
         function () {
-            var mainForm = specify.buildFormForModel(relatedModel);
-            $('div').append(mainForm);
-            mainForm.find('.specify-field').each(function () {
+            var form = specify.buildFormForModel(relatedModel);
+            form.children('input[value="Delete"]').remove();
+            $('div').append(form);
+            form.find('.specify-field').each(function () {
                 var control = $(this);
                 if (control.prop('nodeName') === 'SELECT') {
                     specify.populatePickList(control);
@@ -37,7 +38,7 @@ $(function () {
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
 //                btn.prop('disabled', true);
-                specify.postForm(mainForm).then(function () {
+                specify.postForm(form).then(function () {
 //                    btn.prop('disabled', false);
 //                    window.location.reload(true);
                 });

@@ -85,7 +85,7 @@
         format = typesearch.attr('format'),
         uri = '/api/specify/' + init.name.toLowerCase() + '/', // uri to query values
         input = $('<input type="text">').insertBefore(control), // autocomplete field
-        link = $('<a href="#">[+]</a>').insertAfter(control),
+        link = $('<a href="#">[i]</a>').insertAfter(control),
 
         // format the query results according to formatter in the typesearch
         formatInterpolate = function (obj) {
@@ -185,6 +185,7 @@
                     // again, recursive fill
                     var subform = specify.populateForm(viewName, this, depth + 1, true);
                     subform.appendTo(container.hasClass('specify-formtable') ? container.find('tbody') : container);
+                    subform.children('input[value="Delete"]').click(deleteRelated);
                 });
             });
         };
@@ -198,6 +199,14 @@
         }
         return form;
     };
+
+    function deleteRelated() {
+        var button = $(this),
+        form = button.parent();
+        $.ajax(form.data('specify-uri'), { type: 'DELETE', success: function () {
+            form.remove();
+        }});
+    }
 
     // typesearches define how the querycbx's work.
     specify.loadTypeSearches = function () {

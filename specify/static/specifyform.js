@@ -160,7 +160,7 @@
                         modelName = view.attr('class').split('.').pop().toLowerCase();
                         td.append($('<h3>').text(localizedName)
                                   .append($('<a href="new/'+modelName+'/">Add</a>'))
-                                  .append($('<a href="#">Delete</a>'))
+                              //    .append($('<a href="#">Delete</a>'))
                                  );
                         td.addClass('specify-one-to-many');
                         var subviewdef = getDefaultViewdef(view);
@@ -229,15 +229,17 @@
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
+            var form = $('<form>');
             if (!suppressHeader){
                 var localizedName = getLocalizedStr(
                     getLocalizationForModel(viewModel).children('names')
                 ) || viewdef.attr('name');
 
-                return $('<form>').append($('<h3>').text(localizedName)).append(table);
+                form.append($('<h3>').text(localizedName)).append(table);
             } else {
-                return $('<form>').append(table);
+                form.append(table);
             }
+            return form.append($('<input type="button" value="Delete">'));
         } else if (viewdef.attr('type') === 'formtable') {
             var tr = $('<tr class="specify-formtable-row">'),
             formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
