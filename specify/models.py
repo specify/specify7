@@ -10,7 +10,7 @@
 from django.db import models
 
 class Accession(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AccessionID')
+    id = models.AutoField(primary_key=True, db_column='AccessionID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -40,7 +40,7 @@ class Accession(models.Model):
         db_table = u'accession'
 
 class Accessionagent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AccessionAgentID')
+    id = models.AutoField(primary_key=True, db_column='AccessionAgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -55,7 +55,7 @@ class Accessionagent(models.Model):
         db_table = u'accessionagent'
 
 class Accessionattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AccessionAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='AccessionAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -69,7 +69,7 @@ class Accessionattachment(models.Model):
         db_table = u'accessionattachment'
 
 class Accessionauthorization(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AccessionAuthorizationID')
+    id = models.AutoField(primary_key=True, db_column='AccessionAuthorizationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -83,7 +83,7 @@ class Accessionauthorization(models.Model):
         db_table = u'accessionauthorization'
 
 class Address(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AddressID')
+    id = models.AutoField(primary_key=True, db_column='AddressID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -116,7 +116,7 @@ class Address(models.Model):
         db_table = u'address'
 
 class Addressofrecord(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AddressOfRecordID')
+    id = models.AutoField(primary_key=True, db_column='AddressOfRecordID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -134,7 +134,7 @@ class Addressofrecord(models.Model):
         db_table = u'addressofrecord'
 
 class Agent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AgentID')
+    id = models.AutoField(primary_key=True, db_column='AgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -169,7 +169,7 @@ class Agent(models.Model):
         db_table = u'agent'
 
 class Agentattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AgentAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='AgentAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -183,7 +183,7 @@ class Agentattachment(models.Model):
         db_table = u'agentattachment'
 
 class Agentgeography(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AgentGeographyID')
+    id = models.AutoField(primary_key=True, db_column='AgentGeographyID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -197,7 +197,7 @@ class Agentgeography(models.Model):
         db_table = u'agentgeography'
 
 class Agentspecialty(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AgentSpecialtyID')
+    id = models.AutoField(primary_key=True, db_column='AgentSpecialtyID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -210,7 +210,7 @@ class Agentspecialty(models.Model):
         db_table = u'agentspecialty'
 
 class Agentvariant(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AgentVariantID')
+    id = models.AutoField(primary_key=True, db_column='AgentVariantID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -226,7 +226,7 @@ class Agentvariant(models.Model):
         db_table = u'agentvariant'
 
 class Appraisal(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AppraisalID')
+    id = models.AutoField(primary_key=True, db_column='AppraisalID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -243,7 +243,7 @@ class Appraisal(models.Model):
         db_table = u'appraisal'
 
 class Attachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttachmentID')
+    id = models.AutoField(primary_key=True, db_column='AttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -267,7 +267,7 @@ class Attachment(models.Model):
         db_table = u'attachment'
 
 class Attachmentimageattribute(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttachmentImageAttributeID')
+    id = models.AutoField(primary_key=True, db_column='AttachmentImageAttributeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -295,7 +295,7 @@ class Attachmentimageattribute(models.Model):
         db_table = u'attachmentimageattribute'
 
 class Attachmentmetadata(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttachmentMetadataID')
+    id = models.AutoField(primary_key=True, db_column='AttachmentMetadataID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -308,7 +308,7 @@ class Attachmentmetadata(models.Model):
         db_table = u'attachmentmetadata'
 
 class Attachmenttag(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttachmentTagID')
+    id = models.AutoField(primary_key=True, db_column='AttachmentTagID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -320,7 +320,7 @@ class Attachmenttag(models.Model):
         db_table = u'attachmenttag'
 
 class Attributedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttributeDefID')
+    id = models.AutoField(primary_key=True, db_column='AttributeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -335,7 +335,7 @@ class Attributedef(models.Model):
         db_table = u'attributedef'
 
 class Author(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AuthorID')
+    id = models.AutoField(primary_key=True, db_column='AuthorID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -349,7 +349,7 @@ class Author(models.Model):
         db_table = u'author'
 
 class Autonumberingscheme(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AutoNumberingSchemeID')
+    id = models.AutoField(primary_key=True, db_column='AutoNumberingSchemeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -382,7 +382,7 @@ class AutonumschDsp(models.Model):
         db_table = u'autonumsch_dsp'
 
 class Borrow(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='BorrowID')
+    id = models.AutoField(primary_key=True, db_column='BorrowID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -408,7 +408,7 @@ class Borrow(models.Model):
         db_table = u'borrow'
 
 class Borrowagent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='BorrowAgentID')
+    id = models.AutoField(primary_key=True, db_column='BorrowAgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -423,7 +423,7 @@ class Borrowagent(models.Model):
         db_table = u'borrowagent'
 
 class Borrowmaterial(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='BorrowMaterialID')
+    id = models.AutoField(primary_key=True, db_column='BorrowMaterialID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -442,7 +442,7 @@ class Borrowmaterial(models.Model):
         db_table = u'borrowmaterial'
 
 class Borrowreturnmaterial(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='BorrowReturnMaterialID')
+    id = models.AutoField(primary_key=True, db_column='BorrowReturnMaterialID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -458,7 +458,7 @@ class Borrowreturnmaterial(models.Model):
         db_table = u'borrowreturnmaterial'
 
 class Collectingevent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectingEventID')
+    id = models.AutoField(primary_key=True, db_column='CollectingEventID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -488,7 +488,7 @@ class Collectingevent(models.Model):
         db_table = u'collectingevent'
 
 class Collectingeventattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectingEventAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='CollectingEventAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -503,7 +503,7 @@ class Collectingeventattachment(models.Model):
         db_table = u'collectingeventattachment'
 
 class Collectingeventattr(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttrID')
+    id = models.AutoField(primary_key=True, db_column='AttrID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -518,7 +518,7 @@ class Collectingeventattr(models.Model):
         db_table = u'collectingeventattr'
 
 class Collectingeventattribute(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectingEventAttributeID')
+    id = models.AutoField(primary_key=True, db_column='CollectingEventAttributeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -566,7 +566,7 @@ class Collectingeventattribute(models.Model):
         db_table = u'collectingeventattribute'
 
 class Collectingtrip(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectingTripID')
+    id = models.AutoField(primary_key=True, db_column='CollectingTripID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -586,7 +586,7 @@ class Collectingtrip(models.Model):
         db_table = u'collectingtrip'
 
 class Collection(models.Model):
-    usergroupscopeid = models.IntegerField(primary_key=True, db_column='UserGroupScopeId')
+    usergroupscopeid = models.AutoField(primary_key=True, db_column='UserGroupScopeId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -619,7 +619,7 @@ class Collection(models.Model):
         db_table = u'collection'
 
 class Collectionobject(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionObjectID')
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -673,7 +673,7 @@ class Collectionobject(models.Model):
         db_table = u'collectionobject'
 
 class Collectionobjectattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionObjectAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -688,7 +688,7 @@ class Collectionobjectattachment(models.Model):
         db_table = u'collectionobjectattachment'
 
 class Collectionobjectattr(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttrID')
+    id = models.AutoField(primary_key=True, db_column='AttrID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -703,7 +703,7 @@ class Collectionobjectattr(models.Model):
         db_table = u'collectionobjectattr'
 
 class Collectionobjectattribute(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionObjectAttributeID')
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectAttributeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -779,7 +779,7 @@ class Collectionobjectattribute(models.Model):
         db_table = u'collectionobjectattribute'
 
 class Collectionobjectcitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionObjectCitationID')
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -794,13 +794,13 @@ class Collectionobjectcitation(models.Model):
         db_table = u'collectionobjectcitation'
 
 class CollectionobjecttypeCollectionobjecttypeid(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='OldID')
+    id = models.AutoField(primary_key=True, db_column='OldID')
     newid = models.IntegerField(db_column='NewID')
     class Meta:
         db_table = u'collectionobjecttype_CollectionObjectTypeID'
 
 class Collectionrelationship(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionRelationshipID')
+    id = models.AutoField(primary_key=True, db_column='CollectionRelationshipID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -815,7 +815,7 @@ class Collectionrelationship(models.Model):
         db_table = u'collectionrelationship'
 
 class Collectionreltype(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectionRelTypeID')
+    id = models.AutoField(primary_key=True, db_column='CollectionRelTypeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -829,7 +829,7 @@ class Collectionreltype(models.Model):
         db_table = u'collectionreltype'
 
 class Collector(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CollectorID')
+    id = models.AutoField(primary_key=True, db_column='CollectorID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -845,7 +845,7 @@ class Collector(models.Model):
         db_table = u'collector'
 
 class Commonnametx(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CommonNameTxID')
+    id = models.AutoField(primary_key=True, db_column='CommonNameTxID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -861,7 +861,7 @@ class Commonnametx(models.Model):
         db_table = u'commonnametx'
 
 class Commonnametxcitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='CommonNameTxCitationID')
+    id = models.AutoField(primary_key=True, db_column='CommonNameTxCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -880,7 +880,7 @@ class Commonnametxcitation(models.Model):
         db_table = u'commonnametxcitation'
 
 class Conservdescription(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ConservDescriptionID')
+    id = models.AutoField(primary_key=True, db_column='ConservDescriptionID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -905,7 +905,7 @@ class Conservdescription(models.Model):
         db_table = u'conservdescription'
 
 class Conservdescriptionattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ConservDescriptionAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='ConservDescriptionAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -919,7 +919,7 @@ class Conservdescriptionattachment(models.Model):
         db_table = u'conservdescriptionattachment'
 
 class Conservevent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ConservEventID')
+    id = models.AutoField(primary_key=True, db_column='ConservEventID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -950,7 +950,7 @@ class Conservevent(models.Model):
         db_table = u'conservevent'
 
 class Conserveventattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ConservEventAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='ConservEventAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -964,7 +964,7 @@ class Conserveventattachment(models.Model):
         db_table = u'conserveventattachment'
 
 class Container(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ContainerID')
+    id = models.AutoField(primary_key=True, db_column='ContainerID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -981,7 +981,7 @@ class Container(models.Model):
         db_table = u'container'
 
 class Datatype(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DataTypeID')
+    id = models.AutoField(primary_key=True, db_column='DataTypeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -992,7 +992,7 @@ class Datatype(models.Model):
         db_table = u'datatype'
 
 class Deaccession(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DeaccessionID')
+    id = models.AutoField(primary_key=True, db_column='DeaccessionID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1013,7 +1013,7 @@ class Deaccession(models.Model):
         db_table = u'deaccession'
 
 class Deaccessionagent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DeaccessionAgentID')
+    id = models.AutoField(primary_key=True, db_column='DeaccessionAgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1027,7 +1027,7 @@ class Deaccessionagent(models.Model):
         db_table = u'deaccessionagent'
 
 class Deaccessionpreparation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DeaccessionPreparationID')
+    id = models.AutoField(primary_key=True, db_column='DeaccessionPreparationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1041,7 +1041,7 @@ class Deaccessionpreparation(models.Model):
         db_table = u'deaccessionpreparation'
 
 class Determination(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DeterminationID')
+    id = models.AutoField(primary_key=True, db_column='DeterminationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1076,7 +1076,7 @@ class Determination(models.Model):
         db_table = u'determination'
 
 class Determinationcitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DeterminationCitationID')
+    id = models.AutoField(primary_key=True, db_column='DeterminationCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1090,7 +1090,7 @@ class Determinationcitation(models.Model):
         db_table = u'determinationcitation'
 
 class Discipline(models.Model):
-    usergroupscopeid = models.IntegerField(primary_key=True, db_column='UserGroupScopeId')
+    usergroupscopeid = models.AutoField(primary_key=True, db_column='UserGroupScopeId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1110,7 +1110,7 @@ class Discipline(models.Model):
         db_table = u'discipline'
 
 class Division(models.Model):
-    usergroupscopeid = models.IntegerField(primary_key=True, db_column='UserGroupScopeId')
+    usergroupscopeid = models.AutoField(primary_key=True, db_column='UserGroupScopeId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1132,7 +1132,7 @@ class Division(models.Model):
         db_table = u'division'
 
 class Dnasequence(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DnaSequenceID')
+    id = models.AutoField(primary_key=True, db_column='DnaSequenceID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1169,7 +1169,7 @@ class Dnasequence(models.Model):
         db_table = u'dnasequence'
 
 class Dnasequenceattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DnaSequencingRunAttachmentId')
+    id = models.AutoField(primary_key=True, db_column='DnaSequencingRunAttachmentId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1183,7 +1183,7 @@ class Dnasequenceattachment(models.Model):
         db_table = u'dnasequenceattachment'
 
 class Dnasequencingrun(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DNASequencingRunID')
+    id = models.AutoField(primary_key=True, db_column='DNASequencingRunID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1221,7 +1221,7 @@ class Dnasequencingrun(models.Model):
         db_table = u'dnasequencingrun'
 
 class Dnasequencingruncitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='DNASequencingRunCitationID')
+    id = models.AutoField(primary_key=True, db_column='DNASequencingRunCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1240,7 +1240,7 @@ class Dnasequencingruncitation(models.Model):
         db_table = u'dnasequencingruncitation'
 
 class Exchangein(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExchangeInID')
+    id = models.AutoField(primary_key=True, db_column='ExchangeInID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1266,7 +1266,7 @@ class Exchangein(models.Model):
         db_table = u'exchangein'
 
 class Exchangeinprep(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExchangeInPrepID')
+    id = models.AutoField(primary_key=True, db_column='ExchangeInPrepID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1285,7 +1285,7 @@ class Exchangeinprep(models.Model):
         db_table = u'exchangeinprep'
 
 class Exchangeout(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExchangeOutID')
+    id = models.AutoField(primary_key=True, db_column='ExchangeOutID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1311,7 +1311,7 @@ class Exchangeout(models.Model):
         db_table = u'exchangeout'
 
 class Exchangeoutprep(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExchangeOutPrepID')
+    id = models.AutoField(primary_key=True, db_column='ExchangeOutPrepID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1330,7 +1330,7 @@ class Exchangeoutprep(models.Model):
         db_table = u'exchangeoutprep'
 
 class Exsiccata(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExsiccataID')
+    id = models.AutoField(primary_key=True, db_column='ExsiccataID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1342,7 +1342,7 @@ class Exsiccata(models.Model):
         db_table = u'exsiccata'
 
 class Exsiccataitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ExsiccataItemID')
+    id = models.AutoField(primary_key=True, db_column='ExsiccataItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1356,7 +1356,7 @@ class Exsiccataitem(models.Model):
         db_table = u'exsiccataitem'
 
 class Fieldnotebook(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookID')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1374,7 +1374,7 @@ class Fieldnotebook(models.Model):
         db_table = u'fieldnotebook'
 
 class Fieldnotebookattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookAttachmentId')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookAttachmentId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1388,7 +1388,7 @@ class Fieldnotebookattachment(models.Model):
         db_table = u'fieldnotebookattachment'
 
 class Fieldnotebookpage(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookPageID')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookPageID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1403,7 +1403,7 @@ class Fieldnotebookpage(models.Model):
         db_table = u'fieldnotebookpage'
 
 class Fieldnotebookpageattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookPageAttachmentId')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookPageAttachmentId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1417,7 +1417,7 @@ class Fieldnotebookpageattachment(models.Model):
         db_table = u'fieldnotebookpageattachment'
 
 class Fieldnotebookpageset(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookPageSetID')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookPageSetID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1435,7 +1435,7 @@ class Fieldnotebookpageset(models.Model):
         db_table = u'fieldnotebookpageset'
 
 class Fieldnotebookpagesetattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='FieldNotebookPageSetAttachmentId')
+    id = models.AutoField(primary_key=True, db_column='FieldNotebookPageSetAttachmentId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1449,7 +1449,7 @@ class Fieldnotebookpagesetattachment(models.Model):
         db_table = u'fieldnotebookpagesetattachment'
 
 class Geocoorddetail(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeoCoordDetailID')
+    id = models.AutoField(primary_key=True, db_column='GeoCoordDetailID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1476,7 +1476,7 @@ class Geocoorddetail(models.Model):
         db_table = u'geocoorddetail'
 
 class Geography(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeographyID')
+    id = models.AutoField(primary_key=True, db_column='GeographyID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1510,7 +1510,7 @@ class Geography(models.Model):
         db_table = u'geography'
 
 class Geographytreedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeographyTreeDefID')
+    id = models.AutoField(primary_key=True, db_column='GeographyTreeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1523,7 +1523,7 @@ class Geographytreedef(models.Model):
         db_table = u'geographytreedef'
 
 class Geographytreedefitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeographyTreeDefItemID')
+    id = models.AutoField(primary_key=True, db_column='GeographyTreeDefItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1544,7 +1544,7 @@ class Geographytreedefitem(models.Model):
         db_table = u'geographytreedefitem'
 
 class Geologictimeperiod(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeologicTimePeriodID')
+    id = models.AutoField(primary_key=True, db_column='GeologicTimePeriodID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1574,7 +1574,7 @@ class Geologictimeperiod(models.Model):
         db_table = u'geologictimeperiod'
 
 class Geologictimeperiodtreedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeologicTimePeriodTreeDefID')
+    id = models.AutoField(primary_key=True, db_column='GeologicTimePeriodTreeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1587,7 +1587,7 @@ class Geologictimeperiodtreedef(models.Model):
         db_table = u'geologictimeperiodtreedef'
 
 class Geologictimeperiodtreedefitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GeologicTimePeriodTreeDefItemID')
+    id = models.AutoField(primary_key=True, db_column='GeologicTimePeriodTreeDefItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1608,7 +1608,7 @@ class Geologictimeperiodtreedefitem(models.Model):
         db_table = u'geologictimeperiodtreedefitem'
 
 class Gift(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GiftID')
+    id = models.AutoField(primary_key=True, db_column='GiftID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1637,7 +1637,7 @@ class Gift(models.Model):
         db_table = u'gift'
 
 class Giftagent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GiftAgentID')
+    id = models.AutoField(primary_key=True, db_column='GiftAgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1652,7 +1652,7 @@ class Giftagent(models.Model):
         db_table = u'giftagent'
 
 class Giftpreparation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GiftPreparationID')
+    id = models.AutoField(primary_key=True, db_column='GiftPreparationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1670,7 +1670,7 @@ class Giftpreparation(models.Model):
         db_table = u'giftpreparation'
 
 class Groupperson(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='GroupPersonID')
+    id = models.AutoField(primary_key=True, db_column='GroupPersonID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1690,7 +1690,7 @@ class HibernateUniqueKey(models.Model):
         db_table = u'hibernate_unique_key'
 
 class Inforequest(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='InfoRequestID')
+    id = models.AutoField(primary_key=True, db_column='InfoRequestID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1710,7 +1710,7 @@ class Inforequest(models.Model):
         db_table = u'inforequest'
 
 class Institution(models.Model):
-    usergroupscopeid = models.IntegerField(primary_key=True, db_column='UserGroupScopeId')
+    usergroupscopeid = models.AutoField(primary_key=True, db_column='UserGroupScopeId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1748,7 +1748,7 @@ class Institution(models.Model):
         db_table = u'institution'
 
 class Institutionnetwork(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='InstitutionNetworkID')
+    id = models.AutoField(primary_key=True, db_column='InstitutionNetworkID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1771,7 +1771,7 @@ class Institutionnetwork(models.Model):
         db_table = u'institutionnetwork'
 
 class Journal(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='JournalID')
+    id = models.AutoField(primary_key=True, db_column='JournalID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1787,7 +1787,7 @@ class Journal(models.Model):
         db_table = u'journal'
 
 class Latlonpolygon(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LatLonPolygonID')
+    id = models.AutoField(primary_key=True, db_column='LatLonPolygonID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1802,7 +1802,7 @@ class Latlonpolygon(models.Model):
         db_table = u'latlonpolygon'
 
 class Latlonpolygonpnt(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LatLonPolygonPntID')
+    id = models.AutoField(primary_key=True, db_column='LatLonPolygonPntID')
     elevation = models.IntegerField(null=True, db_column='Elevation', blank=True)
     latitude = models.DecimalField(decimal_places=10, max_digits=14, db_column='Latitude')
     longitude = models.DecimalField(decimal_places=10, max_digits=14, db_column='Longitude')
@@ -1812,7 +1812,7 @@ class Latlonpolygonpnt(models.Model):
         db_table = u'latlonpolygonpnt'
 
 class Lithostrat(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LithoStratID')
+    id = models.AutoField(primary_key=True, db_column='LithoStratID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1840,7 +1840,7 @@ class Lithostrat(models.Model):
         db_table = u'lithostrat'
 
 class Lithostrattreedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LithoStratTreeDefID')
+    id = models.AutoField(primary_key=True, db_column='LithoStratTreeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1853,7 +1853,7 @@ class Lithostrattreedef(models.Model):
         db_table = u'lithostrattreedef'
 
 class Lithostrattreedefitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LithoStratTreeDefItemID')
+    id = models.AutoField(primary_key=True, db_column='LithoStratTreeDefItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1874,7 +1874,7 @@ class Lithostrattreedefitem(models.Model):
         db_table = u'lithostrattreedefitem'
 
 class Loan(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LoanID')
+    id = models.AutoField(primary_key=True, db_column='LoanID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1908,7 +1908,7 @@ class Loan(models.Model):
         db_table = u'loan'
 
 class Loanagent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LoanAgentID')
+    id = models.AutoField(primary_key=True, db_column='LoanAgentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1923,7 +1923,7 @@ class Loanagent(models.Model):
         db_table = u'loanagent'
 
 class Loanattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LoanAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='LoanAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1937,7 +1937,7 @@ class Loanattachment(models.Model):
         db_table = u'loanattachment'
 
 class Loanpreparation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LoanPreparationID')
+    id = models.AutoField(primary_key=True, db_column='LoanPreparationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1958,7 +1958,7 @@ class Loanpreparation(models.Model):
         db_table = u'loanpreparation'
 
 class Loanreturnpreparation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LoanReturnPreparationID')
+    id = models.AutoField(primary_key=True, db_column='LoanReturnPreparationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -1976,7 +1976,7 @@ class Loanreturnpreparation(models.Model):
         db_table = u'loanreturnpreparation'
 
 class Locality(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LocalityID')
+    id = models.AutoField(primary_key=True, db_column='LocalityID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2020,7 +2020,7 @@ class Locality(models.Model):
         db_table = u'locality'
 
 class Localityattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LocalityAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='LocalityAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2034,7 +2034,7 @@ class Localityattachment(models.Model):
         db_table = u'localityattachment'
 
 class Localitycitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LocalityCitationID')
+    id = models.AutoField(primary_key=True, db_column='LocalityCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2048,7 +2048,7 @@ class Localitycitation(models.Model):
         db_table = u'localitycitation'
 
 class Localitydetail(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LocalityDetailID')
+    id = models.AutoField(primary_key=True, db_column='LocalityDetailID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2095,7 +2095,7 @@ class Localitydetail(models.Model):
         db_table = u'localitydetail'
 
 class Localitynamealias(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='LocalityNameAliasID')
+    id = models.AutoField(primary_key=True, db_column='LocalityNameAliasID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2109,7 +2109,7 @@ class Localitynamealias(models.Model):
         db_table = u'localitynamealias'
 
 class Morphbankview(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='MorphBankViewID')
+    id = models.AutoField(primary_key=True, db_column='MorphBankViewID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2128,7 +2128,7 @@ class Morphbankview(models.Model):
         db_table = u'morphbankview'
 
 class Otheridentifier(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='OtherIdentifierID')
+    id = models.AutoField(primary_key=True, db_column='OtherIdentifierID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2143,7 +2143,7 @@ class Otheridentifier(models.Model):
         db_table = u'otheridentifier'
 
 class Paleocontext(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PaleoContextID')
+    id = models.AutoField(primary_key=True, db_column='PaleoContextID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2168,7 +2168,7 @@ class Paleocontext(models.Model):
         db_table = u'paleocontext'
 
 class Permit(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PermitID')
+    id = models.AutoField(primary_key=True, db_column='PermitID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2193,7 +2193,7 @@ class Permit(models.Model):
         db_table = u'permit'
 
 class Permitattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PermitAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='PermitAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2207,7 +2207,7 @@ class Permitattachment(models.Model):
         db_table = u'permitattachment'
 
 class Picklist(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PickListID')
+    id = models.AutoField(primary_key=True, db_column='PickListID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2229,7 +2229,7 @@ class Picklist(models.Model):
         db_table = u'picklist'
 
 class Picklistitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PickListItemID')
+    id = models.AutoField(primary_key=True, db_column='PickListItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2243,7 +2243,7 @@ class Picklistitem(models.Model):
         db_table = u'picklistitem'
 
 class Preparation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PreparationID')
+    id = models.AutoField(primary_key=True, db_column='PreparationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2274,7 +2274,7 @@ class Preparation(models.Model):
         db_table = u'preparation'
 
 class Preparationattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PreparationAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='PreparationAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2289,7 +2289,7 @@ class Preparationattachment(models.Model):
         db_table = u'preparationattachment'
 
 class Preparationattr(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='AttrID')
+    id = models.AutoField(primary_key=True, db_column='AttrID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2304,7 +2304,7 @@ class Preparationattr(models.Model):
         db_table = u'preparationattr'
 
 class Preparationattribute(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PreparationAttributeID')
+    id = models.AutoField(primary_key=True, db_column='PreparationAttributeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2356,7 +2356,7 @@ class Preparationattribute(models.Model):
         db_table = u'preparationattribute'
 
 class Preptype(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='PrepTypeID')
+    id = models.AutoField(primary_key=True, db_column='PrepTypeID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2369,7 +2369,7 @@ class Preptype(models.Model):
         db_table = u'preptype'
 
 class Project(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ProjectID')
+    id = models.AutoField(primary_key=True, db_column='ProjectID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2402,7 +2402,7 @@ class ProjectColobj(models.Model):
         db_table = u'project_colobj'
 
 class Recordset(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='RecordSetID')
+    id = models.AutoField(primary_key=True, db_column='RecordSetID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2423,14 +2423,14 @@ class Recordset(models.Model):
         db_table = u'recordset'
 
 class Recordsetitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='RecordSetItemID')
+    id = models.AutoField(primary_key=True, db_column='RecordSetItemID')
     recordid = models.IntegerField(db_column='RecordId')
     recordset = models.ForeignKey('specify.Recordset', db_column='RecordSetID', related_name='+')
     class Meta:
         db_table = u'recordsetitem'
 
 class Referencework(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ReferenceWorkID')
+    id = models.AutoField(primary_key=True, db_column='ReferenceWorkID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2461,7 +2461,7 @@ class Referencework(models.Model):
         db_table = u'referencework'
 
 class Repositoryagreement(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='RepositoryAgreementID')
+    id = models.AutoField(primary_key=True, db_column='RepositoryAgreementID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2487,7 +2487,7 @@ class Repositoryagreement(models.Model):
         db_table = u'repositoryagreement'
 
 class Repositoryagreementattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='RepositoryAgreementAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='RepositoryAgreementAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2501,7 +2501,7 @@ class Repositoryagreementattachment(models.Model):
         db_table = u'repositoryagreementattachment'
 
 class Shipment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='ShipmentID')
+    id = models.AutoField(primary_key=True, db_column='ShipmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2538,7 +2538,7 @@ class SpSchemaMapping(models.Model):
         db_table = u'sp_schema_mapping'
 
 class Spappresource(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpAppResourceID')
+    id = models.AutoField(primary_key=True, db_column='SpAppResourceID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2559,7 +2559,7 @@ class Spappresource(models.Model):
         db_table = u'spappresource'
 
 class Spappresourcedata(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpAppResourceDataID')
+    id = models.AutoField(primary_key=True, db_column='SpAppResourceDataID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2572,7 +2572,7 @@ class Spappresourcedata(models.Model):
         db_table = u'spappresourcedata'
 
 class Spappresourcedir(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpAppResourceDirID')
+    id = models.AutoField(primary_key=True, db_column='SpAppResourceDirID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2588,7 +2588,7 @@ class Spappresourcedir(models.Model):
         db_table = u'spappresourcedir'
 
 class Spauditlog(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpAuditLogID')
+    id = models.AutoField(primary_key=True, db_column='SpAuditLogID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2604,7 +2604,7 @@ class Spauditlog(models.Model):
         db_table = u'spauditlog'
 
 class Spauditlogfield(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpAuditLogFieldID')
+    id = models.AutoField(primary_key=True, db_column='SpAuditLogFieldID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2618,7 +2618,7 @@ class Spauditlogfield(models.Model):
         db_table = u'spauditlogfield'
 
 class Specifyuser(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpecifyUserID')
+    id = models.AutoField(primary_key=True, db_column='SpecifyUserID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2644,7 +2644,7 @@ class SpecifyuserSpprincipal(models.Model):
         db_table = u'specifyuser_spprincipal'
 
 class Spexportschema(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpExportSchemaID')
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2658,7 +2658,7 @@ class Spexportschema(models.Model):
         db_table = u'spexportschema'
 
 class Spexportschemaitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpExportSchemaItemID')
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2674,7 +2674,7 @@ class Spexportschemaitem(models.Model):
         db_table = u'spexportschemaitem'
 
 class Spexportschemaitemmapping(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpExportSchemaItemMappingID')
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaItemMappingID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2688,7 +2688,7 @@ class Spexportschemaitemmapping(models.Model):
         db_table = u'spexportschemaitemmapping'
 
 class Spexportschemamapping(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpExportSchemaMappingID')
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaMappingID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2702,7 +2702,7 @@ class Spexportschemamapping(models.Model):
         db_table = u'spexportschemamapping'
 
 class Spfieldvaluedefault(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpFieldValueDefaultID')
+    id = models.AutoField(primary_key=True, db_column='SpFieldValueDefaultID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2717,7 +2717,7 @@ class Spfieldvaluedefault(models.Model):
         db_table = u'spfieldvaluedefault'
 
 class Splocalecontainer(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpLocaleContainerID')
+    id = models.AutoField(primary_key=True, db_column='SpLocaleContainerID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2738,7 +2738,7 @@ class Splocalecontainer(models.Model):
         db_table = u'splocalecontainer'
 
 class Splocalecontaineritem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpLocaleContainerItemID')
+    id = models.AutoField(primary_key=True, db_column='SpLocaleContainerItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2758,7 +2758,7 @@ class Splocalecontaineritem(models.Model):
         db_table = u'splocalecontaineritem'
 
 class Splocaleitemstr(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpLocaleItemStrID')
+    id = models.AutoField(primary_key=True, db_column='SpLocaleItemStrID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2776,7 +2776,7 @@ class Splocaleitemstr(models.Model):
         db_table = u'splocaleitemstr'
 
 class Sppermission(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpPermissionID')
+    id = models.AutoField(primary_key=True, db_column='SpPermissionID')
     actions = models.TextField(db_column='Actions', blank=True)
     name = models.CharField(max_length=192, db_column='Name', blank=True)
     permissionclass = models.TextField(db_column='PermissionClass')
@@ -2785,7 +2785,7 @@ class Sppermission(models.Model):
         db_table = u'sppermission'
 
 class Spprincipal(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpPrincipalID')
+    id = models.AutoField(primary_key=True, db_column='SpPrincipalID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2807,7 +2807,7 @@ class SpprincipalSppermission(models.Model):
         db_table = u'spprincipal_sppermission'
 
 class Spquery(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpQueryID')
+    id = models.AutoField(primary_key=True, db_column='SpQueryID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2828,7 +2828,7 @@ class Spquery(models.Model):
         db_table = u'spquery'
 
 class Spqueryfield(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpQueryFieldID')
+    id = models.AutoField(primary_key=True, db_column='SpQueryFieldID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2857,7 +2857,7 @@ class Spqueryfield(models.Model):
         db_table = u'spqueryfield'
 
 class Spreport(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpReportId')
+    id = models.AutoField(primary_key=True, db_column='SpReportId')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2875,7 +2875,7 @@ class Spreport(models.Model):
         db_table = u'spreport'
 
 class Sptasksemaphore(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaskSemaphoreID')
+    id = models.AutoField(primary_key=True, db_column='TaskSemaphoreID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2895,7 +2895,7 @@ class Sptasksemaphore(models.Model):
         db_table = u'sptasksemaphore'
 
 class Spversion(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpVersionID')
+    id = models.AutoField(primary_key=True, db_column='SpVersionID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2910,7 +2910,7 @@ class Spversion(models.Model):
         db_table = u'spversion'
 
 class Spviewsetobj(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpViewSetObjID')
+    id = models.AutoField(primary_key=True, db_column='SpViewSetObjID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2926,7 +2926,7 @@ class Spviewsetobj(models.Model):
         db_table = u'spviewsetobj'
 
 class Spvisualquery(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='SpVisualQueryID')
+    id = models.AutoField(primary_key=True, db_column='SpVisualQueryID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2939,7 +2939,7 @@ class Spvisualquery(models.Model):
         db_table = u'spvisualquery'
 
 class Storage(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='StorageID')
+    id = models.AutoField(primary_key=True, db_column='StorageID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2966,7 +2966,7 @@ class Storage(models.Model):
         db_table = u'storage'
 
 class Storagetreedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='StorageTreeDefID')
+    id = models.AutoField(primary_key=True, db_column='StorageTreeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -2979,7 +2979,7 @@ class Storagetreedef(models.Model):
         db_table = u'storagetreedef'
 
 class Storagetreedefitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='StorageTreeDefItemID')
+    id = models.AutoField(primary_key=True, db_column='StorageTreeDefItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3000,7 +3000,7 @@ class Storagetreedefitem(models.Model):
         db_table = u'storagetreedefitem'
 
 class Taxon(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaxonID')
+    id = models.AutoField(primary_key=True, db_column='TaxonID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3053,7 +3053,7 @@ class Taxon(models.Model):
         db_table = u'taxon'
 
 class Taxonattachment(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaxonAttachmentID')
+    id = models.AutoField(primary_key=True, db_column='TaxonAttachmentID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3067,7 +3067,7 @@ class Taxonattachment(models.Model):
         db_table = u'taxonattachment'
 
 class Taxoncitation(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaxonCitationID')
+    id = models.AutoField(primary_key=True, db_column='TaxonCitationID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3086,7 +3086,7 @@ class Taxoncitation(models.Model):
         db_table = u'taxoncitation'
 
 class Taxontreedef(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaxonTreeDefID')
+    id = models.AutoField(primary_key=True, db_column='TaxonTreeDefID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3099,7 +3099,7 @@ class Taxontreedef(models.Model):
         db_table = u'taxontreedef'
 
 class Taxontreedefitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TaxonTreeDefItemID')
+    id = models.AutoField(primary_key=True, db_column='TaxonTreeDefItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3121,7 +3121,7 @@ class Taxontreedefitem(models.Model):
         db_table = u'taxontreedefitem'
 
 class Treatmentevent(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='TreatmentEventID')
+    id = models.AutoField(primary_key=True, db_column='TreatmentEventID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3146,7 +3146,7 @@ class Treatmentevent(models.Model):
         db_table = u'treatmentevent'
 
 class Workbench(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3170,7 +3170,7 @@ class Workbench(models.Model):
         db_table = u'workbench'
 
 class Workbenchdataitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchDataItemID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchDataItemID')
     celldata = models.TextField(db_column='CellData', blank=True)
     rownumber = models.IntegerField(null=True, db_column='RowNumber', blank=True)
     validationstatus = models.IntegerField(null=True, db_column='ValidationStatus', blank=True)
@@ -3180,7 +3180,7 @@ class Workbenchdataitem(models.Model):
         db_table = u'workbenchdataitem'
 
 class Workbenchrow(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchRowID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchRowID')
     biogeomancerresults = models.TextField(db_column='BioGeomancerResults', blank=True)
     cardimagedata = models.TextField(db_column='CardImageData', blank=True)
     cardimagefullpath = models.CharField(max_length=765, db_column='CardImageFullPath', blank=True)
@@ -3197,7 +3197,7 @@ class Workbenchrow(models.Model):
         db_table = u'workbenchrow'
 
 class Workbenchrowexportedrelationship(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchRowExportedRelationshipID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchRowExportedRelationshipID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3212,7 +3212,7 @@ class Workbenchrowexportedrelationship(models.Model):
         db_table = u'workbenchrowexportedrelationship'
 
 class Workbenchrowimage(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchRowImageID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchRowImageID')
     attachtotablename = models.CharField(max_length=192, db_column='AttachToTableName', blank=True)
     cardimagedata = models.TextField(db_column='CardImageData', blank=True)
     cardimagefullpath = models.CharField(max_length=765, db_column='CardImageFullPath', blank=True)
@@ -3222,7 +3222,7 @@ class Workbenchrowimage(models.Model):
         db_table = u'workbenchrowimage'
 
 class Workbenchtemplate(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchTemplateID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchTemplateID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)
@@ -3236,7 +3236,7 @@ class Workbenchtemplate(models.Model):
         db_table = u'workbenchtemplate'
 
 class Workbenchtemplatemappingitem(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='WorkbenchTemplateMappingItemID')
+    id = models.AutoField(primary_key=True, db_column='WorkbenchTemplateMappingItemID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(null=True, db_column='TimestampModified', blank=True)
     version = models.IntegerField(null=True, db_column='Version', blank=True)

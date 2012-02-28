@@ -37,10 +37,9 @@ $(function () {
             });
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
-//                btn.prop('disabled', true);
+                btn.prop('disabled', true);
                 specify.postForm(form).then(function () {
-//                    btn.prop('disabled', false);
-//                    window.location.reload(true);
+                    window.location = '../../';
                 });
             });
         });
