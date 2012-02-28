@@ -12,9 +12,13 @@ On Ubuntu:
 
     sudo apt-get install python-mysqldb python-pip
 
+On Fedora:
+
+   sudo yum install MySQL-python python-pip
 
 Install Django 1.3.
 -------------------
+On Ubuntu:
 
     sudo pip install Django
 
@@ -23,10 +27,20 @@ package, that will work too.
 
     sudo apt-get install python-django
 
+On Fedora:
+
+    sudo python-pip install Django
+
+
 Install tastypie.
 -----------------
+On Ubuntu:
 
     sudo pip install django-tastypie
+
+On Fedora:
+
+    sudo python-pip install django-tastypie
 
 The choice is yours.
 --------------------
@@ -40,7 +54,7 @@ Get the djangospecify source code.
 Clone this repository:
 
     git clone git://github.com/benanhalt/djangospecify.git
-    
+
 You will now have a djangospecify directory containing the source
 tree. From this point all commands will be with respect to that as the
 working directory.
