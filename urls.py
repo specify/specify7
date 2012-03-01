@@ -15,7 +15,9 @@ for r in specify.api.resources: api.register(r())
 #post_api = Api(api_name='specify')
 #for r in specify.postapi.resources: post_api.register(r())
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}),
     # Examples:
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^specify/', include('specify.urls')),
