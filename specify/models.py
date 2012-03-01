@@ -793,12 +793,6 @@ class Collectionobjectcitation(models.Model):
     class Meta:
         db_table = u'collectionobjectcitation'
 
-class CollectionobjecttypeCollectionobjecttypeid(models.Model):
-    id = models.AutoField(primary_key=True, db_column='OldID')
-    newid = models.IntegerField(db_column='NewID')
-    class Meta:
-        db_table = u'collectionobjecttype_CollectionObjectTypeID'
-
 class Collectionrelationship(models.Model):
     id = models.AutoField(primary_key=True, db_column='CollectionRelationshipID')
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
