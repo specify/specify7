@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'businessrules',
 )
 
-AUTHENTICATION_BACKENDS = ('specify.AuthBackend.SpecifyUserBackend', )
+AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend', )
 
 AJAX_LOOKUP_CHANNELS = {
     #   pass a dict with the model and the field to search against
