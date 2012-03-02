@@ -103,7 +103,7 @@ class ModelResource(tastypie.resources.ModelResource):
 
         bundle = self.full_hydrate(bundle)
 
-        # Save the main object.
+        # If the object has no version field, just save it.
         try:
             bundle.obj._meta.get_field('version')
         except FieldDoesNotExist:
@@ -112,13 +112,17 @@ class ModelResource(tastypie.resources.ModelResource):
 
         manager = bundle.obj.__class__._base_manager
         try:
-            version = bundle.data['version']
+            version = bundle.data['version'] # The version the client has.
         except KeyError:
             raise MissingVersionException()
-        updated = manager.filter(pk=bundle.obj.pk, version=version)\
-            .update(version=version+1)
+
+        # Update a row with the PK and the version no. we have.
+        # If our version is stale, the rows updated will be 0.
+        updated = manager.filter(pk=bundle.obj.pk, version=version).update(version=version+1)
         if not updated:
             raise StaleObjectException()
+
+        # Do the actual update.
         bundle.obj.version = version + 1
         bundle.obj.save(force_update=True)
         return bundle
