@@ -2,13 +2,13 @@ from django.db import models
 from xml.etree import ElementTree
 import os
 
-appname = 'specify'
+appname = __name__.split('.')[-2]
 
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
     class Meta:
         db_table = tabledef.attrib['table']
-    attrs = dict(id=make_id_field(tabledef.find('id')), 
+    attrs = dict(id=make_id_field(tabledef.find('id')),
                  Meta=Meta, __module__=__name__)
     for flddef in tabledef.findall('field'):
         fldname = flddef.attrib['name']
@@ -68,9 +68,12 @@ class make_field(object):
         return dict(
             db_column=flddef.attrib['column'],
             db_index=(flddef.attrib['indexed'] == 'true'),
-            # For some setting unique complains about
-            # field length even when it is legal (<256)
-            #unique=(flddef.attrib['unique'] == 'true'),
+            # For some reason setting unique makes
+            # django complain mysql CharField
+            # field length even when it is legal (<256).
+            # So, just ignoring that option for now.
+            #
+            # unique=(flddef.attrib['unique'] == 'true'),
             editable=(flddef.attrib['updatable'] == 'true'),
             null=(flddef.attrib['required'] == 'false'),
             )
@@ -113,6 +116,10 @@ class make_decimal_field(make_field):
     def make_args(cls, flddef):
         args = super(make_decimal_field, cls).make_args(flddef)
         args.update(dict(
+                # The precision info is not included in the
+                # XML schema def. I don't think it really
+                # matters what values are here since
+                # the schema is already built.
                 max_digits=22, decimal_places=10,
                 blank=(flddef.attrib['required'] == 'false'),
                 ))
@@ -127,6 +134,7 @@ class make_boolean_field(make_field):
             return models.NullBooleanField
 
 field_type_map = {
+    'text': make_text_field,
     'java.lang.String': make_string_field,
     'java.lang.Integer': make_integer_field,
     'java.lang.Long': make_integer_field,
@@ -136,22 +144,15 @@ field_type_map = {
     'java.util.Date': make_date_field,
     'java.lang.Float': make_float_field,
     'java.lang.Double': make_float_field,
-    'text': make_text_field,
     'java.sql.Timestamp': make_datetime_field,
     'java.math.BigDecimal': make_decimal_field,
     'java.lang.Boolean': make_boolean_field,
-}
+    }
 
 datamodel = ElementTree.parse(os.path.join(os.path.dirname(__file__),
                                            'specify_datamodel.xml'))
 
-globals().update(
-    dict((model.__name__, model)
-         for model in (
-            make_model(tabledef)
-            for tabledef in datamodel.findall('table')
-            )
-         )
-    )
+globals().update(dict((model.__name__, model)
+                      for model in map(make_model, datamodel.findall('table'))))
 
-    
+
