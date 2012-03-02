@@ -42,7 +42,7 @@
                 if (!control.hasClass('required')) {
                     $('<option>').appendTo(control);
                 }
-                $(picklist.items).each(function () {
+                $(picklist.picklistitems).each(function () {
                     items[this.value] = this;
                     $('<option>').text(this.value).appendTo(control);
                 });
@@ -178,15 +178,22 @@
             form.find('.specify-one-to-many').each(function () {
                 var container = $(this),
                 viewName = container.data('specify-view-name'),
-                fieldName = container.data('specify-field-name').toLowerCase();
-                // Have to add a subform for each instance. Not exactly sure how this
-                // would be handled with prebuilt forms.
-                $(data[fieldName]).each(function () {
+                fieldName = container.data('specify-field-name').toLowerCase(),
+                fillSubform = function () {
                     // again, recursive fill
                     var subform = specify.populateForm(viewName, this, depth + 1, true);
                     subform.appendTo(container.hasClass('specify-formtable') ? container.find('tbody') : container);
                     subform.children('input[value="Delete"]').click(deleteRelated);
-                });
+                };
+                // Have to add a subform for each instance. Not exactly sure how this
+                // would be handled with prebuilt forms.
+                if ($.isArray(data[fieldName])) {
+                    $(data[fieldName]).each(fillSubform);
+                } else {
+                    $.get(data[fieldName], function (data) {
+                        $(data.objects).each(fillSubform);
+                    });
+                }
             });
         };
 

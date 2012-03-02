@@ -4,6 +4,7 @@ from tastypie.authorization import Authorization
 from django.db.models import get_models
 from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
+from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
 from xml.etree import ElementTree
@@ -12,24 +13,12 @@ from datetime import datetime
 
 from specify import models
 
-to_many_relationships = {
-    'Collectionobject': {
-        'Determination': 'determinations',
-        'Preparation': 'preparations',
-        },
-    'Collectingevent': {
-        'Collector': 'collectors',
-        },
-    'Picklist': {
-        'Picklistitem': 'items',
-        }
-    }
-
 inlined_fields = [
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
-    'Picklist.items',
+    'Collectionobject.determinations',
+    'Picklist.picklistitems',
 ]
 
 filter_fields = {
@@ -40,14 +29,28 @@ typesearches = ElementTree.parse(os.path.join(os.path.dirname(__file__),
                                               "static", "resources",
                                               "typesearch_def.xml"))
 
-for typesearch in typesearches.findall('typesearch'):
-    model = typesearch.attrib['name'].capitalize()
-    field = typesearch.attrib['searchfield'].lower()
+def add_to_filter_fields(model, field, filter_type):
     if model not in filter_fields: filter_fields[model] = {}
     filters = filter_fields[model]
     if field not in filters: filters[field] = []
     querytypes = filters[field]
-    if 'icontains' not in querytypes: querytypes.append('icontains')
+    if filter_type not in querytypes: querytypes.append(filter_type)
+
+for typesearch in typesearches.findall('typesearch'):
+    model = typesearch.attrib['name'].capitalize()
+    field = typesearch.attrib['searchfield'].lower()
+    add_to_filter_fields(model, field, 'icontains')
+
+
+def add_filter_for_fk(fkfield):
+    field = fkfield.name
+    model = fkfield.model.__name__
+    add_to_filter_fields(model, field, 'exact')
+
+for model in get_models(models):
+    for field in model._meta.fields:
+        if field.rel: add_filter_for_fk(field)
+
 
 class OptimisticLockException(Exception): pass
 
@@ -64,11 +67,21 @@ class ForeignKey(tastypie.fields.ForeignKey):
             return None
         return super(ForeignKey, self).resource_from_uri(fk_resource, uri, request, related_obj, related_name)
 
+class ToManyField(tastypie.fields.ToManyField):
+    def dehydrate(self, bundle):
+        if self.full:
+            return super(ToManyField, self).dehydrate(bundle)
+
+        related_uri = self.to_class().get_resource_list_uri()
+        return '%s?%s=%d' % (related_uri, self.related_name, bundle.obj.pk)
+
 class ModelResource(tastypie.resources.ModelResource):
     def _build_reverse_url(self, name, args=None, kwargs=None):
         """Hard code the URL lookups to make things fast."""
         if name == 'api_dispatch_detail':
             return '/api/%(api_name)s/%(resource_name)s/%(pk)d/' % kwargs
+        if name == 'api_dispatch_list':
+            return '/api/%(api_name)s/%(resource_name)s/' % kwargs
 
         return super(ModelResource, self)._build_reverse_url(name, args=args, kwargs=kwargs)
 
@@ -110,14 +123,13 @@ class ModelResource(tastypie.resources.ModelResource):
         bundle.obj.save(force_update=True)
         return bundle
 
-def make_to_many_field(model, related, fieldname):
-    related_model = getattr(models, related)
-    def get_related_objs(bundle):
-        filter_args = {model.__name__.lower(): bundle.obj}
-        return related_model.objects.filter(**filter_args)
-    related_resource = "%s.%s%s" % (__name__, related, "Resource")
+def make_to_many_field(model, field, fieldname):
+    modelname = field.related.model.__name__ # The model w/ the FK column (the many side)
+    fkfieldname = field.related.field.name   # Name of the FK column
+    related_resource = "%s.%s%s" % (__name__, modelname, "Resource")
     full = '.'.join((model.__name__, fieldname)) in inlined_fields
-    return tastypie.fields.ToManyField(related_resource, get_related_objs, null=True, full=full)
+    return ToManyField(related_resource, fieldname,
+                       related_name=fkfieldname, null=True, full=full)
 
 def make_fk_field(field):
     relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)
@@ -129,10 +141,10 @@ def build_resource(model):
         (field.name, make_fk_field(field))
         for field in model._meta.fields if field.rel)
 
-    rels = to_many_relationships.get(model.__name__, {}).items()
     to_many_fields = dict(
-        (fieldname, make_to_many_field(model, related, fieldname))
-        for related, fieldname in rels)
+        (fieldname, make_to_many_field(model, field, fieldname))
+        for fieldname, field in model.__dict__.items()
+        if isinstance(field, ForeignRelatedObjectsDescriptor))
 
     class Meta:
         filtering = filter_fields.get(model.__name__, {})
