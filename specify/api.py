@@ -62,6 +62,17 @@ class HttpResponseConflict(HttpResponse):
     status_code = 409
 
 class ForeignKey(tastypie.fields.ForeignKey):
+    def dehydrate(self, bundle):
+        if self.full:
+            return super(ForeignKey, self).dehydrate(bundle)
+
+        descr = getattr(bundle.obj.__class__, self.attribute)
+        fk = getattr(bundle.obj, descr.field.attname)
+        if fk is None:
+            return None
+        dummy = type('Dummy', (object,), dict(id=fk))()
+        return self.to_class().get_resource_uri(dummy)
+
     def resource_from_uri(self, fk_resource, uri, request=None, related_obj=None, related_name=None):
         if not uri:
             return None
