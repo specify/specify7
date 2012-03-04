@@ -6,7 +6,7 @@ from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, QueryDict
 from xml.etree import ElementTree
 import os
 from datetime import datetime
@@ -94,6 +94,44 @@ class ModelResource(tastypie.resources.ModelResource):
             return HttpResponseBadRequest('Missing version information.')
 
     @transaction.commit_on_success
+    def obj_delete(self, request=None, **kwargs):
+        obj = kwargs.pop('_obj', None)
+
+        if not hasattr(obj, 'delete'):
+            try:
+                obj = self.obj_get(request, **kwargs)
+            except ObjectDoesNotExist:
+                raise NotFound("A model instance matching the provided arguments could not be found.")
+
+        try:
+            obj._meta.get_field('version')
+        except FieldDoesNotExist:
+            obj.delete()
+            return
+
+        if request is None:
+            raise MissingVersionException()
+
+        # Get the version the client wants to delete.
+        request_params = QueryDict(request.META['QUERY_STRING'])
+        try:
+            version = request_params['version']
+        except KeyError:
+            try:
+                version = request.META['HTTP_IF_MATCH']
+            except KeyError:
+                raise MissingVersionException()
+        version = int(version)
+
+        # Update a row with the PK and the version no. we have.
+        # If our version is stale, the rows updated will be 0.
+        manager = obj.__class__._base_manager
+        updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
+        if not updated:
+            raise StaleObjectException()
+        obj.delete()
+        
+    @transaction.commit_on_success
     def obj_update(self, bundle, request=None, **kwargs):
         if not bundle.obj or not bundle.obj.pk:
             try:
@@ -110,7 +148,6 @@ class ModelResource(tastypie.resources.ModelResource):
             bundle.obj.save(force_update=True)
             return bundle
 
-        manager = bundle.obj.__class__._base_manager
         try:
             version = bundle.data['version'] # The version the client has.
         except KeyError:
@@ -118,6 +155,7 @@ class ModelResource(tastypie.resources.ModelResource):
 
         # Update a row with the PK and the version no. we have.
         # If our version is stale, the rows updated will be 0.
+        manager = bundle.obj.__class__._base_manager
         updated = manager.filter(pk=bundle.obj.pk, version=version).update(version=version+1)
         if not updated:
             raise StaleObjectException()

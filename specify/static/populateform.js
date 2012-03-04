@@ -210,9 +210,11 @@
     function deleteRelated() {
         var button = $(this),
         form = button.parent();
-        $.ajax(form.data('specify-uri'), { type: 'DELETE', success: function () {
-            form.remove();
-        }});
+        $.ajax(form.data('specify-uri'), { 
+	    type: 'DELETE',
+	    headers: {'If-Match': form.data('specify-object-version')},
+	    success: function () { form.remove(); }
+	});
     }
 
     // typesearches define how the querycbx's work.
