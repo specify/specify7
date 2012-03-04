@@ -1,6 +1,7 @@
 import tastypie.resources
 import tastypie.fields
 from tastypie.authorization import Authorization
+from tastypie.exceptions import NotFound
 from django.db.models import get_models
 from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
@@ -9,7 +10,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest, QueryDict
 from xml.etree import ElementTree
 import os
-from datetime import datetime
 
 from specify import models
 
