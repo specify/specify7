@@ -34,6 +34,7 @@
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
         picklistJQXHR = $.get(pickListUri), // begin fetching the picklist
         onData = function (value) {
+	    value = value || '';
             // When the selected value is available from fillinData
             // add a success callback to the picklist fetch that
             // will fill in the options and select the current value.
