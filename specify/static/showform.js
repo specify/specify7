@@ -2,12 +2,14 @@
 // Main entry point.
 $(function () {
     "use strict";
-    var uri = "/api/specify/"+view+"/"+id+"/";
+    var rootContainer = $('#specify-rootform-container');
+    var params = specify.pullParamsFromDl(rootContainer);
+    var uri = "/api/specify/" + params.view + "/" + params.id + "/";
 
     $.when(specify.loadViews(), specify.loadTypeSearches())
         .then(function () {
-            var mainForm = specify.populateForm(window.view, uri);
-            $('#specify-rootform-container').append(mainForm);
+            var mainForm = specify.populateForm(params.view, uri);
+            rootContainer.empty().append(mainForm);
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);

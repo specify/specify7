@@ -219,6 +219,15 @@
         });
     }
 
+    specify.pullParamsFromDl = function (dlNode) {
+	var params = {};
+	$(dlNode).find('dt').each(function () {
+	    var dt = $(this);
+	    params[dt.text()] = dt.next('dd').text();
+	});
+	return params;
+    };
+
     // typesearches define how the querycbx's work.
     specify.loadTypeSearches = function () {
         return $.get('/static/resources/typesearch_def.xml', function (data) { typesearches = $(data); });

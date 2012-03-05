@@ -1,11 +1,11 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Specify Form View</title>
+{% extends "base_site.html" %}
+{% load i18n %}
+{% block extrastyle %}
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="/static/css/specifyform.css">
+{% endblock %}
 
+{% block extrahead %}
   <script src="https://www.google.com/jsapi"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -13,18 +13,17 @@
   <script src="/static/populateform.js"></script>
   <script src="/static/putform.js"></script>
   <script src="/static/postform.js"></script>
-  <script>
-//<![CDATA[
-var view = "{{ params.view }}";
-var id = "{{ params.id }}";
-var relatedModel = "{{ params.model }}"
-//]]>
-  </script>
-</head>
+{% endblock %}
 
-<body>
-  <div>
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a></div>{% endblock %}
+
+{% block content %}
+  <div id="specify-rootform-container">
+    <dl>
+      <dt>view</dt><dd>{{ params.view }}</dd>
+      <dt>id</dt><dd>{{ params.id }}</dd>
+      <dt>relatedModel</dt><dd>{{ params.model }}</dd>
+    </dl>
   </div>
   <input type="submit" value="Save">
-</body>
-</html>
+{% endblock %}

@@ -1,11 +1,15 @@
-(function (specify, $, undefined) {
-    "use strict";
 
-    specify.postForm = function (formNode) {
+// Main entry point.
+$(function () {
+    "use strict";
+    var rootContainer = $('#specify-rootform-container');
+    var params = specify.pullParamsFromDl(rootContainer);
+  
+    function postForm(formNode) {
         var form = $(formNode),
         data = specify.harvestForm(form),
-        uri = '/api/specify/' + relatedModel + '/';
-        data[view] = '/api/specify/' + view + '/' + id + '/';
+        uri = '/api/specify/' + params.relatedModel + '/';
+        data[params.view] = '/api/specify/' + params.view + '/' + params.id + '/';
         data.version = 0;
         return $.ajax(uri, {
             type: 'POST',
@@ -15,18 +19,11 @@
         });
     };
 
-} (window.specify = window.specify || {}, jQuery));
-
-
-// Main entry point.
-$(function () {
-    "use strict";
-
     $.when(specify.loadViews(), specify.loadTypeSearches()).then(
         function () {
-            var form = specify.buildFormForModel(relatedModel);
+            var form = specify.buildFormForModel(params.relatedModel);
             form.children('input[value="Delete"]').remove();
-            $('div').append(form);
+            rootContainer.empty().append(form);
             form.find('.specify-field').each(function () {
                 var control = $(this);
                 if (control.prop('nodeName') === 'SELECT') {
@@ -38,7 +35,7 @@ $(function () {
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);
-                specify.postForm(form).then(function () {
+                postForm(form).then(function () {
                     window.location = '../../';
                 });
             });

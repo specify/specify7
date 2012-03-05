@@ -14,18 +14,18 @@
   <script src="/static/putform.js"></script>
   <script src="/static/showform.js"></script>
   <script src="/static/specifyui.js"></script>
-  <script>
-//<![CDATA[
-var view = "{{ params.view }}";
-var id = "{{ params.id }}";
-//]]>
-  </script>
 {% endblock %}
 
 {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a></div>{% endblock %}
 
 {% block content %}
   <div id="specify-rootform-container">
+    <dl>
+      <dt>view</dt>
+      <dd>{{ params.view }}</dd>
+      <dt>id</dt>
+      <dd>{{ params.id }}</dd>
+    </dl>
   </div>
   <input type="submit" value="Save">
 {% endblock %}
