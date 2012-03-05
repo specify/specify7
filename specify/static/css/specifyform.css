@@ -28,11 +28,11 @@ td, th {
 }
 
 textarea {
-    width: 98%;
+    width: 100%;
 }
 
 input[type="text"] {
-    width: 90%;
+    width: 100%;
 }
 
 select {
@@ -44,5 +44,23 @@ select {
 }
 
 .form-label {
-      text-align: right;
+    text-align: right;
 }
+
+.querycbx-strct {
+    display: table;
+    width: 100%;
+}
+
+.querycbx-strct input {
+    display: table-cell;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.querycbx-strct a {
+    display: table-cell;
+    min-width: 0;
+    padding-left: 3px;
+}
+

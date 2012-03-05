@@ -34,7 +34,7 @@
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
         picklistJQXHR = $.get(pickListUri), // begin fetching the picklist
         onData = function (value) {
-	    value = value || '';
+            value = value || '';
             // When the selected value is available from fillinData
             // add a success callback to the picklist fetch that
             // will fill in the options and select the current value.
@@ -85,8 +85,9 @@
         displaycols = typesearch.attr('displaycols').toLowerCase().split(','),
         format = typesearch.attr('format'),
         uri = '/api/specify/' + init.name.toLowerCase() + '/', // uri to query values
-        input = $('<input type="text">').insertBefore(control), // autocomplete field
-        link = $('<a href="#">[i]</a>').insertAfter(control),
+        table = $('<div class="querycbx-strct">').insertBefore(control),
+        input = $('<input type="text">').appendTo(table), // autocomplete field
+        link = $('<a href="#">[i]</a>').appendTo(table),
 
         // format the query results according to formatter in the typesearch
         formatInterpolate = function (obj) {
@@ -146,7 +147,7 @@
 
         populate = function(data) {
             form.data('specify-uri', data.resource_uri);
-	    form.data('specify-object-version', data.version);
+            form.data('specify-object-version', data.version);
             // fill in all the fields
             form.find('.specify-field').each(function () {
                 var control = $(this);
@@ -212,10 +213,10 @@
         var button = $(this),
         form = button.parent();
         $.ajax(form.data('specify-uri'), { 
-	    type: 'DELETE',
-	    headers: {'If-Match': form.data('specify-object-version')},
-	    success: function () { form.remove(); }
-	});
+            type: 'DELETE',
+            headers: {'If-Match': form.data('specify-object-version')},
+            success: function () { form.remove(); }
+        });
     }
 
     // typesearches define how the querycbx's work.
