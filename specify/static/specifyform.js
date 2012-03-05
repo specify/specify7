@@ -1,6 +1,6 @@
 (function (specify, $, undefined) {
     "use strict";
-    var schemaLocalization, views, viewdefs,
+    var schemaLocalization, views, viewdefs, formCounter = 0,
     viewsetNames = [
         '/static/resources/system.views.xml',
         '/static/resources/editorpanel.views.xml',
@@ -11,6 +11,25 @@
     ];
 
     specify.language = "en";
+
+    // Search the schema_localization DOM for the given modelName.
+    specify.getLocalizationForModel = function(modelName) {
+        return $(schemaLocalization).find('container[name="'+modelName.toLowerCase()+'"]').first();
+    }
+
+    specify.getSchemaInfoFor = function(fieldname, inViewdefOrModel) {
+        var path = fieldname.split('.'), field = path.pop(), model = path.pop();
+        if (!model) {
+            model = inViewdefOrModel.jquery ?
+                getModelForViewdef(inViewdefOrModel) :
+                inViewdefOrModel;
+        }
+        return specify.getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
+    };
+
+    specify.getLocalizedLabelFor = function (fieldname, inViewdefOrModel) {
+        return getLocalizedStr(specify.getSchemaInfoFor(fieldname, inViewdefOrModel).children('names'));
+    };
 
     // Given a DOM containing alternative localizations,
     // return the one for the language selected above,
@@ -54,26 +73,22 @@
 
     // Return a <form> DOM node containing the processed view.
     specify.processView = function (viewName, depth, suppressHeader) {
-        if (!views[viewName.toLowerCase()]) { return $('<form>'); }
+        var formNumber = formCounter++,
+        form = $('<form>').prop('id', 'specify-form-' + formNumber);
+        if (!views[viewName.toLowerCase()]) { return form; }
         depth = depth || 1;
         var viewdef = getDefaultViewdef($(views[viewName.toLowerCase()])),
         viewModel = getModelForViewdef(viewdef);
-
-        // Search the schema_localization DOM for the given modelName.
-        function getLocalizationForModel(modelName) {
-            return $(schemaLocalization).find('container[name="'+modelName.toLowerCase()+'"]').first();
-        }
+        form.attr('data-specify-model', viewModel);
 
         var getSchemaInfoFor = function(fieldname, inViewdef) {
             inViewdef = inViewdef || viewdef;
-            var path = fieldname.split('.'), field = path.pop(), model = path.pop(),
-            localization = model ? getLocalizationForModel(model) :
-                getLocalizationForModel(getModelForViewdef(inViewdef));
-            return $(localization).children('items').children('item[name="'+field+'"]');
+            return specify.getSchemaInfoFor(fieldname, inViewdef);
         },
 
         getLocalizedLabelFor = function (fieldname, inViewdef) {
-            return getLocalizedStr(getSchemaInfoFor(fieldname, inViewdef).children('names'));
+            inViewdef = inViewdef || viewdef;
+            return specify.getLocalizedLabelFor(fieldname, inViewdef);
         },
 
         getLabelCellText = function(cell, inViewdef) {
@@ -92,7 +107,10 @@
             var cell = $(cellNode),
             byType = {
                 label: function() {
-                    return $('<td class="form-label">').append($('<label>').text(getLabelCellText(cell)));
+                    var label = $('<label>').text(getLabelCellText(cell));
+                    var labelfor = cell.attr('labelfor');
+                    labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
+                    return $('<td class="form-label">').append(label);
                 },
                 field: function() {
                     var td = $('<td>'),
@@ -133,14 +151,21 @@
                         label: function() {
                             return $('<input type="text" readonly>').appendTo(td);
                         },
+                        plugin: function() {
+                            return $('<input type="text" class="specify-uiplugin">').appendTo(td);
+                        },
                         other: function() {
                             td.text("unsupported uitype: " + cell.attr('uitype'));
                         }
                     },
                     initialize = cell.attr('initialize'),
+                    id = cell.attr('id'),
                     control = (byUIType[cell.attr('uitype')] || byUIType.other)();
-                    control && control.attr('name', fieldName).addClass('specify-field');
-                    if (initialize && control) { control.attr('data-specify-initialize', initialize); }
+                    if (control) {
+                        control.attr('name', fieldName).addClass('specify-field');
+                        id && control.prop('id', 'specify-field-' + formNumber + '-' + id);
+                        initialize && control.attr('data-specify-initialize', initialize);
+                    }
                     return td;
                 },
                 separator: function() {
@@ -229,10 +254,9 @@
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            var form = $('<form>');
             if (!suppressHeader){
                 var localizedName = getLocalizedStr(
-                    getLocalizationForModel(viewModel).children('names')
+                    specify.getLocalizationForModel(viewModel).children('names')
                 ) || viewdef.attr('name');
 
                 form.append($('<h3>').text(localizedName)).append(table);

@@ -27,6 +27,7 @@
             fillinData(data, path.slice(1), dispatch);
         });
     }
+    specify.fillinData = fillinData;
 
     specify.populatePickList = function(control, data) {
         var pickListName = control.data('specify-picklist');
@@ -80,6 +81,7 @@
         // with an autocomplete field.
         control.hide();
         var init = parseSpecifyProperties(control.data('specify-initialize')),
+        controlID = control.prop('id'),
         typesearch = typesearches.find('[name="'+init.name+'"]'), // defines the querycbx
         searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains',
         displaycols = typesearch.attr('displaycols').toLowerCase().split(','),
@@ -96,6 +98,12 @@
             $(vals).each(function () { str = str.replace(/%s/, this); });
             return str;
         };
+
+        // change the label to point to the autocomplete field instead of the hidden control
+        if (controlID) {
+            input.prop('id', controlID + '-autocomplete');
+            control.parents().last().find('label[for="' + controlID + '"]').prop('for', input.prop('id'));
+        }
 
         input.autocomplete({
             minLength: 3,
@@ -132,6 +140,16 @@
         }
     };
 
+    specify.setupUIplugin = function (control, data) {
+        var init = parseSpecifyProperties(control.data('specify-initialize'));
+        var plugin = specify.uiPlugins[init.name];
+        if (!plugin) {
+            control.parent().empty().text('unsupported plugin: ' + init.name);
+            return;
+        }
+        plugin(control, init, data);
+    }
+
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
@@ -155,6 +173,8 @@
                     specify.populatePickList(control, data);
                 } else if (control.is('.specify-querycbx')) {
                     specify.setupQueryCBX(control, data);
+                } else if (control.is('.specify-uiplugin')) {
+                    specify.setupUIplugin(control, data);
                 } else {
                     fillinData(data, control.attr('name'), function (value) {
                         if (control.is('input[type="checkbox"]')) {
@@ -212,7 +232,7 @@
     function deleteRelated() {
         var button = $(this),
         form = button.parent();
-        $.ajax(form.data('specify-uri'), { 
+        $.ajax(form.data('specify-uri'), {
             type: 'DELETE',
             headers: {'If-Match': form.data('specify-object-version')},
             success: function () { form.remove(); }
