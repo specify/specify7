@@ -118,7 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 #    'django_extensions',
@@ -128,6 +128,7 @@ INSTALLED_APPS = (
 )
 
 AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend', )
+LOGIN_REDIRECT_URL = '/'
 
 AJAX_LOOKUP_CHANNELS = {
     #   pass a dict with the model and the field to search against

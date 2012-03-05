@@ -1,13 +1,15 @@
-<!doctype html>
-<html>
-<head>
-  <title>Specify jQuery Demo</title>
-  <link rel="stylesheet" href="/static/css/specifyform.css">
-</head>
+{% extends "base_site.html" %}
+{% load i18n %}
+{% load url from future %}
 
-<body>
-  <h2>Specify jQuery Demo</h2>
+{% block title %}Specify jQuery Demo{% endblock %}
 
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a></div>{% endblock %}
+
+{% block content_title %}Specify jQuery Demo{% endblock %}
+
+
+{% block content %}
   <h3>Some examples:</h3>
   <ul>
     <li><a href="/specify/view/collectionobject/12/">A Collection Object</a></li>
@@ -43,5 +45,4 @@
     <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/putform.js">
         putform.js</a> extracts data from a view and updates the back end via HTTP PUT.</li>
   </ul>
-</body>
-</html>
+{% endblock %}

@@ -7,7 +7,7 @@ $(function () {
     $.when(specify.loadViews(), specify.loadTypeSearches())
         .then(function () {
             var mainForm = specify.populateForm(window.view, uri);
-            $('div').append(mainForm);
+            $('#specify-rootform-container').append(mainForm);
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);
