@@ -5,6 +5,7 @@
         '/static/resources/system.views.xml',
         '/static/resources/editorpanel.views.xml',
         '/static/resources/preferences.views.xml',
+        '/static/resources/common.views.xml',
         '/static/resources/global.views.xml',
         '/static/resources/search.views.xml',
         '/static/resources/fish.views.xml',
@@ -97,7 +98,9 @@
             viewName = viewNameOrNode;
         }
         if (!viewdef) {
-            if (!views[viewName.toLowerCase()]) { return form; }
+            if (!views[viewName.toLowerCase()]) {
+                return form.append($('<p>').text('View "' + viewName + '" not found!'));
+            }
             viewdef = getDefaultViewdef($(views[viewName.toLowerCase()]));
         }
         var viewModel = getModelForViewdef(viewdef);
@@ -220,7 +223,10 @@
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
                         var view = views[cell.attr('viewname').toLowerCase()];
-                        if (view === undefined) break;
+                        if (view === undefined) {
+                            td.text('View "' + cell.attr('viewname') + '" is undefined.');
+                            break;
+                        }
                         var localizedName = getLocalizedStr(schemaInfo.children('names')),
                         modelName = view.attr('class').split('.').pop().toLowerCase();
                         td.append($('<h3>').text(localizedName)
@@ -278,7 +284,7 @@
         };
 
         if (viewdef.attr('type') === 'form') {
-            var colDef = viewdef.find('columnDef[os="exp"]').first().text() ||
+            var colDef = viewdef.find('columnDef[os="lnx"]').first().text() ||
                 viewdef.find('columnDef').first().text();
             var table = processColumnDef(colDef);
 
