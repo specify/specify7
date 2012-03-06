@@ -85,7 +85,7 @@
     }
 
     // Return a <form> DOM node containing the processed view.
-    specify.processView = function (viewNameOrNode, depth, suppressHeader) {
+    specify.processView = function (viewNameOrNode, depth, isRootForm) {
         depth = depth || 1;
         var formNumber = formCounter++, viewdef, viewName,
         form = $('<form>').prop('id', 'specify-form-' + formNumber);
@@ -219,21 +219,19 @@
                 subview: function() {
                     var td = $('<td>'),
                     fieldName = cell.attr('name'),
-                    schemaInfo = getSchemaInfoFor(fieldName);
+                    schemaInfo = getSchemaInfoFor(fieldName),
+                    localizedName = getLocalizedStr(schemaInfo.children('names')),
+                    header = $('<h3>').text(localizedName).appendTo(td);
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
+                        td.addClass('specify-one-to-many');
                         var view = views[cell.attr('viewname').toLowerCase()];
                         if (view === undefined) {
                             td.text('View "' + cell.attr('viewname') + '" is undefined.');
                             break;
                         }
-                        var localizedName = getLocalizedStr(schemaInfo.children('names')),
-                        modelName = view.attr('class').split('.').pop().toLowerCase();
-                        td.append($('<h3>').text(localizedName)
-                                  .append($('<a href="new/'+modelName+'/">Add</a>'))
-                              //    .append($('<a href="#">Delete</a>'))
-                                 );
-                        td.addClass('specify-one-to-many');
+                        var modelName = view.attr('class').split('.').pop().toLowerCase();
+                        header.append($('<a href="new/'+modelName+'/">Add</a>'));
                         var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
                         td.attr('data-specify-viewdef', subviewdef.attr('name'));
                         if (subviewdef.attr('type') === 'formtable') {
@@ -296,16 +294,10 @@
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            if (!suppressHeader){
-                var localizedName = getLocalizedStr(
-                    specify.getLocalizationForModel(viewModel).children('names')
-                ) || viewdef.attr('name');
-
-                form.append($('<h3>').text(localizedName)).append(table);
-            } else {
-                form.append(table);
-            }
-            return form.append($('<input type="button" value="Delete">'));
+            isRootForm && form.append($('<h2>').text(getLocalizedStr(
+                specify.getLocalizationForModel(viewModel.toLowerCase()).children('names')
+            )));
+            return form.append(table).append($('<input type="button" value="Delete">'));
         } else if (viewdef.attr('type') === 'formtable') {
             var tr = $('<tr class="specify-formtable-row">'),
             formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];

@@ -9,7 +9,7 @@ $(function () {
     $.when(specify.loadViews(), specify.loadTypeSearches())
         .then(function () {
             var viewName = specify.getViewForModel(params.model);
-            var mainForm = specify.populateForm(viewName, uri);
+            var mainForm = specify.populateForm(viewName, uri, true);
             rootContainer.empty().append(mainForm);
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
