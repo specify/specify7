@@ -9,7 +9,7 @@ $(function () {
         var form = $(formNode),
         data = specify.harvestForm(form),
         uri = '/api/specify/' + params.relatedModel + '/';
-        data[params.view] = '/api/specify/' + params.view + '/' + params.id + '/';
+        data[params.view] = '/api/specify/' + params.model + '/' + params.id + '/';
         data.version = 0;
         return $.ajax(uri, {
             type: 'POST',
@@ -21,7 +21,7 @@ $(function () {
 
     $.when(specify.loadViews(), specify.loadTypeSearches()).then(
         function () {
-            var form = specify.buildFormForModel(params.relatedModel);
+            var form = specify.processView(specify.getViewForModel(params.relatedModel));
             form.children('input[value="Delete"]').remove();
             specify.setupControls(form);
             rootContainer.empty().append(form);

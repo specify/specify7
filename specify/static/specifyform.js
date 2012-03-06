@@ -1,6 +1,6 @@
 (function (specify, $, undefined) {
     "use strict";
-    var schemaLocalization, views, viewdefs, formCounter = 0,
+    var schemaLocalization, dataModel, views, viewdefs, formCounter = 0,
     viewsetNames = [
         '/static/resources/system.views.xml',
         '/static/resources/editorpanel.views.xml',
@@ -12,10 +12,14 @@
 
     specify.language = "en";
 
+    specify.getViewForModel = function(modelName) {
+        return dataModel[modelName.toLowerCase()].find('display').attr('view');
+    };
+
     // Search the schema_localization DOM for the given modelName.
     specify.getLocalizationForModel = function(modelName) {
-        return $(schemaLocalization).find('container[name="'+modelName.toLowerCase()+'"]').first();
-    }
+        return schemaLocalization.find('container[name="'+modelName.toLowerCase()+'"]').first();
+    };
 
     specify.getSchemaInfoFor = function(fieldname, inViewdefOrModel) {
         var path = fieldname.split('.'), field = path.pop(), model = path.pop();
@@ -297,9 +301,20 @@
         return viewdefs;
     }
 
+    function breakOutModels(dataModelDOM) {
+        var dataModel = {};
+        $(dataModelDOM).find('table').each(function () {
+            var table = $(this);
+            dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
+        });
+        return dataModel;
+    }
+
     specify.loadViews = function() {
         var loaders = [$.get('/static/resources/schema_localization.xml',
-                             function(data) { schemaLocalization = data; })
+                             function(data) { schemaLocalization = $(data); }),
+                       $.get('/static/resources/specify_datamodel.xml',
+                             function(data) { dataModel = breakOutModels(data); })
                       ],
         viewsets = {};
         $(viewsetNames).each(function (i, name) {
@@ -313,15 +328,4 @@
                 function(name) { return breakOutViews(viewsets[name]); })));
         }).promise();
     };
-
-    specify.buildFormForModel = function(modelName) {
-        var viewForModel;
-        $.each(views, function (name, view) {
-            if (view.attr('class').split('.').pop().toLowerCase() === modelName) {
-                viewForModel = name;
-            }
-        });
-        return specify.processView(viewForModel);
-    };
-
 } (window.specify = window.specify || {}, jQuery));

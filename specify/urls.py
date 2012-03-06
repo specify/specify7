@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns(
     'specify.views',
-    (r'^view/(?P<view>[^//]+)/(?P<id>\d+)/$',
+    (r'^view/(?P<model>[^//]+)/(?P<id>\d+)/$',
      login_required(TemplateView.as_view(template_name="form.html"))),
-    (r'^view/(?P<view>[^//]+)/(?P<id>\d+)/new/(?P<model>\w+)/$',
+    (r'^view/(?P<model>[^//]+)/(?P<id>\d+)/new/(?P<related_model>\w+)/$',
      login_required(TemplateView.as_view(template_name="new_related_object.html"))),
 )
