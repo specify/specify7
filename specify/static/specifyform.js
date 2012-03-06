@@ -152,7 +152,7 @@
                             return $('<input type="text" readonly>').appendTo(td);
                         },
                         plugin: function() {
-                            return $('<input type="text" class="specify-uiplugin">').appendTo(td);
+                            return $('<input type="button" value="plugin" class="specify-uiplugin">').appendTo(td);
                         },
                         other: function() {
                             td.text("unsupported uitype: " + cell.attr('uitype'));
@@ -244,7 +244,9 @@
         };
 
         if (viewdef.attr('type') === 'form') {
-            var table = processColumnDef(viewdef.find('columnDef').first().text());
+            var colDef = viewdef.find('columnDef[os="exp"]').first().text() ||
+                viewdef.find('columnDef').first().text();
+            var table = processColumnDef(colDef);
 
             // Iterate over the rows and cells of the view
             // processing each in turn and appending them

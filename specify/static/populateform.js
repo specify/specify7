@@ -143,11 +143,7 @@
     specify.setupUIplugin = function (control, data) {
         var init = parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = specify.uiPlugins[init.name];
-        if (!plugin) {
-            control.parent().empty().text('unsupported plugin: ' + init.name);
-            return;
-        }
-        plugin(control, init, data);
+        plugin && plugin(control, init, data);
     }
 
     // This function is the main entry point for this module. It calls
