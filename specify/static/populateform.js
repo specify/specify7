@@ -144,7 +144,28 @@
         var init = parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = specify.uiPlugins[init.name];
         plugin && plugin(control, init, data);
-    }
+    };
+
+    specify.setupControls = function (form, data) {
+        form.find('.specify-field').each(function () {
+            var control = $(this);
+            if (control.prop('nodeName') === 'SELECT') {
+                specify.populatePickList(control, data);
+            } else if (control.is('.specify-querycbx')) {
+                specify.setupQueryCBX(control, data);
+            } else if (control.is('.specify-uiplugin')) {
+                specify.setupUIplugin(control, data);
+            } else if (data) {
+                fillinData(data, control.attr('name'), function (value) {
+                    if (control.is('input[type="checkbox"]')) {
+                        control.prop('checked', value);
+                    } else {
+                        control.val(value);
+                    }
+                });
+            }
+        });
+    };
 
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
@@ -163,24 +184,7 @@
             form.data('specify-uri', data.resource_uri);
             form.data('specify-object-version', data.version);
             // fill in all the fields
-            form.find('.specify-field').each(function () {
-                var control = $(this);
-                if (control.prop('nodeName') === 'SELECT') {
-                    specify.populatePickList(control, data);
-                } else if (control.is('.specify-querycbx')) {
-                    specify.setupQueryCBX(control, data);
-                } else if (control.is('.specify-uiplugin')) {
-                    specify.setupUIplugin(control, data);
-                } else {
-                    fillinData(data, control.attr('name'), function (value) {
-                        if (control.is('input[type="checkbox"]')) {
-                            control.prop('checked', value);
-                        } else {
-                            control.val(value);
-                        }
-                    });
-                }
-            });
+            specify.setupControls(form, data);
 
             // fill in the many to one subforms
             form.find('.specify-many-to-one').each(function () {

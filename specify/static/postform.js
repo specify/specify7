@@ -4,7 +4,7 @@ $(function () {
     "use strict";
     var rootContainer = $('#specify-rootform-container');
     var params = specify.pullParamsFromDl(rootContainer);
-  
+
     function postForm(formNode) {
         var form = $(formNode),
         data = specify.harvestForm(form),
@@ -23,15 +23,8 @@ $(function () {
         function () {
             var form = specify.buildFormForModel(params.relatedModel);
             form.children('input[value="Delete"]').remove();
+            specify.setupControls(form);
             rootContainer.empty().append(form);
-            form.find('.specify-field').each(function () {
-                var control = $(this);
-                if (control.prop('nodeName') === 'SELECT') {
-                    specify.populatePickList(control);
-                } else if (control.is('.specify-querycbx')) {
-                    specify.setupQueryCBX(control);
-                }
-            });
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);
