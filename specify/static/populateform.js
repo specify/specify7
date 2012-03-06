@@ -141,6 +141,10 @@
     };
 
     specify.setupUIplugin = function (control, data) {
+        if (control.parents().is('.specify-formtable-row')) {
+            // not dealing with plugins it tables yet
+            return;
+        }
         var init = parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = specify.uiPlugins[init.name];
         plugin && plugin(control, init, data);
@@ -170,7 +174,7 @@
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    specify.populateForm = function (viewName, dataOrUri, depth, isOneToMany) {
+    specify.populateForm = function (viewNameOrNode, dataOrUri, depth, isOneToMany) {
         if (!dataOrUri) return $('<form>');
 
         depth = depth || 1;
@@ -178,7 +182,7 @@
         // Build the form DOM. These could be prebuilt and persisted somewhere,
         // in which case we would just select the relavent node from the
         // preloaded html. This may be necessary for accessibility.
-        var form = specify.processView(viewName, depth, isOneToMany),
+        var form = specify.processView(viewNameOrNode, depth, isOneToMany),
 
         populate = function(data) {
             form.data('specify-uri', data.resource_uri);
@@ -188,23 +192,22 @@
 
             // fill in the many to one subforms
             form.find('.specify-many-to-one').each(function () {
-                var container = $(this),
-                viewName = container.data('specify-view-name'),
-                fieldName = container.data('specify-field-name').toLowerCase(),
+                var node = $(this),
+                viewName = node.data('specify-view-name'),
+                fieldName = node.data('specify-field-name').toLowerCase(),
                 // here we recurse
                 subform = specify.populateForm(viewName, data[fieldName], depth + 1);
-                subform.appendTo(container);
+                subform.appendTo(node.find('.specify-form-container'));
             });
 
             // fill in the one to manys
             form.find('.specify-one-to-many').each(function () {
-                var container = $(this),
-                viewName = container.data('specify-view-name'),
-                fieldName = container.data('specify-field-name').toLowerCase(),
+                var node = $(this),
+                fieldName = node.data('specify-field-name').toLowerCase(),
                 fillSubform = function () {
                     // again, recursive fill
-                    var subform = specify.populateForm(viewName, this, depth + 1, true);
-                    subform.appendTo(container.hasClass('specify-formtable') ? container.find('tbody') : container);
+                    var subform = specify.populateForm(node, this, depth + 1, true);
+                    subform.appendTo(node.find('.specify-form-container'));
                     subform.children('input[value="Delete"]').click(deleteRelated);
                 };
                 // Have to add a subform for each instance. Not exactly sure how this

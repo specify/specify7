@@ -65,7 +65,15 @@
         return table;
     }
 
-    function getDefaultViewdef(view) {
+    function getDefaultViewdef(view, defaulttype) {
+        if (defaulttype === 'table') {
+            var viewdef;
+            view.find('altview').each(function() {
+                var vd = viewdefs[$(this).attr('viewdef').toLowerCase()];
+                if (vd.attr('type') === 'formtable') viewdef = vd;
+            });
+            if (viewdef) return viewdef;
+        }
         var defaultView = view.find('altview[default="true"]').first().attr('viewdef') ||
             view.find('altview').first().attr('viewdef');
         return viewdefs[defaultView.toLowerCase()];
@@ -76,13 +84,23 @@
     }
 
     // Return a <form> DOM node containing the processed view.
-    specify.processView = function (viewName, depth, suppressHeader) {
-        var formNumber = formCounter++,
-        form = $('<form>').prop('id', 'specify-form-' + formNumber);
-        if (!views[viewName.toLowerCase()]) { return form; }
+    specify.processView = function (viewNameOrNode, depth, suppressHeader) {
         depth = depth || 1;
-        var viewdef = getDefaultViewdef($(views[viewName.toLowerCase()])),
-        viewModel = getModelForViewdef(viewdef);
+        var formNumber = formCounter++, viewdef, viewName,
+        form = $('<form>').prop('id', 'specify-form-' + formNumber);
+        if (viewNameOrNode.jquery) {
+            // we got a subview node
+            viewName = viewNameOrNode.data('specify-view-name');
+            viewdef = viewdefs[viewNameOrNode.data('specify-viewdef').toLowerCase()];
+        } else {
+            // must be a view name
+            viewName = viewNameOrNode;
+        }
+        if (!viewdef) {
+            if (!views[viewName.toLowerCase()]) { return form; }
+            viewdef = getDefaultViewdef($(views[viewName.toLowerCase()]));
+        }
+        var viewModel = getModelForViewdef(viewdef);
         form.attr('data-specify-model', viewModel);
 
         var getSchemaInfoFor = function(fieldname, inViewdef) {
@@ -95,16 +113,34 @@
             return specify.getLocalizedLabelFor(fieldname, inViewdef);
         },
 
+        getLabelForCell = function (cell, inViewdef) {
+            inViewdef = inViewdef || viewdef;
+            return cell.attr('label') ||
+                getLocalizedLabelFor(cell.attr('name'), inViewdef) ||
+                cell.attr('name');
+        },
+
         getLabelCellText = function(cell, inViewdef) {
             inViewdef = inViewdef || viewdef;
-            var labelfor = cell.attr('labelfor'),
-            forCellName = inViewdef.find('cell[id="'+labelfor+'"]').first().attr('name');
             if (cell.attr('label') !== undefined) {
                 return cell.attr('label');
             } else {
-                var localizedLabel = getLocalizedLabelFor(forCellName, inViewdef);
-                return localizedLabel || forCellName;
+                var labelfor = cell.attr('labelfor'),
+                forCell = inViewdef.find('cell[id="'+labelfor+'"]');
+                return getLabelForCell(forCell, inViewdef);
             }
+        },
+
+        buildFormTableHeader = function(viewdef) {
+            var header = $('<thead>'), tr = $('<tr>').appendTo(header);
+            viewdef.find('cell').each(function () {
+                var cell = $(this), type = cell.attr('type');
+                if (type === 'field' || type == 'subview') {
+//                    if (cell.attr('uitype') === 'plugin') return;
+                    tr.append($('<th>').text(getLabelForCell(cell, viewdef)));
+                }
+            });
+            return header;
         },
 
         processCell = function(cellNode) {
@@ -192,27 +228,19 @@
                               //    .append($('<a href="#">Delete</a>'))
                                  );
                         td.addClass('specify-one-to-many');
-                        var subviewdef = getDefaultViewdef(view);
+                        var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
+                        td.attr('data-specify-viewdef', subviewdef.attr('name'));
                         if (subviewdef.attr('type') === 'formtable') {
                             td.addClass('specify-formtable');
                             var viewdef = viewdefs[subviewdef.find('definition').text().toLowerCase()],
-                            table = $('<table>').appendTo(td),
-                            header = $('<tr>').appendTo($('<thead>').appendTo(table));
-                            viewdef.find('cell').each(function () {
-                                var cell = $(this);
-                                if (cell.attr('type') === 'label') {
-                                    header.append($('<th>').text(getLabelCellText(cell, viewdef)));
-                                } else if (cell.attr('label') !== undefined) {
-                                    header.append($('<th>').text(cell.attr('label')));
-                                } else {
-                                    header.append($('<th>'));
-                                }
-                            });
-                            table.append('<tbody>');
-                        }
+                            table = $('<table>').appendTo(td);
+                            table.append(buildFormTableHeader(viewdef));
+                            table.append('<tbody class="specify-form-container">');
+                        } else { td.append('<div class="specify-form-container">'); }
                         break;
                     case 'ManyToOne':
                         td.addClass('specify-many-to-one');
+                        td.append('<div class="specify-form-container">');
                         break;
                     }
                     td.attr('data-specify-field-name', fieldName);
@@ -243,7 +271,9 @@
 
             td = (byType[cell.attr('type')] || byType.other)(),
             colspan = cell.attr('colspan');
-            colspan && td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+            if (viewdef.attr('type') === 'form' && colspan) {
+                td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+            }
             return td;
         };
 
