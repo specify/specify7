@@ -373,7 +373,7 @@
         return dataModel;
     }
 
-    specify.loadViews = function() {
+    specify.addInitializer(function() {
         var loaders = [$.get('/static/resources/schema_localization.xml',
                              function(data) { schemaLocalization = $(data); }),
                        $.get('/static/resources/specify_datamodel.xml',
@@ -392,5 +392,6 @@
             views = $.extend.apply($, $.merge([{}], viewsetNames.map(
                 function(name) { return breakOutViews(viewsets[name]); })));
         }).promise();
-    };
+    });
+
 } (window.specify = window.specify || {}, jQuery));

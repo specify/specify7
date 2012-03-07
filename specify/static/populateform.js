@@ -263,9 +263,9 @@
 	return params;
     };
 
-    // typesearches define how the querycbx's work.
-    specify.loadTypeSearches = function () {
+
+    specify.addInitializer(function () {
         return $.get('/static/resources/typesearch_def.xml', function (data) { typesearches = $(data); });
-    };
+    });
 
 } (window.specify = window.specify || {}, jQuery));
