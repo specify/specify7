@@ -179,7 +179,7 @@
                     byUIType = {
                         checkbox: function() {
                             var control = $('<input type="checkbox">').appendTo(td);
-                            if (doingFormTable) return control;
+                            if (doingFormTable) return control.attr('disabled', true);
                             var label = cell.attr('label');
                             if (label === undefined) { label = getLocalizedLabelFor(fieldName); }
                             label && td.append($('<label>').text(label));
@@ -187,14 +187,14 @@
                         },
                         textarea: function () {
                             if (doingFormTable)
-                                return $('<input type="text">').appendTo(td);
+                                return $('<input type="text" readonly>').appendTo(td);
                             var control = $('<textarea>)').appendTo(td);
                             cell.attr('rows') && control.attr('rows', cell.attr('rows'));
                             return control;
                         },
                         textareabrief: function() {
                             if (doingFormTable)
-                                return $('<input type="text">').appendTo(td);
+                                return $('<input type="text" readonly>').appendTo(td);
                             return $('<textarea>)').attr('rows', cell.attr('rows') || 1).appendTo(td);
                         },
                         combobox: function() {
@@ -203,22 +203,25 @@
                             control = $('<select>').appendTo(td);
                             pickListName && control.attr('data-specify-picklist', pickListName);
                             isRequired && control.addClass('required');
+                            control.attr('disabled', doingFormTable);
                             return control;
                         },
                         querycbx: function() {
-                            return $('<input type="text">').appendTo(td).addClass('specify-querycbx');
+                            return $('<input type="text">').appendTo(td)
+                                .addClass('specify-querycbx').attr('readonly', doingFormTable);
                         },
                         text: function() {
-                            return $('<input type="text">').appendTo(td);
+                            return $('<input type="text">').appendTo(td).attr('readonly', doingFormTable);
                         },
                         formattedtext: function() {
-                            return $('<input type="text">').appendTo(td);
+                            return $('<input type="text">').appendTo(td).attr('readonly', doingFormTable);
                         },
                         label: function() {
                             return $('<input type="text" readonly>').appendTo(td);
                         },
                         plugin: function() {
-                            return $('<input type="button" value="plugin" class="specify-uiplugin">').appendTo(td);
+                            return $('<input type="button" value="plugin" class="specify-uiplugin">')
+                                .appendTo(td).attr('disabled', doingFormTable);
                         },
                         other: function() {
                             td.text("unsupported uitype: " + cell.attr('uitype'));
@@ -247,6 +250,7 @@
                         button.attr('data-specify-initialize', cell.attr('initialize'));
                         var icon = props.icon || specify.getModelFromView(cell.attr('viewname'));
                         button.append($('<img src="' + specify.getIcon(icon) + '" style="height: 20px">'));
+                        button.attr('disabled', doingFormTable);
                         return td.append(button);
                     }
                     var fieldName = cell.attr('name'),
