@@ -141,10 +141,6 @@
     };
 
     specify.setupUIplugin = function (control, data) {
-        if (control.parents().is('.specify-formtable-row')) {
-            // not dealing with plugins it tables yet
-            return;
-        }
         var init = parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = specify.uiPlugins[init.name];
         plugin && plugin(control, init, data);

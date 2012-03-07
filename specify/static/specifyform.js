@@ -118,9 +118,9 @@
 
         getLabelForCell = function (cell, inViewdef) {
             inViewdef = inViewdef || viewdef;
-            return cell.attr('label') ||
-                getLocalizedLabelFor(cell.attr('name'), inViewdef) ||
-                cell.attr('name');
+            return cell.attr('label')
+                || getLocalizedLabelFor(cell.attr('name'), inViewdef);
+//                || cell.attr('name');
         },
 
         getLabelCellText = function(cell, inViewdef) {
@@ -134,20 +134,21 @@
             }
         },
 
+        getFormTableCells = function(viewdef) {
+            return viewdef.find('cell[type="field"], cell[type="subview"]');
+        },
+
         buildFormTableHeader = function(viewdef) {
             var header = $('<thead>'), tr = $('<tr>').appendTo(header);
-            viewdef.find('cell').each(function () {
-                var cell = $(this), type = cell.attr('type');
-                if (type === 'field' || type == 'subview') {
-//                    if (cell.attr('uitype') === 'plugin') return;
-                    tr.append($('<th>').text(getLabelForCell(cell, viewdef)));
-                }
+            getFormTableCells(viewdef).each(function () {
+                tr.append($('<th>').text(getLabelForCell($(this), viewdef)));
             });
             return header;
         },
 
         processCell = function(cellNode) {
             var cell = $(cellNode),
+            doingFormTable = (viewdef.attr('type') === 'formtable'),
             byType = {
                 label: function() {
                     var label = $('<label>').text(getLabelCellText(cell));
@@ -160,18 +161,23 @@
                     fieldName = cell.attr('name'),
                     byUIType = {
                         checkbox: function() {
-                            var control = $('<input type="checkbox">').appendTo(td),
-                            label = cell.attr('label');
+                            var control = $('<input type="checkbox">').appendTo(td);
+                            if (doingFormTable) return control;
+                            var label = cell.attr('label');
                             if (label === undefined) { label = getLocalizedLabelFor(fieldName); }
                             label && td.append($('<label>').text(label));
                             return control;
                         },
                         textarea: function () {
+                            if (doingFormTable)
+                                return $('<input type="text">').appendTo(td);
                             var control = $('<textarea>)').appendTo(td);
                             cell.attr('rows') && control.attr('rows', cell.attr('rows'));
                             return control;
                         },
                         textareabrief: function() {
+                            if (doingFormTable)
+                                return $('<input type="text">').appendTo(td);
                             return $('<textarea>)').attr('rows', cell.attr('rows') || 1).appendTo(td);
                         },
                         combobox: function() {
@@ -301,7 +307,7 @@
         } else if (viewdef.attr('type') === 'formtable') {
             var tr = $('<tr class="specify-formtable-row">'),
             formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
-            formViewdef.find('cell[type="field"]').each(function () {
+            getFormTableCells(formViewdef).each(function () {
                 processCell(this).appendTo(tr);
             });
             return tr;
