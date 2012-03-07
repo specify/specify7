@@ -40,6 +40,7 @@ select {
 }
 
 .separator {
+    padding-bottom: 3px;
     border-bottom: solid 1px;
 }
 

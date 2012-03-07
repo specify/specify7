@@ -67,14 +67,17 @@
 
     // helper function that pulls name value pairs out of property strings
     function parseSpecifyProperties(props) {
+        props = props || '';
         var result = {};
         $(props.split(';')).each(function () {
-            var match = /([^=]+)=(.+)/.exec(this),
-            key = match[1], value = match[2];
-            if (key && value) { result[key] = value; }
+            var match = /([^=]+)=(.+)/.exec(this);
+            if (!match) return;
+            var key = match[1], value = match[2];
+            if (key) { result[key] = value; }
         });
         return result;
     }
+    specify.parseSpecifyProperties = parseSpecifyProperties;
 
     specify.setupQueryCBX = function (control, data) {
         // The main querycbx control is hidden and the user interacts

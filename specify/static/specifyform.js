@@ -1,6 +1,7 @@
 (function (specify, $, undefined) {
     "use strict";
-    var schemaLocalization, dataModel, views, viewdefs, formCounter = 0,
+    var schemaLocalization, dataModel, dataModelIcons,
+    views, viewdefs, formCounter = 0,
     viewsetNames = [
         '/static/resources/system.views.xml',
         '/static/resources/editorpanel.views.xml',
@@ -13,8 +14,24 @@
 
     specify.language = "en";
 
+    specify.getIcon = function (icon, cycleDetect) {
+        var iconNode = dataModelIcons.find('icon[name="' + icon + '"]');
+        cycleDetect = cycleDetect || {};
+        if (cycleDetect[icon]) return 'circular_reference_in_icons';
+        if (iconNode.attr('alias')) {
+            cycleDetect[icon] = true;
+            return specify.getIcon(iconNode.attr('alias'), cycleDetect);
+        }
+        return '/static/img/icons/datamodel/' + iconNode.attr('file');
+    };
+
     specify.getViewForModel = function(modelName) {
         return dataModel[modelName.toLowerCase()].find('display').attr('view');
+    };
+
+    specify.getModelFromView = function(view) {
+        if (!view.jquery) view = views[view.toLowerCase()];
+        return view.attr('class').split('.').pop();
     };
 
     // Search the schema_localization DOM for the given modelName.
@@ -224,7 +241,15 @@
                 },
                 subview: function() {
                     var td = $('<td>'),
-                    fieldName = cell.attr('name'),
+                    props = specify.parseSpecifyProperties(cell.attr('initialize'));
+                    if (props.btn === 'true') {
+                        var button = $('<button type=button class="specify-subview-button">');
+                        button.attr('data-specify-initialize', cell.attr('initialize'));
+                        var icon = props.icon || specify.getModelFromView(cell.attr('viewname'));
+                        button.append($('<img src="' + specify.getIcon(icon) + '" style="height: 20px">'));
+                        return td.append(button);
+                    }
+                    var fieldName = cell.attr('name'),
                     schemaInfo = getSchemaInfoFor(fieldName),
                     localizedName = getLocalizedStr(schemaInfo.children('names')),
                     header = $('<h3>').text(localizedName).appendTo(td);
@@ -348,7 +373,9 @@
         var loaders = [$.get('/static/resources/schema_localization.xml',
                              function(data) { schemaLocalization = $(data); }),
                        $.get('/static/resources/specify_datamodel.xml',
-                             function(data) { dataModel = breakOutModels(data); })
+                             function(data) { dataModel = breakOutModels(data); }),
+                       $.get('/static/resources/icons_datamodel.xml',
+                             function(data) { dataModelIcons = $(data); })
                       ],
         viewsets = {};
         $(viewsetNames).each(function (i, name) {
