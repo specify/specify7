@@ -40,24 +40,37 @@
             // add a success callback to the picklist fetch that
             // will fill in the options and select the current value.
             picklistJQXHR.success(function (picklistResults) {
-                var picklist = picklistResults.objects[0], items = {};
-                if (!control.hasClass('required')) {
-                    $('<option>').appendTo(control);
-                }
-                $(picklist.picklistitems).each(function () {
-                    items[this.value] = this;
-                    $('<option>').text(this.value).appendTo(control);
-                });
-                if (value === undefined) return;
-                if (!items[value]) {
-                    if (control.hasClass('required') || value !== '') {
-                        $('<option>')
-                            .attr('value', value)
-                            .text(value + " (current value not in picklist)")
-                            .appendTo(control);
+                var picklist = picklistResults.objects[0], items = {},
+                buildPicklist = function () {
+                    if (!control.hasClass('required')) {
+                        $('<option>').appendTo(control);
                     }
-                }
-                control.val(value);
+                    $(picklist.picklistitems).each(function () {
+                        items[this.value] = this;
+                        $('<option>').text(this.title).attr('value', this.value).appendTo(control);
+                    });
+                    if (value === undefined) return;
+                    if (!items[value]) {
+                        if (control.hasClass('required') || value !== '') {
+                            $('<option>')
+                                .attr('value', value)
+                                .text(value + " (current value not in picklist)")
+                                .appendTo(control);
+                        }
+                    }
+                    control.val(value);
+                };
+                if (picklist.tablename) {
+                    $.get('/api/specify/' + picklist.tablename + '/',
+                          function (picklistTable) {
+                              picklist.picklistitems = $.map(
+                                  picklistTable.objects, function (item, i) {
+                                      return {value: item.resource_uri,
+                                              title: item.name};
+                                  });
+                              buildPicklist();
+                          });
+                } else buildPicklist();
             });
         };
 
