@@ -67,6 +67,16 @@ the `DATABASES` section as follows, choosing appropriate values for
     }
 
 
+Sync the database:
+------------------
+The authentication system in django makes use of a couple extra tables. Run
+this command from the `djangospecify` directory to generate them:
+
+    python manage.py syncdb
+    
+Alternatively, you could add an Eclipse run configuration based on 'PyDev: Django'
+with the syncdb argument.
+    
 Run the djangospecify project to start the test server.
 -------------------------------------------------------
 Select the djangospecify project from the Package Explorer and then
