@@ -29,6 +29,13 @@
         return dataModel[modelName.toLowerCase()].find('display').attr('view');
     };
 
+    specify.getDataModelField = function(modelName, fieldName) {
+        var table = dataModel[modelName.toLowerCase()];
+        if (!table) return $();
+        var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
+        return table.find(sel);
+    };
+
     specify.getModelFromView = function(view) {
         if (!view.jquery) view = views[view.toLowerCase()];
         return view.attr('class').split('.').pop();
@@ -104,8 +111,7 @@
     // Return a <form> DOM node containing the processed view.
     specify.processView = function (viewNameOrNode, depth, isRootForm) {
         depth = depth || 1;
-        var formNumber = formCounter++, viewdef, viewName,
-        form = $('<form>').prop('id', 'specify-form-' + formNumber);
+        var formNumber = formCounter++, viewdef, viewName;
         if (viewNameOrNode.jquery) {
             // we got a subview node
             viewName = viewNameOrNode.data('specify-view-name');
@@ -116,12 +122,16 @@
         }
         if (!viewdef) {
             if (!views[viewName.toLowerCase()]) {
-                return form.append($('<p>').text('View "' + viewName + '" not found!'));
+                return $('<p>').text('View "' + viewName + '" not found!');
             }
             viewdef = getDefaultViewdef($(views[viewName.toLowerCase()]));
         }
-        var viewModel = getModelForViewdef(viewdef);
-        form.attr('data-specify-model', viewModel);
+
+        var viewModel = getModelForViewdef(viewdef),
+        doingFormTable = (viewdef.attr('type') === 'formtable'),
+        result = doingFormTable ? $('<tr>') : $('<form>');
+        result.prop('id', 'specify-form-' + formNumber);
+        result.attr('data-specify-model', viewModel);
 
         var getSchemaInfoFor = function(fieldname, inViewdef) {
             inViewdef = inViewdef || viewdef;
@@ -165,7 +175,6 @@
 
         processCell = function(cellNode) {
             var cell = $(cellNode),
-            doingFormTable = (viewdef.attr('type') === 'formtable'),
             byType = {
                 label: function() {
                     var label = $('<label>').text(getLabelCellText(cell));
@@ -310,13 +319,13 @@
 
             td = (byType[cell.attr('type')] || byType.other)(),
             colspan = cell.attr('colspan');
-            if (viewdef.attr('type') === 'form' && colspan) {
+            if (!doingFormTable && colspan) {
                 td.attr('colspan', Math.ceil(parseInt(colspan)/2));
             }
             return td;
         };
 
-        if (viewdef.attr('type') === 'form') {
+        if (!doingFormTable) {
             var colDef = viewdef.find('columnDef[os="lnx"]').first().text() ||
                 viewdef.find('columnDef').first().text();
             var table = processColumnDef(colDef);
@@ -329,17 +338,16 @@
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            isRootForm && form.append($('<h2>').text(getLocalizedStr(
+            isRootForm && result.append($('<h2>').text(getLocalizedStr(
                 specify.getLocalizationForModel(viewModel.toLowerCase()).children('names')
             )));
-            return form.append(table).append($('<input type="button" value="Delete">'));
-        } else if (viewdef.attr('type') === 'formtable') {
-            var tr = $('<tr class="specify-formtable-row">'),
-            formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
+            return result.append(table).append($('<input type="button" value="Delete">'));
+        } else {
+            var formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
             getFormTableCells(formViewdef).each(function () {
-                processCell(this).appendTo(tr);
+                processCell(this).appendTo(result);
             });
-            return tr;
+            return result.addClass("specify-formtable-row");
         }
     };
 

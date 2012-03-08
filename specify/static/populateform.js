@@ -2,6 +2,13 @@
     "use strict";
     var typesearches;
 
+    // Some fields reference data in related objects. E.g. Collectors
+    // references agent.lastName and agent.firstName. So we may have to
+    // traverse the object tree to get the values we need. It is also
+    // possible the related object is not included and has to be fetched,
+    // so we will have to wait for the fetch to occur. Thus, this function.
+    // The top level data is in [resource], and the field we need is named
+    // by [field]. Returns a deferred that resolves to the value.
     specify.getDataFromResource = function (resource, field) {
         var deferred = $.Deferred();
         function getData(data, fieldName) {
@@ -23,14 +30,6 @@
         return deferred.promise();
     };
 
-    // Some fields referrence data in related objects. E.g. Collectors
-    // referrences agent.lastName and agent.firstName. So we may have to
-    // traverse the object tree to get the values we need. It is also
-    // possible the related object is not included and has to be fetched,
-    // so we will have to wait for the fetch to occur. Thus, this function.
-    // The top level data is in [data], and the field we need is named
-    // by [fieldName]. When the value is available (usually immediately)
-    // [dispatch] is called with the value as the argument.
     function fillinData(data, fieldName, dispatch) {
         // deprecated. use specify.getDataFromResource instead
         specify.getDataFromResource(data, fieldName).done(dispatch);
@@ -180,13 +179,23 @@
             } else if (control.is('.specify-uiplugin')) {
                 specify.setupUIplugin(control, data);
             } else if (data) {
-                fillinData(data, control.attr('name'), function (value) {
+                var fetch = specify.getDataFromResource(data, control.attr('name'));
+                var fillItIn  = function (value) {
                     if (control.is('input[type="checkbox"]')) {
                         control.prop('checked', value);
                     } else {
                         control.val(value);
                     }
-                });
+                };
+
+                var dataModelField = specify.getDataModelField(form.data('specify-model'),
+                                                               control.attr('name'));
+
+                if (dataModelField.is('relationship')) {
+                    var relatedModel = dataModelField.attr('classname').split('.').pop();
+                    fetch.pipe(function (obj) { return specify.dataObjFormat(relatedModel, obj) })
+                        .done(fillItIn);
+                } else fetch.done(fillItIn);
             }
         });
     };
