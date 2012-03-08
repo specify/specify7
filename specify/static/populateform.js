@@ -2,6 +2,27 @@
     "use strict";
     var typesearches;
 
+    specify.getDataFromResource = function (resource, field) {
+        var deferred = $.Deferred();
+        function getData(data, fieldName) {
+            var path = $.isArray(fieldName) ? fieldName : fieldName.split('.');
+            if (path.length === 1) {
+                // the field we want is right in the data object
+                deferred.resolve(data[path[0].toLowerCase()]);
+            } else if ($.isPlainObject(data[path[0]])) {
+                // data contains an embedded object that has our field
+                getData(data[path[0]], path.slice(1));
+            } else {
+                // we have to fetch a subobject which contains our field
+                $.get(data[path[0]], function (data) {
+                    getData(data, path.slice(1));
+                });
+            }
+        }
+        getData(resource, field);
+        return deferred.promise();
+    };
+
     // Some fields referrence data in related objects. E.g. Collectors
     // referrences agent.lastName and agent.firstName. So we may have to
     // traverse the object tree to get the values we need. It is also
@@ -11,21 +32,8 @@
     // by [fieldName]. When the value is available (usually immediately)
     // [dispatch] is called with the value as the argument.
     function fillinData(data, fieldName, dispatch) {
-        var path = $.isArray(fieldName) ? fieldName : fieldName.split('.');
-        if (path.length === 1) {
-            // the field we want is right in the data object
-            dispatch(data[path[0].toLowerCase()]);
-            return;
-        }
-        if ($.isPlainObject(data[path[0]])) {
-            // data contains an embedded object that has our field
-            fillinData(data[path[0]], path.slice(1), dispatch);
-            return;
-        }
-        // we have to fetch a subobject which contains our field
-        $.get(data[path[0]], function (data) {
-            fillinData(data, path.slice(1), dispatch);
-        });
+        // deprecated. use specify.getDataFromResource instead
+        specify.getDataFromResource(data, fieldName).done(dispatch);
     }
     specify.fillinData = fillinData;
 
