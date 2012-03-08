@@ -76,6 +76,13 @@ choosing appropriate values for `NAME`, `USER`, and `PASSWORD`:
             'PORT': '',    # Set to empty string for default.
         }
     }
+    
+Sync the database:
+------------------
+The authentication system in django makes use of a couple extra tables. This
+command will generate them:
+
+    python manage.py syncdb
 
 Run the test server:
 --------------------
