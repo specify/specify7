@@ -1,30 +1,22 @@
-(function (specify, $, undefined) {
+define(['jquery', 'text!resources/specify_datamodel.xml'], function($, xml) {
     "use strict";
-    if (specify.datamodel) return;
-    var dataModel, self = specify.datamodel = {};
+    var dataModel = {};
 
-    self.getViewForModel = function(modelName) {
-        return dataModel[modelName.toLowerCase()].find('display').attr('view');
-    };
-
-    self.getDataModelField = function(modelName, fieldName) {
-        var table = dataModel[modelName.toLowerCase()];
-        if (!table) return $();
-        var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
-        return table.find(sel);
-    };
-
-    var breakOutModels = function(dataModelDOM) {
-        if (dataModel) return;
-        dataModel = {};
-        $(dataModelDOM).find('table').each(function () {
-            var table = $(this);
-            dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
-        });
-    }
-
-    specify.addInitializer(function() {
-        return $.get('/static/resources/specify_datamodel.xml', breakOutModels).promise();
+    $('table', $.parseXML(xml)).each(function () {
+        var table = $(this);
+        dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
     });
 
-} (window.specify, jQuery));
+    return {
+        getViewForModel: function(modelName) {
+            return dataModel[modelName.toLowerCase()].find('display').attr('view');
+        },
+
+        getDataModelField: function(modelName, fieldName) {
+            var table = dataModel[modelName.toLowerCase()];
+            if (!table) return $();
+            var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
+            return table.find(sel);
+        },
+    };
+});

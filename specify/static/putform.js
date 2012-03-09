@@ -1,6 +1,7 @@
-(function (specify, $, undefined) {
+define(['jquery'], function($) {
+    var self = {};
 
-    specify.harvestForm = function (formNode) {
+    self.harvestForm = function (formNode) {
         var form = $(formNode), data = {};
         form.find('.specify-field').each(function () {
             var field = $(this);
@@ -15,9 +16,9 @@
         return data;
     };
 
-    specify.putForm = function (formNode, recursive) {
+    self.putForm = function (formNode, recursive) {
         var form = $(formNode),
-        data = specify.harvestForm(form),
+        data = self.harvestForm(form),
         deferreds = [];
         data.resource_uri = form.data('specify-uri');
         data.version = form.data('specify-object-version');
@@ -31,7 +32,7 @@
                     container.children('form');
                 items.each(function () {
                     var subform = $(this);
-                    deferreds.push.apply(deferreds, specify.putForm(subform, recursive));
+                    deferreds.push.apply(deferreds, self.putForm(subform, recursive));
                 });
             });
         }
@@ -44,4 +45,5 @@
         return deferreds;
     };
 
-} (window.specify = window.specify || {}, jQuery));
+    return self;
+});

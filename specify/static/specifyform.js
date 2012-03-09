@@ -1,18 +1,52 @@
-(function (specify, $, undefined) {
+define(['jquery', 'underscore', 'datamodel', 'icons', 'schemalocalization',
+        'text!resources/system.views.xml',
+        'text!resources/editorpanel.views.xml',
+        'text!resources/preferences.views.xml',
+        'text!resources/search.views.xml',
+        'text!resources/global.views.xml',
+        'text!resources/common.views.xml',
+        'text!resources/fish.views.xml'],
+
+function specifyform($, _, datamodel, icons, sl) {
     "use strict";
-    if (specify.forms) return;
-    var self = specify.forms = {},
-    views, viewdefs, formCounter = 0,
-    $sl = specify.schemaLocalization,
-    viewsetNames = [
-        '/static/resources/system.views.xml',
-        '/static/resources/editorpanel.views.xml',
-        '/static/resources/preferences.views.xml',
-        '/static/resources/common.views.xml',
-        '/static/resources/global.views.xml',
-        '/static/resources/search.views.xml',
-        '/static/resources/fish.views.xml',
-    ];
+    var self = {}, formCounter = 0,
+    viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value(),
+    views = _.extend.apply({}, _.map(viewsets, breakOutViews)),
+    viewdefs = _.extend.apply({}, _.map(viewsets, breakOutViewdefs));
+
+    // Processes the viewset DOM to create an object
+    // mapping viewdef names to the viewdef DOM nodes.
+    // Allows the views to be merged easily.
+    function breakOutViews(viewset) {
+        var views = {};
+        $('view', viewset).each(function () {
+            var view = $(this);
+            views[view.attr('name').toLowerCase()] = view;
+        });
+        return views;
+    }
+
+    function breakOutViewdefs(viewset) {
+        var viewdefs = {};
+        $('viewdef', viewset).each(function () {
+            var viewdef = $(this);
+            viewdefs[viewdef.attr('name').toLowerCase()] = viewdef;
+        });
+        return viewdefs;
+    }
+
+    // helper function that pulls name value pairs out of property strings
+    self.parseSpecifyProperties = function(props) {
+        props = props || '';
+        var result = {};
+        $(props.split(';')).each(function () {
+            var match = /([^=]+)=(.+)/.exec(this);
+            if (!match) return;
+            var key = match[1], value = match[2];
+            if (key) { result[key] = value; }
+        });
+        return result;
+    }
 
     self.getModelFromView = function(view) {
         if (!view.jquery) view = views[view.toLowerCase()];
@@ -71,7 +105,7 @@
             viewdef = getDefaultViewdef($(views[viewName.toLowerCase()]));
         }
 
-        var viewModel = getModelForViewdef(viewdef),
+        var viewModel = getModelFromViewdef(viewdef),
         doingFormTable = (viewdef.attr('type') === 'formtable'),
         result = doingFormTable ? $('<tr>') : $('<form>');
         result.prop('id', 'specify-form-' + formNumber);
@@ -79,18 +113,18 @@
 
         var getSchemaInfoFor = function(fieldname, inViewdef) {
             var modelname = getModelFromViewdef(inViewdef || viewdef);
-            return $sl.getSchemaInfoForField(fieldname, modelname);
+            return sl.getLocalizationForField(fieldname, modelname);
         },
 
         getLocalizedLabelFor = function (fieldname, inViewdef) {
             var modelname = getModelFromViewdef(inViewdef || viewdef);
-            return $sl.getLocalizedLabelForField(fieldname, modelname);
+            return sl.getLocalizedLabelForField(fieldname, modelname);
         },
 
         getLabelForCell = function (cell, inViewdef) {
             var modelname = getModelFromViewdef(inViewdef || viewdef);
             return cell.attr('label') ||
-                $sl.getLocalizedLabelForField(cell.attr('name'), modelname);
+                sl.getLocalizedLabelForField(cell.attr('name'), modelname);
 //                || cell.attr('name');
         },
 
@@ -99,8 +133,8 @@
                 return cell.attr('label');
             } else {
                 var labelfor = cell.attr('labelfor'),
-                forCell = inViewdef.find('cell[id="'+labelfor+'"]'),
-                return getLabelForCell(forCell, inViewdef);
+                forCell = $('cell[id="'+labelfor+'"]', inViewdef || viewdef);
+                return getLabelForCell(forCell, inViewdef || viewdef);
             }
         },
 
@@ -196,18 +230,18 @@
                 },
                 subview: function() {
                     var td = $('<td>'),
-                    props = specify.parseSpecifyProperties(cell.attr('initialize'));
+                    props = self.parseSpecifyProperties(cell.attr('initialize'));
                     if (props.btn === 'true') {
                         var button = $('<button type=button class="specify-subview-button">');
                         button.attr('data-specify-initialize', cell.attr('initialize'));
                         var icon = props.icon || self.getModelFromView(cell.attr('viewname'));
-                        button.append($('<img src="' + specify.icons.getIcon(icon) + '" style="height: 20px">'));
+                        button.append($('<img src="' + icons.getIcon(icon) + '" style="height: 20px">'));
                         button.attr('disabled', doingFormTable);
                         return td.append(button);
                     }
                     var fieldName = cell.attr('name'),
                     schemaInfo = getSchemaInfoFor(fieldName),
-                    localizedName = $sl.getLocalizedStr(schemaInfo.children('names')),
+                    localizedName = sl.getLocalizedStr(schemaInfo.children('names')),
                     header = $('<h3>').text(localizedName).appendTo(td);
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
@@ -281,8 +315,8 @@
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            isRootForm && result.append($('<h2>').text(getLocalizedStr(
-                $sl.getLocalizationForModel(viewModel).children('names')
+            isRootForm && result.append($('<h2>').text(sl.getLocalizedStr(
+                sl.getLocalizationForModel(viewModel).children('names')
             )));
             return result.append(table).append($('<input type="button" value="Delete">'));
         } else {
@@ -294,39 +328,5 @@
         }
     };
 
-    // Processes the viewset DOM to create an object
-    // mapping viewdef names to the viewdef DOM nodes.
-    // Allows the views to be merged easily.
-    function breakOutViews(viewset) {
-        var views = {};
-        $(viewset).find('view').each(function () {
-            var view = $(this);
-            views[view.attr('name').toLowerCase()] = view;
-        });
-        return views;
-    }
-
-    function breakOutViewdefs(viewset) {
-        var viewdefs = {};
-        $(viewset).find('viewdef').each(function () {
-            var viewdef = $(this);
-            viewdefs[viewdef.attr('name').toLowerCase()] = viewdef;
-        });
-        return viewdefs;
-    }
-
-    specify.addInitializer(function() {
-        var viewsets = {},
-        loaders = $(viewsetNames).map(function () {
-            return $.get(name, function(viewset) { viewsets[name] = viewset; });
-        });
-        return $.when.apply($, loaders).then(function() {
-            viewdefs = $.extend.apply($, $.merge([{}], viewsetNames.map(
-                function(name) { return breakOutViewdefs(viewsets[name]); })));
-
-            views = $.extend.apply($, $.merge([{}], viewsetNames.map(
-                function(name) { return breakOutViews(viewsets[name]); })));
-        }).promise();
-    });
-
-} (window.specify, jQuery));
+    return self;
+});

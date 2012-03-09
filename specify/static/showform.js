@@ -1,19 +1,25 @@
+require({
+    priority: ['jquery'],
+    paths: {
+        'jquery': "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery",
+        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min"
+    }
+});
 
-// Main entry point.
-$(function () {
+require(['jquery', 'populateform', 'datamodel', 'putform'], function($, populateform, datamodel, putform) {
     "use strict";
-    specify.initialize().then(function () {
+    $(function () {
         var rootContainer = $('#specify-rootform-container');
-        var params = specify.pullParamsFromDl(rootContainer);
+        var params = populateform.pullParamsFromDl(rootContainer);
         var uri = "/api/specify/" + params.model + "/" + params.id + "/";
 
-        var viewName = specify.getViewForModel(params.model);
-        var mainForm = specify.populateForm(viewName, uri, true);
+        var viewName = datamodel.getViewForModel(params.model);
+        var mainForm = populateform.populateForm(viewName, uri, true);
         rootContainer.empty().append(mainForm);
         $('input[type="submit"]').click(function () {
             var btn = $(this);
             btn.prop('disabled', true);
-            $.when.apply($, specify.putForm(mainForm, true)).then(function () {
+            $.when.apply($, putform.putForm(mainForm, true)).then(function () {
                 btn.prop('disabled', false);
                 window.location.reload(true);
             });

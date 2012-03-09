@@ -1,9 +1,9 @@
-(function (specify, $, undefined) {
+define(['jquery', 'specifyapi', 'text!resources/dataobj_formatters.xml'], function($, api, xml) {
     "use strict";
-    var formatters;
+    var formatters = $.parseXML(xml), self = {};
 
-    specify.dataObjFormat = function (modelName, obj) {
-        var sw = formatters.find('format[name="' + modelName + '"]').find('switch');
+    self.dataObjFormat = function (modelName, obj) {
+        var sw = $('format[name="' + modelName + '"]', formatters).find('switch');
         // external dataobjFormatters not supported
         if (!sw.length || sw.find('external').length)
             return obj;
@@ -15,7 +15,7 @@
                           sw.find('fields').first()).find('field');
 
             var deferreds = fields.map(function () {
-                return specify.getDataFromResource(obj, $(this).text());
+                return api.getDataFromResource(obj, $(this).text());
             });
 
             return $.when.apply($, deferreds).pipe(function () {
@@ -32,9 +32,5 @@
         return ($.isPlainObject(obj)) ? doIt(obj) : $.get(obj).pipe(doIt)
     };
 
-    specify.addInitializer(function() {
-        return $.get('/static/resources/dataobj_formatters.xml',
-                     function(data) { formatters = $(data); });
-    });
-
-} (window.specify = window.specify || {}, jQuery));
+    return self;
+});

@@ -6,17 +6,7 @@
 {% endblock %}
 
 {% block extrahead %}
-  <script src="https://www.google.com/jsapi"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-  <script src="/static/spinitialize.js"></script>
-  <script src="/static/specifyform.js"></script>
-  <script src="/static/specifyplugins.js"></script>
-  <script src="/static/populateform.js"></script>
-  <script src="/static/dataobjformatters.js"></script>
-  <script src="/static/putform.js"></script>
-  <script src="/static/showform.js"></script>
-  <script src="/static/specifyui.js"></script>
+  <script data-main="/static/showform.js" src="/static/require-jquery.js"></script>
 {% endblock %}
 
 {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a></div>{% endblock %}

@@ -1,20 +1,20 @@
-(function (specify, $, undefined) {
+define(['jquery', 'schemalocalization', 'specifyapi'], function($, schemalocalization, api) {
     "use strict";
     function inFormTable(control) {
         return control.parents().is('.specify-formtable-row');
     }
 
-    specify.uiPlugins = {
+    return {
         PartialDateUI: function(control, init, data) {
             control[0].type = 'text'; // this probably breaks IE (f*** you IE)
             control.datepicker({dateFormat: $.datepicker.ISO_8601});
             if (!inFormTable(control)) {
                 var label = control.parents().last().find('label[for="' + control.prop('id') + '"]');
                 var model = control.closest('[data-specify-model]').attr('data-specify-model');
-                label.text(specify.getLocalizedLabelFor(init.df, model));
+                label.text(schemalocalization.getLocalizedLabelForField(init.df, model));
             }
             if (data) {
-                specify.fillinData(data, init.df, function(data) { control.val(data); });
+                api.getDataFromResource(data, init.df).done(_.bind(control.val, control));
             } else { control.val(''); }
         },
         WebLinkButton: function(control, init) {
@@ -34,5 +34,4 @@
             }
         },
     };
-
-} (window.specify = window.specify || {}, jQuery));
+});

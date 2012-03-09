@@ -1,42 +1,10 @@
-(function (specify, $, undefined) {
+define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'specifyform', 'specifyplugins', 'dataobjformatters',
+        'text!resources/typesearch_def.xml'],
+function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesXML) {
     "use strict";
-    var typesearches;
+    var self = {}, typesearches = $.parseXML(typesearchesXML);
 
-    // Some fields reference data in related objects. E.g. Collectors
-    // references agent.lastName and agent.firstName. So we may have to
-    // traverse the object tree to get the values we need. It is also
-    // possible the related object is not included and has to be fetched,
-    // so we will have to wait for the fetch to occur. Thus, this function.
-    // The top level data is in [resource], and the field we need is named
-    // by [field]. Returns a deferred that resolves to the value.
-    specify.getDataFromResource = function (resource, field) {
-        var deferred = $.Deferred();
-        function getData(data, fieldName) {
-            var path = $.isArray(fieldName) ? fieldName : fieldName.split('.');
-            if (path.length === 1) {
-                // the field we want is right in the data object
-                deferred.resolve(data[path[0].toLowerCase()]);
-            } else if ($.isPlainObject(data[path[0]])) {
-                // data contains an embedded object that has our field
-                getData(data[path[0]], path.slice(1));
-            } else {
-                // we have to fetch a subobject which contains our field
-                $.get(data[path[0]], function (data) {
-                    getData(data, path.slice(1));
-                });
-            }
-        }
-        getData(resource, field);
-        return deferred.promise();
-    };
-
-    function fillinData(data, fieldName, dispatch) {
-        // deprecated. use specify.getDataFromResource instead
-        specify.getDataFromResource(data, fieldName).done(dispatch);
-    }
-    specify.fillinData = fillinData;
-
-    specify.populatePickList = function(control, data) {
+    self.populatePickList = function(control, data) {
         var pickListName = control.data('specify-picklist');
         if (!pickListName) { return; }
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
@@ -81,31 +49,17 @@
             });
         };
 
-        if (data) { fillinData(data, control.attr('name'), onData); }
+        if (data) { api.getDataFromResource(data, control.attr('name')).done(onData); }
         else { onData();}
     };
 
-    // helper function that pulls name value pairs out of property strings
-    function parseSpecifyProperties(props) {
-        props = props || '';
-        var result = {};
-        $(props.split(';')).each(function () {
-            var match = /([^=]+)=(.+)/.exec(this);
-            if (!match) return;
-            var key = match[1], value = match[2];
-            if (key) { result[key] = value; }
-        });
-        return result;
-    }
-    specify.parseSpecifyProperties = parseSpecifyProperties;
-
-    specify.setupQueryCBX = function (control, data) {
+    self.setupQueryCBX = function (control, data) {
         // The main querycbx control is hidden and the user interacts
         // with an autocomplete field.
         control.hide();
-        var init = parseSpecifyProperties(control.data('specify-initialize')),
+        var init = specifyform.parseSpecifyProperties(control.data('specify-initialize')),
         controlID = control.prop('id'),
-        typesearch = typesearches.find('[name="'+init.name+'"]'), // defines the querycbx
+        typesearch = $('[name="'+init.name+'"]', typesearches), // defines the querycbx
         searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains',
         displaycols = typesearch.attr('displaycols').toLowerCase().split(','),
         format = typesearch.attr('format'),
@@ -163,23 +117,23 @@
         }
     };
 
-    specify.setupUIplugin = function (control, data) {
-        var init = parseSpecifyProperties(control.data('specify-initialize'));
-        var plugin = specify.uiPlugins[init.name];
+    self.setupUIplugin = function (control, data) {
+        var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
+        var plugin = uiplugins[init.name];
         plugin && plugin(control, init, data);
     };
 
-    specify.setupControls = function (form, data) {
+    self.setupControls = function (form, data) {
         form.find('.specify-field').each(function () {
             var control = $(this);
             if (control.prop('nodeName') === 'SELECT') {
-                specify.populatePickList(control, data);
+                self.populatePickList(control, data);
             } else if (control.is('.specify-querycbx')) {
-                specify.setupQueryCBX(control, data);
+                self.setupQueryCBX(control, data);
             } else if (control.is('.specify-uiplugin')) {
-                specify.setupUIplugin(control, data);
+                self.setupUIplugin(control, data);
             } else if (data) {
-                var fetch = specify.getDataFromResource(data, control.attr('name'));
+                var fetch = api.getDataFromResource(data, control.attr('name'));
                 var fillItIn  = function (value) {
                     if (control.is('input[type="checkbox"]')) {
                         control.prop('checked', value);
@@ -188,12 +142,12 @@
                     }
                 };
 
-                var dataModelField = specify.getDataModelField(form.data('specify-model'),
-                                                               control.attr('name'));
+                var dataModelField = datamodel.getDataModelField(form.data('specify-model'),
+                                                                 control.attr('name'));
 
                 if (dataModelField.is('relationship')) {
                     var relatedModel = dataModelField.attr('classname').split('.').pop();
-                    fetch.pipe(function (obj) { return specify.dataObjFormat(relatedModel, obj) })
+                    fetch.pipe(function (obj) { return dof.dataObjFormat(relatedModel, obj) })
                         .done(fillItIn);
                 } else fetch.done(fillItIn);
             }
@@ -203,7 +157,7 @@
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    specify.populateForm = function (viewNameOrNode, dataOrUri, isRootForm, depth) {
+    self.populateForm = function (viewNameOrNode, dataOrUri, isRootForm, depth) {
         if (!dataOrUri) return $('<form>');
 
         depth = depth || 1;
@@ -211,13 +165,13 @@
         // Build the form DOM. These could be prebuilt and persisted somewhere,
         // in which case we would just select the relavent node from the
         // preloaded html. This may be necessary for accessibility.
-        var form = specify.processView(viewNameOrNode, depth, isRootForm),
+        var form = specifyform.processView(viewNameOrNode, depth, isRootForm),
 
         populate = function(data) {
             form.data('specify-uri', data.resource_uri);
             form.data('specify-object-version', data.version);
             // fill in all the fields
-            specify.setupControls(form, data);
+            self.setupControls(form, data);
 
             // fill in the many to one subforms
             form.find('.specify-many-to-one').each(function () {
@@ -225,7 +179,7 @@
                 viewName = node.data('specify-view-name'),
                 fieldName = node.data('specify-field-name').toLowerCase(),
                 // here we recurse
-                subform = specify.populateForm(viewName, data[fieldName], false, depth + 1);
+                subform = self.populateForm(viewName, data[fieldName], false, depth + 1);
                 subform.appendTo(node.find('.specify-form-container'));
             });
 
@@ -235,7 +189,7 @@
                 fieldName = node.data('specify-field-name').toLowerCase(),
                 fillSubform = function () {
                     // again, recursive fill
-                    var subform = specify.populateForm(node, this, false, depth + 1);
+                    var subform = self.populateForm(node, this, false, depth + 1);
                     subform.appendTo(node.find('.specify-form-container'));
                     subform.children('input[value="Delete"]').click(deleteRelated);
                 };
@@ -271,7 +225,7 @@
         });
     }
 
-    specify.pullParamsFromDl = function (dlNode) {
+    self.pullParamsFromDl = function (dlNode) {
 	var params = {};
 	$(dlNode).find('dt').each(function () {
 	    var dt = $(this);
@@ -280,9 +234,5 @@
 	return params;
     };
 
-
-    specify.addInitializer(function () {
-        return $.get('/static/resources/typesearch_def.xml', function (data) { typesearches = $(data); });
-    });
-
-} (window.specify = window.specify || {}, jQuery));
+    return self;
+});

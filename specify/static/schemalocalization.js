@@ -1,18 +1,17 @@
-(function (specify, $, undefined) {
+define(['jquery', 'text!resources/schema_localization.xml'], function($, xmlText) {
     "use strict";
-    if (specify.schemaLocalization) return;
-    var self = specify.schemaLocalization = {}, $sl;
+    var self = {}, xml = $.parseXML(xmlText);
 
     self.language = "en";
 
-        // Search the schema_localization DOM for the given modelName.
+    // Search the schema_localization DOM for the given modelName.
     self.getLocalizationForModel = function(modelName) {
-        return $sl.find('container[name="'+modelName.toLowerCase()+'"]').first();
+        return $('container[name="'+modelName.toLowerCase()+'"]', xml).first();
     };
 
     self.getLocalizationForField = function(fieldname, modelname) {
-        var path = fieldname.split('.'), field = path.pop(), model = path.pop();
-        model = model || modelname.split('.').pop();
+        var path = fieldname.split('.'), field = path.pop(),
+        model = path.pop() || modelname.split('.').pop();
         return self.getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
     };
 
@@ -35,9 +34,5 @@
         return str.children('text').text().replace(/\\n/g, "\n");
     };
 
-    specify.addInitializer(function() {
-        return $.get('/static/resources/schema_localization.xml',
-                     function(data) { $sl = $(data); })).promise();
-    });
-
-} (window.specify, jQuery));
+    return self;
+});

@@ -1,10 +1,9 @@
-(function (specify, $, undefined) {
+define(['jquery', 'text!resources/icons_datamodel.xml'], function($, xmlText) {
     "use strict";
-    if (specify.icons) return;
-    var self = specify.icons = {}, $icons;
+    var self = {}, xml = $.parseXML(xmlText);
 
     self.getIcon = function (icon, cycleDetect) {
-        var iconNode = $icons.find('icon[name="' + icon + '"]');
+        var iconNode = $('icon[name="' + icon + '"]', xml);
         cycleDetect = cycleDetect || {};
         if (cycleDetect[icon]) return 'circular_reference_in_icons';
         if (iconNode.attr('alias')) {
@@ -14,9 +13,5 @@
         return '/static/img/icons/datamodel/' + iconNode.attr('file');
     };
 
-    specify.addInitializer(function() {
-        return $.get('/static/resources/icons_datamodel.xml',
-                     function(data) { $icons = $(data); }).promise();
-    });
-
-} (window.specify, jQuery));
+    return self;
+});
