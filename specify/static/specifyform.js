@@ -1,7 +1,9 @@
 (function (specify, $, undefined) {
     "use strict";
-    var schemaLocalization, dataModel, dataModelIcons,
+    if (specify.forms) return;
+    var self = specify.forms = {},
     views, viewdefs, formCounter = 0,
+    $sl = specify.schemaLocalization,
     viewsetNames = [
         '/static/resources/system.views.xml',
         '/static/resources/editorpanel.views.xml',
@@ -12,67 +14,9 @@
         '/static/resources/fish.views.xml',
     ];
 
-    specify.language = "en";
-
-    specify.getIcon = function (icon, cycleDetect) {
-        var iconNode = dataModelIcons.find('icon[name="' + icon + '"]');
-        cycleDetect = cycleDetect || {};
-        if (cycleDetect[icon]) return 'circular_reference_in_icons';
-        if (iconNode.attr('alias')) {
-            cycleDetect[icon] = true;
-            return specify.getIcon(iconNode.attr('alias'), cycleDetect);
-        }
-        return '/static/img/icons/datamodel/' + iconNode.attr('file');
-    };
-
-    specify.getViewForModel = function(modelName) {
-        return dataModel[modelName.toLowerCase()].find('display').attr('view');
-    };
-
-    specify.getDataModelField = function(modelName, fieldName) {
-        var table = dataModel[modelName.toLowerCase()];
-        if (!table) return $();
-        var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
-        return table.find(sel);
-    };
-
-    specify.getModelFromView = function(view) {
+    self.getModelFromView = function(view) {
         if (!view.jquery) view = views[view.toLowerCase()];
         return view.attr('class').split('.').pop();
-    };
-
-    // Search the schema_localization DOM for the given modelName.
-    specify.getLocalizationForModel = function(modelName) {
-        return schemaLocalization.find('container[name="'+modelName.toLowerCase()+'"]').first();
-    };
-
-    specify.getSchemaInfoFor = function(fieldname, inViewdefOrModel) {
-        var path = fieldname.split('.'), field = path.pop(), model = path.pop();
-        if (!model) {
-            model = inViewdefOrModel.jquery ?
-                getModelForViewdef(inViewdefOrModel) :
-                inViewdefOrModel;
-        }
-        return specify.getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
-    };
-
-    specify.getLocalizedLabelFor = function (fieldname, inViewdefOrModel) {
-        return getLocalizedStr(specify.getSchemaInfoFor(fieldname, inViewdefOrModel).children('names'));
-    };
-
-    // Given a DOM containing alternative localizations,
-    // return the one for the language selected above,
-    // or failing that, for "en", or failing that,
-    // just return the first one.
-    var getLocalizedStr = function(alternatives) {
-        var str = $(alternatives).children('str[language="' + specify.language + '"]');
-        if (str.length < 1) {
-            str = $(alternatives).children('str[language="en"]');
-        }
-        if (str.length < 1) {
-            str = $(alternatives).children('str').first();
-        }
-        return str.children('text').text().replace(/\\n/g, "\n");
     };
 
     // Return a table DOM node with <col> defined based
@@ -104,12 +48,12 @@
         return viewdefs[defaultView.toLowerCase()];
     }
 
-    function getModelForViewdef(viewdef) {
+    function getModelFromViewdef(viewdef) {
         return viewdef.attr('class').split('.').pop();
     }
 
     // Return a <form> DOM node containing the processed view.
-    specify.processView = function (viewNameOrNode, depth, isRootForm) {
+    self.processView = function (viewNameOrNode, depth, isRootForm) {
         depth = depth || 1;
         var formNumber = formCounter++, viewdef, viewName;
         if (viewNameOrNode.jquery) {
@@ -134,29 +78,28 @@
         result.attr('data-specify-model', viewModel);
 
         var getSchemaInfoFor = function(fieldname, inViewdef) {
-            inViewdef = inViewdef || viewdef;
-            return specify.getSchemaInfoFor(fieldname, inViewdef);
+            var modelname = getModelFromViewdef(inViewdef || viewdef);
+            return $sl.getSchemaInfoForField(fieldname, modelname);
         },
 
         getLocalizedLabelFor = function (fieldname, inViewdef) {
-            inViewdef = inViewdef || viewdef;
-            return specify.getLocalizedLabelFor(fieldname, inViewdef);
+            var modelname = getModelFromViewdef(inViewdef || viewdef);
+            return $sl.getLocalizedLabelForField(fieldname, modelname);
         },
 
         getLabelForCell = function (cell, inViewdef) {
-            inViewdef = inViewdef || viewdef;
-            return cell.attr('label')
-                || getLocalizedLabelFor(cell.attr('name'), inViewdef);
+            var modelname = getModelFromViewdef(inViewdef || viewdef);
+            return cell.attr('label') ||
+                $sl.getLocalizedLabelForField(cell.attr('name'), modelname);
 //                || cell.attr('name');
         },
 
         getLabelCellText = function(cell, inViewdef) {
-            inViewdef = inViewdef || viewdef;
             if (cell.attr('label') !== undefined) {
                 return cell.attr('label');
             } else {
                 var labelfor = cell.attr('labelfor'),
-                forCell = inViewdef.find('cell[id="'+labelfor+'"]');
+                forCell = inViewdef.find('cell[id="'+labelfor+'"]'),
                 return getLabelForCell(forCell, inViewdef);
             }
         },
@@ -257,14 +200,14 @@
                     if (props.btn === 'true') {
                         var button = $('<button type=button class="specify-subview-button">');
                         button.attr('data-specify-initialize', cell.attr('initialize'));
-                        var icon = props.icon || specify.getModelFromView(cell.attr('viewname'));
-                        button.append($('<img src="' + specify.getIcon(icon) + '" style="height: 20px">'));
+                        var icon = props.icon || self.getModelFromView(cell.attr('viewname'));
+                        button.append($('<img src="' + specify.icons.getIcon(icon) + '" style="height: 20px">'));
                         button.attr('disabled', doingFormTable);
                         return td.append(button);
                     }
                     var fieldName = cell.attr('name'),
                     schemaInfo = getSchemaInfoFor(fieldName),
-                    localizedName = getLocalizedStr(schemaInfo.children('names')),
+                    localizedName = $sl.getLocalizedStr(schemaInfo.children('names')),
                     header = $('<h3>').text(localizedName).appendTo(td);
                     switch (schemaInfo.attr('type')) {
                     case 'OneToMany':
@@ -339,7 +282,7 @@
             });
 
             isRootForm && result.append($('<h2>').text(getLocalizedStr(
-                specify.getLocalizationForModel(viewModel.toLowerCase()).children('names')
+                $sl.getLocalizationForModel(viewModel).children('names')
             )));
             return result.append(table).append($('<input type="button" value="Delete">'));
         } else {
@@ -372,26 +315,10 @@
         return viewdefs;
     }
 
-    function breakOutModels(dataModelDOM) {
-        var dataModel = {};
-        $(dataModelDOM).find('table').each(function () {
-            var table = $(this);
-            dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
-        });
-        return dataModel;
-    }
-
     specify.addInitializer(function() {
-        var loaders = [$.get('/static/resources/schema_localization.xml',
-                             function(data) { schemaLocalization = $(data); }),
-                       $.get('/static/resources/specify_datamodel.xml',
-                             function(data) { dataModel = breakOutModels(data); }),
-                       $.get('/static/resources/icons_datamodel.xml',
-                             function(data) { dataModelIcons = $(data); })
-                      ],
-        viewsets = {};
-        $(viewsetNames).each(function (i, name) {
-            loaders.push($.get(name, function(viewset) { viewsets[name] = viewset; }));
+        var viewsets = {},
+        loaders = $(viewsetNames).map(function () {
+            return $.get(name, function(viewset) { viewsets[name] = viewset; });
         });
         return $.when.apply($, loaders).then(function() {
             viewdefs = $.extend.apply($, $.merge([{}], viewsetNames.map(
@@ -402,4 +329,4 @@
         }).promise();
     });
 
-} (window.specify = window.specify || {}, jQuery));
+} (window.specify, jQuery));
