@@ -6,7 +6,8 @@ require({
     }
 });
 
-require(['jquery', 'populateform', 'datamodel', 'putform'], function($, populateform, datamodel, putform) {
+require(['jquery', 'specifyform', 'populateform', 'datamodel', 'putform'], 
+function($, specifyform, populateform, datamodel, putform) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
@@ -14,7 +15,8 @@ require(['jquery', 'populateform', 'datamodel', 'putform'], function($, populate
         var uri = "/api/specify/" + params.model + "/" + params.id + "/";
 
         var viewName = datamodel.getViewForModel(params.model);
-        var mainForm = populateform.populateForm(viewName, uri, true);
+        var mainForm = specifyform.buildViewByName(viewName);
+        populateform.populateForm(mainForm, uri);
         rootContainer.empty().append(mainForm);
         $('input[type="submit"]').click(function () {
             var btn = $(this);

@@ -157,17 +157,10 @@ function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesX
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    self.populateForm = function (viewNameOrNode, dataOrUri, isRootForm, depth) {
-        if (!dataOrUri) return $('<form>');
+    self.populateForm = function (form, dataOrUri) {
+        if (!dataOrUri) return form;
 
-        depth = depth || 1;
-
-        // Build the form DOM. These could be prebuilt and persisted somewhere,
-        // in which case we would just select the relavent node from the
-        // preloaded html. This may be necessary for accessibility.
-        var form = specifyform.processView(viewNameOrNode, depth, isRootForm),
-
-        populate = function(data) {
+        var populate = function(data) {
             form.data('specify-uri', data.resource_uri);
             form.data('specify-object-version', data.version);
             // fill in all the fields
@@ -176,10 +169,11 @@ function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesX
             // fill in the many to one subforms
             form.find('.specify-many-to-one').each(function () {
                 var node = $(this),
-                viewName = node.data('specify-view-name'),
                 fieldName = node.data('specify-field-name').toLowerCase(),
                 // here we recurse
-                subform = self.populateForm(viewName, data[fieldName], false, depth + 1);
+                subform = specifyform.buildSubView(node);
+                $('.specify-form-header', subform).remove();
+                self.populateForm(subform, data[fieldName]);
                 subform.appendTo(node.find('.specify-form-container'));
             });
 
@@ -189,7 +183,9 @@ function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesX
                 fieldName = node.data('specify-field-name').toLowerCase(),
                 fillSubform = function () {
                     // again, recursive fill
-                    var subform = self.populateForm(node, this, false, depth + 1);
+                    var subform = specifyform.buildSubView(node);
+                    $('.specify-form-header', subform).remove(); 
+                    self.populateForm(subform, this);
                     subform.appendTo(node.find('.specify-form-container'));
                     subform.children('input[value="Delete"]').click(deleteRelated);
                 };

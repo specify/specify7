@@ -48,10 +48,10 @@ function specifyform($, _, datamodel, icons, sl) {
         return result;
     }
 
-    self.getModelFromView = function(view) {
+    function getModelFromView(view) {
         if (!view.jquery) view = views[view.toLowerCase()];
         return view.attr('class').split('.').pop();
-    };
+    }
 
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewdef.
@@ -87,24 +87,23 @@ function specifyform($, _, datamodel, icons, sl) {
     }
 
     // Return a <form> DOM node containing the processed view.
-    self.processView = function (viewNameOrNode, depth, isRootForm) {
-        depth = depth || 1;
-        var formNumber = formCounter++, viewdef, viewName;
-        if (viewNameOrNode.jquery) {
-            // we got a subview node
-            viewName = viewNameOrNode.data('specify-view-name');
-            viewdef = viewdefs[viewNameOrNode.data('specify-viewdef').toLowerCase()];
-        } else {
-            // must be a view name
-            viewName = viewNameOrNode;
+    self.buildViewByName = function (viewName) {
+        if (!views[viewName.toLowerCase()]) {
+            return $('<p>').text('View "' + viewName + '" not found!');
         }
-        if (!viewdef) {
-            if (!views[viewName.toLowerCase()]) {
-                return $('<p>').text('View "' + viewName + '" not found!');
-            }
-            viewdef = getDefaultViewdef($(views[viewName.toLowerCase()]));
-        }
+        return buildView(getDefaultViewdef(views[viewName.toLowerCase()]));
+    };
 
+    self.buildViewByViewDefName = function (viewDefName) {
+        return buildView(viewdefs[viewDefName.toLowerCase()]);
+    };
+
+    self.buildSubView = function (node) {
+        return buildView(viewdefs[$(node).data('specify-viewdef').toLowerCase()]);
+    };
+      
+    function buildView(viewdef) {
+        var formNumber = formCounter++;
         var viewModel = getModelFromViewdef(viewdef),
         doingFormTable = (viewdef.attr('type') === 'formtable'),
         result = doingFormTable ? $('<tr>') : $('<form>');
@@ -234,7 +233,7 @@ function specifyform($, _, datamodel, icons, sl) {
                     if (props.btn === 'true') {
                         var button = $('<button type=button class="specify-subview-button">');
                         button.attr('data-specify-initialize', cell.attr('initialize'));
-                        var icon = props.icon || self.getModelFromView(cell.attr('viewname'));
+                        var icon = props.icon || getModelFromView(cell.attr('viewname'));
                         button.append($('<img src="' + icons.getIcon(icon) + '" style="height: 20px">'));
                         button.attr('disabled', doingFormTable);
                         return td.append(button);
@@ -269,7 +268,7 @@ function specifyform($, _, datamodel, icons, sl) {
                         break;
                     }
                     td.attr('data-specify-field-name', fieldName);
-                    td.attr('data-specify-view-name', cell.attr('viewname'));
+                    // td.attr('data-specify-view-name', cell.attr('viewname'));
                     return td;
                 },
                 panel: function() {
@@ -315,7 +314,7 @@ function specifyform($, _, datamodel, icons, sl) {
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            isRootForm && result.append($('<h2>').text(sl.getLocalizedStr(
+            result.append($('<h2 class="specify-form-header">').text(sl.getLocalizedStr(
                 sl.getLocalizationForModel(viewModel).children('names')
             )));
             return result.append(table).append($('<input type="button" value="Delete">'));
