@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'datamodel', 'icons', 'schemalocalization',
+define(['jquery', 'underscore', 'datamodel',
         'text!resources/system.views.xml',
         'text!resources/editorpanel.views.xml',
         'text!resources/preferences.views.xml',
@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'datamodel', 'icons', 'schemalocalization',
         'text!resources/common.views.xml',
         'text!resources/fish.views.xml'],
 
-function specifyform($, _, datamodel, icons, sl) {
+function specifyform($, _, datamodel) {
     "use strict";
     var self = {}, formCounter = 0,
     viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value(),
@@ -101,7 +101,7 @@ function specifyform($, _, datamodel, icons, sl) {
     self.buildSubView = function (node) {
         return buildView(viewdefs[$(node).data('specify-viewdef').toLowerCase()]);
     };
-      
+
     function buildView(viewdef) {
         var formNumber = formCounter++;
         var viewModel = getModelFromViewdef(viewdef),
@@ -110,41 +110,17 @@ function specifyform($, _, datamodel, icons, sl) {
         result.prop('id', 'specify-form-' + formNumber);
         result.attr('data-specify-model', viewModel);
 
-        var getSchemaInfoFor = function(fieldname, inViewdef) {
-            var modelname = getModelFromViewdef(inViewdef || viewdef);
-            return sl.getLocalizationForField(fieldname, modelname);
-        },
-
-        getLocalizedLabelFor = function (fieldname, inViewdef) {
-            var modelname = getModelFromViewdef(inViewdef || viewdef);
-            return sl.getLocalizedLabelForField(fieldname, modelname);
-        },
-
-        getLabelForCell = function (cell, inViewdef) {
-            var modelname = getModelFromViewdef(inViewdef || viewdef);
-            return cell.attr('label') ||
-                sl.getLocalizedLabelForField(cell.attr('name'), modelname);
-//                || cell.attr('name');
-        },
-
-        getLabelCellText = function(cell, inViewdef) {
-            if (cell.attr('label') !== undefined) {
-                return cell.attr('label');
-            } else {
-                var labelfor = cell.attr('labelfor'),
-                forCell = $('cell[id="'+labelfor+'"]', inViewdef || viewdef);
-                return getLabelForCell(forCell, inViewdef || viewdef);
-            }
-        },
-
-        getFormTableCells = function(viewdef) {
+        var getFormTableCells = function(viewdef) {
             return viewdef.find('cell[type="field"], cell[type="subview"]');
         },
 
         buildFormTableHeader = function(viewdef) {
             var header = $('<thead>'), tr = $('<tr>').appendTo(header);
             getFormTableCells(viewdef).each(function () {
-                tr.append($('<th>').text(getLabelForCell($(this), viewdef)));
+                tr.append($('<th>').attr(
+                    'data-specify-header-for',
+                    'specify-field-' + formNumber + '-' + $(this).attr('id')
+                ));
             });
             return header;
         },
@@ -153,10 +129,12 @@ function specifyform($, _, datamodel, icons, sl) {
             var cell = $(cellNode),
             byType = {
                 label: function() {
-                    var label = $('<label>').text(getLabelCellText(cell));
+                    var label = $('<label>');
+                    if (cell.attr('label') !== undefined)
+                        label.text(cell.attr('label'));
                     var labelfor = cell.attr('labelfor');
                     labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
-                    return $('<td class="form-label">').append(label);
+                    return $('<td class="specify-form-label">').append(label);
                 },
                 field: function() {
                     var td = $('<td>'),
@@ -165,9 +143,8 @@ function specifyform($, _, datamodel, icons, sl) {
                         checkbox: function() {
                             var control = $('<input type="checkbox">').appendTo(td);
                             if (doingFormTable) return control.attr('disabled', true);
-                            var label = cell.attr('label');
-                            if (label === undefined) { label = getLocalizedLabelFor(fieldName); }
-                            label && td.append($('<label>').text(label));
+                            var label = $('<label>').appendTo(td);
+                            cell.attr('label') && label.text(cell.attr('label'));
                             return control;
                         },
                         textarea: function () {
@@ -233,17 +210,17 @@ function specifyform($, _, datamodel, icons, sl) {
                     if (props.btn === 'true') {
                         var button = $('<button type=button class="specify-subview-button">');
                         button.attr('data-specify-initialize', cell.attr('initialize'));
-                        var icon = props.icon || getModelFromView(cell.attr('viewname'));
-                        button.append($('<img src="' + icons.getIcon(icon) + '" style="height: 20px">'));
                         button.attr('disabled', doingFormTable);
                         return td.append(button);
                     }
                     var fieldName = cell.attr('name'),
-                    schemaInfo = getSchemaInfoFor(fieldName),
-                    localizedName = sl.getLocalizedStr(schemaInfo.children('names')),
-                    header = $('<h3>').text(localizedName).appendTo(td);
-                    switch (schemaInfo.attr('type')) {
-                    case 'OneToMany':
+                    fieldInfo = datamodel.getDataModelField(viewModel, fieldName),
+                    header = $('<h3 class="specify-form-header">').appendTo(td);
+                    if (!fieldInfo.is('relationship')) {
+                        return td.text("Can't make subform for non-rel field!");
+                    }
+                    switch (fieldInfo.attr('type')) {
+                    case 'one-to-many':
                         td.addClass('specify-one-to-many');
                         var view = views[cell.attr('viewname').toLowerCase()];
                         if (view === undefined) {
@@ -262,9 +239,12 @@ function specifyform($, _, datamodel, icons, sl) {
                             table.append('<tbody class="specify-form-container">');
                         } else { td.append('<div class="specify-form-container">'); }
                         break;
-                    case 'ManyToOne':
+                    case 'many-to-one':
                         td.addClass('specify-many-to-one');
                         td.append('<div class="specify-form-container">');
+                        break;
+                    default:
+                        td.text('Unhandled rel type "' + fieldInfo.attr('type') + '"');
                         break;
                     }
                     td.attr('data-specify-field-name', fieldName);
@@ -314,9 +294,7 @@ function specifyform($, _, datamodel, icons, sl) {
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            result.append($('<h2 class="specify-form-header">').text(sl.getLocalizedStr(
-                sl.getLocalizationForModel(viewModel).children('names')
-            )));
+            result.append($('<h2 class="specify-form-header">'));
             return result.append(table).append($('<input type="button" value="Delete">'));
         } else {
             var formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
