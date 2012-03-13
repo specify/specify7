@@ -54,12 +54,18 @@ define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlTex
             if (label.text()) return; // the label was hard coded in the form
             var forId = label.prop('for');
             if (!forId) return; // not much we can do about that
-            var fieldname = $('#' + forId, form).attr('name');
+            var control = $('#' + forId, form);
+            var override = control.data('specify-field-label-override');
+            if (override !== undefined) {
+                label.text(override);
+                return;
+            }
+            var fieldname = control.attr('name');
             if (!fieldname) return; // probably a label for a plugin
             label.text(self.getLocalizedLabelForField(fieldname, modelname));
         };
 
-        if (form.is('.specify-formtable')) {
+        if ($('.specify-formtable', form).length) {
             $('th', form).each(fillinLabel);
         } else {
             $('.specify-form-label', form).each(fillinLabel);

@@ -17,12 +17,11 @@ td, th {
     vertical-align: middle;
 }
 
-.specify-one-to-many > h3,
-.specify-many-to-one > h3 {
+.specify-form-header {
     border-bottom: solid 1px;
 }
 
-.specify-one-to-many > h3 > a {
+.specify-form-header > a {
     margin-left: 1em;
     font-size: 0.5em;
 }

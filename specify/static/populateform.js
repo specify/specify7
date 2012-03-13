@@ -1,11 +1,15 @@
-define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'specifyform', 'specifyplugins', 'dataobjformatters',
+define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
+        'specifyform', 'specifyplugins', 'dataobjformatters',
         'text!resources/typesearch_def.xml'],
-function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesXML) {
+function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins, dof, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
 
     self.populatePickList = function(control, data) {
-        var pickListName = control.data('specify-picklist');
+        var model = control.parents('[data-specify-model]').attr('data-specify-model');
+        var field = control.attr('name');
+        var pickListName =
+            schemalocalization.getLocalizationForField(field, model).attr('pickListName');
         if (!pickListName) { return; }
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
         picklistJQXHR = $.get(pickListUri), // begin fetching the picklist
@@ -126,7 +130,7 @@ function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesX
     self.setupControls = function (form, data) {
         form.find('.specify-field').each(function () {
             var control = $(this);
-            if (control.prop('nodeName') === 'SELECT') {
+            if (control.is('.specify-combobox')) {
                 self.populatePickList(control, data);
             } else if (control.is('.specify-querycbx')) {
                 self.setupQueryCBX(control, data);
@@ -158,45 +162,63 @@ function($, jqueryui, datamodel, api, specifyform, uiplugins, dof, typesearchesX
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
     self.populateForm = function (form, dataOrUri) {
+        schemalocalization.localizeForm(form);
         if (!dataOrUri) return form;
+        var viewmodel = form.data('specify-model');
 
         var populate = function(data) {
             form.data('specify-uri', data.resource_uri);
             form.data('specify-object-version', data.version);
-            // fill in all the fields
             self.setupControls(form, data);
 
-            // fill in the many to one subforms
-            form.find('.specify-many-to-one').each(function () {
+            form.find('.specify-subview').each(function () {
                 var node = $(this),
-                fieldName = node.data('specify-field-name').toLowerCase(),
-                // here we recurse
-                subform = specifyform.buildSubView(node);
-                $('.specify-form-header', subform).remove();
-                self.populateForm(subform, data[fieldName]);
-                subform.appendTo(node.find('.specify-form-container'));
-            });
+                fieldName = node.data('specify-field-name');
+                var fieldInfo = datamodel.getDataModelField(viewmodel, fieldName);
+                if (!fieldInfo.is('relationship')) {
+                    throw new Error("Can't make subform for non-rel field!");
+                    return;
+                }
 
-            // fill in the one to manys
-            form.find('.specify-one-to-many').each(function () {
-                var node = $(this),
-                fieldName = node.data('specify-field-name').toLowerCase(),
-                fillSubform = function () {
-                    // again, recursive fill
-                    var subform = specifyform.buildSubView(node);
-                    $('.specify-form-header', subform).remove(); 
-                    self.populateForm(subform, this);
-                    subform.appendTo(node.find('.specify-form-container'));
-                    subform.children('input[value="Delete"]').click(deleteRelated);
+                var doIt = function(data) {
+                    var result;
+                    var fillSubview = function(count) {
+                        var subview = specifyform.buildSubView(node);
+                        self.populateForm(subview, this);
+                        if (count === 0) {
+                            result = subview;
+                        } else {
+                            $('specify-view-content-container:first', result).append(
+                                $('specify-view-content:first', subview)
+                            );
+                        }
+                    };
+
+                    var relType = fieldInfo.attr('type');
+                    switch (relType) {
+                    case 'one-to-many':
+                        // Have to add a subform for each instance. Not exactly sure how this
+                        // would be handled with prebuilt forms.
+                        if (_.isArray(data)) {
+                            $(data).each(fillSubview);
+                        } else {
+                            $(data.objects).each(fillSubview);
+                        }
+                        break;
+                    case 'many-to-one':
+                        fillSubview.call(data, 0, data);
+                        break;
+                    default:
+                        result = $('unhandled relationship type: ' + relType);
+                    }
+                    node.append(result);
                 };
-                // Have to add a subform for each instance. Not exactly sure how this
-                // would be handled with prebuilt forms.
-                if ($.isArray(data[fieldName])) {
-                    $(data[fieldName]).each(fillSubform);
+
+                var fieldData = data[fieldName.toLowerCase()];
+                if (_.isString(fieldData)) {
+                    $.get(fieldData, doIt);
                 } else {
-                    $.get(data[fieldName], function (data) {
-                        $(data.objects).each(fillSubform);
-                    });
+                    doIt(fieldData);
                 }
             });
         };
