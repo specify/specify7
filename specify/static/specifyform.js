@@ -106,26 +106,14 @@ function specifyform($, _, datamodel) {
         var formNumber = formCounter++;
         var viewModel = getModelFromViewdef(viewdef),
         doingFormTable = (viewdef.attr('type') === 'formtable'),
-        result = doingFormTable ? $('<tr>') : $('<form>');
+        result = doingFormTable ? $('<table class="specify-formtable">') : $('<form>');
         result.prop('id', 'specify-form-' + formNumber);
         result.attr('data-specify-model', viewModel);
 
-        var getFormTableCells = function(viewdef) {
-            return viewdef.find('cell[type="field"], cell[type="subview"]');
-        },
+        $('<h2 class="specify-form-header">').appendTo(result)
+            .append($('<a href="new/' + viewModel + '/">Add</a>'));
 
-        buildFormTableHeader = function(viewdef) {
-            var header = $('<thead>'), tr = $('<tr>').appendTo(header);
-            getFormTableCells(viewdef).each(function () {
-                tr.append($('<th>').attr(
-                    'data-specify-header-for',
-                    'specify-field-' + formNumber + '-' + $(this).attr('id')
-                ));
-            });
-            return header;
-        },
-
-        processCell = function(cellNode) {
+        var processCell = function(cellNode) {
             var cell = $(cellNode),
             byType = {
                 label: function() {
@@ -160,11 +148,7 @@ function specifyform($, _, datamodel) {
                             return $('<textarea>)').attr('rows', cell.attr('rows') || 1).appendTo(td);
                         },
                         combobox: function() {
-                            var pickListName = getSchemaInfoFor(fieldName).attr('pickListName'),
-                            isRequired = getSchemaInfoFor(fieldName).attr('isRequired') === 'true',
-                            control = $('<select>').appendTo(td);
-                            pickListName && control.attr('data-specify-picklist', pickListName);
-                            isRequired && control.addClass('required');
+                            var control = $('<select class="specify-combobox">').appendTo(td);
                             control.attr('disabled', doingFormTable);
                             return control;
                         },
@@ -213,42 +197,30 @@ function specifyform($, _, datamodel) {
                         button.attr('disabled', doingFormTable);
                         return td.append(button);
                     }
-                    var fieldName = cell.attr('name'),
-                    fieldInfo = datamodel.getDataModelField(viewModel, fieldName),
-                    header = $('<h3 class="specify-form-header">').appendTo(td);
+                    var fieldName = cell.attr('name');
+                    td.attr('data-specify-field-name', fieldName);
+                    var fieldInfo = datamodel.getDataModelField(viewModel, fieldName);
                     if (!fieldInfo.is('relationship')) {
                         return td.text("Can't make subform for non-rel field!");
                     }
+                    var view = views[cell.attr('viewname').toLowerCase()];
+                    if (view === undefined) {
+                        return td.text('View "' + cell.attr('viewname') + '" is undefined.');
+                    }
+                    var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
+                    td.attr('data-specify-viewdef', subviewdef.attr('name'));
+
                     switch (fieldInfo.attr('type')) {
                     case 'one-to-many':
                         td.addClass('specify-one-to-many');
-                        var view = views[cell.attr('viewname').toLowerCase()];
-                        if (view === undefined) {
-                            td.text('View "' + cell.attr('viewname') + '" is undefined.');
-                            break;
-                        }
-                        var modelName = view.attr('class').split('.').pop().toLowerCase();
-                        header.append($('<a href="new/'+modelName+'/">Add</a>'));
-                        var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
-                        td.attr('data-specify-viewdef', subviewdef.attr('name'));
-                        if (subviewdef.attr('type') === 'formtable') {
-                            td.addClass('specify-formtable');
-                            var viewdef = viewdefs[subviewdef.find('definition').text().toLowerCase()],
-                            table = $('<table>').appendTo(td);
-                            table.append(buildFormTableHeader(viewdef));
-                            table.append('<tbody class="specify-form-container">');
-                        } else { td.append('<div class="specify-form-container">'); }
                         break;
                     case 'many-to-one':
                         td.addClass('specify-many-to-one');
-                        td.append('<div class="specify-form-container">');
                         break;
                     default:
                         td.text('Unhandled rel type "' + fieldInfo.attr('type') + '"');
                         break;
                     }
-                    td.attr('data-specify-field-name', fieldName);
-                    // td.attr('data-specify-view-name', cell.attr('viewname'));
                     return td;
                 },
                 panel: function() {
@@ -281,28 +253,32 @@ function specifyform($, _, datamodel) {
             return td;
         };
 
-        if (!doingFormTable) {
+        if (doingFormTable) {
+            var formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
+            var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
+            var headerRow = $('<tr>'), bodyRow = $('<tr>');
+            formTableCells.each(function () {
+                headerRow.append($('<th>').attr(
+                    'data-specify-header-for',
+                    'specify-field-' + formNumber + '-' + $(this).attr('id')
+                ));
+                bodyRow.append(processCell(this));
+            });
+            result.append($('<thead>').append(headerRow));
+            result.append($('<tbody>').append(bodyRow));
+            return result;
+        } else {
             var colDef = viewdef.find('columnDef[os="lnx"]').first().text() ||
                 viewdef.find('columnDef').first().text();
             var table = processColumnDef(colDef);
 
-            // Iterate over the rows and cells of the view
-            // processing each in turn and appending them
-            // to the generated <table>.
             viewdef.children('rows').children('row').each(function () {
                 var tr = $('<tr>').appendTo(table);
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            result.append($('<h2 class="specify-form-header">'));
             return result.append(table).append($('<input type="button" value="Delete">'));
-        } else {
-            var formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
-            getFormTableCells(formViewdef).each(function () {
-                processCell(this).appendTo(result);
-            });
-            return result.addClass("specify-formtable-row");
-        }
+        } 
     };
 
     return self;

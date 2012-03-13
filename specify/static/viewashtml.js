@@ -12,14 +12,16 @@ require(['jquery', 'specifyform', 'populateform', 'beautify-html'], function($, 
         var params = populateform.pullParamsFromDl($('body'));
         if (params.viewdef) {
             $('body').empty().append(
-                $('<pre>').text(specifyform.buildViewByViewDefName(params.viewdef).html())
-            );
+                $('<pre>').text(
+                    beautify.style_html($('<div>').append(
+                        specifyform.buildViewByViewDefName(params.viewdef)).html())
+                ));
         } else if (params.view) {
             $('body').empty().append(
                 $('<pre>').text(
-                    beautify.style_html(specifyform.buildViewByName(params.view).html())
-                )
-            );
+                    beautify.style_html($('<div>').append(
+                        specifyform.buildViewByName(params.view)).html())
+                ));
         }
     });
 });
