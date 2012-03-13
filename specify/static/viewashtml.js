@@ -6,22 +6,20 @@ require({
     }
 });
 
-require(['jquery', 'specifyform', 'populateform', 'beautify-html'], function($, specifyform, populateform, beautify) {
-    "use strict";
-    $(function() {
-        var params = populateform.pullParamsFromDl($('body'));
-        if (params.viewdef) {
+require(
+    ['jquery', 'specifyform', 'populateform', 'schemalocalization', 'beautify-html'],
+    function($, specifyform, populateform, schemalocalization, beautify) {
+        "use strict";
+        $(function() {
+            var params = populateform.pullParamsFromDl($('body'));
+            var form = params.viewdef ?
+                specifyform.buildViewByViewDefName(params.viewdef) :
+                specifyform.buildViewByName(params.view);
+            schemalocalization.localizeForm(form);
+            var html = $('<div>').append(form).html();
             $('body').empty().append(
-                $('<pre>').text(
-                    beautify.style_html($('<div>').append(
-                        specifyform.buildViewByViewDefName(params.viewdef)).html())
-                ));
-        } else if (params.view) {
-            $('body').empty().append(
-                $('<pre>').text(
-                    beautify.style_html($('<div>').append(
-                        specifyform.buildViewByName(params.view)).html())
-                ));
-        }
-    });
-});
+                $('<pre>').text(beautify.style_html(html))
+            );
+        });
+    }
+);

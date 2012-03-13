@@ -1,4 +1,4 @@
-define(['jquery', 'datamodel', 'text!resources/schema_localization.xml'], function($, datamodel, xmlText) {
+define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlText) {
     "use strict";
     var self = {}, xml = $.parseXML(xmlText);
 
@@ -15,8 +15,16 @@ define(['jquery', 'datamodel', 'text!resources/schema_localization.xml'], functi
         return self.getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
     };
 
-    self.getLocalizedLabelForField = function (fieldname, modelname) {
-        return self.getLocalizedStr(self.getLocalizationForField(fieldname, modelname).children('names'));
+    self.getLocalizedLabelForModel = function(modelname) {
+        return self.getLocalizedStr(
+            self.getLocalizationForModel(modelname).children('names')
+        );
+    };
+
+    self.getLocalizedLabelForField = function(fieldname, modelname) {
+        return self.getLocalizedStr(
+            self.getLocalizationForField(fieldname, modelname).children('names')
+        );
     };
 
     // Given a DOM containing alternative localizations,
@@ -35,35 +43,31 @@ define(['jquery', 'datamodel', 'text!resources/schema_localization.xml'], functi
     };
 
     self.localizeForm = function(formNode) {
-        var form = $(formNode);
-        form.find('.specify-form-label').each(function() {
+        var form = $(formNode), modelname = form.data('specify-model');
+
+        $('.specify-form-header', form).prepend(
+            $('<span>').text(self.getLocalizedLabelForModel(modelname))
+        );
+
+        var fillinLabel = function() {
             var label = $('label', this);
             if (label.text()) return; // the label was hard coded in the form
-            var fieldname = $('#' + label.prop('for'), this).attr('name');
-            label.text(self.getLocalizedLabelForField(fieldname, viewModel));
-        });
+            var forId = label.prop('for');
+            if (!forId) return; // not much we can do about that
+            var fieldname = $('#' + forId, form).attr('name');
+            if (!fieldname) return; // probably a label for a plugin
+            label.text(self.getLocalizedLabelForField(fieldname, modelname));
+        };
 
-        form.find('.specify-field').each(function() {
-            var control = $(this), fieldname = control.attr('name');
-            if (control.is(':checkbox')) {
-                var label = $('label', control.parent());
-                if (label.text()) return; // label was hard coded
-                label.text(self.getLocalizedLabelForField(fieldname, viewModel));
-            }
-        });
+        if (form.is('.specify-formtable')) {
+            $('th', form).each(fillinLabel);
+        } else {
+            $('.specify-form-label', form).each(fillinLabel);
 
-        form.find('.specify-formtable').each(function() {
-            var formtable = $(this), fieldName = formtable.data('specify-field-name'),
-            fieldInfo = datamodel.getDataModelField(viewModel, fieldName),
-            subviewModel = fieldInfo.attr('classname').split('.').pop();
-            formtable.find('th').each(function() {
-                if (th.text()) return; // the label was hard coded in the form
-                var forId = th.data('specify-header-for');
-                if (!forId) return;
-                var fieldname = form.find('#' + forId).attr('name');
-                th.text(self.getLocalizedLabelForField(fieldname, subviewModel));
+            $('.specify-field:checkbox', form).each(function() {
+                fillinLabel.apply($(this).parent());
             });
-        });
+        }
     };
 
     return self;

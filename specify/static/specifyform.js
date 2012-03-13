@@ -127,11 +127,13 @@ function specifyform($, _, datamodel) {
                 field: function() {
                     var td = $('<td>'),
                     fieldName = cell.attr('name'),
+                    id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined,
                     byUIType = {
                         checkbox: function() {
                             var control = $('<input type="checkbox">').appendTo(td);
                             if (doingFormTable) return control.attr('disabled', true);
                             var label = $('<label>').appendTo(td);
+                            id && label.prop('for', id);
                             cell.attr('label') && label.text(cell.attr('label'));
                             return control;
                         },
@@ -153,8 +155,8 @@ function specifyform($, _, datamodel) {
                             return control;
                         },
                         querycbx: function() {
-                            return $('<input type="text">').appendTo(td)
-                                .addClass('specify-querycbx').attr('readonly', doingFormTable);
+                            return $('<input type="text" class="specify-querycbx">').appendTo(td)
+                                .attr('readonly', doingFormTable);
                         },
                         text: function() {
                             return $('<input type="text">').appendTo(td).attr('readonly', doingFormTable);
@@ -174,11 +176,10 @@ function specifyform($, _, datamodel) {
                         }
                     },
                     initialize = cell.attr('initialize'),
-                    id = cell.attr('id'),
                     control = (byUIType[cell.attr('uitype')] || byUIType.other)();
                     if (control) {
                         control.attr('name', fieldName).addClass('specify-field');
-                        id && control.prop('id', 'specify-field-' + formNumber + '-' + id);
+                        id && control.prop('id', id);
                         initialize && control.attr('data-specify-initialize', initialize);
                     }
                     return td;
@@ -258,10 +259,8 @@ function specifyform($, _, datamodel) {
             var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
             var headerRow = $('<tr>'), bodyRow = $('<tr>');
             formTableCells.each(function () {
-                headerRow.append($('<th>').attr(
-                    'data-specify-header-for',
-                    'specify-field-' + formNumber + '-' + $(this).attr('id')
-                ));
+                var label = $('<label>', {'for': 'specify-field-' + formNumber + '-' + $(this).attr('id')});
+                headerRow.append($('<th>').append(label));
                 bodyRow.append(processCell(this));
             });
             result.append($('<thead>').append(headerRow));
@@ -278,7 +277,7 @@ function specifyform($, _, datamodel) {
             });
 
             return result.append(table).append($('<input type="button" value="Delete">'));
-        } 
+        }
     };
 
     return self;
