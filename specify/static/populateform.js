@@ -167,8 +167,10 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
         var viewmodel = form.data('specify-model');
 
         var populate = function(data) {
-            form.data('specify-uri', data.resource_uri);
-            form.data('specify-object-version', data.version);
+            form.find('.specify-view-content').data({
+                'specify-uri': data.resource_uri,
+                'specify-object-version': data.version});
+
             self.setupControls(form, data);
 
             form.find('.specify-subview').each(function () {
@@ -215,6 +217,7 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
                     result.find('.specify-form-header:first > span').text(
                         schemalocalization.getLocalizedLabelForField(fieldName, viewmodel)
                     );
+                    result.find('.specify-delete-object').click(deleteRelated);
                     node.append(result);
                 };
 

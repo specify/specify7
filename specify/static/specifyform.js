@@ -272,7 +272,7 @@ function specifyform($, _, datamodel) {
 
             var form = $('<form class="specify-view-content">').append(table);
             form.prop('id', 'specify-view-' + formNumber);
-            form.append('<input type=button value="Delete">');
+            form.append('<input type=button value="Delete" class="specify-delete-object">');
             outerDiv.append($('<div class="specify-view-content-container">').append(form));
         }
         return outerDiv;
