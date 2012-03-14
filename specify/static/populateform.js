@@ -1,7 +1,7 @@
 define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
-        'specifyform', 'specifyplugins', 'dataobjformatters',
+        'specifyform', 'specifyplugins', 'dataobjformatters', 'icons',
         'text!resources/typesearch_def.xml'],
-function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins, dof, typesearchesXML) {
+       function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
 
@@ -179,6 +179,15 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
                 var fieldInfo = datamodel.getDataModelField(viewmodel, fieldName);
                 if (!fieldInfo.is('relationship')) {
                     throw new Error("Can't make subform for non-rel field!");
+                    return;
+                }
+
+                var subviewButton = node.children('.specify-subview-button:first');
+                if (subviewButton.length) {
+                    var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
+                    var icon = props.icon ? icons.getIcon(props.icon) :
+                        icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
+                    subviewButton.append($('<img>', {src: icon}));
                     return;
                 }
 

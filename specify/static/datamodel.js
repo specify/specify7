@@ -7,7 +7,7 @@ define(['jquery', 'text!resources/specify_datamodel.xml'], function($, xml) {
         dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
     });
 
-    return {
+    var self = {
         getViewForModel: function(modelName) {
             return dataModel[modelName.toLowerCase()].find('display').attr('view');
         },
@@ -18,5 +18,14 @@ define(['jquery', 'text!resources/specify_datamodel.xml'], function($, xml) {
             var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
             return table.find(sel);
         },
+
+        getRelatedModelForField: function(modelName, fieldName) {
+            var field = self.getDataModelField(modelName, fieldName);
+            if (!field.is('relationship'))
+                throw new TypeError(fieldName + 'is not a related object field.');
+            return field.attr('classname').split('.').pop();
+        }
     };
+
+    return self;
 });
