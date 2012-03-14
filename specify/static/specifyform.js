@@ -270,8 +270,9 @@ function specifyform($, _, datamodel) {
                 $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
             });
 
-            var form = $('<form>').append(table).addClass('specify-view-content');
+            var form = $('<form class="specify-view-content">').append(table);
             form.prop('id', 'specify-view-' + formNumber);
+            form.append('<input type=button value="Delete">');
             outerDiv.append($('<div class="specify-view-content-container">').append(form));
         }
         return outerDiv;

@@ -181,7 +181,7 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
                 }
 
                 var doIt = function(data) {
-                    var result;
+                    var result = $();
                     var fillSubview = function(count) {
                         var subview = specifyform.buildSubView(node);
                         self.populateForm(subview, this);
@@ -211,6 +211,10 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
                     default:
                         result = $('unhandled relationship type: ' + relType);
                     }
+                    // replace header text with the name of the field
+                    result.find('.specify-form-header:first > span').text(
+                        schemalocalization.getLocalizedLabelForField(fieldName, viewmodel)
+                    );
                     node.append(result);
                 };
 
