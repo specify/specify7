@@ -8,8 +8,7 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
     self.populatePickList = function(control, data) {
         var model = control.parents('[data-specify-model]').attr('data-specify-model');
         var field = control.attr('name');
-        var pickListName =
-            schemalocalization.getLocalizationForField(field, model).attr('pickListName');
+        var pickListName = schemalocalization.getPickListForField(field, model);
         if (!pickListName) { return; }
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
         picklistJQXHR = $.get(pickListUri), // begin fetching the picklist

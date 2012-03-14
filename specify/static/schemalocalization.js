@@ -5,33 +5,21 @@ define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlTex
     self.language = "en";
 
     // Search the schema_localization DOM for the given modelName.
-    self.getLocalizationForModel = function(modelName) {
+    var getLocalizationForModel = function(modelName) {
         return $('container[name="'+modelName.toLowerCase()+'"]', xml).first();
     };
 
-    self.getLocalizationForField = function(fieldname, modelname) {
+    var getLocalizationForField = function(fieldname, modelname) {
         var path = fieldname.split('.'), field = path.pop(),
         model = path.pop() || modelname.split('.').pop();
-        return self.getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
-    };
-
-    self.getLocalizedLabelForModel = function(modelname) {
-        return self.getLocalizedStr(
-            self.getLocalizationForModel(modelname).children('names')
-        );
-    };
-
-    self.getLocalizedLabelForField = function(fieldname, modelname) {
-        return self.getLocalizedStr(
-            self.getLocalizationForField(fieldname, modelname).children('names')
-        );
+        return getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
     };
 
     // Given a DOM containing alternative localizations,
     // return the one for the language selected above,
     // or failing that, for "en", or failing that,
     // just return the first one.
-    self.getLocalizedStr = function(alternatives) {
+    var getLocalizedStr = function(alternatives) {
         var str = $(alternatives).children('str[language="' + self.language + '"]');
         if (str.length < 1) {
             str = $(alternatives).children('str[language="en"]');
@@ -40,6 +28,18 @@ define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlTex
             str = $(alternatives).children('str').first();
         }
         return str.children('text').text().replace(/\\n/g, "\n");
+    };
+
+    self.getLocalizedLabelForModel = function(modelname) {
+        return getLocalizedStr(getLocalizationForModel(modelname).children('names'));
+    };
+
+    self.getLocalizedLabelForField = function(fieldname, modelname) {
+        return getLocalizedStr(getLocalizationForField(fieldname, modelname).children('names'));
+    };
+
+    self.getPickListForField = function(fieldname, modelname) {
+        return getLocalizationForField(fieldname, modelname).attr('pickListName');
     };
 
     self.localizeForm = function(formNode) {
