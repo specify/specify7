@@ -188,8 +188,8 @@ function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins
                         if (count === 0) {
                             result = subview;
                         } else {
-                            $('specify-view-content-container:first', result).append(
-                                $('specify-view-content:first', subview)
+                            $('.specify-view-content-container:first', result).append(
+                                $('.specify-view-content:first', subview)
                             );
                         }
                     };

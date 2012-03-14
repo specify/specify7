@@ -3,6 +3,7 @@ define(['jquery', 'specifyapi', 'text!resources/dataobj_formatters.xml'], functi
     var formatters = $.parseXML(xml), self = {};
 
     self.dataObjFormat = function (modelName, obj) {
+        if (!obj) return obj;
         var sw = $('format[name="' + modelName + '"]', formatters).find('switch');
         // external dataobjFormatters not supported
         if (!sw.length || sw.find('external').length)

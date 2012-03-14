@@ -1,4 +1,4 @@
-define(['jquery', 'underscore',
+define(['jquery', 'underscore', 'datamodel',
         'text!resources/system.views.xml',
         'text!resources/editorpanel.views.xml',
         'text!resources/preferences.views.xml',
@@ -7,7 +7,7 @@ define(['jquery', 'underscore',
         'text!resources/common.views.xml',
         'text!resources/fish.views.xml'],
 
-function specifyform($, _) {
+function specifyform($, _, datamodel) {
     "use strict";
     var self = {}, formCounter = 0,
     viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value(),
@@ -100,6 +100,10 @@ function specifyform($, _) {
 
     self.buildSubView = function (node) {
         return buildView(viewdefs[$(node).data('specify-viewdef').toLowerCase()]);
+    };
+
+    self.buildViewForModel = function (modelName) {
+        return self.buildViewByName(datamodel.getViewForModel(modelName));
     };
 
     function buildView(viewdef) {
