@@ -146,11 +146,9 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                     }
                 };
 
-                var dataModelField = datamodel.getDataModelField(form.data('specify-model'),
-                                                                 control.attr('name'));
-
-                if (dataModelField.is('relationship')) {
-                    var relatedModel = dataModelField.attr('classname').split('.').pop();
+                if (datamodel.isRelatedField(form.data('specify-model'), control.attr('name'))) {
+                    var relatedModel =
+                        datamodel.getRelatedModelForField(form.data('specify-model'), control.attr('name'));
                     fetch.pipe(function (obj) { return dof.dataObjFormat(relatedModel, obj) })
                         .done(fillItIn);
                 } else fetch.done(fillItIn);
@@ -176,8 +174,7 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
             form.find('.specify-subview').each(function () {
                 var node = $(this),
                 fieldName = node.data('specify-field-name');
-                var fieldInfo = datamodel.getDataModelField(viewmodel, fieldName);
-                if (!fieldInfo.is('relationship')) {
+                if (!datamodel.isRelatedField(viewmodel, fieldName)) {
                     throw new Error("Can't make subform for non-rel field!");
                     return;
                 }
@@ -205,7 +202,7 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                         }
                     };
 
-                    var relType = fieldInfo.attr('type');
+                    var relType = datamodel.getRelatedFieldType(viewmodel, fieldName);
                     switch (relType) {
                     case 'one-to-many':
                         // Have to add a subform for each instance. Not exactly sure how this
