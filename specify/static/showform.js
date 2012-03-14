@@ -20,10 +20,11 @@ function($, specifyform, populateform, putform) {
         $('input[type="submit"]').click(function () {
             var btn = $(this);
             btn.prop('disabled', true);
-            $.when.apply($, putform.putForm(mainForm, true)).then(function () {
-                btn.prop('disabled', false);
-                window.location.reload(true);
-            });
+            $.when.apply($, putform.putForm(mainForm.find('.specify-view-content'), true))
+                .done(function () {
+                    btn.prop('disabled', false);
+                    window.location.reload(true);
+                });
         });
     });
 });

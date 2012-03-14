@@ -146,6 +146,7 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                 };
 
                 if (datamodel.isRelatedField(form.data('specify-model'), control.attr('name'))) {
+                    control.removeClass('specify-field').addClass('specify-object-formatted');
                     var relatedModel =
                         datamodel.getRelatedModelForField(form.data('specify-model'), control.attr('name'));
                     fetch.pipe(function (obj) { return dof.dataObjFormat(relatedModel, obj) })
@@ -160,7 +161,10 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
     // then fills them in with the given data or pointer to data.
     self.populateForm = function (form, dataOrUri) {
         schemalocalization.localizeForm(form);
-        if (!dataOrUri) return form;
+        if (!dataOrUri) {
+            self.setupControls(form);
+            return form;
+        }
         var viewmodel = form.data('specify-model');
 
         var populate = function(data) {

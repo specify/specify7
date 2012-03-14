@@ -7,8 +7,8 @@ require({
 });
 
 require(
-    ['jquery', 'populateform', 'specifyform', 'putform'],
-    function ($, populateform, specifyform, putform) {
+    ['jquery', 'populateform', 'specifyform', 'schemalocalization', 'putform'],
+    function ($, populateform, specifyform, schemalocalization, putform) {
         "use strict";
 
         $(function () {
@@ -16,12 +16,12 @@ require(
             var params = populateform.pullParamsFromDl(rootContainer);
             var form = specifyform.buildViewForModel(params.relatedModel);
             form.children('input[value="Delete"]').remove();
-            populateform.populateForm(form);
+            schemalocalization.localizeForm(form);
+            populateform.setupControls(form);
             rootContainer.empty().append(form);
 
-            function postForm(formNode) {
-                var form = $(formNode),
-                data = putform.harvestForm(form),
+            function postForm() {
+                var data = putform.harvestForm(form.find('.specify-view-content')),
                 uri = '/api/specify/' + params.relatedModel.toLowerCase() + '/';
                 data[params.model.toLowerCase()] = '/api/specify/' + params.model.toLowerCase() + '/' + params.id + '/';
                 data.version = 0;
@@ -30,13 +30,13 @@ require(
                     contentType: 'application/json',
                     processData: false,
                     data: JSON.stringify(data)
-                });
+                }).promise();
             };
 
             $('input[type="submit"]').click(function () {
                 var btn = $(this);
                 btn.prop('disabled', true);
-                postForm(form).then(function () {
+                postForm().done(function () {
                     window.location = '../../';
                 });
             });
