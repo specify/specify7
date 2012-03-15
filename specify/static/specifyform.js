@@ -113,6 +113,7 @@ function specifyform($, _, datamodel) {
 
         var processCell = function(cellNode) {
             var cell = $(cellNode),
+            id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined,
             byType = {
                 label: function() {
                     var label = $('<label>');
@@ -125,7 +126,6 @@ function specifyform($, _, datamodel) {
                 field: function() {
                     var td = $('<td>'),
                     fieldName = cell.attr('name'),
-                    id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined,
                     byUIType = {
                         checkbox: function() {
                             var control = $('<input type="checkbox">').appendTo(td);
@@ -199,8 +199,10 @@ function specifyform($, _, datamodel) {
                     td.attr('data-specify-field-name', cell.attr('name'));
                     if (props.btn === 'true') {
                         var button = $('<button type=button class="specify-subview-button">');
-                        button.attr('data-specify-initialize', cell.attr('initialize'));
-                        button.attr('disabled', doingFormTable);
+                        id && button.prop('id', id);
+                        button.attr({'data-specify-initialize': cell.attr('initialize'),
+                                     name: cell.attr('name'),
+                                     disabled: doingFormTable});
                         return td.append(button);
                     }
                     var view = views[cell.attr('viewname').toLowerCase()];
