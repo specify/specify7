@@ -64,3 +64,7 @@ select {
     padding-left: 3px;
 }
 
+.specify-subview-button-count {
+    border: solid 1px;
+    padding: 3px;
+}

@@ -60,7 +60,8 @@ define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlTex
                 label.text(override);
                 return;
             }
-            var fieldname = control.attr('name');
+            var fieldname = control.attr('name') ||
+                control.closest('[data-specify-field-name]').data('specify-field-name');
             if (!fieldname) return; // probably a label for a plugin
             label.text(self.getLocalizedLabelForField(fieldname, modelname));
         };

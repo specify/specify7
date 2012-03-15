@@ -201,10 +201,9 @@ function specifyform($, _, datamodel) {
                     props = self.parseSpecifyProperties(cell.attr('initialize'));
                     td.attr('data-specify-field-name', cell.attr('name'));
                     if (props.btn === 'true') {
-                        var button = $('<button type=button class="specify-subview-button">');
+                        var button = $('<a href="#" class="specify-subview-button">');
                         id && button.prop('id', id);
                         button.attr({'data-specify-initialize': cell.attr('initialize'),
-                                     name: cell.attr('name'),
                                      disabled: doingFormTable});
                         return td.append(button);
                     }

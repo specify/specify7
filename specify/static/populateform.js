@@ -175,19 +175,19 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
             self.setupControls(form, data);
 
             form.find('.specify-subview').each(function () {
-                var node = $(this),
-                fieldName = node.data('specify-field-name');
-                if (!datamodel.isRelatedField(viewmodel, fieldName)) {
-                    throw new Error("Can't make subform for non-rel field!");
-                    return;
-                }
+                var node = $(this), fieldName = node.data('specify-field-name');
+                var relType = datamodel.getRelatedFieldType(viewmodel, fieldName);
 
                 var subviewButton = node.children('.specify-subview-button:first');
                 if (subviewButton.length) {
+                    subviewButton.prop('href', api.getViewRelatedURL(data, fieldName));
                     var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
                     var icon = props.icon ? icons.getIcon(props.icon) :
                         icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
                     subviewButton.append($('<img>', {src: icon}));
+                    api.getRelatedObjectCount(data, fieldName).done(function (count) {
+                        $('<span class="specify-subview-button-count">').text(count).insertAfter(subviewButton);
+                    });
                     return;
                 }
 
@@ -205,7 +205,6 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                         }
                     };
 
-                    var relType = datamodel.getRelatedFieldType(viewmodel, fieldName);
                     switch (relType) {
                     case 'one-to-many':
                         // Have to add a subform for each instance. Not exactly sure how this

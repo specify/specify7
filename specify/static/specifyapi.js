@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['jquery', 'underscore'], function($, _) {
     var self = {};
 
     // Some fields reference data in related objects. E.g. Collectors
@@ -27,6 +27,28 @@ define(['jquery'], function($) {
         }
         getData(resource, field);
         return deferred.promise();
+    };
+
+    self.getViewRelatedURL = function (resource, field) {
+        var related = resource[field.toLowerCase()];
+        if (_.isString(related)) {
+            return related.replace(/api\/specify/, 'specify/view');
+        }
+        throw new Error('building links for in-lined related resources not implemented yet');
+    };
+
+    self.getRelatedObjectCount = function (resource, field) {
+        var related = resource[field.toLowerCase()];
+        if (_.isArray(related))
+            return $.when(related.length);
+        else if (_.has(related, 'meta'))
+            return $.when(related.meta.total_count);
+        else {
+            // should be some way to get the count without getting any objects
+            return $.get(related, {limit: 1}).pipe(function (data) {
+                return data.meta.total_count;
+            }).promise();
+        }
     };
 
     return self;
