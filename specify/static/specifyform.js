@@ -128,7 +128,7 @@ function specifyform($, _, datamodel) {
                     fieldName = cell.attr('name'),
                     byUIType = {
                         checkbox: function() {
-                            var control = $('<input type="checkbox">').appendTo(td);
+                            var control = $('<input type=checkbox>').appendTo(td);
                             var labelOR = cell.attr('label');
                             if (doingFormTable) {
                                 if (labelOR !== undefined) {
@@ -143,15 +143,15 @@ function specifyform($, _, datamodel) {
                         },
                         textarea: function () {
                             if (doingFormTable)
-                                return $('<input type="text" readonly>').appendTo(td);
+                                return $('<input type=text readonly>').appendTo(td);
                             var control = $('<textarea>)').appendTo(td);
                             cell.attr('rows') && control.attr('rows', cell.attr('rows'));
                             return control;
                         },
                         textareabrief: function() {
                             if (doingFormTable)
-                                return $('<input type="text" readonly>').appendTo(td);
-                            return $('<textarea>)').attr('rows', cell.attr('rows') || 1).appendTo(td);
+                                return $('<input type=text readonly>').appendTo(td);
+                            return $('<textarea>').attr('rows', cell.attr('rows') || 1).appendTo(td);
                         },
                         combobox: function() {
                             var control = $('<select class="specify-combobox">').appendTo(td);
@@ -159,20 +159,20 @@ function specifyform($, _, datamodel) {
                             return control;
                         },
                         querycbx: function() {
-                            return $('<input type="text" class="specify-querycbx">').appendTo(td)
+                            return $('<input type=text class="specify-querycbx">').appendTo(td)
                                 .attr('readonly', doingFormTable);
                         },
                         text: function() {
-                            return $('<input type="text">').appendTo(td).attr('readonly', doingFormTable);
+                            return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
                         },
                         formattedtext: function() {
-                            return $('<input type="text">').appendTo(td).attr('readonly', doingFormTable);
+                            return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
                         },
                         label: function() {
-                            return $('<input type="text" readonly>').appendTo(td);
+                            return $('<input type=text readonly>').appendTo(td);
                         },
                         plugin: function() {
-                            return $('<input type="button" value="plugin" class="specify-uiplugin">')
+                            return $('<input type=button value="plugin" class="specify-uiplugin">')
                                 .appendTo(td).attr('disabled', doingFormTable);
                         },
                         other: function() {
@@ -223,7 +223,7 @@ function specifyform($, _, datamodel) {
                     return $('<td>').append(table);
                 },
 	        command: function() {
-		    var button = $('<input type="button">').attr({
+		    var button = $('<input type=button>').attr({
 		        value: cell.attr('label'),
 		        name: cell.attr('name')
 		    });
