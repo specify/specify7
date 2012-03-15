@@ -37,6 +37,9 @@ define(['jquery', 'text!resources/specify_datamodel.xml'], function($, xml) {
             return field.attr('type');
         },
 
+        getCannonicalNameForModel: function(modelName) {
+            return dataModel[modelName.toLowerCase()].attr('classname').split('.').pop();
+        }
     };
 
     return self;

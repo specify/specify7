@@ -1,4 +1,4 @@
-define(['jquery', 'underscore'], function($, _) {
+define(['jquery', 'underscore', 'datamodel'], function($, _, datamodel) {
     var self = {};
 
     // Some fields reference data in related objects. E.g. Collectors
@@ -38,6 +38,9 @@ define(['jquery', 'underscore'], function($, _) {
     };
 
     self.getRelatedObjectCount = function (resource, field) {
+        if (datamodel.getRelatedFieldType(self.getResourceModel(resource), field) !== 'one-to-many') {
+            throw new TypeError('field is not one-to-many');
+        }
         var related = resource[field.toLowerCase()];
         if (_.isArray(related))
             return $.when(related.length);
@@ -50,6 +53,18 @@ define(['jquery', 'underscore'], function($, _) {
             }).promise();
         }
     };
+
+    self.getResourceModel = function (resource) {
+        var uri;
+        if (_(resource).has('resource_uri'))
+            uri = resource.resource_uri;
+        else if (_.isString(resource))
+            uri = resource;
+
+        if (!uri) return undefined;
+        var match = /api\/specify\/(\w+)\//.exec(uri);
+        return datamodel.getCannonicalNameForModel(match[1]);
+    }
 
     return self;
 });
