@@ -165,6 +165,9 @@ function specifyform($, _, datamodel) {
                         text: function() {
                             return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
                         },
+                        dsptextfield: function() {
+                            return $('<input type=text readonly>').appendTo(td);
+                        },
                         formattedtext: function() {
                             return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
                         },
