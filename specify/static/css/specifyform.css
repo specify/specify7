@@ -62,21 +62,13 @@ select {
     padding-left: 6px;
 }
 
-.specify-subview-button {
-    vertical-align: middle;
-}
-
 .specify-subview-button-count {
-    border: solid 1px;
     padding: 3px;
     margin-left: 5px;
     vertical-align: middle;
     background-color: white;
     border: 1px solid #CCC;
-}
-
-.specify-subview-button div {
-    display: inline-block;
+    color: #555;
 }
 
 .specify-formtable td, .specify-formtable th {

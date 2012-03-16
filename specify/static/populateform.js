@@ -1,7 +1,8 @@
-define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
-        'specifyform', 'specifyplugins', 'dataobjformatters', 'icons',
-        'text!resources/typesearch_def.xml'],
-       function($, jqueryui, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
+define([
+    'jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
+    'specifyform', 'specifyplugins', 'dataobjformatters', 'icons',
+    'text!resources/typesearch_def.xml'
+], function($, dummy, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
 
@@ -187,11 +188,13 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                     var icon = props.icon ? icons.getIcon(props.icon) :
                         icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
                     subviewButton.append($('<img>', {src: icon}));
+                    $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
+                    subviewButton.button();
                     if (relType === 'one-to-many') {
-                        var countDsp = $('<span class="specify-subview-button-count">').appendTo(subviewButton);
-                        api.getRelatedObjectCount(data, fieldName).done(_.bind(countDsp.text, countDsp));
+                        api.getRelatedObjectCount(data, fieldName).done(function(count) {
+                            $('.specify-subview-button-count', subviewButton).text(count).show();
+                        });
                     }
-                    subviewButton.wrapInner('<div class="button">');
                     return;
                 }
 
