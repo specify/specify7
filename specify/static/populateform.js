@@ -186,10 +186,10 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                         icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
                     subviewButton.append($('<img>', {src: icon}));
                     if (relType === 'one-to-many') {
-                        api.getRelatedObjectCount(data, fieldName).done(function (count) {
-                            $('<span class="specify-subview-button-count">').text(count).insertAfter(subviewButton);
-                        });
+                        var countDsp = $('<span class="specify-subview-button-count">').appendTo(subviewButton);
+                        api.getRelatedObjectCount(data, fieldName).done(_.bind(countDsp.text, countDsp));
                     }
+                    subviewButton.wrapInner('<div class="button">');
                     return;
                 }
 
