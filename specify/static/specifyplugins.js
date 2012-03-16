@@ -7,7 +7,10 @@ define(
         return {
             PartialDateUI: function(control, init, data) {
                 control[0].type = 'text'; // this probably breaks IE (f*** you IE)
-                control.datepicker({dateFormat: $.datepicker.ISO_8601});
+                if (control.prop('disabled'))
+                    control.prop({disabled: false, readonly: true});
+                else
+                    control.datepicker({dateFormat: $.datepicker.ISO_8601});
                 var label = control.parents().last().find('label[for="' + control.prop('id') + '"]');
                 if (!label.text()) {
                     var model = control.closest('[data-specify-model]').attr('data-specify-model');

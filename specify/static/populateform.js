@@ -68,11 +68,13 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
         format = typesearch.attr('format'),
         uri = '/api/specify/' + init.name.toLowerCase() + '/', // uri to query values
         table = $('<div class="querycbx-strct">').insertBefore(control),
-        input = $('<input type="text">').appendTo(table), // autocomplete field
-        link = $('<a href="#">[i]</a>').appendTo(table),
+        input = $('<input type=text>').appendTo(table), // autocomplete field
+        link = $('<a><span class="ui-icon ui-icon-pencil">edit</span></a>');
+
+        control.prop('readonly') || link.appendTo(table);
 
         // format the query results according to formatter in the typesearch
-        formatInterpolate = function (obj) {
+        var formatInterpolate = function (obj) {
             var str = format,
             vals = displaycols.map(function (col)  { return obj[col]; });
             $(vals).each(function () { str = str.replace(/%s/, this); });
@@ -105,7 +107,7 @@ define(['jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
                 control.val(ui.item.uri);
                 link.attr('href', ui.item.uri.replace(/api\/specify/, 'specify/view'));
             }
-        });
+        }).prop('readonly', control.prop('readonly'));
 
         if (data) {
             // fill in the initial value
