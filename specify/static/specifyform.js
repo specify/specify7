@@ -205,6 +205,7 @@ function specifyform($, _, datamodel) {
                         id && button.prop('id', id);
                         button.attr({'data-specify-initialize': cell.attr('initialize'),
                                      disabled: doingFormTable});
+                        props.align && td.addClass('align-' + props.align);
                         return td.append(button);
                     }
                     var view = views[cell.attr('viewname').toLowerCase()];

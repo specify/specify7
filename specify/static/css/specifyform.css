@@ -54,14 +54,12 @@ select {
 
 .querycbx-strct input {
     display: table-cell;
-    padding-left: 0;
-    padding-right: 0;
 }
 
 .querycbx-strct a {
     display: table-cell;
-    min-width: 0;
-    padding-left: 3px;
+    width: 16px;
+    padding-left: 6px;
 }
 
 .specify-subview-button {
@@ -81,3 +79,6 @@ select {
     display: inline-block;
 }
 
+.specify-formtable td, .specify-formtable th {
+    text-align: center;
+}
