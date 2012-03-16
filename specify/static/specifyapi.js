@@ -31,6 +31,7 @@ define(['jquery', 'underscore', 'datamodel'], function($, _, datamodel) {
 
     self.getViewRelatedURL = function (resource, field) {
         var related = resource[field.toLowerCase()];
+        if (related === null) return null;
         if (_.isString(related)) {
             return related.replace(/api\/specify/, 'specify/view');
         }
