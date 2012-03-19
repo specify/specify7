@@ -208,6 +208,7 @@ function specifyform($, _, datamodel) {
                         props.align && td.addClass('align-' + props.align);
                         return td.append(button);
                     }
+                    td.append('<h3 class="specify-subview-header">');
                     var view = views[cell.attr('viewname').toLowerCase()];
                     if (view === undefined) {
                         return td.text('View "' + cell.attr('viewname') + '" is undefined.');
@@ -277,7 +278,6 @@ function specifyform($, _, datamodel) {
 
             var form = $('<form class="specify-view-content">').append(table);
             form.prop('id', 'specify-view-' + formNumber);
-            form.append('<input type=button value="Delete" class="specify-delete-object">');
             outerDiv.append($('<div class="specify-view-content-container">').append(form));
         }
         return outerDiv;

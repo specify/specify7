@@ -159,6 +159,50 @@ define([
         });
     };
 
+    self.makeRecordSelector = function(node, data, contentSelector, buildContent) {
+        var bottom = data.meta.offset;
+        var top = bottom + data.meta.limit;
+        var url = data.meta.next;
+        var request, showingSpinner;
+        $('<div>').appendTo(node).slider({
+            max: data.meta.total_count - 1,
+            stop: _.throttle(function(event, ui) {
+                if (ui.value >= bottom && ui.value < top) return;
+                request && request.abort();
+                var offset = Math.max(0, ui.value - Math.floor(data.meta.limit/2));
+                request = $.get(url, {offset: offset}, function(newData) {
+                    request = null;
+                    data = newData;
+                    bottom = data.meta.offset;
+                    top = bottom + data.meta.limit;
+                    $(contentSelector, node).replaceWith(
+                        buildContent(data.objects[ui.value - bottom])
+                    );
+                    showingSpinner = false;
+                });
+            }, 750),
+            slide: function(event, ui) {
+                $('.ui-slider-handle', this).text(ui.value + 1);
+                if (ui.value >= bottom && ui.value < top) {
+                    $(contentSelector, node).replaceWith(
+                        buildContent(data.objects[ui.value - bottom])
+                    );
+                    showingSpinner = false;
+                } else if (!showingSpinner) {
+                    var content = $(contentSelector, node);
+                    var spinner = $('<img src="/static/img/icons/specify128spinner.gif">');
+                    var div = $('<div>').css({height: content.height(),
+                                              'text-align': 'center'}).append(spinner);
+                    spinner.height(Math.min(128, 0.90*content.height()));
+                    content.empty().append(div);
+                    showingSpinner = true;
+                }
+            }
+        }).find('.ui-slider-handle').
+            css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
+            text(1);
+    };
+
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
@@ -200,73 +244,45 @@ define([
 
                 var doIt = function(data) {
                     var result = $();
-                    var fillSubview = function(count) {
-                        var subview = specifyform.buildSubView(node);
-                        self.populateForm(subview, this);
-                        if (count === 0) {
-                            result = subview;
-                        } else {
-                            $('.specify-view-content-container:first', result).append(
-                                $('.specify-view-content:first', subview)
-                            );
-                        }
-                    };
-
                     switch (relType) {
                     case 'one-to-many':
-                        var objects = _.isArray(data) ? data : data.objects;
+                        if (!_(data).has('meta')) {
+                            data = {
+                                objects: data,
+                                meta: {offset: 0, limit: data.length, total_count: data.length, next: null}
+                            };
+                        }
                         var subview = specifyform.buildSubView(node);
                         if (subview.find('table:first').is('.specify-formtable')) {
-                            $(objects).each(fillSubview);
+                            $(data.objects).each(function(count) {
+                                var subview = specifyform.buildSubView(node);
+                                self.populateForm(subview, this);
+                                if (count === 0) {
+                                    result = subview;
+                                } else {
+                                    $('.specify-view-content-container:first', result).append(
+                                        $('.specify-view-content:first', subview)
+                                    );
+                                }
+                            });
                             break;
                         }
-                        self.populateForm(subview, objects[0]);
+                        if (data.objects.length < 1) {
+                            result = $('<p style="text-align: center">nothing here...</p>');
+                            break;
+                        }
+                        self.populateForm(subview, data.objects[0]);
                         result = $('<div>').append(subview);
 
-                        var doIt = function (object) {
-                            subview = specifyform.buildSubView(node);
-                            self.populateForm(subview, object);
-                            result.find('.specify-view-content:first').replaceWith(
-                                subview.find('.specify-view-content:first'));
-                            showingSpinner = false;
-                        }
-
-                        var bottom =  _(data).has('meta') ? data.meta.offset : 0;
-                        var top = _(data).has('meta') ? bottom + data.meta.limit : data.length;
-                        var url = _(data).has('meta') ? data.meta.next : null;
-                        var request, showingSpinner;
-                        $('<div>').appendTo(result).slider({
-                            max: (_(data).has('meta') ? data.meta.total_count : objects.length) - 1,
-                            stop: _.throttle(function(event, ui) {
-                                if (ui.value >= bottom && ui.value < top) return;
-                                request && request.abort();
-                                var offset = Math.max(0, ui.value - Math.floor(data.meta.limit/2));
-                                request = $.get(url, {offset: offset}, function(newData) {
-                                    request = null;
-                                    data = newData;
-                                    objects = data.objects;
-                                    bottom = data.meta.offset;
-                                    top = bottom + data.meta.limit;
-                                    doIt(objects[ui.value - bottom]);
-                                });
-                            }, 750),
-                            slide: function(event, ui) {
-                                $('.ui-slider-handle', this).text(ui.value + 1);
-                                if (ui.value >= bottom && ui.value < top) {
-                                    doIt(objects[ui.value - bottom]);
-                                } else if (!showingSpinner) {
-                                    var content = result.find('.specify-view-content:first');
-                                    var spinner = $('<img src="/static/img/icons/specify128spinner.gif">');
-                                    var div = $('<div>').css({height: content.height(),
-                                                              'text-align': 'center'}).append(spinner);
-                                    spinner.height(Math.min(128, 0.90*content.height()));
-                                    content.empty().append(div);
-                                    showingSpinner = true;
-                                }
+                        if (data.objects.length > 1) self.makeRecordSelector(
+                            result, data, '.specify-view-content:first',
+                            function(object) {
+                                subview = specifyform.buildSubView(node);
+                                self.populateForm(subview, object);
+                                return subview.find('.specify-view-content:first');
                             }
-                        }).find('.ui-slider-handle').
-                            css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
-                            text(1);
+                        );
+
                         break;
                     case 'many-to-one':
                         if (data) {
@@ -277,11 +293,7 @@ define([
                     default:
                         result = $('unhandled relationship type: ' + relType);
                     }
-                    // replace header text with the name of the field
-                    result.find('.specify-form-header:first > span').text(
-                        schemalocalization.getLocalizedLabelForField(fieldName, viewmodel)
-                    );
-                    result.find('.specify-delete-object').click(deleteRelated);
+                    result.find('.specify-form-header:first').remove();
                     node.append(result);
                 };
 

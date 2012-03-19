@@ -75,6 +75,12 @@ define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlTex
                 fillinLabel.apply($(this).parent());
             });
         }
+
+        $('.specify-subview-header', form).each(function() {
+            var fieldname = $(this).parent().data('specify-field-name');
+            var label = self.getLocalizedLabelForField(fieldname, modelname);
+            $(this).text(label);
+        });
     };
 
     return self;

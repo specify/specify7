@@ -17,11 +17,11 @@ td, th {
     vertical-align: middle;
 }
 
-.specify-form-header {
+.specify-form-header, .specify-subview-header {
     border-bottom: solid 1px;
 }
 
-.specify-form-header > a {
+.specify-form-header > a, .specify-subview-header > a {
     margin-left: 1em;
     font-size: 0.5em;
 }
