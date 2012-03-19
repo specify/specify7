@@ -214,16 +214,64 @@ define([
 
                     switch (relType) {
                     case 'one-to-many':
-                        // Have to add a subform for each instance. Not exactly sure how this
-                        // would be handled with prebuilt forms.
-                        if (_.isArray(data)) {
-                            $(data).each(fillSubview);
-                        } else {
-                            $(data.objects).each(fillSubview);
+                        var objects = _.isArray(data) ? data : data.objects;
+                        var subview = specifyform.buildSubView(node);
+                        if (subview.find('table:first').is('.specify-formtable')) {
+                            $(objects).each(fillSubview);
+                            break;
                         }
+                        self.populateForm(subview, objects[0]);
+                        result = $('<div>').append(subview);
+
+                        var doIt = function (object) {
+                            subview = specifyform.buildSubView(node);
+                            self.populateForm(subview, object);
+                            result.find('.specify-view-content:first').replaceWith(
+                                subview.find('.specify-view-content:first'));
+                            showingSpinner = false;
+                        }
+
+                        var bottom =  _(data).has('meta') ? data.meta.offset : 0;
+                        var top = _(data).has('meta') ? bottom + data.meta.limit : data.length;
+                        var request, showingSpinner;
+                        $('<div>').appendTo(result).slider({
+                            max: (_(data).has('meta') ? data.meta.total_count : objects.length) - 1,
+                            stop: _.throttle(function(event, ui) {
+                                if (ui.value >= bottom && ui.value < top) return;
+                                request && request.abort();
+                                var offset = Math.max(0, ui.value - Math.floor(data.meta.limit/2));
+                                request = $.get(data.meta.next, {offset: offset}, function(newData) {
+                                    request = null;
+                                    data = newData;
+                                    objects = data.objects;
+                                    bottom = data.meta.offset;
+                                    top = bottom + data.meta.limit;
+                                    doIt(objects[ui.value - bottom]);
+                                });
+                            }, 750),
+                            slide: function(event, ui) {
+                                $('.ui-slider-handle', this).text(ui.value + 1);
+                                if (ui.value >= bottom && ui.value < top) {
+                                    doIt(objects[ui.value - bottom]);
+                                } else if (!showingSpinner) {
+                                    var content = result.find('.specify-view-content:first');
+                                    var spinner = $('<img src="/static/img/icons/specify128spinner.gif">');
+                                    var div = $('<div>').css({height: content.height(),
+                                                              'text-align': 'center'}).append(spinner);
+                                    spinner.height(Math.min(128, 0.90*content.height()));
+                                    content.empty().append(div);
+                                    showingSpinner = true;
+                                }
+                            }
+                        }).find('.ui-slider-handle').
+                            css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
+                            text(1);
                         break;
                     case 'many-to-one':
-                        fillSubview.call(data, 0, data);
+                        if (data) {
+                            result = specifyform.buildSubView(node);
+                            self.populateForm(result, data);
+                        };
                         break;
                     default:
                         result = $('unhandled relationship type: ' + relType);
