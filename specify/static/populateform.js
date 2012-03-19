@@ -246,12 +246,11 @@ define([
                     var result = $();
                     switch (relType) {
                     case 'one-to-many':
-                        if (!_(data).has('meta')) {
-                            data = {
-                                objects: data,
-                                meta: {offset: 0, limit: data.length, total_count: data.length, next: null}
-                            };
-                        }
+                        data = _(data).has('meta') ? data : {
+                            meta: {offset: 0, limit: data.length, total_count: data.length, next: null},
+                            objects: data,
+                        };
+
                         var subview = specifyform.buildSubView(node);
                         if (subview.find('table:first').is('.specify-formtable')) {
                             $(data.objects).each(function(count) {
@@ -288,7 +287,9 @@ define([
                         if (data) {
                             result = specifyform.buildSubView(node);
                             self.populateForm(result, data);
-                        };
+                        } else {
+                            result = $('<p style="text-align: center">none</p>');
+                        }
                         break;
                     default:
                         result = $('unhandled relationship type: ' + relType);
