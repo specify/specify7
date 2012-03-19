@@ -233,6 +233,7 @@ define([
 
                         var bottom =  _(data).has('meta') ? data.meta.offset : 0;
                         var top = _(data).has('meta') ? bottom + data.meta.limit : data.length;
+                        var url = _(data).has('meta') ? data.meta.next : null;
                         var request, showingSpinner;
                         $('<div>').appendTo(result).slider({
                             max: (_(data).has('meta') ? data.meta.total_count : objects.length) - 1,
@@ -240,7 +241,7 @@ define([
                                 if (ui.value >= bottom && ui.value < top) return;
                                 request && request.abort();
                                 var offset = Math.max(0, ui.value - Math.floor(data.meta.limit/2));
-                                request = $.get(data.meta.next, {offset: offset}, function(newData) {
+                                request = $.get(url, {offset: offset}, function(newData) {
                                     request = null;
                                     data = newData;
                                     objects = data.objects;
