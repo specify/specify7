@@ -245,6 +245,7 @@ define([
                 var doIt = function(data) {
                     var result = $();
                     switch (relType) {
+                    case 'zero-to-one':
                     case 'one-to-many':
                         data = _(data).has('meta') ? data : {
                             meta: {offset: 0, limit: data.length, total_count: data.length, next: null},
@@ -292,7 +293,7 @@ define([
                         }
                         break;
                     default:
-                        result = $('unhandled relationship type: ' + relType);
+                        result = $('<p>unhandled relationship type: ' + relType + '</p>');
                     }
                     result.find('.specify-form-header:first').remove();
                     node.append(result);
