@@ -74,3 +74,38 @@ select {
 .specify-formtable td, .specify-formtable th {
     text-align: center;
 }
+
+.specifyplugin-latlonui-type, .specifyplugin-latlonui-point-index {
+    display: inline;
+}
+
+.specifyplugin-latlonui table {
+    width: 100%;
+}
+
+.specifyplugin-latlonui-value {
+    display: table;
+}
+
+.specifyplugin-latlonui-value > input {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.specifyplugin-latlonui-value > span {
+    display: table-cell;
+    padding: 0 3px;
+    vertical-align: middle;
+}
+
+.specifyplugin-latlonui [name="format"] {
+    width: auto;
+}
+
+.specifyplugin-latlonui .ui-button-text {
+    padding: 0.3em;
+}
+
+.specifyplugin-latlonui-sign {
+    width: 100%;
+}

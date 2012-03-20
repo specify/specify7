@@ -1,8 +1,9 @@
 define(
-    ['jquery', 'underscore', 'schemalocalization', 'specifyapi', 'text!gmapplugin.html'],
-    function($, _, schemalocalization, api, gmaptemplate_html) {
+    ['jquery', 'underscore', 'schemalocalization', 'specifyapi', 'text!gmapplugin.html', 'text!latlonui.html'],
+    function($, _, schemalocalization, api, gmaptemplate_html, latlonui_html) {
         "use strict";
         var gmaptemplate = _.template(gmaptemplate_html);
+        var latlonuitemplate = _.template(latlonui_html);
 
         return {
             PartialDateUI: function(control, init, data) {
@@ -36,6 +37,50 @@ define(
             },
             LocalityGoogleEarth: function(control, init, data) {
                 control.replaceWith(gmaptemplate(data));
+            },
+            LatLonUI: function(control, init, data) {
+                var plugin = $(latlonuitemplate({id: _.uniqueId()}));
+                control.replaceWith(plugin);
+
+                var type = plugin.find('.specifyplugin-latlonui-type');
+                var pointIndex = plugin.find('.specifyplugin-latlonui-point-index');
+                var format = plugin.find('[name="format"]');
+
+                type.buttonset();
+                pointIndex.buttonset();
+
+                format.change(function() {
+                    var select = $(this);
+                    switch (select.val()) {
+                    case 'Decimal Degrees':
+                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '6em')
+                            .next().nextAll().hide();
+                        break;
+                    case 'Degrees Minutes Decimal Seconds':
+                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '3em')
+                            .nextAll().show();
+                        $('.specifyplugin-latlonui-minutes', plugin).css('width', '3em');
+                        $('.specifyplugin-latlonui-seconds', plugin).css('width', '6em');
+                        break;
+                    case 'Degrees Decimal Minutes':
+                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '3em')
+                            .nextAll().show();
+                        $('.specifyplugin-latlonui-minutes', plugin).css('width', '6em')
+                            .next().nextAll().hide();
+                        break;
+                    }
+                });
+                format.val('Degrees Minutes Decimal Seconds').change();
+
+                type.find(':radio').change(function() {
+                    var radio = $(this);
+                    if (radio.val() === 'point') {
+                        pointIndex.hide();
+                    } else {
+                        pointIndex.show();
+                    }
+                });
+                type.find('[value="point"]').prop('checked', true).change();
             }
         };
     });
