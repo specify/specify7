@@ -21,7 +21,7 @@ define(['underscore'], function (_) {
     }
 
     return {
-        parseLatLong: function(str) {
+        parse: function(str) {
             var match, deg, min, dir, sec;
 
             var fixSign = function() {

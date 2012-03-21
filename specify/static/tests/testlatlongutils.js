@@ -1,6 +1,6 @@
 define(['underscore', 'latlongutils'], function(_, latlongutils) {
     return function() {
-        module('latlongutils.parseLatLong');
+        module('latlongutils.parse');
 
         _.each({
             '34.123 N': [34.123],
@@ -20,7 +20,53 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
             '28° 19\' 0.121" N': [28, 19, 0.121],
             '115° 34\' 59.872" W': [-115, 34, 59.872],
         }, function(value, key) {
-            test(key, function() { deepEqual(latlongutils.parseLatLong(key), value); });
+            test(key, function() { deepEqual(latlongutils.parse(key), value); });
+        });
+
+        module('latlongutils.toDegs');
+
+        _.each({
+            '28° 19\' 0.121" N': [28.3167002778],
+            '115° 34\' 59.872" W': [-115.5832977778],
+        }, function(value, key) {
+            test(key, function() {
+                var result = latlongutils.toDegs(latlongutils.parse(key));
+                equal(result.length, value.length);
+                equal(Math.round(result.pop() * 1e9), Math.round(value.pop() * 1e9));
+            });
+        });
+
+        module('latlongutils.toDegsMinsSecs');
+
+        _.each({
+            '28.3167002778': [28, 19, 0.121],
+            '-115.5832977778': [-115, 34, 59.872],
+            '28': [28, 0, 0],
+            '-115.5': [-115, 30, 0],
+            '-115.51': [-115, 30, 36],
+        }, function(value, key) {
+            test(key, function() {
+                var result = latlongutils.toDegsMinsSecs([parseFloat(key)]);
+                equal(result.length, value.length);
+                while(result.length) {
+                    equal(Math.round(result.pop() * 1e3), Math.round(value.pop() * 1e3));
+                }
+            });
+        });
+
+        module('latlongutils.toDegsMins');
+
+        _.each({
+            '28.5': [28, 30],
+            '-115.25': [-115, 15],
+        }, function(value, key) {
+            test(key, function() {
+                var result = latlongutils.toDegsMins([parseFloat(key)]);
+                equal(result.length, value.length);
+                while(result.length) {
+                    equal(Math.round(result.pop() * 1e3), Math.round(value.pop() * 1e3));
+                }
+            });
         });
     };
 });
