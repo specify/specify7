@@ -39,7 +39,7 @@ define(
                 control.replaceWith(gmaptemplate(data));
             },
             LatLonUI: function(control, init, data) {
-                var plugin = $(latlonuitemplate({id: _.uniqueId()}));
+                var plugin = $(latlonuitemplate({id: _.uniqueId(control.prop('id'))}));
                 control.replaceWith(plugin);
 
                 var type = plugin.find('.specifyplugin-latlonui-type');
@@ -53,19 +53,19 @@ define(
                     var select = $(this);
                     switch (select.val()) {
                     case 'Decimal Degrees':
-                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '6em')
+                        $('[name="degrees"]', plugin).css('width', '6em')
                             .next().nextAll().hide();
                         break;
                     case 'Degrees Minutes Decimal Seconds':
-                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '3em')
+                        $('[name="degrees"]', plugin).css('width', '3em')
                             .nextAll().show();
-                        $('.specifyplugin-latlonui-minutes', plugin).css('width', '3em');
-                        $('.specifyplugin-latlonui-seconds', plugin).css('width', '6em');
+                        $('[name="minutes"]', plugin).css('width', '3em');
+                        $('[name="seconds"]', plugin).css('width', '6em');
                         break;
                     case 'Degrees Decimal Minutes':
-                        $('.specifyplugin-latlonui-degrees', plugin).css('width', '3em')
+                        $('[name="degrees"]', plugin).css('width', '3em')
                             .nextAll().show();
-                        $('.specifyplugin-latlonui-minutes', plugin).css('width', '6em')
+                        $('[name="minutes"]', plugin).css('width', '6em')
                             .next().nextAll().hide();
                         break;
                     }
@@ -81,6 +81,11 @@ define(
                     }
                 });
                 type.find('[value="point"]').prop('checked', true).change();
+
+                var coords = [[data.lat1text, data.long1text], [data.lat2text, data.long2text]];
+                plugin.find('[name="source"]').each(function(i) {
+                    $(this).val(coords[0][i]);
+                });
             }
         };
     });

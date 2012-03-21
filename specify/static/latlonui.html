@@ -19,29 +19,29 @@
     <label for="<%= id %>-second-point">Second point</label>
   </div>
   <table>
-    <tr>
+    <tr class="specifyplugin-latlonui-lat">
       <td class="specify-form-label"><label for="<%= id %>-lat">Latitude</label></td>
       <td><div class="specifyplugin-latlonui-value">
-        <input type=text class="specifyplugin-latlonui-degrees" id="<%= id %>-lat"> <span>&deg;</span>
-        <input type=text class="specifyplugin-latlonui-minutes"> <span>&apos;</span>
-        <input type=text class="specifyplugin-latlonui-seconds"> <span>&quot;</span>
+        <input type=text name="degrees" id="<%= id %>-lat"> <span>&deg;</span>
+        <input type=text name="minutes"> <span>&apos;</span>
+        <input type=text name="seconds"> <span>&quot;</span>
       </div></td>
       <td>
         <select class="specifyplugin-latlonui-sign"> <option>N</option> <option>S</option> </select>
       </td>
-      <td> <input type=text readonly> </td><td> (Source) </td>
+      <td> <input type=text name="source" readonly> </td><td> (Source) </td>
     </tr>
-    <tr>
+    <tr class="specifyplugin-latlonui-lon">
       <td  class="specify-form-label"><label for="<%= id %>-lon">Longitude</label></td>
       <td><div class="specifyplugin-latlonui-value">
-        <input type=text class="specifyplugin-latlonui-degrees" id="<%= id %>-lon"> <span>&deg;</span>
-        <input type=text class="specifyplugin-latlonui-minutes"> <span>&apos;</span>
-        <input type=text class="specifyplugin-latlonui-seconds"> <span>&quot;</span>
+        <input type=text name="degrees" id="<%= id %>-lon"> <span>&deg;</span>
+        <input type=text name="minutes"> <span>&apos;</span>
+        <input type=text name="seconds"> <span>&quot;</span>
       </div></td>
       <td>
         <select class="specifyplugin-latlonui-sign"> <option>E</option> <option>W</option> </select>
       </td>
-      <td> <input type=text readonly> </td><td> (Source) </td>
+      <td> <input type=text name="source" readonly> </td><td> (Source) </td>
     </tr>
   </table>
 </form>
