@@ -24,13 +24,13 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
             ' ': null,
             'foobar': null,
         }, function(value, key) {
-            test(key, function() {
+            var type = value && value.pop();
+            test(key + ' is ' + (type && type.name), function() {
                 var result = latlongutils.parse(key);
                 if (_.isNull(value)) {
                     equal(result, null);
                     return;
                 }
-                var type = value.pop();
                 ok(result instanceof type);
                 deepEqual(result._components, value);
             });
@@ -147,6 +147,28 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
                     } else {
                         equal(result, null);
                     }
+                });
+            });
+        });
+
+        _.each({
+            '124:34:23 N': null,
+            '124:34:23': 'Long',
+            '200:34': null,
+            '15:75': null,
+            '-124:34:23 N': null,
+            '-124:34:23': 'Long',
+            '-200.34': null,
+            '-15:75': null,
+        }, function(value, key) {
+            _([null, 'Coord', 'Lat', 'Long']).each(function(type) {
+                test(key + ' as ' + type, function() {
+                    var result = type ? latlongutils[type].parse(key) : latlongutils.parse(key);
+                    if (_.isNull(value) || type === 'Lat') {
+                        equal(result, null);
+                        return;
+                    }
+                    ok(result instanceof latlongutils[value]);
                 });
             });
         });

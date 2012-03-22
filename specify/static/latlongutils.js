@@ -7,6 +7,14 @@ define(['underscore'], function (_) {
         flt = flt || 0.0;
         this._components = [flt];
     }
+    Coord.prototype.isValid = function() {
+        for(var i = 0; i < this._components.length; i++) {
+            var x = this._components[i];
+            if (i === 0 && Math.abs(x) > 180) return false;
+            if (i > 0 && Math.abs(x) >= 60) return false;
+        }
+        return true;
+    };
     Coord.prototype.format = function() {
         return format(this._components);
     };
@@ -18,11 +26,18 @@ define(['underscore'], function (_) {
     _(['toDegs', 'toDegsMins', 'toDegsMinsSecs']).each(function(f, i) {
         Coord.prototype[f] = function () { return this._adjustTerms(i+1); };
     });
-    Coord.parse = function(str) { return parse(str); };
+    Coord.parse = function(str) {
+        var result = parse(str);
+        return result && result.isValid() ? result : null;
+    };
 
     function Lat(flt) { Coord.call(this, flt); }
     Lat.prototype = new Coord();
-    Lat.prototype.format = function () {
+    Lat.prototype.isValid = function() {
+        if (Math.abs(this._components[0]) > 90) return false;
+        return Coord.prototype.isValid.call(this);
+    }
+    Lat.prototype.format = function() {
         var comps = _.clone(this._components);
         var dir = comps[0] < 0 ? 'S' : 'N';
         comps[0] = Math.abs(comps[0]);
@@ -34,7 +49,7 @@ define(['underscore'], function (_) {
         var comps = result._components;
         result = new Lat();
         result._components = comps;
-        return result;
+        return result.isValid() ? result : null;
     };
 
     function Long(flt) { Coord.call(this, flt); }
@@ -51,7 +66,7 @@ define(['underscore'], function (_) {
         var comps = result._components;
         result = new Long();
         result._components = comps;
-        return result;
+        return result.isValid() ? result : null;
     };
 
     function adjustTerms(x, n) {
@@ -92,7 +107,8 @@ define(['underscore'], function (_) {
             result = new Long();
             break;
         default:
-            result = new Coord();
+            // if the coord is greater in magnitude than 90 it has to be a long
+            result = Math.abs(comps[0]) > 90 ? new Long() : new Coord();
         }
         result._components = comps;
         return result;
@@ -134,5 +150,5 @@ define(['underscore'], function (_) {
         return null;
     };
 
-    return { Coord: Coord, Lat: Lat, Long: Long, parse: parse };
+    return { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
 });
