@@ -46,7 +46,7 @@ define(['underscore'], function (_) {
             if (match !== null) {
                 deg = parseInt(match[1], 10);
                 min = parseFloat(match[2]);
-                if (!_(deg).isNaN() && !_(min).isNaN()) {
+                if (!_.any([deg, min], _.isNaN)) {
                     dir = match[4].toLowerCase();
                     fixSign();
                     return [deg, min];
@@ -58,7 +58,7 @@ define(['underscore'], function (_) {
                 deg = parseInt(match[1], 10);
                 min = parseInt(match[2], 10);
                 sec = parseFloat(match[3]);
-                if (!_(deg).isNaN() && !_(min).isNaN() && !_(sec).isNaN()) {
+                if (!_.any([deg, min, sec], _.isNaN)) {
                     dir = match[5].toLowerCase();
                     fixSign();
                     return [deg, min, sec];
