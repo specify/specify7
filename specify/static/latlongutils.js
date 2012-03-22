@@ -21,6 +21,10 @@ define(['underscore'], function (_) {
     }
 
     return {
+        format: function(ll) {
+            var signs = _(['° ', "' ", '" ']).first(ll.length);
+            return _(ll).chain().zip(signs).flatten().value().join('').trim();
+        },
         parse: function(str) {
             var match, deg, min, dir, sec;
 
@@ -31,7 +35,7 @@ define(['underscore'], function (_) {
             match = decDegRegex.exec(str);
             if (match !== null) {
                 deg = parseFloat(match[1]);
-                if (deg !== NaN) {
+                if (!_(deg).isNaN()) {
                     dir = match[3].toLowerCase();
                     fixSign();
                     return [deg];
@@ -42,7 +46,7 @@ define(['underscore'], function (_) {
             if (match !== null) {
                 deg = parseInt(match[1], 10);
                 min = parseFloat(match[2]);
-                if (deg !== NaN && min !== NaN) {
+                if (!_(deg).isNaN() && !_(min).isNaN()) {
                     dir = match[4].toLowerCase();
                     fixSign();
                     return [deg, min];
@@ -54,7 +58,7 @@ define(['underscore'], function (_) {
                 deg = parseInt(match[1], 10);
                 min = parseInt(match[2], 10);
                 sec = parseFloat(match[3]);
-                if (deg !== NaN && min !== NaN && sec !== NaN) {
+                if (!_(deg).isNaN() && !_(min).isNaN() && !_(sec).isNaN()) {
                     dir = match[5].toLowerCase();
                     fixSign();
                     return [deg, min, sec];

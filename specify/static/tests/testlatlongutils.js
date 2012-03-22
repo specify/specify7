@@ -19,6 +19,9 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
             '28° 19\' N': [28, 19],
             '28° 19\' 0.121" N': [28, 19, 0.121],
             '115° 34\' 59.872" W': [-115, 34, 59.872],
+            '': null,
+            ' ': null,
+            'foobar': null,
         }, function(value, key) {
             test(key, function() { deepEqual(latlongutils.parse(key), value); });
         });
@@ -66,6 +69,19 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
                 while(result.length) {
                     equal(Math.round(result.pop() * 1e3), Math.round(value.pop() * 1e3));
                 }
+            });
+        });
+
+        module('latlongutils.format');
+
+        _.each({
+            '28° 19\' 0.121"': [28, 19, 0.121],
+            '-115° 34\' 59.872"': [-115, 34, 59.872],
+            '28° 19\'': [28, 19],
+            '-115° 34.44\'': [-115, 34.44],
+        }, function(value, key) {
+            test(key, function() {
+                equal(latlongutils.format(value), key);
             });
         });
     };

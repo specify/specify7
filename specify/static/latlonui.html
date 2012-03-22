@@ -1,47 +1,23 @@
 <form class="specifyplugin-latlonui" id="<%= id %>">
-  <select name="format">
-    <option>Decimal Degrees</option>
-    <option>Degrees Minutes Decimal Seconds</option>
-    <option>Degrees Decimal Minutes</option>
+  <select name="type">
+    <option>Point</option>
+    <option>Line</option>
+    <option>Rectangle</option>
   </select>
-  <div class="specifyplugin-latlonui-type" style="direction: ltr">
-      <input type="radio" name="type" id="<%= id %>-point" value="point">
-      <label for="<%= id %>-point">Point</label>
-      <input type="radio" name="type" id="<%= id %>-line" value="line">
-      <label for="<%= id %>-line">Line</label>
-      <input type="radio" name="type" id="<%= id %>-rectangle" value="rectangle">
-      <label for="<%= id %>-rectangle">Rectangle</label>
-  </div>
-  <div class="specifyplugin-latlonui-point-index" style="direction: ltr">
-    <input type="radio" name="index" id="<%= id %>-first-point" value="0" checked>
-    <label for="<%= id %>-first-point">First point</label>
-    <input type="radio" name="index" id="<%= id %>-second-point" value="1">
-    <label for="<%= id %>-second-point">Second point</label>
-  </div>
   <table>
-    <tr class="specifyplugin-latlonui-lat">
-      <td class="specify-form-label"><label for="<%= id %>-lat">Latitude</label></td>
-      <td><div class="specifyplugin-latlonui-value">
-        <input type=text name="degrees" id="<%= id %>-lat"> <span>&deg;</span>
-        <input type=text name="minutes"> <span>&apos;</span>
-        <input type=text name="seconds"> <span>&quot;</span>
-      </div></td>
-      <td>
-        <select class="specifyplugin-latlonui-sign"> <option>N</option> <option>S</option> </select>
-      </td>
-      <td> <input type=text name="source" readonly> </td><td> (Source) </td>
-    </tr>
-    <tr class="specifyplugin-latlonui-lon">
-      <td  class="specify-form-label"><label for="<%= id %>-lon">Longitude</label></td>
-      <td><div class="specifyplugin-latlonui-value">
-        <input type=text name="degrees" id="<%= id %>-lon"> <span>&deg;</span>
-        <input type=text name="minutes"> <span>&apos;</span>
-        <input type=text name="seconds"> <span>&quot;</span>
-      </div></td>
-      <td>
-        <select class="specifyplugin-latlonui-sign"> <option>E</option> <option>W</option> </select>
-      </td>
-      <td> <input type=text name="source" readonly> </td><td> (Source) </td>
-    </tr>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Verbatim</th>
+        <th>Interpreted</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Coords</th>
+        <td><input type=text>, <input type=text></td>
+        <td><span>N/A</span>, <span>N/A</span></td>
+      </tr>
+    </tbody>
   </table>
 </form>
