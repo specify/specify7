@@ -77,6 +77,12 @@ define([
                     break;
                 }
             });
+            data.latlongtype && type.val(data.latlongtype).change();
+            tbody.find('input').each(function(i) {
+                var ptInx = Math.floor(i/2) + 1;
+                var ll = ['lat', 'long'][i%2];
+                $(this).val(data[ll + ptInx + 'text']).keyup();
+            });
         }
     };
 });
