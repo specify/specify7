@@ -46,11 +46,12 @@ define([
             tbody.find('input').each(function(i) {
                 var input = $(this);
                 var interpreted = $(tbody.find('span')[i]);
+                var expectedType = ['Lat', 'Long'][i%2];
                 input.keyup(function() {
-                    var parsed = latlongutils.parse(input.val());
+                    var parsed = latlongutils[expectedType].parse(input.val());
                     input.data('parsed', parsed);
                     interpreted.text(
-                        parsed ? latlongutils.format(parsed) : '???'
+                        parsed ? parsed.format() : '???'
                     );
                 });
             });

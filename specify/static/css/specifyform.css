@@ -17,6 +17,10 @@ td, th {
     vertical-align: middle;
 }
 
+thead th {
+    background: #F8F8F8;
+}
+
 .specify-form-header, .specify-subview-header {
     border-bottom: solid 1px;
 }

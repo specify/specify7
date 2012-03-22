@@ -1,21 +1,26 @@
 <form class="specifyplugin-latlonui" id="<%= id %>">
-  <select name="type">
-    <option>Point</option>
-    <option>Line</option>
-    <option>Rectangle</option>
-  </select>
   <table>
     <thead>
       <tr>
-        <th></th>
-        <th>Verbatim</th>
-        <th>Interpreted</th>
+        <th rowspan="2">
+          <select name="type">
+            <option>Point</option>
+            <option>Line</option>
+            <option>Rectangle</option>
+          </select>
+        </th>
+        <th colspan="2">Source</th>
+        <th rowspan="2">Parsed</th>
+      </tr>
+      <tr>
+        <th>Latitude</th>
+        <th>Longitude</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <th>Coords</th>
-        <td><input type=text>, <input type=text></td>
+        <td><input type=text></td><td><input type=text></td>
         <td><span>N/A</span>, <span>N/A</span></td>
       </tr>
     </tbody>
