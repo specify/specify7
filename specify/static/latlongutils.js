@@ -1,28 +1,34 @@
 define(['underscore'], function (_) {
-    var decDegRegex = /^(-?\d{0,3}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i;
-    var degDecMinRegex = /^(-?\d{1,3})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i;
-    var degMinDecSecRegex = /^(-?\d{1,3})[^\d\.]+(\d{1,2})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i;
-
     function Coord(flt) {
         flt = flt || 0.0;
         this._components = [flt];
     }
-    Coord.prototype.isValid = function() {
-        for(var i = 0; i < this._components.length; i++) {
-            var x = this._components[i];
-            if (i === 0 && Math.abs(x) > 180) return false;
-            if (i > 0 && Math.abs(x) >= 60) return false;
+    _.extend(Coord.prototype, {
+        isValid: function() {
+            for(var i = 0; i < this._components.length; i++) {
+                var x = this._components[i];
+                if (i === 0 && Math.abs(x) > 180) return false;
+                if (i > 0 && Math.abs(x) >= 60) return false;
+            }
+            return true;
+        },
+        format: function() {
+            return format(this._components);
+        },
+        _adjustTerms: function(n) {
+            var result = Object.create(this);
+            result._components = adjustTerms(this._components, n);
+            return result;
+        },
+        asLat: function() {
+            var result = _.extend(new Lat(), {_components: _.clone(this._components)});
+            return result.isValid() ? result : null;
+        },
+        asLong: function() {
+            var result = _.extend(new Long(), {_components: _.clone(this._components)});
+            return result.isValid() ? result : null;
         }
-        return true;
-    };
-    Coord.prototype.format = function() {
-        return format(this._components);
-    };
-    Coord.prototype._adjustTerms = function(n) {
-        var result = Object.create(this);
-        result._components = adjustTerms(this._components, n);
-        return result;
-    };
+    });
     _(['toDegs', 'toDegsMins', 'toDegsMinsSecs']).each(function(f, i) {
         Coord.prototype[f] = function () { return this._adjustTerms(i+1); };
     });
@@ -32,41 +38,37 @@ define(['underscore'], function (_) {
     };
 
     function Lat(flt) { Coord.call(this, flt); }
-    Lat.prototype = new Coord();
-    Lat.prototype.isValid = function() {
-        if (Math.abs(this._components[0]) > 90) return false;
-        return Coord.prototype.isValid.call(this);
-    }
-    Lat.prototype.format = function() {
-        var comps = _.clone(this._components);
-        var dir = comps[0] < 0 ? 'S' : 'N';
-        comps[0] = Math.abs(comps[0]);
-        return [format(comps), dir].join(' ');
-    };
+    Lat.prototype = _.extend(new Coord(), {
+        isValid: function() {
+            if (Math.abs(this._components[0]) > 90) return false;
+            return Coord.prototype.isValid.call(this);
+        },
+        format: function() {
+            var comps = _.clone(this._components);
+            var dir = comps[0] < 0 ? 'S' : 'N';
+            comps[0] = Math.abs(comps[0]);
+            return [format(comps), dir].join(' ');
+        },
+        asLong: function() { return null; }
+    });
     Lat.parse = function(str) {
-        var result = parse(str);
-        if (_.isNull(result) || result instanceof Long) return null;
-        var comps = result._components;
-        result = new Lat();
-        result._components = comps;
-        return result.isValid() ? result : null;
+        var result = Coord.parse(str);
+        return result && result.asLat();
     };
 
     function Long(flt) { Coord.call(this, flt); }
-    Long.prototype = new Coord();
-    Long.prototype.format = function () {
-        var comps = _.clone(this._components);
-        var dir = comps[0] < 0 ? 'W' : 'E';
-        comps[0] = Math.abs(comps[0]);
-        return [format(comps), dir].join(' ');
-    };
+    Long.prototype = _.extend(new Coord(), {
+        format: function () {
+            var comps = _.clone(this._components);
+            var dir = comps[0] < 0 ? 'W' : 'E';
+            comps[0] = Math.abs(comps[0]);
+            return [format(comps), dir].join(' ');
+        },
+        asLat: function() { return null; }
+    });
     Long.parse = function(str) {
-        var result = parse(str);
-        if (_.isNull(result) || result instanceof Lat) return null;
-        var comps = result._components;
-        result = new Long();
-        result._components = comps;
-        return result.isValid() ? result : null;
+        var result = Coord.parse(str);
+        return result && result.asLong();
     };
 
     function adjustTerms(x, n) {
@@ -94,6 +96,7 @@ define(['underscore'], function (_) {
     }
 
     function makeLatLong(comps, dir) {
+        if (_.any(comps, _.isNaN)) return null;
         var result;
         switch (dir.toLowerCase()) {
         case 's':
@@ -114,40 +117,34 @@ define(['underscore'], function (_) {
         return result;
     }
 
+    var parsers = [{
+        regex:  /^(-?\d{0,3}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i,
+        comps: [1], dir: 3 // what match group to use for each component
+    }, {
+        regex: /^(-?\d{1,3})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i,
+        comps: [1, 2], dir: 4
+    }, {
+        regex: /^(-?\d{1,3})[^\d\.]+(\d{1,2})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$/i,
+        comps: [1, 2, 3], dir: 5
+    }];
+
     function parse(str) {
-        var match, deg, min, dir, sec;
+        var parser, match, comps, result;
 
-        match = decDegRegex.exec(str);
-        if (match !== null) {
-            deg = parseFloat(match[1]);
-            if (!_(deg).isNaN()) {
-                dir = match[3].toLowerCase();
-                return makeLatLong([deg], dir);
+        for(var i = 0; i < parsers.length; i++) {
+            parser = parsers[i];
+            match = parser.regex.exec(str);
+            if (match !== null) {
+                dir = match[parser.dir].toLowerCase();
+                comps = _(_.initial(parser.comps)).map(
+                    function(j) { return parseInt(match[j], 10); }
+                );
+                comps.push(parseFloat(match[_.last(parser.comps)]));
+                result = makeLatLong(comps, dir);
+                if (result) return result; // We got one!
             }
         }
-
-        match = degDecMinRegex.exec(str);
-        if (match !== null) {
-            deg = parseInt(match[1], 10);
-            min = parseFloat(match[2]);
-            if (!_.any([deg, min], _.isNaN)) {
-                dir = match[4].toLowerCase();
-                return makeLatLong([deg, min], dir);
-            }
-        }
-
-        match = degMinDecSecRegex.exec(str);
-        if (match !== null) {
-            deg = parseInt(match[1], 10);
-            min = parseInt(match[2], 10);
-            sec = parseFloat(match[3]);
-            if (!_.any([deg, min, sec], _.isNaN)) {
-                dir = match[5].toLowerCase();
-                return makeLatLong([deg, min, sec], dir);
-            }
-        }
-
-        return null;
+        return null; // No parser succeeded.
     };
 
     return { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };

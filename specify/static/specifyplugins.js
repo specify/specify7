@@ -40,11 +40,11 @@ define([
             control.replaceWith(gmaptemplate(data));
         },
         LatLonUI: function(control, init, data) {
-            var plugin = $(latlonuitemplate({id: _.uniqueId(control.prop('id'))}));
+            var plugin = $(latlonuitemplate());
             var tbody = plugin.find('tbody');
             tbody.append(tbody.find('tr').clone().hide());
             tbody.find('input').each(function(i) {
-                var input = $(this);
+                var input = $(this), ptInx = Math.floor(i/2) + 1;
                 var interpreted = $(tbody.find('span')[i]);
                 var expectedType = ['Lat', 'Long'][i%2];
                 input.keyup(function() {
@@ -54,6 +54,8 @@ define([
                         parsed ? parsed.format() : '???'
                     );
                 });
+                var value = data[expectedType.toLowerCase() + ptInx + 'text'];
+                input.val(value).keyup();
             });
             control.replaceWith(plugin);
             var type = plugin.find('[name="type"]');
@@ -78,11 +80,6 @@ define([
                 }
             });
             data.latlongtype && type.val(data.latlongtype).change();
-            tbody.find('input').each(function(i) {
-                var ptInx = Math.floor(i/2) + 1;
-                var ll = ['lat', 'long'][i%2];
-                $(this).val(data[ll + ptInx + 'text']).keyup();
-            });
         }
     };
 });
