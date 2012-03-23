@@ -1,4 +1,7 @@
-define(['jquery', 'specifyapi', 'text!resources/dataobj_formatters.xml'], function($, api, xml) {
+define([
+    'jquery', 'specifyapi',
+    'text!/static/resources/dataobj_formatters.xml'
+], function($, api, xml) {
     "use strict";
     var formatters = $.parseXML(xml), self = {};
 

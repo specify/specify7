@@ -1,4 +1,7 @@
-define(['jquery', 'text!resources/specify_datamodel.xml'], function($, xml) {
+define([
+    'jquery',
+    'text!/static/resources/specify_datamodel.xml'
+], function($, xml) {
     "use strict";
     var dataModel = {};
 

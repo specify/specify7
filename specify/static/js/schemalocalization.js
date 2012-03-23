@@ -1,4 +1,7 @@
-define(['jquery', 'text!resources/schema_localization.xml'], function($,  xmlText) {
+define([
+    'jquery',
+    'text!/static/resources/schema_localization.xml'
+], function($,  xmlText) {
     "use strict";
     var self = {}, xml = $.parseXML(xmlText);
 

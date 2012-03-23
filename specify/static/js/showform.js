@@ -2,7 +2,9 @@ require({
     priority: ['jquery'],
     paths: {
         'jquery': "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery",
-        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min"
+        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min",
+        'underscore': "vendor/underscore",
+        'text': "vendor/text",
     }
 });
 

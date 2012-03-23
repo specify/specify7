@@ -1,3 +1,4 @@
 *.pyc
 *~
 .emacs.desktop*
+.directory

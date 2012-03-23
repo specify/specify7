@@ -1,7 +1,7 @@
 define([
     'jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
     'specifyform', 'specifyplugins', 'dataobjformatters', 'icons',
-    'text!resources/typesearch_def.xml'
+    'text!/static/resources/typesearch_def.xml'
 ], function($, dummy, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);

@@ -1,13 +1,13 @@
-define(['jquery', 'underscore', 'datamodel',
-        'text!resources/system.views.xml',
-        'text!resources/editorpanel.views.xml',
-        'text!resources/preferences.views.xml',
-        'text!resources/search.views.xml',
-        'text!resources/global.views.xml',
-        'text!resources/common.views.xml',
-        'text!resources/fish.views.xml'],
-
-function specifyform($, _, datamodel) {
+define([
+    'jquery', 'underscore', 'datamodel',
+    'text!/static/resources/system.views.xml',
+    'text!/static/resources/editorpanel.views.xml',
+    'text!/static/resources/preferences.views.xml',
+    'text!/static/resources/search.views.xml',
+    'text!/static/resources/global.views.xml',
+    'text!/static/resources/common.views.xml',
+    'text!/static/resources/fish.views.xml'
+], function specifyform($, _, datamodel) {
     "use strict";
     var self = {}, formCounter = 0,
     viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value(),

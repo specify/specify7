@@ -1,6 +1,7 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'latlongutils',
-    'text!gmapplugin.html', 'text!latlonui.html'
+    'text!/static/html/templates/gmapplugin.html',
+    'text!/static/html/templates/latlonui.html'
 ], function($, _, schemalocalization, api, latlongutils, gmaptemplate_html, latlonui_html) {
     "use strict";
     var gmaptemplate = _.template(gmaptemplate_html);
