@@ -9,31 +9,23 @@ define([
     'text!/static/resources/fish.views.xml'
 ], function specifyform($, _, datamodel) {
     "use strict";
-    var self = {}, formCounter = 0,
-    viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value(),
-    views = _.extend.apply({}, _.map(viewsets, breakOutViews)),
-    viewdefs = _.extend.apply({}, _.map(viewsets, breakOutViewdefs));
+    var self = {}, formCounter = 0;
+    var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
 
-    // Processes the viewset DOM to create an object
-    // mapping viewdef names to the viewdef DOM nodes.
-    // Allows the views to be merged easily.
-    function breakOutViews(viewset) {
-        var views = {};
-        $('view', viewset).each(function () {
-            var view = $(this);
-            views[view.attr('name').toLowerCase()] = view;
+    function find(selector, sets, name) {
+        name = name.toLowerCase();
+        var result = $();
+        _.find(sets, function(set) {
+            result = $(selector, set).filter(function() {
+                return $(this).attr('name').toLowerCase() === name;
+            });
+            return result.length;
         });
-        return views;
+        return result;
     }
 
-    function breakOutViewdefs(viewset) {
-        var viewdefs = {};
-        $('viewdef', viewset).each(function () {
-            var viewdef = $(this);
-            viewdefs[viewdef.attr('name').toLowerCase()] = viewdef;
-        });
-        return viewdefs;
-    }
+    var findView = _.bind(find, this, 'view', viewsets);
+    var findViewdef = _.bind(find, this, 'viewdef', viewsets);
 
     // helper function that pulls name value pairs out of property strings
     self.parseSpecifyProperties = function(props) {
@@ -49,15 +41,14 @@ define([
     }
 
     function getModelFromView(view) {
-        if (!view.jquery) view = views[view.toLowerCase()];
+        view = _(view).isString() ? findView(view) : view;
         return view.attr('class').split('.').pop();
     }
 
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewdef.
     function processColumnDef(columnDef) {
-        var table = $('<table>'),
-        colgroup = $('<colgroup>').appendTo(table);
+        var table = $('<table>'), colgroup = $('<colgroup>').appendTo(table);
         $(columnDef.split(',')).each(function(i) {
             if (i%2 === 0) {
                 var col = $('<col>').appendTo(colgroup),
@@ -72,14 +63,14 @@ define([
         if (defaulttype === 'table') {
             var viewdef;
             view.find('altview').each(function() {
-                var vd = viewdefs[$(this).attr('viewdef').toLowerCase()];
+                var vd = findViewdef($(this).attr('viewdef'));
                 if (vd.attr('type') === 'formtable') viewdef = vd;
             });
             if (viewdef) return viewdef;
         }
         var defaultView = view.find('altview[default="true"]').first().attr('viewdef') ||
             view.find('altview').first().attr('viewdef');
-        return viewdefs[defaultView.toLowerCase()];
+        return findViewdef(defaultView);
     }
 
     function getModelFromViewdef(viewdef) {
@@ -88,18 +79,19 @@ define([
 
     // Return a <form> DOM node containing the processed view.
     self.buildViewByName = function (viewName) {
-        if (!views[viewName.toLowerCase()]) {
+        var view = findView(viewName);
+        if (view.length === 0) {
             return $('<p>').text('View "' + viewName + '" not found!');
         }
-        return buildView(getDefaultViewdef(views[viewName.toLowerCase()]));
+        return buildView(getDefaultViewdef(view));
     };
 
     self.buildViewByViewDefName = function (viewDefName) {
-        return buildView(viewdefs[viewDefName.toLowerCase()]);
+        return buildView(findViewdef(viewDefName));
     };
 
     self.buildSubView = function (node) {
-        return buildView(viewdefs[$(node).data('specify-viewdef').toLowerCase()]);
+        return buildView(findViewdef($(node).data('specify-viewdef')));
     };
 
     self.buildViewForModel = function (modelName) {
@@ -209,7 +201,7 @@ define([
                         return td.append(button);
                     }
                     td.append('<h3 class="specify-subview-header">');
-                    var view = views[cell.attr('viewname').toLowerCase()];
+                    var view = findView(cell.attr('viewname'));
                     if (view === undefined) {
                         return td.text('View "' + cell.attr('viewname') + '" is undefined.');
                     }
@@ -251,7 +243,7 @@ define([
             .append($('<a href="new/' + viewModel + '/">Add</a>'));
 
         if (doingFormTable) {
-            var formViewdef = viewdefs[viewdef.find('definition').text().toLowerCase()];
+            var formViewdef = findViewdef(viewdef.find('definition').text());
             var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
             var headerRow = $('<tr>'), bodyRow = $('<tr class="specify-view-content">');
             bodyRow.prop('id', 'specify-view-' + formNumber);

@@ -3,16 +3,17 @@ define([
     'text!/static/resources/specify_datamodel.xml'
 ], function($, xml) {
     "use strict";
-    var dataModel = {};
+    var dataModel = $.parseXML(xml);
 
-    $('table', $.parseXML(xml)).each(function () {
-        var table = $(this);
-        dataModel[table.attr('classname').split('.').pop().toLowerCase()] = table;
-    });
+    var findTable = function(name) {
+        name = name.toLowerCase();
+        return $('table', dataModel).filter(function() {
+            return $(this).attr('classname').split('.').pop().toLowerCase() === name;
+        });
+    };
 
     var getDataModelField = function(modelName, fieldName) {
-        var table = dataModel[modelName.toLowerCase()], fieldName = fieldName.toLowerCase();
-        if (!table) return $();
+        var table = findTable(modelName), fieldName = fieldName.toLowerCase();
         return table.find('field, relationship').filter(function() {
             var field = $(this), name = field.attr('name') || field.attr('relationshipname');
             return name && name.toLowerCase() === fieldName;
@@ -21,7 +22,7 @@ define([
 
     var self = {
         getViewForModel: function(modelName) {
-            return dataModel[modelName.toLowerCase()].find('display').attr('view');
+            return findTable(modelName).find('display').attr('view');
         },
 
         getRelatedModelForField: function(modelName, fieldName) {
@@ -43,7 +44,7 @@ define([
         },
 
         getCannonicalNameForModel: function(modelName) {
-            return dataModel[modelName.toLowerCase()].attr('classname').split('.').pop();
+            return findTable(modelName).attr('classname').split('.').pop();
         }
     };
 
