@@ -10,14 +10,15 @@ require({
 });
 
 require([
-    'jquery', 'backbone', 'specifyform', 'populateform', 'putform'
-], function($, Backbone, specifyform, populateform, putform) {
+    'jquery', 'backbone', 'datamodel', 'specifyform', 'populateform', 'putform'
+], function($, Backbone, datamodel, specifyform, populateform, putform) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'view/:model/:id/': 'view',
+                'view/:model/:id/:related': 'viewRelated'
             },
 
             view: function(model, id) {
@@ -33,6 +34,27 @@ require([
                             btn.prop('disabled', false);
                             window.location.reload(true);
                         });
+                });
+            },
+
+            viewRelated: function(model, id, relatedField) {
+                var uri = "/api/specify/" + model + "/" + id + "/";
+                var relType = datamodel.getRelatedFieldType(model, relatedField);
+                var relModel = datamodel.getRelatedModelForField(model, relatedField);
+                rootContainer.empty();
+                $.get(uri, function (data) {
+                    var doIt = function(data) {
+                        var build = _(specifyform.buildViewForModel).bind(specifyform, relModel);
+                        var result = populateform.populateSubView(build, relType, data, true);
+                        rootContainer.append(result);
+                    };
+
+                    var fieldData = data[relatedField.toLowerCase()];
+                    if (_.isString(fieldData)) {
+                        $.get(fieldData, doIt);
+                    } else {
+                        doIt(fieldData);
+                    }
                 });
             }
 

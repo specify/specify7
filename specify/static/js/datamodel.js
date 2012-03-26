@@ -11,10 +11,12 @@ define([
     });
 
     var getDataModelField = function(modelName, fieldName) {
-        var table = dataModel[modelName.toLowerCase()];
+        var table = dataModel[modelName.toLowerCase()], fieldName = fieldName.toLowerCase();
         if (!table) return $();
-        var sel = 'field[name="'+ fieldName +'"], relationship[relationshipname="'+ fieldName + '"]';
-        return table.find(sel).first();
+        return table.find('field, relationship').filter(function() {
+            var field = $(this), name = field.attr('name') || field.attr('relationshipname');
+            return name && name.toLowerCase() === fieldName;
+        });
     };
 
     var self = {

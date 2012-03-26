@@ -163,12 +163,13 @@ define([
         });
     };
 
-    self.makeRecordSelector = function(node, data, contentSelector, buildContent) {
+    self.makeRecordSelector = function(node, data, contentSelector, buildContent, atTop) {
         var bottom = data.meta.offset;
         var top = bottom + data.meta.limit;
         var url = data.meta.next;
+        var slider = atTop ? $('<div>').prependTo(node) : $('<div>').appendTo(node);
         var request, showingSpinner;
-        $('<div>').appendTo(node).slider({
+        slider.slider({
             max: data.meta.total_count - 1,
             stop: _.throttle(function(event, ui) {
                 if (ui.value >= bottom && ui.value < top) return;
@@ -207,6 +208,63 @@ define([
             text(1);
     };
 
+    self.populateSubView = function(buildSubView, relType, data, sliderAtTop) {
+        var result = $();
+        switch (relType) {
+        case 'zero-to-one':
+        case 'one-to-many':
+            data = _(data).has('meta') ? data : {
+                meta: {offset: 0, limit: data.length, total_count: data.length, next: null},
+                objects: data,
+            };
+
+            var subview = buildSubView();
+            if (subview.find('table:first').is('.specify-formtable')) {
+                $(data.objects).each(function(count) {
+                    var subview = buildSubView();
+                    self.populateForm(subview, this);
+                    if (count === 0) {
+                        result = subview;
+                    } else {
+                        $('.specify-view-content-container:first', result).append(
+                            $('.specify-view-content:first', subview)
+                        );
+                    }
+                });
+                break;
+            }
+            if (data.objects.length < 1) {
+                result = $('<p style="text-align: center">nothing here...</p>');
+                break;
+            }
+            self.populateForm(subview, data.objects[0]);
+            result = $('<div>').append(subview);
+
+            if (data.objects.length > 1) self.makeRecordSelector(
+                result, data, '.specify-view-content:first',
+                function(object) {
+                    subview = buildSubView();
+                    self.populateForm(subview, object);
+                    return subview.find('.specify-view-content:first');
+                }, sliderAtTop
+            );
+
+            break;
+        case 'many-to-one':
+            if (data) {
+                result = buildSubView();
+                self.populateForm(result, data);
+            } else {
+                result = $('<p style="text-align: center">none</p>');
+            }
+            break;
+        default:
+            result = $('<p>unhandled relationship type: ' + relType + '</p>');
+        }
+        result.find('.specify-form-header:first').remove();
+        return result;
+    };
+
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
@@ -231,7 +289,7 @@ define([
 
                 var subviewButton = node.children('.specify-subview-button:first');
                 if (subviewButton.length) {
-                    subviewButton.prop('href', api.getViewRelatedURL(data, fieldName));
+                    subviewButton.prop('href',fieldName.toLowerCase());
                     var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
                     var icon = props.icon ? icons.getIcon(props.icon) :
                         icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
@@ -247,59 +305,8 @@ define([
                 }
 
                 var doIt = function(data) {
-                    var result = $();
-                    switch (relType) {
-                    case 'zero-to-one':
-                    case 'one-to-many':
-                        data = _(data).has('meta') ? data : {
-                            meta: {offset: 0, limit: data.length, total_count: data.length, next: null},
-                            objects: data,
-                        };
-
-                        var subview = specifyform.buildSubView(node);
-                        if (subview.find('table:first').is('.specify-formtable')) {
-                            $(data.objects).each(function(count) {
-                                var subview = specifyform.buildSubView(node);
-                                self.populateForm(subview, this);
-                                if (count === 0) {
-                                    result = subview;
-                                } else {
-                                    $('.specify-view-content-container:first', result).append(
-                                        $('.specify-view-content:first', subview)
-                                    );
-                                }
-                            });
-                            break;
-                        }
-                        if (data.objects.length < 1) {
-                            result = $('<p style="text-align: center">nothing here...</p>');
-                            break;
-                        }
-                        self.populateForm(subview, data.objects[0]);
-                        result = $('<div>').append(subview);
-
-                        if (data.objects.length > 1) self.makeRecordSelector(
-                            result, data, '.specify-view-content:first',
-                            function(object) {
-                                subview = specifyform.buildSubView(node);
-                                self.populateForm(subview, object);
-                                return subview.find('.specify-view-content:first');
-                            }
-                        );
-
-                        break;
-                    case 'many-to-one':
-                        if (data) {
-                            result = specifyform.buildSubView(node);
-                            self.populateForm(result, data);
-                        } else {
-                            result = $('<p style="text-align: center">none</p>');
-                        }
-                        break;
-                    default:
-                        result = $('<p>unhandled relationship type: ' + relType + '</p>');
-                    }
-                    result.find('.specify-form-header:first').remove();
+                    var build = _(specifyform.buildSubView).bind(specifyform, node);
+                    var result = self.populateSubView(build, relType, data);
                     node.append(result);
                 };
 
