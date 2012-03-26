@@ -1,8 +1,8 @@
 define([
-    'jquery', 'jquery-ui', 'datamodel', 'specifyapi', 'schemalocalization',
+    'jquery', 'jquery-ui', 'backbone', 'datamodel', 'specifyapi', 'schemalocalization',
     'specifyform', 'specifyplugins', 'dataobjformatters', 'icons',
     'text!/static/resources/typesearch_def.xml'
-], function($, dummy, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
+], function($, dummy, Backbone, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
 
@@ -71,6 +71,10 @@ define([
         table = $('<div class="querycbx-strct">').insertBefore(control),
         input = $('<input type=text>').appendTo(table), // autocomplete field
         link = $('<a><span class="ui-icon ui-icon-pencil">edit</span></a>');
+        link.click(function(evt) {
+            Backbone.history.navigate($(this).attr('href').replace('/specify/', ''), true);
+            evt.preventDefault();
+        });
 
         control.prop('readonly') || link.appendTo(table);
 

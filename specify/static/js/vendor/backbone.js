@@ -5,7 +5,7 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
-(function(){
+define(['underscore'], function(_) {
 
   // Initial Setup
   // -------------
@@ -1428,4 +1428,5 @@
     throw new Error('A "url" property or function must be specified');
   };
 
-}).call(this);
+    return Backbone;
+});
