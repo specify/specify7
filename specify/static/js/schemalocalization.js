@@ -41,9 +41,22 @@ define([
         return getLocalizedStr(getLocalizationForField(fieldname, modelname).children('names'));
     };
 
+    self.getLocalizedDescForField = function(fieldname, modelname) {
+        return getLocalizedStr(getLocalizationForField(fieldname, modelname).children('descs'));
+    };
+
     self.getPickListForField = function(fieldname, modelname) {
         return getLocalizationForField(fieldname, modelname).attr('pickListName');
     };
+
+    self.isRequiredField = function(fieldname, modelname) {
+        return getLocalizationForField(fieldname, modelname).attr('isRequired') === 'true';
+    };
+
+    function getControlFieldName(control) {
+        return control.attr('name') ||
+            control.closest('[data-specify-field-name]').data('specify-field-name');
+    }
 
     self.localizeForm = function(formNode) {
         var form = $(formNode), modelname = form.data('specify-model');
@@ -63,10 +76,11 @@ define([
                 label.text(override);
                 return;
             }
-            var fieldname = control.attr('name') ||
-                control.closest('[data-specify-field-name]').data('specify-field-name');
+            var fieldname = getControlFieldName(control);
             if (!fieldname) return; // probably a label for a plugin
             label.text(self.getLocalizedLabelForField(fieldname, modelname));
+            var title = self.getLocalizedDescForField(fieldname, modelname);
+            title && label.attr('title', title);
         };
 
         if ($('.specify-formtable', form).length) {
@@ -76,6 +90,12 @@ define([
 
             $('.specify-field:checkbox', form).each(function() {
                 fillinLabel.apply($(this).parent());
+            });
+
+            $('.specify-field', form).each(function() {
+                var control = $(this), fieldname = getControlFieldName(control);
+                if (!fieldname) return;
+                self.isRequiredField(fieldname, modelname) && control.addClass('specify-required-field');
             });
         }
 

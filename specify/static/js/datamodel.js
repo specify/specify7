@@ -36,6 +36,10 @@ define([
             return getDataModelField(modelName, fieldName).is('relationship');
         },
 
+        isRequiredField: function(modelName, fieldName) {
+            return getDataModelField(modelName, fieldName).attr('required') === 'true';
+        },
+
         getRelatedFieldType: function(modelName, fieldName) {
             var field = getDataModelField(modelName, fieldName);
             if (!field.is('relationship'))

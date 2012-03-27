@@ -42,6 +42,10 @@ select.specify-field {
     width: 100%;
 }
 
+.specify-required-field {
+    background-color: #C8E6FF;
+}
+
 .separator {
     padding-bottom: 3px;
     border-bottom: solid 1px;

@@ -175,11 +175,16 @@ define([
                         }
                     },
                     initialize = cell.attr('initialize'),
+                    isRequired = cell.attr('isrequired'),
                     control = (byUIType[cell.attr('uitype')] || byUIType.other)();
                     if (control) {
                         control.attr('name', fieldName).addClass('specify-field');
                         id && control.prop('id', id);
                         initialize && control.attr('data-specify-initialize', initialize);
+                        if (isRequired && isRequired.toLowerCase() === 'true' ||
+                            datamodel.isRequiredField(viewModel, fieldName)) {
+                            control.addClass('specify-required-field');
+                        }
                     }
                     return td;
                 },

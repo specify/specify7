@@ -20,7 +20,7 @@ define([
             });
             if (value === undefined) return;
             if (!items[value]) {
-                if (control.hasClass('required') || value !== '') {
+                if (control.hasClass('specify-required-field') || value !== '') {
                     $('<option>')
                         .attr('value', value)
                         .text(value + " (current value not in picklist)")
@@ -87,6 +87,7 @@ define([
             evt.preventDefault();
         });
 
+        control.hasClass('specify-required-field') && input.addClass('specify-required-field');
         control.prop('readonly') || link.appendTo(table);
 
         // format the query results according to formatter in the typesearch
