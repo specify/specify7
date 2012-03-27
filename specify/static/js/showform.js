@@ -3,22 +3,25 @@ require({
     paths: {
         'jquery': "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery",
         'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min",
+        'jquery-bbq': "vendor/jquery.ba-bbq",
         'underscore': "vendor/underscore",
         'backbone': "vendor/backbone",
+        'beautify-html': "vendor/beautify-html",
         'text': "vendor/text",
     }
 });
 
 require([
-    'jquery', 'backbone', 'datamodel', 'specifyform', 'populateform', 'putform'
-], function($, Backbone, datamodel, specifyform, populateform, putform) {
+    'jquery', 'backbone', 'datamodel', 'specifyform', 'populateform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
+], function($, Backbone, datamodel, specifyform, populateform, schemalocalization, beautify) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'view/:model/:id/': 'view',
-                'view/:model/:id/:related': 'viewRelated'
+                'view/:model/:id/:related/': 'viewRelated',
+                'viewashtml/*splat': 'viewashtml'
             },
 
             view: function(model, id) {
@@ -56,6 +59,20 @@ require([
                         doIt(fieldData);
                     }
                 });
+            },
+
+            viewashtml: function() {
+                var params = $.deparam.querystring();
+                var form = params.viewdef ?
+                    specifyform.buildViewByViewDefName(params.viewdef) :
+                    specifyform.buildViewByName(params.view);
+                if (params.localize && params.localize.toLowerCase() !== 'false')
+                    schemalocalization.localizeForm(form);
+                var html = $('<div>').append(form).html();
+                rootContainer.empty().append(
+                    $('<pre>').text(beautify.style_html(html))
+                );
+
             }
 
         });

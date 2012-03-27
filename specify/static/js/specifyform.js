@@ -87,11 +87,13 @@ define([
     };
 
     self.buildViewByViewDefName = function (viewDefName) {
-        return buildView(findViewdef(viewDefName));
+        var view = findViewdef(viewDefName);
+        return view.length ? buildView(view) : undefined;
     };
 
     self.buildSubView = function (node) {
-        return buildView(findViewdef($(node).data('specify-viewdef')));
+        var view = findViewdef($(node).data('specify-viewdef'));
+        return view.length ? buildView(view) : undefined;
     };
 
     self.buildViewForModel = function (modelName) {
