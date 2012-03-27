@@ -23,6 +23,8 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
             '': null,
             ' ': null,
             'foobar': null,
+            '180:00:01': null,
+            '-90:05 S': null
         }, function(value, key) {
             var type = value && value.pop();
             test(key + ' is ' + (type && type.name), function() {
@@ -160,6 +162,10 @@ define(['underscore', 'latlongutils'], function(_, latlongutils) {
             '-124:34:23': 'Long',
             '-200.34': null,
             '-15:75': null,
+            '90.01 N': null,
+            '90.1': 'Long',
+            '90:01 N': null,
+            '90:00:01': 'Long'
         }, function(value, key) {
             _([null, 'Coord', 'Lat', 'Long']).each(function(type) {
                 test(key + ' as ' + type, function() {

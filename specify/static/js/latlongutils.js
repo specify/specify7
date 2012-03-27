@@ -10,6 +10,8 @@ define(['underscore'], function (_) {
                 if (i === 0 && Math.abs(x) > 180) return false;
                 if (i > 0 && Math.abs(x) >= 60) return false;
             }
+            var decDegs = this.toDegs();
+            if (Math.abs(decDegs._components[0]) > 180) return false;
             return true;
         },
         format: function() {
@@ -40,7 +42,8 @@ define(['underscore'], function (_) {
     function Lat(flt) { Coord.call(this, flt); }
     Lat.prototype = _.extend(new Coord(), {
         isValid: function() {
-            if (Math.abs(this._components[0]) > 90) return false;
+            var decDegs = this.toDegs();
+            if (Math.abs(decDegs._components[0]) > 90) return false;
             return Coord.prototype.isValid.call(this);
         },
         format: function() {
@@ -111,7 +114,7 @@ define(['underscore'], function (_) {
             break;
         default:
             // if the coord is greater in magnitude than 90 it has to be a long
-            result = Math.abs(comps[0]) > 90 ? new Long() : new Coord();
+            result = Math.abs(adjustTerms(comps, 1)[0]) > 90 ? new Long() : new Coord();
         }
         result._components = comps;
         return result;
