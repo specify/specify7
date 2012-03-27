@@ -9,6 +9,36 @@ define([
     self.populatePickList = function(control, data) {
         var model = control.parents('[data-specify-model]').attr('data-specify-model');
         var field = control.attr('name');
+        var buildPicklist = function (picklistitems, value) {
+            var items = {};
+            if (!control.hasClass('required')) {
+                $('<option>').appendTo(control);
+            }
+            $(picklistitems).each(function () {
+                items[this.value] = this;
+                $('<option>').text(this.title).attr('value', this.value).appendTo(control);
+            });
+            if (value === undefined) return;
+            if (!items[value]) {
+                if (control.hasClass('required') || value !== '') {
+                    $('<option>')
+                        .attr('value', value)
+                        .text(value + " (current value not in picklist)")
+                        .appendTo(control);
+                }
+            }
+            control.val(value);
+        };
+
+        if (model.toLowerCase() === 'agent' && field.toLowerCase() === 'agenttype') {
+            buildPicklist([{value: 0, title: 'Organization'},
+                           {value: 1, title: 'Person'},
+                           {value: 2, title: 'Other'},
+                           {value: 3, title: 'Group'}],
+                          data['agenttype']);
+            return;
+        }
+
         var pickListName = schemalocalization.getPickListForField(field, model);
         if (!pickListName) { return; }
         var pickListUri = "/api/specify/picklist/?name=" + pickListName,
@@ -19,37 +49,18 @@ define([
             // add a success callback to the picklist fetch that
             // will fill in the options and select the current value.
             picklistJQXHR.success(function (picklistResults) {
-                var picklist = picklistResults.objects[0], items = {},
-                buildPicklist = function () {
-                    if (!control.hasClass('required')) {
-                        $('<option>').appendTo(control);
-                    }
-                    $(picklist.picklistitems).each(function () {
-                        items[this.value] = this;
-                        $('<option>').text(this.title).attr('value', this.value).appendTo(control);
-                    });
-                    if (value === undefined) return;
-                    if (!items[value]) {
-                        if (control.hasClass('required') || value !== '') {
-                            $('<option>')
-                                .attr('value', value)
-                                .text(value + " (current value not in picklist)")
-                                .appendTo(control);
-                        }
-                    }
-                    control.val(value);
-                };
+                var picklist = picklistResults.objects[0];
                 if (picklist.tablename) {
                     $.get('/api/specify/' + picklist.tablename + '/',
                           function (picklistTable) {
-                              picklist.picklistitems = $.map(
+                              var picklistitems = $.map(
                                   picklistTable.objects, function (item, i) {
                                       return {value: item.resource_uri,
                                               title: item.name};
                                   });
-                              buildPicklist();
+                              buildPicklist(picklistitems, value);
                           });
-                } else buildPicklist();
+                } else buildPicklist(picklist.picklistitems, value);
             });
         };
 
