@@ -1,5 +1,95 @@
-define(['jquery', 'underscore', 'datamodel'], function($, _, datamodel) {
-    var self = {};
+define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function($, _, Backbone, datamodel) {
+    var self = {}, resources = {}, collections = {};
+
+    var Collection = self.Collection = Backbone.Collection.extend({
+        offset: 0,
+        urlProto: function() { return '/api/specify/' + this.model.specifyModel.toLowerCase() + '/'; },
+        url: function(options) {
+            options = _.extend({offset: this.offset, limit: this.length}, options);
+            return $.param.querystring(this.urlProto(), options);
+        },
+        getAtOffset: function(offset) {
+            return Collection.fromUri(this.url({offset: offset}));
+        }
+    }, {
+        forModel: function(modelName) {
+            var cannonicalName = datamodel.getCannonicalNameForModel(modelName);
+            if (!_(collections).has(cannonicalName)) {
+                collections[cannonicalName] = Collection.extend({
+                    model: Resource.forModel(modelName)
+                });
+            }
+            return collections[cannonicalName];
+        },
+        fromUri: function(uri) {
+            var match = /api\/specify\/(\w+)\//.exec(uri);
+            var CollectionForModel = Collection.forModel(match[1]);
+            return $.get(uri).pipe(function(data) {
+                return _.extend(new CollectionForModel(data.objects), {
+                    offset: data.meta.offset,
+                    totalCount: data.meta.total_count,
+                    urlProto: function() { return data.meta.next; }
+                });
+            });
+        }
+    });
+
+    var Resource = self.Resource = Backbone.Model.extend({
+        url: function() {
+            return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
+        },
+        rget: function(field) {
+            var path = _(field).isArray()? field : field.split('.');
+            field = path[0].toLowerCase();
+            var value = this.get(field);
+            if (path.length === 1 && !datamodel.isRelatedField(this.specifyModel, field))
+                return $.when(value);
+            if (_.isNull(value) || _.isUndefined(value))
+                return $.when(value);
+            switch (datamodel.getRelatedFieldType(this.specifyModel, field)) {
+            case 'many-to-one':
+                var related = _.isString(value) ? Resource.fromUri(value) : Resource.fromUri(value.resource_uri);
+                var deferred;
+                if (_.isString(value)) {
+                    deferred = related.fetch().pipe(function() {
+                        return $.when(path.length === 1 ? related : related.rget(_.tail(path)));
+                    });
+                } else {
+                    related.set(value);
+                    deferred = $.when(path.length === 1 ? related : related.rget(_.tail(path)));
+                }
+                return deferred;
+            case 'one-to-many':
+                if (path.length > 1) throw new Error();
+                if (_.isString(value)) return Collection.fromUri(value);
+                var CollectionForModel = Collection.forModel(
+                    datamodel.getRelatedModelForField(this.specifyModel, field)
+                );
+                return $.when(new CollectionForModel(value));
+            }
+        },
+        fetchIfNotPopulated: function() {
+            return this.has('resoure_uri') ? $.when("already populated") : this.fetch();
+        }
+    }, {
+        forModel: function(modelName) {
+            var cannonicalName = datamodel.getCannonicalNameForModel(modelName);
+            if (!_(resources).has(cannonicalName)) {
+                resources[cannonicalName] = Resource.extend({
+                    specifyModel: cannonicalName
+                }, {
+                    specifyModel: cannonicalName
+                });
+            }
+            return resources[cannonicalName];
+        },
+
+        fromUri: function(uri) {
+            var match = /api\/specify\/(\w+)\/(\d)+\//.exec(uri);
+            var ResourceForModel = Resource.forModel(match[1]);
+            return new ResourceForModel({id: match[2]});
+        }
+    });
 
     // Some fields reference data in related objects. E.g. Collectors
     // references agent.lastName and agent.firstName. So we may have to

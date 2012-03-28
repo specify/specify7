@@ -6,7 +6,7 @@ define([
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
 
-    self.populatePickList = function(control, data) {
+    self.populatePickList = function(control, resource) {
         var model = control.parents('[data-specify-model]').attr('data-specify-model');
         var field = control.attr('name');
         var buildPicklist = function (picklistitems, value) {
@@ -35,7 +35,7 @@ define([
                            {value: 1, title: 'Person'},
                            {value: 2, title: 'Other'},
                            {value: 3, title: 'Group'}],
-                          data['agenttype']);
+                          resource && resource.get('agenttype'));
             return;
         }
 
@@ -64,15 +64,16 @@ define([
             });
         };
 
-        if (data) { api.getDataFromResource(data, control.attr('name')).done(onData); }
+        if (resource) { resource.rget(control.attr('name')).done(onData); }
         else { onData();}
     };
 
-    self.setupQueryCBX = function (control, data) {
+    self.setupQueryCBX = function (control, resource) {
         // The main querycbx control is hidden and the user interacts
         // with an autocomplete field.
         control.hide();
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize')),
+        data = resource.toJSON(),
         controlID = control.prop('id'),
         typesearch = $('[name="'+init.name+'"]', typesearches), // defines the querycbx
         searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains',
@@ -139,23 +140,23 @@ define([
         }
     };
 
-    self.setupUIplugin = function (control, data) {
+    self.setupUIplugin = function (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
-        plugin && plugin(control, init, data);
+        plugin && plugin(control, init, resource.toJSON());
     };
 
-    self.setupControls = function (form, data) {
+    self.setupControls = function (form, resource) {
         form.find('.specify-field').each(function () {
             var control = $(this);
             if (control.is('.specify-combobox')) {
-                self.populatePickList(control, data);
+                self.populatePickList(control, resource);
             } else if (control.is('.specify-querycbx')) {
-                self.setupQueryCBX(control, data);
+                self.setupQueryCBX(control, resource);
             } else if (control.is('.specify-uiplugin')) {
-                self.setupUIplugin(control, data);
-            } else if (data) {
-                var fetch = api.getDataFromResource(data, control.attr('name'));
+                self.setupUIplugin(control, resource);
+            } else if (resource) {
+                var fetch = resource.rget(control.attr('name'));
                 var fillItIn  = function (value) {
                     if (control.is('input[type="checkbox"]')) {
                         control.prop('checked', value);
@@ -175,25 +176,24 @@ define([
         });
     };
 
-    self.makeRecordSelector = function(node, data, contentSelector, buildContent, atTop) {
-        var bottom = data.meta.offset;
-        var top = bottom + data.meta.limit;
-        var url = data.meta.next;
+    self.makeRecordSelector = function(node, collection, contentSelector, buildContent, atTop) {
+        var bottom = collection.offset;
+        var top = bottom + collection.length;
         var slider = atTop ? $('<div>').prependTo(node) : $('<div>').appendTo(node);
         var request, showingSpinner;
         slider.slider({
-            max: data.meta.total_count - 1,
+            max: collection.totalCount - 1,
             stop: _.throttle(function(event, ui) {
                 if (ui.value >= bottom && ui.value < top) return;
                 request && request.abort();
-                var offset = Math.max(0, ui.value - Math.floor(data.meta.limit/2));
-                request = $.get(url, {offset: offset}, function(newData) {
+                var offset = Math.max(0, ui.value - Math.floor(collection.length/2));
+                request = collection.getAtOffset(offset).done(function(newCollection) {
                     request = null;
-                    data = newData;
-                    bottom = data.meta.offset;
-                    top = bottom + data.meta.limit;
+                    collection = newCollection;
+                    bottom = collection.offset;
+                    top = bottom + collection.length;
                     $(contentSelector, node).replaceWith(
-                        buildContent(data.objects[ui.value - bottom])
+                        buildContent(collection.at(ui.value - bottom))
                     );
                     showingSpinner = false;
                 });
@@ -202,7 +202,7 @@ define([
                 $('.ui-slider-handle', this).text(ui.value + 1);
                 if (ui.value >= bottom && ui.value < top) {
                     $(contentSelector, node).replaceWith(
-                        buildContent(data.objects[ui.value - bottom])
+                        buildContent(collection.at(ui.value - bottom))
                     );
                     showingSpinner = false;
                 } else if (!showingSpinner) {
@@ -220,21 +220,16 @@ define([
             text(1);
     };
 
-    self.populateSubView = function(buildSubView, relType, data, sliderAtTop) {
+    self.populateSubView = function(buildSubView, relType, related, sliderAtTop) {
         var result = $();
         switch (relType) {
         case 'zero-to-one':
         case 'one-to-many':
-            data = _(data).has('meta') ? data : {
-                meta: {offset: 0, limit: data.length, total_count: data.length, next: null},
-                objects: data,
-            };
-
             var subview = buildSubView();
             if (subview.find('table:first').is('.specify-formtable')) {
-                $(data.objects).each(function(count) {
+                related.each(function(resource, count) {
                     var subview = buildSubView();
-                    self.populateForm(subview, this);
+                    self.populateForm(subview, resource);
                     if (count === 0) {
                         result = subview;
                     } else {
@@ -245,27 +240,27 @@ define([
                 });
                 break;
             }
-            if (data.objects.length < 1) {
+            if (related.length < 1) {
                 result = $('<p style="text-align: center">nothing here...</p>');
                 break;
             }
-            self.populateForm(subview, data.objects[0]);
+            self.populateForm(subview, related.at(0));
             result = $('<div>').append(subview);
 
-            if (data.objects.length > 1) self.makeRecordSelector(
-                result, data, '.specify-view-content:first',
-                function(object) {
+            if (related.length > 1) self.makeRecordSelector(
+                result, related, '.specify-view-content:first',
+                function(resource) {
                     subview = buildSubView();
-                    self.populateForm(subview, object);
+                    self.populateForm(subview, resource);
                     return subview.find('.specify-view-content:first');
                 }, sliderAtTop
             );
 
             break;
         case 'many-to-one':
-            if (data) {
+            if (related) {
                 result = buildSubView();
-                self.populateForm(result, data);
+                self.populateForm(result, related);
             } else {
                 result = $('<p style="text-align: center">none</p>');
             }
@@ -280,20 +275,21 @@ define([
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    self.populateForm = function (form, dataOrUri) {
+    self.populateForm = function (form, resource) {
         schemalocalization.localizeForm(form);
-        if (!dataOrUri) {
+        if (!resource) {
             self.setupControls(form);
-            return form;
+            return;
         }
         var viewmodel = form.data('specify-model');
 
-        var populate = function(data) {
+        resource.fetchIfNotPopulated().done(function() {
+            var data = resource.toJSON();
             form.find('.specify-view-content').data({
                 'specify-uri': data.resource_uri,
                 'specify-object-version': data.version});
 
-            self.setupControls(form, data);
+            self.setupControls(form, resource);
 
             form.find('.specify-subview').each(function () {
                 var node = $(this), fieldName = node.data('specify-field-name');
@@ -316,29 +312,13 @@ define([
                     return;
                 }
 
-                var doIt = function(data) {
+                resource.rget(fieldName).done(function (related) {
                     var build = _(specifyform.buildSubView).bind(specifyform, node);
-                    var result = self.populateSubView(build, relType, data);
+                    var result = self.populateSubView(build, relType, related);
                     node.append(result);
-                };
-
-                var fieldData = data[fieldName.toLowerCase()];
-                if (_.isString(fieldData)) {
-                    $.get(fieldData, doIt);
-                } else {
-                    doIt(fieldData);
-                }
+                });
             });
-        };
-
-        if ($.isPlainObject(dataOrUri)) {
-            // data is here
-            populate(dataOrUri);
-        } else {
-            // gotta go get it
-            $.get(dataOrUri, populate);
-        }
-        return form;
+        });
     };
 
     function deleteRelated() {
