@@ -5,6 +5,7 @@ define([
 ], function($, dummy, Backbone, datamodel, api, schemalocalization, specifyform, uiplugins, dof, icons, typesearchesXML) {
     "use strict";
     var self = {}, typesearches = $.parseXML(typesearchesXML);
+    var debug = false;
 
     self.populatePickList = function(control, resource) {
         var model = control.parents('[data-specify-model]').attr('data-specify-model');
@@ -41,31 +42,21 @@ define([
 
         var pickListName = schemalocalization.getPickListForField(field, model);
         if (!pickListName) { return; }
-        var pickListUri = "/api/specify/picklist/?name=" + pickListName,
-        picklistJQXHR = $.get(pickListUri), // begin fetching the picklist
-        onData = function (value) {
-            value = value || '';
-            // When the selected value is available from fillinData
-            // add a success callback to the picklist fetch that
-            // will fill in the options and select the current value.
-            picklistJQXHR.success(function (picklistResults) {
-                var picklist = picklistResults.objects[0];
+        var pickListUri = "/api/specify/picklist/?name=" + pickListName;
+        var deferreds = [
+            $.get(pickListUri).pipe(function(data) {
+                var picklist = data.objects[0];
                 if (picklist.tablename) {
-                    $.get('/api/specify/' + picklist.tablename + '/',
-                          function (picklistTable) {
-                              var picklistitems = $.map(
-                                  picklistTable.objects, function (item, i) {
-                                      return {value: item.resource_uri,
-                                              title: item.name};
-                                  });
-                              buildPicklist(picklistitems, value);
-                          });
-                } else buildPicklist(picklist.picklistitems, value);
-            });
-        };
-
-        if (resource) { resource.rget(control.attr('name')).done(onData); }
-        else { onData();}
+                    return $.get('/api/specify/' + picklist.tablename + '/').pipe(
+                        function (picklistTable) {
+                            return _(picklistTable.objects).map(function (item, i) {
+                                return {value: item.resource_uri, title: item.name};
+                            });
+                        });
+                } else return data.objects[0].picklistitems;
+            })];
+        deferreds.push(resource ? resource.rget(control.attr('name')) : null);
+        return $.when.apply($, deferreds).done(buildPicklist);
     };
 
     self.setupQueryCBX = function (control, resource) {
@@ -133,7 +124,7 @@ define([
             if (related) {
                 control.val(related);
                 link.attr('href', related.replace(/api\/specify/, 'specify/view'));
-                $.get(related, function (obj) {
+                return $.get(related, function (obj) {
                     input.val(formatInterpolate(obj));
                 });
             }
@@ -143,18 +134,18 @@ define([
     self.setupUIplugin = function (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
-        plugin && plugin(control, init, resource.toJSON());
+        return plugin && plugin(control, init, resource.toJSON());
     };
 
     self.setupControls = function (form, resource) {
-        form.find('.specify-field').each(function () {
+        var deferreds = form.find('.specify-field').map(function () {
             var control = $(this);
             if (control.is('.specify-combobox')) {
-                self.populatePickList(control, resource);
+                return self.populatePickList(control, resource);
             } else if (control.is('.specify-querycbx')) {
-                self.setupQueryCBX(control, resource);
+                return self.setupQueryCBX(control, resource);
             } else if (control.is('.specify-uiplugin')) {
-                self.setupUIplugin(control, resource);
+                return self.setupUIplugin(control, resource);
             } else if (resource) {
                 var fetch = resource.rget(control.attr('name'));
                 var fillItIn  = function (value) {
@@ -169,18 +160,36 @@ define([
                     control.removeClass('specify-field').addClass('specify-object-formatted');
                     var relatedModel =
                         datamodel.getRelatedModelForField(form.data('specify-model'), control.attr('name'));
-                    fetch.pipe(function (obj) { return dof.dataObjFormat(relatedModel, obj) })
-                        .done(fillItIn);
-                } else fetch.done(fillItIn);
+                    return fetch.pipe(function (obj) {
+                        return dof.dataObjFormat(relatedModel, obj);
+                    }).done(fillItIn);
+                } else return fetch.done(fillItIn);
             }
         });
+        return whenAll(deferreds);
     };
 
     self.makeRecordSelector = function(node, collection, contentSelector, buildContent, atTop) {
         var bottom = collection.offset;
         var top = bottom + collection.length;
         var slider = atTop ? $('<div>').prependTo(node) : $('<div>').appendTo(node);
-        var request, showingSpinner;
+        var request, showingSpinner, intervalId;
+        var redraw = function(offset) {
+            debug && console.log('want to redraw at ' + offset);
+            if (offset < bottom || offset > top-1) return false;
+            buildContent(collection.at(offset - bottom)).done(function(content) {
+                var curOffset = slider.slider('value');
+                if (curOffset === offset) {
+                    debug && console.log('filling in at ' + offset);
+                    $(contentSelector, node).replaceWith(content);
+                    showingSpinner = false;
+                } else {
+                    debug && console.log('not filling because slider is at ' +
+                                         curOffset + ' but data is for ' + offset);
+                }
+            });
+            return true;
+        };
         slider.slider({
             max: collection.totalCount - 1,
             stop: _.throttle(function(event, ui) {
@@ -188,24 +197,17 @@ define([
                 request && request.abort();
                 var offset = Math.max(0, ui.value - Math.floor(collection.length/2));
                 request = collection.getAtOffset(offset).done(function(newCollection) {
+                    debug && console.log('got collection at offset ' + offset);
                     request = null;
                     collection = newCollection;
                     bottom = collection.offset;
                     top = bottom + collection.length;
-                    $(contentSelector, node).replaceWith(
-                        buildContent(collection.at(ui.value - bottom))
-                    );
-                    showingSpinner = false;
+                    redraw(slider.slider('value'));
                 });
             }, 750),
             slide: function(event, ui) {
                 $('.ui-slider-handle', this).text(ui.value + 1);
-                if (ui.value >= bottom && ui.value < top) {
-                    $(contentSelector, node).replaceWith(
-                        buildContent(collection.at(ui.value - bottom))
-                    );
-                    showingSpinner = false;
-                } else if (!showingSpinner) {
+                if (!redraw(ui.value)) {
                     var content = $(contentSelector, node);
                     var spinner = $('<img src="/static/img/icons/specify128spinner.gif">');
                     var div = $('<div>').css({height: content.height(),
@@ -220,56 +222,55 @@ define([
             text(1);
     };
 
+    function whenAll(deferreds) {
+        return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
+    }
+
     self.populateSubView = function(buildSubView, relType, related, sliderAtTop) {
-        var result = $();
+        var populateSubView = function(resource) { return self.populateForm(buildSubView(), resource); };
         switch (relType) {
         case 'zero-to-one':
         case 'one-to-many':
-            var subview = buildSubView();
-            if (subview.find('table:first').is('.specify-formtable')) {
-                related.each(function(resource, count) {
-                    var subview = buildSubView();
-                    self.populateForm(subview, resource);
-                    if (count === 0) {
-                        result = subview;
-                    } else {
-                        $('.specify-view-content-container:first', result).append(
-                            $('.specify-view-content:first', subview)
-                        );
-                    }
+            if (buildSubView().find('table:first').is('.specify-formtable')) {
+                return whenAll(related.map(populateSubView)).pipe(function(subviews) {
+                    var result;
+                    _(subviews).each(function(subview, count) {
+                        if (count === 0) {
+                            result = subview;
+                        } else {
+                            $('.specify-view-content-container:first', result).append(
+                                $('.specify-view-content:first', subview)
+                            );
+                        }
+                    });
+                    result.find('.specify-form-header:first').remove();
+                    return result;
                 });
-                break;
             }
             if (related.length < 1) {
-                result = $('<p style="text-align: center">nothing here...</p>');
-                break;
+                return $.when('<p style="text-align: center">nothing here...</p>');
             }
-            self.populateForm(subview, related.at(0));
-            result = $('<div>').append(subview);
 
-            if (related.length > 1) self.makeRecordSelector(
-                result, related, '.specify-view-content:first',
-                function(resource) {
-                    subview = buildSubView();
-                    self.populateForm(subview, resource);
-                    return subview.find('.specify-view-content:first');
-                }, sliderAtTop
-            );
+            return populateSubView(related.at(0)).pipe(function(subview) {
+                var result = $('<div>').append(subview);
+                result.find('.specify-form-header:first').remove();
 
-            break;
+                if (related.length > 1) self.makeRecordSelector(
+                    result, related, '.specify-view-content:first',
+                    function(resource) {
+                         return populateSubView(resource).pipe(function(subview) {
+                            return subview.find('.specify-view-content:first');
+                         });
+                    }, sliderAtTop
+                );
+                return result;
+            });
         case 'many-to-one':
-            if (related) {
-                result = buildSubView();
-                self.populateForm(result, related);
-            } else {
-                result = $('<p style="text-align: center">none</p>');
-            }
-            break;
+            return related ? populateSubView(related).find('.specify-form-header:first').remove() :
+                $.when('<p style="text-align: center">none</p>');
         default:
-            result = $('<p>unhandled relationship type: ' + relType + '</p>');
+            return $.when('<p>unhandled relationship type: ' + relType + '</p>');
         }
-        result.find('.specify-form-header:first').remove();
-        return result;
     };
 
     // This function is the main entry point for this module. It calls
@@ -278,18 +279,18 @@ define([
     self.populateForm = function (form, resource) {
         schemalocalization.localizeForm(form);
         if (!resource) {
-            self.setupControls(form);
-            return;
+            return self.setupControls(form).pipe(function() { return form; });
         }
         var viewmodel = form.data('specify-model');
 
-        resource.fetchIfNotPopulated().done(function() {
+        return resource.fetchIfNotPopulated().pipe(function() {
             var data = resource.toJSON();
+            var subDeferreds = [];
             form.find('.specify-view-content').data({
                 'specify-uri': data.resource_uri,
                 'specify-object-version': data.version});
 
-            self.setupControls(form, resource);
+            subDeferreds.push(self.setupControls(form, resource));
 
             form.find('.specify-subview').each(function () {
                 var node = $(this), fieldName = node.data('specify-field-name');
@@ -304,20 +305,23 @@ define([
                     subviewButton.append($('<img>', {src: icon}));
                     $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
                     subviewButton.button();
-                    if (relType === 'one-to-many') {
+                    relType === 'one-to-many' && subDeferreds.push(
                         api.getRelatedObjectCount(data, fieldName).done(function(count) {
                             $('.specify-subview-button-count', subviewButton).text(count).show();
-                        });
-                    }
-                    return;
+                        })
+                    );
+                } else {
+                    subDeferreds.push(
+                        resource.rget(fieldName).pipe(function (related) {
+                            var build = _(specifyform.buildSubView).bind(specifyform, node);
+                            return self.populateSubView(build, relType, related).done(function(result) {
+                                node.append(result);
+                            });
+                        })
+                    );
                 }
-
-                resource.rget(fieldName).done(function (related) {
-                    var build = _(specifyform.buildSubView).bind(specifyform, node);
-                    var result = self.populateSubView(build, relType, related);
-                    node.append(result);
-                });
             });
+            return whenAll(subDeferreds).pipe(function() { return form; });
         });
     };
 
