@@ -2,7 +2,7 @@ require({
     priority: ['jquery'],
     paths: {
         'jquery': "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery",
-        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min",
+        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui",
         'jquery-bbq': "vendor/jquery.ba-bbq",
         'underscore': "vendor/underscore",
         'backbone': "vendor/backbone",
@@ -27,7 +27,7 @@ require([
 
             view: function(model, id) {
                 var ResourceForModel = specifyapi.Resource.forModel(model);
-                var resource = new ResourceForModel({id: id}); 
+                var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.buildViewForModel(model);
                 populateform.populateForm(mainForm, resource);
                 rootContainer.empty().append(mainForm);
