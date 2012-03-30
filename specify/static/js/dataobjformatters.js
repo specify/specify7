@@ -5,35 +5,30 @@ define([
     "use strict";
     var formatters = $.parseXML(xml), self = {};
 
-    self.dataObjFormat = function (modelName, obj) {
-        if (!obj) return obj;
-        var sw = $('format[name="' + modelName + '"]', formatters).find('switch');
+    self.dataObjFormat = function (resource) {
+        if (!resource) return resource;
+        var sw = $('format[name="' + resource.specifyModel + '"]', formatters).find('switch');
         // external dataobjFormatters not supported
-        if (!sw.length || sw.find('external').length)
-            return obj;
+        if (!sw.length || sw.find('external').length) return resource;
 
-        function doIt(obj) {
-            // doesn't support switch fields that are in child objects
-            var fields = (sw.attr('field') ?
-                          sw.find('fields[value="' + obj[sw.attr('field').toLowerCase()] + '"]').first() :
-                          sw.find('fields').first()).find('field');
+        // doesn't support switch fields that are in child objects
+        var fields = (sw.attr('field') ?
+                      sw.find('fields[value="' + resource.get(sw.attr('field')) + '"]:first') :
+                      sw.find('fields:first')).find('field');
 
-            var deferreds = fields.map(function () {
-                return api.getDataFromResource(obj, $(this).text());
+        var deferreds = fields.map(function () {
+            return resource.rget($(this).text());
+        });
+
+        return api.whenAll(deferreds).pipe(function (data) {
+            var result = [];
+            fields.each(function (index) {
+                var field = $(this);
+                field.attr('sep') && result.push(field.attr('sep'));
+                result.push(data[index]);
             });
-
-            return $.when.apply($, deferreds).pipe(function () {
-                var data = arguments, result = [];
-                fields.each(function (index) {
-                    var field = $(this);
-                    field.attr('sep') && result.push(field.attr('sep'));
-                    result.push(data[index]);
-                });
-                return result.join('');
-            }).promise();
-        }
-
-        return ($.isPlainObject(obj)) ? doIt(obj) : $.get(obj).pipe(doIt)
+            return result.join('');
+        });
     };
 
     return self;

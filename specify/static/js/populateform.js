@@ -6,10 +6,6 @@ define([
     "use strict";
     var self = {};
 
-    function whenAll(deferreds) {
-        return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
-    }
-
     self.setupUIplugin = function (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
@@ -31,17 +27,13 @@ define([
                     _(control.prop).bind(control, 'checked') :
                     _(control.val).bind(control);
 
-                if (datamodel.isRelatedField(form.data('specify-model'), control.attr('name'))) {
+                if (datamodel.isRelatedField(resource.specifyModel, control.attr('name'))) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
-                    var relatedModel =
-                        datamodel.getRelatedModelForField(form.data('specify-model'), control.attr('name'));
-                    return fetch.pipe(function (obj) {
-                        return dof.dataObjFormat(relatedModel, obj);
-                    }).done(fillItIn);
+                    return fetch.pipe(dof.dataObjFormat).done(fillItIn);
                 } else return fetch.done(fillItIn);
             }
         });
-        return whenAll(deferreds);
+        return api.whenAll(deferreds);
     };
 
     self.populateSubView = function(buildSubView, relType, related, sliderAtTop) {
@@ -53,7 +45,7 @@ define([
             }
 
             if (buildSubView().find('table:first').is('.specify-formtable')) {
-                return whenAll(related.map(makeSub)).pipe(function(subviews) {
+                return api.whenAll(related.map(makeSub)).pipe(function(subviews) {
                     var result = _.first(subviews);
                     result.find('.specify-form-header:first').remove();
                     _(subviews).chain().tail().each(function(subview) {
@@ -144,7 +136,7 @@ define([
                     );
                 }
             });
-            return whenAll(deferreds).pipe(function() { return form; });
+            return api.whenAll(deferreds).pipe(function() { return form; });
         });
     };
 

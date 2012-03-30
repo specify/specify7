@@ -1,6 +1,10 @@
 define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function($, _, Backbone, datamodel) {
     var self = {}, resources = {}, collections = {};
 
+    self.whenAll = function(deferreds) {
+        return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
+    };
+
     var Collection = self.Collection = Backbone.Collection.extend({
         populated: false,
         queryParams: {},
