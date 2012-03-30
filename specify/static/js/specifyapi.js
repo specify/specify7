@@ -113,7 +113,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
 
         fromUri: function(uri) {
-            var match = /api\/specify\/(\w+)\/(\d)+\//.exec(uri);
+            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             var ResourceForModel = Resource.forModel(match[1]);
             return new ResourceForModel({id: match[2]});
         }
