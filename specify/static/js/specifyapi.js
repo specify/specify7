@@ -125,11 +125,6 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         return collection.fetch().pipe(function() { return collection.first(); });
     };
 
-    function invoke(func) {
-        var args = _.tail(arguments);
-        return function(obj) { return obj[func].apply(obj, args); };
-    }
-
     self.getViewRelatedURL = function (resource, field) {
         var related = resource[field.toLowerCase()];
         if (related === null) return null;
@@ -140,33 +135,17 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     };
 
     self.getRelatedObjectCount = function (resource, field) {
-        if (datamodel.getRelatedFieldType(self.getResourceModel(resource), field) !== 'one-to-many') {
+        if (datamodel.getRelatedFieldType(resource.specifyModel, field) !== 'one-to-many') {
             throw new TypeError('field is not one-to-many');
         }
-        var related = resource[field.toLowerCase()];
-        if (_.isArray(related))
-            return $.when(related.length);
-        else if (_.has(related, 'meta'))
-            return $.when(related.meta.total_count);
-        else {
+        return resource.rget(field).pipe(function (collection) {
+            if (_.has(collection, 'totalCount')) return related.totalCount;
             // should be some way to get the count without getting any objects
-            return $.get(related, {limit: 1}).pipe(function (data) {
-                return data.meta.total_count;
-            }).promise();
-        }
-    };
-
-    self.getResourceModel = function (resource) {
-        var uri;
-        if (_(resource).has('resource_uri'))
-            uri = resource.resource_uri;
-        else if (_.isString(resource))
-            uri = resource;
-
-        if (!uri) return undefined;
-        var match = /api\/specify\/(\w+)\//.exec(uri);
-        return datamodel.getCannonicalNameForModel(match[1]);
+            collection.limit = 1;
+            return collection.fetch().pipe(function () {
+                return collection.totalCount;
+            });
+        });
     }
-
     return self;
 });

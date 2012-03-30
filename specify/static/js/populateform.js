@@ -118,7 +118,7 @@ define([
                     $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
                     subviewButton.button();
                     relType === 'one-to-many' && deferreds.push(
-                        api.getRelatedObjectCount(data, fieldName).done(function(count) {
+                        api.getRelatedObjectCount(resource, fieldName).done(function(count) {
                             $('.specify-subview-button-count', subviewButton).text(count).show();
                         })
                     );
