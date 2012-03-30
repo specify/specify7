@@ -1,6 +1,6 @@
 define([
-    'jquery', 'specifyform', 'text!/static/resources/typesearch_def.xml'
-], function ($, specifyform, xml) {
+    'jquery', 'specifyapi', 'specifyform', 'text!/static/resources/typesearch_def.xml'
+], function ($, api, specifyform, xml) {
     var typesearches = $.parseXML(xml);
 
     return function (control, resource) {
@@ -8,13 +8,11 @@ define([
         // with an autocomplete field.
         control.hide();
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize')),
-        data = resource.toJSON(),
         controlID = control.prop('id'),
         typesearch = $('[name="'+init.name+'"]', typesearches), // defines the querycbx
-        searchfield = typesearch.attr('searchfield').toLowerCase() + '__icontains',
-        displaycols = typesearch.attr('displaycols').toLowerCase().split(','),
+        searchfield = typesearch.attr('searchfield'),
+        displaycols = typesearch.attr('displaycols').split(','),
         format = typesearch.attr('format'),
-        uri = '/api/specify/' + init.name.toLowerCase() + '/', // uri to query values
         table = $('<div class="querycbx-strct">').insertBefore(control),
         input = $('<input type=text>').appendTo(table), // autocomplete field
         link = $('<a><span class="ui-icon ui-icon-pencil">edit</span></a>');
@@ -27,10 +25,13 @@ define([
         control.prop('readonly') || link.appendTo(table);
 
         // format the query results according to formatter in the typesearch
-        var formatInterpolate = function (obj) {
-            var str = format,
-            vals = displaycols.map(function (col)  { return obj[col]; });
-            $(vals).each(function () { str = str.replace(/%s/, this); });
+        var formatInterpolate = function (resource) {
+            var str = format;
+            _.chain(displaycols).map(function(col)  {
+                return resource.get(col);
+            }).each(function (val) {
+                str = str.replace(/%s/, val);
+            });
             return str;
         };
 
@@ -43,35 +44,31 @@ define([
         input.autocomplete({
             minLength: 3,
             source: function (request, response) {
-                var query = {};
-                query[searchfield] = request.term;
-                var jqxhr = $.get(uri, query);
-                jqxhr.success(function (data) {
-                    response(
-                        data.objects.map(function (obj) {
-                            var display = formatInterpolate(obj);
-                            return {label: display, value: display, uri: obj.resource_uri};
-                        })
-                    );
-                });
-                jqxhr.error(function () { response([]); });
+                var collection = api.queryCbxSearch(init.name, searchfield, request.term);
+                collection.fetch().done(function() {
+                    response(collection.map(function(resource) {
+                        var display = formatInterpolate(resource);
+                        return { label: display, value: display, resource: resource };
+                    }));
+                }).fail(function() { response([]); });
             },
             select: function (event, ui) {
-                control.val(ui.item.uri);
-                link.attr('href', ui.item.uri.replace(/api\/specify/, 'specify/view'));
+                control.val(ui.item.resource.url());
+                link.attr('href', ui.item.resource.viewUrl());
             }
         }).prop('readonly', control.prop('readonly'));
 
-        if (data) {
+        if (resource) {
             // fill in the initial value
-            var related = data[control.attr('name').toLowerCase()];
-            if (related) {
-                control.val(related);
-                link.attr('href', related.replace(/api\/specify/, 'specify/view'));
-                return $.get(related, function (obj) {
-                    input.val(formatInterpolate(obj));
-                });
-            }
+            return resource.rget(control.attr('name')).pipe(function(related) {
+                if (related) {
+                    control.val(related.url());
+                    link.attr('href', related.viewUrl());
+                    return related.fetchIfNotPopulated().done(function() {
+                        input.val(formatInterpolate(related));
+                    });
+                }
+            });
         }
     };
 });

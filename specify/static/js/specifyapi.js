@@ -7,8 +7,10 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
 
     var Collection = self.Collection = Backbone.Collection.extend({
         populated: false,
-        queryParams: {},
-        initialize: function(models) { if (models) this.populated = true; },
+        initialize: function(models) {
+            if (models) this.populated = true;
+            this.queryParams = {};
+        },
         url: function() {
             var url = '/api/specify/' + this.model.specifyModel.toLowerCase() + '/';
             var options = _.extend({}, this.queryParams);
@@ -41,7 +43,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\//.exec(uri);
             var collection = new (Collection.forModel(match[1]))();
-            collection.queryParams = $.deparam.querystring(uri);
+            _.extend(collection.queryParams, $.deparam.querystring(uri));
             return collection;
         }
     });
@@ -49,6 +51,9 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     var Resource = self.Resource = Backbone.Model.extend({
         url: function() {
             return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
+        },
+        viewUrl: function() {
+            return '/specify/view/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
         },
         get: function(attribute) {
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
@@ -98,6 +103,19 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
         fetchIfNotPopulated: function() {
             return this.has('resoure_uri') ? $.when("already populated") : this.fetch();
+        },
+        getRelatedObjectCount: function(field) {
+            if (datamodel.getRelatedFieldType(this.specifyModel, field) !== 'one-to-many') {
+                throw new TypeError('field is not one-to-many');
+            }
+            return this.rget(field).pipe(function (collection) {
+                if (_.has(collection, 'totalCount')) return related.totalCount;
+                // should be some way to get the count without getting any objects
+                collection.limit = 1;
+                return collection.fetch().pipe(function () {
+                    return collection.totalCount;
+                });
+            });
         }
     }, {
         forModel: function(modelName) {
@@ -125,27 +143,11 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         return collection.fetch().pipe(function() { return collection.first(); });
     };
 
-    self.getViewRelatedURL = function (resource, field) {
-        var related = resource[field.toLowerCase()];
-        if (related === null) return null;
-        if (_.isString(related)) {
-            return related.replace(/api\/specify/, 'specify/view');
-        }
-        throw new Error('building links for in-lined related resources not implemented yet');
+    self.queryCbxSearch = function(model, searchfield, searchterm) {
+        var collection = new (Collection.forModel(model))();
+        collection.queryParams[searchfield.toLowerCase() + '__icontains'] = searchterm;
+        return collection;
     };
 
-    self.getRelatedObjectCount = function (resource, field) {
-        if (datamodel.getRelatedFieldType(resource.specifyModel, field) !== 'one-to-many') {
-            throw new TypeError('field is not one-to-many');
-        }
-        return resource.rget(field).pipe(function (collection) {
-            if (_.has(collection, 'totalCount')) return related.totalCount;
-            // should be some way to get the count without getting any objects
-            collection.limit = 1;
-            return collection.fetch().pipe(function () {
-                return collection.totalCount;
-            });
-        });
-    }
     return self;
 });
