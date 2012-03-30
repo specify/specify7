@@ -8,20 +8,19 @@ define([
     var latlonuitemplate = _.template(latlonui_html);
 
     return {
-        PartialDateUI: function(control, init, data) {
+        PartialDateUI: function(control, init, resource) {
             control[0].type = 'text'; // this probably breaks IE (f*** you IE)
+            control.val('');
             if (control.prop('disabled'))
                 control.prop({disabled: false, readonly: true});
             else
                 control.datepicker({dateFormat: $.datepicker.ISO_8601});
             var label = control.parents().last().find('label[for="' + control.prop('id') + '"]');
             if (!label.text()) {
-                var model = control.closest('[data-specify-model]').attr('data-specify-model');
-                label.text(schemalocalization.getLocalizedLabelForField(init.df, model));
+                label.text(schemalocalization.getLocalizedLabelForField(init.df, resource.specifyModel));
             }
-            if (data) {
-                api.getDataFromResource(data, init.df).done(_.bind(control.val, control));
-            } else { control.val(''); }
+            if (resource)
+                return resource.rget(init.df).done(_.bind(control.val, control));
         },
         WebLinkButton: function(control, init) {
             var form = control.closest('.specify-view-content');
@@ -37,10 +36,10 @@ define([
                 break;
             }
         },
-        LocalityGoogleEarth: function(control, init, data) {
-            control.replaceWith(gmaptemplate(data));
+        LocalityGoogleEarth: function(control, init, resource) {
+            control.replaceWith(gmaptemplate(resource.toJSON()));
         },
-        LatLonUI: function(control, init, data) {
+        LatLonUI: function(control, init, resource) {
             var plugin = $(latlonuitemplate());
             var tbody = plugin.find('tbody');
             tbody.append(tbody.find('tr').clone().hide());
@@ -55,7 +54,7 @@ define([
                         parsed ? parsed.format() : '???'
                     );
                 });
-                var value = data[expectedType.toLowerCase() + ptInx + 'text'];
+                var value = resource.get(expectedType.toLowerCase() + ptInx + 'text');
                 input.val(value).keyup();
             });
             control.replaceWith(plugin);
@@ -80,7 +79,7 @@ define([
                     break;
                 }
             });
-            data.latlongtype && type.val(data.latlongtype).change();
+            resource.get('latlongtype') && type.val(resource.get('latlongtype')).change();
         }
     };
 });

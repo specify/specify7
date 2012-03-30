@@ -9,7 +9,7 @@ define([
     self.setupUIplugin = function (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
-        return plugin && plugin(control, init, resource.toJSON());
+        return plugin && plugin(control, init, resource);
     };
 
     self.setupControls = function (form, resource) {
