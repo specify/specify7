@@ -34,7 +34,7 @@ textarea {
     width: 100%;
 }
 
-input.specify-field[type="text"], .querycbx-strct input {
+input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
     width: 100%;
 }
 

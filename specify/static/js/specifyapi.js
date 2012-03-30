@@ -58,6 +58,16 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         get: function(attribute) {
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },
+        set: function(key, value, options) {
+            var attrs = {};
+            if (_.isObject(key) || key == null) {
+                _(key).each(function(value, key) { attrs[key.toLowerCase()] = value; });
+                options = value;
+            } else {
+                attrs[key.toLowerCase()] = value;
+            }
+            return Backbone.Model.prototype.set.call(this, attrs, options);
+        },
         rget: function(field) {
             var path = _(field).isArray()? field : field.split('.');
             field = path[0].toLowerCase();
@@ -102,7 +112,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             }
         },
         fetchIfNotPopulated: function() {
-            return this.has('resoure_uri') ? $.when("already populated") : this.fetch();
+            return this.has('resoure_uri') ? $.when("already populated") : this.fetch({silent: true});
         },
         getRelatedObjectCount: function(field) {
             if (datamodel.getRelatedFieldType(this.specifyModel, field) !== 'one-to-many') {

@@ -19,8 +19,10 @@ define([
             if (!label.text()) {
                 label.text(schemalocalization.getLocalizedLabelForField(init.df, resource.specifyModel));
             }
-            if (resource)
+            if (resource) {
+                control.change(function() { resource.set(init.df, control.val()); });
                 return resource.rget(init.df).done(_.bind(control.val, control));
+            }
         },
         WebLinkButton: function(control, init) {
             var form = control.closest('.specify-view-content');
@@ -47,6 +49,8 @@ define([
                 var input = $(this), ptInx = Math.floor(i/2) + 1;
                 var interpreted = $(tbody.find('span')[i]);
                 var expectedType = ['Lat', 'Long'][i%2];
+                var fieldName = expectedType.toLowerCase() + ptInx + 'text';
+                var inferredField = ['latitude', 'longitude'][i%2] + ptInx;
                 input.keyup(function() {
                     var parsed = latlongutils[expectedType].parse(input.val());
                     input.data('parsed', parsed);
@@ -54,8 +58,13 @@ define([
                         parsed ? parsed.format() : '???'
                     );
                 });
-                var value = resource.get(expectedType.toLowerCase() + ptInx + 'text');
+                var value = resource.get(fieldName);
                 input.val(value).keyup();
+                input.change(function() {
+                    var parsed = input.data('parsed');
+                    resource.set(fieldName, input.val());
+                    parsed && resource.set(inferredField, parsed.asFloat());
+                });
             });
             control.replaceWith(plugin);
             var type = plugin.find('[name="type"]');
@@ -80,6 +89,7 @@ define([
                 }
             });
             resource.get('latlongtype') && type.val(resource.get('latlongtype')).change();
+            type.change(function() { resource.set('latlongtype', type.val()); });
         }
     };
 });

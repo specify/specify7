@@ -31,15 +31,6 @@ require([
                 var mainForm = specifyform.buildViewForModel(model);
                 populateform.populateForm(mainForm, resource);
                 rootContainer.empty().append(mainForm);
-                $('input[type="submit"]').click(function () {
-                    var btn = $(this);
-                    btn.prop('disabled', true);
-                    $.when.apply($, putform.putForm(mainForm.find('.specify-view-content'), true))
-                        .done(function () {
-                            btn.prop('disabled', false);
-                            window.location.reload(true);
-                        });
-                });
             },
 
             viewRelated: function(model, id, relatedField) {

@@ -54,6 +54,7 @@ define([
             },
             select: function (event, ui) {
                 control.val(ui.item.resource.url());
+                resource && resource.set(control.attr('name'), control.val());
                 link.attr('href', ui.item.resource.viewUrl());
             }
         }).prop('readonly', control.prop('readonly'));

@@ -29,6 +29,9 @@ define(['underscore'], function (_) {
         asLong: function() {
             var result = _.extend(new Long(), {_components: _.clone(this._components)});
             return result.isValid() ? result : null;
+        },
+        asFloat: function() {
+            return this.toDegs()._components[0];
         }
     });
     _(['toDegs', 'toDegsMins', 'toDegsMinsSecs']).each(function(f, i) {

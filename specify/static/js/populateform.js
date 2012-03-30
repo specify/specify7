@@ -13,6 +13,11 @@ define([
     };
 
     self.setupControls = function (form, resource) {
+        function controlChanged() {
+            var control = $(this);
+            resource.set(control.attr('name'), control.val());
+        };
+
         var deferreds = form.find('.specify-field').map(function () {
             var control = $(this);
             if (control.is('.specify-combobox')) {
@@ -27,8 +32,11 @@ define([
                     _(control.prop).bind(control, 'checked') :
                     _(control.val).bind(control);
 
+                control.change(controlChanged);
+
                 if (datamodel.isRelatedField(resource.specifyModel, control.attr('name'))) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
+                    control.prop('readonly', true);
                     return fetch.pipe(dof.dataObjFormat).done(fillItIn);
                 } else return fetch.done(fillItIn);
             }
@@ -37,7 +45,8 @@ define([
     };
 
     self.populateSubView = function(buildSubView, relType, related, sliderAtTop) {
-        var makeSub = function(resource) { return self.populateForm(buildSubView(), resource); };
+        function makeSub(resource) { return self.populateForm(buildSubView(), resource); };
+
         switch (relType) {
         case 'one-to-many':
             if (related.length < 1) {
@@ -47,7 +56,7 @@ define([
             if (buildSubView().find('table:first').is('.specify-formtable')) {
                 return api.whenAll(related.map(makeSub)).pipe(function(subviews) {
                     var result = _.first(subviews);
-                    result.find('.specify-form-header:first').remove();
+                    result.find('.specify-form-header:first, :submit').remove();
                     _(subviews).chain().tail().each(function(subview) {
                         $('.specify-view-content-container:first', result).append(
                             $('.specify-view-content:first', subview)
@@ -59,7 +68,7 @@ define([
 
             return makeSub(related.at(0)).pipe(function(subview) {
                 var result = $('<div>').append(subview);
-                result.find('.specify-form-header:first').remove();
+                result.find('.specify-form-header:first, :submit').remove();
 
                 if (related.length > 1) makeRecordSelector(
                     result, related, '.specify-view-content:first',
@@ -75,7 +84,7 @@ define([
         case 'many-to-one':
             if (related)
                 return makeSub(related).pipe(function(subview) {
-                    subview.find('.specify-form-header:first').remove();
+                    subview.find('.specify-form-header:first, :submit').remove();
                     return subview;
                 });
             else
@@ -93,27 +102,32 @@ define([
         if (!resource) {
             return self.setupControls(form).pipe(function() { return form; });
         }
-        var viewmodel = form.data('specify-model');
+
+        var submit = $('<input type="submit">').appendTo(form).click(function(evt) {
+            evt.preventDefault();
+            resource.save().done(function() {
+                window.location.reload(); // lame
+            });
+        }).prop('disabled', true);
+
+        resource.on('change', function() {
+            submit.prop('disabled', false);
+        });
 
         return resource.fetchIfNotPopulated().pipe(function() {
-            var data = resource.toJSON();
-            var deferreds = [];
-            form.find('.specify-view-content').data({
-                'specify-uri': data.resource_uri,
-                'specify-object-version': data.version});
-
-            deferreds.push(self.setupControls(form, resource));
+            var model = resource.specifyModel;
+            var deferreds = [self.setupControls(form, resource)];
 
             form.find('.specify-subview').each(function () {
                 var node = $(this), fieldName = node.data('specify-field-name');
-                var relType = datamodel.getRelatedFieldType(viewmodel, fieldName);
+                var relType = datamodel.getRelatedFieldType(model, fieldName);
 
                 var subviewButton = node.children('.specify-subview-button:first');
                 if (subviewButton.length) {
                     subviewButton.prop('href',fieldName.toLowerCase());
                     var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
                     var icon = props.icon ? icons.getIcon(props.icon) :
-                        icons.getIcon(datamodel.getRelatedModelForField(viewmodel, fieldName));
+                        icons.getIcon(datamodel.getRelatedModelForField(model, fieldName));
                     subviewButton.append($('<img>', {src: icon}));
                     $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
                     subviewButton.button();

@@ -20,6 +20,10 @@ define(['jquery', 'underscore', 'schemalocalization', 'specifyapi'], function($,
             control.val(value);
         }
 
+        resource && control.change(function() {
+            resource.set(field, control.val());
+        });
+
         if (model.toLowerCase() === 'agent' && field.toLowerCase() === 'agenttype') {
             buildPicklist([{value: 0, title: 'Organization'},
                            {value: 1, title: 'Person'},
