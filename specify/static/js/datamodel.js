@@ -48,7 +48,8 @@ define([
         },
 
         getCannonicalNameForModel: function(modelName) {
-            return findTable(modelName).attr('classname').split('.').pop();
+            var table = findTable(modelName);
+            return table.length ? table.attr('classname').split('.').pop() : null;
         }
     };
 

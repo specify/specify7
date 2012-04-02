@@ -49,6 +49,10 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     });
 
     var Resource = self.Resource = Backbone.Model.extend({
+        populated: false,
+        initialize: function(attributes, options) {
+            if (attributes && _(attributes).has('resource_uri')) this.populated = true;
+        },
         url: function() {
             return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
         },
@@ -68,51 +72,43 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             }
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
-        rget: function(field) {
+        rget: function(field) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
             var path = _(field).isArray()? field : field.split('.');
             field = path[0].toLowerCase();
-            var value = this.get(field);
-            if (path.length === 1 && !datamodel.isRelatedField(this.specifyModel, field))
-                return $.when(value);
+            var value = self.get(field);
+            if (path.length === 1 && !datamodel.isRelatedField(self.specifyModel, field))
+                return value;
             if (_.isNull(value) || _.isUndefined(value))
-                return $.when(value);
-            var deferred;
-            switch (datamodel.getRelatedFieldType(this.specifyModel, field)) {
+                return value;
+
+            var CollectionForModel = Collection.forModel(
+                datamodel.getRelatedModelForField(self.specifyModel, field)
+            );
+
+            switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
             case 'many-to-one':
                 var related = _.isString(value) ? Resource.fromUri(value) : Resource.fromUri(value.resource_uri);
-                if (_.isString(value)) {
-                    deferred = related.fetch().pipe(function() {
-                        return $.when(path.length === 1 ? related : related.rget(_.tail(path)));
-                    });
-                } else {
-                    related.set(value);
-                    deferred = $.when(path.length === 1 ? related : related.rget(_.tail(path)));
-                }
-                return deferred;
+                _.isObject(value) && related.set(value);
+                return (path.length === 1) ? related :
+                    related.fetchIfNotPopulated().pipe(function() { related.rget(_.tail(path)); });
             case 'one-to-many':
                 if (path.length > 1) throw new Error();
-                if (_.isString(value)) return $.when(Collection.fromUri(value));
-                var CollectionForModel = Collection.forModel(
-                    datamodel.getRelatedModelForField(this.specifyModel, field)
-                );
-                return $.when(new CollectionForModel(value));
+                if (_.isString(value)) return Collection.fromUri(value);
+                return new CollectionForModel(value);
             case 'zero-to-one':
-                if(_.isString(value))
-                    deferred = $.when(Collection.fromUri(value));
-                else {
-                    var CFM = Collection.forModel(datamodel.getRelatedModelForField(this.specifyModel, field));
-                    deferred = $.when(new CFM(value));
-                }
-                return deferred.pipe(function(collection) {
-                    if (path.length > 1)
-                        return collection.at(0).rget(_.tail(path));
-                    else
-                        return collection.length ? collection.at(0) : null;
+                var collection = _.isString(value) ? Collection.fromUri(value) : new CollectionForModel(value);
+                return collection.fetchIfNotPopulated().pipe(function() {
+                    return path.length > 1 ? collection.at(0).rget(_.tail(path)) :
+                        (collection.length ? collection.at(0) : null);
                 });
             }
-        },
+        });},
         fetchIfNotPopulated: function() {
-            return this.has('resoure_uri') ? $.when("already populated") : this.fetch({silent: true});
+            return this.populated ? $.when("already populated") : this.fetch({silent: true});
+        },
+        parse: function() {
+            this.populated = true;
+            Backbone.Model.prototype.parse.apply(this, arguments);
         },
         getRelatedObjectCount: function(field) {
             if (datamodel.getRelatedFieldType(this.specifyModel, field) !== 'one-to-many') {
@@ -130,6 +126,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     }, {
         forModel: function(modelName) {
             var cannonicalName = datamodel.getCannonicalNameForModel(modelName);
+            if (!cannonicalName) return null;
             if (!_(resources).has(cannonicalName)) {
                 resources[cannonicalName] = Resource.extend({
                     specifyModel: cannonicalName
