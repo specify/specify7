@@ -17,7 +17,7 @@ inlined_fields = [
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
-    'Collectionobject.determinations',
+#    'Collectionobject.determinations',
     'Picklist.picklistitems',
 ]
 

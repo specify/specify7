@@ -76,8 +76,9 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             var path = _(field).isArray()? field : field.split('.');
             field = path[0].toLowerCase();
             var value = self.get(field);
-            if (path.length === 1 && !datamodel.isRelatedField(self.specifyModel, field))
-                return value;
+            if (!datamodel.isRelatedField(self.specifyModel, field))
+                return path.length === 1 ? value : undefined;
+
             if (_.isNull(value) || _.isUndefined(value))
                 return value;
 
@@ -88,13 +89,17 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
             case 'many-to-one':
                 var related = _.isString(value) ? Resource.fromUri(value) : Resource.fromUri(value.resource_uri);
-                _.isObject(value) && related.set(value);
-                return (path.length === 1) ? related :
-                    related.fetchIfNotPopulated().pipe(function() { related.rget(_.tail(path)); });
+                if( _.isObject(value)) {
+                    related.set(value);
+                    related.populated = true;
+                }
+                return (path.length === 1) ? related : related.rget(_.tail(path));
             case 'one-to-many':
-                if (path.length > 1) throw new Error();
+                if (path.length > 1) return undefined;
                 if (_.isString(value)) return Collection.fromUri(value);
-                return new CollectionForModel(value);
+                var tomany = new CollectionForModel(value);
+                tomany.queryParams[self.specifyModel.toLowerCase()] = self.id;
+                return tomany;
             case 'zero-to-one':
                 var collection = _.isString(value) ? Collection.fromUri(value) : new CollectionForModel(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
@@ -108,7 +113,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
         parse: function() {
             this.populated = true;
-            Backbone.Model.prototype.parse.apply(this, arguments);
+            return Backbone.Model.prototype.parse.apply(this, arguments);
         },
         getRelatedObjectCount: function(field) {
             if (datamodel.getRelatedFieldType(this.specifyModel, field) !== 'one-to-many') {
