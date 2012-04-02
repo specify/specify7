@@ -102,6 +102,7 @@ define([
         if (!resource) {
             return self.setupControls(form).pipe(function() { return form; });
         }
+        form.find('a.specify-edit').prop('href', resource.viewUrl());
 
         var submit = $('<input type="submit">').appendTo(form).click(function(evt) {
             evt.preventDefault();

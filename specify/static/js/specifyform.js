@@ -252,9 +252,9 @@ define([
         if (doingFormTable) {
             var formViewdef = findViewdef(viewdef.find('definition').text());
             var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
-            var headerRow = $('<tr>'), bodyRow = $('<tr class="specify-view-content">');
+            var headerRow = $('<tr><th></th></tr>'), bodyRow = $('<tr class="specify-view-content">');
             bodyRow.prop('id', 'specify-view-' + formNumber);
-
+            bodyRow.append('<td><a class="specify-edit"><span class="ui-icon ui-icon-pencil">edit</span></a></td>');
             formTableCells.each(function () {
                 var label = $('<label>', {'for': 'specify-field-' + formNumber + '-' + $(this).attr('id')});
                 headerRow.append($('<th>').append(label));
