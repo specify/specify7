@@ -1,9 +1,11 @@
 define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function($, _, Backbone, datamodel) {
     var self = {}, resources = {}, collections = {};
 
-    self.whenAll = function(deferreds) {
+    var whenAll = self.whenAll = function(deferreds) {
         return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
     };
+
+    function instanceOf(obj) { return obj instanceof this; }
 
     var Collection = self.Collection = Backbone.Collection.extend({
         populated: false,
@@ -49,9 +51,15 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     });
 
     var Resource = self.Resource = Backbone.Model.extend({
-        populated: false, _fetch: null,
+        populated: false, _fetch: null, needsSaved: false,
         initialize: function(attributes, options) {
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
+            this.on('change', function() {
+                this.needsSaved = true;
+            });
+            this.on('sync', function() {
+                this.needsSaved = false;
+            });
         },
         url: function() {
             return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
@@ -95,6 +103,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                         toOne.set(value);
                         toOne.populated = true;
                     }
+                    toOne.on('change rchange', function() { self.trigger('rchange'); });
                     self.set(field, toOne, {silent: true});
                 }
                 return (path.length === 1) ? toOne : toOne.rget(_.tail(path));
@@ -114,16 +123,31 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
+                    value && value.on('change rchange', function() { self.trigger('rchange'); });
                     self.set(field, value, {silent: true});
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             }
         });},
+        rsave: function() {
+            var resource = this;
+            var deferreds = _(resource.attributes).chain().filter(_.bind(instanceOf, Resource)).invoke('rsave').value();
+            deferreds.push(resource.needsSaved && resource.save());
+            // If there is a circular dependency we could end up
+            // saving over and over, so if we are saving already
+            // return the previous saves deferred. This means you
+            // can't save and then make changes and save again while
+            // the first save is pending, but that would be insane
+            // anyways.
+            return resource._rsaveDeferred = resource._rsaveDeferred ||
+                whenAll(deferreds).then(function() { resource._rsaveDeferred = null; });
+        },
         fetchIfNotPopulated: function() {
-            if (this.populated) return $.when("already populated")
-            if (this._fetch !== null) return this._fetch;
-            this._fetch = this.fetch({silent: true}).done(function() { this._fetch = null; });
-            return this._fetch;
+            var resource = this;
+            if (resource.populated) return $.when("already populated")
+            if (resource._fetch !== null) return resource._fetch;
+            resource._fetch = resource.fetch({silent: true}).done(function() { resource._fetch = null; });
+            return resource._fetch;
         },
         parse: function() {
             this.populated = true;

@@ -285,6 +285,94 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 });
             });
         });
+
+        test('needsSaved', function() {
+            expect(7);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            equal(resource.needsSaved, false);
+            resource.rget('catalognumber').done(function(original) {
+                equal(resource.needsSaved, false);
+                resource.set('catalognumber', original + 'foo');
+                equal(resource.needsSaved, true);
+                resource.save().done(function() {
+                    equal(resource.needsSaved, false);
+                    resource.set('catalognumber', original);
+                    resource.set('version', resource.get('version') + 1);
+                    equal(resource.needsSaved, true);
+                    resource.save().done(function() {
+                        equal(resource.needsSaved, false);
+                        equal(requestCounter, 3);
+                        start();
+                    });
+                });
+            });
+        });
+
+        test('rsave', function() {
+            expect(2);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            resource.rget('catalognumber').done(function(original) {
+                resource.set('catalognumber', original + 'foo');
+                resource.rsave().done(function() {
+                    ok(!resource.needsSaved);
+                    equal(requestCounter, 2);
+                    resource.set('catalognumber', original);
+                    resource.set('version', resource.get('version') + 1);
+                    resource.save().done(function() { start(); });
+                });
+            });
+        });
+
+        test('rsave child', function() {
+            expect(4);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            resource.rget('collectingevent.remarks').done(function(original) {
+                equal(requestCounter, 2);
+                var ce = resource.get('collectingevent');
+                ce.set('remarks', original + 'foo');
+                ok(ce.needsSaved);
+                resource.rsave().done(function() {
+                    equal(requestCounter, 3);
+                    ok(!ce.needsSaved);
+                    ce.set('remarks', original);
+                    ce.set('version', ce.get('version') + 1);
+                    ce.save().done(function () { start(); });
+                });
+            });
+        });
+
+        test('rchange event', function() {
+            expect(13); // 3 agent.set X 3 callbacks + 3 needsSaved checks + 1 requestCounter check
+            stop();
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            resource.on('rchange', function() { ok(true); });
+            resource.on('change', function() { ok(false); });
+            resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
+                var ce = resource.get('collectingevent');
+                ce.on('rchange', function() { ok(true); });
+                ce.on('change', function() { ok(false); });
+                var agent = ce.get('modifiedbyagent');
+                agent.on('rchange', function() { ok(false); });
+                agent.on('change', function() { ok(true); });
+                agent.set('remarks', original + 'foo');
+                ok(agent.needsSaved);
+                ok(!ce.needsSaved);
+                ok(!resource.needsSaved);
+                requestCounter = 0;
+                resource.rsave().done(function() {
+                    equal(requestCounter, 1);
+                    agent.set('remarks', original);
+                    agent.set('version', agent.get('version') + 1);
+                    agent.save().done(function() { start(); });
+                });
+            });
+        });
     };
 });
 

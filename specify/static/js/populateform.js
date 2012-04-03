@@ -106,12 +106,12 @@ define([
 
         var submit = $('<input type="submit">').appendTo(form).click(function(evt) {
             evt.preventDefault();
-            resource.save().done(function() {
+            resource.rsave().done(function() {
                 window.location.reload(); // lame
             });
         }).prop('disabled', true);
 
-        resource.on('change', function() {
+        resource.on('change rchange', function() {
             submit.prop('disabled', false);
         });
 
