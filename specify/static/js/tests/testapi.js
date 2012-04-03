@@ -86,6 +86,17 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             });
         });
 
+        test('rget double fetch', function() {
+            expect(1);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            $.when(resource.rget('catalognumber'), resource.rget('collectingeven')).done(function() {
+                equal(requestCounter, 1);
+                start();
+            });
+        });
+
         test('rget nested field', function() {
             expect(2);
             stop();
@@ -200,6 +211,78 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 equal(requestCounter, 2);
                 equal(result, null);
                 start();
+            });
+        });
+
+        test('rget many-to-one null', function() {
+            expect(2);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/1748/');
+            resource.rget('collectingevent').done(function(result) {
+                equal(requestCounter, 1);
+                equal(result, null);
+                start();
+            });
+        });
+
+        test('rget many-to-one cached', function() {
+            expect(3);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            resource.rget('collectingevent').done(function(outer) {
+                equal(requestCounter, 1);
+                resource.rget('collectingevent').done(function(inner) {
+                    equal(requestCounter, 1);
+                    strictEqual(inner, outer);
+                    start();
+                });
+            });
+        });
+
+        test('rget inlined many-to-one cached', function() {
+            expect(3);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collector/1343/');
+            resource.rget('agent').done(function(outer) {
+                equal(requestCounter, 1);
+                resource.rget('agent').done(function(inner) {
+                    equal(requestCounter, 1);
+                    strictEqual(inner, outer);
+                    start();
+                });
+            });
+        });
+
+        test('rget one-to-many cached', function() {
+            expect(3);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            resource.rget('preparations').done(function(outer) {
+                equal(requestCounter, 1);
+                resource.rget('preparations').done(function(inner) {
+                    equal(requestCounter, 1);
+                    strictEqual(inner, outer);
+                    start();
+                });
+            });
+        });
+
+        test('rget zero-to-one cached', function() {
+            expect(3);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/locality/341/');
+            resource.rget('localitydetails').done(function(outer) {
+                equal(requestCounter, 2);
+                resource.rget('localitydetails').done(function(inner) {
+                    equal(requestCounter, 2);
+                    strictEqual(inner, outer);
+                    start();
+                });
             });
         });
     };

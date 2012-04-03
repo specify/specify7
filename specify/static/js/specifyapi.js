@@ -49,7 +49,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     });
 
     var Resource = self.Resource = Backbone.Model.extend({
-        populated: false,
+        populated: false, _fetch: null,
         initialize: function(attributes, options) {
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
         },
@@ -82,34 +82,48 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             if (_.isNull(value) || _.isUndefined(value))
                 return value;
 
-            var CollectionForModel = Collection.forModel(
-                datamodel.getRelatedModelForField(self.specifyModel, field)
-            );
+            var related = datamodel.getRelatedModelForField(self.specifyModel, field);
 
             switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
             case 'many-to-one':
-                var related = _.isString(value) ? Resource.fromUri(value) : Resource.fromUri(value.resource_uri);
-                if( _.isObject(value)) {
-                    related.set(value);
-                    related.populated = true;
+                var toOne;
+                if (value instanceof Resource.forModel(related)) toOne = value;
+                else {
+                    if (_.isString(value)) toOne = Resource.fromUri(value);
+                    else {
+                        toOne = Resource.fromUri(value.resource_uri);
+                        toOne.set(value);
+                        toOne.populated = true;
+                    }
+                    self.set(field, toOne, {silent: true});
                 }
-                return (path.length === 1) ? related : related.rget(_.tail(path));
+                return (path.length === 1) ? toOne : toOne.rget(_.tail(path));
             case 'one-to-many':
                 if (path.length > 1) return undefined;
-                if (_.isString(value)) return Collection.fromUri(value);
-                var tomany = new CollectionForModel(value);
-                tomany.queryParams[self.specifyModel.toLowerCase()] = self.id;
-                return tomany;
+                if (value instanceof Collection.forModel(related)) return value;
+                var toMany = (_.isString(value)) ? Collection.fromUri(value) :
+                    new (Collection.forModel(related))(value);
+                toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
+                self.set(field, toMany, {silent: true});
+                return toMany;
             case 'zero-to-one':
-                var collection = _.isString(value) ? Collection.fromUri(value) : new CollectionForModel(value);
+                if (value instanceof Resource.forModel(related)) {
+                    return (path.length === 1) ? value : value.rget(_.tail(path));
+                }
+                var collection = _.isString(value) ? Collection.fromUri(value) :
+                    new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
-                    return path.length > 1 ? collection.at(0).rget(_.tail(path)) :
-                        (collection.length ? collection.at(0) : null);
+                    var value = collection.isEmpty() ? null : collection.first();
+                    self.set(field, value, {silent: true});
+                    return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             }
         });},
         fetchIfNotPopulated: function() {
-            return this.populated ? $.when("already populated") : this.fetch({silent: true});
+            if (this.populated) return $.when("already populated")
+            if (this._fetch !== null) return this._fetch;
+            this._fetch = this.fetch({silent: true}).done(function() { this._fetch = null; });
+            return this._fetch;
         },
         parse: function() {
             this.populated = true;
