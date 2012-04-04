@@ -6,6 +6,9 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter++;
         });
 
+        var justOk = _.bind(ok, this, true);
+        var notOk = _.bind(ok, this, false);
+
         module('specifyapi.Resource');
         test('forModel', function() {
             var Resource = api.Resource.forModel('collectionobject');
@@ -351,15 +354,15 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(13); // 3 agent.set X 3 callbacks + 3 needsSaved checks + 1 requestCounter check
             stop();
             var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
-            resource.on('rchange', function() { ok(true); });
-            resource.on('change', function() { ok(false); });
+            resource.on('rchange', justOk);
+            resource.on('change', notOk);
             resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
                 var ce = resource.get('collectingevent');
-                ce.on('rchange', function() { ok(true); });
-                ce.on('change', function() { ok(false); });
+                ce.on('rchange', justOk);
+                ce.on('change', notOk);
                 var agent = ce.get('modifiedbyagent');
-                agent.on('rchange', function() { ok(false); });
-                agent.on('change', function() { ok(true); });
+                agent.on('rchange', notOk);
+                agent.on('change', justOk);
                 agent.set('remarks', original + 'foo');
                 ok(agent.needsSaved);
                 ok(!ce.needsSaved);
@@ -466,6 +469,74 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                     equal(collection.models.length, totalCount);
                     equal(_(collection.models).compact().length, collection.limit);
                     start();
+                });
+            });
+        });
+
+        test('rchange event', function() {
+            expect(3);
+            stop();
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            resource.on('change', notOk);
+            resource.on('rchange', justOk);
+            resource.rget('preparations').done(function(preps) {
+                preps.on('change', justOk);
+                preps.on('rchange', notOk);
+                preps.fetch().done(function() {
+                    var prep = preps.at(1);
+                    prep.on('change', justOk);
+                    prep.on('rchange', notOk);
+                    prep.set('remarks', prep.get('remarks') + 'foo');
+                    start();
+                });
+            });
+        });
+
+        test('rchange event deep', function() {
+            expect(4);
+            stop();
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            resource.on('change', notOk);
+            resource.on('rchange', justOk);
+            resource.rget('determinations').done(function(dets) {
+                dets.on('change', notOk);
+                dets.on('rchange', justOk);
+                dets.fetch().done(function() {
+                    var det = dets.at(1);
+                    det.on('change', notOk);
+                    det.on('rchange', justOk);
+                    det.rget('determiner.lastname').done(function(original) {
+                        var agent = det.get('determiner');
+                        agent.on('change', justOk);
+                        agent.on('rchange', notOk);
+                        agent.set('lastname', original + 'foo');
+                        start();
+                    });
+                });
+            });
+        });
+
+        test('rsave', function() {
+            expect(6);
+            stop();
+            requestCounter = 0;
+            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            resource.rget('determinations').done(function(dets) {
+                equal(requestCounter, 1);
+                dets.fetch().done(function() {
+                    equal(requestCounter, 2);
+                    var det = dets.at(1);
+                    det.rget('determiner.remarks').done(function(original) {
+                        var agent = det.get('determiner');
+                        equal(requestCounter, 3);
+                        agent.set('remarks', original === 'foo' ? 'bar' : 'foo');
+                        ok(agent.needsSaved);
+                        resource.rsave().done(function() {
+                            equal(requestCounter, 4);
+                            ok(!agent.needsSaved);
+                            start();
+                        });
+                    });
                 });
             });
         });

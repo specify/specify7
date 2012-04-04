@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
     };
 
-    function instanceOf(obj) { return obj instanceof this; }
+    function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
     var Collection = self.Collection = Backbone.Collection.extend({
         populated: false,
@@ -45,6 +45,9 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 this.length = this.models.length;
             }
             return Backbone.Collection.prototype.add.apply(this, arguments);
+        },
+        rsave: function() {
+            return whenAll(_.chain(this.models).compact().invoke('rsave').value());
         }
     }, {
         forModel: function(modelName) {
@@ -109,7 +112,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
             case 'many-to-one':
                 var toOne;
-                if (value instanceof Resource.forModel(related)) toOne = value;
+                if (value instanceof Resource) toOne = value;
                 else {
                     if (_.isString(value)) toOne = Resource.fromUri(value);
                     else {
@@ -123,14 +126,15 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 return (path.length === 1) ? toOne : toOne.rget(_.tail(path));
             case 'one-to-many':
                 if (path.length > 1) return undefined;
-                if (value instanceof Collection.forModel(related)) return value;
+                if (value instanceof Collection) return value;
                 var toMany = (_.isString(value)) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
                 toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
                 self.set(field, toMany, {silent: true});
+                toMany.on('change rchange', function() { self.trigger('rchange'); });
                 return toMany;
             case 'zero-to-one':
-                if (value instanceof Resource.forModel(related)) {
+                if (value instanceof Resource) {
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
                 var collection = _.isString(value) ? Collection.fromUri(value) :
@@ -145,7 +149,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         });},
         rsave: function() {
             var resource = this;
-            var deferreds = _(resource.attributes).chain().filter(_.bind(instanceOf, Resource)).invoke('rsave').value();
+            var deferreds = _(resource.attributes).chain().filter(isResourceOrCollection).invoke('rsave').value();
             deferreds.push(resource.needsSaved && resource.save());
             // If there is a circular dependency we could end up
             // saving over and over, so if we are saving already
