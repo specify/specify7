@@ -15,15 +15,11 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
         url: function() {
             var url = '/api/specify/' + this.model.specifyModel.toLowerCase() + '/';
-            var options = _.extend({}, this.queryParams);
-            if (_(this).has('offset')) options.offset = this.offset;
-            if (_(this).has('limit')) options.limit = this.limit;
-            return $.param.querystring(url, options);
+            return $.param.querystring(url, this.queryParams);
         },
         parse: function(resp, xhr) {
             _.extend(this, {
                 populated: true,
-                offset: resp.meta.offset,
                 limit: resp.meta.limit,
                 totalCount: resp.meta.total_count,
             });
@@ -31,6 +27,24 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
         fetchIfNotPopulated: function () {
             return this.populated ? $.when("already populated") : this.fetch();
+        },
+        fetch: function(options) {
+            options = options || {};
+            options.add = true;
+            options.silent = true;
+            options.at = options.at || this.length;
+            options.data = options.data || _.extend({}, this.queryParams);
+            options.data.offset = options.at;
+            if (_(this).has('limit')) options.data.limit = this.limit;
+            return Backbone.Collection.prototype.fetch.call(this, options);
+        },
+        add: function(models, options) {
+            if (this.totalCount) {
+                if (this.models.length < this.totalCount) this.models[this.totalCount-1] = undefined;
+                this.models.splice(options.at, models.length);
+                this.length = this.models.length;
+            }
+            return Backbone.Collection.prototype.add.apply(this, arguments);
         }
     }, {
         forModel: function(modelName) {

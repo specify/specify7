@@ -373,6 +373,102 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 });
             });
         });
+
+        module('specifyapi.Collection');
+        test('forModel', function() {
+            var Collection = api.Collection.forModel('agent');
+            var collection = new Collection();
+            equal(collection.model, api.Resource.forModel('agent'));
+            ok(collection instanceof api.Collection);
+            ok(collection instanceof api.Collection.forModel('agent'));
+            equal(collection.url(), '/api/specify/agent/');
+            ok(!collection.populated);
+        });
+
+        test('fromUri', function() {
+            var url = '/api/specify/collectionobject/?accession=62';
+            var collection = api.Collection.fromUri(url);
+            equal(collection.url(), url);
+            ok(!collection.populated);
+        });
+
+        test('fetch', function() {
+            expect(8);
+            stop();
+            requestCounter = 0;
+            var url = '/api/specify/collectionobject/?accession=62';
+            var collection = api.Collection.fromUri(url);
+            collection.fetch().done(function() {
+                equal(requestCounter, 1);
+                equal(collection.totalCount, 285);
+                equal(collection.length, collection.totalCount);
+                equal(collection.models.length, collection.length);
+                equal(collection.limit, 20);
+                ok(!collection.chain().first(collection.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(collection.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, collection.limit);
+                start();
+            });
+        });
+
+        test('fetch at', function() {
+            expect(9);
+            stop();
+            requestCounter = 0;
+            var url = '/api/specify/collectionobject/?accession=62';
+            var collection = api.Collection.fromUri(url);
+            var at = 100;
+            collection.fetch({at: at}).done(function() {
+                equal(requestCounter, 1);
+                equal(collection.totalCount, 285);
+                equal(collection.length, collection.totalCount);
+                equal(collection.models.length, collection.length);
+                equal(collection.limit, 20);
+                ok(collection.chain().first(at).all(_.isUndefined).value());
+                ok(!collection.chain().tail(at).first(collection.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(at+collection.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, collection.limit);
+                start();
+            });
+        });
+
+        test('fetch then fetch at', function() {
+            expect(10);
+            stop();
+            requestCounter = 0;
+            var url = '/api/specify/collectionobject/?accession=62';
+            var collection = api.Collection.fromUri(url);
+            var at = 100;
+            collection.fetch().done(function() { collection.fetch({at: at}).done(function() {
+                equal(requestCounter, 2);
+                equal(collection.totalCount, 285);
+                equal(collection.length, collection.totalCount);
+                equal(collection.models.length, collection.length);
+                equal(collection.limit, 20);
+                ok(!collection.chain().first(collection.limit).any(_.isUndefined).value());
+                ok(collection.chain().first(at).tail(collection.limit).all(_.isUndefined).value());
+                ok(!collection.chain().tail(at).first(collection.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(at+collection.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, 2*collection.limit);
+                start();
+            });});
+        });
+
+        test('fetch past end', function() {
+            expect(3);
+            stop();
+            var url = '/api/specify/agent/';
+            var collection = api.Collection.fromUri(url);
+            collection.fetch().done(function() {
+                var totalCount = collection.length;
+                collection.fetch({at: totalCount + 10}).done(function() {
+                    equal(collection.length, totalCount);
+                    equal(collection.models.length, totalCount);
+                    equal(_(collection.models).compact().length, collection.limit);
+                    start();
+                });
+            });
+        });
     };
 });
 

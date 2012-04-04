@@ -8,8 +8,9 @@ define(['jquery', 'underscore', 'jquery-ui'], function($, _) {
         var request, showingSpinner, intervalId;
         var redraw = function(offset) {
             debug && console.log('want to redraw at ' + offset);
-            if (offset < bottom || offset > top-1) return;
-            buildContent(collection.at(offset - bottom)).done(function(content) {
+            var resource = collection.at(offset);
+            if (_(resource).isUndefined()) return;
+            buildContent(resource).done(function(content) {
                 var curOffset = slider.slider('value');
                 if (curOffset === offset) {
                     debug && console.log('filling in at ' + offset);
@@ -24,20 +25,18 @@ define(['jquery', 'underscore', 'jquery-ui'], function($, _) {
         slider.slider({
             max: (collection.totalCount || collection.length) - 1,
             stop: _.throttle(function(event, ui) {
-                if (ui.value >= bottom && ui.value < top) return;
+                if (collection.at(ui.value)) return;
                 request && request.abort();
-                collection.offset = Math.max(0, ui.value - Math.floor(collection.length/2));
-                request = collection.fetch().done(function() {
-                    debug && console.log('got collection at offset ' + collection.offset);
+                var at = ui.value - ui.value % collection.limit;
+                request = collection.fetch({at: at}).done(function() {
+                    debug && console.log('got collection at offset ' + at);
                     request = null;
-                    bottom = collection.offset;
-                    top = bottom + collection.length;
                     redraw(slider.slider('value'));
                 });
             }, 750),
             slide: function(event, ui) {
                 $('.ui-slider-handle', this).text(ui.value + 1);
-                if (ui.value < bottom || ui.value > top-1) {
+                if (_(collection.at(ui.value)).isUndefined()) {
                     if (showingSpinner) return;
                     var content = $(contentSelector, node);
                     var spinner = $('<img src="/static/img/icons/specify128spinner.gif">');
