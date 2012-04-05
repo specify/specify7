@@ -1,5 +1,6 @@
 define([
     'jquery', 'underscore', 'datamodel',
+    'text!/static/html/templates/subviewheader.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
     'text!/static/resources/preferences.views.xml',
@@ -7,7 +8,7 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, datamodel) {
+], function specifyform($, _, datamodel, subviewheader) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
@@ -207,7 +208,7 @@ define([
                         props.align && td.addClass('align-' + props.align);
                         return td.append(button);
                     }
-                    td.append('<h3 class="specify-subview-header">');
+                    td.append(subviewheader);
                     var view = findView(cell.attr('viewname'));
                     if (view === undefined) {
                         return td.text('View "' + cell.attr('viewname') + '" is undefined.');

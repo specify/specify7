@@ -102,7 +102,7 @@ define([
         $('.specify-subview-header', form).each(function() {
             var fieldname = $(this).parent().data('specify-field-name');
             var label = self.getLocalizedLabelForField(fieldname, modelname);
-            $(this).text(label);
+            $('.specify-subview-title', this).text(label);
         });
     };
 
