@@ -47,6 +47,13 @@ define([
             return field.attr('type');
         },
 
+        getFieldOtherSideName: function(modelName, fieldName) {
+            var field = getDataModelField(modelName, fieldName);
+            if (!field.is('relationship'))
+                throw new TypeError(fieldName + 'is not a related object field.');
+            return field.attr('othersidename');
+        },
+
         getCannonicalNameForModel: function(modelName) {
             var table = findTable(modelName);
             return table.length ? table.attr('classname').split('.').pop() : null;

@@ -44,7 +44,7 @@ define([
         return api.whenAll(deferreds);
     };
 
-    self.populateSubView = function(node, relType, related, sliderAtTop) {
+    self.populateSubView = function(node, relType, related, resource, fieldName) {
         var buildSubView = _(specifyform.buildSubView).bind(specifyform, node);
         function makeSub(resource) { return self.populateForm(buildSubView(), resource); };
 
@@ -66,9 +66,6 @@ define([
                     return result;
                 });
             }
-            node.find('.specify-subview-header:first .specify-add-related').click(function() {
-                related.add(new (related.model)());
-            });
 
             var recordSelector = new RecordSelector({
                 collection: related,
@@ -78,6 +75,15 @@ define([
                         return subview;
                     });
                 },
+            });
+            node.find('.specify-subview-header:first .specify-delete-related').click(function() {
+                recordSelector.getShowing().destroy();
+            });
+            node.find('.specify-subview-header:first .specify-add-related').click(function() {
+                var newResource = new (related.model)();
+                var osn = datamodel.getFieldOtherSideName(resource.specifyModel, fieldName);
+                newResource.set(osn, resource.url());
+                related.add(newResource);
             });
             recordSelector.render();
             return $.when(recordSelector.el);
@@ -143,7 +149,7 @@ define([
                         resource.rget(fieldName).pipe(function (related) {
                             if (!related) return related;
                             return related.fetchIfNotPopulated().pipe(function() {
-                                self.populateSubView(node, relType, related).done(function(result) {
+                                self.populateSubView(node, relType, related, resource, fieldName).done(function(result) {
                                     node.append(result);
                                 });
                             });

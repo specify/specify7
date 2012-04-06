@@ -46,10 +46,10 @@ define([
             source: function (request, response) {
                 var collection = api.queryCbxSearch(init.name, searchfield, request.term);
                 collection.fetch().done(function() {
-                    response(collection.map(function(resource) {
+                    response(collection.chain().compact().map(function(resource) {
                         var display = formatInterpolate(resource);
                         return { label: display, value: display, resource: resource };
-                    }));
+                    }).value());
                 }).fail(function() { response([]); });
             },
             select: function (event, ui) {

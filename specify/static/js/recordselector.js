@@ -12,6 +12,13 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 self.onSlide(end);
                 self.showHide();
             });
+            self.collection.on('destroy', function() {
+                var end = self.collection.length - 1;
+                var value = Math.min(self.slider.slider('value'), end);
+                self.slider.slider('option', { max: end, value: value });
+                self.onSlide(value);
+                self.showHide();
+            });
         },
         render: function() {
             var self = this;
@@ -91,6 +98,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 this.slider.show();
                 break;
             }
-        }
+        },
+        getShowing: function() { return this.collection.at(this.slider.slider('value')); }
     });
 });

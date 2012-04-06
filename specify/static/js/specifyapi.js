@@ -83,7 +83,8 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             this.relatedCache = {};
         },
         url: function() {
-            return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
+            return '/api/specify/' + this.specifyModel.toLowerCase() + '/' +
+                (!this.isNew() ? (this.id + '/') : '');
         },
         viewUrl: function() {
             return '/specify/view/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
@@ -169,6 +170,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         fetchIfNotPopulated: function() {
             var resource = this;
             if (resource.populated) return $.when("already populated")
+            if (resource.isNew()) return $.when('is new')
             if (resource._fetch !== null) return resource._fetch;
             resource._fetch = resource.fetch({silent: true}).done(function() { resource._fetch = null; });
             return resource._fetch;
@@ -189,6 +191,13 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                     return collection.totalCount;
                 });
             });
+        },
+        sync: function(method, resource, options) {
+            if (method === 'delete') {
+                options = options || {};
+                options.headers = {'If-Match': resource.get('version')};
+            }
+            return Backbone.sync(method, resource, options);
         }
     }, {
         forModel: function(modelName) {
