@@ -337,7 +337,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
             resource.rget('collectingevent.remarks').done(function(original) {
                 equal(requestCounter, 2);
-                var ce = resource.get('collectingevent');
+                var ce = resource.relatedCache['collectingevent'];
                 ce.set('remarks', original + 'foo');
                 ok(ce.needsSaved);
                 resource.rsave().done(function() {
@@ -357,10 +357,10 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             resource.on('rchange', justOk);
             resource.on('change', notOk);
             resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
-                var ce = resource.get('collectingevent');
+                var ce = resource.relatedCache['collectingevent'];
                 ce.on('rchange', justOk);
                 ce.on('change', notOk);
-                var agent = ce.get('modifiedbyagent');
+                var agent = ce.relatedCache['modifiedbyagent'];
                 agent.on('rchange', notOk);
                 agent.on('change', justOk);
                 agent.set('remarks', original + 'foo');
@@ -506,7 +506,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                     det.on('change', notOk);
                     det.on('rchange', justOk);
                     det.rget('determiner.lastname').done(function(original) {
-                        var agent = det.get('determiner');
+                        var agent = det.relatedCache['determiner'];
                         agent.on('change', justOk);
                         agent.on('rchange', notOk);
                         agent.set('lastname', original + 'foo');
@@ -527,7 +527,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                     equal(requestCounter, 2);
                     var det = dets.at(1);
                     det.rget('determiner.remarks').done(function(original) {
-                        var agent = det.get('determiner');
+                        var agent = det.relatedCache['determiner'];
                         equal(requestCounter, 3);
                         agent.set('remarks', original === 'foo' ? 'bar' : 'foo');
                         ok(agent.needsSaved);

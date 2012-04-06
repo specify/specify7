@@ -77,6 +77,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             this.on('sync', function() {
                 this.needsSaved = false;
             });
+            this.relatedCache = {};
         },
         url: function() {
             return '/api/specify/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
@@ -88,13 +89,15 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },
         set: function(key, value, options) {
-            var attrs = {};
+            var attrs = {}, self = this;
             if (_.isObject(key) || key == null) {
                 _(key).each(function(value, key) { attrs[key.toLowerCase()] = value; });
                 options = value;
             } else {
                 attrs[key.toLowerCase()] = value;
             }
+            if (self.relatedCache)
+                _(attrs).each(function(value, key) { delete self.relatedCache[key]; });
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
         rget: function(field) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
@@ -111,9 +114,8 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
 
             switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
             case 'many-to-one':
-                var toOne;
-                if (value instanceof Resource) toOne = value;
-                else {
+                var toOne = self.relatedCache[field];
+                if (!toOne) {
                     if (_.isString(value)) toOne = Resource.fromUri(value);
                     else {
                         toOne = Resource.fromUri(value.resource_uri);
@@ -121,20 +123,21 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                         toOne.populated = true;
                     }
                     toOne.on('change rchange', function() { self.trigger('rchange'); });
-                    self.set(field, toOne, {silent: true});
+                    self.relatedCache[field] = toOne;
                 }
                 return (path.length === 1) ? toOne : toOne.rget(_.tail(path));
             case 'one-to-many':
                 if (path.length > 1) return undefined;
-                if (value instanceof Collection) return value;
+                if (self.relatedCache[field]) return self.relatedCache[field];
                 var toMany = (_.isString(value)) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
                 toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
-                self.set(field, toMany, {silent: true});
+                self.relatedCache[field] = toMany;
                 toMany.on('change rchange', function() { self.trigger('rchange'); });
                 return toMany;
             case 'zero-to-one':
-                if (value instanceof Resource) {
+                if (self.relatedCache[field]) {
+                    value = self.relatedCache[field];
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
                 var collection = _.isString(value) ? Collection.fromUri(value) :
@@ -142,14 +145,14 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
                     value && value.on('change rchange', function() { self.trigger('rchange'); });
-                    self.set(field, value, {silent: true});
+                    self.relatedCache[field] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             }
         });},
         rsave: function() {
             var resource = this;
-            var deferreds = _(resource.attributes).chain().filter(isResourceOrCollection).invoke('rsave').value();
+            var deferreds = _(resource.relatedCache).invoke('rsave');
             deferreds.push(resource.needsSaved && resource.save());
             // If there is a circular dependency we could end up
             // saving over and over, so if we are saving already
