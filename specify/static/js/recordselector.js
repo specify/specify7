@@ -4,6 +4,15 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
 
     return Backbone.View.extend({
+        initialize: function(options) {
+            var self = this;
+            self.collection.on('add', function() {
+                var end = self.collection.length - 1;
+                self.slider.slider('option', { max: end, value: end });
+                self.onSlide(end);
+                self.showHide();
+            });
+        },
         render: function() {
             var self = this;
             this.$el.empty();
@@ -22,24 +31,24 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                         self.redraw(self.slider.slider('value'));
                     });
                 }, 750),
-                slide: function(event, ui) {
-                    $('.ui-slider-handle', this).text(ui.value + 1);
-                    if (_(self.collection.at(ui.value)).isUndefined()) {
-                        if (!self.spinner.is(':hidden')) return;
-                        var height = Math.min(128, self.content.height());
-                        self.spinner.height(height);
-                        self.spinner.find('img').height(0.9*height);
-                        self.content.hide();
-                        self.spinner.show();
-                        showingSpinner = true;
-                    } else _.defer(_.bind(self.redraw, self, ui.value));
-                }
+                slide: function(event, ui) { self.onSlide(ui.value); }
             });
             this.slider.find('.ui-slider-handle').
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
             self.redraw(0);
             self.showHide();
+        },
+        onSlide: function(offset) {
+            this.$('.ui-slider-handle').text(offset + 1);
+            if (_(this.collection.at(offset)).isUndefined()) {
+                if (!this.spinner.is(':hidden')) return;
+                var height = Math.min(128, this.content.height());
+                this.spinner.height(height);
+                this.spinner.find('img').height(0.9*height);
+                this.content.hide();
+                this.spinner.show();
+            } else _.defer(_.bind(this.redraw, this, offset));
         },
         showHide: function() {
             switch (this.collection.length) {

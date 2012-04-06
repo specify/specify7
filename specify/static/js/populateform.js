@@ -44,7 +44,8 @@ define([
         return api.whenAll(deferreds);
     };
 
-    self.populateSubView = function(buildSubView, relType, related, sliderAtTop) {
+    self.populateSubView = function(node, relType, related, sliderAtTop) {
+        var buildSubView = _(specifyform.buildSubView).bind(specifyform, node);
         function makeSub(resource) { return self.populateForm(buildSubView(), resource); };
 
         switch (relType) {
@@ -65,6 +66,10 @@ define([
                     return result;
                 });
             }
+            node.find('.specify-subview-header:first .specify-add-related').click(function() {
+                related.add(new (related.model)());
+            });
+
             var recordSelector = new RecordSelector({
                 collection: related,
                 buildContent: function(resource) {
@@ -138,8 +143,7 @@ define([
                         resource.rget(fieldName).pipe(function (related) {
                             if (!related) return related;
                             return related.fetchIfNotPopulated().pipe(function() {
-                                var build = _(specifyform.buildSubView).bind(specifyform, node);
-                                self.populateSubView(build, relType, related).done(function(result) {
+                                self.populateSubView(node, relType, related).done(function(result) {
                                     node.append(result);
                                 });
                             });

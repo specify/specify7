@@ -39,6 +39,9 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             return Backbone.Collection.prototype.fetch.call(this, options);
         },
         add: function(models, options) {
+            options = options || {};
+            options.at = options.at || this.length;
+            models = _.isArray(models) ? models.slice() : [models];
             if (this.totalCount) {
                 if (this.models.length < this.totalCount) this.models[this.totalCount-1] = undefined;
                 this.models.splice(options.at, models.length);
