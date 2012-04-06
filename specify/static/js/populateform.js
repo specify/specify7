@@ -2,7 +2,7 @@ define([
     'jquery', 'backbone', 'datamodel', 'specifyapi', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'icons'
 ], function($, Backbone, datamodel, api, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
-            makeRecordSelector, uiplugins, dof, icons) {
+            RecordSelector, uiplugins, dof, icons) {
     "use strict";
     var self = {};
 
@@ -49,11 +49,11 @@ define([
 
         switch (relType) {
         case 'one-to-many':
-            if (related.length < 1) {
-                return $.when('<p style="text-align: center">nothing here...</p>');
-            }
-
             if (buildSubView().find('table:first').is('.specify-formtable')) {
+                if (related.length < 1) {
+                    return $.when('<p style="text-align: center">nothing here...</p>');
+                }
+
                 return api.whenAll(related.map(makeSub)).pipe(function(subviews) {
                     var result = _.first(subviews);
                     result.find('.specify-form-header:first, :submit').remove();
@@ -65,21 +65,17 @@ define([
                     return result;
                 });
             }
-
-            return makeSub(related.at(0)).pipe(function(subview) {
-                var result = $('<div>').append(subview);
-                result.find('.specify-form-header:first, :submit').remove();
-
-                if (related.length > 1) makeRecordSelector(
-                    result, related, '.specify-view-content:first',
-                    function(resource) {
-                         return makeSub(resource).pipe(function(subview) {
-                            return subview.find('.specify-view-content:first');
-                         });
-                    }, sliderAtTop
-                );
-                return result;
+            var recordSelector = new RecordSelector({
+                collection: related,
+                buildContent: function(resource) {
+                    return makeSub(resource).pipe(function(subview) {
+                        subview.find('.specify-form-header:first, :submit').remove();
+                        return subview;
+                    });
+                },
             });
+            recordSelector.render();
+            return $.when(recordSelector.el);
         case 'zero-to-one':
         case 'many-to-one':
             if (related)
