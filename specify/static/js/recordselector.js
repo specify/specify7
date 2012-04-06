@@ -1,5 +1,5 @@
 define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbone) {
-    var debug = true;
+    var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
 
@@ -18,7 +18,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
             this.$el.empty();
             this.noContent = $(emptyTemplate).appendTo(this.el);
             this.content = $('<div>').appendTo(this.el);
-            this.spinner = $(spinnerTemplate).appendTo(this.el);
+            this.spinner = $(spinnerTemplate).appendTo(this.el).hide();
             this.slider = $('<div>').appendTo(this.el).slider({
                 max: self.collection.length - 1,
                 stop: _.throttle(function(event, ui) {
@@ -41,36 +41,8 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
         },
         onSlide: function(offset) {
             this.$('.ui-slider-handle').text(offset + 1);
-            if (_(this.collection.at(offset)).isUndefined()) {
-                if (!this.spinner.is(':hidden')) return;
-                var height = Math.min(128, this.content.height());
-                this.spinner.height(height);
-                this.spinner.find('img').height(0.9*height);
-                this.content.hide();
-                this.spinner.show();
-            } else _.defer(_.bind(this.redraw, this, offset));
-        },
-        showHide: function() {
-            switch (this.collection.length) {
-            case 0:
-                this.noContent.show();
-                this.content.hide();
-                this.spinner.hide();
-                this.slider.hide();
-                break;
-            case 1:
-                this.noContent.hide();
-                this.content.show();
-                this.spinner.hide();
-                this.slider.hide();
-                break;
-            default:
-                this.noContent.hide();
-                this.content.show();
-                this.spinner.hide();
-                this.slider.show();
-                break;
-            }
+            if (_(this.collection.at(offset)).isUndefined()) this.showSpinner();
+            else _.defer(_.bind(this.redraw, this, offset));
         },
         redraw: function(offset) {
             var self = this;
@@ -82,13 +54,43 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 if (curOffset === offset) {
                     debug && console.log('filling in at ' + offset);
                     self.content.empty().append(content);
-                    self.spinner.hide();
-                    self.content.show();
+                    self.hideSpinner();
                 } else {
                     debug && console.log('not filling because slider is at ' +
                                          curOffset + ' but data is for ' + offset);
                 }
             });
+        },
+        showSpinner: function() {
+            if (!this.spinner.is(':hidden')) return;
+            var height = Math.min(128, this.content.height());
+            this.spinner.height(height);
+            this.spinner.find('img').height(0.9*height);
+            this.content.hide();
+            this.spinner.show();
+        },
+        hideSpinner: function() {
+            this.spinner.hide();
+            this.content.show();
+        },
+        showHide: function() {
+            switch (this.collection.length) {
+            case 0:
+                this.noContent.show();
+                this.content.hide();
+                this.slider.hide();
+                break;
+            case 1:
+                this.noContent.hide();
+                this.content.show();
+                this.slider.hide();
+                break;
+            default:
+                this.noContent.hide();
+                this.content.show();
+                this.slider.show();
+                break;
+            }
         }
     });
 });
