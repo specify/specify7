@@ -26,7 +26,8 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             return resp.objects;
         },
         fetchIfNotPopulated: function () {
-            return this.populated ? $.when("already populated") : this.fetch();
+            var collection = this;
+            return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
         },
         fetch: function(options) {
             options = options || {};
@@ -104,7 +105,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 _(attrs).each(function(value, key) { delete self.relatedCache[key]; });
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
-        rget: function(field) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
+        rget: function(field, prePop) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
             var path = _(field).isArray()? field : field.split('.');
             field = path[0].toLowerCase();
             var value = self.get(field);
@@ -129,7 +130,9 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                     toOne.on('change rchange', function() { self.trigger('rchange'); });
                     self.relatedCache[field] = toOne;
                 }
-                return (path.length === 1) ? toOne : toOne.rget(_.tail(path));
+                return (path.length > 1) ? toOne.rget(_.tail(path)) : (
+                    prePop ? toOne.fetchIfNotPopulated() : toOne
+                );
             case 'one-to-many':
                 if (path.length > 1) return undefined;
                 if (self.relatedCache[field]) return self.relatedCache[field];
@@ -138,7 +141,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
                 self.relatedCache[field] = toMany;
                 toMany.on('change rchange', function() { self.trigger('rchange'); });
-                return toMany;
+                return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
                 if (self.relatedCache[field]) {
                     value = self.relatedCache[field];
@@ -169,10 +172,13 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
         },
         fetchIfNotPopulated: function() {
             var resource = this;
-            if (resource.populated) return $.when("already populated")
-            if (resource.isNew()) return $.when('is new')
+            if (resource.populated) return $.when(resource)
+            if (resource.isNew()) return $.when(resource)
             if (resource._fetch !== null) return resource._fetch;
-            resource._fetch = resource.fetch({silent: true}).done(function() { resource._fetch = null; });
+            resource._fetch = resource.fetch({silent: true}).pipe(function() {
+                resource._fetch = null;
+                return resource;
+            });
             return resource._fetch;
         },
         parse: function() {

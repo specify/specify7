@@ -100,51 +100,46 @@ define([
                     });
                 return;
             }
-            resource.rget(fieldName).done(function (related) {
-                related && related.fetchIfNotPopulated().done(function() {
-                    if (specifyform.subViewIsFormTable(node)) {
-                        var formTable = new FormTable({
-                            collection: related,
-                            subViewNode: node
-                        });
-                        formTable.render();
-                        node.append(formTable.el);
-                        return;
-                    }
+            resource.rget(fieldName, true).done(function (related) {
+                if (specifyform.subViewIsFormTable(node)) {
+                    var formTable = new FormTable({ collection: related, subViewNode: node });
+                    formTable.render();
+                    node.append(formTable.el);
+                    return;
+                }
 
-                    switch (relType) {
-                    case 'one-to-many':
-                        var recordSelector = new RecordSelector({
-                            collection: related,
-                            buildContent: function (resource) {
-                                return populateForm(specifyform.buildSubView(node), resource);
-                            }
-                        });
-                        node.find('.specify-subview-header:first .specify-delete-related').click(function() {
-                            recordSelector.getShowing().destroy();
-                        });
-                        node.find('.specify-subview-header:first .specify-add-related').click(function() {
-                            var newResource = new (related.model)();
-                            var osn = datamodel.getFieldOtherSideName(resource.specifyModel, fieldName);
-                            newResource.set(osn, resource.url());
-                            related.add(newResource);
-                        });
-                        recordSelector.render();
-                        node.append(recordSelector.el);
-                        return;
-                    case 'zero-to-one':
-                    case 'many-to-one':
-                        if (!related) {
-                            node.append('<p style="text-align: center">none</p>');
-                            return;
+                switch (relType) {
+                case 'one-to-many':
+                    var recordSelector = new RecordSelector({
+                        collection: related,
+                        buildContent: function (resource) {
+                            return populateForm(specifyform.buildSubView(node), resource);
                         }
-                        node.append(populateForm(specifyform.buildSubView(node), related));
-                        return;
-                    default:
-                        node.append('<p>unhandled relationship type: ' + relType + '</p>');
+                    });
+                    node.find('.specify-subview-header:first .specify-delete-related').click(function() {
+                        recordSelector.getShowing().destroy();
+                    });
+                    node.find('.specify-subview-header:first .specify-add-related').click(function() {
+                        var newResource = new (related.model)();
+                        var osn = datamodel.getFieldOtherSideName(resource.specifyModel, fieldName);
+                        newResource.set(osn, resource.url());
+                        related.add(newResource);
+                    });
+                    recordSelector.render();
+                    node.append(recordSelector.el);
+                    return;
+                case 'zero-to-one':
+                case 'many-to-one':
+                    if (!related) {
+                        node.append('<p style="text-align: center">none</p>');
                         return;
                     }
-                });
+                    node.append(populateForm(specifyform.buildSubView(node), related));
+                    return;
+                default:
+                    node.append('<p>unhandled relationship type: ' + relType + '</p>');
+                    return;
+                }
             });
         });
         return form;
