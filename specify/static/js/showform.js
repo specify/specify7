@@ -34,24 +34,11 @@ require([
             },
 
             viewRelated: function(model, id, relatedField) {
-                var uri = "/api/specify/" + model + "/" + id + "/";
-                var relType = datamodel.getRelatedFieldType(model, relatedField);
-                var relModel = datamodel.getRelatedModelForField(model, relatedField);
-                rootContainer.empty();
-                $.get(uri, function (data) {
-                    var doIt = function(data) {
-                        var build = _(specifyform.buildViewForModel).bind(specifyform, relModel);
-                        var result = populateform.populateSubView(build, relType, data, true);
-                        rootContainer.append(result);
-                    };
-
-                    var fieldData = data[relatedField.toLowerCase()];
-                    if (_.isString(fieldData)) {
-                        $.get(fieldData, doIt);
-                    } else {
-                        doIt(fieldData);
-                    }
-                });
+                var ResourceForModel = specifyapi.Resource.forModel(model);
+                var resource = new ResourceForModel({id: id});
+                var mainForm = specifyform.relatedObjectsForm(model, relatedField);
+                populateform.populateForm(mainForm, resource);
+                rootContainer.empty().append(mainForm);
             },
 
             viewashtml: function() {

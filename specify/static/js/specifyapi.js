@@ -184,7 +184,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                 throw new TypeError('field is not one-to-many');
             }
             return this.rget(field).pipe(function (collection) {
-                if (_.has(collection, 'totalCount')) return related.totalCount;
+                if (_.has(collection, 'totalCount')) return collection.totalCount;
                 // should be some way to get the count without getting any objects
                 collection.limit = 1;
                 return collection.fetch().pipe(function () {

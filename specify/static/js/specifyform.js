@@ -1,6 +1,7 @@
 define([
     'jquery', 'underscore', 'datamodel',
     'text!/static/html/templates/subviewheader.html',
+    'text!/static/html/templates/relatedobjectsform.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
     'text!/static/resources/preferences.views.xml',
@@ -8,10 +9,20 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, datamodel, subviewheader) {
+], function specifyform($, _, datamodel, subviewheader, relatedobjectsform) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
+    var relatedObjectsForm = _.template(relatedobjectsform);
+
+    self.relatedObjectsForm = function(model, field) {
+        var related = datamodel.getRelatedModelForField(model, field);
+        var view = findView(datamodel.getViewForModel(related));
+        return $(relatedObjectsForm({
+            model: model, field: field,
+            viewdef: getDefaultViewdef(view).attr('name')
+        }));
+    };
 
     function find(selector, sets, name) {
         name = name.toLowerCase();
@@ -99,7 +110,9 @@ define([
     };
 
     self.subViewIsFormTable = function (node) {
-        var view = findViewdef($(node).data('specify-viewdef'));
+        var viewdef = $(node).data('specify-viewdef');
+        if (!viewdef) return false;
+        var view = findViewdef(viewdef);
         return view.length && view.attr('type') === 'formtable';
     }
 

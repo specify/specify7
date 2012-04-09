@@ -28,7 +28,7 @@ define([
         getRelatedModelForField: function(modelName, fieldName) {
             var field = getDataModelField(modelName, fieldName);
             if (!field.is('relationship'))
-                throw new TypeError(fieldName + 'is not a related object field.');
+                throw new TypeError(fieldName + ' is not a related object field.');
             return field.attr('classname').split('.').pop();
         },
 
@@ -43,14 +43,14 @@ define([
         getRelatedFieldType: function(modelName, fieldName) {
             var field = getDataModelField(modelName, fieldName);
             if (!field.is('relationship'))
-                throw new TypeError(fieldName + 'is not a related object field.');
+                throw new TypeError(fieldName + ' is not a related object field.');
             return field.attr('type');
         },
 
         getFieldOtherSideName: function(modelName, fieldName) {
             var field = getDataModelField(modelName, fieldName);
             if (!field.is('relationship'))
-                throw new TypeError(fieldName + 'is not a related object field.');
+                throw new TypeError(fieldName + ' is not a related object field.');
             return field.attr('othersidename');
         },
 
