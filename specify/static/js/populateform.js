@@ -4,15 +4,14 @@ define([
 ], function($, Backbone, datamodel, api, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
             RecordSelector, uiplugins, dof, icons) {
     "use strict";
-    var populateform = {};
 
-    populateform.setupUIplugin = function (control, resource) {
+    function setupUIplugin (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
         return plugin && plugin(control, init, resource);
     };
 
-    populateform.setupControls = function (form, resource) {
+    function setupControls (form, resource) {
         function controlChanged() {
             var control = $(this);
             resource.set(control.attr('name'), control.val());
@@ -25,7 +24,7 @@ define([
             } else if (control.is('.specify-querycbx')) {
                 return setupQueryCbx(control, resource);
             } else if (control.is('.specify-uiplugin')) {
-                return populateform.setupUIplugin(control, resource);
+                return setupUIplugin(control, resource);
             } else if (resource) {
                 var fetch = resource.rget(control.attr('name'));
                 var fillItIn = control.is('input[type="checkbox"]') ?
@@ -53,7 +52,7 @@ define([
                 return;
             }
             var makeRow = function(resource) {
-                return populateform.populateForm(specifyform.buildSubView(self.options.subViewNode), resource);
+                return populateForm(specifyform.buildSubView(self.options.subViewNode), resource);
             };
             api.whenAll(self.collection.map(makeRow)).done(function(rows) {
                 self.$el.append(rows[0]);
@@ -64,9 +63,9 @@ define([
         },
     });
 
-    populateform.populateSubView = function(node, relType, related, resource, fieldName) {
+    function populateSubView(node, relType, related, resource, fieldName) {
         function makeSub(resource) {
-            return populateform.populateForm(specifyform.buildSubView(node), resource);
+            return populateForm(specifyform.buildSubView(node), resource);
         }
 
         switch (relType) {
@@ -109,10 +108,10 @@ define([
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    populateform.populateForm = function (form, resource) {
+    function populateForm (form, resource) {
         schemalocalization.localizeForm(form);
         if (!resource) {
-            return populateform.setupControls(form).pipe(function() { return form; });
+            return setupControls(form).pipe(function() { return form; });
         }
         form.find('a.specify-edit').prop('href', resource.viewUrl());
 
@@ -129,7 +128,7 @@ define([
 
         return resource.fetchIfNotPopulated().pipe(function() {
             var model = resource.specifyModel;
-            var deferreds = [populateform.setupControls(form, resource)];
+            var deferreds = [setupControls(form, resource)];
 
             form.find('.specify-subview').each(function () {
                 var node = $(this), fieldName = node.data('specify-field-name');
@@ -154,7 +153,7 @@ define([
                         resource.rget(fieldName).pipe(function (related) {
                             if (!related) return related;
                             return related.fetchIfNotPopulated().pipe(function() {
-                                populateform.populateSubView(node, relType, related, resource, fieldName).done(function(result) {
+                                populateSubView(node, relType, related, resource, fieldName).done(function(result) {
                                     node.append(result);
                                 });
                             });
@@ -166,24 +165,8 @@ define([
         });
     };
 
-    function deleteRelated() {
-        var button = $(this),
-        form = button.parent();
-        $.ajax(form.data('specify-uri'), {
-            type: 'DELETE',
-            headers: {'If-Match': form.data('specify-object-version')},
-            success: function () { form.remove(); }
-        });
-    }
-
-    populateform.pullParamsFromDl = function (dlNode) {
-	var params = {};
-	$(dlNode).find('dt').each(function () {
-	    var dt = $(this);
-	    params[dt.text()] = dt.next('dd').text();
-	});
-	return params;
+    return {
+        populateForm: populateForm,
+        populateSubView: populateSubView
     };
-
-    return populateform;
 });
