@@ -151,7 +151,5 @@ define([
         return api.whenAll(deferreds).pipe(function() { return form; });
     };
 
-    return {
-        populateForm: populateForm,
-    };
+    return populateForm;
 });

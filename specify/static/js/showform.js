@@ -29,7 +29,7 @@ require([
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.buildViewForModel(model);
-                populateform.populateForm(mainForm, resource);
+                populateform(mainForm, resource);
                 rootContainer.empty().append(mainForm);
             },
 
@@ -37,7 +37,7 @@ require([
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.relatedObjectsForm(model, relatedField);
-                populateform.populateForm(mainForm, resource);
+                populateform(mainForm, resource);
                 rootContainer.empty().append(mainForm);
             },
 
