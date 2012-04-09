@@ -35,7 +35,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('fetch', function() {
             expect(4);
             var uri = '/api/specify/collectionobject/100/';
-            var resource = api.Resource.fromUri(uri);
+            var resource =  new (api.Resource.forModel('collectionobject'))({id: 100});
             ok(!resource.populated);
             var deferred = resource.fetch();
             ok(_(deferred).has('promise'));
@@ -49,7 +49,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
 
         test('fetchIfNotPopulated', function() {
             expect(3);
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             ok(!resource.populated);
             stop();
             var deferred = resource.fetchIfNotPopulated();
@@ -67,7 +67,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(catnumber) {
                 ok(_(catnumber).isString());
                 equal(requestCounter, 1);
@@ -79,7 +79,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.fetch().done(function() {
                 equal(requestCounter, 1);
                 resource.rget('catalognumber').done(function(catnumber) {
@@ -93,7 +93,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(1);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             $.when(resource.rget('catalognumber'), resource.rget('collectingeven')).done(function() {
                 equal(requestCounter, 1);
                 start();
@@ -104,7 +104,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('cataloger.lastname').done(function(name) {
                 equal(requestCounter, 2);
                 equal(name, 'Luttrell');
@@ -116,7 +116,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collector/1343/');
+            var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent.lastname').done(function(name) {
                 equal(requestCounter, 1);
                 equal(name, 'Gorman');
@@ -128,7 +128,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(4);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent').done(function(ce) {
                 equal(requestCounter, 1);
                 ok(ce instanceof api.Resource.forModel('collectingevent'));
@@ -142,7 +142,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(4);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collector/1343/');
+            var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent').done(function(agent) {
                 equal(requestCounter, 1);
                 ok(agent instanceof api.Resource.forModel('agent'));
@@ -156,7 +156,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(4);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(prepCol) {
                 equal(requestCounter, 1);
                 ok(prepCol instanceof api.Collection.forModel('preparation'));
@@ -170,7 +170,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(4);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/picklist/1/');
+            var resource = new (api.Resource.forModel('picklist'))({id: 1});
             resource.rget('picklistitems').done(function(result) {
                 equal(requestCounter, 1);
                 ok(result instanceof api.Collection.forModel('picklistitem'));
@@ -184,7 +184,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('determinations.id').done(function(result) {
                 equal(requestCounter, 1);
                 equal(result, undefined);
@@ -196,7 +196,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(3);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/locality/341/');
+            var resource = new (api.Resource.forModel('locality'))({id: 341});
             resource.rget('localitydetails').done(function(result) {
                 equal(requestCounter, 2);
                 ok(result instanceof api.Resource.forModel('localitydetail'));
@@ -209,7 +209,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/locality/100/');
+            var resource = new (api.Resource.forModel('locality'))({id: 100});
             resource.rget('localitydetails').done(function(result) {
                 equal(requestCounter, 2);
                 equal(result, null);
@@ -221,7 +221,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/1748/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 1748});
             resource.rget('collectingevent').done(function(result) {
                 equal(requestCounter, 1);
                 equal(result, null);
@@ -233,7 +233,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(3);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent').done(function(outer) {
                 equal(requestCounter, 1);
                 resource.rget('collectingevent').done(function(inner) {
@@ -248,7 +248,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(3);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collector/1343/');
+            var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent').done(function(outer) {
                 equal(requestCounter, 1);
                 resource.rget('agent').done(function(inner) {
@@ -263,7 +263,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(3);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(outer) {
                 equal(requestCounter, 1);
                 resource.rget('preparations').done(function(inner) {
@@ -278,7 +278,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(3);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/locality/341/');
+            var resource = new (api.Resource.forModel('locality'))({id: 341});
             resource.rget('localitydetails').done(function(outer) {
                 equal(requestCounter, 2);
                 resource.rget('localitydetails').done(function(inner) {
@@ -293,7 +293,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(7);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             equal(resource.needsSaved, false);
             resource.rget('catalognumber').done(function(original) {
                 equal(resource.needsSaved, false);
@@ -317,7 +317,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(2);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(original) {
                 resource.set('catalognumber', original + 'foo');
                 resource.rsave().done(function() {
@@ -334,7 +334,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(4);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent.remarks').done(function(original) {
                 equal(requestCounter, 2);
                 var ce = resource.relatedCache['collectingevent'];
@@ -353,7 +353,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('rchange event', function() {
             expect(13); // 3 agent.set X 3 callbacks + 3 needsSaved checks + 1 requestCounter check
             stop();
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/100/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.on('rchange', justOk);
             resource.on('change', notOk);
             resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
@@ -476,7 +476,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('rchange event', function() {
             expect(3);
             stop();
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.on('change', notOk);
             resource.on('rchange', justOk);
             resource.rget('preparations').done(function(preps) {
@@ -495,7 +495,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('rchange event deep', function() {
             expect(4);
             stop();
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.on('change', notOk);
             resource.on('rchange', justOk);
             resource.rget('determinations').done(function(dets) {
@@ -520,7 +520,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             expect(6);
             stop();
             requestCounter = 0;
-            var resource = api.Resource.fromUri('/api/specify/collectionobject/102/');
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.rget('determinations').done(function(dets) {
                 equal(requestCounter, 1);
                 dets.fetch().done(function() {
