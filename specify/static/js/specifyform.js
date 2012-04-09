@@ -94,8 +94,14 @@ define([
 
     self.buildSubView = function (node) {
         var view = findViewdef($(node).data('specify-viewdef'));
-        return view.length ? buildView(view) : undefined;
+        if (!view.length) return;
+        return buildView(view).find('.specify-form-header:first, :submit').remove().end();
     };
+
+    self.subViewIsFormTable = function (node) {
+        var view = findViewdef($(node).data('specify-viewdef'));
+        return view.length && view.attr('type') === 'formtable';
+    }
 
     self.buildViewForModel = function (modelName) {
         return self.buildViewByName(datamodel.getViewForModel(modelName));
@@ -279,6 +285,7 @@ define([
             var form = $('<form class="specify-view-content">').append(table);
             form.prop('id', 'specify-view-' + formNumber);
             outerDiv.append($('<div class="specify-view-content-container">').append(form));
+            outerDiv.append('<input type="submit">');
         }
         return outerDiv;
     };

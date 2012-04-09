@@ -4,15 +4,15 @@ define([
 ], function($, Backbone, datamodel, api, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
             RecordSelector, uiplugins, dof, icons) {
     "use strict";
-    var self = {};
+    var populateform = {};
 
-    self.setupUIplugin = function (control, resource) {
+    populateform.setupUIplugin = function (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
         return plugin && plugin(control, init, resource);
     };
 
-    self.setupControls = function (form, resource) {
+    populateform.setupControls = function (form, resource) {
         function controlChanged() {
             var control = $(this);
             resource.set(control.attr('name'), control.val());
@@ -25,7 +25,7 @@ define([
             } else if (control.is('.specify-querycbx')) {
                 return setupQueryCbx(control, resource);
             } else if (control.is('.specify-uiplugin')) {
-                return self.setupUIplugin(control, resource);
+                return populateform.setupUIplugin(control, resource);
             } else if (resource) {
                 var fetch = resource.rget(control.attr('name'));
                 var fillItIn = control.is('input[type="checkbox"]') ?
@@ -44,37 +44,45 @@ define([
         return api.whenAll(deferreds);
     };
 
-    self.populateSubView = function(node, relType, related, resource, fieldName) {
-        var buildSubView = _(specifyform.buildSubView).bind(specifyform, node);
-        function makeSub(resource) { return self.populateForm(buildSubView(), resource); };
+    var FormTable = Backbone.View.extend({
+        render: function() {
+            var self = this;
+            self.$el.empty();
+            if (self.collection.length < 1) {
+                $el.append('<p style="text-align: center">nothing here...</p>');
+                return;
+            }
+            var makeRow = function(resource) {
+                return populateform.populateForm(specifyform.buildSubView(self.options.subViewNode), resource);
+            };
+            api.whenAll(self.collection.map(makeRow)).done(function(rows) {
+                self.$el.append(rows[0]);
+                _(rows).chain().tail().each(function(row) {
+                    self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
+                });
+            });
+        },
+    });
+
+    populateform.populateSubView = function(node, relType, related, resource, fieldName) {
+        function makeSub(resource) {
+            return populateform.populateForm(specifyform.buildSubView(node), resource);
+        }
 
         switch (relType) {
         case 'one-to-many':
-            if (buildSubView().find('table:first').is('.specify-formtable')) {
-                if (related.length < 1) {
-                    return $.when('<p style="text-align: center">nothing here...</p>');
-                }
-
-                return api.whenAll(related.map(makeSub)).pipe(function(subviews) {
-                    var result = _.first(subviews);
-                    result.find('.specify-form-header:first, :submit').remove();
-                    _(subviews).chain().tail().each(function(subview) {
-                        $('.specify-view-content-container:first', result).append(
-                            $('.specify-view-content:first', subview)
-                        );
-                    });
-                    return result;
+            if (specifyform.subViewIsFormTable(node)) {
+                var formTable = new FormTable({
+                    collection: related,
+                    subViewNode: node
                 });
+                formTable.render();
+                return $.when(formTable.el);
             }
 
             var recordSelector = new RecordSelector({
                 collection: related,
-                buildContent: function(resource) {
-                    return makeSub(resource).pipe(function(subview) {
-                        subview.find('.specify-form-header:first, :submit').remove();
-                        return subview;
-                    });
-                },
+                buildContent:  makeSub
             });
             node.find('.specify-subview-header:first .specify-delete-related').click(function() {
                 recordSelector.getShowing().destroy();
@@ -90,10 +98,7 @@ define([
         case 'zero-to-one':
         case 'many-to-one':
             if (related)
-                return makeSub(related).pipe(function(subview) {
-                    subview.find('.specify-form-header:first, :submit').remove();
-                    return subview;
-                });
+                return makeSub(related);
             else
                 return $.when('<p style="text-align: center">none</p>');
         default:
@@ -104,14 +109,14 @@ define([
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
-    self.populateForm = function (form, resource) {
+    populateform.populateForm = function (form, resource) {
         schemalocalization.localizeForm(form);
         if (!resource) {
-            return self.setupControls(form).pipe(function() { return form; });
+            return populateform.setupControls(form).pipe(function() { return form; });
         }
         form.find('a.specify-edit').prop('href', resource.viewUrl());
 
-        var submit = $('<input type="submit">').appendTo(form).click(function(evt) {
+        var submit = form.find(':submit').click(function(evt) {
             evt.preventDefault();
             resource.rsave().done(function() {
                 window.location.reload(); // lame
@@ -124,7 +129,7 @@ define([
 
         return resource.fetchIfNotPopulated().pipe(function() {
             var model = resource.specifyModel;
-            var deferreds = [self.setupControls(form, resource)];
+            var deferreds = [populateform.setupControls(form, resource)];
 
             form.find('.specify-subview').each(function () {
                 var node = $(this), fieldName = node.data('specify-field-name');
@@ -149,7 +154,7 @@ define([
                         resource.rget(fieldName).pipe(function (related) {
                             if (!related) return related;
                             return related.fetchIfNotPopulated().pipe(function() {
-                                self.populateSubView(node, relType, related, resource, fieldName).done(function(result) {
+                                populateform.populateSubView(node, relType, related, resource, fieldName).done(function(result) {
                                     node.append(result);
                                 });
                             });
@@ -171,7 +176,7 @@ define([
         });
     }
 
-    self.pullParamsFromDl = function (dlNode) {
+    populateform.pullParamsFromDl = function (dlNode) {
 	var params = {};
 	$(dlNode).find('dt').each(function () {
 	    var dt = $(this);
@@ -180,5 +185,5 @@ define([
 	return params;
     };
 
-    return self;
+    return populateform;
 });
