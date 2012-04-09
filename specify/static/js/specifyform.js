@@ -116,6 +116,10 @@ define([
         return view.length && view.attr('type') === 'formtable';
     }
 
+    self.isSubViewButton = function (node) {
+        return node.children().is('.specify-subview-button');
+    };
+
     self.buildViewForModel = function (modelName) {
         return self.buildViewByName(datamodel.getViewForModel(modelName));
     };

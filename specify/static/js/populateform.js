@@ -60,6 +60,26 @@ define([
         }
     });
 
+    var SubViewButton = Backbone.View.extend({
+        render: function() {
+            var self = this, node = self.$el, model = self.options.parentModel;
+            var fieldName = node.data('specify-field-name');
+            var relType = datamodel.getRelatedFieldType(model, fieldName);
+            var subviewButton = node.children('.specify-subview-button:first');
+            var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
+            var icon = props.icon ? icons.getIcon(props.icon) :
+                icons.getIcon(datamodel.getRelatedModelForField(model, fieldName));
+            subviewButton.prop('href',fieldName.toLowerCase() + '/');
+            subviewButton.find('.specify-subviewbutton-icon').remove();
+            subviewButton.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
+            $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
+            subviewButton.button();
+            relType === 'one-to-many' && self.model.getRelatedObjectCount(fieldName).done(function(count) {
+                self.$('.specify-subview-button-count').text(count).show();
+            });
+        }
+    });
+
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
@@ -82,24 +102,16 @@ define([
 
         var model = resource.specifyModel;
         form.find('.specify-subview').each(function () {
-            var node = $(this), fieldName = node.data('specify-field-name');
-            var relType = datamodel.getRelatedFieldType(model, fieldName);
-
-            var subviewButton = node.children('.specify-subview-button:first');
-            if (subviewButton.length) {
-                subviewButton.prop('href',fieldName.toLowerCase() + '/');
-                var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
-                var icon = props.icon ? icons.getIcon(props.icon) :
-                    icons.getIcon(datamodel.getRelatedModelForField(model, fieldName));
-                subviewButton.append($('<img>', {src: icon}));
-                $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
-                subviewButton.button();
-                if (relType === 'one-to-many')
-                    resource.getRelatedObjectCount(fieldName).done(function(count) {
-                        $('.specify-subview-button-count', subviewButton).text(count).show();
-                    });
+            var node = $(this);
+            if (specifyform.isSubViewButton(node)) {
+                var subViewButton = new SubViewButton({ parentModel: model, model: resource, el: node });
+                subViewButton.render();
                 return;
             }
+
+            var fieldName = node.data('specify-field-name');
+            var relType = datamodel.getRelatedFieldType(model, fieldName);
+
             resource.rget(fieldName, true).done(function (related) {
                 if (specifyform.subViewIsFormTable(node)) {
                     var formTable = new FormTable({ collection: related, subViewNode: node });
