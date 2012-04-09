@@ -8,7 +8,7 @@ define([
     function setupUIplugin (control, resource) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         var plugin = uiplugins[init.name];
-        return plugin && plugin(control, init, resource);
+        plugin && resource.fetchIfNotPopulated().done(function () { plugin(control, init, resource); });
     };
 
     function setupControls (form, resource) {
@@ -17,7 +17,7 @@ define([
             resource.set(control.attr('name'), control.val());
         };
 
-        var deferreds = form.find('.specify-field').map(function () {
+        form.find('.specify-field').each(function () {
             var control = $(this);
             if (control.is('.specify-combobox')) {
                 return setupPickList(control, resource);
@@ -25,7 +25,7 @@ define([
                 return setupQueryCbx(control, resource);
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
-            } else if (resource) {
+            } else {
                 var fetch = resource.rget(control.attr('name'));
                 var fillItIn = control.is('input[type="checkbox"]') ?
                     _(control.prop).bind(control, 'checked') :
@@ -36,11 +36,10 @@ define([
                 if (datamodel.isRelatedField(resource.specifyModel, control.attr('name'))) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
                     control.prop('readonly', true);
-                    return fetch.pipe(dof.dataObjFormat).done(fillItIn);
-                } else return fetch.done(fillItIn);
+                    fetch.pipe(dof.dataObjFormat).done(fillItIn);
+                } else fetch.done(fillItIn);
             }
         });
-        return api.whenAll(deferreds);
     };
 
     var FormTable = Backbone.View.extend({
@@ -51,16 +50,14 @@ define([
                 self.$el.append('<p style="text-align: center">nothing here...</p>');
                 return;
             }
-            var makeRow = function(resource) {
+            var rows = self.collection.map(function(resource) {
                 return populateForm(specifyform.buildSubView(self.options.subViewNode), resource);
-            };
-            api.whenAll(self.collection.map(makeRow)).done(function(rows) {
-                self.$el.append(rows[0]);
-                _(rows).chain().tail().each(function(row) {
-                    self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
-                });
             });
-        },
+            self.$el.append(rows[0]);
+            _(rows).chain().tail().each(function(row) {
+                self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
+            });
+        }
     });
 
     // This function is the main entry point for this module. It calls
@@ -81,9 +78,9 @@ define([
             submit.prop('disabled', false);
         });
 
-        var model = resource.specifyModel;
-        var deferreds = [setupControls(form, resource)];
+        setupControls(form, resource);
 
+        var model = resource.specifyModel;
         form.find('.specify-subview').each(function () {
             var node = $(this), fieldName = node.data('specify-field-name');
             var relType = datamodel.getRelatedFieldType(model, fieldName);
@@ -97,15 +94,14 @@ define([
                 subviewButton.append($('<img>', {src: icon}));
                 $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
                 subviewButton.button();
-                relType === 'one-to-many' && deferreds.push(
+                if (relType === 'one-to-many')
                     resource.getRelatedObjectCount(fieldName).done(function(count) {
                         $('.specify-subview-button-count', subviewButton).text(count).show();
-                    })
-                );
+                    });
                 return;
             }
-            deferreds.push( resource.rget(fieldName).pipe(function (related) {
-                return related && related.fetchIfNotPopulated().pipe(function() {
+            resource.rget(fieldName).done(function (related) {
+                related && related.fetchIfNotPopulated().done(function() {
                     if (specifyform.subViewIsFormTable(node)) {
                         var formTable = new FormTable({
                             collection: related,
@@ -138,17 +134,20 @@ define([
                         return;
                     case 'zero-to-one':
                     case 'many-to-one':
-                        if (related) return populateForm(specifyform.buildSubView(node), resource);
-                        node.append('<p style="text-align: center">none</p>');
+                        if (!related) {
+                            node.append('<p style="text-align: center">none</p>');
+                            return;
+                        }
+                        node.append(populateForm(specifyform.buildSubView(node), related));
                         return;
                     default:
                         node.append('<p>unhandled relationship type: ' + relType + '</p>');
                         return;
                     }
                 });
-            }));
+            });
         });
-        return api.whenAll(deferreds).pipe(function() { return form; });
+        return form;
     };
 
     return populateForm;

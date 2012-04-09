@@ -56,17 +56,10 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
             debug && console.log('want to redraw at ' + offset);
             var resource = this.collection.at(offset);
             if (_(resource).isUndefined()) return;
-            this.options.buildContent(resource).done(function(content) {
-                var curOffset = self.slider.slider('value');
-                if (curOffset === offset) {
-                    debug && console.log('filling in at ' + offset);
-                    self.content.empty().append(content);
-                    self.hideSpinner();
-                } else {
-                    debug && console.log('not filling because slider is at ' +
-                                         curOffset + ' but data is for ' + offset);
-                }
-            });
+            var content = this.options.buildContent(resource);
+            debug && console.log('filling in at ' + offset);
+            self.content.empty().append(content);
+            self.hideSpinner();
         },
         showSpinner: function() {
             if (!this.spinner.is(':hidden')) return;
