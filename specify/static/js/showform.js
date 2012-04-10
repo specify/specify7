@@ -13,8 +13,8 @@ require({
 
 require([
     'jquery', 'backbone', 'specifyapi', 'datamodel', 'specifyform',
-    'populateform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
-], function($, Backbone, specifyapi, datamodel, specifyform, populateform, schemalocalization, beautify) {
+    'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
+], function($, Backbone, specifyapi, datamodel, specifyform, MainForm, schemalocalization, beautify) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
@@ -29,16 +29,14 @@ require([
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.buildViewForModel(model);
-                populateform(mainForm, resource);
-                rootContainer.empty().append(mainForm);
+                (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
             viewRelated: function(model, id, relatedField) {
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.relatedObjectsForm(model, relatedField);
-                populateform(mainForm, resource);
-                rootContainer.empty().append(mainForm);
+                (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
             viewashtml: function() {
@@ -52,13 +50,10 @@ require([
                 rootContainer.empty().append(
                     $('<pre>').text(beautify.style_html(html))
                 );
-
             }
-
         });
 
         var specifyRouter = new SpecifyRouter();
         Backbone.history.start({pushState: true, root: '/specify/'});
-
     });
 });

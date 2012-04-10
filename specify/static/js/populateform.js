@@ -1,8 +1,8 @@
 define([
     'jquery', 'backbone', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
-    'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable'
+    'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
 ], function($, Backbone, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
-            RecordSelector, uiplugins, dof, SubViewButton, FormTable) {
+            RecordSelector, uiplugins, dof, SubViewButton, FormTable, SubView) {
     "use strict";
 
     function setupUIplugin (control, resource) {
@@ -26,7 +26,7 @@ define([
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
             } else {
-                var fetch = resource.rget(control.attr('name'));
+                var fetch = resource.rget(control.attr('name'), true);
                 var fillItIn = control.is('input[type="checkbox"]') ?
                     _(control.prop).bind(control, 'checked') :
                     _(control.val).bind(control);
@@ -47,27 +47,13 @@ define([
     // then fills them in with the given data or pointer to data.
     function populateForm (form, resource) {
         schemalocalization.localizeForm(form);
-        form.find('a.specify-edit').prop('href', resource.viewUrl());
-
-        var submit = form.find(':submit').click(function(evt) {
-            evt.preventDefault();
-            resource.rsave().done(function() {
-                window.location.reload(); // lame
-            });
-        }).prop('disabled', true);
-
-        resource.on('change rchange', function() {
-            submit.prop('disabled', false);
-        });
-
         setupControls(form, resource);
 
         var model = resource.specifyModel;
         form.find('.specify-subview').each(function () {
             var node = $(this);
             if (specifyform.isSubViewButton(node)) {
-                var subViewButton = new SubViewButton({ parentModel: model, model: resource, el: node });
-                subViewButton.render();
+                (new SubViewButton({ parentModel: model, model: resource, el: node })).render();
                 return;
             }
 
@@ -75,28 +61,22 @@ define([
             var relType = datamodel.getRelatedFieldType(model, fieldName);
 
             resource.rget(fieldName, true).done(function (related) {
+                var View, viewOptions = { el: node, resource: resource, fieldName: fieldName };
                 switch (relType) {
                 case 'one-to-many':
-                    var viewOptions = {
-                        el: node, collection: related, resource: resource, fieldName: fieldName
-                    };
-
-                    var view = specifyform.subViewIsFormTable(node) ? new FormTable(viewOptions) :
-                        new RecordSelector(viewOptions);
-                    view.render();
-                    return;
+                    View = specifyform.subViewIsFormTable(node) ? FormTable : RecordSelector;
+                    viewOptions.collection = related;
+                    break;
                 case 'zero-to-one':
                 case 'many-to-one':
-                    if (!related) {
-                        node.append('<p style="text-align: center">none</p>');
-                        return;
-                    }
-                    node.append(populateForm(specifyform.buildSubView(node), related));
-                    return;
+                    View = SubView;
+                    viewOptions.model = related
+                    break;
                 default:
                     node.append('<p>unhandled relationship type: ' + relType + '</p>');
                     return;
                 }
+                (new View(viewOptions)).render();
             });
         });
         return form;

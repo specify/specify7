@@ -4,6 +4,9 @@ define([
 ], function(require, $, _, Backbone, populateform, schemalocalization, specifyform, subviewheader) {
 
     return Backbone.View.extend({
+        events: {
+            'click a.specify-edit': 'edit'
+        },
         initialize: function(options) {
             this.resource = options.resource;
             this.specifyModel = options.resource.specifyModel;
@@ -21,13 +24,22 @@ define([
                 return;
             }
             var rows = self.collection.map(function(resource) {
-                return populateForm(specifyform.buildSubView(self.$el), resource);
+                var form = specifyform.buildSubView(self.$el);
+                var url = resource.viewUrl();
+                $('a.specify-edit', form).prop('href', url)
+                    .data('backbone-url', url.replace(/^\/specify/, ''));
+                return populateForm(form, resource);
             });
             self.$el.append(rows[0]);
             _(rows).chain().tail().each(function(row) {
                 self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
             });
             self.delegateEvents();
+        },
+        edit: function(evt) {
+            evt.preventDefault();
+            var url = $(evt.currentTarget).data('backbone-url');
+            Backbone.history.navigate(url, {trigger: true});
         }
     });
 });
