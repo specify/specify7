@@ -4,6 +4,7 @@ define(['jquery', 'underscore', 'schemalocalization', 'specifyapi'], function($,
         var model = control.parents('[data-specify-model]').attr('data-specify-model');
         var field = control.attr('name');
         function buildPicklist(picklistitems, value) {
+            value = (value instanceof api.Resource) ? value.url() : value;
             var items = {};
             if (!control.hasClass('required')) {
                 $('<option>').appendTo(control);
@@ -45,7 +46,7 @@ define(['jquery', 'underscore', 'schemalocalization', 'specifyapi'], function($,
                 });
             } else return picklist.get('picklistitems');
         });
-        var getValue = resource ? resource.get(field) : null;
+        var getValue = resource ? resource.rget(field) : null;
         return $.when(getPickList, getValue).done(buildPicklist);
     };
 });
