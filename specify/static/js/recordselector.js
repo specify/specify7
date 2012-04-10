@@ -1,9 +1,17 @@
-define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbone) {
+define([
+    'require', 'jquery', 'underscore', 'backbone', 'datamodel', 'schemalocalization', 'specifyform', 'populateform',
+    'text!/static/html/templates/subviewheader.html',
+    'jquery-ui'
+], function(require, $, _, Backbone, datamodel, schemalocalization, specifyform, populateform, subviewheader) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
 
     return Backbone.View.extend({
+        events: {
+            'click .specify-subview-header:first .specify-delete-related' : 'destroy',
+            'click .specify-subview-header:first .specify-add-related' : 'add'
+        },
         initialize: function(options) {
             var self = this;
             self.collection.on('add', function() {
@@ -19,14 +27,20 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 self.onSlide(value);
                 self.showHide();
             });
+            self.resource = options.resource;
+            self.specifyModel = options.resource.specifyModel;
+            self.fieldName = options.fieldName;
+            self.title = schemalocalization.getLocalizedLabelForField(self.fieldName, self.specifyModel);
         },
         render: function() {
             var self = this;
-            this.$el.empty();
-            this.noContent = $(emptyTemplate).appendTo(this.el);
-            this.content = $('<div>').appendTo(this.el);
-            this.spinner = $(spinnerTemplate).appendTo(this.el).hide();
-            this.slider = $('<div>').appendTo(this.el).slider({
+            self.undelegateEvents();
+            self.$el.empty().append(subviewheader);
+            self.$('.specify-subview-title').text(self.title);
+            self.noContent = $(emptyTemplate).appendTo(self.el);
+            self.content = $('<div>').appendTo(self.el);
+            self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
+            self.slider = $('<div>').appendTo(self.el).slider({
                 max: self.collection.length - 1,
                 stop: _.throttle(function(event, ui) {
                     if (self.collection.at(ui.value)) return;
@@ -40,9 +54,10 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 }, 750),
                 slide: function(event, ui) { self.onSlide(ui.value); }
             });
-            this.slider.find('.ui-slider-handle').
+            self.slider.find('.ui-slider-handle').
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
+            self.delegateEvents();
             self.redraw(0);
             self.showHide();
         },
@@ -54,11 +69,12 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
         redraw: function(offset) {
             var self = this;
             debug && console.log('want to redraw at ' + offset);
-            var resource = this.collection.at(offset);
+            var resource = self.collection.at(offset);
             if (_(resource).isUndefined()) return;
-            var content = this.options.buildContent(resource);
+            var form = specifyform.buildSubView(self.$el);
+            require('populateform')(form, resource);
             debug && console.log('filling in at ' + offset);
-            self.content.empty().append(content);
+            self.content.empty().append(form);
             self.hideSpinner();
         },
         showSpinner: function() {
@@ -92,6 +108,14 @@ define(['jquery', 'underscore', 'backbone', 'jquery-ui'], function($, _, Backbon
                 break;
             }
         },
-        getShowing: function() { return this.collection.at(this.slider.slider('value')); }
+        destroy: function() {
+            return this.collection.at(this.slider.slider('value')).destroy();
+        },
+        add: function() {
+            var newResource = new (this.collection.model)();
+            var osn = datamodel.getFieldOtherSideName(this.specifyModel, this.fieldName);
+            newResource.set(osn, this.resource.url());
+            this.collection.add(newResource);
+        }
     });
 });

@@ -1,6 +1,5 @@
 define([
     'jquery', 'underscore', 'datamodel',
-    'text!/static/html/templates/subviewheader.html',
     'text!/static/html/templates/relatedobjectsform.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
@@ -9,7 +8,7 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, datamodel, subviewheader, relatedobjectsform) {
+], function specifyform($, _, datamodel, relatedobjectsform) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
@@ -117,7 +116,7 @@ define([
     }
 
     self.isSubViewButton = function (node) {
-        return node.children().is('.specify-subview-button');
+        return node.is('.specify-subview-button');
     };
 
     self.buildViewForModel = function (modelName) {
@@ -224,14 +223,12 @@ define([
                     props = self.parseSpecifyProperties(cell.attr('initialize'));
                     td.attr('data-specify-field-name', cell.attr('name'));
                     if (props.btn === 'true') {
-                        var button = $('<a href="#" class="specify-subview-button">');
-                        id && button.prop('id', id);
-                        button.attr({'data-specify-initialize': cell.attr('initialize'),
-                                     disabled: doingFormTable});
+                        td.addClass('specify-subview-button');
+                        id && td.prop('id', id);
+                        td.attr('data-specify-initialize', cell.attr('initialize'));
                         props.align && td.addClass('align-' + props.align);
-                        return td.append(button);
+                        return td;
                     }
-                    td.append(subviewheader);
                     var view = findView(cell.attr('viewname'));
                     if (view === undefined) {
                         return td.text('View "' + cell.attr('viewname') + '" is undefined.');

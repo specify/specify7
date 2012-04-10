@@ -1,8 +1,8 @@
 define([
-    'jquery', 'backbone', 'datamodel', 'specifyapi', 'schemalocalization', 'specifyform', 'picklist',
-    'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'icons'
-], function($, Backbone, datamodel, api, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
-            RecordSelector, uiplugins, dof, icons) {
+    'jquery', 'backbone', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
+    'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable'
+], function($, Backbone, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
+            RecordSelector, uiplugins, dof, SubViewButton, FormTable) {
     "use strict";
 
     function setupUIplugin (control, resource) {
@@ -42,44 +42,6 @@ define([
         });
     };
 
-    var FormTable = Backbone.View.extend({
-        render: function() {
-            var self = this;
-            self.$el.empty();
-            if (self.collection.length < 1) {
-                self.$el.append('<p style="text-align: center">nothing here...</p>');
-                return;
-            }
-            var rows = self.collection.map(function(resource) {
-                return populateForm(specifyform.buildSubView(self.options.subViewNode), resource);
-            });
-            self.$el.append(rows[0]);
-            _(rows).chain().tail().each(function(row) {
-                self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
-            });
-        }
-    });
-
-    var SubViewButton = Backbone.View.extend({
-        render: function() {
-            var self = this, node = self.$el, model = self.options.parentModel;
-            var fieldName = node.data('specify-field-name');
-            var relType = datamodel.getRelatedFieldType(model, fieldName);
-            var subviewButton = node.children('.specify-subview-button:first');
-            var props = specifyform.parseSpecifyProperties(subviewButton.data('specify-initialize'));
-            var icon = props.icon ? icons.getIcon(props.icon) :
-                icons.getIcon(datamodel.getRelatedModelForField(model, fieldName));
-            subviewButton.prop('href',fieldName.toLowerCase() + '/');
-            subviewButton.find('.specify-subviewbutton-icon').remove();
-            subviewButton.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
-            $('<span class="specify-subview-button-count">').appendTo(subviewButton).hide();
-            subviewButton.button();
-            relType === 'one-to-many' && self.model.getRelatedObjectCount(fieldName).done(function(count) {
-                self.$('.specify-subview-button-count').text(count).show();
-            });
-        }
-    });
-
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
@@ -113,32 +75,15 @@ define([
             var relType = datamodel.getRelatedFieldType(model, fieldName);
 
             resource.rget(fieldName, true).done(function (related) {
-                if (specifyform.subViewIsFormTable(node)) {
-                    var formTable = new FormTable({ collection: related, subViewNode: node });
-                    formTable.render();
-                    node.append(formTable.el);
-                    return;
-                }
-
                 switch (relType) {
                 case 'one-to-many':
-                    var recordSelector = new RecordSelector({
-                        collection: related,
-                        buildContent: function (resource) {
-                            return populateForm(specifyform.buildSubView(node), resource);
-                        }
-                    });
-                    node.find('.specify-subview-header:first .specify-delete-related').click(function() {
-                        recordSelector.getShowing().destroy();
-                    });
-                    node.find('.specify-subview-header:first .specify-add-related').click(function() {
-                        var newResource = new (related.model)();
-                        var osn = datamodel.getFieldOtherSideName(resource.specifyModel, fieldName);
-                        newResource.set(osn, resource.url());
-                        related.add(newResource);
-                    });
-                    recordSelector.render();
-                    node.append(recordSelector.el);
+                    var viewOptions = {
+                        el: node, collection: related, resource: resource, fieldName: fieldName
+                    };
+
+                    var view = specifyform.subViewIsFormTable(node) ? new FormTable(viewOptions) :
+                        new RecordSelector(viewOptions);
+                    view.render();
                     return;
                 case 'zero-to-one':
                 case 'many-to-one':
