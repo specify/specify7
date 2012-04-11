@@ -5,14 +5,28 @@ define([
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
+    function eventHandlerForToOne(resource, field) {
+        return function(event) {
+            if (event === 'saverequired') return resource.trigger('saverequired');
+            var match = /^r?change:(.*)$/.exec(event);
+            if (match) {
+                var args = _(arguments).toArray();
+                args[0] = 'rchange:' + field + '.' + match[1];
+                resource.trigger.apply(resource, args);
+            }
+        };
+    }
+
     var Resource = Backbone.Model.extend({
         populated: false, _fetch: null, needsSaved: false, saving: false,
         initialize: function(attributes, options) {
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
             this.on('change', function() {
                 if (this._fetch) return;
-                this.needsSaved = true;
-                !this.saving && _.defer(_.bind(this.trigger, this, 'saverequired'));
+                if (!this.saving) {
+                    this.needsSaved = true;
+                    _.defer(_.bind(this.trigger, this, 'saverequired'));
+                }
             });
             this.on('sync', function() {
                 this.needsSaved = this.saving = false;
@@ -66,7 +80,7 @@ define([
                         toOne.set(value);
                         toOne.populated = true;
                     }
-                    toOne.on('saverequired', function() { self.trigger('saverequired'); });
+                    toOne.on('all', eventHandlerForToOne(self, field));
                     self.relatedCache[field] = toOne;
                 }
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : (
@@ -90,7 +104,7 @@ define([
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    value && value.on('saverequired', function() { self.trigger('saverequired'); });
+                    value && value.on('all', eventHandlerForToOne(self, field));
                     self.relatedCache[field] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
@@ -149,6 +163,12 @@ define([
                 options.headers = {'If-Match': resource.get('version')};
             }
             return Backbone.sync(method, resource, options);
+        },
+        onChange: function(field, callback) {
+            if (field.split('.').length === 1)
+                this.on('change:' + field, callback);
+            else
+                this.on('rchange:' + field, callback);
         }
     }, {
         forModel: function(modelName) {

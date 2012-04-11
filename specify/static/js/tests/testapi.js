@@ -384,6 +384,69 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             });
         });
 
+        test('rchange event', function() {
+            expect(4);
+            stop();
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
+            resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
+                var value = original === 'foo'? 'bar' : 'foo';
+                resource.on('all', function (event) {
+                    if (event === 'change') {
+                        ok(false, 'change on resource');
+                        return;
+                    }
+                    var match = /^rchange:(.*)$/.exec(event);
+                    if (match) {
+                        equal(match[1], 'collectingevent.modifiedbyagent.remarks');
+                        equal(arguments[2], value);
+                    }
+                });
+                var ce = resource.relatedCache['collectingevent'];
+                ce.on('all', function(event) {
+                    if (event === 'change') {
+                        ok(false, 'change on collectingevent');
+                        return;
+                    }
+                    var match = /^rchange:(.*)$/.exec(event);
+                    if (match) {
+                        equal(match[1], 'modifiedbyagent.remarks');
+                        equal(arguments[2], value);
+                    }
+                });
+                var agent = ce.relatedCache['modifiedbyagent'];
+                agent.on('all', function(event) {
+                    var match = /^rchange:(.*)$/.exec(event);
+                    match && ok(false, 'rchange on agent');
+                });
+                agent.set('remarks', value);
+                start();
+            });
+        });
+
+        test('onChange', function() {
+            expect(3);
+            stop();
+            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
+            resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
+                var value = original === 'foo'? 'bar' : 'foo';
+                resource.onChange(
+                    'collectingevent.modifiedbyagent.remarks',
+                    function (resource, val) {
+                        equal(val, value, 'onChange resource');
+                    });
+                var ce = resource.relatedCache['collectingevent'];
+                ce.onChange('modifiedbyagent.remarks', function(resource, val) {
+                    equal(val, value, 'onChange collectingevent');
+                });
+                var agent = ce.relatedCache['modifiedbyagent'];
+                agent.onChange('remarks', function(resource, val) {
+                    equal(val, value, 'onChange agent');
+                });
+                agent.set('remarks', value);
+                start();
+            });
+        });
+
         module('specifyapi.Collection');
         test('forModel', function() {
             var Collection = api.Collection.forModel('agent');
