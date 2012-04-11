@@ -359,18 +359,18 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             });
         });
 
-        test('rchange event', function() {
+        test('saverequired event', function() {
             expect(9); // 4 callbacks + 3 needsSaved checks + 1 change on sync + 1 requestCounter check
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
-                resource.on('rchange', yep('rchange on resource'));
+                resource.on('saverequired', yep('saverequired on resource'));
                 resource.on('change', nope('change on resource'));
                 var ce = resource.relatedCache['collectingevent'];
-                ce.on('rchange', yep('rchange on collectingevent'));
+                ce.on('saverequired', yep('saverequired on collectingevent'));
                 ce.on('change', nope('change on collectingevent'));
                 var agent = ce.relatedCache['modifiedbyagent'];
-                agent.on('rchange', yep('rchange on agent'));
+                agent.on('saverequired', yep('saverequired on agent'));
                 agent.on('change', yep('change on agent'));
                 agent.set('remarks', original === 'foo'? 'bar' : 'foo');
                 ok(agent.needsSaved, 'agent needs saved');
@@ -480,42 +480,42 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             });
         });
 
-        test('rchange event', function() {
+        test('saverequired event', function() {
             expect(5);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.rget('preparations').done(function(preps) {
                 resource.on('change', nope('change on resource'));
-                resource.on('rchange', yep('rchange on resource'));
+                resource.on('saverequired', yep('saverequired on resource'));
                 preps.fetch().done(function() {
                     preps.on('change', yep('change on preps'));
-                    preps.on('rchange', yep('rchange on preps'));
+                    preps.on('saverequired', yep('saverequired on preps'));
                     var prep = preps.at(1);
                     prep.on('change', yep('change on prep'));
-                    prep.on('rchange', yep('rchange on prep'));
+                    prep.on('saverequired', yep('saverequired on prep'));
                     prep.set('remarks', prep.get('remarks') + 'foo');
                     start();
                 });
             });
         });
 
-        test('rchange event deep', function() {
+        test('saverequired event deep', function() {
             expect(5);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.rget('determinations').done(function(dets) {
                 resource.on('change', nope('change on resource'));
-                resource.on('rchange', yep('rchane on resource'));
+                resource.on('saverequired', yep('saverequired on resource'));
                 dets.fetch().done(function() {
                     dets.on('change', nope('change on dets'));
-                    dets.on('rchange', yep('rchange on dets'));
+                    dets.on('saverequired', yep('saverequired on dets'));
                     var det = dets.at(1);
                     det.rget('determiner.lastname').done(function(original) {
                         det.on('change', nope('change on det'));
-                        det.on('rchange', yep('rchange on det'));
+                        det.on('saverequired', yep('saverequired on det'));
                         var agent = det.relatedCache['determiner'];
                         agent.on('change', yep('change on agent'));
-                        agent.on('rchange', yep('rchange on agent'));
+                        agent.on('saverequired', yep('saverequired on agent'));
                         agent.set('lastname', original + 'foo');
                         start();
                     });

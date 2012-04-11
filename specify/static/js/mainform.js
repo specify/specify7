@@ -9,7 +9,7 @@ define([
         },
         initialize: function(options) {
             var self = this;
-            self.model.on('rchange', function() {
+            self.model.on('saverequired', function() {
                 self.$(':submit').prop('disabled', false);
             });
         },

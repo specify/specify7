@@ -12,7 +12,7 @@ define([
             this.on('change', function() {
                 if (this._fetch) return;
                 this.needsSaved = true;
-                !this.saving && _.defer(_.bind(this.trigger, this, 'rchange'));
+                !this.saving && _.defer(_.bind(this.trigger, this, 'saverequired'));
             });
             this.on('sync', function() {
                 this.needsSaved = this.saving = false;
@@ -66,7 +66,7 @@ define([
                         toOne.set(value);
                         toOne.populated = true;
                     }
-                    toOne.on('rchange', function() { self.trigger('rchange'); });
+                    toOne.on('saverequired', function() { self.trigger('saverequired'); });
                     self.relatedCache[field] = toOne;
                 }
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : (
@@ -79,7 +79,7 @@ define([
                     new (Collection.forModel(related))(value);
                 toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
                 self.relatedCache[field] = toMany;
-                toMany.on('rchange', function() { self.trigger('rchange'); });
+                toMany.on('saverequired', function() { self.trigger('saverequired'); });
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
                 if (self.relatedCache[field]) {
@@ -90,7 +90,7 @@ define([
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    value && value.on('rchange', function() { self.trigger('rchange'); });
+                    value && value.on('saverequired', function() { self.trigger('saverequired'); });
                     self.relatedCache[field] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
