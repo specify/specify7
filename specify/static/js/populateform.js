@@ -1,7 +1,7 @@
 define([
-    'jquery', 'backbone', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
+    'jquery', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, Backbone, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
+], function($, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
             RecordSelector, uiplugins, dof, SubViewButton, FormTable, SubView) {
     "use strict";
 

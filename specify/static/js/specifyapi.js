@@ -1,5 +1,5 @@
 define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function($, _, Backbone, datamodel) {
-    var self = {}, resources = {}, collections = {};
+    var debug = true, self = {}, resources = {}, collections = {};
 
     var whenAll = self.whenAll = function(deferreds) {
         return $.when.apply($, deferreds).pipe(function() { return _(arguments).toArray(); });
@@ -72,16 +72,21 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
     });
 
     var Resource = self.Resource = Backbone.Model.extend({
-        populated: false, _fetch: null, needsSaved: false,
+        populated: false, _fetch: null, needsSaved: false, saving: false,
         initialize: function(attributes, options) {
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
             this.on('change', function() {
+                if (this._fetch) return;
                 this.needsSaved = true;
+                !this.saving && _.defer(_.bind(this.trigger, this, 'rchange'));
             });
             this.on('sync', function() {
-                this.needsSaved = false;
+                this.needsSaved = this.saving = false;
             });
             this.relatedCache = {};
+            debug && this.on('all', function() {
+                console.log(arguments);
+            });
         },
         url: function() {
             return '/api/specify/' + this.specifyModel.toLowerCase() + '/' +
@@ -127,7 +132,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                         toOne.set(value);
                         toOne.populated = true;
                     }
-                    toOne.on('change rchange', function() { self.trigger('rchange'); });
+                    toOne.on('rchange', function() { self.trigger('rchange'); });
                     self.relatedCache[field] = toOne;
                 }
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : (
@@ -140,7 +145,7 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                     new (Collection.forModel(related))(value);
                 toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
                 self.relatedCache[field] = toMany;
-                toMany.on('change rchange', function() { self.trigger('rchange'); });
+                toMany.on('rchange', function() { self.trigger('rchange'); });
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
                 if (self.relatedCache[field]) {
@@ -151,12 +156,16 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    value && value.on('change rchange', function() { self.trigger('rchange'); });
+                    value && value.on('rchange', function() { self.trigger('rchange'); });
                     self.relatedCache[field] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             }
         });},
+        save: function() {
+            this.saving = true;
+            return Backbone.Model.prototype.save.apply(this, arguments);
+        },
         rsave: function() {
             var resource = this;
             var deferreds = _(resource.relatedCache).invoke('rsave');
@@ -170,16 +179,18 @@ define(['jquery', 'underscore', 'backbone', 'datamodel', 'jquery-bbq'], function
             return resource._rsaveDeferred = resource._rsaveDeferred ||
                 whenAll(deferreds).then(function() { resource._rsaveDeferred = null; });
         },
+        fetch: function() {
+            var resource = this;
+            if (resource._fetch !== null) return resource._fetch;
+            return resource._fetch = Backbone.Model.prototype.fetch.call(this).done(function() {
+                resource._fetch = null;
+            });
+        },
         fetchIfNotPopulated: function() {
             var resource = this;
             if (resource.populated) return $.when(resource)
             if (resource.isNew()) return $.when(resource)
-            if (resource._fetch !== null) return resource._fetch;
-            resource._fetch = resource.fetch({silent: true}).pipe(function() {
-                resource._fetch = null;
-                return resource;
-            });
-            return resource._fetch;
+            return resource.fetch().pipe(function() { return resource; });
         },
         parse: function() {
             this.populated = true;

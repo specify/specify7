@@ -9,6 +9,14 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         var justOk = _.bind(ok, this, true);
         var notOk = _.bind(ok, this, false);
 
+        function nope(message) {
+            return function() { ok(false, message); };
+        }
+
+        function yep(message) {
+            return function() { ok(true, message); };
+        }
+
         module('specifyapi.Resource');
         test('forModel', function() {
             var Resource = api.Resource.forModel('collectionobject');
@@ -33,7 +41,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('fetch', function() {
-            expect(4);
+            expect(5);
             var uri = '/api/specify/collectionobject/100/';
             var resource =  new (api.Resource.forModel('collectionobject'))({id: 100});
             ok(!resource.populated);
@@ -42,33 +50,36 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             stop();
             deferred.done(function() {
                 ok(resource.populated);
+                ok(!resource.needsSaved);
                 equal(resource.get('resource_uri'), uri);
                 start();
             });
         });
 
         test('fetchIfNotPopulated', function() {
-            expect(3);
+            expect(4);
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             ok(!resource.populated);
             stop();
             var deferred = resource.fetchIfNotPopulated();
             deferred.done(function() {
                 ok(resource.populated);
+                ok(!resource.needsSaved);
                 deferred = resource.fetchIfNotPopulated();
                 deferred.done(function(result) {
-                    equal(result, 'already populated');
+                    equal(result, resource);
                     start();
                 });
             });
         });
 
         test('rget regular field from unpopulated', function() {
-            expect(2);
+            expect(3);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(catnumber) {
+                ok(!resource.needsSaved);
                 ok(_(catnumber).isString());
                 equal(requestCounter, 1);
                 start();
@@ -76,13 +87,14 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('rget regular field from populated', function() {
-            expect(2);
+            expect(3);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.fetch().done(function() {
                 equal(requestCounter, 1);
                 resource.rget('catalognumber').done(function(catnumber) {
+                    ok(!resource.needsSaved);
                     equal(requestCounter, 1);
                     start();
                 });
@@ -302,7 +314,6 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 resource.save().done(function() {
                     equal(resource.needsSaved, false);
                     resource.set('catalognumber', original);
-                    resource.set('version', resource.get('version') + 1);
                     equal(resource.needsSaved, true);
                     resource.save().done(function() {
                         equal(resource.needsSaved, false);
@@ -324,7 +335,6 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                     ok(!resource.needsSaved);
                     equal(requestCounter, 2);
                     resource.set('catalognumber', original);
-                    resource.set('version', resource.get('version') + 1);
                     resource.save().done(function() { start(); });
                 });
             });
@@ -344,35 +354,32 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                     equal(requestCounter, 3);
                     ok(!ce.needsSaved);
                     ce.set('remarks', original);
-                    ce.set('version', ce.get('version') + 1);
                     ce.save().done(function () { start(); });
                 });
             });
         });
 
         test('rchange event', function() {
-            expect(13); // 3 agent.set X 3 callbacks + 3 needsSaved checks + 1 requestCounter check
+            expect(9); // 4 callbacks + 3 needsSaved checks + 1 change on sync + 1 requestCounter check
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
-            resource.on('rchange', justOk);
-            resource.on('change', notOk);
             resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
+                resource.on('rchange', yep('rchange on resource'));
+                resource.on('change', nope('change on resource'));
                 var ce = resource.relatedCache['collectingevent'];
-                ce.on('rchange', justOk);
-                ce.on('change', notOk);
+                ce.on('rchange', yep('rchange on collectingevent'));
+                ce.on('change', nope('change on collectingevent'));
                 var agent = ce.relatedCache['modifiedbyagent'];
-                agent.on('rchange', notOk);
-                agent.on('change', justOk);
-                agent.set('remarks', original + 'foo');
-                ok(agent.needsSaved);
-                ok(!ce.needsSaved);
-                ok(!resource.needsSaved);
+                agent.on('rchange', yep('rchange on agent'));
+                agent.on('change', yep('change on agent'));
+                agent.set('remarks', original === 'foo'? 'bar' : 'foo');
+                ok(agent.needsSaved, 'agent needs saved');
+                ok(!ce.needsSaved, 'collecting event doesnt need saved');
+                ok(!resource.needsSaved, 'resource doesnt need saved');
                 requestCounter = 0;
                 resource.rsave().done(function() {
                     equal(requestCounter, 1);
-                    agent.set('remarks', original);
-                    agent.set('version', agent.get('version') + 1);
-                    agent.save().done(function() { start(); });
+                    start();
                 });
             });
         });
@@ -474,18 +481,18 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('rchange event', function() {
-            expect(3);
+            expect(5);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
-            resource.on('change', notOk);
-            resource.on('rchange', justOk);
             resource.rget('preparations').done(function(preps) {
-                preps.on('change', justOk);
-                preps.on('rchange', notOk);
+                resource.on('change', nope('change on resource'));
+                resource.on('rchange', yep('rchange on resource'));
                 preps.fetch().done(function() {
+                    preps.on('change', yep('change on preps'));
+                    preps.on('rchange', yep('rchange on preps'));
                     var prep = preps.at(1);
-                    prep.on('change', justOk);
-                    prep.on('rchange', notOk);
+                    prep.on('change', yep('change on prep'));
+                    prep.on('rchange', yep('rchange on prep'));
                     prep.set('remarks', prep.get('remarks') + 'foo');
                     start();
                 });
@@ -493,22 +500,22 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('rchange event deep', function() {
-            expect(4);
+            expect(5);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
-            resource.on('change', notOk);
-            resource.on('rchange', justOk);
             resource.rget('determinations').done(function(dets) {
-                dets.on('change', notOk);
-                dets.on('rchange', justOk);
+                resource.on('change', nope('change on resource'));
+                resource.on('rchange', yep('rchane on resource'));
                 dets.fetch().done(function() {
+                    dets.on('change', nope('change on dets'));
+                    dets.on('rchange', yep('rchange on dets'));
                     var det = dets.at(1);
-                    det.on('change', notOk);
-                    det.on('rchange', justOk);
                     det.rget('determiner.lastname').done(function(original) {
+                        det.on('change', nope('change on det'));
+                        det.on('rchange', yep('rchange on det'));
                         var agent = det.relatedCache['determiner'];
-                        agent.on('change', justOk);
-                        agent.on('rchange', notOk);
+                        agent.on('change', yep('change on agent'));
+                        agent.on('rchange', yep('rchange on agent'));
                         agent.set('lastname', original + 'foo');
                         start();
                     });

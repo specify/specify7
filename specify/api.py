@@ -84,13 +84,13 @@ class ToManyField(tastypie.fields.ToManyField):
             return super(ToManyField, self).dehydrate(bundle)
 
         related_uri = self.to_class().get_resource_list_uri()
-        return '%s?%s=%d' % (related_uri, self.related_name, bundle.obj.pk)
+        return '%s?%s=%s' % (related_uri, self.related_name, bundle.obj.pk)
 
 class ModelResource(tastypie.resources.ModelResource):
     def _build_reverse_url(self, name, args=None, kwargs=None):
         """Hard code the URL lookups to make things fast."""
         if name == 'api_dispatch_detail':
-            return '/api/%(api_name)s/%(resource_name)s/%(pk)d/' % kwargs
+            return '/api/%(api_name)s/%(resource_name)s/%(pk)s/' % kwargs
         if name == 'api_dispatch_list':
             return '/api/%(api_name)s/%(resource_name)s/' % kwargs
 
@@ -141,7 +141,7 @@ class ModelResource(tastypie.resources.ModelResource):
         if not updated:
             raise StaleObjectException()
         obj.delete()
-        
+
     @transaction.commit_on_success
     def obj_update(self, bundle, request=None, **kwargs):
         if not bundle.obj or not bundle.obj.pk:
@@ -200,6 +200,7 @@ def build_resource(model):
         if isinstance(field, ForeignRelatedObjectsDescriptor))
 
     class Meta:
+        always_return_data = True
         filtering = filter_fields.get(model.__name__, {})
         queryset = model.objects.all()
         authorization = Authorization()

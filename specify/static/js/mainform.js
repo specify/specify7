@@ -9,14 +9,14 @@ define([
         },
         initialize: function(options) {
             var self = this;
-            self.model.on('change rchange', function() {
+            self.model.on('rchange', function() {
                 self.$(':submit').prop('disabled', false);
             });
         },
         submit: function(evt) {
             evt.preventDefault();
+            self.$(':submit').prop('disabled', true);
             this.model.rsave().done(function() {
-                window.location.reload(); // lame
             });
         },
         render: function() {
