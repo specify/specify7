@@ -152,6 +152,14 @@ class ModelResource(tastypie.resources.ModelResource):
 
         bundle = self.full_hydrate(bundle)
 
+        try:
+            bundle.obj._meta.get_field('modifiedbyagent')
+        except FieldDoesNotExist:
+            pass
+        else:
+            # if the specify user corresponds to more than one agent this will break
+            bundle.obj.modifiedbyagent = models.Agent.objects.get(specifyuser__name=bundle.request.user.username)
+
         # If the object has no version field, just save it.
         try:
             bundle.obj._meta.get_field('version')

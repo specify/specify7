@@ -18,7 +18,7 @@ define([
         };
 
         form.find('.specify-field').each(function () {
-            var control = $(this);
+            var control = $(this), field = control.attr('name');
             if (control.is('.specify-combobox')) {
                 return setupPickList(control, resource);
             } else if (control.is('.specify-querycbx')) {
@@ -26,18 +26,25 @@ define([
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
             } else {
-                var fetch = resource.rget(control.attr('name'), true);
-                var fillItIn = control.is('input[type="checkbox"]') ?
+                var fetch = function () { return resource.rget(field, true) };
+
+                if (datamodel.isRelatedField(resource.specifyModel, field)) {
+                    control.removeClass('specify-field').addClass('specify-object-formatted');
+                    control.prop('readonly', true);
+                    var plainFetch = fetch;
+                    fetch = function() { return plainFetch().pipe(dataObjFormat); };
+                }
+
+                var setControl = control.is('input[type="checkbox"]') ?
                     _(control.prop).bind(control, 'checked') :
                     _(control.val).bind(control);
 
-                control.change(controlChanged);
+                var fillItIn = function() { fetch().done(setControl); };
 
-                if (datamodel.isRelatedField(resource.specifyModel, control.attr('name'))) {
-                    control.removeClass('specify-field').addClass('specify-object-formatted');
-                    control.prop('readonly', true);
-                    fetch.pipe(dataObjFormat).done(fillItIn);
-                } else fetch.done(fillItIn);
+                fillItIn();
+                resource.onChange(field, fillItIn);
+
+                control.change(controlChanged);
             }
         });
     };

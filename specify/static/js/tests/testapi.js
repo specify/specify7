@@ -431,15 +431,15 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 var value = original === 'foo'? 'bar' : 'foo';
                 resource.onChange(
                     'collectingevent.modifiedbyagent.remarks',
-                    function (resource, val) {
+                    function (val) {
                         equal(val, value, 'onChange resource');
                     });
                 var ce = resource.relatedCache['collectingevent'];
-                ce.onChange('modifiedbyagent.remarks', function(resource, val) {
+                ce.onChange('modifiedbyagent.remarks', function(val) {
                     equal(val, value, 'onChange collectingevent');
                 });
                 var agent = ce.relatedCache['modifiedbyagent'];
-                agent.onChange('remarks', function(resource, val) {
+                agent.onChange('remarks', function(val) {
                     equal(val, value, 'onChange agent');
                 });
                 agent.set('remarks', value);

@@ -165,10 +165,9 @@ define([
             return Backbone.sync(method, resource, options);
         },
         onChange: function(field, callback) {
-            if (field.split('.').length === 1)
-                this.on('change:' + field, callback);
-            else
-                this.on('rchange:' + field, callback);
+            var field = field.toLowerCase();
+            var event = field.split('.').length === 1 ? 'change:' : 'rchange:';
+            this.on(event + field, function(resource, value) { callback(value); });
         }
     }, {
         forModel: function(modelName) {

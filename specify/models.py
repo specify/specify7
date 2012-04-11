@@ -11,10 +11,15 @@ def make_model(tabledef):
     attrs = dict(id=make_id_field(tabledef.find('id')),
                  Meta=Meta, __module__=__name__)
     for flddef in tabledef.findall('field'):
-        fldname = flddef.attrib['name']
+        fldname = flddef.attrib['name'].lower()
         fldtype = flddef.attrib['type']
         maker = field_type_map[fldtype]
-        attrs[fldname.lower()] = maker(flddef)
+        fldargs = {}
+        if fldname == 'timestampcreated':
+            fldargs['auto_now_add'] = True
+        if fldname == 'timestampmodified':
+            fldargs['auto_now'] = True
+        attrs[fldname.lower()] = maker(flddef, fldargs)
     for reldef in tabledef.findall('relationship'):
         relname = reldef.attrib['relationshipname']
         relationship = make_relationship(reldef)
@@ -78,9 +83,11 @@ class make_field(object):
             null=(flddef.attrib['required'] == 'false'),
             )
 
-    def __new__(cls, flddef):
+    def __new__(cls, flddef, fldargs):
         field_class = cls.get_field_class(flddef)
-        return field_class(**cls.make_args(flddef))
+        args = cls.make_args(flddef)
+        args.update(fldargs)
+        return field_class(**args)
 
 class make_string_field(make_field):
     field_class = models.CharField
