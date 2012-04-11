@@ -1,11 +1,11 @@
 define([
-    'jquery', 'specifyapi',
+    'jquery', 'specifyapi', 'whenall',
     'text!/static/resources/dataobj_formatters.xml'
-], function($, api, xml) {
+], function($, api, whenAll, xml) {
     "use strict";
-    var formatters = $.parseXML(xml), self = {};
+    var formatters = $.parseXML(xml);
 
-    self.dataObjFormat = function (resource) {
+    return function (resource) {
         if (!resource) return resource;
         var sw = $('format[name="' + resource.specifyModel + '"]', formatters).find('switch');
         // external dataobjFormatters not supported
@@ -20,7 +20,7 @@ define([
             return resource.rget($(this).text());
         });
 
-        return api.whenAll(deferreds).pipe(function (data) {
+        return whenAll(deferreds).pipe(function (data) {
             var result = [];
             fields.each(function (index) {
                 var field = $(this);
@@ -30,6 +30,4 @@ define([
             return result.join('');
         });
     };
-
-    return self;
 });

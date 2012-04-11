@@ -2,7 +2,7 @@ define([
     'jquery', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
 ], function($, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
-            RecordSelector, uiplugins, dof, SubViewButton, FormTable, SubView) {
+            RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
     function setupUIplugin (control, resource) {
@@ -36,7 +36,7 @@ define([
                 if (datamodel.isRelatedField(resource.specifyModel, control.attr('name'))) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
                     control.prop('readonly', true);
-                    fetch.pipe(dof.dataObjFormat).done(fillItIn);
+                    fetch.pipe(dataObjFormat).done(fillItIn);
                 } else fetch.done(fillItIn);
             }
         });
