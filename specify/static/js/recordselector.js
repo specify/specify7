@@ -1,15 +1,17 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'datamodel', 'schemalocalization', 'specifyform', 'populateform',
     'text!/static/html/templates/subviewheader.html',
+    'text!/static/html/templates/confirmdelete.html',
     'jquery-ui'
-], function(require, $, _, Backbone, datamodel, schemalocalization, specifyform, populateform, subviewheader) {
+], function(require, $, _, Backbone, datamodel, schemalocalization, specifyform, populateform,
+            subviewheader, confirmdelete) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
 
     return Backbone.View.extend({
         events: {
-            'click .specify-subview-header:first .specify-delete-related' : 'destroy',
+            'click .specify-subview-header:first .specify-delete-related' : 'openDeleteDialog',
             'click .specify-subview-header:first .specify-add-related' : 'add'
         },
         initialize: function(options) {
@@ -57,6 +59,12 @@ define([
             self.slider.find('.ui-slider-handle').
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
+            self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
+                resizable: false, modal: true, autoOpen: false, buttons: {
+                    'Delete': _.bind(self.destroy, self),
+                    'Cancel': function() { $(this).dialog('close'); }
+                }
+            });
             self.delegateEvents();
             self.redraw(0);
             self.showHide();
@@ -108,7 +116,12 @@ define([
                 break;
             }
         },
+        openDeleteDialog: function(evt) {
+            evt.preventDefault();
+            this.deleteDialog.dialog('open');
+        },
         destroy: function() {
+            this.deleteDialog.dialog('close');
             return this.collection.at(this.slider.slider('value')).destroy();
         },
         add: function() {

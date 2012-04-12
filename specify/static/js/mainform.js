@@ -39,14 +39,12 @@ define([
             self.$el.append(populateForm(self.options.form, self.model));
             self.$(':submit').prop('disabled', true);
             if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
-            else {
-                self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
-                    resizable: false, modal: true, autoOpen: false, buttons: {
-                        'Delete': _.bind(self.destroy, self),
-                        'Cancel': function() { $(this).dialog('close'); }
-                    }
-                });
-            }
+            self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
+                resizable: false, modal: true, autoOpen: false, buttons: {
+                    'Delete': _.bind(self.destroy, self),
+                    'Cancel': function() { $(this).dialog('close'); }
+                }
+            });
             self.delegateEvents();
             return self;
         },
