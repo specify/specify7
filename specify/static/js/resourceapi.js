@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'datamodel', 'collectionapi', 'whenall'
 ], function($, _, Backbone, datamodel, Collection, whenAll) {
-    var debug = true, resources = {};
+    var debug = false, resources = {};
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
@@ -149,6 +149,7 @@ define([
                 throw new TypeError('field is not one-to-many');
             }
             return this.rget(field).pipe(function (collection) {
+                if (!collection) return 0;
                 if (_.has(collection, 'totalCount')) return collection.totalCount;
                 // should be some way to get the count without getting any objects
                 collection.limit = 1;

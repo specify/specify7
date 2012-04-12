@@ -18,28 +18,44 @@ require([
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
+        var currentView;
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'view/:model/:id/': 'view',
                 'view/:model/:id/:related/': 'viewRelated',
+                'view/:model/:id/:related/new/': 'addRelated',
                 'viewashtml/*splat': 'viewashtml'
             },
 
             view: function(model, id) {
+                currentView && currentView.remove();
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.buildViewForModel(model);
-                (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
             viewRelated: function(model, id, relatedField) {
+                currentView && currentView.remove();
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
                 var mainForm = specifyform.relatedObjectsForm(model, relatedField);
-                (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+            },
+
+            addRelated: function(model, id, relatedField) {
+                currentView && currentView.remove();
+                var parentResource = new (specifyapi.Resource.forModel(model))({id: id});
+                var relatedModel = datamodel.getRelatedModelForField(model, relatedField);
+                var newResource = new (specifyapi.Resource.forModel(relatedModel))();
+                var osn = datamodel.getFieldOtherSideName(model, relatedField);
+                newResource.set(osn, parentResource.url());
+                var mainForm = specifyform.buildViewForModel(relatedModel);
+                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: newResource })).render();
             },
 
             viewashtml: function() {
+                currentView && currentView.remove();
                 var params = $.deparam.querystring();
                 var form = params.viewdef ?
                     specifyform.buildViewByViewDefName(params.viewdef) :
@@ -50,6 +66,7 @@ require([
                 rootContainer.empty().append(
                     $('<pre>').text(beautify.style_html(html))
                 );
+                currentView = null;
             }
         });
 

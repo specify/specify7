@@ -1,7 +1,7 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'datamodel', 'whenall', 'jquery-bbq'
 ], function(require, $, _, Backbone, datamodel, whenAll) {
-    var debug = true, collections = {};
+    var collections = {};
 
     var Collection = Backbone.Collection.extend({
         populated: false,

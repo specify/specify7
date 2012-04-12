@@ -5,7 +5,8 @@ define([
     "use strict";
     return Backbone.View.extend({
         events: {
-            'click :submit': 'submit'
+            'click :submit': 'submit',
+            'click :button[value="Delete"]': 'delete'
         },
         initialize: function(options) {
             var self = this;
@@ -14,10 +15,16 @@ define([
             });
         },
         submit: function(evt) {
+            var self = this;
             evt.preventDefault();
             self.$(':submit').prop('disabled', true);
-            this.model.rsave().done(function() {
+            self.model.rsave().done(function() {
             });
+        },
+        'delete': function(evt) {
+            var self = this;
+            evt.preventDefault();
+            self.model.destroy();
         },
         render: function() {
             var self = this;
@@ -25,8 +32,14 @@ define([
             self.$el.empty();
             self.$el.append(populateForm(self.options.form, self.model));
             self.$(':submit').prop('disabled', true);
+            self.model.isNew() && self.$(':button[value="Delete"]').hide();
             self.delegateEvents();
             return self;
+        },
+        remove: function() {
+            this.undelegateEvents();
+            this.$el.empty();
+            return this;
         }
     });
 });

@@ -105,7 +105,7 @@ define([
     self.buildSubView = function (node) {
         var view = findViewdef($(node).data('specify-viewdef'));
         if (!view.length) return;
-        return buildView(view).find('.specify-form-header:first, :submit').remove().end();
+        return buildView(view).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
     };
 
     self.subViewIsFormTable = function (node) {
@@ -267,8 +267,7 @@ define([
         };
 
         var outerDiv = $('<div>').attr('data-specify-model', viewModel);
-        $('<h2 class="specify-form-header">').appendTo(outerDiv)
-            .append($('<a href="new/' + viewModel + '/">Add</a>'));
+        $('<h2 class="specify-form-header">').appendTo(outerDiv);
 
         if (doingFormTable) {
             var formViewdef = findViewdef(viewdef.find('definition').text());
@@ -299,7 +298,7 @@ define([
             var form = $('<form class="specify-view-content">').append(table);
             form.prop('id', 'specify-view-' + formNumber);
             outerDiv.append($('<div class="specify-view-content-container">').append(form));
-            outerDiv.append('<input type="submit">');
+            outerDiv.append('<input type="submit">').append('<input type="button", value="Delete">');
         }
         return outerDiv;
     };

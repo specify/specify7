@@ -1,7 +1,7 @@
 define([
-    'jquery', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
+    'jquery', 'underscore', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
+], function($, _, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
             RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
@@ -14,7 +14,8 @@ define([
     function setupControls (form, resource) {
         function controlChanged() {
             var control = $(this);
-            resource.set(control.attr('name'), control.val());
+            var value = control.is(':checkbox') ? control.prop('checked') : control.val();
+            resource.set(control.attr('name'), value);
         };
 
         form.find('.specify-field').each(function () {
@@ -35,7 +36,7 @@ define([
                     fetch = function() { return plainFetch().pipe(dataObjFormat); };
                 }
 
-                var setControl = control.is('input[type="checkbox"]') ?
+                var setControl = control.is(':checkbox') ?
                     _(control.prop).bind(control, 'checked') :
                     _(control.val).bind(control);
 

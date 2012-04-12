@@ -5,7 +5,8 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click a.specify-edit': 'edit'
+            'click a.specify-edit': 'edit',
+            'click .specify-subview-header:first a.specify-add-related': 'add'
         },
         initialize: function(options) {
             this.resource = options.resource;
@@ -16,8 +17,11 @@ define([
         render: function() {
             var self = this;
             var populateForm = require('populateform');
+            var header = $(subviewheader);
+            header.find('.specify-delete-related').remove();
+            header.find('.specify-add-related').prop('href', this.addUrl());
             self.undelegateEvents();
-            self.$el.empty().append(subviewheader);
+            self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
             if (self.collection.length < 1) {
                 self.$el.append('<p style="text-align: center">nothing here...</p>');
@@ -40,6 +44,14 @@ define([
             evt.preventDefault();
             var url = $(evt.currentTarget).data('backbone-url');
             Backbone.history.navigate(url, {trigger: true});
+        },
+        add: function(evt) {
+            evt.preventDefault();
+            var url = this.addUrl().replace(/^\/specify/, '');
+            Backbone.history.navigate(url, {trigger: true});
+        },
+        addUrl: function() {
+            return this.resource.viewUrl() + this.fieldName + '/new/';
         }
     });
 });
