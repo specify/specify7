@@ -1,12 +1,13 @@
 define([
-    'jquery', 'underscore', 'backbone', 'populateform', 'schemalocalization', 'specifyform',
-    'text!/static/html/templates/subviewheader.html'
-], function($, _, Backbone, populateForm, schemalocalization, specifyform, subviewheader) {
+    'jquery', 'underscore', 'backbone', 'populateform',
+    'text!/static/html/templates/confirmdelete.html',
+    'jquery-ui'
+], function($, _, Backbone, populateForm, confirmdelete) {
     "use strict";
     return Backbone.View.extend({
         events: {
             'click :submit': 'submit',
-            'click :button[value="Delete"]': 'delete'
+            'click :button[value="Delete"]': 'openDeleteDialog'
         },
         initialize: function(options) {
             var self = this;
@@ -21,10 +22,15 @@ define([
             self.model.rsave().done(function() {
             });
         },
-        'delete': function(evt) {
-            var self = this;
+        destroy: function() {
+            this.deleteDialog.dialog('close');
+            this.model.destroy();
+            this.undelegateEvents();
+            this.$el.empty();
+        },
+        openDeleteDialog: function(evt) {
             evt.preventDefault();
-            self.model.destroy();
+            this.deleteDialog.dialog('open');
         },
         render: function() {
             var self = this;
@@ -32,7 +38,15 @@ define([
             self.$el.empty();
             self.$el.append(populateForm(self.options.form, self.model));
             self.$(':submit').prop('disabled', true);
-            self.model.isNew() && self.$(':button[value="Delete"]').hide();
+            if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
+            else {
+                self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
+                    resizable: false, modal: true, autoOpen: false, buttons: {
+                        'Delete': _.bind(self.destroy, self),
+                        'Cancel': function() { $(this).dialog('close'); }
+                    }
+                });
+            }
             self.delegateEvents();
             return self;
         },
