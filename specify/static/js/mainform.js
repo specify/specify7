@@ -19,8 +19,7 @@ define([
             var self = this;
             evt.preventDefault();
             self.$(':submit').prop('disabled', true);
-            self.model.rsave().done(function() {
-            });
+            self.model.rsave().done(function() { self.trigger('savecomplete'); });
         },
         destroy: function() {
             this.deleteDialog.dialog('close');

@@ -52,6 +52,9 @@ require([
                 newResource.set(osn, parentResource.url());
                 var mainForm = specifyform.buildViewForModel(relatedModel);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: newResource })).render();
+                currentView.on('savecomplete', function() {
+                    Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), {trigger: true});
+                });
             },
 
             viewashtml: function() {
