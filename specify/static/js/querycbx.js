@@ -30,7 +30,7 @@ define([
             self.setElement(querycbx);
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
-            self.$('.querycbx-add').prop('href', self.model.url() + self.fieldName + '/new/');
+            self.$('.querycbx-add').prop('href', self.model.viewUrl() + self.fieldName + '/new/');
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize')),
             typesearch = $('[name="'+init.name+'"]', typesearches), // defines the querycbx

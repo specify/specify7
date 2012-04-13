@@ -61,8 +61,10 @@ require([
 
                     }
                     if (relatedType === 'many-to-one') {
-                        parentResource.set(relatedField, newResource.url());
-                        parentResource.save().done(goBack);
+                        parentResource.fetchIfNotPopulated().done(function() {
+                            parentResource.set(relatedField, newResource.url());
+                            parentResource.save().done(goBack);
+                        });
                     } else goBack();
                 });
             },

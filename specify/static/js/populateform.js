@@ -69,6 +69,7 @@ define([
             var relType = datamodel.getRelatedFieldType(model, fieldName);
 
             resource.rget(fieldName, true).done(function (related) {
+                if (!related) return;
                 var View, viewOptions = { el: node, resource: resource, fieldName: fieldName };
                 switch (relType) {
                 case 'one-to-many':
