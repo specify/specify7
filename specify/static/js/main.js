@@ -58,7 +58,6 @@ require([
                 currentView.on('savecomplete', function() {
                     function goBack() {
                         Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), true);
-
                     }
                     if (relatedType === 'many-to-one') {
                         parentResource.fetchIfNotPopulated().done(function() {
