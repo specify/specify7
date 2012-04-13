@@ -12,9 +12,9 @@ require({
 });
 
 require([
-    'jquery', 'backbone', 'specifyapi', 'datamodel', 'specifyform',
+    'jquery', 'backbone', 'specifyapi', 'datamodel', 'specifyform', 'datamodelview',
     'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
-], function($, Backbone, specifyapi, datamodel, specifyform, MainForm, schemalocalization, beautify) {
+], function($, Backbone, specifyapi, datamodel, specifyform, datamodelview, MainForm, schemalocalization, beautify) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
@@ -24,7 +24,9 @@ require([
                 'view/:model/:id/:related/new/*splat': 'addRelated',
                 'view/:model/:id/:related/*splat': 'viewRelated',
                 'view/:model/:id/*splat': 'view',
-                'viewashtml/*splat': 'viewashtml'
+                'viewashtml/*splat': 'viewashtml',
+                'datamodel/:model/': 'datamodel',
+                'datamodel/': 'datamodel'
             },
 
             view: function(model, id) {
@@ -81,6 +83,13 @@ require([
                     $('<pre>').text(beautify.style_html(html))
                 );
                 currentView = null;
+            },
+
+            datamodel: function(model) {
+                currentView && currentView.remove();
+                var View = model ? datamodelview.DataModelView : datamodelview.SchemaView;
+                currentView = new View({ model: model }).render();
+                rootContainer.append(currentView.el);
             }
         });
 
