@@ -19,6 +19,8 @@ def make_model(tabledef):
             fldargs['auto_now_add'] = True
         if fldname == 'timestampmodified':
             fldargs['auto_now'] = True
+        if fldname == 'version':
+            fldargs['default'] = 0
         attrs[fldname.lower()] = maker(flddef, fldargs)
     for reldef in tabledef.findall('relationship'):
         relname = reldef.attrib['relationshipname']
