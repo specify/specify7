@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'populateform',
     'text!/static/html/templates/confirmdelete.html',
+    'text!/static/html/templates/404.html',
     'jquery-ui'
-], function($, _, Backbone, populateForm, confirmdelete) {
+], function($, _, Backbone, populateForm, confirmdelete, notfoundtemplate) {
     "use strict";
     return Backbone.View.extend({
         events: {
@@ -13,6 +14,13 @@ define([
             var self = this;
             self.model.on('saverequired', function() {
                 self.$(':submit').prop('disabled', false);
+            });
+            self.model.on('error', function(resource, jqxhr, options) {
+                switch (jqxhr.status) {
+                case 404:
+                    self.$el.html(notfoundtemplate);
+                    return;
+                }
             });
         },
         submit: function(evt) {
