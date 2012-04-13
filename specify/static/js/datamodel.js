@@ -20,7 +20,7 @@ define([
         });
     };
 
-    var self = {
+    var datamodel = {
         getViewForModel: function(modelName) {
             return findTable(modelName).find('display').attr('view');
         },
@@ -60,5 +60,5 @@ define([
         }
     };
 
-    return self;
+    return datamodel;
 });

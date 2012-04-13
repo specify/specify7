@@ -1,5 +1,5 @@
 define([
-    'jquery', 'backbone', 'icons', 'datamodel', 'specifyform'
+    'jquery', 'backbone', 'icons', 'datamodel', 'specifyform', 'jquery-bbq'
 ], function($, Backbone, icons, datamodel, specifyform) {
 
     return Backbone.View.extend({
@@ -12,12 +12,15 @@ define([
             self.$el.empty();
             var model = self.options.parentModel;
             var fieldName = self.$el.data('specify-field-name');
+            var viewDef = self.$el.data('specify-viewdef');
             var relType = datamodel.getRelatedFieldType(model, fieldName);
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
             var icon = props.icon ? icons.getIcon(props.icon) :
                 icons.getIcon(datamodel.getRelatedModelForField(model, fieldName));
             var button = $('<a>').appendTo(self.el);
             self.url = self.model.viewUrl() + fieldName.toLowerCase() + '/';
+            if (viewDef)
+                self.url = $.param.querystring(self.url, {viewdef: viewDef});
             button.prop('href', self.url);
             button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
             if (relType === 'one-to-many') {

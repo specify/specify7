@@ -21,9 +21,9 @@ require([
         var currentView;
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
-                'view/:model/:id/': 'view',
-                'view/:model/:id/:related/': 'viewRelated',
-                'view/:model/:id/:related/new/': 'addRelated',
+                'view/:model/:id/:related/new/*splat': 'addRelated',
+                'view/:model/:id/:related/*splat': 'viewRelated',
+                'view/:model/:id/*splat': 'view',
                 'viewashtml/*splat': 'viewashtml'
             },
 

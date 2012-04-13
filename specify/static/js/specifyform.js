@@ -222,19 +222,19 @@ define([
                     var td = $('<td class="specify-subview">'),
                     props = self.parseSpecifyProperties(cell.attr('initialize'));
                     td.attr('data-specify-field-name', cell.attr('name'));
-                    if (props.btn === 'true') {
-                        td.addClass('specify-subview-button');
-                        id && td.prop('id', id);
-                        td.attr('data-specify-initialize', cell.attr('initialize'));
-                        props.align && td.addClass('align-' + props.align);
-                        return td;
-                    }
                     var view = findView(cell.attr('viewname'));
                     if (view === undefined) {
                         return td.text('View "' + cell.attr('viewname') + '" is undefined.');
                     }
                     var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
-                    return td.attr('data-specify-viewdef', subviewdef.attr('name'));
+                    td.attr('data-specify-viewdef', subviewdef.attr('name'));
+                    if (props.btn === 'true') {
+                        td.addClass('specify-subview-button');
+                        id && td.prop('id', id);
+                        td.attr('data-specify-initialize', cell.attr('initialize'));
+                        props.align && td.addClass('align-' + props.align);
+                    }
+                    return td;
                 },
                 panel: function() {
                     var table = processColumnDef(cell.attr('coldef'));
