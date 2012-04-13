@@ -77,7 +77,9 @@ define([
                     if (_.isString(value)) toOne = Resource.fromUri(value);
                     else {
                         toOne = Resource.fromUri(value.resource_uri);
+                        toOne._fetch = true; // bit of a kludge to block neesSaved event
                         toOne.set(value);
+                        toOne._fetch = null;
                         toOne.populated = true;
                     }
                     toOne.on('all', eventHandlerForToOne(self, field));

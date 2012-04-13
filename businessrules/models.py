@@ -1,4 +1,4 @@
-from django.db.models import signals
+from django.db.models import signals, Max
 from django.dispatch import receiver
 from specify import models
 from datetime import datetime
@@ -21,3 +21,15 @@ def preparation_pre_save(sender, **kwargs):
         if not preparation.collectionmemberid:
             preparation.collectionmemberid = preparation.collectionobject.collectionmemberid
 
+
+@receiver(signals.pre_save, sender=models.Collector)
+def collector_pre_save(sender, **kwargs):
+    collector = kwargs['instance']
+    if collector.id is None:
+        if collector.version is None:
+            collector.version = 0
+        if collector.ordernumber is None:
+            # this should be atomic, but whatever
+            others = models.Collector.objects.filter(collectingevent=collector.collectingevent)
+            top = others.aggregate(Max('ordernumber'))['ordernumber__max']
+            collector.ordernumber = top + 1

@@ -46,14 +46,24 @@ require([
             addRelated: function(model, id, relatedField) {
                 currentView && currentView.remove();
                 var parentResource = new (specifyapi.Resource.forModel(model))({id: id});
+                var relatedType = datamodel.getRelatedFieldType(model, relatedField);
                 var relatedModel = datamodel.getRelatedModelForField(model, relatedField);
                 var newResource = new (specifyapi.Resource.forModel(relatedModel))();
-                var osn = datamodel.getFieldOtherSideName(model, relatedField);
-                newResource.set(osn, parentResource.url());
+                if (relatedType === 'one-to-many') {
+                    var osn = datamodel.getFieldOtherSideName(model, relatedField);
+                    newResource.set(osn, parentResource.url());
+                }
                 var mainForm = specifyform.buildViewForModel(relatedModel);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: newResource })).render();
                 currentView.on('savecomplete', function() {
-                    Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), {trigger: true});
+                    function goBack() {
+                        Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), true);
+
+                    }
+                    if (relatedType === 'many-to-one') {
+                        parentResource.set(relatedField, newResource.url());
+                        parentResource.save().done(goBack);
+                    } else goBack();
                 });
             },
 

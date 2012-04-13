@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, _, datamodel, schemalocalization, specifyform,  setupPickList, setupQueryCbx,
+], function($, _, datamodel, schemalocalization, specifyform,  setupPickList, QueryCbx,
             RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
@@ -23,7 +23,7 @@ define([
             if (control.is('.specify-combobox')) {
                 return setupPickList(control, resource);
             } else if (control.is('.specify-querycbx')) {
-                return setupQueryCbx(control, resource);
+                (new QueryCbx({ el: control, model: resource })).render();
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
             } else {

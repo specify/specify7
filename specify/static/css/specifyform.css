@@ -67,6 +67,9 @@ select.specify-field {
 .querycbx-strct a {
     display: table-cell;
     width: 16px;
+}
+
+.querycbx-edit {
     padding-left: 6px;
 }
 

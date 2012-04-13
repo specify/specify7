@@ -6,7 +6,7 @@ define([
     return Backbone.View.extend({
         events: {
             'click a.specify-edit': 'edit',
-            'click .specify-subview-header:first a.specify-add-related': 'add'
+            'click .specify-subview-header a.specify-add-related': 'add'
         },
         initialize: function(options) {
             this.resource = options.resource;
