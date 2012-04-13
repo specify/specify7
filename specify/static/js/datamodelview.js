@@ -1,33 +1,44 @@
 define([
-    'jquery', 'underscore', 'backbone', 'datamodel'
-], function($, _, Backbone, datamodel) {
+    'jquery', 'underscore', 'backbone', 'schema'
+], function($, _, Backbone, schema) {
     "use strict";
     var datamodelview = {};
 
-    datamodelview.SchemaView = Backbone.View.extend({
+    var NavView = Backbone.View.extend({
+        events: {
+            'click a': 'nav'
+        },
+        nav: function(evt) {
+            evt.preventDefault();
+            var url = $(evt.currentTarget).prop('href').replace(/^.*\/specify/, '');
+            Backbone.history.navigate(url, true);
+        }
+    });
+
+    datamodelview.SchemaView = NavView.extend({
         tagName: 'table',
         render: function() {
             var self = this;
             self.$el.append('<h2>Specify Schema</h2>')
-            _(datamodel.getAllModels()).each(function(model) {
-                self.$el.append('<tr><td><a href="' + model.toLowerCase() + '/">' + model + '</a></td></tr>');
+            _(schema.models).each(function(model) {
+                self.$el.append('<tr><td><a href="' + model.name.toLowerCase() + '/">' + model.name + '</a></td></tr>');
             });
             return this;
         }
     });
 
-    datamodelview.DataModelView = Backbone.View.extend({
+    datamodelview.DataModelView = NavView.extend({
         tagName: 'table',
         render: function() {
-            var self = this, modelName = self.options.model;
-            self.$el.append('<h2>' + datamodel.getCannonicalNameForModel(modelName) + '</h2>')
-            _(datamodel.getAllFields(modelName)).each(function(field) {
+            var self = this, model = schema.getModel(self.options.model);
+            self.$el.append('<h2>' + model.name + '</h2>')
+            _(model.getAllFields()).each(function(field) {
                 var tr = $('<tr>');
-                tr.append('<td>' + field + '</td>');
-                tr.append('<td>' + datamodel.getFieldType(modelName, field) + '</td>');
-                if (datamodel.isRelatedField(modelName, field)) {
-                    var related = datamodel.getRelatedModelForField(modelName, field);
-                    tr.append('<td><a href="../' + related.toLowerCase() + '/">' + related + '</a></td>');
+                tr.append('<td>' + field.name + '</td>');
+                tr.append('<td>' + field.type + '</td>');
+                if (field.isRelationship) {
+                    var related = field.getRelatedModel();
+                    tr.append('<td><a href="../' + related.name.toLowerCase() + '/">' + related.name + '</a></td>');
                 }
                 self.$el.append(tr);
             });
