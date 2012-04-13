@@ -11,8 +11,8 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click .specify-subview-header:first .specify-delete-related' : 'openDeleteDialog',
-            'click .specify-subview-header:first .specify-add-related' : 'add'
+            'click .specify-subview-header .specify-delete-related' : 'openDeleteDialog',
+            'click .specify-subview-header .specify-add-related' : 'add'
         },
         initialize: function(options) {
             var self = this;
@@ -98,6 +98,7 @@ define([
             this.content.show();
         },
         showHide: function() {
+            this.spinner.hide();
             switch (this.collection.length) {
             case 0:
                 this.noContent.show();
