@@ -48,5 +48,11 @@ define(['underscore', 'schema'], function(_, schema) {
             equal(field.otherSideName.toLowerCase(), 'collectionobjects', 'othersidename matches');
             equal(field.getRelatedModel(), schema.getModel('collectingevent'), 'getRelatedModel works');
         });
+
+        test('field sets for models get confused', function() {
+            var fields1 = schema.getModel('collectionobject').getAllFields();
+            var fields2 = schema.getModel('agent').getAllFields();
+            notEqual(fields1, fields2);
+        });
     };
 });

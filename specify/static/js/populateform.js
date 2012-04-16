@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'datamodel', 'schemalocalization', 'specifyform', 'picklist',
+    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, _, datamodel, schemalocalization, specifyform,  setupPickList, QueryCbx,
+], function($, _, schema, schemalocalization, specifyform,  setupPickList, QueryCbx,
             RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
@@ -19,7 +19,7 @@ define([
         };
 
         form.find('.specify-field').each(function () {
-            var control = $(this), field = control.attr('name');
+            var control = $(this), fieldName = control.attr('name');
             if (control.is('.specify-combobox')) {
                 return setupPickList(control, resource);
             } else if (control.is('.specify-querycbx')) {
@@ -27,9 +27,10 @@ define([
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
             } else {
-                var fetch = function () { return resource.rget(field, true) };
+                var fetch = function () { return resource.rget(fieldName, true) };
+                var field = resource.specifyModel.getField(fieldName);
 
-                if (datamodel.isRelatedField(resource.specifyModel, field)) {
+                if (field && field.isRelationship) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
                     control.prop('readonly', true);
                     var plainFetch = fetch;
@@ -43,7 +44,7 @@ define([
                 var fillItIn = function() { fetch().done(setControl); };
 
                 fillItIn();
-                resource.onChange(field, fillItIn);
+                resource.onChange(fieldName, fillItIn);
 
                 control.change(controlChanged);
             }
@@ -66,7 +67,7 @@ define([
             }
 
             var fieldName = node.data('specify-field-name');
-            var relType = datamodel.getRelatedFieldType(model, fieldName);
+            var relType = model.getField(fieldName).type;
 
             resource.rget(fieldName, true).done(function (related) {
                 if (!related) return;

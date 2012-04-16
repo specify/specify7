@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'datamodel', 'collectionapi', 'whenall'
-], function($, _, Backbone, datamodel, Collection, whenAll) {
+    'jquery', 'underscore', 'backbone', 'schema', 'collectionapi', 'whenall'
+], function($, _, Backbone, schema, Collection, whenAll) {
     var debug = false, resources = {};
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
@@ -37,11 +37,11 @@ define([
             });
         },
         url: function() {
-            return '/api/specify/' + this.specifyModel.toLowerCase() + '/' +
+            return '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
         },
         viewUrl: function() {
-            return '/specify/view/' + this.specifyModel.toLowerCase() + '/' + this.id + '/';
+            return '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + this.id + '/';
         },
         get: function(attribute) {
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
@@ -58,21 +58,20 @@ define([
                 _(attrs).each(function(value, key) { delete self.relatedCache[key]; });
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
-        rget: function(field, prePop) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
-            var path = _(field).isArray()? field : field.split('.');
-            field = path[0].toLowerCase();
-            var value = self.get(field);
-            if (!datamodel.isRelatedField(self.specifyModel, field))
-                return path.length === 1 ? value : undefined;
+        rget: function(fieldName, prePop) { var self = this; return this.fetchIfNotPopulated().pipe(function() {
+            var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
+            fieldName = path[0].toLowerCase();
+            var field = self.specifyModel.getField(fieldName);
+            var value = self.get(fieldName);
+            if (!field || !field.isRelationship) return path.length === 1 ? value : undefined;
 
-            if (_.isNull(value) || _.isUndefined(value))
-                return value;
+            if (_.isNull(value) || _.isUndefined(value)) return value;
 
-            var related = datamodel.getRelatedModelForField(self.specifyModel, field);
+            var related = field.getRelatedModel();
 
-            switch (datamodel.getRelatedFieldType(self.specifyModel, field)) {
+            switch (field.type) {
             case 'many-to-one':
-                var toOne = self.relatedCache[field];
+                var toOne = self.relatedCache[fieldName];
                 if (!toOne) {
                     if (_.isString(value)) toOne = Resource.fromUri(value);
                     else {
@@ -82,32 +81,32 @@ define([
                         toOne._fetch = null;
                         toOne.populated = true;
                     }
-                    toOne.on('all', eventHandlerForToOne(self, field));
-                    self.relatedCache[field] = toOne;
+                    toOne.on('all', eventHandlerForToOne(self, fieldName));
+                    self.relatedCache[fieldName] = toOne;
                 }
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : (
                     prePop ? toOne.fetchIfNotPopulated() : toOne
                 );
             case 'one-to-many':
                 if (path.length > 1) return undefined;
-                if (self.relatedCache[field]) return self.relatedCache[field];
+                if (self.relatedCache[fieldName]) return self.relatedCache[fieldName];
                 var toMany = (_.isString(value)) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
-                toMany.queryParams[self.specifyModel.toLowerCase()] = self.id;
-                self.relatedCache[field] = toMany;
+                toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
+                self.relatedCache[fieldName] = toMany;
                 toMany.on('saverequired', function() { self.trigger('saverequired'); });
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
-                if (self.relatedCache[field]) {
-                    value = self.relatedCache[field];
+                if (self.relatedCache[fieldName]) {
+                    value = self.relatedCache[fieldName];
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
                 var collection = _.isString(value) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    value && value.on('all', eventHandlerForToOne(self, field));
-                    self.relatedCache[field] = value;
+                    value && value.on('all', eventHandlerForToOne(self, fieldName));
+                    self.relatedCache[fieldName] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             }
@@ -146,11 +145,11 @@ define([
             this.populated = true;
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },
-        getRelatedObjectCount: function(field) {
-            if (datamodel.getRelatedFieldType(this.specifyModel, field) !== 'one-to-many') {
+        getRelatedObjectCount: function(fieldName) {
+            if (this.specifyModel.getField(fieldName).type !== 'one-to-many') {
                 throw new TypeError('field is not one-to-many');
             }
-            return this.rget(field).pipe(function (collection) {
+            return this.rget(fieldName).pipe(function (collection) {
                 if (!collection) return 0;
                 if (_.has(collection, 'totalCount')) return collection.totalCount;
                 // should be some way to get the count without getting any objects
@@ -167,23 +166,23 @@ define([
             }
             return Backbone.sync(method, resource, options);
         },
-        onChange: function(field, callback) {
-            var field = field.toLowerCase();
-            var event = field.split('.').length === 1 ? 'change:' : 'rchange:';
-            this.on(event + field, function(resource, value) { callback(value); });
+        onChange: function(fieldName, callback) {
+            var fieldName = fieldName.toLowerCase();
+            var event = fieldName.split('.').length === 1 ? 'change:' : 'rchange:';
+            this.on(event + fieldName, function(resource, value) { callback(value); });
         }
     }, {
-        forModel: function(modelName) {
-            var cannonicalName = datamodel.getCannonicalNameForModel(modelName);
-            if (!cannonicalName) return null;
-            if (!_(resources).has(cannonicalName)) {
-                resources[cannonicalName] = Resource.extend({
-                    specifyModel: cannonicalName
+        forModel: function(model) {
+            var model = _(model).isString() ? schema.getModel(model) : model;
+            if (!model) return null;
+            if (!_(resources).has(model.name)) {
+                resources[model.name] = Resource.extend({
+                    specifyModel: model
                 }, {
-                    specifyModel: cannonicalName
+                    specifyModel: model
                 });
             }
-            return resources[cannonicalName];
+            return resources[model.name];
         },
 
         fromUri: function(uri) {

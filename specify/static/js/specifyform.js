@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'datamodel',
+    'jquery', 'underscore', 'schema',
     'text!/static/html/templates/relatedobjectsform.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
@@ -8,17 +8,17 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, datamodel, relatedobjectsform) {
+], function specifyform($, _, schema, relatedobjectsform) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
     var relatedObjectsForm = _.template(relatedobjectsform);
 
-    self.relatedObjectsForm = function(model, field) {
-        var related = datamodel.getRelatedModelForField(model, field);
-        var view = findView(datamodel.getViewForModel(related));
+    self.relatedObjectsForm = function(modelName, fieldName) {
+        var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
+        var view = findView(related.view);
         return $(relatedObjectsForm({
-            model: model, field: field,
+            model: modelName, field: fieldName,
             viewdef: getDefaultViewdef(view).attr('name')
         }));
     };
@@ -119,10 +119,6 @@ define([
         return node.is('.specify-subview-button');
     };
 
-    self.buildViewForModel = function (modelName) {
-        return self.buildViewByName(datamodel.getViewForModel(modelName));
-    };
-
     function buildView(viewdef) {
         var formNumber = formCounter++;
         var viewModel = getModelFromViewdef(viewdef),
@@ -206,8 +202,7 @@ define([
                         control.attr('name', fieldName).addClass('specify-field');
                         id && control.prop('id', id);
                         initialize && control.attr('data-specify-initialize', initialize);
-                        if (isRequired && isRequired.toLowerCase() === 'true' ||
-                            datamodel.isRequiredField(viewModel, fieldName)) {
+                        if (isRequired && isRequired.toLowerCase() === 'true') {
                             control.addClass('specify-required-field');
                         }
                     }

@@ -14,11 +14,12 @@ define([
             name = name.toLowerCase();
             return _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name; });
         },
-        getAllFields: _.memoize (function () {
-            return _.toArray(
+        getAllFields: function () {
+            this.fields = this.fields || _.toArray(
                 this.node.find('field, relationship').map(function() { return new Field(this); })
             );
-        }),
+            return this.fields;
+        },
     });
 
     var Field = function(node) {

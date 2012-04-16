@@ -17,7 +17,7 @@ define([
                 control.datepicker({dateFormat: $.datepicker.ISO_8601});
             var label = control.parents().last().find('label[for="' + control.prop('id') + '"]');
             if (!label.text()) {
-                label.text(schemalocalization.getLocalizedLabelForField(init.df, resource.specifyModel));
+                label.text(schemalocalization.getLocalizedLabelForField(init.df, resource.specifyModel.name));
             }
             if (resource) {
                 control.change(function() { resource.set(init.df, control.val()); });

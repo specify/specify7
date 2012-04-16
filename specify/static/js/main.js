@@ -12,9 +12,9 @@ require({
 });
 
 require([
-    'jquery', 'backbone', 'specifyapi', 'datamodel', 'specifyform', 'datamodelview',
+    'jquery', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
     'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
-], function($, Backbone, specifyapi, datamodel, specifyform, datamodelview, MainForm, schemalocalization, beautify) {
+], function($, Backbone, specifyapi, schema, specifyform, datamodelview, MainForm, schemalocalization, beautify) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
@@ -31,39 +31,41 @@ require([
 
             view: function(model, id) {
                 currentView && currentView.remove();
+                model = schema.getModel(model);
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
-                var mainForm = specifyform.buildViewForModel(model);
+                var mainForm = specifyform.buildViewByName(model.view);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
             viewRelated: function(model, id, relatedField) {
                 currentView && currentView.remove();
+                model = schema.getModel(model);
                 var ResourceForModel = specifyapi.Resource.forModel(model);
                 var resource = new ResourceForModel({id: id});
-                var mainForm = specifyform.relatedObjectsForm(model, relatedField);
+                var mainForm = specifyform.relatedObjectsForm(model.name, relatedField);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
             addRelated: function(model, id, relatedField) {
                 currentView && currentView.remove();
+                model = schema.getModel(model);
+                relatedField = model.getField(relatedField);
                 var parentResource = new (specifyapi.Resource.forModel(model))({id: id});
-                var relatedType = datamodel.getRelatedFieldType(model, relatedField);
-                var relatedModel = datamodel.getRelatedModelForField(model, relatedField);
+                var relatedModel = relatedField.getRelatedModel();
                 var newResource = new (specifyapi.Resource.forModel(relatedModel))();
-                if (relatedType === 'one-to-many') {
-                    var osn = datamodel.getFieldOtherSideName(model, relatedField);
-                    newResource.set(osn, parentResource.url());
+                if (relatedField.type === 'one-to-many') {
+                    newResource.set(relatedField.otherSideName, parentResource.url());
                 }
-                var mainForm = specifyform.buildViewForModel(relatedModel);
+                var mainForm = specifyform.buildViewByName(relatedModel.view);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: newResource })).render();
                 currentView.on('savecomplete', function() {
                     function goBack() {
                         Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), true);
                     }
-                    if (relatedType === 'many-to-one') {
+                    if (relatedField.type === 'many-to-one') {
                         parentResource.fetchIfNotPopulated().done(function() {
-                            parentResource.set(relatedField, newResource.url());
+                            parentResource.set(relatedField.name, newResource.url());
                             parentResource.save().done(goBack);
                         });
                     } else goBack();

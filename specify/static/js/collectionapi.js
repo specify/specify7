@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'datamodel', 'whenall', 'jquery-bbq'
-], function(require, $, _, Backbone, datamodel, whenAll) {
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'jquery-bbq'
+], function(require, $, _, Backbone, schema, whenAll) {
     var collections = {};
 
     var Collection = Backbone.Collection.extend({
@@ -10,7 +10,7 @@ define([
             this.queryParams = {};
         },
         url: function() {
-            var url = '/api/specify/' + this.model.specifyModel.toLowerCase() + '/';
+            var url = '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
             return $.param.querystring(url, this.queryParams);
         },
         parse: function(resp, xhr) {
@@ -50,15 +50,15 @@ define([
             return whenAll(_.chain(this.models).compact().invoke('rsave').value());
         }
     }, {
-        forModel: function(modelName) {
+        forModel: function(model) {
+            model = _(model).isString() ? schema.getModel(model) : model;
             var Resource = require('resourceapi');
-            var cannonicalName = datamodel.getCannonicalNameForModel(modelName);
-            if (!_(collections).has(cannonicalName)) {
-                collections[cannonicalName] = Collection.extend({
-                    model: Resource.forModel(modelName)
+            if (!_(collections).has(model.name)) {
+                collections[model.name] = Collection.extend({
+                    model: Resource.forModel(model)
                 });
             }
-            return collections[cannonicalName];
+            return collections[model.name];
         },
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\//.exec(uri);

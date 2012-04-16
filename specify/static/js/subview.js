@@ -8,7 +8,7 @@ define([
             this.resource = options.resource;
             this.specifyModel = options.resource.specifyModel;
             this.fieldName = options.fieldName;
-            this.title = schemalocalization.getLocalizedLabelForField(this.fieldName, this.specifyModel);
+            this.title = schemalocalization.getLocalizedLabelForField(this.fieldName, this.specifyModel.name);
         },
         render: function() {
             var self = this;

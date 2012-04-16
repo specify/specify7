@@ -20,9 +20,9 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         module('specifyapi.Resource');
         test('forModel', function() {
             var Resource = api.Resource.forModel('collectionobject');
-            equal(Resource.specifyModel, 'CollectionObject');
+            equal(Resource.specifyModel.name, 'CollectionObject');
             var resource = new Resource();
-            equal(resource.specifyModel, 'CollectionObject');
+            equal(resource.specifyModel.name, 'CollectionObject');
             ok(resource instanceof api.Resource);
             ok(resource instanceof Backbone.Model);
             ok(resource instanceof api.Resource.forModel('collectionObject'));
@@ -35,7 +35,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
 
         test('fromUri', function() {
             var resource = api.Resource.fromUri('/api/specify/determination/100/');
-            equal(resource.specifyModel, 'Determination');
+            equal(resource.specifyModel.name, 'Determination');
             equal(resource.id, 100);
             equal(resource.populated, false);
         });
@@ -106,7 +106,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
-            $.when(resource.rget('catalognumber'), resource.rget('collectingeven')).done(function() {
+            $.when(resource.rget('catalognumber'), resource.rget('collectingevent')).done(function() {
                 equal(requestCounter, 1);
                 start();
             });

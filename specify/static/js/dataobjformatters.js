@@ -7,7 +7,7 @@ define([
 
     return function (resource) {
         if (!resource) return resource;
-        var sw = $('format[name="' + resource.specifyModel + '"]', formatters).find('switch');
+        var sw = $('format[name="' + resource.specifyModel.name + '"]', formatters).find('switch');
         // external dataobjFormatters not supported
         if (!sw.length || sw.find('external').length) return resource;
 
