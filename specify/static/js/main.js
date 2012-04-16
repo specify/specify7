@@ -29,22 +29,37 @@ require([
                 'datamodel/': 'datamodel'
             },
 
-            view: function(model, id) {
+            view: function(modelName, id) {
                 currentView && currentView.remove();
-                model = schema.getModel(model);
-                var ResourceForModel = specifyapi.Resource.forModel(model);
-                var resource = new ResourceForModel({id: id});
+                var model = schema.getModel(modelName);
+                var resource = new (specifyapi.Resource.forModel(model))({id: id});
                 var mainForm = specifyform.buildViewByName(model.view);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
 
-            viewRelated: function(model, id, relatedField) {
-                currentView && currentView.remove();
-                model = schema.getModel(model);
-                var ResourceForModel = specifyapi.Resource.forModel(model);
-                var resource = new ResourceForModel({id: id});
-                var mainForm = specifyform.relatedObjectsForm(model.name, relatedField);
-                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+            viewRelated: function(modelName, id, relatedField) {
+                var model = schema.getModel(modelName);
+                var field = model.getField(relatedField);
+                var resource = new (specifyapi.Resource.forModel(model))({id: id});
+                var viewdef = $.deparam.querystring().viewdef;
+                var mainForm = viewdef && specifyform.buildViewByViewDefName(viewdef);
+                switch (field.type) {
+                case 'one-to-many':
+                    currentView && currentView.remove();
+                    mainForm = mainForm || specifyform.relatedObjectsForm(model.name, relatedField);
+                    currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+                    break;
+                case 'many-to-one':
+                case 'zero-to-one':
+                    var relatedModel = field.getRelatedModel();
+                    resource.rget(relatedField).done(function(relatedResource) {
+                        currentView && currentView.remove();
+                        mainForm = mainForm || specifyform.buildViewByName(relatedResource.specifyModel.view);
+                        currentView = (new MainForm({ el: rootContainer, form: mainForm, model: relatedResource }))
+                            .render();
+                    });
+                    break;
+                }
             },
 
             addRelated: function(model, id, relatedField) {
