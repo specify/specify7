@@ -14,8 +14,11 @@ require({
     }
 });
 
-require(['tests/testlatlongutils', 'tests/testapi'], function(testlatlongutils, testapi) {
+require([
+    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema'
+], function(testlatlongutils, testapi, testschema) {
     QUnit.start();
-    testlatlongutils();
+    testschema();
     testapi();
+    testlatlongutils();
 });

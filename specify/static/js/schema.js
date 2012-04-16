@@ -15,7 +15,9 @@ define([
             return _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name; });
         },
         getAllFields: _.memoize (function () {
-            return this.node.find('field, relationship').map(function() { return new Field(this); });
+            return _.toArray(
+                this.node.find('field, relationship').map(function() { return new Field(this); })
+            );
         }),
     });
 
