@@ -12,9 +12,11 @@ require({
 });
 
 require([
-    'jquery', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
-    'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
-], function($, Backbone, specifyapi, schema, specifyform, datamodelview, MainForm, schemalocalization, beautify) {
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
+    'dataobjformatters', 'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
+], function(
+    $, _, Backbone, specifyapi, schema, specifyform, datamodelview, dataobjformat,
+    MainForm, schemalocalization, beautify) {
     "use strict";
     $(function () {
         var rootContainer = $('#specify-rootform-container');
@@ -32,7 +34,15 @@ require([
             view: function(modelName, id) {
                 currentView && currentView.remove();
                 var model = schema.getModel(modelName);
+
+                function setTitle(resource) {
+                    window.document.title = model.getLocalizedName();
+                    dataobjformat(resource).done(function(title) {
+                        if (_(title).isString()) window.document.title += ': ' + title;
+                    });
+                }
                 var resource = new (specifyapi.Resource.forModel(model))({id: id});
+                resource.on('change', setTitle);
                 var mainForm = specifyform.buildViewByName(model.view);
                 currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
             },
@@ -40,7 +50,15 @@ require([
             viewRelated: function(modelName, id, relatedField) {
                 var model = schema.getModel(modelName);
                 var field = model.getField(relatedField);
+
+                function setTitle(resource) {
+                    window.document.title = field.getLocalizedName() + ' for ' + model.getLocalizedName();
+                    dataobjformat(resource).done(function(title) {
+                        if(_(title).isString()) window.document.title += ': ' + title;
+                    });
+                }
                 var resource = new (specifyapi.Resource.forModel(model))({id: id});
+                resource.on('change', setTitle);
                 var viewdef = $.deparam.querystring().viewdef;
                 var mainForm;
                 switch (field.type) {
@@ -67,7 +85,17 @@ require([
                 currentView && currentView.remove();
                 model = schema.getModel(model);
                 relatedField = model.getField(relatedField);
+                function setTitle(resource) {
+                    window.document.title = 'New ' + relatedField.getLocalizedName() +
+                        ' for ' + model.getLocalizedName();;
+                    dataobjformat(resource).done(function(title) {
+                        if(_(title).isString()) window.document.title += ': ' + title;
+                    });
+                }
+
                 var parentResource = new (specifyapi.Resource.forModel(model))({id: id});
+                parentResource.on('change', setTitle);
+                parentResource.fetchIfNotPopulated();
                 var relatedModel = relatedField.getRelatedModel();
                 var newResource = new (specifyapi.Resource.forModel(relatedModel))();
                 if (relatedField.type === 'one-to-many') {
