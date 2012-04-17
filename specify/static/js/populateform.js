@@ -27,10 +27,11 @@ define([
             } else if (control.is('.specify-uiplugin')) {
                 return setupUIplugin(control, resource);
             } else {
-                var fetch = function () { return resource.rget(fieldName, true) };
                 var field = resource.specifyModel.getField(fieldName);
+                if (!field) return;
+                var fetch = function () { return resource.rget(fieldName, true) };
 
-                if (field && field.isRelationship) {
+                if (field.isRelationship) {
                     control.removeClass('specify-field').addClass('specify-object-formatted');
                     control.prop('readonly', true);
                     var plainFetch = fetch;

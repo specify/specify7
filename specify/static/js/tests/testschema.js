@@ -25,7 +25,15 @@ define(['underscore', 'schema'], function(_, schema) {
             var field = model.getField('catalognumber');
             ok(_(model.getAllFields()).contains(field), 'field in getAllFields');
             equal(field.name.toLowerCase(), 'catalognumber', 'got the right field');
+            equal(field.model, model, 'the model for the field is correct');
             equal(model.getField('catalogNumber'), field, 'getField is case-insensitive');
+        });
+
+        test('model.getField nested', function() {
+            var model = schema.getModel('collectionobject');
+            var field = model.getField('cataloger.lastname');
+            equal(field.name.toLowerCase(), 'lastname', 'got the right field');
+            equal(field.model.name.toLowerCase(), 'agent', 'field is in agent model');
         });
 
         test('regular field attributes', function() {

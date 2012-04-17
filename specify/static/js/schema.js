@@ -11,19 +11,24 @@ define([
     };
     _.extend(Model.prototype, {
         getField: function(name) {
-            name = name.toLowerCase();
-            return _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name; });
+            if (_(name).isString()) {
+                name = name.toLowerCase().split('.');
+            }
+            var field = _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name[0]; });
+            return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
         },
         getAllFields: function () {
-            this.fields = this.fields || _.toArray(
-                this.node.find('field, relationship').map(function() { return new Field(this); })
+            var self = this;
+            self.fields = self.fields || _.toArray(
+                self.node.find('field, relationship').map(function() { return new Field(self, this); })
             );
-            return this.fields;
+            return self.fields;
         },
     });
 
-    var Field = function(node) {
+    var Field = function(model, node) {
         this.node = $(node);
+        this.model = model;
         this.name = this.node.attr('name') || this.node.attr('relationshipname');
         this.isRelationship = this.node.is('relationship');
         this.isRequired = this.node.attr('required') === 'true';
