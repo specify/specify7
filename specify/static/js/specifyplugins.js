@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'latlongutils',
+    'jquery', 'underscore', 'specifyapi', 'latlongutils',
     'text!/static/html/templates/gmapplugin.html',
     'text!/static/html/templates/latlonui.html'
-], function($, _, schemalocalization, api, latlongutils, gmaptemplate_html, latlonui_html) {
+], function($, _, api, latlongutils, gmaptemplate_html, latlonui_html) {
     "use strict";
     var gmaptemplate = _.template(gmaptemplate_html);
     var latlonuitemplate = _.template(latlonui_html);
@@ -17,7 +17,7 @@ define([
                 control.datepicker({dateFormat: $.datepicker.ISO_8601});
             var label = control.parents().last().find('label[for="' + control.prop('id') + '"]');
             if (!label.text()) {
-                label.text(schemalocalization.getLocalizedLabelForField(init.df, resource.specifyModel.name));
+                label.text(resource.specifyModel.getField(init.df).getLocalizedName());
             }
             if (resource) {
                 control.change(function() { resource.set(init.df, control.val()); });

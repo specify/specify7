@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schemalocalization', 'specifyform', 'populateform',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform',
     'text!/static/html/templates/subviewheader.html',
     'text!/static/html/templates/confirmdelete.html',
     'jquery-ui'
-], function(require, $, _, Backbone, schemalocalization, specifyform, populateform,
+], function(require, $, _, Backbone, specifyform, populateform,
             subviewheader, confirmdelete) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
@@ -32,7 +32,7 @@ define([
             self.resource = options.resource;
             self.specifyModel = options.resource.specifyModel;
             self.fieldName = options.fieldName;
-            self.title = schemalocalization.getLocalizedLabelForField(self.fieldName, self.specifyModel.name);
+            self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
         },
         render: function() {
             var self = this;

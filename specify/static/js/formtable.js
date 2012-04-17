@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'schemalocalization', 'specifyform',
+    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'specifyform',
     'text!/static/html/templates/subviewheader.html'
-], function(require, $, _, Backbone, populateform, schemalocalization, specifyform, subviewheader) {
+], function(require, $, _, Backbone, populateform, specifyform, subviewheader) {
 
     return Backbone.View.extend({
         events: {
@@ -12,7 +12,7 @@ define([
             this.resource = options.resource;
             this.specifyModel = options.resource.specifyModel;
             this.fieldName = options.fieldName;
-            this.title = schemalocalization.getLocalizedLabelForField(this.fieldName, this.specifyModel.name);
+            this.title = this.specifyModel.getField(this.fieldName).getLocalizedName();
         },
         render: function() {
             var self = this;

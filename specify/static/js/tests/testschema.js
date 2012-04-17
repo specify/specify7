@@ -36,6 +36,24 @@ define(['underscore', 'schema'], function(_, schema) {
             equal(field.model.name.toLowerCase(), 'agent', 'field is in agent model');
         });
 
+        test('model.getLocalizedName', function() {
+            var model = schema.getModel('collectionobject');
+            var name = model.getLocalizedName();
+            ok(_(name).isString(), 'name is string: ' + name);
+        });
+
+        test('field.getLocalizedName', function() {
+            var field = schema.getModel('collectionobject').getField('cataloger');
+            var name = field.getLocalizedName();
+            ok(_(name).isString(), 'name is string: ' + name);
+        });
+
+        test('field.getLocalizedDesc', function() {
+            var field = schema.getModel('collectionobject').getField('cataloger');
+            var desc = field.getLocalizedDesc();
+            ok(_(desc).isString(), 'desc is string: ' + desc);
+        });
+
         test('regular field attributes', function() {
             var model = schema.getModel('collectionobject');
             var field = model.getField('catalognumber');

@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore',
+    'jquery', 'underscore', 'schemalocalization',
     'text!/static/resources/specify_datamodel.xml'
-], function($, _, xml) {
+], function($, _, schemalocalization, xml) {
     "use strict";
 
     var Model = function(node) {
@@ -24,6 +24,9 @@ define([
             );
             return self.fields;
         },
+        getLocalizedName: function() {
+            return schemalocalization.getLocalizedLabelForModel(this.name);
+        }
     });
 
     var Field = function(model, node) {
@@ -39,6 +42,12 @@ define([
         getRelatedModel: function() {
             if (!this.isRelationship) return undefined;
             return schema.getModel(this.node.attr('classname').split('.').pop());
+        },
+        getLocalizedName: function() {
+            return schemalocalization.getLocalizedLabelForField(this.name, this.model.name);
+        },
+        getLocalizedDesc: function() {
+            return schemalocalization.getLocalizedDescForField(this.name, this.model.name);
         }
     });
 
