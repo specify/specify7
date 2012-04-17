@@ -14,12 +14,14 @@ define([
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
     var relatedObjectsForm = _.template(relatedobjectsform);
 
-    self.relatedObjectsForm = function(modelName, fieldName) {
-        var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
-        var view = findView(related.view);
+    self.relatedObjectsForm = function(modelName, fieldName, viewdef) {
+        if (!viewdef) {
+            var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
+            if (!related.view) throw new Error('no default view for ' + related.name);
+            viewdef = getDefaultViewdef(findView(related.view)).attr('name');
+        }
         return $(relatedObjectsForm({
-            model: modelName, field: fieldName,
-            viewdef: getDefaultViewdef(view).attr('name')
+            model: modelName, field: fieldName, viewdef: viewdef
         }));
     };
 

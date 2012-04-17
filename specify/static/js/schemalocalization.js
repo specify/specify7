@@ -13,9 +13,11 @@ define([
     };
 
     var getLocalizationForField = function(fieldname, modelname) {
-        var path = fieldname.split('.'), field = path.pop(),
+        var path = fieldname.split('.'), field = path.pop().toLowerCase(),
         model = path.pop() || modelname.split('.').pop();
-        return getLocalizationForModel(model).children('items').children('item[name="'+field+'"]');
+        return getLocalizationForModel(model).children('items').children('item').filter(function() {
+            return $(this).attr('name').toLowerCase() === field;
+        });
     };
 
     // Given a DOM containing alternative localizations,

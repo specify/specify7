@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'dataobjformatters', 'whenall',
     'text!/static/resources/typesearch_def.xml',
     'text!/static/html/templates/querycbx.html',
     'jquery-ui'
-], function ($, _, Backbone, api, specifyform, xml, html) {
+], function ($, _, Backbone, api, specifyform, dataobjformat, whenAll, xml, html) {
     var typesearches = $.parseXML(xml);
 
     return Backbone.View.extend({
@@ -31,46 +31,49 @@ define([
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
             self.$('.querycbx-add').prop('href', self.model.viewUrl() + self.fieldName + '/new/');
-
-            var init = specifyform.parseSpecifyProperties(control.data('specify-initialize')),
-            typesearch = $('[name="'+init.name+'"]', typesearches), // defines the querycbx
-            searchfield = typesearch.attr('searchfield'),
-            displaycols = typesearch.attr('displaycols').split(','),
-            format = typesearch.attr('format');
-
             control.prop('readonly') && self.$('a').hide();
 
-            // format the query results according to formatter in the typesearch
-            var formatInterpolate = function (resource) {
-                var str = format;
-                _.chain(displaycols).map(function(col)  {
-                    return resource.get(col);
-                }).each(function (val) {
-                    str = str.replace(/%s/, val);
-                });
-                return str;
-            };
+            var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
+            self.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
+            self.displaycols = self.typesearch.attr('displaycols').split(',');
 
+            var searchfield = self.typesearch.attr('searchfield');
             control.autocomplete({
                 minLength: 3,
                 source: function (request, response) {
                     var collection = api.queryCbxSearch(init.name, searchfield, request.term);
-                    collection.fetch().done(function() {
-                        response(collection.chain().compact().map(function(resource) {
-                            var display = formatInterpolate(resource);
-                            return { label: display, value: display, resource: resource };
-                        }).value());
+                    collection.fetch().pipe(function() {
+                        var rendering = collection.chain().compact().map(_.bind(self.renderItem, self)).value();
+                        return whenAll(rendering).done(response);
                     }).fail(function() { response([]); });
                 }
             });
 
-            self.model.rget(self.fieldName, true).pipe(function(related) {
+            self.model.rget(self.fieldName, true).done(function(related) {
                 if (related) {
                     self.$('.querycbx-edit').attr('href', related.viewUrl());
-                    control.val(formatInterpolate(related));
+                    self.renderItem(related).done(function(item) {
+                        control.val(item.value);
+                    });
                 }
             });
             return this;
+        },
+        renderItem: function (resource) {
+            function makeItem(display) {
+                return { label: display, value: display, resource: resource };
+            }
+
+            var str = this.typesearch.attr('format');
+            if (str) {
+                _.chain(this.displaycols).map(function(col)  {
+                    return resource.get(col);
+                }).each(function (val) {
+                    str = str.replace(/%s/, val);
+                });
+                return $.when(makeItem(str));
+            };
+            return dataobjformat(resource, this.typesearch.attr('dataobjformatter')).pipe(makeItem);
         }
     });
 });

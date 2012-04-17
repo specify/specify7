@@ -42,11 +42,11 @@ require([
                 var field = model.getField(relatedField);
                 var resource = new (specifyapi.Resource.forModel(model))({id: id});
                 var viewdef = $.deparam.querystring().viewdef;
-                var mainForm = viewdef && specifyform.buildViewByViewDefName(viewdef);
+                var mainForm;
                 switch (field.type) {
                 case 'one-to-many':
                     currentView && currentView.remove();
-                    mainForm = mainForm || specifyform.relatedObjectsForm(model.name, relatedField);
+                    mainForm = specifyform.relatedObjectsForm(model.name, relatedField, viewdef);
                     currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
                     break;
                 case 'many-to-one':
@@ -54,7 +54,8 @@ require([
                     var relatedModel = field.getRelatedModel();
                     resource.rget(relatedField).done(function(relatedResource) {
                         currentView && currentView.remove();
-                        mainForm = mainForm || specifyform.buildViewByName(relatedResource.specifyModel.view);
+                        mainForm = viewdef ? specifyform.buildViewByViewDefName(viewdef) :
+                            specifyform.buildViewByName(relatedResource.specifyModel.view);
                         currentView = (new MainForm({ el: rootContainer, form: mainForm, model: relatedResource }))
                             .render();
                     });
