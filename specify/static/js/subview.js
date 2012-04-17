@@ -17,7 +17,7 @@ define([
             self.$el.empty().append(subviewheader);
             self.$('.specify-subview-title').text(self.title);
             if (!self.model) {
-                self.$el.append('<p style="text-align: center">none...</p>');
+                self.$el.append('<p>none...</p>');
                 return;
             }
             self.$el.append(populateForm(specifyform.buildSubView(self.$el), self.model));

@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist',
+    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist', 'specifyapi',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, _, schema, schemalocalization, specifyform,  setupPickList, QueryCbx,
+], function($, _, schema, schemalocalization, specifyform,  setupPickList, api, QueryCbx,
             RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
@@ -68,15 +68,15 @@ define([
             }
 
             var fieldName = node.data('specify-field-name');
-            var relType = model.getField(fieldName).type;
+            var field = model.getField(fieldName);
 
             resource.rget(fieldName, true).done(function (related) {
-                if (!related) return;
                 var View, viewOptions = { el: node, resource: resource, fieldName: fieldName };
-                switch (relType) {
+                switch (field.type) {
                 case 'one-to-many':
                     View = specifyform.subViewIsFormTable(node) ? FormTable : RecordSelector;
-                    viewOptions.collection = related;
+                    viewOptions.collection = related ||
+                        new (api.Collection.forModel(field.getRelatedModel()))();
                     break;
                 case 'zero-to-one':
                 case 'many-to-one':
@@ -84,7 +84,7 @@ define([
                     viewOptions.model = related
                     break;
                 default:
-                    node.append('<p>unhandled relationship type: ' + relType + '</p>');
+                    node.append('<p>unhandled relationship type: ' + feild.type + '</p>');
                     return;
                 }
                 (new View(viewOptions)).render();

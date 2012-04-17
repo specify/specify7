@@ -24,7 +24,7 @@ define([
             self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
             if (self.collection.length < 1) {
-                self.$el.append('<p style="text-align: center">nothing here...</p>');
+                self.$el.append('<p>nothing here...</p>');
                 return;
             }
             var rows = self.collection.map(function(resource) {
