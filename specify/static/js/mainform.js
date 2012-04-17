@@ -41,9 +41,7 @@ define([
         },
         render: function() {
             var self = this;
-            self.undelegateEvents();
-            self.$el.empty();
-            self.$el.append(populateForm(self.options.form, self.model));
+            self.$el.append(populateForm(self.buildForm(), self.model));
             self.$(':submit').prop('disabled', true);
             if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
             self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
@@ -52,13 +50,12 @@ define([
                     'Cancel': function() { $(this).dialog('close'); }
                 }
             });
-            self.delegateEvents();
+            self.setTitle();
             return self;
         },
-        remove: function() {
-            this.undelegateEvents();
-            this.$el.empty();
-            return this;
-        }
+        setFormTitle: function(title) {
+            this.$('.specify-form-header span').text(title);
+        },
+        setTitle: function() {}
     });
 });

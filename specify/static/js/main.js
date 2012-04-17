@@ -18,9 +18,92 @@ require([
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview, dataobjformat,
     MainForm, schemalocalization, beautify) {
     "use strict";
+
+    var ResourceView = MainForm.extend({
+        initialize: function(options) {
+            this.specifyModel = schema.getModel(options.modelName);
+            this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.id });
+            this.model.on('change', _.bind(this.setTitle, this));
+            MainForm.prototype.initialize.call(this, options);
+        },
+        buildForm: function() {
+            return specifyform.buildViewByName(this.specifyModel.view);
+        },
+        setTitle: function () {
+            var self = this;
+            var title = self.specifyModel.getLocalizedName();
+            self.setFormTitle(title);
+            window.document.title = title;
+            dataobjformat(self.model).done(function(str) {
+                if (_(str).isString()) {
+                    title += ': ' + str;
+                    self.setFormTitle(title);
+                    window.document.title = title;
+                }
+            });
+        }
+    });
+
+    var ToManyView = MainForm.extend({
+        initialize: function(options) {
+            this.model = options.parentResource;
+            this.model.on('change', _.bind(this.setTitle, this));
+            MainForm.prototype.initialize.call(this, options);
+        },
+        buildForm: function() {
+            var o = this.options;
+            return specifyform.relatedObjectsForm(o.parentModel.name, o.relatedField.name, o.viewdef);
+        },
+        setTitle: function () {
+            var self = this, o = this.options;
+            var title = o.relatedField.getLocalizedName() + ' for ' + o.parentModel.getLocalizedName();
+            self.setFormTitle(title);
+            window.document.title = title;
+            dataobjformat(self.model).done(function(str) {
+                if (_(str).isString()) {
+                    title += ': ' + str;
+                    self.setFormTitle(title);
+                    window.document.title = title;
+                }
+            });
+        }
+    });
+
+    var ToOneView = MainForm.extend({
+        initialize: function(options) {
+            options.parentResource.on('change', _.bind(this.setTitle, this));
+            MainForm.prototype.initialize.call(this, options);
+        },
+        buildForm: function() {
+            var viewdef = this.options.viewdef;
+            return viewdef ? specifyform.buildViewByViewDefName(viewdef) :
+                specifyform.buildViewByName(this.model.specifyModel.view);
+        },
+        setTitle: function () {
+            var self = this, o = this.options;
+            var title = o.relatedField.getLocalizedName() + ' for ' + o.parentModel.getLocalizedName();
+            self.setFormTitle(title);
+            window.document.title = title;
+            dataobjformat(o.parentResource).done(function(str) {
+                if (_(str).isString()) {
+                    title += ': ' + str;
+                    self.setFormTitle(title);
+                    window.document.title = title;
+                }
+            });
+        }
+    });
+
     $(function () {
-        var rootContainer = $('#specify-rootform-container');
+        var rootContainer = $('#content');
         var currentView;
+        function setCurrentView(view) {
+            currentView && currentView.remove();
+            currentView = view;
+            currentView.render();
+            rootContainer.append(currentView.el);
+        }
+
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'view/:model/:id/:related/new/*splat': 'addRelated',
@@ -33,52 +116,25 @@ require([
 
             view: function(modelName, id) {
                 currentView && currentView.remove();
-                var model = schema.getModel(modelName);
-
-                function setTitle(resource) {
-                    window.document.title = model.getLocalizedName();
-                    dataobjformat(resource).done(function(title) {
-                        if (_(title).isString()) window.document.title += ': ' + title;
-                    });
-                }
-                var resource = new (specifyapi.Resource.forModel(model))({id: id});
-                resource.on('change', setTitle);
-                var mainForm = specifyform.buildViewByName(model.view);
-                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
+                currentView = new ResourceView({ modelName: modelName, id: id });
+                currentView.render();
+                rootContainer.append(currentView.el);
             },
 
             viewRelated: function(modelName, id, relatedField) {
                 var model = schema.getModel(modelName);
                 var field = model.getField(relatedField);
-
-                function setTitle(resource) {
-                    window.document.title = field.getLocalizedName() + ' for ' + model.getLocalizedName();
-                    dataobjformat(resource).done(function(title) {
-                        if(_(title).isString()) window.document.title += ': ' + title;
-                    });
-                }
-                var resource = new (specifyapi.Resource.forModel(model))({id: id});
-                resource.on('change', setTitle);
                 var viewdef = $.deparam.querystring().viewdef;
-                var mainForm;
-                switch (field.type) {
-                case 'one-to-many':
-                    currentView && currentView.remove();
-                    mainForm = specifyform.relatedObjectsForm(model.name, relatedField, viewdef);
-                    currentView = (new MainForm({ el: rootContainer, form: mainForm, model: resource })).render();
-                    break;
-                case 'many-to-one':
-                case 'zero-to-one':
-                    var relatedModel = field.getRelatedModel();
-                    resource.rget(relatedField).done(function(relatedResource) {
-                        currentView && currentView.remove();
-                        mainForm = viewdef ? specifyform.buildViewByViewDefName(viewdef) :
-                            specifyform.buildViewByName(relatedResource.specifyModel.view);
-                        currentView = (new MainForm({ el: rootContainer, form: mainForm, model: relatedResource }))
-                            .render();
-                    });
-                    break;
-                }
+                var opts = {
+                    parentModel: model, relatedField: field, viewdef: viewdef,
+                    parentResource: new (specifyapi.Resource.forModel(model))({id: id})
+                };
+                if (field.type === 'one-to-many') {
+                    setCurrentView(new ToManyView(opts));
+                } else opts.parentResource.rget(field.name).done(function(relatedResource) {
+                    opts.model = relatedResource;
+                    setCurrentView(new ToOneView(opts));
+                });
             },
 
             addRelated: function(model, id, relatedField) {
@@ -87,9 +143,11 @@ require([
                 relatedField = model.getField(relatedField);
                 function setTitle(resource) {
                     window.document.title = 'New ' + relatedField.getLocalizedName() +
-                        ' for ' + model.getLocalizedName();;
+                        ' for ' + model.getLocalizedName();
+                    currentView.setTitle(window.document.title);
                     dataobjformat(resource).done(function(title) {
                         if(_(title).isString()) window.document.title += ': ' + title;
+                        currentView.setTitle(window.document.title);
                     });
                 }
 
