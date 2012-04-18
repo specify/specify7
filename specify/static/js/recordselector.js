@@ -37,7 +37,8 @@ define([
         render: function() {
             var self = this;
             self.undelegateEvents();
-            self.$el.empty().append(subviewheader);
+            self.$el.empty();
+            self.$el.hasClass('no-header') || self.$el.append(subviewheader);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
             self.content = $('<div>').appendTo(self.el);

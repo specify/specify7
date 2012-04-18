@@ -128,7 +128,7 @@ require([
                 var viewdef = $.deparam.querystring().viewdef;
                 var opts = {
                     parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
-                    parentResource: new (specifyapi.Resource.forModel(model))({resourceId: id})
+                    parentResource: new (specifyapi.Resource.forModel(model))({ id: id })
                 };
                 if (field.type === 'one-to-many' && !adding) {
                     setCurrentView(new ToManyView(opts));
