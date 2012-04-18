@@ -73,6 +73,10 @@ select.specify-field {
     padding-left: 6px;
 }
 
+ul.ui-autocomplete li.ui-menu-item {
+    list-style-type: none;
+}
+
 .specify-subview-button-count {
     padding: 3px;
     margin-left: 5px;

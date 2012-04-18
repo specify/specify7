@@ -22,7 +22,7 @@ require([
     var ResourceView = MainForm.extend({
         initialize: function(options) {
             this.specifyModel = schema.getModel(options.modelName);
-            this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.id });
+            this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.resourceId });
             this.model.on('change', _.bind(this.setTitle, this));
             MainForm.prototype.initialize.call(this, options);
         },
@@ -102,6 +102,7 @@ require([
         var currentView;
         function setCurrentView(view) {
             currentView && currentView.remove();
+            $('.ui-autocomplete').remove(); // these are getting left behind sometimes
             currentView = view;
             currentView.render();
             rootContainer.append(currentView.el);
@@ -118,10 +119,7 @@ require([
             },
 
             view: function(modelName, id) {
-                currentView && currentView.remove();
-                currentView = new ResourceView({ modelName: modelName, id: id });
-                currentView.render();
-                rootContainer.append(currentView.el);
+                setCurrentView(new ResourceView({ modelName: modelName, resourceId: id }));
             },
 
             addOrViewRelated: function(modelName, id, relatedField, adding) {
@@ -130,7 +128,7 @@ require([
                 var viewdef = $.deparam.querystring().viewdef;
                 var opts = {
                     parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
-                    parentResource: new (specifyapi.Resource.forModel(model))({id: id})
+                    parentResource: new (specifyapi.Resource.forModel(model))({resourceId: id})
                 };
                 if (field.type === 'one-to-many' && !adding) {
                     setCurrentView(new ToManyView(opts));

@@ -50,6 +50,10 @@ define([
                     'Cancel': function() { $(this).dialog('close'); }
                 }
             });
+            self.deleteDialog.parent('.ui-dialog').appendTo(self.el);
+            self.deleteDialog.on('remove', function() {
+                $(this).detach();
+            });
             self.setTitle();
             return self;
         },

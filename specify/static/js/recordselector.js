@@ -65,6 +65,10 @@ define([
                     'Cancel': function() { $(this).dialog('close'); }
                 }
             });
+            self.deleteDialog.parent('.ui-dialog').appendTo(self.el);
+            self.deleteDialog.on('remove', function() {
+                $(this).detach();
+            });
             self.delegateEvents();
             self.redraw(0);
             self.showHide();
