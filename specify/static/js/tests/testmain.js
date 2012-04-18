@@ -15,9 +15,10 @@ require({
 });
 
 require([
-    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema'
-], function(testlatlongutils, testapi, testschema) {
+    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema', 'tests/testparseselect',
+], function(testlatlongutils, testapi, testschema, testparseselect) {
     QUnit.start();
+    testparseselect();
     testschema();
     testapi();
     testlatlongutils();

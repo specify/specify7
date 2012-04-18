@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'dataobjformatters', 'whenall',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'dataobjformatters', 'whenall', 'parseselect',
     'text!/static/resources/typesearch_def.xml',
     'text!/static/html/templates/querycbx.html',
     'jquery-ui'
-], function ($, _, Backbone, api, specifyform, dataobjformat, whenAll, xml, html) {
+], function ($, _, Backbone, api, specifyform, dataobjformat, whenAll, parseselect, xml, html) {
     var typesearches = $.parseXML(xml);
 
     return Backbone.View.extend({
@@ -35,7 +35,11 @@ define([
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             self.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
-            self.displaycols = self.typesearch.attr('displaycols').split(',');
+
+            var typesearchTxt = self.typesearch.text().trim();
+            var mapF = !typesearchTxt ? function(x) { return x; } :
+                _.bind(parseselect.colToField, parseselect, parseselect.parse(typesearchTxt));
+            self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapF);
 
             var searchfield = self.typesearch.attr('searchfield');
             control.autocomplete({
@@ -60,20 +64,17 @@ define([
             return this;
         },
         renderItem: function (resource) {
-            function makeItem(display) {
-                return { label: display, value: display, resource: resource };
-            }
-
             var str = this.typesearch.attr('format');
-            if (str) {
-                _.chain(this.displaycols).map(function(col)  {
-                    return resource.get(col);
-                }).each(function (val) {
-                    str = str.replace(/%s/, val);
+            var rget = _.bind(resource.rget, resource);
+            var buildLabel = str &&
+                whenAll(_(this.displaycols).map(rget)).pipe(function(vals) {
+                    _(vals).each(function (val) { str = str.replace(/%s/, val); });
+                    return str;
                 });
-                return $.when(makeItem(str));
-            };
-            return dataobjformat(resource, this.typesearch.attr('dataobjformatter')).pipe(makeItem);
+            var buildValue = dataobjformat(resource, this.typesearch.attr('dataobjformatter'));
+            return $.when(buildLabel, buildValue).pipe(function(label, value) {
+                return { label: label || value, value: value, resource: resource };
+            });
         }
     });
 });
