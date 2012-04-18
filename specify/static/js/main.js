@@ -81,7 +81,10 @@ require([
         },
         setTitle: function () {
             var self = this, o = this.options;
-            var title = o.relatedField.getLocalizedName() + ' for ' + o.parentModel.getLocalizedName();
+            var title = !o.adding ? o.relatedField.getLocalizedName() : 'New ' + (
+                o.relatedField.type === "one-to-many" ? this.model.specifyModel.getLocalizedName() :
+                    o.relatedField.getLocalizedName());
+            title += ' for ' + o.parentModel.getLocalizedName();
             self.setFormTitle(title);
             window.document.title = title;
             dataobjformat(o.parentResource).done(function(str) {
@@ -121,57 +124,53 @@ require([
                 rootContainer.append(currentView.el);
             },
 
-            viewRelated: function(modelName, id, relatedField) {
+            addOrViewRelated: function(modelName, id, relatedField, adding) {
                 var model = schema.getModel(modelName);
                 var field = model.getField(relatedField);
                 var viewdef = $.deparam.querystring().viewdef;
                 var opts = {
-                    parentModel: model, relatedField: field, viewdef: viewdef,
+                    parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
                     parentResource: new (specifyapi.Resource.forModel(model))({id: id})
                 };
-                if (field.type === 'one-to-many') {
+                if (field.type === 'one-to-many' && !adding) {
                     setCurrentView(new ToManyView(opts));
-                } else opts.parentResource.rget(field.name).done(function(relatedResource) {
-                    opts.model = relatedResource;
-                    setCurrentView(new ToOneView(opts));
+                    return;
+                }
+
+                opts.parentResource.rget(field.name).done(function(relatedResource) {
+                    var view;
+                    if (adding) {
+                        opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
+                        if (field.type === 'one-to-many')
+                            opts.model.set(field.otherSideName, opts.parentResource.url());
+                        view = new ToOneView(opts);
+                        view.on('savecomplete', function() {
+                            function goBack() {
+                                Backbone.history.navigate(opts.parentResource.viewUrl().replace(/^\/specify/, ''), true);
+                            }
+                            if (field.type === 'many-to-one') {
+                                parentResource.set(field.name, opts.model.url());
+                                parentResource.save().done(goBack);
+                            } else goBack();
+                        });
+                    } else {
+                        opts.model = relatedResource;
+                        view = new ToOneView(opts);
+                    }
+                    setCurrentView(view);
                 });
             },
 
-            addRelated: function(model, id, relatedField) {
-                currentView && currentView.remove();
-                model = schema.getModel(model);
-                relatedField = model.getField(relatedField);
-                function setTitle(resource) {
-                    window.document.title = 'New ' + relatedField.getLocalizedName() +
-                        ' for ' + model.getLocalizedName();
-                    currentView.setTitle(window.document.title);
-                    dataobjformat(resource).done(function(title) {
-                        if(_(title).isString()) window.document.title += ': ' + title;
-                        currentView.setTitle(window.document.title);
-                    });
-                }
+            viewRelated: function() {
+                var args = _(arguments).toArray();
+                args[3] = false; // not adding
+                this.addOrViewRelated.apply(this, args);
+            },
 
-                var parentResource = new (specifyapi.Resource.forModel(model))({id: id});
-                parentResource.on('change', setTitle);
-                parentResource.fetchIfNotPopulated();
-                var relatedModel = relatedField.getRelatedModel();
-                var newResource = new (specifyapi.Resource.forModel(relatedModel))();
-                if (relatedField.type === 'one-to-many') {
-                    newResource.set(relatedField.otherSideName, parentResource.url());
-                }
-                var mainForm = specifyform.buildViewByName(relatedModel.view);
-                currentView = (new MainForm({ el: rootContainer, form: mainForm, model: newResource })).render();
-                currentView.on('savecomplete', function() {
-                    function goBack() {
-                        Backbone.history.navigate(parentResource.viewUrl().replace(/^\/specify/, ''), true);
-                    }
-                    if (relatedField.type === 'many-to-one') {
-                        parentResource.fetchIfNotPopulated().done(function() {
-                            parentResource.set(relatedField.name, newResource.url());
-                            parentResource.save().done(goBack);
-                        });
-                    } else goBack();
-                });
+            addRelated: function() {
+                var args = _(arguments).toArray();
+                args[3] = true; // adding
+                this.addOrViewRelated.apply(this, args);
             },
 
             viewashtml: function() {
