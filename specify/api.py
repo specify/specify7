@@ -37,10 +37,9 @@ def add_to_filter_fields(model, field, filter_type):
     if filter_type not in querytypes: querytypes.append(filter_type)
 
 for typesearch in typesearches.findall('typesearch'):
-    model = typesearch.attrib['name'].capitalize()
+    model = models.models_by_tableid[int(typesearch.attrib['tableid'])]
     field = typesearch.attrib['searchfield'].lower()
-    add_to_filter_fields(model, field, 'icontains')
-
+    add_to_filter_fields(model.__name__, field, 'icontains')
 
 def add_filter_for_fk(fkfield):
     field = fkfield.name

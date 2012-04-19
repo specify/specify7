@@ -9,6 +9,7 @@ def make_model(tabledef):
     class Meta:
         db_table = tabledef.attrib['table']
     attrs = dict(id=make_id_field(tabledef.find('id')),
+                 tableid=int(tabledef.attrib['tableid']),
                  Meta=Meta, __module__=__name__)
     for flddef in tabledef.findall('field'):
         fldname = flddef.attrib['name'].lower()
@@ -159,9 +160,11 @@ field_type_map = {
     }
 
 datamodel = ElementTree.parse(os.path.join(os.path.dirname(__file__),
+                                           "static", "resources",
                                            'specify_datamodel.xml'))
 
-globals().update(dict((model.__name__, model)
-                      for model in map(make_model, datamodel.findall('table'))))
+models_by_tableid = dict((model.tableid, model) for model in map(make_model, datamodel.findall('table')))
+
+globals().update((model.__name__, model) for model in models_by_tableid.values())
 
 

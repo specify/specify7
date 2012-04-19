@@ -10,8 +10,7 @@ define([
             this.queryParams = {};
         },
         url: function() {
-            var url = '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
-            return $.param.querystring(url, this.queryParams);
+            return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
         },
         parse: function(resp, xhr) {
             _.extend(this, {

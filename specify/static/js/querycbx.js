@@ -1,9 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'dataobjformatters', 'whenall', 'parseselect',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'dataobjformatters', 'whenall', 'parseselect',
     'text!/static/resources/typesearch_def.xml',
     'text!/static/html/templates/querycbx.html',
     'jquery-ui'
-], function ($, _, Backbone, api, specifyform, dataobjformat, whenAll, parseselect, xml, html) {
+], function ($, _, Backbone, api, schema, specifyform, dataobjformat, whenAll, parseselect, xml, html) {
     var typesearches = $.parseXML(xml);
 
     return Backbone.View.extend({
@@ -41,11 +42,15 @@ define([
                 _.bind(parseselect.colToField, parseselect, parseselect.parse(typesearchTxt));
             self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapF);
 
-            var searchfield = self.typesearch.attr('searchfield');
+            var field = self.model.specifyModel.getField(self.fieldName);
+            var relatedModel = field.getRelatedModel();
+            var searchField = relatedModel.getField(self.typesearch.attr('searchfield'));
+            control.attr('title', 'Searches: ' + searchField.getLocalizedName());
+
             control.autocomplete({
                 minLength: 3,
                 source: function (request, response) {
-                    var collection = api.queryCbxSearch(init.name, searchfield, request.term);
+                    var collection = api.queryCbxSearch(relatedModel, searchField.name, request.term);
                     collection.fetch().pipe(function() {
                         var rendering = collection.chain().compact().map(_.bind(self.renderItem, self)).value();
                         return whenAll(rendering).done(response);

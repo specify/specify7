@@ -173,7 +173,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 equal(requestCounter, 1);
                 ok(prepCol instanceof api.Collection.forModel('preparation'));
                 ok(!prepCol.populated);
-                equal(prepCol.url(), '/api/specify/preparation/?collectionobject=100');
+                equal(prepCol.url(), '/api/specify/preparation/');
                 start();
             });
         });
@@ -187,7 +187,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 equal(requestCounter, 1);
                 ok(result instanceof api.Collection.forModel('picklistitem'));
                 ok(result.populated);
-                equal(result.url(), '/api/specify/picklistitem/?picklist=1');
+                equal(result.url(), '/api/specify/picklistitem/');
                 start();
             });
         });
@@ -461,7 +461,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('fromUri', function() {
             var url = '/api/specify/collectionobject/?accession=62';
             var collection = api.Collection.fromUri(url);
-            equal(collection.url(), url);
+            equal(collection.url(), '/api/specify/collectionobject/');
             ok(!collection.populated);
         });
 
