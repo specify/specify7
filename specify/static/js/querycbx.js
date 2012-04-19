@@ -11,7 +11,8 @@ define([
         events: {
             'click .querycbx-edit': 'nav',
             'click .querycbx-add': 'nav',
-            'autocompleteselect': 'select'
+            'autocompleteselect': 'select',
+            'blur input': 'fillIn'
         },
         nav: function (evt) {
             evt.preventDefault();
@@ -58,15 +59,19 @@ define([
                 }
             });
 
+            this.fillIn();
+            return this;
+        },
+        fillIn: function () {
+            var self = this;
             self.model.rget(self.fieldName, true).done(function(related) {
                 if (related) {
                     self.$('.querycbx-edit').attr('href', related.viewUrl());
                     self.renderItem(related).done(function(item) {
-                        control.val(item.value);
+                        self.$('input').val(item.value);
                     });
                 }
             });
-            return this;
         },
         renderItem: function (resource) {
             var str = this.typesearch.attr('format');
