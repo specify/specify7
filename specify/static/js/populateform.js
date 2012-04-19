@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist', 'specifyapi',
+    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist', 'specifyapi', 'uiformat',
     'querycbx', 'recordselector', 'specifyplugins', 'dataobjformatters', 'subviewbutton', 'formtable', 'subview'
-], function($, _, schema, schemalocalization, specifyform,  setupPickList, api, QueryCbx,
-            RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
+], function($, _, schema, schemalocalization, specifyform,  setupPickList, api, uiformat,
+            QueryCbx, RecordSelector, uiplugins, dataObjFormat, SubViewButton, FormTable, SubView) {
     "use strict";
 
     function setupUIplugin (control, resource) {
@@ -11,53 +11,50 @@ define([
         plugin && resource.fetchIfNotPopulated().done(function () { plugin(control, init, resource); });
     };
 
-    function setupControls (form, resource) {
+    function setupRegularField (resource, control) {
         function controlChanged() {
             var control = $(this);
             var value = control.is(':checkbox') ? control.prop('checked') : control.val();
             resource.set(control.attr('name'), value);
         };
 
-        form.find('.specify-field').each(function () {
-            var control = $(this), fieldName = control.attr('name');
-            if (control.is('.specify-combobox')) {
-                return setupPickList(control, resource);
-            } else if (control.is('.specify-querycbx')) {
-                (new QueryCbx({ el: control, model: resource })).render();
-            } else if (control.is('.specify-uiplugin')) {
-                return setupUIplugin(control, resource);
-            } else {
-                var field = resource.specifyModel.getField(fieldName);
-                if (!field) return;
-                var fetch = function () { return resource.rget(fieldName, true) };
+        var fieldName = control.attr('name');
+        var field = resource.specifyModel.getField(fieldName);
+        if (!field) return;
+        var fetch = function () { return resource.rget(fieldName, true) };
 
-                if (field.isRelationship) {
-                    control.removeClass('specify-field').addClass('specify-object-formatted');
-                    control.prop('readonly', true);
-                    var plainFetch = fetch;
-                    fetch = function() { return plainFetch().pipe(dataObjFormat); };
-                }
+        if (field.isRelationship) {
+            control.removeClass('specify-field').addClass('specify-object-formatted');
+            control.prop('readonly', true);
+            var plainFetch = fetch;
+            fetch = function() { return plainFetch().pipe(dataObjFormat); };
+        }
 
-                var setControl = control.is(':checkbox') ?
-                    _(control.prop).bind(control, 'checked') :
-                    _(control.val).bind(control);
+        var setControl = control.is(':checkbox') ? _(control.prop).bind(control, 'checked') :
+            function (value) { control.val(uiformat(field, value)); };
 
-                var fillItIn = function() { fetch().done(setControl); };
+        var fillItIn = function() { fetch().done(setControl); };
 
-                fillItIn();
-                resource.onChange(fieldName, fillItIn);
+        fillItIn();
+        resource.onChange(fieldName, fillItIn);
 
-                control.change(controlChanged);
-            }
-        });
-    };
+        control.change(controlChanged);
+    }
 
     // This function is the main entry point for this module. It calls
     // the processView function in specifyform.js to build the forms
     // then fills them in with the given data or pointer to data.
     function populateForm (form, resource) {
         schemalocalization.localizeForm(form);
-        setupControls(form, resource);
+
+        form.find('.specify-field').each(function () {
+            var control = $(this);
+            if      (control.is('.specify-combobox')) setupPickList(control, resource);
+            else if (control.is('.specify-querycbx')) (new QueryCbx({ el: control, model: resource })).render();
+            else if (control.is('.specify-uiplugin')) setupUIplugin(control, resource);
+            else setupRegularField(resource, control);
+        });
+
 
         var model = resource.specifyModel;
         form.find('.specify-subview').each(function () {

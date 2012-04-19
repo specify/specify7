@@ -1,7 +1,7 @@
 define([
-    'jquery', 'specifyapi', 'whenall',
+    'jquery', 'specifyapi', 'whenall', 'uiformat',
     'text!/static/resources/dataobj_formatters.xml'
-], function($, api, whenAll, xml) {
+], function($, api, whenAll, uiformat, xml) {
     "use strict";
     var formatters = $.parseXML(xml);
 
@@ -27,12 +27,13 @@ define([
                 });
             });
 
-            return whenAll(deferreds).pipe(function (data) {
+            return whenAll(deferreds).pipe(function (fieldVals) {
                 var result = [];
                 fields.each(function (index) {
-                    var field = $(this);
-                    field.attr('sep') && result.push(field.attr('sep'));
-                    result.push(data[index]);
+                    var fieldNode = $(this);
+                    var field = resource.specifyModel.getField(fieldNode.text());
+                    fieldNode.attr('sep') && result.push(fieldNode.attr('sep'));
+                    result.push(uiformat(field, fieldVals[index]));
                 });
                 return result.join('');
             });
