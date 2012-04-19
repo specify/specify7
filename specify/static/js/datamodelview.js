@@ -15,23 +15,34 @@ define([
         }
     });
 
+    function attrsToDl(node) {
+        var dl = $('<dl class="specify-datamodel-attrs">');
+        _(node.attributes).each(function(attr) {
+            $('<dt>').text(attr.nodeName).appendTo(dl);
+            $('<dd>').text(attr.nodeValue).appendTo(dl);
+        });
+        return dl;
+    }
+
+
     datamodelview.SchemaView = NavView.extend({
-        tagName: 'table',
         render: function() {
             var self = this;
             self.$el.append('<h2>Specify Schema</h2>')
+            var table = $('<table>').appendTo(self.el);
             _(schema.models).each(function(model) {
-                self.$el.append('<tr><td><a href="' + model.name.toLowerCase() + '/">' + model.name + '</a></td></tr>');
+                table.append('<tr><td><a href="' + model.name.toLowerCase() + '/">' + model.name + '</a></td></tr>');
             });
             return this;
         }
     });
 
     datamodelview.DataModelView = NavView.extend({
-        tagName: 'table',
         render: function() {
             var self = this, model = schema.getModel(self.options.model);
-            self.$el.append('<h2>' + model.name + '</h2>')
+            self.$el.append('<h2>' + model.name + '</h2>');
+            self.$el.append(attrsToDl(model.node.get(0)));
+            var table = $('<table>').appendTo(self.el);
             _(model.getAllFields()).each(function(field) {
                 var tr = $('<tr>');
                 tr.append('<td>' + field.name + '</td>');
@@ -39,12 +50,13 @@ define([
                 if (field.isRelationship) {
                     var related = field.getRelatedModel();
                     tr.append('<td><a href="../' + related.name.toLowerCase() + '/">' + related.name + '</a></td>');
-                }
-                self.$el.append(tr);
+                } else tr.append('<td>');
+                $('<td>').append(attrsToDl(field.node.get(0))).appendTo(tr);
+                table.append(tr);
             });
             return this;
         }
-    })
+    });
 
     return datamodelview;
 });
