@@ -21,17 +21,16 @@ define([
         var fieldName = control.attr('name');
         var field = resource.specifyModel.getField(fieldName);
         if (!field) return;
-        var fetch = function () { return resource.rget(fieldName, true) };
 
+        var fetch;
         if (field.isRelationship) {
             control.removeClass('specify-field').addClass('specify-object-formatted');
             control.prop('readonly', true);
-            var plainFetch = fetch;
-            fetch = function() { return plainFetch().pipe(dataObjFormat); };
-        }
+            fetch = function() { return resource.rget(fieldName).pipe(dataObjFormat); };
+        } else fetch = function () { return uiformat(resource, fieldName); };
 
-        var setControl = control.is(':checkbox') ? _(control.prop).bind(control, 'checked') :
-            function (value) { control.val(uiformat(field, value)); };
+        var setControl = control.is(':checkbox') ?
+            _(control.prop).bind(control, 'checked') : _(control.val).bind(control);
 
         var fillItIn = function() { fetch().done(setControl); };
 

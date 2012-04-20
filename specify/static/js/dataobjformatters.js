@@ -18,13 +18,14 @@ define([
                           sw.find('fields:first')).find('field');
 
             var deferreds = fields.map(function () {
-                var field = $(this);
-                var formatter = field.attr('formatter'); // hope it's not circular!
-                var fieldName = field.text();
-                var fetch = resource.rget(fieldName, true);
-                return !formatter ? fetch : fetch.pipe(function(resource) {
-                    return dataobjformat(resource, formatter);
-                });
+                var fieldNode = $(this);
+                var formatter = fieldNode.attr('formatter'); // hope it's not circular!
+                var fieldName = fieldNode.text();
+                if (formatter)
+                    return resource.rget(fieldName).pipe(function(resource) {
+                        return dataobjformat(resource, formatter);
+                    });
+                else return uiformat(resource, fieldName);
             });
 
             return whenAll(deferreds).pipe(function (fieldVals) {
@@ -36,8 +37,7 @@ define([
 
                     var format = fieldNode.attr('format');
                     if (!_(format).isUndefined() && format.trim() === '') return;
-                    var field = resource.specifyModel.getField(fieldNode.text());
-                    result.push(uiformat(field, fieldVals[index]));
+                    result.push(fieldVals[index]);
                 });
                 return result.join('');
             });
