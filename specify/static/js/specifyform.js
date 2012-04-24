@@ -199,7 +199,7 @@ define([
                     },
                     initialize = cell.attr('initialize'),
                     isRequired = cell.attr('isrequired'),
-                    control = (byUIType[cell.attr('uitype')] || byUIType.other)();
+                    control = (byUIType[cell.attr('uitype') || 'text'] || byUIType.other)();
                     if (control) {
                         control.attr('name', fieldName).addClass('specify-field');
                         id && control.prop('id', id);

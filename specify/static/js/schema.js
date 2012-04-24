@@ -7,7 +7,9 @@ define([
     var Model = function(node) {
         this.node = $(node);
         this.name = this.node.attr('classname').split('.').pop();
-        this.view = this.node.find('display').attr('view');
+        var display = this.node.find('display');
+        this.view = display.attr('view');
+        this.searchDialog = display.attr('searchdlg');
     };
     _.extend(Model.prototype, {
         getField: function(name) {

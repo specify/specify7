@@ -13,89 +13,13 @@ require({
 
 require([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
-    'dataobjformatters', 'mainform', 'schemalocalization', 'beautify-html', 'jquery-bbq'
+    'views', 'schemalocalization', 'beautify-html', 'jquery-bbq'
 ], function(
-    $, _, Backbone, specifyapi, schema, specifyform, datamodelview, dataobjformat,
-    MainForm, schemalocalization, beautify) {
+    $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
+    views, schemalocalization, beautify) {
     "use strict";
+    var ResourceView = views.ResourceView, ToManyView = views.ToManyView, ToOneView = views.ToOneView;
 
-    var ResourceView = MainForm.extend({
-        initialize: function(options) {
-            this.specifyModel = schema.getModel(options.modelName);
-            this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.resourceId });
-            this.model.on('change', _.bind(this.setTitle, this));
-            MainForm.prototype.initialize.call(this, options);
-        },
-        buildForm: function() {
-            return specifyform.buildViewByName(this.specifyModel.view);
-        },
-        setTitle: function () {
-            var self = this;
-            var title = self.specifyModel.getLocalizedName();
-            self.setFormTitle(title);
-            window.document.title = title;
-            dataobjformat(self.model).done(function(str) {
-                if (_(str).isString()) {
-                    title += ': ' + str;
-                    self.setFormTitle(title);
-                    window.document.title = title;
-                }
-            });
-        }
-    });
-
-    var ToManyView = MainForm.extend({
-        initialize: function(options) {
-            this.model = options.parentResource;
-            this.model.on('change', _.bind(this.setTitle, this));
-            MainForm.prototype.initialize.call(this, options);
-        },
-        buildForm: function() {
-            var o = this.options;
-            return specifyform.relatedObjectsForm(o.parentModel.name, o.relatedField.name, o.viewdef);
-        },
-        setTitle: function () {
-            var self = this, o = this.options;
-            var title = o.relatedField.getLocalizedName() + ' for ' + o.parentModel.getLocalizedName();
-            self.setFormTitle(title);
-            window.document.title = title;
-            dataobjformat(self.model).done(function(str) {
-                if (_(str).isString()) {
-                    title += ': ' + str;
-                    self.setFormTitle(title);
-                    window.document.title = title;
-                }
-            });
-        }
-    });
-
-    var ToOneView = MainForm.extend({
-        initialize: function(options) {
-            options.parentResource.on('change', _.bind(this.setTitle, this));
-            MainForm.prototype.initialize.call(this, options);
-        },
-        buildForm: function() {
-            var viewdef = this.options.viewdef;
-            return viewdef ? specifyform.buildViewByViewDefName(viewdef) :
-                specifyform.buildViewByName(this.model.specifyModel.view);
-        },
-        setTitle: function () {
-            var self = this, o = this.options;
-            var title = !o.adding ? o.relatedField.getLocalizedName() : 'New ' + (
-                o.relatedField.type === "one-to-many" ? this.model.specifyModel.getLocalizedName() :
-                    o.relatedField.getLocalizedName());
-            title += ' for ' + o.parentModel.getLocalizedName();
-            self.setFormTitle(title);
-            window.document.title = title;
-            dataobjformat(o.parentResource).done(function(str) {
-                if (_(str).isString()) {
-                    title += ': ' + str;
-                    self.setFormTitle(title);
-                    window.document.title = title;
-                }
-            });
-        }
-    });
 
     $(function () {
         var rootContainer = $('#content');

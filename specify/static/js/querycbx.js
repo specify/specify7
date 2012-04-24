@@ -1,16 +1,20 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'dataobjformatters', 'whenall', 'parseselect',
+    'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization',
     'text!/static/resources/typesearch_def.xml',
+    'text!/static/resources/dialog_defs.xml',
     'text!/static/html/templates/querycbx.html',
     'jquery-ui'
-], function ($, _, Backbone, api, schema, specifyform, dataobjformat, whenAll, parseselect, xml, html) {
-    var typesearches = $.parseXML(xml);
+], function ($, _, Backbone, api, schema, specifyform, dataobjformat, whenAll, parseselect, schemalocalization,
+             typesearchxml, dialogdefxml, html) {
+    var typesearches = $.parseXML(typesearchxml);
+    var dialogdefs = $.parseXML(dialogdefxml);
 
     return Backbone.View.extend({
         events: {
             'click .querycbx-edit': 'nav',
             'click .querycbx-add': 'nav',
+            'click .querycbx-search': 'search',
             'autocompleteselect': 'select',
             'blur input': 'fillIn'
         },
@@ -44,14 +48,14 @@ define([
             self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapF);
 
             var field = self.model.specifyModel.getField(self.fieldName);
-            var relatedModel = field.getRelatedModel();
-            var searchField = relatedModel.getField(self.typesearch.attr('searchfield'));
+            self.relatedModel = field.getRelatedModel();
+            var searchField = self.relatedModel.getField(self.typesearch.attr('searchfield'));
             control.attr('title', 'Searches: ' + searchField.getLocalizedName());
 
             control.autocomplete({
                 minLength: 3,
                 source: function (request, response) {
-                    var collection = api.queryCbxSearch(relatedModel, searchField.name, request.term);
+                    var collection = api.queryCbxSearch(self.relatedModel, searchField.name, request.term);
                     collection.fetch().pipe(function() {
                         var rendering = collection.chain().compact().map(_.bind(self.renderItem, self)).value();
                         return whenAll(rendering).done(response);
@@ -84,6 +88,22 @@ define([
             var buildValue = dataobjformat(resource, this.typesearch.attr('dataobjformatter'));
             return $.when(buildLabel, buildValue).pipe(function(label, value) {
                 return { label: label || value, value: value, resource: resource };
+            });
+        },
+        search: function(event, ui) {
+            event.preventDefault();
+            var dialogDef = $('dialog[type="search"][name="' + this.relatedModel.searchDialog + '"]', dialogdefs);
+            var form = $(specifyform.buildViewByName(dialogDef.attr('view')));
+            schemalocalization.localizeForm(form);
+            form.find('.specify-form-header, input[value="Delete"], :submit').remove();
+            $('<div title="Search">').append(form).dialog({
+                width: 'auto',
+                buttons: [
+                    { text: "Search", click: function() {} }
+                ],
+                close: function() {
+                    $(this).remove();
+                }
             });
         }
     });
