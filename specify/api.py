@@ -1,6 +1,7 @@
 import tastypie.resources
 import tastypie.fields
 from tastypie.authorization import Authorization
+import tastypie.authentication
 from tastypie.exceptions import NotFound
 from django.db.models import get_models
 from django.db import transaction
@@ -12,6 +13,13 @@ from xml.etree import ElementTree
 import os
 
 from specify import models
+
+class Authentication(tastypie.authentication.Authentication):
+    def is_authenticated(self, request, **kwargs):
+        return request.user.is_authenticated()
+
+    def get_identifier(self, request):
+        return request.user.username
 
 inlined_fields = [
     'Collector.agent',
@@ -210,6 +218,7 @@ def build_resource(model):
         always_return_data = True
         filtering = filter_fields.get(model.__name__, {})
         queryset = model.objects.all()
+        authentication = Authentication()
         authorization = Authorization()
 
     attrs = {'Meta': Meta}
