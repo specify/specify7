@@ -26,12 +26,11 @@ define(['jquery', 'underscore', 'schemalocalization', 'specifyapi'], function($,
         });
 
         if (model.toLowerCase() === 'agent' && field.toLowerCase() === 'agenttype') {
-            buildPicklist([{value: 0, title: 'Organization'},
+            return $.when([{value: 0, title: 'Organization'},
                            {value: 1, title: 'Person'},
                            {value: 2, title: 'Other'},
                            {value: 3, title: 'Group'}],
-                          resource && resource.get('agenttype'));
-            return;
+                          resource.rget('agenttype')).done(buildPicklist);
         }
 
         var pickListName = schemalocalization.getPickListForField(field, model);
