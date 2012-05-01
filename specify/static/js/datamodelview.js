@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema'
-], function($, _, Backbone, schema) {
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation'
+], function($, _, Backbone, schema, navigation) {
     "use strict";
     var datamodelview = {};
 
@@ -10,8 +10,7 @@ define([
         },
         nav: function(evt) {
             evt.preventDefault();
-            var url = $(evt.currentTarget).prop('href').replace(/^.*\/specify/, '');
-            Backbone.history.navigate(url, true);
+            navigation.go($(evt.currentTarget).prop('href'));
         }
     });
 

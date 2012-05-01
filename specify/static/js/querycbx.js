@@ -1,11 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization',
+    'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
     'text!/static/resources/typesearch_def.xml',
     'text!/static/resources/dialog_defs.xml',
     'text!/static/html/templates/querycbx.html',
     'jquery-ui'
-], function ($, _, Backbone, api, schema, specifyform, dataobjformat, whenAll, parseselect, schemalocalization,
+], function ($, _, Backbone, api, schema, specifyform, dataobjformat,
+             whenAll, parseselect, schemalocalization, navigation,
              typesearchxml, dialogdefxml, html) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
@@ -21,7 +22,7 @@ define([
         nav: function (evt) {
             evt.preventDefault();
             var url = $(evt.currentTarget).attr('href');
-            url && Backbone.history.navigate(url.replace('/specify/', ''), true);
+            url && navigation.go(url);
         },
         select: function (event, ui) {
             var resource = ui.item.resource;

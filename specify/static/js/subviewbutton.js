@@ -1,6 +1,6 @@
 define([
-    'jquery', 'backbone', 'icons', 'specifyform', 'jquery-bbq'
-], function($, Backbone, icons, specifyform) {
+    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'jquery-bbq'
+], function($, Backbone, icons, specifyform, navigation) {
 
     return Backbone.View.extend({
         events: {
@@ -33,7 +33,7 @@ define([
             self.delegateEvents();
         },
         click: function(evt) {
-            Backbone.history.navigate(this.url.replace(/^\/specify/, ''), {trigger: true});
+            navigation.go(this.url);
             evt.preventDefault();
         }
     });

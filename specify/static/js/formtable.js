@@ -1,7 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'specifyform',
+    'require', 'jquery', 'underscore', 'backbone', 'populateform',
+    'specifyform', 'navigation',
     'text!/static/html/templates/subviewheader.html'
-], function(require, $, _, Backbone, populateform, specifyform, subviewheader) {
+], function(require, $, _, Backbone, populateform, specifyform,
+            navigation, subviewheader) {
 
     return Backbone.View.extend({
         events: {
@@ -42,13 +44,11 @@ define([
         },
         edit: function(evt) {
             evt.preventDefault();
-            var url = $(evt.currentTarget).data('backbone-url');
-            Backbone.history.navigate(url, {trigger: true});
+            navigation.go($(evt.currentTarget).data('backbone-url'))
         },
         add: function(evt) {
             evt.preventDefault();
-            var url = this.addUrl().replace(/^\/specify/, '');
-            Backbone.history.navigate(url, {trigger: true});
+            navigation.go(this.addUrl());
         },
         addUrl: function() {
             return this.resource.viewUrl() + this.fieldName + '/new/';

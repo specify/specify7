@@ -13,10 +13,10 @@ require({
 
 require([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
-    'views', 'schemalocalization', 'beautify-html', 'jquery-bbq'
+    'views', 'schemalocalization', 'beautify-html', 'navigation', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
-    views, schemalocalization, beautify) {
+    views, schemalocalization, beautify, navigation) {
     "use strict";
     var ResourceView = views.ResourceView, ToManyView = views.ToManyView, ToOneView = views.ToOneView;
 
@@ -68,7 +68,7 @@ require([
                         view = new ToOneView(opts);
                         view.on('savecomplete', function() {
                             function goBack() {
-                                Backbone.history.navigate(opts.parentResource.viewUrl().replace(/^\/specify/, ''), true);
+                                navigation.go(opts.parentResource.viewUrl());
                             }
                             if (field.type === 'many-to-one') {
                                 parentResource.set(field.name, opts.model.url());
