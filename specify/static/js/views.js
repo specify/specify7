@@ -1,12 +1,14 @@
 define([
-    'jquery', 'underscore', 'backbone', 'populateform', 'schema', 'specifyapi', 'specifyform', 'dataobjformatters',
+    'jquery', 'underscore', 'backbone', 'populateform', 'schema',
+    'specifyapi', 'specifyform', 'dataobjformatters', 'navigation',
     'text!/static/html/templates/confirmdelete.html',
     'text!/static/html/templates/404.html',
-    'jquery-ui'
-], function($, _, Backbone, populateForm, schema, specifyapi, specifyform, dataobjformat,
+    'jquery-ui', 'jquery-bbq'
+], function($, _, Backbone, populateForm, schema, specifyapi, specifyform, dataobjformat, navigation,
             confirmdelete, notfoundtemplate) {
     "use strict";
     var views = {};
+    var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
 
     var MainForm = Backbone.View.extend({
         events: {
@@ -99,7 +101,13 @@ define([
         },
         buildForm: function() {
             var o = this.options;
-            return specifyform.relatedObjectsForm(o.parentModel.name, o.relatedField.name, o.viewdef);
+            var form = specifyform.relatedObjectsForm(o.parentModel.name, o.relatedField.name, o.viewdef);
+            form.find('.specify-form-header:first')
+                .append(addDeleteLinks)
+                .find('.specify-add-related')
+                .attr('href', $.param.querystring(window.location.pathname + 'new/', {viewdef: o.viewdef}))
+                .click(function() { navigation.go($(this).attr('href')); return false; });
+            return form;
         },
         setTitle: function () {
             var self = this, o = this.options;
