@@ -193,6 +193,9 @@ define([
                             return $('<input type=button value="plugin" class="specify-uiplugin">')
                                 .appendTo(td).attr('disabled', doingFormTable);
                         },
+                        browse: function() {
+                            return $('<input type=file>').appendTo(td);
+                        },
                         other: function() {
                             td.text("unsupported uitype: " + cell.attr('uitype'));
                         }
