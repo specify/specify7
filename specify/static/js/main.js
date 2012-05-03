@@ -61,6 +61,7 @@ require([
 
                 opts.parentResource.rget(field.name).done(function(relatedResource) {
                     var view;
+                    if (_(relatedResource).isNull()) opts.adding = adding = true;
                     if (adding) {
                         opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
                         if (field.type === 'one-to-many')
