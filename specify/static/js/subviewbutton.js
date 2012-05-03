@@ -23,10 +23,14 @@ define([
                 self.url = $.param.querystring(self.url, {viewdef: viewDef});
             button.prop('href', self.url);
             button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
+            button.append('<span class="specify-subview-button-count">');
             if (field.type === 'one-to-many') {
-                $('<span class="specify-subview-button-count">').appendTo(button);
                 self.model.getRelatedObjectCount(fieldName).done(function(count) {
                     self.$('.specify-subview-button-count').text(count);
+                });
+            } else {
+                self.model.rget(fieldName).done(function(related) {
+                    self.$('.specify-subview-button-count').text(related ? 1 : 0);
                 });
             }
             button.button();
