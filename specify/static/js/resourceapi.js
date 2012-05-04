@@ -89,12 +89,14 @@ define([
                 );
             case 'one-to-many':
                 if (path.length > 1) return undefined;
-                if (self.relatedCache[fieldName]) return self.relatedCache[fieldName];
-                var toMany = (_.isString(value)) ? Collection.fromUri(value) :
-                    new (Collection.forModel(related))(value);
-                toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
-                self.relatedCache[fieldName] = toMany;
-                toMany.on('saverequired', function() { self.trigger('saverequired'); });
+                var toMany =  self.relatedCache[fieldName];
+                if (!toMany) {
+                    toMany = (_.isString(value)) ? Collection.fromUri(value) :
+                        new (Collection.forModel(related))(value);
+                    toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
+                    self.relatedCache[fieldName] = toMany;
+                    toMany.on('saverequired', function() { self.trigger('saverequired'); });
+                }
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
                 if (self.relatedCache[fieldName]) {
