@@ -10,6 +10,7 @@ define([
         var display = this.node.find('display');
         this.view = display.attr('view');
         this.searchDialog = display.attr('searchdlg');
+        this.tableId = parseInt(this.node.attr('tableid'), 10);
     };
     _.extend(Model.prototype, {
         getField: function(name) {
@@ -58,6 +59,9 @@ define([
         getModel: function(name) {
             name = name.toLowerCase();
             return _(this.models).find(function(model) { return model.name.toLowerCase() === name; });
+        },
+        getModelById: function(tableId) {
+            return _(this.models).find(function(model) { return model.tableId === tableId; });
         }
     };
 

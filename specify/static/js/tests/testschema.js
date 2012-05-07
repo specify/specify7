@@ -8,6 +8,12 @@ define(['underscore', 'schema'], function(_, schema) {
             equal(model, schema.getModel('CollectionObject'), 'getting model by alternative name');
         });
 
+        test('getModelById', function() {
+            var model = schema.getModelById(7);
+            equal(model.name, 'Accession');
+            equal(model.tableId, 7);
+        });
+
         test('model.veiw', function() {
             var model = schema.getModel('collectionobject');
             ok(_(model.view).isString(), 'model.view is string');
