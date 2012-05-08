@@ -34,12 +34,18 @@ require([
 
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
+                'recordset/:id/*splat': 'recordSet',
                 'view/:model/:id/:related/new/*splat': 'addRelated',
                 'view/:model/:id/:related/*splat': 'viewRelated',
                 'view/:model/:id/*splat': 'view',
                 'viewashtml/*splat': 'viewashtml',
                 'datamodel/:model/': 'datamodel',
                 'datamodel/': 'datamodel'
+            },
+
+            recordSet: function(id) {
+                var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
+                setCurrentView(new views.RecordSetView({ model: recordSet }));
             },
 
             view: function(modelName, id) {

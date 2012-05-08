@@ -25,6 +25,13 @@ define([
         }));
     };
 
+    self.recordSetForm = function(model) {
+        var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
+        return $(relatedObjectsForm({
+            model: 'RecordSet', field: 'recordsetitems', viewdef: viewdef
+        }));
+    };
+
     function find(selector, sets, name) {
         name = name.toLowerCase();
         var result = $();

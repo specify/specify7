@@ -10,6 +10,19 @@ define([
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
 
+
+    views.RecordSetView = Backbone.View.extend({
+        render: function() {
+            var self = this;
+            self.model.rget('recordsetitems').done(function(items) {
+                var specifyModel = schema.getModelById(self.model.get('dbtableid'));
+                var form = specifyform.recordSetForm(specifyModel);
+                self.$el.append(populateForm(form, self.model));
+            });
+            return this;
+        }
+    });
+
     var MainForm = Backbone.View.extend({
         events: {
             'click :submit': 'submit',
