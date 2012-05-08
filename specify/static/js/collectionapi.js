@@ -93,7 +93,8 @@ define([
             return this;
         },
         at: function(index) {
-            return Collection.prototype.at.call(this, index).item;
+            var recordSetItem = Collection.prototype.at.call(this, index);
+            return recordSetItem && recordSetItem.item;
         }
     });
 

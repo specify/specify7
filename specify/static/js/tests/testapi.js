@@ -640,6 +640,19 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 });
             });
         });
+
+        test('recordsetitems at(index) returns undefined if index has not been fetched', function() {
+            expect(3);
+            stop();
+            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
+            recordSet.rget('recordsetitems', true).done(function(recordSetItems) {
+                var itemsFetched = Math.min(recordSetItems.limit, recordSetItems.length);
+                ok(itemsFetched > 0, 'at least one item fetched');
+                ok(!_(recordSetItems.at(0)).isUndefined(), 'if item is available at doesnt return undefined');
+                ok(_(recordSetItems.at(itemsFetched)).isUndefined(), 'if items is not available at returns undefined');
+                start();
+            });
+        });
     };
 });
 
