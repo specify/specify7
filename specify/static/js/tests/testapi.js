@@ -30,28 +30,28 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
 
         test('forModel invalid', function() {
             var Resource = api.Resource.forModel('foobar');
-            equal(Resource, null);
+            equal(Resource, null, "Resource.forModel('foobar') returns null");
         });
 
         test('fromUri', function() {
             var resource = api.Resource.fromUri('/api/specify/determination/100/');
-            equal(resource.specifyModel.name, 'Determination');
-            equal(resource.id, 100);
-            equal(resource.populated, false);
+            equal(resource.specifyModel.name, 'Determination', 'Resource is for the right Model');
+            equal(resource.id, 100, 'Resource has the right id');
+            equal(resource.populated, false, 'Resource starts unpopulated');
         });
 
         test('fetch', function() {
             expect(5);
             var uri = '/api/specify/collectionobject/100/';
             var resource =  new (api.Resource.forModel('collectionobject'))({id: 100});
-            ok(!resource.populated);
+            ok(!resource.populated, 'Resource starts out unpopulated');
             var deferred = resource.fetch();
-            ok(_(deferred).has('promise'));
+            ok(_(deferred).has('promise'), 'resource.fetch returns deferred');
             stop();
             deferred.done(function() {
-                ok(resource.populated);
-                ok(!resource.needsSaved);
-                equal(resource.get('resource_uri'), uri);
+                ok(resource.populated, 'resource is populated when deferred completes');
+                ok(!resource.needsSaved, 'resource doesnt need saved right after fetch');
+                equal(resource.get('resource_uri'), uri, 'resource has the correct url');
                 start();
             });
         });
@@ -59,15 +59,15 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         test('fetchIfNotPopulated', function() {
             expect(4);
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
-            ok(!resource.populated);
+            ok(!resource.populated, 'resource starts out unpopulated');
             stop();
             var deferred = resource.fetchIfNotPopulated();
             deferred.done(function() {
-                ok(resource.populated);
-                ok(!resource.needsSaved);
+                ok(resource.populated, 'resource is populated when fetchIfNotPopulated deferred completes');
+                ok(!resource.needsSaved, 'resource doesnt need saved');
                 deferred = resource.fetchIfNotPopulated();
                 deferred.done(function(result) {
-                    equal(result, resource);
+                    equal(result, resource, 'calling fetchIfNotPopulated on a populated resource returns deferred resolving to that resource');
                     start();
                 });
             });
@@ -79,9 +79,9 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(catnumber) {
-                ok(!resource.needsSaved);
-                ok(_(catnumber).isString());
-                equal(requestCounter, 1);
+                ok(!resource.needsSaved, 'rget doesnt cause resource to need saving');
+                ok(_(catnumber).isString(), 'the deferred resolves to the field requested');
+                equal(requestCounter, 1, 'only one request needed');
                 start();
             });
         });
@@ -92,10 +92,10 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.fetch().done(function() {
-                equal(requestCounter, 1);
+                equal(requestCounter, 1, 'one request triggered by fetch()');
                 resource.rget('catalognumber').done(function(catnumber) {
-                    ok(!resource.needsSaved);
-                    equal(requestCounter, 1);
+                    ok(!resource.needsSaved, 'resource still doesnt need saved');
+                    equal(requestCounter, 1, 'the rget on the popd resource doesnt trigger another request');
                     start();
                 });
             });
@@ -107,7 +107,7 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             $.when(resource.rget('catalognumber'), resource.rget('collectingevent')).done(function() {
-                equal(requestCounter, 1);
+                equal(requestCounter, 1, "after resource is fectched it is not fetched againg for another field");
                 start();
             });
         });
@@ -118,8 +118,8 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('cataloger.lastname').done(function(name) {
-                equal(requestCounter, 2);
-                equal(name, 'Luttrell');
+                equal(requestCounter, 2, 'two requests are required to get a field on a related object');
+                equal(name, 'Luttrell', 'the requested field is obtained');
                 start();
             });
         });
@@ -130,62 +130,66 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent.lastname').done(function(name) {
-                equal(requestCounter, 1);
-                equal(name, 'Gorman');
+                equal(requestCounter, 1, 'dont need a separate request for in-lined fields');
+                equal(name, 'Gorman', 'the requested field is returned');
                 start();
             });
         });
 
         test('rget many-to-one', function() {
-            expect(4);
+            expect(5);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent').done(function(ce) {
-                equal(requestCounter, 1);
-                ok(ce instanceof api.Resource.forModel('collectingevent'));
-                ok(!ce.populated);
-                equal(ce.url(), '/api/specify/collectingevent/715/');
+                equal(requestCounter, 1, 'one request to get the url for the related object');
+                ok(ce instanceof api.Resource.forModel('collectingevent'), 'the correct type of resource is created for the related object');
+                equal(ce.parent, resource, 'the related resource has link back to parent resource');
+                ok(!ce.populated, 'the related resource is not populated');
+                equal(ce.url(), '/api/specify/collectingevent/715/', 'the related resource has the correct url');
                 start();
             });
         });
 
         test('rget inlined many-to-one', function() {
-            expect(4);
+            expect(5);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent').done(function(agent) {
-                equal(requestCounter, 1);
-                ok(agent instanceof api.Resource.forModel('agent'));
-                ok(agent.populated);
-                equal(agent.url(), '/api/specify/agent/638/');
+                equal(requestCounter, 1, 'one request to get the parent resource');
+                ok(agent instanceof api.Resource.forModel('agent'), 'the related resource has the right type');
+                equal(agent.parent, resource, 'the related resource has link back to parent')
+                ok(agent.populated, 'for an in-lined field the related resource is populated');
+                equal(agent.url(), '/api/specify/agent/638/', 'the related resource is the right one');
                 start();
             });
         });
 
         test('rget one-to-many', function() {
-            expect(4);
+            expect(5);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(prepCol) {
-                equal(requestCounter, 1);
-                ok(prepCol instanceof api.Collection.forModel('preparation'));
-                ok(!prepCol.populated);
-                equal(prepCol.url(), '/api/specify/preparation/');
+                equal(requestCounter, 1, "one request to get the parent resource");
+                ok(prepCol instanceof api.Collection.forModel('preparation'), 'the result is the correct type of collection');
+                equal(prepCol.parent, resource, 'the related collection has a link back to the parent resource');
+                ok(!prepCol.populated, 'the collection starts out unpopulated');
+                equal(prepCol.url(), '/api/specify/preparation/', 'the collection has the correct url');
                 start();
             });
         });
 
         test('rget inlined one-to-many', function() {
-            expect(4);
+            expect(5);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('picklist'))({id: 1});
             resource.rget('picklistitems').done(function(result) {
                 equal(requestCounter, 1);
                 ok(result instanceof api.Collection.forModel('picklistitem'));
+                equal(result.parent, resource, 'inlined collection also get parent link');
                 ok(result.populated);
                 equal(result.url(), '/api/specify/picklistitem/');
                 start();
@@ -205,13 +209,14 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('rget zero-to-one', function() {
-            expect(3);
+            expect(4);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('locality'))({id: 341});
             resource.rget('localitydetails').done(function(result) {
                 equal(requestCounter, 2);
                 ok(result instanceof api.Resource.forModel('localitydetail'));
+                equal(result.parent, resource, 'zero-to-one related resource gets correct parent link');
                 equal(result.id, 126);
                 start();
             });
@@ -607,6 +612,31 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                             start();
                         });
                     });
+                });
+            });
+        });
+
+        module("RecordSetItems");
+
+        test('recordsetitems', function() {
+            stop();
+            requestCounter = 0;
+            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
+            recordSet.rget('recordsetitems').done(function(recordSetItems) {
+                equal(requestCounter, 1, "one request to get the recordset");
+                requestCounter = 0;
+                equal(recordSetItems.model.specifyModel.name, 'RecordSetItem', "the collection contains recordSetItems");
+                recordSetItems.fetch().done(function() {
+                    var itemsFetched = Math.min(recordSetItems.limit, recordSetItems.length);
+                    equal(requestCounter, itemsFetched + 1,
+                          "one request for the recordset items plus one each for the items they refer to");
+                    var recordSetItem;
+                    for (var i = 0; i < itemsFetched; i++) {
+                        recordSetItem = recordSetItems.at(i);
+                        equal(recordSetItem.specifyModel.tableId, recordSet.get("dbtableid"), "item is the right model");
+                        ok(recordSetItem.populated, 'the item is populated');
+                    }
+                    start();
                 });
             });
         });

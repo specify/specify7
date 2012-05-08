@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'collectionapi', 'whenall'
 ], function($, _, Backbone, schema, Collection, whenAll) {
-    var debug = false, resources = {};
+    var debug = false;
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
@@ -20,6 +20,7 @@ define([
     var Resource = Backbone.Model.extend({
         populated: false, _fetch: null, needsSaved: false, saving: false,
         initialize: function(attributes, options) {
+            this.specifyModel = this.constructor.specifyModel;
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
             this.on('change', function() {
                 if (this._fetch) return;
@@ -81,6 +82,7 @@ define([
                         toOne._fetch = null;
                         toOne.populated = true;
                     }
+                    toOne.parent = self;
                     toOne.on('all', eventHandlerForToOne(self, fieldName));
                     self.relatedCache[fieldName] = toOne;
                 }
@@ -93,6 +95,7 @@ define([
                 if (!toMany) {
                     toMany = (_.isString(value)) ? Collection.fromUri(value) :
                         new (Collection.forModel(related))(value);
+                    toMany.parent = self;
                     toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
                     self.relatedCache[fieldName] = toMany;
                     toMany.on('saverequired', function() { self.trigger('saverequired'); });
@@ -107,7 +110,10 @@ define([
                     new (Collection.forModel(related))(value);
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    value && value.on('all', eventHandlerForToOne(self, fieldName));
+                    if (value) {
+                        value.on('all', eventHandlerForToOne(self, fieldName));
+                        value.parent = self;
+                    }
                     self.relatedCache[fieldName] = value;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
@@ -178,21 +184,18 @@ define([
             var model = _(model).isString() ? schema.getModel(model) : model;
             if (!model) return null;
             if (!_(resources).has(model.name)) {
-                resources[model.name] = Resource.extend({
-                    specifyModel: model
-                }, {
-                    specifyModel: model
-                });
+                resources[model.name] = Resource.extend({}, { specifyModel: model });
             }
             return resources[model.name];
         },
-
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             var ResourceForModel = Resource.forModel(match[1]);
             return new ResourceForModel({id: match[2]});
         }
     });
+
+    var resources = {};
 
     return Resource;
 });

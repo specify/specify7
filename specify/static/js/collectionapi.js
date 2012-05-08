@@ -1,7 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'jquery-bbq'
 ], function(require, $, _, Backbone, schema, whenAll) {
-    var collections = {};
 
     var Collection = Backbone.Collection.extend({
         populated: false,
@@ -66,6 +65,41 @@ define([
             return collection;
         }
     });
+
+    var RecordSetItems = Collection.extend({
+        initialize: function() {
+            this.model = require('resourceapi').forModel('recordsetitem');
+            return this.constructor.__super__.initialize.apply(this, arguments);
+        },
+        fetch: function(options) {
+            options = options || {};
+            options.itemFetchDeferreds = [];
+            return Collection.prototype.fetch.call(this, options).pipe(function() {
+                return whenAll(options.itemFetchDeferreds);
+            });
+        },
+        add: function(models, options) {
+            Collection.prototype.add.call(this, models, options);
+            var ItemResource = require('resourceapi').forModel(
+                schema.getModelById(this.parent.get('dbTableId'))
+            );
+            var recordSetItems = this;
+            _(models).forEach(function(model) {
+                var recordSetItem = recordSetItems.get(model.id);
+                var item = new ItemResource({ id: recordSetItem.get('recordId') });
+                recordSetItem.item = item;
+                options.itemFetchDeferreds.push(item.fetch());
+            });
+            return this;
+        },
+        at: function(index) {
+            return Collection.prototype.at.call(this, index).item;
+        }
+    });
+
+    var collections = {
+        RecordSetItem: RecordSetItems
+    };
 
     return Collection;
 });
