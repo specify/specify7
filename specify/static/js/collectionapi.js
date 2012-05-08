@@ -74,9 +74,12 @@ define([
         fetch: function(options) {
             options = options || {};
             options.itemFetchDeferreds = [];
-            return Collection.prototype.fetch.call(this, options).pipe(function() {
+            var mainFetch = Collection.prototype.fetch.call(this, options);
+            var comprehensiveFetch = mainFetch.pipe(function() {
                 return whenAll(options.itemFetchDeferreds);
             });
+            comprehensiveFetch.abort = function() { return mainFetch.abort(arguments); };
+            return comprehensiveFetch;
         },
         add: function(models, options) {
             Collection.prototype.add.call(this, models, options);

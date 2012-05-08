@@ -653,6 +653,18 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
                 start();
             });
         });
+
+        test('recordsetitems collection fetch has abort function', function() {
+            expect(2);
+            stop();
+            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
+            recordSet.rget('recordsetitems').done(function(recordSetItems) {
+                var fetch = recordSetItems.fetch();
+                ok(_(fetch).has('abort'), 'fetch has abort property');
+                ok(_(fetch.abort).isFunction(), 'fetch().abort is function');
+                start();
+            });
+        });
     };
 });
 
