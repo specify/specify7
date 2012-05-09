@@ -1,10 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'populateform', 'schema',
+    'jquery', 'underscore', 'backbone', 'populateform', 'schema', 'schemalocalization',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation',
     'text!/static/html/templates/confirmdelete.html',
     'text!/static/html/templates/404.html',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, schema, specifyapi, specifyform, dataobjformat, navigation,
+], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi, specifyform, dataobjformat, navigation,
             confirmdelete, notfoundtemplate) {
     "use strict";
     var views = {};
@@ -18,6 +18,9 @@ define([
                 var specifyModel = schema.getModelById(self.model.get('dbtableid'));
                 var form = specifyform.recordSetForm(specifyModel);
                 self.$el.append(populateForm(form, self.model));
+                var formTitle = form.find('.specify-form-header:first span');
+                var localizedModelName = schemalocalization.getLocalizedLabelForModel(specifyModel.name);
+                formTitle.text(formTitle.text() + ' of ' + localizedModelName);
             });
             return this;
         }
