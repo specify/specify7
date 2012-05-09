@@ -1,4 +1,4 @@
-define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
+define(['jquery', 'underscore', 'backbone', 'specifyapi', 'jquery-mockjax', 'jquery-bbq'], function($, _, Backbone, api) {
     "use strict";
     return function() {
         var requestCounter = 0;
@@ -16,6 +16,23 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         function yep(message) {
             return function() { ok(true, message); };
         }
+
+        $.mockjax(function(settings) {
+            var match = settings.url.match(/^\/api\/specify\/(\w+)\/(\d+)\/$/);
+
+            if (match) return {
+                proxy: '/static/js/tests/fixtures/' + match[1] + '.' + match[2] + '.json',
+            };
+
+            match = settings.url.match(/^\/api\/specify\/(\w+)\/$/);
+            if (match) return {
+                proxy: $.param.querystring('/static/js/tests/fixtures/' + match[1], settings.data).replace('?', '.') + '.json'
+            };
+
+            return;
+        });
+
+        $.mockjaxSettings.responseTime = 10;
 
         module('specifyapi.Resource');
         test('forModel', function() {
@@ -307,24 +324,18 @@ define(['underscore', 'backbone', 'specifyapi'], function(_, Backbone, api) {
         });
 
         test('needsSaved', function() {
-            expect(7);
+            expect(4);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
-            equal(resource.needsSaved, false);
+            equal(resource.needsSaved, false, 'newly declared resource does not need saved');
             resource.rget('catalognumber').done(function(original) {
-                equal(resource.needsSaved, false);
+                equal(resource.needsSaved, false, 'resource does not need saved after rget');
                 resource.set('catalognumber', original + 'foo');
-                equal(resource.needsSaved, true);
+                equal(resource.needsSaved, true, 'resource needs saved after set');
                 resource.save().done(function() {
-                    equal(resource.needsSaved, false);
-                    resource.set('catalognumber', original);
-                    equal(resource.needsSaved, true);
-                    resource.save().done(function() {
-                        equal(resource.needsSaved, false);
-                        equal(requestCounter, 3);
-                        start();
-                    });
+                    equal(resource.needsSaved, false, 'resource no longer needs saved after save');
+                    start();
                 });
             });
         });

@@ -61,7 +61,8 @@ define([
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\//.exec(uri);
             var collection = new (Collection.forModel(match[1]))();
-            _.extend(collection.queryParams, $.deparam.querystring(uri));
+            if (uri.indexOf("?") !== -1)
+                _.extend(collection.queryParams, $.deparam.querystring(uri));
             return collection;
         }
     });
