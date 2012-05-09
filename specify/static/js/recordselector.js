@@ -38,12 +38,15 @@ define([
             var self = this;
             self.undelegateEvents();
             self.$el.empty();
+            self.slider = $('<div>');
             self.$el.hasClass('no-header') || self.$el.append(subviewheader);
+            self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
             self.content = $('<div>').appendTo(self.el);
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
-            self.slider = $('<div>').appendTo(self.el).slider({
+            self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
+            self.slider.slider({
                 max: self.collection.length - 1,
                 stop: _.throttle(function(event, ui) {
                     if (self.collection.at(ui.value)) return;
@@ -92,7 +95,7 @@ define([
         },
         showSpinner: function() {
             if (!this.spinner.is(':hidden')) return;
-            var height = Math.min(128, this.content.height());
+            var height = Math.min(64, this.content.height());
             this.spinner.height(height);
             this.spinner.find('img').height(0.9*height);
             this.content.hide();
