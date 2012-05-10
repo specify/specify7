@@ -85,7 +85,7 @@ define([
             self.showHide();
         },
         onSlide: function(offset) {
-            this.$('.ui-slider-handle').text(offset + 1);
+            $('.ui-slider-handle', this.slider).text(offset + 1);
             if (_(this.collection.at(offset)).isUndefined()) this.showSpinner();
             else _.defer(_.bind(this.redraw, this, offset));
         },
@@ -104,7 +104,7 @@ define([
                 params[self.urlParam] = offset;
                 navigation.push($.param.querystring(window.location.pathname, params));
             }
-            this.$('.ui-slider-handle').text(offset + 1);
+            $('.ui-slider-handle', this.slider).text(offset + 1);
         },
         showSpinner: function() {
             if (!this.spinner.is(':hidden')) return;
