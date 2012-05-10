@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform', 'navigation',
     'text!/static/html/templates/subviewheader.html',
     'text!/static/html/templates/confirmdelete.html',
     'jquery-ui'
-], function(require, $, _, Backbone, specifyform, populateform,
+], function(require, $, _, Backbone, specifyform, populateform, navigation,
             subviewheader, confirmdelete) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
@@ -34,6 +34,18 @@ define([
             self.fieldName = options.fieldName;
             self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
         },
+        fetchThenRedraw: function(offset) {
+            var self = this;
+            if (self.collection.at(offset)) return null;
+            self.request && self.request.abort();
+            var at = offset - offset % self.collection.limit;
+            self.request = self.collection.fetch({at: at}).done(function() {
+                debug && console.log('got collection at offset ' + at);
+                request = null;
+                self.redraw(self.slider.slider('value'));
+            });
+            return self.request;
+        },
         render: function() {
             var self = this;
             self.undelegateEvents();
@@ -48,16 +60,7 @@ define([
             self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
             self.slider.slider({
                 max: self.collection.length - 1,
-                stop: _.throttle(function(event, ui) {
-                    if (self.collection.at(ui.value)) return;
-                    self.request && self.request.abort();
-                    var at = ui.value - ui.value % self.collection.limit;
-                    self.request = self.collection.fetch({at: at}).done(function() {
-                        debug && console.log('got collection at offset ' + at);
-                        request = null;
-                        self.redraw(self.slider.slider('value'));
-                    });
-                }, 750),
+                stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),
                 slide: function(event, ui) { self.onSlide(ui.value); }
             });
             self.slider.find('.ui-slider-handle').
@@ -74,7 +77,11 @@ define([
                 $(this).detach();
             });
             self.delegateEvents();
-            self.redraw(0);
+            self.urlParam = self.$el.data('url-param');
+            var params = $.deparam.querystring(true);
+            var index = params[self.urlParam] || 0;
+            self.slider.slider('value', index);
+            self.fetchThenRedraw(index) || self.redraw(index);
             self.showHide();
         },
         onSlide: function(offset) {
@@ -92,6 +99,12 @@ define([
             debug && console.log('filling in at ' + offset);
             self.content.empty().append(form);
             self.hideSpinner();
+            if (self.urlParam) {
+                var params = {};
+                params[self.urlParam] = offset;
+                navigation.push($.param.querystring(window.location.pathname, params));
+            }
+            this.$('.ui-slider-handle').text(offset + 1);
         },
         showSpinner: function() {
             if (!this.spinner.is(':hidden')) return;

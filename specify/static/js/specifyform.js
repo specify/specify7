@@ -1,6 +1,7 @@
 define([
     'jquery', 'underscore', 'schema',
     'text!/static/html/templates/relatedobjectsform.html',
+    'text!/static/html/templates/recordsetform.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
     'text!/static/resources/preferences.views.xml',
@@ -8,11 +9,12 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, schema, relatedobjectsform) {
+], function specifyform($, _, schema, relatedobjectsformHtml, recordsetformHtml) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
-    var relatedObjectsForm = _.template(relatedobjectsform);
+    var relatedObjectsFormTmpl = _.template(relatedobjectsformHtml);
+    var recordSetFormTmpl = _.template(recordsetformHtml);
 
     self.relatedObjectsForm = function(modelName, fieldName, viewdef) {
         if (!viewdef) {
@@ -20,18 +22,14 @@ define([
             if (!related.view) throw new Error('no default view for ' + related.name);
             viewdef = getDefaultViewdef(findView(related.view)).attr('name');
         }
-        return $(relatedObjectsForm({
+        return $(relatedObjectsFormTmpl({
             model: modelName, field: fieldName, viewdef: viewdef
         }));
     };
 
     self.recordSetForm = function(model) {
         var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
-        var form = $(relatedObjectsForm({
-            model: 'RecordSet', field: 'recordsetitems', viewdef: viewdef
-        }));
-        form.find('.specify-subview').addClass('slider-at-top');
-        return form;
+        return $(recordSetFormTmpl({ viewdef: viewdef }));
     };
 
     function find(selector, sets, name) {
