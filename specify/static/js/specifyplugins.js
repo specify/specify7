@@ -27,11 +27,28 @@ define([
             disabled && select.hide();
 
             var label = ui.parents().last().find('label[for="' + input.prop('id') + '"]');
-            if (!label.text()) {
-                label.text(resource.specifyModel.getField(init.df).getLocalizedName());
-            }
+            label.text() || label.text(resource.specifyModel.getField(init.df).getLocalizedName());
+
             if (resource) {
-                input.change(function() { resource.set(init.df, input.val()); });
+                input.change(function() {
+                    resource.set(init.df, input.val());
+                });
+
+                select.change(function() {
+                    resource.set(init.tp, select.val());
+                });
+
+                resource.on('change:' + init.df.toLowerCase(), function() {
+                    input.val(resource.get(init.df));
+                });
+
+                resource.on('change:' + init.tp.toLowerCase(), function() {
+                    var precision = resource.get(init.tp);
+                    var format = partialDateFormats[precision];
+                    format && input.datepicker('option', 'dateFormat', format);
+                    select.val(precision);
+                });
+
                 return $.when(
                     resource.rget(init.df).done(_.bind(input.val, input)),
                     resource.rget(init.tp).done(function(precision) {
