@@ -22,8 +22,7 @@ define([
         return origParseDate.call($.datepicker, format, value, settings);
     };
 
-
-    return  function(control, init, resource) {
+    return function(control, init, resource) {
         var disabled = control.prop('disabled');
         var ui = $(template());
         var input = ui.find('input');
@@ -40,6 +39,18 @@ define([
         label.text() || label.text(resource.specifyModel.getField(init.df).getLocalizedName());
 
         if (resource) {
+            var setInput = function() {
+                var value = resource.get(init.df);
+                input.val(value && value.replace(/T.+$/, ''));
+            };
+
+            var setPrecision = function() {
+                var precision = resource.get(init.tp);
+                var format = formats[precision];
+                format && input.datepicker('option', 'dateFormat', format);
+                select.val(precision);
+            };
+
             input.change(function() {
                 resource.set(init.df, input.val());
             });
@@ -48,24 +59,11 @@ define([
                 resource.set(init.tp, select.val());
             });
 
-            resource.on('change:' + init.df.toLowerCase(), function() {
-                input.val(resource.get(init.df));
-            });
+            resource.on('change:' + init.df.toLowerCase(), setInput);
 
-            resource.on('change:' + init.tp.toLowerCase(), function() {
-                var precision = resource.get(init.tp);
-                var format = formats[precision];
-                format && input.datepicker('option', 'dateFormat', format);
-                select.val(precision);
-            });
+            resource.on('change:' + init.tp.toLowerCase(), setPrecision);
 
-            return $.when(
-                resource.rget(init.df).done(_.bind(input.val, input)),
-                resource.rget(init.tp).done(function(precision) {
-                    select.val(precision);
-                    var format = formats[precision];
-                    format && input.datepicker('option', 'dateFormat', format);
-                }));
+            return resource.fetchIfNotPopulated().done(setInput).done(setPrecision);
         }
     };
 });
