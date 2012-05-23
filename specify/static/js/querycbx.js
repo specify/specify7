@@ -42,6 +42,7 @@ define([
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             self.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
+            if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") self.$('.querycbx-clone').hide();
 
             var typesearchTxt = self.typesearch.text().trim();
             var mapF = !typesearchTxt ? function(x) { return x; } :
