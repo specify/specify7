@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'schemalocalization',
+    'jquery', 'underscore', 'schemalocalization', 'icons',
     'text!/static/resources/specify_datamodel.xml'
-], function($, _, schemalocalization, xml) {
+], function($, _, schemalocalization, icons, xml) {
     "use strict";
 
     var Model = function(node) {
@@ -29,6 +29,9 @@ define([
         },
         getLocalizedName: function() {
             return schemalocalization.getLocalizedLabelForModel(this.name);
+        },
+        getIcon: function() {
+            return icons.getIcon(this.name);
         }
     });
 

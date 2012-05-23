@@ -18,9 +18,12 @@ define([
                 var specifyModel = schema.getModelById(self.model.get('dbtableid'));
                 var form = specifyform.recordSetForm(specifyModel);
                 self.$el.append(populateForm(form, self.model));
-                var formTitle = form.find('.specify-form-header:first span');
-                var localizedModelName = schemalocalization.getLocalizedLabelForModel(specifyModel.name);
-                formTitle.text(formTitle.text() + ' of ' + localizedModelName);
+                var formHeader = form.find('.specify-form-header:first');
+                $('<img>', {src: specifyModel.getIcon()}).prependTo(formHeader);
+                var title = formHeader.find('span').text();
+                title += ': ' + self.model.get('name');
+                formHeader.find('span').text(title);
+                window.document.title = title;
             });
             return this;
         }

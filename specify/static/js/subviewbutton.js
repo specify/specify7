@@ -15,8 +15,7 @@ define([
             var viewDef = self.$el.data('specify-viewdef');
             var field = model.getField(fieldName);
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
-            var icon = props.icon ? icons.getIcon(props.icon) :
-                icons.getIcon(field.getRelatedModel().name);
+            var icon = props.icon ? icons.getIcon(props.icon) : field.getRelatedModel().getIcon();
             var button = $('<a>').appendTo(self.el);
             self.url = self.model.viewUrl() + fieldName.toLowerCase() + '/';
             if (viewDef)
