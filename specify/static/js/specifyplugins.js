@@ -1,63 +1,14 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongutils',
+    'jquery', 'underscore', 'specifyapi', 'latlongutils', 'partialdateui',
     'text!/static/html/templates/gmapplugin.html',
     'text!/static/html/templates/latlonui.html',
-    'text!/static/html/templates/partialdateui.html',
-    'partialdate'
-], function($, _, api, latlongutils, gmaptemplate_html, latlonui_html, partialdateui_html) {
+], function($, _, api, latlongutils, partialDateUI, gmaptemplate_html, latlonui_html) {
     "use strict";
     var gmaptemplate = _.template(gmaptemplate_html);
     var latlonuitemplate = _.template(latlonui_html);
-    var partialdateuitemplate = _.template(partialdateui_html);
-
-    var partialDateFormats = [null, 'yy-mm-dd', 'yy-mm', 'yy'];
 
     return {
-        PartialDateUI: function(control, init, resource) {
-            var disabled = control.prop('disabled');
-            var ui = $(partialdateuitemplate());
-            var input = ui.find('input');
-            var select = ui.find('select');
-            input.prop('id', control.prop('id'));
-
-            control.replaceWith(ui);
-            ui.find('select, input').prop('readonly', disabled);
-
-            disabled || input.datepicker({dateFormat: $.datepicker.ISO_8601});
-            disabled && select.hide();
-
-            var label = ui.parents().last().find('label[for="' + input.prop('id') + '"]');
-            label.text() || label.text(resource.specifyModel.getField(init.df).getLocalizedName());
-
-            if (resource) {
-                input.change(function() {
-                    resource.set(init.df, input.val());
-                });
-
-                select.change(function() {
-                    resource.set(init.tp, select.val());
-                });
-
-                resource.on('change:' + init.df.toLowerCase(), function() {
-                    input.val(resource.get(init.df));
-                });
-
-                resource.on('change:' + init.tp.toLowerCase(), function() {
-                    var precision = resource.get(init.tp);
-                    var format = partialDateFormats[precision];
-                    format && input.datepicker('option', 'dateFormat', format);
-                    select.val(precision);
-                });
-
-                return $.when(
-                    resource.rget(init.df).done(_.bind(input.val, input)),
-                    resource.rget(init.tp).done(function(precision) {
-                        select.val(precision);
-                        var format = partialDateFormats[precision];
-                        format && input.datepicker('option', 'dateFormat', format);
-                    }));
-            }
-        },
+        PartialDateUI: partialDateUI,
         WebLinkButton: function(control, init) {
             var form = control.closest('.specify-view-content');
             var watched = form.find(
