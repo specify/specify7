@@ -14,7 +14,7 @@ On Ubuntu:
 
 On Fedora:
 
-   sudo yum install MySQL-python python-pip
+    sudo yum install MySQL-python python-pip
 
 Install Django 1.3.
 -------------------
