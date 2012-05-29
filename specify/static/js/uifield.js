@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat'
-], function($, _, Backbone, dataObjFormat, uiformat) {
+    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uivalidate'
+], function($, _, Backbone, dataObjFormat, uiformat, uivalidate) {
     "use strict";
 
     return Backbone.View.extend({
@@ -12,6 +12,8 @@ define([
             var fieldName = self.$el.attr('name');
             var field = self.model.specifyModel.getField(fieldName);
             if (!field) return self;
+
+            self.defaultBGColor = self.$el.css('background-color');
 
             if (field.isRelationship) {
                 self.$el.removeClass('specify-field').addClass('specify-object-formatted');
@@ -37,7 +39,13 @@ define([
         change: function() {
             var self = this;
             var value = self.$el.is(':checkbox') ? self.$el.prop('checked') : self.$el.val();
-            self.model.set(self.$el.attr('name'), value);
+            var validation = uivalidate(self.model, self.$el.attr('name'), value);
+            if (validation) {
+                self.model.set(self.$el.attr('name'), value);
+                self.$el.css('background-color', self.defaultBGColor);
+            }
+            else
+                self.$el.css('background-color', 'red');
         }
     });
 });
