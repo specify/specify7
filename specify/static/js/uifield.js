@@ -14,6 +14,7 @@ define([
             if (!field) return self;
 
             self.defaultBGColor = self.$el.css('background-color');
+            self.defaultTooltip = self.$el.attr('title');
 
             if (field.isRelationship) {
                 self.$el.removeClass('specify-field').addClass('specify-object-formatted');
@@ -26,8 +27,7 @@ define([
                 return uiformat(self.model, fieldName);
             };
 
-            var setControl = self.$el.is(':checkbox') ?
-                _(self.$el.prop).bind(self.$el, 'checked') : _(self.$el.val).bind(self.$el);
+            var setControl =_(self.$el.val).bind(self.$el);
 
             var fillItIn = function() { fetch().done(setControl); };
 
@@ -37,15 +37,24 @@ define([
             return this;
         },
         change: function() {
-            var self = this;
-            var value = self.$el.is(':checkbox') ? self.$el.prop('checked') : self.$el.val();
-            var validation = uivalidate(self.model, self.$el.attr('name'), value);
-            if (validation) {
-                self.model.set(self.$el.attr('name'), value);
-                self.$el.css('background-color', self.defaultBGColor);
+            var validation = uivalidate(this.model, this.$el.attr('name'),  this.$el.val());
+            if (validation.isValid) {
+                this.model.set(this.$el.attr('name'), validation.parsed);
+                this.resetInvalid();
+            } else {
+                this.showInvalid(validation.reason);
             }
+        },
+        showInvalid: function(mesg) {
+            this.$el.css('background-color', 'red');
+            this.$el.attr('title', mesg);
+        },
+        resetInvalid: function() {
+            this.$el.css('background-color', this.defaultBGColor);
+            if (this.defaultTooltip)
+                this.$el.attr('title', this.defaultTooltip);
             else
-                self.$el.css('background-color', 'red');
+                this.$el.removeAttr('title');
         }
     });
 });
