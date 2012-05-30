@@ -1,51 +1,63 @@
-define(['jquery', 'underscore', 'schemalocalization', 'specifyapi'], function($, _, schemalocalization, api) {
+define([
+    'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema'
+], function($, _, schemalocalization, api, Backbone, schema) {
+    "use strict";
 
-    return function(control, resource) {
-        var model = control.parents('[data-specify-model]').attr('data-specify-model');
-        var field = control.attr('name');
-        function buildPicklist(picklistitems, value) {
-            value = (value instanceof api.Resource) ? value.url() : value;
-            var items = {};
-            if (!control.hasClass('required')) {
-                $('<option>').appendTo(control);
-            }
-            _(picklistitems).each(function(item) {
-                $('<option>').text(item.title).attr('value', item.value).appendTo(control);
-            });
-            if (_(value).isUndefined()) return;
-            var valueNotInItems = (value !== '') && _.all(picklistitems, function(item) { return item.value !== value; });
-            var valueIsRequiredButMissing = control.is('.specify-required-field') && value === '';
-            if (valueNotInItems || valueIsRequiredButMissing) {
-                $('<option>').appendTo(control).attr('value', value).text(value + " (current value not in picklist)");
-            }
-            control.val(value);
-        }
+    var agentTypePicklist = [{value: 0, title: 'Organization'},
+                             {value: 1, title: 'Person'},
+                             {value: 2, title: 'Other'},
+                             {value: 3, title: 'Group'}];
 
-        resource && control.change(function() {
-            resource.set(field, control.val());
-        });
+    return Backbone.View.extend({
+        events: {
+            'change': 'change'
+        },
+        render: function() {
+            var self = this;
+            var specifyModel = self.model.specifyModel;
+            var field = specifyModel.getField(self.$el.attr('name'));
+            var isAgentType = (specifyModel === schema.getModel('Agent')
+                               && field === specifyModel.getField('agentType'));
 
-        if (model.toLowerCase() === 'agent' && field.toLowerCase() === 'agenttype') {
-            return $.when([{value: 0, title: 'Organization'},
-                           {value: 1, title: 'Person'},
-                           {value: 2, title: 'Other'},
-                           {value: 3, title: 'Group'}],
-                          resource.rget('agenttype')).done(buildPicklist);
-        }
+            var pickListName = schemalocalization.getPickListForField(field.name, specifyModel.name);
+            if (!pickListName && !isAgentType) { return self; }
 
-        var pickListName = schemalocalization.getPickListForField(field, model);
-        if (!pickListName) { return; }
-        var getPickList = api.getPickListByName(pickListName).pipe(function(picklist) {
-            if (picklist.get('tablename')) {
-                var picklistCol = new (api.Collection.forModel(picklist.get('tablename')))();
-                return picklistCol.fetch().pipe(function () {
-                    return picklistCol.map(function (item) {
-                        return {value: item.get('resource_uri'), title: item.get('name')};
-                    });
+            var buildPicklist = function(picklistitems, value) {
+                value = (value instanceof api.Resource) ? value.url() : value;
+                var items = {};
+                if (!self.$el.hasClass('required')) {
+                    $('<option>').appendTo(self.el);
+                }
+                _(picklistitems).each(function(item) {
+                    $('<option>').text(item.title).attr('value', item.value).appendTo(self.el);
                 });
-            } else return picklist.get('picklistitems');
-        });
-        var getValue = resource ? resource.rget(field) : null;
-        return $.when(getPickList, getValue).done(buildPicklist);
-    };
+                if (_(value).isUndefined()) return;
+                var valueNotInItems = (value !== '') && _.all(picklistitems, function(item) { return item.value !== value; });
+                var valueIsRequiredButMissing = self.$el.is('.specify-required-field') && value === '';
+                if (valueNotInItems || valueIsRequiredButMissing) {
+                    $('<option>').appendTo(self.el).attr('value', value).text(value + " (current value not in picklist)");
+                }
+                self.$el.val(value);
+            };
+
+            var getPickList = isAgentType ? agentTypePicklist :
+                api.getPickListByName(pickListName).pipe(function(picklist) {
+                    if (picklist.get('tablename')) {
+                        var picklistCol = new (api.Collection.forModel(picklist.get('tablename')))();
+                        return picklistCol.fetch().pipe(function () {
+                            return picklistCol.map(function (item) {
+                                return {value: item.get('resource_uri'), title: item.get('name')};
+                            });
+                        });
+                    } else return picklist.get('picklistitems');
+                });
+
+            var getValue = self.model.rget(field.name);
+            $.when(getPickList, getValue).done(buildPicklist);
+            return self;
+        },
+        change: function() {
+            this.model.set(this.$el.attr('name'), this.$el.val());
+        }
+    });
 });

@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist', 'specifyapi', 'uifield',
     'querycbx', 'recordselector', 'specifyplugins', 'subviewbutton', 'formtable', 'subview', 'checkbox'
-], function($, _, schema, schemalocalization, specifyform,  setupPickList, api, UiField,
+], function($, _, schema, schemalocalization, specifyform,  PickList, api, UiField,
             QueryCbx, RecordSelector, uiplugins, SubViewButton, FormTable, SubView, CheckBox) {
     "use strict";
 
@@ -19,7 +19,7 @@ define([
 
         form.find('.specify-field').each(function () {
             var control = $(this);
-            if      (control.is('.specify-combobox')) setupPickList(control, resource);
+            if      (control.is('.specify-combobox')) (new PickList({ el: control, model: resource })).render();
             else if (control.is('.specify-querycbx')) (new QueryCbx({ el: control, model: resource })).render();
             else if (control.is('.specify-uiplugin')) setupUIplugin(control, resource);
             else if (control.is(':checkbox'))         (new CheckBox({ model: resource, el: control })).render();
