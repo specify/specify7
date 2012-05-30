@@ -42,6 +42,7 @@ define([
         this.isRelationship = this.node.is('relationship');
         this.isRequired = this.node.attr('required') === 'true';
         this.type = this.node.attr('type');
+        this.length = this.node.attr('length');
         if (this.isRelationship) this.otherSideName = this.node.attr('othersidename');
     };
     _.extend(Field.prototype, {
