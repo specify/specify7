@@ -5,25 +5,24 @@ define([
             QueryCbx, RecordSelector, uiplugins, SubViewButton, FormTable, SubView, CheckBox) {
     "use strict";
 
-    function setupUIplugin (control, resource) {
+    function pluginFor(control) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
-        var plugin = uiplugins[init.name];
-        plugin && resource.fetchIfNotPopulated().done(function () { plugin(control, init, resource); });
+        return uiplugins[init.name];
     };
 
-    // This function is the main entry point for this module. It calls
-    // the processView function in specifyform.js to build the forms
-    // then fills them in with the given data or pointer to data.
     function populateForm (form, resource) {
         schemalocalization.localizeForm(form);
 
         form.find('.specify-field').each(function () {
             var control = $(this);
-            if      (control.is('.specify-combobox')) (new PickList({ el: control, model: resource })).render();
-            else if (control.is('.specify-querycbx')) (new QueryCbx({ el: control, model: resource })).render();
-            else if (control.is('.specify-uiplugin')) setupUIplugin(control, resource);
-            else if (control.is(':checkbox'))         (new CheckBox({ model: resource, el: control })).render();
-            else                                      (new UiField({ model: resource, el: control })).render();
+            var viewOptions = { el: control, model: resource };
+            var View =
+                control.is('.specify-combobox') ? PickList :
+                (control.is('.specify-querycbx') ? QueryCbx :
+                 (control.is(':checkbox') ? CheckBox :
+                  (control.is('.specify-uiplugin') ? pluginFor(control) :
+                   UiField)));
+            View && new View(viewOptions).render();
         });
 
         var model = resource.specifyModel;
