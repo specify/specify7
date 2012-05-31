@@ -108,7 +108,20 @@ define(['jquery', 'underscore'], function($, _) {
         }
     };
 
+    var stringLike = _.bind(_.contains, _, ['java.lang.String', 'text']);
+
     return function(field, value) {
+        if (value.trim() === '' && !stringLike(field.type))
+            return field.isRequired ? {
+                value: value,
+                isValid: false,
+                reason: "Field is required."
+            } : {
+                value: value,
+                isValid: true,
+                parsed: null
+            };
+
         var parser = parsers[field.type];
         return parser ? parser(field, value) : {
             value: value,
