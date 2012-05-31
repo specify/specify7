@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uivalidate'
-], function($, _, Backbone, dataObjFormat, uiformat, uivalidate) {
+    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse'
+], function($, _, Backbone, dataObjFormat, uiformat, uiparse) {
     "use strict";
 
     return Backbone.View.extend({
@@ -37,7 +37,7 @@ define([
             return this;
         },
         change: function() {
-            var validation = uivalidate(this.model, this.$el.attr('name'),  this.$el.val());
+            var validation = this.validate();
             if (validation.isValid) {
                 this.model.set(this.$el.attr('name'), validation.parsed);
                 this.resetInvalid();
@@ -55,6 +55,19 @@ define([
                 this.$el.attr('title', this.defaultTooltip);
             else
                 this.$el.removeAttr('title');
+        },
+        validate: function() {
+            var value = this.$el.val().trim();
+            var field = this.model.specifyModel.getField(this.$el.attr('name'));
+            var isRequired = this.$el.is('.specify-required-field');
+            if (value === '' && isRequired) {
+                return {
+                    value: value,
+                    isValid: false,
+                    reason: "Field is required."
+                };
+            }
+            return uiparse(field, value);
         }
     });
 });

@@ -22,6 +22,8 @@ define([
         var fetch = resource.rget(fieldName);
 
         return fetch.pipe(function(value) {
+            if (!value) return '';
+
             if(_(['timestampModified', 'timestampCreated']).contains(field.name)) {
                 return value && value.split('T').shift();
             }
