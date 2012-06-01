@@ -16,11 +16,12 @@ require({
 });
 
 require([
-    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema', 'tests/testparseselect',
-], function(testlatlongutils, testapi, testschema, testparseselect) {
+    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema', 'tests/testparseselect', 'tests/testuiformatters'
+], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters) {
     QUnit.start();
-    testparseselect();
-    testschema();
-    testapi();
-    testlatlongutils();
+//  testparseselect();
+//  testschema();
+//  testapi();
+//  testlatlongutils();
+    testuiformatters();
 });
