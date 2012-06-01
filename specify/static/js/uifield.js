@@ -9,9 +9,9 @@ define([
         },
         render: function() {
             var self = this;
-            var fieldName = self.$el.attr('name');
-            var field = self.model.specifyModel.getField(fieldName);
+            var field = self.model.specifyModel.getField(self.$el.attr('name'));
             if (!field) return self;
+            self.field = field;
 
             self.defaultBGColor = self.$el.css('background-color');
             self.defaultTooltip = self.$el.attr('title');
@@ -22,9 +22,9 @@ define([
             }
 
             var fetch =  field.isRelationship ? function() {
-                return self.model.rget(fieldName).pipe(dataObjFormat);
+                return self.model.rget(field.name).pipe(dataObjFormat);
             } : function () {
-                return uiformat(self.model, fieldName);
+                return uiformat(self.model, field.name);
             };
 
             var setControl =_(self.$el.val).bind(self.$el);
@@ -32,14 +32,14 @@ define([
             var fillItIn = function() { fetch().done(setControl); };
 
             fillItIn();
-            self.model.onChange(fieldName, fillItIn);
+            self.model.onChange(field.name, fillItIn);
 
             return this;
         },
         change: function() {
             var validation = this.validate();
             if (validation.isValid) {
-                this.model.set(this.$el.attr('name'), validation.parsed);
+                this.model.set(this.field.name, validation.parsed);
                 this.resetInvalid();
             } else {
                 this.showInvalid(validation.reason);
@@ -58,7 +58,6 @@ define([
         },
         validate: function() {
             var value = this.$el.val().trim();
-            var field = this.model.specifyModel.getField(this.$el.attr('name'));
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
                 return {
@@ -67,7 +66,15 @@ define([
                     reason: "Field is required."
                 };
             }
-            return uiparse(field, value);
+            if (this.$el.is('.specify-formattedtext')) {
+                var formatter = this.field.getUIFormatter();
+                if (formatter && !formatter.validate(value)) return {
+                    value: value,
+                    isValid: false,
+                    reason: "Required format: " + formatter.value()
+                };
+            }
+            return uiparse(this.field, value);
         }
     });
 });

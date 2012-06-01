@@ -191,7 +191,8 @@ define([
                             return $('<input type=text readonly>').appendTo(td);
                         },
                         formattedtext: function() {
-                            return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
+                            return $('<input type=text class="specify-formattedtext">').appendTo(td)
+                                .attr('readonly', doingFormTable);
                         },
                         label: function() {
                             return $('<input type=text readonly>').appendTo(td);

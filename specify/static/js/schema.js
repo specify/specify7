@@ -1,12 +1,13 @@
 define([
-    'jquery', 'underscore', 'schemalocalization', 'icons',
+    'jquery', 'underscore', 'schemalocalization', 'icons', 'uiformatters',
     'text!/static/resources/specify_datamodel.xml'
-], function($, _, schemalocalization, icons, xml) {
+], function($, _, schemalocalization, icons, UIFormatter, xml) {
     "use strict";
 
     var Model = function(node) {
         this.node = $(node);
-        this.name = this.node.attr('classname').split('.').pop();
+        this.longName = this.node.attr('classname');
+        this.name = this.longName.split('.').pop();
         var display = this.node.find('display');
         this.view = display.attr('view');
         this.searchDialog = display.attr('searchdlg');
@@ -55,6 +56,10 @@ define([
         },
         getLocalizedDesc: function() {
             return schemalocalization.getLocalizedDescForField(this.name, this.model.name);
+        },
+        getUIFormatter: function() {
+            this._uiformatter = this._uiformatter || UIFormatter.forField(this);
+            return this._uiformatter;
         }
     });
 
