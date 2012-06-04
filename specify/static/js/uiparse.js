@@ -14,6 +14,10 @@ define(['jquery', 'underscore'], function($, _) {
                 result.parsed = false;
                 result.isValid = true;
                 break;
+            default:
+                result.isValid = false;
+                result.reason = 'Illegal value for Boolean: "' + value + '".';
+                break;
             }
             return result;
         },
@@ -30,6 +34,7 @@ define(['jquery', 'underscore'], function($, _) {
 
         "java.lang.Double": function(field, value) {
             var result = {
+                isValid: true,
                 value: value,
                 parsed: parseFloat(value)
             };
@@ -54,7 +59,7 @@ define(['jquery', 'underscore'], function($, _) {
 
             if(_(result.parsed).isNaN()) {
                 result.isValid = false;
-                result.reason = "Not a valid decimal number.";
+                result.reason = "Not a valid integer.";
             }
             return result;
         },
