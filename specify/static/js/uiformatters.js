@@ -22,7 +22,7 @@ define([
             '[class="' + field.model.longName + '"]'
         ].join('');
 
-        return new UIFormatter(uiformatters.find(selector));
+        return new UIFormatter(uiformatters.find(selector).first());
     };
 
     _(UIFormatter.prototype).extend({
