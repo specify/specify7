@@ -11,7 +11,8 @@ define([
         this.name = this.node.attr('name');
         this.modelName = this.node.attr('class').split('.').pop();
         this.fieldName = this.node.attr('fieldname');
-
+        this.isExternal = this.node.find('external').length > 0;
+        if (this.isExternal) return;
         this.fields = _(this.node.find('field')).map(function(node) { return new Field(node); });
     }
 

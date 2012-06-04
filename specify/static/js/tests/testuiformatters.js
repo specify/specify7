@@ -1,4 +1,4 @@
-define(['underscore', 'uiformatters'], function(_, UIFormatter) {
+define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema) {
     "use strict";
     return function() {
         module('uiformatters');
@@ -18,6 +18,7 @@ define(['underscore', 'uiformatters'], function(_, UIFormatter) {
             equal(uiformatter.system, true);
             equal(uiformatter.modelName, 'Accession');
             equal(uiformatter.fieldName, 'accessionNumber');
+            equal(uiformatter.isExternal, false);
 
             deepEqual(_(uiformatter.fields).pluck('type'),
                       ['year', 'separator', 'alphanumeric', 'separator', 'numeric']);
@@ -32,6 +33,26 @@ define(['underscore', 'uiformatters'], function(_, UIFormatter) {
             equal(uiformatter.regExp(), '\\d{4}\\-[a-zA-Z0-9]{2}\\-\\d{3}');
             ok(uiformatter.validate('2012-hi-123'));
             ok(!uiformatter.validate('123-34-oeu'));
+        });
+
+        test('external', function() {
+            var node = $($.parseXML('\
+<format system="true" name="CatalogNumberNumeric" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">\
+<autonumber>edu.ku.brc.specify.dbsupport.CollectionAutoNumber</autonumber>\
+<external>edu.ku.brc.specify.ui.CatalogNumberUIFieldFormatter</external>\
+</format>\
+')).find('format');
+            var uiformatter = new UIFormatter(node);
+            equal(uiformatter.name, 'CatalogNumberNumeric');
+            equal(uiformatter.system, true);
+            equal(uiformatter.modelName, 'CollectionObject');
+            equal(uiformatter.fieldName, 'catalogNumber');
+            equal(uiformatter.isExternal, true);
+        });
+
+        test('UIFormatter.forField', function() {
+            var uiformatter = schema.getModel('gift').getField('giftnumber').getUIFormatter();
+            equal(uiformatter.name, 'GiftNumber');
         });
     };
 });
