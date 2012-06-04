@@ -54,5 +54,10 @@ define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema
             var uiformatter = schema.getModel('gift').getField('giftnumber').getUIFormatter();
             equal(uiformatter.name, 'GiftNumber');
         });
+
+        test('UIFormatter.forField multiple', function() {
+            var uiformatter = schema.getModel('accession').getField('accessionNumber').getUIFormatter();
+            equal(uiformatter.value(), 'YEAR-AA-###');
+        });
     };
 });

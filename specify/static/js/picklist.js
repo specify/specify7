@@ -16,6 +16,8 @@ define([
             var self = this;
             var specifyModel = self.model.specifyModel;
             var field = specifyModel.getField(self.$el.attr('name'));
+            if (!field) { return self; }
+
             var isAgentType = (specifyModel === schema.getModel('Agent')
                                && field === specifyModel.getField('agentType'));
 

@@ -9,8 +9,10 @@ define([
         },
         render: function() {
             var self = this;
-            var field = self.model.specifyModel.getField(self.$el.attr('name'));
+            var fieldName = self.$el.attr('name');
+            var field = self.model.specifyModel.getField(fieldName);
             if (!field) return self;
+            self.fieldName = fieldName;
             self.field = field;
 
             self.defaultBGColor = self.$el.css('background-color');
@@ -22,9 +24,9 @@ define([
             }
 
             var fetch =  field.isRelationship ? function() {
-                return self.model.rget(field.name).pipe(dataObjFormat);
+                return self.model.rget(fieldName).pipe(dataObjFormat);
             } : function () {
-                return uiformat(self.model, field.name);
+                return uiformat(self.model, fieldName);
             };
 
             var setControl =_(self.$el.val).bind(self.$el);
@@ -32,14 +34,14 @@ define([
             var fillItIn = function() { fetch().done(setControl); };
 
             fillItIn();
-            self.model.onChange(field.name, fillItIn);
+            self.model.onChange(fieldName, fillItIn);
 
             return this;
         },
         change: function() {
             var validation = this.validate();
             if (validation.isValid) {
-                this.model.set(this.field.name, validation.parsed);
+                this.model.set(this.fieldName, validation.parsed);
                 this.resetInvalid();
             } else {
                 this.showInvalid(validation.reason);
