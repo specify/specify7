@@ -12,6 +12,7 @@ define([
         this.view = display.attr('view');
         this.searchDialog = display.attr('searchdlg');
         this.tableId = parseInt(this.node.attr('tableid'), 10);
+        this.jpaID = this.node.find('id').attr('name');
     };
     _.extend(Model.prototype, {
         getField: function(name) {

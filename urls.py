@@ -34,4 +34,8 @@ urlpatterns = patterns(
     # Tastypie specify urls
     (r'^api/', include(api.urls)),
 #    (r'^api/new/', include(post_api.urls)),
+
+    # jpa proxy
+    (r'^jpa/(?P<model>.+)$', 'specify.views.jpa_proxy'),
+    # (r'^rawview/(?P<nameType>[^/]+)/(?P<name>[^/]+)/$',
 )
