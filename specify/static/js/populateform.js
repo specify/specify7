@@ -1,14 +1,27 @@
 define([
-    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform', 'picklist', 'specifyapi', 'uifield',
-    'querycbx', 'recordselector', 'specifyplugins', 'subviewbutton', 'formtable', 'subview', 'checkbox'
-], function($, _, schema, schemalocalization, specifyform,  PickList, api, UiField,
-            QueryCbx, RecordSelector, uiplugins, SubViewButton, FormTable, SubView, CheckBox) {
+    'jquery', 'underscore', 'schema', 'schemalocalization', 'specifyform',
+    'picklist', 'specifyapi', 'uifield', 'catalognumberfield', 'relationshipfield',
+    'querycbx', 'recordselector', 'specifyplugins', 'subviewbutton',
+    'formtable', 'subview', 'checkbox'
+], function(
+    $, _, schema, schemalocalization, specifyform, PickList, api,
+    UIField, CatalogNumberField, RelationshipField, QueryCbx, RecordSelector,
+    uiplugins, SubViewButton, FormTable, SubView, CheckBox
+) {
     "use strict";
 
     function pluginFor(control) {
         var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
         return uiplugins[init.name];
-    };
+    }
+
+    function uiFieldFor(resource, control) {
+        var field = resource.specifyModel.getField(control.attr('name'));
+        var isCatNumber = (field.model.name === 'CollectionObject' && field.name === 'catalogNumber');
+        return isCatNumber ? CatalogNumberField :
+            (field.isRelationShip ? RelationShipField :
+             UIField);
+    }
 
     function populateForm (form, resource) {
         schemalocalization.localizeForm(form);
@@ -21,7 +34,7 @@ define([
                 (control.is('.specify-querycbx') ? QueryCbx :
                  (control.is(':checkbox') ? CheckBox :
                   (control.is('.specify-uiplugin') ? pluginFor(control) :
-                   UiField)));
+                   uiFieldFor(resource, control))));
             View && new View(viewOptions).render();
         });
 

@@ -1,47 +1,44 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse'
-], function($, _, Backbone, dataObjFormat, uiformat, uiparse) {
+    'jquery', 'underscore', 'backbone', 'uiparse'
+], function($, _, Backbone, uiparse) {
     "use strict";
 
     return Backbone.View.extend({
         events: {
             'change': 'change'
         },
+        initialize: function(options) {
+            this.fieldName = this.$el.attr('name');
+            this.field = this.model.specifyModel.getField(this.fieldName);
+            this.defaultBGColor = this.$el.css('background-color');
+            this.defaultTooltip = this.$el.attr('title');
+        },
         render: function() {
             var self = this;
-            var fieldName = self.$el.attr('name');
-            var field = self.model.specifyModel.getField(fieldName);
-            if (!field) return self;
-            self.fieldName = fieldName;
-            self.field = field;
 
-            self.defaultBGColor = self.$el.css('background-color');
-            self.defaultTooltip = self.$el.attr('title');
+            var setControl = _.bind(self.setValue, self);
 
-            if (field.isRelationship) {
-                self.$el.removeClass('specify-field').addClass('specify-object-formatted');
-                self.$el.prop('readonly', true);
-            }
-
-            var fetch =  field.isRelationship ? function() {
-                return self.model.rget(fieldName).pipe(dataObjFormat);
-            } : function () {
-                return uiformat(self.model, fieldName);
+            var fillItIn = function() {
+                self.fetch().done(setControl);
             };
 
-            var setControl =_(self.$el.val).bind(self.$el);
-
-            var fillItIn = function() { fetch().done(setControl); };
-
             fillItIn();
-            self.model.onChange(fieldName, fillItIn);
+            self.model.onChange(self.fieldName, fillItIn);
 
             return this;
         },
+        setValue: function(value) {
+            this.$el.val(value);
+        },
+        fetch: function() {
+            return this.model.rget(this.fieldName);
+        },
         change: function() {
-            var validation = this.validate();
+            var value = this.$el.val().trim();
+            var validation = this.validate(value);
             if (validation.isValid) {
                 this.model.set(this.fieldName, validation.parsed);
+                this.setValue(validation.parsed);
                 this.resetInvalid();
             } else {
                 this.showInvalid(validation.reason);
@@ -58,8 +55,7 @@ define([
             else
                 this.$el.removeAttr('title');
         },
-        validate: function() {
-            var value = this.$el.val().trim();
+        validate: function(value) {
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
                 return {
