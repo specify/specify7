@@ -44,7 +44,7 @@ define([
         return result;
     }
 
-    var findView = _.bind(find, this, 'view', viewsets);
+    var findView = self.findView = _.bind(find, this, 'view', viewsets);
     var findViewdef = _.bind(find, this, 'viewdef', viewsets);
 
     // helper function that pulls name value pairs out of property strings
@@ -92,6 +92,7 @@ define([
             view.find('altview').first().attr('viewdef');
         return findViewdef(defaultView);
     }
+    self.getDefaultViewdef = getDefaultViewdef;
 
     function getModelFromViewdef(viewdef) {
         return viewdef.attr('class').split('.').pop();
@@ -128,151 +129,152 @@ define([
         return node.is('.specify-subview-button');
     };
 
+    var processField = self.processField = function(doingFormTable, cell, id) {
+        return {
+            checkbox: function() {
+                var control = $('<input type=checkbox class="specify-field">');
+                var labelOR = cell.attr('label');
+                if (doingFormTable) {
+                    if (labelOR !== undefined) {
+                        control.attr('data-specify-field-label-override', labelOR);
+                    }
+                    return control.attr('disabled', true);
+                }
+                var label = $('<label>');
+                id && label.prop('for', id);
+                labelOR && label.text(cell.attr('label'));
+                return control.add(label);
+            },
+            textarea: function () {
+                if (doingFormTable)
+                    return $('<input type=text class="specify-field" readonly>');
+                var control = $('<textarea class="specify-field">)');
+                cell.attr('rows') && control.attr('rows', cell.attr('rows'));
+                return control;
+            },
+            textareabrief: function() {
+                if (doingFormTable)
+                    return $('<input type=text class="specify-field" readonly>');
+                return $('<textarea class="specify-field">').attr('rows', cell.attr('rows') || 1);
+            },
+            combobox: function() {
+                var control = $('<select class="specify-combobox specify-field">');
+                control.attr('disabled', doingFormTable);
+                return control;
+            },
+            querycbx: function() {
+                return $('<input type=text class="specify-querycbx specify-field">')
+                    .attr('readonly', doingFormTable);
+            },
+            text: function() {
+                return $('<input type=text class="specify-field">').attr('readonly', doingFormTable);
+            },
+            dsptextfield: function() {
+                return $('<input type=text class="specify-field" readonly>');
+            },
+            formattedtext: function() {
+                return $('<input type=text class="specify-formattedtext specify-field">')
+                    .attr('readonly', doingFormTable);
+            },
+            label: function() {
+                return $('<input type=text class="specify-field" readonly>');
+            },
+            plugin: function() {
+                return $('<input type=button value="plugin" class="specify-uiplugin specify-field">')
+                    .attr('disabled', doingFormTable);
+            },
+            browse: function() {
+                return $('<input type=file class="specify-field">');
+            }
+        }[cell.attr('uitype')]();
+    };
+
+    var processCell = self.processCell = function(formNumber, doingFormTable, cellNode) {
+        var cell = $(cellNode);
+        var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;
+        var byType = {
+            field: function() {
+                var td = $('<td>');
+                var fieldName = cell.attr('name');
+                var initialize = cell.attr('initialize');
+                var isRequired = cell.attr('isrequired');
+                processField(doingFormTable, cell, id).appendTo(td);
+                var control = td.find('.specify-field');
+                if (control) {
+                    control.attr('name', fieldName).addClass('specify-field');
+                    id && control.prop('id', id);
+                    initialize && control.attr('data-specify-initialize', initialize);
+                    if (isRequired && isRequired.toLowerCase() === 'true') {
+                        control.addClass('specify-required-field');
+                    }
+                }
+                return td;
+            },
+            label: function() {
+                var label = $('<label>');
+                if (cell.attr('label') !== undefined)
+                    label.text(cell.attr('label'));
+                var labelfor = cell.attr('labelfor');
+                labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
+                return $('<td class="specify-form-label">').append(label);
+            },
+            separator: function() {
+                var label = cell.attr('label'),
+                elem = label ? $('<h3>').text(label) : $('<hr>');
+                return $('<td>').append(elem.addClass('separator'));
+            },
+            subview: function() {
+                var td = $('<td class="specify-subview">'),
+                props = self.parseSpecifyProperties(cell.attr('initialize'));
+                td.attr('data-specify-field-name', cell.attr('name'));
+                var view = self.findView(cell.attr('viewname'));
+                if (view === undefined) {
+                    return td.text('View "' + cell.attr('viewname') + '" is undefined.');
+                }
+                var subviewdef = self.getDefaultViewdef(view, cell.attr('defaulttype'));
+                td.attr('data-specify-viewdef', subviewdef.attr('name'));
+                if (props.btn === 'true') {
+                    td.addClass('specify-subview-button');
+                    id && td.prop('id', id);
+                    td.attr('data-specify-initialize', cell.attr('initialize'));
+                    props.align && td.addClass('align-' + props.align);
+                }
+                return td;
+            },
+            panel: function() {
+                var table = processColumnDef(cell.attr('coldef'));
+                cell.children('rows').children('row').each(function () {
+                    var tr = $('<tr>').appendTo(table);
+                    $(this).children('cell').each(function() {
+                        tr.append(processCell(formNumber, doingFormTable, this));
+                    });
+                });
+                return $('<td>').append(table);
+            },
+	    command: function() {
+		var button = $('<input type=button>').attr({
+		    value: cell.attr('label'),
+		    name: cell.attr('name')
+		});
+		return $('<td>').append(button);
+	    },
+            other: function() {
+                return $('<td>').text("unsupported cell type: " + cell.attr('type'));
+            }
+        },
+
+        td = (byType[cell.attr('type')] || byType.other)(),
+        colspan = cell.attr('colspan');
+        if (!doingFormTable && colspan) {
+            td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+        }
+        return td;
+    };
+
     function buildView(viewdef) {
         var formNumber = formCounter++;
         var viewModel = getModelFromViewdef(viewdef),
         doingFormTable = (viewdef.attr('type') === 'formtable');
-
-        var processCell = function(cellNode) {
-            var cell = $(cellNode),
-            id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined,
-            byType = {
-                label: function() {
-                    var label = $('<label>');
-                    if (cell.attr('label') !== undefined)
-                        label.text(cell.attr('label'));
-                    var labelfor = cell.attr('labelfor');
-                    labelfor && label.prop('for', 'specify-field-' + formNumber + '-' + labelfor);
-                    return $('<td class="specify-form-label">').append(label);
-                },
-                field: function() {
-                    var td = $('<td>'),
-                    fieldName = cell.attr('name'),
-                    byUIType = {
-                        checkbox: function() {
-                            var control = $('<input type=checkbox>').appendTo(td);
-                            var labelOR = cell.attr('label');
-                            if (doingFormTable) {
-                                if (labelOR !== undefined) {
-                                    control.attr('data-specify-field-label-override', labelOR);
-                                }
-                                return control.attr('disabled', true);
-                            }
-                            var label = $('<label>').appendTo(td);
-                            id && label.prop('for', id);
-                            labelOR && label.text(cell.attr('label'));
-                            return control;
-                        },
-                        textarea: function () {
-                            if (doingFormTable)
-                                return $('<input type=text readonly>').appendTo(td);
-                            var control = $('<textarea>)').appendTo(td);
-                            cell.attr('rows') && control.attr('rows', cell.attr('rows'));
-                            return control;
-                        },
-                        textareabrief: function() {
-                            if (doingFormTable)
-                                return $('<input type=text readonly>').appendTo(td);
-                            return $('<textarea>').attr('rows', cell.attr('rows') || 1).appendTo(td);
-                        },
-                        combobox: function() {
-                            var control = $('<select class="specify-combobox">').appendTo(td);
-                            control.attr('disabled', doingFormTable);
-                            return control;
-                        },
-                        querycbx: function() {
-                            return $('<input type=text class="specify-querycbx">').appendTo(td)
-                                .attr('readonly', doingFormTable);
-                        },
-                        text: function() {
-                            return $('<input type=text>').appendTo(td).attr('readonly', doingFormTable);
-                        },
-                        dsptextfield: function() {
-                            return $('<input type=text readonly>').appendTo(td);
-                        },
-                        formattedtext: function() {
-                            return $('<input type=text class="specify-formattedtext">').appendTo(td)
-                                .attr('readonly', doingFormTable);
-                        },
-                        label: function() {
-                            return $('<input type=text readonly>').appendTo(td);
-                        },
-                        plugin: function() {
-                            return $('<input type=button value="plugin" class="specify-uiplugin">')
-                                .appendTo(td).attr('disabled', doingFormTable);
-                        },
-                        browse: function() {
-                            return $('<input type=file>').appendTo(td);
-                        },
-                        other: function() {
-                            td.text("unsupported uitype: " + cell.attr('uitype'));
-                        }
-                    },
-                    initialize = cell.attr('initialize'),
-                    isRequired = cell.attr('isrequired'),
-                    control = (byUIType[cell.attr('uitype') || 'text'] || byUIType.other)();
-                    if (control) {
-                        control.attr('name', fieldName).addClass('specify-field');
-                        id && control.prop('id', id);
-                        initialize && control.attr('data-specify-initialize', initialize);
-                        if (isRequired && isRequired.toLowerCase() === 'true') {
-                            control.addClass('specify-required-field');
-                        }
-                    }
-                    return td;
-                },
-                separator: function() {
-                    var label = cell.attr('label'),
-                    elem = label ? $('<h3>').text(label) : $('<hr>');
-                    return $('<td>').append(elem.addClass('separator'));
-                },
-                subview: function() {
-                    var td = $('<td class="specify-subview">'),
-                    props = self.parseSpecifyProperties(cell.attr('initialize'));
-                    td.attr('data-specify-field-name', cell.attr('name'));
-                    var view = findView(cell.attr('viewname'));
-                    if (view === undefined) {
-                        return td.text('View "' + cell.attr('viewname') + '" is undefined.');
-                    }
-                    var subviewdef = getDefaultViewdef(view, cell.attr('defaulttype'));
-                    td.attr('data-specify-viewdef', subviewdef.attr('name'));
-                    if (props.btn === 'true') {
-                        td.addClass('specify-subview-button');
-                        id && td.prop('id', id);
-                        td.attr('data-specify-initialize', cell.attr('initialize'));
-                        props.align && td.addClass('align-' + props.align);
-                    }
-                    return td;
-                },
-                panel: function() {
-                    var table = processColumnDef(cell.attr('coldef'));
-                    cell.children('rows').children('row').each(function () {
-                        var tr = $('<tr>').appendTo(table);
-                        $(this).children('cell').each(function() {
-                            tr.append(processCell(this));
-                        });
-                    });
-                    return $('<td>').append(table);
-                },
-	        command: function() {
-		    var button = $('<input type=button>').attr({
-		        value: cell.attr('label'),
-		        name: cell.attr('name')
-		    });
-		    return $('<td>').append(button);
-	        },
-                other: function() {
-                    return $('<td>').text("unsupported cell type: " + cell.attr('type'));
-                }
-            },
-
-            td = (byType[cell.attr('type')] || byType.other)(),
-            colspan = cell.attr('colspan');
-            if (!doingFormTable && colspan) {
-                td.attr('colspan', Math.ceil(parseInt(colspan)/2));
-            }
-            return td;
-        };
 
         var outerDiv = $('<div>').attr('data-specify-model', viewModel);
         $('<h2 class="specify-form-header">').appendTo(outerDiv);
@@ -286,7 +288,7 @@ define([
             formTableCells.each(function () {
                 var label = $('<label>', {'for': 'specify-field-' + formNumber + '-' + $(this).attr('id')});
                 headerRow.append($('<th>').append(label));
-                bodyRow.append(processCell(this));
+                bodyRow.append(processCell(formNumber, doingFormTable, this));
             });
 
             table = $('<table class="specify-formtable">');
@@ -300,7 +302,7 @@ define([
 
             viewdef.children('rows').children('row').each(function () {
                 var tr = $('<tr>').appendTo(table);
-                $(this).children('cell').each(function () { processCell(this).appendTo(tr); });
+                $(this).children('cell').each(function () { processCell(formNumber, doingFormTable, this).appendTo(tr); });
             });
 
             var form = $('<form class="specify-view-content">').append(table);

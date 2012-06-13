@@ -16,13 +16,16 @@ require({
 });
 
 require([
-    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema', 'tests/testparseselect', 'tests/testuiformatters', 'tests/testuiparse'
-], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters, testuiparse) {
+    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema',
+    'tests/testparseselect', 'tests/testuiformatters', 'tests/testuiparse',
+    'tests/testforms'
+], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters, testuiparse, testforms) {
     QUnit.start();
-//  testparseselect();
-//  testschema();
-//  testapi();
-//  testlatlongutils();
+    testparseselect();
+    testschema();
+    testapi();
+    testlatlongutils();
     testuiparse();
     testuiformatters();
+    testforms();
 });
