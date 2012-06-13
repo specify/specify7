@@ -266,7 +266,7 @@ define([
         td = (byType[cell.attr('type')] || byType.other)(),
         colspan = cell.attr('colspan');
         if (!doingFormTable && colspan) {
-            td.attr('colspan', Math.ceil(parseInt(colspan)/2));
+            td.attr('colspan', Math.ceil(parseInt(colspan, 10)/2));
         }
         return td;
     };

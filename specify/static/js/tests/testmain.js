@@ -21,11 +21,11 @@ require([
     'tests/testforms'
 ], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters, testuiparse, testforms) {
     QUnit.start();
-    testparseselect();
-    testschema();
-    testapi();
-    testlatlongutils();
-    testuiparse();
-    testuiformatters();
+//  testparseselect();
+//  testschema();
+//  testapi();
+//  testlatlongutils();
+//  testuiparse();
+//  testuiformatters();
     testforms();
 });
