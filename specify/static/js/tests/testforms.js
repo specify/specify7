@@ -1,13 +1,13 @@
-define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, specifyform) {
+define(['underscore', 'uiformatters', 'specifyformcells'], function(_, UIFormatter, processCell) {
     "use strict";
     return function() {
         var uitypes = ['checkbox', 'textarea', 'textareabrief', 'combobox', 'querycbx', 'text',
                        'dsptextfield', 'formattedtext', 'label', 'plugin', 'browse'];
         var formNumber = '<%= formNumber %>';
 
-        function processCell(doingFormTable, node) {
+        function instProcessCell(doingFormTable, node) {
             var cell = $(node);
-            var result = specifyform.processCell(formNumber, doingFormTable, node);
+            var result = processCell(formNumber, doingFormTable, node);
             if (cell.attr('colspan')) {
                 if (doingFormTable) {
                     ok(_.isUndefined(result.attr('colspan')), 'colspan undefined for formtable');
@@ -16,7 +16,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
                           'colspan is correct');
                 }
             }
-            var result = specifyform.processCell(formNumber, doingFormTable, node);
+            var result = processCell(formNumber, doingFormTable, node);
             return result;
         }
 
@@ -24,7 +24,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _([true, false]).each(function(doingFormTable) {
             var node ='<cell type="label" labelfor="1"/>';
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 ok(result.hasClass('specify-form-label'), 'specify-form-label class');
                 equal(result.children().length, 1);
                 var label = result.children().first();
@@ -37,7 +37,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _([true, false]).each(function(doingFormTable) {
             var node = '<cell type="label" labelfor="1" label="Foobar"/>';
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 ok(result.hasClass('specify-form-label'), 'specify-form-label class');
                 equal(result.children().length, 1);
                 var label = result.children().first();
@@ -53,7 +53,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
                 '<cell type="separator" colspan="15"/>';
 
             test(node, function() {
-                var result = processCell(false, node);
+                var result = instProcessCell(false, node);
                 equal(result.children().length, 1, 'only one element');
                 var separator = result.children().first();
                 ok(separator.hasClass('separator'));
@@ -65,7 +65,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         (function() {
             var node = '<cell type="command" id="14" name="ReturnLoan" label="Return Loan" commandtype="Interactions" action="ReturnLoan" ignore="true" initialize="vis=false"/>';
             test(node, function() {
-                var result = processCell(false, node);
+                var result = instProcessCell(false, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.children().first();
                 ok(control.is('input[type="button"]'), 'control is button input');
@@ -78,7 +78,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _(uitypes).each(function(uitype) { _([true, false]).each(function(doingFormTable) {
             var node = '<cell type="field" id="1" name="aField" uitype="'+uitype+'"/>';
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 var control = result.find('.specify-field');
                 equal(control.length, 1, 'exactly one specify-field element');
                 equal(control.attr('name'), 'aField', 'name is correct');
@@ -92,7 +92,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _(uitypes).each(function(uitype) { _([true, false]).each(function(doingFormTable) {
             var node = '<cell type="field" id="1" name="aField" uitype="'+uitype+'" isrequired="true" initialize="somedata"/>';
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 var control = result.find('.specify-field');
                 equal(control.length, 1, 'exactly one specify-field element');
                 equal(control.attr('name'), 'aField', 'name is correct');
@@ -109,7 +109,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
                     (_.isNull(labelStr)? '': (' label="'+labelStr+'"')) +
                     '/>';
                 test(node + ' doingFormTable: ' + doingFormTable, function() {
-                    var result = processCell(doingFormTable, node);
+                    var result = instProcessCell(doingFormTable, node);
                     var control = result.children('input').first();
                     var label = result.children('label').first();
                     equal(result.children().length, doingFormTable ? 1 : 2);
@@ -136,7 +136,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
             _(['rows="10"', 'rows="3"', '']).each(function(rowsAttr) {
                 var node = '<cell type="field" id="4" name="remarks" uitype="textarea" '+rowsAttr+' colspan="3"/>';
                 test(node + ' doingFormTable: ' + doingFormTable, function() {
-                    var result = processCell(doingFormTable, node);
+                    var result = instProcessCell(doingFormTable, node);
                     equal(result.children().length, 1, 'only one element');
                     var control = result.find('.specify-field');
                     if (doingFormTable) {
@@ -159,7 +159,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
             _(['rows="10"', 'rows="3"', '']).each(function(rowsAttr) {
                 var node = '<cell type="field" id="2" name="brieftext" uitype="textareabrief" '+rowsAttr+' colspan="3"/>';
                 test(node + ' doingFormTable: ' + doingFormTable, function() {
-                    var result = processCell(doingFormTable, node);
+                    var result = instProcessCell(doingFormTable, node);
                     equal(result.children().length, 1, 'only one element');
                     var control = result.find('.specify-field');
                     if (doingFormTable) {
@@ -183,7 +183,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
                 var node = '<cell type="field" id="7" name="prepType" uitype="combobox" ' +
                     (givePickList ? 'picklist="PrepType"' : '') + ' />';
                 test(node + ' doingFormTable: ' + doingFormTable, function() {
-                    var result = processCell(doingFormTable, node);
+                    var result = instProcessCell(doingFormTable, node);
                     equal(result.children().length, 1, 'only one element');
                     var control = result.find('.specify-field');
                     ok(control.is('select'), 'control is <select>');
@@ -203,7 +203,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _([true, false]).each(function(doingFormTable) {
             var node = '<cell type="field" id="3" name="accession" uitype="querycbx" initialize="name=AccessionCO;title=AccessionCO" isrequired="false"/>';
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.find('.specify-field');
                 ok(control.is('input[type="text"]'), 'input is type text');
@@ -217,7 +217,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
             _(['text', 'dsptextfield', 'formattedtext', 'label']).each(function(uitype) {
                 var node = '<cell type="field" id="2" name="text2" uitype="' + uitype + '"/>';
                 test(node + ' doingFormTable: ' + doingFormTable, function() {
-                    var result = processCell(doingFormTable, node);
+                    var result = instProcessCell(doingFormTable, node);
                     equal(result.children().length, 1, 'only one element');
                     var control = result.find('.specify-field');
                     ok(control.is('input[type="text"]'), 'control is text input');
@@ -233,7 +233,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
         _([true, false]).each(function(doingFormTable) {
             var node = '<cell type="field" id="mailto" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=MailTo;icon=EMail;watch=7"/>'
             test(node + ' doingFormTable: ' + doingFormTable, function() {
-                var result = processCell(doingFormTable, node);
+                var result = instProcessCell(doingFormTable, node);
                 equal(result.children().length, 1, 'only one element');
                 var control = result.find('.specify-field');
                 ok(control.is('input[type="button"]'), 'control is button');
@@ -244,7 +244,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
 
         module('specifyform field browse');
         test('browse', function() {
-            var result = specifyform.processCell(
+            var result = processCell(
                 formNumber, false,
                 '<cell type="field" id="2" name="mysql.location" cols="30" uitype="browse" colspan="3"/>');
             equal(result.children().length, 1, 'only one element');
@@ -261,7 +261,7 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
 
                 var node = '<cell type="subview" viewname="Authors" id="10" name="authors" '+init+' defaulttype="table" colspan="12" rows="3"/>';
                 test(node, function() {
-                    var result = processCell(false, node);
+                    var result = instProcessCell(false, node);
                     equal(result.children().length, 0, 'is empty td');
                     ok(result.hasClass('specify-subview'), 'has subview class');
                     equal(result.data('specify-field-name'), 'authors', 'field name is correct');
