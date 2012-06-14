@@ -17,21 +17,7 @@ define([
     var relatedObjectsFormTmpl = _.template(relatedobjectsformHtml);
     var recordSetFormTmpl = _.template(recordsetformHtml);
 
-    self.relatedObjectsForm = function(modelName, fieldName, viewdef) {
-        if (!viewdef) {
-            var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
-            if (!related.view) throw new Error('no default view for ' + related.name);
-            viewdef = getDefaultViewdef(findView(related.view)).attr('name');
-        }
-        return $(relatedObjectsFormTmpl({
-            model: modelName, field: fieldName, viewdef: viewdef
-        }));
-    };
-
-    self.recordSetForm = function(model) {
-        var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
-        return $(recordSetFormTmpl({ viewdef: viewdef }));
-    };
+    self.parseSpecifyProperties = parseSpecifyProperties;
 
     function find(selector, sets, name) {
         name = name.toLowerCase();
@@ -48,8 +34,21 @@ define([
     var findView = self.findView = _.bind(find, this, 'view', viewsets);
     var findViewdef = _.bind(find, this, 'viewdef', viewsets);
 
-    // helper function that pulls name value pairs out of property strings
-    self.parseSpecifyProperties = parseSpecifyProperties;
+    self.relatedObjectsForm = function(modelName, fieldName, viewdef) {
+        if (!viewdef) {
+            var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
+            if (!related.view) throw new Error('no default view for ' + related.name);
+            viewdef = getDefaultViewdef(findView(related.view)).attr('name');
+        }
+        return $(relatedObjectsFormTmpl({
+            model: modelName, field: fieldName, viewdef: viewdef
+        }));
+    };
+
+    self.recordSetForm = function(model) {
+        var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
+        return $(recordSetFormTmpl({ viewdef: viewdef }));
+    };
 
     function getModelFromView(view) {
         view = _(view).isString() ? findView(view) : view;

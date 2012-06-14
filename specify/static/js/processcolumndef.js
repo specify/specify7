@@ -1,17 +1,16 @@
-define(['jquery'], function($) {
+define(['jquery', 'text!/static/html/templates/formdeftemplate.html'], function($, html) {
     "use strict";
+    var template = _.template(html);
     // Return a table DOM node with <col> defined based
     // on the columnDef attr of a viewdef.
     return function(columnDef) {
-        var table = $('<table>'), colgroup = $('<colgroup>').appendTo(table);
-        $(columnDef.split(',')).each(function(i) {
-            if (i%2 === 0) {
-                var col = $('<col>').appendTo(colgroup),
-                width = /(\d+)px/.exec(this);
-                width && col.attr('width', width[1]+'px');
-            }
-        });
-        return table;
-    }
-
+        return $(template({
+            widths: _(columnDef.split(',')).chain()
+                .filter(function(def, ind) { return ind%2 === 0; })
+                .map(function(def) {
+                    var width = /(\d+)px/.exec(def);
+                    return width && width[1];
+                }).value()
+        }));
+    };
 });

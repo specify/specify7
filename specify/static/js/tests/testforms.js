@@ -1,4 +1,6 @@
-define(['underscore', 'uiformatters', 'specifyformcells'], function(_, UIFormatter, processCell) {
+define([
+    'underscore', 'uiformatters', 'specifyformcells', 'processcolumndef'
+], function(_, UIFormatter, processCell, processColumnDef) {
     "use strict";
     return function() {
         var uitypes = ['checkbox', 'textarea', 'textareabrief', 'combobox', 'querycbx', 'text',
@@ -287,5 +289,19 @@ define(['underscore', 'uiformatters', 'specifyformcells'], function(_, UIFormatt
 
         module('specifyform panel');
         test('TODO', function() { ok(false, 'implementation needed'); });
+
+        module('processcolumndef');
+        test('processColumnDef', function() {
+            var result = processColumnDef(
+                '115px,2px,137px,5px,135px,2px,130px,5px,133px,2px,81px,15px,155px,p:g'
+            );
+            ok(result.is('table'), 'result is table');
+            equal(result.children().length, 1, 'table only contains colgroup');
+            var colgroup = result.children().first();
+            ok(colgroup.is('colgroup'), 'is colgroup');
+            ok(_(colgroup.children()).all(function(child) { return $(child).is('col'); }), 'colgroup contians cols');
+            var widths = _(colgroup.find('col')).map(function(col) { return $(col).attr('width'); });
+            deepEqual(widths, ['115px', '137px', '135px', '130px', '133px', '81px', '155px'], 'widths are correct');
+        });
     };
 });
