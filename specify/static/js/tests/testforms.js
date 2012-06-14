@@ -288,7 +288,34 @@ define([
         });
 
         module('specifyform panel');
-        test('TODO', function() { ok(false, 'implementation needed'); });
+        (function() {
+            var panelXML = '\
+<cell type="panel" id="17" name="srcPanel" coldef="130px,2px,p:g,5px,130px,2px,p:g" rowdef="p" colspan="14">\
+   <rows>\
+     <row>\
+       <cell type="label" label="1"/>\
+       <cell type="label" label="2"/>\
+     </row>\
+     <row>\
+       <cell type="label" label="3"/>\
+       <cell type="label" label="4"/>\
+     </row>\
+   </rows>\
+</cell>\
+';
+            test('panel', function() {
+                var result = instProcessCell(false, $(panelXML));
+                equal(result.children().length, 1, 'only one element');
+                var table = result.children().first();
+                ok(table.is('table'), 'element is table');
+                var vals = _(table.find('tr')).map(function(tr) {
+                    return _($(tr).find('td')).map(function(td) {
+                        return $(td).find('label').text();
+                    });
+                });
+                deepEqual(vals, [['1', '2'], ['3', '4']], 'panel structure is correct');
+            });
+        })();
 
         module('processcolumndef');
         _({
