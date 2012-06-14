@@ -12,14 +12,14 @@ define([
             self.$el.empty();
             var model = self.options.parentModel;
             var fieldName = self.$el.data('specify-field-name');
-            var viewDef = self.$el.data('specify-viewdef');
+            var viewDef = specifyform.getSubViewDef(self.$el);
             var field = model.getField(fieldName);
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
             var icon = props.icon ? icons.getIcon(props.icon) : field.getRelatedModel().getIcon();
             var button = $('<a>').appendTo(self.el);
             self.url = self.model.viewUrl() + fieldName.toLowerCase() + '/';
             if (viewDef)
-                self.url = $.param.querystring(self.url, {viewdef: viewDef});
+                self.url = $.param.querystring(self.url, {viewdef: viewDef.attr('name')});
             button.prop('href', self.url);
             button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
             button.append('<span class="specify-subview-button-count">');

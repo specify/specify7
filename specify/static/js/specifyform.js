@@ -112,16 +112,24 @@ define([
         return view.length ? buildView(view) : undefined;
     };
 
+    self.getSubViewDef = function (node) {
+        node = $(node);
+        if (node.data('specify-viewdef'))
+            return findViewdef(node.data('specify-viewdef'));
+
+        var subview = self.findView(node.data('specify-viewname'));
+        var viewdef = self.getDefaultViewdef(subview, node.data('specify-viewtype'));
+        return findViewdef(viewdef.attr('name'));
+    }
+
     self.buildSubView = function (node) {
-        var view = findViewdef($(node).data('specify-viewdef'));
+        var view = self.getSubViewDef(node);
         if (!view.length) return;
         return buildView(view).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
     };
 
     self.subViewIsFormTable = function (node) {
-        var viewdef = $(node).data('specify-viewdef');
-        if (!viewdef) return false;
-        var view = findViewdef(viewdef);
+        var view = self.getSubViewDef(node);
         return view.length && view.attr('type') === 'formtable';
     }
 
@@ -224,15 +232,12 @@ define([
                 return $('<td>').append(elem.addClass('separator'));
             },
             subview: function() {
-                var td = $('<td class="specify-subview">'),
-                props = self.parseSpecifyProperties(cell.attr('initialize'));
-                td.attr('data-specify-field-name', cell.attr('name'));
-                var view = self.findView(cell.attr('viewname'));
-                if (view === undefined) {
-                    return td.text('View "' + cell.attr('viewname') + '" is undefined.');
-                }
-                var subviewdef = self.getDefaultViewdef(view, cell.attr('defaulttype'));
-                td.attr('data-specify-viewdef', subviewdef.attr('name'));
+                var td = $('<td class="specify-subview">').attr({
+                    'data-specify-field-name': cell.attr('name'),
+                    'data-specify-viewname': cell.attr('viewname'),
+                    'data-specify-viewtype': cell.attr('defaulttype')
+                });
+                var props = self.parseSpecifyProperties(cell.attr('initialize'));
                 if (props.btn === 'true') {
                     td.addClass('specify-subview-button');
                     id && td.prop('id', id);

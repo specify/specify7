@@ -261,25 +261,12 @@ define(['underscore', 'uiformatters', 'specifyform'], function(_, UIFormatter, s
 
                 var node = '<cell type="subview" viewname="Authors" id="10" name="authors" '+init+' defaulttype="table" colspan="12" rows="3"/>';
                 test(node, function() {
-                    var origFindView = specifyform.findView;
-                    var origGetDefaultViewdef = specifyform.getDefaultView;
-                    specifyform.findView = function(viewName) {
-                        equal(viewName, 'Authors', 'findView called with correct view name');
-                        return "mockView";
-                    };
-                    specifyform.getDefaultViewdef = function(view, defaulttype) {
-                        equal(view, 'mockView', 'getDefaultView gets called correctly');
-                        equal(defaulttype, 'table', 'default type gets passed correctly');
-                        return $('<viewdef name="mockViewDef"/>');
-                    };
                     var result = processCell(false, node);
-                    specifyform.findView = origFindView;
-                    specifyform.getDefaultViewdef = origGetDefaultViewdef;
-
                     equal(result.children().length, 0, 'is empty td');
                     ok(result.hasClass('specify-subview'), 'has subview class');
                     equal(result.data('specify-field-name'), 'authors', 'field name is correct');
-                    equal(result.data('specify-viewdef'), 'mockViewDef', 'viewdef is correct');
+                    equal(result.data('specify-viewname'), 'Authors', 'viewname is correct');
+                    equal(result.data('specify-viewtype'), 'table', 'viewtype is correct');
                     equal(result.hasClass('specify-subview-button'), doingButton, 'button class is correct');
                     if (doingButton) {
                         equal(result.attr('id'), 'specify-field-'+formNumber+'-10', 'id is correct');
