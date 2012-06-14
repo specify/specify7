@@ -53,10 +53,12 @@ define([
             },
             panel: function() {
                 var table = processColumnDef(cell.attr('coldef'));
-                cell.children('rows').children('row').each(function () {
+                var rows = cell.children('rows').children('row');
+                var cells = function(row) { return $(row).children('cell'); };
+                _(rows).each(function (row) {
                     var tr = $('<tr>').appendTo(table);
-                    $(this).children('cell').each(function() {
-                        tr.append(processCell(formNumber, doingFormTable, this));
+                    _(cells(row)).each(function(cell) {
+                        tr.append(processCell(formNumber, doingFormTable, cell));
                     });
                 });
                 return $('<td>').append(table);
