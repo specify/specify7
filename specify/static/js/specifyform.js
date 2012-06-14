@@ -201,7 +201,7 @@ define([
                 processField(doingFormTable, cell, id).appendTo(td);
                 var control = td.find('.specify-field');
                 if (control) {
-                    control.attr('name', fieldName).addClass('specify-field');
+                    control.attr('name', fieldName);
                     id && control.prop('id', id);
                     initialize && control.attr('data-specify-initialize', initialize);
                     if (isRequired && isRequired.toLowerCase() === 'true') {
