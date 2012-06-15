@@ -1,7 +1,10 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyformfields', 'specifyformcells', 'parsespecifyproperties', 'processcolumndef',
+    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties', 'processcolumndef',
     'text!/static/html/templates/relatedobjectsform.html',
     'text!/static/html/templates/recordsetform.html',
+    'text!/static/html/templates/formtemplate.html',
+    'text!/static/html/templates/formtabletemplate.html',
+    'text!/static/html/templates/viewwrappertemplate.html',
     'text!/static/resources/system.views.xml',
     'text!/static/resources/editorpanel.views.xml',
     'text!/static/resources/preferences.views.xml',
@@ -9,13 +12,16 @@ define([
     'text!/static/resources/global.views.xml',
     'text!/static/resources/common.views.xml',
     'text!/static/resources/fish.views.xml'
-], function specifyform($, _, schema, processField, processCell, parseSpecifyProperties, processColumnDef,
-                        relatedobjectsformHtml, recordsetformHtml) {
+], function specifyform($, _, schema, specifyformcells, parseSpecifyProperties, processColumnDef,
+                        relatedobjectsformHtml, recordsetformHtml, formtemplateHtml, formtabletemplateHtml, viewwrappertemplateHtml) {
     "use strict";
     var self = {}, formCounter = 0;
     var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
     var relatedObjectsFormTmpl = _.template(relatedobjectsformHtml);
     var recordSetFormTmpl = _.template(recordsetformHtml);
+    var formTmpl = _.template(formtemplateHtml);
+    var formtableTmpl = _.template(formtabletemplateHtml);
+    var viewWrapperTmpl = _.template(viewwrappertemplateHtml);
 
     self.parseSpecifyProperties = parseSpecifyProperties;
 
@@ -114,46 +120,52 @@ define([
     };
 
 
+    function buildFormTable(formNumber, formViewdef, processCell) {
+        var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
+        var table = $(formtableTmpl({ formNumber: formNumber }));
+        var headerRow = table.find('thead tr');
+        var bodyRow = table.find('tbody tr');
+
+        _(formTableCells).each(function (cell) {
+            var label = $('<label>', {'for': 'specify-field-' + formNumber + '-' + $(cell).attr('id')});
+            headerRow.append($('<th>').append(label));
+            bodyRow.append(processCell(cell));
+        });
+
+        return table;
+    }
+
+    function buildForm(formNumber, viewdef, processCell) {
+        var colDef = viewdef.find('columnDef[os="lnx"]').first().text() ||
+            viewdef.find('columnDef').first().text();
+        var rows = viewdef.children('rows').children('row');
+        var cells = function(row) { return $(row).children('cell'); };
+        var table = processColumnDef(colDef);
+
+       _(rows).each(function (row) {
+           var tr = $('<tr>').appendTo(table);
+           _(cells(row)).chain().map(processCell).each(function (processedCell) {
+               tr.append(processedCell);
+           });
+       });
+
+        return $(formTmpl({ formNumber: formNumber })).find('form').append(table).end();
+    }
+
     function buildView(viewdef) {
         var formNumber = formCounter++;
-        var viewModel = getModelFromViewdef(viewdef),
-        doingFormTable = (viewdef.attr('type') === 'formtable');
+        var doingFormTable = (viewdef.attr('type') === 'formtable');
+        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable);
 
-        var outerDiv = $('<div>').attr('data-specify-model', viewModel);
-        $('<h2 class="specify-form-header">').appendTo(outerDiv);
+        var wrapper = $(viewWrapperTmpl({ viewModel: getModelFromViewdef(viewdef) }));
 
         if (doingFormTable) {
             var formViewdef = findViewdef(viewdef.find('definition').text());
-            var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
-            var headerRow = $('<tr><th></th></tr>'), bodyRow = $('<tr class="specify-view-content">');
-            bodyRow.prop('id', 'specify-view-' + formNumber);
-            bodyRow.append('<td><a class="specify-edit"><span class="ui-icon ui-icon-pencil">edit</span></a></td>');
-            formTableCells.each(function () {
-                var label = $('<label>', {'for': 'specify-field-' + formNumber + '-' + $(this).attr('id')});
-                headerRow.append($('<th>').append(label));
-                bodyRow.append(processCell(formNumber, doingFormTable, this));
-            });
-
-            table = $('<table class="specify-formtable">');
-            table.append($('<thead>').append(headerRow));
-            table.append($('<tbody class="specify-view-content-container">').append(bodyRow));
-            outerDiv.append(table);
+            wrapper.append(buildFormTable(formNumber, formViewdef, processCell));
         } else {
-            var colDef = viewdef.find('columnDef[os="lnx"]').first().text() ||
-                viewdef.find('columnDef').first().text();
-            var table = processColumnDef(colDef);
-
-            viewdef.children('rows').children('row').each(function () {
-                var tr = $('<tr>').appendTo(table);
-                $(this).children('cell').each(function () { processCell(formNumber, doingFormTable, this).appendTo(tr); });
-            });
-
-            var form = $('<form class="specify-view-content">').append(table);
-            form.prop('id', 'specify-view-' + formNumber);
-            outerDiv.append($('<div class="specify-view-content-container">').append(form));
-            outerDiv.append('<input type="submit">').append('<input type="button" value="Delete">');
+            wrapper.append(buildForm(formNumber, viewdef, processCell));
         }
-        return outerDiv;
+        return wrapper;
     };
 
     return self;
