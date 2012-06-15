@@ -1,44 +1,12 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties', 'processcolumndef',
-    'text!/static/html/templates/relatedobjectsform.html',
-    'text!/static/html/templates/recordsetform.html',
-    'text!/static/html/templates/formtemplate.html',
-    'text!/static/html/templates/formtabletemplate.html',
-    'text!/static/html/templates/viewwrappertemplate.html',
-    'text!/static/resources/system.views.xml',
-    'text!/static/resources/editorpanel.views.xml',
-    'text!/static/resources/preferences.views.xml',
-    'text!/static/resources/search.views.xml',
-    'text!/static/resources/global.views.xml',
-    'text!/static/resources/common.views.xml',
-    'text!/static/resources/fish.views.xml'
-], function specifyform($, _, schema, specifyformcells, parseSpecifyProperties, processColumnDef,
-                        relatedobjectsformHtml, recordsetformHtml, formtemplateHtml, formtabletemplateHtml, viewwrappertemplateHtml) {
+    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties', 'processcolumndef', 'viewsets', 'templates'
+], function specifyform($, _, schema, specifyformcells, parseSpecifyProperties, processColumnDef, viewsets, templates) {
     "use strict";
     var self = {}, formCounter = 0;
-    var viewsets = _.chain(arguments).tail(specifyform.length).map($.parseXML).value().reverse();
-    var relatedObjectsFormTmpl = _.template(relatedobjectsformHtml);
-    var recordSetFormTmpl = _.template(recordsetformHtml);
-    var formTmpl = _.template(formtemplateHtml);
-    var formtableTmpl = _.template(formtabletemplateHtml);
-    var viewWrapperTmpl = _.template(viewwrappertemplateHtml);
+    var findView = viewsets.findView;
+    var findViewdef = viewsets.findViewdef;
 
     self.parseSpecifyProperties = parseSpecifyProperties;
-
-    function find(selector, sets, name) {
-        name = name.toLowerCase();
-        var result = $();
-        _.find(sets, function(set) {
-            result = $(selector, set).filter(function() {
-                return $(this).attr('name').toLowerCase() === name;
-            });
-            return result.length;
-        });
-        return result;
-    }
-
-    var findView = self.findView = _.bind(find, this, 'view', viewsets);
-    var findViewdef = _.bind(find, this, 'viewdef', viewsets);
 
     self.relatedObjectsForm = function(modelName, fieldName, viewdef) {
         if (!viewdef) {
@@ -46,14 +14,14 @@ define([
             if (!related.view) throw new Error('no default view for ' + related.name);
             viewdef = getDefaultViewdef(findView(related.view)).attr('name');
         }
-        return $(relatedObjectsFormTmpl({
+        return $(templates.relatedobjectform({
             model: modelName, field: fieldName, viewdef: viewdef
         }));
     };
 
     self.recordSetForm = function(model) {
         var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
-        return $(recordSetFormTmpl({ viewdef: viewdef }));
+        return $(templates.recordsetform({ viewdef: viewdef }));
     };
 
     function getModelFromView(view) {
@@ -99,7 +67,7 @@ define([
         if (node.data('specify-viewdef'))
             return findViewdef(node.data('specify-viewdef'));
 
-        var subview = self.findView(node.data('specify-viewname'));
+        var subview = findView(node.data('specify-viewname'));
         var viewdef = self.getDefaultViewdef(subview, node.data('specify-viewtype'));
         return findViewdef(viewdef.attr('name'));
     }
@@ -122,7 +90,7 @@ define([
 
     function buildFormTable(formNumber, formViewdef, processCell) {
         var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
-        var table = $(formtableTmpl({ formNumber: formNumber }));
+        var table = $(templates.formtable({ formNumber: formNumber }));
         var headerRow = table.find('thead tr');
         var bodyRow = table.find('tbody tr');
 
@@ -149,7 +117,7 @@ define([
            });
        });
 
-        return $(formTmpl({ formNumber: formNumber })).find('form').append(table).end();
+        return $(templates.form({ formNumber: formNumber })).find('form').append(table).end();
     }
 
     function buildView(viewdef) {
@@ -157,7 +125,7 @@ define([
         var doingFormTable = (viewdef.attr('type') === 'formtable');
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable);
 
-        var wrapper = $(viewWrapperTmpl({ viewModel: getModelFromViewdef(viewdef) }));
+        var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(viewdef) }));
 
         if (doingFormTable) {
             var formViewdef = findViewdef(viewdef.find('definition').text());
