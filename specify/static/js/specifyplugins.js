@@ -1,9 +1,7 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui', 'uiplugin',
-    'text!/static/html/templates/gmapplugin.html',
-], function($, _, api, LatLonUI, PartialDateUI, UIPlugin, gmaptemplate_html) {
+    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui', 'uiplugin', 'templates'
+], function($, _, api, LatLonUI, PartialDateUI, UIPlugin, templates) {
     "use strict";
-    var gmaptemplate = _.template(gmaptemplate_html);
 
     return {
         PartialDateUI: PartialDateUI,
@@ -31,7 +29,7 @@ define([
             render: function() {
                 var self = this;
                 self.model.fetchIfNotPopulated().done(function() {
-                    var ui = gmaptemplate(self.model.toJSON());
+                    var ui = templates.gmapplugin(self.model.toJSON());
                     self.$el.replaceWith(ui);
                     self.setElement(ui);
                 });

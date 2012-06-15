@@ -1,7 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'specifyform',
-    'text!/static/html/templates/subviewheader.html'
-], function(require, $, _, Backbone, populateform, specifyform, subviewheader) {
+    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'specifyform', 'templates'
+], function(require, $, _, Backbone, populateform, specifyform, templates) {
     "use strict";
     return Backbone.View.extend({
         initialize: function(options) {
@@ -14,7 +13,7 @@ define([
             var self = this;
             var populateForm = require('populateform');
             self.undelegateEvents();
-            self.$el.empty().append(subviewheader);
+            self.$el.empty().append(templates.subviewheader());
             self.$('.specify-subview-title').text(self.title);
             if (!self.model) {
                 self.$el.append('<p>none...</p>');

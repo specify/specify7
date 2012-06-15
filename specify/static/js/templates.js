@@ -1,10 +1,18 @@
 define([
     'jquery', 'underscore',
-    'text!/static/html/templates/relatedobjectsform.html',
-    'text!/static/html/templates/recordsetform.html',
-    'text!/static/html/templates/formtemplate.html',
-    'text!/static/html/templates/formtabletemplate.html',
-    'text!/static/html/templates/viewwrappertemplate.html'
+    'text!tmpls/relatedobjectsform.html',
+    'text!tmpls/recordsetform.html',
+    'text!tmpls/formtemplate.html',
+    'text!tmpls/formtabletemplate.html',
+    'text!tmpls/formdeftemplate.html',
+    'text!tmpls/viewwrappertemplate.html',
+    'text!tmpls/confirmdelete.html',
+    'text!tmpls/gmapplugin.html',
+    'text!tmpls/latlonui.html',
+    'text!tmpls/partialdateui.html',
+    'text!tmpls/querycbx.html',
+    'text!tmpls/subviewheader.html',
+    'text!tmpls/404.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -16,7 +24,15 @@ define([
         'recordsetform',
         'form',
         'formtable',
-        'viewwrapper'
+        'formdef',
+        'viewwrapper',
+        'confirmdelete',
+        'gmapplugin',
+        'latlonui',
+        'partialdateui',
+        'querycbx',
+        'subviewheader',
+        'fourohfour'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

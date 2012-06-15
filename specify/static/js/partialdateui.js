@@ -1,10 +1,7 @@
 define([
-    'jquery', 'underscore', 'uiplugin',
-    'text!/static/html/templates/partialdateui.html',
-    'jquery-ui'
-], function($, _, UIPlugin, partialdateui_html) {
+    'jquery', 'underscore', 'uiplugin', 'templates', 'jquery-ui'
+], function($, _, UIPlugin, templates) {
     "use strict";
-    var template = _.template(partialdateui_html);
     var formats = [null, 'yy-mm-dd', 'yy-mm', 'yy'];
 
     var origParseDate = $.datepicker.parseDate;
@@ -27,7 +24,7 @@ define([
             var self = this;
             var init = self.init;
             var disabled = self.$el.prop('disabled');
-            var ui = $(template());
+            var ui = $(templates.partialdateui());
             var input = ui.find('input');
             var select = ui.find('select');
             input.prop('id', self.$el.prop('id'));

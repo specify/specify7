@@ -1,11 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'populateform', 'schema', 'schemalocalization',
-    'specifyapi', 'specifyform', 'dataobjformatters', 'navigation',
-    'text!/static/html/templates/confirmdelete.html',
-    'text!/static/html/templates/404.html',
+    'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi, specifyform, dataobjformat, navigation,
-            confirmdelete, notfoundtemplate) {
+], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi, specifyform, dataobjformat, navigation, templates) {
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
@@ -42,7 +39,7 @@ define([
             self.model.on('error', function(resource, jqxhr, options) {
                 switch (jqxhr.status) {
                 case 404:
-                    self.$el.html(notfoundtemplate);
+                    self.$el.html(templates.fourohfour());
                     return;
                 }
             });
@@ -68,7 +65,7 @@ define([
             self.$el.append(populateForm(self.buildForm(), self.model));
             self.$(':submit').prop('disabled', true);
             if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
-            self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
+            self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false, modal: true, autoOpen: false, buttons: {
                     'Delete': _.bind(self.destroy, self),
                     'Cancel': function() { $(this).dialog('close'); }

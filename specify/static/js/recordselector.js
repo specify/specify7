@@ -1,10 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform', 'navigation',
-    'text!/static/html/templates/subviewheader.html',
-    'text!/static/html/templates/confirmdelete.html',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform', 'navigation', 'templates',
     'jquery-ui'
-], function(require, $, _, Backbone, specifyform, populateform, navigation,
-            subviewheader, confirmdelete) {
+], function(require, $, _, Backbone, specifyform, populateform, navigation, templates) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
@@ -51,7 +48,7 @@ define([
             self.undelegateEvents();
             self.$el.empty();
             self.slider = $('<div>');
-            self.$el.hasClass('no-header') || self.$el.append(subviewheader);
+            self.$el.hasClass('no-header') || self.$el.append(templates.subviewheader());
             self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
@@ -66,7 +63,7 @@ define([
             self.slider.find('.ui-slider-handle').
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
-            self.deleteDialog = $(confirmdelete).appendTo(self.el).dialog({
+            self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false, modal: true, autoOpen: false, buttons: {
                     'Delete': _.bind(self.destroy, self),
                     'Cancel': function() { $(this).dialog('close'); }

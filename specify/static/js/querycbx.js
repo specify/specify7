@@ -1,13 +1,12 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
-    'text!/static/resources/typesearch_def.xml',
-    'text!/static/resources/dialog_defs.xml',
-    'text!/static/html/templates/querycbx.html',
+    'text!resources/typesearch_def.xml',
+    'text!resources/dialog_defs.xml',
     'jquery-ui'
-], function ($, _, Backbone, api, schema, specifyform, dataobjformat,
+], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
              whenAll, parseselect, schemalocalization, navigation,
-             typesearchxml, dialogdefxml, html) {
+             typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
 
@@ -32,7 +31,7 @@ define([
         render: function () {
             var self = this;
             var control = self.$el;
-            var querycbx = $(html);
+            var querycbx = $(templates.querycbx());
             control.replaceWith(querycbx);
             self.setElement(querycbx);
             self.$('input').replaceWith(control);

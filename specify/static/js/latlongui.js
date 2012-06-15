@@ -1,9 +1,7 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongutils', 'uiplugin',
-    'text!/static/html/templates/latlonui.html',
-], function($, _, api, latlongutils, UIPlugin, latlonui_html) {
+    'jquery', 'underscore', 'specifyapi', 'latlongutils', 'uiplugin', 'templates'
+], function($, _, api, latlongutils, UIPlugin, templates) {
     "use strict";
-    var template = _.template(latlonui_html);
 
     return UIPlugin.extend({
         render: function() {
@@ -15,7 +13,7 @@ define([
 
             var init = this.init;
 
-            var plugin = $(template());
+            var plugin = $(templates.latlonui());
             var tbody = plugin.find('tbody');
             tbody.append(tbody.find('tr').clone().hide());
             tbody.find('input').each(function(i) {

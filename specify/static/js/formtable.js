@@ -1,9 +1,8 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'populateform',
-    'specifyform', 'navigation',
-    'text!/static/html/templates/subviewheader.html'
+    'specifyform', 'navigation', 'templates'
 ], function(require, $, _, Backbone, populateform, specifyform,
-            navigation, subviewheader) {
+            navigation, templates) {
 
     return Backbone.View.extend({
         events: {
@@ -19,7 +18,7 @@ define([
         render: function() {
             var self = this;
             var populateForm = require('populateform');
-            var header = $(subviewheader);
+            var header = $(templates.subviewheader());
             header.find('.specify-delete-related').remove();
             header.find('.specify-add-related').prop('href', this.addUrl());
             self.undelegateEvents();
