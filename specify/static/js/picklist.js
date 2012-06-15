@@ -18,6 +18,8 @@ define([
             var field = specifyModel.getField(self.$el.attr('name'));
             if (!field) { return self; }
 
+            // look at data-specify-picklist on element
+
             var isAgentType = (specifyModel === schema.getModel('Agent')
                                && field === specifyModel.getField('agentType'));
 

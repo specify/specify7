@@ -1,26 +1,23 @@
-define(['jquery'], function($) {
+define(['jquery', 'underscore'], function($, _) {
     "use strict";
     return function(doingFormTable, cell, id) {
         return {
             checkbox: function() {
                 var control = $('<input type=checkbox class="specify-field">');
-                var labelOR = cell.attr('label');
                 if (doingFormTable) {
-                    if (labelOR !== undefined) {
-                        control.attr('data-specify-field-label-override', labelOR);
-                    }
+                    control.attr('data-specify-field-label-override', cell.attr('label'));
                     return control.attr('disabled', true);
                 }
                 var label = $('<label>');
-                id && label.prop('for', id);
-                labelOR && label.text(cell.attr('label'));
+                label.prop('for', id);
+                label.text(cell.attr('label'));
                 return control.add(label);
             },
             textarea: function () {
                 if (doingFormTable)
                     return $('<input type=text class="specify-field" readonly>');
                 var control = $('<textarea class="specify-field">)');
-                cell.attr('rows') && control.attr('rows', cell.attr('rows'));
+                control.attr('rows', cell.attr('rows'));
                 return control;
             },
             textareabrief: function() {
@@ -30,7 +27,8 @@ define(['jquery'], function($) {
             },
             combobox: function() {
                 var control = $('<select class="specify-combobox specify-field">');
-                control.attr('disabled', doingFormTable);
+                control.attr({'disabled': doingFormTable,
+                              'data-specify-picklist': cell.attr('picklist')});
                 return control;
             },
             querycbx: function() {

@@ -117,6 +117,7 @@ define([
                     equal(result.children().length, doingFormTable ? 1 : 2);
                     ok(control.is(':checkbox'), 'is checkbox');
                     equal(control.prop('disabled'), doingFormTable, 'disabled if doingFormTable');
+                    !doingFormTable && equal(label.prop('for'), 'specify-field-'+formNumber+'-3', 'for id is correct');
                     var labelOR = control.data('specify-field-label-override');
                     if (_.isNull(labelStr)) {
                         if (doingFormTable)
@@ -131,6 +132,13 @@ define([
                     }
                 });
             });
+        });
+
+        test('checkbox without id', function() {
+            var result = instProcessCell(false, '<cell type="field" name="foo" uitype="checkbox"/>');
+            var label = result.children('label');
+            equal(label.length, 1, 'label exists');
+            equal(_.isUndefined(label.prop('for')), '', 'label for id is undefined');
         });
 
         module('specifyform field textarea');
