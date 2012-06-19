@@ -30,20 +30,10 @@
 
   <p>The code is available on
     github <a href="https://github.com/benanhalt/djangospecify">here</a>.
-    There are instructions there on how to run the demo locally. Of
-    primary interest is the jQuery front end, which at this point
-    consists of three files:
+    There are instructions there on how to run the demo locally.
   </p>
 
-  <ul>
-    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/specifyform.js">
-        specifyform.js</a> processes existing Specify resources to
-        build DOMs in the browser for displaying Specify views</li>
-    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/populateform.js">
-        populateform.js</a> pulls data from the RESTful back end and
-        uses the functionality in <code>specifyform.js</code> to build
-        and populate a view for a particular object.</li>
-    <li><a href="https://github.com/benanhalt/djangospecify/blob/master/specify/static/putform.js">
-        putform.js</a> extracts data from a view and updates the back end via HTTP PUT.</li>
-  </ul>
+  <p>
+    I have also written an <a href="overview">overview</a> of the front-end architecture.
+  </p>
 {% endblock %}

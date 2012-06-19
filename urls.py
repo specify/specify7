@@ -21,6 +21,7 @@ urlpatterns = patterns(
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logged_out.html'}),
     # Examples:
     url(r'^$', TemplateView.as_view(template_name="index.html")),
+    url(r'^overview/$', TemplateView.as_view(template_name="code_overview.html")),
     url(r'^specify/', include('specify.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
