@@ -11,7 +11,11 @@ require({
         'underscore': "vendor/underscore",
         'backbone': "vendor/backbone",
         'beautify-html': "vendor/beautify-html",
+        'CoffeeScript': "vendor/CoffeeScript",
+        'cs': "vendor/cs",
         'text': "vendor/text",
+        'resources': '/static/resources',
+        'tmpls': '/static/html/templates'
     }
 });
 
@@ -21,11 +25,11 @@ require([
     'tests/testforms'
 ], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters, testuiparse, testforms) {
     QUnit.start();
-//  testparseselect();
-//  testschema();
-//  testapi();
-//  testlatlongutils();
-//  testuiparse();
-//  testuiformatters();
+    testparseselect();
+    testschema();
+    testapi();
+    testlatlongutils();
+    testuiparse();
+    testuiformatters();
     testforms();
 });
