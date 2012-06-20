@@ -183,8 +183,7 @@ proceeds mainly from top to bottom.
     necessary because in general a requested field may exist as a related object or even be nested
     in a related object, e.g. <code>collector.lastName</code>. Since the related object may not have
     been previously fetched, we may have to request it from the server. This means a promise is the
-    best that we can return. This circumstance is probably the most complicated aspect of the system
-    and necessitates a coding style that seem unfamiliar at first.
+    best that we can return.
   </li>
   <li>
     Once the schema info is available and the resource fetch is underway, control flows into
@@ -212,7 +211,7 @@ proceeds mainly from top to bottom.
     figure are the various plugin modules that populateform may dispatch to via
     the <code>specifyplugins.js</code> module. All of the UI producing modules and plugins should be
     implemented as Backbone views in order to maintain a consistent interface and structure. A few
-    of the modules need to be refactored to meet this goal.
+    of the existing modules need to be refactored to meet this goal.
   </li>
 </ul>
 
