@@ -30,11 +30,9 @@ to understand the Specify web app code.
 <h3>JQuery</h3>
 <p>
 <a href="http://docs.jquery.com/Main_Page">JQuery</a> is heavily relied upon in this application. It
-is used for DOM manipulation of the user visible web pages that constitute the
-UI. Additionally, various resources (view definitions, the specify datamodel, schema localization,
-etc.) are represented by XML exposed by the server. JQuery is used in querying these data structures.
-</p>
-<p>
+is used for DOM manipulation of the user visible web pages that constitute the UI. Additionally,
+various resources (view definitions, the specify datamodel, schema localization, etc.) are
+represented by XML exposed by the server. JQuery is used in querying these data structures.
 Finally, heavy use is made of the <a href="http://api.jquery.com/category/deferred-object/">JQuery
 deferred object</a> in order to allow concurrent fetching of data and rendering of UI. An
 understanding of this <a href="http://en.wikipedia.org/wiki/Promise_(programming)">paradigm</a> is
@@ -52,7 +50,7 @@ Javascript benefits from the use of libraries to provide this functionality. I h
 chosen <a href="http://requirejs.org/">RequireJS</a> for use in this project.
 </p>
 <p>
-For a cursory understanding of the code base, it is probably sufficient to understand how a module
+For a cursory understanding of the code base it is probably sufficient to understand how a module
 definition is structured when using RequireJS. Most of the javascript files in this project take the
 following form:
 </p>
@@ -98,7 +96,7 @@ by the browser before the code is interpreted.
 <a href="http://documentcloud.github.com/underscore/">UnderscoreJS</a> is a utility library that
 abstracts away many of the rough edges of Javascript in much the same way that JQuery abstracts away
 complexities in the browser DOM interface. It also makes use of the familiar JQuery style whereby an
-object is 'wrapped' to provide extended functionality. Thus, if <code> foo </code> is an object,
+object is <em>wrapped</em> to provide extended functionality. Thus, if <code> foo </code> is an object,
 then <code> _(foo) </code> is a wrapped object with special sauce.
 </p>
 
@@ -110,36 +108,43 @@ DOM. <a href="http://documentcloud.github.com/backbone/">Backbone</a> provides a
 abstractions based around a MVC pattern that can be used to structure these data and UI
 interactions. The main abstractions provided and their use in this application are as follows:
 </p>
-<h4>Models</h4>
-<p>
-Models represent groups of related data that are generally synchronized with objects on the
-back end. In this project they are generally used to represent instances of Specify datamodel
-objects. E.g. CollectionObjects, Accessions, Determinations, etc.
-</p>
-<p>
-The advantage of using Backbone here is that it provides out-of-the-box underpinnings for tasks like
-synchronizing with the server, parsing objects, observer pattern, etc.
-</p>
-<p>
-Sadly, the term 'Model' is highly overloaded and is used more-or-less interchangeably along with
-'Resource' to mean a variety of things. So that is something to watch out for.
-</p>
-
-<h4>Collections</h4>
-<p>
-Essentially these represent collections of Models. Predominately these are used
-to represent one-to-many collections, record sets, querycbx search results and the like.
-</p>
-
-<h4>Views</h4>
-<p>
-Views abstract the association of data with user interface. One thing to be aware of here is that I
-use the <code> View.render() </code> method somewhat differently than the Backbone documentation
-describes. Where the more standard semantics for that method imply that it may be called repeatedly
-to redraw the UI if the underlying model changes, I have adopted a more single-use style in which
-the method sets up the DOM for the particular UI and events are attached which modify it 'in-place'
-when changes occur.
-</p>
+<ul>
+  <li>
+    <h4>Models</h4>
+    <p>
+      Models represent groups of related data that are generally synchronized with objects on the
+      back end. In this project they are mostly used to represent instances of Specify datamodel
+      objects. E.g. CollectionObjects, Accessions, Determinations, etc.
+    </p>
+    <p>
+      The advantage of using Backbone here is that it provides out-of-the-box underpinnings for tasks like
+      synchronizing with the server, parsing objects, observer pattern, etc.
+    </p>
+    <p>
+      Sadly, the term <em>Model</em> is highly overloaded in this project and is used more-or-less
+      interchangeably along with <em>Resource</em> to mean a variety of things. The situation for <em>View</em>
+      and <em>Form</em> is similarly fraught.
+    </p>
+  </li>
+  <li>
+    <h4>Collections</h4>
+    <p>
+      Essentially these represent collections of Models. Predominately these are used
+      to represent one-to-many collections, record sets, querycbx search results and the like.
+    </p>
+  </li>
+  <li>
+    <h4>Views</h4>
+    <p>
+      Views abstract the association of data with user interface. One thing to be aware of here is that I
+      use the <code> View.render() </code> method somewhat differently than the Backbone documentation
+      describes. Where the more standard semantics for that method imply that it may be called repeatedly
+      to redraw the UI if the underlying model changes, I have adopted a more single-use style in which
+      the method sets up the DOM for the particular UI and events are attached which modify it 'in-place'
+      when changes occur.
+    </p>
+  </li>
+</ul>
 
 <h2>Architecture and Flow</h2>
 <p>
@@ -155,53 +160,53 @@ proceeds mainly from top to bottom.
 </p>
 
 <ul>
-  <li>
+  <li><p>
     Visiting a particular resource corresponds to accessing a particular
     URL. The <code>main.js</code> module examines the URL to determine the preliminary information
     needed to begin rendering the view. In this case, we will be producing a form for a single
     CollectionObject with primary key 12.
-  </li>
-  <li>
+  </p></li>
+  <li><p>
     Given the type of the object, <code>schema.js</code> returns a data structure representing the
-    schema information for that type (i.e. fields, relationships, default forms, etc.). This
-    data structure is generally given the name <code> specifyModel </code> in the code to
-    differentiate it from what Backbone calls models.
-  </li>
-  <li>
+    schema information for that type (i.e. fields, relationships, default forms, etc.). This data
+    structure is sometimes given the name <code> specifyModel </code> in the code to differentiate
+    it from what Backbone calls models, although the class itself is <code>schema.Model</code>.
+  </p></li>
+  <li><p>
     With the specifyModel and the object's id, there are a family of modules, <code>*api.js</code>,
     which conspire to retrieve the associated data from the back-end webservice. The retrieved data
     will eventually become available in the form of linked Backbone models and collections. The code
-    base uses 'resource' and 'model' somewhat interchangeably to refer to these structures.
-
+    base uses <em>resource</em> and <em>model</em> somewhat interchangeably to refer to these structures.
+    </p>
     <h4>Aside regarding deferreds and <code> rget </code> </h4>
-
+    <p>
     Because the resources are ultimately being retrieved asynchronously from the server, the api
     code in general returns deferred promises so that the UI can continue rendering and other
     resources can be fetched concurrently. The resources that are returned are specialized Backbone
-    models which implement a special<code> rget(fieldName) </code> method. This method extends the
-    semantics of the regular models' <code> get </code> methods to return deferreds. This is
-    necessary because in general a requested field may exist as a related object or even be nested
-    in a related object, e.g. <code>collector.lastName</code>. Since the related object may not have
-    been previously fetched, we may have to request it from the server. This means a promise is the
-    best that we can return.
-  </li>
-  <li>
+    models which implement a <code>rget(fieldName)</code> method. This method extends the semantics
+    of the regular models' <code> get </code> methods to return deferreds. This is necessary because
+    a requested field may exist as a related object or even be a few steps down in a related object
+    tree, e.g. <code>collector.agent.lastName</code>. If the related object(s) has not been previously
+    fetched, we must request it from the server. This means a promise is the best that we can
+    return.
+    </p></li>
+  <li><p>
     Once the schema info is available and the resource fetch is underway, control flows into
     the <code>populateform.js</code> module. First the schema info is passed to the <code>
     specifyform.js </code> module which determines the appropriate view for the object and parses
     the XML view definitions to produce a skeleton DOM which contains all the structure and
-    information need to produce the finished view. This process is independent of the specific data
-    in the given resource and can happen concurrently with the fetch. This also means that the
+    information needed to produce the finished view. This process is independent of the specific
+    data in the given resource and can happen concurrently with the fetch. This also means that the
     constructed DOMs could be serialized and replace the existing form definitions in future
     versions.
-  </li>
-  <li>
+  </p></li>
+  <li><p>
     The DOM is then supplemented with information from the schema localization tables. This step is
     also independent of the resource data fetch.
-  </li>
-  <li>
+  </p></li>
+  <li><p>
     Having obtained the DOM structure for the view, the populateform module will visit the various
-    UI elements within it. These elements carry attributes which determine what sort of UI they
+    UI elements within. These elements carry attributes which determine what sort of UI they
     require, what fields they represent, whether they are read-only or required, etc. Populateform
     essentially dispatches on the UI type for each element to various other modules which are
     responsible for generating the corresponding UI. The figure sketches out the Subview, querycbx,
@@ -212,7 +217,7 @@ proceeds mainly from top to bottom.
     the <code>specifyplugins.js</code> module. All of the UI producing modules and plugins should be
     implemented as Backbone views in order to maintain a consistent interface and structure. A few
     of the existing modules need to be refactored to meet this goal.
-  </li>
+  </p></li>
 </ul>
 
  {% endblock %}
