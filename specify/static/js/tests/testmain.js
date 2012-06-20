@@ -20,11 +20,18 @@ require({
 });
 
 require([
-    'underscore',
-    'tests/testlatlongutils', 'tests/testapi', 'tests/testschema',
-    'tests/testparseselect', 'tests/testuiformatters', 'tests/testuiparse',
-    'tests/testforms'
-], function testmain(_) {
+    'underscore', 'cs!tests/setupmockjax',
+    'tests/testlatlongutils',
+    'tests/testapi',
+    'tests/testschema',
+    'tests/testparseselect',
+    'tests/testuiformatters',
+    'tests/testuiparse',
+    'tests/testforms',
+//    'cs!tests/testquerycbx'
+], function testmain(_, setupmockjax) {
+    setupmockjax();
+
     QUnit.start();
     var tests = _(arguments).chain().tail(testmain.length);
     tests.invoke('apply');

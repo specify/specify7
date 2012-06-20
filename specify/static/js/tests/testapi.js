@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'specifyapi', 'jquery-mockjax', 'jquery-bbq'], function($, _, Backbone, api) {
+define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbone, api) {
     "use strict";
     return function() {
         var requestCounter = 0;
@@ -16,23 +16,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi', 'jquery-mockjax', 'jqu
         function yep(message) {
             return function() { ok(true, message); };
         }
-
-        $.mockjax(function(settings) {
-            var match = settings.url.match(/^\/api\/specify\/(\w+)\/(\d+)\/$/);
-
-            if (match) return {
-                proxy: '/static/js/tests/fixtures/' + match[1] + '.' + match[2] + '.json',
-            };
-
-            match = settings.url.match(/^\/api\/specify\/(\w+)\/$/);
-            if (match) return {
-                proxy: $.param.querystring('/static/js/tests/fixtures/' + match[1], settings.data).replace('?', '.') + '.json'
-            };
-
-            return;
-        });
-
-        $.mockjaxSettings.responseTime = 10;
 
         module('specifyapi.Resource');
         test('forModel', function() {
