@@ -20,16 +20,12 @@ require({
 });
 
 require([
+    'underscore',
     'tests/testlatlongutils', 'tests/testapi', 'tests/testschema',
     'tests/testparseselect', 'tests/testuiformatters', 'tests/testuiparse',
     'tests/testforms'
-], function(testlatlongutils, testapi, testschema, testparseselect, testuiformatters, testuiparse, testforms) {
+], function testmain(_) {
     QUnit.start();
-    testparseselect();
-    testschema();
-    testapi();
-    testlatlongutils();
-    testuiparse();
-    testuiformatters();
-    testforms();
+    var tests = _(arguments).chain().tail(testmain.length);
+    tests.invoke('apply');
 });
