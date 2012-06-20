@@ -24,6 +24,9 @@ define(['underscore'], function(_) {
             var field = colMap[col[0]].split('.');
             field.push(col[1]);
             return _(field).tail().join('.');
+        },
+        colToFieldMapper: function(select) {
+            return _.bind(self.colToField, self, self.parse(select));
         }
     };
     return self;

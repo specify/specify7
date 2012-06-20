@@ -44,9 +44,8 @@ define([
             if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") self.$('.querycbx-clone').hide();
 
             var typesearchTxt = self.typesearch.text().trim();
-            var mapF = !typesearchTxt ? function(x) { return x; } :
-                _.bind(parseselect.colToField, parseselect, parseselect.parse(typesearchTxt));
-            self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapF);
+            var mapper = typesearchTxt ? parseselect.colToFieldMapper(typesearchTxt) : _.identity;
+            self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapper);
 
             var field = self.model.specifyModel.getField(self.fieldName);
             self.relatedModel = field.getRelatedModel();
