@@ -26,7 +26,7 @@ define([
                 if (this._fetch) return;
                 if (!this.saving) {
                     this.needsSaved = true;
-                    _.defer(_.bind(this.trigger, this, 'saverequired'));
+                    this.trigger('saverequired');
                 }
             });
             this.on('sync', function() {
@@ -96,7 +96,11 @@ define([
                     toMany = (_.isString(value)) ? Collection.fromUri(value) :
                         new (Collection.forModel(related))(value);
                     toMany.parent = self;
-                    toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
+                    if (self.isNew()) {
+                        toMany.isNew = true;
+                    } else {
+                        toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
+                    }
                     self.relatedCache[fieldName] = toMany;
                     toMany.on('saverequired', function() { self.trigger('saverequired'); });
                 }

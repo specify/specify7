@@ -21,9 +21,11 @@ define([
         },
         fetchIfNotPopulated: function () {
             var collection = this;
+            if (this.isNew) return $.when(collection);
             return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
         },
         fetch: function(options) {
+            if (this.isNew) return $.when(null);
             options = options || {};
             options.add = true;
             options.silent = true;

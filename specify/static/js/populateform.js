@@ -43,6 +43,7 @@ define([
                     View = specifyform.subViewIsFormTable(node) ? FormTable : RecordSelector;
                     viewOptions.collection = related ||
                         new (api.Collection.forModel(field.getRelatedModel()))();
+                    viewOptions.collection.isNew = resource.isNew();
                     break;
                 case 'zero-to-one':
                 case 'many-to-one':

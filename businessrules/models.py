@@ -33,3 +33,12 @@ def collector_pre_save(sender, **kwargs):
             others = models.Collector.objects.filter(collectingevent=collector.collectingevent)
             top = others.aggregate(Max('ordernumber'))['ordernumber__max']
             collector.ordernumber = top + 1
+
+@receiver(signals.pre_save, sender=models.Collectionobject)
+def collectionobject_pre_save(sender, **kwargs):
+    collectionobject = kwargs['instance']
+    if collectionobject.id is None:
+        if collectionobject.version is None:
+            collectionobject.version = 0
+        if collectionobject.collectionmemberid is None:
+            collectionobject.collectionmemberid = collectionobject.collection.id
