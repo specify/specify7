@@ -57,6 +57,7 @@ def make_relationship(reldef):
     if reltype == 'one-to-many':
         return None # only define the to side of the relationship
     if reltype == 'many-to-many':
+        return None
         try:
             jointable = reldef.attrib['jointable']
         except KeyError:
