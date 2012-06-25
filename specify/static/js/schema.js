@@ -37,20 +37,47 @@ define([
         }
     });
 
+    function handleSpecialCases(model) {
+        var specialCase = {
+            Collection: function() {
+                var fields = model.getAllFields();
+                var collectionObjects = _(new Field(model)).extend({
+                    name: 'collectionObjects',
+                    isRelationship: true,
+                    isRequired: false,
+                    type: 'one-to-many',
+                    otherSideName: 'Collection',
+                    relatedModelName: 'CollectionObject'
+                });
+                fields.push(collectionObjects);
+            },
+            CollectionObject: function() {
+                var collection = model.getField('collection');
+                collection.otherSideName = 'collectionObjects';
+            }
+        };
+        var dispatch = specialCase[model.name];
+        dispatch && dispatch();
+    }
+
     var Field = function(model, node) {
-        this.node = $(node);
         this.model = model;
+        if (!node) return;
+        this.node = $(node);
         this.name = this.node.attr('name') || this.node.attr('relationshipname');
         this.isRelationship = this.node.is('relationship');
         this.isRequired = this.node.attr('required') === 'true';
         this.type = this.node.attr('type');
         this.length = this.node.attr('length');
-        if (this.isRelationship) this.otherSideName = this.node.attr('othersidename');
+        if (this.isRelationship) {
+            this.otherSideName = this.node.attr('othersidename');
+            this.relatedModelName = this.node.attr('classname').split('.').pop();
+        }
     };
     _.extend(Field.prototype, {
         getRelatedModel: function() {
             if (!this.isRelationship) return undefined;
-            return schema.getModel(this.node.attr('classname').split('.').pop());
+            return schema.getModel(this.relatedModelName);
         },
         getLocalizedName: function() {
             return schemalocalization.getLocalizedLabelForField(this.name, this.model.name);
@@ -77,6 +104,7 @@ define([
 
     $('table', $.parseXML(xml)).each(function() {
         var model = new Model(this);
+        handleSpecialCases(model);
         schema.models[model.name] = model;
     });
 
