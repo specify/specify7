@@ -87,7 +87,7 @@ define([
                 if (!related.view) throw new Error('no default view for ' + related.name);
                 viewdef = getDefaultViewdef(findView(related.view)).attr('name');
             }
-            return $(templates.relatedobjectform({
+            return $(templates.relatedobjectsform({
                 model: modelName, field: fieldName, viewdef: viewdef
             }));
         },
