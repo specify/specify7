@@ -1,10 +1,16 @@
 define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbone, api) {
     "use strict";
     return function() {
-        var requestCounter = 0;
-        $('body').ajaxSend(function() {
+        var requestCounter = 0, requestSettings = [];
+        $('body').ajaxSend(function(evt, request, settings) {
             requestCounter++;
+            requestSettings.push(settings);
         });
+
+        QUnit.testStart = function() {
+            requestCounter = 0;
+            requestSettings = [];
+        };
 
         var justOk = _.bind(ok, this, true);
         var notOk = _.bind(ok, this, false);
@@ -76,7 +82,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget regular field from unpopulated', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(catnumber) {
                 ok(!resource.needsSaved, 'rget doesnt cause resource to need saving');
@@ -89,7 +94,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget regular field from populated', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.fetch().done(function() {
                 equal(requestCounter, 1, 'one request triggered by fetch()');
@@ -104,7 +108,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget double fetch', function() {
             expect(1);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             $.when(resource.rget('catalognumber'), resource.rget('collectingevent')).done(function() {
                 equal(requestCounter, 1, "after resource is fectched it is not fetched againg for another field");
@@ -115,7 +118,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget nested field', function() {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('cataloger.lastname').done(function(name) {
                 equal(requestCounter, 2, 'two requests are required to get a field on a related object');
@@ -127,7 +129,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget inline nested field', function () {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent.lastname').done(function(name) {
                 equal(requestCounter, 1, 'dont need a separate request for in-lined fields');
@@ -139,7 +140,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget many-to-one', function() {
             expect(6);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent').done(function(ce) {
                 equal(requestCounter, 1, 'one request to get the url for the related object');
@@ -155,7 +155,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget inlined many-to-one', function() {
             expect(6);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent').done(function(agent) {
                 equal(requestCounter, 1, 'one request to get the parent resource');
@@ -171,7 +170,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget one-to-many', function() {
             expect(6);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(prepCol) {
                 equal(requestCounter, 1, "one request to get the parent resource");
@@ -187,7 +185,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget inlined one-to-many', function() {
             expect(6);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('picklist'))({id: 1});
             resource.rget('picklistitems').done(function(result) {
                 equal(requestCounter, 1);
@@ -203,7 +200,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget nested one-to-many fails', function() {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('determinations.id').done(function(result) {
                 equal(requestCounter, 1);
@@ -215,7 +211,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget zero-to-one', function() {
             expect(5);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('locality'))({id: 341});
             resource.rget('localitydetails').done(function(result) {
                 equal(requestCounter, 2);
@@ -230,7 +225,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget zero-to-one null', function() {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('locality'))({id: 100});
             resource.rget('localitydetails').done(function(result) {
                 equal(requestCounter, 2);
@@ -242,7 +236,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget many-to-one null', function() {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 1748});
             resource.rget('collectingevent').done(function(result) {
                 equal(requestCounter, 1);
@@ -254,7 +247,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget many-to-one cached', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent').done(function(outer) {
                 equal(requestCounter, 1);
@@ -269,7 +261,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget inlined many-to-one cached', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
             resource.rget('agent').done(function(outer) {
                 equal(requestCounter, 1);
@@ -284,7 +275,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget one-to-many cached', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(outer) {
                 equal(requestCounter, 1);
@@ -299,7 +289,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rget zero-to-one cached', function() {
             expect(3);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('locality'))({id: 341});
             resource.rget('localitydetails').done(function(outer) {
                 equal(requestCounter, 2);
@@ -314,7 +303,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('needsSaved', function() {
             expect(4);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             equal(resource.needsSaved, false, 'newly declared resource does not need saved');
             resource.rget('catalognumber').done(function(original) {
@@ -331,7 +319,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rsave', function() {
             expect(2);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('catalognumber').done(function(original) {
                 resource.set('catalognumber', original + 'foo');
@@ -347,7 +334,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rsave child', function() {
             expect(4);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('collectingevent.remarks').done(function(original) {
                 equal(requestCounter, 2);
@@ -359,6 +345,37 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                     ok(!ce.needsSaved);
                     ce.set('remarks', original);
                     ce.save().done(function () { start(); });
+                });
+            });
+        });
+
+        test('rsave new resource and toMany', function() {
+            expect(0);
+            stop();
+            var resource = new (api.Resource.forModel('collectionobject'))();
+            resource.rget('determinations').done(function(determinations) {
+                equal(requestCounter, 0, 'no requests for new object');
+                ok(determinations.isNew, 'toMany collection is marked new');
+                equal(determinations.length, 0, 'nothing in collection');
+                var newDetermination = new determinations.model();
+                determinations.add(newDetermination);
+                ok(!newDetermination.needsSaved, 'determination doesnt need saved yet');
+                newDetermination.set('remarks', 'test');
+                ok(newDetermination.needsSaved, 'now determination needs saved');
+                resource.set('catalognumber', 'test');
+                ok(resource.needsSaved, 'collectionobject needsSaved');
+                resource.rsave().done(function() {
+                    equal(requestCounter, 2, 'had to save both collectionobject and determination');
+                    equal(requestSettings[0].url, '/api/specify/collectionobject/', 'collectionobject saved first');
+                    equal(requestSettings[1].url, '/api/specify/determination/', 'determination saved next');
+                    var savedData = JSON.parse(requestSettings[1].data);
+                    equal(savedData.collectionobject, resource.url(), 'related field is set correctly');
+                    ok(!resource.needsSaved, 'collection doesnt need saved anymore');
+                    ok(!newDetermination.needsSaved, 'determination doesnt need saved anymore');
+                    ok(!_.isUndefined(resource.id), 'resource id is defined');
+                    ok(!_.isUndefined(newDetermination.id), 'determination id is defined');
+                    equal(newDetermination.get('collectionobject'), resource.url(), 'related field is set correctly');
+                    start();
                 });
             });
         });
@@ -472,7 +489,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('fetch', function() {
             expect(8);
             stop();
-            requestCounter = 0;
             var url = '/api/specify/collectionobject/?accession=62';
             var collection = api.Collection.fromUri(url);
             collection.fetch().done(function() {
@@ -491,7 +507,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('fetch at', function() {
             expect(9);
             stop();
-            requestCounter = 0;
             var url = '/api/specify/collectionobject/?accession=62';
             var collection = api.Collection.fromUri(url);
             var at = 100;
@@ -512,7 +527,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('fetch then fetch at', function() {
             expect(10);
             stop();
-            requestCounter = 0;
             var url = '/api/specify/collectionobject/?accession=62';
             var collection = api.Collection.fromUri(url);
             var at = 100;
@@ -593,7 +607,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         test('rsave', function() {
             expect(6);
             stop();
-            requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.rget('determinations').done(function(dets) {
                 equal(requestCounter, 1);
@@ -619,7 +632,6 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
 
         test('recordsetitems', function() {
             stop();
-            requestCounter = 0;
             var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
             recordSet.rget('recordsetitems').done(function(recordSetItems) {
                 equal(requestCounter, 1, "one request to get the recordset");

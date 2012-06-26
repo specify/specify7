@@ -127,16 +127,30 @@ define([
         },
         rsave: function() {
             var resource = this;
-            var deferreds = _(resource.relatedCache).invoke('rsave');
-            deferreds.push(resource.needsSaved && resource.save());
-            // If there is a circular dependency we could end up
-            // saving over and over, so if we are saving already
-            // return the previous saves deferred. This means you
-            // can't save and then make changes and save again while
-            // the first save is pending, but that would be insane
-            // anyways.
-            return resource._rsaveDeferred = resource._rsaveDeferred ||
-                whenAll(deferreds).then(function() { resource._rsaveDeferred = null; });
+            var isToOne = function(related, fieldName) {
+                return resource.specifyModel.getField(fieldName).type === 'many-to-one';
+            };
+            var isToMany = function(related, fieldName) {
+                var field = resource.specifyModel.getField(fieldName);
+                return _(['one-to-many', 'zero-to-one']).contains(field.type);
+            };
+            var saveIfExists = function(related) { return related && related.rsave(); };
+
+            var saveIf = function(pred) {
+                return _.chain(resource.relatedCache).filter(pred).map(saveIfExists).value();
+            };
+
+            var saveResource = function() { return resource.needsSaved && resource.save(); };
+
+            resource._rsaveDeferred = resource._rsaveDeferred ||
+                whenAll(saveIf(isToOne)).pipe(function() {
+                    return $.when(saveResource()).pipe(function() {
+                        return whenAll(saveIf(isToMany));
+                    });
+                })
+                .then(function() { resource._rsaveDeferred = null; });
+
+            return resource._rsaveDeferred;
         },
         fetch: function() {
             var resource = this;
