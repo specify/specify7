@@ -137,7 +137,7 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         });
 
         test('rget many-to-one', function() {
-            expect(5);
+            expect(6);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
@@ -147,12 +147,13 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                 equal(ce.parent, resource, 'the related resource has link back to parent resource');
                 ok(!ce.populated, 'the related resource is not populated');
                 equal(ce.url(), '/api/specify/collectingevent/715/', 'the related resource has the correct url');
+                equal(ce.parent, resource, 'parent reference is correct');
                 start();
             });
         });
 
         test('rget inlined many-to-one', function() {
-            expect(5);
+            expect(6);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collector'))({id: 1343});
@@ -162,12 +163,13 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                 equal(agent.parent, resource, 'the related resource has link back to parent')
                 ok(agent.populated, 'for an in-lined field the related resource is populated');
                 equal(agent.url(), '/api/specify/agent/638/', 'the related resource is the right one');
+                equal(agent.parent, resource, 'parent reference is correct');
                 start();
             });
         });
 
         test('rget one-to-many', function() {
-            expect(5);
+            expect(6);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
@@ -177,12 +179,13 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                 equal(prepCol.parent, resource, 'the related collection has a link back to the parent resource');
                 ok(!prepCol.populated, 'the collection starts out unpopulated');
                 equal(prepCol.url(), '/api/specify/preparation/', 'the collection has the correct url');
+                equal(prepCol.parent, resource, 'parent reference is correct');
                 start();
             });
         });
 
         test('rget inlined one-to-many', function() {
-            expect(5);
+            expect(6);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('picklist'))({id: 1});
@@ -192,6 +195,7 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                 equal(result.parent, resource, 'inlined collection also get parent link');
                 ok(result.populated);
                 equal(result.url(), '/api/specify/picklistitem/');
+                equal(result.parent, resource, 'parent reference is correct');
                 start();
             });
         });
@@ -209,7 +213,7 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         });
 
         test('rget zero-to-one', function() {
-            expect(4);
+            expect(5);
             stop();
             requestCounter = 0;
             var resource = new (api.Resource.forModel('locality'))({id: 341});
@@ -218,6 +222,7 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
                 ok(result instanceof api.Resource.forModel('localitydetail'));
                 equal(result.parent, resource, 'zero-to-one related resource gets correct parent link');
                 equal(result.id, 126);
+                equal(result.parent, resource, 'parent reference is correct');
                 start();
             });
         });
