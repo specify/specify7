@@ -41,9 +41,7 @@ define([
                 switch (field.type) {
                 case 'one-to-many':
                     View = specifyform.subViewIsFormTable(node) ? FormTable : RecordSelector;
-                    viewOptions.collection = related ||
-                        new (api.Collection.forModel(field.getRelatedModel()))();
-                    viewOptions.collection.isNew = resource.isNew();
+                    viewOptions.collection = related;
                     break;
                 case 'zero-to-one':
                 case 'many-to-one':

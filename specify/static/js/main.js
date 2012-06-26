@@ -73,7 +73,7 @@ require([
                     if (adding) {
                         opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
                         if (field.type === 'one-to-many')
-                            opts.model.set(field.otherSideName, opts.parentResource.url());
+                            opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
                         view = new ToOneView(opts);
                         view.on('savecomplete', function() {
                             function goBack() {

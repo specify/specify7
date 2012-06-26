@@ -66,12 +66,10 @@ define([
             var value = self.get(fieldName);
             if (!field || !field.isRelationship) return path.length === 1 ? value : undefined;
 
-            if (_.isNull(value) || _.isUndefined(value)) return value;
-
             var related = field.getRelatedModel();
-
             switch (field.type) {
             case 'many-to-one':
+                if (!value) return value;
                 var toOne = self.relatedCache[fieldName];
                 if (!toOne) {
                     if (_.isString(value)) toOne = Resource.fromUri(value);
