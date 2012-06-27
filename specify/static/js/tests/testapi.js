@@ -350,7 +350,7 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         });
 
         test('rsave new resource and toMany', function() {
-            expect(0);
+            expect(15);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))();
             resource.rget('determinations').done(function(determinations) {
