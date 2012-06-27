@@ -21,6 +21,7 @@ define([
         populated: false, _fetch: null, needsSaved: false, saving: false,
         initialize: function(attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
+            this.relatedCache = {};
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
             this.on('change', function() {
                 if (this._fetch) return;
@@ -32,7 +33,15 @@ define([
             this.on('sync', function() {
                 this.needsSaved = this.saving = false;
             });
-            this.relatedCache = {};
+            this.on('change:id', function() {
+                var resource = this;
+                _(resource.relatedCache).each(function(related, fieldName) {
+                    var field = resource.specifyModel.getField(fieldName);
+                    if(field.type === 'one-to-many') {
+                        _.chain(related.models).compact().invoke('set', field.otherSideName, resource.url());
+                    }
+                });
+            });
             debug && this.on('all', function() {
                 console.log(arguments);
             });
@@ -55,7 +64,7 @@ define([
             } else {
                 attrs[key.toLowerCase()] = value;
             }
-            if (self.relatedCache)
+            if (!self.saving && self.relatedCache)
                 _(attrs).each(function(value, key) { delete self.relatedCache[key]; });
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
