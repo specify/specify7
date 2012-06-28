@@ -51,7 +51,7 @@ define([
                 (!this.isNew() ? (this.id + '/') : '');
         },
         viewUrl: function() {
-            return '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + this.id + '/';
+            return '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + (this.id || 'new') + '/';
         },
         get: function(attribute) {
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());

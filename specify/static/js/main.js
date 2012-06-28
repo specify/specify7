@@ -20,8 +20,6 @@ require([
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
     views, schemalocalization, beautify, navigation) {
     "use strict";
-    var ResourceView = views.ResourceView, ToManyView = views.ToManyView, ToOneView = views.ToOneView;
-
 
     $(function () {
         var rootContainer = $('#content');
@@ -51,7 +49,7 @@ require([
             },
 
             view: function(modelName, id) {
-                setCurrentView(new ResourceView({ modelName: modelName, resourceId: id }));
+                setCurrentView(new views.ResourceView({ modelName: modelName, resourceId: id }));
             },
 
             addOrViewRelated: function(modelName, id, relatedField, adding) {
@@ -63,7 +61,7 @@ require([
                     parentResource: new (specifyapi.Resource.forModel(model))({ id: id })
                 };
                 if (field.type === 'one-to-many' && !adding) {
-                    setCurrentView(new ToManyView(opts));
+                    setCurrentView(new views.ToManyView(opts));
                     return;
                 }
 
@@ -74,7 +72,7 @@ require([
                         opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
                         if (field.type === 'one-to-many')
                             opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
-                        view = new ToOneView(opts);
+                        view = new views.ToOneView(opts);
                         view.on('savecomplete', function() {
                             function goBack() {
                                 navigation.go(opts.parentResource.viewUrl());
@@ -86,7 +84,7 @@ require([
                         });
                     } else {
                         opts.model = relatedResource;
-                        view = new ToOneView(opts);
+                        view = new views.ToOneView(opts);
                     }
                     setCurrentView(view);
                 });
