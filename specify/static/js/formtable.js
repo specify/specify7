@@ -21,9 +21,13 @@ define([
             var header = $(templates.subviewheader());
             header.find('.specify-delete-related').remove();
             header.find('.specify-add-related').prop('href', this.addUrl());
-            self.undelegateEvents();
             self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
+            if (self.resource.isNew()) {
+                header.find('.specify-add-related').remove();
+                self.$el.append('<p>items can be added after form is saved...</p>');
+                return ;
+            }
             if (self.collection.length < 1) {
                 self.$el.append('<p>nothing here...</p>');
                 return;
@@ -39,7 +43,6 @@ define([
             _(rows).chain().tail().each(function(row) {
                 self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
             });
-            self.delegateEvents();
         },
         edit: function(evt) {
             evt.preventDefault();

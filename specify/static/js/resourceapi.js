@@ -182,6 +182,8 @@ define([
             if (this.specifyModel.getField(fieldName).type !== 'one-to-many') {
                 throw new TypeError('field is not one-to-many');
             }
+            if (this.isNew()) return $.when(undefined);
+
             return this.rget(fieldName).pipe(function (collection) {
                 if (!collection) return 0;
                 if (_.has(collection, 'totalCount')) return collection.totalCount;

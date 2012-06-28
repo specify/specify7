@@ -25,14 +25,15 @@ define([
             button.append('<span class="specify-subview-button-count">');
             if (field.type === 'one-to-many') {
                 self.model.getRelatedObjectCount(fieldName).done(function(count) {
-                    self.$('.specify-subview-button-count').text(count);
+                    var value = _.isUndefined(count) ? 'N/A' : count.toString();
+                    self.$('.specify-subview-button-count').text(value);
                 });
             } else {
                 self.model.rget(fieldName).done(function(related) {
                     self.$('.specify-subview-button-count').text(related ? 1 : 0);
                 });
             }
-            button.button();
+            button.button({ disabled: self.model.isNew() });
             self.delegateEvents();
         },
         click: function(evt) {

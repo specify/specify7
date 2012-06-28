@@ -74,13 +74,12 @@ require([
                             opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
                         view = new views.ToOneView(opts);
                         view.on('savecomplete', function() {
-                            function goBack() {
-                                navigation.go(opts.parentResource.viewUrl());
-                            }
                             if (field.type === 'many-to-one') {
                                 parentResource.set(field.name, opts.model.url());
-                                parentResource.save().done(goBack);
-                            } else goBack();
+                                parentResource.save().done(function() {
+                                    navigation.go(opts.parentResource.viewUrl());
+                                });
+                            } else navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
                         });
                     } else {
                         opts.model = relatedResource;
