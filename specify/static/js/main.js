@@ -32,6 +32,39 @@ require([
             rootContainer.append(currentView.el);
         }
 
+        function addOrViewRelated(adding, modelName, id, relatedField) {
+            var model = schema.getModel(modelName);
+            var field = model.getField(relatedField);
+            var viewdef = $.deparam.querystring().viewdef;
+            var opts = {
+                parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
+                parentResource: window.specifyParentResource || new (specifyapi.Resource.forModel(model))({ id: id })
+            };
+            if (field.type === 'one-to-many' && !adding) {
+                setCurrentView(new views.ToManyView(opts));
+                return;
+            }
+
+            opts.parentResource.rget(field.name).done(function(relatedResource) {
+                var view;
+                if (_(relatedResource).isNull()) opts.adding = adding = true;
+                if (adding) {
+                    opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
+                    if (field.type === 'one-to-many')
+                        opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
+                    view = new views.ToOneView(opts);
+                    view.on('savecomplete', function() {
+                        if (field.type === 'many-to-one') opts.parentResource.set(field.name, opts.model.url());
+                        navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
+                    });
+                } else {
+                    opts.model = relatedResource;
+                    view = new views.ToOneView(opts);
+                }
+                setCurrentView(view);
+            });
+        }
+
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'recordset/:id/*splat': 'recordSet',
@@ -52,50 +85,9 @@ require([
                 setCurrentView(new views.ResourceView({ modelName: modelName, resourceId: id }));
             },
 
-            addOrViewRelated: function(modelName, id, relatedField, adding) {
-                var model = schema.getModel(modelName);
-                var field = model.getField(relatedField);
-                var viewdef = $.deparam.querystring().viewdef;
-                var opts = {
-                    parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
-                    parentResource: window.specifyParentResource || new (specifyapi.Resource.forModel(model))({ id: id })
-                };
-                if (field.type === 'one-to-many' && !adding) {
-                    setCurrentView(new views.ToManyView(opts));
-                    return;
-                }
+            viewRelated: _.bind(addOrViewRelated, this, false),
 
-                opts.parentResource.rget(field.name).done(function(relatedResource) {
-                    var view;
-                    if (_(relatedResource).isNull()) opts.adding = adding = true;
-                    if (adding) {
-                        opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
-                        if (field.type === 'one-to-many')
-                            opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
-                        view = new views.ToOneView(opts);
-                        view.on('savecomplete', function() {
-                            if (field.type === 'many-to-one') opts.parentResource.set(field.name, opts.model.url());
-                            navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
-                        });
-                    } else {
-                        opts.model = relatedResource;
-                        view = new views.ToOneView(opts);
-                    }
-                    setCurrentView(view);
-                });
-            },
-
-            viewRelated: function() {
-                var args = _(arguments).toArray();
-                args[3] = false; // not adding
-                this.addOrViewRelated.apply(this, args);
-            },
-
-            addRelated: function() {
-                var args = _(arguments).toArray();
-                args[3] = true; // adding
-                this.addOrViewRelated.apply(this, args);
-            },
+            addRelated: _.bind(addOrViewRelated, this, true),
 
             viewashtml: function() {
                 currentView && currentView.remove();
