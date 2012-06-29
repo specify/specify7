@@ -20,14 +20,13 @@ define([
 
             // look at data-specify-picklist on element
 
-            var isAgentType = (specifyModel === schema.getModel('Agent')
-                               && field === specifyModel.getField('agentType'));
+            var isAgentType = (specifyModel.name === 'Agent' && field.name === 'agentType');
 
             var pickListName = schemalocalization.getPickListForField(field.name, specifyModel.name);
             if (!pickListName && !isAgentType) { return self; }
 
             var buildPicklist = function(picklistitems, value) {
-                value = (value instanceof api.Resource) ? value.url() : value;
+                value = _.isString(value) ? value : value.url();
                 var items = {};
                 if (!self.$el.hasClass('required')) {
                     $('<option>').appendTo(self.el);

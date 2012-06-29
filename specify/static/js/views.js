@@ -150,6 +150,11 @@ define([
             return viewdef ? specifyform.buildViewByViewDefName(viewdef) :
                 specifyform.buildViewByName(this.model.specifyModel.view);
         },
+        submit: function(evt) {
+            var self = this;
+            evt.preventDefault();
+            self.trigger('done');
+        },
         setTitle: function () {
             var self = this, o = this.options;
             var title = !o.adding ? o.relatedField.getLocalizedName() : 'New ' + (

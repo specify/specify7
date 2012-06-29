@@ -32,48 +32,102 @@ require([
             rootContainer.append(currentView.el);
         }
 
-        function addOrViewRelated(adding, modelName, id, relatedField) {
-            var model = schema.getModel(modelName);
-            var field = model.getField(relatedField);
-            var viewdef = $.deparam.querystring().viewdef;
-            var opts = {
-                parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
-                parentResource: window.specifyParentResource || new (specifyapi.Resource.forModel(model))({ id: id })
-            };
-            if (field.type === 'one-to-many' && !adding) {
-                setCurrentView(new views.ToManyView(opts));
-                return;
-            }
-
-            opts.parentResource.rget(field.name).done(function(relatedResource) {
-                var view;
-                if (_(relatedResource).isNull()) opts.adding = adding = true;
-                if (adding) {
-                    opts.model = new (specifyapi.Resource.forModel(field.getRelatedModel()))();
-                    if (field.type === 'one-to-many')
-                        opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
-                    view = new views.ToOneView(opts);
-                    view.on('savecomplete', function() {
-                        if (field.type === 'many-to-one') opts.parentResource.set(field.name, opts.model.url());
-                        navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
-                    });
-                } else {
-                    opts.model = relatedResource;
-                    view = new views.ToOneView(opts);
-                }
-                setCurrentView(view);
-            });
-        }
-
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'recordset/:id/*splat': 'recordSet',
                 'view/:model/:id/:related/new/*splat': 'addRelated',
+                'view/:model/:id/:related/:index/*splat': 'viewSingleToMany',
                 'view/:model/:id/:related/*splat': 'viewRelated',
                 'view/:model/:id/*splat': 'view',
                 'viewashtml/*splat': 'viewashtml',
                 'datamodel/:model/': 'datamodel',
                 'datamodel/': 'datamodel'
+            },
+
+            addRelated: function(modelName, id, relatedFieldName) {
+                var resource = window.specifyParentResource ||
+                    new (specifyapi.Resource.forModel(modelName))({ id: id });
+                var relatedField = resource.specifyModel.getField(relatedFieldName);
+
+                var relatedResource = new (specifyapi.Resource.forModel(relatedField.getRelatedModel()))();
+                var view = new views.ToOneView({
+                    model: relatedResource,
+                    parentResource: resource,
+                    parentModel: resource.specifyModel,
+                    relatedField: relatedField,
+                    adding: true
+                });
+
+                switch (relatedField.type) {
+                case 'one-to-many':
+                    relatedResource.set(relatedField.otherSideName, resource.url(), { silent: true });
+
+                    view.on('done', function() {
+                        resource.rget(relatedField.name).done(function(collection) {
+                            collection.add(relatedResource);
+                            resource.isNew() && window.close();
+                        });
+                        resource.isNew() || relatedResource.rsave().done(function() {
+                            navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
+                        });
+                    });
+                    break;
+                case 'many-to-one':
+                    view.on('done', function() {
+                        relatedResource.rsave().done(function() {
+                            resource.set(relatedField.name, relatedResource.url());
+                            navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
+                        });
+                    });
+                    break;
+                }
+
+                setCurrentView(view);
+            },
+
+            viewSingleToMany: function(modelName, id, relatedFieldName, index) {
+                index = parseInt(index, 10);
+                var resource = window.specifyParentResource ||
+                    new (specifyapi.Resource.forModel(modelName))({ id: id });
+                resource.rget(relatedFieldName).done(function(collection) {
+                    collection.fetchIfNotPopulated().done(function() {
+                        var relatedResource = collection.at(index);
+                        setCurrentView(new views.ToOneView({
+                            model: relatedResource,
+                            parentResource: resource,
+                            parentModel: resource.specifyModel,
+                            relatedField: resource.specifyModel.getField(relatedFieldName),
+                            adding: false
+                        }));
+                    });
+                });
+            },
+
+            viewRelated: function(modelName, id, relatedFieldName) {
+                var resource = window.specifyParentResource ||
+                    new (specifyapi.Resource.forModel(modelName))({ id: id });
+                var relatedField = resource.specifyModel.getField(relatedFieldName);
+                switch (relatedField.type) {
+                case 'one-to-many':
+                    setCurrentView(new views.ToManyView({
+                        parentResource: resource,
+                        parentModel: resource.specifyModel,
+                        relatedField: relatedField,
+                        adding: false
+                    }));
+                    break;
+                case 'many-to-one':
+                    resource.rget(relatedField.name).done(function(relatedResource) {
+                        setCurrentView(new views.ToOneView({
+                            model: relatedResource,
+                            parentResource: resource,
+                            parentModel: resource.specifyModel,
+                            relatedField: relatedField,
+                            adding: false
+                        }));
+                    });
+                    break;
+                }
             },
 
             recordSet: function(id) {
@@ -84,10 +138,6 @@ require([
             view: function(modelName, id) {
                 setCurrentView(new views.ResourceView({ modelName: modelName, resourceId: id }));
             },
-
-            viewRelated: _.bind(addOrViewRelated, this, false),
-
-            addRelated: _.bind(addOrViewRelated, this, true),
 
             viewashtml: function() {
                 currentView && currentView.remove();
