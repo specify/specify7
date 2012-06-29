@@ -58,7 +58,7 @@ require([
                 var viewdef = $.deparam.querystring().viewdef;
                 var opts = {
                     parentModel: model, relatedField: field, viewdef: viewdef, adding: adding,
-                    parentResource: new (specifyapi.Resource.forModel(model))({ id: id })
+                    parentResource: window.specifyParentResource || new (specifyapi.Resource.forModel(model))({ id: id })
                 };
                 if (field.type === 'one-to-many' && !adding) {
                     setCurrentView(new views.ToManyView(opts));
@@ -74,12 +74,8 @@ require([
                             opts.model.set(field.otherSideName, opts.parentResource.url(), { silent: true });
                         view = new views.ToOneView(opts);
                         view.on('savecomplete', function() {
-                            if (field.type === 'many-to-one') {
-                                parentResource.set(field.name, opts.model.url());
-                                parentResource.save().done(function() {
-                                    navigation.go(opts.parentResource.viewUrl());
-                                });
-                            } else navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
+                            if (field.type === 'many-to-one') opts.parentResource.set(field.name, opts.model.url());
+                            navigation.navigate(opts.model.viewUrl(), { replace: true, trigger: true });
                         });
                     } else {
                         opts.model = relatedResource;

@@ -12,16 +12,11 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click .querycbx-edit': 'nav',
-            'click .querycbx-add': 'nav',
+            'click .querycbx-edit': 'edit',
+            'click .querycbx-add': 'add',
             'click .querycbx-search': 'search',
             'autocompleteselect': 'select',
             'blur input': 'fillIn'
-        },
-        nav: function (evt) {
-            evt.preventDefault();
-            var url = $(evt.currentTarget).attr('href');
-            url && navigation.go(url);
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
@@ -36,7 +31,6 @@ define([
             self.setElement(querycbx);
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
-            self.$('.querycbx-add').prop('href', self.model.viewUrl() + self.fieldName + '/new/');
             control.prop('readonly') && self.$('a').hide();
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
@@ -63,18 +57,16 @@ define([
                 }
             });
 
+            self.model.on('change:' + self.fieldName, _.bind(self.fillIn, self));
             this.fillIn();
             return this;
         },
         fillIn: function () {
             var self = this;
             self.model.rget(self.fieldName, true).done(function(related) {
-                if (related) {
-                    self.$('.querycbx-edit').attr('href', related.viewUrl());
-                    self.renderItem(related).done(function(item) {
-                        self.$('input').val(item.value);
-                    });
-                }
+                related && self.renderItem(related).done(function(item) {
+                    self.$('input').val(item.value);
+                });
             });
         },
         renderItem: function (resource) {
@@ -104,6 +96,19 @@ define([
                 close: function() {
                     $(this).remove();
                 }
+            });
+        },
+        add: function(event, ui) {
+            var self = this;
+            event.preventDefault();
+            var popUp = window.open(self.model.viewUrl() + self.fieldName + '/new/');
+            popUp.specifyParentResource = self.model;
+        },
+        edit: function(event, ui) {
+            var self = this;
+            event.preventDefault();
+            self.model.rget(self.fieldName, true).done(function(related) {
+                related && window.open(related.viewUrl());
             });
         }
     });
