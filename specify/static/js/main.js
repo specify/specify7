@@ -32,6 +32,8 @@ require([
             rootContainer.append(currentView.el);
         }
 
+        function getViewdef() { return $.deparam.querystring().viewdef; }
+
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'recordset/:id/*splat': 'recordSet',
@@ -55,6 +57,7 @@ require([
                     parentResource: resource,
                     parentModel: resource.specifyModel,
                     relatedField: relatedField,
+                    viewdef: getViewdef(),
                     adding: true
                 });
 
@@ -87,6 +90,7 @@ require([
                             parentResource: resource,
                             parentModel: resource.specifyModel,
                             relatedField: resource.specifyModel.getField(relatedFieldName),
+                            viewdef: getViewdef(),
                             adding: false
                         }));
                     });
@@ -103,6 +107,7 @@ require([
                         parentResource: resource,
                         parentModel: resource.specifyModel,
                         relatedField: relatedField,
+                        viewdef: getViewdef(),
                         adding: false
                     }));
                     break;
@@ -113,6 +118,7 @@ require([
                             parentResource: resource,
                             parentModel: resource.specifyModel,
                             relatedField: relatedField,
+                            viewdef: getViewdef(),
                             adding: false
                         }));
                     });

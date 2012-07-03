@@ -40,7 +40,7 @@ define([
         },
         change: function() {
             var validation = this.validate();
-            if (validation.isValid) {
+            if (true || validation.isValid) {
                 this.model.set(this.fieldName, validation.parsed);
                 this.resetInvalid();
             } else {

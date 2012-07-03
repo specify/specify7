@@ -51,10 +51,12 @@ define([
             self.model.rsave().done(function() { self.trigger('savecomplete'); });
         },
         destroy: function() {
-            this.deleteDialog.dialog('close');
-            this.model.destroy();
-            this.undelegateEvents();
-            this.$el.empty();
+            var self = this;
+            $.when(self.model.destroy()).done(function() {
+                self.$el.empty();
+                self.$el.append('<p>Item deleted.</p>');
+            });
+            self.deleteDialog.dialog('close');
         },
         openDeleteDialog: function(evt) {
             evt.preventDefault();
