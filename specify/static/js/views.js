@@ -88,7 +88,7 @@ define([
         initialize: function(options) {
             this.specifyModel = schema.getModel(options.modelName);
             this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.resourceId });
-            this.model.on('change', _.bind(this.setTitle, this));
+            this.model.on('change', this.setTitle, this);
             MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {
@@ -112,7 +112,7 @@ define([
     views.ToManyView = MainForm.extend({
         initialize: function(options) {
             this.model = options.parentResource;
-            this.model.on('change', _.bind(this.setTitle, this));
+            this.model.on('change', this.setTitle, this);
             MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {

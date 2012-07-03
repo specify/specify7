@@ -26,7 +26,7 @@ define([
             if (!pickListName && !isAgentType) { return self; }
 
             var buildPicklist = function(picklistitems, value) {
-                value = _.isString(value) ? value : value.url();
+                value = _.isUndefined(value) || _.isUndefined(value.url) ? value : value.url();
                 var items = {};
                 if (!self.$el.hasClass('required')) {
                     $('<option>').appendTo(self.el);
