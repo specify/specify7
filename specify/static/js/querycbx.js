@@ -21,7 +21,6 @@ define([
         select: function (event, ui) {
             var resource = ui.item.resource;
             this.model.set(this.fieldName, resource.url());
-            this.$('.querycbx-edit').attr('href', resource.viewUrl());
         },
         render: function () {
             var self = this;
@@ -57,9 +56,9 @@ define([
                 }
             });
 
-            self.model.on('change:' + self.fieldName, _.bind(self.fillIn, self));
-            this.fillIn();
-            return this;
+            self.model.on('change:' + self.fieldName, self.fillIn, self);
+            self.fillIn();
+            return self;
         },
         fillIn: function () {
             var self = this;

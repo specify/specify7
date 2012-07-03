@@ -109,7 +109,7 @@ define([
         }
     });
 
-    views.ToManyView = MainForm.extend({
+    views.CollectionView = MainForm.extend({
         initialize: function(options) {
             this.model = options.parentResource;
             this.model.on('change', this.setTitle, this);
@@ -140,7 +140,7 @@ define([
         }
     });
 
-    views.ToOneView = MainForm.extend({
+    views.RelatedView = MainForm.extend({
         initialize: function(options) {
             options.parentResource.on('change', _.bind(this.setTitle, this));
             MainForm.prototype.initialize.call(this, options);
@@ -149,11 +149,6 @@ define([
             var viewdef = this.options.viewdef;
             return viewdef ? specifyform.buildViewByViewDefName(viewdef) :
                 specifyform.buildViewByName(this.model.specifyModel.view);
-        },
-        submit: function(evt) {
-            var self = this;
-            evt.preventDefault();
-            self.trigger('done');
         },
         setTitle: function () {
             var self = this, o = this.options;

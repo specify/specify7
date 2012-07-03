@@ -50,7 +50,7 @@ require([
                 var relatedField = resource.specifyModel.getField(relatedFieldName);
 
                 var relatedResource = new (specifyapi.Resource.forModel(relatedField.getRelatedModel()))();
-                var view = new views.ToOneView({
+                var view = new views.RelatedView({
                     model: relatedResource,
                     parentResource: resource,
                     parentModel: resource.specifyModel,
@@ -61,26 +61,16 @@ require([
                 switch (relatedField.type) {
                 case 'one-to-many':
                     relatedResource.set(relatedField.otherSideName, resource.url(), { silent: true });
-
-                    view.on('done', function() {
-                        resource.rget(relatedField.name).done(function(collection) {
-                            collection.add(relatedResource);
-                            resource.isNew() && window.close();
-                        });
-                        resource.isNew() || relatedResource.rsave().done(function() {
-                            navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
-                        });
-                    });
                     break;
                 case 'many-to-one':
-                    view.on('done', function() {
-                        relatedResource.rsave().done(function() {
-                            resource.set(relatedField.name, relatedResource.url());
-                            navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
-                        });
+                    view.on('savecomplete', function() {
+                        resource.set(relatedField.name, relatedResource.url());
                     });
                     break;
                 }
+                view.on('savecomplete', function() {
+                    navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
+                });
 
                 setCurrentView(view);
             },
@@ -92,7 +82,7 @@ require([
                 resource.rget(relatedFieldName).done(function(collection) {
                     collection.fetchIfNotPopulated().done(function() {
                         var relatedResource = collection.at(index);
-                        setCurrentView(new views.ToOneView({
+                        setCurrentView(new views.RelatedView({
                             model: relatedResource,
                             parentResource: resource,
                             parentModel: resource.specifyModel,
@@ -109,7 +99,7 @@ require([
                 var relatedField = resource.specifyModel.getField(relatedFieldName);
                 switch (relatedField.type) {
                 case 'one-to-many':
-                    setCurrentView(new views.ToManyView({
+                    setCurrentView(new views.CollectionView({
                         parentResource: resource,
                         parentModel: resource.specifyModel,
                         relatedField: relatedField,
@@ -118,7 +108,7 @@ require([
                     break;
                 case 'many-to-one':
                     resource.rget(relatedField.name).done(function(relatedResource) {
-                        setCurrentView(new views.ToOneView({
+                        setCurrentView(new views.RelatedView({
                             model: relatedResource,
                             parentResource: resource,
                             parentModel: resource.specifyModel,
