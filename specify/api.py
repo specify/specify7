@@ -191,6 +191,13 @@ class ModelResource(tastypie.resources.ModelResource):
         bundle.obj.save(force_update=True)
         return bundle
 
+    def obj_create(self, bundle, request=None, **kwargs):
+        agent = models.Agent.objects.get(specifyuser__name=bundle.request.user.username)
+        for field in ('createdbyagent', 'modifiedbyagent'):
+            if hasattr(self._meta.object_class, field):
+                kwargs[field] = agent
+        return super(ModelResource, self).obj_create(bundle, request, **kwargs)
+
 def make_to_many_field(model, field, fieldname):
     modelname = field.related.model.__name__ # The model w/ the FK column (the many side)
     fkfieldname = field.related.field.name   # Name of the FK column
