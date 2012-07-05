@@ -40,7 +40,10 @@ define([
         },
         change: function() {
             var validation = this.validate();
-            if (true || validation.isValid) {
+            this.model.set(this.fieldName, validation.value);
+            return;
+            // skip validation for now.
+            if (validation.isValid) {
                 this.model.set(this.fieldName, validation.parsed);
                 this.resetInvalid();
             } else {
