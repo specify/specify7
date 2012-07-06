@@ -29,6 +29,7 @@ define([
             render: function() {
                 var self = this;
                 self.model.fetchIfNotPopulated().done(function() {
+                    if (!self.model.populated) return;
                     var ui = templates.gmapplugin(self.model.toJSON());
                     self.$el.replaceWith(ui);
                     self.setElement(ui);
