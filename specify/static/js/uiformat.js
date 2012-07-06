@@ -13,8 +13,8 @@ define([
         var field = resource.specifyModel.getField(fieldName);
         if (field.model.name === 'CollectionObject' && field.name === 'catalogNumber') {
             return resource.rget('collection.catalogNumFormatName').pipe(function(catNumForm) {
-                if (catNumForm === 'CatalogNumberNumeric') return parseDecInt(resource.get('catalogNumber'));
-                else return resource.get('catalogNumber');
+                var catNum = resource.get('catalogNumber');
+                return (catNumForm === 'CatalogNumberNumeric') ? (parseDecInt(catNum, 10) || '') : catNum;
             });
         }
 
