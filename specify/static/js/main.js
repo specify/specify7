@@ -75,6 +75,7 @@ require([
                     navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
                 });
 
+                relatedResource.placeInSameHierarchy(resource);
                 setCurrentView(view);
             },
 

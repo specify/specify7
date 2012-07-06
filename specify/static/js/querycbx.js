@@ -56,7 +56,7 @@ define([
                 }
             });
 
-            self.model.on('change:' + self.fieldName, self.fillIn, self);
+            self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
             self.fillIn();
             return self;
         },

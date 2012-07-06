@@ -84,7 +84,7 @@ define([
                     if (_.isString(value)) toOne = Resource.fromUri(value);
                     else {
                         toOne = Resource.fromUri(value.resource_uri);
-                        toOne._fetch = true; // bit of a kludge to block neesSaved event
+                        toOne._fetch = true; // bit of a kludge to block needsSaved event
                         toOne.set(value);
                         toOne._fetch = null;
                         toOne.populated = true;
@@ -119,6 +119,7 @@ define([
                 }
                 var collection = _.isString(value) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
+                if (self.isNew()) collection.isNew = true;
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
                     if (value) {
