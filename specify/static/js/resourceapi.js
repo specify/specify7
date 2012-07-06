@@ -205,6 +205,17 @@ define([
             var fieldName = fieldName.toLowerCase();
             var event = fieldName.split('.').length === 1 ? 'change:' : 'rchange:';
             this.on(event + fieldName, function(resource, value) { callback(value); });
+        },
+        placeInSameHierarchy: function(other) {
+            var self = this;
+            var myPath = self.specifyModel.orgPath();
+            var otherPath = other.specifyModel.orgPath();
+            if (!myPath || !otherPath) return;
+            if (myPath.length > otherPath.length) return;
+            var diff = _(otherPath).rest(myPath.length - 1).reverse();
+            return other.rget(diff.join('.')).done(function(common) {
+                self.set(_(diff).last(), common.url());
+            });
         }
     }, {
         forModel: function(model) {

@@ -50,7 +50,7 @@ define([
                     var related = field.getRelatedModel();
                     tr.append('<td><a href="../' + related.name.toLowerCase() + '/">' + related.name + '</a></td>');
                 } else tr.append('<td>');
-                $('<td>').append(attrsToDl(field.node.get(0))).appendTo(tr);
+                field.node && $('<td>').append(attrsToDl(field.node.get(0))).appendTo(tr);
                 table.append(tr);
             });
             return this;

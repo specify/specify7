@@ -34,6 +34,20 @@ define([
         },
         getIcon: function() {
             return icons.getIcon(this.name);
+        },
+        orgRelationship: function() {
+            return _.chain(schema.orgHierarchy).map(this.getField, this).filter(function(field) {
+                return field && field.type === 'many-to-one';
+            }).first().value();
+        },
+        orgPath: function() {
+            if (this.name.toLowerCase() === _.last(schema.orgHierarchy)) return [];
+            var up = this.orgRelationship();
+            if (up) {
+                var path = up.getRelatedModel().orgPath();
+                path.push(up.name);
+                return path;
+            }
         }
     });
 
@@ -99,7 +113,8 @@ define([
         },
         getModelById: function(tableId) {
             return _(this.models).find(function(model) { return model.tableId === tableId; });
-        }
+        },
+        orgHierarchy: ['collectionobject', 'collection', 'discipline', 'division', 'institution']
     };
 
     $('table', $.parseXML(xml)).each(function() {

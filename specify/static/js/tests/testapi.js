@@ -468,6 +468,35 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
             });
         });
 
+        test('placeInSameHierarchy', function() {
+            expect(1);
+            stop();
+            var collectionObject = new (api.Resource.forModel('collectionobject'))({ id: 100 });
+            var locality = new (api.Resource.forModel('locality'))();
+            locality.placeInSameHierarchy(collectionObject).done(function() {
+                equal(locality.get('discipline'), "/api/specify/discipline/3/", 'locality gets the correct discipline');
+                start();
+            });
+        });
+
+        test('placeInSameHierarchy fail', function() {
+            var collectionObject = new (api.Resource.forModel('collectionobject'))({ id: 100 });
+            var author = new (api.Resource.forModel('author'))();
+            equal(author.placeInSameHierarchy(collectionObject), undefined, 'cant place object not in hierarchy');
+        });
+
+        test('placeInSameHierarchy fail another way', function() {
+            var recordset = new (api.Resource.forModel('recordset'))({ id: 1 });
+            var collectionObject = new (api.Resource.forModel('collectionobject'))();
+            equal(collectionObject.placeInSameHierarchy(recordset), undefined, 'no reference hierarchy to use');
+        });
+
+        test('placeInSameHierearchy reference object too high', function() {
+            var locality = new (api.Resource.forModel('locality'))({ id: 100 });
+            var collectionObject = new (api.Resource.forModel('collectionobject'))();
+            equal(collectionObject.placeInSameHierarchy(locality), undefined, 'returns undefined');
+        });
+
         module('specifyapi.Collection');
         test('forModel', function() {
             var Collection = api.Collection.forModel('agent');
