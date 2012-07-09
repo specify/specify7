@@ -31,7 +31,7 @@ def collector_pre_save(sender, **kwargs):
         if collector.ordernumber is None:
             # this should be atomic, but whatever
             others = models.Collector.objects.filter(collectingevent=collector.collectingevent)
-            top = others.aggregate(Max('ordernumber'))['ordernumber__max']
+            top = others.aggregate(Max('ordernumber'))['ordernumber__max'] or 0
             collector.ordernumber = top + 1
 
 @receiver(signals.pre_save, sender=models.Collectionobject)
