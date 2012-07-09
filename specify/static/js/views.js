@@ -6,7 +6,7 @@ define([
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
-
+    function setWindowTitle(title) { window && (window.document.title = title); }
 
     views.RecordSetView = Backbone.View.extend({
         render: function() {
@@ -20,7 +20,7 @@ define([
                 var title = formHeader.find('span').text();
                 title += ': ' + self.model.get('name');
                 formHeader.find('span').text(title);
-                window.document.title = title;
+                setWindowTitle(title);
             });
             return this;
         }
@@ -100,12 +100,12 @@ define([
             var self = this;
             var title = self.specifyModel.getLocalizedName();
             self.setFormTitle(title);
-            window.document.title = title;
+            setWindowTitle(title);
             dataobjformat(self.model).done(function(str) {
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);
-                    window.document.title = title;
+                    setWindowTitle(title);
                 }
             });
         }
@@ -131,12 +131,12 @@ define([
             var self = this, o = this.options;
             var title = o.relatedField.getLocalizedName() + ' for ' + o.parentModel.getLocalizedName();
             self.setFormTitle(title);
-            window.document.title = title;
+            setWindowTitle(title);
             dataobjformat(self.model).done(function(str) {
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);
-                    window.document.title = title;
+                    setWindowTitle(title);
                 }
             });
         }
@@ -159,12 +159,12 @@ define([
                     o.relatedField.getLocalizedName());
             title += ' for ' + o.parentModel.getLocalizedName();
             self.setFormTitle(title);
-            window.document.title = title;
+            setWindowTitle(title);
             dataobjformat(o.parentResource).done(function(str) {
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);
-                    window.document.title = title;
+                    setWindowTitle(title);
                 }
             });
         }
