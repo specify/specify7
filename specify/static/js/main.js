@@ -30,6 +30,7 @@ require([
             currentView = view;
             currentView.render();
             rootContainer.append(currentView.el);
+            window.specifyParentResource = null;
         }
 
         function getViewdef() { return $.deparam.querystring().viewdef; }
