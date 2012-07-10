@@ -31,6 +31,7 @@ inlined_fields = [
 
 filter_fields = {
     'Picklist': {'name': ['exact',]},
+    'Collectionobject': {'catalognumber': ['exact',]},
 }
 
 typesearches = ElementTree.parse(os.path.join(os.path.dirname(__file__),
