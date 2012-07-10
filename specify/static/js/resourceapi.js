@@ -81,11 +81,11 @@ define([
                 if (!value) return value;
                 var toOne = self.relatedCache[fieldName];
                 if (!toOne) {
-                    if (_.isString(value)) toOne = Resource.fromUri(value);
+                    if (_.isString(value)) toOne = self.constructor.fromUri(value);
                     else {
-                        toOne = Resource.fromUri(value.resource_uri);
+                        toOne = new (self.constructor.forModel(related))();
                         toOne._fetch = true; // bit of a kludge to block needsSaved event
-                        toOne.set(value);
+                        toOne.set(toOne.parse(value));
                         toOne._fetch = null;
                         toOne.populated = true;
                     }
@@ -101,7 +101,7 @@ define([
                 var toMany =  self.relatedCache[fieldName];
                 if (!toMany) {
                     toMany = (_.isString(value)) ? Collection.fromUri(value) :
-                        new (Collection.forModel(related))(value);
+                        new (Collection.forModel(related))(value, {parse: true});
                     toMany.parent = self;
                     if (self.isNew()) {
                         toMany.isNew = true;
