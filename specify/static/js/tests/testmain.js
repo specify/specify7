@@ -1,26 +1,32 @@
-QUnit.config.autostart = false;
-
 require({
     baseUrl: "/static/js",
     priority: ['jquery'],
     paths: {
-        'jquery': "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery",
-        'jquery-ui': "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui",
-        'jquery-bbq': "vendor/jquery.ba-bbq",
-        'jquery-mockjax': "vendor/jquery.mockjax",
-        'underscore': "vendor/underscore",
-        'backbone': "vendor/backbone",
-        'beautify-html': "vendor/beautify-html",
-        'CoffeeScript': "vendor/CoffeeScript",
-        'cs': "vendor/cs",
-        'text': "vendor/text",
-        'resources': '/static/resources',
-        'tmpls': '/static/html/templates'
+        'jquery'         : "vendor/jquery-1.7.2",
+        'jquery-ui'      : "vendor/jquery-ui",
+        'jquery-bbq'     : "vendor/jquery.ba-bbq",
+        'jquery-mockjax' : "vendor/jquery.mockjax",
+        'underscore'     : "vendor/underscore",
+        'backbone'       : "vendor/backbone",
+        'qunit'          : "vendor/qunit",
+        'beautify-html'  : "vendor/beautify-html",
+        'CoffeeScript'   : "vendor/CoffeeScript",
+        'cs'             : "vendor/cs",
+        'text'           : "vendor/text",
+        'resources'      : '/static/resources',
+        'tmpls'          : '/static/html/templates'
+    },
+    shim: {
+        'jquery-ui'      : ['jquery'],
+        'jquery-bbq'     : ['jquery'],
+        'jquery-mockjax' : ['jquery'],
+        'backbone'       : { deps: ['jquery', 'underscore'], exports: 'Backbone' },
+        'qunit'          : { deps: ['jquery'], exports: 'QUnit' }
     }
 });
 
 require([
-    'underscore', 'cs!tests/setupmockjax',
+    'underscore', 'qunit', 'cs!tests/setupmockjax',
     'tests/testlatlongutils',
     'tests/testapi',
     'tests/testschema',
@@ -30,10 +36,9 @@ require([
     'tests/testforms',
     'cs!tests/testbusinessrules',
 //    'cs!tests/testquerycbx'
-], function testmain(_, setupmockjax) {
+], function testmain(_, QUnit, setupmockjax) {
     setupmockjax();
 
-    QUnit.start();
     var tests = _(arguments).chain().tail(testmain.length);
     tests.invoke('apply');
 });
