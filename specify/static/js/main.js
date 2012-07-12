@@ -6,6 +6,8 @@ require({
         'jquery-bbq': "vendor/jquery.ba-bbq",
         'underscore': "vendor/underscore",
         'backbone': "vendor/backbone",
+        'CoffeeScript': "vendor/CoffeeScript",
+        'cs': "vendor/cs",
         'resources': '/static/resources',
         'tmpls': '/static/html/templates',
         'beautify-html': "vendor/beautify-html",

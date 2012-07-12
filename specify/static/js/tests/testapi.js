@@ -1,4 +1,6 @@
-define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbone, api) {
+define([
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'cs!businessrules'
+], function($, _, Backbone, api, businessrules) {
     "use strict";
     return function() {
         var requestCounter = 0, requestSettings = [];
@@ -22,6 +24,14 @@ define(['jquery', 'underscore', 'backbone', 'specifyapi'], function($, _, Backbo
         function yep(message) {
             return function() { ok(true, message); };
         }
+
+        var module = function(title, env) {
+            var businessRulesAttach = businessrules.attachToResource;
+            window.module(title, _.extend(env || {}, {
+                setup: function() { businessrules.attachToResource = function() {}; },
+                teardown: function() { businessrules.attachToResource = businessRulesAttach; }
+            }));
+        };
 
         module('specifyapi.Resource');
         test('forModel', function() {

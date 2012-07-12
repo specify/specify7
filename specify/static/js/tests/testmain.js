@@ -28,7 +28,8 @@ require([
     'tests/testuiformatters',
     'tests/testuiparse',
     'tests/testforms',
-    'cs!tests/testquerycbx'
+    'cs!tests/testbusinessrules',
+//    'cs!tests/testquerycbx'
 ], function testmain(_, setupmockjax) {
     setupmockjax();
 

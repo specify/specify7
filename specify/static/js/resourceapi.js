@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'collectionapi', 'whenall'
-], function($, _, Backbone, schema, Collection, whenAll) {
+    'jquery', 'underscore', 'backbone', 'schema', 'collectionapi', 'whenall', 'cs!businessrules'
+], function($, _, Backbone, schema, Collection, whenAll, businessrules) {
     var debug = false;
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
@@ -23,12 +23,10 @@ define([
             this.specifyModel = this.constructor.specifyModel;
             this.relatedCache = {};
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
-            this.on('change', function() {
-                if (this._fetch) return;
-                if (!this.saving) {
-                    this.needsSaved = true;
-                    this.trigger('saverequired');
-                }
+            this.on('change', function(resource, options) {
+                if (this._fetch || this.saving) return;
+                this.needsSaved = true;
+                this.trigger('saverequired');
             });
             this.on('sync', function() {
                 this.needsSaved = this.saving = false;
@@ -45,6 +43,7 @@ define([
             debug && this.on('all', function() {
                 console.log(arguments);
             });
+            businessrules.attachToResource(this);
         },
         url: function() {
             return '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
