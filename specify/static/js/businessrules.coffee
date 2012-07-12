@@ -13,13 +13,7 @@ define ['underscore'], (_) ->
                     deferred?.done (result) =>
                         if deferred is @fieldChangeDeferreds[fieldName]
                             delete @fieldChangeDeferreds[fieldName]
-                            @changedResult fieldName, result
-
-        changedResult: (fieldName, result) ->
-            if not result.valid
-                @resource.trigger 'businessruleerror', @resource
-                @resource.trigger "businessruleerror:#{ fieldName }", @resource, result
-
+                            @resource.trigger "businessrule:#{ fieldName }", @resource, result
     rules =
         CollectionObject:
             fieldChange:
