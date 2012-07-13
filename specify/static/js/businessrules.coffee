@@ -48,11 +48,22 @@ define ['jquery', 'underscore'], ($, _) ->
             fieldChange:
                 role: (accessionagent) ->
                     role = accessionagent.get 'role'
-                    others = accessionagent.collection
-                    if others.filter((agent) -> accessionagent isnt agent and role is agent.get 'role').length > 0
-                        $.when { valid: false, reason: 'Agent with role already exists' }
+                    sameRoleP = (agent) -> accessionagent.id isnt agent.id and role is agent.get 'role'
+                    roleIsDupped = (others) ->
+                        if others.filter(sameRoleP).length > 0
+                            $.when { valid: false, reason: 'Agent with role already exists' }
+                        else
+                            $.when valid: true
+
+                    if accessionagent.collection?
+                        roleIsDupped(accessionagent.collection)
                     else
-                        $.when valid: true
+                        accessionagent.rget('accession.accessionagents').pipe (AAs) ->
+                            others = new AAs.constructor()
+                            _.extend others.queryParams,
+                                accession: AAs.parent.id,
+                                role: role
+                            others.fetch().pipe -> roleIsDupped(others)
 
     businessRules =
         attachToResource: (resource) ->
