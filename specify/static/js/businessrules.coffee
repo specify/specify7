@@ -15,19 +15,21 @@ define ['jquery', 'underscore'], ($, _) ->
             promise
 
         changed: (resource, options) ->
-            _(options.changes).each (wasChanged, fieldName) =>
-                if wasChanged
-                    rule = @rules?.fieldChange[fieldName]
-                    if rule?
-                        deferred = @fieldChangeDeferreds[fieldName] = rule resource
-                        @pending = true
-                        deferred.done (result) =>
-                            if deferred is @fieldChangeDeferreds[fieldName]
-                                delete @fieldChangeDeferreds[fieldName]
-                                @resource.trigger "businessrule:#{ fieldName }", @resource, result
-                                if _.isEmpty @fieldChangeDeferreds
-                                    @pending = false
-                                    @resource.trigger "businessrulescomplete", @resource
+            _.each options.changes, (wasChanged, fieldName) => @checkField fieldName if wasChanged
+
+        checkField: (fieldName) ->
+            fieldName = fieldName.toLowerCase()
+            rule = @rules?.fieldChange[fieldName]
+            if rule?
+                deferred = @fieldChangeDeferreds[fieldName] = rule @resource
+                @pending = true
+                deferred.done (result) =>
+                    if deferred is @fieldChangeDeferreds[fieldName]
+                        delete @fieldChangeDeferreds[fieldName]
+                        @resource.trigger "businessrule:#{ fieldName }", @resource, result
+                        if _.isEmpty @fieldChangeDeferreds
+                            @pending = false
+                            @resource.trigger "businessrulescomplete", @resource
 
     uniqueFor = (toOneField, resource, valueField) ->
         fieldInfo = resource.specifyModel.getField(toOneField)

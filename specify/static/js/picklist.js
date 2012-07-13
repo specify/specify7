@@ -35,13 +35,14 @@ define([
                 _(picklistitems).each(function(item) {
                     $('<option>').text(item.title).attr('value', item.value).appendTo(self.el);
                 });
-                if (_(value).isUndefined()) return;
+                if (_(value).isUndefined()) return self.change();
                 var valueNotInItems = (value !== '') && _.all(picklistitems, function(item) { return item.value !== value; });
                 var valueIsRequiredButMissing = self.$el.is('.specify-required-field') && value === '';
                 if (valueNotInItems || valueIsRequiredButMissing) {
                     $('<option>').appendTo(self.el).attr('value', value).text(value + " (current value not in picklist)");
                 }
                 self.$el.val(value);
+                self.model.businessRuleMgr.checkField(field.name);
             };
 
             var getPickList = isAgentType ? agentTypePicklist :
