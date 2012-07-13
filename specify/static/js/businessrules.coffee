@@ -28,42 +28,35 @@ define ['jquery', 'underscore'], ($, _) ->
                                 if _.isEmpty @fieldChangeDeferreds
                                     @pending = false
                                     @resource.trigger "businessrulescomplete", @resource
+
+    uniqueFor = (toOneField, resource, valueField) ->
+        fieldInfo = resource.specifyModel.getField(toOneField)
+        value = resource.get valueField
+        sameValueP = (other) -> other.id isnt resource.id and value is other.get valueField
+        valueIsDupedIn = (others) ->
+            if others.filter(sameValueP).length > 0
+                $.when { valid: false, reason: "Value must be unique to #{ toOneField }" }
+            else
+                $.when valid: true
+        if fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
+            valueIsDupedIn resource.collection
+        else
+            resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
+                others = new collection.constructor()
+                others.queryParams[toOneField] = collection.parent.id
+                others.queryParams[valueField] = value
+                others.fetch().pipe -> valueIsDupedIn(others)
+
     rules =
         CollectionObject:
             fieldChange:
                 catalognumber: (collectionobject) ->
-                    collectionobject.rget('collection.collectionobjects').pipe (COs) ->
-                        otherCOs = new COs.constructor()
-                        _.extend otherCOs.queryParams,
-                            collection: COs.parent.id
-                            catalognumber: collectionobject.get 'catalognumber'
-                        otherCOs.fetch().pipe ->
-                            if otherCOs.totalCount is 0
-                                valid: true
-                            else if otherCOs.totalCount is 1 and otherCOs.at(0).id is collectionobject.id
-                                valid: true
-                            else
-                                valid: false, reason: 'Catalog number already in use'
+                    uniqueFor 'collection', collectionobject, 'catalognumber'
+
         AccessionAgent:
             fieldChange:
                 role: (accessionagent) ->
-                    role = accessionagent.get 'role'
-                    sameRoleP = (agent) -> accessionagent.id isnt agent.id and role is agent.get 'role'
-                    roleIsDupped = (others) ->
-                        if others.filter(sameRoleP).length > 0
-                            $.when { valid: false, reason: 'Agent with role already exists' }
-                        else
-                            $.when valid: true
-
-                    if accessionagent.collection?
-                        roleIsDupped(accessionagent.collection)
-                    else
-                        accessionagent.rget('accession.accessionagents').pipe (AAs) ->
-                            others = new AAs.constructor()
-                            _.extend others.queryParams,
-                                accession: AAs.parent.id,
-                                role: role
-                            others.fetch().pipe -> roleIsDupped(others)
+                    uniqueFor 'accession', accessionagent, 'role'
 
     businessRules =
         attachToResource: (resource) ->
