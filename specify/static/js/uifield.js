@@ -1,9 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse'
-], function($, _, Backbone, dataObjFormat, uiformat, uiparse) {
+    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse',
+    'cs!businessrulesviewmixin'
+], function($, _, Backbone, dataObjFormat, uiformat, uiparse, businessrulesviewmixin) {
     "use strict";
 
-    return Backbone.View.extend({
+    var UIField = Backbone.View.extend({
         events: {
             'change': 'change'
         },
@@ -14,9 +15,6 @@ define([
             if (!field) return self;
             self.fieldName = fieldName;
             self.field = field;
-
-            self.defaultBGColor = self.$el.css('background-color');
-            self.defaultTooltip = self.$el.attr('title');
 
             if (field.isRelationship) {
                 self.$el.removeClass('specify-field').addClass('specify-object-formatted');
@@ -50,24 +48,6 @@ define([
                 this.showInvalid(validation.reason);
             }
         },
-        onBR: function(resource, result) {
-            if (result.valid) {
-                this.resetInvalid();
-            } else {
-                this.showInvalid(result.reason);
-            }
-        },
-        showInvalid: function(mesg) {
-            this.$el.css('background-color', 'red');
-            this.$el.attr('title', mesg);
-        },
-        resetInvalid: function() {
-            this.$el.css('background-color', this.defaultBGColor);
-            if (this.defaultTooltip)
-                this.$el.attr('title', this.defaultTooltip);
-            else
-                this.$el.removeAttr('title');
-        },
         validate: function() {
             var value = this.$el.val().trim();
             var isRequired = this.$el.is('.specify-required-field');
@@ -89,4 +69,8 @@ define([
             return uiparse(this.field, value);
         }
     });
+
+    _.extend(UIField.prototype, businessrulesviewmixin);
+    return UIField;
+
 });

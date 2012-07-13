@@ -1,6 +1,7 @@
 define([
-    'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema'
-], function($, _, schemalocalization, api, Backbone, schema) {
+    'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema',
+    'cs!businessrulesviewmixin'
+], function($, _, schemalocalization, api, Backbone, schema, businessrulesviewmixin) {
     "use strict";
 
     var agentTypePicklist = [{value: 0, title: 'Organization'},
@@ -8,7 +9,7 @@ define([
                              {value: 2, title: 'Other'},
                              {value: 3, title: 'Group'}];
 
-    return Backbone.View.extend({
+    var Picklist = Backbone.View.extend({
         events: {
             'change': 'change'
         },
@@ -57,10 +58,14 @@ define([
 
             var getValue = self.model.rget(field.name);
             $.when(getPickList, getValue).done(buildPicklist);
+            self.model.on('businessrule:' + field.name.toLowerCase(), self.onBR, self);
             return self;
         },
         change: function() {
             this.model.set(this.$el.attr('name'), this.$el.val());
         }
     });
+
+    _.extend(Picklist.prototype, businessrulesviewmixin);
+    return Picklist;
 });

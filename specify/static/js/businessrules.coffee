@@ -44,6 +44,15 @@ define ['jquery', 'underscore'], ($, _) ->
                                 valid: true
                             else
                                 valid: false, reason: 'Catalog number already in use'
+        AccessionAgent:
+            fieldChange:
+                role: (accessionagent) ->
+                    role = accessionagent.get 'role'
+                    others = accessionagent.collection
+                    if others.filter((agent) -> accessionagent isnt agent and role is agent.get 'role').length > 0
+                        $.when { valid: false, reason: 'Agent with role already exists' }
+                    else
+                        $.when valid: true
 
     businessRules =
         attachToResource: (resource) ->
