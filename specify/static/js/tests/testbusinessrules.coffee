@@ -2,8 +2,21 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
 
     getCollectionObject = (id, callback) ->
         collectionobject = new (api.Resource.forModel 'collectionobject') id: id
-        collectionobject.fetchIfNotPopulated().done callback
+        collectionobject.fetch().done callback
         collectionobject
+
+    module 'businessrules'
+    test 'business rules pending flag', ->
+        expect 3
+        stop()
+        collectionobject = getCollectionObject 100, ->
+            collectionobject.businessRuleMgr.getPromise ->
+                collectionobject.on 'businessrulescomplete', (resource) ->
+                    ok (not collectionobject.businessRuleMgr.pending), 'not pending'
+                    start()
+                ok (not collectionobject.businessRuleMgr.pending), 'not pending'
+                collectionobject.set 'catalognumber', "999999999"
+                ok (collectionobject.businessRuleMgr.pending), 'is pending'
 
     module 'collection object businessrules'
     test 'dup catalognumber', ->

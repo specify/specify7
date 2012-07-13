@@ -35,7 +35,7 @@ define([
 
             fillItIn();
             self.model.onChange(fieldName, fillItIn);
-
+            self.model.on('businessrule:' + fieldName.toLowerCase(), self.onBR, self);
             return this;
         },
         change: function() {
@@ -48,6 +48,13 @@ define([
                 this.resetInvalid();
             } else {
                 this.showInvalid(validation.reason);
+            }
+        },
+        onBR: function(resource, result) {
+            if (result.valid) {
+                this.resetInvalid();
+            } else {
+                this.showInvalid(result.reason);
             }
         },
         showInvalid: function(mesg) {
