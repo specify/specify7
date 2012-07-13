@@ -28,7 +28,7 @@ define([
             var buildPicklist = function(picklistitems, value) {
                 value = value && !_.isUndefined(value.url) ? value.url() : value;
                 var items = {};
-                if (!self.$el.hasClass('required')) {
+                if (!self.$el.hasClass('specify-required-field')) {
                     $('<option>').appendTo(self.el);
                 }
                 _(picklistitems).each(function(item) {
