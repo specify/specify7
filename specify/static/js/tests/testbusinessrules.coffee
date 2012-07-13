@@ -26,7 +26,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             collectionobject.on 'businessrule:catalognumber', (resource, result) ->
                 ok true, 'businessrule event is triggered'
                 ok (not result.valid), 'field is in valid'
-                equal result.reason, 'Catalog number already in use', 'catalog number is dupped'
+                ok _(result.reason).isString(), 'reason is given'
                 start()
             collectionobject.set 'catalognumber',  "000037799"
 

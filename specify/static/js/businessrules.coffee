@@ -5,13 +5,13 @@ define ['jquery', 'underscore'], ($, _) ->
             @fieldChangeDeferreds = {}
             @rules = rules[@resource.specifyModel.name]
 
-        getPromise: (cb) ->
+        getPromise: (callback) ->
             promise = $.Deferred()
             if @pending
                 @resource.on 'businessrulescomplete', -> promise.resolve()
             else
                 promise.resolve()
-            if cb? then promise.done(cb)
+            if callback? then promise.done callback
             promise
 
         changed: (resource, options) ->
@@ -31,8 +31,8 @@ define ['jquery', 'underscore'], ($, _) ->
                             @pending = false
                             @resource.trigger "businessrulescomplete", @resource
 
-    uniqueFor = (toOneField, resource, valueField) ->
-        fieldInfo = resource.specifyModel.getField(toOneField)
+    uniqueIn = (toOneField, resource, valueField) ->
+        fieldInfo = resource.specifyModel.getField toOneField
         value = resource.get valueField
         sameValueP = (other) -> other.id isnt resource.id and value is other.get valueField
         valueIsDupedIn = (others) ->
@@ -47,18 +47,18 @@ define ['jquery', 'underscore'], ($, _) ->
                 others = new collection.constructor()
                 others.queryParams[toOneField] = collection.parent.id
                 others.queryParams[valueField] = value
-                others.fetch().pipe -> valueIsDupedIn(others)
+                others.fetch().pipe -> valueIsDupedIn others
 
     rules =
         CollectionObject:
             fieldChange:
                 catalognumber: (collectionobject) ->
-                    uniqueFor 'collection', collectionobject, 'catalognumber'
+                    uniqueIn 'collection', collectionobject, 'catalognumber'
 
         AccessionAgent:
             fieldChange:
                 role: (accessionagent) ->
-                    uniqueFor 'accession', accessionagent, 'role'
+                    uniqueIn 'accession', accessionagent, 'role'
 
     businessRules =
         attachToResource: (resource) ->
