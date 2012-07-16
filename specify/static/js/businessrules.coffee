@@ -35,19 +35,22 @@ define ['jquery', 'underscore'], ($, _) ->
         fieldInfo = resource.specifyModel.getField toOneField
         value = resource.get valueField
         sameValueP = (other) -> other.id isnt resource.id and value is other.get valueField
-        valueIsDupedIn = (others) ->
-            if others.filter(sameValueP).length > 0
-                $.when { valid: false, reason: "Value must be unique to #{ toOneField }" }
-            else
-                $.when valid: true
-        if fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
-            valueIsDupedIn resource.collection
-        else
-            resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
-                others = new collection.constructor()
-                others.queryParams[toOneField] = collection.parent.id
-                others.queryParams[valueField] = value
-                others.fetch().pipe -> valueIsDupedIn others
+        valueIsDupedIn = (others) -> (_.filter others, sameValueP).length > 0
+        haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
+        resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
+            others = new collection.constructor()
+            others.queryParams[toOneField] = collection.parent.id
+            others.queryParams[valueField] = value
+            others.fetch().pipe ->
+                databaseOnly = others.chain().compact().filter( (other) ->
+                    # remove fetched objects that are in our local collection
+                    (not haveLocalColl) || (not (resource.collection.get other.id))
+                ).value()
+                localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
+                if (valueIsDupedIn databaseOnly) or (valueIsDupedIn localCollection)
+                    { valid: false, reason: "Value must be unique to #{ toOneField }" }
+                else
+                    valid: true
 
     rules =
         CollectionObject:

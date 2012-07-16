@@ -25,7 +25,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         collectionobject = getCollectionObject 100, ->
             collectionobject.on 'businessrule:catalognumber', (resource, result) ->
                 ok true, 'businessrule event is triggered'
-                ok (not result.valid), 'field is in valid'
+                ok (not result.valid), 'field is invalid'
                 ok _(result.reason).isString(), 'reason is given'
                 start()
             collectionobject.set 'catalognumber',  "000037799"
@@ -53,3 +53,26 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
                 else
                     start()
             collectionobject.set 'catalognumber', "999999999"
+
+    test 'catalognumber unique in collection where some collection objects have been fetched', ->
+        expect 4
+        stop()
+        collection = new (api.Resource.forModel 'collection') id: 4
+        collection.fetch().done ->
+            collection.rget('collectionobjects', true).done (COs) ->
+                tests = [
+                    [0, '999999999', true, 'ok b/c this no. is unused'],
+                    [1, '000000001', true, 'this no. was in use by COs.at(0). but we just changed that one'],
+                    [2, '000037799', false, 'not ok b/c no. is used (even tho the conflicting CO is not fetched'],
+                    [3, '999999999', false, 'conflicts with the first object now.']
+                ]
+
+                nextTest = ->
+                    if tests.length is 0 then return start()
+                    [i, catNum, expectedValid, doc] = tests.shift()
+                    COs.at(i).on 'businessrule:catalognumber', (resource, result) ->
+                        equal result.valid, expectedValid, doc
+                        nextTest()
+                    COs.at(i).set 'catalognumber', catNum
+
+                nextTest()
