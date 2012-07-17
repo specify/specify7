@@ -65,7 +65,7 @@ define([
         render: function() {
             var self = this;
             self.$el.append(populateForm(self.buildForm(), self.model));
-            self.$(':submit').prop('disabled', true);
+            self.$(':submit, :button[value="Delete"]').prop('disabled', true);
             if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
             self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false, modal: true, autoOpen: false, buttons: {
@@ -78,6 +78,12 @@ define([
                 $(this).detach();
             });
             self.setTitle();
+            _({ candelete: 'enable', deleteblocked: 'disable' }).each(function(action, event) {
+                self.model.on(event, function() {
+                    self.$(':button[value="Delete"]').prop('disabled', action === 'disable');
+                });
+            });
+            self.model.businessRuleMgr.checkCanDelete();
             return self;
         },
         setFormTitle: function(title) {

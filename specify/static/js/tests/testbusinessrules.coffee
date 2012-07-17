@@ -55,6 +55,17 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
                 start()
             accession.businessRuleMgr.checkCanDelete()
 
+    test 'checkCanDelete with no blocking fields', ->
+        expect 1
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 1
+        accession.fetch().done ->
+            accession.businessRuleMgr.deleteBlockers = {}
+            accession.on 'candelete', ->
+                ok true, 'candelete event triggered'
+                start()
+            accession.businessRuleMgr.checkCanDelete()
+
     module 'collection object businessrules'
     test 'dup catalognumber', ->
         expect 3

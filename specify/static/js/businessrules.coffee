@@ -19,8 +19,12 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     # a work around might be to always do destroy({ wait: true })
                     @resource.on "remove:#{ fieldname }", => @tryToRemDeleteBlocker fieldname
 
-        checkCanDelete: -> whenAll(
-            _.map @deleteBlockers, (__, fieldname) => @tryToRemDeleteBlocker fieldname)
+        checkCanDelete: ->
+            if @canDelete()
+                @resource.trigger 'candelete'
+                $.when true
+            else whenAll(
+                _.map @deleteBlockers, (__, fieldname) => @tryToRemDeleteBlocker fieldname)
 
         canDelete: -> _.isEmpty @deleteBlockers
 
@@ -82,6 +86,9 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     valid: true
 
     rules =
+        CollectingEvent:
+            deleteBlockers: ['collectionobjects']
+
         Accession:
             deleteBlockers: ['collectionobjects']
 
