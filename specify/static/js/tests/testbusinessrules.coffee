@@ -18,6 +18,43 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
                 collectionobject.set 'catalognumber', "999999999"
                 ok (collectionobject.businessRuleMgr.pending), 'is pending'
 
+    test 'delete blockers', ->
+        expect 3
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 3
+        accession.rget('collectionobjects', true).done (COs) ->
+            ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
+            accession.on 'candelete', ->
+                ok true, 'candelete event triggered'
+                ok accession.businessRuleMgr.canDelete(), 'canDelete() returns true'
+                start()
+            orig = accession.getRelatedObjectCount
+            accession.getRelatedObjectCount = (fieldname) ->
+                if fieldname is 'collectionobjects' then $.when 0 else orig fieldname
+            accession.trigger 'remove:collectionobjects'
+
+    test 'checkCanDelete with block', ->
+        expect 1
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 3
+        accession.rget('collectionobjects', true).done (COs) ->
+            ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
+            accession.on 'candelete', ->
+                ok false, 'candelete event should not be triggered'
+            accession.businessRuleMgr.checkCanDelete().done ->
+                _.delay start, 1000
+
+    test 'checkCanDelete with no block', ->
+        expect 2
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 1
+        accession.rget('collectionobjects', true).done (COs) ->
+            ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
+            accession.on 'candelete', ->
+                ok true, 'candelete event triggered'
+                start()
+            accession.businessRuleMgr.checkCanDelete()
+
     module 'collection object businessrules'
     test 'dup catalognumber', ->
         expect 3
@@ -58,21 +95,20 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         expect 4
         stop()
         collection = new (api.Resource.forModel 'collection') id: 4
-        collection.fetch().done ->
-            collection.rget('collectionobjects', true).done (COs) ->
-                tests = [
-                    [0, '999999999', true, 'ok b/c this no. is unused'],
-                    [1, '000000001', true, 'this no. was in use by COs.at(0). but we just changed that one'],
-                    [2, '000037799', false, 'not ok b/c no. is used (even tho the conflicting CO is not fetched'],
-                    [3, '999999999', false, 'conflicts with the first object now.']
-                ]
+        collection.rget('collectionobjects', true).done (COs) ->
+            tests = [
+                [0, '999999999', true, 'ok b/c this no. is unused'],
+                [1, '000000001', true, 'this no. was in use by COs.at(0). but we just changed that one'],
+                [2, '000037799', false, 'not ok b/c no. is used (even tho the conflicting CO is not fetched'],
+                [3, '999999999', false, 'conflicts with the first object now.']
+            ]
 
-                nextTest = ->
-                    if tests.length is 0 then return start()
-                    [i, catNum, expectedValid, doc] = tests.shift()
-                    COs.at(i).on 'businessrule:catalognumber', (resource, result) ->
-                        equal result.valid, expectedValid, doc
-                        nextTest()
-                    COs.at(i).set 'catalognumber', catNum
+            nextTest = ->
+                if tests.length is 0 then return start()
+                [i, catNum, expectedValid, doc] = tests.shift()
+                COs.at(i).on 'businessrule:catalognumber', (resource, result) ->
+                    equal result.valid, expectedValid, doc
+                    nextTest()
+                COs.at(i).set 'catalognumber', catNum
 
-                nextTest()
+            nextTest()

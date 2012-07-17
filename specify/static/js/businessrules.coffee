@@ -1,9 +1,38 @@
-define ['jquery', 'underscore'], ($, _) ->
+define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
 
     class BusinessRuleMgr
         constructor: (@resource) ->
-            @fieldChangeDeferreds = {}
             @rules = rules[@resource.specifyModel.name]
+            @fieldChangeDeferreds = {}
+            @deleteBlockers = {}
+            _.each @rules?.deleteBlockers, (fieldname) =>
+                 @deleteBlockers[fieldname] = true
+
+        setupEvents: ->
+            @resource.on 'change', @changed, @
+            _.each @resource.specifyModel.getAllFields(), (field) =>
+                fieldname = field.name.toLowerCase()
+                if field.type is 'one-to-many' and fieldname in (@rules?.deleteBlockers or [])
+                    @resource.on "add:#{ fieldname }", => @addDeleteBlocker fieldname
+                    # possible race condition if getRelatedObject count goes through before
+                    # the deletion associated following remove event occurs
+                    # a work around might be to always do destroy({ wait: true })
+                    @resource.on "remove:#{ fieldname }", => @tryToRemDeleteBlocker fieldname
+
+        checkCanDelete: -> whenAll(
+            _.map @deleteBlockers, (__, fieldname) => @tryToRemDeleteBlocker fieldname)
+
+        canDelete: -> _.isEmpty @deleteBlockers
+
+        addDeleteBlocker: (fieldname) ->
+            @deleteBlockers[fieldname] = true
+            @resource.trigger 'deleteblocked'
+
+        tryToRemDeleteBlocker: (fieldname) ->
+            @resource.getRelatedObjectCount(fieldname).done (count) =>
+                if count < 1
+                    delete @deleteBlockers[fieldname]
+                    if @canDelete() then @resource.trigger 'candelete'
 
         getPromise: (callback) ->
             promise = $.Deferred()
@@ -19,7 +48,7 @@ define ['jquery', 'underscore'], ($, _) ->
 
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
-            rule = @rules?.fieldChange[fieldName]
+            rule = @rules?.fieldChange?[fieldName]
             if rule?
                 deferred = @fieldChangeDeferreds[fieldName] = rule @resource
                 @pending = true
@@ -53,6 +82,9 @@ define ['jquery', 'underscore'], ($, _) ->
                     valid: true
 
     rules =
+        Accession:
+            deleteBlockers: ['collectionobjects']
+
         CollectionObject:
             fieldChange:
                 catalognumber: (collectionobject) ->
@@ -66,4 +98,4 @@ define ['jquery', 'underscore'], ($, _) ->
     businessRules =
         attachToResource: (resource) ->
             mgr = resource.businessRuleMgr = new BusinessRuleMgr resource
-            resource.on 'change', mgr.changed, mgr
+            mgr.setupEvents()
