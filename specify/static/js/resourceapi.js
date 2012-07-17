@@ -109,6 +109,8 @@ define([
                     }
                     self.relatedCache[fieldName] = toMany;
                     toMany.on('saverequired', function() { self.trigger('saverequired'); });
+                    toMany.on('add', function() { self.trigger('add:' + fieldName); });
+                    toMany.on('remove', function() { self.trigger('remove:' + fieldName); });
                 }
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':

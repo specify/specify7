@@ -454,6 +454,32 @@ define([
             });
         });
 
+        test('one-to-many add event', function() {
+            expect(1);
+            stop();
+            var resource = new (api.Resource.forModel('accession'))({ id: 3});
+            resource.on('add:collectionobjects', function() {
+                yep('add event triggered')();
+                start();
+            });
+            resource.rget('collectionobjects', true).done(function(COs) {
+                COs.add(new (api.Resource.forModel('collectionobject'))());
+            });
+        });
+
+        test('one-to-many remove event', function() {
+            expect(1);
+            stop();
+            var resource = new (api.Resource.forModel('accession'))({ id: 3 });
+            resource.on('remove:collectionobjects', function() {
+                yep('remove event triggered')();
+                start();
+            });
+            resource.rget('collectionobjects', true).done(function(COs) {
+                COs.at(0).destroy();
+            });
+        });
+
         test('onChange', function() {
             expect(3);
             stop();
