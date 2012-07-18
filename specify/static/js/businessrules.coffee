@@ -52,9 +52,12 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
 
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
-            rule = @rules?.fieldChange?[fieldName]
-            if rule?
-                deferred = @fieldChangeDeferreds[fieldName] = rule @resource
+            @checkUniqueIn fieldName
+
+        checkUniqueIn: (fieldName) ->
+            toOneField = @rules?.uniqueIn?[fieldName]
+            if toOneField?
+                deferred = @fieldChangeDeferreds[fieldName] = uniqueIn toOneField, @resource, fieldName
                 @pending = true
                 deferred.done (result) =>
                     if deferred is @fieldChangeDeferreds[fieldName]
@@ -86,21 +89,85 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     valid: true
 
     rules =
+        Accession:
+            deleteBlockers: ['collectionobjects']
+            uniqueIn:
+                accessionnumber: 'division'
+
+        AccessionAgent:
+            uniqueIn:
+                role: 'accession'
+
+        Appraisal:
+            uniqueIn:
+                appraisalnumber: 'accession'
+
+        Author:
+            uniqueIn:
+                agent: 'referencework'
+
+        BorrowAgent:
+            uniqueIn:
+                role: 'borrow'
+
+        Collection:
+            deleteBlockers: ['collectionobjects']
+            uniqueIn:
+                name: 'discipline'
+
         CollectingEvent:
             deleteBlockers: ['collectionobjects']
 
-        Accession:
-            deleteBlockers: ['collectionobjects']
-
         CollectionObject:
-            fieldChange:
-                catalognumber: (collectionobject) ->
-                    uniqueIn 'collection', collectionobject, 'catalognumber'
+            uniqueIn:
+                catalognumber: 'collection'
 
-        AccessionAgent:
-            fieldChange:
-                role: (accessionagent) ->
-                    uniqueIn 'accession', accessionagent, 'role'
+        Collector:
+            uniqueIn:
+                agent: 'collectingevent'
+
+        Discipline:
+            uniqueIn:
+                name: 'division'
+
+        Division:
+            uniqueIn:
+                name: 'institution'
+
+        Gift:
+            uniqueIn:
+                giftnumber: 'discipline'
+
+        Journal:
+            deleteBlockers: ['referenceworks']
+
+        Loan:
+            uniqueIn:
+                loannumber: 'discipline'
+
+        # Locality:
+        #     # deleteBlockers: ['collectingevents'] # this relationship is missing from the datamodel
+
+        # # Permit:
+        # #     uniqueIn:
+        # #         permitnumber: '' # no to-one field!!!
+
+        Picklist:
+            uniqueIn:
+                name: 'collection'
+
+        Preparation:
+            deleteBlockers: ['preparationattachments']
+
+        Preptype:
+            deletBlockers: ['preparations']
+            uniqueIn:
+                name: 'collection'
+
+        Repositoryagreement:
+            deleteBlockers: ['accessions']
+            uniqueIn:
+                repositoryagreementnumber: 'division'
 
     businessRules =
         attachToResource: (resource) ->

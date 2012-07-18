@@ -38,7 +38,9 @@ require([
 //    'cs!tests/testquerycbx'
 ], function testmain(_, QUnit, setupmockjax) {
     setupmockjax();
-
+    QUnit.config.reorder = false;
+    QUnit.config.autorun = false;
+    QUnit.start();
     var tests = _(arguments).chain().tail(testmain.length);
     tests.invoke('apply');
 });
