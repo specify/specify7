@@ -174,8 +174,8 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
         Preparation:
             deleteBlockers: ['preparationattachments']
 
-        Preptype:
-            deletBlockers: ['preparations']
+        PrepType:
+            deleteBlockers: ['preparations']
             uniqueIn:
                 name: 'collection'
 

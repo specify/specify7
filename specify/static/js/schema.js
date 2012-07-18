@@ -68,6 +68,38 @@ define([
             CollectionObject: function() {
                 var collection = model.getField('collection');
                 collection.otherSideName = 'collectionObjects';
+            },
+            Division: function() {
+                var fields = model.getAllFields();
+                var accessions = _(new Field(model)).extend({
+                    name: 'accessions',
+                    isRelationship: true,
+                    isRequired: false,
+                    type: 'one-to-many',
+                    otherSideName: 'Division',
+                    relatedModelName: 'Accession'
+                });
+                fields.push(accessions);
+            },
+            Accession: function() {
+                var division = model.getField('division');
+                division.otherSideName = 'accessions';
+            },
+            PrepType: function() {
+                var fields = model.getAllFields();
+                var preparations = _(new Field(model)).extend({
+                    name: 'preparations',
+                    isRelationship: true,
+                    isRequired: false,
+                    type: 'one-to-many',
+                    otherSideName: 'PrepType',
+                    relatedModelName: 'Preparation'
+                });
+                fields.push(preparations);
+            },
+            Preparation: function() {
+                var preptype = model.getField('preptype');
+                preptype.otherSideName = 'preparations';
             }
         };
         var dispatch = specialCase[model.name];
