@@ -3,6 +3,7 @@ import tastypie.fields
 from tastypie.authorization import Authorization
 import tastypie.authentication
 from tastypie.exceptions import NotFound
+from tastypie.constants import ALL_WITH_RELATIONS
 from django.db.models import get_models
 from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
@@ -28,40 +29,6 @@ inlined_fields = [
 #    'Collectionobject.determinations',
     'Picklist.picklistitems',
 ]
-
-filter_fields = {
-    'Picklist': {'name': ['exact',]},
-    'Collectionobject': {'catalognumber': ['exact',]},
-    'Accessionagent': {'role': ['exact',]},
-    'Institution': {'name': ['exact',]},
-    'Division': {'name': ['exact',]}
-}
-
-typesearches = ElementTree.parse(os.path.join(os.path.dirname(__file__),
-                                              "static", "resources",
-                                              "typesearch_def.xml"))
-
-def add_to_filter_fields(model, field, filter_type):
-    if model not in filter_fields: filter_fields[model] = {}
-    filters = filter_fields[model]
-    if field not in filters: filters[field] = []
-    querytypes = filters[field]
-    if filter_type not in querytypes: querytypes.append(filter_type)
-
-for typesearch in typesearches.findall('typesearch'):
-    model = models.models_by_tableid[int(typesearch.attrib['tableid'])]
-    field = typesearch.attrib['searchfield'].lower()
-    add_to_filter_fields(model.__name__, field, 'icontains')
-
-def add_filter_for_fk(fkfield):
-    field = fkfield.name
-    model = fkfield.model.__name__
-    add_to_filter_fields(model, field, 'exact')
-
-for model in get_models(models):
-    for field in model._meta.fields:
-        if field.rel: add_filter_for_fk(field)
-
 
 class OptimisticLockException(Exception): pass
 
@@ -227,7 +194,7 @@ def build_resource(model):
 
     class Meta:
         always_return_data = True
-        filtering = filter_fields.get(model.__name__, {})
+        filtering = dict((field.name, ALL_WITH_RELATIONS) for field in model._meta.fields)
         queryset = model.objects.all()
         authentication = Authentication()
         authorization = Authorization()
