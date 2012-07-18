@@ -24,7 +24,8 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                 @resource.trigger 'candelete'
                 $.when true
             else whenAll(
-                _.map @deleteBlockers, (__, fieldname) => @tryToRemDeleteBlocker fieldname)
+                _.map @deleteBlockers, (__, fieldname) => @tryToRemDeleteBlocker fieldname
+            )
 
         canDelete: -> _.isEmpty @deleteBlockers
 

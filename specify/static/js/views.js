@@ -66,7 +66,8 @@ define([
             var self = this;
             self.$el.append(populateForm(self.buildForm(), self.model));
             self.$(':submit, :button[value="Delete"]').prop('disabled', true);
-            if (self.model.isNew()) self.$(':button[value="Delete"]').hide();
+            self.deleteBtn = self.$(':button[value="Delete"]');
+            self.model.isNew() && self.deleteBtn.hide();
             self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false, modal: true, autoOpen: false, buttons: {
                     'Delete': _.bind(self.destroy, self),
@@ -80,11 +81,19 @@ define([
             self.setTitle();
             _({ candelete: 'enable', deleteblocked: 'disable' }).each(function(action, event) {
                 self.model.on(event, function() {
-                    self.$(':button[value="Delete"]').prop('disabled', action === 'disable');
+                    self.deleteBtn.prop('disabled', action === 'disable');
+                    self.setDeleteBtnToolTip();
                 });
             });
-            self.model.businessRuleMgr.checkCanDelete();
+            self.model.businessRuleMgr.checkCanDelete().done(
+                _.bind(self.setDeleteBtnToolTip, self)
+            );
             return self;
+        },
+        setDeleteBtnToolTip: function() {
+            var title = _.map(this.model.businessRuleMgr.deleteBlockers,
+                              function(__, field) { return field; }).join(',');
+            this.deleteBtn.attr('title', title);
         },
         setFormTitle: function(title) {
             this.$('.specify-form-header span').text(title);
