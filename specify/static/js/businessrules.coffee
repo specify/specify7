@@ -52,12 +52,17 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
 
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
-            @checkUniqueIn fieldName
+            @checkUnique fieldName
 
-        checkUniqueIn: (fieldName) ->
-            toOneField = @rules?.uniqueIn?[fieldName]
-            if toOneField?
-                deferred = @fieldChangeDeferreds[fieldName] = uniqueIn toOneField, @resource, fieldName
+        checkUnique: (fieldName) ->
+            deferred = if fieldName in (@rules?.unique or [])
+                uniqueIn null, @resource, fieldName
+            else
+                toOneField = @rules?.uniqueIn?[fieldName]
+                uniqueIn toOneField, @resource, fieldName if toOneField?
+
+            if deferred
+                @fieldChangeDeferreds[fieldName] = deferred
                 @pending = true
                 deferred.done (result) =>
                     if deferred is @fieldChangeDeferreds[fieldName]
@@ -68,25 +73,31 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                             @resource.trigger "businessrulescomplete", @resource
 
     uniqueIn = (toOneField, resource, valueField) ->
-        fieldInfo = resource.specifyModel.getField toOneField
+        valid = valid: true
+        invalid = { valid: false, reason: "Value must be unique to #{ toOneField or 'database' }" }
         value = resource.get valueField
         sameValueP = (other) -> other.id isnt resource.id and value is other.get valueField
         valueIsDupedIn = (others) -> (_.filter others, sameValueP).length > 0
-        haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
-        resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
-            others = new collection.constructor()
-            others.queryParams[toOneField] = collection.parent.id
+        if toOneField?
+            fieldInfo = resource.specifyModel.getField toOneField
+            haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
+            localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
+            if valueIsDupedIn localCollection then return $.when invalid
+            resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
+                others = new collection.constructor()
+                others.queryParams[toOneField] = collection.parent.id
+                others.queryParams[valueField] = value
+                others.fetch().pipe ->
+                    database = others.chain().compact().filter( (other) ->
+                        # remove fetched objects that are in our local collection
+                        (not haveLocalColl) || (not (resource.collection.get other.id))
+                    ).value()
+                    if valueIsDupedIn database then invalid else valid
+        else
+            # no toOneField indicates globally unique field
+            others = new (resource.constructor.collectionFor())()
             others.queryParams[valueField] = value
-            others.fetch().pipe ->
-                databaseOnly = others.chain().compact().filter( (other) ->
-                    # remove fetched objects that are in our local collection
-                    (not haveLocalColl) || (not (resource.collection.get other.id))
-                ).value()
-                localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
-                if (valueIsDupedIn databaseOnly) or (valueIsDupedIn localCollection)
-                    { valid: false, reason: "Value must be unique to #{ toOneField }" }
-                else
-                    valid: true
+            others.fetch().pipe -> if valueIsDupedIn others.models then invalid else valid
 
     rules =
         Accession:
@@ -137,6 +148,9 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
         Gift:
             uniqueIn:
                 giftnumber: 'discipline'
+
+        Institution:
+            unique: ['name']
 
         Journal:
             deleteBlockers: ['referenceworks']

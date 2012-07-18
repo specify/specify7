@@ -33,6 +33,8 @@ filter_fields = {
     'Picklist': {'name': ['exact',]},
     'Collectionobject': {'catalognumber': ['exact',]},
     'Accessionagent': {'role': ['exact',]},
+    'Institution': {'name': ['exact',]},
+    'Division': {'name': ['exact',]}
 }
 
 typesearches = ElementTree.parse(os.path.join(os.path.dirname(__file__),

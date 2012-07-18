@@ -232,6 +232,9 @@ define([
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             var ResourceForModel = Resource.forModel(match[1]);
             return new ResourceForModel({id: match[2]});
+        },
+        collectionFor: function() {
+            return Collection.forModel(this.specifyModel);
         }
     });
 

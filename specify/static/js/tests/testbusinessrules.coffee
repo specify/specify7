@@ -123,3 +123,24 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
                 COs.at(i).set 'catalognumber', catNum
 
             nextTest()
+
+    test 'institution name is not unique', ->
+        expect 2
+        stop()
+        institution = new (api.Resource.forModel 'institution')()
+        institution.on 'businessrule:name', (resource, result) ->
+            console.log result
+            ok (not result.valid), 'business rule is violated'
+            ok (_.isString result.reason), result.reason
+            start()
+        institution.set 'name', 'Natural History Museum'
+
+    test 'institution name is unique', ->
+        expect 1
+        stop()
+        institution = new (api.Resource.forModel 'institution')()
+        institution.on 'businessrule:name', (resource, result) ->
+            console.log result
+            ok result.valid, 'business rule is valid'
+            start()
+        institution.set 'name', 'foobar'
