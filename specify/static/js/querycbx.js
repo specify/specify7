@@ -59,7 +59,7 @@ define([
 
             self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
             self.fillIn();
-            self.enableBusinessRulesMixin(self.fieldName);
+            self.enableBusinessRulesMixin(self.fieldName, control);
             return self;
         },
         fillIn: function () {
