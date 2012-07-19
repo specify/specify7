@@ -59,8 +59,11 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             deferred = if fieldName in (@rules?.unique or [])
                 uniqueIn null, @resource, fieldName
             else
-                toOneField = @rules?.uniqueIn?[fieldName]
-                uniqueIn toOneField, @resource, fieldName if toOneField?
+                toOneFields = @rules?.uniqueIn?[fieldName] or []
+                if not _.isArray toOneFields
+                    toOneFields = [toOneFields]
+                results = _.map toOneFields, (field) => uniqueIn field, @resource, fieldName
+                combineUniquenessResults results
 
             if deferred
                 @fieldChangeDeferreds[fieldName] = deferred
@@ -73,6 +76,13 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                             @pending = false
                             @resource.trigger "businessrulescomplete", @resource
 
+    combineUniquenessResults = (deferredResults) -> whenAll(deferredResults).pipe (results) ->
+        invalids = _.filter results, (result) -> not result.valid
+        if invalids.length < 1
+            valid: true
+        else
+            valid: false, reason: _(invalids).pluck('reason').join ', '
+
     uniqueIn = (toOneField, resource, valueField) ->
         valid = valid: true
         invalid = { valid: false, reason: "Value must be unique to #{ toOneField or 'database' }" }
@@ -83,15 +93,16 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             # kinda kludgy way to get id
             valueId = if _.isString value then resource.constructor.fromUri(value).id else value.id
 
-        sameValueP = (other) ->
-            if other.id is resource.id then return false
+        haveSameValue = (other) ->
+            if other.id? and other.id is resource.id then return false
+            if other.cid is resource.cid then return false
             otherVal = other.get valueField
             if valueIsToOne and not (_.isString otherVal)
                 otherVal.id is valueId
             else
                 value is other.get valueField
 
-        valueIsDupedIn = (others) -> (_.filter others, sameValueP).length > 0
+        valueIsDupedIn = (others) -> _.any others, haveSameValue
 
         if toOneField?
             fieldInfo = resource.specifyModel.getField toOneField
@@ -99,14 +110,16 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
             if valueIsDupedIn localCollection then return $.when invalid
             resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
+                if not collection? then return valid
                 others = new collection.constructor()
                 others.queryParams[toOneField] = collection.parent.id
                 others.queryParams[valueField] = valueId or value
                 others.fetch().pipe ->
-                    database = others.chain().compact().filter( (other) ->
-                        # remove fetched objects that are in our local collection
-                        (not haveLocalColl) || (not (resource.collection.get other.id))
-                    ).value()
+                    database = others.chain().compact()
+                    database = if haveLocalColl
+                        # remove items that we have locally
+                        database.filter((other) -> not (resource.collection.get other.id)).value()
+                    else database.value()
                     if valueIsDupedIn database then invalid else valid
         else
             # no toOneField indicates globally unique field
@@ -122,7 +135,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
 
         AccessionAgent:
             uniqueIn:
-                role: 'accession'
+                role: ['accession', 'repositoryagreement']
 
         Appraisal:
             uniqueIn:

@@ -124,6 +124,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
 
             nextTest()
 
+    module 'institution business rules'
     test 'institution name is not unique', ->
         expect 2
         stop()
@@ -145,6 +146,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             start()
         institution.set 'name', 'foobar'
 
+    module 'collector business rules'
     test 'collector agent unique in collectingevent', ->
         expect 1
         stop()
@@ -170,3 +172,91 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
                 start()
             collectors.add newcollector
             newcollector.set 'agent', '/api/specify/agent/634/'
+
+    module 'accessionagent business rules'
+    test 'accessionagent with undefined accession', ->
+        expect 1
+        stop()
+        accessionagent = new (api.Resource.forModel 'accessionagent')()
+        accessionagent.on 'businessrule:role', (resource, result) ->
+            ok result.valid, 'business rule is valid'
+            start()
+        accessionagent.set 'role', 'Donor'
+
+    test 'accessionagent with null accession', ->
+        expect 1
+        stop()
+        accessionagent = new (api.Resource.forModel 'accessionagent')()
+        accessionagent.set 'accession', null
+        accessionagent.on 'businessrule:role', (resource, result) ->
+            ok result.valid, 'business rule is valid'
+            start()
+        accessionagent.set 'role', 'Donor'
+
+    test 'accessionagent with new role in accession', ->
+        expect 1
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 1
+        accession.rget('accessionagents', true).done (AAs) ->
+            newagent = new (api.Resource.forModel 'accessionagent')()
+            newagent.on 'businessrule:role', (__, result) ->
+                ok result.valid, 'business is ok'
+                start()
+            newagent.set 'accession', accession.url()
+            AAs.add newagent
+            newagent.set 'role', 'Donor'
+
+    test 'accessionagent with duped role in accession', ->
+        expect 1
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 1
+        accession.rget('accessionagents', true).done (AAs) ->
+            newagent = new (api.Resource.forModel 'accessionagent')()
+            newagent.on 'businessrule:role', (__, result) ->
+                ok (not result.valid), 'business rule is violated'
+                start()
+            newagent.set 'accession', accession.url()
+            AAs.add newagent
+            newagent.set 'role', 'Collector'
+
+    test 'accessionagent with duped role in repositoryagreement', ->
+        expect 1
+        stop()
+        repositoryagreement = new (api.Resource.forModel 'repositoryagreement') id: 1
+        repositoryagreement.rget('repositoryagreementagents', true).done (AAs) ->
+            newagent1 = new (api.Resource.forModel 'accessionagent')()
+            newagent1.set 'repositoryagreement', repositoryagreement.url()
+            AAs.add newagent1
+            newagent1.set 'role', 'Collector'
+
+            newagent2 = new (api.Resource.forModel 'accessionagent')()
+            newagent2.on 'businessrule:role', (__, result) ->
+                ok (not result.valid), 'business rule violated'
+                start()
+
+            newagent2.set 'repositoryagreement', repositoryagreement.url()
+            AAs.add newagent2
+            newagent2.set 'role', 'Collector'
+
+    test 'accessionagent with duped role in both accession and repositoryagreement', ->
+        expect 2
+        stop()
+        accession = new (api.Resource.forModel 'accession') id: 1
+        repositoryagreement = new (api.Resource.forModel 'repositoryagreement') id: 1
+        repositoryagreement.rget('repositoryagreementagents', true).done (RAAs) ->
+            newagent1 = new (api.Resource.forModel 'accessionagent')()
+            newagent1.set 'repositoryagreement', repositoryagreement.url()
+            RAAs.add newagent1
+            newagent1.set 'role', 'Collector'
+
+            newagent = new (api.Resource.forModel 'accessionagent')()
+            newagent.on 'businessrule:role', (__, result) ->
+                ok (not result.valid), 'business rule is not ok'
+                equal result.reason, 'Value must be unique to accession, Value must be unique to repositoryagreement',
+                    'reasons are joined'
+                start()
+
+            newagent.set 'accession', accession.url()
+            newagent.set 'repositoryagreement', repositoryagreement.url()
+            RAAs.add newagent
+            newagent.set 'role', 'Collector'
