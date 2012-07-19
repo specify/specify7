@@ -144,3 +144,29 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             ok result.valid, 'business rule is valid'
             start()
         institution.set 'name', 'foobar'
+
+    test 'collector agent unique in collectingevent', ->
+        expect 1
+        stop()
+        collectingevent = new (api.Resource.forModel 'collectingevent') id: 715
+        collectingevent.rget('collectors', true).done (collectors) ->
+            newcollector = new (api.Resource.forModel 'collector')()
+            newcollector.set 'collectingevent', collectingevent.url()
+            newcollector.on 'businessrule:agent', (resource, result) ->
+                ok result.valid, 'business rule is valid'
+                start()
+            collectors.add newcollector
+            newcollector.set 'agent', '/api/specify/agent/66/'
+
+    test 'collector agent not unique in collectingevent', ->
+        expect 1
+        stop()
+        collectingevent = new (api.Resource.forModel 'collectingevent') id: 715
+        collectingevent.rget('collectors', true).done (collectors) ->
+            newcollector = new (api.Resource.forModel 'collector')()
+            newcollector.set 'collectingevent', collectingevent.url()
+            newcollector.on 'businessrule:agent', (resource, result) ->
+                ok (not result.valid), result.reason
+                start()
+            collectors.add newcollector
+            newcollector.set 'agent', '/api/specify/agent/634/'

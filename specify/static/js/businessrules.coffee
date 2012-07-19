@@ -76,9 +76,23 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
     uniqueIn = (toOneField, resource, valueField) ->
         valid = valid: true
         invalid = { valid: false, reason: "Value must be unique to #{ toOneField or 'database' }" }
+
         value = resource.get valueField
-        sameValueP = (other) -> other.id isnt resource.id and value is other.get valueField
+        valueIsToOne = resource.specifyModel.getField(valueField).type is 'many-to-one'
+        if valueIsToOne
+            # kinda kludgy way to get id
+            valueId = if _.isString value then resource.constructor.fromUri(value).id else value.id
+
+        sameValueP = (other) ->
+            if other.id is resource.id then return false
+            otherVal = other.get valueField
+            if valueIsToOne and not (_.isString otherVal)
+                otherVal.id is valueId
+            else
+                value is other.get valueField
+
         valueIsDupedIn = (others) -> (_.filter others, sameValueP).length > 0
+
         if toOneField?
             fieldInfo = resource.specifyModel.getField toOneField
             haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
@@ -87,7 +101,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
                 others = new collection.constructor()
                 others.queryParams[toOneField] = collection.parent.id
-                others.queryParams[valueField] = value
+                others.queryParams[valueField] = valueId or value
                 others.fetch().pipe ->
                     database = others.chain().compact().filter( (other) ->
                         # remove fetched objects that are in our local collection
@@ -97,7 +111,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
         else
             # no toOneField indicates globally unique field
             others = new (resource.constructor.collectionFor())()
-            others.queryParams[valueField] = value
+            others.queryParams[valueField] = valueId or value
             others.fetch().pipe -> if valueIsDupedIn others.models then invalid else valid
 
     rules =

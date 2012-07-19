@@ -1,16 +1,17 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
+    'cs!businessrulesviewmixin',
     'text!resources/typesearch_def.xml',
     'text!resources/dialog_defs.xml',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
-             whenAll, parseselect, schemalocalization, navigation,
+             whenAll, parseselect, schemalocalization, navigation, businessrulesviewmixin,
              typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
 
-    return Backbone.View.extend({
+    var QueryCbx = Backbone.View.extend({
         events: {
             'click .querycbx-edit': 'edit',
             'click .querycbx-add': 'add',
@@ -58,6 +59,7 @@ define([
 
             self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
             self.fillIn();
+            self.enableBusinessRulesMixin(self.fieldName);
             return self;
         },
         fillIn: function () {
@@ -111,4 +113,7 @@ define([
             });
         }
     });
+
+    _.extend(QueryCbx.prototype, businessrulesviewmixin);
+    return QueryCbx;
 });

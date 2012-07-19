@@ -1,6 +1,7 @@
 define [], ->
-    onBR: (resource, result) ->
-        if result.valid then @resetInvalid() else @showInvalid(result.reason)
+    enableBusinessRulesMixin: (fieldname) ->
+        @model.on "businessrule:#{ fieldname.toLowerCase() }", (resource, result) =>
+            if result.valid then @resetInvalid() else @showInvalid(result.reason)
 
     showInvalid: (message) ->
         @_savedBGColor ?= @$el.css 'background-color'
