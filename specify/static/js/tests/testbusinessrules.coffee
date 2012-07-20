@@ -6,17 +6,51 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         collectionobject
 
     module 'businessrules'
-    test 'business rules pending flag', ->
-        expect 3
+    test 'saverequired event', ->
+        expect 4
         stop()
         collectionobject = getCollectionObject 100, ->
-            collectionobject.businessRuleMgr.getPromise ->
-                collectionobject.on 'businessrulescomplete', (resource) ->
-                    ok (not collectionobject.businessRuleMgr.pending), 'not pending'
-                    start()
-                ok (not collectionobject.businessRuleMgr.pending), 'not pending'
-                collectionobject.set 'catalognumber', "999999999"
-                ok (collectionobject.businessRuleMgr.pending), 'is pending'
+            collectionobject.rget('collectingevent.modifiedbyagent.remarks').done (remarks) ->
+                collectionobject.on 'saverequired', ->
+                    ok true, 'saverequired on CO'
+                    _.delay start, 1000
+
+                collectionobject.on 'change', -> ok false, 'change on CO'
+
+                collectingevent = collectionobject.relatedCache.collectingevent
+                collectingevent.on 'saverequired', -> ok true, 'saverequired on CE'
+                collectingevent.on 'change', -> ok false, 'change on CE'
+
+                agent = collectingevent.relatedCache.modifiedbyagent
+                agent.on 'saverequired', -> ok true, 'saverequired on agent'
+                agent.on 'change', -> ok true, 'change on agent'
+
+                agent.set 'remarks', if remarks is 'foo' then 'bar' else 'foo'
+
+    test 'saverequired blocked', ->
+        expect 2
+        stop()
+        collectionobject = getCollectionObject 100, ->
+            collectionobject.rget('accession.accessionagents', true).done (AAs) ->
+                collectionobject.on 'saverequired', -> ok false, 'saverequired on CO'
+
+                accession = collectionobject.relatedCache.accession
+                accession.on 'saverequired', -> ok false, 'saverequired on accession'
+
+                existingRole = AAs.at(0).get 'role'
+
+                newagent = new (api.Resource.forModel 'accessionagent')()
+                newagent.set 'accession', accession.url()
+                AAs.add newagent
+
+                newagent.on 'saverequired', -> ok false, 'saverequired on newagent'
+
+                newagent.on 'businessrulescomplete', ->
+                    ok true, 'businessrulescomplete'
+                    ok newagent.needsSaved, 'newagent needsSaved'
+                    _.delay start, 1000
+
+                newagent.set 'role', existingRole
 
     test 'delete blockers', ->
         expect 3

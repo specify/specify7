@@ -24,9 +24,10 @@ define([
             this.relatedCache = {};
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
             this.on('change', function(resource, options) {
-                if (this._fetch || this.saving) return;
-                this.needsSaved = true;
-                this.trigger('saverequired');
+                if (!this._fetch && !this.saving) {
+                    this.needsSaved = true;
+                    this.businessRuleMgr || this.trigger('saverequired');
+                }
             });
             this.on('sync', function() {
                 this.needsSaved = this.saving = false;

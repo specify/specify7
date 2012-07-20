@@ -5,6 +5,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             @rules = rules[@resource.specifyModel.name]
             @fieldChangeDeferreds = {}
             @deleteBlockers = {}
+            @fieldResults = {}
             _.each @rules?.deleteBlockers, (fieldname) =>
                  @deleteBlockers[fieldname] = true
 
@@ -39,24 +40,24 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     delete @deleteBlockers[fieldname]
                     if @canDelete() then @resource.trigger 'candelete'
 
-        getPromise: (callback) ->
-            promise = $.Deferred()
-            if @pending
-                @resource.on 'businessrulescomplete', -> promise.resolve()
-            else
-                promise.resolve()
-            if callback? then promise.done callback
-            promise
-
         changed: (resource, options) ->
             _.each options.changes, (wasChanged, fieldName) => @checkField fieldName if wasChanged
 
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
-            @checkUnique fieldName
+            @fieldChangeDeferreds[fieldName] = deferred = @checkUnique fieldName
+            deferred.done (result) =>
+                if deferred is @fieldChangeDeferreds[fieldName]
+                    delete @fieldChangeDeferreds[fieldName]
+                    @fieldResults[fieldName] = result
+                    @resource.trigger "businessrule:#{ fieldName }", @resource, result
+                    if _.isEmpty @fieldChangeDeferreds
+                        @resource.trigger "businessrulescomplete", @resource
+                        if @resource.needsSaved and (_.all @fieldResults, (result) -> result.valid)
+                            @resource.trigger 'saverequired'
 
         checkUnique: (fieldName) ->
-            deferred = if fieldName in (@rules?.unique or [])
+            if fieldName in (@rules?.unique or [])
                 uniqueIn null, @resource, fieldName
             else
                 toOneFields = @rules?.uniqueIn?[fieldName] or []
@@ -64,17 +65,6 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     toOneFields = [toOneFields]
                 results = _.map toOneFields, (field) => uniqueIn field, @resource, fieldName
                 combineUniquenessResults results
-
-            if deferred
-                @fieldChangeDeferreds[fieldName] = deferred
-                @pending = true
-                deferred.done (result) =>
-                    if deferred is @fieldChangeDeferreds[fieldName]
-                        delete @fieldChangeDeferreds[fieldName]
-                        @resource.trigger "businessrule:#{ fieldName }", @resource, result
-                        if _.isEmpty @fieldChangeDeferreds
-                            @pending = false
-                            @resource.trigger "businessrulescomplete", @resource
 
     combineUniquenessResults = (deferredResults) -> whenAll(deferredResults).pipe (results) ->
         invalids = _.filter results, (result) -> not result.valid
