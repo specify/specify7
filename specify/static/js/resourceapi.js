@@ -92,7 +92,7 @@ define([
                     toOne.on('all', eventHandlerForToOne(self, fieldName));
                     self.relatedCache[fieldName] = toOne;
                 }
-                return (path.length > 1) ? toOne.rget(_.tail(path)) : (
+                return (path.length > 1) ? toOne.rget(_.tail(path), prePop) : (
                     prePop ? toOne.fetchIfNotPopulated() : toOne
                 );
             case 'one-to-many':
@@ -116,7 +116,7 @@ define([
             case 'zero-to-one':
                 if (self.relatedCache[fieldName]) {
                     value = self.relatedCache[fieldName];
-                    return (path.length === 1) ? value : value.rget(_.tail(path));
+                    return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
                 }
                 var collection = _.isString(value) ? Collection.fromUri(value) :
                     new (Collection.forModel(related))(value);
@@ -128,7 +128,7 @@ define([
                         value.parent = self;
                     }
                     self.relatedCache[fieldName] = value;
-                    return (path.length === 1) ? value : value.rget(_.tail(path));
+                    return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
                 });
             }
         });},
