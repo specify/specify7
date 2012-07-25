@@ -59,7 +59,7 @@ define([
 
             var getValue = self.model.rget(field.name);
             $.when(getPickList, getValue).done(buildPicklist);
-            self.model.on('businessrule:' + field.name.toLowerCase(), self.onBR, self);
+            self.enableBusinessRulesMixin(field.name);
             return self;
         },
         change: function() {
