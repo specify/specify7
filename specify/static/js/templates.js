@@ -12,7 +12,8 @@ define([
     'text!tmpls/partialdateui.html',
     'text!tmpls/querycbx.html',
     'text!tmpls/subviewheader.html',
-    'text!tmpls/404.html'
+    'text!tmpls/404.html',
+    'text!tmpls/saveblocked.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -32,7 +33,8 @@ define([
         'partialdateui',
         'querycbx',
         'subviewheader',
-        'fourohfour'
+        'fourohfour',
+        'saveblocked'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;
