@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'populateform', 'schema', 'schemalocalization',
-    'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates',
+    'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi, specifyform, dataobjformat, navigation, templates) {
+], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi,
+            specifyform, dataobjformat, navigation, templates, SaveButton) {
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
@@ -28,19 +29,10 @@ define([
 
     var MainForm = Backbone.View.extend({
         events: {
-            'click :submit': 'submit',
             'click :button[value="Delete"]': 'openDeleteDialog'
         },
         initialize: function(options) {
             var self = this;
-            self.model.on('saverequired', function() {
-                self.$(':submit').prop('disabled', false);
-                self.submitCSS = self.$(':submit').css('background', self.submitCSS);
-            });
-            self.model.on('saveblocked', function() {
-                self.submitCSS = self.$(':submit').css('background');
-                self.$(':submit').prop('disabled', true).css('background', 'red');
-            });
             self.model.on('error', function(resource, jqxhr, options) {
                 switch (jqxhr.status) {
                 case 404:
@@ -48,12 +40,6 @@ define([
                     return;
                 }
             });
-        },
-        submit: function(evt) {
-            var self = this;
-            evt.preventDefault();
-            self.$(':submit').prop('disabled', true);
-            self.model.rsave().done(function() { self.trigger('savecomplete'); });
         },
         destroy: function() {
             var self = this;
@@ -70,8 +56,9 @@ define([
         render: function() {
             var self = this;
             self.$el.append(populateForm(self.buildForm(), self.model));
-            self.$(':submit, :button[value="Delete"]').prop('disabled', true);
-            self.deleteBtn = self.$(':button[value="Delete"]');
+            self.saveBtn = new SaveButton({ el: self.$(':submit'), model: self.model });
+            self.saveBtn.render().on('savecomplete', function() { self.trigger('savecomplete'); });
+            self.deleteBtn = self.$(':button[value="Delete"]').prop('disabled', true);
             self.model.isNew() && self.deleteBtn.hide();
             self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false, modal: true, autoOpen: false, buttons: {

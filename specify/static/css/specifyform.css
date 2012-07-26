@@ -102,3 +102,7 @@ ul.ui-autocomplete li.ui-menu-item {
     display: inline;
     margin: 5px;
 }
+
+input[type="submit"].saveblocked {
+    background: red;
+}
