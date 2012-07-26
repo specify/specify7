@@ -106,3 +106,7 @@ ul.ui-autocomplete li.ui-menu-item {
 input[type="submit"].saveblocked {
     background: red;
 }
+
+.businessruleviolated {
+    background-color: red;
+}

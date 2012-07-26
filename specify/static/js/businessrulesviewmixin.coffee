@@ -5,12 +5,11 @@ define [], ->
             if result.valid then @_brResetInvalid() else @_brShowInvalid(result.reason)
 
     _brShowInvalid: (message) ->
-        @_brSavedBGColor ?= @_brControl.css 'background-color'
         @_brSavedTooltip ?= @_brControl.attr 'title'
-        @_brControl.css('background-color', 'red').attr('title', message)
+        @_brControl.addClass('businessruleviolated').attr('title', message)
 
     _brResetInvalid: ->
-        @_brControl.css 'background-color', @_brSavedBGColor
+        @_brControl.removeClass('businessruleviolated')
         if @_brSavedTooltip
             @_brControl.attr 'title', @_brSavedTooltip
         else
