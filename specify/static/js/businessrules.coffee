@@ -53,8 +53,12 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                     @resource.trigger "businessrule:#{ fieldName }", @resource, result
                     if _.isEmpty @fieldChangeDeferreds
                         @resource.trigger "businessrulescomplete", @resource
-                        if @resource.needsSaved and (_.all @fieldResults, (result) -> result.valid)
-                            @resource.trigger 'saverequired'
+                        if @resource.needsSaved then @resource.trigger (
+                            if (_.all @fieldResults, (result) -> result.valid)
+                                'saverequired'
+                            else
+                                'saveblocked'
+                        ), @resource
 
         checkUnique: (fieldName) ->
             if fieldName in (@rules?.unique or [])

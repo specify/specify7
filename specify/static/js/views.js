@@ -35,6 +35,11 @@ define([
             var self = this;
             self.model.on('saverequired', function() {
                 self.$(':submit').prop('disabled', false);
+                self.submitCSS = self.$(':submit').css('background', self.submitCSS);
+            });
+            self.model.on('saveblocked', function() {
+                self.submitCSS = self.$(':submit').css('background');
+                self.$(':submit').prop('disabled', true).css('background', 'red');
             });
             self.model.on('error', function(resource, jqxhr, options) {
                 switch (jqxhr.status) {

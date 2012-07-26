@@ -7,14 +7,32 @@ define([
 
     function eventHandlerForToOne(resource, field) {
         return function(event) {
-            if (event === 'saverequired') return resource.trigger('saverequired');
-            var match = /^r?change:(.*)$/.exec(event);
+            if (_.contains(['saverequired', 'saveblocked'], event)) {
+                return resource.trigger.apply(resource, arguments);
+            }
+            var match = /^r?(change):(.*)$/.exec(event);
             if (match) {
                 var args = _(arguments).toArray();
-                args[0] = 'rchange:' + field + '.' + match[1];
+                args[0] = 'r' + match[1] + ':' + field + '.' + match[2];
                 resource.trigger.apply(resource, args);
             }
         };
+    }
+
+    function eventHandlerForToMany(resource, field) {
+        return function(event) {
+            switch (event) {
+            case 'saverequired':
+            case 'saveblocked':
+                resource.trigger.apply(resource, arguments);
+                break;
+            case 'add':
+            case 'remove':
+                var args = _(arguments).toArray();
+                args[0] = event + ':' + field;
+                resource.trigger.apply(resource, args);
+                break;
+            }};
     }
 
     var Resource = Backbone.Model.extend({
@@ -109,9 +127,7 @@ define([
                         toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
                     }
                     self.relatedCache[fieldName] = toMany;
-                    toMany.on('saverequired', function() { self.trigger('saverequired'); });
-                    toMany.on('add', function() { self.trigger('add:' + fieldName); });
-                    toMany.on('remove', function() { self.trigger('remove:' + fieldName); });
+                    toMany.on('all', eventHandlerForToMany(self, fieldName));
                 }
                 return prePop ? toMany.fetchIfNotPopulated() : toMany;
             case 'zero-to-one':
