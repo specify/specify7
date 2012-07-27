@@ -6,6 +6,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             @fieldChangeDeferreds = {}
             @deleteBlockers = {}
             @fieldResults = {}
+            @watchers = {}
             _.each @rules?.deleteBlockers, (fieldname) =>
                  @deleteBlockers[fieldname] = true
 
@@ -61,14 +62,19 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
                         ), @resource
 
         checkUnique: (fieldName) ->
-            if fieldName in (@rules?.unique or [])
-                uniqueIn null, @resource, fieldName
+            results = if fieldName in (@rules?.unique or [])
+                [uniqueIn null, @resource, fieldName]
             else
                 toOneFields = @rules?.uniqueIn?[fieldName] or []
                 if not _.isArray toOneFields
                     toOneFields = [toOneFields]
-                results = _.map toOneFields, (field) => uniqueIn field, @resource, fieldName
-                combineUniquenessResults results
+                _.map toOneFields, (field) => uniqueIn field, @resource, fieldName
+
+            whenAll(results).done (results) =>
+                _.chain(results).pluck('localDupes').compact().flatten().each (dup) =>
+                    @watchers[dup.cid] ?= dup.on 'change', @changed, @
+
+            combineUniquenessResults results
 
     combineUniquenessResults = (deferredResults) -> whenAll(deferredResults).pipe (results) ->
         invalids = _.filter results, (result) -> not result.valid
@@ -87,7 +93,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             # kinda kludgy way to get id
             valueId = if _.isString value then resource.constructor.fromUri(value).id else value.id
 
-        haveSameValue = (other) ->
+        hasSameValue = (other) ->
             if other.id? and other.id is resource.id then return false
             if other.cid is resource.cid then return false
             otherVal = other.get valueField
@@ -96,30 +102,33 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
             else
                 value is other.get valueField
 
-        valueIsDupedIn = (others) -> _.any others, haveSameValue
-
         if toOneField?
             fieldInfo = resource.specifyModel.getField toOneField
             haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
             localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
-            if valueIsDupedIn localCollection then return $.when invalid
+
+            dupes = _.filter localCollection, hasSameValue
+            if dupes.length > 0
+                invalid.localDupes = dupes
+                return $.when invalid
+
             resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
                 if not collection? then return valid
                 others = new collection.constructor()
                 others.queryParams[toOneField] = collection.parent.id
                 others.queryParams[valueField] = valueId or value
                 others.fetch().pipe ->
-                    database = others.chain().compact()
-                    database = if haveLocalColl
+                    inDatabase = others.chain().compact()
+                    inDatabase = if haveLocalColl
                         # remove items that we have locally
-                        database.filter((other) -> not (resource.collection.get other.id)).value()
-                    else database.value()
-                    if valueIsDupedIn database then invalid else valid
+                        inDatabase.filter((other) -> not (resource.collection.get other.id)).value()
+                    else inDatabase.value()
+                    if _.any inDatabase, hasSameValue then invalid else valid
         else
             # no toOneField indicates globally unique field
             others = new (resource.constructor.collectionFor())()
             others.queryParams[valueField] = valueId or value
-            others.fetch().pipe -> if valueIsDupedIn others.models then invalid else valid
+            others.fetch().pipe -> if _.any others.models, hasSameValue then invalid else valid
 
     rules =
         Accession:
