@@ -7,13 +7,15 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @blockers = {}
             @model.on 'saverequired', (blocker) =>
                 @$el.prop 'disabled', false
-                delete @blockers[blocker.cid]
-                if _.isEmpty @blockers
-                    @$el.removeClass 'saveblocked'
+                @removeBlocker blocker
             @model.on 'saveblocked', (blocker) =>
-                @blockers[blocker.cid] = blocker
+                @blockers[blocker.cid] ?= blocker.on 'destroy', @removeBlocker, @
                 @$el.prop 'disabled', false
                 @$el.addClass 'saveblocked'
+        removeBlocker: (blocker) ->
+            delete @blockers[blocker.cid]
+            if _.isEmpty @blockers
+                @$el.removeClass 'saveblocked'
         render: ->
             @$el.prop 'disabled', true
             @dialog = $(templates.saveblocked()).insertAfter(@el).dialog

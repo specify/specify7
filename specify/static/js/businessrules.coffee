@@ -72,7 +72,7 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
 
             whenAll(results).done (results) =>
                 _.chain(results).pluck('localDupes').compact().flatten().each (dup) =>
-                    @watchers[dup.cid] ?= dup.on 'change', @changed, @
+                    @watchers[dup.cid] ?= dup.on 'change destroy', @changed, @
 
             combineUniquenessResults results
 
