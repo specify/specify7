@@ -1,15 +1,17 @@
 define([
     'jquery', 'underscore',
-    'text!resources/system.views.xml',
-    'text!resources/editorpanel.views.xml',
-    'text!resources/preferences.views.xml',
-    'text!resources/search.views.xml',
-    'text!resources/global.views.xml',
-    'text!resources/common.views.xml',
-    'text!resources/fish.views.xml'
+    'text!context/viewsets/0.xml',
+    'text!context/viewsets/1.xml',
+    'text!context/viewsets/2.xml',
+    'text!context/viewsets/3.xml',
+    'text!context/viewsets/4.xml',
+    'text!context/viewsets/5.xml',
 ], function parseViewSets($, _) {
     "use strict";
-    var viewsets = _.chain(arguments).tail(parseViewSets.length).map($.parseXML).value().reverse();
+
+    var viewsets = _.chain(arguments).tail(parseViewSets.length).map(function(xml) {
+        return _.toArray($($.parseXML(xml)).find('viewset'));
+    }).flatten().value();
 
     function find(selector, sets, name) {
         name = name.toLowerCase();
