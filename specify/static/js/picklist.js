@@ -47,8 +47,10 @@ define([
 
             var getPickList = isAgentType ? agentTypePicklist :
                 api.getPickListByName(pickListName).pipe(function(picklist) {
-                    if (picklist.get('tablename')) {
-                        var picklistCol = new (api.Collection.forModel(picklist.get('tablename')))();
+                    var tablename = picklist.get('tablename');
+                    var model = tablename && schema.getModel(tablename);
+                    if (model) {
+                        var picklistCol = new (api.Collection.forModel(model))();
                         return picklistCol.fetch().pipe(function () {
                             return picklistCol.map(function (item) {
                                 return {value: item.get('resource_uri'), title: item.get('name')};
