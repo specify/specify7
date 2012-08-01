@@ -1,7 +1,7 @@
 import os, itertools
 from xml.etree import ElementTree
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -39,7 +39,7 @@ def collection(request):
 
 @login_required
 @require_GET
-def viewsets(request):
+def viewsets(request, level):
     try:
         collection = Collection.objects.get(id=int(request.session.get('collection', '')))
     except ValueError:
@@ -66,7 +66,7 @@ def viewsets(request):
         if filters['ispersonal']: filters['specifyuser'] = user
         dirs = Spappresourcedir.objects.filter(**filters)
         objs = Spappresourcedata.objects.filter(spviewsetobj__spappresourcedir__in=dirs)
-        return [ElementTree.XML(o.data) for o in objs] or load_viewset(level)
+        return [ElementTree.XML(o.data) for o in objs]
 
     viewset_paths = {
         'UserType'  : (discipline_dir, usertype),
@@ -82,9 +82,14 @@ def viewsets(request):
         return [ElementTree.parse(os.path.join(path, f.attrib['file'])).getroot() \
                     for f in registry.findall('file')]
 
-    viewsets = map(get_viewset, DIR_LEVELS[:-1])
-    viewsets.append(load_viewset('Backstop'))
+    try:
+        dir_level = DIR_LEVELS[int(level)]
+    except IndexError:
+        raise Http404()
+
+    if dir_level == 'Backstop': viewsets = load_viewset('Backstop')
+    else: viewsets = get_viewset(dir_level) or load_viewset(dir_level)
 
     result = ElementTree.Element('viewsets')
-    for viewset in itertools.chain(*viewsets): result.append(viewset)
+    for viewset in viewsets: result.append(viewset)
     return HttpResponse(ElementTree.tostring(result), content_type="text/xml")
