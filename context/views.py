@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth import views as auth_views
+
 from specify.models import Collection, Spappresourcedata, Spappresourcedir, Specifyuser
 
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
@@ -19,6 +21,18 @@ disciplines = ElementTree.parse(disc_file)
 discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name'])) \
                             for disc in disciplines.findall('discipline') )
 
+
+def login(request):
+    if request.method == 'POST':
+        request.session['collection'] = request.POST['collection_id']
+
+    kwargs = {
+        'template_name': 'login.html',
+        'extra_context': { 'collections': Collection.objects.all() } }
+    return auth_views.login(request, **kwargs)
+
+def logout(request):
+    return auth_views.logout(request, template_name='logged_out.html')
 
 @login_required
 @csrf_exempt

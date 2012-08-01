@@ -17,8 +17,8 @@ for r in specify.api.resources: api.register(r())
 
 urlpatterns = patterns(
     '',
-    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logged_out.html'}),
+    (r'^accounts/login/$', 'context.views.login'),
+    (r'^accounts/logout/$', 'context.views.logout'),
     # Examples:
     url(r'^$', TemplateView.as_view(template_name="index.html")),
     url(r'^overview/$', TemplateView.as_view(template_name="code_overview.html")),

@@ -39,6 +39,16 @@
     <input type="hidden" name="this_is_the_login_form" value="1" />
     <input type="hidden" name="next" value="{{ next }}" />
   </div>
+  {% if collections %}
+  <div class="form-row">
+    <label>Collection:</label>
+    <select name="collection_id">
+      {% for collection in collections %}
+      <option value="{{ collection.id }}">{{ collection.collectionname }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
   {% url 'admin_password_reset' as password_reset_url %}
   {% if password_reset_url %}
   <div class="password-reset-link">
