@@ -13,7 +13,7 @@ define([
             cycleDetect[icon] = true;
             return self.getIcon(iconNode.attr('alias'), cycleDetect);
         }
-        return '/static/img/icons/datamodel/' + iconNode.attr('file');
+        return '/images/datamodel/' + iconNode.attr('file');
     };
 
     return self;

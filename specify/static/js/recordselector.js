@@ -4,7 +4,7 @@ define([
 ], function(require, $, _, Backbone, specifyform, populateform, navigation, templates) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
-    var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/icons/specify128spinner.gif"></div>';
+    var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
     return Backbone.View.extend({
         events: {
