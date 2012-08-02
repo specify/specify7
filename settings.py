@@ -1,5 +1,5 @@
 import os
-# Django settings for djangospecify project.
+import specify_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -14,15 +14,15 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'hibernateboolsbackend.backends.mysql',
-        'NAME': 'old_kufish',
-        'USER': 'Master',
-        'PASSWORD': 'Master',
+        'NAME': specify_settings.DATABASE_NAME,
+        'USER': specify_settings.MASTER_NAME,
+        'PASSWORD': specify_settings.MASTER_PASSWORD,
         'HOST': '',
         'PORT': '',
     }
 }
 
-SPECIFY_THICK_CLIENT = '/home/ben/Specify6.4.07'
+SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 
