@@ -1,3 +1,4 @@
+import os
 # Django settings for djangospecify project.
 
 DEBUG = True
@@ -20,6 +21,10 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+SPECIFY_THICK_CLIENT = '/home/ben/Specify6.4.07'
+
+SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

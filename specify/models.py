@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from xml.etree import ElementTree
 import os
 
@@ -160,9 +161,7 @@ field_type_map = {
     'java.lang.Boolean': make_boolean_field,
     }
 
-datamodel = ElementTree.parse(os.path.join(os.path.dirname(__file__),
-                                           "static", "resources",
-                                           'specify_datamodel.xml'))
+datamodel = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
 
 models_by_tableid = dict((model.tableid, model) for model in map(make_model, datamodel.findall('table')))
 
