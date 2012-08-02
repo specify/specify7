@@ -1,6 +1,6 @@
 define([
     'jquery', 'specifyapi', 'whenall', 'uiformat',
-    'text!resources/dataobj_formatters.xml'
+    'text!resources/backstop/dataobj_formatters.xml'
 ], function($, api, whenAll, uiformat, xml) {
     "use strict";
     var formatters = $.parseXML(xml);

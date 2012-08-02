@@ -13,7 +13,7 @@ require({
         'CoffeeScript'   : "vendor/CoffeeScript",
         'cs'             : "vendor/cs",
         'text'           : "vendor/text",
-        'resources'      : '/static/resources',
+        'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
         'context'        : '/context'
     },

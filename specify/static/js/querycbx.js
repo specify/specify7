@@ -2,8 +2,8 @@ define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
     'cs!businessrulesviewmixin',
-    'text!resources/typesearch_def.xml',
-    'text!resources/dialog_defs.xml',
+    'text!resources/backstop/typesearch_def.xml',
+    'text!resources/backstop/dialog_defs.xml',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
              whenAll, parseselect, schemalocalization, navigation, businessrulesviewmixin,

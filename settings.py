@@ -78,6 +78,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    ('config', SPECIFY_CONFIG_DIR),
 )
 
 # List of finder classes that know how to find static files in
@@ -134,17 +135,6 @@ INSTALLED_APPS = (
 
 AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend', )
 LOGIN_REDIRECT_URL = '/'
-
-AJAX_LOOKUP_CHANNELS = {
-    #   pass a dict with the model and the field to search against
-    'agent': {'model':'specify.Agent', 'search_field':'lastname'},
-    'locality': {'model':'specify.Locality', 'search_field':'localityname'},
-    'collectingevent': ('specify.lookups','CollectingEventLookup'),
-    'taxon': {'model':'specify.Taxon', 'search_field':'fullname'},
-}
-
-AJAX_SELECT_BOOTSTRAP = True
-AJAX_SELECT_INLINES = 'inline'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

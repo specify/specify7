@@ -13,8 +13,9 @@ require({
         'CoffeeScript'   : "vendor/CoffeeScript",
         'cs'             : "vendor/cs",
         'text'           : "vendor/text",
-        'resources'      : '/static/resources',
-        'tmpls'          : '/static/html/templates'
+        'resources'      : '/static/config',
+        'tmpls'          : '/static/html/templates',
+        'context'        : '/context'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
