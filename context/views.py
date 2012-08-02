@@ -1,5 +1,6 @@
 import os
 from xml.etree import ElementTree
+from collections import defaultdict
 
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required
@@ -7,6 +8,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
 from django.conf import settings
+from django.utils import simplejson
 
 from specify.models import Collection, Spappresourcedata, Spappresourcedir, Specifyuser
 
@@ -113,17 +115,33 @@ def viewsets(request, collection, level):
 @require_GET
 @with_collection
 def schema_localization(request, collection):
-    def read_schema_localization(path):
-        with open(path) as schema_localization:
-            xml = schema_localization.read()
-        return xml
+    from specify.models import Splocalecontainer as Container
+    from specify.models import Splocalecontaineritem as Item
+    from specify.models import Splocaleitemstr as SpString
 
-    discipline_dir = discipline_dirs[collection.discipline.type]
-    path = os.path.join(settings.SPECIFY_CONFIG_DIR, discipline_dir, 'schema_localization.xml')
-    try:
-        xml = read_schema_localization(path)
-    except IOError:
-        path = os.path.join(settings.SPECIFY_CONFIG_DIR, 'schema_localization.xml')
-        xml = read_schema_localization(path)
+    strings = dict(
+        ((i.containername_id, i.containerdesc_id, i.itemname_id, i.itemdesc_id), i.text) \
+            for i in SpString.objects.filter(language='en')
+        )
 
-    return HttpResponse(xml, content_type='text/xml')
+    ifields = ('format', 'ishidden', 'isuiformatter', 'picklistname',
+               'type', 'isrequired', 'weblinkname',)
+
+    items = defaultdict(dict)
+    for i in Item.objects.all():
+        items[i.container_id][i.name.lower()] = item = dict((field, getattr(i, field)) for field in ifields)
+        item.update({
+                'name': strings.get((None, None, i.id, None), None),
+                'desc': strings.get((None, None, None, i.id), None)})
+
+    cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui')
+
+    containers = {}
+    for c in Container.objects.filter(discipline=collection.discipline):
+        containers[c.name] = container = dict((field, getattr(c, field)) for field in cfields)
+        container.update({
+                'name': strings.get((c.id, None, None, None), None),
+                'desc': strings.get((None, c.id, None, None), None),
+                'items': items[c.id] })
+
+    return HttpResponse(simplejson.dumps(containers), content_type='application/json')
