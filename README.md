@@ -6,15 +6,15 @@ server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
 
-Install the Python MySQL drivers, and the package installer, pip.
------------------------------------------------------------------
+Install the Python MySQL drivers, Crypto package, and the package installer, pip.
+---------------------------------------------------------------------------------
 On Ubuntu:
 
-    sudo apt-get install python-mysqldb python-pip
+    sudo apt-get install python-mysqldb python-pip python-crypto
 
 On Fedora:
 
-    sudo yum install MySQL-python python-pip
+    sudo yum install MySQL-python python-pip python-crypto
 
 Install Django 1.3.
 -------------------
