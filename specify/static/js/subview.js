@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'populateform', 'specifyform', 'templates'
-], function(require, $, _, Backbone, populateform, specifyform, templates) {
+    'jquery', 'underscore', 'backbone', 'specifyform', 'templates'
+], function($, _, Backbone, specifyform, templates) {
     "use strict";
     return Backbone.View.extend({
         initialize: function(options) {
@@ -11,7 +11,7 @@ define([
         },
         render: function() {
             var self = this;
-            var populateForm = require('populateform');
+            var populateForm = self.options.populateform;
             self.undelegateEvents();
             self.$el.empty().append(templates.subviewheader());
             self.$('.specify-subview-title').text(self.title);

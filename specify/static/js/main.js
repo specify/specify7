@@ -23,7 +23,7 @@ require({
         'jquery-mockjax' : ['jquery'],
         'backbone'       : { deps: ['jquery', 'underscore'], exports: 'Backbone' },
         'qunit'          : { deps: ['jquery'], exports: 'QUnit' }
-    }
+    },
 });
 
 require(['jquery', 'specifyapp'], function($, app) { $(app.start()); });

@@ -1,7 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'collectionapi', 'whenall', 'cs!businessrules'
-], function($, _, Backbone, schema, Collection, whenAll, businessrules) {
+    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'cs!businessrules'
+], function($, _, Backbone, schema, whenAll, businessrules) {
     var debug = false;
+    var api = {};
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
@@ -35,7 +36,7 @@ define([
             }};
     }
 
-    var Resource = Backbone.Model.extend({
+    api.Resource = Backbone.Model.extend({
         populated: false, _fetch: null, needsSaved: false, saving: false,
         initialize: function(attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
@@ -118,8 +119,8 @@ define([
                 if (path.length > 1) return undefined;
                 var toMany =  self.relatedCache[fieldName];
                 if (!toMany) {
-                    toMany = (_.isString(value)) ? Collection.fromUri(value) :
-                        new (Collection.forModel(related))(value, {parse: true});
+                    toMany = (_.isString(value)) ? api.Collection.fromUri(value) :
+                        new (api.Collection.forModel(related))(value, {parse: true});
                     toMany.parent = self;
                     if (self.isNew()) {
                         toMany.isNew = true;
@@ -135,8 +136,8 @@ define([
                     value = self.relatedCache[fieldName];
                     return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
                 }
-                var collection = _.isString(value) ? Collection.fromUri(value) :
-                    new (Collection.forModel(related))(value);
+                var collection = _.isString(value) ? api.Collection.fromUri(value) :
+                    new (api.Collection.forModel(related))(value);
                 if (self.isNew()) collection.isNew = true;
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
@@ -241,21 +242,21 @@ define([
             var model = _(model).isString() ? schema.getModel(model) : model;
             if (!model) return null;
             if (!_(resources).has(model.name)) {
-                resources[model.name] = Resource.extend({}, { specifyModel: model });
+                resources[model.name] = api.Resource.extend({}, { specifyModel: model });
             }
             return resources[model.name];
         },
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
-            var ResourceForModel = Resource.forModel(match[1]);
+            var ResourceForModel = api.Resource.forModel(match[1]);
             return new ResourceForModel({id: match[2]});
         },
         collectionFor: function() {
-            return Collection.forModel(this.specifyModel);
+            return api.Collection.forModel(this.specifyModel);
         }
     });
 
     var resources = {};
 
-    return Resource;
+    return api;
 });

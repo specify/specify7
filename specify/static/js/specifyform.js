@@ -1,6 +1,10 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties', 'processcolumndef', 'viewsets', 'templates'
-], function specifyform($, _, schema, specifyformcells, parseSpecifyProperties, processColumnDef, viewsets, templates) {
+    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties',
+    'processcolumndef', 'viewsets', 'templates'
+], function specifyform(
+    $, _, schema, specifyformcells, parseSpecifyProperties,
+    processColumnDef, viewsets, templates
+) {
     "use strict";
     var formCounter = 0;
     var findView = viewsets.findView;

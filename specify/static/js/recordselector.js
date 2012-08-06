@@ -1,7 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'populateform', 'navigation', 'templates',
-    'jquery-ui'
-], function(require, $, _, Backbone, specifyform, populateform, navigation, templates) {
+    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
+], function($, _, Backbone, specifyform, navigation, templates) {
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
@@ -92,7 +91,7 @@ define([
             var resource = self.collection.at(offset);
             if (_(resource).isUndefined()) return;
             var form = specifyform.buildSubView(self.$el);
-            require('populateform')(form, resource);
+            self.options.populateform(form, resource);
             debug && console.log('filling in at ' + offset);
             self.content.empty().append(form);
             self.hideSpinner();

@@ -1,8 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'populateform',
-    'specifyform', 'navigation', 'templates'
-], function(require, $, _, Backbone, populateform, specifyform,
-            navigation, templates) {
+    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates'
+], function($, _, Backbone, specifyform, navigation, templates) {
 
     return Backbone.View.extend({
         events: {
@@ -17,7 +15,6 @@ define([
         },
         render: function() {
             var self = this;
-            var populateForm = require('populateform');
             var header = $(templates.subviewheader());
             header.find('.specify-delete-related').remove();
             header.find('.specify-add-related').prop('href', this.addUrl());
@@ -36,7 +33,7 @@ define([
                 var form = specifyform.buildSubView(self.$el);
                 var url = resource.viewUrl();
                 $('a.specify-edit', form).data('index', index).prop('href', self.editUrl(index));
-                return populateForm(form, resource);
+                return self.options.populateform(form, resource);
             });
             self.$el.append(rows[0]);
             _(rows).chain().tail().each(function(row) {

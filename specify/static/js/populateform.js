@@ -37,7 +37,10 @@ define([
             var field = model.getField(fieldName);
 
             resource.rget(fieldName, true).done(function (related) {
-                var View, viewOptions = { el: node, resource: resource, fieldName: fieldName };
+                var View, viewOptions = { el: node,
+                                          resource: resource,
+                                          fieldName: fieldName,
+                                          populateform: populateForm };
                 switch (field.type) {
                 case 'one-to-many':
                     View = specifyform.subViewIsFormTable(node) ? FormTable : RecordSelector;

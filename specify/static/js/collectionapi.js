@@ -1,8 +1,8 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, whenAll) {
+    'jquery', 'underscore', 'backbone', 'resourceapi', 'schema', 'whenall', 'jquery-bbq'
+], function($, _, Backbone, api, schema, whenAll) {
 
-    var Collection = Backbone.Collection.extend({
+    api.Collection = Backbone.Collection.extend({
         populated: false,
         initialize: function(models) {
             if (models) this.populated = true;
@@ -52,32 +52,31 @@ define([
     }, {
         forModel: function(model) {
             model = _(model).isString() ? schema.getModel(model) : model;
-            var Resource = require('resourceapi');
             if (!_(collections).has(model.name)) {
-                collections[model.name] = Collection.extend({
-                    model: Resource.forModel(model)
+                collections[model.name] = api.Collection.extend({
+                    model: api.Resource.forModel(model)
                 });
             }
             return collections[model.name];
         },
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\//.exec(uri);
-            var collection = new (Collection.forModel(match[1]))();
+            var collection = new (api.Collection.forModel(match[1]))();
             if (uri.indexOf("?") !== -1)
                 _.extend(collection.queryParams, $.deparam.querystring(uri));
             return collection;
         }
     });
 
-    var RecordSetItems = Collection.extend({
+    var RecordSetItems = api.Collection.extend({
         initialize: function() {
-            this.model = require('resourceapi').forModel('recordsetitem');
+            this.model = api.Resource.forModel('recordsetitem');
             return this.constructor.__super__.initialize.apply(this, arguments);
         },
         fetch: function(options) {
             options = options || {};
             options.itemFetchDeferreds = [];
-            var mainFetch = Collection.prototype.fetch.call(this, options);
+            var mainFetch = api.Collection.prototype.fetch.call(this, options);
             var comprehensiveFetch = mainFetch.pipe(function() {
                 return whenAll(options.itemFetchDeferreds);
             });
@@ -85,8 +84,8 @@ define([
             return comprehensiveFetch;
         },
         add: function(models, options) {
-            Collection.prototype.add.call(this, models, options);
-            var ItemResource = require('resourceapi').forModel(
+            api.Collection.prototype.add.call(this, models, options);
+            var ItemResource = api.Resource.forModel(
                 schema.getModelById(this.parent.get('dbTableId'))
             );
             var recordSetItems = this;
@@ -99,7 +98,7 @@ define([
             return this;
         },
         at: function(index) {
-            var recordSetItem = Collection.prototype.at.call(this, index);
+            var recordSetItem = api.Collection.prototype.at.call(this, index);
             return recordSetItem && recordSetItem.item;
         }
     });
@@ -108,5 +107,5 @@ define([
         RecordSetItem: RecordSetItems
     };
 
-    return Collection;
+    return api;
 });
