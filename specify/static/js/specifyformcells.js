@@ -63,13 +63,13 @@ define([
                 });
                 return $('<td>').append(table);
             },
-	    command: function() {
-		var button = $('<input type=button>').attr({
-		    value: cell.attr('label'),
-		    name: cell.attr('name')
-		});
-		return $('<td>').append(button);
-	    },
+	        command: function() {
+		        var button = $('<input type=button>').attr({
+		            value: cell.attr('label'),
+		            name: cell.attr('name')
+		        });
+		        return $('<td>').append(button);
+	        },
             other: function() {
                 return $('<td>').text("unsupported cell type: " + cell.attr('type'));
             }

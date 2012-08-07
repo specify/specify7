@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'populateform', 'schema', 'schemalocalization',
+    'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema', 'schemalocalization',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi,
