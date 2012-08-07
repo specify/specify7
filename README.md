@@ -61,22 +61,24 @@ working directory.
 
     cd djangospecify
 
-Set database, username, and password.
--------------------------------------
-Edit the `settings.py` file and configure the `DATABASES` section as follows,
-choosing appropriate values for `NAME`, `USER`, and `PASSWORD`:
+Set up the settings file.
+-------------------------
+Edit the `specify_settings.py` file and configure the settings
+according to your system.
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql',
-            'NAME': 'kuplant',   # name of a Specify 6.4 mysql database
-            'USER': 'Master',    # mysql user with full privileges to that DB
-            'PASSWORD': 'MasterPassword',
-            'HOST': '',    # Set to empty string for localhost.
-            'PORT': '',    # Set to empty string for default.
-        }
-    }
-    
+    # The webapp server piggy backs on the thick client.
+    # Set the path to a thick client installation.
+    THICK_CLIENT_LOCATION = '/home/ben/Specify6.4.10'
+
+    # Set the database name to the mysql data base you
+    # want to access.
+    DATABASE_NAME = 'old_kufish'
+
+    # The master user login. Use the same values as
+    # you did setting up the thick client.
+    MASTER_NAME = 'Master'
+    MASTER_PASSWORD = 'Master'
+
 Sync the database:
 ------------------
 The authentication system in django makes use of a couple extra tables. This
