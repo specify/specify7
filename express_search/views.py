@@ -52,6 +52,15 @@ class Term:
         return create(field)
 
     def create_text_filter(self, field):
+        from specify.models import Splocalecontaineritem
+        fieldinfo = Splocalecontaineritem.objects.get(
+            name=field.name,
+            container__name=field.model.__name__.lower())
+        if fieldinfo.format == 'CatalogNumberNumeric':
+            if not self.is_integer: return None
+            term = "%.9d" % int(self.term)
+            return Q(**{ field.name: term })
+
         if self.is_prefix and self.is_suffix:
             op = '__icontains'
         elif self.is_prefix:
