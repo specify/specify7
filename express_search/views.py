@@ -1,11 +1,11 @@
 import re
+import json
 from datetime import date, datetime
 from xml.etree import ElementTree
 
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
-from django.utils import simplejson
 from django.db.models import fields as django_fields
 
 from specify import models
@@ -14,6 +14,15 @@ QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
 express_search_config = ElementTree.XML(
     models.Spappresourcedata.objects.get(spappresource__name='ExpressSearchConfig').data)
+
+class JsonDateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
+
+def toJson(obj):
+    return json.dumps(obj, cls=JsonDateEncoder)
 
 class Term:
     def __init__(self, term):
@@ -100,6 +109,10 @@ def search(request):
         tablename = searchtable.find('tableName').text.capitalize()
         model = getattr(models, tablename)
 
+        display_fields = [fn.text.lower() \
+                              for fn in searchtable.findall('.//displayfield/fieldName')]
+        display_fields.append('id')
+
         fields = [model._meta.get_field(fn.text.lower()) \
                       for fn in searchtable.findall('.//searchfield/fieldName')]
 
@@ -108,8 +121,8 @@ def search(request):
 
         if len(filters) > 0:
             reduced = reduce(lambda p, q: p | q, filters)
-            results[tablename] = list( model.objects.filter(reduced).values_list('id', flat=True) )
+            results[tablename] = list( model.objects.filter(reduced).values(*display_fields) )
         else:
             results[tablename] = []
 
-    return HttpResponse(simplejson.dumps(results), content_type='application/json')
+    return HttpResponse(toJson(results), content_type='application/json')
