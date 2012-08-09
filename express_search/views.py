@@ -40,7 +40,7 @@ class Term:
             self.maybe_year = 1000 <= int(self.term) <= date.today().year
             self.is_integer = True
         except ValueError:
-            self.is_integer = False
+            self.maybe_year = self.is_integer = False
 
         try:
             self.as_date = datetime.strptime(self.term, '%m/%d/%Y').date()
