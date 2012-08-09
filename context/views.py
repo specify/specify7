@@ -145,3 +145,10 @@ def schema_localization(request, collection):
                 'items': items[c.id] })
 
     return HttpResponse(simplejson.dumps(containers), content_type='application/json')
+
+
+@require_GET
+def express_search_config(request):
+    xml = Spappresourcedata.objects.get(spappresource__name='ExpressSearchConfig').data
+    return HttpResponse(xml, content_type='text/xml')
+

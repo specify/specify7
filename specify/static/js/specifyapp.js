@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
-    'views', 'schemalocalization', 'beautify-html', 'navigation', 'jquery-bbq'
+    'views', 'schemalocalization', 'beautify-html', 'navigation', 'cs!express-search', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
-    views, schemalocalization, beautify, navigation) {
+    views, schemalocalization, beautify, navigation, esearch) {
     "use strict";
 
     var app = {
@@ -13,6 +13,8 @@ define([
 
     function appStart() {
         var rootContainer = $('#content');
+
+        app.expressSearch = new esearch.SearchView({ el: $('#express-search') });
 
         function setCurrentView(view) {
             app.currentView && app.currentView.remove();
@@ -27,6 +29,7 @@ define([
 
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
+                'express_search/*splat': 'esearch',
                 'recordset/:id/*splat': 'recordSet',
                 'view/:model/:id/:related/new/*splat': 'addRelated',
                 'view/:model/:id/:related/:index/*splat': 'viewSingleToMany',
@@ -35,6 +38,10 @@ define([
                 'viewashtml/*splat': 'viewashtml',
                 'datamodel/:model/': 'datamodel',
                 'datamodel/': 'datamodel'
+            },
+
+            esearch: function() {
+                setCurrentView(new esearch.ResultsView());
             },
 
             addRelated: function(modelName, id, relatedFieldName) {
