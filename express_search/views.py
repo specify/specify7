@@ -85,6 +85,9 @@ class Term:
         return Q(**{ field.name: int(self.term) })
 
     def create_date_filter(self, field):
+        if self.maybe_year:
+            return Q(**{ field.name + '__year': int(self.term) })
+
         if not self.as_date: return None
         return Q(**{ field.name: self.as_date })
 
