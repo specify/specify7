@@ -169,6 +169,14 @@ class ModelResource(tastypie.resources.ModelResource):
                 kwargs[field] = agent
         return super(ModelResource, self).obj_create(bundle, request, **kwargs)
 
+    def apply_filters(self, request, filters):
+        for filtr in filters:
+            if filtr.split('__')[-1] == 'in':
+                filters[filtr] = [v for val in filters[filtr] for v in val.split(',')]
+        qs = super(ModelResource, self).apply_filters(request, filters)
+        if 'distinct' in request.GET: qs = qs.distinct()
+        return qs
+
 def make_to_many_field(model, field, fieldname):
     modelname = field.related.model.__name__ # The model w/ the FK column (the many side)
     fkfieldname = field.related.field.name   # Name of the FK column
@@ -195,6 +203,9 @@ def build_resource(model):
     class Meta:
         always_return_data = True
         filtering = dict((field.name, ALL_WITH_RELATIONS) for field in model._meta.fields)
+        filtering.update(dict((fieldname, ALL_WITH_RELATIONS)
+                              for fieldname, field in model.__dict__.items()
+                              if isinstance(field, ForeignRelatedObjectsDescriptor)))
         queryset = model.objects.all()
         authentication = Authentication()
         authorization = Authorization()
