@@ -64,9 +64,8 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'schema',
                 row = $('<tr>').appendTo table
                 _.each relatedSearch.columns, (column) ->
                     href = resource.viewUrl()
-                    resource.rget(column).done (value) ->
-                        row.append $('<td>').append \
-                            $('<a>', { href: href, class: "express-search-result" }).text value
+                    row.append $('<td>').append \
+                        $('<a>', { href: href, class: "express-search-result" }).text resource.get(column)
 
             @$el.accordion('destroy').accordion accordionOptions
 

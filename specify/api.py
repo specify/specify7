@@ -174,8 +174,17 @@ class ModelResource(tastypie.resources.ModelResource):
             if filtr.split('__')[-1] == 'in':
                 filters[filtr] = [v for val in filters[filtr] for v in val.split(',')]
         qs = super(ModelResource, self).apply_filters(request, filters)
+        if 'values' in request.GET:
+            fields = request.GET['values'].split(',')
+            lookups = [f.replace('.', '__') for f in fields]
+            qs = qs.values(*lookups)
         if 'distinct' in request.GET: qs = qs.distinct()
         return qs
+
+    def full_dehydrate(self, bundle, *args, **kwargs):
+        if isinstance(bundle.obj, dict):
+            return dict((col.replace('__', '.') , val) for col, val in bundle.obj.items())
+        return super(ModelResource, self).full_dehydrate(bundle, *args, **kwargs)
 
 def make_to_many_field(model, field, fieldname):
     modelname = field.related.model.__name__ # The model w/ the FK column (the many side)

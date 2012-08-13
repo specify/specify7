@@ -8,7 +8,7 @@ define ['jquery', 'underscore', 'backbone', 'schema', 'specifyapi'], ($, _, Back
                 'catalognumber'
                 'catalogeddate'
                 'collectingevent.startdate'
-#                'collectingevent.collectors'
+                'collectingevent.collectors.agent.lastname'
                 ]
 
 
@@ -31,6 +31,8 @@ define ['jquery', 'underscore', 'backbone', 'schema', 'specifyapi'], ($, _, Back
         lookup = rs.path.join('__') + '__in'
         collection = new (api.Collection.forModel rs.root)()
         collection.queryParams[lookup] = ids.join ','
+        collection.queryParams.values = 'id,' + rs.columns.join ','
+        collection.queryParams.limit = 0
         if rs.distinct then collection.queryParams.distinct = true
         collection
 
