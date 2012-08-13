@@ -51,6 +51,7 @@ define([
                     var model = tablename && schema.getModel(tablename);
                     if (model) {
                         var picklistCol = new (api.Collection.forModel(model))();
+                        picklistCol.queryParams.limit = 0;
                         return picklistCol.fetch().pipe(function () {
                             return picklistCol.map(function (item) {
                                 return {value: item.get('resource_uri'), title: item.get('name')};

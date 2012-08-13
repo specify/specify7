@@ -146,9 +146,20 @@ def schema_localization(request, collection):
 
     return HttpResponse(simplejson.dumps(containers), content_type='application/json')
 
+def get_express_search_config(collection):
+    try:
+        return Spappresourcedata.objects.get(spappresource__name='ExpressSearchConfig').data
+    except Spappresourcedata.DoesNotExist:
+        pass
+
+    discipline = collection.discipline
+    discipline_dir = discipline_dirs[discipline.type]
+    f = open(os.path.join(settings.SPECIFY_CONFIG_DIR, discipline_dir, 'es_config.xml'))
+    return f.read()
 
 @require_GET
-def express_search_config(request):
-    xml = Spappresourcedata.objects.get(spappresource__name='ExpressSearchConfig').data
+@with_collection
+def express_search_config(request, collection):
+    xml = get_express_search_config(collection)
     return HttpResponse(xml, content_type='text/xml')
 

@@ -9,11 +9,10 @@ from django.views.decorators.http import require_GET
 from django.db.models import fields as django_fields
 
 from specify import models
+from context.views import with_collection
+from specify.filter_by_col import filter_by_collection
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
-
-express_search_config = ElementTree.XML(
-    models.Spappresourcedata.objects.get(spappresource__name='ExpressSearchConfig').data)
 
 class JsonDateEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -25,6 +24,7 @@ def toJson(obj):
     return json.dumps(obj, cls=JsonDateEncoder)
 
 class Term:
+    discipline = None
     def __init__(self, term):
         self.is_suffix = term.startswith('*')
         self.is_prefix = term.endswith('*')
@@ -61,14 +61,16 @@ class Term:
         return create(field)
 
     def create_text_filter(self, field):
-        from specify.models import Splocalecontaineritem
-        fieldinfo = Splocalecontaineritem.objects.get(
-            name=field.name,
-            container__name=field.model.__name__.lower())
-        if fieldinfo.format == 'CatalogNumberNumeric':
-            if not self.is_integer: return None
-            term = "%.9d" % int(self.term)
-            return Q(**{ field.name: term })
+        if self.discipline:
+            from specify.models import Splocalecontaineritem
+            fieldinfo = Splocalecontaineritem.objects.get(
+                container__discipline=self.discipline,
+                name=field.name,
+                container__name=field.model.__name__.lower())
+            if fieldinfo.format == 'CatalogNumberNumeric':
+                if not self.is_integer: return None
+                term = "%.9d" % int(self.term)
+                return Q(**{ field.name: term })
 
         if self.is_prefix and self.is_suffix:
             op = '__icontains'
@@ -95,18 +97,24 @@ class Term:
         if not self.is_number: return None
         return Q(**{ field.name: float(self.term) })
 
-def parse_search_str(search_str):
+def parse_search_str(collection, search_str):
+    class TermForCollection(Term):
+        discipline = collection.discipline
+
     match_quoted = QUOTED_STR_RE.match(search_str)
     if match_quoted:
         terms = [ match_quoted.groups()[1] ]
     else:
         terms = search_str.split()
 
-    return map(Term, terms)
+    return map(TermForCollection, terms)
 
 @require_GET
-def search(request):
-    terms = parse_search_str(request.GET['q'])
+@with_collection
+def search(request, collection):
+    from context.views import get_express_search_config
+    express_search_config = ElementTree.XML(get_express_search_config(collection))
+    terms = parse_search_str(collection, request.GET['q'])
     results = {}
     for searchtable in express_search_config.findall('tables/searchtable'):
         tablename = searchtable.find('tableName').text.capitalize()
@@ -124,7 +132,8 @@ def search(request):
 
         if len(filters) > 0:
             reduced = reduce(lambda p, q: p | q, filters)
-            results[tablename] = list( model.objects.filter(reduced).values(*display_fields) )
+            qs = filter_by_collection(model.objects.filter(reduced), collection)
+            results[tablename] = list(qs.values(*display_fields))
         else:
             results[tablename] = []
 
