@@ -45,16 +45,7 @@ def make_relationship(reldef):
     reltype = reldef.attrib['type']
     null = reldef.attrib['required'] == 'false'
     editable = reldef.attrib['updatable'] == 'true'
-    if reltype == 'many-to-one':
-        try:
-            related_name = reldef.attrib['othersidename'].lower()
-        except KeyError:
-            related_name = '+' # magic symbol means don't make reverse field
-        column = reldef.attrib['columnname']
-        return models.ForeignKey('.'.join((appname, relatedmodel)),
-                                 db_column=column, related_name=related_name,
-                                 null=null, on_delete=models.DO_NOTHING,
-                                 editable=editable)
+
     if reltype == 'one-to-many':
         return None # only define the to side of the relationship
     if reltype == 'many-to-many':
@@ -68,6 +59,23 @@ def make_relationship(reldef):
                                       db_table=jointable,
                                       related_name=related_name,
                                       null=null, editable=editable)
+
+    def make_to_one(Field):
+        try:
+            related_name = reldef.attrib['othersidename'].lower()
+        except KeyError:
+            related_name = '+' # magic symbol means don't make reverse field
+        column = reldef.attrib['columnname']
+        return Field('.'.join((appname, relatedmodel)),
+                     db_column=column, related_name=related_name,
+                     null=null, on_delete=models.DO_NOTHING,
+                     editable=editable)
+
+    if reltype == 'many-to-one':
+        return make_to_one(models.ForeignKey)
+
+    if reltype == 'one-to-one' and 'columnname' in reldef.attrib:
+        return make_to_one(models.OneToOneField)
 
 class make_field(object):
     @classmethod
