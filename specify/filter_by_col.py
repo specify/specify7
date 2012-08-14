@@ -1,5 +1,4 @@
 from models import *
-from django.db.models.fields.related import ForeignKey
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 

@@ -33,6 +33,7 @@ define ['jquery', 'underscore', 'backbone', 'schema', 'specifyapi'], ($, _, Back
         collection.queryParams[lookup] = ids.join ','
         collection.queryParams.values = 'id,' + rs.columns.join ','
         collection.queryParams.limit = 0
+        collection.queryParams.domainfilter = true
         if rs.distinct then collection.queryParams.distinct = true
         collection
 

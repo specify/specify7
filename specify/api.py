@@ -14,6 +14,7 @@ from xml.etree import ElementTree
 import os
 
 from specify import models
+from specify.filter_by_col import filter_by_collection
 
 class Authentication(tastypie.authentication.Authentication):
     def is_authenticated(self, request, **kwargs):
@@ -174,6 +175,8 @@ class ModelResource(tastypie.resources.ModelResource):
             if filtr.split('__')[-1] == 'in':
                 filters[filtr] = [v for val in filters[filtr] for v in val.split(',')]
         qs = super(ModelResource, self).apply_filters(request, filters)
+        if 'domainfilter' in request.GET:
+            qs = filter_by_collection(qs, request.specify_collection)
         if 'values' in request.GET:
             fields = request.GET['values'].split(',')
             lookups = [f.replace('.', '__') for f in fields]
