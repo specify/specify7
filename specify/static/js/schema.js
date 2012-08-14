@@ -20,6 +20,12 @@ define([
                 name = name.toLowerCase().split('.');
             }
             var field = _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name[0]; });
+            if (_(field).isUndefined()) {
+                var alias = _(this.node.find('fieldalias')).find(function(alias) {
+                    return $(alias).attr('vname').toLowerCase() === name[0];
+                });
+                field = alias && this.getField($(alias).attr('aname'));
+            }
             return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
         },
         getAllFields: function () {
