@@ -22,13 +22,22 @@
     <div id="header">
         <div id="branding">
         {% block branding %}{% endblock %}
+        {% if user.is_authenticated %}
+        <form id="express-search" action="/specify/express_search/">
+          <input type="text" class="express-search-query" name="q">
+          <input type="submit" value="Search">
+        </form>
+        {% endif %}
         </div>
         <div id="user-tools">
-            {% trans 'Welcome,' %}
             {% block userlinks %}
 	    {% if user.is_authenticated %}
+            {% trans 'Logged in to' %}
+            {{ collection.collectionname }}
+            {% trans 'as' %}
                 <strong>{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</strong>.
                 <a href="/accounts/logout/">{% trans 'Log out' %}</a>
+                <br>
 	    {% else %}
 		<a href="/accounts/login/">{% trans 'Log in' %}</a>
 	    {% endif %}

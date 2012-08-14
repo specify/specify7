@@ -6,10 +6,10 @@ from xml.etree import ElementTree
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+from django.contrib.auth.decorators import login_required
 from django.db.models import fields as django_fields
 
 from specify import models
-from context.views import with_collection
 from specify.filter_by_col import filter_by_collection
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
@@ -110,11 +110,11 @@ def parse_search_str(collection, search_str):
     return map(TermForCollection, terms)
 
 @require_GET
-@with_collection
-def search(request, collection):
+@login_required
+def search(request):
     from context.views import get_express_search_config
-    express_search_config = ElementTree.XML(get_express_search_config(collection))
-    terms = parse_search_str(collection, request.GET['q'])
+    express_search_config = ElementTree.XML(get_express_search_config(request.specify_collection))
+    terms = parse_search_str(request.specify_collection, request.GET['q'])
     results = {}
     for searchtable in express_search_config.findall('tables/searchtable'):
         tablename = searchtable.find('tableName').text.capitalize()
@@ -132,7 +132,7 @@ def search(request, collection):
 
         if len(filters) > 0:
             reduced = reduce(lambda p, q: p | q, filters)
-            qs = filter_by_collection(model.objects.filter(reduced), collection)
+            qs = filter_by_collection(model.objects.filter(reduced), request.specify_collection)
             results[tablename] = list(qs.values(*display_fields))
         else:
             results[tablename] = []

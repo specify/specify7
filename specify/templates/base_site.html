@@ -5,12 +5,6 @@
 
 {% block branding %}
 <h1 id="site-name">{% trans 'Specify WebApp' %}</h1>
-{% if user.is_authenticated %}
-<form id="express-search" action="/specify/express_search/">
-  <input type="text" class="express-search-query" name="q">
-  <input type="submit" value="Search">
-</form>
-{% endif %}
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

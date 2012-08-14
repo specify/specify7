@@ -21,18 +21,6 @@ disciplines = ElementTree.parse(disc_file)
 discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name'])) \
                             for disc in disciplines.findall('discipline') )
 
-def with_collection(func):
-    @login_required
-    def wrapped(request, *args, **kwargs):
-        try:
-            collection = Collection.objects.get(id=int(request.session.get('collection', '')))
-        except ValueError:
-            return HttpResponseBadRequest('bad collection id', content_type="text/plain")
-        except Collection.DoesNotExist:
-            return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
-        return func(request, collection, *args, **kwargs)
-    return wrapped
-
 def login(request):
     if request.method == 'POST':
         request.session['collection'] = request.POST['collection_id']
@@ -63,9 +51,10 @@ def collection(request):
         return HttpResponse(collection, content_type="text/plain")
 
 @require_GET
-@with_collection
-def viewsets(request, collection, level):
+@login_required
+def viewsets(request, level):
     user = Specifyuser.objects.get(name=request.user.username)
+    collection = request.specify_collection
     discipline = collection.discipline
     discipline_dir = discipline_dirs[discipline.type]
     usertype = user.usertype.replace(' ', '').lower()
@@ -113,11 +102,12 @@ def viewsets(request, collection, level):
     return HttpResponse(ElementTree.tostring(result), content_type="text/xml")
 
 @require_GET
-@with_collection
-def schema_localization(request, collection):
+@login_required
+def schema_localization(request):
     from specify.models import Splocalecontainer as Container
     from specify.models import Splocalecontaineritem as Item
     from specify.models import Splocaleitemstr as SpString
+    collection = request.specify_collection
 
     strings = dict(
         ((i.containername_id, i.containerdesc_id, i.itemname_id, i.itemdesc_id), i.text) \
@@ -158,8 +148,8 @@ def get_express_search_config(collection):
     return f.read()
 
 @require_GET
-@with_collection
-def express_search_config(request, collection):
-    xml = get_express_search_config(collection)
+@login_required
+def express_search_config(request):
+    xml = get_express_search_config(request.specify_collection)
     return HttpResponse(xml, content_type='text/xml')
 

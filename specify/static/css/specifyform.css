@@ -110,3 +110,7 @@ input[type="submit"].saveblocked {
 .businessruleviolated {
     background-color: red;
 }
+
+#express-search {
+    padding: 0 10px 5px;
+}
