@@ -1,5 +1,6 @@
 from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor
 from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
+from django.conf import settings
 
 from specify import models
 
@@ -58,11 +59,14 @@ class RelatedSearch(object):
 
     def result_as_dict(self, queryset):
         results = list( queryset )
-        return {
+        data = {
             'definition': self.def_as_dict(),
             'totalCount': len(results),
             'results': results,
             }
+        if settings.DEBUG:
+            data['sql'] = str(queryset.query)
+        return data
 
     def do_search(self, queryset):
         rqs = self.build_related_queryset(queryset)

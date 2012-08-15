@@ -15,6 +15,7 @@ class ColObjCollectors(RelatedSearch):
 class CollObjToDeterminer(RelatedSearch):
     definition = 'Collectionobject.determinations.determiner'
     distinct = True
+    filters = { 'determinations.iscurrent': True }
     columns = [
         'determinations.taxon.fullname',
         'determinations.taxon.commonname',
@@ -22,7 +23,6 @@ class CollObjToDeterminer(RelatedSearch):
         'determinations.determiner.firstname',
         #                'determinations.determiner.agenttype',
         ]
-    filters = { 'determinations.iscurrent': True }
 
 class CollObToLocality(RelatedSearch):
     definition = 'Collectingevent.locality'
@@ -46,11 +46,11 @@ class CollObject(RelatedSearch):
 class GeoToTaxon(RelatedSearch):
     definition = 'Collectingevent.collectionobjects.determinations.taxon'
     distinct = True
+    filters = { 'collectionobjects.determinations.iscurrent': True }
     columns = [
         'collectionobjects.determinations.taxon.fullname',
         'locality.geography.fullname',
         ]
-    filters = { 'collectionobjects.determinations.iscurrent': True }
 
 class AcceptedTaxon(RelatedSearch):
     definition = 'Taxon.acceptedtaxon'
@@ -62,40 +62,40 @@ class AcceptedTaxon(RelatedSearch):
 class SynonymCollObjs(RelatedSearch):
     definition = 'Collectionobject.determinations.taxon'
     distinct = True
+    excludes = { 'determinations.taxon': F('determinations__preferredtaxon') }
     columns = [
         'catalognumber',
         'determinations.taxon.fullname',
         'determinations.preferredtaxon.fullname',
         ]
-    excludes = { 'determinations.taxon': F('determinations__preferredtaxon') }
 
 class OtherSynsCollObjs(RelatedSearch):
     definition = 'Taxon'
     distinct = True
+    excludes = { 'acceptedchildren__id': F('id') }
     columns = [
         'determinations.collectionobject.catalognumber',
         'fullname',
         'determinations.preferredtaxon.fullname',
         'acceptedchildren.fullname',
         ]
-    excludes = { 'acceptedchildren__id': F('id') }
 
 class CurrCollObject(RelatedSearch):
     definition = 'Collectionobject.determinations.taxon'
     distinct = True
+    filters = { 'determinations.iscurrent': True }
     columns = [
         'catalognumber',
         'catalogeddate',
         'determinations.taxon.fullname',
         ]
-    filters = { 'determinations.iscurrent': True }
 
 class AgentFromAgentVariant(RelatedSearch):
-    definition = 'Agent'
+    definition = 'Agentvariant.agent'
     columns = [
-        'variants.name',
-        'lastname',
-        'firstname',
+        'name',
+        'agent.lastname',
+        'agent.firstname',
         ]
 
 class LocalityAlias(RelatedSearch):
@@ -125,12 +125,12 @@ class CEToCO(RelatedSearch):
 
 class AccessionToCo(RelatedSearch):
     definition = 'Accession.collectionobjects.determinations.taxon'
+    filters = { 'collectionobjects.determinations.iscurrent': True }
     columns = [
         'collectionobjects.catalognumber',
         'collectionobjects.determinations.taxon.fullname',
         'accessionnumber',
         ]
-    filters = { 'collectionobjects.determinations.iscurrent': True }
 
 class AccessionToAgent(RelatedSearch):
     definition = 'Accession.accessionagents.agent'
