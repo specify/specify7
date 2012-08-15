@@ -1,9 +1,10 @@
 define ['jquery', 'underscore', 'backbone', 'navigation', 'schema',
-    'cs!express-search-related',
     'text!context/express_search_config.xml',
+    'text!context/available_related_searches.json',
     'jquery-bbq', 'jquery-ui'
-], ($, _, Backbone, navigation, schema, related, configXML) ->
+], ($, _, Backbone, navigation, schema, configXML, availableRelatedJson) ->
     config = $.parseXML configXML
+    relatedSearches = $.parseJSON availableRelatedJson
 
     accordionOptions =
         autoHeight: false
@@ -25,10 +26,12 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'schema',
         events:
             'click a.express-search-result': 'navToResult'
         render: ->
+            @$el.accordion accordionOptions
             query = $.deparam.querystring().q
             $('.express-search-query').val query
             ajaxUrl = $.param.querystring '/express_search/', q: query
             $.get ajaxUrl, _.bind(@showResults, @)
+            @doRelatedSearches query
             @
         searchTableOrder:
             (searchTable) -> parseInt $('displayOrder', searchTable).text(), 10
@@ -38,37 +41,35 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'schema',
                 .sortBy(@searchTableOrder) \
                 .each _.bind(@showResultsForTable, @, results)
 
-            _.each results, (resultsForTable, table) =>
-                @doRelatedSearch _.pluck(resultsForTable, 'id'), table
+            @$el.accordion('destroy').accordion accordionOptions
 
-            @$el.accordion accordionOptions
-
-        doRelatedSearch: (ids, table) ->
-            relatedSearches = related.forModel table
+        doRelatedSearches: (query) ->
             _.each relatedSearches, (rs) =>
-                collection = related.buildCollection(rs, ids)
-                collection.fetch().done => @showRelatedResults rs, collection
+                ajaxUrl = $.param.querystring '/express_search/related/', {
+                    q: query, name: rs }
+                $.get ajaxUrl, _.bind(@showRelatedResults, @)
 
-        showRelatedResults: (relatedSearch, collection) ->
-            if collection.totalCount < 1 then return
-            heading = relatedSearch.name + ' - ' + collection.totalCount
+        showRelatedResults: (relatedSearch) ->
+            if relatedSearch.totalCount < 1 then return
+            heading = relatedSearch.definition.name + ' - ' + relatedSearch.totalCount
             @$el.append $('<h4>').append $('<a>').text heading
             table = $('<table width="100%">').appendTo $('<div>').appendTo @el
 
-            displayFields = _.map relatedSearch.columns, (col) -> relatedSearch.root.getField col
+            displayFields = _.map relatedSearch.definition.columns, (col) ->
+                schema.getModel(relatedSearch.definition.root).getField col
+
             header = $('<tr>').appendTo table
             _.each displayFields, (field) ->
                 header.append $('<th>').text field.getLocalizedName()
 
-            _.chain(collection.models).compact().each (resource) ->
+            _.each relatedSearch.results, (values) ->
                 row = $('<tr>').appendTo table
-                _.each relatedSearch.columns, (column) ->
-                    href = resource.viewUrl()
+                href = '#' #resource.viewUrl()
+                _.each values, (value) ->
                     row.append $('<td>').append \
-                        $('<a>', { href: href, class: "express-search-result" }).text resource.get(column)
+                        $('<a>', { href: href, class: "express-search-result" }).text value
 
             @$el.accordion('destroy').accordion accordionOptions
-
 
         showResultsForTable: (allResults, searchTable) ->
             model = schema.getModel $('tableName', searchTable).text()

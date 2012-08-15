@@ -48,14 +48,17 @@ class RelatedSearch(object):
 
     def def_as_dict(self):
         return {
+            'name': self.__class__.__name__,
             'root': self.root().__name__,
             'columns': self.columns,
             }
 
     def result_as_dict(self, queryset):
+        results = list( queryset )
         return {
             'definition': self.def_as_dict(),
-            'results': list( queryset )
+            'totalCount': len(results),
+            'results': results,
             }
 
     def do_search(self, queryset):

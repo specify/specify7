@@ -7,4 +7,5 @@ urlpatterns = patterns(
     (r'^viewsets/(?P<level>\d+).xml$', 'viewsets'),
     (r'^schema_localization.json$', 'schema_localization'),
     (r'^express_search_config.xml$', 'express_search_config'),
+    (r'^available_related_searches.json$', 'available_related_searches'),
 )

@@ -153,3 +153,9 @@ def express_search_config(request):
     xml = get_express_search_config(request.specify_collection)
     return HttpResponse(xml, content_type='text/xml')
 
+@require_GET
+def available_related_searches(request):
+    from express_search import related_searches
+    from express_search.views import toJson
+    return HttpResponse(toJson(related_searches.__all__),
+                        content_type='application/json')

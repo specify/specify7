@@ -163,9 +163,3 @@ def related_search(request):
     qs = build_queryset(searchtable, terms, request.specify_collection)
     results = rs.do_search(qs)
     return HttpResponse(toJson(results), content_type='application/json')
-
-@require_GET
-def available_related_searches(request):
-    import related_searches
-    return HttpResponse(toJson(related_searches.__all__),
-                        content_type='application/json')
