@@ -86,7 +86,7 @@ class CurrCollObject(RelatedSearch):
     columns = [
         'catalognumber',
         'catalogeddate',
-        'determinations.fullname',
+        'determinations.taxon.fullname',
         ]
     filters = { 'determinations.iscurrent': True }
 
@@ -137,7 +137,7 @@ class AccessionToAgent(RelatedSearch):
     columns = [
         'accessionagents.agent.lastname',
         'accessionagents.agent.firstname',
-        'accessionagent.role',
+        'accessionagents.role',
         'accessionnumber',
         ]
 

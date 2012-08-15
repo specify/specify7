@@ -35,8 +35,11 @@ class RelatedSearch(object):
 
     def build_related_queryset(self, queryset):
         assert queryset.model is self.pivot()
-        relatedqs = self.root().objects.filter(**{
-                self.pivot_path() + '__in': queryset })
+        if self.pivot_path() == '':
+            relatedqs = queryset
+        else:
+            relatedqs = self.root().objects.filter(**{
+                    self.pivot_path() + '__in': queryset })
         if self.distinct: relatedqs = relatedqs.distinct()
         filters = dots2dunders(self.filters)
         excludes = dots2dunders(self.excludes)
