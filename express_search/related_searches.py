@@ -70,14 +70,14 @@ class SynonymCollObjs(RelatedSearch):
         ]
 
 class OtherSynsCollObjs(RelatedSearch):
-    definition = 'Taxon'
+    definition = 'Collectionobject.determinations.preferredtaxon.acceptedchildren'
     distinct = True
-    excludes = { 'acceptedchildren__id': F('id') }
+    excludes = { 'determinations.preferredtaxon.acceptedchildren': F('determinations__preferredtaxon') }
     columns = [
-        'determinations.collectionobject.catalognumber',
-        'fullname',
+        'catalognumber',
+        'determinations.taxon.fullname',
         'determinations.preferredtaxon.fullname',
-        'acceptedchildren.fullname',
+        'determinations.preferredtaxon.acceptedchildren.fullname',
         ]
 
 class CurrCollObject(RelatedSearch):
