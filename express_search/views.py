@@ -12,6 +12,8 @@ from django.db.models import fields as django_fields
 from specify import models
 from specify.filter_by_col import filter_by_collection
 
+from context.views import get_express_search_config
+
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
 class JsonDateEncoder(json.JSONEncoder):
@@ -109,32 +111,61 @@ def parse_search_str(collection, search_str):
 
     return map(TermForCollection, terms)
 
+def build_queryset(searchtable, terms, collection):
+    tablename = searchtable.find('tableName').text.capitalize()
+    model = getattr(models, tablename)
+
+    fields = [model._meta.get_field(fn.text.lower()) \
+                  for fn in searchtable.findall('.//searchfield/fieldName')]
+
+    filters = filter(None,
+                     [term.create_filter(field) for term in terms for field in fields])
+
+    if len(filters) > 0:
+        reduced = reduce(lambda p, q: p | q, filters)
+        return filter_by_collection(model.objects.filter(reduced), collection)
+
 @require_GET
 @login_required
 def search(request):
-    from context.views import get_express_search_config
     express_search_config = ElementTree.XML(get_express_search_config(request.specify_collection))
     terms = parse_search_str(request.specify_collection, request.GET['q'])
     results = {}
     for searchtable in express_search_config.findall('tables/searchtable'):
         tablename = searchtable.find('tableName').text.capitalize()
-        model = getattr(models, tablename)
+        qs = build_queryset(searchtable, terms, request.specify_collection)
+        if not qs:
+            results[tablename] = []
+            continue
 
         display_fields = [fn.text.lower() \
                               for fn in searchtable.findall('.//displayfield/fieldName')]
         display_fields.append('id')
 
-        fields = [model._meta.get_field(fn.text.lower()) \
-                      for fn in searchtable.findall('.//searchfield/fieldName')]
-
-        filters = filter(None,
-                         [term.create_filter(field) for term in terms for field in fields])
-
-        if len(filters) > 0:
-            reduced = reduce(lambda p, q: p | q, filters)
-            qs = filter_by_collection(model.objects.filter(reduced), request.specify_collection)
-            results[tablename] = list(qs.values(*display_fields))
-        else:
-            results[tablename] = []
+        results[tablename] = list(qs.values(*display_fields))
 
     return HttpResponse(toJson(results), content_type='application/json')
+
+@require_GET
+@login_required
+def related_search(request):
+    import related_searches
+    express_search_config = ElementTree.XML(get_express_search_config(request.specify_collection))
+    rs = getattr(related_searches, request.GET['name'])()
+    model = rs.pivot()
+    for searchtable in express_search_config.findall('tables/searchtable'):
+        tablename = searchtable.find('tableName').text.capitalize()
+        if tablename == model.__name__: break
+    else:
+        raise Exception('no matching primary search for related search: ' + rs)
+
+    terms = parse_search_str(request.specify_collection, request.GET['q'])
+    qs = build_queryset(searchtable, terms, request.specify_collection)
+    results = rs.do_search(qs)
+    return HttpResponse(toJson(results), content_type='application/json')
+
+@require_GET
+def available_related_searches(request):
+    import related_searches
+    return HttpResponse(toJson(related_searches.__all__),
+                        content_type='application/json')

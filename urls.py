@@ -25,7 +25,8 @@ urlpatterns = patterns(
     url(r'^specify/', include('specify.urls')),
     url(r'^context/', include('context.urls')),
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
-    url(r'^express_search/$', 'express_search.views.search'),
+
+    url(r'^express_search/', include('express_search.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
