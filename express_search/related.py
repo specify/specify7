@@ -48,6 +48,7 @@ class RelatedSearch(object):
 
     def to_values(self, queryset):
         fields = [col.replace('.', '__') for col in self.columns]
+        fields.append('id')
         return queryset.values_list(*fields)
 
     def def_as_dict(self):

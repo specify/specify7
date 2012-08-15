@@ -21,7 +21,7 @@ class CollObjToDeterminer(RelatedSearch):
         'determinations.taxon.commonname',
         'determinations.determiner.lastname',
         'determinations.determiner.firstname',
-        #                'determinations.determiner.agenttype',
+        'determinations.determiner.agenttype',
         ]
 
 class CollObToLocality(RelatedSearch):
