@@ -100,6 +100,7 @@ class AgentFromAgentVariant(RelatedSearch):
 
 class LocalityAlias(RelatedSearch):
     definition = 'Locality'
+    filters = { 'localitynamealiass.isnull': False }
     columns = [
         'localityname',
         'localitynamealiass.name'

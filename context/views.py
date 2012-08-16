@@ -156,6 +156,5 @@ def express_search_config(request):
 @require_GET
 def available_related_searches(request):
     from express_search import related_searches
-    from express_search.views import toJson
-    return HttpResponse(toJson(related_searches.__all__),
+    return HttpResponse(simplejson.dumps(related_searches.__all__),
                         content_type='application/json')

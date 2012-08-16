@@ -18,6 +18,9 @@ QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
 class JsonDateEncoder(json.JSONEncoder):
     def default(self, obj):
+        from decimal import Decimal
+        if isinstance(obj, Decimal):
+            return str(obj)
         if hasattr(obj, 'isoformat'):
             return obj.isoformat()
         return json.JSONEncoder.default(self, obj)
