@@ -137,6 +137,9 @@ define([
         getLocalizedDesc: function() {
             return schemalocalization.getLocalizedDescForField(this.name, this.model.name);
         },
+        getFormat: function() {
+            return schemalocalization.getFormatForField(this.name, this.model.name);
+        },
         getUIFormatter: function() {
             this._uiformatter = this._uiformatter || UIFormatter.forField(this);
             return this._uiformatter;

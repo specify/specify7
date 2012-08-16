@@ -1,8 +1,9 @@
-define ['jquery', 'underscore', 'backbone', 'navigation', 'schema', 'specifyapi',
+define ['jquery', 'underscore', 'backbone', 'navigation',
+     'schema', 'specifyapi', 'cs!fieldformat',
     'text!context/express_search_config.xml',
     'text!context/available_related_searches.json',
     'jquery-bbq', 'jquery-ui'
-], ($, _, Backbone, navigation, schema, api, configXML, availableRelatedJson) ->
+], ($, _, Backbone, navigation, schema, api, fieldformat, configXML, availableRelatedJson) ->
     config = $.parseXML configXML
     relatedSearches = $.parseJSON availableRelatedJson
 
@@ -66,9 +67,10 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'schema', 'specifyapi'
                 row = $('<tr>').appendTo table
                 resource = new (api.Resource.forModel model) id: values.pop()
                 href = resource.viewUrl()
-                _.each values, (value) ->
+                _.each displayFields, (field, i) ->
+                    value = fieldformat field, values[i]
                     row.append $('<td>').append \
-                        $('<a>', { href: href, class: "express-search-result" }).text(value or '')
+                        $('<a>', { href: href, class: "express-search-result" }).text value
 
             @$el.accordion('destroy').accordion accordionOptions
 
@@ -93,11 +95,12 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'schema', 'specifyapi'
 
             _.each results, (result) ->
                 row = $('<tr>').appendTo table
-                _.each displayFields, (displayField) ->
-                    href = "/specify/view/#{ model.name.toLowerCase() }/#{ result.id }/"
+                _.each displayFields, (field) ->
+                    resource = new (api.Resource.forModel model) id: result.id
+                    href = resource.viewUrl()
+                    value = fieldformat field, result[field.name.toLowerCase()]
                     row.append $('<td>').append \
-                        $('<a>', { href: href, class: "express-search-result" }).text(
-                            result[displayField.name.toLowerCase()] or '')
+                        $('<a>', { href: href, class: "express-search-result" }).text value
 
         navToResult: (evt) ->
             evt.preventDefault()

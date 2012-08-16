@@ -34,6 +34,10 @@ define(['jquery', 'text!context/schema_localization.json'], function($,  jsonTex
             return getLocalizationForField(fieldname, modelname).picklistname;
         },
 
+        getFormatForField: function(fieldname, modelname) {
+            return getLocalizationForField(fieldname, modelname).format;
+        },
+
         isRequiredField: function(fieldname, modelname) {
             return getLocalizationForField(fieldname, modelname).isrequired;
         },
