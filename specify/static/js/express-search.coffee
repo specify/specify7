@@ -1,11 +1,14 @@
 define ['jquery', 'underscore', 'backbone', 'navigation',
-     'schema', 'specifyapi', 'cs!fieldformat',
+    'schema', 'specifyapi', 'cs!fieldformat', 'cs!props',
     'text!context/express_search_config.xml',
     'text!context/available_related_searches.json',
+    'text!properties/expresssearch_en.properties',
     'jquery-bbq', 'jquery-ui'
-], ($, _, Backbone, navigation, schema, api, fieldformat, configXML, availableRelatedJson) ->
+], ($, _, Backbone, navigation, schema, api, fieldformat, props, \
+configXML, availableRelatedJson, propstext) ->
     config = $.parseXML configXML
     relatedSearches = $.parseJSON availableRelatedJson
+    getProp = _.bind props.getProperty, props, propstext
 
     accordionOptions =
         autoHeight: false
@@ -52,7 +55,7 @@ define ['jquery', 'underscore', 'backbone', 'navigation',
 
         showRelatedResults: (relatedSearch) ->
             if relatedSearch.totalCount < 1 then return
-            heading = relatedSearch.definition.name + ' - ' + relatedSearch.totalCount
+            heading = getProp(relatedSearch.definition.name) + ' - ' + relatedSearch.totalCount
             @$el.append $('<h4>').append $('<a>').text heading
             table = $('<table width="100%">').appendTo $('<div>').appendTo @el
 
