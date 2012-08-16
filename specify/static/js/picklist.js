@@ -1,13 +1,9 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema',
-    'cs!businessrulesviewmixin'
-], function($, _, schemalocalization, api, Backbone, schema, businessrulesviewmixin) {
+    'cs!businessrulesviewmixin', 'cs!agenttypepicklist'
+], function($, _, schemalocalization, api, Backbone, schema,
+            businessrulesviewmixin, agentTypePicklist) {
     "use strict";
-
-    var agentTypePicklist = [{value: 0, title: 'Organization'},
-                             {value: 1, title: 'Person'},
-                             {value: 2, title: 'Other'},
-                             {value: 3, title: 'Group'}];
 
     var Picklist = Backbone.View.extend({
         events: {
