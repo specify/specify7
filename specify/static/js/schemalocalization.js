@@ -1,6 +1,13 @@
-define(['jquery', 'text!context/schema_localization.json'], function($,  jsonText) {
+define([
+    'jquery', 'underscore', 'cs!props',
+    'text!context/schema_localization.json',
+    'text!properties/views_en.properties',
+    'text!properties/global_views_en.properties'
+], function($, _, props, jsonText, viewsprops, globalviewsprops) {
     "use strict";
     var json = $.parseJSON(jsonText);
+    var getProp = _.bind(props.getProperty, props,
+                         viewsprops + '\n' + globalviewsprops);
 
     function getLocalizationForModel(modelName) {
         return json[modelName.toLowerCase()];
@@ -51,13 +58,17 @@ define(['jquery', 'text!context/schema_localization.json'], function($,  jsonTex
 
             var fillinLabel = function() {
                 var label = $('label', this);
-                if (label.text()) return; // the label was hard coded in the form
+                if (label.text()) {
+                    // the label was hard coded in the form
+                    label.text(getProp(label.text()));
+                    return;
+                }
                 var forId = label.prop('for');
                 if (!forId) return; // not much we can do about that
                 var control = $('#' + forId, form);
                 var override = control.data('specify-field-label-override');
                 if (override !== undefined) {
-                    label.text(override);
+                    label.text(getProp(override));
                     return;
                 }
                 var fieldname = getControlFieldName(control);
