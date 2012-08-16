@@ -18,6 +18,12 @@ def images(request, path):
     return HttpResponse(specify_jar.read(path), content_type=mimetype)
 
 @login_required
+@require_GET
+def properties(request, name):
+    path = name + '.properties'
+    return HttpResponse(specify_jar.read(path), content_type='text/plain')
+
+@login_required
 def jpa_proxy(request, model):
     url = "http://localhost:8080/specify-data-service/search/uidata/fish/%s" % model
     f = urlopen(url + "?" + request.GET.urlencode())

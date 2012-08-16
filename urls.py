@@ -25,7 +25,7 @@ urlpatterns = patterns(
     url(r'^specify/', include('specify.urls')),
     url(r'^context/', include('context.urls')),
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
-
+    url(r'^properties/(?P<name>.+).properties$', 'specify.views.properties'),
     url(r'^express_search/', include('express_search.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
