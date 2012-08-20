@@ -107,7 +107,7 @@ input[type="submit"].saveblocked {
     background: red;
 }
 
-.businessruleviolated {
+.saveblocked {
     background-color: red;
 }
 

@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema',
-    'cs!businessrulesviewmixin', 'cs!agenttypepicklist'
+    'cs!saveblockers', 'cs!agenttypepicklist'
 ], function($, _, schemalocalization, api, Backbone, schema,
-            businessrulesviewmixin, agentTypePicklist) {
+            saveblockers, agentTypePicklist) {
     "use strict";
 
     var Picklist = Backbone.View.extend({
@@ -58,7 +58,7 @@ define([
 
             var getValue = self.model.rget(field.name);
             $.when(getPickList, getValue).done(buildPicklist);
-            self.enableBusinessRulesMixin(field.name);
+            self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, field.name);
             return self;
         },
         change: function() {
@@ -66,6 +66,5 @@ define([
         }
     });
 
-    _.extend(Picklist.prototype, businessrulesviewmixin);
     return Picklist;
 });

@@ -16,15 +16,6 @@ define([
         this.fields = _(this.node.find('field')).map(function(node) { return new Field(node); });
     }
 
-    UIFormatter.forField = function(field) {
-        var selector = [
-            '[fieldname="' + field.name + '"]',
-            '[class="' + field.model.longName + '"]'
-        ].join('');
-
-        return new UIFormatter(uiformatters.find(selector).first());
-    };
-
     _(UIFormatter.prototype).extend({
         value: function() {
             return _(this.fields).pluck('value').join('');
@@ -69,5 +60,10 @@ define([
         return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    return UIFormatter;
+    function getUIFormatter(name) {
+        var formatter = uiformatters.find('[name="' + name + '"]');
+        return formatter && new UIFormatter(formatter);
+    }
+
+    return getUIFormatter;
 });

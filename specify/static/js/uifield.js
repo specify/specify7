@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse',
-    'cs!businessrulesviewmixin'
-], function($, _, Backbone, dataObjFormat, uiformat, uiparse, businessrulesviewmixin) {
+    'cs!saveblockers'
+], function($, _, Backbone, dataObjFormat, uiformat, uiparse, saveblockers) {
     "use strict";
 
     var UIField = Backbone.View.extend({
@@ -33,44 +33,37 @@ define([
 
             fillItIn();
             self.model.onChange(fieldName, fillItIn);
-            self.enableBusinessRulesMixin(fieldName);
+            self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
             return this;
         },
         change: function() {
-            var validation = this.validate();
-            this.model.set(this.fieldName, validation.value);
-            return;
-            // skip validation for now.
-            if (validation.isValid) {
-                this.model.set(this.fieldName, validation.parsed);
-                this.resetInvalid();
-            } else {
-                this.showInvalid(validation.reason);
-            }
-        },
-        validate: function() {
             var value = this.$el.val().trim();
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
-                return {
-                    value: value,
-                    isValid: false,
-                    reason: "Field is required."
-                };
+                this.model.saveBlockers.add('fieldrequired:' + this.fieldName,
+                                            this.fieldName, "Field is required.");
+                return;
             }
+            this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
             if (this.$el.is('.specify-formattedtext')) {
                 var formatter = this.field.getUIFormatter();
-                if (formatter && !formatter.validate(value)) return {
-                    value: value,
-                    isValid: false,
-                    reason: "Required format: " + formatter.value()
-                };
+                if (formatter && !formatter.validate(value)) {
+                    this.model.saveBlockers.add('badformat:' + this.fieldName,
+                                                this.fieldName,
+                                                "Required format: " + formatter.value());
+                    return;
+                }
             }
-            return uiparse(this.field, value);
+            var result = uiparse(this.field, value);
+            if (!result.isValid) {
+                this.model.saveBlockers.add('cantparse:' + this.fieldName,
+                                            this.fieldName,
+                                            result.reason);
+                return;
+            }
+            this.model.set(this.fieldName, result.parsed);
         }
     });
 
-    _.extend(UIField.prototype, businessrulesviewmixin);
     return UIField;
-
 });

@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'icons', 'uiformatters',
     'text!resources/specify_datamodel.xml'
-], function($, _, schemalocalization, icons, UIFormatter, xml) {
+], function($, _, schemalocalization, icons, uiformatters, xml) {
     "use strict";
 
     var Model = function(node) {
@@ -141,8 +141,7 @@ define([
             return schemalocalization.getFormatForField(this.name, this.model.name);
         },
         getUIFormatter: function() {
-            this._uiformatter = this._uiformatter || UIFormatter.forField(this);
-            return this._uiformatter;
+            return uiformatters(this.getFormat());
         }
     });
 

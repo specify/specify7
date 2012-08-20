@@ -1,12 +1,11 @@
-define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
+define ['jquery', 'underscore', 'whenall', 'cs!saveblockers'], ($, _, whenAll, saveblockers) ->
 
     class BusinessRuleMgr
         constructor: (@resource) ->
             @rules = rules[@resource.specifyModel.name]
             @fieldChangeDeferreds = {}
-            @deleteBlockers = {}
-            @fieldResults = {}
             @watchers = {}
+            @deleteBlockers = {}
             _.each @rules?.deleteBlockers, (fieldname) =>
                  @deleteBlockers[fieldname] = true
 
@@ -47,19 +46,12 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
             @fieldChangeDeferreds[fieldName] = deferred = @checkUnique fieldName
-            deferred.done (result) =>
-                if deferred is @fieldChangeDeferreds[fieldName]
-                    delete @fieldChangeDeferreds[fieldName]
-                    @fieldResults[fieldName] = result
-                    @resource.trigger "businessrule:#{ fieldName }", @resource, result
-                    if _.isEmpty @fieldChangeDeferreds
-                        @resource.trigger "businessrulescomplete", @resource
-                        if @resource.needsSaved then @resource.trigger (
-                            if (_.all @fieldResults, (result) -> result.valid)
-                                'saverequired'
-                            else
-                                'saveblocked'
-                        ), @resource
+            deferred.done (result) => if deferred is @fieldChangeDeferreds[fieldName]
+                delete @fieldChangeDeferreds[fieldName]
+                if not result.valid
+                    @resource.saveBlockers.add('br:' + fieldName, fieldName, result.reason)
+                else
+                    @resource.saveBlockers.remove('br:' + fieldName)
 
         checkUnique: (fieldName) ->
             results = if fieldName in (@rules?.unique or [])
@@ -219,3 +211,4 @@ define ['jquery', 'underscore', 'whenall'], ($, _, whenAll) ->
         attachToResource: (resource) ->
             mgr = resource.businessRuleMgr = new BusinessRuleMgr resource
             mgr.setupEvents()
+            resource.saveBlockers = new saveblockers.SaveBlockers resource

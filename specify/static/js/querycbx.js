@@ -1,12 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
-    'cs!businessrulesviewmixin',
+    'cs!saveblockers',
     'text!resources/backstop/typesearch_def.xml',
     'text!resources/backstop/dialog_defs.xml',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
-             whenAll, parseselect, schemalocalization, navigation, businessrulesviewmixin,
+             whenAll, parseselect, schemalocalization, navigation, saveblockers,
              typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
@@ -59,7 +59,7 @@ define([
 
             self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
             self.fillIn();
-            self.enableBusinessRulesMixin(self.fieldName, control);
+            self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, self.fieldName, control);
             return self;
         },
         fillIn: function () {
@@ -114,6 +114,5 @@ define([
         }
     });
 
-    _.extend(QueryCbx.prototype, businessrulesviewmixin);
     return QueryCbx;
 });
