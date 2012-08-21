@@ -21,7 +21,7 @@ define([
             return _(this.fields).pluck('value').join('');
         },
         regExp: function() {
-            return _(this.fields).invoke('regExp').join('');
+            return '^' + _(this.fields).invoke('regExp').join('') + '$';
         },
         validate: function(str) {
             return RegExp(this.regExp()).test(str) && str;
