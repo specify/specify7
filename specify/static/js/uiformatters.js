@@ -24,7 +24,7 @@ define([
             return _(this.fields).invoke('regExp').join('');
         },
         validate: function(str) {
-            return RegExp(this.regExp()).test(str);
+            return RegExp(this.regExp()).test(str) && str;
         }
     });
 
@@ -56,13 +56,25 @@ define([
         }
     });
 
+    var catalogNumberNumeric = {
+        value: function() { return '#########'; },
+        regExp: function() { return '^\\d{1,9}$'; },
+        validate: function(str) {
+            return RegExp(this.regExp()).test(str) && (Array(10-str.length).join('0') + str);
+        }
+    };
+
     function escapeRegExp(str) {
         return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
     function getUIFormatter(name) {
-        var formatter = uiformatters.find('[name="' + name + '"]');
-        return formatter && new UIFormatter(formatter);
+        var node = uiformatters.find('[name="' + name + '"]');
+        var formatter = node && new UIFormatter(node);
+        if (formatter.isExternal && formatter.name === "CatalogNumberNumeric") {
+            _(formatter).extend(catalogNumberNumeric);
+        }
+        return formatter;
     }
 
     return getUIFormatter;

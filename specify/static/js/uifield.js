@@ -47,11 +47,14 @@ define([
             this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
             if (this.$el.is('.specify-formattedtext')) {
                 var formatter = this.field.getUIFormatter();
-                if (formatter && !formatter.validate(value)) {
+                if (formatter) value = formatter.validate(value);
+                if (!value) {
                     this.model.saveBlockers.add('badformat:' + this.fieldName,
                                                 this.fieldName,
                                                 "Required format: " + formatter.value());
                     return;
+                } else {
+                    this.model.saveBlockers.remove('badformat:' + this.fieldName);
                 }
             }
             var result = uiparse(this.field, value);
