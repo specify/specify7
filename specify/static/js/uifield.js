@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse',
+    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
     'cs!saveblockers', 'cs!tooltipmgr'
-], function($, _, Backbone, dataObjFormat, uiformat, uiparse, saveblockers, ToolTipMgr) {
+], function($, _, Backbone, dataObjFormat, fieldformat, uiparse, saveblockers, ToolTipMgr) {
     "use strict";
 
     var UIField = Backbone.View.extend({
@@ -21,10 +21,11 @@ define([
                 self.$el.prop('readonly', true);
             }
 
-            var fetch =  field.isRelationship ? function() {
-                return self.model.rget(fieldName).pipe(dataObjFormat);
-            } : function () {
-                return uiformat(self.model, fieldName);
+            var fetch = function() {
+                return self.model.rget(fieldName).pipe(function(value) {
+                    return field.isRelationship ? dataObjFormat(value) :
+                        fieldformat(field, value);
+                });
             };
 
             var setControl =_(self.$el.val).bind(self.$el);

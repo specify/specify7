@@ -1,7 +1,7 @@
 define([
-    'jquery', 'specifyapi', 'whenall', 'uiformat',
+    'jquery', 'specifyapi', 'whenall', 'cs!fieldformat',
     'text!resources/backstop/dataobj_formatters.xml'
-], function($, api, whenAll, uiformat, xml) {
+], function($, api, whenAll, fieldformat, xml) {
     "use strict";
     var formatters = $.parseXML(xml);
 
@@ -21,11 +21,10 @@ define([
                 var fieldNode = $(this);
                 var formatter = fieldNode.attr('formatter'); // hope it's not circular!
                 var fieldName = fieldNode.text();
-                if (formatter)
-                    return resource.rget(fieldName).pipe(function(resource) {
-                        return dataobjformat(resource, formatter);
-                    });
-                else return uiformat(resource, fieldName);
+                return resource.rget(fieldName).pipe(function(value) {
+                    return formatter ? dataobjformat(value, formatter) :
+                        fieldformat(resource.specifyModel.getField(fieldName), value);
+                });
             });
 
             return whenAll(deferreds).pipe(function (fieldVals) {
