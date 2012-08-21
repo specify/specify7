@@ -15,7 +15,8 @@ require({
         'text'           : "vendor/text",
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
-        'context'        : '/static/js/tests/fixtures/context'
+        'context'        : '/static/js/tests/fixtures/context',
+        'properties'     : '/static/js/tests/fixtures/properties'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
