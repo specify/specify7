@@ -77,5 +77,8 @@ define([
         return formatter;
     }
 
-    return getUIFormatter;
+    return {
+        getByName: getUIFormatter,
+        UIFormatter: UIFormatter,
+        Field: Field };
 });

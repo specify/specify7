@@ -1,4 +1,4 @@
-define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema) {
+define(['underscore', 'uiformatters', 'schema'], function(_, uiformatters, schema) {
     "use strict";
     return function() {
         module('uiformatters');
@@ -13,7 +13,7 @@ define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema
     <field type="numeric" size="3" inc="true"/>\
   </format>\
 ')).find('format');
-            var uiformatter = new UIFormatter(node);
+            var uiformatter = new uiformatters.UIFormatter(node);
             equal(uiformatter.name, 'AccessionNumber');
             equal(uiformatter.system, true);
             equal(uiformatter.modelName, 'Accession');
@@ -42,7 +42,7 @@ define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema
 <external>edu.ku.brc.specify.ui.CatalogNumberUIFieldFormatter</external>\
 </format>\
 ')).find('format');
-            var uiformatter = new UIFormatter(node);
+            var uiformatter = new uiformatters.UIFormatter(node);
             equal(uiformatter.name, 'CatalogNumberNumeric');
             equal(uiformatter.system, true);
             equal(uiformatter.modelName, 'CollectionObject');
@@ -50,14 +50,9 @@ define(['underscore', 'uiformatters', 'schema'], function(_, UIFormatter, schema
             equal(uiformatter.isExternal, true);
         });
 
-        test('UIFormatter.forField', function() {
-            var uiformatter = schema.getModel('gift').getField('giftnumber').getUIFormatter();
-            equal(uiformatter.name, 'GiftNumber');
-        });
-
-        test('UIFormatter.forField multiple', function() {
-            var uiformatter = schema.getModel('accession').getField('accessionNumber').getUIFormatter();
-            equal(uiformatter.value(), 'YEAR-AA-###');
+        test('getUIFormatter', function() {
+            var uiformatter = schema.getModel('collectionobject').getField('catalogNumber').getUIFormatter();
+            equal(uiformatter.name, 'CatalogNumberNumeric');
         });
     };
 });
