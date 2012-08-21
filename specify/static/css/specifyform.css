@@ -114,3 +114,23 @@ input[type="submit"].saveblocked {
 #express-search {
     padding: 0 10px 5px;
 }
+
+.tooltip {
+    display: none;
+    position: absolute;
+    text-align: center;
+    color: grey;
+}
+
+.tooltip-content {
+    background-color: grey;
+    color: white;
+    padding: 8px;
+    border-width: 1px;
+    border-color: black;
+    margin-top: -3px;
+}
+
+.tooltip li {
+    list-style-type: none;
+}

@@ -1,4 +1,4 @@
-define [], () ->
+define ['jquery', 'underscore'], ($, _) ->
 
     SaveBlockers: class SaveBlockers
         constructor: (@resource) ->
@@ -29,12 +29,13 @@ define [], () ->
             @control = control or @view.$el
             @view.model.on "saveblocked:#{ @field }", @indicatorOn, @
             @view.model.on "nosaveblockers:#{ @field }", @indicatorOff, @
+            @view.toolTipMgr?.addGenerator @makeToolTips, @
 
         indicatorOn: ->
-            @savedToolTip ?= @control.attr 'title'
-            reasons = _.pluck @view.model.saveBlockers.blockersForField(@field), 'reason'
-            @control.addClass('saveblocked').attr 'title', reasons.join(' ')
+            @control.addClass 'saveblocked'
 
         indicatorOff: ->
             @control.removeClass 'saveblocked'
-            @control.attr 'title', @savedToolTip if @savedToolTip
+
+        makeToolTips: ->
+            _.pluck @view.model.saveBlockers.blockersForField(@field), 'reason'

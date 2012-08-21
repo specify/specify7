@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'dataobjformatters', 'uiformat', 'uiparse',
-    'cs!saveblockers'
-], function($, _, Backbone, dataObjFormat, uiformat, uiparse, saveblockers) {
+    'cs!saveblockers', 'cs!tooltipmgr'
+], function($, _, Backbone, dataObjFormat, uiformat, uiparse, saveblockers, ToolTipMgr) {
     "use strict";
 
     var UIField = Backbone.View.extend({
@@ -33,6 +33,7 @@ define([
 
             fillItIn();
             self.model.onChange(fieldName, fillItIn);
+            self.toolTipMgr = new ToolTipMgr(self).enable();
             self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
             return this;
         },

@@ -42,10 +42,10 @@ define([
             switch (this.type) {
             case 'year':
             case 'numeric':
-                return '\\d{' + this.size + '}';
+                return '\\d{0,' + this.size + '}';
                 break;
             case 'alphanumeric':
-                return '[a-zA-Z0-9]{' + this.size + '}';
+                return '[a-zA-Z0-9]{0,' + this.size + '}';
                 break;
             case 'separator':
                 return escapeRegExp(this.value);
@@ -58,7 +58,7 @@ define([
 
     var catalogNumberNumeric = {
         value: function() { return '#########'; },
-        regExp: function() { return '^\\d{1,9}$'; },
+        regExp: function() { return '^\\d{0,9}$'; },
         validate: function(str) {
             return RegExp(this.regExp()).test(str) && (Array(10-str.length).join('0') + str);
         }
