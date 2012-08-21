@@ -5,23 +5,30 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             click: 'submit'
         initialize: (options) ->
             @blockers = {}
-            @model.on 'saverequired', (blocker) =>
+
+            @model.on 'saverequired', (resource) =>
                 @$el.prop 'disabled', false
-                @removeBlocker blocker
-            @model.on 'saveblocked', (blocker) =>
-                @blockers[blocker.cid] ?= blocker.on 'destroy', @removeBlocker, @
+
+            @model.on 'oktosave', (resource) =>
+                @removeBlocker resource
+
+            @model.on 'saveblocked', (resource) =>
+                @blockers[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
                 @$el.prop 'disabled', false
                 @$el.addClass 'saveblocked'
-        removeBlocker: (blocker) ->
-            delete @blockers[blocker.cid]
+
+        removeBlocker: (resource) ->
+            delete @blockers[resource.cid]
             if _.isEmpty @blockers
                 @$el.removeClass 'saveblocked'
+
         render: ->
             @$el.prop 'disabled', true
             @dialog = $(templates.saveblocked()).insertAfter(@el).dialog
                 resizable: false
                 autoOpen: false
             @dialog.parent('.ui-dialog').insertAfter(@el)
+
         submit: (evt) ->
             evt.preventDefault()
             if _.isEmpty @blockers
@@ -30,14 +37,13 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             else
                 list = @dialog.find '.saveblockers'
                 list.empty()
-                _.each @blockers, (blocker) =>
+                _.each @blockers, (resource) =>
                     li = $('<li>').appendTo list
-                    li.append $('<h3>').text(blocker.specifyModel.getLocalizedName())
+                    li.append $('<h3>').text(resource.specifyModel.getLocalizedName())
                     dl = $('<dl>').appendTo li
-                    _.each blocker.businessRuleMgr.fieldResults, (result, fieldName) ->
-                        if result.valid then return
-                        field = blocker.specifyModel.getField fieldName
-                        $('<dt>').text(field.getLocalizedName()).appendTo dl
-                        $('<dd>').text(result.reason).appendTo dl
+                    _.each resource.saveBlockers.getAll(), (blocker) ->
+                        field = resource.specifyModel.getField blocker.field if blocker.field?
+                        $('<dt>').text(field?.getLocalizedName() or '').appendTo dl
+                        $('<dd>').text(blocker.reason).appendTo dl
                 @dialog.dialog 'open'
 

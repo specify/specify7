@@ -45,7 +45,7 @@ define([
             this.on('change', function(resource, options) {
                 if (!this._fetch && !this.saving) {
                     this.needsSaved = true;
-                    this.businessRuleMgr || this.trigger('saverequired');
+                    this.trigger('saverequired');
                 }
             });
             this.on('sync', function() {

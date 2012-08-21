@@ -15,8 +15,10 @@ define [], () ->
             delete @blockers[key]
             if field? and _.isEmpty @blockersForField field
                 @resource.trigger "nosaveblockers:#{ field }"
-            if @resource.needsSaved and _.isEmpty @blockers
-                @resource.trigger 'saverequired', @resource
+            if  _.isEmpty @blockers
+                @resource.trigger 'oktosave', @resource
+
+        getAll: -> @blockers
 
         blockersForField: (field) ->
             _.filter @blockers, (blocker) -> blocker.field is field
