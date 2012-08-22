@@ -1,9 +1,20 @@
-define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> ->
+define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, schema, whenAll) -> ->
 
     getCollectionObject = (id, callback) ->
         collectionobject = new (api.Resource.forModel 'collectionobject') id: id
         collectionobject.fetch().done callback
         collectionobject
+
+    requireEvent = (object, event, message) ->
+        deferred = $.Deferred()
+        object.on event, ->
+            deferred.resolve.apply deferred, arguments
+            ok true, (message or event)
+        deferred
+
+    rejectEvent = (object, event, message) ->
+        object.on event, -> ok false, (message or event)
+        null
 
     module 'businessrules'
     test 'saverequired event', ->
@@ -11,45 +22,52 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         stop()
         collectionobject = getCollectionObject 100, ->
             collectionobject.rget('collectingevent.modifiedbyagent.remarks').done (remarks) ->
-                collectionobject.on 'saverequired', ->
-                    ok true, 'saverequired on CO'
-                    _.delay start, 1000
-
-                collectionobject.on 'change', -> ok false, 'change on CO'
-
                 collectingevent = collectionobject.relatedCache.collectingevent
-                collectingevent.on 'saverequired', -> ok true, 'saverequired on CE'
-                collectingevent.on 'change', -> ok false, 'change on CE'
-
                 agent = collectingevent.relatedCache.modifiedbyagent
-                agent.on 'saverequired', -> ok true, 'saverequired on agent'
-                agent.on 'change', -> ok true, 'change on agent'
+
+                checks = [
+                    requireEvent collectionobject, 'saverequired', 'saverequired on CO'
+                    rejectEvent collectionobject, 'change', 'change on CO'
+
+                    requireEvent collectingevent, 'saverequired', 'saverequired on CE'
+                    rejectEvent collectingevent, 'change', 'change on CE'
+
+                    requireEvent agent, 'saverequired', 'saverequired on agent'
+                    requireEvent agent, 'change', 'change on agent'
+                ]
+                whenAll(checks).done -> start()
 
                 agent.set 'remarks', if remarks is 'foo' then 'bar' else 'foo'
 
-    test 'saverequired blocked', ->
-        expect 2
+    test 'saveblocked event', ->
+        expect 7
         stop()
         collectionobject = getCollectionObject 100, ->
             collectionobject.rget('accession.accessionagents', true).done (AAs) ->
-                collectionobject.on 'saverequired', -> ok false, 'saverequired on CO'
-
                 accession = collectionobject.relatedCache.accession
-                accession.on 'saverequired', -> ok false, 'saverequired on accession'
 
-                existingRole = AAs.at(0).get 'role'
+                checks = [
+                    requireEvent collectionobject, 'saveblocked', 'saveblocked reaches CO'
+                    requireEvent collectionobject, 'saverequired', 'saverequired reaches CO'
+
+                    requireEvent accession, 'saveblocked', 'saveblocked reaches accession'
+                    requireEvent accession, 'saverequired', 'saverequired reaches accession'
+                ]
 
                 newagent = new (api.Resource.forModel 'accessionagent')()
                 newagent.set 'accession', accession.url()
                 AAs.add newagent
 
-                newagent.on 'saverequired', -> ok false, 'saverequired on newagent'
+                checks.push(
+                    requireEvent newagent, 'saverequired', 'saverequired on newagent',
+                    requireEvent newagent, 'saveblocked', 'saveblocked fired on newagent'
+                )
 
-                newagent.on 'businessrulescomplete', ->
-                    ok true, 'businessrulescomplete'
+                whenAll(checks).done ->
                     ok newagent.needsSaved, 'newagent needsSaved'
-                    _.delay start, 1000
+                    start()
 
+                existingRole = AAs.at(0).get 'role'
                 newagent.set 'role', existingRole
 
     test 'delete blockers', ->
@@ -105,36 +123,41 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         expect 3
         stop()
         collectionobject = getCollectionObject 100, ->
-            collectionobject.on 'businessrule:catalognumber', (resource, result) ->
-                ok true, 'businessrule event is triggered'
-                ok (not result.valid), 'field is invalid'
-                ok _(result.reason).isString(), 'reason is given'
+            collectionobject.on 'saveblocked:catalognumber', (resource) ->
+                ok true, 'save is blocked by catalognumber'
+                blockers = resource.saveBlockers.blockersForField 'catalognumber'
+                equal blockers.length, 1, 'only one blocker'
+                ok blockers[0].reason, 'reason is given'
                 start()
             collectionobject.set 'catalognumber',  "000037799"
 
     test 'catalognumber unique', ->
+        expect 3
+        stop()
+        collectionobject = getCollectionObject 100, ->
+            collectionobject.on 'saveblocked', (resource) ->
+                ok true, 'save is blocked'
+
+                checks = [
+                    requireEvent collectionobject, 'nosaveblockers:catalognumber', 'saveblockers cleared'
+                    requireEvent collectionobject, 'oktosave', 'oktosave event triggered'
+                ]
+                whenAll(checks).done -> start()
+                _.defer -> collectionobject.set 'catalognumber', "999999999"
+            collectionobject.set 'catalognumber', "000037799"
+
+    test 'catalognumber set to original value', ->
         expect 2
         stop()
         collectionobject = getCollectionObject 100, ->
-            collectionobject.on 'businessrule:catalognumber', (resource, result) ->
-                ok true, 'businessrule event is triggered'
-                ok result.valid, 'catalog number is valid'
-                start()
-            collectionobject.set 'catalognumber', "999999999"
-
-    test 'catalognumber set to original value', ->
-        expect 4
-        stop()
-        collectionobject = getCollectionObject 102, ->
             origCatNum = collectionobject.get 'catalognumber'
-            collectionobject.on 'businessrule:catalognumber', (resource, result) ->
-                ok true, 'businessrule event triggered'
-                ok result.valid, 'is valid'
-                if (collectionobject.get 'catalognumber') is "999999999"
-                    collectionobject.set 'catalognumber', origCatNum
-                else
+            collectionobject.on 'saveblocked', (resource) ->
+                ok true, 'save is blocked'
+                collectionobject.on 'oktosave', (resource) ->
+                    ok true, 'oktosave after setting value back to orig'
                     start()
-            collectionobject.set 'catalognumber', "999999999"
+                _.defer -> collectionobject.set 'catalognumber', origCatNum
+            collectionobject.set 'catalognumber', "000037799"
 
     test 'catalognumber unique in collection where some collection objects have been fetched', ->
         expect 4
@@ -151,59 +174,62 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             nextTest = ->
                 if tests.length is 0 then return start()
                 [i, catNum, expectedValid, doc] = tests.shift()
-                COs.at(i).on 'businessrule:catalognumber', (resource, result) ->
-                    equal result.valid, expectedValid, doc
-                    nextTest()
-                COs.at(i).set 'catalognumber', catNum
+                collectionobject = COs.at i
+                checks = if expectedValid then [
+                    requireEvent collectionobject, 'oktosave', doc
+                    rejectEvent collectionobject, 'saveblocked', doc ]
+                else [
+                    requireEvent collectionobject, 'saveblocked', doc
+                    rejectEvent collectionobject, 'oktosave', doc ]
+
+                whenAll(checks).done -> _.defer nextTest
+
+                collectionobject.set 'catalognumber', catNum
 
             nextTest()
 
     module 'institution business rules'
     test 'institution name is not unique', ->
-        expect 2
+        expect 4
         stop()
         institution = new (api.Resource.forModel 'institution')()
-        institution.on 'businessrule:name', (resource, result) ->
-            console.log result
-            ok (not result.valid), 'business rule is violated'
-            ok (_.isString result.reason), result.reason
-            start()
+        checkReason = (resource, blocker) ->
+                ok (_.isString blocker.reason), blocker.reason
+
+        whenAll([
+            (requireEvent institution, 'saveblocked', 'saveblocked triggered').done checkReason
+            (requireEvent institution, 'saveblocked:name', 'field event triggered').done checkReason
+        ]).done -> _.defer start
+
         institution.set 'name', 'Natural History Museum'
 
     test 'institution name is unique', ->
-        expect 1
+        expect 2
         stop()
         institution = new (api.Resource.forModel 'institution')()
-        institution.on 'businessrule:name', (resource, result) ->
-            console.log result
-            ok result.valid, 'business rule is valid'
-            start()
-        institution.set 'name', 'foobar'
+        requireEvent(institution, 'saveblocked', 'saveblocked triggered').done ->
+            requireEvent(institution, 'oktosave', 'oktosave').done -> _.defer start
+            _.defer -> institution.set 'name', 'foobar'
+
+        institution.set 'name', 'Natural History Museum'
 
     module 'collector business rules'
-    test 'collector agent unique in collectingevent', ->
-        expect 1
-        stop()
-        collectingevent = new (api.Resource.forModel 'collectingevent') id: 715
-        collectingevent.rget('collectors', true).done (collectors) ->
-            newcollector = new (api.Resource.forModel 'collector')()
-            newcollector.set 'collectingevent', collectingevent.url()
-            newcollector.on 'businessrule:agent', (resource, result) ->
-                ok result.valid, 'business rule is valid'
-                start()
-            collectors.add newcollector
-            newcollector.set 'agent', '/api/specify/agent/66/'
-
     test 'collector agent not unique in collectingevent', ->
-        expect 1
+        expect 4
         stop()
         collectingevent = new (api.Resource.forModel 'collectingevent') id: 715
         collectingevent.rget('collectors', true).done (collectors) ->
             newcollector = new (api.Resource.forModel 'collector')()
             newcollector.set 'collectingevent', collectingevent.url()
-            newcollector.on 'businessrule:agent', (resource, result) ->
-                ok (not result.valid), result.reason
-                start()
+
+            requireEvent(newcollector, 'saveblocked:agent', 'saveblocked').done (resource, blocker) ->
+                ok _.isString(blocker.reason), blocker.reason
+                whenAll([
+                    requireEvent newcollector, 'nosaveblockers:agent'
+                    requireEvent newcollector, 'oktosave'
+                ]).done -> _.defer start
+                _.defer -> newcollector.set 'agent', '/api/specify/agent/66/'
+
             collectors.add newcollector
             newcollector.set 'agent', '/api/specify/agent/634/'
 
@@ -212,9 +238,11 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         expect 1
         stop()
         accessionagent = new (api.Resource.forModel 'accessionagent')()
-        accessionagent.on 'businessrule:role', (resource, result) ->
-            ok result.valid, 'business rule is valid'
-            start()
+        whenAll([
+            requireEvent accessionagent, 'saverequired'
+            rejectEvent accessionagent, 'saveblocked'
+        ]).done -> _.defer start
+
         accessionagent.set 'role', 'Donor'
 
     test 'accessionagent with null accession', ->
@@ -222,9 +250,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         stop()
         accessionagent = new (api.Resource.forModel 'accessionagent')()
         accessionagent.set 'accession', null
-        accessionagent.on 'businessrule:role', (resource, result) ->
-            ok result.valid, 'business rule is valid'
-            start()
+        whenAll([
+            requireEvent accessionagent, 'saverequired'
+            rejectEvent accessionagent, 'saveblocked'
+        ]).done -> _.defer start
         accessionagent.set 'role', 'Donor'
 
     test 'accessionagent with new role in accession', ->
@@ -233,24 +262,26 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
         accession = new (api.Resource.forModel 'accession') id: 1
         accession.rget('accessionagents', true).done (AAs) ->
             newagent = new (api.Resource.forModel 'accessionagent')()
-            newagent.on 'businessrule:role', (__, result) ->
-                ok result.valid, 'business is ok'
-                start()
             newagent.set 'accession', accession.url()
             AAs.add newagent
+            whenAll([
+                requireEvent newagent, 'saverequired'
+                rejectEvent newagent, 'saveblocked'
+            ]).done -> _.defer start
             newagent.set 'role', 'Donor'
 
     test 'accessionagent with duped role in accession', ->
-        expect 1
+        expect 2
         stop()
         accession = new (api.Resource.forModel 'accession') id: 1
         accession.rget('accessionagents', true).done (AAs) ->
             newagent = new (api.Resource.forModel 'accessionagent')()
-            newagent.on 'businessrule:role', (__, result) ->
-                ok (not result.valid), 'business rule is violated'
-                start()
             newagent.set 'accession', accession.url()
             AAs.add newagent
+            whenAll([
+                requireEvent newagent, 'saveblocked'
+                requireEvent newagent, 'saverequired'
+            ]).done -> _.defer start
             newagent.set 'role', 'Collector'
 
     test 'accessionagent with duped role in repositoryagreement', ->
@@ -264,16 +295,14 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             newagent1.set 'role', 'Collector'
 
             newagent2 = new (api.Resource.forModel 'accessionagent')()
-            newagent2.on 'businessrule:role', (__, result) ->
-                ok (not result.valid), 'business rule violated'
-                start()
+            requireEvent(newagent2, 'saveblocked:role').done -> _.defer start
 
             newagent2.set 'repositoryagreement', repositoryagreement.url()
             AAs.add newagent2
             newagent2.set 'role', 'Collector'
 
     test 'accessionagent with duped role in both accession and repositoryagreement', ->
-        expect 2
+        expect 7
         stop()
         accession = new (api.Resource.forModel 'accession') id: 1
         repositoryagreement = new (api.Resource.forModel 'repositoryagreement') id: 1
@@ -284,10 +313,16 @@ define ['jquery', 'underscore', 'specifyapi', 'schema'], ($, _, api, schema) -> 
             newagent1.set 'role', 'Collector'
 
             newagent = new (api.Resource.forModel 'accessionagent')()
-            newagent.on 'businessrule:role', (__, result) ->
-                ok (not result.valid), 'business rule is not ok'
-                equal result.reason, 'Value must be unique to accession, Value must be unique to repositoryagreement',
-                    'reasons are joined'
+
+            whenAll([
+                requireEvent newagent, 'saveblocked'
+                requireEvent newagent, 'saverequired'
+            ]).done -> _.defer ->
+                blockers = newagent.saveBlockers.getAll()
+                equal _.keys(blockers).length, 1
+                _(blockers).each (blocker) ->
+                    equal blocker.field, 'role'
+                    equal blocker.reason, "Value must be unique to accession, Value must be unique to repositoryagreement"
                 start()
 
             newagent.set 'accession', accession.url()

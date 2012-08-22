@@ -6,9 +6,9 @@ define ['jquery', 'underscore'], ($, _) ->
 
         add: (key, field, reason) ->
             field = field?.toLowerCase()
-            @blockers[key] = { field: field, reason: reason }
-            @resource.trigger 'saveblocked', @resource
-            if field? then @resource.trigger "saveblocked:#{ field }"
+            @blockers[key] = blocker = { field: field, reason: reason }
+            @resource.trigger 'saveblocked', @resource, blocker
+            if field? then @resource.trigger "saveblocked:#{ field }", @resource, blocker
 
         remove: (key) ->
             field = @blockers[key]?.field

@@ -30,7 +30,7 @@ define(['underscore', 'uiformatters', 'schema'], function(_, uiformatters, schem
                   [true, false, false, false, false]);
 
             equal(uiformatter.value(), 'YEAR-AA-###');
-            equal(uiformatter.regExp(), '\\d{4}\\-[a-zA-Z0-9]{2}\\-\\d{3}');
+            equal(uiformatter.regExp(), '^\\d{0,4}\\-[a-zA-Z0-9]{0,2}\\-\\d{0,3}$');
             ok(uiformatter.validate('2012-hi-123'));
             ok(!uiformatter.validate('123-34-oeu'));
         });
