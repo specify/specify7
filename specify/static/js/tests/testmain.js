@@ -42,7 +42,6 @@ require([
     setupmockjax();
     QUnit.config.reorder = false;
     QUnit.config.autorun = false;
-    QUnit.start();
     var tests = _(arguments).chain().tail(testmain.length);
     tests.invoke('apply');
 });
