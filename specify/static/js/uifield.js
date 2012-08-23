@@ -40,33 +40,43 @@ define([
         },
         change: function() {
             var value = this.$el.val().trim();
+
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
-                this.model.saveBlockers.add('fieldrequired:' + this.fieldName,
-                                            this.fieldName, "Field is required.");
+                this.addSaveBlocker('fieldrequired', "Field is required.");
                 return;
+            } else {
+                this.removeSaveBlocker('fieldrequired');
             }
-            this.model.saveBlockers.remove('fieldrequired:' + this.fieldName);
+
             if (this.$el.is('.specify-formattedtext')) {
                 var formatter = this.field.getUIFormatter();
                 if (formatter) value = formatter.validate(value);
                 if (!value) {
-                    this.model.saveBlockers.add('badformat:' + this.fieldName,
-                                                this.fieldName,
-                                                "Required format: " + formatter.value());
+                    this.addSaveBlocker('badformat', "Required format: " + formatter.value());
                     return;
                 } else {
-                    this.model.saveBlockers.remove('badformat:' + this.fieldName);
+                    this.removeSaveBlocker('badformat');
                 }
             }
-            var result = uiparse(this.field, value);
-            if (!result.isValid) {
-                this.model.saveBlockers.add('cantparse:' + this.fieldName,
-                                            this.fieldName,
-                                            result.reason);
+
+            var parseResult = uiparse(this.field, value);
+            if (!parseResult.isValid) {
+                this.addSaveBlocker('cantparse', parseResult.reason);
                 return;
+            } else {
+                this.removeSaveBlocker('cantparse');
             }
-            this.model.set(this.fieldName, result.parsed);
+
+            this.model.set(this.fieldName, parseResult.parsed);
+            if (!this.field.isRelationship)
+                this.$el.val(fieldformat(this.field, parseResult.parsed));
+        },
+        addSaveBlocker: function(key, message) {
+            this.model.saveBlockers.add(key + ':' + this.fieldName, this.fieldName, message);
+        },
+        removeSaveBlocker: function(key) {
+            this.model.saveBlockers.remove(key + ':' + this.fieldName);
         }
     });
 
