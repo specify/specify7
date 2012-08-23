@@ -1,14 +1,13 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'cs!businessrules'
 ], function($, _, Backbone, schema, whenAll, businessrules) {
-    var debug = false;
     var api = {};
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
     function eventHandlerForToOne(resource, field) {
         return function(event) {
-            if (_.contains(['saverequired', 'saveblocked'], event)) {
+            if (_.contains(['saverequired', 'saveblocked', 'oktosave'], event)) {
                 return resource.trigger.apply(resource, arguments);
             }
             var match = /^r?(change):(.*)$/.exec(event);
@@ -25,6 +24,7 @@ define([
             switch (event) {
             case 'saverequired':
             case 'saveblocked':
+            case 'oktosave':
                 resource.trigger.apply(resource, arguments);
                 break;
             case 'add':
@@ -60,10 +60,12 @@ define([
                     }
                 });
             });
-            debug && this.on('all', function() {
+            businessrules.attachToResource(this);
+        },
+        logAllEvents: function() {
+            this.on('all', function() {
                 console.log(arguments);
             });
-            businessrules.attachToResource(this);
         },
         url: function() {
             return '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
