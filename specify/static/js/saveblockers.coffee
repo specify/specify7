@@ -11,6 +11,7 @@ define ['jquery', 'underscore'], ($, _) ->
             if field? then @resource.trigger "saveblocked:#{ field }", @resource, blocker
 
         remove: (key) ->
+            if not @blockers[key]? then return
             field = @blockers[key]?.field
             delete @blockers[key]
             if field? and _.isEmpty @blockersForField field

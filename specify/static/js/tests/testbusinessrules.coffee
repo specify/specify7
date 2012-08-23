@@ -160,27 +160,35 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             collectionobject.set 'catalognumber', "000037799"
 
     test 'catalognumber unique in collection where some collection objects have been fetched', ->
-        expect 4
+        expect 6
         stop()
         collection = new (api.Resource.forModel 'collection') id: 4
         collection.rget('collectionobjects', true).done (COs) ->
             tests = [
-                [0, '999999999', true, 'ok b/c this no. is unused'],
-                [1, '000000001', true, 'this no. was in use by COs.at(0). but we just changed that one'],
-                [2, '000037799', false, 'not ok b/c no. is used (even tho the conflicting CO is not fetched'],
-                [3, '999999999', false, 'conflicts with the first object now.']
+                #i, catNumber,  [required events], [reject events], doc string
+
+                [0, '999999999', ['saverequired'], ['saveblocked', 'oktosave'],
+                    'ok b/c this no. is unused']
+
+                [1, '000000001', ['saverequired'], ['saveblocked', 'oktosave'],
+                    'this no. was in use by COs.at(0). but we just changed that one']
+
+                [2, '000037799', ['saverequired', 'saveblocked'], ['oktosave'],
+                    'not ok b/c no. is used (even tho the conflicting CO is not fetched)']
+
+                [3, '999999999', ['saverequired', 'saveblocked'], ['oktosave'],
+                    'conflicts with the first object now.']
             ]
 
             nextTest = ->
                 if tests.length is 0 then return start()
-                [i, catNum, expectedValid, doc] = tests.shift()
+                [i, catNum, require, reject, doc] = tests.shift()
+                message = (event) -> "(#{i}) #{event}: #{doc}"
                 collectionobject = COs.at i
-                checks = if expectedValid then [
-                    requireEvent collectionobject, 'oktosave', doc
-                    rejectEvent collectionobject, 'saveblocked', doc ]
-                else [
-                    requireEvent collectionobject, 'saveblocked', doc
-                    rejectEvent collectionobject, 'oktosave', doc ]
+                checks = _.flatten [
+                    _.map require, (event) ->  requireEvent collectionobject, event, message(event)
+                    _.map reject, (event) -> rejectEvent collectionobject, event, message(event)
+                ]
 
                 whenAll(checks).done -> _.defer nextTest
 
