@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'specifyapi', 'backbone', 'schema',
-    'cs!saveblockers', 'cs!agenttypepicklist'
+    'cs!saveblockers', 'cs!agenttypepicklist', 'cs!tooltipmgr'
 ], function($, _, schemalocalization, api, Backbone, schema,
-            saveblockers, agentTypePicklist) {
+            saveblockers, agentTypePicklist, ToolTipMgr) {
     "use strict";
 
     var Picklist = Backbone.View.extend({
@@ -58,6 +58,8 @@ define([
 
             var getValue = self.model.rget(field.name);
             $.when(getPickList, getValue).done(buildPicklist);
+
+            self.toolTipMgr = new ToolTipMgr(self).enable();
             self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, field.name);
             return self;
         },
