@@ -29,7 +29,7 @@ define ['jquery', 'underscore'], ($, _) ->
             @control = control or @view.$el
             @view.model.on "saveblocked:#{ @field }", @indicatorOn, @
             @view.model.on "nosaveblockers:#{ @field }", @indicatorOff, @
-            @view.toolTipMgr?.addGenerator @makeToolTips, @
+            @view.on 'requestfortooltips', @sendToolTips, @
 
         indicatorOn: ->
             @control.addClass 'saveblocked'
@@ -37,5 +37,6 @@ define ['jquery', 'underscore'], ($, _) ->
         indicatorOff: ->
             @control.removeClass 'saveblocked'
 
-        makeToolTips: ->
-            _.pluck @view.model.saveBlockers.blockersForField(@field), 'reason'
+        sendToolTips: ->
+            _.each @view.model.saveBlockers.blockersForField(@field), (blocker) =>
+                @view.trigger 'tooltipitem', blocker.reason

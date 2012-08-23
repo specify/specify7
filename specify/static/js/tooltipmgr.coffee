@@ -4,9 +4,14 @@ define ['jquery', 'underscore', 'jquery-ui'], ($, _) ->
         constructor: (@view, control) ->
             @generators = []
             @control = control and $(control) or @view.$el
+            @view.on 'tooltipitem', @addToolTipItem, @
 
-        addGenerator: (gen, context) ->
-            @generators.push [gen, context]
+        addToolTipItem: (item) ->
+            @el.find('.tooltip-content').append $('<li>').text item
+            @el.show().position
+                at: 'bottom center'
+                of: @content
+                my: 'top'
 
         enable: ->
             @el = $('''
@@ -17,20 +22,7 @@ define ['jquery', 'underscore', 'jquery-ui'], ($, _) ->
 
             @control.hover =>
                 @el.find('.tooltip-content').empty()
-                messages = _.flatten _(@generators).map (generator) ->
-                    [func, context] = generator
-                    context ?= @view
-                    func.call(context)
-
-                if _.isEmpty messages then return
-
-                _(messages).each (message) =>
-                    @el.find('.tooltip-content').append $('<li>').text message
-
-                @el.show().position
-                    at: 'bottom center'
-                    of: @content
-                    my: 'top'
+                @view.trigger 'requestfortooltips'
 
             @control.mouseleave => @el.hide()
             @
