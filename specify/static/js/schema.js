@@ -141,7 +141,8 @@ define([
             return schemalocalization.getFormatForField(this.name, this.model.name);
         },
         getUIFormatter: function() {
-            return uiformatters.getByName(this.getFormat());
+            var format = this.getFormat();
+            return format && uiformatters.getByName(format);
         }
     });
 
