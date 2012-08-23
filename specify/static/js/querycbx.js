@@ -1,13 +1,13 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
-    'cs!saveblockers',
+    'cs!saveblockers', 'cs!tooltipmgr',
     'text!resources/backstop/typesearch_def.xml',
     'text!resources/backstop/dialog_defs.xml',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
              whenAll, parseselect, schemalocalization, navigation, saveblockers,
-             typesearchxml, dialogdefxml) {
+             ToolTipMgr, typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
 
@@ -59,6 +59,8 @@ define([
 
             self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
             self.fillIn();
+
+            self.toolTipMgr = new ToolTipMgr(self, control).enable();
             self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, self.fieldName, control);
             return self;
         },
