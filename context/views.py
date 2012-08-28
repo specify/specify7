@@ -104,10 +104,19 @@ def viewsets(request, level):
 @require_GET
 @login_required
 def schema_localization(request):
+    sl = get_schema_localization(request.specify_collection)
+    return HttpResponse(sl, content_type='application/json')
+
+schema_localization_cache = {}
+
+def get_schema_localization(collection):
+    disc = collection.discipline
+    if disc in schema_localization_cache:
+        return schema_localization_cache[disc]
+
     from specify.models import Splocalecontainer as Container
     from specify.models import Splocalecontaineritem as Item
     from specify.models import Splocaleitemstr as SpString
-    collection = request.specify_collection
 
     strings = dict(
         ((i.containername_id, i.containerdesc_id, i.itemname_id, i.itemdesc_id), i.text) \
@@ -127,14 +136,15 @@ def schema_localization(request):
     cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui')
 
     containers = {}
-    for c in Container.objects.filter(discipline=collection.discipline):
+    for c in Container.objects.filter(discipline=disc):
         containers[c.name] = container = dict((field, getattr(c, field)) for field in cfields)
         container.update({
                 'name': strings.get((c.id, None, None, None), None),
                 'desc': strings.get((None, c.id, None, None), None),
                 'items': items[c.id] })
 
-    return HttpResponse(simplejson.dumps(containers), content_type='application/json')
+    sl = schema_localization_cache[disc] =  simplejson.dumps(containers)
+    return sl
 
 def get_express_search_config(collection):
     try:
