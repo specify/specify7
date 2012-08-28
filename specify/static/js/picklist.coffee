@@ -22,6 +22,8 @@ define [
             @isAgentType = @model.specifyModel.name is 'Agent' and @field.name is 'agentType'
             @pickListName = @field.getPickList()
 
+            # TODO: should check for picklist attribute on element
+
             if not @pickListName and not @isAgentType
                 console.log "can't determine picklist for field #{ @model.specifyModel.name }.#{ @field.name }"
                 return
