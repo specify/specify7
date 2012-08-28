@@ -12,7 +12,7 @@ require({
         'beautify-html'  : "vendor/beautify-html",
         'CoffeeScript'   : "vendor/CoffeeScript",
         'cs'             : "vendor/cs",
-        'text'           : "vendor/text",
+        'textbase'       : "vendor/text",
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
         'context'        : '/context',

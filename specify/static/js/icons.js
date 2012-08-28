@@ -1,6 +1,6 @@
 define([
     'jquery',
-    'text!resources/icons_datamodel.xml'
+    'text!resources/icons_datamodel.xml!noinline'
 ], function($, xmlText) {
     "use strict";
     var self = {}, xml = $.parseXML(xmlText);

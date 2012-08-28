@@ -1,11 +1,11 @@
 define([
     'jquery', 'underscore',
-    'text!context/viewsets/0.xml',
-    'text!context/viewsets/1.xml',
-    'text!context/viewsets/2.xml',
-    'text!context/viewsets/3.xml',
-    'text!context/viewsets/4.xml',
-    'text!context/viewsets/5.xml',
+    'text!context/viewsets/0.xml!noinline',
+    'text!context/viewsets/1.xml!noinline',
+    'text!context/viewsets/2.xml!noinline',
+    'text!context/viewsets/3.xml!noinline',
+    'text!context/viewsets/4.xml!noinline',
+    'text!context/viewsets/5.xml!noinline',
 ], function parseViewSets($, _) {
     "use strict";
 

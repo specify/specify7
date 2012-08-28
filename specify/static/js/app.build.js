@@ -2,7 +2,7 @@
     baseUrl: '.',
     name: 'main',
     out: 'main-built.js',
-    inlineText: false,
+    inlineText: true,
     paths: {
         'jquery'         : "vendor/jquery-1.7.2",
         'jquery-ui'      : "vendor/jquery-ui",
@@ -14,9 +14,9 @@
         'beautify-html'  : "vendor/beautify-html",
         'CoffeeScript'   : "vendor/CoffeeScript",
         'cs'             : "vendor/cs",
-        'text'           : "vendor/text",
+        'textbase'       : "vendor/text",
         'resources'      : '/static/config',
-        'tmpls'          : '/static/html/templates',
+        'tmpls'          : '../html/templates',
         'context'        : '/context',
         'properties'     : '/properties'
     },

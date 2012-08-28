@@ -2,8 +2,8 @@ define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
     'cs!saveblockers', 'cs!tooltipmgr',
-    'text!resources/backstop/typesearch_def.xml',
-    'text!resources/backstop/dialog_defs.xml',
+    'text!resources/backstop/typesearch_def.xml!noinline',
+    'text!resources/backstop/dialog_defs.xml!noinline',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
              whenAll, parseselect, schemalocalization, navigation, saveblockers,

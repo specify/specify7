@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'schemalocalization', 'icons', 'uiformatters',
-    'text!resources/specify_datamodel.xml'
+    'text!resources/specify_datamodel.xml!noinline'
 ], function($, _, schemalocalization, icons, uiformatters, xml) {
     "use strict";
 

@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'cs!props',
-    'text!context/schema_localization.json',
-    'text!properties/views_en.properties',
-    'text!properties/global_views_en.properties'
+    'text!context/schema_localization.json!noinline',
+    'text!properties/views_en.properties!noinline',
+    'text!properties/global_views_en.properties!noinline'
 ], function($, _, props, jsonText, viewsprops, globalviewsprops) {
     "use strict";
     var json = $.parseJSON(jsonText);

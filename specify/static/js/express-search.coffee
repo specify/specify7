@@ -1,8 +1,8 @@
 define ['jquery', 'underscore', 'backbone', 'navigation',
     'schema', 'specifyapi', 'cs!fieldformat', 'cs!props',
-    'text!context/express_search_config.xml',
-    'text!context/available_related_searches.json',
-    'text!properties/expresssearch_en.properties',
+    'text!context/express_search_config.xml!noinline',
+    'text!context/available_related_searches.json!noinline',
+    'text!properties/expresssearch_en.properties!noinline',
     'jquery-bbq', 'jquery-ui'
 ], ($, _, Backbone, navigation, schema, api, fieldformat, props, \
 configXML, availableRelatedJson, propstext) ->
