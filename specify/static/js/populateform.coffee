@@ -1,6 +1,6 @@
 define [
     'jquery', 'underscore','schemalocalization', 'specifyform'
-    'specifyapi', 'picklist', 'uifield', 'querycbx', 'specifyplugins'
+    'specifyapi', 'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
     'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
 ], ( \
 $, _, schemalocalization, specifyform, \

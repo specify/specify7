@@ -143,6 +143,9 @@ define([
         getUIFormatter: function() {
             var format = this.getFormat();
             return format && uiformatters.getByName(format);
+        },
+        getPickList: function() {
+            return schemalocalization.getPickListForField(this.name, this.model.name);
         }
     });
 
