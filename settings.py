@@ -1,6 +1,5 @@
 import os
 import specify_settings
-from django import contrib
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -80,7 +79,6 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     ('config', SPECIFY_CONFIG_DIR),
-    os.path.join(contrib.__path__[0], 'admin', 'media')
 )
 
 # List of finder classes that know how to find static files in
