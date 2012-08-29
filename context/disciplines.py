@@ -3,8 +3,6 @@ from xml.etree import ElementTree
 
 from django.conf import settings
 
-DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
-
 disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
 
 disciplines = ElementTree.parse(disc_file)
