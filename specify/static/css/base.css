@@ -1,6 +1,3 @@
-/*
-    DJANGO Admin styles
-*/
 
 body {
     margin: 0;
@@ -833,3 +830,7 @@ table#change-history tbody th {
     color: #666;
 }
 
+
+#express-search {
+    padding: 0 10px 5px;
+}

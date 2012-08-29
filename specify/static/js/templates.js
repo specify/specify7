@@ -13,7 +13,8 @@ define([
     'text!tmpls/querycbx.html',
     'text!tmpls/subviewheader.html',
     'text!tmpls/404.html',
-    'text!tmpls/saveblocked.html'
+    'text!tmpls/saveblocked.html',
+    'text!tmpls/welcome.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -34,7 +35,8 @@ define([
         'querycbx',
         'subviewheader',
         'fourohfour',
-        'saveblocked'
+        'saveblocked',
+        'welcome'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

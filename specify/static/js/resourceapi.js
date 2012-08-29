@@ -258,7 +258,16 @@ define([
         }
     });
 
+    var RecordSet = api.Resource.extend({
+        viewUrl: function() {
+            return '/specify/recordset/' + (this.id || 'new') + '/';
+        }
+    }, {
+        specifyModel: schema.getModel('recordset')
+    });
+
     var resources = {};
+    resources[schema.getModel('recordset').name] = RecordSet;
 
     return api;
 });

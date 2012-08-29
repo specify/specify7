@@ -111,10 +111,6 @@ input[type="submit"].saveblocked {
     background-color: red;
 }
 
-#express-search {
-    padding: 0 10px 5px;
-}
-
 .tooltip {
     display: none;
     position: absolute;
@@ -133,4 +129,33 @@ input[type="submit"].saveblocked {
 
 .tooltip li {
     list-style-type: none;
+}
+
+.welcome {
+    text-align: left;
+}
+
+.welcome h2 {
+    border-bottom: solid 1px;
+}
+
+.welcome ul {
+    padding: 0;
+}
+
+.welcome li img {
+    vertical-align: middle;
+    margin-right: 10px;
+    height: 24px;
+}
+
+.welcome li {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.welcome .forms, .welcome .recordsets {
+    text-align: left;
+    display: inline-block;
+    margin: 0 20px 0px 20px;
 }

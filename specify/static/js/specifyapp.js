@@ -1,9 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'datamodelview',
-    'views', 'schemalocalization', 'beautify-html', 'navigation', 'cs!express-search', 'jquery-bbq'
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'datamodelview', 'views', 'schemalocalization', 'beautify-html', 'navigation',
+    'cs!express-search', 'cs!welcomeview', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
-    views, schemalocalization, beautify, navigation, esearch) {
+    views, schemalocalization, beautify, navigation, esearch, WelcomeView) {
     "use strict";
 
     var app = {
@@ -14,6 +15,7 @@ define([
     function appStart() {
         var rootContainer = $('#content');
 
+        // make the express search field functional
         app.expressSearch = new esearch.SearchView({ el: $('#express-search') });
 
         function setCurrentView(view) {
@@ -37,7 +39,12 @@ define([
                 'view/:model/:id/*splat': 'view',
                 'viewashtml/*splat': 'viewashtml',
                 'datamodel/:model/': 'datamodel',
-                'datamodel/': 'datamodel'
+                'datamodel/': 'datamodel',
+                '*splat': 'welcome',
+            },
+
+            welcome: function() {
+                setCurrentView(new WelcomeView());
             },
 
             esearch: function() {
