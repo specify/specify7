@@ -133,6 +133,8 @@ INSTALLED_APPS = (
     'tastypie',
     'specify',
     'businessrules',
+    'express_search',
+    'context',
 )
 
 AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend', )

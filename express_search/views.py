@@ -12,7 +12,7 @@ from django.db.models import fields as django_fields
 from specify import models
 from specify.filter_by_col import filter_by_collection
 
-from context.views import get_express_search_config
+from context.express_search_config import get_express_search_config
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
