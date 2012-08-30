@@ -1,15 +1,16 @@
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
+from django.utils import simplejson
 
 from specify.models import Collection
 
-# these are the other context views
+from app_resource import get_app_resource
+
 from viewsets import viewsets
 from schema_localization import schema_localization
-from express_search_config import express_search_config, available_related_searches
 
 def login(request):
     if request.method == 'POST':
@@ -41,4 +42,20 @@ def collection(request):
         return HttpResponse(collection, content_type="text/plain")
 
 
+@login_required
+@require_GET
+def app_resource(request):
+    resource_name = request.GET['name']
+    result = get_app_resource(request.specify_collection,
+                              request.specify_user,
+                              resource_name)
+    if result is None: raise Http404()
+    resource, mimetype = result
+    return HttpResponse(resource, content_type=mimetype)
 
+
+@require_GET
+def available_related_searches(request):
+    import express_search.related_searches
+    return HttpResponse(simplejson.dumps(express_search.related_searches.__all__),
+                        content_type='application/json')

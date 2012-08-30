@@ -32,7 +32,7 @@ def viewsets(request, level):
     except IndexError:
         raise Http404()
 
-    user = Specifyuser.objects.get(name=request.user.username)
+    user = request.specify_user
     collection = request.specify_collection
 
     from_db = get_viewset(collection, user, level)

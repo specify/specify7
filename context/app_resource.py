@@ -5,9 +5,14 @@ from django.conf import settings
 
 from specify.models import Spappresourcedir, Spappresourcedata
 
-from disciplines import discipline_dirs
-
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
+
+disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
+
+disciplines = ElementTree.parse(disc_file)
+
+discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
+    for disc in disciplines.findall('discipline') )
 
 def get_usertype(user):
     return user and user.usertype.replace(' ', '').lower()
@@ -48,7 +53,7 @@ def load_resource(path, registry, resource_name):
     resource = registry.find('file[@name="%s"]' % resource_name)
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
-    return open(pathname).read()
+    return [open(pathname).read(), resource.attrib['mimetype']]
 
 def get_app_resource_from_db(collection, user, level, resource_name):
     dirs = get_app_resource_dirs_for_level(collection, user, level)
@@ -57,7 +62,8 @@ def get_app_resource_from_db(collection, user, level, resource_name):
         'spappresource__spappresourcedir__in': dirs
         }
     try:
-        return Spappresourcedata.objects.get(**filters).data
+        resource = Spappresourcedata.objects.get(**filters)
+        return [resource.data, resource.spappresource.mimetype]
     except Spappresource.DoesNotExist:
         return None
 
