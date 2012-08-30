@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest
-from specify.models import Collection
+from specify.models import Collection, Specifyuser
 
 class ContextMiddleware(object):
     def process_request(self, request):
@@ -11,6 +11,7 @@ class ContextMiddleware(object):
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection does not exist', content_type='text/plain')
         request.specify_collection = collection
+        request.specify_user = Specifyuser.objects.get(name=request.user.username)
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)
