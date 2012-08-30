@@ -2,22 +2,30 @@ define [
     'jquery', 'underscore','schemalocalization', 'specifyform'
     'specifyapi', 'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
     'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
+    'cs!treelevelpicklist'
 ], ( \
 $, _, schemalocalization, specifyform, \
 api, PickList, UIField, QueryCbx, uiplugins, \
-RecordSelector, SubViewButton, FormTable, SubView, CheckBox) ->
-
-    pluginFor = (control) ->
-        init = specifyform.parseSpecifyProperties control.data('specify-initialize')
-        return uiplugins[init.name]
+RecordSelector, SubViewButton, FormTable, \
+SubView, CheckBox, TreeLevelPickList) ->
 
     populateField = (resource, control) ->
         getView = _(
             ':checkbox': -> CheckBox
-            '.specify-combobox': -> PickList
             '.specify-querycbx': -> QueryCbx
-            '.specify-uiplugin': -> pluginFor(control)
+
+            '.specify-uiplugin': ->
+                init = specifyform.parseSpecifyProperties control.data('specify-initialize')
+                uiplugins[init.name]
+
+            '.specify-combobox': ->
+                if control.attr('name') is 'definitionItem'
+                    TreeLevelPickList
+                else
+                    PickList
+
             ).find (__, selector) -> control.is selector
+
         view = new ( getView?() or UIField ) { el: control, model: resource }
         view.render()
 
