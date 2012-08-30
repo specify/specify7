@@ -8,9 +8,8 @@ define [
     'navigation'
     'icons'
     'specifyform'
-    'cs!domain'
     'text!context/app.resource?name=DataEntryTaskInit!noinline'
-], ($, _, Backbone, templates, api, schema, navigation, icons, specifyform, domain, formsXML) ->
+], ($, _, Backbone, templates, api, schema, navigation, icons, specifyform, formsXML) ->
 
     formsList = $.parseXML formsXML
 
@@ -26,9 +25,7 @@ define [
 
         formListItem: (viewnode) ->
             view = $ viewnode
-            domainField = specifyform.getModelForView(view.attr 'view').orgRelationship()
-            href = if domainField and domainField.otherSideName
-                domain[domainField.name].viewUrl() + domainField.otherSideName + '/new/'
+            href = "/specify/view/#{ view.attr('view').toLowerCase() }/new/"
             link = $('<a>', href: href, title: view.attr 'tooltip')
                 .text(view.attr 'title')
                 .prepend($ '<img>', src: icons.getIcon view.attr 'iconname')

@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema', 'schemalocalization',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
+    'cs!domain',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi,
-            specifyform, dataobjformat, navigation, templates, SaveButton) {
+            specifyform, dataobjformat, navigation, templates, SaveButton, domain) {
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
@@ -141,6 +142,35 @@ define([
             setWindowTitle(title);
             dataobjformat(self.model).done(function(str) {
                 if (_(str).isString()) {
+                    title += ': ' + str;
+                    self.setFormTitle(title);
+                    setWindowTitle(title);
+                }
+            });
+        }
+    });
+
+    views.NewResourceView = MainForm.extend({
+        initialize: function(options) {
+            this.specifyModel = specifyform.getModelForView(options.viewName);
+            this.model = new (specifyapi.Resource.forModel(this.specifyModel))();
+            var domainField = this.specifyModel.orgRelationship();
+            this.parentResource = domain[domainField.name];
+            this.model.set(domainField.name, this.parentResource.url());
+            this.model.on('change', this.setTitle, this);
+            MainForm.prototype.initialize.call(this, options);
+        },
+        buildForm: function() {
+            return specifyform.buildViewByName(this.options.viewName);
+        },
+        setTitle: function() {
+            var self = this;
+            var title = 'New ' + self.specifyModel.getLocalizedName() + ' for '
+                + self.specifyModel.orgRelationship().getRelatedModel().getLocalizedName();
+            self.setFormTitle(title);
+            setWindowTitle(title);
+            dataobjformat(self.parentResource).done(function(str) {
+                if (_.isString(str)) {
                     title += ': ' + str;
                     self.setFormTitle(title);
                     setWindowTitle(title);

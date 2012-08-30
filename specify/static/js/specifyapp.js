@@ -33,6 +33,7 @@ define([
             routes: {
                 'express_search/*splat': 'esearch',
                 'recordset/:id/*splat': 'recordSet',
+                'view/:view/new/*splat': 'newResource',
                 'view/:model/:id/:related/new/*splat': 'addRelated',
                 'view/:model/:id/:related/:index/*splat': 'viewSingleToMany',
                 'view/:model/:id/:related/*splat': 'viewRelated',
@@ -139,6 +140,10 @@ define([
 
             view: function(modelName, id) {
                 setCurrentView(new views.ResourceView({ modelName: modelName, resourceId: id }));
+            },
+
+            newResource: function(viewName) {
+                setCurrentView(new views.NewResourceView({ viewName: viewName }));
             },
 
             viewashtml: function() {

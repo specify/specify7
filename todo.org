@@ -1,0 +1,2 @@
+* multiple agents corresponding to specify user when creating object
+  * screws up setting createdby and modifiedby
