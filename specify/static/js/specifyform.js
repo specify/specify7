@@ -85,6 +85,10 @@ define([
     var specifyform = {
         parseSpecifyProperties: parseSpecifyProperties,
 
+        getModelForView: function(viewName) {
+            return schema.getModel(getModelFromView(viewName));
+        },
+
         relatedObjectsForm: function(modelName, fieldName, viewdef) {
             if (!viewdef) {
                 var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();

@@ -4,8 +4,11 @@ from specify.models import Collection, Specifyuser
 class ContextMiddleware(object):
     def process_request(self, request):
         if not request.user.is_authenticated(): return
+        qs = Collection.objects.select_related('discipline',
+                                               'discipline__division',
+                                               'discipline__division__institution')
         try:
-            collection = Collection.objects.get(id=int(request.session.get('collection', '')))
+            collection = qs.get(id=int(request.session.get('collection', '')))
         except ValueError:
             return HttpResponseBadRequest('bad collection id in session', content_type='text/plain')
         except Collection.DoesNotExist:

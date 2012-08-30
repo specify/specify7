@@ -131,8 +131,8 @@ input[type="submit"].saveblocked {
     list-style-type: none;
 }
 
-.welcome {
-    text-align: left;
+.welcome div {
+    vertical-align: top;
 }
 
 .welcome h2 {
@@ -155,7 +155,6 @@ input[type="submit"].saveblocked {
 }
 
 .welcome .forms, .welcome .recordsets {
-    text-align: left;
     display: inline-block;
     margin: 0 20px 0px 20px;
 }

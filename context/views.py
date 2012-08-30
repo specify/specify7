@@ -41,6 +41,17 @@ def collection(request):
         collection = request.session.get('collection', '')
         return HttpResponse(collection, content_type="text/plain")
 
+@login_required
+@require_GET
+def domain(request):
+    levels = ('collection', 'discipline', 'division', 'institution')
+    domain = {}
+    obj = type('dummy', (object,), {'collection': request.specify_collection})
+    for level in levels:
+        obj = getattr(obj, level)
+        domain[level] = obj.id
+
+    return HttpResponse(simplejson.dumps(domain), content_type='application/json')
 
 @login_required
 @require_GET
