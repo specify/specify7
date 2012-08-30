@@ -137,7 +137,7 @@ class ModelResource(tastypie.resources.ModelResource):
             pass
         else:
             # if the specify user corresponds to more than one agent this will break
-            bundle.obj.modifiedbyagent = models.Agent.objects.get(specifyuser__name=bundle.request.user.username)
+            bundle.obj.modifiedbyagent = models.Agent.objects.get(specifyuser=bundle.request.specify_user)
 
         # If the object has no version field, just save it.
         try:
@@ -164,7 +164,7 @@ class ModelResource(tastypie.resources.ModelResource):
         return bundle
 
     def obj_create(self, bundle, request=None, **kwargs):
-        agent = models.Agent.objects.get(specifyuser__name=bundle.request.user.username)
+        agent = models.Agent.objects.get(specifyuser=bundle.request.specify_user)
         for field in ('createdbyagent', 'modifiedbyagent'):
             if hasattr(self._meta.object_class, field):
                 kwargs[field] = agent
