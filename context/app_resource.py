@@ -28,6 +28,7 @@ def get_app_resource(collection, user, resource_name):
 
 def load_resource_at_level(collection, user, level, resource_name):
     path = get_path_for_level(collection, user, level)
+    if path is None: return None
     registry = load_registry(path)
     return load_resource(path, registry, resource_name)
 
@@ -64,7 +65,7 @@ def get_app_resource_from_db(collection, user, level, resource_name):
     try:
         resource = Spappresourcedata.objects.get(**filters)
         return [resource.data, resource.spappresource.mimetype]
-    except Spappresource.DoesNotExist:
+    except Spappresourcedata.DoesNotExist:
         return None
 
 def get_app_resource_dirs_for_level(collection, user, level):

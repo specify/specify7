@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore',
-    'text!resources/backstop/uiformatters.xml!noinline'
+    'text!context/app.resource?name=UIFormatters!noinline'
 ], function($, _, xml) {
     "use strict";
     var uiformatters =  $($.parseXML(xml));
