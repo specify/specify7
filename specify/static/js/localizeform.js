@@ -39,8 +39,8 @@ define(['jquery', 'cs!props', 'schema',
             var fieldname = getControlFieldName(control);
             if (!fieldname) return; // probably a label for a plugin
             var field = model.getField(fieldname);
-            label.text(field.getLocalizedName());
-            var title = field.getLocalizedDesc();
+            field && label.text(field.getLocalizedName());
+            var title = field && field.getLocalizedDesc();
             title && label.attr('title', title);
         };
 

@@ -35,8 +35,11 @@ define([
             );
             return self.fields;
         },
+        getLocalization: function() {
+            return schemalocalization.getLocalizationForModel(this.name);
+        },
         getLocalizedName: function() {
-            return schemalocalization.getLocalizedLabelForModel(this.name);
+            return this.getLocalization().name;
         },
         getIcon: function() {
             return icons.getIcon(this.name);
@@ -131,24 +134,28 @@ define([
             if (!this.isRelationship) return undefined;
             return schema.getModel(this.relatedModelName);
         },
+        getLocalization: function() {
+            return schemalocalization.getLocalizationForField(
+                this.model.getLocalization(), this.name);
+        },
         getLocalizedName: function() {
-            return schemalocalization.getLocalizedLabelForField(this.name, this.model.name);
+            return this.getLocalization().name;
         },
         getLocalizedDesc: function() {
-            return schemalocalization.getLocalizedDescForField(this.name, this.model.name);
+            return this.getLocalization().desc;
         },
         getFormat: function() {
-            return schemalocalization.getFormatForField(this.name, this.model.name);
+            return this.getLocalization().format;
         },
         getUIFormatter: function() {
             var format = this.getFormat();
             return format && uiformatters.getByName(format);
         },
         getPickList: function() {
-            return schemalocalization.getPickListForField(this.name, this.model.name);
+            return this.getLocalization().picklistname;
         },
         isRequiredBySchemaLocalization: function() {
-            return schemalocalization.isRequiredField(this.name, this.model.name);
+            return this.getLocalization().isrequired;
         }
     });
 
