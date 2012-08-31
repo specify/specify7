@@ -18,6 +18,11 @@ define([
         // make the express search field functional
         app.expressSearch = new esearch.SearchView({ el: $('#express-search') });
 
+        $('#site-name a').click(function(evt) {
+            evt.preventDefault();
+            navigation.go($(evt.currentTarget).prop('href'));
+        });
+
         function setCurrentView(view) {
             app.currentView && app.currentView.remove();
             $('.ui-autocomplete').remove(); // these are getting left behind sometimes

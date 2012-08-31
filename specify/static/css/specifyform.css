@@ -30,6 +30,12 @@ thead th {
     font-size: 0.5em;
 }
 
+.specify-form-header img {
+    vertical-align: bottom;
+    margin: 0 2px 2px 0;
+    height: 24px;
+}
+
 textarea {
     width: 100%;
 }

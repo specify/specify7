@@ -804,6 +804,11 @@ table#change-history tbody th {
     color: #ffc;
 }
 
+#branding a:link, #branding a:visited {
+    text-decoration: none;
+    color: #f4f379;
+}
+
 #user-tools {
     position: absolute;
     top: 0;
