@@ -1,12 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
-    'dataobjformatters', 'whenall', 'parseselect', 'schemalocalization', 'navigation',
+    'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
     'cs!saveblockers', 'cs!tooltipmgr',
     'text!resources/backstop/typesearch_def.xml!noinline',
     'text!resources/backstop/dialog_defs.xml!noinline',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
-             whenAll, parseselect, schemalocalization, navigation, saveblockers,
+             whenAll, parseselect, localizeForm, navigation, saveblockers,
              ToolTipMgr, typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
@@ -89,7 +89,7 @@ define([
             event.preventDefault();
             var dialogDef = $('dialog[type="search"][name="' + this.relatedModel.searchDialog + '"]', dialogdefs);
             var form = $(specifyform.buildViewByName(dialogDef.attr('view')));
-            schemalocalization.localizeForm(form);
+            localizeForm(form);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             $('<div title="Search">').append(form).dialog({
                 width: 'auto',

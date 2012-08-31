@@ -7,15 +7,15 @@ require({
 });
 
 require(
-    ['jquery', 'specifyform', 'populateform', 'schemalocalization', 'beautify-html'],
-    function($, specifyform, populateform, schemalocalization, beautify) {
+    ['jquery', 'specifyform', 'populateform', 'localizeform', 'beautify-html'],
+    function($, specifyform, populateform, localizeForm, beautify) {
         "use strict";
         $(function() {
             var params = populateform.pullParamsFromDl($('body'));
             var form = params.viewdef ?
                 specifyform.buildViewByViewDefName(params.viewdef) :
                 specifyform.buildViewByName(params.view);
-            schemalocalization.localizeForm(form);
+            localizeForm(form);
             var html = $('<div>').append(form).html();
             $('body').empty().append(
                 $('<pre>').text(beautify.style_html(html))

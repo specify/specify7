@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema', 'schemalocalization',
+    'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
     'cs!domain',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, schema, schemalocalization, specifyapi,
+], function($, _, Backbone, populateForm, schema, specifyapi,
             specifyform, dataobjformat, navigation, templates, SaveButton, domain) {
     "use strict";
     var views = {};

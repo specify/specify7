@@ -1,10 +1,10 @@
 define [
-    'jquery', 'underscore','schemalocalization', 'specifyform'
+    'jquery', 'underscore','localizeform', 'specifyform'
     'specifyapi', 'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
     'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
     'cs!treelevelpicklist'
 ], ( \
-$, _, schemalocalization, specifyform, \
+$, _, localizeForm, specifyform, \
 api, PickList, UIField, QueryCbx, uiplugins, \
 RecordSelector, SubViewButton, FormTable, \
 SubView, CheckBox, TreeLevelPickList) ->
@@ -62,7 +62,7 @@ SubView, CheckBox, TreeLevelPickList) ->
                 if View then (new View viewOptions).render()
 
     populateForm = (form, resource) ->
-        schemalocalization.localizeForm form
+        localizeForm form
         _.each form.find('.specify-field'), (node) -> populateField resource, $ node
         _.each form.find('.specify-subview'), (node) -> populateSubview resource, $ node
         return form

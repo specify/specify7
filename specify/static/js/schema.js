@@ -146,6 +146,9 @@ define([
         },
         getPickList: function() {
             return schemalocalization.getPickListForField(this.name, this.model.name);
+        },
+        isRequiredBySchemaLocalization: function() {
+            return schemalocalization.isRequiredField(this.name, this.model.name);
         }
     });
 

@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'datamodelview', 'views', 'schemalocalization', 'beautify-html', 'navigation',
+    'datamodelview', 'views', 'localizeform', 'beautify-html', 'navigation',
     'cs!express-search', 'cs!welcomeview', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
-    views, schemalocalization, beautify, navigation, esearch, WelcomeView) {
+    views, localizeForm, beautify, navigation, esearch, WelcomeView) {
     "use strict";
 
     var app = {
@@ -153,7 +153,7 @@ define([
                     specifyform.buildViewByViewDefName(params.viewdef) :
                     specifyform.buildViewByName(params.view);
                 if (params.localize && params.localize.toLowerCase() !== 'false')
-                    schemalocalization.localizeForm(form);
+                    localizeForm(form);
                 var html = $('<div>').append(form).html();
                 rootContainer.empty().append(
                     $('<pre>').text(beautify.style_html(html))
