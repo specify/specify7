@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import TemplateView
+from django.conf import settings
+
 from tastypie.api import Api
 import specify.api
 #import specify.postapi
@@ -27,6 +29,8 @@ urlpatterns = patterns(
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specify.views.properties'),
     url(r'^express_search/', include('express_search.urls')),
+
+    url(r'^testcontext/', include('context.testurls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

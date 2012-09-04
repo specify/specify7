@@ -15,7 +15,7 @@ require({
         'text'           : "vendor/text",
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
-        'context'        : '/static/js/tests/fixtures/context',
+        'context'        : '/testcontext',
         'properties'     : '/static/js/tests/fixtures/properties'
     },
     shim: {
