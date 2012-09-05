@@ -1,5 +1,3 @@
-* multiple agents corresponding to specify user when creating object
-  * screws up setting createdby and modifiedby
 * disable testcontext in production
 * unknown picklist accession.divisionCBX
 * express search page indicate no hits

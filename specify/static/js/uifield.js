@@ -21,6 +21,9 @@ define([
                 self.$el.prop('readonly', true);
             }
 
+            self.formatter = self.field.getUIFormatter();
+            self.formatter && self.$el.attr('title', 'Format: ' + self.formatter.value());
+
             var fetch = function() {
                 return self.model.rget(fieldName).pipe(function(value) {
                     return field.isRelationship ? dataObjFormat(value) :
@@ -49,11 +52,10 @@ define([
                 this.removeSaveBlocker('fieldrequired');
             }
 
-            if (this.$el.is('.specify-formattedtext')) {
-                var formatter = this.field.getUIFormatter();
-                if (formatter) value = formatter.validate(value);
+            if (this.formatter) {
+                value = this.formatter.validate(value);
                 if (!value) {
-                    this.addSaveBlocker('badformat', "Required format: " + formatter.value());
+                    this.addSaveBlocker('badformat', "Required format: " + this.formatter.value());
                     return;
                 } else {
                     this.removeSaveBlocker('badformat');
