@@ -38,6 +38,7 @@ define([
             routes: {
                 'express_search/*splat': 'esearch',
                 'recordset/:id/*splat': 'recordSet',
+                'view/:view/new/:related/new/*splat': 'addRelatedToNew',
                 'view/:view/new/*splat': 'newResource',
                 'view/:model/:id/:related/new/*splat': 'addRelated',
                 'view/:model/:id/:related/:index/*splat': 'viewSingleToMany',
@@ -58,6 +59,9 @@ define([
             },
 
             addRelated: function(modelName, id, relatedFieldName) {
+                // The id should be checked here.
+                // If the parentResource is new and is not passed as from the
+                // opening window, then that is an error.
                 var resource = window.specifyParentResource ||
                     new (specifyapi.Resource.forModel(modelName))({ id: id });
                 var relatedField = resource.specifyModel.getField(relatedFieldName);
@@ -88,6 +92,10 @@ define([
 
                 relatedResource.placeInSameHierarchy(resource);
                 setCurrentView(view);
+            },
+
+            addRelatedToNew: function(viewName, relatedFieldName) {
+                this.addRelated(null, null, relatedFieldName);
             },
 
             viewSingleToMany: function(modelName, id, relatedFieldName, index) {

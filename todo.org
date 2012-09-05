@@ -2,7 +2,6 @@
   * screws up setting createdby and modifiedby
 * disable testcontext in production
 * filter recordsets by domain
-* new button on querycbx not working for new resources
 * unknown picklist accession.divisionCBX
 * express search page indicate no hits
 * make "visit" link for one-to-many recordselector view
