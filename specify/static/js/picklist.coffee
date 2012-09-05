@@ -16,7 +16,7 @@ define [
         initialize: (options) ->
             @field = @model.specifyModel.getField @$el.attr 'name'
             if not @field?
-                console.log "can't setup picklist for unknown field #{ @model.specifyModel.name }.#{ @field.name }"
+                console.log "can't setup picklist for unknown field #{ @model.specifyModel.name }.#{ @$el.attr 'name' }"
                 return
 
             @isAgentType = @model.specifyModel.name is 'Agent' and @field.name is 'agentType'
