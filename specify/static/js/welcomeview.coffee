@@ -44,7 +44,7 @@ define [
             @$el.empty()
 
             recordsets = new (api.Collection.forModel 'recordset')()
-            #recordsets.queryParams.domainfilter = true
+            recordsets.queryParams.domainfilter = true
             recordsets.fetch().done => recordsets.each (recordset) =>
                 @$el.append @recordSetListItem recordset
             @

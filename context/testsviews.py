@@ -23,3 +23,6 @@ def app_resource(request):
     resource = request.GET['name']
     filename = os.path.join(path, 'data', 'appresources', resource)
     return HttpResponse(open(filename).read(), content_type='text/plain')
+
+def available_related_searches(request):
+    return HttpResponse('{}', content_type='application/json')

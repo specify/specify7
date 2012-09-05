@@ -1,3 +1,4 @@
+from django.core.exceptions import FieldError
 from models import *
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
@@ -8,6 +9,11 @@ def filter_by_collection(queryset, collection):
 
     if queryset.model is Taxon:
         return queryset.filter(definition__discipline=collection.discipline)
+
+    try:
+        return queryset.filter(collectionmemberid=collection.id)
+    except FieldError:
+        pass
 
     for fieldname in HIERARCHY:
         if getattr(queryset.model, fieldname, None):
