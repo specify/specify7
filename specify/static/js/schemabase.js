@@ -9,6 +9,9 @@ define(['underscore'], function(_) {
         getModelById: function(tableId) {
             return _(this.models).find(function(model) { return model.tableId === tableId; });
         },
+        unescape: function(str) {
+            return str.replace(/([^\\])\\n/g, '$1\n');
+        },
         orgHierarchy: ['collectionobject', 'collection', 'discipline', 'division', 'institution']
     };
 });

@@ -25,10 +25,10 @@ define([
             return schema.getModel(this.relatedModelName);
         },
         getLocalizedName: function() {
-            return this._localization.name;
+            return schema.unescape(this._localization.name);
         },
         getLocalizedDesc: function() {
-            return this._localization.desc;
+            return schema.unescape(this._localization.desc);
         },
         getFormat: function() {
             return this._localization.format;

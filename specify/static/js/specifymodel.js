@@ -39,7 +39,7 @@ define([
             return self.fields;
         },
         getLocalizedName: function() {
-            return this._localization.name;
+            return schema.unescape(this._localization.name);
         },
         getIcon: function() {
             return icons.getIcon(this.name);

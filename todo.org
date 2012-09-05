@@ -3,6 +3,6 @@
 * disable testcontext in production
 * filter recordsets by domain
 * new button on querycbx not working for new resources
-* deal with escaped chars in schema localization strings
 * unknown picklist accession.divisionCBX
 * express search page indicate no hits
+* make "visit" link for one-to-many recordselector view
