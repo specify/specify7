@@ -158,6 +158,9 @@ define([
             this.parentResource = domain[domainField.name];
             this.model.set(domainField.name, this.parentResource.url());
             this.model.on('change', this.setTitle, this);
+            this.on('savecomplete', function() {
+                navigation.go(this.model.viewUrl())
+            }, this);
             MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {

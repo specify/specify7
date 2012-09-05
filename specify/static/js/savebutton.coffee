@@ -28,6 +28,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 resizable: false
                 autoOpen: false
             @dialog.parent('.ui-dialog').insertAfter(@el)
+            @
 
         submit: (evt) ->
             evt.preventDefault()
