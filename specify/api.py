@@ -136,7 +136,6 @@ class ModelResource(tastypie.resources.ModelResource):
         except FieldDoesNotExist:
             pass
         else:
-            # if the specify user corresponds to more than one agent this will break
             bundle.obj.modifiedbyagent = request.specify_user_agent
 
         # If the object has no version field, just save it.
