@@ -33,7 +33,7 @@ define(['jquery', 'cs!props', 'schema',
             var control = $('#' + forId, form);
             var override = control.data('specify-field-label-override');
             if (override !== undefined) {
-                label.text(getProp(override));
+                label.text(getProp(override) || override);
                 return;
             }
             var fieldname = getControlFieldName(control);
