@@ -1,3 +1,7 @@
+"""
+Specify Application resources are hierarchical in nature and may be stored in either the
+database or the filesystem with database resources taking precedence over the filesystem.
+"""
 import os
 from xml.etree import ElementTree
 
@@ -5,8 +9,13 @@ from django.conf import settings
 
 from specify.models import Spappresourcedir, Spappresourcedata
 
+# The resource hierarchy procedes from resources that are specific to the user
+# up through resources that are valid in any context. More specific resources
+# take priority.
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
 
+# At the discipline level of the hierarchy, filesystem resources are found in
+# the directories defined in "disciplines.xml".
 disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
 
 disciplines = ElementTree.parse(disc_file)
@@ -14,25 +23,41 @@ disciplines = ElementTree.parse(disc_file)
 discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
     for disc in disciplines.findall('discipline') )
 
-def get_usertype(user):
-    return user and user.usertype.replace(' ', '').lower()
-
+# get_app_resource is the main interface provided by this module
 def get_app_resource(collection, user, resource_name):
+    """Fetch the named app resource in the context of the given user and collection.
+    Returns the resource data and mimetype as a pair.
+    """
+    # Traverse the hierarchy.
     for level in DIR_LEVELS:
+        # First look in the database.
         from_db = get_app_resource_from_db(collection, user, level, resource_name)
         if from_db is not None: return from_db
 
+        # If resource was not found, look on the filesystem.
         from_fs = load_resource_at_level(collection, user, level, resource_name)
         if from_fs is not None: return from_fs
+        # Continue to next higher level of hierarchy.
+
+    # resource was not found
     return None
 
+def get_usertype(user):
+    return user and user.usertype.replace(' ', '').lower()
+
 def load_resource_at_level(collection, user, level, resource_name):
+    """Try to load a resource from the filesystem at a given
+    level of the resource hierarchy.
+    Returns the resource data and mimetype as a pair.
+    """
     path = get_path_for_level(collection, user, level)
     if path is None: return None
     registry = load_registry(path)
     return load_resource(path, registry, resource_name)
 
 def get_path_for_level(collection, user, level):
+    """Build the filesystem path for a given resource level."""
+
     discipline_dir = discipline_dirs[collection.discipline.type]
     usertype = get_usertype(user)
 
@@ -47,31 +72,54 @@ def get_path_for_level(collection, user, level):
         return os.path.join(settings.SPECIFY_CONFIG_DIR, *path)
 
 def load_registry(path, registry_filename='app_resources.xml'):
+    """Loads the registry file from a directory on the filesystem.
+    The registry maps resource names to filename in the directory.
+    """
     pathname = os.path.join(path, registry_filename)
     return ElementTree.parse(pathname)
 
 def load_resource(path, registry, resource_name):
+    """Try to load the named resource using the given directory
+    and registry.
+    Returns the resource data and mimetype as a pair.
+    """
     resource = registry.find('file[@name="%s"]' % resource_name)
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
-    return [open(pathname).read(), resource.attrib['mimetype']]
+    return (open(pathname).read(), resource.attrib['mimetype'])
 
 def get_app_resource_from_db(collection, user, level, resource_name):
+    """Try to get the named resource at a given level from the database.
+    Returns the resource data and mimetype as a pair."""
+
+    # The database structure mimics a filesystem.
+    # Here we get the SpAppResourceDir for the given level.
     dirs = get_app_resource_dirs_for_level(collection, user, level)
+
+    # The resource query can now be filtered on the
+    # resource name and the containing SpAppResourceDir.
     filters = {
         'spappresource__name': resource_name,
         'spappresource__spappresourcedir__in': dirs
         }
+
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return [resource.data, resource.spappresource.mimetype]
+        return (resource.data, resource.spappresource.mimetype)
     except Spappresourcedata.DoesNotExist:
+        # The resource does not exist in the database at the given level.
         return None
 
 def get_app_resource_dirs_for_level(collection, user, level):
+    """Returns a queryset of SpAppResourceDir that match the user/collection context
+    at the given level of the hierarchy. In principle the queryset should represent
+    a single row. The queryset is returned so that the django ORM can use it to
+    build a IN clause when selecting the actual SpAppResource row, resulting in
+    a single query to get the resource."""
     usertype = get_usertype(user)
     discipline = collection.discipline
 
+    # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
         'Personal'   : (True        , usertype  , collection  , discipline)  ,
@@ -82,10 +130,14 @@ def get_app_resource_dirs_for_level(collection, user, level):
 
     if level not in filter_levels: return []
 
+    # Pull out the column names and values for the given level.
     columns, values = filter_levels['Columns'], filter_levels[level]
     filters = dict(zip(columns, values))
+
+    # At the user level, add a clause for the user column.
     if filters['ispersonal']:
         if user is None: return []
         filters['specifyuser'] = user
 
+    # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
