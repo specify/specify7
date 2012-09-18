@@ -33,6 +33,11 @@ class UIFormatter(object):
             raise ValueError("value doesn't match formatter")
         return match.groups()
 
+    def needs_autonumber(self, vals):
+        for f, v in zip(self.fields, vals):
+            if f.is_wild(v): return True
+        return False
+
     def autonumber_regexp(self, vals):
         regexp = []
         for field, val in zip(self.fields, vals):
@@ -51,8 +56,9 @@ class UIFormatter(object):
                 filled_vals.append(val)
         return filled_vals
 
-    def autonumber(self, collection, model, fieldname, vals, year=None):
+    def autonumber(self, collection, model, vals, year=None):
         with_year = self.fillin_year(vals, year)
+        fieldname = self.field_name.lower()
 
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         try:
@@ -79,7 +85,7 @@ class UIFormatter(object):
         filled = []
         for field, val in zip(self.fields, vals):
             if field.is_wild(val):
-                filled.append(self.size * "0")
+                filled.append(field.size * "0")
             else:
                 filled.append(val)
         return filled

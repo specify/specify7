@@ -15,6 +15,7 @@ import os
 
 from specify import models
 from specify.filter_by_col import filter_by_collection
+from specify.autonumbering import autonumber
 
 class Authentication(tastypie.authentication.Authentication):
     def is_authenticated(self, request, **kwargs):
@@ -162,11 +163,14 @@ class ModelResource(tastypie.resources.ModelResource):
         bundle.obj.save(force_update=True)
         return bundle
 
+    @transaction.commit_on_success
     def obj_create(self, bundle, request=None, **kwargs):
         for field in ('createdbyagent', 'modifiedbyagent'):
             if hasattr(self._meta.object_class, field):
                 kwargs[field] = request.specify_user_agent
-        return super(ModelResource, self).obj_create(bundle, request, **kwargs)
+        bundle = super(ModelResource, self).obj_create(bundle, request, **kwargs)
+        autonumber(request.specify_collection, request.specify_user, bundle.obj)
+        return bundle
 
     def apply_filters(self, request, filters):
         for filtr in filters:
