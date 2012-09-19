@@ -59,6 +59,7 @@ define([
                     return;
                 } else {
                     this.removeSaveBlocker('badformat');
+                    value = this.formatter.canonicalize(formatterVals);
                 }
             }
 

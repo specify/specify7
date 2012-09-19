@@ -8,20 +8,30 @@ from context.app_resource import get_app_resource
 def get_uiformatter(collection, user, formatter_name):
     xml, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name="%s"]' % formatter_name)
-    return node and UIFormatter(node)
+    if node is None: return None
+    external = node.find('external')
+    print external
+    if external is not None:
+        print external.text
+        name = external.text.split('.')[-1]
+        if name == 'CatalogNumberUIFieldFormatter':
+            return CatalogNumberNumeric()
+        else:
+            return None
+    else:
+        return UIFormatter(
+            model_name = node.attrib['class'].split('.')[-1],
+            field_name = node.attrib['fieldname'],
+            fields = map(new_field, node.findall('field')))
 
 class AutonumberOverflowException(Exception):
     pass
 
 class UIFormatter(object):
-    def __init__(self, node):
-        self.system = node.attrib['system'] == 'true'
-        self.name = node.attrib['name']
-        self.model_name = node.attrib['class'].split('.')[-1]
-        self.field_name = node.attrib['fieldname']
-        self.is_external = node.find('external') is not None
-        if self.is_external: return
-        self.fields = map(new_field, node.findall('field'))
+    def __init__(self, model_name, field_name, fields):
+        self.model_name = model_name
+        self.field_name = field_name
+        self.fields = fields
 
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
@@ -91,21 +101,25 @@ class UIFormatter(object):
         return filled
 
 def new_field(node):
-    by_type = {
+    Field = {
         'numeric': NumericField,
         'year': YearField,
         'alphanumeric': AlphaNumField,
         'separator': SeparatorField
-        }
-    return by_type[node.attrib['type']](node)
+        }[node.attrib['type']]
+    return Field(
+        size = int(node.attrib['size']),
+        value = node.attrib.get('value'),
+        inc = node.attrib.get('inc') == 'true',
+        by_year = node.attrib.get('byyear') == 'true')
+
 
 class Field(object):
-    def __init__(self, node):
-        self.type = node.attrib['type']
-        self.size = int(node.attrib['size'])
-        self.value = node.attrib.get('value')
-        self.inc = node.attrib.get('inc') == 'true'
-        self.by_year = node.attrib.get('byyear') == 'true'
+    def __init__(self, size, value, inc, by_year):
+        self.size = size
+        self.value = value
+        self.inc = inc
+        self.by_year = by_year
 
     def can_autonumber(self):
         return self.inc or self.by_year
@@ -124,9 +138,9 @@ class Field(object):
             return self.value_regexp()
 
 class NumericField(Field):
-    def __init__(self, node):
-        Field.__init__(self, node)
-        self.value = self.size * '#'
+    def __init__(self, size, value=None, inc=False, by_year=False):
+        value = size * '#'
+        Field.__init__(self, size, value, inc, by_year)
 
     def value_regexp(self):
         return r'[0-9]{%d}' % self.size
@@ -145,3 +159,14 @@ class SeparatorField(Field):
 
     def value_regexp(self):
         return self.wild_regexp()
+
+class CatalogNumberNumeric(UIFormatter):
+    class CNNField(NumericField):
+        def __init__(self):
+            NumericField.__init__(self, size=9, inc=True)
+
+    def __init__(self):
+        UIFormatter.__init__(self,
+                             model_name='CollectionObject',
+                             field_name='catalogNumber',
+                             fields=[CatalogNumberNumeric.CNNField()])

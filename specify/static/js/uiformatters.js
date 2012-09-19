@@ -34,6 +34,9 @@ define([
             return _.any(this.fields, function(field, i) {
                 return field.isWild(values[i]);
             });
+        },
+        canonicalize: function(values) {
+            return values.join('');
         }
     });
 
@@ -77,19 +80,19 @@ define([
             this.value = Array(this.size+1).join('#');
         },
         valueRegexp: function() {
-            return '\\d{0,' + this.size + '}';
+            return '\\d{' + this.size + '}';
         }
     });
 
     var YearField = Field.extend({
         valueRegexp: function() {
-            return '\\d{0,' + this.size + '}';
+            return '\\d{' + this.size + '}';
         }
     });
 
     var AlphaNumField = Field.extend({
         valueRegexp: function() {
-            return '[a-zA-Z0-9]{0,' + this.size + '}';
+            return '[a-zA-Z0-9]{' + this.size + '}';
         }
     });
 
@@ -103,6 +106,10 @@ define([
         constructor: function(node) {
             UIFormatter.call(this, node);
             this.fields = [new CatalogNumberNumeric.Field()];
+        },
+        canonicalize: function(values) {
+            var value = values[0];
+            return Array(this.fields[0].size - value.length + 1).join('0') + value;
         }
     });
     CatalogNumberNumeric.Field = NumericField.extend({
@@ -112,6 +119,9 @@ define([
             this.value = Array(this.size+1).join('#');
             this.inc = true;
             this.byYear = false;
+        },
+        valueRegexp: function() {
+            return '\\d{1,' + this.size + '}';
         }
     });
 
