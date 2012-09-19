@@ -5,15 +5,8 @@ define([
     "use strict";
     var uiformatters =  $($.parseXML(xml));
 
-    function UIFormatter(node) {
-        this.node = $(node);
-        this.system = this.node.attr('system') === 'true';
-        this.name = this.node.attr('name');
-        this.modelName = this.node.attr('class').split('.').pop();
-        this.fieldName = this.node.attr('fieldname');
-        this.isExternal = this.node.find('external').length > 0;
-        if (this.isExternal) return;
-        this.fields = _(this.node.find('field')).map(Field.forNode);
+    function UIFormatter(fields) {
+        this.fields = fields;
     }
     UIFormatter.extend = Backbone.Model.extend;
     _(UIFormatter.prototype).extend({
@@ -36,17 +29,17 @@ define([
             });
         },
         canonicalize: function(values) {
-            return values.join('');
+            return _.map(this.fields, function(field, i) {
+                    return field.canonicalize(values[i]);
+            }).join('');
         }
     });
 
-    function Field(node) {
-        this.node = $(node);
-        this.type = this.node.attr('type');
-        this.size = parseInt(this.node.attr('size'), 10);
-        this.value = this.node.attr('value');
-        this.inc = this.node.attr('inc') === 'true';
-        this.byYear = this.node.attr('byyear') === 'true';
+    function Field(options) {
+        this.size = options.size;
+        this.value = options.value;
+        this.inc = options.inc;
+        this.byYear = options.byYear;
     }
     Field.extend = Backbone.Model.extend;
     _.extend(Field.prototype, {
@@ -63,21 +56,28 @@ define([
         wildOrValueRegexp: function() {
             return this.canAutonumber() ? this.wildRegexp() + '|' + this.valueRegexp()
                 : this.valueRegexp();
-        }
+        },
+        canonicalize: _.identity
     });
     Field.forNode = function(node) {
+        node = $(node);
         return new ({
             'year': YearField,
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
             'separator': SeparatorField
-        }[$(node).attr('type')])(node);
+        }[node.attr('type')])({
+            size: parseInt(node.attr('size'), 10),
+            value: node.attr('value'),
+            inc: node.attr('inc') === 'true',
+            byYear: node.attr('byyear') === 'true'
+        });
     };
 
     var NumericField = Field.extend({
-        constructor: function(node) {
-            Field.call(this, node);
-            this.value = Array(this.size+1).join('#');
+        constructor: function(options) {
+            options.value = Array(options.size+1).join('#');
+            Field.call(this, options);
         },
         valueRegexp: function() {
             return '\\d{' + this.size + '}';
@@ -101,45 +101,48 @@ define([
         valueRegexp: Field.prototype.wildRegexp
     });
 
-
     var CatalogNumberNumeric = UIFormatter.extend({
-        constructor: function(node) {
-            UIFormatter.call(this, node);
-            this.fields = [new CatalogNumberNumeric.Field()];
-        },
-        canonicalize: function(values) {
-            var value = values[0];
-            return Array(this.fields[0].size - value.length + 1).join('0') + value;
-        }
-    });
-    CatalogNumberNumeric.Field = NumericField.extend({
         constructor: function() {
-            this.type = 'numeric';
-            this.size = 9;
-            this.value = Array(this.size+1).join('#');
-            this.inc = true;
-            this.byYear = false;
-        },
-        valueRegexp: function() {
-            return '\\d{1,' + this.size + '}';
+            UIFormatter.call(this,  [
+                new CatalogNumberNumeric.Field({ size: 9, inc: true })
+            ]);
         }
-    });
+    }, {
+        Field: NumericField.extend({
+            valueRegexp: function() {
+                return '\\d{0,' + this.size + '}';
+            },
+            canonicalize: function(value) {
+                return Array(this.size - value.length + 1).join('0') + value;
+            }
+        }
+    )});
+
 
     function escapeRegExp(str) {
         return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
     function getUIFormatter(name) {
-        var node = uiformatters.find('[name="' + name + '"]');
-        var formatter = node && new UIFormatter(node);
-        if (formatter.isExternal && formatter.name === "CatalogNumberNumeric") {
-           return new CatalogNumberNumeric(node);
+        var node = $(uiformatters.find('[name="' + name + '"]'));
+        if (!node) return null;
+        var external = node.find('external');
+        if (external.length) {
+            switch ($(external).text().split('.').pop()) {
+            case 'CatalogNumberUIFieldFormatter':
+                return new CatalogNumberNumeric();
+            default:
+                return null;
+            }
+        } else {
+            return new UIFormatter(
+                _(node.find('field')).map(Field.forNode));
         }
-        return formatter;
     }
 
     return {
         getByName: getUIFormatter,
         UIFormatter: UIFormatter,
-        Field: Field };
+        Field: Field
+    };
 });
