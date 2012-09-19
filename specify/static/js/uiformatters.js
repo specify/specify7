@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore',
+    'jquery', 'underscore', 'backbone',
     'text!context/app.resource?name=UIFormatters!noinline'
-], function($, _, xml) {
+], function($, _, Backbone, xml) {
     "use strict";
     var uiformatters =  $($.parseXML(xml));
 
@@ -13,18 +13,27 @@ define([
         this.fieldName = this.node.attr('fieldname');
         this.isExternal = this.node.find('external').length > 0;
         if (this.isExternal) return;
-        this.fields = _(this.node.find('field')).map(function(node) { return new Field(node); });
+        this.fields = _(this.node.find('field')).map(Field.forNode);
     }
-
+    UIFormatter.extend = Backbone.Model.extend;
     _(UIFormatter.prototype).extend({
         value: function() {
             return _(this.fields).pluck('value').join('');
         },
-        regExp: function() {
-            return '^' + _(this.fields).invoke('regExp').join('') + '$';
+        parseRegexp: function() {
+            return '^' + _(this.fields).map(function(field) {
+                return '(' + field.wildOrValueRegexp() + ')';
+            }).join('') + '$';
         },
-        validate: function(str) {
-            return RegExp(this.regExp()).test(str) && str;
+        parse: function(value) {
+            var match = RegExp(this.parseRegexp()).exec(value);
+            match && match.shift();
+            return match;
+        },
+        needsAutoNumber: function(values) {
+            return _.any(this.fields, function(field, i) {
+                return field.isWild(values[i]);
+            });
         }
     });
 
@@ -32,37 +41,79 @@ define([
         this.node = $(node);
         this.type = this.node.attr('type');
         this.size = parseInt(this.node.attr('size'), 10);
-        this.value = this.type === 'numeric' ? Array(this.size+1).join('#') : this.node.attr('value');
+        this.value = this.node.attr('value');
         this.inc = this.node.attr('inc') === 'true';
         this.byYear = this.node.attr('byyear') === 'true';
     }
+    Field.extend = Backbone.Model.extend;
+    _.extend(Field.prototype, {
+        canAutonumber: function() {
+            return this.inc || this.byYear;
+        },
+        wildRegexp: function() {
+            return escapeRegExp(this.value);
+        },
+        isWild: function(value) {
+            return RegExp(this.wildRegexp()).test(value) &&
+                !RegExp(this.valueRegexp()).test(value);
+        },
+        wildOrValueRegexp: function() {
+            return this.canAutonumber() ? this.wildRegexp() + '|' + this.valueRegexp()
+                : this.valueRegexp();
+        }
+    });
+    Field.forNode = function(node) {
+        return new ({
+            'year': YearField,
+            'numeric': NumericField,
+            'alphanumeric': AlphaNumField,
+            'separator': SeparatorField
+        }[$(node).attr('type')])(node);
+    };
 
-    _(Field.prototype).extend({
-        regExp: function() {
-            switch (this.type) {
-            case 'year':
-            case 'numeric':
-                return '\\d{0,' + this.size + '}';
-                break;
-            case 'alphanumeric':
-                return '[a-zA-Z0-9]{0,' + this.size + '}';
-                break;
-            case 'separator':
-                return escapeRegExp(this.value);
-                break;
-            default:
-                throw new Error('unhandled uiformatter field type: ' + this.type);
-            }
+    var NumericField = Field.extend({
+        constructor: function(node) {
+            Field.call(this, node);
+            this.value = Array(this.size+1).join('#');
+        },
+        valueRegexp: function() {
+            return '\\d{0,' + this.size + '}';
         }
     });
 
-    var catalogNumberNumeric = {
-        value: function() { return '#########'; },
-        regExp: function() { return '^\\d{0,9}$'; },
-        validate: function(str) {
-            return RegExp(this.regExp()).test(str) && (Array(10-str.length).join('0') + str);
+    var YearField = Field.extend({
+        valueRegexp: function() {
+            return '\\d{0,' + this.size + '}';
         }
-    };
+    });
+
+    var AlphaNumField = Field.extend({
+        valueRegexp: function() {
+            return '[a-zA-Z0-9]{0,' + this.size + '}';
+        }
+    });
+
+    var SeparatorField = Field.extend({
+        isWild: function() { return false; },
+        valueRegexp: Field.prototype.wildRegexp
+    });
+
+
+    var CatalogNumberNumeric = UIFormatter.extend({
+        constructor: function(node) {
+            UIFormatter.call(this, node);
+            this.fields = [new CatalogNumberNumeric.Field()];
+        }
+    });
+    CatalogNumberNumeric.Field = NumericField.extend({
+        constructor: function() {
+            this.type = 'numeric';
+            this.size = 9;
+            this.value = Array(this.size+1).join('#');
+            this.inc = true;
+            this.byYear = false;
+        }
+    });
 
     function escapeRegExp(str) {
         return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -72,7 +123,7 @@ define([
         var node = uiformatters.find('[name="' + name + '"]');
         var formatter = node && new UIFormatter(node);
         if (formatter.isExternal && formatter.name === "CatalogNumberNumeric") {
-            _(formatter).extend(catalogNumberNumeric);
+           return new CatalogNumberNumeric(node);
         }
         return formatter;
     }

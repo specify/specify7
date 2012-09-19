@@ -53,8 +53,8 @@ define([
             }
 
             if (this.formatter) {
-                value = this.formatter.validate(value);
-                if (!value) {
+                var formatterVals = this.formatter.parse(value);
+                if (!formatterVals) {
                     this.addSaveBlocker('badformat', "Required format: " + this.formatter.value());
                     return;
                 } else {
