@@ -42,7 +42,7 @@ define([
             self.saveBtn = new SaveButton({ model: self.model });
             self.saveBtn.on('savecomplete', function() { self.trigger('savecomplete'); });
 
-            if (!self.model.isNew()) {
+            if (options.deleteButton) {
                 self.deleteBtn = new DeleteButton({ model: self.model });
                 self.deleteBtn.on('deleted', function() {
                     self.$el.empty();
@@ -69,6 +69,7 @@ define([
             this.specifyModel = schema.getModel(options.modelName);
             this.model = new (specifyapi.Resource.forModel(this.specifyModel))({ id: options.resourceId });
             this.model.on('change', this.setTitle, this);
+            options.deleteButton = !this.model.isNew();
             MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {

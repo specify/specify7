@@ -2,7 +2,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
     Backbone.View.extend
         events:
-            click: 'openDialog'
+            'click .delete-button': 'openDialog'
 
         initialize: (options) ->
             @model.on 'candelete', =>
@@ -14,7 +14,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 @setToolTip()
 
         render: ->
-            @button = $('<input type="button" value="Delete">').appendTo @el
+            @button = $('<input type="button" value="Delete" class="delete-button">').appendTo @el
             @button.prop 'disabled', true
             @dialog = $(templates.confirmdelete()).appendTo(@el).dialog
                 resizable: false
@@ -22,7 +22,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 modal: true
                 buttons:
                     'Delete': => @doDelete()
-                    'Cancel': => @dialog.dialog 'close'
+                    'Cancel': -> $(this).dialog 'close'
 
             @dialog.parent('.ui-dialog').appendTo @el
             @dialog.on 'remove', -> $(@).detach()

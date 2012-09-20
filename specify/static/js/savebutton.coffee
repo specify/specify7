@@ -2,7 +2,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
     Backbone.View.extend
         events:
-            click: 'submit'
+            'click .save-button': 'submit'
         initialize: (options) ->
             @blockers = {}
 
@@ -23,7 +23,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 @button.removeClass 'saveblocked'
 
         render: ->
-            @button = $('<input type="submit">').appendTo(@el)
+            @button = $('<input type="submit" class="save-button">').appendTo(@el)
             @button.prop 'disabled', true
             @dialog = $(templates.saveblocked()).appendTo(@el).dialog
                 resizable: false
