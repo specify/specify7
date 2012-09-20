@@ -39,8 +39,14 @@ define([
                     return;
                 }
             });
-            self.saveBtn = new SaveButton({ model: self.model });
-            self.saveBtn.on('savecomplete', function() { self.trigger('savecomplete'); });
+            self.saveBtn = new SaveButton(_.extend(
+                { model: self.model },
+                options.saveButtonOptions));
+
+            self.saveBtn.on('savecomplete', function() {
+                var args = ['savecomplete'].concat(_(arguments).toArray());
+                self.trigger.apply(self, args);
+            });
 
             if (options.deleteButton) {
                 self.deleteBtn = new DeleteButton({ model: self.model });
@@ -129,9 +135,15 @@ define([
             this.parentResource = domain[domainField.name];
             this.model.set(domainField.name, this.parentResource.url());
             this.model.on('change', this.setTitle, this);
-            this.on('savecomplete', function() {
-                navigation.go(this.model.viewUrl())
+            this.on('savecomplete', function(options) {
+                if (options.addAnother) {
+                    _.defer(_.bind(window.open, window, this.model.viewUrl()));
+                    this.trigger('refresh');
+                } else {
+                    navigation.go(this.model.viewUrl());
+                }
             }, this);
+            options.saveButtonOptions = { addAnother: true };
             MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {

@@ -2,29 +2,41 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
     Backbone.View.extend
         events:
-            'click .save-button': 'submit'
+            'click :submit': 'submit'
+
         initialize: (options) ->
             @blockers = {}
 
             @model.on 'saverequired', (resource) =>
-                @button.prop 'disabled', false
+                @buttons.prop 'disabled', false
 
             @model.on 'oktosave', (resource) =>
                 @removeBlocker resource
 
             @model.on 'saveblocked', (resource) =>
                 @blockers[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
-                @button.prop 'disabled', false
-                @button.addClass 'saveblocked'
+                @buttons.prop 'disabled', false
+                @buttons.addClass 'saveblocked'
 
         removeBlocker: (resource) ->
             delete @blockers[resource.cid]
             if _.isEmpty @blockers
-                @button.removeClass 'saveblocked'
+                @buttons.removeClass 'saveblocked'
 
         render: ->
-            @button = $('<input type="submit" class="save-button">').appendTo(@el)
-            @button.prop 'disabled', true
+            @$el.append $ '<input>'
+                type: "submit"
+                class: "save-button"
+                value: "Save"
+
+            if @options.addAnother then @$el.append $ '<input>'
+                type: "submit"
+                class: "save-and-add-button"
+                value: "Save and Add Another"
+
+            @buttons = @$(':submit')
+            @buttons.appendTo(@el).prop 'disabled', true
+
             @dialog = $(templates.saveblocked()).appendTo(@el).dialog
                 resizable: false
                 autoOpen: false
@@ -35,8 +47,9 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
         submit: (evt) ->
             evt.preventDefault()
             if _.isEmpty @blockers
-                @button.prop 'disabled', true
-                @model.rsave().done => @trigger 'savecomplete'
+                @buttons.prop 'disabled', true
+                @model.rsave().done => @trigger 'savecomplete',
+                    addAnother: $(evt.currentTarget).is '.save-and-add-button'
             else
                 list = @dialog.find '.saveblockers'
                 list.empty()
@@ -49,4 +62,3 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                         $('<dt>').text(field?.getLocalizedName() or '').appendTo dl
                         $('<dd>').text(blocker.reason).appendTo dl
                 @dialog.dialog 'open'
-

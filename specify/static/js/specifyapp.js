@@ -157,6 +157,9 @@ define([
 
             newResource: function(viewName) {
                 setCurrentView(new views.NewResourceView({ viewName: viewName }));
+                app.currentView.on('refresh', function() {
+                    specifyRouter.newResource(viewName);
+                });
             },
 
             viewashtml: function() {
