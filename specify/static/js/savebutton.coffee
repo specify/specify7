@@ -7,23 +7,24 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @blockers = {}
 
             @model.on 'saverequired', (resource) =>
-                @$el.prop 'disabled', false
+                @button.prop 'disabled', false
 
             @model.on 'oktosave', (resource) =>
                 @removeBlocker resource
 
             @model.on 'saveblocked', (resource) =>
                 @blockers[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
-                @$el.prop 'disabled', false
-                @$el.addClass 'saveblocked'
+                @button.prop 'disabled', false
+                @button.addClass 'saveblocked'
 
         removeBlocker: (resource) ->
             delete @blockers[resource.cid]
             if _.isEmpty @blockers
-                @$el.removeClass 'saveblocked'
+                @button.removeClass 'saveblocked'
 
         render: ->
-            @$el.prop 'disabled', true
+            @button = $('<input type="submit">').appendTo(@el)
+            @button.prop 'disabled', true
             @dialog = $(templates.saveblocked()).insertAfter(@el).dialog
                 resizable: false
                 autoOpen: false
@@ -33,7 +34,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
         submit: (evt) ->
             evt.preventDefault()
             if _.isEmpty @blockers
-                @$el.prop 'disabled', true
+                @button.prop 'disabled', true
                 @model.rsave().done => @trigger 'savecomplete'
             else
                 list = @dialog.find '.saveblockers'

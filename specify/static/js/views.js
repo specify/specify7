@@ -1,10 +1,11 @@
 define([
     'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
-    'cs!domain',
+    'cs!deletebutton', 'cs!domain',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm, schema, specifyapi,
-            specifyform, dataobjformat, navigation, templates, SaveButton, domain) {
+            specifyform, dataobjformat, navigation, templates,
+            SaveButton, DeleteButton, domain) {
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
@@ -29,9 +30,6 @@ define([
     });
 
     var MainForm = Backbone.View.extend({
-        events: {
-            'click :button[value="Delete"]': 'openDeleteDialog'
-        },
         initialize: function(options) {
             var self = this;
             self.model.on('error', function(resource, jqxhr, options) {
@@ -41,52 +39,24 @@ define([
                     return;
                 }
             });
-        },
-        destroy: function() {
-            var self = this;
-            $.when(self.model.destroy()).done(function() {
-                self.$el.empty();
-                self.$el.append('<p>Item deleted.</p>');
-            });
-            self.deleteDialog.dialog('close');
-        },
-        openDeleteDialog: function(evt) {
-            evt.preventDefault();
-            this.deleteDialog.dialog('open');
+            self.saveBtn = new SaveButton({ model: self.model });
+            self.saveBtn.on('savecomplete', function() { self.trigger('savecomplete'); });
+
+            if (!self.model.isNew()) {
+                self.deleteBtn = new DeleteButton({ model: self.model });
+                self.deleteBtn.on('deleted', function() {
+                    self.$el.empty();
+                    self.$el.append('<p>Item deleted.</p>');
+                });
+            }
         },
         render: function() {
             var self = this;
             self.$el.append(populateForm(self.buildForm(), self.model));
-            self.saveBtn = new SaveButton({ el: self.$(':submit'), model: self.model });
-            self.saveBtn.render().on('savecomplete', function() { self.trigger('savecomplete'); });
-            self.deleteBtn = self.$(':button[value="Delete"]').prop('disabled', true);
-            self.model.isNew() && self.deleteBtn.hide();
-            self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false, modal: true, autoOpen: false, buttons: {
-                    'Delete': _.bind(self.destroy, self),
-                    'Cancel': function() { $(this).dialog('close'); }
-                }
-            });
-            self.deleteDialog.parent('.ui-dialog').appendTo(self.el);
-            self.deleteDialog.on('remove', function() {
-                $(this).detach();
-            });
+            self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
+            self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
             self.setTitle();
-            _({ candelete: 'enable', deleteblocked: 'disable' }).each(function(action, event) {
-                self.model.on(event, function() {
-                    self.deleteBtn.prop('disabled', action === 'disable');
-                    self.setDeleteBtnToolTip();
-                });
-            });
-            self.model.businessRuleMgr.checkCanDelete().done(
-                _.bind(self.setDeleteBtnToolTip, self)
-            );
             return self;
-        },
-        setDeleteBtnToolTip: function() {
-            var title = _.map(this.model.businessRuleMgr.deleteBlockers,
-                              function(__, field) { return field; }).join(',');
-            this.deleteBtn.attr('title', title);
         },
         setFormTitle: function(title) {
             this.$('.specify-form-header span').text(title);
