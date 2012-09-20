@@ -35,9 +35,9 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @dialog.dialog 'open'
 
         doDelete: ->
-            $.when(@model.destroy()).done => @trigger 'deleted'
+            @model.destroy().done => @trigger 'deleted'
             @dialog.dialog 'close'
 
         setToolTip: ->
-            title = _.map(@model.businessRuleMgr.deleteBlockers, (__, field) -> field).join(', ')
-            @button.attr 'title', title
+            blockers = _.map @model.businessRuleMgr.deleteBlockers, (__, field) -> field
+            @button.attr 'title', blockers.join ', '

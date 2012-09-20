@@ -25,10 +25,11 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
         render: ->
             @button = $('<input type="submit">').appendTo(@el)
             @button.prop 'disabled', true
-            @dialog = $(templates.saveblocked()).insertAfter(@el).dialog
+            @dialog = $(templates.saveblocked()).appendTo(@el).dialog
                 resizable: false
                 autoOpen: false
-            @dialog.parent('.ui-dialog').insertAfter(@el)
+            @dialog.parent('.ui-dialog').appendTo @el
+            @dialog.on 'remove', -> $(@).detach()
             @
 
         submit: (evt) ->
