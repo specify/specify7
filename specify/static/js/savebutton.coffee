@@ -6,22 +6,32 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
         initialize: (options) ->
             @blockers = {}
+            @saveBlocked = false
+            @buttonsDisabled = true
 
             @model.on 'saverequired', (resource) =>
-                @buttons.prop 'disabled', false
+                @setButtonsDisabled false
 
             @model.on 'oktosave', (resource) =>
                 @removeBlocker resource
 
             @model.on 'saveblocked', (resource) =>
                 @blockers[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
-                @buttons.prop 'disabled', false
-                @buttons.addClass 'saveblocked'
+                @setButtonsDisabled false
+                @setSaveBlocked true
+
+        setButtonsDisabled: (state) ->
+            @buttonsDisabled = state
+            @buttons?.prop 'disabled', state
+
+        setSaveBlocked: (saveBlocked) ->
+            @saveBlocked = saveBlocked
+            @buttons?[if saveBlocked then 'addClass' else 'removeClass'] 'saveblocked'
 
         removeBlocker: (resource) ->
             delete @blockers[resource.cid]
             if _.isEmpty @blockers
-                @buttons.removeClass 'saveblocked'
+                @setSaveBlocked false
 
         render: ->
             @$el.append $ '<input>'
@@ -35,7 +45,11 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 value: "Save and Add Another"
 
             @buttons = @$(':submit')
-            @buttons.appendTo(@el).prop 'disabled', true
+            @buttons.appendTo(@el)
+
+            # get buttons to match current state
+            @setButtonsDisabled @buttonsDisabled
+            @setSaveBlocked @saveBlocked
 
             @dialog = $(templates.saveblocked()).appendTo(@el).dialog
                 resizable: false
@@ -47,7 +61,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
         submit: (evt) ->
             evt.preventDefault()
             if _.isEmpty @blockers
-                @buttons.prop 'disabled', true
+                @setButtonsDisabled true
                 @model.rsave().done => @trigger 'savecomplete',
                     addAnother: $(evt.currentTarget).is '.save-and-add-button'
             else

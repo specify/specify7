@@ -23,6 +23,9 @@ define([
             match && match.shift();
             return match;
         },
+        canAutonumber: function() {
+            return _.any(_.invoke(this.fields, 'canAutonumber'));
+        },
         needsAutoNumber: function(values) {
             return _.any(this.fields, function(field, i) {
                 return field.isWild(values[i]);

@@ -39,6 +39,13 @@ define([
             self.model.onChange(fieldName, fillItIn);
             self.toolTipMgr = new ToolTipMgr(self).enable();
             self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
+
+            if (self.model.isNew() &&
+                self.fieldName.split('.').length === 1 &&
+                self.formatter && self.formatter.canAutonumber())
+            {
+                self.model.set(self.fieldName, self.formatter.value());
+            }
             return this;
         },
         change: function() {
