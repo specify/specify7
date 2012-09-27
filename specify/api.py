@@ -23,14 +23,9 @@ inlined_fields = [
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
-#    'Collectionobject.determinations',
+    'Collectionobject.determinations',
     'Picklist.picklistitems',
 ]
-
-inlined_dict = defaultdict(list)
-for field in inlined_fields:
-    m, f = field.split('.')
-    inlined_dict[m].append(f)
 
 class JsonDateEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -242,7 +237,7 @@ def obj_to_data(obj):
 
 def to_many_to_data(obj, related_object):
     parent_model = related_object.parent_model.__name__
-    if related_object.get_accessor_name() in inlined_dict[parent_model]:
+    if '.'.join((parent_model, related_object.get_accessor_name())) in inlined_fields:
         objs = getattr(obj, related_object.get_accessor_name())
         return [obj_to_data(o) for o in objs.all()]
 
@@ -251,7 +246,7 @@ def to_many_to_data(obj, related_object):
 
 def field_to_val(obj, field):
     if isinstance(field, ForeignKey):
-        if field.name in inlined_dict[obj.__class__.__name__]:
+        if '.'.join((obj.__class__.__name__, field.name)) in inlined_fields:
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
             return obj_to_data(related_obj)
