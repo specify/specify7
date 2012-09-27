@@ -3,10 +3,12 @@ import json
 from collections import defaultdict
 import re
 
+from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.contrib.auth.decorators import login_required
 from django.db.models.fields.related import ForeignKey
-from django.db.models.fields import DateTimeField
+from django.db.models.fields import DateTimeField, FieldDoesNotExist
 from django.utils import simplejson
 
 from specify import models
@@ -38,16 +40,34 @@ class JsonDateEncoder(json.JSONEncoder):
 def toJson(obj):
     return json.dumps(obj, cls=JsonDateEncoder)
 
+class OptimisticLockException(Exception): pass
+
+class MissingVersionException(OptimisticLockException): pass
+
+class StaleObjectException(OptimisticLockException): pass
+
+class HttpResponseConflict(HttpResponse):
+    status_code = 409
+
+@login_required
 def resource(request, model, id):
     if request.method == 'GET':
         return HttpResponse(toJson(get_resource(model, id)),
                             content_type='application/json')
 
     if request.method == 'PUT':
-        put_resource(model, id, json.load(request))
+        try:
+            put_resource(request.specify_collection, request.specify_user_agent,
+                         model, id, json.load(request))
+        except StaleObjectException:
+            return HttpResponseConflict()
+        except MissingVersionException:
+            return HttpResponseBadRequest('Missing version information.')
+
         return HttpResponse(toJson(get_resource(model, id)),
                             content_type='application/json')
 
+@login_required
 def collection(request, model):
     if request.method == 'GET':
         return HttpResponse(toJson(get_collection(model, request.GET)),
@@ -60,9 +80,11 @@ def get_resource(name, id):
     data['resource_uri'] = uri_for_model(name, id)
     return data
 
-def put_resource(name, id, data):
+@transaction.commit_on_success
+def put_resource(collection, agent, name, id, data):
     id = int(id)
     obj = getattr(models, name.capitalize()).objects.get(id=id)
+
     for field_name, val in data.items():
         if field_name == 'resource_uri': continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
@@ -77,7 +99,36 @@ def put_resource(name, id, data):
             setattr(obj, field_name + '_id', fk_id)
         else:
             setattr(obj, field_name, prepare_value(field, val))
-    obj.save()
+
+    try:
+        obj._meta.get_field('modifiedbyagent')
+    except FieldDoesNotExist:
+        pass
+    else:
+        obj.modifiedbyagent = agent
+
+    # If the object has no version field, just save it.
+    try:
+        obj._meta.get_field('version')
+    except FieldDoesNotExist:
+        obj.save(force_update=True)
+        return
+
+    try:
+        version = data['version'] # The version the client has.
+    except KeyError:
+        raise MissingVersionException()
+
+    # Update a row with the PK and the version no. we have.
+    # If our version is stale, the rows updated will be 0.
+    manager = obj.__class__._base_manager
+    updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
+    if not updated:
+        raise StaleObjectException()
+
+    # Do the actual update.
+    obj.version = version + 1
+    obj.save(force_update=True)
 
 def prepare_value(field, val):
     if isinstance(field, DateTimeField):
