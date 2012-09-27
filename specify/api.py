@@ -103,12 +103,12 @@ def collection(request, model):
                             content_type='application/json')
 
     if request.method == 'POST':
-       obj = post_resource(request.specify_collection,
-                           request.specify_user_agent,
-                           model, json.load(request))
+        obj = post_resource(request.specify_collection,
+                            request.specify_user_agent,
+                            model, json.load(request))
 
-       return HttpResponseCreated(toJson(obj_to_data(obj)),
-                                  content_type='application/json')
+        return HttpResponseCreated(toJson(obj_to_data(obj)),
+                                   content_type='application/json')
 
 def get_resource(name, id):
     id = int(id)
@@ -120,6 +120,10 @@ def get_resource(name, id):
 def post_resource(collection, agent, name, data):
     obj = getattr(models, name.capitalize())()
     set_fields_from_data(obj, data)
+    # Have to save the object before autonumbering b/c
+    # autonumber acquires a write lock on the model,
+    # but save touches other tables.
+    obj.save()
     autonumber(collection, agent.specifyuser, obj)
     try:
         obj._meta.get_field('createdbyagent')
@@ -180,7 +184,7 @@ def bump_version(obj, version):
     try:
         version = int(version)
     except ValueError:
-        raise MissingVersionException(e)
+        raise MissingVersionException()
 
     # Update a row with the PK and the version no. we have.
     # If our version is stale, the rows updated will be 0.
@@ -235,9 +239,9 @@ def field_to_val(obj, field):
 def get_collection(model, params={}):
     if isinstance(model, basestring):
         model = getattr(models, model.capitalize())
-    objs = model.objects.all()
     offset = 0
     limit = 20
+    filters = {}
     for param, val in params.items():
         if param == 'domainfilter':
             continue
@@ -251,7 +255,8 @@ def get_collection(model, params={}):
             continue
 
         # param is a related field
-        objs = objs.filter(**{param: val})
+        filters.update({param: val})
+    objs = model.objects.filter(**filters)
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):
