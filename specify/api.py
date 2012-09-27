@@ -56,7 +56,15 @@ class HttpResponseCreated(HttpResponse):
 
 @login_required
 @csrf_exempt
-def resource(request, model, id):
+def resource(*args, **kwargs):
+    try:
+        return resource_dispatch(*args, **kwargs)
+    except StaleObjectException:
+        return HttpResponseConflict()
+    except MissingVersionException:
+        return HttpResponseBadRequest('Missing version information.')
+
+def resource_dispatch(request, model, id):
     request_params = QueryDict(request.META['QUERY_STRING'])
 
     # Get the version the client wants to delete.
@@ -79,14 +87,9 @@ def resource(request, model, id):
         except KeyError:
             pass
 
-        try:
-            obj = put_resource(request.specify_collection,
-                               request.specify_user_agent,
-                               model, id, version, data)
-        except StaleObjectException:
-            return HttpResponseConflict()
-        except MissingVersionException:
-            return HttpResponseBadRequest('Missing version information.')
+        obj = put_resource(request.specify_collection,
+                           request.specify_user_agent,
+                           model, id, version, data)
 
         return HttpResponse(toJson(obj_to_data(obj)),
                             content_type='application/json')
