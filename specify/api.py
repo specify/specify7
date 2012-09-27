@@ -13,6 +13,7 @@ from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 
 from specify import models
+from specify.autonumbering import autonumber
 
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
@@ -119,6 +120,13 @@ def get_resource(name, id):
 def post_resource(collection, agent, name, data):
     obj = getattr(models, name.capitalize())()
     set_fields_from_data(obj, data)
+    autonumber(collection, agent.specifyuser, obj)
+    try:
+        obj._meta.get_field('createdbyagent')
+    except FieldDoesNotExist:
+        pass
+    else:
+        obj.createdbyagent = agent
     obj.save()
     return obj
 
