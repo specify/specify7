@@ -4,3 +4,6 @@
 * make "visit" link for one-to-many recordselector view
 * ui and dataobj formatters for express search results
 * save and delete buttons missing on recordsets view
+* weird limit of one on collection fetches (new api)
+* 404 for new api
+* update all fields after put

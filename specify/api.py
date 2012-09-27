@@ -1,28 +1,17 @@
-import tastypie.resources
-import tastypie.fields
-from tastypie.authorization import Authorization
-import tastypie.authentication
-from tastypie.exceptions import NotFound
-from tastypie.constants import ALL_WITH_RELATIONS
-from django.db.models import get_models
-from django.db import transaction
-from django.db.models.fields import FieldDoesNotExist
-from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest, QueryDict
-from xml.etree import ElementTree
-import os
+from urllib import urlencode
+import json
+from collections import defaultdict
+import re
+
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.contrib.auth.decorators import login_required
+from django.db.models.fields.related import ForeignKey
+from django.db.models.fields import DateTimeField
+from django.utils import simplejson
 
 from specify import models
-from specify.filter_by_col import filter_by_collection
-from specify.autonumbering import autonumber
 
-class Authentication(tastypie.authentication.Authentication):
-    def is_authenticated(self, request, **kwargs):
-        return request.user.is_authenticated()
-
-    def get_identifier(self, request):
-        return request.user.username
+URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
 inlined_fields = [
     'Collector.agent',
@@ -32,203 +21,148 @@ inlined_fields = [
     'Picklist.picklistitems',
 ]
 
-class OptimisticLockException(Exception): pass
+inlined_dict = defaultdict(list)
+for field in inlined_fields:
+    m, f = field.split('.')
+    inlined_dict[m].append(f)
 
-class MissingVersionException(OptimisticLockException): pass
+class JsonDateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        from decimal import Decimal
+        if isinstance(obj, Decimal):
+            return str(obj)
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
 
-class StaleObjectException(OptimisticLockException): pass
+def toJson(obj):
+    return json.dumps(obj, cls=JsonDateEncoder)
 
-class HttpResponseConflict(HttpResponse):
-    status_code = 409
+def resource(request, model, id):
+    if request.method == 'GET':
+        return HttpResponse(toJson(get_resource(model, id)),
+                            content_type='application/json')
 
-class ForeignKey(tastypie.fields.ForeignKey):
-    def dehydrate(self, bundle):
-        if self.full:
-            return super(ForeignKey, self).dehydrate(bundle)
+    if request.method == 'PUT':
+        put_resource(model, id, json.load(request))
+        return HttpResponse(toJson(get_resource(model, id)),
+                            content_type='application/json')
 
-        descr = getattr(bundle.obj.__class__, self.attribute)
-        fk = getattr(bundle.obj, descr.field.attname)
-        if fk is None:
-            return None
-        dummy = type('Dummy', (object,), dict(id=fk))()
-        return self.to_class().get_resource_uri(dummy)
+def collection(request, model):
+    if request.method == 'GET':
+        return HttpResponse(toJson(get_collection(model, request.GET)),
+                            content_type='application/json')
 
-    def resource_from_uri(self, fk_resource, uri, request=None, related_obj=None, related_name=None):
-        if not uri:
-            return None
-        return super(ForeignKey, self).resource_from_uri(fk_resource, uri, request, related_obj, related_name)
+def get_resource(name, id):
+    id = int(id)
+    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    data = obj_to_data(obj)
+    data['resource_uri'] = uri_for_model(name, id)
+    return data
 
-class ToManyField(tastypie.fields.ToManyField):
-    def dehydrate(self, bundle):
-        if self.full:
-            return super(ToManyField, self).dehydrate(bundle)
+def put_resource(name, id, data):
+    id = int(id)
+    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    for field_name, val in data.items():
+        if field_name == 'resource_uri': continue
+        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
+        if not direct: continue
+        if isinstance(field, ForeignKey):
+            if val is None:
+                setattr(obj, field_name, None)
+                continue
 
-        related_uri = self.to_class().get_resource_list_uri()
-        return '%s?%s=%s' % (related_uri, self.related_name, bundle.obj.pk)
-
-class ModelResource(tastypie.resources.ModelResource):
-    def _build_reverse_url(self, name, args=None, kwargs=None):
-        """Hard code the URL lookups to make things fast."""
-        if name == 'api_dispatch_detail':
-            return '/api/%(api_name)s/%(resource_name)s/%(pk)s/' % kwargs
-        if name == 'api_dispatch_list':
-            return '/api/%(api_name)s/%(resource_name)s/' % kwargs
-
-        return super(ModelResource, self)._build_reverse_url(name, args=args, kwargs=kwargs)
-
-    def dispatch(self, request_type, request, **kwargs):
-        try:
-            return super(ModelResource, self).dispatch(request_type, request, **kwargs)
-        except StaleObjectException:
-            return HttpResponseConflict()
-        except MissingVersionException:
-            return HttpResponseBadRequest('Missing version information.')
-
-    @transaction.commit_on_success
-    def obj_delete(self, request=None, **kwargs):
-        obj = kwargs.pop('_obj', None)
-
-        if not hasattr(obj, 'delete'):
-            try:
-                obj = self.obj_get(request, **kwargs)
-            except ObjectDoesNotExist:
-                raise NotFound("A model instance matching the provided arguments could not be found.")
-
-        try:
-            obj._meta.get_field('version')
-        except FieldDoesNotExist:
-            obj.delete()
-            return
-
-        if request is None:
-            raise MissingVersionException()
-
-        # Get the version the client wants to delete.
-        request_params = QueryDict(request.META['QUERY_STRING'])
-        try:
-            version = request_params['version']
-        except KeyError:
-            try:
-                version = request.META['HTTP_IF_MATCH']
-            except KeyError:
-                raise MissingVersionException()
-        version = int(version)
-
-        # Update a row with the PK and the version no. we have.
-        # If our version is stale, the rows updated will be 0.
-        manager = obj.__class__._base_manager
-        updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
-        if not updated:
-            raise StaleObjectException()
-        obj.delete()
-
-    @transaction.commit_on_success
-    def obj_update(self, bundle, request=None, **kwargs):
-        if not bundle.obj or not bundle.obj.pk:
-            try:
-                bundle.obj = self.obj_get(request, **kwargs)
-            except ObjectDoesNotExist:
-                raise NotFound("A model instance matching the provided arguments could not be found.")
-
-        bundle = self.full_hydrate(bundle)
-
-        try:
-            bundle.obj._meta.get_field('modifiedbyagent')
-        except FieldDoesNotExist:
-            pass
+            fk_model, fk_id = parse_uri(val)
+            assert fk_model == field.related.parent_model.__name__.lower()
+            setattr(obj, field_name + '_id', fk_id)
         else:
-            bundle.obj.modifiedbyagent = request.specify_user_agent
+            setattr(obj, field_name, prepare_value(field, val))
+    obj.save()
 
-        # If the object has no version field, just save it.
-        try:
-            bundle.obj._meta.get_field('version')
-        except FieldDoesNotExist:
-            bundle.obj.save(force_update=True)
-            return bundle
+def prepare_value(field, val):
+    if isinstance(field, DateTimeField):
+        return val.replace('T', ' ')
+    return val
 
-        try:
-            version = bundle.data['version'] # The version the client has.
-        except KeyError:
-            raise MissingVersionException()
+def parse_uri(uri):
+    print uri
+    match = URI_RE.match(uri)
+    if match is not None:
+        groups = match.groups()
+        return (groups[0], groups[2])
 
-        # Update a row with the PK and the version no. we have.
-        # If our version is stale, the rows updated will be 0.
-        manager = bundle.obj.__class__._base_manager
-        updated = manager.filter(pk=bundle.obj.pk, version=version).update(version=version+1)
-        if not updated:
-            raise StaleObjectException()
+def obj_to_data(obj):
+    data = dict((field.name, field_to_val(obj, field))
+                for field in obj._meta.fields)
+    data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro))
+                     for ro in obj._meta.get_all_related_objects()))
+    return data
 
-        # Do the actual update.
-        bundle.obj.version = version + 1
-        bundle.obj.save(force_update=True)
-        return bundle
+def to_many_to_data(obj, related_object):
+    parent_model = related_object.parent_model.__name__
+    if related_object.get_accessor_name() in inlined_dict[parent_model]:
+        objs = getattr(obj, related_object.get_accessor_name())
+        return [obj_to_data(o) for o in objs.all()]
 
-    @transaction.commit_on_success
-    def obj_create(self, bundle, request=None, **kwargs):
-        for field in ('createdbyagent', 'modifiedbyagent'):
-            if hasattr(self._meta.object_class, field):
-                kwargs[field] = request.specify_user_agent
-        bundle = super(ModelResource, self).obj_create(bundle, request, **kwargs)
-        autonumber(request.specify_collection, request.specify_user, bundle.obj)
-        return bundle
+    collection_uri = uri_for_model(related_object.model)
+    return collection_uri + '?' + urlencode([(parent_model.lower(), str(obj.id))])
 
-    def apply_filters(self, request, filters):
-        for filtr in filters:
-            if filtr.split('__')[-1] == 'in':
-                filters[filtr] = [v for val in filters[filtr] for v in val.split(',')]
-        qs = super(ModelResource, self).apply_filters(request, filters)
-        if 'domainfilter' in request.GET:
-            qs = filter_by_collection(qs, request.specify_collection)
-        if 'values' in request.GET:
-            fields = request.GET['values'].split(',')
-            lookups = [f.replace('.', '__') for f in fields]
-            qs = qs.values(*lookups)
-        if 'distinct' in request.GET: qs = qs.distinct()
-        return qs
+def field_to_val(obj, field):
+    if isinstance(field, ForeignKey):
+        if field.name in inlined_dict[obj.__class__.__name__]:
+            related_obj = getattr(obj, field.name)
+            if related_obj is None: return None
+            return obj_to_data(related_obj)
+        related_id = getattr(obj, field.name + '_id')
+        if related_id is None: return None
+        related_model = field.related.parent_model
+        return uri_for_model(related_model, related_id)
+    else:
+        return getattr(obj, field.name)
 
-    def full_dehydrate(self, bundle, *args, **kwargs):
-        if isinstance(bundle.obj, dict):
-            return dict((col.replace('__', '.') , val) for col, val in bundle.obj.items())
-        return super(ModelResource, self).full_dehydrate(bundle, *args, **kwargs)
+def get_collection(model, params={}):
+    if isinstance(model, basestring):
+        model = getattr(models, model.capitalize())
+    objs = model.objects.all()
+    offset = 0
+    limit = 20
+    for param, val in params.items():
+        if param == 'domainfilter':
+            continue
 
-def make_to_many_field(model, field, fieldname):
-    modelname = field.related.model.__name__ # The model w/ the FK column (the many side)
-    fkfieldname = field.related.field.name   # Name of the FK column
-    related_resource = "%s.%s%s" % (__name__, modelname, "Resource")
-    full = '.'.join((model.__name__, fieldname)) in inlined_fields
-    return ToManyField(related_resource, fieldname,
-                       related_name=fkfieldname, null=True, full=full)
+        if param == 'limit':
+            limit = int(val)
+            continue
 
-def make_fk_field(field):
-    relname = "%s.%sResource" % (__name__, field.related.parent_model.__name__)
-    full = '.'.join((field.model.__name__, field.name)) in inlined_fields
-    return ForeignKey(relname, field.name, null=field.null, full=full)
+        if param == 'offset':
+            offset = int(val)
+            continue
 
-def build_resource(model):
-    fk_fields = dict(
-        (field.name, make_fk_field(field))
-        for field in model._meta.fields if field.rel)
+        # param is a related field
+        objs = objs.filter(**{param: val})
+    return objs_to_data(objs, offset, limit)
 
-    to_many_fields = dict(
-        (fieldname, make_to_many_field(model, field, fieldname))
-        for fieldname, field in model.__dict__.items()
-        if isinstance(field, ForeignRelatedObjectsDescriptor))
+def objs_to_data(objs, offset=0, limit=20):
+    total_count = objs.count()
 
-    class Meta:
-        always_return_data = True
-        filtering = dict((field.name, ALL_WITH_RELATIONS) for field in model._meta.fields)
-        filtering.update(dict((fieldname, ALL_WITH_RELATIONS)
-                              for fieldname, field in model.__dict__.items()
-                              if isinstance(field, ForeignRelatedObjectsDescriptor)))
-        queryset = model.objects.all()
-        authentication = Authentication()
-        authorization = Authorization()
+    if limit == 0:
+        objs = objs[offset:]
+    else:
+        objs = objs[offset:offset + limit]
 
-    attrs = {'Meta': Meta}
-    attrs.update(fk_fields)
-    attrs.update(to_many_fields)
-    clsname = model.__name__ + 'Resource'
-    return type(clsname, (ModelResource,), attrs)
+    return {'objects': [obj_to_data(o) for o in objs],
+            'meta': {'limit': limit,
+                     'offset': offset,
+                     'total_count': total_count}}
 
-resources = [build_resource(model) for model in get_models(models)]
-globals().update(dict((resource.__name__, resource) for resource in resources))
+def uri_for_model(model, id=None):
+    if not isinstance(model, basestring):
+        model = model.__name__
+    uri = '/api/specify/%s/' % model.lower()
+    if id is not None:
+        uri += '%d/' % id
+    return uri
+
+
+
+

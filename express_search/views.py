@@ -1,5 +1,4 @@
 import re
-import json
 from datetime import date, datetime
 from xml.etree import ElementTree
 
@@ -11,22 +10,11 @@ from django.db.models import fields as django_fields
 
 from specify import models
 from specify.filter_by_col import filter_by_collection
+from specify.api import toJson
 
 from context.express_search_config import get_express_search_config
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
-
-class JsonDateEncoder(json.JSONEncoder):
-    def default(self, obj):
-        from decimal import Decimal
-        if isinstance(obj, Decimal):
-            return str(obj)
-        if hasattr(obj, 'isoformat'):
-            return obj.isoformat()
-        return json.JSONEncoder.default(self, obj)
-
-def toJson(obj):
-    return json.dumps(obj, cls=JsonDateEncoder)
 
 class Term:
     discipline = None

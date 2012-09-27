@@ -2,20 +2,10 @@ from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import TemplateView
 from django.conf import settings
 
-from tastypie.api import Api
-import specify.api
-#import specify.postapi
 
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
-
-# Generate the tastypie specify resources urls
-api = Api(api_name='specify')
-for r in specify.api.resources: api.register(r())
-
-#post_api = Api(api_name='specify')
-#for r in specify.postapi.resources: post_api.register(r())
 
 urlpatterns = patterns(
     '',
@@ -32,6 +22,10 @@ urlpatterns = patterns(
 
     url(r'^testcontext/', include('context.testurls')),
 
+
+    (r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specify.api.resource'),
+    (r'^api/specify/(?P<model>\w+)/$', 'specify.api.collection'),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
@@ -39,10 +33,6 @@ urlpatterns = patterns(
     #url(r'^admin/', include(admin.site.urls)),
     #(r'^admin/lookups/', include(ajax_select_urls)),
     #(r'^admin/', include(admin.site.urls)),
-
-    # Tastypie specify urls
-    (r'^api/', include(api.urls)),
-#    (r'^api/new/', include(post_api.urls)),
 
     # jpa proxy
     (r'^jpa/(?P<model>.+)$', 'specify.views.jpa_proxy'),
