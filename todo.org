@@ -7,3 +7,4 @@
 * weird limit of one on collection fetches (new api)
 * 404 for new api
 * update all fields after put
+* don't remove from collection if delete fails

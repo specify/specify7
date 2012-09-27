@@ -5,7 +5,7 @@ import re
 
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, Http404, QueryDict
 from django.contrib.auth.decorators import login_required
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
@@ -72,6 +72,10 @@ def resource(request, model, id):
         return HttpResponse(toJson(get_resource(model, id)),
                             content_type='application/json')
 
+    if request.method == 'DELETE':
+        delete_resource(request, model, id)
+        return HttpResponse('', status=204)
+
 @login_required
 @csrf_exempt
 def collection(request, model):
@@ -117,6 +121,24 @@ def set_fields_from_data(obj, data):
             setattr(obj, field_name, prepare_value(field, val))
 
 @transaction.commit_on_success
+def delete_resource(request, name, id):
+    id = int(id)
+    obj = getattr(models, name.capitalize()).objects.get(id=id)
+
+    def get_current_version():
+        request_params = QueryDict(request.META['QUERY_STRING'])
+
+        # Get the version the client wants tno delete.
+        try:
+            version = request_params['version']
+        except KeyError:
+            version = request.META['HTTP_IF_MATCH']
+        return int(version)
+
+    bump_version(obj, get_current_version)
+    obj.delete()
+
+@transaction.commit_on_success
 def put_resource(collection, agent, name, id, data):
     id = int(id)
     obj = getattr(models, name.capitalize()).objects.get(id=id)
@@ -129,17 +151,22 @@ def put_resource(collection, agent, name, id, data):
     else:
         obj.modifiedbyagent = agent
 
+    bump_version(obj, lambda: data['version'])
+    obj.save(force_update=True)
+
+
+
+def bump_version(obj, get_current_version):
     # If the object has no version field, just save it.
     try:
         obj._meta.get_field('version')
     except FieldDoesNotExist:
-        obj.save(force_update=True)
         return
 
     try:
-        version = data['version'] # The version the client has.
-    except KeyError:
-        raise MissingVersionException()
+        version = get_current_version()
+    except Exception, e:
+        raise MissingVersionException(e)
 
     # Update a row with the PK and the version no. we have.
     # If our version is stale, the rows updated will be 0.
@@ -147,10 +174,7 @@ def put_resource(collection, agent, name, id, data):
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
         raise StaleObjectException()
-
-    # Do the actual update.
     obj.version = version + 1
-    obj.save(force_update=True)
 
 def prepare_value(field, val):
     if isinstance(field, DateTimeField):
