@@ -5,7 +5,9 @@ import re
 
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, QueryDict
+from django.http import HttpResponse, HttpResponseBadRequest,\
+    Http404, HttpResponseNotAllowed, QueryDict
+
 from django.contrib.auth.decorators import login_required
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
@@ -67,7 +69,7 @@ def resource(*args, **kwargs):
 def resource_dispatch(request, model, id):
     request_params = QueryDict(request.META['QUERY_STRING'])
 
-    # Get the version the client wants to delete.
+    # Get the version the client has.
     try:
         version = request_params['version']
     except KeyError:
@@ -77,10 +79,10 @@ def resource_dispatch(request, model, id):
             version = None
 
     if request.method == 'GET':
-        return HttpResponse(toJson(get_resource(model, id)),
+        resp = HttpResponse(toJson(get_resource(model, id)),
                             content_type='application/json')
 
-    if request.method == 'PUT':
+    elif request.method == 'PUT':
         data = json.load(request)
         try:
             version = data['version']
@@ -91,37 +93,58 @@ def resource_dispatch(request, model, id):
                            request.specify_user_agent,
                            model, id, version, data)
 
-        return HttpResponse(toJson(obj_to_data(obj)),
+        resp = HttpResponse(toJson(obj_to_data(obj)),
                             content_type='application/json')
 
-    if request.method == 'DELETE':
+    elif request.method == 'DELETE':
         delete_resource(model, id, version)
-        return HttpResponse('', status=204)
+        resp = HttpResponse('', status=204)
+
+    else:
+        resp = HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
+    return resp
 
 @login_required
 @csrf_exempt
 def collection(request, model):
     if request.method == 'GET':
-        return HttpResponse(toJson(get_collection(model, request.GET)),
+        resp = HttpResponse(toJson(get_collection(model, request.GET)),
                             content_type='application/json')
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
                             model, json.load(request))
 
-        return HttpResponseCreated(toJson(obj_to_data(obj)),
+        resp = HttpResponseCreated(toJson(obj_to_data(obj)),
                                    content_type='application/json')
+    else:
+        resp = HttpResponseNotAllowed(['GET', 'POST'])
+    return resp
+
+
+def get_model_or_404(name):
+    try:
+        return getattr(models, name.capitalize())
+    except AttributeError as e:
+        raise Http404(e)
+
+def get_object_or_404(model, *args, **kwargs):
+    from django.shortcuts import get_object_or_404 as get_object
+
+    if isinstance(model, basestring):
+        model = get_model_or_404(model)
+    return get_object(model, *args, **kwargs)
 
 def get_resource(name, id):
     id = int(id)
-    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    obj = get_object_or_404(name, id=id)
     data = obj_to_data(obj)
     return data
 
 @transaction.commit_on_success
 def post_resource(collection, agent, name, data):
-    obj = getattr(models, name.capitalize())()
+    obj = get_model_or_404(name)()
     set_fields_from_data(obj, data)
     # Have to save the object before autonumbering b/c
     # autonumber acquires a write lock on the model,
@@ -156,14 +179,14 @@ def set_fields_from_data(obj, data):
 @transaction.commit_on_success
 def delete_resource(name, id, version):
     id = int(id)
-    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    obj = get_object_or_404(name, id=id)
     bump_version(obj, version)
     obj.delete()
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
     id = int(id)
-    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    obj = get_object_or_404(name, id=id)
     set_fields_from_data(obj, data)
 
     try:
@@ -241,7 +264,7 @@ def field_to_val(obj, field):
 
 def get_collection(model, params={}):
     if isinstance(model, basestring):
-        model = getattr(models, model.capitalize())
+        model = get_model_or_404(model)
     offset = 0
     limit = 20
     filters = {}
