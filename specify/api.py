@@ -56,24 +56,42 @@ class HttpResponseCreated(HttpResponse):
 @login_required
 @csrf_exempt
 def resource(request, model, id):
+    request_params = QueryDict(request.META['QUERY_STRING'])
+
+    # Get the version the client wants to delete.
+    try:
+        version = request_params['version']
+    except KeyError:
+        try:
+            version = request.META['HTTP_IF_MATCH']
+        except KeyError:
+            version = None
+
     if request.method == 'GET':
         return HttpResponse(toJson(get_resource(model, id)),
                             content_type='application/json')
 
     if request.method == 'PUT':
+        data = json.load(request)
         try:
-            put_resource(request.specify_collection, request.specify_user_agent,
-                         model, id, json.load(request))
+            version = data['version']
+        except KeyError:
+            pass
+
+        try:
+            obj = put_resource(request.specify_collection,
+                               request.specify_user_agent,
+                               model, id, version, data)
         except StaleObjectException:
             return HttpResponseConflict()
         except MissingVersionException:
             return HttpResponseBadRequest('Missing version information.')
 
-        return HttpResponse(toJson(get_resource(model, id)),
+        return HttpResponse(toJson(obj_to_data(obj)),
                             content_type='application/json')
 
     if request.method == 'DELETE':
-        delete_resource(request, model, id)
+        delete_resource(model, id, version)
         return HttpResponse('', status=204)
 
 @login_required
@@ -121,25 +139,14 @@ def set_fields_from_data(obj, data):
             setattr(obj, field_name, prepare_value(field, val))
 
 @transaction.commit_on_success
-def delete_resource(request, name, id):
+def delete_resource(name, id, version):
     id = int(id)
     obj = getattr(models, name.capitalize()).objects.get(id=id)
-
-    def get_current_version():
-        request_params = QueryDict(request.META['QUERY_STRING'])
-
-        # Get the version the client wants tno delete.
-        try:
-            version = request_params['version']
-        except KeyError:
-            version = request.META['HTTP_IF_MATCH']
-        return int(version)
-
-    bump_version(obj, get_current_version)
+    bump_version(obj, version)
     obj.delete()
 
 @transaction.commit_on_success
-def put_resource(collection, agent, name, id, data):
+def put_resource(collection, agent, name, id, version, data):
     id = int(id)
     obj = getattr(models, name.capitalize()).objects.get(id=id)
     set_fields_from_data(obj, data)
@@ -151,12 +158,11 @@ def put_resource(collection, agent, name, id, data):
     else:
         obj.modifiedbyagent = agent
 
-    bump_version(obj, lambda: data['version'])
+    bump_version(obj, version)
     obj.save(force_update=True)
+    return obj
 
-
-
-def bump_version(obj, get_current_version):
+def bump_version(obj, version):
     # If the object has no version field, just save it.
     try:
         obj._meta.get_field('version')
@@ -164,8 +170,8 @@ def bump_version(obj, get_current_version):
         return
 
     try:
-        version = get_current_version()
-    except Exception, e:
+        version = int(version)
+    except ValueError:
         raise MissingVersionException(e)
 
     # Update a row with the PK and the version no. we have.
