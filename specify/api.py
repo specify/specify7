@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 from django.utils import simplejson
+from django.views.decorators.csrf import csrf_exempt
 
 from specify import models
 
@@ -49,7 +50,11 @@ class StaleObjectException(OptimisticLockException): pass
 class HttpResponseConflict(HttpResponse):
     status_code = 409
 
+class HttpResponseCreated(HttpResponse):
+    status_code = 201
+
 @login_required
+@csrf_exempt
 def resource(request, model, id):
     if request.method == 'GET':
         return HttpResponse(toJson(get_resource(model, id)),
@@ -68,23 +73,34 @@ def resource(request, model, id):
                             content_type='application/json')
 
 @login_required
+@csrf_exempt
 def collection(request, model):
     if request.method == 'GET':
         return HttpResponse(toJson(get_collection(model, request.GET)),
                             content_type='application/json')
 
+    if request.method == 'POST':
+       obj = post_resource(request.specify_collection,
+                           request.specify_user_agent,
+                           model, json.load(request))
+
+       return HttpResponseCreated(toJson(obj_to_data(obj)),
+                                  content_type='application/json')
+
 def get_resource(name, id):
     id = int(id)
     obj = getattr(models, name.capitalize()).objects.get(id=id)
     data = obj_to_data(obj)
-    data['resource_uri'] = uri_for_model(name, id)
     return data
 
 @transaction.commit_on_success
-def put_resource(collection, agent, name, id, data):
-    id = int(id)
-    obj = getattr(models, name.capitalize()).objects.get(id=id)
+def post_resource(collection, agent, name, data):
+    obj = getattr(models, name.capitalize())()
+    set_fields_from_data(obj, data)
+    obj.save()
+    return obj
 
+def set_fields_from_data(obj, data):
     for field_name, val in data.items():
         if field_name == 'resource_uri': continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
@@ -99,6 +115,12 @@ def put_resource(collection, agent, name, id, data):
             setattr(obj, field_name + '_id', fk_id)
         else:
             setattr(obj, field_name, prepare_value(field, val))
+
+@transaction.commit_on_success
+def put_resource(collection, agent, name, id, data):
+    id = int(id)
+    obj = getattr(models, name.capitalize()).objects.get(id=id)
+    set_fields_from_data(obj, data)
 
     try:
         obj._meta.get_field('modifiedbyagent')
@@ -147,6 +169,7 @@ def obj_to_data(obj):
                 for field in obj._meta.fields)
     data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro))
                      for ro in obj._meta.get_all_related_objects()))
+    data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
     return data
 
 def to_many_to_data(obj, related_object):
@@ -211,7 +234,7 @@ def uri_for_model(model, id=None):
         model = model.__name__
     uri = '/api/specify/%s/' % model.lower()
     if id is not None:
-        uri += '%d/' % id
+        uri += '%d/' % int(id)
     return uri
 
 
