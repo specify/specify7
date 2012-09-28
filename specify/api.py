@@ -117,7 +117,6 @@ def collection(request, model):
         resp = HttpResponseNotAllowed(['GET', 'POST'])
     return resp
 
-
 def get_model_or_404(name):
     try:
         return getattr(models, name.capitalize())
@@ -132,14 +131,17 @@ def get_object_or_404(model, *args, **kwargs):
     return get_object(model, *args, **kwargs)
 
 def get_resource(name, id):
-    id = int(id)
-    obj = get_object_or_404(name, id=id)
+    obj = get_object_or_404(name, id=int(id))
     data = obj_to_data(obj)
     return data
 
 @transaction.commit_on_success
 def post_resource(collection, agent, name, data):
+    return create_obj(collection, agent, name, data)
+
+def create_obj(collection, agent, name, data):
     obj = get_model_or_404(name)()
+    handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     # Have to save the object before autonumbering b/c
     # autonumber acquires a write lock on the model,
@@ -159,29 +161,54 @@ def set_fields_from_data(obj, data):
     for field_name, val in data.items():
         if field_name == 'resource_uri': continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
-        if not direct: continue
-        if isinstance(field, ForeignKey):
-            if val is None:
-                setattr(obj, field_name, None)
-                continue
+        if direct and not isinstance(field, ForeignKey):
+            setattr(obj, field_name, prepare_value(field, val))
 
+def handle_fk_fields(collection, agent, obj, data):
+    for field_name, val in data.items():
+        if field_name == 'resource_uri': continue
+        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
+        if not isinstance(field, ForeignKey): continue
+
+        if val is None:
+            setattr(obj, field_name, None)
+
+        elif isinstance(val, basestring):
             fk_model, fk_id = parse_uri(val)
             assert fk_model == field.related.parent_model.__name__.lower()
             setattr(obj, field_name + '_id', fk_id)
+
+        elif hasattr(val, 'items'):
+            rel_model = field.related.parent_model.__name__
+            if 'id' in val:
+                rel_obj = update_obj(collection, agent,
+                                     rel_model, val['id'],
+                                     val['version'], val)
+            else:
+                rel_obj = create_obj(collection, agent,
+                                     rel_model, val)
+
+            setattr(obj, field_name, rel_obj)
+            data[field_name] = obj_to_data(rel_obj)
         else:
-            setattr(obj, field_name, prepare_value(field, val))
+            raise Exception('bad foreign key field in data')
 
 @transaction.commit_on_success
 def delete_resource(name, id, version):
-    id = int(id)
-    obj = get_object_or_404(name, id=id)
+    return delete_obj(name, id, version)
+
+def delete_obj(name, id, version):
+    obj = get_object_or_404(name, id=int(id))
     bump_version(obj, version)
     obj.delete()
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
-    id = int(id)
-    obj = get_object_or_404(name, id=id)
+    return update_obj(collection, agent, name, id, version, data)
+
+def update_obj(collection, agent, name, id, version, data):
+    obj = get_object_or_404(name, id=int(id))
+    handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
 
     try:
