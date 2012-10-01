@@ -10,17 +10,28 @@ class ContextMiddleware(object):
                                                'discipline__division__institution')
         try:
             collection = qs.get(id=int(request.session.get('collection', '')))
-        except ValueError:
-            return HttpResponseBadRequest('bad collection id in session', content_type='text/plain')
-        except Collection.DoesNotExist:
-            return HttpResponseBadRequest('collection does not exist', content_type='text/plain')
+        except ValueError, Collection.DoesNotExist:
+            collection = None
+
+        if collection is not None:
+            try:
+                agent = filter_by_collection(Agent.objects, collection) \
+                    .select_related('specifyuser') \
+                    .get(specifyuser__name=request.user.username)
+            except Agent.DoesNotExist:
+                agent = None
+        else:
+            agent = None
+
+        if agent is not None:
+            user = agent.specifyuser
+        else:
+            user = None
+
+
         request.specify_collection = collection
-
-        request.specify_user_agent = filter_by_collection(Agent.objects, collection) \
-            .select_related('specifyuser') \
-            .get(specifyuser__name=request.user.username)
-
-        request.specify_user = request.specify_user_agent.specifyuser
+        request.specify_user_agent = agent
+        request.specify_user = user
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)

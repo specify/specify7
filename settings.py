@@ -3,7 +3,6 @@ import specify_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TASTYPIE_FULL_DEBUG = True
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -130,14 +129,14 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 #    'django_extensions',
-    'tastypie',
     'specify',
     'businessrules',
     'express_search',
     'context',
 )
 
-AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend', )
+AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',
+                           'django.contrib.auth.backends.ModelBackend')
 LOGIN_REDIRECT_URL = '/'
 
 # A sample logging configuration. The only tangible logging
