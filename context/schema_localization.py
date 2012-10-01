@@ -34,7 +34,7 @@ def get_schema_localization(collection):
     cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui')
 
     containers = {}
-    for c in Container.objects.filter(discipline=disc):
+    for c in Container.objects.filter(discipline=disc, schematype=0):
         containers[c.name] = container = dict((field, getattr(c, field)) for field in cfields)
         container.update({
                 'name': strings.get((c.id, None, None, None), None),
