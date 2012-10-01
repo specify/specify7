@@ -155,6 +155,7 @@ def create_obj(collection, agent, name, data):
     else:
         obj.createdbyagent = agent
     obj.save()
+    handle_to_many(collection, agent, obj, data)
     return obj
 
 def set_fields_from_data(obj, data):
@@ -193,6 +194,25 @@ def handle_fk_fields(collection, agent, obj, data):
         else:
             raise Exception('bad foreign key field in data')
 
+def handle_to_many(collection, agent, obj, data):
+    for field_name, val in data.items():
+        if not isinstance(val, list): continue
+        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
+        if direct: continue
+        rel_model = field.model.__name__
+        ids = []
+        for rel_data in val:
+            rel_data[field.field.name] = uri_for_model(obj.__class__, obj.id)
+            if 'id' in rel_data:
+                rel_obj = update_obj(collection, agent,
+                                     rel_model, rel_data['id'],
+                                     rel_data['version'], rel_data)
+            else:
+                rel_obj = create_obj(collection, agent, rel_model, rel_data)
+            ids.append(rel_obj.id)
+
+        getattr(obj, field_name).exclude(id__in=ids).delete()
+
 @transaction.commit_on_success
 def delete_resource(name, id, version):
     return delete_obj(name, id, version)
@@ -220,6 +240,7 @@ def update_obj(collection, agent, name, id, version, data):
 
     bump_version(obj, version)
     obj.save(force_update=True)
+    handle_to_many(collection, agent, obj, data)
     return obj
 
 def bump_version(obj, version):
@@ -243,12 +264,11 @@ def bump_version(obj, version):
     obj.version = version + 1
 
 def prepare_value(field, val):
-    if isinstance(field, DateTimeField):
+    if isinstance(field, DateTimeField) and isinstance(val, basestring):
         return val.replace('T', ' ')
     return val
 
 def parse_uri(uri):
-    print uri
     match = URI_RE.match(uri)
     if match is not None:
         groups = match.groups()
