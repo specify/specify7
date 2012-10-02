@@ -10,6 +10,9 @@ from specify import api, models
 
 class ApiTests(TestCase):
     def setUp(self):
+        self.orig_inlined_fields = api.inlined_fields
+        api.inlined_fields = api.inlined_fields.copy()
+
         self.institution = models.Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -48,6 +51,9 @@ class ApiTests(TestCase):
                 collection=self.collection,
                 catalognumber="num-%d" % i)
             for i in range(5)]
+
+    def tearDown(self):
+        api.inlined_fields = self.orig_inlined_fields
 
 class SimpleApiTests(ApiTests):
     def test_get_collection(self):
@@ -116,3 +122,109 @@ class VersionCtrlApiTests(ApiTests):
         with self.assertRaises(api.StaleObjectException) as cm:
             api.delete_obj('collectionobject', data['id'], data['version'])
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 1)
+
+class InlineApiTests(ApiTests):
+    def test_get_resource_with_to_many_inlines(self):
+        api.inlined_fields.add('Collectionobject.determinations')
+        for i in range(3):
+            self.collectionobjects[0].determinations.create(
+                iscurrent=False, number1=i)
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        self.assertTrue(isinstance(data['determinations'], list))
+        self.assertEqual(len(data['determinations']), 3)
+        ids = [d['id'] for d in data['determinations']]
+        for det in self.collectionobjects[0].determinations.all():
+            self.assertTrue(det.id in ids)
+
+    def test_get_resource_with_to_one_inlines(self):
+        api.inlined_fields.add('Collectionobject.collectionobjectattribute')
+        self.collectionobjects[0].collectionobjectattribute = \
+            models.Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
+        self.collectionobjects[0].save()
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        self.assertTrue(isinstance(data['collectionobjectattribute'], dict))
+        self.assertEqual(data['collectionobjectattribute']['id'],
+                         self.collectionobjects[0].collectionobjectattribute.id)
+
+    def test_create_object_with_inlines(self):
+        data =  {
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'catalognumber': 'foobar',
+            'determinations': [{
+                    'iscurrent': False,
+                    'number1': 1
+                    }, {
+                    'iscurrent': False,
+                    'number1': 2
+                    }],
+            'collectionobjectattribute': {
+                'text1': 'some text'}}
+
+        obj = api.create_obj(self.collection, self.agent, 'collectionobject', data)
+        co = models.Collectionobject.objects.get(id=obj.id)
+        self.assertEqual(set(co.determinations.values_list('number1', flat=True)),
+                        set((1, 2)))
+        self.assertEqual(co.collectionobjectattribute.text1, 'some text')
+
+    def test_create_object_with_inlined_existing_resource(self):
+        collection_data = api.get_resource('collection', self.collection.id)
+        co_data = {
+            'collection': collection_data,
+            'catalognumber': 'foobar'}
+        obj = api.create_obj(self.collection, self.agent, 'collectionobject', co_data)
+        co = models.Collectionobject.objects.get(id=obj.id)
+        self.assertEqual(co.collection, self.collection)
+
+    def test_update_object_with_inlines(self):
+        for f in ('determinations', 'collectionobjectattribute'):
+            api.inlined_fields.add(f)
+
+        self.collectionobjects[0].determinations.create(
+            collectionmemberid=self.collection.id,
+            number1=1,
+            remarks='original value')
+
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        data['determinations'][0]['remarks'] = 'changed value'
+        data['determinations'].append({
+                'number1': 2,
+                'remarks': 'a new determination'})
+        data['collectionobjectattribute'] = {
+            'text1': 'added an attribute'}
+
+        api.update_obj(self.collection, self.agent, 'collectionobject',
+                       data['id'], data['version'], data)
+
+        obj = models.Collectionobject.objects.get(id=self.collectionobjects[0].id)
+        self.assertEqual(obj.determinations.count(), 2)
+        self.assertEqual(obj.determinations.get(number1=1).remarks, 'changed value')
+        self.assertEqual(obj.determinations.get(number1=2).remarks, 'a new determination')
+        self.assertEqual(obj.collectionobjectattribute.text1, 'added an attribute')
+
+    def test_update_object_with_more_inlines(self):
+        for f in ('determinations', 'collectionobjectattribute'):
+            api.inlined_fields.add(f)
+
+        for i in range(6):
+            self.collectionobjects[0].determinations.create(
+                collectionmemberid=self.collection.id,
+                number1=i)
+
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        even_dets = [d for d in data['determinations'] if d['number1'] % 2 == 0]
+        for d in even_dets: data['determinations'].remove(d)
+
+        data['collectionobjectattribute'] = {'text1': 'look! an attribute'}
+
+        api.update_obj(self.collection, self.agent, 'collectionobject',
+                       data['id'], data['version'], data)
+
+        obj = models.Collectionobject.objects.get(id=self.collectionobjects[0].id)
+        self.assertEqual(obj.determinations.count(), 3)
+        for d in obj.determinations.all():
+            self.assertFalse(d.number1 % 2 == 0)
+
+        self.assertEqual(obj.collectionobjectattribute.text1, 'look! an attribute')
+
+
+    # version control on inlined resources should be tested

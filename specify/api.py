@@ -19,13 +19,13 @@ from specify.autonumbering import autonumber
 
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-inlined_fields = [
+inlined_fields = set([
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.determinations',
     'Picklist.picklistitems',
-]
+])
 
 class JsonDateEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -118,6 +118,8 @@ def collection(request, model):
     return resp
 
 def get_model_or_404(name):
+    if not isinstance(name, basestring): return name
+
     try:
         return getattr(models, name.capitalize())
     except AttributeError as e:
@@ -165,6 +167,15 @@ def set_fields_from_data(obj, data):
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
 
+def add_collectionmemberid_if_needed(collection, model, data):
+    try:
+        model._meta.get_field_by_name('collectionmemberid')
+    except FieldDoesNotExist:
+        pass
+    else:
+        if 'collectionmemberid' not in data:
+            data['collectionmemberid'] = collection.id
+
 def handle_fk_fields(collection, agent, obj, data):
     for field_name, val in data.items():
         if field_name == 'resource_uri': continue
@@ -180,12 +191,13 @@ def handle_fk_fields(collection, agent, obj, data):
             setattr(obj, field_name + '_id', fk_id)
 
         elif hasattr(val, 'items'):
-            rel_model = field.related.parent_model.__name__
+            rel_model = field.related.parent_model
             if 'id' in val:
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
                                      val['version'], val)
             else:
+                add_collectionmemberid_if_needed(collection, rel_model, val)
                 rel_obj = create_obj(collection, agent,
                                      rel_model, val)
 
@@ -199,7 +211,7 @@ def handle_to_many(collection, agent, obj, data):
         if not isinstance(val, list): continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct: continue
-        rel_model = field.model.__name__
+        rel_model = field.model
         ids = []
         for rel_data in val:
             rel_data[field.field.name] = uri_for_model(obj.__class__, obj.id)
@@ -208,6 +220,7 @@ def handle_to_many(collection, agent, obj, data):
                                      rel_model, rel_data['id'],
                                      rel_data['version'], rel_data)
             else:
+                add_collectionmemberid_if_needed(collection, rel_model, rel_data)
                 rel_obj = create_obj(collection, agent, rel_model, rel_data)
             ids.append(rel_obj.id)
 
