@@ -18,6 +18,19 @@ DATABASES = {
         'PASSWORD': specify_settings.MASTER_PASSWORD,
         'HOST': '',
         'PORT': '',
+     }
+ }
+
+
+TESTING_DATABASES = {
+    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'hibernateboolsbackend.backends.mysql',
+        'NAME': "specifytest",
+        'USER': "Master",
+        'PASSWORD': "Master",
+        'HOST': '127.0.0.1',
+        'PORT': '3307',
     }
 }
 
