@@ -3,7 +3,7 @@ define([
 ], function($, _, Backbone, api, schema, whenAll) {
 
     api.Collection = Backbone.Collection.extend({
-        populated: false,
+        populated: false, needsSaved: false,
         initialize: function(models) {
             if (models) this.populated = true;
             this.queryParams = {};
@@ -48,6 +48,13 @@ define([
         },
         rsave: function() {
             return whenAll(_.chain(this.models).compact().invoke('rsave').value());
+        },
+        gatherDependentFields: function() {
+            this.invoke('gatherDependentFields');
+        },
+        rNeedsSaved: function() {
+            if (this.needsSaved) return true;
+            return _.any(this.invoke('rNeedsSaved'));
         }
     }, {
         forModel: function(model) {

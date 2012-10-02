@@ -7,7 +7,7 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click .specify-subview-header .specify-delete-related' : 'openDeleteDialog',
+            'click .specify-subview-header .specify-delete-related' : 'delete',
             'click .specify-subview-header .specify-add-related' : 'add'
         },
         initialize: function(options) {
@@ -18,7 +18,11 @@ define([
                 self.onSlide(end);
                 self.showHide();
             });
-            self.collection.on('destroy', function() {
+            self.collection.on('remove destroy', function() {
+                if (self.isDependent) {
+                    self.collection.needsSaved = true;
+                    self.collection.trigger('saverequired');
+                }
                 var end = self.collection.length - 1;
                 var value = Math.min(self.slider.slider('value'), end);
                 self.slider.slider('option', { max: end, value: value });
@@ -29,6 +33,7 @@ define([
             self.specifyModel = options.resource.specifyModel;
             self.fieldName = options.fieldName;
             self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
+            self.isDependent = self.specifyModel.getField(self.fieldName).isDependent();
         },
         fetchThenRedraw: function(offset) {
             var self = this;
@@ -134,9 +139,13 @@ define([
                 break;
             }
         },
-        openDeleteDialog: function(evt) {
+        delete: function(evt) {
             evt.preventDefault();
-            this.deleteDialog.dialog('open');
+            if (this.isDependent) {
+                this.collection.remove(this.collection.at(this.slider.slider('value')));
+            } else {
+                this.deleteDialog.dialog('open');
+            }
         },
         destroy: function() {
             this.deleteDialog.dialog('close');

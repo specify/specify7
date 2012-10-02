@@ -159,11 +159,12 @@ define([
         rsave: function() {
             var resource = this;
             var isToOne = function(related, fieldName) {
-                return resource.specifyModel.getField(fieldName).type === 'many-to-one';
+                var field = resource.specifyModel.getField(fieldName);
+                return field.type === 'many-to-one' && !field.isDependent();
             };
             var isToMany = function(related, fieldName) {
                 var field = resource.specifyModel.getField(fieldName);
-                return _(['one-to-many', 'zero-to-one']).contains(field.type);
+                return _(['one-to-many', 'zero-to-one']).contains(field.type) && !field.isDependent();
             };
             var saveIfExists = function(related) { return related && related.rsave(); };
 
@@ -171,7 +172,10 @@ define([
                 return _.chain(resource.relatedCache).filter(pred).map(saveIfExists).value();
             };
 
-            var saveResource = function() { return resource.needsSaved && resource.save(); };
+            var saveResource = function() {
+                resource.gatherDependentFields();
+                return resource.needsSaved && resource.save();
+            };
 
             resource._rsaveDeferred = resource._rsaveDeferred ||
                 whenAll(saveIf(isToOne)).pipe(function() {
@@ -182,6 +186,24 @@ define([
                 .then(function() { resource._rsaveDeferred = null; });
 
             return resource._rsaveDeferred;
+        },
+        gatherDependentFields: function() {
+            var resource = this;
+            _.chain(resource.relatedCache).each(function(related, fieldName) {
+                var field = resource.specifyModel.getField(fieldName);
+                if (field.isDependent() && related.rNeedsSaved()) {
+                    related.gatherDependentFields();
+                    resource.set(fieldName, related.toJSON());
+                }
+            });
+        },
+        rNeedsSaved: function() {
+            var resource = this;
+            if (resource.needsSaved) return true;
+            return _.any(resource.relatedCache, function(related, fieldName) {
+                var field = resource.specifyModel.getField(fieldName);
+                return field.isDependent() && related.rNeedsSaved();
+            });
         },
         fetch: function() {
             var resource = this;

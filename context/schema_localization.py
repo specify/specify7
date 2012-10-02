@@ -11,6 +11,12 @@ from specify.models import Splocaleitemstr as SpString
 
 schema_localization_cache = {}
 
+dependent_fields = set((
+        'Collectionobject.determinations',
+        'Collectionobject.collectionobjectattribute',
+        'Collectionobject.preparations',
+))
+
 def get_schema_localization(collection):
     disc = collection.discipline
     if disc in schema_localization_cache:
@@ -40,6 +46,9 @@ def get_schema_localization(collection):
                 'name': strings.get((c.id, None, None, None), None),
                 'desc': strings.get((None, c.id, None, None), None),
                 'items': items[c.id] })
+        for field, info in container['items'].items():
+            dependent = ('%s.%s' % (c.name.capitalize(), field)) in dependent_fields
+            info['isdependent'] = dependent
 
     sl = schema_localization_cache[disc] =  simplejson.dumps(containers)
     return sl
