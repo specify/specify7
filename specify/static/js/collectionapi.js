@@ -3,17 +3,19 @@ define([
 ], function($, _, Backbone, api, schema, whenAll) {
 
     api.Collection = Backbone.Collection.extend({
-        populated: false, needsSaved: false,
+        populated: false,   // set if the collection has been fetched or filled in
+        needsSaved: false,  // set if resources are added or removed from the collection
         initialize: function(models) {
+            this.queryParams = {}; // these define the filters on the collection
             if (models) this.populated = true;
-            this.queryParams = {};
+            this.on('add remove', function() { this.needsSaved = true; }, this);
         },
         url: function() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
         },
         parse: function(resp, xhr) {
             _.extend(this, {
-                populated: true,
+                populated: true,   // have data now
                 limit: resp.meta.limit,
                 totalCount: resp.meta.total_count,
             });
@@ -21,11 +23,17 @@ define([
         },
         fetchIfNotPopulated: function () {
             var collection = this;
+            // a new collection is used for to-many collections related to new resources
             if (this.isNew) return $.when(collection);
+
             return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
         },
         fetch: function(options) {
-            if (this.isNew) return $.when(null);
+            // block trying to fetch data for collections that represent new to-many collections
+            if (this.isNew) {
+                throw new Error("can't fetch non-existant collection");
+            }
+
             options = options || {};
             options.add = true;
             options.silent = true;
@@ -50,6 +58,7 @@ define([
             return whenAll(_.chain(this.models).compact().invoke('rsave').value());
         },
         gatherDependentFields: function() {
+            // call gatherDependentFields on all the resources in this collection.
             this.invoke('gatherDependentFields');
         },
         rNeedsSaved: function() {

@@ -5,37 +5,37 @@ define([
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
-    function eventHandlerForToOne(resource, field) {
+    function eventHandlerForToOne(field) {
         return function(event) {
             if (_.contains(['saverequired', 'saveblocked', 'oktosave'], event)) {
                 // propagate the above events up the object tree
-                return resource.trigger.apply(resource, arguments);
+                return this.trigger.apply(this, arguments);
             }
             // pass change:field events up the tree, updating fields with dot notation
             var match = /^r?(change):(.*)$/.exec(event);
             if (match) {
                 var args = _(arguments).toArray();
                 args[0] = 'r' + match[1] + ':' + field + '.' + match[2];
-                resource.trigger.apply(resource, args);
+                this.trigger.apply(this, args);
             }
         };
     }
 
-    function eventHandlerForToMany(resource, field) {
+    function eventHandlerForToMany(field) {
         return function(event) {
             switch (event) {
             case 'saverequired':
             case 'saveblocked':
             case 'oktosave':
                 // propagate the above events up the object tree
-                resource.trigger.apply(resource, arguments);
+                this.trigger.apply(this, arguments);
                 break;
             case 'add':
             case 'remove':
                 // annotate add and remove events with the field in which they occured
                 var args = _(arguments).toArray();
                 args[0] = event + ':' + field;
-                resource.trigger.apply(resource, args);
+                this.trigger.apply(this, args);
                 break;
             }};
     }
@@ -44,7 +44,7 @@ define([
         populated: false,   // indicates if this resource has data
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
-        saving: false,      // set while resource is being saved
+        _save: null,        // stores reference to the ajax deferred while the resource is being saved
 
         initialize: function(attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
@@ -58,15 +58,12 @@ define([
             // unless they change because the resource is being fetched
             // or updated during a save
             this.on('change', function(resource, options) {
-                if (!this._fetch && !this.saving) {
+                if (!this._fetch && !this._save) {
                     this.needsSaved = true;
                     this.trigger('saverequired');
                 }
-            });
 
-            // save is complete
-            this.on('sync', function() {
-                this.needsSaved = this.saving = false;
+                this.updateRelatedCache(options.changes);
             });
 
             // if the id of this resource changes, we go through and update
@@ -86,6 +83,15 @@ define([
             });
 
             businessrules.attachToResource(this);
+        },
+        updateRelatedCache: function(changes) {
+            var self = this;
+            _.each(changes, function(changed, field) {
+                if (!changed) return;
+                var related = self.relatedCache[field];
+                related && related.off(null, null, self);
+                delete self.relatedCache[field];
+            });
         },
         logAllEvents: function() {
             this.on('all', function() {
@@ -115,11 +121,6 @@ define([
             } else {
                 attrs[key.toLowerCase()] = value;
             }
-
-            // the relatedCache needs to be updated to reflect changes.
-            // this needs to be improved.
-            if (!self.saving && self.relatedCache)
-                _(attrs).each(function(value, key) { delete self.relatedCache[key]; });
 
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
@@ -164,7 +165,7 @@ define([
                         }
                         // setup back reference and event handlers then cache it
                         toOne.parent = self;
-                        toOne.on('all', eventHandlerForToOne(self, fieldName));
+                        toOne.on('all', eventHandlerForToOne(fieldName), self);
                         self.relatedCache[fieldName] = toOne;
                     }
                     // if we want a field within the related resource then recur
@@ -198,7 +199,7 @@ define([
 
                         // cache it and set up event handlers
                         self.relatedCache[fieldName] = toMany;
-                        toMany.on('all', eventHandlerForToMany(self, fieldName));
+                        toMany.on('all', eventHandlerForToMany(fieldName), self);
                     }
 
                     // start the fetch if requested and return the collection
@@ -228,7 +229,7 @@ define([
                         var value = collection.isEmpty() ? null : collection.first();
                         if (value) {
                             // setup event handlers and back ref
-                            value.on('all', eventHandlerForToOne(self, fieldName));
+                            value.on('all', eventHandlerForToOne(fieldName), self);
                             value.parent = self;
                         }
 
@@ -240,13 +241,30 @@ define([
             });
         },
         save: function() {
-            // this needs improvement
-            this.saving = true;
-            return Backbone.Model.prototype.save.apply(this, arguments);
+            var resource = this;
+            if (resource._save) {
+                throw new Error('resource is already being saved');
+            }
+            var didNeedSave = resource.needsSaved;
+            resource.needsSaved = false;
+
+            resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
+
+            resource._save.fail(function() {
+                resource.needsSaved = didNeedSaved;
+                didNeedSaved && resource.trigger('saverequired');
+            }).then(function() {
+                resource._save = null;
+            });
+
+            return resource._save;
         },
         rsave: function() {
             // descend the object tree and save everything that needs it
             var resource = this;
+            if (resource._save) {
+                throw new Error('resource is already being saved');
+            }
 
             var isToOne = function(related, fieldName) {
                 var field = resource.specifyModel.getField(fieldName);
@@ -267,15 +285,11 @@ define([
                 return resource.needsSaved && resource.save();
             };
 
-            resource._rsaveDeferred = resource._rsaveDeferred ||
-                whenAll(saveIf(isToOne)).pipe(function() {
-                    return $.when(saveResource()).pipe(function() {
-                        return whenAll(saveIf(isToMany));
-                    });
-                })
-                .then(function() { resource._rsaveDeferred = null; });
-
-            return resource._rsaveDeferred;
+            return whenAll(saveIf(isToOne)).pipe(function() {
+                return $.when(saveResource()).pipe(function() {
+                    return whenAll(saveIf(isToMany));
+                });
+            });
         },
         gatherDependentFields: function() {
             var resource = this;
@@ -297,9 +311,9 @@ define([
         },
         fetch: function() {
             // cache a reference to the ajax deferred and don't start fetching if we
-            // already are. could be improved.
+            // already are.
             var resource = this;
-            if (resource._fetch !== null) return resource._fetch;
+            if (resource._fetch) return resource._fetch;
             return resource._fetch = Backbone.Model.prototype.fetch.call(this).done(function() {
                 resource._fetch = null;
             });
