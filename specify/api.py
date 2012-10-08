@@ -56,10 +56,10 @@ class HttpResponseCreated(HttpResponse):
 def resource(*args, **kwargs):
     try:
         return resource_dispatch(*args, **kwargs)
-    except StaleObjectException:
-        return HttpResponseConflict()
-    except MissingVersionException:
-        return HttpResponseBadRequest('Missing version information.')
+    except StaleObjectException as e:
+        return HttpResponseConflict(e)
+    except MissingVersionException as e:
+        return HttpResponseBadRequest(e)
 
 def resource_dispatch(request, model, id):
     request_params = QueryDict(request.META['QUERY_STRING'])
@@ -266,14 +266,14 @@ def bump_version(obj, version):
     try:
         version = int(version)
     except ValueError:
-        raise MissingVersionException()
+        raise MissingVersionException("%s object cannot be updated without version info" % obj.__class__.__name__)
 
     # Update a row with the PK and the version no. we have.
     # If our version is stale, the rows updated will be 0.
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
-        raise StaleObjectException()
+        raise StaleObjectException("%s object %d is out of date" % (obj.__class__.__name__, obj.id))
     obj.version = version + 1
 
 def prepare_value(field, val):
