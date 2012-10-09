@@ -43,7 +43,6 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 agent.set 'remarks', if remarks is 'foo' then 'bar' else 'foo'
 
     test 'saveblocked event', ->
-        expect 7
         stop()
         collectionobject = getCollectionObject 100, ->
             collectionobject.rget('accession.accessionagents', true).done (AAs) ->

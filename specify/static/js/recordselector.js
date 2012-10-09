@@ -19,10 +19,6 @@ define([
                 self.showHide();
             });
             self.collection.on('remove destroy', function() {
-                if (self.isDependent) {
-                    self.collection.needsSaved = true;
-                    self.collection.trigger('saverequired');
-                }
                 var end = self.collection.length - 1;
                 var value = Math.min(self.slider.slider('value'), end);
                 self.slider.slider('option', { max: end, value: value });
@@ -33,7 +29,6 @@ define([
             self.specifyModel = options.resource.specifyModel;
             self.fieldName = options.fieldName;
             self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
-            self.isDependent = self.specifyModel.getField(self.fieldName).isDependent();
         },
         fetchThenRedraw: function(offset) {
             var self = this;
@@ -141,7 +136,7 @@ define([
         },
         delete: function(evt) {
             evt.preventDefault();
-            if (this.isDependent) {
+            if (this.collection.dependent) {
                 this.collection.remove(this.collection.at(this.slider.slider('value')));
             } else {
                 this.deleteDialog.dialog('open');

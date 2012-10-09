@@ -5,13 +5,13 @@ define([
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
-    function eventHandlerForToOne(field) {
+    function eventHandlerForToOne(related, field) {
         return function(event) {
             var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
-                if (field.isDependent()) this.needsSaved = true;
-                args[0] = 'subsaverequired';
+                if (related.dependent) this.needsSaved = true;
+                else args[0] = 'subsaverequired';
             case 'subsaverequired':
             case 'saveblocked':
             case 'oktosave':
@@ -28,13 +28,13 @@ define([
         };
     }
 
-    function eventHandlerForToMany(field) {
+    function eventHandlerForToMany(related, field) {
         return function(event) {
             var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
-                if (field.isDependent()) this.needsSaved = true;
-                args[0] = 'subsaverequired';
+                if (related.dependent) this.needsSaved = true;
+                else args[0] = 'subsaverequired';
             case 'subsaverequired':
             case 'saveblocked':
             case 'oktosave':
@@ -43,7 +43,6 @@ define([
                 break;
             case 'add':
             case 'remove':
-                if (field.isDependent()) this.needsSaved = true;
                 // annotate add and remove events with the field in which they occured
                 var args = _(arguments).toArray();
                 args[0] = event + ':' + field.name.toLowerCase();
@@ -57,6 +56,7 @@ define([
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
+        dependent: false,   // set when resource is a related to it parent by a dependent field
 
         initialize: function(attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
@@ -177,7 +177,8 @@ define([
                         }
                         // setup back reference and event handlers then cache it
                         toOne.parent = self;
-                        toOne.on('all', eventHandlerForToOne(field), self);
+                        toOne.dependent = field.isDependent();
+                        toOne.on('all', eventHandlerForToOne(toOne, field), self);
                         self.relatedCache[fieldName] = toOne;
                     }
                     // if we want a field within the related resource then recur
@@ -199,6 +200,7 @@ define([
 
                         // set the back ref
                         toMany.parent = self;
+                        toMany.dependent = field.isDependent();
                         if (!self.isNew()) {
                             // filter the related objects to be those that have a FK to this resource
                             toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
@@ -211,7 +213,7 @@ define([
 
                         // cache it and set up event handlers
                         self.relatedCache[fieldName] = toMany;
-                        toMany.on('all', eventHandlerForToMany(field), self);
+                        toMany.on('all', eventHandlerForToMany(toMany, field), self);
                     }
 
                     // start the fetch if requested and return the collection
@@ -241,8 +243,9 @@ define([
                         var value = collection.isEmpty() ? null : collection.first();
                         if (value) {
                             // setup event handlers and back ref
-                            value.on('all', eventHandlerForToOne(field), self);
+                            value.on('all', eventHandlerForToOne(value, field), self);
                             value.parent = self;
+                            value.dependent = field.isDependent();
                         }
 
                         // cache it and either return it or recur if further traversing is required
@@ -280,11 +283,11 @@ define([
 
             var isToOne = function(related, fieldName) {
                 var field = resource.specifyModel.getField(fieldName);
-                return field.type === 'many-to-one' && !field.isDependent();
+                return field.type === 'many-to-one' && !related.dependent;
             };
             var isToMany = function(related, fieldName) {
                 var field = resource.specifyModel.getField(fieldName);
-                return _(['one-to-many', 'zero-to-one']).contains(field.type) && !field.isDependent();
+                return _(['one-to-many', 'zero-to-one']).contains(field.type) && !related.dependent;
             };
             var saveIfExists = function(related) { return related && related.rsave(); };
 
@@ -305,20 +308,14 @@ define([
         },
         gatherDependentFields: function() {
             var resource = this;
-            _.chain(resource.relatedCache).each(function(related, fieldName) {
+            _.each(resource.relatedCache, function(related, fieldName) {
                 var field = resource.specifyModel.getField(fieldName);
-                if (field.isDependent() && related.rNeedsSaved()) {
+
+                if (related.dependent) {
                     related.gatherDependentFields();
-                    resource.set(fieldName, related.toJSON());
+                    var relatedData = field.type === 'zero-to-one' ? [related.toJSON()] : related.toJSON() ;
+                    resource.set(fieldName, relatedData, {silent: true});
                 }
-            });
-        },
-        rNeedsSaved: function() {
-            var resource = this;
-            if (resource.needsSaved) return true;
-            return _.any(resource.relatedCache, function(related, fieldName) {
-                var field = resource.specifyModel.getField(fieldName);
-                return field.isDependent() && related.rNeedsSaved();
             });
         },
         fetch: function() {

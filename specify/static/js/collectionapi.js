@@ -4,11 +4,14 @@ define([
 
     api.Collection = Backbone.Collection.extend({
         populated: false,   // set if the collection has been fetched or filled in
-        needsSaved: false,  // set if resources are added or removed from the collection
+        dependent: false,   // set when the collection is related to a parent resource by a dependent field
+
         initialize: function(models) {
             this.queryParams = {}; // these define the filters on the collection
             if (models) this.populated = true;
-            this.on('add remove', function() { this.needsSaved = true; }, this);
+            this.on('add remove', function() {
+                this.trigger('saverequired');
+            }, this);
         },
         url: function() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
@@ -58,12 +61,7 @@ define([
             return whenAll(_.chain(this.models).compact().invoke('rsave').value());
         },
         gatherDependentFields: function() {
-            // call gatherDependentFields on all the resources in this collection.
             this.invoke('gatherDependentFields');
-        },
-        rNeedsSaved: function() {
-            if (this.needsSaved) return true;
-            return _.any(this.invoke('rNeedsSaved'));
         }
     }, {
         forModel: function(model) {

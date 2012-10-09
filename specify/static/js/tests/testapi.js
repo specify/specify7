@@ -702,6 +702,101 @@ define([
             });
         });
 
+        module("Dependent Fields");
+
+        test('needsSaved set correctly for to-manys change', function() {
+            expect(8);
+            stop();
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
+            collectionobject.rget('determinations').done(function(dets) {
+                dets.dependent = true;
+                dets.fetch().done(function() {
+                    var det = dets.at(1);
+                    det.on('change', yep('change on determination'));
+                    det.on('saverequired', yep('saverequired on determination'));
+
+                    dets.on('saverequired', yep('saverequired on detreminations'));
+
+                    collectionobject.on('change', nope('change on collectionobject'));
+                    collectionobject.on('saverequired', yep('saverequired on collectionobject'));
+
+                    ok(!collectionobject.needsSaved, 'collection object doesnt need saved');
+                    ok(!dets.needsSaved, 'determination doesnt need saved');
+
+                    det.set('remarks', det.get('remarks') + ' foobar');
+
+                    ok(det.needsSaved, 'determination needs saved');
+                    ok(collectionobject.needsSaved, 'collectionobject needs saved');
+                    start();
+                });
+            });
+        });
+
+        test('needsSaved set correctly for to-manys add', function() {
+            expect(3);
+            stop();
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
+            collectionobject.rget('determinations').done(function(dets) {
+                dets.dependent = true;
+                dets.fetch().done(function() {
+                    collectionobject.on('saverequired', yep('saverequired on collectionobject'));
+                    ok(!collectionobject.needsSaved, 'collectionobject does not need saved');
+
+                    var newDet = new (api.Resource.forModel('determination'))();
+                    newDet.set('collectionobject', collectionobject.url());
+                    dets.add(newDet);
+
+                    ok(collectionobject.needsSaved, 'now collectionobject needs saved');
+                    start();
+                });
+            });
+        });
+
+        test('needsSaved set correctly for to-manys remove', function() {
+            expect(3);
+            stop();
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
+            collectionobject.rget('determinations').done(function(dets) {
+                dets.dependent = true;
+                dets.fetch().done(function() {
+                    collectionobject.on('saverequired', yep('saverequired on collectionobject'));
+                    ok(!collectionobject.needsSaved, 'collectionobject does not need saved');
+
+                    dets.remove(dets.at(0));
+
+                    ok(collectionobject.needsSaved, 'now collectionobject needs saved');
+                    start();
+                });
+            });
+        });
+
+        test('gatherDependentFields for to-manys', function() {
+            stop();
+            var collectionobject = new (api.Resource.forModel("collectionobject"))({id: 102});
+            collectionobject.rget('determinations').done(function(dets) {
+                dets.dependent = true;
+                dets.fetch().done(function() {
+                    expect(3 + dets.totalCount);
+
+                    ok(_.isString(collectionobject.get('determinations')), 'determinations field is a url');
+
+                    collectionobject.gatherDependentFields();
+
+                    ok(_.isArray(collectionobject.get('determinations')), 'determinations field is an array');
+
+                    var data = collectionobject.toJSON();
+
+                    equal(data.determinations.length, dets.totalCount, 'number of determinations is correct');
+
+                    _.each(data.determinations, function(det, i) {
+                        equal(det.id, dets.at(i).id, 'ids all match');
+                    });
+
+                    start();
+                });
+            });
+        });
+
         module("RecordSetItems");
 
         test('recordsetitems', function() {
