@@ -7,15 +7,22 @@ define([
 
     function eventHandlerForToOne(field) {
         return function(event) {
-            if (_.contains(['saverequired', 'saveblocked', 'oktosave'], event)) {
-                // propagate the above events up the object tree
-                return this.trigger.apply(this, arguments);
+            var args = _.toArray(arguments);
+            switch (event) {
+            case 'saverequired':
+                if (field.isDependent()) this.needsSaved = true;
+                args[0] = 'subsaverequired';
+            case 'subsaverequired':
+            case 'saveblocked':
+            case 'oktosave':
+                return this.trigger.apply(this, args);
+                break;
             }
+
             // pass change:field events up the tree, updating fields with dot notation
             var match = /^r?(change):(.*)$/.exec(event);
             if (match) {
-                var args = _(arguments).toArray();
-                args[0] = 'r' + match[1] + ':' + field + '.' + match[2];
+                args[0] = 'r' + match[1] + ':' + field.name.toLowerCase() + '.' + match[2];
                 this.trigger.apply(this, args);
             }
         };
@@ -23,18 +30,23 @@ define([
 
     function eventHandlerForToMany(field) {
         return function(event) {
+            var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
+                if (field.isDependent()) this.needsSaved = true;
+                args[0] = 'subsaverequired';
+            case 'subsaverequired':
             case 'saveblocked':
             case 'oktosave':
                 // propagate the above events up the object tree
-                this.trigger.apply(this, arguments);
+                this.trigger.apply(this, args);
                 break;
             case 'add':
             case 'remove':
+                if (field.isDependent()) this.needsSaved = true;
                 // annotate add and remove events with the field in which they occured
                 var args = _(arguments).toArray();
-                args[0] = event + ':' + field;
+                args[0] = event + ':' + field.name.toLowerCase();
                 this.trigger.apply(this, args);
                 break;
             }};
@@ -165,7 +177,7 @@ define([
                         }
                         // setup back reference and event handlers then cache it
                         toOne.parent = self;
-                        toOne.on('all', eventHandlerForToOne(fieldName), self);
+                        toOne.on('all', eventHandlerForToOne(field), self);
                         self.relatedCache[fieldName] = toOne;
                     }
                     // if we want a field within the related resource then recur
@@ -199,7 +211,7 @@ define([
 
                         // cache it and set up event handlers
                         self.relatedCache[fieldName] = toMany;
-                        toMany.on('all', eventHandlerForToMany(fieldName), self);
+                        toMany.on('all', eventHandlerForToMany(field), self);
                     }
 
                     // start the fetch if requested and return the collection
@@ -229,7 +241,7 @@ define([
                         var value = collection.isEmpty() ? null : collection.first();
                         if (value) {
                             // setup event handlers and back ref
-                            value.on('all', eventHandlerForToOne(fieldName), self);
+                            value.on('all', eventHandlerForToOne(field), self);
                             value.parent = self;
                         }
 

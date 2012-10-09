@@ -391,27 +391,30 @@ define([
         });
 
         test('saverequired event', function() {
-            expect(9); // 4 callbacks + 3 needsSaved checks + 1 change on sync + 1 requestCounter check
+            expect(7);
             stop();
-            var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
-            resource.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
-                resource.on('saverequired', yep('saverequired on resource'));
-                resource.on('change', nope('change on resource'));
-                var ce = resource.relatedCache['collectingevent'];
-                ce.on('saverequired', yep('saverequired on collectingevent'));
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 100});
+            collectionobject.rget('collectingevent.modifiedbyagent.remarks').done(function(original) {
+                collectionobject.on('subsaverequired', yep('subsaverequired on collectionobject'));
+                collectionobject.on('saverequired', nope('saverequired on collectionobject'));
+                collectionobject.on('change', nope('change on collectionobject'));
+
+                var ce = collectionobject.relatedCache['collectingevent'];
+                ce.on('subsaverequired', yep('subsaverequired on collectingevent'));
+                ce.on('saverequired', nope('saverequired on collectingevent'));
                 ce.on('change', nope('change on collectingevent'));
+
                 var agent = ce.relatedCache['modifiedbyagent'];
                 agent.on('saverequired', yep('saverequired on agent'));
+                agent.on('subsaverequired', nope('subsaverequired on agent'));
                 agent.on('change', yep('change on agent'));
+
                 agent.set('remarks', original === 'foo'? 'bar' : 'foo');
+
                 ok(agent.needsSaved, 'agent needs saved');
                 ok(!ce.needsSaved, 'collecting event doesnt need saved');
-                ok(!resource.needsSaved, 'resource doesnt need saved');
-                requestCounter = 0;
-                resource.rsave().done(function() {
-                    equal(requestCounter, 1);
-                    start();
-                });
+                ok(!collectionobject.needsSaved, 'collectionobject doesnt need saved');
+                start();
             });
         });
 
@@ -629,10 +632,11 @@ define([
         test('saverequired event', function() {
             expect(5);
             stop();
-            var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
-            resource.rget('preparations').done(function(preps) {
-                resource.on('change', nope('change on resource'));
-                resource.on('saverequired', yep('saverequired on resource'));
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
+            collectionobject.rget('preparations').done(function(preps) {
+                collectionobject.on('change', nope('change on collectionobject'));
+                collectionobject.on('saverequired', nope('saverequired on collectionobject'));
+                collectionobject.on('subsaverequired', yep('subsaverequired on collectionobject'));
                 preps.fetch().done(function() {
                     preps.on('change', yep('change on preps'));
                     preps.on('saverequired', yep('saverequired on preps'));
@@ -648,17 +652,22 @@ define([
         test('saverequired event deep', function() {
             expect(5);
             stop();
-            var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
-            resource.rget('determinations').done(function(dets) {
-                resource.on('change', nope('change on resource'));
-                resource.on('saverequired', yep('saverequired on resource'));
+            var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
+            collectionobject.rget('determinations').done(function(dets) {
+                collectionobject.on('change', nope('change on collectionobject'));
+                collectionobject.on('saverequired', nope('saverequired on collectionobject'));
+                collectionobject.on('subsaverequired', yep('subsaverequired on collectionobject'));
                 dets.fetch().done(function() {
                     dets.on('change', nope('change on dets'));
-                    dets.on('saverequired', yep('saverequired on dets'));
+                    dets.on('saverequired', nope('saverequired on dets'));
+                    dets.on('subsaverequired', yep('subsaverequired on dets'));
+
                     var det = dets.at(1);
                     det.rget('determiner.lastname').done(function(original) {
                         det.on('change', nope('change on det'));
-                        det.on('saverequired', yep('saverequired on det'));
+                        det.on('saverequired', nope('saverequired on det'));
+                        det.on('subsaverequired', yep('subsaverequired on det'));
+
                         var agent = det.relatedCache['determiner'];
                         agent.on('change', yep('change on agent'));
                         agent.on('saverequired', yep('saverequired on agent'));

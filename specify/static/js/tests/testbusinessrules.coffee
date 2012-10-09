@@ -26,13 +26,16 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 agent = collectingevent.relatedCache.modifiedbyagent
 
                 checks = [
-                    requireEvent collectionobject, 'saverequired', 'saverequired on CO'
+                    rejectEvent collectionobject, 'saverequired', 'saverequired on CO'
+                    requireEvent collectionobject, 'subsaverequired', 'subsaverequired on CO'
                     rejectEvent collectionobject, 'change', 'change on CO'
 
-                    requireEvent collectingevent, 'saverequired', 'saverequired on CE'
+                    rejectEvent collectingevent, 'saverequired', 'saverequired on CE'
+                    requireEvent collectingevent, 'subsaverequired', 'subsaverequired on CE'
                     rejectEvent collectingevent, 'change', 'change on CE'
 
                     requireEvent agent, 'saverequired', 'saverequired on agent'
+                    rejectEvent agent, 'subsaverequired', 'subsaverequired on agent'
                     requireEvent agent, 'change', 'change on agent'
                 ]
                 whenAll(checks).done -> start()
@@ -48,10 +51,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
 
                 checks = [
                     requireEvent collectionobject, 'saveblocked', 'saveblocked reaches CO'
-                    requireEvent collectionobject, 'saverequired', 'saverequired reaches CO'
+                    requireEvent collectionobject, 'subsaverequired', 'subsaverequired reaches CO'
 
                     requireEvent accession, 'saveblocked', 'saveblocked reaches accession'
-                    requireEvent accession, 'saverequired', 'saverequired reaches accession'
+                    requireEvent accession, 'subsaverequired', 'subsaverequired reaches accession'
                 ]
 
                 newagent = new (api.Resource.forModel 'accessionagent')()
