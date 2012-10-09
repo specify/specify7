@@ -5,6 +5,8 @@ define([
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
+    var BLOCK_SIZE = 20;
+
     return Backbone.View.extend({
         events: {
             'click .specify-subview-header .specify-delete-related' : 'delete',
@@ -12,6 +14,7 @@ define([
         },
         initialize: function(options) {
             var self = this;
+            self.collection.limit = BLOCK_SIZE;
             self.collection.on('add', function() {
                 var end = self.collection.length - 1;
                 self.slider.slider('option', { max: end, value: end });
@@ -34,7 +37,8 @@ define([
             var self = this;
             if (self.collection.at(offset)) return null;
             self.request && self.request.abort();
-            var at = offset - offset % self.collection.limit;
+            var at = offset - offset % BLOCK_SIZE;
+            self.collection.limit = BLOCK_SIZE;
             self.request = self.collection.fetch({at: at}).done(function() {
                 debug && console.log('got collection at offset ' + at);
                 request = null;
@@ -44,7 +48,6 @@ define([
         },
         render: function() {
             var self = this;
-            self.undelegateEvents();
             self.$el.empty();
             self.slider = $('<div>');
             self.$el.hasClass('no-header') || self.$el.append(templates.subviewheader());
@@ -72,7 +75,6 @@ define([
             self.deleteDialog.on('remove', function() {
                 $(this).detach();
             });
-            self.delegateEvents();
             self.urlParam = self.$el.data('url-param');
             var params = $.deparam.querystring(true);
             var index = params[self.urlParam] || 0;
