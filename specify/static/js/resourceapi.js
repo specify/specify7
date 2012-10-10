@@ -404,7 +404,7 @@ define([
             // a resource object representing the resource. will not be populated.
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             var ResourceForModel = api.Resource.forModel(match[1]);
-            return new ResourceForModel({id: match[2]});
+            return new ResourceForModel({id: parseInt(match[2], 10) });
         },
         collectionFor: function() {
             // return the collection constructor for this type of resource
