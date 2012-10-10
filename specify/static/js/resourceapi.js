@@ -260,7 +260,7 @@ define([
             if (resource._save) {
                 throw new Error('resource is already being saved');
             }
-            var didNeedSave = resource.needsSaved;
+            var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
 
             resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
