@@ -2,9 +2,11 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
     Backbone.View.extend
         events:
-            'click .delete-button': 'openDialog'
+            'click .delete-button': 'buttonClicked'
 
         initialize: (options) ->
+            @skipConfirm = options.skipConfirm or false
+
             @model.on 'candelete', =>
                 @button.prop 'disabled', false
                 @setToolTip()
@@ -30,9 +32,9 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @model.businessRuleMgr.checkCanDelete().done => @setToolTip()
             @
 
-        openDialog: (evt) ->
+        buttonClicked: (evt) ->
             evt.preventDefault()
-            @dialog.dialog 'open'
+            if @skipConfirm then @doDelete() else @dialog.dialog 'open'
 
         doDelete: ->
             @model.destroy().done => @trigger 'deleted'

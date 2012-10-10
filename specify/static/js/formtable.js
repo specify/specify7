@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates'
-], function($, _, Backbone, specifyform, navigation, templates) {
+    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'cs!savebutton', 'cs!deletebutton'
+], function($, _, Backbone, specifyform, navigation, templates, SaveButton, DeleteButton) {
 
     return Backbone.View.extend({
         events: {
@@ -50,36 +50,37 @@ define([
         buildDialog: function(resource) {
             var self = this;
             var dialogForm = specifyform.buildViewByName(resource.specifyModel.view);
+            dialogForm.find('.specify-form-header:first').remove();
+
+            if (self.collection.dependent) {
+                $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+                    dialog.dialog('close');
+                });
+                $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                    self.collection.remove(resource);
+                    dialog.dialog('close');
+                });
+            } else {
+                var saveButton = new SaveButton({ model: resource });
+                saveButton.render().$el.appendTo(dialogForm);
+                saveButton.on('savecomplete', function() {
+                    dialog.dialog('close');
+                    self.collection.add(resource);
+                });
+
+                if (!resource.isNew()) {
+                    var deleteButton = new DeleteButton({ model: resource, skipConfirm: true });
+                    deleteButton.render().$el.appendTo(dialogForm);
+                    deleteButton.on('deleted', function() { dialog.dialog('close'); });
+                }
+            }
+
             self.options.populateform(dialogForm, resource);
 
-            $('<div title="Search">').append(dialogForm).dialog({
+            var dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',
-                buttons: [
-                    {
-                        text: resource.isNew() ? "Add" : "Save",
-                        click: function() {
-                            if (self.collection.dependent) {
-                                $(this).remove();
-                            } else {
-                                var dialog = $(this);
-                                resource.save().done(function() { dialog.remove(); });
-                            }
-                        }
-                    }, {
-                        text: resource.isNew() ? "Remove" : "Delete",
-                        click: function() {
-                            if (self.collection.dependent) {
-                                self.collection.remove(resource);
-                            } else {
-                                resource.destroy();
-                            }
-                            $(this).remove();
-                        }
-                    }
-                ],
-                close: function() {
-                    $(this).remove();
-                }
+                title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
+                close: function() { $(this).remove(); }
             });
         },
         add: function(evt) {
@@ -89,7 +90,7 @@ define([
             var newResource = new (self.collection.model)();
             var osn = self.specifyModel.getField(self.fieldName).otherSideName;
             newResource.set(osn, self.resource.url());
-            self.collection.add(newResource);
+            self.collection.dependent && self.collection.add(newResource);
 
             self.buildDialog(newResource);
         },
