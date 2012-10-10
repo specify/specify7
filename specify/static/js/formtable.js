@@ -49,7 +49,7 @@ define([
         },
         buildDialog: function(resource) {
             var self = this;
-            var dialogForm = specifyform.buildSubView(self.$el, true);
+            var dialogForm = specifyform.buildViewByName(resource.specifyModel.view);
             self.options.populateform(dialogForm, resource);
 
             $('<div title="Search">').append(dialogForm).dialog({
@@ -61,7 +61,7 @@ define([
                             if (self.collection.dependent) {
                                 $(this).remove();
                             } else {
-                                var dialog = this;
+                                var dialog = $(this);
                                 resource.save().done(function() { dialog.remove(); });
                             }
                         }
