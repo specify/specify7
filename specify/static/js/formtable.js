@@ -57,9 +57,16 @@ define([
                 buttons: [
                     {
                         text: resource.isNew() ? "Add" : "Save",
-                        click: function() {}
+                        click: function() {
+                            if (self.collection.dependent) {
+                                $(this).remove();
+                            } else {
+                                var dialog = this;
+                                resource.save().done(function() { dialog.remove(); });
+                            }
+                        }
                     }, {
-                        text: resource.isNew() ? "Cancel" : "Delete",
+                        text: resource.isNew() ? "Remove" : "Delete",
                         click: function() {
                             if (self.collection.dependent) {
                                 self.collection.remove(resource);
