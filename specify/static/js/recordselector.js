@@ -35,7 +35,7 @@ define([
         },
         fetchThenRedraw: function(offset) {
             var self = this;
-            if (self.collection.at(offset)) return null;
+            if (self.collection.isNew || self.collection.at(offset)) return null;
             self.request && self.request.abort();
             var at = offset - offset % BLOCK_SIZE;
             self.collection.limit = BLOCK_SIZE;
