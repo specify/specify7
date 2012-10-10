@@ -93,6 +93,7 @@ define [
 
             $.when(@getPickListItems(), getValue).done (items, value) =>
                 @setupOptions items, value
+                @model.onChange @field.name, (value) => @$el.val value
 
             @toolTipMgr = new ToolTipMgr(@).enable()
             @saveblockerEnhancement = new saveblockers.FieldViewEnhancer @, @field.name
