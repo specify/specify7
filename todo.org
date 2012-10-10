@@ -9,3 +9,4 @@
 * update all fields after put
 * don't remove from collection if delete fails
 * make limit handling in collection api better
+* formtable fetch all in collection

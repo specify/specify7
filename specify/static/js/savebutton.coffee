@@ -50,12 +50,6 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             # get buttons to match current state
             @setButtonsDisabled @buttonsDisabled
             @setSaveBlocked @saveBlocked
-
-            @dialog = $(templates.saveblocked()).appendTo(@el).dialog
-                resizable: false
-                autoOpen: false
-            @dialog.parent('.ui-dialog').appendTo @el
-            @dialog.on 'remove', -> $(@).detach()
             @
 
         submit: (evt) ->
@@ -65,7 +59,11 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 @model.rsave().done => @trigger 'savecomplete',
                     addAnother: $(evt.currentTarget).is '.save-and-add-button'
             else
-                list = @dialog.find '.saveblockers'
+                dialog = $(templates.saveblocked()).appendTo(@el).dialog
+                    resizable: false
+                    close: -> dialog.remove()
+
+                list = dialog.find '.saveblockers'
                 list.empty()
                 _.each @blockers, (resource) =>
                     li = $('<li>').appendTo list
@@ -75,4 +73,4 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                         field = resource.specifyModel.getField blocker.field if blocker.field?
                         $('<dt>').text(field?.getLocalizedName() or '').appendTo dl
                         $('<dd>').text(blocker.reason).appendTo dl
-                @dialog.dialog 'open'
+

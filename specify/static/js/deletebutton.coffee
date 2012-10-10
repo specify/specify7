@@ -2,11 +2,9 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
     Backbone.View.extend
         events:
-            'click .delete-button': 'buttonClicked'
+            'click .delete-button': 'openDialog'
 
         initialize: (options) ->
-            @skipConfirm = options.skipConfirm or false
-
             @model.on 'candelete', =>
                 @button.prop 'disabled', false
                 @setToolTip()
@@ -18,27 +16,25 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
         render: ->
             @button = $('<input type="button" value="Delete" class="delete-button">').appendTo @el
             @button.prop 'disabled', true
-            @dialog = $(templates.confirmdelete()).appendTo(@el).dialog
-                resizable: false
-                autoOpen: false
-                modal: true
-                buttons:
-                    'Delete': => @doDelete()
-                    'Cancel': -> $(this).dialog 'close'
-
-            @dialog.parent('.ui-dialog').appendTo @el
-            @dialog.on 'remove', -> $(@).detach()
 
             @model.businessRuleMgr.checkCanDelete().done => @setToolTip()
             @
 
-        buttonClicked: (evt) ->
+        openDialog: (evt) ->
             evt.preventDefault()
-            if @skipConfirm then @doDelete() else @dialog.dialog 'open'
+            dialog = $(templates.confirmdelete()).appendTo(@el).dialog
+                resizable: false
+                close: -> dialog.remove()
+                modal: true
+                buttons:
+                    'Delete': =>
+                        @doDelete()
+                        dialog.dialog 'close'
+                    'Cancel': -> dialog.dialog 'close'
+
 
         doDelete: ->
             @model.destroy().done => @trigger 'deleted'
-            @dialog.dialog 'close'
 
         setToolTip: ->
             blockers = _.map @model.businessRuleMgr.deleteBlockers, (__, field) -> field

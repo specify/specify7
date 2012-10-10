@@ -69,7 +69,7 @@ define([
                 });
 
                 if (!resource.isNew()) {
-                    var deleteButton = new DeleteButton({ model: resource, skipConfirm: true });
+                    var deleteButton = new DeleteButton({ model: resource });
                     deleteButton.render().$el.appendTo(dialogForm);
                     deleteButton.on('deleted', function() { dialog.dialog('close'); });
                 }
