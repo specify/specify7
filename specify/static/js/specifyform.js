@@ -66,16 +66,17 @@ define([
         return $(templates.form({ formNumber: formNumber })).find('form').append(table).end();
     }
 
-    function buildView(viewdef) {
+    function buildView(viewdef, formTableAsForm) {
         var formNumber = formCounter++;
         var doingFormTable = (viewdef.attr('type') === 'formtable');
-        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable);
+        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable && !formTableAsForm);
 
         var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(viewdef) }));
 
         if (doingFormTable) {
             var formViewdef = findViewdef(viewdef.find('definition').text());
-            buildFormTable(formNumber, formViewdef, processCell).appendTo(wrapper);
+            var build = formTableAsForm ? buildForm : buildFormTable;
+            build(formNumber, formViewdef, processCell).appendTo(wrapper);
         } else {
             buildForm(formNumber, viewdef, processCell).appendTo(wrapper);
         }
@@ -128,10 +129,11 @@ define([
             return findViewdef(viewdef.attr('name'));
         },
 
-        buildSubView: function (node) {
+        buildSubView: function (node, formTableAsForm) {
             var view = specifyform.getSubViewDef(node);
             if (!view.length) return;
-            return buildView(view).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
+            return buildView(view, formTableAsForm)
+                .find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
         },
 
         subViewIsFormTable: function (node) {
