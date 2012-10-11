@@ -146,7 +146,7 @@ define([
                 buttons: {
                     'Delete': function() {
                         $(this).dialog('close');
-                        self.collection.at(self.slider.slider('value')).destroy();
+                        resource.destroy();
                     },
                     'Cancel': function() { $(this).remove(); }
                 }

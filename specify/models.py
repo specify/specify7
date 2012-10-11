@@ -66,9 +66,10 @@ def make_relationship(reldef):
         except KeyError:
             related_name = '+' # magic symbol means don't make reverse field
         column = reldef.attrib['columnname']
+        on_delete = models.SET_NULL if null else models.DO_NOTHING
         return Field('.'.join((appname, relatedmodel)),
                      db_column=column, related_name=related_name,
-                     null=null, on_delete=models.DO_NOTHING,
+                     null=null, on_delete=on_delete,
                      editable=editable)
 
     if reltype == 'many-to-one':

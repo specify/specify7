@@ -17,6 +17,9 @@ define([
             case 'oktosave':
                 return this.trigger.apply(this, args);
                 break;
+            case 'change:id':
+                this.set(field.name, related.url(), {silent: true});
+                break;
             }
 
             // pass change:field events up the tree, updating fields with dot notation
@@ -92,6 +95,8 @@ define([
                         _.chain(related.models).compact().invoke('set', field.otherSideName, resource.url());
                     }
                 });
+
+                // TODO: set value on parent object if necessary
             });
 
             businessrules.attachToResource(this);
@@ -123,6 +128,26 @@ define([
         get: function(attribute) {
             // case insensitive
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
+        },
+        setToOneField: function(field, related, options) {
+            var self = this;
+            if (_.isString(field)) field = self.specifyModel.getField(field);
+
+            var oldRelated = self.relatedCache[field.name.toLowerCase()];
+            oldRelated && oldRelated.off("all", null, this);
+
+            if (!related) {
+                self.set(field.name, related, options);
+                return;
+            }
+            if (!(related instanceof api.Resource))
+                throw new Error("can't set to-one field to non resource");
+
+            self.set(field.name, related.url(), options);
+            related.on('all', eventHandlerForToOne(related, field), self);
+            related.parent = self;
+            related.dependent = field.isDependent();
+            self.relatedCache[field.name.toLowerCase()] = related;
         },
         set: function(key, value, options) {
             // make the keys case insensitive
@@ -175,11 +200,7 @@ define([
                             toOne._fetch = null;
                             toOne.populated = true;
                         }
-                        // setup back reference and event handlers then cache it
-                        toOne.parent = self;
-                        toOne.dependent = field.isDependent();
-                        toOne.on('all', eventHandlerForToOne(toOne, field), self);
-                        self.relatedCache[fieldName] = toOne;
+                        self.setToOneField(field, toOne, {silent: true});
                     }
                     // if we want a field within the related resource then recur
                     // otherwise, start the resource fetching if prePop and return
