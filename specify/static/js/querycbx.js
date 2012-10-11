@@ -1,13 +1,13 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'cs!saveblockers', 'cs!tooltipmgr',
+    'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr',
     'text!context/app.resource?name=TypeSearches!noinline',
     'text!context/app.resource?name=DialogDefs!noinline',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
-             whenAll, parseselect, localizeForm, navigation, saveblockers,
-             ToolTipMgr, typesearchxml, dialogdefxml) {
+             whenAll, parseselect, localizeForm, navigation, SaveButton,
+             DeleteButton, saveblockers, ToolTipMgr, typesearchxml, dialogdefxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dialogdefs = $.parseXML(dialogdefxml);
 
@@ -66,9 +66,15 @@ define([
         },
         fillIn: function () {
             var self = this;
-            self.model.rget(self.fieldName, true).done(function(related) {
-                related && self.renderItem(related).done(function(item) {
-                    self.$('input').val(item.value);
+            _.defer(function() {
+                self.model.rget(self.fieldName, true).done(function(related) {
+                    if (related) {
+                        self.renderItem(related).done(function(item) {
+                            self.$('input').val(item.value);
+                        });
+                    } else {
+                        self.$('input').val('');
+                    }
                 });
             });
         },
@@ -104,14 +110,45 @@ define([
         add: function(event, ui) {
             var self = this;
             event.preventDefault();
-            var popUp = window.open(self.model.viewUrl() + self.fieldName + '/new/');
-            popUp.specifyParentResource = self.model;
+            var relatedModel = self.model.specifyModel.getField(self.fieldName).getRelatedModel();
+
+            var newResource = new (api.Resource.forModel(relatedModel))();
+            self.buildDialog(newResource);
+        },
+        buildDialog: function(resource) {
+            var self = this;
+            var dialogForm = specifyform.buildViewByName(resource.specifyModel.view);
+            dialogForm.find('.specify-form-header:first').remove();
+
+            var saveButton = new SaveButton({ model: resource });
+            saveButton.render().$el.appendTo(dialogForm);
+            saveButton.on('savecomplete', function() {
+                dialog.dialog('close');
+                self.model.set(self.fieldName, resource.url());
+            });
+
+            if (!resource.isNew()) {
+                    var deleteButton = new DeleteButton({ model: resource });
+                    deleteButton.render().$el.appendTo(dialogForm);
+                    deleteButton.on('deleted', function() {
+                        self.model.set(self.fieldName, null);
+                        dialog.dialog('close');
+                    });
+            }
+
+            self.options.populateform(dialogForm, resource);
+
+            var dialog = $('<div>').append(dialogForm).dialog({
+                width: 'auto',
+                title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
+                close: function() { $(this).remove(); }
+            });
         },
         edit: function(event, ui) {
             var self = this;
             event.preventDefault();
             self.model.rget(self.fieldName, true).done(function(related) {
-                related && window.open(related.viewUrl());
+                related && self.buildDialog(related);
             });
         }
     });

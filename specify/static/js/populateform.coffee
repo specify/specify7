@@ -26,7 +26,7 @@ SubView, CheckBox, TreeLevelPickList) ->
 
             ).find (__, selector) -> control.is selector
 
-        view = new ( getView?() or UIField ) { el: control, model: resource }
+        view = new ( getView?() or UIField ) { el: control, model: resource, populateform: populateForm }
         view.render()
 
     populateSubview = (resource, node) ->
