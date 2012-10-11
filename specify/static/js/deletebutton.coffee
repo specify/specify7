@@ -14,6 +14,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 @setToolTip()
 
         render: ->
+            @$el.addClass 'deletebutton'
             @button = $('<input type="button" value="Delete" class="delete-button">').appendTo @el
             @button.prop 'disabled', true
 

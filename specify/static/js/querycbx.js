@@ -128,12 +128,17 @@ define([
             });
 
             if (!resource.isNew()) {
-                    var deleteButton = new DeleteButton({ model: resource });
-                    deleteButton.render().$el.appendTo(dialogForm);
-                    deleteButton.on('deleted', function() {
-                        self.model.set(self.fieldName, null);
-                        dialog.dialog('close');
-                    });
+                var deleteButton = new DeleteButton({ model: resource });
+                deleteButton.render().$el.appendTo(dialogForm);
+                deleteButton.on('deleted', function() {
+                    self.model.set(self.fieldName, null);
+                    dialog.dialog('close');
+                });
+
+                $('<input type="button" value="Visit">').appendTo(dialogForm).click(function() {
+                    dialog.dialog('close');
+                    navigation.go(resource.viewUrl());
+                });
             }
 
             self.options.populateform(dialogForm, resource);

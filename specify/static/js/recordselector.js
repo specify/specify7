@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
 ], function($, _, Backbone, specifyform, navigation, templates) {
-    var debug = false;
+    var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
@@ -35,7 +35,7 @@ define([
         },
         fetchThenRedraw: function(offset) {
             var self = this;
-            if (self.collection.isNew || self.collection.at(offset)) return null;
+            if (self.collection.isNew === true || self.collection.at(offset)) return null;
             self.request && self.request.abort();
             var at = offset - offset % BLOCK_SIZE;
             self.collection.limit = BLOCK_SIZE;

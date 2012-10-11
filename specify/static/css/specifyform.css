@@ -164,3 +164,7 @@ input[type="submit"].saveblocked {
     display: inline-block;
     margin: 0 20px 0px 20px;
 }
+
+.savebutton, .deletebutton {
+    display: inline;
+}

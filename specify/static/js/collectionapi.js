@@ -40,7 +40,7 @@ define([
             options = options || {};
             options.add = true;
             options.silent = true;
-            options.at = options.at || this.length;
+            options.at = _.isUndefined(options.at) ? this.length : options.at;
             options.data = options.data || _.extend({}, this.queryParams);
             options.data.offset = options.at;
             if (_(this).has('limit')) options.data.limit = this.limit;
@@ -48,7 +48,7 @@ define([
         },
         add: function(models, options) {
             options = options || {};
-            options.at = options.at || this.length;
+            options.at = _.isUndefined(options.at) ? this.length : options.at;
             models = _.isArray(models) ? models.slice() : [models];
             if (this.totalCount) {
                 if (this.models.length < this.totalCount) this.models[this.totalCount-1] = undefined;

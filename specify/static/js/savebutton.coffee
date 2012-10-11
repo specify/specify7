@@ -34,6 +34,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 @setSaveBlocked false
 
         render: ->
+            @$el.addClass 'savebutton'
             @$el.append $ '<input>'
                 type: "submit"
                 class: "save-button"
