@@ -65,16 +65,7 @@ define([
             self.slider.find('.ui-slider-handle').
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
-            self.deleteDialog = $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false, modal: true, autoOpen: false, buttons: {
-                    'Delete': _.bind(self.destroy, self),
-                    'Cancel': function() { $(this).dialog('close'); }
-                }
-            });
-            self.deleteDialog.parent('.ui-dialog').appendTo(self.el);
-            self.deleteDialog.on('remove', function() {
-                $(this).detach();
-            });
+
             self.urlParam = self.$el.data('url-param');
             var params = $.deparam.querystring(true);
             var index = params[self.urlParam] || 0;
@@ -137,16 +128,29 @@ define([
             }
         },
         delete: function(evt) {
+            var self = this;
             evt.preventDefault();
-            if (this.collection.dependent) {
-                this.collection.remove(this.collection.at(this.slider.slider('value')));
+            var resource = self.collection.at(self.slider.slider('value'));
+            if (self.collection.dependent) {
+                self.collection.remove(resource);
             } else {
-                this.deleteDialog.dialog('open');
+                if (resource.isNew()) resource.destroy()
+                else self.makeDeleteDialog(resource);
             }
         },
-        destroy: function() {
-            this.deleteDialog.dialog('close');
-            return this.collection.at(this.slider.slider('value')).destroy();
+        makeDeleteDialog: function(resource) {
+            var self = this;
+            $(templates.confirmdelete()).appendTo(self.el).dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    'Delete': function() {
+                        $(this).dialog('close');
+                        self.collection.at(self.slider.slider('value')).destroy();
+                    },
+                    'Cancel': function() { $(this).remove(); }
+                }
+            });
         },
         add: function() {
             var newResource = new (this.collection.model)();
