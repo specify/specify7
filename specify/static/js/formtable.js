@@ -19,7 +19,6 @@ define([
             var self = this;
             var header = $(templates.subviewheader());
             header.find('.specify-delete-related').remove();
-            header.find('.specify-add-related').prop('href', this.addUrl());
             self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
 
@@ -93,9 +92,6 @@ define([
             self.collection.dependent && self.collection.add(newResource);
 
             self.buildDialog(newResource);
-        },
-        addUrl: function() {
-            return this.resource.viewUrl() + this.fieldName + '/new/';
         }
     });
 });
