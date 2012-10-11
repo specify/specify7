@@ -338,9 +338,10 @@ define([
             // fetch and return a deferred.
             return resource.fetch().pipe(function() { return resource; });
         },
-        parse: function() {
+        parse: function(resp) {
             // since we are putting in data, the resource in now populated
             this.populated = true;
+            if (resp.id) resp.id = parseInt(resp.id, 10);
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },
         getRelatedObjectCount: function(fieldName) {

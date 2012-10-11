@@ -91,7 +91,7 @@ define ['jquery', 'underscore', 'whenall', 'cs!saveblockers'], ($, _, whenAll, s
             if other.cid is resource.cid then return false
             otherVal = other.get valueField
             if valueIsToOne and not (_.isString otherVal)
-                otherVal.id is valueId
+                parseInt(otherVal.id, 10) is parseInt(valueId, 10)
             else
                 value is other.get valueField
 
