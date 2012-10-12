@@ -36,6 +36,7 @@ SubView, CheckBox, TreeLevelPickList) ->
                 el: node
                 model: resource
                 parentModel: model
+                populateform: populateForm
             (new SubViewButton viewOptions).render()
         else
             fieldName = node.data 'specify-field-name'

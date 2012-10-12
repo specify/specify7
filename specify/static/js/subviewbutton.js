@@ -1,44 +1,85 @@
 define([
-    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'jquery-bbq'
-], function($, Backbone, icons, specifyform, navigation) {
+    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'jquery-bbq'
+], function($, Backbone, icons, specifyform, navigation, DeleteButton) {
 
     return Backbone.View.extend({
         events: {
             'click a': 'click'
         },
+        initialize: function(options) {
+            var self = this;
+            self.parentModel = self.options.parentModel;
+
+            var fieldName = self.$el.data('specify-field-name');
+            self.field = self.parentModel.getField(fieldName);
+            self.relatedModel = self.field.getRelatedModel();
+        },
         render: function() {
             var self = this;
-            self.undelegateEvents();
             self.$el.empty();
-            var model = self.options.parentModel;
-            var fieldName = self.$el.data('specify-field-name');
-            var viewDef = specifyform.getSubViewDef(self.$el);
-            var field = model.getField(fieldName);
+
+            var fieldName = self.field.name.toLowerCase();
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
-            var icon = props.icon ? icons.getIcon(props.icon) : field.getRelatedModel().getIcon();
+            var icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
             var button = $('<a>').appendTo(self.el);
-            self.url = self.model.viewUrl() + fieldName.toLowerCase() + '/';
-            if (viewDef)
-                self.url = $.param.querystring(self.url, {viewdef: viewDef.attr('name')});
-            button.prop('href', self.url);
-            button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
-            button.append('<span class="specify-subview-button-count">');
-            if (field.type === 'one-to-many') {
-                self.model.getRelatedObjectCount(fieldName).done(function(count) {
+            if (self.field.type === 'one-to-many') {
+                self.model.getRelatedObjectCount(self.field.name).done(function(count) {
                     var value = _.isUndefined(count) ? 'N/A' : count.toString();
                     self.$('.specify-subview-button-count').text(value);
                 });
             } else {
-                self.model.rget(fieldName).done(function(related) {
+                self.model.rget(self.field.name).done(function(related) {
                     self.$('.specify-subview-button-count').text(related ? 1 : 0);
                 });
             }
+            button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
+            button.append('<span class="specify-subview-button-count">');
             button.button({ disabled: self.model.isNew() });
-            self.delegateEvents();
         },
         click: function(evt) {
-            navigation.go(this.url);
+            var self = this;
             evt.preventDefault();
+
+            var viewDef = specifyform.getSubViewDef(self.$el);
+            var dialogForm = viewDef ? specifyform.buildViewByViewDefName(viewDef.attr('name')) :
+                specifyform.buildViewByName(self.relatedModel.view);
+            dialogForm.find('.specify-form-header:first').remove();
+
+            self.model.rget(self.field.name).done(function(resource) {
+                if (!resource) {
+                    resource = new (self.model.constructor.forModel(self.relatedModel))();
+                    resource.placeInSameHierarchy(self.model);
+                    self.model.setToOneField(self.field.name, resource);
+                    self.$('.specify-subview-button-count').text(1);
+                }
+
+                $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+                    dialog.dialog('close');
+                });
+
+                if (resource.isNew()) {
+                    $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                        dialog.dialog('close');
+                        self.model.setToOneField(self.field.name, null, {silent: true});
+                        self.$('.specify-subview-button-count').text(0);
+                    });
+                } else {
+                    var deleteButton = new DeleteButton({ model: resource });
+                    deleteButton.render().$el.appendTo(dialogForm);
+                    deleteButton.on('deleted', function() {
+                        dialog.dialog('close');
+                        self.model.setToOneField(self.field.name, null, {silent: true});
+                        self.$('.specify-subview-button-count').text(0);
+                    });
+                }
+
+                self.options.populateform(dialogForm, resource);
+                var dialog = $('<div>').append(dialogForm).dialog({
+                    width: 'auto',
+                    title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
+                    close: function() { $(this).remove(); }
+                });
+            });
         }
     });
 });
