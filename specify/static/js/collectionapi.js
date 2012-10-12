@@ -28,23 +28,33 @@ define([
             var collection = this;
             // a new collection is used for to-many collections related to new resources
             if (this.isNew) return $.when(collection);
+            if (this._fetch) return this._fetch.pipe(function () { return collection; });
 
             return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
         },
         fetch: function(options) {
+            var self = this;
             // block trying to fetch data for collections that represent new to-many collections
-            if (this.isNew) {
+            if (self.isNew) {
                 throw new Error("can't fetch non-existant collection");
             }
+
+            if (self._fetch) throw new Error('already fetching');
 
             options = options || {};
             options.add = true;
             options.silent = true;
-            options.at = _.isUndefined(options.at) ? this.length : options.at;
-            options.data = options.data || _.extend({}, this.queryParams);
+            options.at = _.isUndefined(options.at) ? self.length : options.at;
+            options.data = options.data || _.extend({}, self.queryParams);
             options.data.offset = options.at;
-            if (_(this).has('limit')) options.data.limit = this.limit;
-            return Backbone.Collection.prototype.fetch.call(this, options);
+            if (_(self).has('limit')) options.data.limit = self.limit;
+            self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
+            return self._fetch.then(function() { self._fetch = null; });
+        },
+        abortFetch: function() {
+            if (!this._fetch) return;
+            this._fetch.abort();
+            this._fetch = null;
         },
         add: function(models, options) {
             options = options || {};
@@ -62,6 +72,12 @@ define([
         },
         gatherDependentFields: function() {
             this.invoke('gatherDependentFields');
+        },
+        getTotalCount: function() {
+            var self = this;
+            if (self.isNew) return $.when(self.length);
+            if (self._fetch) return self._fetch.pipe(function() { return self.totalCount; });
+            return self.fetchIfNotPopulated().pipe(function() { return self.totalCount; });
         }
     }, {
         forModel: function(model) {

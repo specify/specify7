@@ -376,12 +376,7 @@ define([
 
             return this.rget(fieldName).pipe(function (collection) {
                 if (!collection) return 0;
-                if (_.has(collection, 'totalCount')) return collection.totalCount;
-                // should be some way to get the count without getting any objects
-                collection.limit = 1;
-                return collection.fetch().pipe(function () {
-                    return collection.totalCount;
-                });
+                return collection.getTotalCount();
             });
         },
         sync: function(method, resource, options) {
