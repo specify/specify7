@@ -8,10 +8,6 @@ define([
     var BLOCK_SIZE = 20;
 
     return Backbone.View.extend({
-        events: {
-            'click .specify-subview-header .specify-delete-related' : 'delete',
-            'click .specify-subview-header .specify-add-related' : 'add'
-        },
         initialize: function(options) {
             var self = this;
             self.collection.limit = BLOCK_SIZE;
@@ -50,13 +46,22 @@ define([
             var self = this;
             self.$el.empty();
             self.slider = $('<div>');
-            self.$el.hasClass('no-header') || self.$el.append(templates.subviewheader());
+            var header = self.$el.hasClass('no-header') ? null : self.$el.append(templates.subviewheader());
             self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
             self.content = $('<div>').appendTo(self.el);
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
             self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
+
+            if (self.$el.hasClass('no-header')) {
+                $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
+                $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
+            } else {
+                header.find('.specify-add-related').click(_.bind(self.add, self));
+                header.find('.specify-delete-related').click(_.bind(self.delete, self));
+            }
+
             self.slider.slider({
                 max: self.collection.length - 1,
                 stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),

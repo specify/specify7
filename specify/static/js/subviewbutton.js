@@ -39,10 +39,12 @@ define([
         click: function(evt) {
             var self = this;
             evt.preventDefault();
+            self.field.type === 'one-to-many' ? self.makeToManyDialog() : self.makeToOneDialog();
+        },
+        makeToOneDialog: function () {
+            var self = this;
+            var dialogForm = specifyform.buildSubView(self.el);
 
-            var viewDef = specifyform.getSubViewDef(self.$el);
-            var dialogForm = viewDef ? specifyform.buildViewByViewDefName(viewDef.attr('name')) :
-                specifyform.buildViewByName(self.relatedModel.view);
             dialogForm.find('.specify-form-header:first').remove();
 
             self.model.rget(self.field.name).done(function(resource) {
@@ -79,6 +81,20 @@ define([
                     title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
                     close: function() { $(this).remove(); }
                 });
+            });
+        },
+        makeToManyDialog: function () {
+            var self = this;
+            var viewDef = specifyform.getSubViewDef(self.el).attr('name');
+            var dialogForm = specifyform.relatedObjectsForm(self.parentModel.name, self.field.name, viewDef);
+
+            dialogForm.find('.specify-form-header').remove();
+            self.options.populateform(dialogForm, self.model);
+
+            var dialog =  $('<div>').append(dialogForm).dialog({
+                width: 'auto',
+                title: self.field.getLocalizedName(),
+                close: function() { $(this).remove(); }
             });
         }
     });
