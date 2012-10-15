@@ -147,7 +147,6 @@ define([
             related.on('all', eventHandlerForToOne(related, field), self);
             related.parent = self;
             related.dependent = field.isDependent();
-            self.relatedCache[field.name.toLowerCase()] = related;
 
             switch (field.type) {
             case 'many-to-one':
@@ -159,6 +158,8 @@ define([
             default:
                 throw new Error("setToOneField: unhandled field type: " + field.type);
             }
+
+            self.relatedCache[field.name.toLowerCase()] = related;
         },
         set: function(key, value, options) {
             // make the keys case insensitive
