@@ -9,7 +9,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @saveBlocked = false
             @buttonsDisabled = true
 
-            @model.on 'saverequired', (resource) =>
+            @model.on 'saverequired subsaverequired', (resource) =>
                 @setButtonsDisabled false
 
             @model.on 'oktosave', (resource) =>

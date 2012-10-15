@@ -134,20 +134,31 @@ define([
             if (_.isString(field)) field = self.specifyModel.getField(field);
 
             var oldRelated = self.relatedCache[field.name.toLowerCase()];
-            oldRelated && oldRelated.off("all", null, this);
-
             if (!related) {
                 self.set(field.name, related, options);
+                self.relatedCache[field.name.toLowerCase()] = related;
                 return;
             }
             if (!(related instanceof api.Resource))
                 throw new Error("can't set to-one field to non resource");
 
-            self.set(field.name, related.url(), options);
+            oldRelated && oldRelated.off("all", null, this);
+
             related.on('all', eventHandlerForToOne(related, field), self);
             related.parent = self;
             related.dependent = field.isDependent();
             self.relatedCache[field.name.toLowerCase()] = related;
+
+            switch (field.type) {
+            case 'many-to-one':
+                self.set(field.name, related.url(), options);
+                break;
+            case 'zero-to-one':
+                related.set(field.otherSideName, self.url(), options);
+                break;
+            default:
+                throw new Error("setToOneField: unhandled field type: " + field.type);
+            }
         },
         set: function(key, value, options) {
             // make the keys case insensitive
@@ -262,14 +273,7 @@ define([
                     // fetch the collection and pretend like it is a single resource
                     return collection.fetchIfNotPopulated().pipe(function() {
                         var value = collection.isEmpty() ? null : collection.first();
-                        if (value) {
-                            // setup event handlers and back ref
-                            value.on('all', eventHandlerForToOne(value, field), self);
-                            value.parent = self;
-                            value.dependent = field.isDependent();
-                        }
-
-                        // cache it and either return it or recur if further traversing is required
+                        self.setToOneField(field.name, value, {silent: true});
                         self.relatedCache[fieldName] = value;
                         return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
                     });
