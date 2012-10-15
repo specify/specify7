@@ -93,6 +93,27 @@ class SimpleApiTests(ApiTests):
         api.delete_obj('collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
 
+class ApiRelatedFieldsTests(ApiTests):
+    def test_get_to_many_uris_with_regular_othersidename(self):
+        api.inlined_fields.difference_update(set(['Collectionobject.determinations']))
+
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        self.assertEqual(data['determinations'],
+                         api.uri_for_model('determination') +
+                         '?collectionobject=%d' % self.collectionobjects[0].id)
+
+    def test_get_to_many_uris_with_special_othersidename(self):
+        api.inlined_fields.difference_update(set(['Agent.groups','Agent.collectors']))
+
+        data = api.get_resource('agent', self.agent.id)
+        self.assertEqual(data['collectors'],
+                         api.uri_for_model('collector') +
+                         '?agent=%d' % self.agent.id)
+        self.assertEqual(data['groups'],
+                         api.uri_for_model('groupperson') +
+                         '?group=%d' % self.agent.id)
+
+
 class VersionCtrlApiTests(ApiTests):
     def test_bump_version(self):
         data = api.get_resource('collection', self.collection.id)

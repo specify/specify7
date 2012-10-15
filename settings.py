@@ -24,8 +24,8 @@ DATABASES = {
 
 TESTING_DATABASES = {
     'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'hibernateboolsbackend.backends.mysql',
+        'ENGINE': 'django.db.backends.sqlite3',
+#        'ENGINE': 'hibernateboolsbackend.backends.mysql',
         'NAME': "specifytest",
         'USER': "Master",
         'PASSWORD': "Master",
@@ -33,6 +33,8 @@ TESTING_DATABASES = {
         'PORT': '3307',
     }
 }
+
+#DATABASES = TESTING_DATABASES
 
 SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
 

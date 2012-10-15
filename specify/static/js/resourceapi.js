@@ -236,7 +236,7 @@ define([
                         toMany.dependent = field.isDependent();
                         if (!self.isNew()) {
                             // filter the related objects to be those that have a FK to this resource
-                            toMany.queryParams[self.specifyModel.name.toLowerCase()] = self.id;
+                            toMany.queryParams[field.otherSideName.toLowerCase()] = self.id;
                         } else {
                             // if this resource has no id, we can't set up the filter yet.
                             // we'll set a flag to indicate this collection represents a set

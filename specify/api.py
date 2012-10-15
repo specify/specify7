@@ -302,7 +302,7 @@ def to_many_to_data(obj, related_object):
         return [obj_to_data(o) for o in objs.all()]
 
     collection_uri = uri_for_model(related_object.model)
-    return collection_uri + '?' + urlencode([(parent_model.lower(), str(obj.id))])
+    return collection_uri + '?' + urlencode([(related_object.field.name.lower(), str(obj.id))])
 
 def field_to_val(obj, field):
     if isinstance(field, ForeignKey):
