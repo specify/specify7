@@ -46,8 +46,8 @@ SubView, CheckBox, TreeLevelPickList) ->
             resource.rget(fieldName, true).done (related) ->
                 viewOptions =
                     el: node
-                    resource: resource
-                    fieldName: fieldName
+                    field: field
+                    parentResource: resource
                     populateform: populateForm
 
                 View = switch field.type
@@ -58,8 +58,8 @@ SubView, CheckBox, TreeLevelPickList) ->
                         viewOptions.model = related
                         SubView
                     else
-                        node.append "<p>unhandled relationship type: #{ field.type }</p>"
-                        null
+                        throw new Error "unhandled relationship type: #{ field.type }"
+
                 if View then (new View viewOptions).render()
 
     populateForm = (form, resource) ->

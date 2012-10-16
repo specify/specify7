@@ -10,13 +10,24 @@ define([
     return Backbone.View.extend({
         initialize: function(options) {
             var self = this;
+
+            self.field = options.field;
+            if (self.field && !self.collection.parent)
+                throw new Error('parent not defined for collection');
+
+            self.title = self.field ? self.field.getLocalizedName() : self.collection.model.specifyModel.getLocalizedName();
+            self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
+            self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
+
             self.collection.limit = BLOCK_SIZE;
+
             self.collection.on('add', function() {
                 var end = self.collection.length - 1;
                 self.slider.slider('option', { max: end, value: end });
                 self.onSlide(end);
                 self.showHide();
             });
+
             self.collection.on('remove destroy', function() {
                 var end = self.collection.length - 1;
                 var value = Math.min(self.slider.slider('value'), end);
@@ -24,12 +35,6 @@ define([
                 self.onSlide(value);
                 self.showHide();
             });
-            self.resource = options.resource;
-            self.specifyModel = options.resource.specifyModel;
-            self.fieldName = options.fieldName;
-            self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
-            self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
-            self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
         },
         fetchThenRedraw: function(offset) {
             var self = this;
@@ -162,8 +167,9 @@ define([
         },
         add: function() {
             var newResource = new (this.collection.model)();
-            var osn = this.specifyModel.getField(this.fieldName).otherSideName;
-            newResource.set(osn, this.resource.url());
+            if (this.field) {
+                newResource.set(this.field.otherSideName, this.collection.parent.url());
+            }
             this.collection.add(newResource);
         }
     });

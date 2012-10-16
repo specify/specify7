@@ -8,10 +8,12 @@ define([
             'click .specify-subview-header a.specify-add-related': 'add'
         },
         initialize: function(options) {
-            this.resource = options.resource;
-            this.specifyModel = options.resource.specifyModel;
-            this.fieldName = options.fieldName;
-            this.title = this.specifyModel.getField(this.fieldName).getLocalizedName();
+            this.field = this.options.field;
+            if (this.field && !this.collection.parent)
+                throw new Error('collection for field does not have parent resource');
+
+            this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
+
             this.collection.on('add', this.render, this);
             this.collection.on('remove destroy', this.render, this);
         },
@@ -30,7 +32,7 @@ define([
             var rows = self.collection.map(function(resource, index) {
                 var form = specifyform.buildSubView(self.$el);
                 var url = resource.viewUrl();
-                $('a.specify-edit', form).data('index', index).prop('href', self.editUrl(index));
+                $('a.specify-edit', form).data('index', index);
                 return self.options.populateform(form, resource);
             });
             self.$el.append(rows[0]);
@@ -42,9 +44,6 @@ define([
             evt.preventDefault();
             var index = $(evt.currentTarget).data('index');
             this.buildDialog(this.collection.at(index));
-        },
-        editUrl: function(index) {
-            return this.resource.viewUrl() + this.fieldName + '/' + index + '/';
         },
         buildDialog: function(resource) {
             var self = this;
@@ -87,8 +86,9 @@ define([
             evt.preventDefault();
 
             var newResource = new (self.collection.model)();
-            var osn = self.specifyModel.getField(self.fieldName).otherSideName;
-            newResource.set(osn, self.resource.url());
+            if (self.field) {
+                newResource.set(self.field.otherSideName, self.collection.parent.url());
+            }
             self.collection.dependent && self.collection.add(newResource);
 
             self.buildDialog(newResource);

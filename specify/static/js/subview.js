@@ -8,10 +8,9 @@ define([
             'click .specify-subview-header .specify-add-related' : 'add'
         },
         initialize: function(options) {
-            this.resource = options.resource;
-            this.specifyModel = options.resource.specifyModel;
-            this.fieldName = options.fieldName;
-            this.title = this.specifyModel.getField(this.fieldName).getLocalizedName();
+            this.parentResource = options.parentResource;
+            this.field = options.field;
+            this.title = this.field.getLocalizedName();
         },
         render: function() {
             var self = this;
@@ -32,10 +31,10 @@ define([
         },
         add: function() {
             var self = this;
-            var relatedModel = self.specifyModel.getField(this.fieldName).getRelatedModel();
+            var relatedModel = self.field.getRelatedModel();
             self.model = new (api.Resource.forModel(relatedModel))();
-            self.model.placeInSameHierarchy(self.resource);
-            self.resource.setToOneField(self.fieldName, self.model);
+            self.model.placeInSameHierarchy(self.parentResource);
+            self.parentResource.setToOneField(self.field.name, self.model);
             self.render();
         },
         makeDeleteDialog: function(resource, callback) {
@@ -56,7 +55,7 @@ define([
             var self = this;
             function done() {
                 self.model = null;
-                self.resource.setToOneField(self.fieldName, null, {silent: true});
+                self.parentResource.setToOneField(self.field.name, null, {silent: true});
                 self.render();
             }
             if (self.model.isNew()) done()

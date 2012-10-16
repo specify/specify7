@@ -99,8 +99,7 @@ define([
             if (self.dialog) return;
 
             var recordSelector = new RecordSelector({
-                resource: self.model,
-                fieldName: self.field.name,
+                field: self.field,
                 collection: self.collection,
                 populateform: self.options.populateform,
                 buildSubView: function () { return specifyform.buildSubView(self.$el); },
