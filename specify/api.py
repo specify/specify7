@@ -141,21 +141,25 @@ def get_resource(name, id):
 def post_resource(collection, agent, name, data):
     return create_obj(collection, agent, name, data)
 
+def set_field_if_exists(obj, field, value):
+    try:
+        obj._meta.get_field(field)
+    except FieldDoesNotExist:
+        pass
+    else:
+        setattr(obj, field, value)
+
 def create_obj(collection, agent, name, data):
     obj = get_model_or_404(name)()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
+    set_field_if_exists(obj, 'createdbyagent', agent)
+    set_field_if_exists(obj, 'collectionmemberid', collection.id)
     # Have to save the object before autonumbering b/c
     # autonumber acquires a write lock on the model,
     # but save touches other tables.
     obj.save()
     autonumber(collection, agent.specifyuser, obj)
-    try:
-        obj._meta.get_field('createdbyagent')
-    except FieldDoesNotExist:
-        pass
-    else:
-        obj.createdbyagent = agent
     obj.save()
     handle_to_many(collection, agent, obj, data)
     return obj
@@ -166,15 +170,6 @@ def set_fields_from_data(obj, data):
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
-
-def add_collectionmemberid_if_needed(collection, model, data):
-    try:
-        model._meta.get_field_by_name('collectionmemberid')
-    except FieldDoesNotExist:
-        pass
-    else:
-        if 'collectionmemberid' not in data:
-            data['collectionmemberid'] = collection.id
 
 def handle_fk_fields(collection, agent, obj, data):
     for field_name, val in data.items():
@@ -197,7 +192,6 @@ def handle_fk_fields(collection, agent, obj, data):
                                      rel_model, val['id'],
                                      val['version'], val)
             else:
-                add_collectionmemberid_if_needed(collection, rel_model, val)
                 rel_obj = create_obj(collection, agent,
                                      rel_model, val)
 
@@ -220,7 +214,6 @@ def handle_to_many(collection, agent, obj, data):
                                      rel_model, rel_data['id'],
                                      rel_data['version'], rel_data)
             else:
-                add_collectionmemberid_if_needed(collection, rel_model, rel_data)
                 rel_obj = create_obj(collection, agent, rel_model, rel_data)
             ids.append(rel_obj.id)
 
