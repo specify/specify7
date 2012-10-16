@@ -55,6 +55,6 @@ define(['jquery', 'underscore'], function($, _) {
             browse: function() {
                 return $('<input type=file class="specify-field">');
             }
-        }[cell.attr('uitype')]();
+        }[cell.attr('uitype') || 'text']();
     };
 });

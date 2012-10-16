@@ -16,6 +16,7 @@ define(['jquery', 'cs!props', 'schema',
     return function(formNode) {
         var form = $(formNode);
         var model = schema.getModel(form.data('specify-model'));
+        if (!model) return;
 
         $('.specify-form-header', form).prepend(
             $('<span>').text(model.getLocalizedName())

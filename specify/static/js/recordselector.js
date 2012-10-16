@@ -28,6 +28,8 @@ define([
             self.specifyModel = options.resource.specifyModel;
             self.fieldName = options.fieldName;
             self.title = self.specifyModel.getField(self.fieldName).getLocalizedName();
+            self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
+            self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
         },
         fetchThenRedraw: function(offset) {
             var self = this;
@@ -46,7 +48,7 @@ define([
             var self = this;
             self.$el.empty();
             self.slider = $('<div>');
-            var header = self.$el.hasClass('no-header') ? null : self.$el.append(templates.subviewheader());
+            var header = self.noHeader ? null : self.$el.append(templates.subviewheader());
             self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
@@ -54,12 +56,12 @@ define([
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
             self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
 
-            if (self.$el.hasClass('no-header')) {
-                $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
-                $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
-            } else {
+            if (header) {
                 header.find('.specify-add-related').click(_.bind(self.add, self));
                 header.find('.specify-delete-related').click(_.bind(self.delete, self));
+            } else {
+                $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
+                $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
             }
 
             self.slider.slider({
@@ -77,6 +79,7 @@ define([
             self.slider.slider('value', index);
             self.fetchThenRedraw(index) || self.redraw(index);
             self.showHide();
+            return self;
         },
         onSlide: function(offset) {
             $('.ui-slider-handle', this.slider).text(offset + 1);
@@ -88,7 +91,7 @@ define([
             debug && console.log('want to redraw at ' + offset);
             var resource = self.collection.at(offset);
             if (_(resource).isUndefined()) return;
-            var form = specifyform.buildSubView(self.$el);
+            var form = self.buildSubView();
             self.options.populateform(form, resource);
             debug && console.log('filling in at ' + offset);
             self.content.empty().append(form);

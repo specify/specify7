@@ -1,6 +1,6 @@
 define([
-    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'jquery-bbq'
-], function($, Backbone, icons, specifyform, navigation, DeleteButton) {
+    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'recordselector', 'jquery-bbq'
+], function($, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
 
     return Backbone.View.extend({
         events: {
@@ -23,9 +23,13 @@ define([
             var icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
             var button = $('<a>').appendTo(self.el);
             if (self.field.type === 'one-to-many') {
-                self.model.getRelatedObjectCount(self.field.name).done(function(count) {
-                    var value = _.isUndefined(count) ? 'N/A' : count.toString();
-                    self.$('.specify-subview-button-count').text(value);
+                self.model.rget(self.field.name).done(function(collection) {
+                    self.collection = collection;
+                    collection.getTotalCount().done(function(count) {
+                        var value = _.isUndefined(count) ? 'N/A' : count.toString();
+                        self.setCount(value);
+                    });
+                    collection.on('add remove destroy', _.bind(self.collectionChanged, self));
                 });
             } else {
                 self.model.rget(self.field.name).done(function(related) {
@@ -35,6 +39,13 @@ define([
             button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
             button.append('<span class="specify-subview-button-count">');
             button.button({ disabled: self.model.isNew() });
+        },
+        setCount: function (c) {
+            this.$('.specify-subview-button-count').text(c);
+        },
+        collectionChanged: function() {
+            this.setCount(this.collection.length);
+            if (this.collection.length < 1 && this.dialog) this.dialog.dialog('close');
         },
         click: function(evt) {
             var self = this;
@@ -85,17 +96,25 @@ define([
         },
         makeToManyDialog: function () {
             var self = this;
-            var viewDef = specifyform.getSubViewDef(self.el).attr('name');
-            var dialogForm = specifyform.relatedObjectsForm(self.parentModel.name, self.field.name, viewDef);
+            if (self.dialog) return;
 
-            dialogForm.find('.specify-form-header').remove();
-            self.options.populateform(dialogForm, self.model);
+            var recordSelector = new RecordSelector({
+                resource: self.model,
+                fieldName: self.field.name,
+                collection: self.collection,
+                populateform: self.options.populateform,
+                buildSubView: function () { return specifyform.buildSubView(self.$el); },
+                noHeader: true
+            });
+            recordSelector.render();
+            if (self.collection.length < 1) recordSelector.add();
 
-            var dialog =  $('<div>').append(dialogForm).dialog({
+            self.dialog = $('<div>').append(recordSelector.el).dialog({
                 width: 'auto',
                 title: self.field.getLocalizedName(),
-                close: function() { $(this).remove(); }
+                close: function() { $(this).remove(); self.dialog = null; }
             });
+
         }
     });
 });
