@@ -10,35 +10,40 @@ define([
             var self = this;
             self.field = options.field;
             self.relatedModel = self.field.getRelatedModel();
+
+            self.related = self.options.model;
+            self.model = self.options.parentResource;
+
+            var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
+            self.icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
+
+            if (self.field.type === 'one-to-many') {
+                self.collection.on('add remove destroy', self.collectionChanged, self);
+            } else {
+                self.model.on('change:' + self.field.name.toLowerCase(), self.resourceChanged, self);
+            }
         },
         render: function() {
             var self = this;
             self.$el.empty();
 
-            var fieldName = self.field.name.toLowerCase();
-            var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
-            var icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
             var button = $('<a>').appendTo(self.el);
-            if (self.field.type === 'one-to-many') {
-                self.model.rget(self.field.name).done(function(collection) {
-                    self.collection = collection;
-                    collection.getTotalCount().done(function(count) {
-                        var value = _.isUndefined(count) ? 'N/A' : count.toString();
-                        self.setCount(value);
-                    });
-                    collection.on('add remove destroy', _.bind(self.collectionChanged, self));
-                });
-            } else {
-                self.model.rget(self.field.name).done(function(related) {
-                    self.$('.specify-subview-button-count').text(related ? 1 : 0);
-                });
-            }
-            button.append($('<img>', {'class': "specify-subviewbutton-icon", src: icon}));
+
+            button.append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}));
             button.append('<span class="specify-subview-button-count">');
             button.button({ disabled: self.model.isNew() });
+
+            if (self.field.type === 'one-to-many') {
+                self.collectionChanged();
+            } else {
+                self.resourceChanged();
+            }
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count').text(c);
+        },
+        resourceChanged: function() {
+            this.setCount(this.model.get(this.field.name) ? 1 : 0);
         },
         collectionChanged: function() {
             this.setCount(this.collection.length);
@@ -55,40 +60,40 @@ define([
 
             dialogForm.find('.specify-form-header:first').remove();
 
-            self.model.rget(self.field.name).done(function(resource) {
-                if (!resource) {
-                    resource = new (self.model.constructor.forModel(self.relatedModel))();
-                    resource.placeInSameHierarchy(self.model);
-                    self.model.setToOneField(self.field.name, resource);
-                    self.$('.specify-subview-button-count').text(1);
-                }
+            if (!self.related) {
+                self.related = new (self.model.constructor.forModel(self.relatedModel))();
+                self.related.placeInSameHierarchy(self.model);
+                self.model.setToOneField(self.field.name, self.related);
+                self.resourceChanged();
+            }
 
-                $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+            $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+                dialog.dialog('close');
+            });
+
+            if (self.related.isNew()) {
+                $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
                     dialog.dialog('close');
+                    self.related = null;
+                    self.model.setToOneField(self.field.name, self.related, {silent: true});
+                    self.resourceChanged();
                 });
-
-                if (resource.isNew()) {
-                    $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
-                        dialog.dialog('close');
-                        self.model.setToOneField(self.field.name, null, {silent: true});
-                        self.$('.specify-subview-button-count').text(0);
-                    });
-                } else {
-                    var deleteButton = new DeleteButton({ model: resource });
-                    deleteButton.render().$el.appendTo(dialogForm);
-                    deleteButton.on('deleted', function() {
-                        dialog.dialog('close');
-                        self.model.setToOneField(self.field.name, null, {silent: true});
-                        self.$('.specify-subview-button-count').text(0);
-                    });
-                }
-
-                self.options.populateform(dialogForm, resource);
-                var dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
-                    close: function() { $(this).remove(); }
+            } else {
+                var deleteButton = new DeleteButton({ model: self.related });
+                deleteButton.render().$el.appendTo(dialogForm);
+                deleteButton.on('deleted', function() {
+                    dialog.dialog('close');
+                    self.related = null;
+                    self.model.setToOneField(self.field.name, self.related, {silent: true});
+                    self.resourceChanged();
                 });
+            }
+
+            self.options.populateform(dialogForm, self.related);
+            var dialog = $('<div>').append(dialogForm).dialog({
+                width: 'auto',
+                title: (self.related.isNew() ? "New " : "") + self.related.specifyModel.getLocalizedName(),
+                close: function() { $(this).remove(); }
             });
         },
         makeToManyDialog: function () {

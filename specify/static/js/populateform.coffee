@@ -37,27 +37,32 @@ SubView, CheckBox, TreeLevelPickList) ->
         viewOptions =
             el: node
             field: field
+            parentResource: resource
             populateform: populateForm
 
-        if specifyform.isSubViewButton node
-            viewOptions.model =  resource
-            (new SubViewButton viewOptions).render()
-        else
-            resource.rget(fieldName, true).done (related) ->
-                viewOptions.parentResource =resource
+        resource.rget(fieldName, true).done (related) ->
 
-                View = switch field.type
-                    when 'one-to-many'
-                        viewOptions.collection = related
-                        isFormTable = specifyform.subViewIsFormTable node
-                        if isFormTable then FormTable else RecordSelector
-                    when 'zero-to-one', 'many-to-one'
-                        viewOptions.model = related
-                        SubView
+            View = switch field.type
+                when 'one-to-many'
+                    viewOptions.collection = related
+
+                    if specifyform.isSubViewButton node
+                        SubViewButton
+                    else if specifyform.subViewIsFormTable node
+                        FormTable
+                    else RecordSelector
+
+                when 'zero-to-one', 'many-to-one'
+                    viewOptions.model = related
+
+                    if specifyform.isSubViewButton node
+                        SubViewButton
                     else
-                        throw new Error "unhandled relationship type: #{ field.type }"
+                        SubView
+                else
+                    throw new Error "unhandled relationship type: #{ field.type }"
 
-                if View then (new View viewOptions).render()
+            new View(viewOptions).render()
 
     populateForm = (form, resource) ->
         localizeForm form
