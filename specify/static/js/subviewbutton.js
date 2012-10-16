@@ -8,10 +8,7 @@ define([
         },
         initialize: function(options) {
             var self = this;
-            self.parentModel = self.options.parentModel;
-
-            var fieldName = self.$el.data('specify-field-name');
-            self.field = self.parentModel.getField(fieldName);
+            self.field = options.field;
             self.relatedModel = self.field.getRelatedModel();
         },
         render: function() {

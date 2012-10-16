@@ -31,28 +31,25 @@ SubView, CheckBox, TreeLevelPickList) ->
 
     populateSubview = (resource, node) ->
         model = resource.specifyModel
+        fieldName = node.data 'specify-field-name'
+        field = model.getField fieldName
+
+        viewOptions =
+            el: node
+            field: field
+            populateform: populateForm
+
         if specifyform.isSubViewButton node
-            viewOptions =
-                el: node
-                model: resource
-                parentModel: model
-                populateform: populateForm
+            viewOptions.model =  resource
             (new SubViewButton viewOptions).render()
         else
-            fieldName = node.data 'specify-field-name'
-            field = model.getField fieldName
-            isFormTable = specifyform.subViewIsFormTable node
-
             resource.rget(fieldName, true).done (related) ->
-                viewOptions =
-                    el: node
-                    field: field
-                    parentResource: resource
-                    populateform: populateForm
+                viewOptions.parentResource =resource
 
                 View = switch field.type
                     when 'one-to-many'
                         viewOptions.collection = related
+                        isFormTable = specifyform.subViewIsFormTable node
                         if isFormTable then FormTable else RecordSelector
                     when 'zero-to-one', 'many-to-one'
                         viewOptions.model = related
