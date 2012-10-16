@@ -47,7 +47,7 @@ SubView, CheckBox, TreeLevelPickList) ->
                     viewOptions.collection = related
 
                     if specifyform.isSubViewButton node
-                        SubViewButton
+                        SubViewButton.ToMany
                     else if specifyform.subViewIsFormTable node
                         FormTable
                     else RecordSelector
@@ -56,7 +56,7 @@ SubView, CheckBox, TreeLevelPickList) ->
                     viewOptions.model = related
 
                     if specifyform.isSubViewButton node
-                        SubViewButton
+                        SubViewButton.ToOne
                     else
                         SubView
                 else
