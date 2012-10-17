@@ -23,8 +23,10 @@ define([
 
             var button = $('<a>').appendTo(self.el);
 
-            button.append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}));
-            button.append('<span class="specify-subview-button-count">');
+            $('<div style="display: table-row">')
+                .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
+                .append('<span class="specify-subview-button-count">')
+                .appendTo(button);
             button.button({ disabled: self.model.isNew() });
         },
         setCount: function (c) {

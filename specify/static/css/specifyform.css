@@ -85,11 +85,26 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-subview-button-count {
     padding: 3px;
-    margin-left: 5px;
     vertical-align: middle;
     background-color: white;
     border: 1px solid #CCC;
     color: #555;
+}
+
+.specify-subviewbutton-icon {
+    padding-right: 5px;
+}
+
+.specify-subview-button .ui-button-text div {
+    display: table-row;
+}
+
+.specify-subview-button a {
+    vertical-align: middle;
+}
+
+.specify-subviewbutton-icon, .specify-subview-button-count {
+    display: table-cell;
 }
 
 .specify-formtable td, .specify-formtable th {
