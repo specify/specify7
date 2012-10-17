@@ -31,17 +31,6 @@ On Fedora:
 
     sudo python-pip install Django
 
-
-Install tastypie.
------------------
-On Ubuntu:
-
-    sudo pip install django-tastypie
-
-On Fedora:
-
-    sudo python-pip install django-tastypie
-
 The choice is yours.
 --------------------
 At this point you can switch over to the [Eclipse
