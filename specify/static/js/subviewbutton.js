@@ -100,6 +100,8 @@ define([
                     dialog.dialog('close');
                 });
 
+                var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
+
                 if (self.related.isNew()) {
                     $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
@@ -116,12 +118,16 @@ define([
                         self.model.setToOneField(self.field.name, self.related, {silent: true});
                         self.resourceChanged();
                     });
+
+                    title = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                        + title;
                 }
 
                 self.options.populateform(dialogForm, self.related);
+                var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
                 var dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',
-                    title: (self.related.isNew() ? "New " : "") + self.related.specifyModel.getLocalizedName(),
+                    title: title,
                     close: function() { $(this).remove(); }
                 });
             }

@@ -127,6 +127,8 @@ define([
                 self.model.set(self.fieldName, resource.url());
             });
 
+            var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
+
             if (!resource.isNew()) {
                 var deleteButton = new DeleteButton({ model: resource });
                 deleteButton.render().$el.appendTo(dialogForm);
@@ -135,18 +137,22 @@ define([
                     dialog.dialog('close');
                 });
 
-                $('<input type="button" value="Visit">').appendTo(dialogForm).click(function() {
-                    dialog.dialog('close');
-                    navigation.go(resource.viewUrl());
-                });
+                title = '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                    + title;
             }
 
             self.options.populateform(dialogForm, resource);
 
             var dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',
-                title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
+                title: title,
                 close: function() { $(this).remove(); }
+            });
+
+            dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                evt.preventDefault();
+                navigation.go(resource.viewUrl());
+                dialog.dialog('close');
             });
         },
         edit: function(event, ui) {
