@@ -26,15 +26,21 @@ define([
             }
         }),
         LocalityGoogleEarth: UIPlugin.extend({
+            events: {
+                'click': 'click'
+            },
             render: function() {
-                var self = this;
-                self.model.fetchIfNotPopulated().done(function() {
-                    if (!self.model.populated) return;
-                    var ui = templates.gmapplugin(self.model.toJSON());
-                    self.$el.replaceWith(ui);
-                    self.setElement(ui);
-                });
+                this.$el.attr('value', 'Google Map');
                 return this;
+            },
+            click: function(evt) {
+                var self = this;
+                evt.preventDefault();
+                $('<div>').append(templates.gmapplugin(self.model.toJSON())).dialog({
+                    width: 455,
+                    title: self.model.specifyModel.getLocalizedName(),
+                    close: function() { $(this).remove(); }
+                });
             }
         })
     };
