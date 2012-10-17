@@ -57,7 +57,11 @@ define([
             self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
-            self.content = $('<div>').appendTo(self.el);
+
+            // we build the form and add it to the DOM immediately so that if it is
+            // embedded in a dialog it will be sized properly
+            self.content = $('<div>').appendTo(self.el).append(self.buildSubView());
+
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
             self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
 
