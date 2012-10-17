@@ -8,7 +8,7 @@ define(['jquery', 'underscore'], function($, _) {
                     control.attr('data-specify-field-label-override', cell.attr('label'));
                     return control.attr('disabled', true);
                 }
-                var label = $('<label>');
+                var label = $('<label class="specify-checkbox-label">');
                 label.prop('for', id);
                 label.text(cell.attr('label'));
                 return control.add(label);

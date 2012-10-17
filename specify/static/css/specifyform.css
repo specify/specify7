@@ -61,6 +61,11 @@ select.specify-field {
     text-align: right;
 }
 
+.specify-checkbox-label {
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
 .querycbx-strct {
     display: table;
     width: 100%;
