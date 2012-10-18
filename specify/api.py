@@ -39,6 +39,8 @@ class JsonDateEncoder(json.JSONEncoder):
 def toJson(obj):
     return json.dumps(obj, cls=JsonDateEncoder)
 
+class RecordSetException(Exception): pass
+
 class OptimisticLockException(Exception): pass
 
 class MissingVersionException(OptimisticLockException): pass
@@ -109,7 +111,8 @@ def collection(request, model):
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.load(request))
+                            model, json.load(request),
+                            request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(obj_to_data(obj)),
                                    content_type='application/json')
@@ -138,8 +141,20 @@ def get_resource(name, id):
     return data
 
 @transaction.commit_on_success
-def post_resource(collection, agent, name, data):
-    return create_obj(collection, agent, name, data)
+def post_resource(collection, agent, name, data, recordsetid=None):
+    obj = create_obj(collection, agent, name, data)
+    if recordsetid is not None:
+        try:
+            recordset = models.Recordset.objects.get(id=recordsetid)
+        except models.Recordset.DoesNotExist, e:
+            raise RecordSetException(e)
+
+        if recordset.dbtableid != obj.tableid:
+            raise RecordSetException("expected %s, got %s when adding object to recordset",
+                                     (models.models_by_tableid[recordset.dbtableid],
+                                      obj.__class__))
+        recordset.recordsetitems.create(recordid=obj.id)
+    return obj
 
 def set_field_if_exists(obj, field, value):
     try:

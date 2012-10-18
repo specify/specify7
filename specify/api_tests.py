@@ -5,10 +5,11 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from django.db.models import Max
 from specify import api, models
 
-class ApiTests(TestCase):
+class MainSetupTearDown:
     def setUp(self):
         self.orig_inlined_fields = api.inlined_fields
         api.inlined_fields = api.inlined_fields.copy()
@@ -44,7 +45,15 @@ class ApiTests(TestCase):
             isembeddedcollectingevent=False,
             discipline=self.discipline)
 
-        self.agent = models.Agent.objects.create(agenttype=0)
+        self.specifyuser = models.Specifyuser.objects.create(
+            isloggedin=False,
+            isloggedinreport=False,
+            name="testuser",
+            password="testuser")
+
+        self.agent = models.Agent.objects.create(
+            agenttype=0,
+            specifyuser=self.specifyuser)
 
         self.collectionobjects = [
             models.Collectionobject.objects.create(
@@ -54,6 +63,8 @@ class ApiTests(TestCase):
 
     def tearDown(self):
         api.inlined_fields = self.orig_inlined_fields
+
+class ApiTests(MainSetupTearDown, TestCase): pass
 
 class SimpleApiTests(ApiTests):
     def test_get_collection(self):
@@ -92,6 +103,37 @@ class SimpleApiTests(ApiTests):
                 'catalognumber': 'foobar'})
         api.delete_obj('collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
+
+class AddToRecordSetTests(MainSetupTearDown, TransactionTestCase):
+    def setUp(self):
+        super(AddToRecordSetTests, self).setUp()
+        self.recordset = models.Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=models.Collectionobject.tableid,
+            name="Test recordset",
+            type=0,
+            specifyuser=self.specifyuser)
+
+    def test_post_resource(self):
+        obj = api.post_resource(self.collection, self.agent, 'collectionobject', {
+                'collection': api.uri_for_model('collection', self.collection.id),
+                'catalognumber': 'foobar'}, recordsetid=self.recordset.id)
+        self.assertEqual(self.recordset.recordsetitems.filter(recordid=obj.id).count(), 1)
+
+    def test_post_bad_resource(self):
+        with self.assertRaises(api.RecordSetException) as cm:
+            obj = api.post_resource(self.collection, self.agent, 'Agent',
+                                    {'agenttype': 0, 'lastname': 'MonkeyWrench'},
+                                    recordsetid=self.recordset.id)
+        self.assertEqual(models.Agent.objects.filter(lastname='MonkeyWrench').count(), 0)
+
+    def test_post_resource_to_bad_recordset(self):
+        max_id = models.Recordset.objects.aggregate(Max('id'))['id__max']
+        with self.assertRaises(api.RecordSetException) as cm:
+            obj = api.post_resource(self.collection, self.agent, 'Agent',
+                                    {'agenttype': 0, 'lastname': 'Pitts'},
+                                    recordsetid=max_id + 100)
+        self.assertEqual(models.Agent.objects.filter(lastname='Pitts').count(), 0)
 
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
