@@ -37,6 +37,7 @@ define([
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'express_search/*splat': 'esearch',
+                'recordset/:id/new/*splat': 'addToRecordSet',
                 'recordset/:id/*splat': 'recordSet',
                 'view/:view/new/:related/new/*splat': 'addRelatedToNew',
                 'view/:view/new/*splat': 'newResource',
@@ -149,6 +150,13 @@ define([
             recordSet: function(id) {
                 var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
                 setCurrentView(new views.RecordSetView({ model: recordSet }));
+            },
+
+            addToRecordSet: function(id) {
+                var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
+                recordSet.fetch().done(function() {
+                    setCurrentView(new views.AddToRecordSetView({ recordSet: recordSet }));
+                });
             },
 
             view: function(modelName, id) {

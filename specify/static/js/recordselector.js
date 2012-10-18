@@ -163,11 +163,14 @@ define([
                 buttons: {
                     'Delete': function() {
                         $(this).dialog('close');
-                        resource.destroy();
+                        self.doDestroy(resource);
                     },
                     'Cancel': function() { $(this).remove(); }
                 }
             });
+        },
+        doDestroy: function(resource) {
+            resource.destroy();
         },
         add: function() {
             var newResource = new (this.collection.model)();

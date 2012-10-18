@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'cs!businessrules'
+    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'cs!businessrules', 'jquery-bbq'
 ], function($, _, Backbone, schema, whenAll, businessrules) {
     var api = {};
 
@@ -385,11 +385,20 @@ define([
             });
         },
         sync: function(method, resource, options) {
-            // override default backbone sync to include version header on delete
-            // to support the optimistic locking system
-            if (method === 'delete') {
-                options = options || {};
+            options = options || {};
+            switch (method) {
+            case 'delete':
+                // when deleting we don't send any data so put the version in a header
                 options.headers = {'If-Match': resource.get('version')};
+                break;
+            case 'create':
+                // use the special recordSetId field to add the resource to a record set
+                if (!_.isUndefined(resource.recordSetId)) {
+                    options.url = $.param.querystring(
+                        options.url || resource.url(),
+                        {recordsetid: resource.recordSetId});
+                }
+                break;
             }
             return Backbone.sync(method, resource, options);
         },

@@ -11,24 +11,6 @@ define([
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
     function setWindowTitle(title) { window && (window.document.title = title); }
 
-    views.RecordSetView = Backbone.View.extend({
-        render: function() {
-            var self = this;
-            self.model.rget('recordsetitems').done(function(items) {
-                var specifyModel = schema.getModelById(self.model.get('dbtableid'));
-                var form = specifyform.recordSetForm(specifyModel);
-                self.$el.append(populateForm(form, self.model));
-                var formHeader = form.find('.specify-form-header:first');
-                $('<img>', {src: specifyModel.getIcon()}).prependTo(formHeader);
-                var title = formHeader.find('span').text();
-                title += ': ' + self.model.get('name');
-                formHeader.find('span').text(title);
-                setWindowTitle(title);
-            });
-            return this;
-        }
-    });
-
     var MainForm = Backbone.View.extend({
         initialize: function(options) {
             var self = this;
@@ -68,6 +50,43 @@ define([
             this.$('.specify-form-header span').text(title);
         },
         setTitle: function() {}
+    });
+
+    views.RecordSetView = Backbone.View.extend({
+        render: function() {
+            var self = this;
+            self.model.rget('recordsetitems').done(function(items) {
+                var specifyModel = schema.getModelById(self.model.get('dbtableid'));
+                var form = specifyform.recordSetForm(specifyModel);
+                self.$el.append(populateForm(form, self.model));
+                var formHeader = form.find('.specify-form-header:first');
+                $('<img>', {src: specifyModel.getIcon()}).prependTo(formHeader);
+                var title = formHeader.find('span').text();
+                title += ': ' + self.model.get('name');
+                formHeader.find('span').text(title);
+                setWindowTitle(title);
+            });
+            return this;
+        }
+    });
+
+    views.AddToRecordSetView = MainForm.extend({
+        initialize: function(options) {
+            var self = this;
+            self.recordSet = options.recordSet;
+            self.specifyModel = schema.getModelById(self.recordSet.get('dbtableid'));
+            self.model = new (specifyapi.Resource.forModel(self.specifyModel))();
+            self.model.recordSetId = self.recordSet.id;
+
+            var domainField = this.specifyModel.orgRelationship();
+            this.parentResource = domain[domainField.name];
+            this.model.set(domainField.name, this.parentResource.url());
+
+            MainForm.prototype.initialize.apply(self, arguments);
+        },
+        buildForm: function() {
+            return specifyform.buildViewByName(this.specifyModel.view);
+        }
     });
 
     views.ResourceView = MainForm.extend({
