@@ -1,11 +1,11 @@
 define([
     'jquery', 'underscore', 'backbone', 'cs!populateform', 'schema',
     'specifyapi', 'specifyform', 'dataobjformatters', 'navigation', 'templates', 'cs!savebutton',
-    'cs!deletebutton', 'cs!domain',
+    'cs!deletebutton', 'cs!domain', 'recordselector',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm, schema, specifyapi,
             specifyform, dataobjformat, navigation, templates,
-            SaveButton, DeleteButton, domain) {
+            SaveButton, DeleteButton, domain, RecordSelector) {
     "use strict";
     var views = {};
     var addDeleteLinks = '<a class="specify-add-related">Add</a><a class="specify-delete-related">Delete</a>';
@@ -40,6 +40,7 @@ define([
         },
         render: function() {
             var self = this;
+            self.$el.empty();
             self.$el.append(populateForm(self.buildForm(), self.model));
             self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
             self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
@@ -52,19 +53,61 @@ define([
         setTitle: function() {}
     });
 
+    var RecordSetItemSelector = RecordSelector.extend({
+        initialize: function(options) {
+            var self = this;
+            self.recordSet = options.recordSet;
+            self.specifyModel = schema.getModelById(self.collection.parent.get('dbtableid'));
+
+            _.extend(options, {
+                noHeader: true,
+                sliderAtTop: true,
+                urlParam: 'index',
+                buildSubView: function() {
+                    var view = specifyform.buildViewByName(self.specifyModel.view);
+                    view.find('.specify-form-header:first').remove();
+                    return view;
+                },
+                populateform: function(form, recordSetItem) {
+                    return populateForm(form, recordSetItem.item);
+                }
+            });
+            RecordSelector.prototype.initialize.call(this, options);
+        },
+        add: function() {
+            navigation.go(this.recordSet.viewUrl() + "new/");
+        },
+        delete: function() {
+            this.makeDeleteDialog();
+        },
+        doDestroy: function() {
+            var self = this;
+            var recordSetItem = self.currentResource();
+            recordSetItem.item.destroy().done(function() {
+                self.collection.remove(recordSetItem);
+            });
+        }
+    });
+
     views.RecordSetView = Backbone.View.extend({
+        initialize: function(options) {
+            var self = this;
+            self.recordSet = options.recordSet;
+            self.specifyModel = schema.getModelById(self.recordSet.get('dbtableid'));
+        },
         render: function() {
             var self = this;
-            self.model.rget('recordsetitems').done(function(items) {
-                var specifyModel = schema.getModelById(self.model.get('dbtableid'));
-                var form = specifyform.recordSetForm(specifyModel);
-                self.$el.append(populateForm(form, self.model));
-                var formHeader = form.find('.specify-form-header:first');
-                $('<img>', {src: specifyModel.getIcon()}).prependTo(formHeader);
-                var title = formHeader.find('span').text();
-                title += ': ' + self.model.get('name');
-                formHeader.find('span').text(title);
-                setWindowTitle(title);
+            self.$el.empty();
+            var header = $(templates.recordsetheader()).appendTo(self.el);
+            header.find('img').attr('src', self.specifyModel.getIcon());
+            var title = self.recordSet.specifyModel.getLocalizedName() + ': ' + self.recordSet.get('name');
+            header.find('span').text(title);
+            setWindowTitle(title);
+
+            self.recordSet.rget('recordsetitems', true).done(function(items) {
+                var recordSelector = new RecordSetItemSelector({ recordSet: self.recordSet, collection: items });
+                recordSelector.render();
+                self.$el.append(recordSelector.el);
             });
             return this;
         }
@@ -78,14 +121,31 @@ define([
             self.model = new (specifyapi.Resource.forModel(self.specifyModel))();
             self.model.recordSetId = self.recordSet.id;
 
-            var domainField = this.specifyModel.orgRelationship();
-            this.parentResource = domain[domainField.name];
-            this.model.set(domainField.name, this.parentResource.url());
+            var domainField = self.specifyModel.orgRelationship();
+            var parentResource = domain[domainField.name];
+            self.model.set(domainField.name, parentResource.url());
 
-            MainForm.prototype.initialize.apply(self, arguments);
+            self.on('savecomplete', function(options) {
+                if (options.addAnother) {
+                    self.trigger('refresh');
+                } else {
+                    var url = $.param.querystring(self.recordSet.viewUrl(), {index: "end"});
+                    navigation.go(url);
+                }
+            }, self);
+
+            options.saveButtonOptions = { addAnother: true };
+            MainForm.prototype.initialize.call(this, options);
         },
         buildForm: function() {
             return specifyform.buildViewByName(this.specifyModel.view);
+        },
+        setTitle: function() {
+            var self = this;
+            var title = 'Adding new ' + self.specifyModel.getLocalizedName() + ' to "'
+                + self.recordSet.get('name') + '"';
+            self.setFormTitle(title);
+            setWindowTitle(title);
         }
     });
 

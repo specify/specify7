@@ -149,13 +149,18 @@ define([
 
             recordSet: function(id) {
                 var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
-                setCurrentView(new views.RecordSetView({ model: recordSet }));
+                recordSet.fetch().done(function() {
+                    setCurrentView(new views.RecordSetView({ recordSet: recordSet }));
+                });
             },
 
             addToRecordSet: function(id) {
                 var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
                 recordSet.fetch().done(function() {
                     setCurrentView(new views.AddToRecordSetView({ recordSet: recordSet }));
+                    app.currentView.on('refresh', function() {
+                        specifyRouter.addToRecordSet(id);
+                    });
                 });
             },
 

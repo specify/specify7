@@ -17,6 +17,9 @@ define([
 
             self.title = self.field ? self.field.getLocalizedName() : self.collection.model.specifyModel.getLocalizedName();
             self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
+            self.sliderAtTop = _.isUndefined(options.sliderAtTop) ? self.$el.hasClass('slider-at-top') : options.sliderAtTop;
+            self.urlParam = options.urlParam || self.$el.data('url-param');
+
             self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
 
             self.collection.limit = BLOCK_SIZE;
@@ -24,17 +27,29 @@ define([
             self.collection.on('add', function() {
                 var end = self.collection.length - 1;
                 self.slider.slider('option', { max: end, value: end });
-                self.onSlide(end);
+                self.fetchThenRedraw(end) || self.redraw(end);
                 self.showHide();
             });
 
             self.collection.on('remove destroy', function() {
                 var end = self.collection.length - 1;
-                var value = Math.min(self.slider.slider('value'), end);
+                var currentIndex = self.currentIndex();
+                var value = Math.min(currentIndex, end);
                 self.slider.slider('option', { max: end, value: value });
-                self.onSlide(value);
+                if (value !== currentIndex) {
+                    self.fetchThenRedraw(value) || self.redraw(value);
+                }
                 self.showHide();
             });
+        },
+        currentIndex: function() {
+            return this.slider.slider('value');
+        },
+        resourceAt: function(index) {
+            return this.collection.at(index);
+        },
+        currentResource: function() {
+            return this.resourceAt(this.currentIndex());
         },
         fetchThenRedraw: function(offset) {
             var self = this;
@@ -45,7 +60,7 @@ define([
             self.request = self.collection.fetch({at: at}).done(function() {
                 debug && console.log('got collection at offset ' + at);
                 request = null;
-                self.redraw(self.slider.slider('value'));
+                self.redraw(self.currentIndex());
             });
             return self.request;
         },
@@ -54,7 +69,7 @@ define([
             self.$el.empty();
             self.slider = $('<div>');
             var header = self.noHeader ? null : self.$el.append(templates.subviewheader());
-            self.$el.hasClass('slider-at-top') && self.$el.append(self.slider);
+            self.sliderAtTop && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
 
@@ -63,7 +78,7 @@ define([
             self.content = $('<div>').appendTo(self.el).append(self.buildSubView());
 
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
-            self.$el.hasClass('slider-at-top') || self.$el.append(self.slider);
+            self.sliderAtTop || self.$el.append(self.slider);
 
             if (header) {
                 header.find('.specify-add-related').click(_.bind(self.add, self));
@@ -82,9 +97,10 @@ define([
                 css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
                 text(1);
 
-            self.urlParam = self.$el.data('url-param');
             var params = $.deparam.querystring(true);
             var index = params[self.urlParam] || 0;
+            index === 'end' && (index = self.collection.length - 1);
+
             self.slider.slider('value', index);
             self.fetchThenRedraw(index) || self.redraw(index);
             self.showHide();
@@ -98,7 +114,7 @@ define([
         redraw: function(offset) {
             var self = this;
             debug && console.log('want to redraw at ' + offset);
-            var resource = self.collection.at(offset);
+            var resource = self.resourceAt(offset);
             if (_(resource).isUndefined()) return;
             var form = self.buildSubView();
             self.options.populateform(form, resource);
@@ -147,15 +163,15 @@ define([
         delete: function(evt) {
             var self = this;
             evt.preventDefault();
-            var resource = self.collection.at(self.slider.slider('value'));
+            var resource = self.currentResource();
             if (self.collection.dependent) {
                 self.collection.remove(resource);
             } else {
                 if (resource.isNew()) resource.destroy()
-                else self.makeDeleteDialog(resource);
+                else self.makeDeleteDialog();
             }
         },
-        makeDeleteDialog: function(resource) {
+        makeDeleteDialog: function() {
             var self = this;
             $(templates.confirmdelete()).appendTo(self.el).dialog({
                 resizable: false,
@@ -163,14 +179,14 @@ define([
                 buttons: {
                     'Delete': function() {
                         $(this).dialog('close');
-                        self.doDestroy(resource);
+                        self.doDestroy();
                     },
                     'Cancel': function() { $(this).remove(); }
                 }
             });
         },
-        doDestroy: function(resource) {
-            resource.destroy();
+        doDestroy: function() {
+            this.currentResource().destroy();
         },
         add: function() {
             var newResource = new (this.collection.model)();

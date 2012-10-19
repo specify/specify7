@@ -126,10 +126,6 @@ define([
                 options.itemFetchDeferreds.push(item.fetch());
             });
             return this;
-        },
-        at: function(index) {
-            var recordSetItem = api.Collection.prototype.at.call(this, index);
-            return recordSetItem && recordSetItem.item;
         }
     });
 

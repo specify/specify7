@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore',
-    'text!tmpls/relatedobjectsform.html',
+    'text!tmpls/recordsetheader.html',
     'text!tmpls/recordsetform.html',
     'text!tmpls/formtemplate.html',
     'text!tmpls/formtabletemplate.html',
@@ -22,7 +22,7 @@ define([
     var withNames = {};
 
     _([
-        'relatedobjectsform',
+        'recordsetheader',
         'recordsetform',
         'form',
         'formtable',
