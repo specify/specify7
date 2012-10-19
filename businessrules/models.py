@@ -42,3 +42,11 @@ def collectionobject_pre_save(sender, **kwargs):
             collectionobject.version = 0
         if collectionobject.collectionmemberid is None:
             collectionobject.collectionmemberid = collectionobject.collection.id
+
+@receiver(signals.post_delete)
+def remove_from_recordsets(sender, **kwargs):
+    if not hasattr(sender, 'tableid'): return
+    obj = kwargs['instance']
+    rsis = models.Recordsetitem.objects.filter(recordset__dbtableid=sender.tableid,
+                                               recordid=obj.id)
+    rsis.delete()

@@ -104,9 +104,9 @@ class SimpleApiTests(ApiTests):
         api.delete_obj('collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
 
-class AddToRecordSetTests(MainSetupTearDown, TransactionTestCase):
+class RecordSetTests(MainSetupTearDown, TransactionTestCase):
     def setUp(self):
-        super(AddToRecordSetTests, self).setUp()
+        super(RecordSetTests, self).setUp()
         self.recordset = models.Recordset.objects.create(
             collectionmemberid=self.collection.id,
             dbtableid=models.Collectionobject.tableid,
@@ -134,6 +134,21 @@ class AddToRecordSetTests(MainSetupTearDown, TransactionTestCase):
                                     {'agenttype': 0, 'lastname': 'Pitts'},
                                     recordsetid=max_id + 100)
         self.assertEqual(models.Agent.objects.filter(lastname='Pitts').count(), 0)
+
+    def test_remove_from_recordset_on_delete(self):
+        ids = [co.id for co in self.collectionobjects]
+
+        for id in ids:
+            self.recordset.recordsetitems.create(recordid=id)
+
+        counts = set((self.recordset.recordsetitems.filter(recordid=id).count() for id in ids))
+        self.assertEqual(counts, set([1]))
+
+        for co in self.collectionobjects:
+            co.delete()
+
+        counts = set((self.recordset.recordsetitems.filter(recordid=id).count() for id in ids))
+        self.assertEqual(counts, set([0]))
 
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
