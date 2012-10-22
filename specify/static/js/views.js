@@ -23,7 +23,8 @@ define([
             });
             self.saveBtn = new SaveButton(_.extend(
                 { model: self.model },
-                options.saveButtonOptions));
+                options.saveButtonOptions
+            ));
 
             self.saveBtn.on('savecomplete', function() {
                 var args = ['savecomplete'].concat(_(arguments).toArray());
@@ -118,7 +119,7 @@ define([
             var self = this;
             self.recordSet = options.recordSet;
             self.specifyModel = schema.getModelById(self.recordSet.get('dbtableid'));
-            self.model = new (specifyapi.Resource.forModel(self.specifyModel))();
+            self.model || (self.model = new (specifyapi.Resource.forModel(self.specifyModel))());
             self.model.recordSetId = self.recordSet.id;
 
             var domainField = self.specifyModel.orgRelationship();
@@ -127,7 +128,7 @@ define([
 
             self.on('savecomplete', function(options) {
                 if (options.addAnother) {
-                    self.trigger('refresh');
+                    self.trigger('refresh', options.addAnother);
                 } else {
                     var url = $.param.querystring(self.recordSet.viewUrl(), {index: "end"});
                     navigation.go(url);

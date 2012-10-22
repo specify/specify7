@@ -9,6 +9,8 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @saveBlocked = false
             @buttonsDisabled = true
 
+            if @model.isNew() then @setButtonsDisabled false
+
             @model.on 'saverequired subsaverequired', (resource) =>
                 @setButtonsDisabled false
 
@@ -57,8 +59,12 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             evt.preventDefault()
             if _.isEmpty @blockers
                 @setButtonsDisabled true
-                @model.rsave().done => @trigger 'savecomplete',
-                    addAnother: $(evt.currentTarget).is '.save-and-add-button'
+                addAnother =  if $(evt.currentTarget).is '.save-and-add-button'
+                    @model.clone()
+                else
+                    null
+
+                @model.rsave().done => @trigger 'savecomplete', addAnother: addAnother
             else
                 dialog = $(templates.saveblocked()).appendTo(@el).dialog
                     resizable: false

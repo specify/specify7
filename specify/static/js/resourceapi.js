@@ -101,6 +101,31 @@ define([
 
             businessrules.attachToResource(this);
         },
+        clone: function() {
+            var self = this;
+            var newResource = Backbone.Model.prototype.clone.call(self);
+            newResource.needsSaved = self.needsSaved;
+            newResource.dependent = self.dependent;
+
+            _.each(self.relatedCache, function(related, fieldName) {
+                var field = self.specifyModel.getField(fieldName);
+                switch (field.type) {
+                case 'many-to-one':
+                    break;
+                case 'one-to-many':
+                    newResource.rget(fieldName).done(function(newCollection) {
+                        related.each(function(resource) { newCollection.add(resource); });
+                    });
+                    break;
+                case 'zero-to-one':
+                    newResource.setToOneField(field, related);
+                    break;
+                default:
+                    throw new Error('unhandled relationship type');
+                }
+            });
+            return newResource;
+        },
         updateRelatedCache: function(changes) {
             var self = this;
             _.each(changes, function(changed, field) {
