@@ -33,11 +33,13 @@ define([
 
             self.collection.on('remove destroy', function() {
                 var end = self.collection.length - 1;
-                var currentIndex = self.currentIndex();
-                var value = Math.min(currentIndex, end);
-                self.slider.slider('option', { max: end, value: value });
-                if (value !== currentIndex) {
-                    self.fetchThenRedraw(value) || self.redraw(value);
+                if (self.collection.length > 0) {
+                    var currentIndex = self.currentIndex();
+                    var value = Math.min(currentIndex, end);
+                    self.slider.slider('option', { max: end, value: value });
+                    if (value !== currentIndex) {
+                        self.fetchThenRedraw(value) || self.redraw(value);
+                    }
                 }
                 self.showHide();
             });
