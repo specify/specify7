@@ -29,7 +29,6 @@ define([
             app.currentView = view;
             app.currentView.render();
             rootContainer.append(app.currentView.el);
-            window.specifyParentResource = null;
         }
 
         function getViewdef() { return $.deparam.querystring().viewdef; }
@@ -67,7 +66,8 @@ define([
                         id: recordSetItems.at(index).get('recordid')
                     });
                     var url = resource.viewUrl();
-                    navigation.go($.param.querystring(url, { recordsetid: id }));
+                    navigation.navigate($.param.querystring(url, { recordsetid: id }),
+                                       {replace: true, trigger: true});
                 });
             },
 
@@ -81,8 +81,10 @@ define([
 
                 if (resource.isNew()) {
                     var domainField = resource.specifyModel.orgRelationship();
-                    var parentResource = domain[domainField.name];
-                    resource.set(domainField.name, parentResource.url());
+                    if (domainField) {
+                        var parentResource = domain[domainField.name];
+                        resource.set(domainField.name, parentResource.url());
+                    }
                 }
 
                 function doIt() {
