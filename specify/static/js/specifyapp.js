@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'datamodelview', 'views', 'localizeform', 'beautify-html', 'navigation',
-    'cs!express-search', 'cs!welcomeview', 'jquery-bbq'
+    'datamodelview', 'resourceview', 'localizeform', 'beautify-html', 'navigation',
+    'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
-    views, localizeForm, beautify, navigation, esearch, WelcomeView) {
+    ResourceView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
     "use strict";
 
     var app = {
@@ -37,13 +37,9 @@ define([
         var SpecifyRouter = Backbone.Router.extend({
             routes: {
                 'express_search/*splat': 'esearch',
-                'recordset/:id/new/*splat': 'addToRecordSet',
+                'recordset/:id/:index/*splat': 'recordSet',
                 'recordset/:id/*splat': 'recordSet',
-                'view/:view/new/:related/new/*splat': 'addRelatedToNew',
-                'view/:view/new/*splat': 'newResource',
-                'view/:model/:id/:related/new/*splat': 'addRelated',
-                'view/:model/:id/:related/:index/*splat': 'viewSingleToMany',
-                'view/:model/:id/:related/*splat': 'viewRelated',
+                'view/:model/new/*splat': 'newResource',
                 'view/:model/:id/*splat': 'view',
                 'viewashtml/*splat': 'viewashtml',
                 'datamodel/:model/': 'datamodel',
@@ -59,125 +55,49 @@ define([
                 setCurrentView(new esearch.ResultsView());
             },
 
-            addRelated: function(modelName, id, relatedFieldName) {
-                // The id should be checked here.
-                // If the parentResource is new and is not passed as from the
-                // opening window, then that is an error.
-                var resource = window.specifyParentResource ||
-                    new (specifyapi.Resource.forModel(modelName))({ id: id });
-                var relatedField = resource.specifyModel.getField(relatedFieldName);
-
-                var relatedResource = new (specifyapi.Resource.forModel(relatedField.getRelatedModel()))();
-                var view = new views.RelatedView({
-                    model: relatedResource,
-                    parentResource: resource,
-                    parentModel: resource.specifyModel,
-                    relatedField: relatedField,
-                    viewdef: getViewdef(),
-                    adding: true
-                });
-
-                switch (relatedField.type) {
-                case 'one-to-many':
-                    relatedResource.set(relatedField.otherSideName, resource.url(), { silent: true });
-                    break;
-                case 'many-to-one':
-                    view.on('savecomplete', function() {
-                        resource.set(relatedField.name, relatedResource.url());
-                    });
-                    break;
-                }
-                view.on('savecomplete', function() {
-                    navigation.navigate(relatedResource.viewUrl(), { replace: true, trigger: true });
-                });
-
-                relatedResource.placeInSameHierarchy(resource);
-                setCurrentView(view);
-            },
-
-            addRelatedToNew: function(viewName, relatedFieldName) {
-                this.addRelated(null, null, relatedFieldName);
-            },
-
-            viewSingleToMany: function(modelName, id, relatedFieldName, index) {
-                index = parseInt(index, 10);
-                var resource = window.specifyParentResource ||
-                    new (specifyapi.Resource.forModel(modelName))({ id: id });
-                resource.rget(relatedFieldName).done(function(collection) {
-                    collection.fetchIfNotPopulated().done(function() {
-                        var relatedResource = collection.at(index);
-                        setCurrentView(new views.RelatedView({
-                            model: relatedResource,
-                            parentResource: resource,
-                            parentModel: resource.specifyModel,
-                            relatedField: resource.specifyModel.getField(relatedFieldName),
-                            viewdef: getViewdef(),
-                            adding: false
-                        }));
-                    });
-                });
-            },
-
-            viewRelated: function(modelName, id, relatedFieldName) {
-                var resource = window.specifyParentResource ||
-                    new (specifyapi.Resource.forModel(modelName))({ id: id });
-                var relatedField = resource.specifyModel.getField(relatedFieldName);
-                switch (relatedField.type) {
-                case 'one-to-many':
-                    setCurrentView(new views.CollectionView({
-                        parentResource: resource,
-                        parentModel: resource.specifyModel,
-                        relatedField: relatedField,
-                        viewdef: getViewdef(),
-                        adding: false
-                    }));
-                    break;
-                case 'many-to-one':
-                    resource.rget(relatedField.name).done(function(relatedResource) {
-                        setCurrentView(new views.RelatedView({
-                            model: relatedResource,
-                            parentResource: resource,
-                            parentModel: resource.specifyModel,
-                            relatedField: relatedField,
-                            viewdef: getViewdef(),
-                            adding: false
-                        }));
-                    });
-                    break;
-                }
-            },
-
-            recordSet: function(id) {
+            recordSet: function(id, index) {
+                index = index ? parseInt(index, 10) : 0;
                 var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
-                recordSet.fetch().done(function() {
-                    setCurrentView(new views.RecordSetView({ recordSet: recordSet }));
+                var recordSetItems = new (specifyapi.Collection.forModel('recordsetitem'))();
+                recordSetItems.queryParams.recordset = id;
+                recordSetItems.limit = 1;
+                $.when(recordSetItems.fetch({at: index}), recordSet.fetch()).done(function() {
+                    var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
+                    var resource = new (specifyapi.Resource.forModel(specifyModel))({
+                        id: recordSetItems.at(index).get('recordid')
+                    });
+                    var url = resource.viewUrl();
+                    navigation.go($.param.querystring(url, { recordsetid: id }));
                 });
             },
 
-            addToRecordSet: function(id) {
-                var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
-                var resource = null;
+            view: function(modelName, id) {
+                var params = $.deparam.querystring();
+                var recordSet = params.recordsetid && new (specifyapi.Resource.forModel('recordset'))({
+                    id: params.recordsetid });
+
+                var resource = new (specifyapi.Resource.forModel(modelName))({ id: id });
+                params.recordsetid && (resource.recordsetid = params.recordsetid);
+
+                if (resource.isNew()) {
+                    var domainField = resource.specifyModel.orgRelationship();
+                    var parentResource = domain[domainField.name];
+                    resource.set(domainField.name, parentResource.url());
+                }
 
                 function doIt() {
-                    setCurrentView(new views.AddToRecordSetView({ recordSet: recordSet, model: resource }));
-                    app.currentView.on('refresh', function(newResource) {
+                    setCurrentView(new ResourceView({ model: resource, recordSet: recordSet }));
+                    app.currentView.on('addAnother', function(newResource) {
                         resource = newResource;
                         doIt();
                     });
                 }
 
-                recordSet.fetch().done(doIt);
+                $.when(resource.isNew() || resource.fetch(), recordSet && recordSet.fetch()).done(doIt);
             },
 
-            view: function(modelName, id) {
-                setCurrentView(new views.ResourceView({ modelName: modelName, resourceId: id }));
-            },
-
-            newResource: function(viewName) {
-                setCurrentView(new views.NewResourceView({ viewName: viewName }));
-                app.currentView.on('refresh', function() {
-                    specifyRouter.newResource(viewName);
-                });
+            newResource: function(model) {
+                specifyRouter.view(model, null);
             },
 
             viewashtml: function() {

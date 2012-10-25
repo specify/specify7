@@ -150,6 +150,63 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
         counts = set((self.recordset.recordsetitems.filter(recordid=id).count() for id in ids))
         self.assertEqual(counts, set([0]))
 
+    def test_get_resource_with_recordset_info(self):
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
+        self.assertFalse(hasattr(data, 'recordset_info'))
+
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        self.assertEqual(data['recordset_info'], None)
+
+        self.recordset.recordsetitems.create(recordid=self.collectionobjects[0].id)
+
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        self.assertEqual(data['recordset_info']['recordsetid'], self.recordset.id)
+
+
+    def test_update_object(self):
+        data = api.get_resource('collectionobject', self.collectionobjects[0].id, self.recordset.id)
+        self.assertEqual(data['recordset_info'], None)
+
+        obj = api.update_obj(self.collection, self.agent, 'collectionobject',
+                             data['id'], data['version'], data)
+
+
+    def test_get_recordset_info(self):
+        ids = [co.id for co in self.collectionobjects]
+
+        for id in ids:
+            self.recordset.recordsetitems.create(recordid=id)
+
+        for i, co in enumerate(self.collectionobjects):
+            info = api.get_recordset_info(co, self.recordset.id)
+            self.assertEqual(info['recordsetid'], self.recordset.id)
+            self.assertEqual(info['total_count'], len(self.collectionobjects))
+            self.assertEqual(info['index'], i)
+            self.assertEqual(info['previous'], None if i == 0 else \
+                                 api.uri_for_model('collectionobject', self.collectionobjects[i-1].id))
+
+            self.assertEqual(info['next'], None if i == len(self.collectionobjects) - 1 else \
+                                 api.uri_for_model('collectionobject', self.collectionobjects[i+1].id))
+
+    def test_no_recordset_info(self):
+        info = api.get_recordset_info(self.collectionobjects[0], self.recordset.id)
+        self.assertEqual(info, None)
+
+    def test_recordsetitem_ordering(self):
+        ids = [co.id for co in self.collectionobjects]
+        ids.sort()
+        ids.reverse()
+
+        for id in ids:
+            self.recordset.recordsetitems.create(recordid=id)
+
+        rsis = api.get_collection('recordsetitem', {
+                'recordset': self.recordset.id})
+
+        result_ids = [rsi['recordid'] for rsi in rsis['objects']]
+        ids.sort()
+        self.assertEqual(result_ids, ids)
+
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
         api.inlined_fields.difference_update(set(['Collectionobject.determinations']))

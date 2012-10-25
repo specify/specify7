@@ -13,3 +13,4 @@
 * latlongMethod picklist (see locality form)
 * consistency of collection membership for login/recordset/resources
 * do something about recordsetitems that refer to nonexistant resources
+* deleting from recordselector not updating the display

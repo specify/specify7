@@ -98,40 +98,8 @@ define([
         }
     });
 
-    var RecordSetItems = api.Collection.extend({
-        initialize: function() {
-            this.model = api.Resource.forModel('recordsetitem');
-            return this.constructor.__super__.initialize.apply(this, arguments);
-        },
-        fetch: function(options) {
-            options = options || {};
-            options.itemFetchDeferreds = [];
-            var mainFetch = api.Collection.prototype.fetch.call(this, options);
-            var comprehensiveFetch = mainFetch.pipe(function() {
-                return whenAll(options.itemFetchDeferreds);
-            });
-            comprehensiveFetch.abort = function() { return mainFetch.abort(arguments); };
-            return comprehensiveFetch;
-        },
-        add: function(models, options) {
-            api.Collection.prototype.add.call(this, models, options);
-            var ItemResource = api.Resource.forModel(
-                schema.getModelById(this.parent.get('dbTableId'))
-            );
-            var recordSetItems = this;
-            _(models).forEach(function(model) {
-                var recordSetItem = recordSetItems.get(model.id);
-                var item = new ItemResource({ id: recordSetItem.get('recordId') });
-                recordSetItem.item = item;
-                options.itemFetchDeferreds.push(item.fetch());
-            });
-            return this;
-        }
-    });
 
-    var collections = {
-        RecordSetItem: RecordSetItems
-    };
+    var collections = {};
 
     return api;
 });

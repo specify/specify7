@@ -51,7 +51,7 @@ define [
 
         recordSetListItem: (recordset) ->
             icon = schema.getModelById(recordset.get 'dbtableid').getIcon()
-            $('<li>').append $('<a>', href: recordset.viewUrl())
+            $('<li>').append $('<a>', href: "/specify/recordset/#{ recordset.id }/")
                 .text(recordset.get 'name').prepend $('<img>', src: icon)
 
         navToRecordSet: (evt) ->

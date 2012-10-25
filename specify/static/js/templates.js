@@ -14,7 +14,8 @@ define([
     'text!tmpls/subviewheader.html',
     'text!tmpls/404.html',
     'text!tmpls/saveblocked.html',
-    'text!tmpls/welcome.html'
+    'text!tmpls/welcome.html',
+    'text!tmpls/viewheader.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -36,7 +37,8 @@ define([
         'subviewheader',
         'fourohfour',
         'saveblocked',
-        'welcome'
+        'welcome',
+        'viewheader'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

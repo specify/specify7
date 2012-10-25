@@ -106,6 +106,7 @@ define([
             var newResource = Backbone.Model.prototype.clone.call(self);
             newResource.needsSaved = self.needsSaved;
             newResource.dependent = self.dependent;
+            newResource.recordsetid = self.recordsetid;
 
             _.each(self.relatedCache, function(related, fieldName) {
                 var field = self.specifyModel.getField(fieldName);
@@ -143,12 +144,14 @@ define([
         url: function() {
             // returns the api uri for this resource. if the resource is newly created
             // (no id), return the uri for the collection it belongs to
-            return '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
+            var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
+            return $.param.querystring(url, {recordsetid: this.recordsetid});
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
-            return '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + (this.id || 'new') + '/';
+            var url = '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + (this.id || 'new') + '/';
+            return $.param.querystring(url, {recordsetid: this.recordsetid});
         },
         get: function(attribute) {
             // case insensitive
@@ -468,17 +471,7 @@ define([
         }
     });
 
-    var RecordSet = api.Resource.extend({
-        // record sets have a special case for viewing
-        viewUrl: function() {
-            return '/specify/recordset/' + (this.id || 'new') + '/';
-        }
-    }, {
-        specifyModel: schema.getModel('recordset')
-    });
-
     var resources = {};
-    resources[schema.getModel('recordset').name] = RecordSet;
 
     return api;
 });

@@ -76,8 +76,8 @@ def resource_dispatch(request, model, id):
             version = None
 
     if request.method == 'GET':
-        resp = HttpResponse(toJson(get_resource(model, id)),
-                            content_type='application/json')
+        data = get_resource(model, id, request.GET.get('recordsetid', None))
+        resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'PUT':
         data = json.load(request)
@@ -135,10 +135,41 @@ def get_object_or_404(model, *args, **kwargs):
         model = get_model_or_404(model)
     return get_object(model, *args, **kwargs)
 
-def get_resource(name, id):
+def get_resource(name, id, recordsetid=None):
     obj = get_object_or_404(name, id=int(id))
     data = obj_to_data(obj)
+    if recordsetid is not None:
+        data['recordset_info'] = get_recordset_info(obj, recordsetid)
     return data
+
+def get_recordset_info(obj, recordsetid):
+    rsis = models.Recordsetitem.objects.filter(
+        recordset__id=recordsetid, recordset__dbtableid=obj.tableid)
+    try:
+        rsi = rsis.get(recordid=obj.id)
+    except models.Recordsetitem.DoesNotExist:
+        return None
+
+    prev_rsis = rsis.filter(recordid__lt=obj.id).order_by('-recordid')
+    next_rsis = rsis.filter(recordid__gt=obj.id).order_by('recordid')
+
+    try:
+        prev = uri_for_model(obj.__class__, prev_rsis[0].recordid)
+    except IndexError:
+        prev = None
+
+    try:
+        next = uri_for_model(obj.__class__, next_rsis[0].recordid)
+    except IndexError:
+        next = None
+
+    return {
+        'recordsetid': rsi.recordset_id,
+        'total_count': rsis.count(),
+        'index': prev_rsis.count(),
+        'previous': prev,
+        'next': next
+        }
 
 @transaction.commit_on_success
 def post_resource(collection, agent, name, data, recordsetid=None):
@@ -181,14 +212,14 @@ def create_obj(collection, agent, name, data):
 
 def set_fields_from_data(obj, data):
     for field_name, val in data.items():
-        if field_name == 'resource_uri': continue
+        if field_name in ('resource_uri', 'recordset_info'): continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
 
 def handle_fk_fields(collection, agent, obj, data):
     for field_name, val in data.items():
-        if field_name == 'resource_uri': continue
+        if field_name in ('resource_uri', 'recordset_info'): continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 

@@ -5,10 +5,17 @@ import os
 
 appname = __name__.split('.')[-2]
 
+orderings = {
+    'Recordsetitem': ('recordid', )
+}
+
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
     class Meta:
         db_table = tabledef.attrib['table']
+        if modelname in orderings:
+            ordering = orderings[modelname]
+
     attrs = dict(id=make_id_field(tabledef.find('id')),
                  tableid=int(tabledef.attrib['tableid']),
                  Meta=Meta, __module__=__name__)
