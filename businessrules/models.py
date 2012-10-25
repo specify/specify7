@@ -50,3 +50,9 @@ def remove_from_recordsets(sender, **kwargs):
     rsis = models.Recordsetitem.objects.filter(recordset__dbtableid=sender.tableid,
                                                recordid=obj.id)
     rsis.delete()
+
+@receiver(signals.pre_save, sender=models.Recordset)
+def recordset_pre_save(sender, **kwargs):
+    recordset = kwargs['instance']
+    if recordset.specifyuser_id is None:
+        recordset.specifyuser = recordset.createdbyagent.specifyuser

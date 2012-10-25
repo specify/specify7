@@ -7,7 +7,6 @@ define([
             specifyform, dataobjformat, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
-    var views = {};
 
     function setWindowTitle(title) { window && (window.document.title = title); }
 

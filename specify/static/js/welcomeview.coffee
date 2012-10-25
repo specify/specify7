@@ -9,13 +9,14 @@ define [
     'icons'
     'specifyform'
     'text!context/app.resource?name=DataEntryTaskInit!noinline'
+    'jquery-bbq'
 ], ($, _, Backbone, templates, api, schema, navigation, icons, specifyform, formsXML) ->
 
     formsList = $.parseXML formsXML
 
     FormsList = Backbone.View.extend
         events:
-            'click a': 'navToForm'
+            'click a': 'clicked'
 
         render: ->
             @$el.empty()
@@ -25,16 +26,64 @@ define [
 
         formListItem: (viewnode) ->
             view = $ viewnode
-            href = "/specify/view/#{ view.attr('view').toLowerCase() }/new/"
+            href = @urlForView view.attr 'view'
             link = $('<a>', href: href, title: view.attr 'tooltip')
                 .text(view.attr 'title')
                 .prepend($ '<img>', src: icons.getIcon view.attr 'iconname')
 
             $('<li>').append link
 
-        navToForm: (evt) ->
+        urlForView: (view, recordsetid) ->
+            model = specifyform.getModelForView view
+            $.param.querystring "/specify/view/#{ model.name.toLowerCase() }/new/",
+                view: view
+                recordsetid: recordsetid
+
+        clicked: (evt) ->
             evt.preventDefault()
-            navigation.go $(evt.currentTarget).prop 'href'
+            if @recordsets then return
+
+            params = $.deparam.querystring $(evt.currentTarget).prop 'href'
+            model = specifyform.getModelForView params.view
+            @recordsets = new (api.Collection.forModel 'recordset')()
+            _.extend @recordsets.queryParams,
+                domainfilter: true
+                dbtableid: model.tableId
+            @recordsets.fetch().done => @makeDialog(params.view)
+
+        makeDialog: (view) ->
+            dialog = $ templates.recordsetchooser()
+            tmpl = dialog.find('input[value="template"]').parent()
+            @recordsets.each (recordset) ->
+                newLi = tmpl.clone().insertBefore tmpl
+                newLi.find('input').prop 'value', recordset.id
+                newLi.find('.recordset-name').text recordset.get 'name'
+            tmpl.remove()
+
+            dialog.dialog
+                buttons: ok: =>
+                    choice = dialog.find('input:checked').val()
+                    switch choice
+                        when "new"
+                            name = dialog.find('[name="name"]').val()
+                            @createRecordSet(name, view).done (recordset) =>
+                                navigation.go @urlForView view, recordset.id
+                        when "none"
+                            navigation.go @urlForView view
+                        else
+                            navigation.go @urlForView view, choice
+                close: =>
+                    dialog.remove()
+                    @recordsets = null
+
+        createRecordSet: (name, view) ->
+            model = specifyform.getModelForView view
+            recordset = new (api.Resource.forModel 'recordset')
+                dbtableid: model.tableId
+                name: name
+                type: 0
+            recordset.save().pipe -> recordset
+
 
     RecordSetsList = Backbone.View.extend
         events:
