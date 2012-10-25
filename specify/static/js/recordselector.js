@@ -37,9 +37,7 @@ define([
                     var currentIndex = self.currentIndex();
                     var value = Math.min(currentIndex, end);
                     self.slider.slider('option', { max: end, value: value });
-                    if (value !== currentIndex) {
-                        self.fetchThenRedraw(value) || self.redraw(value);
-                    }
+                    self.fetchThenRedraw(value) || self.redraw(value);
                 }
                 self.showHide();
             });
