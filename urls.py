@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic import TemplateView
 from django.conf import settings
-
+from django.views.generic.simple import redirect_to
 
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
@@ -12,7 +12,7 @@ urlpatterns = patterns(
     (r'^accounts/login/$', 'context.views.login'),
     (r'^accounts/logout/$', 'context.views.logout'),
     # Examples:
-    url(r'^$', TemplateView.as_view(template_name="index.html")),
+    url(r'^$', redirect_to, {'url': '/specify/'}), #TemplateView.as_view(template_name="index.html")),
     url(r'^overview/$', TemplateView.as_view(template_name="code_overview.html")),
     url(r'^specify/', include('specify.urls')),
     url(r'^context/', include('context.urls')),
