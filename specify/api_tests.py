@@ -207,6 +207,21 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
         ids.sort()
         self.assertEqual(result_ids, ids)
 
+    def test_deleting_recordset_deletes_items(self):
+        ids = [co.id for co in self.collectionobjects]
+
+        for id in ids:
+            self.recordset.recordsetitems.create(recordid=id)
+
+        recordset = models.Recordset.objects.get(id=self.recordset.id)
+        self.assertNotEqual(recordset.recordsetitems.count(), 0)
+
+        # shouldn't throw integrity exception
+        recordset.delete()
+
+        with self.assertRaises(models.Recordset.DoesNotExist) as cm:
+            recordset = models.Recordset.objects.get(id=self.recordset.id)
+
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
         api.inlined_fields.difference_update(set(['Collectionobject.determinations']))

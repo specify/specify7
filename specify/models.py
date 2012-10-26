@@ -9,6 +9,11 @@ orderings = {
     'Recordsetitem': ('recordid', )
 }
 
+cascade_delete = set([
+        'Recordsetitem.recordset',
+        'Determination.collectionobject',
+])
+
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
     class Meta:
@@ -32,17 +37,17 @@ def make_model(tabledef):
             fldargs['default'] = 0
         attrs[fldname.lower()] = maker(flddef, fldargs)
     for reldef in tabledef.findall('relationship'):
-        relname = reldef.attrib['relationshipname']
-        relationship = make_relationship(reldef)
+        relname = reldef.attrib['relationshipname'].lower()
+        relationship = make_relationship(modelname, relname, reldef)
         if relationship is not None:
-            attrs[relname.lower()] = relationship
+            attrs[relname] = relationship
     return type(modelname, (models.Model,), attrs)
 
 def make_id_field(flddef):
     assert flddef.attrib['type'] == 'java.lang.Integer'
     return models.AutoField(primary_key=True, db_column=flddef.attrib['column'])
 
-def make_relationship(reldef):
+def make_relationship(modelname, relname, reldef):
     relatedmodel = reldef.attrib['classname'].split('.')[-1].capitalize()
     # Usergroupscope breaks things.
     # I think maybe it is a superclass thing and not really a table?
@@ -67,13 +72,17 @@ def make_relationship(reldef):
                                       related_name=related_name,
                                       null=null, editable=editable)
 
+    if '.'.join((modelname, relname)) in cascade_delete:
+        on_delete = models.CASCADE
+    else:
+        on_delete = models.SET_NULL if null else models.DO_NOTHING
+
     def make_to_one(Field):
         try:
             related_name = reldef.attrib['othersidename'].lower()
         except KeyError:
             related_name = '+' # magic symbol means don't make reverse field
         column = reldef.attrib['columnname']
-        on_delete = models.SET_NULL if null else models.DO_NOTHING
         return Field('.'.join((appname, relatedmodel)),
                      db_column=column, related_name=related_name,
                      null=null, on_delete=on_delete,
