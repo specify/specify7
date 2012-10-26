@@ -26,6 +26,7 @@ define([
         function setCurrentView(view) {
             app.currentView && app.currentView.remove();
             $('.ui-autocomplete').remove(); // these are getting left behind sometimes
+            $('.ui-dialog-content').dialog('close'); // close any open dialogs
             app.currentView = view;
             app.currentView.render();
             rootContainer.append(app.currentView.el);
