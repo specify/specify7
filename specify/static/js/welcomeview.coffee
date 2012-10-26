@@ -86,26 +86,76 @@ define [
 
 
     RecordSetsList = Backbone.View.extend
-        events:
-            'click a': 'navToRecordSet'
-
         render: ->
             @$el.empty()
 
             recordsets = new (api.Collection.forModel 'recordset')()
             recordsets.queryParams.domainfilter = true
             recordsets.fetch().done => recordsets.each (recordset) =>
-                @$el.append @recordSetListItem recordset
+                rsli = new RecordSetsListItem
+                    el: $ '<li>'
+                    recordset: recordset
+                @$el.append rsli.render().el
             @
 
-        recordSetListItem: (recordset) ->
-            icon = schema.getModelById(recordset.get 'dbtableid').getIcon()
-            $('<li>').append $('<a>', href: "/specify/recordset/#{ recordset.id }/")
-                .text(recordset.get 'name').prepend $('<img>', src: icon)
+    RecordSetsListItem = Backbone.View.extend
+        events:
+            'click a.recordset-name': 'navToRecordSet'
+            'click a.recordset-edit': 'editRecordSet'
+
+        initialize: (options) ->
+            @recordset = options.recordset
+            @recordset.on 'sync', @render, @
+            @recordset.on 'destroy', => @$el.remove()
+
+        render: ->
+            # TODO: This should be a template.
+            @$el.html """
+                <a class=\"recordset-edit\">
+                    <span class=\"ui-icon ui-icon-pencil\">edit</span>
+                </a>
+                <img><a class=\"recordset-name\" />
+            """
+            @$('.recordset-name').text(@recordset.get 'name').prop 'href', "/specify/recordset/#{ @recordset.id }/"
+            @$('img').prop 'src', schema.getModelById(@recordset.get 'dbtableid').getIcon()
+            @$('.recordset-edit').data 'recordset', @recordset
+            @
+
+        editRecordSet: (evt) ->
+            evt.preventDefault()
+            # TODO: This should make use of the forms system.
+            dialog = $ """
+                <div title=\"Edit Record Set\">
+                    <p>
+                        <label>Name</label>
+                        <input type=\"text\" name=\"name\">
+                    </p><p>
+                        <label>Remarks</label>
+                        <input type=\"textarea\" name=\"remarks\">
+                    </p>
+                </div>
+            """
+
+            nameEl = dialog.find('[name="name"]').val(@recordset.get 'name').change =>
+                @recordset.set 'name', nameEl.val()
+            remarksEl = dialog.find('[name="remarks"]').val(@recordset.get 'remarks').change =>
+                @recordset.set 'remarks', remarksEl.val()
+
+            dialog.dialog
+                buttons:
+                    Save: =>
+                        @recordset.save().done -> dialog.dialog 'close'
+                    Delete: =>
+                        @recordset.destroy(wait: true).done -> dialog.dialog 'close'
+                    Cancel: =>
+                        @recordset.fetch().done -> dialog.dialog 'close'
+                close: ->
+                    dialog.remove()
 
         navToRecordSet: (evt) ->
             evt.preventDefault()
             navigation.go $(evt.currentTarget).prop 'href'
+
 
     WelcomeView = Backbone.View.extend
         render: ->

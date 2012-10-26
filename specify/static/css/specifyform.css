@@ -185,6 +185,11 @@ input[type="submit"].saveblocked {
     margin: 0 20px 0px 20px;
 }
 
+.welcome .recordset-edit .ui-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .savebutton, .deletebutton {
     display: inline;
 }
