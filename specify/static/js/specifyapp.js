@@ -60,15 +60,31 @@ define([
                 var recordSetItems = new (specifyapi.Collection.forModel('recordsetitem'))();
                 recordSetItems.queryParams.recordset = id;
                 recordSetItems.limit = 1;
-                $.when(recordSetItems.fetch({at: index}), recordSet.fetch()).done(function() {
-                    var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
-                    var resource = new (specifyapi.Resource.forModel(specifyModel))({
-                        id: recordSetItems.at(index).get('recordid')
+
+                function doIt() {
+                    $.when(recordSetItems.fetch({at: index}), recordSet.fetch()).done(function() {
+                        var recordsetitem = recordSetItems.at(index);
+                        var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
+                        if (!recordsetitem) {
+                            if (recordSetItems.length === 0) {
+                                // TODO: Do something better for empty record sets.
+                                specifyRouter.resourceView(specifyModel, null, recordSet);
+                            } else {
+                                index = recordSetItems.length - 1;
+                                doIt();
+                            }
+                            return;
+                        }
+                        var resource = new (specifyapi.Resource.forModel(specifyModel))({
+                            id: recordsetitem.get('recordid')
+                        });
+                        var url = resource.viewUrl();
+                        navigation.navigate($.param.querystring(url, { recordsetid: id }),
+                                            {replace: true, trigger: true});
                     });
-                    var url = resource.viewUrl();
-                    navigation.navigate($.param.querystring(url, { recordsetid: id }),
-                                       {replace: true, trigger: true});
-                });
+                }
+
+                doIt();
             },
 
             view: function(modelName, id) {
@@ -76,8 +92,12 @@ define([
                 var recordSet = params.recordsetid && new (specifyapi.Resource.forModel('recordset'))({
                     id: params.recordsetid });
 
-                var resource = new (specifyapi.Resource.forModel(modelName))({ id: id });
-                params.recordsetid && (resource.recordsetid = params.recordsetid);
+                specifyRouter.resourceView(modelName, id, recordSet);
+            },
+
+            resourceView: function(model, id, recordSet) {
+                var resource = new (specifyapi.Resource.forModel(model))({ id: id });
+                recordSet && (resource.recordsetid = recordSet.id);
 
                 if (resource.isNew()) {
                     var domainField = resource.specifyModel.orgRelationship();
