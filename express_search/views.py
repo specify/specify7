@@ -12,7 +12,7 @@ from specify import models
 from specify.filter_by_col import filter_by_collection
 from specify.api import toJson
 
-from context.express_search_config import get_express_search_config
+from context.app_resource import get_app_resource
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
@@ -116,10 +116,16 @@ def build_queryset(searchtable, terms, collection):
         reduced = reduce(lambda p, q: p | q, filters)
         return filter_by_collection(model.objects.filter(reduced), collection)
 
+def get_express_search_config(request):
+    resource, __ = get_app_resource(request.specify_collection,
+                                    request.specify_user,
+                                    'ExpressSearchConfig')
+    return ElementTree.XML(resource)
+
 @require_GET
 @login_required
 def search(request):
-    express_search_config = ElementTree.XML(get_express_search_config(request.specify_collection))
+    express_search_config = get_express_search_config(request)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
     results = {}
     for searchtable in express_search_config.findall('tables/searchtable'):
@@ -141,7 +147,7 @@ def search(request):
 @login_required
 def related_search(request):
     import related_searches
-    express_search_config = ElementTree.XML(get_express_search_config(request.specify_collection))
+    express_search_config = get_express_search_config(request)
     rs = getattr(related_searches, request.GET['name'])()
     model = rs.pivot()
     for searchtable in express_search_config.findall('tables/searchtable'):
