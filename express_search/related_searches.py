@@ -126,6 +126,7 @@ class CEToCO(RelatedSearch):
 
 class AccessionToCo(RelatedSearch):
     definition = 'Accession.collectionobjects.determinations.taxon'
+    distinct = True
     filters = { 'collectionobjects.determinations.iscurrent': True }
     columns = [
         'collectionobjects.catalognumber',
