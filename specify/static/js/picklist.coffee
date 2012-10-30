@@ -48,7 +48,7 @@ define [
             # value will be undefined when creating picklist for new resource
             # so we set the model to have whatever the select element is set to
             if _.isUndefined value
-                @setValueIntoModel
+                @setValueIntoModel()
                 return
 
             # value is now either null or a string
