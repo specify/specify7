@@ -21,7 +21,7 @@ define([
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
-            this.model.set(this.fieldName, resource.url());
+            this.model.setToOneField(this.fieldName, resource);
         },
         render: function () {
             var self = this;
@@ -124,7 +124,7 @@ define([
             saveButton.render().$el.appendTo(dialogForm);
             saveButton.on('savecomplete', function() {
                 dialog.dialog('close');
-                self.model.set(self.fieldName, resource.url());
+                self.model.setToOneField(self.fieldName, resource);
             });
 
             var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
@@ -133,7 +133,7 @@ define([
                 var deleteButton = new DeleteButton({ model: resource });
                 deleteButton.render().$el.appendTo(dialogForm);
                 deleteButton.on('deleted', function() {
-                    self.model.set(self.fieldName, null);
+                    self.model.setToOneField(self.fieldName, null);
                     dialog.dialog('close');
                 });
 
@@ -166,7 +166,7 @@ define([
             var val = this.$('input').val().trim();
             var isRequired = this.$('input').is('.specify-required-field');
             if (val === '' && !isRequired) {
-                this.model.set(this.fieldName, null);
+                this.model.setToOneField(this.fieldName, null);
             } else {
                 this.fillIn();
             }
