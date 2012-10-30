@@ -32,6 +32,7 @@ define([
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
             control.prop('readonly') && self.$('a').hide();
+            self.isRequired = self.$('input').is('.specify-required-field');
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             self.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
@@ -72,8 +73,11 @@ define([
                         self.renderItem(related).done(function(item) {
                             self.$('input').val(item.value);
                         });
+                        self.model.saveBlockers.remove('fieldrequired:' + self.fieldName);
                     } else {
                         self.$('input').val('');
+                        self.isRequired && self.model.saveBlockers.add(
+                            'fieldrequired:' + self.fieldName, self.fieldName, 'Field is required', true);
                     }
                 });
             });
@@ -164,8 +168,7 @@ define([
         },
         blur: function() {
             var val = this.$('input').val().trim();
-            var isRequired = this.$('input').is('.specify-required-field');
-            if (val === '' && !isRequired) {
+            if (val === '' && !this.isRequired) {
                 this.model.setToOneField(this.fieldName, null);
             } else {
                 this.fillIn();

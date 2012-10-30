@@ -19,8 +19,8 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
             @model.on 'saveblocked', (resource, blocker) =>
                 @blockingResources[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
-                @setButtonsDisabled (not blocker.deferred)
-                @setSaveBlocked (not blocker.deferred)
+                @setButtonsDisabled true if not blocker.deferred
+                @setSaveBlocked true if not blocker.deferred
 
         setButtonsDisabled: (state) ->
             @buttonsDisabled = state

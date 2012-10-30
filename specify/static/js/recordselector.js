@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
 ], function($, _, Backbone, specifyform, navigation, templates) {
-    var debug = true;
+    var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
