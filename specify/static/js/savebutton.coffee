@@ -5,7 +5,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             'click :submit': 'submit'
 
         initialize: (options) ->
-            @blockers = {}
+            @blockingResources = {}
             @saveBlocked = false
             @buttonsDisabled = true
 
@@ -17,10 +17,10 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @model.on 'oktosave', (resource) =>
                 @removeBlocker resource
 
-            @model.on 'saveblocked', (resource) =>
-                @blockers[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
-                @setButtonsDisabled false
-                @setSaveBlocked true
+            @model.on 'saveblocked', (resource, blocker) =>
+                @blockingResources[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
+                @setButtonsDisabled (not blocker.deferred)
+                @setSaveBlocked (not blocker.deferred)
 
         setButtonsDisabled: (state) ->
             @buttonsDisabled = state
@@ -31,8 +31,8 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @buttons?[if saveBlocked then 'addClass' else 'removeClass'] 'saveblocked'
 
         removeBlocker: (resource) ->
-            delete @blockers[resource.cid]
-            if _.isEmpty @blockers
+            delete @blockingResources[resource.cid]
+            if _.isEmpty @blockingResources
                 @setSaveBlocked false
 
         render: ->
@@ -57,7 +57,11 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
         submit: (evt) ->
             evt.preventDefault()
-            if _.isEmpty @blockers
+
+            _.each @blockingResources, (resource) ->
+                resource.saveBlockers.fireDeferredBlockers()
+
+            if _.isEmpty @blockingResources
                 @setButtonsDisabled true
                 addAnother =  if $(evt.currentTarget).is '.save-and-add-button'
                     @model.clone()
@@ -72,7 +76,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
                 list = dialog.find '.saveblockers'
                 list.empty()
-                _.each @blockers, (resource) =>
+                _.each @blockingResources, (resource) =>
                     li = $('<li>').appendTo list
                     li.append $('<h3>').text(resource.specifyModel.getLocalizedName())
                     dl = $('<dl>').appendTo li

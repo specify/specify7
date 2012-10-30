@@ -21,6 +21,8 @@ define([
                 self.$el.prop('readonly', true);
             }
 
+            field.isRequired && self.$el.addClass('specify-required-field');
+
             self.formatter = self.field.getUIFormatter();
             self.formatter && self.$el.attr('title', 'Format: ' + self.formatter.value());
 
@@ -40,20 +42,22 @@ define([
             self.toolTipMgr = new ToolTipMgr(self).enable();
             self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
 
-            if (self.model.isNew() &&
-                self.fieldName.split('.').length === 1 &&
-                self.formatter && self.formatter.canAutonumber())
-            {
-                self.model.set(self.fieldName, self.formatter.value());
+            if (self.model.isNew()) {
+                if (self.fieldName.split('.').length === 1 &&
+                    self.formatter && self.formatter.canAutonumber())
+                {
+                    self.model.set(self.fieldName, self.formatter.value());
+                }
+                self.validate(true);
             }
             return this;
         },
-        change: function() {
+        validate: function(deferred) {
             var value = this.$el.val().trim();
 
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
-                this.addSaveBlocker('fieldrequired', "Field is required.");
+                this.addSaveBlocker('fieldrequired', "Field is required.", deferred);
                 return;
             } else {
                 this.removeSaveBlocker('fieldrequired');
@@ -62,7 +66,7 @@ define([
             if (this.formatter) {
                 var formatterVals = this.formatter.parse(value);
                 if (!formatterVals) {
-                    this.addSaveBlocker('badformat', "Required format: " + this.formatter.value());
+                    this.addSaveBlocker('badformat', "Required format: " + this.formatter.value(), deferred);
                     return;
                 } else {
                     this.removeSaveBlocker('badformat');
@@ -72,18 +76,23 @@ define([
 
             var parseResult = uiparse(this.field, value);
             if (!parseResult.isValid) {
-                this.addSaveBlocker('cantparse', parseResult.reason);
+                this.addSaveBlocker('cantparse', parseResult.reason, deferred);
                 return;
             } else {
                 this.removeSaveBlocker('cantparse');
+                return parseResult;
             }
-
-            this.model.set(this.fieldName, parseResult.parsed);
-            if (!this.field.isRelationship)
-                this.$el.val(fieldformat(this.field, parseResult.parsed));
         },
-        addSaveBlocker: function(key, message) {
-            this.model.saveBlockers.add(key + ':' + this.fieldName, this.fieldName, message);
+        change: function() {
+            var result = this.validate();
+            if (_.isUndefined(result)) return;
+
+            this.model.set(this.fieldName, result.parsed);
+            if (!this.field.isRelationship)
+                this.$el.val(fieldformat(this.field, result.parsed));
+        },
+        addSaveBlocker: function(key, message, deferred) {
+            this.model.saveBlockers.add(key + ':' + this.fieldName, this.fieldName, message, deferred);
         },
         removeSaveBlocker: function(key) {
             this.model.saveBlockers.remove(key + ':' + this.fieldName);
