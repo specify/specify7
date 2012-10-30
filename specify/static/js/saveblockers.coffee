@@ -3,6 +3,12 @@ define ['jquery', 'underscore'], ($, _) ->
     SaveBlockers: class SaveBlockers
         constructor: (@resource) ->
             @blockers = {}
+            @resource.on 'saveblocked', (source, blocker) =>
+                @resource.parent?.trigger 'saveblocked', source, blocker
+                @resource.collection?.parent?.trigger 'saveblocked', source, blocker
+            @resource.on 'oktosave', (source) =>
+                @resource.parent?.trigger 'oktosave', source
+                @resource.collection?.parent.trigger 'oktosave', source
 
         add: (key, field, reason) ->
             field = field?.toLowerCase()

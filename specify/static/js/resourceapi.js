@@ -13,8 +13,6 @@ define([
                 if (related.dependent) this.needsSaved = true;
                 else args[0] = 'subsaverequired';
             case 'subsaverequired':
-            case 'saveblocked':
-            case 'oktosave':
                 return this.trigger.apply(this, args);
                 break;
             case 'change:id':
@@ -39,8 +37,6 @@ define([
                 if (related.dependent) this.needsSaved = true;
                 else args[0] = 'subsaverequired';
             case 'subsaverequired':
-            case 'saveblocked':
-            case 'oktosave':
                 // propagate the above events up the object tree
                 this.trigger.apply(this, args);
                 break;
