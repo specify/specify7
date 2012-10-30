@@ -796,55 +796,6 @@ define([
                 });
             });
         });
-
-        module("RecordSetItems");
-
-        test('recordsetitems', function() {
-            stop();
-            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
-            recordSet.rget('recordsetitems').done(function(recordSetItems) {
-                equal(requestCounter, 1, "one request to get the recordset");
-                requestCounter = 0;
-                equal(recordSetItems.model.specifyModel.name, 'RecordSetItem', "the collection contains recordSetItems");
-                recordSetItems.fetch().done(function() {
-                    var itemsFetched = Math.min(recordSetItems.limit, recordSetItems.length);
-                    equal(requestCounter, itemsFetched + 1,
-                          "one request for the recordset items plus one each for the items they refer to");
-                    var recordSetItem;
-                    for (var i = 0; i < itemsFetched; i++) {
-                        recordSetItem = recordSetItems.at(i);
-                        equal(recordSetItem.specifyModel.tableId, recordSet.get("dbtableid"), "item is the right model");
-                        ok(recordSetItem.populated, 'the item is populated');
-                    }
-                    start();
-                });
-            });
-        });
-
-        test('recordsetitems at(index) returns undefined if index has not been fetched', function() {
-            expect(3);
-            stop();
-            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
-            recordSet.rget('recordsetitems', true).done(function(recordSetItems) {
-                var itemsFetched = Math.min(recordSetItems.limit, recordSetItems.length);
-                ok(itemsFetched > 0, 'at least one item fetched');
-                ok(!_(recordSetItems.at(0)).isUndefined(), 'if item is available at doesnt return undefined');
-                ok(_(recordSetItems.at(itemsFetched)).isUndefined(), 'if items is not available at returns undefined');
-                start();
-            });
-        });
-
-        test('recordsetitems collection fetch has abort function', function() {
-            expect(2);
-            stop();
-            var recordSet = new (api.Resource.forModel('recordset'))({ id: 1 });
-            recordSet.rget('recordsetitems').done(function(recordSetItems) {
-                var fetch = recordSetItems.fetch();
-                ok(_(fetch).has('abort'), 'fetch has abort property');
-                ok(_(fetch.abort).isFunction(), 'fetch().abort is function');
-                start();
-            });
-        });
     };
 });
 
