@@ -17,7 +17,7 @@ define([
             'click .querycbx-add': 'add',
             'click .querycbx-search': 'search',
             'autocompleteselect': 'select',
-            'blur input': 'fillIn'
+            'blur input': 'blur'
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
@@ -161,6 +161,15 @@ define([
             self.model.rget(self.fieldName, true).done(function(related) {
                 related && self.buildDialog(related);
             });
+        },
+        blur: function() {
+            var val = this.$('input').val().trim();
+            var isRequired = this.$('input').is('.specify-required-field');
+            if (val === '' && !isRequired) {
+                this.model.set(this.fieldName, null);
+            } else {
+                this.fillIn();
+            }
         }
     });
 
