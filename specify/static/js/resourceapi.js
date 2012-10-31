@@ -88,7 +88,8 @@ define([
                 _(resource.relatedCache).each(function(related, fieldName) {
                     var field = resource.specifyModel.getField(fieldName);
                     if(field.type === 'one-to-many') {
-                        _.chain(related.models).compact().invoke('set', field.otherSideName, resource.url());
+                        _.chain(related.models).compact().invoke(
+                            'set', field.otherSideName, resource.url(), {silent: true});
                     }
                 });
 

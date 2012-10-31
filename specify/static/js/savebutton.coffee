@@ -17,8 +17,9 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
             @model.on 'oktosave', (resource) =>
                 @removeBlocker resource
 
-            @model.on 'saveblocked', (resource, blocker) =>
-                @blockingResources[resource.cid] ?= resource.on 'destroy', @removeBlocker, @
+            @model.on 'saveblocked', (blocker) =>
+                @blockingResources[blocker.resource.cid] ?=
+                    blocker.resource.on 'destroy', @removeBlocker, @
                 @setButtonsDisabled true if not blocker.deferred
                 @setSaveBlocked true if not blocker.deferred
 
@@ -32,8 +33,8 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
         removeBlocker: (resource) ->
             delete @blockingResources[resource.cid]
-            if _.isEmpty @blockingResources
-                @setSaveBlocked false
+            onlyDeferreds = _.all @blockingResources, (br) -> br.saveBlockers.hasOnlyDeferredBlockers()
+            @setSaveBlocked false if onlyDeferreds
 
         render: ->
             @$el.addClass 'savebutton'

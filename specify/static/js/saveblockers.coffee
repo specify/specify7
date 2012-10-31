@@ -3,9 +3,9 @@ define ['jquery', 'underscore'], ($, _) ->
     SaveBlockers: class SaveBlockers
         constructor: (@resource) ->
             @blockers = {}
-            @resource.on 'saveblocked', (source, blocker) =>
-                @resource.parent?.trigger 'saveblocked', source, blocker
-                @resource.collection?.parent?.trigger 'saveblocked', source, blocker
+            @resource.on 'saveblocked', (blocker) =>
+                @resource.parent?.trigger 'saveblocked', blocker
+                @resource.collection?.parent?.trigger 'saveblocked', blocker
             @resource.on 'oktosave', (source) =>
                 @resource.parent?.trigger 'oktosave', source
                 @resource.collection?.parent.trigger 'oktosave', source
@@ -13,12 +13,16 @@ define ['jquery', 'underscore'], ($, _) ->
         add: (key, field, reason, deferred) ->
             deferred ?= false
             field = field?.toLowerCase()
-            @blockers[key] = blocker = { field: field, reason: reason, deferred: deferred }
+            @blockers[key] = blocker =
+                resource: @resource
+                field: field
+                reason: reason
+                deferred: deferred
             @triggerSaveBlocked blocker
 
         triggerSaveBlocked: (blocker) ->
-            @resource.trigger 'saveblocked', @resource, blocker
-            if blocker.field? then @resource.trigger "saveblocked:#{ blocker.field }", @resource, blocker
+            @resource.trigger 'saveblocked', blocker
+            if blocker.field? then @resource.trigger "saveblocked:#{ blocker.field }", blocker
 
         remove: (key) ->
             if not @blockers[key]? then return
@@ -40,6 +44,11 @@ define ['jquery', 'underscore'], ($, _) ->
                     blocker.deferred = false
                     @triggerSaveBlocked blocker
 
+        hasBlockers: -> not _.empty @blockers
+
+        hasOnlyDeferredBlockers: ->
+            _.all @blockers, (blocker) -> blocker.deferred
+
     FieldViewEnhancer: class FieldViewEnhancer
         constructor: (@view, fieldName, control) ->
             @field = fieldName.toLowerCase()
@@ -48,10 +57,10 @@ define ['jquery', 'underscore'], ($, _) ->
             @view.model.on "nosaveblockers:#{ @field }", @indicatorOff, @
             @view.on 'requestfortooltips', @sendToolTips, @
 
-        indicatorOn: (source, blocker) ->
+        indicatorOn: (blocker) ->
             @control.addClass 'saveblocked' if not blocker.deferred
 
-        indicatorOff:  ->
+        indicatorOff: ->
             @control.removeClass 'saveblocked'
 
         sendToolTips: ->
