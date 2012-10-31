@@ -6,7 +6,8 @@ import os
 appname = __name__.split('.')[-2]
 
 orderings = {
-    'Recordsetitem': ('recordid', )
+    'Recordsetitem': ('recordid', ),
+    'Taxontreedefitem': ('rankid', ),
 }
 
 cascade_delete = set([
