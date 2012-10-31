@@ -2,9 +2,12 @@ define [
     'jquery'
     'underscore'
     'backbone'
-], ($, _, Backbone) ->
+    'specifyapi'
+], ($, _, Backbone, api) ->
 
     Backbone.View.extend
+        events: change: 'changed'
+
         initialize: (options) ->
             @model.on 'change:parent', @render, @
             @lastFetch = null
@@ -19,7 +22,12 @@ define [
                 children.limit = 0
                 children.fetch().pipe -> children
 
-            fetch.done (children) =>
-                if fetch is @lastFetch then children.each (child) =>
+            fetch.done (children) => if fetch is @lastFetch
+                children.each (child) =>
                     @$el.append $('<option>', value: child.url()).text child.get 'name'
+                @model.setToOneField @$el.attr('name'), children.first()
             @
+
+        changed: ->
+            selected = api.Resource.fromUri @$el.val()
+            @model.setToOneField @$el.attr('name'), selected

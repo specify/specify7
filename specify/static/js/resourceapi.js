@@ -160,8 +160,8 @@ define([
 
             var oldRelated = self.relatedCache[field.name.toLowerCase()];
             if (!related) {
-                self.set(field.name, related, options);
-                self.relatedCache[field.name.toLowerCase()] = related;
+                self.set(field.name, null, options);
+                delete self.relatedCache[field.name.toLowerCase()];
                 return;
             }
             if (!(related instanceof api.Resource))
