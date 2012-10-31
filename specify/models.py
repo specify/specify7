@@ -7,7 +7,6 @@ appname = __name__.split('.')[-2]
 
 orderings = {
     'Recordsetitem': ('recordid', ),
-    'Taxontreedefitem': ('rankid', ),
 }
 
 cascade_delete = set([
@@ -17,14 +16,9 @@ cascade_delete = set([
 
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
-    class Meta:
-        db_table = tabledef.attrib['table']
-        if modelname in orderings:
-            ordering = orderings[modelname]
-
     attrs = dict(id=make_id_field(tabledef.find('id')),
                  tableid=int(tabledef.attrib['tableid']),
-                 Meta=Meta, __module__=__name__)
+                 __module__=__name__)
     for flddef in tabledef.findall('field'):
         fldname = flddef.attrib['name'].lower()
         fldtype = flddef.attrib['type']
@@ -42,6 +36,16 @@ def make_model(tabledef):
         relationship = make_relationship(modelname, relname, reldef)
         if relationship is not None:
             attrs[relname] = relationship
+
+    class Meta:
+        db_table = tabledef.attrib['table']
+        ordering = tuple()
+        if modelname in orderings:
+            ordering += orderings[modelname]
+        if 'rankid' in attrs:
+            ordering += ('rankid', )
+
+    attrs['Meta'] = Meta
     return type(modelname, (models.Model,), attrs)
 
 def make_id_field(flddef):
