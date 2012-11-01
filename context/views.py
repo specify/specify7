@@ -9,7 +9,7 @@ from specify.models import Collection
 
 from app_resource import get_app_resource
 
-from viewsets import viewsets
+from viewsets import viewsets, view
 from schema_localization import schema_localization
 
 def login(request):
