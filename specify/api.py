@@ -381,7 +381,8 @@ def get_collection(collection, model, params={}):
         # param is a related field
         filters.update({param: val})
     objs = model.objects.filter(**filters)
-    objs = filter_by_collection(objs, collection)
+    if do_domain_filter:
+        objs = filter_by_collection(objs, collection)
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):
