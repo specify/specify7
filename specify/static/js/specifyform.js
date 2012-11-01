@@ -82,6 +82,12 @@ define([
         return wrapper;
     }
 
+    function getSubViewDef(node) {
+        node = $(node);
+        var subview = findView(node.data('specify-viewname'));
+        return getDefaultViewdef(subview, node.data('specify-viewtype'));
+    }
+
     var specifyform = {
         parseSpecifyProperties: parseSpecifyProperties,
 
@@ -89,54 +95,21 @@ define([
             return schema.getModel(getModelFromView(viewName));
         },
 
-        relatedObjectsForm: function(modelName, fieldName, viewdef) {
-            if (!viewdef) {
-                var related = schema.getModel(modelName).getField(fieldName).getRelatedModel();
-                if (!related.view) throw new Error('no default view for ' + related.name);
-                viewdef = getDefaultViewdef(findView(related.view)).attr('name');
-            }
-            return $(templates.relatedobjectsform({
-                model: modelName, field: fieldName, viewdef: viewdef
-            }));
-        },
-
-        recordSetForm: function(model) {
-            var viewdef = getDefaultViewdef(findView(model.view)).attr('name');
-            return $(templates.recordsetform({ viewdef: viewdef }));
-        },
-
         buildViewByName: function (viewName) {
             var view = findView(viewName);
-            if (view.length === 0) {
-                return $('<p>').text('View "' + viewName + '" not found!');
-            }
+            if (view.length === 0) throw new Error('view "' + viewName + '" not found');
             return buildView(getDefaultViewdef(view));
         },
 
-        buildViewByViewDefName: function (viewDefName) {
-            var view = findViewdef(viewDefName);
-            return view.length ? buildView(view) : undefined;
-        },
-
-        getSubViewDef: function (node) {
-            node = $(node);
-            if (node.data('specify-viewdef'))
-                return findViewdef(node.data('specify-viewdef'));
-
-            var subview = findView(node.data('specify-viewname'));
-            var viewdef = getDefaultViewdef(subview, node.data('specify-viewtype'));
-            return findViewdef(viewdef.attr('name'));
-        },
-
         buildSubView: function (node) {
-            var view = specifyform.getSubViewDef(node);
-            if (!view.length) return;
-            return buildView(view).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
+            var viewdef = getSubViewDef(node);
+            if (!viewdef.length) return;
+            return buildView(viewdef).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
         },
 
         subViewIsFormTable: function (node) {
-            var view = specifyform.getSubViewDef(node);
-            return view.length && view.attr('type') === 'formtable';
+            var viewdef = getSubViewDef(node);
+            return viewdef.length && viewdef.attr('type') === 'formtable';
         },
 
         isSubViewButton: function (node) {
