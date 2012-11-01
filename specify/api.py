@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from specify import models
 from specify.autonumbering import autonumber
+from specify.filter_by_col import filter_by_collection
 
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
@@ -105,8 +106,9 @@ def resource_dispatch(request, model, id):
 @csrf_exempt
 def collection(request, model):
     if request.method == 'GET':
-        resp = HttpResponse(toJson(get_collection(model, request.GET)),
-                            content_type='application/json')
+        data = get_collection(request.specify_collection,
+                              model, request.GET)
+        resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
@@ -356,14 +358,16 @@ def field_to_val(obj, field):
     else:
         return getattr(obj, field.name)
 
-def get_collection(model, params={}):
+def get_collection(collection, model, params={}):
     if isinstance(model, basestring):
         model = get_model_or_404(model)
     offset = 0
     limit = 20
     filters = {}
+    do_domain_filter = False
     for param, val in params.items():
         if param == 'domainfilter':
+            do_domain_filter = True
             continue
 
         if param == 'limit':
@@ -377,6 +381,7 @@ def get_collection(model, params={}):
         # param is a related field
         filters.update({param: val})
     objs = model.objects.filter(**filters)
+    objs = filter_by_collection(objs, collection)
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):
