@@ -98,17 +98,18 @@ define([
         search: function(event, ui) {
             event.preventDefault();
             var dialogDef = $('dialog[type="search"][name="' + this.relatedModel.searchDialog + '"]', dialogdefs);
-            var form = $(specifyform.buildViewByName(dialogDef.attr('view')));
-            localizeForm(form);
-            form.find('.specify-form-header, input[value="Delete"], :submit').remove();
-            $('<div title="Search">').append(form).dialog({
-                width: 'auto',
-                buttons: [
-                    { text: "Search", click: function() {} }
-                ],
-                close: function() {
-                    $(this).remove();
-                }
+            specifyform.buildViewByName(dialogDef.attr('view')).done(function(form) {
+                localizeForm(form);
+                form.find('.specify-form-header, input[value="Delete"], :submit').remove();
+                $('<div title="Search">').append(form).dialog({
+                    width: 'auto',
+                    buttons: [
+                        { text: "Search", click: function() {} }
+                    ],
+                    close: function() {
+                        $(this).remove();
+                    }
+                });
             });
         },
         add: function(event, ui) {
@@ -121,42 +122,43 @@ define([
         },
         buildDialog: function(resource) {
             var self = this;
-            var dialogForm = specifyform.buildViewByName(resource.specifyModel.view);
-            dialogForm.find('.specify-form-header:first').remove();
+            specifyform.buildViewByName(resource.specifyModel.view).done(function(dialogForm) {
+                dialogForm.find('.specify-form-header:first').remove();
 
-            var saveButton = new SaveButton({ model: resource });
-            saveButton.render().$el.appendTo(dialogForm);
-            saveButton.on('savecomplete', function() {
-                dialog.dialog('close');
-                self.model.setToOneField(self.fieldName, resource);
-            });
-
-            var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
-
-            if (!resource.isNew()) {
-                var deleteButton = new DeleteButton({ model: resource });
-                deleteButton.render().$el.appendTo(dialogForm);
-                deleteButton.on('deleted', function() {
-                    self.model.setToOneField(self.fieldName, null);
+                var saveButton = new SaveButton({ model: resource });
+                saveButton.render().$el.appendTo(dialogForm);
+                saveButton.on('savecomplete', function() {
                     dialog.dialog('close');
+                    self.model.setToOneField(self.fieldName, resource);
                 });
 
-                title = '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                    + title;
-            }
+                var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
 
-            self.options.populateform(dialogForm, resource);
+                if (!resource.isNew()) {
+                    var deleteButton = new DeleteButton({ model: resource });
+                    deleteButton.render().$el.appendTo(dialogForm);
+                    deleteButton.on('deleted', function() {
+                        self.model.setToOneField(self.fieldName, null);
+                        dialog.dialog('close');
+                    });
 
-            var dialog = $('<div>').append(dialogForm).dialog({
-                width: 'auto',
-                title: title,
-                close: function() { $(this).remove(); }
-            });
+                    title = '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                        + title;
+                }
 
-            dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                evt.preventDefault();
-                navigation.go(resource.viewUrl());
-                dialog.dialog('close');
+                self.options.populateform(dialogForm, resource);
+
+                var dialog = $('<div>').append(dialogForm).dialog({
+                    width: 'auto',
+                    title: title,
+                    close: function() { $(this).remove(); }
+                });
+
+                dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                    evt.preventDefault();
+                    navigation.go(resource.viewUrl());
+                    dialog.dialog('close');
+                });
             });
         },
         edit: function(event, ui) {

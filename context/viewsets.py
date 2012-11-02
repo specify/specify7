@@ -62,9 +62,13 @@ def view(request):
 
 def get_viewdef(viewset, view, viewtype="form", mode="edit"):
 
+    xpath_any  = lambda altview: 'viewdefs/viewdef[@name="%s"]' % altview.attrib['viewdef']
+    xpath_type = lambda altview: xpath_any(altview) + '[@type="%s"]' % viewtype
+
     matches = ((viewdef, altview.attrib['name'])
                for altview in view.findall('altviews/altview[@mode="%s"]' % mode)
-               for viewdef in viewset.findall('viewdefs/viewdef[@name="%s"][@type="%s"]' % (altview.attrib['viewdef'], viewtype)))
+               for xpath in (xpath_type, xpath_any)
+               for viewdef in viewset.findall(xpath(altview)))
 
     try:
         viewdef, altview = matches.next()
@@ -74,12 +78,14 @@ def get_viewdef(viewset, view, viewtype="form", mode="edit"):
 
     definition = viewdef.find('definition')
     if definition is not None:
-        viewdef = viewset.find('viewdefs/viewdef[@name="%s"]' % definition.text)
-        if viewdef is None:
+        definition_viewdef = viewset.find('viewdefs/viewdef[@name="%s"]' % definition.text)
+        if definition_viewdef is None:
             raise Http404("no viewdef: %s for definition of viewdef: %s" % (
                     definition.text, viewdef.attrib['name']))
+    else:
+        definition_viewdef = None
 
-    return viewdef, altview
+    return altview, viewdef, definition_viewdef
 
 def get_view(collection, user, viewname, viewtype="form", mode="edit"):
 
@@ -94,8 +100,10 @@ def get_view(collection, user, viewname, viewtype="form", mode="edit"):
         raise Http404("view: %s not found" % viewname)
 
     data = view.attrib.copy()
-    viewdef, altview = get_viewdef(viewset, view, viewtype, mode)
+    altview, viewdef, definition = get_viewdef(viewset, view, viewtype, mode)
     data['viewdef'] = ElementTree.tostring(viewdef)
+    if definition:
+        data['viewdefDefinition'] = ElementTree.tostring(definition)
     data['altviewName'] = altview
     data['viewsetName'] = viewset.attrib['name']
     data['viewsetLevel'] = level

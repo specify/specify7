@@ -49,7 +49,6 @@ define([
         render: function() {
             var self = this;
             self.$el.empty();
-            var form = specifyform.buildViewByName(self.model.specifyModel.view);
             self.header = $(templates.viewheader({
                 viewTitle: self.model.specifyModel.getLocalizedName(),
                 recordsetInfo: self.recordsetInfo,
@@ -57,12 +56,14 @@ define([
                 prevUrl: self.prev && self.prev.viewUrl(),
                 nextUrl: self.next && self.next.viewUrl()
             }));
-            populateForm(form, self.model);
-            form.find('.specify-form-header').replaceWith(self.header);
-            self.$el.append(form);
-            self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
-            self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
-            self.setTitle();
+            specifyform.buildViewByName(self.model.specifyModel.view).done(function(form) {
+                populateForm(form, self.model);
+                form.find('.specify-form-header').replaceWith(self.header);
+                self.$el.append(form);
+                self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
+                self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
+                self.setTitle();
+            });
             return self;
         },
         setTitle: function () {

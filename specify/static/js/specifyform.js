@@ -66,19 +66,19 @@ define([
         return $(templates.form({ formNumber: formNumber })).find('form').append(table).end();
     }
 
-    function buildView(viewdef) {
+    function buildView(view) {
+        var viewdef = $($.parseXML(view.viewdef)).find('viewdef');
+        var definition = view.viewdefDefinition ?
+            $($.parseXML(view.viewdefDefinition)).find('viewdef')
+            : viewdef;
+
         var formNumber = formCounter++;
-        var doingFormTable = (viewdef.attr('type') === 'formtable');
+        var doingFormTable = viewdef.attr('type') === 'formtable';
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable);
 
-        var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(viewdef) }));
+        var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(definition) }));
 
-        if (doingFormTable) {
-            var formViewdef = findViewdef(viewdef.find('definition').text());
-            buildFormTable(formNumber, formViewdef, processCell).appendTo(wrapper);
-        } else {
-            buildForm(formNumber, viewdef, processCell).appendTo(wrapper);
-        }
+        (doingFormTable ? buildFormTable : buildForm)(formNumber, definition, processCell).appendTo(wrapper);
         return wrapper;
     }
 
@@ -86,6 +86,14 @@ define([
         node = $(node);
         var subview = findView(node.data('specify-viewname'));
         return getDefaultViewdef(subview, node.data('specify-viewtype'));
+    }
+
+    function getView(viewName, type, mode) {
+        return $.getJSON('/context/view.json', {
+            view: viewName,
+            type: type || 'form',
+            mode: mode || 'edit'
+        });
     }
 
     var specifyform = {
@@ -96,20 +104,20 @@ define([
         },
 
         buildViewByName: function (viewName) {
-            var view = findView(viewName);
-            if (view.length === 0) throw new Error('view "' + viewName + '" not found');
-            return buildView(getDefaultViewdef(view));
+            return getView(viewName).pipe(buildView);
         },
 
         buildSubView: function (node) {
-            var viewdef = getSubViewDef(node);
-            if (!viewdef.length) return;
-            return buildView(viewdef).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
+            return getView(
+                node.data('specify-viewname'),
+                specifyform.subViewIsFormTable(node) ? 'formtable' : 'form'
+            ).pipe(function(view) {
+                return buildView(view).find('.specify-form-header:first, :submit, :button[value="Delete"]').remove().end();
+            });
         },
 
         subViewIsFormTable: function (node) {
-            var viewdef = getSubViewDef(node);
-            return viewdef.length && viewdef.attr('type') === 'formtable';
+            return node.data('specify-viewtype') === 'table';
         },
 
         isSubViewButton: function (node) {

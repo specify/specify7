@@ -24,9 +24,10 @@ define([
                 self.$('.specify-add-related').remove();
             }
 
-            var form = specifyform.buildSubView(self.$el);
-            self.options.populateform(form, self.model);
-            self.$el.append(form);
+            specifyform.buildSubView(self.$el).done(function(form) {
+                self.options.populateform(form, self.model);
+                self.$el.append(form);
+            });
             return self;
         },
         add: function() {
