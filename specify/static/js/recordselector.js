@@ -10,6 +10,7 @@ define([
     return Backbone.View.extend({
         initialize: function(options) {
             var self = this;
+            self.form = self.options.form;
 
             self.field = options.field;
             if (self.field && !self.collection.parent)
@@ -75,38 +76,35 @@ define([
 
             // we build the form and add it to the DOM immediately so that if it is
             // embedded in a dialog it will be sized properly
-            self.buildSubView().done(function(form) {
-                self.form = form;
-                self.content = $('<div>').appendTo(self.el).append(self.form.clone());
+            self.content = $('<div>').appendTo(self.el).append(self.form.clone());
 
-                self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
-                self.sliderAtTop || self.$el.append(self.slider);
+            self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
+            self.sliderAtTop || self.$el.append(self.slider);
 
-                if (header) {
-                    header.find('.specify-add-related').click(_.bind(self.add, self));
-                    header.find('.specify-delete-related').click(_.bind(self.delete, self));
-                } else {
-                    $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
-                    $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
-                }
+            if (header) {
+                header.find('.specify-add-related').click(_.bind(self.add, self));
+                header.find('.specify-delete-related').click(_.bind(self.delete, self));
+            } else {
+                $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
+                $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
+            }
 
-                self.slider.slider({
-                    max: self.collection.length - 1,
-                    stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),
-                    slide: function(event, ui) { self.onSlide(ui.value); }
-                });
-                self.slider.find('.ui-slider-handle').
-                    css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
-                    text(1);
-
-                var params = $.deparam.querystring(true);
-                var index = params[self.urlParam] || 0;
-                index === 'end' && (index = self.collection.length - 1);
-
-                self.slider.slider('value', index);
-                self.fetchThenRedraw(index) || self.redraw(index);
-                self.showHide();
+            self.slider.slider({
+                max: self.collection.length - 1,
+                stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),
+                slide: function(event, ui) { self.onSlide(ui.value); }
             });
+            self.slider.find('.ui-slider-handle').
+                css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
+                text(1);
+
+            var params = $.deparam.querystring(true);
+            var index = params[self.urlParam] || 0;
+            index === 'end' && (index = self.collection.length - 1);
+
+            self.slider.slider('value', index);
+            self.fetchThenRedraw(index) || self.redraw(index);
+            self.showHide();
             return self;
         },
         onSlide: function(offset) {

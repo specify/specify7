@@ -9,6 +9,18 @@ api, PickList, UIField, QueryCbx, uiplugins, \
 RecordSelector, SubViewButton, FormTable, \
 SubView, CheckBox, TreeLevelPickList) ->
 
+    MultiView = Backbone.View.extend
+        render: -> specifyform.buildSubView(@$el).done (form) =>
+            @options.form = form
+
+            View = if form.hasClass 'specify-form-type-formtable'
+                FormTable
+            else
+                RecordSelector
+
+            new View(@options).render()
+
+
     populateField = (resource, control) ->
         getView = _(
             ':checkbox': -> CheckBox
@@ -48,9 +60,8 @@ SubView, CheckBox, TreeLevelPickList) ->
 
                     if specifyform.isSubViewButton node
                         SubViewButton.ToMany
-                    else if specifyform.subViewIsFormTable node
-                        FormTable
-                    else RecordSelector
+                    else
+                        MultiView
 
                 when 'zero-to-one', 'many-to-one'
                     viewOptions.model = related

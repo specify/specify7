@@ -29,19 +29,16 @@ define([
                 return;
             }
 
-            self.form || (self.form = specifyform.buildSubView(self.$el));
+            var rows = self.collection.map(function(resource, index) {
+                var form = self.options.form.clone();
+                var url = resource.viewUrl();
+                $('a.specify-edit', form).data('index', index);
+                return self.options.populateform(form, resource);
+            });
 
-            self.form.done(function(formOrig) {
-                var rows = self.collection.map(function(resource, index) {
-                    var form = formOrig.clone();
-                    var url = resource.viewUrl();
-                    $('a.specify-edit', form).data('index', index);
-                    return self.options.populateform(form, resource);
-                });
-                self.$el.append(rows[0]);
-                _(rows).chain().tail().each(function(row) {
-                    self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
-                });
+            self.$el.append(rows[0]);
+            _(rows).chain().tail().each(function(row) {
+                self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
             });
         },
         edit: function(evt) {

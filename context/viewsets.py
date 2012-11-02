@@ -51,43 +51,11 @@ def view(request):
     else:
         collection = request.specify_collection
 
-    data = get_view(
-        collection,
-        request.specify_user,
-        request.GET['view'],
-        request.GET.get('type', "form"),
-        request.GET.get('mode', "edit"))
+    data = get_view(collection, request.specify_user, request.GET['name'])
 
     return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
-def get_viewdef(viewset, view, viewtype="form", mode="edit"):
-
-    xpath_any  = lambda altview: 'viewdefs/viewdef[@name="%s"]' % altview.attrib['viewdef']
-    xpath_type = lambda altview: xpath_any(altview) + '[@type="%s"]' % viewtype
-
-    matches = ((viewdef, altview.attrib['name'])
-               for altview in view.findall('altviews/altview[@mode="%s"]' % mode)
-               for xpath in (xpath_type, xpath_any)
-               for viewdef in viewset.findall(xpath(altview)))
-
-    try:
-        viewdef, altview = matches.next()
-    except StopIteration:
-        raise Http404("no viewdef matching view: %s with mode: %s and type: %s" % (
-                view.attrib['name'], mode, viewtype))
-
-    definition = viewdef.find('definition')
-    if definition is not None:
-        definition_viewdef = viewset.find('viewdefs/viewdef[@name="%s"]' % definition.text)
-        if definition_viewdef is None:
-            raise Http404("no viewdef: %s for definition of viewdef: %s" % (
-                    definition.text, viewdef.attrib['name']))
-    else:
-        definition_viewdef = None
-
-    return altview, viewdef, definition_viewdef
-
-def get_view(collection, user, viewname, viewtype="form", mode="edit"):
+def get_view(collection, user, viewname):
 
     matches = ((viewset, view, src, level)
                for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'))
@@ -99,12 +67,30 @@ def get_view(collection, user, viewname, viewtype="form", mode="edit"):
     except StopIteration:
         raise Http404("view: %s not found" % viewname)
 
+    altviews = view.findall('altviews/altview')
+
+    viewdefs = set((viewdef
+                    for altview in altviews
+                    for viewdef in viewset.findall('viewdefs/viewdef[@name="%s"]' % altview.attrib['viewdef'])))
+
+    def get_definition(viewdef):
+        definition = viewdef.find('definition')
+        if definition is None: return
+        definition_viewdef = viewset.find('viewdefs/viewdef[@name="%s"]' % definition.text)
+        if definition_viewdef is None:
+            raise Http404("no viewdef: %s for definition of viewdef: %s" % (
+                    definition.text, viewdef.attrib['name']))
+        return definition_viewdef
+
+    viewdefs.update(filter(None, [get_definition(viewdef) for viewdef in viewdefs]))
+
     data = view.attrib.copy()
-    altview, viewdef, definition = get_viewdef(viewset, view, viewtype, mode)
-    data['viewdef'] = ElementTree.tostring(viewdef)
-    if definition:
-        data['viewdefDefinition'] = ElementTree.tostring(definition)
-    data['altviewName'] = altview
+    data['altviews'] = dict((altview.attrib['name'], altview.attrib.copy())
+                            for altview in altviews)
+
+    data['viewdefs'] = dict((viewdef.attrib['name'], ElementTree.tostring(viewdef))
+                            for viewdef in viewdefs)
+
     data['viewsetName'] = viewset.attrib['name']
     data['viewsetLevel'] = level
     data['viewSetSource'] = source
