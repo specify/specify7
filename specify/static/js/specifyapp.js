@@ -49,6 +49,7 @@ define([
 
             welcome: function() {
                 setCurrentView(new WelcomeView());
+                window.document.title = 'Welcome | Specify WebApp'
             },
 
             esearch: function() {

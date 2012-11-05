@@ -35,6 +35,7 @@ class MainSetupTearDown:
 
         self.collection = models.Collection.objects.create(
             catalognumformatname='test',
+            collectionname='TestCollection',
             isembeddedcollectingevent=False,
             discipline=self.discipline)
 
@@ -42,7 +43,7 @@ class MainSetupTearDown:
             isloggedin=False,
             isloggedinreport=False,
             name="testuser",
-            password="testuser")
+            password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C") # testuser
 
         self.agent = models.Agent.objects.create(
             agenttype=0,
