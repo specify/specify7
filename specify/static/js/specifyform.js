@@ -92,8 +92,8 @@ define([
             return schema.getModel(getModelFromView(viewName));
         },
 
-        buildViewByName: function (viewName) {
-            return getView(viewName).pipe(buildView);
+        buildViewByName: function (viewName, defaultType) {
+            return getView(viewName).pipe(function(view) { return buildView(view, defaultType); });
         },
 
         buildSubView: function (node) {
