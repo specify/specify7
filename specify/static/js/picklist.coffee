@@ -75,9 +75,7 @@ define [
                     if not plModel then picklist.get 'picklistitems' else
                         # items come from another table
                         plItemCollection = new (api.Collection.forModel plModel)()
-                        plItemCollection.queryParams.limit = 0
-
-                        plItemCollection.fetch().pipe -> plItemCollection.map (item) ->
+                        plItemCollection.fetch(limit: 0).pipe -> plItemCollection.map (item) ->
                                 value: item.url()
                                 title: item.get 'name'
 

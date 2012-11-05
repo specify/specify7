@@ -19,8 +19,7 @@ define [
                 if not parentTreeDefItem then return _([])
                 children = new (parentTreeDefItem.constructor.collectionFor())()
                 children.queryParams.rankid__gt = parentTreeDefItem.get 'rankid'
-                children.limit = 0
-                children.fetch().pipe -> children
+                children.fetch(limit: 0).pipe -> children
 
             fetch.done (children) => if fetch is @lastFetch
                 children.each (child) =>

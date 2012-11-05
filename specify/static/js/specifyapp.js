@@ -60,10 +60,9 @@ define([
                 var recordSet = new (specifyapi.Resource.forModel('recordset'))({ id: id });
                 var recordSetItems = new (specifyapi.Collection.forModel('recordsetitem'))();
                 recordSetItems.queryParams.recordset = id;
-                recordSetItems.limit = 1;
 
                 function doIt() {
-                    $.when(recordSetItems.fetch({at: index}), recordSet.fetch()).done(function() {
+                    $.when(recordSetItems.fetch({at: index, limit: 1}), recordSet.fetch()).done(function() {
                         var recordsetitem = recordSetItems.at(index);
                         var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
                         if (!recordsetitem) {

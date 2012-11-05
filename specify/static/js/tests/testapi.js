@@ -564,10 +564,10 @@ define([
                 equal(collection.totalCount, 285);
                 equal(collection.length, collection.totalCount);
                 equal(collection.models.length, collection.length);
-                equal(collection.limit, 20);
-                ok(!collection.chain().first(collection.limit).any(_.isUndefined).value());
-                ok(collection.chain().tail(collection.limit).all(_.isUndefined).value());
-                equal(_(collection.models).compact().length, collection.limit);
+                equal(collection.meta.limit, 20);
+                ok(!collection.chain().first(collection.meta.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(collection.meta.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, collection.meta.limit);
                 start();
             });
         });
@@ -583,11 +583,11 @@ define([
                 equal(collection.totalCount, 285);
                 equal(collection.length, collection.totalCount);
                 equal(collection.models.length, collection.length);
-                equal(collection.limit, 20);
+                equal(collection.meta.limit, 20);
                 ok(collection.chain().first(at).all(_.isUndefined).value());
-                ok(!collection.chain().tail(at).first(collection.limit).any(_.isUndefined).value());
-                ok(collection.chain().tail(at+collection.limit).all(_.isUndefined).value());
-                equal(_(collection.models).compact().length, collection.limit);
+                ok(!collection.chain().tail(at).first(collection.meta.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(at+collection.meta.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, collection.meta.limit);
                 start();
             });
         });
@@ -603,12 +603,12 @@ define([
                 equal(collection.totalCount, 285);
                 equal(collection.length, collection.totalCount);
                 equal(collection.models.length, collection.length);
-                equal(collection.limit, 20);
-                ok(!collection.chain().first(collection.limit).any(_.isUndefined).value());
-                ok(collection.chain().first(at).tail(collection.limit).all(_.isUndefined).value());
-                ok(!collection.chain().tail(at).first(collection.limit).any(_.isUndefined).value());
-                ok(collection.chain().tail(at+collection.limit).all(_.isUndefined).value());
-                equal(_(collection.models).compact().length, 2*collection.limit);
+                equal(collection.meta.limit, 20);
+                ok(!collection.chain().first(collection.meta.limit).any(_.isUndefined).value());
+                ok(collection.chain().first(at).tail(collection.meta.limit).all(_.isUndefined).value());
+                ok(!collection.chain().tail(at).first(collection.meta.limit).any(_.isUndefined).value());
+                ok(collection.chain().tail(at+collection.meta.limit).all(_.isUndefined).value());
+                equal(_(collection.models).compact().length, 2*collection.meta.limit);
                 start();
             });});
         });
@@ -620,10 +620,10 @@ define([
             var collection = api.Collection.fromUri(url);
             collection.fetch().done(function() {
                 var totalCount = collection.length;
-                collection.fetch({at: totalCount + 10}).done(function() {
+                collection.fetch({limit: 20, at: totalCount + 10}).done(function() {
                     equal(collection.length, totalCount);
                     equal(collection.models.length, totalCount);
-                    equal(_(collection.models).compact().length, collection.limit);
+                    equal(_(collection.models).compact().length, collection.meta.limit);
                     start();
                 });
             });

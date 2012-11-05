@@ -23,8 +23,6 @@ define([
 
             self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
 
-            self.collection.limit = BLOCK_SIZE;
-
             self.collection.on('add', function() {
                 var end = self.collection.length - 1;
                 self.slider.slider('option', { max: end, value: end });
@@ -57,8 +55,7 @@ define([
             if (self.collection.isNew === true || self.collection.at(offset)) return null;
             self.collection.abortFetch();
             var at = offset - offset % BLOCK_SIZE;
-            self.collection.limit = BLOCK_SIZE;
-            self.request = self.collection.fetch({at: at}).done(function() {
+            self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
                 debug && console.log('got collection at offset ' + at);
                 request = null;
                 self.redraw(self.currentIndex());

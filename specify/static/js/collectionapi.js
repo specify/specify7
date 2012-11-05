@@ -19,8 +19,8 @@ define([
         parse: function(resp, xhr) {
             _.extend(this, {
                 populated: true,   // have data now
-                limit: resp.meta.limit,
                 totalCount: resp.meta.total_count,
+                meta: resp.meta
             });
             return resp.objects;
         },
@@ -47,7 +47,7 @@ define([
             options.at = _.isUndefined(options.at) ? self.length : options.at;
             options.data = options.data || _.extend({}, self.queryParams);
             options.data.offset = options.at;
-            if (_(self).has('limit')) options.data.limit = self.limit;
+            if (_(options).has('limit')) options.data.limit = options.limit;
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
             return self._fetch.then(function() { self._fetch = null; });
         },
