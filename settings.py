@@ -1,4 +1,5 @@
 import os
+import sys
 import specify_settings
 
 DEBUG = True
@@ -34,7 +35,11 @@ TESTING_DATABASES = {
     }
 }
 
-#DATABASES = TESTING_DATABASES
+if 'test' in sys.argv:
+    DATABASES = TESTING_DATABASES
+    FIREBUG_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firebug@software.joehewitt.com.xpi"
+    FIRESTARTER_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firestarter@getfirebug.com.xpi"
+
 
 SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
 
@@ -166,12 +171,16 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
