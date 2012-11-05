@@ -5,7 +5,6 @@ urlpatterns = patterns(
     'context.views',
     (r'^collection/$', 'collection'),
     (r'^domain.json$', 'domain'),
-    (r'^viewsets/(?P<level>\d+).xml$', 'viewsets'),
     (r'^view.json$', 'view'),
     (r'^schema_localization.json$', 'schema_localization'),
     (r'^app.resource$', 'app_resource'),

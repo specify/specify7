@@ -14,8 +14,6 @@ define [
 
     formsList = $.parseXML formsXML
 
-    urlForView = (view, recordsetid) ->
-
     FormsList = Backbone.View.extend
         render: ->
             @$el.empty()

@@ -16,35 +16,6 @@ import app_resource as AR
 
 @require_GET
 @login_required
-def viewsets(request, level):
-    """Returns an XML HTTP response containing the viewsets for a given level.
-    Level should be an integer representing the level of the hierarchy desired.
-    The user level is represented by 0. Backstop is represented by 5.
-    """
-    try:
-        # Change the level number into the level name.
-        level = AR.DIR_LEVELS[int(level)]
-    except IndexError:
-        raise Http404()
-
-    # Get the user and logged in collection from the request's session.
-    user = request.specify_user
-    collection = request.specify_collection
-
-    # Try to get viewsets from the database.
-    viewsets = list(get_viewsets_from_db(collection, user, level))
-
-    if len(viewsets) < 1:
-        # Try to get viewsets from the filesystem.
-        viewsets = load_viewsets(collection, user, level)
-
-    # Combine all the retrieved viewsets into a single XML document.
-    result = ElementTree.Element('viewsets')
-    for viewset in viewsets: result.append(viewset)
-    return HttpResponse(ElementTree.tostring(result), content_type="text/xml")
-
-@require_GET
-@login_required
 def view(request):
     if 'collectionid' in request.GET:
         collection = Collection.objects.get(id=request.GET['collectionid'])
