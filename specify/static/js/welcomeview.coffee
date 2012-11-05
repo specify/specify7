@@ -8,16 +8,16 @@ define [
     'navigation'
     'icons'
     'specifyform'
-    'text!context/app.resource?name=DataEntryTaskInit!noinline'
+    'cs!appresource'
     'jquery-bbq'
-], ($, _, Backbone, templates, api, schema, navigation, icons, specifyform, formsXML) ->
+], ($, _, Backbone, templates, api, schema, navigation, icons, specifyform, getAppResource) ->
 
-    formsList = $.parseXML formsXML
+    formsList = getAppResource 'DataEntryTaskInit'
 
     FormsList = Backbone.View.extend
         render: ->
             @$el.empty()
-            _.each $('view', formsList), (view) =>
+            formsList.done (forms) => _.each $('view', forms), (view) =>
                 @$el.append (new FormListItem el: '<li>', viewNode: view).render().el
             @
 

@@ -1,12 +1,12 @@
-define ['jquery', 'underscore', 'backbone', 'navigation',
+define ['jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource',
     'schema', 'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall',
-    'text!context/app.resource?name=ExpressSearchConfig!noinline',
     'text!context/available_related_searches.json!noinline',
     'text!properties/expresssearch_en.properties!noinline',
     'jquery-bbq', 'jquery-ui'
-], ($, _, Backbone, navigation, schema, api, fieldformat, props, whenAll, \
-configXML, availableRelatedJson, propstext) ->
-    config = $.parseXML configXML
+], ($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll, availableRelatedJson, propstext) ->
+
+    configFetch = getAppResource 'ExpressSearchConfig'
+
     relatedSearches = $.parseJSON availableRelatedJson
     getProp = _.bind props.getProperty, props, propstext
 
@@ -42,7 +42,7 @@ configXML, availableRelatedJson, propstext) ->
         searchTableOrder:
             (searchTable) -> parseInt $('displayOrder', searchTable).text(), 10
 
-        showResults: (results) ->
+        showResults: (results) -> configFetch.done (config) =>
             totalResults = _.chain($ 'tables > searchtable', config) \
                 .sortBy(@searchTableOrder) \
                 .map(_.bind @showResultsForTable, @, results) \

@@ -16,7 +16,8 @@ define([
             this.otherSideName = this.node.attr('othersidename');
             this.relatedModelName = this.node.attr('classname').split('.').pop();
         }
-        this._localization = this.model._localization.items[this.name.toLowerCase()];
+        this._localization = this.model._localization &&
+            this.model._localization.items[this.name.toLowerCase()];
     };
 
     _.extend(schema.Field.prototype, {

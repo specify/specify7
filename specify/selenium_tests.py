@@ -16,6 +16,7 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         profile.set_preference('extensions.firebug.allPagesActivation', 'on')
         profile.set_preference('extensions.firebug.previousPlacement', 1)
         profile.set_preference('extensions.firebug.onByDefault', True)
+        profile.set_preference('extensions.firebug.showFirstRunPage', False)
         profile.set_preference('extensions.firebug.defaultPanelName', 'net')
         profile.set_preference('extensions.firebug.net.enableSites', True)
         profile.set_preference('extensions.firebug.console.enableSites', True)
