@@ -33,7 +33,7 @@ require([
     'tests/testapi',
     'tests/testschema',
     'tests/testparseselect',
-    'tests/testuiformatters',
+//    'tests/testuiformatters',
     'tests/testuiparse',
     'tests/testforms',
     'cs!tests/testbusinessrules',

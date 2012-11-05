@@ -1,10 +1,3 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from django.test import TestCase, TransactionTestCase
 from django.db.models import Max
 from specify import api, models
@@ -68,7 +61,7 @@ class ApiTests(MainSetupTearDown, TestCase): pass
 
 class SimpleApiTests(ApiTests):
     def test_get_collection(self):
-        data = api.get_collection('collectionobject')
+        data = api.get_collection(self.collection, 'collectionobject')
         self.assertEqual(data['meta']['total_count'], len(self.collectionobjects))
         self.assertEqual(len(data['objects']), len(self.collectionobjects))
         ids = [obj['id'] for obj in data['objects']]
@@ -200,7 +193,7 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        rsis = api.get_collection('recordsetitem', {
+        rsis = api.get_collection(self.collection, 'recordsetitem', {
                 'recordset': self.recordset.id})
 
         result_ids = [rsi['recordid'] for rsi in rsis['objects']]

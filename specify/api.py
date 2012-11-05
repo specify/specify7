@@ -358,7 +358,7 @@ def field_to_val(obj, field):
     else:
         return getattr(obj, field.name)
 
-def get_collection(collection, model, params={}):
+def get_collection(logged_in_collection, model, params={}):
     if isinstance(model, basestring):
         model = get_model_or_404(model)
     offset = 0
@@ -382,7 +382,7 @@ def get_collection(collection, model, params={}):
         filters.update({param: val})
     objs = model.objects.filter(**filters)
     if do_domain_filter:
-        objs = filter_by_collection(objs, collection)
+        objs = filter_by_collection(objs, logged_in_collection)
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):

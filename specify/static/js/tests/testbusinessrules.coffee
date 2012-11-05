@@ -125,9 +125,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
         expect 3
         stop()
         collectionobject = getCollectionObject 100, ->
-            collectionobject.on 'saveblocked:catalognumber', (resource) ->
+            collectionobject.on 'saveblocked:catalognumber', (blocker) ->
                 ok true, 'save is blocked by catalognumber'
-                blockers = resource.saveBlockers.blockersForField 'catalognumber'
+                blockers = blocker.resource.saveBlockers.blockersForField 'catalognumber'
                 equal blockers.length, 1, 'only one blocker'
                 ok blockers[0].reason, 'reason is given'
                 start()
@@ -203,7 +203,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
         expect 4
         stop()
         institution = new (api.Resource.forModel 'institution')()
-        checkReason = (resource, blocker) ->
+        checkReason = (blocker) ->
                 ok (_.isString blocker.reason), blocker.reason
 
         whenAll([
@@ -232,7 +232,7 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             newcollector = new (api.Resource.forModel 'collector')()
             newcollector.set 'collectingevent', collectingevent.url()
 
-            requireEvent(newcollector, 'saveblocked:agent', 'saveblocked').done (resource, blocker) ->
+            requireEvent(newcollector, 'saveblocked:agent', 'saveblocked').done (blocker) ->
                 ok _.isString(blocker.reason), blocker.reason
                 whenAll([
                     requireEvent newcollector, 'nosaveblockers:agent'
