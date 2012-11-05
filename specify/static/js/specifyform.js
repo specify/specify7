@@ -87,10 +87,7 @@ define([
 
     var specifyform = {
         parseSpecifyProperties: parseSpecifyProperties,
-
-        getModelForView: function(viewName) {
-            return schema.getModel(getModelFromView(viewName));
-        },
+        getView: getView,
 
         buildViewByName: function (viewName, defaultType) {
             return getView(viewName).pipe(function(view) { return buildView(view, defaultType); });
@@ -98,8 +95,10 @@ define([
 
         buildSubView: function (node) {
             var defaultType = node.data('specify-viewtype') === 'table' ? 'formtable' : 'form';
-            return getView(node.data('specify-viewname')).pipe(function(view) {
-                var form = buildView(view, defaultType);
+            var viewName = node.data('specify-viewname');
+            var buildView = specifyform.buildViewByName(viewName, defaultType)
+
+            return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
                 return form;
             });
