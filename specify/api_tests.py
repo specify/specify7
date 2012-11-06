@@ -47,6 +47,9 @@ class MainSetupTearDown:
 
         self.agent = models.Agent.objects.create(
             agenttype=0,
+            firstname="Test",
+            lastname="User",
+            division=self.division,
             specifyuser=self.specifyuser)
 
         self.collectionobjects = [

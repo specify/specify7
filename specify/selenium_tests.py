@@ -35,7 +35,7 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.selenium.quit()
+        #cls.selenium.quit()
         super(SeleniumTests, cls).tearDownClass()
 
     def setUp(self):
@@ -52,8 +52,17 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         super(SeleniumTests, self).tearDown()
         del self.schema_localization_cache[self.discipline]
 
+    def selenium_wait(self):
+        return WebDriverWait(self.selenium, 10)
+
     def test_login(self):
         self.selenium.get(self.live_server_url)
+        self.do_login()
+
+        self.selenium_wait().until(
+            lambda driver: driver.title.lower().startswith("welcome"))
+
+    def do_login(self):
         username_input = self.selenium.find_element_by_name('username')
         password_input = self.selenium.find_element_by_name('password')
         collection_input = self.selenium.find_element_by_name('collection_id')
@@ -63,20 +72,63 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         password_input.send_keys(self.specifyuser.name) # assume testuser has same username and password
         submit.submit()
 
-        WebDriverWait(self.selenium, 10).until(
-            lambda driver: driver.title.lower().startswith("welcome"))
-
-    def test_new_collection_object(self):
-        self.test_login()
-        self.selenium.get(self.live_server_url + '/specify/view/collectionobject/new/')
-
-        WebDriverWait(self.selenium, 10).until(
-            lambda driver: driver.title.lower().startswith('new'))
-
     def test_new_collection_object_wo_schema_localization(self):
         del self.schema_localization_cache[self.discipline]
-        self.test_login()
         self.selenium.get(self.live_server_url + '/specify/view/collectionobject/new/')
+        self.do_login()
 
-        WebDriverWait(self.selenium, 10).until(
+        self.selenium_wait().until(
             lambda driver: driver.title.lower().startswith('new'))
+
+    def test_new_collection_object(self):
+        self.selenium.get(self.live_server_url + '/specify/view/collectionobject/new/')
+        self.do_login()
+
+        self.selenium_wait().until(
+            lambda driver: driver.title.lower().startswith('new'))
+
+        self.selenium.find_element_by_name('catalogNumber').clear()
+        self.selenium.find_element_by_name('catalogNumber').send_keys('1234')
+
+        # set cataloger
+        self.selenium.find_element_by_name('cataloger').send_keys('user')
+
+        def get_test_user_autocomplete(driver):
+            return driver.execute_script('''return $('a:contains("User"):visible')[0]''')
+
+        self.selenium_wait().until(get_test_user_autocomplete)
+
+        get_test_user_autocomplete(self.selenium).click()
+
+
+        # add determination
+        self.selenium.execute_script(
+            '''return $('[data-specify-field-name="determinations"] a.specify-add-related')[0]'''
+            ).click()
+
+        self.selenium_wait().until(
+            lambda driver: driver.execute_script('''
+                return $('[data-specify-field-name="determinations"] p:contains("nothing here"):hidden')[0]
+            '''))
+
+        # set determiner
+        self.selenium.find_element_by_name('determiner').send_keys('user')
+
+        self.selenium_wait().until(get_test_user_autocomplete)
+
+        get_test_user_autocomplete(self.selenium).click()
+
+        #self.selenium.execute_script('''return $('label:contains("Cat Date")')[0]''').click()
+        #self.selenium.send_keys('2012-11-06')
+
+        # save the form
+        self.selenium.find_elements_by_class_name("save-button")[0].click()
+
+        self.selenium_wait().until(
+            lambda driver: 'new' not in driver.title)
+
+        self.selenium_wait().until(
+            lambda driver: driver.find_elements_by_class_name("save-button"))
+
+
+
