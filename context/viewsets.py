@@ -53,7 +53,7 @@ def get_view(collection, user, viewname):
                     definition.text, viewdef.attrib['name']))
         return definition_viewdef
 
-    viewdefs.update(filter(None, [get_definition(viewdef) for viewdef in viewdefs]))
+    viewdefs.update(filter(lambda e: e is not None, [get_definition(viewdef) for viewdef in viewdefs]))
 
     data = view.attrib.copy()
     data['altviews'] = dict((altview.attrib['name'], altview.attrib.copy())

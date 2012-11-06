@@ -43,7 +43,7 @@ def get_app_resource(collection, user, resource_name):
     return None
 
 def get_usertype(user):
-    return user and user.usertype.replace(' ', '').lower()
+    return user and user.usertype and user.usertype.replace(' ', '').lower()
 
 def load_resource_at_level(collection, user, level, resource_name):
     """Try to load a resource from the filesystem at a given
@@ -62,7 +62,7 @@ def get_path_for_level(collection, user, level):
     usertype = get_usertype(user)
 
     paths = {
-        'UserType'  : (discipline_dir, usertype) if discipline_dir else None,
+        'UserType'  : (discipline_dir, usertype) if discipline_dir and usertype else None,
         'Discipline': (discipline_dir,)          if discipline_dir else None,
         'Common'    : ('common'      ,),
         'Backstop'  : ('backstop'    ,)}

@@ -17,7 +17,7 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         profile.set_preference('extensions.firebug.previousPlacement', 1)
         profile.set_preference('extensions.firebug.onByDefault', True)
         profile.set_preference('extensions.firebug.showFirstRunPage', False)
-        profile.set_preference('extensions.firebug.defaultPanelName', 'net')
+        profile.set_preference('extensions.firebug.defaultPanelName', 'console')
         profile.set_preference('extensions.firebug.net.enableSites', True)
         profile.set_preference('extensions.firebug.console.enableSites', True)
 
@@ -28,6 +28,14 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
     def tearDownClass(cls):
         #cls.selenium.quit()
         super(SeleniumTests, cls).tearDownClass()
+
+    def setUp(self):
+        super(SeleniumTests, self).setUp()
+
+        # some views are not defined above the discipline level
+        self.discipline.type = "fish"
+        self.discipline.save()
+
 
     def test_login(self):
         self.selenium.get(self.live_server_url)
@@ -42,4 +50,12 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
 
         WebDriverWait(self.selenium, 10).until(
             lambda driver: driver.title.lower().startswith("welcome"))
+
+    def test_new_collection_object(self):
+        self.test_login()
+        self.selenium.get(self.live_server_url + '/specify/view/collectionobject/new/')
+
+        WebDriverWait(self.selenium, 10).until(
+            lambda driver: driver.title.lower().startswith('new'))
+
 

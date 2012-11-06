@@ -26,23 +26,23 @@ define([
             return schema.getModel(this.relatedModelName);
         },
         getLocalizedName: function() {
-            return schema.unescape(this._localization.name);
+            return this._localization && schema.unescape(this._localization.name);
         },
         getLocalizedDesc: function() {
-            return schema.unescape(this._localization.desc);
+            return this._localization && schema.unescape(this._localization.desc);
         },
         getFormat: function() {
-            return this._localization.format;
+            return this._localization && this._localization.format;
         },
         getUIFormatter: function() {
             var format = this.getFormat();
             return format && uiformatters.getByName(format);
         },
         getPickList: function() {
-            return this._localization.picklistname;
+            return this._localization && this._localization.picklistname;
         },
         isRequiredBySchemaLocalization: function() {
-            return this._localization.isrequired;
+            return this._localization && this._localization.isrequired;
         },
         isDependent: function() {
             return this._localization && this._localization.isdependent;

@@ -1,16 +1,16 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
 
-Replace this with more appropriate tests for your application.
-"""
+from specify import models, api
+from specify.api_tests import ApiTests
+from context import viewsets
 
-from django.test import TestCase
+class ViewTests(ApiTests):
+    def setUp(self):
+        super(ViewTests, self).setUp()
 
+        # some views are not defined above the discipline level
+        self.discipline.type = "fish"
+        self.discipline.save()
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_get_view(self):
+        viewsets.get_view(self.collection, self.specifyuser, "CollectionObject")
+
