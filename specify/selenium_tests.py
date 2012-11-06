@@ -1,3 +1,5 @@
+import os
+
 from django.test import LiveServerTestCase
 from django.conf import settings
 
@@ -7,6 +9,13 @@ from selenium.webdriver.firefox.webdriver import WebDriver, FirefoxProfile
 from api_tests import MainSetupTearDown
 
 class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
+    import context
+    from context.schema_localization import schema_localization_cache
+
+    sl_path = os.path.dirname(context.__file__)
+    sl_filename = os.path.join(sl_path, 'data', 'schemalocalization.json')
+    sl = open(sl_filename).read()
+
     @classmethod
     def setUpClass(cls):
         profile = FirefoxProfile()
@@ -26,7 +35,7 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        #cls.selenium.quit()
+        cls.selenium.quit()
         super(SeleniumTests, cls).tearDownClass()
 
     def setUp(self):
@@ -36,6 +45,12 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         self.discipline.type = "fish"
         self.discipline.save()
 
+        # inject a schema localization into the cache to avoid having to load it into the db
+        self.schema_localization_cache[self.discipline] = self.sl
+
+    def tearDown(self):
+        super(SeleniumTests, self).tearDown()
+        del self.schema_localization_cache[self.discipline]
 
     def test_login(self):
         self.selenium.get(self.live_server_url)
@@ -58,4 +73,10 @@ class SeleniumTests(MainSetupTearDown, LiveServerTestCase):
         WebDriverWait(self.selenium, 10).until(
             lambda driver: driver.title.lower().startswith('new'))
 
+    def test_new_collection_object_wo_schema_localization(self):
+        del self.schema_localization_cache[self.discipline]
+        self.test_login()
+        self.selenium.get(self.live_server_url + '/specify/view/collectionobject/new/')
 
+        WebDriverWait(self.selenium, 10).until(
+            lambda driver: driver.title.lower().startswith('new'))
