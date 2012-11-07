@@ -11,6 +11,7 @@ define([
         initialize: function(options) {
             var self = this;
             self.form = self.options.form;
+            self.readOnly = self.options.readOnly;
 
             self.field = options.field;
             if (self.field && !self.collection.parent)
@@ -20,8 +21,6 @@ define([
             self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
             self.sliderAtTop = _.isUndefined(options.sliderAtTop) ? self.$el.hasClass('slider-at-top') : options.sliderAtTop;
             self.urlParam = options.urlParam || self.$el.data('url-param');
-
-            self.buildSubView = options.buildSubView || function() { return specifyform.buildSubView(self.$el); };
 
             self.collection.on('add', function() {
                 var end = self.collection.length - 1;
@@ -64,6 +63,7 @@ define([
         },
         render: function() {
             var self = this;
+            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
             self.slider = $('<div>');
             var header = self.noHeader ? null : self.$el.append(templates.subviewheader());
@@ -79,9 +79,13 @@ define([
             self.sliderAtTop || self.$el.append(self.slider);
 
             if (header) {
-                header.find('.specify-add-related').click(_.bind(self.add, self));
-                header.find('.specify-delete-related').click(_.bind(self.delete, self));
-            } else {
+                if (self.readOnly) {
+                    header.find('.specify-add-related, .specify-delete-related').remove();
+                } else {
+                    header.find('.specify-add-related').click(_.bind(self.add, self));
+                    header.find('.specify-delete-related').click(_.bind(self.delete, self));
+                }
+            } else if (!self.readOnly) {
                 $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
                 $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
             }

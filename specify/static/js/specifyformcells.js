@@ -2,7 +2,7 @@ define([
     'jquery', 'underscore', 'specifyformfields', 'parsespecifyproperties', 'processcolumndef'
 ], function($, _, processField, parseSpecifyProperties, processColumnDef) {
     "use strict";
-    function processCell(formNumber, doingFormTable, cellNode) {
+    function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
         var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;
         var byType = {
@@ -11,7 +11,7 @@ define([
                 var fieldName = cell.attr('name');
                 var initialize = cell.attr('initialize');
                 var isRequired = cell.attr('isrequired');
-                processField(doingFormTable, cell, id).appendTo(td);
+                processField(doingFormTable, mode, cell, id).appendTo(td);
                 var control = td.find('.specify-field');
                 if (control) {
                     control.attr('name', fieldName);
@@ -40,7 +40,8 @@ define([
                 var td = $('<td class="specify-subview">').attr({
                     'data-specify-field-name': cell.attr('name'),
                     'data-specify-viewname': cell.attr('viewname'),
-                    'data-specify-viewtype': cell.attr('defaulttype')
+                    'data-specify-viewtype': cell.attr('defaulttype'),
+                    'data-specify-viewmode': mode
                 });
                 var props = parseSpecifyProperties(cell.attr('initialize'));
                 if (props.btn === 'true') {
@@ -58,7 +59,7 @@ define([
                 _(rows).each(function (row) {
                     var tr = $('<tr>').appendTo(table);
                     _(cells(row)).each(function(cell) {
-                        tr.append(processCell(formNumber, doingFormTable, cell));
+                        tr.append(processCell(formNumber, doingFormTable, mode, cell));
                     });
                 });
                 return $('<td>').append(table);

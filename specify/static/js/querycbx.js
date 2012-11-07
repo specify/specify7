@@ -13,7 +13,7 @@ define([
 
     var QueryCbx = Backbone.View.extend({
         events: {
-            'click .querycbx-edit': 'edit',
+            'click .querycbx-edit, .querycbx-display': 'display',
             'click .querycbx-add': 'add',
             'click .querycbx-search': 'search',
             'autocompleteselect': 'select',
@@ -31,7 +31,12 @@ define([
             self.setElement(querycbx);
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
-            control.prop('readonly') && self.$('a').hide();
+            self.readOnly = control.prop('readonly');
+            if (self.readOnly) {
+                self.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
+            } else {
+                self.$('.querycbx-display').hide();
+            }
             self.isRequired = self.$('input').is('.specify-required-field');
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
@@ -122,19 +127,22 @@ define([
         },
         buildDialog: function(resource) {
             var self = this;
-            specifyform.buildViewByName(resource.specifyModel.view).done(function(dialogForm) {
+            var mode = self.readOnly ? 'view' : 'edit';
+            specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
                 dialogForm.find('.specify-form-header:first').remove();
 
-                var saveButton = new SaveButton({ model: resource });
-                saveButton.render().$el.appendTo(dialogForm);
-                saveButton.on('savecomplete', function() {
-                    dialog.dialog('close');
-                    self.model.setToOneField(self.fieldName, resource);
-                });
+                if (!self.readOnly) {
+                    var saveButton = new SaveButton({ model: resource });
+                    saveButton.render().$el.appendTo(dialogForm);
+                    saveButton.on('savecomplete', function() {
+                        dialog.dialog('close');
+                        self.model.setToOneField(self.fieldName, resource);
+                    });
+                }
 
                 var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
 
-                if (!resource.isNew()) {
+                if (!resource.isNew() && !self.readOnly) {
                     var deleteButton = new DeleteButton({ model: resource });
                     deleteButton.render().$el.appendTo(dialogForm);
                     deleteButton.on('deleted', function() {
@@ -161,7 +169,7 @@ define([
                 });
             });
         },
-        edit: function(event, ui) {
+        display: function(event, ui) {
             var self = this;
             event.preventDefault();
             self.model.rget(self.fieldName, true).done(function(related) {

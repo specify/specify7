@@ -19,6 +19,7 @@ define([
         },
         render: function() {
             var self = this;
+            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
             var button = $('<a>').appendTo(self.el);
@@ -52,6 +53,7 @@ define([
                 evt.preventDefault();
                 var self = this;
                 if (self.dialog) return;
+                if (self.readOnly && self.collection.length < 1) return;
 
                 specifyform.buildSubView(self.$el).done(function(form) {
                     var recordSelector = new RecordSelector({
@@ -88,6 +90,8 @@ define([
             openDialog: function(evt) {
                 evt.preventDefault();
                 var self = this;
+                if (self.readOnly && !self.related) return;
+
                 specifyform.buildSubView(self.$el).done(function(dialogForm) {
 
                     dialogForm.find('.specify-form-header:first').remove();
@@ -113,15 +117,16 @@ define([
                             self.resourceChanged();
                         });
                     } else {
-                        var deleteButton = new DeleteButton({ model: self.related });
-                        deleteButton.render().$el.appendTo(dialogForm);
-                        deleteButton.on('deleted', function() {
-                            dialog.dialog('close');
-                            self.related = null;
-                            self.model.setToOneField(self.field.name, self.related, {silent: true});
-                            self.resourceChanged();
-                        });
-
+                        if (!self.readOnly) {
+                            var deleteButton = new DeleteButton({ model: self.related });
+                            deleteButton.render().$el.appendTo(dialogForm);
+                            deleteButton.on('deleted', function() {
+                                dialog.dialog('close');
+                                self.related = null;
+                                self.model.setToOneField(self.field.name, self.related, {silent: true});
+                                self.resourceChanged();
+                            });
+                        }
                         title = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
                             + title;
                     }

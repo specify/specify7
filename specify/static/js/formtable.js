@@ -4,7 +4,7 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click a.specify-edit': 'edit',
+            'click a.specify-edit, a.specify-display': 'edit',
             'click .specify-subview-header a.specify-add-related': 'add'
         },
         initialize: function(options) {
@@ -20,7 +20,10 @@ define([
         render: function() {
             var self = this;
             var header = $(templates.subviewheader());
+            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
+
             header.find('.specify-delete-related').remove();
+            if (self.readOnly) header.find('.specify-add-related').remove();
             self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
 
@@ -32,7 +35,8 @@ define([
             var rows = self.collection.map(function(resource, index) {
                 var form = self.options.form.clone();
                 var url = resource.viewUrl();
-                $('a.specify-edit', form).data('index', index);
+                $('a.specify-' + (self.readOnly ? 'edit' : 'display'), form).remove();
+                $('a.specify-edit, a.specify-display', form).data('index', index);
                 return self.options.populateform(form, resource);
             });
 
@@ -51,7 +55,9 @@ define([
             specifyform.buildViewByName(resource.specifyModel.view).done(function(dialogForm) {
                 dialogForm.find('.specify-form-header:first').remove();
 
-                if (self.collection.dependent) {
+                if (self.readOnly) {
+                    // don't add anything.
+                } else if (self.collection.dependent) {
                     $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
                     });

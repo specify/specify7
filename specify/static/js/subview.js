@@ -16,6 +16,9 @@ define([
             var self = this;
             self.$el.empty().append(templates.subviewheader());
             self.$('.specify-subview-title').text(self.title);
+            if (specifyform.subViewMode(self.$el) === 'view') {
+                self.$('.specify-delete-related, .specify-add-related').remove();
+            }
             if (!self.model) {
                 self.$('.specify-delete-related').remove();
                 self.$el.append('<p>none...</p>');

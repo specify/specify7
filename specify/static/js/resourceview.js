@@ -56,7 +56,7 @@ define([
                 prevUrl: self.prev && self.prev.viewUrl(),
                 nextUrl: self.next && self.next.viewUrl()
             }));
-            specifyform.buildViewByName(self.model.specifyModel.view).done(function(form) {
+            specifyform.buildViewByName(self.model.specifyModel.view, null).done(function(form) {
                 populateForm(form, self.model);
                 form.find('.specify-form-header').replaceWith(self.header);
                 self.$el.append(form);

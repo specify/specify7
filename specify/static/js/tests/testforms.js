@@ -9,7 +9,7 @@ define([
 
         function instProcessCell(doingFormTable, node) {
             var cell = $(node);
-            var result = processCell(formNumber, doingFormTable, node);
+            var result = processCell(formNumber, doingFormTable, 'edit', node);
             if (cell.attr('colspan')) {
                 if (doingFormTable) {
                     ok(_.isUndefined(result.attr('colspan')), 'colspan undefined for formtable');
@@ -18,7 +18,6 @@ define([
                           'colspan is correct');
                 }
             }
-            var result = processCell(formNumber, doingFormTable, node);
             return result;
         }
 
@@ -255,7 +254,7 @@ define([
         module('specifyform field browse');
         test('browse', function() {
             var result = processCell(
-                formNumber, false,
+                formNumber, false, 'edit',
                 '<cell type="field" id="2" name="mysql.location" cols="30" uitype="browse" colspan="3"/>');
             equal(result.children().length, 1, 'only one element');
             var control = result.find('.specify-field');

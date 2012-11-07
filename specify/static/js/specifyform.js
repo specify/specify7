@@ -50,9 +50,11 @@ define([
         return $(templates.form({ formNumber: formNumber })).find('form').append(table).end();
     }
 
-    function buildView(view, defaultType) {
+    function buildView(view, defaultType, mode) {
         defaultType || (defaultType = 'form');
-        var altviews = _.filter(view.altviews, function(av) { return av.mode == 'edit'; });
+        mode || (mode = 'edit');
+        var altviews = _.filter(view.altviews, function(av) { return av.mode == mode; });
+        altviews.length > 0 || (altviews = view.altviews);
 
         var viewdefs = {};
         _.each(view.viewdefs, function(xml, name) {
@@ -60,24 +62,28 @@ define([
         });
 
         var viewdef;
-        _.find(altviews, function(av) {
+        var altview = _.find(altviews, function(av) {
             viewdef = viewdefs[av.viewdef];
             return viewdef.attr('type') === defaultType;
         });
 
-        viewdef || (viewdef = viewdefs[_.first(altviews).viewdef])
+        if (!altview) {
+            altview = _.first(altviews);
+            viewdef = viewdefs[altview.viewdef];
+        }
 
         var definition = viewdef.find('definition').text();
         var actual_viewdef = definition ? viewdefs[definition] : viewdef;
 
         var formNumber = formCounter++;
         var doingFormTable = viewdef.attr('type') === 'formtable';
-        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable);
+        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable, altview.mode);
 
         var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
 
         (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell).appendTo(wrapper);
         wrapper.addClass('specify-form-type-' + viewdef.attr('type'));
+        wrapper.addClass('specify-form-mode-' + altview.mode);
         return wrapper;
     }
 
@@ -89,14 +95,15 @@ define([
         parseSpecifyProperties: parseSpecifyProperties,
         getView: getView,
 
-        buildViewByName: function (viewName, defaultType) {
-            return getView(viewName).pipe(function(view) { return buildView(view, defaultType); });
+        buildViewByName: function (viewName, defaultType, mode) {
+            return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode); });
         },
 
         buildSubView: function (node) {
             var defaultType = node.data('specify-viewtype') === 'table' ? 'formtable' : 'form';
             var viewName = node.data('specify-viewname');
-            var buildView = specifyform.buildViewByName(viewName, defaultType)
+            var mode = node.data('specify-viewmode');
+            var buildView = specifyform.buildViewByName(viewName, defaultType, mode)
 
             return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
@@ -106,6 +113,10 @@ define([
 
         isSubViewButton: function (node) {
             return node.is('.specify-subview-button');
+        },
+
+        subViewMode: function (node) {
+            return node.data('specify-viewmode');
         }
     };
 

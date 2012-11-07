@@ -80,7 +80,7 @@ select.specify-field {
     width: 16px;
 }
 
-.querycbx-edit {
+.querycbx-edit, .querycbx-display {
     padding-left: 6px;
 }
 
