@@ -364,6 +364,7 @@ define([
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))();
             resource.rget('determinations').done(function(determinations) {
+                determinations.dependent = false;
                 equal(requestCounter, 0, 'no requests for new object');
                 ok(determinations.isNew, 'toMany collection is marked new');
                 equal(determinations.length, 0, 'nothing in collection');
@@ -634,6 +635,7 @@ define([
             stop();
             var collectionobject = new (api.Resource.forModel('collectionobject'))({id: 102});
             collectionobject.rget('preparations').done(function(preps) {
+                preps.dependent = false;
                 collectionobject.on('change', nope('change on collectionobject'));
                 collectionobject.on('saverequired', nope('saverequired on collectionobject'));
                 collectionobject.on('subsaverequired', yep('subsaverequired on collectionobject'));
@@ -683,6 +685,7 @@ define([
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 102});
             resource.rget('determinations').done(function(dets) {
+                dets.dependent = false;
                 equal(requestCounter, 1);
                 dets.fetch().done(function() {
                     equal(requestCounter, 2);
