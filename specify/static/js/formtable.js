@@ -52,7 +52,8 @@ define([
         },
         buildDialog: function(resource) {
             var self = this;
-            specifyform.buildViewByName(resource.specifyModel.view).done(function(dialogForm) {
+            var mode = specifyform.subViewMode(self.$el);
+            specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
                 dialogForm.find('.specify-form-header:first').remove();
 
                 if (self.readOnly) {
