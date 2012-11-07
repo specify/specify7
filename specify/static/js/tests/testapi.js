@@ -26,10 +26,10 @@ define([
         }
 
         var module = function(title, env) {
-            var businessRulesAttach = businessrules.attachToResource;
+            var wereEnabled = businessrules.areEnabled();
             window.module(title, _.extend(env || {}, {
-                setup: function() { businessrules.attachToResource = function() {}; },
-                teardown: function() { businessrules.attachToResource = businessRulesAttach; }
+                setup: function() { businessrules.enable(false); },
+                teardown: function() { businessrules.enable(wereEnabled); }
             }));
         };
 

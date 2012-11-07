@@ -1,4 +1,13 @@
-define ['jquery', 'underscore', 'whenall', 'cs!saveblockers'], ($, _, whenAll, saveblockers) ->
+define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($, _, api, whenAll, saveblockers) ->
+    enabled = true
+
+    api.on 'newresource', (resource) ->
+        if enabled then attachTo resource
+
+    attachTo = (resource) ->
+        mgr = resource.businessRuleMgr = new BusinessRuleMgr resource
+        mgr.setupEvents()
+        resource.saveBlockers = new saveblockers.SaveBlockers resource
 
     class BusinessRuleMgr
         constructor: (@resource) ->
@@ -208,7 +217,5 @@ define ['jquery', 'underscore', 'whenall', 'cs!saveblockers'], ($, _, whenAll, s
                 repositoryagreementnumber: 'division'
 
     businessRules =
-        attachToResource: (resource) ->
-            mgr = resource.businessRuleMgr = new BusinessRuleMgr resource
-            mgr.setupEvents()
-            resource.saveBlockers = new saveblockers.SaveBlockers resource
+        enable: (e) -> enabled = e
+        areEnabled: -> enabled

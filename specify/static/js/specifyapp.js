@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
     'datamodelview', 'resourceview', 'localizeform', 'beautify-html', 'navigation',
     'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
 ], function(
-    $, _, Backbone, specifyapi, schema, specifyform, datamodelview,
+    $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview,
     ResourceView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
     "use strict";
 
@@ -14,6 +14,7 @@ define([
 
     function appStart() {
         var rootContainer = $('#content');
+        businessRules.enable(true);
 
         // make the express search field functional
         app.expressSearch = new esearch.SearchView({ el: $('#express-search') });

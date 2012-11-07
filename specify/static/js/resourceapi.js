@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'cs!businessrules', 'jquery-bbq'
-], function($, _, Backbone, schema, whenAll, businessrules) {
-    var api = {};
+    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'jquery-bbq'
+], function($, _, Backbone, schema, whenAll) {
+    var api = _.extend({}, Backbone.Events);
 
     function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
 
@@ -96,7 +96,7 @@ define([
                 // TODO: set value on parent object if necessary
             });
 
-            businessrules.attachToResource(this);
+            api.trigger('newresource', this);
         },
         clone: function() {
             var self = this;
