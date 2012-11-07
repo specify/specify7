@@ -53,22 +53,23 @@ define([
                 var self = this;
                 if (self.dialog) return;
 
-                var recordSelector = new RecordSelector({
-                    field: self.field,
-                    collection: self.collection,
-                    populateform: self.options.populateform,
-                    buildSubView: function () { return specifyform.buildSubView(self.$el); },
-                    noHeader: true
-                });
-                recordSelector.render();
-                if (self.collection.length < 1) recordSelector.add();
+                specifyform.buildSubView(self.$el).done(function(form) {
+                    var recordSelector = new RecordSelector({
+                        field: self.field,
+                        collection: self.collection,
+                        populateform: self.options.populateform,
+                        form: form,
+                        noHeader: true
+                    });
+                    recordSelector.render();
+                    if (self.collection.length < 1) recordSelector.add();
 
-                self.dialog = $('<div>').append(recordSelector.el).dialog({
-                    width: 'auto',
-                    title: self.field.getLocalizedName(),
-                    close: function() { $(this).remove(); self.dialog = null; }
+                    self.dialog = $('<div>').append(recordSelector.el).dialog({
+                        width: 'auto',
+                        title: self.field.getLocalizedName(),
+                        close: function() { $(this).remove(); self.dialog = null; }
+                    });
                 });
-
             }
         }),
 
@@ -87,50 +88,51 @@ define([
             openDialog: function(evt) {
                 evt.preventDefault();
                 var self = this;
-                var dialogForm = specifyform.buildSubView(self.el);
+                specifyform.buildSubView(self.$el).done(function(dialogForm) {
 
-                dialogForm.find('.specify-form-header:first').remove();
+                    dialogForm.find('.specify-form-header:first').remove();
 
-                if (!self.related) {
-                    self.related = new (self.model.constructor.forModel(self.relatedModel))();
-                    self.related.placeInSameHierarchy(self.model);
-                    self.model.setToOneField(self.field.name, self.related);
-                    self.resourceChanged();
-                }
-
-                $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
-                    dialog.dialog('close');
-                });
-
-                var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
-
-                if (self.related.isNew()) {
-                    $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
-                        dialog.dialog('close');
-                        self.related = null;
-                        self.model.setToOneField(self.field.name, self.related, {silent: true});
+                    if (!self.related) {
+                        self.related = new (self.model.constructor.forModel(self.relatedModel))();
+                        self.related.placeInSameHierarchy(self.model);
+                        self.model.setToOneField(self.field.name, self.related);
                         self.resourceChanged();
-                    });
-                } else {
-                    var deleteButton = new DeleteButton({ model: self.related });
-                    deleteButton.render().$el.appendTo(dialogForm);
-                    deleteButton.on('deleted', function() {
+                    }
+
+                    $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
-                        self.related = null;
-                        self.model.setToOneField(self.field.name, self.related, {silent: true});
-                        self.resourceChanged();
                     });
 
-                    title = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                        + title;
-                }
+                    var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
-                self.options.populateform(dialogForm, self.related);
-                var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                var dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title: title,
-                    close: function() { $(this).remove(); }
+                    if (self.related.isNew()) {
+                        $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                            dialog.dialog('close');
+                            self.related = null;
+                            self.model.setToOneField(self.field.name, self.related, {silent: true});
+                            self.resourceChanged();
+                        });
+                    } else {
+                        var deleteButton = new DeleteButton({ model: self.related });
+                        deleteButton.render().$el.appendTo(dialogForm);
+                        deleteButton.on('deleted', function() {
+                            dialog.dialog('close');
+                            self.related = null;
+                            self.model.setToOneField(self.field.name, self.related, {silent: true});
+                            self.resourceChanged();
+                        });
+
+                        title = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                            + title;
+                    }
+
+                    self.options.populateform(dialogForm, self.related);
+                    var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                    var dialog = $('<div>').append(dialogForm).dialog({
+                        width: 'auto',
+                        title: title,
+                        close: function() { $(this).remove(); }
+                    });
                 });
             }
         })
