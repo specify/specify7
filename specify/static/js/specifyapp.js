@@ -102,7 +102,7 @@ define([
                 recordSet && (resource.recordsetid = recordSet.id);
 
                 function doIt() {
-                    setCurrentView(new ResourceView({ model: resource, recordSet: recordSet }));
+                    setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: 'edit' }));
                     app.currentView.on('addAnother', function(newResource) {
                         resource = newResource;
                         doIt();

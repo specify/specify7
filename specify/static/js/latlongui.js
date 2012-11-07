@@ -7,6 +7,8 @@ define([
         render: function() {
             var self = this;
             var resource = this.model;
+            var disabled = self.$el.prop('disabled');
+
             resource.fetchIfNotPopulated().done(function() {
                 var init = self.init;
                 var plugin = $(templates.latlonui());
@@ -32,12 +34,13 @@ define([
                         resource.set(fieldName, input.val());
                         parsed && resource.set(inferredField, parsed.asFloat());
                     });
+                    input.prop('disabled', disabled);
                 });
 
                 self.$el.replaceWith(plugin);
                 self.setElement(plugin);
 
-                var type = plugin.find('[name="type"]');
+                var type = plugin.find('[name="type"]').prop('disabled', disabled);
                 type.change(function() {
                     switch (type.val()) {
                     case 'Point':

@@ -16,8 +16,10 @@ define([
         },
         initialize: function(options) {
             var self = this;
-            this.model.on('change', this.setTitle, this);
-            this.recordSet = options.recordSet;
+            self.model.on('change', self.setTitle, self);
+            self.recordSet = options.recordSet;
+            self.mode = options.mode;
+            self.readOnly = self.mode === 'view';
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
@@ -36,12 +38,15 @@ define([
                 }
             });
 
-            self.saveBtn = new SaveButton({ model: self.model,
-                                            addAnother: self.model.isNew() && self.recordSet });
+            if (!self.readOnly) {
+                self.saveBtn = new SaveButton({
+                    model: self.model,
+                    addAnother: self.model.isNew() && self.recordSet });
 
-            self.saveBtn.on('savecomplete', self.saved, self);
+                self.saveBtn.on('savecomplete', self.saved, self);
+            }
 
-            if (!self.model.isNew()) {
+            if (!self.readOnly && !self.model.isNew()) {
                 self.deleteBtn = new DeleteButton({ model: self.model });
                 self.deleteBtn.on('deleted', self.deleted, self);
             }
@@ -56,7 +61,7 @@ define([
                 prevUrl: self.prev && self.prev.viewUrl(),
                 nextUrl: self.next && self.next.viewUrl()
             }));
-            specifyform.buildViewByName(self.model.specifyModel.view, null).done(function(form) {
+            specifyform.buildViewByName(self.model.specifyModel.view, 'form', self.mode).done(function(form) {
                 populateForm(form, self.model);
                 form.find('.specify-form-header').replaceWith(self.header);
                 self.$el.append(form);

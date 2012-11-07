@@ -22,6 +22,7 @@ define([
                     self.$el.attr('value', 'EMail');
                     break;
                 }
+                self.$el.prop('disabled', false);
                 return self;
             }
         }),
@@ -30,7 +31,7 @@ define([
                 'click': 'click'
             },
             render: function() {
-                this.$el.attr('value', 'Google Map');
+                this.$el.attr('value', 'Google Map').prop('disabled', false);
                 return this;
             },
             click: function(evt) {
