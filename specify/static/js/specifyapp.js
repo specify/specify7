@@ -101,14 +101,6 @@ define([
                 var resource = new (specifyapi.Resource.forModel(model))({ id: id });
                 recordSet && (resource.recordsetid = recordSet.id);
 
-                if (resource.isNew()) {
-                    var domainField = resource.specifyModel.orgRelationship();
-                    if (domainField) {
-                        var parentResource = domain[domainField.name];
-                        resource.set(domainField.name, parentResource.url());
-                    }
-                }
-
                 function doIt() {
                     setCurrentView(new ResourceView({ model: resource, recordSet: recordSet }));
                     app.currentView.on('addAnother', function(newResource) {
