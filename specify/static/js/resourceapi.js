@@ -161,8 +161,8 @@ define([
 
             var oldRelated = self.relatedCache[field.name.toLowerCase()];
             if (!related) {
-                self.set(field.name, null, options);
                 delete self.relatedCache[field.name.toLowerCase()];
+                self.set(field.name, null, options);
                 return;
             }
             if (!(related instanceof api.Resource))
@@ -176,16 +176,16 @@ define([
 
             switch (field.type) {
             case 'many-to-one':
+                self.relatedCache[field.name.toLowerCase()] = related;
                 self.set(field.name, related.url(), options);
                 break;
             case 'zero-to-one':
+                self.relatedCache[field.name.toLowerCase()] = related;
                 related.set(field.otherSideName, self.url(), options);
                 break;
             default:
                 throw new Error("setToOneField: unhandled field type: " + field.type);
             }
-
-            self.relatedCache[field.name.toLowerCase()] = related;
         },
         set: function(key, value, options) {
             // make the keys case insensitive
@@ -312,6 +312,7 @@ define([
             resource._save = Backbone.Model.prototype.save.apply(resource, arguments);
 
             resource._save.fail(function() {
+                resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
             }).then(function() {

@@ -1,6 +1,27 @@
 define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($, _, api, whenAll, saveblockers) ->
     enabled = true
 
+    treeBusinessRules =
+        isTreeNode: (resource) ->
+            model = resource.specifyModel
+            _.all ['parent', 'definition', 'definitionitem'], (field) -> model.getField(field)?
+
+        run: (resource, fieldName) ->
+            if not treeBusinessRules.isTreeNode resource then return
+            if not (fieldName in ['parent', 'definitionitem', 'name']) then return
+            treeBusinessRules.buildFullName(resource, [], true).pipe (acc) ->
+                valid: true
+                action: -> resource.set 'fullname', acc.reverse().join(' ')
+
+        buildFullName: (resource, acc, start) ->
+            recur = (parent, defitem) ->
+                if start or defitem.get('isinfullname') then acc.push resource.get 'name'
+                if not parent? then acc
+                else treeBusinessRules.buildFullName(parent, acc)
+
+            $.when(resource.rget('parent', true), resource.rget('definitionitem', true)).pipe recur
+
+
     api.on 'initresource', (resource) ->
         if enabled then attachTo resource
 
@@ -17,6 +38,8 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
             @deleteBlockers = {}
             _.each @rules?.deleteBlockers, (fieldname) =>
                  @deleteBlockers[fieldname] = true
+
+            @isTreeNode = treeBusinessRules.isTreeNode @resource
 
         setupEvents: ->
             @resource.on 'change', @changed, @
@@ -54,13 +77,18 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
 
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
-            @fieldChangeDeferreds[fieldName] = deferred = @checkUnique fieldName
-            deferred.done (result) => if deferred is @fieldChangeDeferreds[fieldName]
+            @fieldChangeDeferreds[fieldName] = deferred = whenAll [
+                @checkUnique fieldName
+                treeBusinessRules.run @resource, fieldName if @isTreeNode
+            ]
+            deferred.done (results) => if deferred is @fieldChangeDeferreds[fieldName]
                 delete @fieldChangeDeferreds[fieldName]
-                if not result.valid
-                    @resource.saveBlockers.add('br:' + fieldName, fieldName, result.reason)
-                else
-                    @resource.saveBlockers.remove('br:' + fieldName)
+                _.each _.compact(results), (result) =>
+                    if not result.valid
+                        @resource.saveBlockers.add(result.key, fieldName, result.reason)
+                    else
+                        @resource.saveBlockers.remove(result.key)
+                    result.action?()
 
         checkUnique: (fieldName) ->
             results = if fieldName in (@rules?.unique or [])
@@ -76,7 +104,9 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     @watchers[dup.cid + ':' + fieldName] ?= dup.on 'change remove', =>
                         @checkField fieldName
 
-            combineUniquenessResults results
+            result = combineUniquenessResults results
+            result.key = 'br-uniqueness-' + fieldName
+            result
 
     combineUniquenessResults = (deferredResults) -> whenAll(deferredResults).pipe (results) ->
         invalids = _.filter results, (result) -> not result.valid
