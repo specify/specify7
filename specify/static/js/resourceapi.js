@@ -96,7 +96,8 @@ define([
                 // TODO: set value on parent object if necessary
             });
 
-            api.trigger('newresource', this);
+            api.trigger('initresource', this);
+            if (this.isNew()) api.trigger('newresource', this);
         },
         clone: function() {
             var self = this;
@@ -229,13 +230,7 @@ define([
                         if (_.isString(value)) toOne = self.constructor.fromUri(value);
                         else {
                             // we got the data inline as a JSON object.
-                            toOne = new (self.constructor.forModel(related))();
-                            // pretend like the resource is being fetched
-                            // and set the data into it
-                            toOne._fetch = true;
-                            toOne.set(toOne.parse(value));
-                            toOne._fetch = null;
-                            toOne.populated = true;
+                            toOne = new (self.constructor.forModel(related))(value, {parse: true});
                         }
                         self.setToOneField(field, toOne, {silent: true});
                     }

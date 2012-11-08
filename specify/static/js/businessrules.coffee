@@ -1,7 +1,7 @@
 define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($, _, api, whenAll, saveblockers) ->
     enabled = true
 
-    api.on 'newresource', (resource) ->
+    api.on 'initresource', (resource) ->
         if enabled then attachTo resource
 
     attachTo = (resource) ->
