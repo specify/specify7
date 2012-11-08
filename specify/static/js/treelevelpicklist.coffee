@@ -22,9 +22,16 @@ define [
                 children.fetch(limit: 0).pipe -> children
 
             fetch.done (children) => if fetch is @lastFetch
+                value = @model.get @$el.attr 'name'
                 children.each (child) =>
-                    @$el.append $('<option>', value: child.url()).text child.get 'name'
-                @model.setToOneField @$el.attr('name'), children.first()
+                    url = child.url()
+                    @$el.append $('<option>',
+                        value: url
+                        selected: url is value
+                    ).text child.get 'name'
+
+                if not value
+                    @model.setToOneField @$el.attr('name'), children.first()
             @
 
         changed: ->
