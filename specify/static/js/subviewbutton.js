@@ -28,7 +28,8 @@ define([
                 .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
                 .append('<span class="specify-subview-button-count">')
                 .appendTo(button);
-            button.button({ disabled: self.model.isNew() });
+
+            button.button();
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count').text(c);
