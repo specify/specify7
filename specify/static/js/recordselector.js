@@ -11,7 +11,7 @@ define([
         initialize: function(options) {
             var self = this;
             self.form = self.options.form;
-            self.readOnly = self.options.readOnly;
+            self.readOnly = specifyform.getFormMode(self.form) === 'view';
 
             self.field = options.field;
             if (self.field && !self.collection.parent)
@@ -63,7 +63,6 @@ define([
         },
         render: function() {
             var self = this;
-            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
             self.slider = $('<div>');
             var header = self.noHeader ? null : self.$el.append(templates.subviewheader());

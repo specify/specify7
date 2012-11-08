@@ -14,20 +14,22 @@ define([
         },
         render: function() {
             var self = this;
-            self.$el.empty().append(templates.subviewheader());
-            self.$('.specify-subview-title').text(self.title);
-            if (specifyform.subViewMode(self.$el) === 'view') {
-                self.$('.specify-delete-related, .specify-add-related').remove();
-            }
-            if (!self.model) {
-                self.$('.specify-delete-related').remove();
-                self.$el.append('<p>none...</p>');
-                return;
-            } else {
-                self.$('.specify-add-related').remove();
-            }
-
+            self.$el.empty();
+            var header = $(templates.subviewheader());
+            $('.specify-subview-title', header).text(self.title);
             specifyform.buildSubView(self.$el).done(function(form) {
+                if (specifyform.getFormMode(form) === 'view') {
+                    $('.specify-delete-related, .specify-add-related', header).remove();
+                }
+                self.$el.append(header);
+                if (!self.model) {
+                    $('.specify-delete-related', header).remove();
+                    self.$el.append('<p>none...</p>');
+                    return;
+                } else {
+                    $('.specify-add-related', header).remove();
+                }
+
                 self.options.populateform(form, self.model);
                 self.$el.append(form);
             });

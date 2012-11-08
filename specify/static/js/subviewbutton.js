@@ -93,10 +93,12 @@ define([
                 if (self.readOnly && !self.related) return;
 
                 specifyform.buildSubView(self.$el).done(function(dialogForm) {
+                    var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
 
                     dialogForm.find('.specify-form-header:first').remove();
 
                     if (!self.related) {
+                        if (formReadOnly) return;
                         self.related = new (self.model.constructor.forModel(self.relatedModel))();
                         self.related.placeInSameHierarchy(self.model);
                         self.model.setToOneField(self.field.name, self.related);

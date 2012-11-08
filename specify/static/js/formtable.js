@@ -16,11 +16,12 @@ define([
 
             this.collection.on('add', this.render, this);
             this.collection.on('remove destroy', this.render, this);
+
+            this.readOnly = specifyform.getFormMode(this.options.form) === 'view';
         },
         render: function() {
             var self = this;
             var header = $(templates.subviewheader());
-            self.readOnly = specifyform.subViewMode(self.$el) === 'view';
 
             header.find('.specify-delete-related').remove();
             if (self.readOnly) header.find('.specify-add-related').remove();
@@ -52,11 +53,13 @@ define([
         },
         buildDialog: function(resource) {
             var self = this;
-            var mode = specifyform.subViewMode(self.$el);
+            var mode = self.readOnly ? 'view' : 'edit';
             specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
+                var readOnly = specifyform.getFormMode(dialogForm) === 'view';
+
                 dialogForm.find('.specify-form-header:first').remove();
 
-                if (self.readOnly) {
+                if (readOnly) {
                     // don't add anything.
                 } else if (self.collection.dependent) {
                     $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {

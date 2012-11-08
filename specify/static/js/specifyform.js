@@ -83,7 +83,8 @@ define([
 
         (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell).appendTo(wrapper);
         wrapper.addClass('specify-form-type-' + viewdef.attr('type'));
-        wrapper.addClass('specify-form-mode-' + altview.mode);
+        wrapper.attr('data-specify-altview-mode', altview.mode);
+        wrapper.attr('data-specify-form-mode', mode === 'view' ? 'view' : altview.mode);
         return wrapper;
     }
 
@@ -117,6 +118,10 @@ define([
 
         subViewMode: function (node) {
             return node.data('specify-viewmode');
+        },
+
+        getFormMode: function (node) {
+            return node.data('specify-form-mode');
         }
     };
 
