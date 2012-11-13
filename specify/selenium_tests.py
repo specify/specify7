@@ -40,24 +40,16 @@ class WithFixturesTest(SeleniumTests):
         self.selenium.get(self.live_server_url)
         self.do_login('testuser', 'testuser')
 
-        self.selenium_wait().until(
-            lambda driver: driver.title.lower().startswith('welcome'))
-
-        self.select('.forms a:contains("Taxon")').click()
-
+        # add a taxon
+        self.wait_select('.forms a:contains("Taxon")').click()
         self.wait_select('.ui-dialog button').click()
-
         self.wait_select('input.specify-field[name="parent"]').send_keys('life')
-
         self.wait_select('.ui-autocomplete a:contains("Life")').click()
-
         self.wait_select('select[name="definitionItem"] option:contains("Genus")').click()
-
         self.select('input.specify-field[name="name"]').send_keys('Foo')
-
         self.select('.save-and-add-button').click()
 
-        # another
+        # add another taxon
         parent = self.wait_select('input.specify-field[name="parent"]')
         parent.clear()
         parent.send_keys('foo')
@@ -68,11 +60,63 @@ class WithFixturesTest(SeleniumTests):
 
         name = self.select('input.specify-field[name="name"]')
         name.clear()
-        name.send_keys('bar')
+        name.send_keys('bar\n')
 
         self.select('.save-button').click()
 
+        self.selenium_wait().until(
+            lambda driver: not driver.title.lower().startswith('new'))
+
+        # add collection object
+        self.select('#site-name a').click()
+
+        self.wait_select('.forms a:contains("Collection Object")').click()
+        recordset_name = self.wait_select('.ui-dialog input[name="name"]')
+        recordset_name.clear()
+        recordset_name.send_keys('Some Collection Objects')
+        self.select('.ui-dialog button').click()
+
+        # add an accession for the object
+        self.wait_select('.specify-field[name="accession"] ~ .querycbx-add').click()
+
+        self.wait_select('.ui-dialog .specify-field[name="accessionNumber"]').send_keys('123')
+        self.select('.ui-dialog .specify-field[name="type"] option:contains("Field Work")').click()
+        self.select('.ui-dialog .specify-field[name="status"] option:contains("In Process")').click()
+        self.select('.ui-dialog .specify-field[name="remarks"]').send_keys('A test accession.')
+
+        # add an accession agent
+        self.select('.ui-dialog .specify-subview[data-specify-field-name="accessionAgents"] a.specify-add-related').click()
+
+        self.wait_select('.ui-dialog .specify-subview[data-specify-field-name="accessionAgents"] .specify-field[name="agent"]')\
+                                     .send_keys('user')
+        self.wait_select('.ui-autocomplete a:contains("User"):visible').click()
+
+        self.select('.ui-dialog .save-button').click() # save the accession
+
+        self.select('.specify-field:[name="cataloger"]').send_keys('user')
+        self.wait_select('.ui-autocomplete a:contains("User"):visible').click()
+
+        self.select('label:contains("Cataloged Date")').click()
+        self.selenium.switch_to_active_element().send_keys('2012-07-04\n')
+
+        # add a determination
+        self.select('.specify-subview[data-specify-field-name="determinations"] a.specify-add-related').click()
+
+        self.wait_select('.specify-field[name="taxon"]').send_keys('foo bar')
+        self.wait_select('.ui-autocomplete a:contains("Foo bar"):visible').click()
+
+        self.select('label:contains("Determined Date")').click()
+        self.selenium.switch_to_active_element().send_keys('2011-07-04\n')
+
+        self.select('.specify-field[name="determiner"]').send_keys('user')
+        self.wait_select('.ui-autocomplete a:contains("User"):visible').click()
+
+        self.select('.save-button').click()
         import ipdb; ipdb.set_trace()
+        return
+
+
+
 
 class FreshDBTests(MainSetupTearDown, SeleniumTests):
     import context
