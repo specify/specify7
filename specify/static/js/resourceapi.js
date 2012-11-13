@@ -176,6 +176,9 @@ define([
 
             switch (field.type) {
             case 'many-to-one':
+                // have to fix up the cache first in case there are any
+                // 'change' event watchers that might be triggered and
+                // look in there when set is called
                 self.relatedCache[field.name.toLowerCase()] = related;
                 self.set(field.name, related.url(), options);
                 break;

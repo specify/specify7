@@ -13,6 +13,19 @@ def collector_pre_save(sender, **kwargs):
             top = others.aggregate(Max('ordernumber'))['ordernumber__max'] or 0
             collector.ordernumber = top + 1
 
+
+@receiver(signals.pre_save, sender=models.Collectionobject)
+def collectionobject_pre_save(sender, **kwargs):
+    co = kwargs['instance']
+    if co.collectionmemberid is None:
+        co.collectionmemberid = co.collection.id
+
+@receiver(signals.pre_save, sender=models.Determination)
+def determination_pre_save(sender, **kwargs):
+    det = kwargs['instance']
+    if det.collectionmemberid is None:
+        det.collectionmemberid = det.collectionobject.collectionmemberid
+
 @receiver(signals.post_delete)
 def remove_from_recordsets(sender, **kwargs):
     if not hasattr(sender, 'tableid'): return
@@ -26,4 +39,11 @@ def recordset_pre_save(sender, **kwargs):
     recordset = kwargs['instance']
     if recordset.specifyuser_id is None:
         recordset.specifyuser = recordset.createdbyagent.specifyuser
+
+@receiver(signals.pre_save)
+def set_rankid(sender, **kwargs):
+    obj = kwargs['instance']
+    if hasattr(obj, 'definitionitem'):
+        obj.rankid = obj.definitionitem.rankid
+        obj.definition = obj.definitionitem.treedef
 

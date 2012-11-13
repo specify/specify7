@@ -40,6 +40,7 @@ if 'test' in sys.argv:
     FIREBUG_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firebug@software.joehewitt.com.xpi"
     FIRESTARTER_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firestarter@getfirebug.com.xpi"
 
+TEST_RUNNER = 'selenium_testsuite_runner.SeleniumTestSuiteRunner'
 
 SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
 
