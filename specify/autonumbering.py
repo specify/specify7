@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from django.db import connection, transaction
 
 from specify.models import Splocalecontaineritem as Item
@@ -25,15 +28,21 @@ def autonumber(collection, user, obj):
 
 def do_autonumbering(collection, obj, fields):
     table = obj._meta.db_table
+    cursor = connection.cursor()
 
     try:
-        connection.cursor().execute('lock tables %s write' % table)
+        if cursor.db.vendor == 'mysql':
+            cursor.execute('lock tables %s write' % table)
+        else:
+            logger.warning("unable to lock tables for autonumbering.")
+
         for formatter, vals in fields:
             value = formatter.autonumber(collection, obj.__class__, vals)
             setattr(obj, formatter.field_name.lower(), value)
         obj.save()
     finally:
-        connection.cursor().execute('unlock tables')
+        if cursor.db.vendor == 'mysql':
+            cursor.execute('unlock tables')
 
 
 
