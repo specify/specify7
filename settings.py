@@ -180,8 +180,13 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console'],
             'level': 'DEBUG',
+            'propagate': True,
+        },
+        'specify': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': True,
         },
     }
