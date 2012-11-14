@@ -368,12 +368,15 @@ define([
                 }
             });
         },
-        fetch: function() {
+        fetch: function(options) {
             // cache a reference to the ajax deferred and don't start fetching if we
             // already are.
             var resource = this;
+            options || (options = {});
+            options.silent = options.silent || !resource.populated;
+
             if (resource._fetch) return resource._fetch;
-            return resource._fetch = Backbone.Model.prototype.fetch.call(this).done(function() {
+            return resource._fetch = Backbone.Model.prototype.fetch.call(this, options).done(function() {
                 resource._fetch = null;
             });
         },
