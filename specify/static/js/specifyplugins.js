@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui', 'uiplugin', 'templates'
-], function($, _, api, LatLonUI, PartialDateUI, UIPlugin, templates) {
+    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui', 'uiplugin', 'geolocateplugin', 'templates'
+], function($, _, api, LatLonUI, PartialDateUI, UIPlugin, GeoLocatePlugin, templates) {
     "use strict";
 
     return {
@@ -43,6 +43,7 @@ define([
                     close: function() { $(this).remove(); }
                 });
             }
-        })
+        }),
+        LocalityGeoRef: GeoLocatePlugin
     };
 });

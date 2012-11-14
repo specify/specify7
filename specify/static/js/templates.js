@@ -16,7 +16,8 @@ define([
     'text!tmpls/saveblocked.html',
     'text!tmpls/welcome.html',
     'text!tmpls/viewheader.html',
-    'text!tmpls/recordsetchooser.html'
+    'text!tmpls/recordsetchooser.html',
+    'text!tmpls/geolocateplugin.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -40,7 +41,8 @@ define([
         'saveblocked',
         'welcome',
         'viewheader',
-        'recordsetchooser'
+        'recordsetchooser',
+        'geolocate'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

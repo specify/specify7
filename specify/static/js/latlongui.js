@@ -4,10 +4,18 @@ define([
     "use strict";
 
     return UIPlugin.extend({
+        initialize: function() {
+            UIPlugin.prototype.initialize.apply(this, arguments);
+            this.disabled = this.$el.prop('disabled');
+
+            var events = _(["lat1text", "long1text", "lat2text", "long2text", "latlongtype"]).map(
+                function(field) { return 'change:' + field; });
+
+            this.model.on(events.join(" "), this.render, this);
+        },
         render: function() {
             var self = this;
             var resource = this.model;
-            var disabled = self.$el.prop('disabled');
 
             resource.fetchIfNotPopulated().done(function() {
                 var init = self.init;
@@ -34,13 +42,13 @@ define([
                         resource.set(fieldName, input.val());
                         parsed && resource.set(inferredField, parsed.asFloat());
                     });
-                    input.prop('disabled', disabled);
+                    input.prop('disabled', self.disabled);
                 });
 
                 self.$el.replaceWith(plugin);
                 self.setElement(plugin);
 
-                var type = plugin.find('[name="type"]').prop('disabled', disabled);
+                var type = plugin.find('[name="type"]').prop('disabled', self.disabled);
                 type.change(function() {
                     switch (type.val()) {
                     case 'Point':
