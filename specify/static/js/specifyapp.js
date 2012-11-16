@@ -103,7 +103,11 @@ define([
 
                 function doIt() {
                     setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: 'edit' }));
-                    app.currentView.on('addAnother', function(newResource) {
+                    app.currentView.on('redisplay', function() {
+                        resource = new (specifyapi.Resource.forModel(model))({ id: id });
+                        doIt();
+                    });
+                    app.currentView.on('addanother', function(newResource) {
                         resource = newResource;
                         doIt();
                     });

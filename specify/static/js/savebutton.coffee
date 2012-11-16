@@ -64,12 +64,17 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
             if _.isEmpty @blockingResources
                 @setButtonsDisabled true
-                addAnother =  if $(evt.currentTarget).is '.save-and-add-button'
-                    @model.clone()
-                else
-                    null
+                addAnother = $(evt.currentTarget).is '.save-and-add-button'
 
-                @model.rsave().done => @trigger 'savecomplete', addAnother: addAnother
+                # This has to be done before saving so that the data we get back isn't copied.
+                # Eg. autonumber fields, the id, etc.
+                newResource = @model.clone() if addAnother
+                wasNew = @model.isNew()
+
+                @model.rsave().done => @trigger 'savecomplete',
+                    addAnother: addAnother
+                    newResource: newResource
+                    wasNew: wasNew
             else
                 dialog = $(templates.saveblocked()).appendTo(@el).dialog
                     resizable: false

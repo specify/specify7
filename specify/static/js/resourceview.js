@@ -96,9 +96,11 @@ define([
         saved: function(options) {
             var self = this;
             if (options.addAnother) {
-                self.trigger('addAnother', options.addAnother);
-            } else {
+                self.trigger('addanother', options.newResource);
+            } else if (options.wasNew) {
                 navigation.go(self.model.viewUrl());
+            } else {
+                self.trigger('redisplay');
             }
         },
         deleted: function() {

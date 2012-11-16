@@ -112,6 +112,10 @@ class WithFixturesTest(SeleniumTests):
         self.wait_select('.ui-autocomplete a:contains("User"):visible').click()
 
         self.select('.save-button').click()
+
+        self.selenium_wait().until(
+            lambda driver: not driver.title.lower().startswith('new'))
+
         import ipdb; ipdb.set_trace()
         return
 
