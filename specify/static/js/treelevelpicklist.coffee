@@ -22,7 +22,8 @@ define [
                 children.fetch(limit: 0).pipe -> children
 
             fetch.done (children) => if fetch is @lastFetch
-                value = @model.get @$el.attr 'name'
+                fieldName = @$el.attr 'name'
+                value = @model.get fieldName
                 children.each (child) =>
                     url = child.url()
                     @$el.append $('<option>',
@@ -30,8 +31,9 @@ define [
                         selected: url is value
                     ).text child.get 'name'
 
-                if not value
-                    @model.setToOneField @$el.attr('name'), children.first()
+                # make sure value in the resouce is consitent with what is displayed.
+                if not value or @$el.find('option[value="' + value + '"]').length < 1
+                    @model.setToOneField fieldName, children.first()
             @
 
         changed: ->
