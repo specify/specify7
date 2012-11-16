@@ -93,10 +93,9 @@ define([
                 max: self.collection.length - 1,
                 stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),
                 slide: function(event, ui) { self.onSlide(ui.value); }
-            });
-            self.slider.find('.ui-slider-handle').
-                css({'min-width': '1.2em', width: 'auto', 'text-align': 'center', padding: '0 3px 0 3px'}).
-                text(1);
+            }).addClass('recordselector-slider');
+
+            self.slider.find('.ui-slider-handle').text(1);
 
             var params = $.deparam.querystring(true);
             var index = params[self.urlParam] || 0;

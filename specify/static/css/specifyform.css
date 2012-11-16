@@ -197,3 +197,24 @@ input[type="submit"].saveblocked {
 .ui-dialog-title .ui-icon {
     display: inline-block;
 }
+
+.specify-attachment-display {
+    width: 510px;
+    height: 510px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #aaa;
+    background-color: #000;
+}
+
+.recordselector-slider {
+    margin: 6px 20px;
+}
+
+.recordselector-slider .ui-slider-handle {
+    min-width: 1.2em;
+    width: auto;
+    text-align: center;
+    padding: 2px 3px 2px 3px;
+}
