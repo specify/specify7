@@ -97,6 +97,9 @@ define([
         getView: getView,
 
         buildViewByName: function (viewName, defaultType, mode) {
+            if (viewName === "ObjectAttachment") {
+                return $.when($(templates.attachmentview()));
+            }
             return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode); });
         },
 
