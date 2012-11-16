@@ -3,6 +3,9 @@ from django.dispatch import receiver
 from specify import models
 from datetime import datetime
 
+class BusinessRuleException(Exception):
+    pass
+
 @receiver(signals.pre_save, sender=models.Collector)
 def collector_pre_save(sender, **kwargs):
     collector = kwargs['instance']
@@ -47,3 +50,6 @@ def set_rankid(sender, **kwargs):
         obj.rankid = obj.definitionitem.rankid
         obj.definition = obj.definitionitem.treedef
 
+    if hasattr(obj, 'parent') and obj.parent is not None:
+        if obj.parent.rankid >= obj.rankid:
+            raise BusinessRuleException('Tree object has parent with rank not greater than itself.')
