@@ -1,5 +1,7 @@
 Eclipse Quick Start Instructions
 ================================
+(warning: These instructions have not been tested in some time.)
+
 These instructions assume you have installed the required dependencies
 as outlined in the first part of the [generic
 instructions](README.md).
@@ -23,13 +25,13 @@ contains a 'System libs' entry. If these are not present, use the
 'Auto Config' button. If your Python installation is still not found,
 consult the PyDev documentation.
 
-Use EGit to checkout the djangospecify source tree.
+Use EGit to checkout the specifyweb source tree.
 ---------------------------------------------------
 Open the 'Eclipse -> File -> Import...' dialog and choose the 'Git ->
 Projects from Git' option and click 'Next >'.
 
 In the 'Select a Git Repository' dialog click the 'Clone...' button on
-the right. Paste `https://github.com/benanhalt/djangospecify.git`
+the right. Paste `https://github.com/specify/specifyweb.git`
 into the 'URI' field on the 'Source Git Repository' dialog. Several
 fields will auto-fill.
 
@@ -41,7 +43,7 @@ Destination' dialog. All fields will be auto-filled with reasonable
 values, so click 'Finish' to return to the 'Select a Git Repository'
 dialog.
 
-The dialog will now contain 'djangospecify' as an option. Select it
+The dialog will now contain 'specifyweb' as an option. Select it
 and click 'Next >' to proceed to 'Select a wizard to use for importing
 projects'.
 
@@ -51,13 +53,13 @@ complete the import.
 
 Set database, username, and password.
 -------------------------------------
-Edit the `settings.py` file in the djangospecify project and configure
+Edit the `settings.py` file in the specifyweb project and configure
 the `DATABASES` section as follows, choosing appropriate values for
 `NAME`, `USER`, and `PASSWORD`:
 
     DATABASES = {
         'default': {
-            'ENGINE': 'djangospecify.hibernateboolsbackend.backends.mysql',
+            'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
             'NAME': 'kuplant',   # name of a Specify 6.4 mysql database
             'USER': 'Master',    # mysql user with full privileges to that DB
             'PASSWORD': 'MasterPassword',
@@ -70,16 +72,16 @@ the `DATABASES` section as follows, choosing appropriate values for
 Sync the database:
 ------------------
 The authentication system in django makes use of a couple extra tables. Run
-this command from the `djangospecify` directory to generate them:
+this command from the `specifyweb` directory to generate them:
 
     python manage.py syncdb
     
 Alternatively, you could add an Eclipse run configuration based on 'PyDev: Django'
 with the syncdb argument.
     
-Run the djangospecify project to start the test server.
+Run the specifyweb project to start the test server.
 -------------------------------------------------------
-Select the djangospecify project from the Package Explorer and then
+Select the specifyweb project from the Package Explorer and then
 'Run -> Run As -> PyDev: Django'.
 
 Visit the running app with your browser.
