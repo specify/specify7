@@ -16,16 +16,11 @@ On Fedora:
 
     sudo yum install MySQL-python python-pip python-crypto
 
-Install Django 1.3.
+Install Django 1.4.
 -------------------
 On Ubuntu:
 
     sudo pip install Django
-
-If you are running Ubuntu 11.10 or later and prefer to use the Ubuntu
-package, that will work too.
-
-    sudo apt-get install python-django
 
 On Fedora:
 
@@ -38,17 +33,17 @@ instructions](README-ECLIPSE.md) if you want to use Eclipse for your
 development. Or continue with these instructions and work from the
 command line.
 
-Get the djangospecify source code.
+Get the specifyweb source code.
 ----------------------------------
 Clone this repository:
 
-    git clone git://github.com/benanhalt/djangospecify.git
+    git clone git://github.com/specify/specifyweb.git
 
-You will now have a djangospecify directory containing the source
+You will now have a specifyweb directory containing the source
 tree. From this point all commands will be with respect to that as the
 working directory.
 
-    cd djangospecify
+    cd specifyweb
 
 Set up the settings file.
 -------------------------
