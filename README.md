@@ -86,3 +86,10 @@ Visit the running app with your browser.
 ----------------------------------------
 Paste this URL in your browser's location bar:
 [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+Run the test suite.
+-------------------
+There is a preliminary test suite which can be ran as follows:
+
+    python manage.py test specify
+
