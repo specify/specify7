@@ -24,7 +24,7 @@ On Ubuntu:
 
 On Fedora:
 
-    sudo python-pip install Django
+    sudo pip-python install Django
 
 The choice is yours.
 --------------------
@@ -69,6 +69,12 @@ The authentication system in django makes use of a couple extra tables. This
 command will generate them:
 
     python manage.py syncdb
+    
+Django will ask whether it should create a superuser. It is safe to answer 'no',
+since the superuser for the Django admin system which is not being used.
+
+If this step fails because the master user does not have `CREATE TABLE` privileges, you can
+change the `specify_settings.py` file to use the 'IT user' as a temporary work-around.
 
 Run the test server:
 --------------------
