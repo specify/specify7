@@ -306,7 +306,7 @@ def bump_version(obj, version):
 
     try:
         version = int(version)
-    except ValueError:
+    except (ValueError, TypeError):
         raise MissingVersionException("%s object cannot be updated without version info" % obj.__class__.__name__)
 
     # Update a row with the PK and the version no. we have.

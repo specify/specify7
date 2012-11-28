@@ -270,6 +270,15 @@ class VersionCtrlApiTests(ApiTests):
             api.delete_obj('collectionobject', data['id'], data['version'])
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 1)
 
+    def test_missing_version(self):
+        data = api.get_resource('collection', self.collection.id)
+        data['collectionname'] = 'New Name'
+        self.collection.version += 1
+        self.collection.save()
+        with self.assertRaises(api.MissingVersionException) as cm:
+            api.update_obj(self.collection, self.agent, 'collection',
+                           data['id'], None, data)
+
 class InlineApiTests(ApiTests):
     def test_get_resource_with_to_many_inlines(self):
         api.inlined_fields.add('Collectionobject.determinations')
