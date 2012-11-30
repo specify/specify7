@@ -101,7 +101,7 @@ define([
                     if (formReadOnly) return;
                     self.related = new (self.model.constructor.forModel(self.relatedModel))();
                     self.related.placeInSameHierarchy(self.model);
-                    self.model.setToOneField(self.field.name, self.related);
+                    self.model.set(self.field.name, self.related);
                     self.resourceChanged();
                 }
 
@@ -115,7 +115,7 @@ define([
                     $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
                         self.related = null;
-                        self.model.setToOneField(self.field.name, self.related, {silent: true});
+                        self.model.set(self.field.name, self.related);
                         self.resourceChanged();
                     });
                 } else {
@@ -125,7 +125,7 @@ define([
                         deleteButton.on('deleted', function() {
                             dialog.dialog('close');
                             self.related = null;
-                            self.model.setToOneField(self.field.name, self.related, {silent: true});
+                            self.model.set(self.field.name, self.related);
                             self.resourceChanged();
                         });
                     }

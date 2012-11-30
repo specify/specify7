@@ -70,9 +70,6 @@ define([
         rsave: function() {
             return whenAll(_.chain(this.models).compact().invoke('rsave').value());
         },
-        gatherDependentFields: function() {
-            this.invoke('gatherDependentFields');
-        },
         getTotalCount: function() {
             var self = this;
             if (self.isNew) return $.when(self.length);

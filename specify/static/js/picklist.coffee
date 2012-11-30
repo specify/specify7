@@ -72,7 +72,11 @@ define [
                 api.getPickListByName(@pickListName).pipe (picklist) ->
                     plTable = picklist.get 'tablename'
                     plModel = schema.getModel plTable if plTable
-                    if not plModel then picklist.get 'picklistitems' else
+                    if not plModel
+                        picklist.rget('picklistitems').pipe (plItemCollection) ->
+                            plItemCollection.fetch(limit: 0).pipe ->
+                                plItemCollection.toJSON()
+                    else
                         # items come from another table
                         plItemCollection = new (api.Collection.forModel plModel)()
                         plItemCollection.fetch(limit: 0).pipe -> plItemCollection.map (item) ->

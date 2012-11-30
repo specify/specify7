@@ -72,7 +72,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     delete @deleteBlockers[fieldname]
                     if @canDelete() then @resource.trigger 'candelete'
 
-        changed: (resource, options) ->
+        changed: (resource, options) -> if not resource._fetch and not resource._save
             _.each options.changes, (wasChanged, fieldName) => @checkField fieldName if wasChanged
 
         checkField: (fieldName) ->

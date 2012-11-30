@@ -779,13 +779,9 @@ define([
             collectionobject.rget('determinations').done(function(dets) {
                 dets.dependent = true;
                 dets.fetch().done(function() {
-                    expect(3 + dets.totalCount);
+                    expect(2 + dets.totalCount);
 
                     ok(_.isString(collectionobject.get('determinations')), 'determinations field is a url');
-
-                    collectionobject.gatherDependentFields();
-
-                    ok(_.isArray(collectionobject.get('determinations')), 'determinations field is an array');
 
                     var data = collectionobject.toJSON();
 

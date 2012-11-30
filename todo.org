@@ -16,3 +16,4 @@
 * don't save before businessrules finish
 * saving breaks after save
 * geolocate plugin should maybe set lat/long method field
+* should cache nulls in related cache

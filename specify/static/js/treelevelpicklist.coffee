@@ -33,9 +33,9 @@ define [
 
                 # make sure value in the resouce is consitent with what is displayed.
                 if not value or @$el.find('option[value="' + value + '"]').length < 1
-                    @model.setToOneField fieldName, children.first()
+                    @model.set fieldName, children.first()
             @
 
         changed: ->
             selected = api.Resource.fromUri @$el.val()
-            @model.setToOneField @$el.attr('name'), selected
+            @model.set @$el.attr('name'), selected

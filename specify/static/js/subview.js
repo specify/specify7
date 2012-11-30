@@ -40,7 +40,7 @@ define([
             var relatedModel = self.field.getRelatedModel();
             self.model = new (api.Resource.forModel(relatedModel))();
             self.model.placeInSameHierarchy(self.parentResource);
-            self.parentResource.setToOneField(self.field.name, self.model);
+            self.parentResource.set(self.field.name, self.model);
             self.render();
         },
         makeDeleteDialog: function(resource, callback) {
@@ -61,7 +61,7 @@ define([
             var self = this;
             function done() {
                 self.model = null;
-                self.parentResource.setToOneField(self.field.name, null, {silent: true});
+                self.parentResource.set(self.field.name, null);
                 self.render();
             }
             if (self.model.isNew()) done()
