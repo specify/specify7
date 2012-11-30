@@ -44,4 +44,5 @@ require([
     QUnit.config.autorun = false;
     var tests = _(arguments).chain().tail(testmain.length);
     tests.invoke('apply');
+    QUnit.load();
 });
