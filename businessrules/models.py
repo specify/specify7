@@ -1,7 +1,6 @@
 from django.db.models import signals, Max
 from django.dispatch import receiver
 from specify import models
-from datetime import datetime
 
 class BusinessRuleException(Exception):
     pass
@@ -53,3 +52,79 @@ def set_rankid(sender, **kwargs):
     if hasattr(obj, 'parent') and obj.parent is not None:
         if obj.parent.rankid >= obj.rankid:
             raise BusinessRuleException('Tree object has parent with rank not greater than itself.')
+
+@receiver(signals.pre_delete, sender=models.Accession)
+def accession_no_delete_if_has_collection_objects(sender, **kwargs):
+    accession = kwargs['instance']
+    if models.Collectionobject.objects.filter(accession=accession).count() > 0:
+        raise BusinessRuleException("can't delete accession with associated collection objects")
+
+def make_uniqueness_rule(model, parent_field, unique_field):
+    @receiver(signals.pre_save, sender=model)
+    def check_unique(sender, **kwargs):
+        instance = kwargs['instance']
+        parent = getattr(instance, parent_field, None)
+        if  parent is None: return
+        conflicts = model.objects.filter(**{
+            parent_field: parent,
+            unique_field: getattr(instance, unique_field)})
+        if instance.id is not None:
+            conflicts = conflicts.exclude(id=instance.id)
+        if conflicts.count() > 0:
+            raise BusinessRuleException("%s must have unique %s in %s" % (model.__name__, unique_field, parent_field))
+    return check_unique
+
+UNIQUENESS_RULES = {
+    models.Accession: {
+        'accessionnumber': ['division'],
+        },
+    models.Accessionagent: {
+        'agent': ['accession', 'repositoryagreement'],
+        'role': ['accession', 'repositoryagreement'],
+        },
+    models.Appraisal: {
+        'appraisalnumber': ['accession'],
+        },
+    models.Author: {
+        'agent': ['referencework'],
+        },
+    models.Borrowagent: {
+        'role': ['borrow'],
+        },
+    models.Collection: {
+        'collectionname': ['discipline'],
+        },
+    models.Collectionobject: {
+        'catalognumber': ['collection'],
+        },
+    models.Collector: {
+        'agent': ['collectingevent'],
+        },
+    models.Discipline: {
+        'name': ['division'],
+        },
+    models.Division: {
+        'name': ['institution'],
+        },
+    models.Gift: {
+        'giftnumber': ['discipline'],
+        },
+    models.Loan: {
+        'loannumber': ['discipline'],
+        },
+    models.Picklist: {
+        'name': ['collection'],
+        },
+    models.Preptype: {
+        'name': ['collection'],
+        },
+    models.Repositoryagreement: {
+        'repositoryagreementnumber': ['division'],
+        },
+    }
+
+uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)
+                    for model, rules in UNIQUENESS_RULES.items()
+                    for unique_field, parent_fields in rules.items()
+                    for parent_field in parent_fields]
+

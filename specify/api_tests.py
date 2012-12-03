@@ -16,7 +16,9 @@ class MainSetupTearDown:
             issinglegeographytree=True,
             )
 
-        self.division = models.Division.objects.create(institution=self.institution)
+        self.division = models.Division.objects.create(
+            institution=self.institution,
+            name='Test Division')
 
         self.geologictimeperiodtreedef = models.Geologictimeperiodtreedef.objects.create(
             name='Test gtptd')
