@@ -29,6 +29,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
         mgr = resource.businessRuleMgr = new BusinessRuleMgr resource
         mgr.setupEvents()
         resource.saveBlockers = new saveblockers.SaveBlockers resource
+        mgr.doCustomInit()
 
     class BusinessRuleMgr
         constructor: (@resource) ->
@@ -51,6 +52,8 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     # the deletion associated following remove event occurs
                     # a work around might be to always do destroy({ wait: true })
                     @resource.on "remove:#{ fieldname }", => @tryToRemDeleteBlocker fieldname
+
+        doCustomInit: -> @rules?.customInit? @resource
 
         checkCanDelete: ->
             if @canDelete()
@@ -78,6 +81,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
         checkField: (fieldName) ->
             fieldName = fieldName.toLowerCase()
             @fieldChangeDeferreds[fieldName] = deferred = whenAll [
+                @doCustomCheck fieldName
                 @checkUnique fieldName
                 treeBusinessRules.run @resource, fieldName if @isTreeNode
             ]
@@ -89,6 +93,8 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     else
                         @resource.saveBlockers.remove(result.key)
                     result.action?()
+
+        doCustomCheck: (fieldName) -> @rules?.customChecks?[fieldName]? @resource
 
         checkUnique: (fieldName) ->
             results = if fieldName in (@rules?.unique or [])
@@ -199,6 +205,37 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
         Collector:
             uniqueIn:
                 agent: 'collectingevent'
+
+        Determination:
+            # these business rules assume the collection of determinations will be fully populated
+            customInit: (determination) -> if determination.isNew()
+                setCurrentIfNoneIsSet = ->
+                    if not (determination.collection.any (other) -> other.get 'iscurrent')
+                        determination.set 'iscurrent', true
+
+                if determination.collection? then setCurrentIfNoneIsSet()
+                determination.on 'add', setCurrentIfNoneIsSet
+
+
+            customChecks:
+                taxon: (determination) -> determination.rget('taxon', true).pipe (taxon) ->
+                    if not taxon?
+                        determination.set 'preferredtaxon', null
+                        return valid: true
+
+                    recur = (taxon) ->
+                        if not taxon.get('isaccepted') and taxon.get('acceptedtaxon')
+                            taxon.rget('acceptedtaxon', true).pipe recur
+                        else
+                            determination.set 'preferredtaxon', taxon
+                            valid: true
+                    recur taxon
+
+                iscurrent: (determination) ->
+                    if determination.get('iscurrent') and determination.collection?
+                        determination.collection.each (other) ->
+                            if other.cid != determination.cid then other.set 'iscurrent', false
+                    valid: true
 
         Discipline:
             uniqueIn:
