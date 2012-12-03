@@ -1,5 +1,6 @@
 from django.db.models import signals, Max
 from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
 from specify import models
 
 class BusinessRuleException(Exception):
@@ -63,7 +64,12 @@ def make_uniqueness_rule(model, parent_field, unique_field):
     @receiver(signals.pre_save, sender=model)
     def check_unique(sender, **kwargs):
         instance = kwargs['instance']
-        parent = getattr(instance, parent_field, None)
+
+        try:
+            parent = getattr(instance, parent_field, None)
+        except ObjectDoesNotExist:
+            parent = None
+
         if  parent is None: return
         conflicts = model.objects.filter(**{
             parent_field: parent,
@@ -127,4 +133,3 @@ uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)
                     for model, rules in UNIQUENESS_RULES.items()
                     for unique_field, parent_fields in rules.items()
                     for parent_field in parent_fields]
-
