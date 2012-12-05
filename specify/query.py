@@ -2,7 +2,7 @@ import re
 
 import models
 
-from query_ops import make_filter
+from query_ops import make_filter, key_to_key_and_date_part
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
@@ -40,14 +40,34 @@ def get_field_by_tableid(model, tableid):
 
     raise Exception("couldn't find related field for tableid %d in %s" % (tableid, model))
 
+
+def field_specs_for(query):
+    return [(field_key(f), f) for f in query.fields.all()]
+
+
 def execute(query):
-    field_specs = [(field_key(f), f) for f in query.fields.all()]
-    filters = [make_filter(k, f) for k, f in field_specs]
-    display_fields = [(k, f) for k, f in field_specs if f.isdisplay]
+    model = models.models_by_tableid[query.contexttableid]
+    field_specs = field_specs_for(query)
 
-    qs = models.models_by_tableid[query.contexttableid].objects.filter(*filters)
+    filters = [make_filter(model, k, f.operstart, f.startvalue, f.isnot)
+               for k, f in field_specs]
 
-    results = [tuple(f.columnalias for k, f in display_fields)]
-    results.extend(qs.values_list(*[k for k, f in display_fields]))
+    qs = model.objects.filter(*filters)
+    return make_results(field_specs, qs)
+
+def make_results(field_specs, qs):
+    display_fields = [key_to_key_and_date_part(k) + (f,)
+                      for k, f in field_specs if f.isdisplay]
+
+    results = [tuple(f.columnalias for _, _, f in display_fields)]
+    rows = qs.values_list(*[k for k, _, _ in display_fields])
+
+    date_parts = [dp for _, dp, _ in display_fields]
+
+    def process(row):
+        return [v if date_part is None else getattr(v, date_part)
+                for v, date_part in zip(row, date_parts)]
+
+    results.extend(process(row) for row in rows)
 
     return results
