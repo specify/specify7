@@ -1,8 +1,8 @@
 import re
 
-from django.db.models import Q
-
 import models
+
+from query_ops import make_filter
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
@@ -40,105 +40,14 @@ def get_field_by_tableid(model, tableid):
 
     raise Exception("couldn't find related field for tableid %d in %s" % (tableid, model))
 
-def op_like(key, field):
-    class Dummy(object):
-        """Trick the django __contains lookup into doing an unescaped LIKE query"""
-        def as_sql(self):
-            return "%s", (field.startvalue,)
-    return key + '__contains', Dummy()
-
-def op_equals(key, field):
-    return key, field.startvalue
-
-def op_greaterthan(key, field):
-    return key + '__gt', field.startvalue
-
-def op_lessthan(key, field):
-    return key + '__lt', field.startvalue
-
-def op_greaterthanequals(key, field):
-    return key + '__gte', field.startvalue
-
-def op_lessthanequals(key, field):
-    return key + '__lte', field.startvalue
-
-def op_true(key, field):
-    return key, True
-
-def op_false(key, field):
-    return key, False
-
-def op_dontcare(key, field):
-    return
-
-def op_between(key, field):
-    return key + '__range', field.startvalue.split(',')[:2]
-
-def op_in(key, field):
-    return key + '__in', field.startvalue.split(',')
-
-def op_contains(key, field):
-    return key + '__contains', field.startvalue
-
-def op_empty(key, field):
-    return key + '__exact', ''
-
-def op_trueornull(key, field):
-    return Q(*{key: True}) | Q(*{key + '__isnull', True})
-
-def op_falseornull(key, field):
-    return Q(*{key: False}) | Q(*{key + '__isnull', True})
-
-OPERATIONS = [
-    op_like,
-    op_equals,
-    op_greaterthan,
-    op_lessthan,
-    op_greaterthanequals,
-    op_lessthanequals,
-    op_true,
-    op_false,
-    op_dontcare,
-    op_between,
-    op_in,
-    op_contains,
-    op_empty,
-    op_trueornull,
-    op_falseornull,
-    ]
-
-QUERY_OPS = [
-    op_contains,
-    op_like,
-    op_equals,
-    op_in,
-    op_between,
-    op_empty,
-    ]
-
 def execute(query):
     field_specs = [(field_key(f), f) for f in query.fields.all()]
+    filters = [make_filter(k, f) for k, f in field_specs]
+    display_fields = [(k, f) for k, f in field_specs if f.isdisplay]
 
-    all_filters = [(field.isnot, QUERY_OPS[field.operstart](key, field))
-                   for key, field in field_specs]
+    qs = models.models_by_tableid[query.contexttableid].objects.filter(*filters)
 
-    filters = [f for isnot, f in all_filters if not isnot]
-    excludes = [f for isnot, f in all_filters if isnot]
-
-    def args(filters):
-        return [f for f in filters if isinstance(f, Q)]
-
-    def kwargs(filters):
-        return dict(f for f in filters if isinstance(f, tuple))
-
-    model = models.models_by_tableid[query.contexttableid]
-
-    qs = model.objects \
-         .filter(*args(filters), **kwargs(filters)) \
-         .exclude(*args(excludes), **kwargs(excludes))
-
-    results = [tuple(field.columnalias for key, field in field_specs)]
-    results.extend(
-        qs.values_list(*[key for key, field in field_specs]))
+    results = [tuple(f.columnalias for k, f in display_fields)]
+    results.extend(qs.values_list(*[k for k, f in display_fields]))
 
     return results
