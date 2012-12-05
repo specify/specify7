@@ -41,8 +41,11 @@ def get_field_by_tableid(model, tableid):
     raise Exception("couldn't find related field for tableid %d in %s" % (tableid, model))
 
 def op_like(key, field):
-    # TODO: fix this
-    return key, field.startvalue
+    class Dummy(object):
+        """Trick the django __contains lookup into doing an unescaped LIKE query"""
+        def as_sql(self):
+            return "%s", (field.startvalue,)
+    return key + '__contains', Dummy()
 
 def op_equals(key, field):
     return key, field.startvalue
