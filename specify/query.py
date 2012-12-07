@@ -3,6 +3,7 @@ import re
 import models
 
 from query_ops import make_filter, key_to_key_and_date_part
+from filter_by_col import filter_by_collection
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
@@ -45,7 +46,7 @@ def field_specs_for(query):
     return [(field_key(f), f) for f in query.fields.all()]
 
 
-def execute(query):
+def execute(query, collection_filter=None):
     model = models.models_by_tableid[query.contexttableid]
     field_specs = field_specs_for(query)
 
@@ -53,7 +54,15 @@ def execute(query):
                for k, f in field_specs]
 
     qs = model.objects.filter(*filters)
-    return make_results(field_specs, qs)
+    if collection_filter is not None:
+        qs = filter_by_collection(qs, collection_filter)
+    if query.selectdistinct:
+        qs = qs.distinct()
+
+    if query.countonly:
+        return qs.count()
+    else:
+        return make_results(field_specs, qs)
 
 def make_results(field_specs, qs):
     display_fields = [key_to_key_and_date_part(k) + (f,)
