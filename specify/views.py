@@ -1,14 +1,11 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 from django.views.decorators.http import require_GET
 
-import os
 import mimetypes
 from urllib import urlopen
-from zipfile import ZipFile
 
-specify_jar = ZipFile(os.path.join(settings.SPECIFY_THICK_CLIENT, 'specify.jar'))
+from specify_jar import specify_jar
 
 @login_required
 @require_GET
