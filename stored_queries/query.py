@@ -1,9 +1,9 @@
 import re
 
-import models
+from specify import models
 
 from query_ops import make_filter, key_to_key_and_date_part
-from filter_by_col import filter_by_collection
+from specify.filter_by_col import filter_by_collection
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
@@ -80,3 +80,4 @@ def make_results(field_specs, qs):
     results.extend(process(row) for row in rows)
 
     return results
+
