@@ -72,7 +72,7 @@ define([
 
                 var location = attachment.get('attachmentlocation');
                 $.ajax({
-                    url: "http://boxley.nhm.ku.edu/getfileref.php",
+                    url: "http://anza.nhm.ku.edu/getfileref.php",
                     data: {
                         coll: "KUFishvoucher",
                         type: 0,
