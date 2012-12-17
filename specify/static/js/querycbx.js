@@ -101,18 +101,27 @@ define([
             });
         },
         search: function(event, ui) {
+            var self = this;
             event.preventDefault();
-            var dialogDef = $('dialog[type="search"][name="' + this.relatedModel.searchDialog + '"]', dialogdefs);
+
+            if (self.dialog) {
+                // if the open dialog is for search just close it and don't open a new one
+                var closeOnly = self.dialog.hasClass('querycbx-dialog-search');
+                self.dialog.dialog('close');
+                if (closeOnly) return;
+            }
+            var dialogDef = $('dialog[type="search"][name="' + self.relatedModel.searchDialog + '"]', dialogdefs);
             specifyform.buildViewByName(dialogDef.attr('view')).done(function(form) {
                 localizeForm(form);
                 form.find('.specify-form-header, input[value="Delete"], :submit').remove();
-                $('<div title="Search">').append(form).dialog({
+                self.dialog = $('<div title="Search" class="querycbx-dialog-search">').append(form).dialog({
                     width: 'auto',
                     buttons: [
                         { text: "Search", click: function() {} }
                     ],
                     close: function() {
                         $(this).remove();
+                        self.dialog = null;
                     }
                 });
             });
@@ -120,12 +129,17 @@ define([
         add: function(event, ui) {
             var self = this;
             event.preventDefault();
+            if (self.dialog) {
+                // if the open dialog is for adding, just close it and don't open a new one
+                var closeOnly = self.dialog.hasClass('querycbx-dialog-add');
+                self.dialog.dialog('close');
+                if (closeOnly) return;
+            }
             var relatedModel = self.model.specifyModel.getField(self.fieldName).getRelatedModel();
-
             var newResource = new (api.Resource.forModel(relatedModel))();
-            self.buildDialog(newResource);
+            self.buildDialog(newResource, 'add');
         },
-        buildDialog: function(resource) {
+        buildDialog: function(resource, addOrDisplay) {
             var self = this;
             var mode = self.readOnly ? 'view' : 'edit';
             specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
@@ -156,11 +170,12 @@ define([
 
                 self.options.populateform(dialogForm, resource);
 
-                var dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title: title,
-                    close: function() { $(this).remove(); }
-                });
+                var dialog = self.dialog = $('<div>', {'class': 'querycbx-dialog-' + addOrDisplay})
+                    .append(dialogForm).dialog({
+                        width: 'auto',
+                        title: title,
+                        close: function() { $(this).remove(); self.dialog = null; }
+                    });
 
                 dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
                     evt.preventDefault();
@@ -172,8 +187,14 @@ define([
         display: function(event, ui) {
             var self = this;
             event.preventDefault();
+            if (self.dialog) {
+                // if the open dialog is for display, just close it and don't open a new one
+                var closeOnly = self.dialog.hasClass('querycbx-dialog-display');
+                self.dialog.dialog('close');
+                if (closeOnly) return;
+            }
             self.model.rget(self.fieldName, true).done(function(related) {
-                related && self.buildDialog(related);
+                related && self.buildDialog(related, 'display');
             });
         },
         blur: function() {
