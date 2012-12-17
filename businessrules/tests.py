@@ -180,6 +180,76 @@ class AccessionAgentTests(ApiTests):
             agent=self.agent,
             role="Collector")
 
+class AgentTests(ApiTests):
+    def test_agent_delete_cascades(self):
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Test",
+            lastname="Agent",
+            division=self.division,)
+
+        agent.addresses.create(address="somewhere")
+
+        geography = models.Geography.objects.create(
+            name="Earth",
+            definition=self.geographytreedef,
+            definitionitem=self.geographytreedef.treedefitems.all()[0]
+            )
+        agent.agentgeographies.create(geography=geography)
+
+        agent.agentspecialties.create(
+            ordernumber=0,
+            specialtyname="testing")
+
+        agent.delete()
+
+    def test_specifyuser_blocks_delete(self):
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Test",
+            lastname="Agent",
+            division=self.division,
+            specifyuser=self.specifyuser)
+
+        with self.assertRaises(BusinessRuleException):
+            agent.delete()
+
+        agent.specifyuser = None
+        with self.assertRaises(BusinessRuleException):
+            agent.delete()
+
+        agent.save()
+        agent.delete()
+
+    def test_other_and_group_do_not_have_addresses(self):
+        from specify.agent_types import agent_types
+        agent = models.Agent.objects.create(
+            agenttype=agent_types.index('Person'),
+            firstname="Test",
+            lastname="Agent",
+            division=self.division)
+
+        agent.addresses.create(address="somewhere")
+
+        models.Address.objects.get(agent=agent)
+
+        agent.agenttype = agent_types.index('Other')
+        agent.save()
+
+        with self.assertRaises(models.Address.DoesNotExist):
+            models.Address.objects.get(agent=agent)
+
+        agent.addresses.create(address="somewhere")
+
+        models.Address.objects.get(agent=agent)
+
+        agent.agenttype = agent_types.index('Group')
+        agent.save()
+
+        with self.assertRaises(models.Address.DoesNotExist):
+            models.Address.objects.get(agent=agent)
+
+
 class AppraisalTests(ApiTests):
     def test_appraisal_number_is_unique_in_accession(self):
         accession = models.Accession.objects.create(

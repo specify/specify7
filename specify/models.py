@@ -12,10 +12,13 @@ orderings = {
     'Recordsetitem': ('recordid', ),
 }
 
-cascade_delete = set([
-        'Recordsetitem.recordset',
-        'Determination.collectionobject',
-])
+cascade_delete = {
+    'Recordsetitem.recordset',
+    'Determination.collectionobject',
+    'Address.agent',
+    'Agentgeography.agent',
+    'Agentspecialty.agent',
+}
 
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
@@ -206,10 +209,11 @@ SPECIFY_VERSION = re.findall(r'SPECIFY_VERSION=(.*)',
 
 SCHEMA_VERSION = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'schema_version.xml')).getroot().text
 
-spversion = Spversion.objects.get()
-assert spversion.appversion == SPECIFY_VERSION and spversion.schemaversion == SCHEMA_VERSION, """
-       Specify version: %s, Schema Version: %s do not match database values: %s, %s
-       Please update and/or run the host thickclient installation at %s
-       to update the database.""" % (
-       SPECIFY_VERSION, SCHEMA_VERSION, spversion.appversion, spversion.schemaversion,
-       settings.SPECIFY_THICK_CLIENT)
+if not settings.TESTING:
+    spversion = Spversion.objects.get()
+    assert spversion.appversion == SPECIFY_VERSION and spversion.schemaversion == SCHEMA_VERSION, """
+           Specify version: %s, Schema Version: %s do not match database values: %s, %s
+           Please update and/or run the host thickclient installation at %s
+           to update the database.""" % (
+           SPECIFY_VERSION, SCHEMA_VERSION, spversion.appversion, spversion.schemaversion,
+           settings.SPECIFY_THICK_CLIENT)

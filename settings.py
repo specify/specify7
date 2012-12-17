@@ -36,9 +36,12 @@ TESTING_DATABASES = {
 }
 
 if 'test' in sys.argv:
+    TESTING = True
     DATABASES = TESTING_DATABASES
     FIREBUG_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firebug@software.joehewitt.com.xpi"
     FIRESTARTER_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firestarter@getfirebug.com.xpi"
+else:
+    TESTING = False
 
 #TEST_RUNNER = 'selenium_testsuite_runner.SeleniumTestSuiteRunner'
 

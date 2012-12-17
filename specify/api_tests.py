@@ -26,6 +26,8 @@ class MainSetupTearDown:
         self.geographytreedef = models.Geographytreedef.objects.create(
             name='Test gtd')
 
+        self.geographytreedef.treedefitems.create(name="Planet", rankid="0")
+
         self.datatype = models.Datatype.objects.create(
             name='Test datatype')
 

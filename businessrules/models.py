@@ -16,7 +16,6 @@ def collector_pre_save(sender, **kwargs):
             top = others.aggregate(Max('ordernumber'))['ordernumber__max'] or 0
             collector.ordernumber = top + 1
 
-
 @receiver(signals.pre_save, sender=models.Collectionobject)
 def collectionobject_pre_save(sender, **kwargs):
     co = kwargs['instance']
@@ -42,6 +41,22 @@ def recordset_pre_save(sender, **kwargs):
     recordset = kwargs['instance']
     if recordset.specifyuser_id is None:
         recordset.specifyuser = recordset.createdbyagent.specifyuser
+
+@receiver(signals.pre_delete, sender=models.Agent)
+def agent_delete_blocked_by_related_specifyuser(sender, **kwargs):
+    agent = kwargs['instance']
+    try:
+        models.Specifyuser.objects.get(agents=agent)
+    except models.Specifyuser.DoesNotExist:
+        return
+    raise BusinessRuleException("agent cannot be deleted while associated with a specifyuser")
+
+@receiver(signals.pre_save, sender=models.Agent)
+def agent_types_other_and_group_do_not_have_addresses(sender, **kwargs):
+    from specify.agent_types import agent_types
+    agent = kwargs['instance']
+    if agent_types[agent.agenttype] in ('Other', 'Group'):
+        agent.addresses.all().delete()
 
 @receiver(signals.pre_save)
 def set_rankid(sender, **kwargs):
