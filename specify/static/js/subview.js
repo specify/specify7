@@ -16,6 +16,7 @@ define([
             var self = this;
             self.$el.empty();
             var header = $(templates.subviewheader());
+            $('.specify-visit-related', header).remove();
             $('.specify-subview-title', header).text(self.title);
             specifyform.buildSubView(self.$el).done(function(form) {
                 if (specifyform.getFormMode(form) === 'view') {

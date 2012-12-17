@@ -84,6 +84,7 @@ define([
                     header.find('.specify-add-related').click(_.bind(self.add, self));
                     header.find('.specify-delete-related').click(_.bind(self.delete, self));
                 }
+                header.find('.specify-visit-related').click(_.bind(self.visit, self));
             } else if (!self.readOnly) {
                 $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
                 $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
@@ -194,6 +195,9 @@ define([
                 newResource.set(this.field.otherSideName, this.collection.parent.url());
             }
             this.collection.add(newResource);
+        },
+        visit: function() {
+            navigation.go(this.currentResource().viewUrl());
         }
     });
 });

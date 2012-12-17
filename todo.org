@@ -1,7 +1,5 @@
 * disable testcontext in production
 * unknown picklist accession.divisionCBX
-* express search page indicate no hits
-* make "visit" link for one-to-many recordselector view
 * ui and dataobj formatters for express search results
 * save and delete buttons missing on recordsets view
 * weird limit of one on collection fetches (new api)

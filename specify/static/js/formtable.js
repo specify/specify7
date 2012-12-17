@@ -23,7 +23,7 @@ define([
             var self = this;
             var header = $(templates.subviewheader());
 
-            header.find('.specify-delete-related').remove();
+            header.find('.specify-delete-related, .specify-visit-related').remove();
             if (self.readOnly) header.find('.specify-add-related').remove();
             self.$el.empty().append(header);
             self.$('.specify-subview-title').text(self.title);
