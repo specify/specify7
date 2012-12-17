@@ -4,7 +4,7 @@ define([
 
     var Base =  Backbone.View.extend({
         events: {
-            'click a': 'openDialog'
+            'click a': 'clicked'
         },
         initialize: function(options) {
             var self = this;
@@ -33,6 +33,14 @@ define([
         },
         setCount: function (c) {
             this.$('.specify-subview-button-count').text(c);
+        },
+        clicked: function(evt) {
+            evt.preventDefault();
+            if (this.dialog) {
+                this.dialog.dialog('close');
+            } else {
+                this.openDialog();
+            }
         }
     });
 
@@ -49,10 +57,8 @@ define([
             this.setCount(this.collection.length);
             if (this.collection.length < 1 && this.dialog) this.dialog.dialog('close');
         },
-        openDialog: function(evt) {
-            evt.preventDefault();
+        openDialog: function() {
             var self = this;
-            if (self.dialog) return;
             if (self.readOnly && self.collection.length < 1) return;
 
             specifyform.buildSubView(self.$el).done(function(form) {
@@ -87,8 +93,7 @@ define([
         resourceChanged: function() {
             this.setCount(this.model.get(this.field.name) ? 1 : 0);
         },
-        openDialog: function(evt) {
-            evt.preventDefault();
+        openDialog: function() {
             var self = this;
             if (self.readOnly && !self.related) return;
 
@@ -106,14 +111,14 @@ define([
                 }
 
                 $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
-                    dialog.dialog('close');
+                    self.dialog.dialog('close');
                 });
 
                 var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
                 if (self.related.isNew()) {
                     $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
-                        dialog.dialog('close');
+                        self.dialog.dialog('close');
                         self.related = null;
                         self.model.set(self.field.name, self.related);
                         self.resourceChanged();
@@ -123,7 +128,7 @@ define([
                         var deleteButton = new DeleteButton({ model: self.related });
                         deleteButton.render().$el.appendTo(dialogForm);
                         deleteButton.on('deleted', function() {
-                            dialog.dialog('close');
+                            self.dialog.dialog('close');
                             self.related = null;
                             self.model.set(self.field.name, self.related);
                             self.resourceChanged();
@@ -135,10 +140,10 @@ define([
 
                 self.options.populateform(dialogForm, self.related);
                 var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                var dialog = $('<div>').append(dialogForm).dialog({
+                self.dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',
                     title: title,
-                    close: function() { $(this).remove(); }
+                    close: function() { $(this).remove(); self.dialog = null; }
                 });
             });
         }
