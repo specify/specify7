@@ -6,9 +6,24 @@ from specify import models
 class BusinessRuleException(Exception):
     pass
 
-@receiver(signals.pre_save, sender=models.Collector)
-def collector_pre_save(sender, **kwargs):
-    collector = kwargs['instance']
+def orm_signal_handler(signal, model=None):
+    def _dec(rule):
+        receiver_kwargs = {}
+        if model is not None:
+            receiver_kwargs['sender'] = getattr(models, model)
+            def handler(sender, **kwargs):
+                # since the rule knows what model the signal comes from
+                # the sender value is redundant.
+                rule(kwargs['instance'])
+        else:
+            def handler(sender, **kwargs):
+                rule(sender, kwargs['instance'])
+
+        return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
+    return _dec
+
+@orm_signal_handler('pre_save', 'Collector')
+def collector_pre_save(collector):
     if collector.id is None:
         if collector.ordernumber is None:
             # this should be atomic, but whatever
@@ -16,51 +31,44 @@ def collector_pre_save(sender, **kwargs):
             top = others.aggregate(Max('ordernumber'))['ordernumber__max'] or 0
             collector.ordernumber = top + 1
 
-@receiver(signals.pre_save, sender=models.Collectionobject)
-def collectionobject_pre_save(sender, **kwargs):
-    co = kwargs['instance']
+@orm_signal_handler('pre_save', 'Collectionobject')
+def collectionobject_pre_save(co):
     if co.collectionmemberid is None:
         co.collectionmemberid = co.collection.id
 
-@receiver(signals.pre_save, sender=models.Determination)
-def determination_pre_save(sender, **kwargs):
-    det = kwargs['instance']
+@orm_signal_handler('pre_save', 'Determination')
+def determination_pre_save(det):
     if det.collectionmemberid is None:
         det.collectionmemberid = det.collectionobject.collectionmemberid
 
-@receiver(signals.post_delete)
-def remove_from_recordsets(sender, **kwargs):
+@orm_signal_handler('post_delete')
+def remove_from_recordsets(sender, obj):
     if not hasattr(sender, 'tableid'): return
-    obj = kwargs['instance']
     rsis = models.Recordsetitem.objects.filter(recordset__dbtableid=sender.tableid,
                                                recordid=obj.id)
     rsis.delete()
 
-@receiver(signals.pre_save, sender=models.Recordset)
-def recordset_pre_save(sender, **kwargs):
-    recordset = kwargs['instance']
+@orm_signal_handler('pre_save', 'Recordset')
+def recordset_pre_save(recordset):
     if recordset.specifyuser_id is None:
         recordset.specifyuser = recordset.createdbyagent.specifyuser
 
-@receiver(signals.pre_delete, sender=models.Agent)
-def agent_delete_blocked_by_related_specifyuser(sender, **kwargs):
-    agent = kwargs['instance']
+@orm_signal_handler('pre_delete', 'Agent')
+def agent_delete_blocked_by_related_specifyuser(agent):
     try:
         models.Specifyuser.objects.get(agents=agent)
     except models.Specifyuser.DoesNotExist:
         return
     raise BusinessRuleException("agent cannot be deleted while associated with a specifyuser")
 
-@receiver(signals.pre_save, sender=models.Agent)
-def agent_types_other_and_group_do_not_have_addresses(sender, **kwargs):
+@orm_signal_handler('pre_save', 'Agent')
+def agent_types_other_and_group_do_not_have_addresses(agent):
     from specify.agent_types import agent_types
-    agent = kwargs['instance']
     if agent_types[agent.agenttype] in ('Other', 'Group'):
         agent.addresses.all().delete()
 
-@receiver(signals.pre_save)
-def set_rankid(sender, **kwargs):
-    obj = kwargs['instance']
+@orm_signal_handler('pre_save')
+def set_rankid(sender, obj):
     if hasattr(obj, 'definitionitem'):
         obj.rankid = obj.definitionitem.rankid
         obj.definition = obj.definitionitem.treedef
@@ -69,17 +77,15 @@ def set_rankid(sender, **kwargs):
         if obj.parent.rankid >= obj.rankid:
             raise BusinessRuleException('Tree object has parent with rank not greater than itself.')
 
-@receiver(signals.pre_delete, sender=models.Accession)
-def accession_no_delete_if_has_collection_objects(sender, **kwargs):
-    accession = kwargs['instance']
+@orm_signal_handler('pre_delete', 'Accession')
+def accession_no_delete_if_has_collection_objects(accession):
     if models.Collectionobject.objects.filter(accession=accession).count() > 0:
         raise BusinessRuleException("can't delete accession with associated collection objects")
 
-def make_uniqueness_rule(model, parent_field, unique_field):
-    @receiver(signals.pre_save, sender=model)
-    def check_unique(sender, **kwargs):
-        instance = kwargs['instance']
-
+def make_uniqueness_rule(model_name, parent_field, unique_field):
+    model = getattr(models, model_name)
+    @orm_signal_handler('pre_save', model_name)
+    def check_unique(instance):
         try:
             parent = getattr(instance, parent_field, None)
         except ObjectDoesNotExist:
@@ -96,50 +102,50 @@ def make_uniqueness_rule(model, parent_field, unique_field):
     return check_unique
 
 UNIQUENESS_RULES = {
-    models.Accession: {
+    'Accession': {
         'accessionnumber': ['division'],
         },
-    models.Accessionagent: {
+    'Accessionagent': {
         'agent': ['accession', 'repositoryagreement'],
         'role': ['accession', 'repositoryagreement'],
         },
-    models.Appraisal: {
+    'Appraisal': {
         'appraisalnumber': ['accession'],
         },
-    models.Author: {
+    'Author': {
         'agent': ['referencework'],
         },
-    models.Borrowagent: {
+    'Borrowagent': {
         'role': ['borrow'],
         },
-    models.Collection: {
+    'Collection': {
         'collectionname': ['discipline'],
         },
-    models.Collectionobject: {
+    'Collectionobject': {
         'catalognumber': ['collection'],
         },
-    models.Collector: {
+    'Collector': {
         'agent': ['collectingevent'],
         },
-    models.Discipline: {
+    'Discipline': {
         'name': ['division'],
         },
-    models.Division: {
+    'Division': {
         'name': ['institution'],
         },
-    models.Gift: {
+    'Gift': {
         'giftnumber': ['discipline'],
         },
-    models.Loan: {
+    'Loan': {
         'loannumber': ['discipline'],
         },
-    models.Picklist: {
+    'Picklist': {
         'name': ['collection'],
         },
-    models.Preptype: {
+    'Preptype': {
         'name': ['collection'],
         },
-    models.Repositoryagreement: {
+    'Repositoryagreement': {
         'repositoryagreementnumber': ['division'],
         },
     }
