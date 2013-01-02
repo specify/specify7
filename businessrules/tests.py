@@ -1,4 +1,5 @@
 import datetime
+from django.db.models import ProtectedError
 
 from specify import models
 from specify.api_tests import ApiTests
@@ -235,6 +236,22 @@ class AgentTests(ApiTests):
         agent.save()
         agent.delete()
 
+    def test_agent_division_and_agenttype_cannot_be_null(self):
+        with self.assertRaises(BusinessRuleException):
+            models.Agent.objects.create(
+                agenttype=0,
+                firstname="Test",
+                lastname="Agent",
+                division=None)
+
+        with self.assertRaises(BusinessRuleException):
+            models.Agent.objects.create(
+                agenttype=None,
+                firstname="Test",
+                lastname="Agent",
+                division=self.division)
+
+
     def test_other_and_group_do_not_have_addresses(self):
         from specify.agent_types import agent_types
         agent = models.Agent.objects.create(
@@ -265,6 +282,20 @@ class AgentTests(ApiTests):
 
 
 class AppraisalTests(ApiTests):
+    def test_delete_blocked_by_collection_objects(self):
+        appraisal = models.Appraisal.objects.create(
+            appraisaldate=datetime.date.today(),
+            appraisalnumber='1',
+            agent=self.agent)
+
+        appraisal.collectionobjects.add(*self.collectionobjects)
+        self.assertEqual(
+            models.Collectionobject.objects.filter(appraisal=appraisal).count(),
+            len(self.collectionobjects))
+
+        with self.assertRaises(ProtectedError):
+            appraisal.delete()
+
     def test_appraisal_number_is_unique_in_accession(self):
         accession = models.Accession.objects.create(
             accessionnumber='a',
@@ -318,6 +349,24 @@ class AuthorTests(ApiTests):
                 firstname="Test2",
                 lastname="Agent",
                 division=self.division))
+
+    def test_ordernumber_unique(self):
+        referencework = models.Referencework.objects.create(
+            referenceworktype=0)
+
+        referencework.authors.create(
+            ordernumber=0,
+            agent=self.agent)
+
+        with self.assertRaises(BusinessRuleException):
+            referencework.authors.create(
+                ordernumber=0,
+                agent=models.Agent.objects.create(
+                    agenttype=0,
+                    firstname="Test2",
+                    lastname="Agent",
+                    division=self.division))
+
 
 class BrowseAgentTests(ApiTests):
     def test_is_unique_in_borrow(self):

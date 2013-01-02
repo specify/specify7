@@ -62,8 +62,15 @@ def agent_delete_blocked_by_related_specifyuser(agent):
     raise BusinessRuleException("agent cannot be deleted while associated with a specifyuser")
 
 @orm_signal_handler('pre_save', 'Agent')
+def agent_division_must_not_be_null(agent):
+    if agent.division is None:
+        raise BusinessRuleException("agent.division cannot be null")
+
+@orm_signal_handler('pre_save', 'Agent')
 def agent_types_other_and_group_do_not_have_addresses(agent):
     from specify.agent_types import agent_types
+    if agent.agenttype is None:
+        raise BusinessRuleException("agenttype cannot be null")
     if agent_types[agent.agenttype] in ('Other', 'Group'):
         agent.addresses.all().delete()
 
@@ -119,6 +126,7 @@ UNIQUENESS_RULES = {
         },
     'Author': {
         'agent': ['referencework'],
+        'ordernumber': ['referencework'],
         },
     'Borrowagent': {
         'role': ['borrow'],

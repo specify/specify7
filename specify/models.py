@@ -20,6 +20,10 @@ cascade_delete = {
     'Agentspecialty.agent',
 }
 
+protect_delete = {
+    'Collectionobject.appraisal',
+}
+
 def make_model(tabledef):
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
     attrs = dict(id=make_id_field(tabledef.find('id')),
@@ -83,8 +87,11 @@ def make_relationship(modelname, relname, reldef):
                                       related_name=related_name,
                                       null=null, editable=editable)
 
-    if '.'.join((modelname, relname)) in cascade_delete:
+    fieldname = '.'.join((modelname, relname))
+    if  fieldname in cascade_delete:
         on_delete = models.CASCADE
+    elif fieldname in protect_delete:
+        on_delete = models.PROTECT
     else:
         on_delete = models.SET_NULL if null else models.DO_NOTHING
 
