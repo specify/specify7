@@ -18,6 +18,7 @@ cascade_delete = {
     'Address.agent',
     'Agentgeography.agent',
     'Agentspecialty.agent',
+    'Geography.parent',
 }
 
 protect_delete = {
@@ -25,6 +26,9 @@ protect_delete = {
     'Collectionobject.appraisal',
     'Collectionobject.collectingevent',
     'Collectionobject.collection',
+    'Locality.geography',
+    'Agentgeography.geography',
+    'Geography.definitionitem',
 }
 
 def make_model(tabledef):

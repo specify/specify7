@@ -108,6 +108,11 @@ def create_taxontreedef_if_null(discipline):
         discipline.taxontreedef = models.Taxontreedef.objects.create(
             name='Sample')
 
+@orm_signal_handler('pre_delete', 'Geographytreedefitem')
+def cannot_delete_root(geographytreedefitem):
+    if models.Geographytreedefitem.objects.get(id=geographytreedefitem.id).parent is None:
+        raise BusinessRuleException("cannot delete root level geograpty tree definition item")
+
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)
     @orm_signal_handler('pre_save', model_name)
