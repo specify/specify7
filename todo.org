@@ -16,3 +16,5 @@
 * geolocate plugin should maybe set lat/long method field
 * should cache nulls in related cache
 * special agents that have null division even though it is required by the datamodel
+* deal with container business rules
+* business rule about discipline/collection picklist

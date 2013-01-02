@@ -84,20 +84,29 @@ def set_rankid(sender, obj):
         if obj.parent.rankid >= obj.rankid:
             raise BusinessRuleException('Tree object has parent with rank not greater than itself.')
 
-@orm_signal_handler('pre_delete', 'Accession')
-def accession_no_delete_if_has_collection_objects(accession):
-    if models.Collectionobject.objects.filter(accession=accession).count() > 0:
-        raise BusinessRuleException("can't delete accession with associated collection objects")
-
 @orm_signal_handler('pre_save', 'Address')
 def at_most_one_primary_address_per_agent(address):
     if address.isprimary and address.agent is not None:
         address.agent.addresses.all().update(isprimary=False)
 
+@orm_signal_handler('pre_save', 'Collector')
+def division_cannot_be_null(collector):
+    if collector.division is None:
+        raise BusinessRuleException("collector.division cannot be null")
+
 @orm_signal_handler('pre_save', 'Determination')
 def only_one_determination_iscurrent(determination):
     if determination.iscurrent:
         determination.collectionobject.determinations.all().update(iscurrent=False)
+
+@orm_signal_handler('pre_save', 'Discipline')
+def create_taxontreedef_if_null(discipline):
+    if discipline.id is not None:
+        # only do this for new disciplines
+        return
+    if discipline.taxontreedef is None:
+        discipline.taxontreedef = models.Taxontreedef.objects.create(
+            name='Sample')
 
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)

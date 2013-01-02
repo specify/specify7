@@ -21,6 +21,7 @@ cascade_delete = {
 }
 
 protect_delete = {
+    'Collectionobject.accession',
     'Collectionobject.appraisal',
     'Collectionobject.collectingevent',
     'Collectionobject.collection',

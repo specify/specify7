@@ -43,7 +43,7 @@ class AccessionTests(ApiTests):
                 accession=accession).count(),
             len(self.collectionobjects))
 
-        with self.assertRaises(BusinessRuleException):
+        with self.assertRaises(ProtectedError):
             accession.delete()
 
         accession.collectionobjects.clear()
@@ -475,12 +475,25 @@ class CollectorTests(ApiTests):
         collectingevent.collectors.create(
             isprimary=True,
             ordernumber=0,
+            division=self.division,
             agent=self.agent)
 
         with self.assertRaises(BusinessRuleException):
             collectingevent.collectors.create(
                 isprimary=False,
                 ordernumber=1,
+                division=self.division,
+                agent=self.agent)
+
+    def test_division_cannot_be_null(self):
+        collectingevent = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
+        with self.assertRaises(BusinessRuleException):
+            collectingevent.collectors.create(
+                isprimary=True,
+                ordernumber=0,
+                division=None,
                 agent=self.agent)
 
 class DeterminationTests(ApiTests):
@@ -517,6 +530,17 @@ class DisciplineTests(ApiTests):
                 geographytreedef=self.geographytreedef,
                 division=self.division,
                 datatype=self.datatype)
+
+    def test_create_taxontreedef_if_null(self):
+        discipline = models.Discipline.objects.create(
+            name='foobar',
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            taxontreedef=None)
+
+        self.assertNotEqual(discipline.taxontreedef, None)
 
 class DivisionTests(ApiTests):
     def test_name_unique_in_institution(self):
