@@ -22,6 +22,18 @@ def orm_signal_handler(signal, model=None):
         return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
     return _dec
 
+@orm_signal_handler('post_delete')
+def remove_from_recordsets(sender, obj):
+    if not hasattr(sender, 'tableid'): return
+    rsis = models.Recordsetitem.objects.filter(recordset__dbtableid=sender.tableid,
+                                               recordid=obj.id)
+    rsis.delete()
+
+@orm_signal_handler('pre_save', 'Recordset')
+def recordset_pre_save(recordset):
+    if recordset.specifyuser_id is None:
+        recordset.specifyuser = recordset.createdbyagent.specifyuser
+
 @orm_signal_handler('pre_save', 'Collector')
 def collector_pre_save(collector):
     if collector.id is None:
@@ -40,18 +52,6 @@ def collectionobject_pre_save(co):
 def determination_pre_save(det):
     if det.collectionmemberid is None:
         det.collectionmemberid = det.collectionobject.collectionmemberid
-
-@orm_signal_handler('post_delete')
-def remove_from_recordsets(sender, obj):
-    if not hasattr(sender, 'tableid'): return
-    rsis = models.Recordsetitem.objects.filter(recordset__dbtableid=sender.tableid,
-                                               recordid=obj.id)
-    rsis.delete()
-
-@orm_signal_handler('pre_save', 'Recordset')
-def recordset_pre_save(recordset):
-    if recordset.specifyuser_id is None:
-        recordset.specifyuser = recordset.createdbyagent.specifyuser
 
 @orm_signal_handler('pre_delete', 'Agent')
 def agent_delete_blocked_by_related_specifyuser(agent):
@@ -81,6 +81,11 @@ def set_rankid(sender, obj):
 def accession_no_delete_if_has_collection_objects(accession):
     if models.Collectionobject.objects.filter(accession=accession).count() > 0:
         raise BusinessRuleException("can't delete accession with associated collection objects")
+
+@orm_signal_handler('pre_save', 'Address')
+def at_most_one_primary_address_per_agent(address):
+    if address.isprimary and address.agent is not None:
+        address.agent.addresses.all().update(isprimary=False)
 
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)
