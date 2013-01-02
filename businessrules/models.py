@@ -94,6 +94,11 @@ def at_most_one_primary_address_per_agent(address):
     if address.isprimary and address.agent is not None:
         address.agent.addresses.all().update(isprimary=False)
 
+@orm_signal_handler('pre_save', 'Determination')
+def only_one_determination_iscurrent(determination):
+    if determination.iscurrent:
+        determination.collectionobject.determinations.all().update(iscurrent=False)
+
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)
     @orm_signal_handler('pre_save', model_name)
@@ -104,9 +109,11 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
             parent = None
 
         if  parent is None: return
+        value = getattr(instance, unique_field)
+        if value is None: return
         conflicts = model.objects.filter(**{
             parent_field: parent,
-            unique_field: getattr(instance, unique_field)})
+            unique_field: value})
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
         if conflicts.count() > 0:
@@ -133,6 +140,7 @@ UNIQUENESS_RULES = {
         },
     'Collection': {
         'collectionname': ['discipline'],
+        'code': ['discipline'],
         },
     'Collectionobject': {
         'catalognumber': ['collection'],

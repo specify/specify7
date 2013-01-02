@@ -368,7 +368,7 @@ class AuthorTests(ApiTests):
                     division=self.division))
 
 
-class BrowseAgentTests(ApiTests):
+class BorrowAgentTests(ApiTests):
     def test_is_unique_in_borrow(self):
         borrow = models.Borrow.objects.create(
             collectionmemberid=self.collection.id,
@@ -390,6 +390,19 @@ class BrowseAgentTests(ApiTests):
             collectionmemberid=self.collection.id,
             role='Lender')
 
+class CollectingEventTests(ApiTests):
+    def test_collectionobjects_block_delete(self):
+        ce = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
+        ce.collectionobjects.add(*self.collectionobjects)
+
+        with self.assertRaises(ProtectedError):
+            ce.delete()
+
+        ce.collectionobjects.clear()
+        ce.delete()
+
 class CollectionTests(ApiTests):
     def test_collection_name_unique_in_discipline(self):
         with self.assertRaises(BusinessRuleException):
@@ -404,6 +417,44 @@ class CollectionTests(ApiTests):
             collectionname=self.collection.collectionname + 'foo',
             isembeddedcollectingevent=False,
             discipline=self.discipline)
+
+    def test_code_is_unique(self):
+        models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='test1',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+            code='TEST')
+
+        with self.assertRaises(BusinessRuleException):
+            models.Collection.objects.create(
+                catalognumformatname='test',
+                collectionname='test2',
+                isembeddedcollectingevent=False,
+                discipline=self.discipline,
+                code='TEST')
+
+    def test_null_code_need_not_be_unique(self):
+        models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='test1',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+            code=None)
+
+        models.Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='test2',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+            code=None)
+
+    def test_collection_objects_block_delete(self):
+        with self.assertRaises(ProtectedError):
+            self.collection.delete()
+
+        models.Collectionobject.objects.filter(collection=self.collection).delete()
+        self.collection.delete()
 
 class CollectionObjectTests(ApiTests):
     def test_catalog_number_unique_in_collection(self):
@@ -431,6 +482,24 @@ class CollectorTests(ApiTests):
                 isprimary=False,
                 ordernumber=1,
                 agent=self.agent)
+
+class DeterminationTests(ApiTests):
+    def test_only_one_determination_iscurrent(self):
+        determinations = self.collectionobjects[0].determinations
+        d1 = determinations.create(iscurrent=True)
+        d2 = determinations.create(iscurrent=False)
+        d3 = determinations.create(iscurrent=True)
+        self.assertEqual(determinations.get(iscurrent=True).id, d3.id)
+        d2.iscurrent = True
+        d2.save()
+        self.assertEqual(determinations.get(iscurrent=True).id, d2.id)
+
+    def test_iscurrent_doesnt_interfere_across_colleciton_objects(self):
+        for co in self.collectionobjects:
+            co.determinations.create(iscurrent=True)
+
+        for co in self.collectionobjects:
+            co.determinations.get(iscurrent=True)
 
 class DisciplineTests(ApiTests):
     def test_name_unique_in_division(self):

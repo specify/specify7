@@ -22,6 +22,8 @@ cascade_delete = {
 
 protect_delete = {
     'Collectionobject.appraisal',
+    'Collectionobject.collectingevent',
+    'Collectionobject.collection',
 }
 
 def make_model(tabledef):
