@@ -83,6 +83,9 @@ UNIQUENESS_RULES = {
     'Loan': {
         'loannumber': ['discipline'],
         },
+    'Permit': {
+        'permitnumber': [None],
+        },
     'Picklist': {
         'name': ['collection'],
         },

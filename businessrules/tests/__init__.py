@@ -22,7 +22,9 @@ from institution import *
 from journal import *
 from lithostrat import *
 from lithostrattreedefitem import *
+from locality import *
 from loan import *
+from permit import *
 from picklist import *
 from preptype import *
 from repositoryagreement import *

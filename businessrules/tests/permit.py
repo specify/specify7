@@ -1,0 +1,28 @@
+from django.db.models import ProtectedError
+from specify import models
+from specify.api_tests import ApiTests
+from ..exceptions import BusinessRuleException
+
+class PermitTests(ApiTests):
+    def test_number_is_unique(self):
+        models.Permit.objects.create(
+            permitnumber='1')
+
+        with self.assertRaises(BusinessRuleException):
+            models.Permit.objects.create(
+                permitnumber='1')
+
+        models.Permit.objects.create(
+            permitnumber='2')
+
+    def test_delete_blocked_by_accessionauthorization(self):
+        permit = models.Permit.objects.create(
+            permitnumber='1')
+
+        aa = permit.accessionauthorizations.create()
+
+        with self.assertRaises(ProtectedError):
+            permit.delete()
+
+        aa.delete()
+        permit.delete()
