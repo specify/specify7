@@ -14,6 +14,8 @@ from discipline import *
 from division import *
 from geography import *
 from geographytreedefitem import *
+from geologictimeperiod import *
+from geologictimeperiodtreedefitem import *
 from gift import *
 from loan import *
 from picklist import *

@@ -37,7 +37,7 @@ class GeographyTests(ApiTests):
         models.Agentgeography.objects.filter(geography=geography).delete()
         geography.delete()
 
-    def test_cascades_to_deletable_children(self):
+    def test_delete_cascades_to_deletable_children(self):
         earth = models.Geography.objects.create(
             name="Earth",
             definition=self.geographytreedef,

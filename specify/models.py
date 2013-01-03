@@ -19,6 +19,7 @@ cascade_delete = {
     'Agentgeography.agent',
     'Agentspecialty.agent',
     'Geography.parent',
+    'Geologictimeperiod.parent',
 }
 
 protect_delete = {
@@ -29,6 +30,9 @@ protect_delete = {
     'Locality.geography',
     'Agentgeography.geography',
     'Geography.definitionitem',
+    'Paleocontext.biostrat',
+    'Paleocontext.chronosstrat',
+    'Paleocontext.chronosstratend',
 }
 
 def make_model(tabledef):
