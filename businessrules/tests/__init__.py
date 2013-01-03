@@ -17,6 +17,9 @@ from geographytreedefitem import *
 from geologictimeperiod import *
 from geologictimeperiodtreedefitem import *
 from gift import *
+from groupperson import *
+from institution import *
+from journal import *
 from loan import *
 from picklist import *
 from preptype import *

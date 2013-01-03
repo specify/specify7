@@ -30,9 +30,11 @@ protect_delete = {
     'Locality.geography',
     'Agentgeography.geography',
     'Geography.definitionitem',
+    'Geologictimeperiod.definitionitem',
     'Paleocontext.biostrat',
     'Paleocontext.chronosstrat',
     'Paleocontext.chronosstratend',
+    'Referencework.journal',
 }
 
 def make_model(tabledef):

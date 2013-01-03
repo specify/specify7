@@ -1,6 +1,4 @@
 from django.db.models import ProtectedError
-
-from specify import models
 from specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
@@ -13,24 +11,27 @@ class GeologictimeperiodtreedefitemTests(ApiTests):
         with self.assertRaises(BusinessRuleException):
             root.delete()
 
-    # def test_delete_blocked_by_geography(self):
-    #     earth = models.Geography.objects.create(
-    #         name="Earth",
-    #         definition=self.geographytreedef,
-    #         definitionitem=self.geographytreedef.treedefitems.all()[0])
+    def test_delete_blocked_by_geologictimeperiod(self):
+        root = self.geologictimeperiodtreedef.treedefitems.create(
+            name="root",
+            rankid=0)
 
-    #     continent = earth.definitionitem.children.create(
-    #         name="Continent",
-    #         treedef=earth.definition,
-    #         rankid=earth.definitionitem.rankid+100)
+        eternity = root.treeentries.create(
+            name="Eternity",
+            definition=root.treedef)
 
-    #     asia = earth.children.create(
-    #         name="Asia",
-    #         definition=earth.definition,
-    #         definitionitem=continent)
+        age = root.children.create(
+            name="Age",
+            treedef=root.treedef,
+            rankid=root.rankid+100)
 
-    #     with self.assertRaises(ProtectedError):
-    #         continent.delete()
+        first_age = eternity.children.create(
+            name="First Age",
+            definition=age.treedef,
+            definitionitem=age)
 
-    #     asia.delete()
-    #     continent.delete()
+        with self.assertRaises(ProtectedError):
+            age.delete()
+
+        first_age.delete()
+        age.delete()
