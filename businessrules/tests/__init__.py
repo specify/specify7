@@ -20,6 +20,8 @@ from gift import *
 from groupperson import *
 from institution import *
 from journal import *
+from lithostrat import *
+from lithostrattreedefitem import *
 from loan import *
 from picklist import *
 from preptype import *

@@ -20,6 +20,7 @@ cascade_delete = {
     'Agentspecialty.agent',
     'Geography.parent',
     'Geologictimeperiod.parent',
+    'Lithostrat.parent',
 }
 
 protect_delete = {
@@ -31,6 +32,8 @@ protect_delete = {
     'Agentgeography.geography',
     'Geography.definitionitem',
     'Geologictimeperiod.definitionitem',
+    'Lithostrat.definitionitem',
+    'Paleocontext.lithostrat',
     'Paleocontext.biostrat',
     'Paleocontext.chronosstrat',
     'Paleocontext.chronosstratend',
