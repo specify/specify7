@@ -124,7 +124,9 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
     def test_post_bad_resource(self):
         with self.assertRaises(api.RecordSetException) as cm:
             obj = api.post_resource(self.collection, self.agent, 'Agent',
-                                    {'agenttype': 0, 'lastname': 'MonkeyWrench'},
+                                    {'agenttype': 0,
+                                     'lastname': 'MonkeyWrench',
+                                     'division': api.uri_for_model('division', self.division.id)},
                                     recordsetid=self.recordset.id)
         self.assertEqual(models.Agent.objects.filter(lastname='MonkeyWrench').count(), 0)
 
@@ -132,7 +134,9 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
         max_id = models.Recordset.objects.aggregate(Max('id'))['id__max']
         with self.assertRaises(api.RecordSetException) as cm:
             obj = api.post_resource(self.collection, self.agent, 'Agent',
-                                    {'agenttype': 0, 'lastname': 'Pitts'},
+                                    {'agenttype': 0,
+                                     'lastname': 'Pitts',
+                                     'division': api.uri_for_model('division', self.division.id)},
                                     recordsetid=max_id + 100)
         self.assertEqual(models.Agent.objects.filter(lastname='Pitts').count(), 0)
 
