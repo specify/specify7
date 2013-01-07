@@ -28,3 +28,9 @@ from permit import *
 from picklist import *
 from preptype import *
 from repositoryagreement import *
+from shipment import *
+from storage import *
+from storagetreedefitem import *
+from taxon import *
+from taxontreedefitem import *
+

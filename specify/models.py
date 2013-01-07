@@ -21,6 +21,9 @@ cascade_delete = {
     'Geography.parent',
     'Geologictimeperiod.parent',
     'Lithostrat.parent',
+    'Storage.parent',
+    'Commonnametx.taxon',
+    'Taxon.parent',
 }
 
 protect_delete = {
@@ -41,6 +44,16 @@ protect_delete = {
     'Paleocontext.chronosstrat',
     'Paleocontext.chronosstratend',
     'Referencework.journal',
+    'Preparation.storage',
+    'Container.storage',
+    'Storage.definitionitem',
+    'Taxon.definitionitem',
+    'Collectingeventattribute.hosttaxon',
+    'Determination.taxon',
+    'Determination.preferredtaxon',
+    'Taxon.hybridparent1',
+    'Taxon.hybridparent2',
+    'Taxoncitation.taxon',
 }
 
 def make_model(tabledef):

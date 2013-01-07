@@ -19,3 +19,4 @@
 * deal with container business rules
 * business rule about discipline/collection picklist
 * permit numbers uniqueness is global. probably not ideal
+* usergroupscopeid must be unique across all tables

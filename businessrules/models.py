@@ -8,3 +8,4 @@ import address_rules
 import discipline_rules
 import agent_rules
 import groupperson_rules
+import shipment_rules
