@@ -10,10 +10,11 @@ def agent_delete_blocked_by_related_specifyuser(agent):
         return
     raise BusinessRuleException("agent cannot be deleted while associated with a specifyuser")
 
-@orm_signal_handler('pre_save', 'Agent')
-def agent_division_must_not_be_null(agent):
-    if agent.division is None:
-        raise BusinessRuleException("agent.division cannot be null")
+# Disabling this rule because system agents must be created separate from divisions
+# @orm_signal_handler('pre_save', 'Agent')
+# def agent_division_must_not_be_null(agent):
+#     if agent.division is None:
+#         raise BusinessRuleException("agent.division cannot be null")
 
 @orm_signal_handler('pre_save', 'Agent')
 def agent_types_other_and_group_do_not_have_addresses(agent):

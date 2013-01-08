@@ -1,3 +1,4 @@
+import unittest
 from specify import models
 from specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
@@ -43,6 +44,7 @@ class AgentTests(ApiTests):
         agent.save()
         agent.delete()
 
+    @unittest.expectedFailure
     def test_agent_division_and_agenttype_cannot_be_null(self):
         with self.assertRaises(BusinessRuleException):
             models.Agent.objects.create(
