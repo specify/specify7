@@ -3,3 +3,5 @@
 .emacs.desktop*
 .directory
 virtenv
+/local_settings.py
+/secret_key.py
