@@ -164,6 +164,7 @@ INSTALLED_APPS = (
     'businessrules',
     'express_search',
     'context',
+    'frontend',
 )
 
 AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',
