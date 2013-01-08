@@ -38,12 +38,8 @@ TESTING_DATABASES = {
 if 'test' in sys.argv:
     TESTING = True
     DATABASES = TESTING_DATABASES
-    FIREBUG_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firebug@software.joehewitt.com.xpi"
-    FIRESTARTER_EXTENSION = "/home/ben/.mozilla/firefox/ecmt468b.default/extensions/firestarter@getfirebug.com.xpi"
 else:
     TESTING = False
-
-#TEST_RUNNER = 'selenium_testsuite_runner.SeleniumTestSuiteRunner'
 
 SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
 
@@ -154,6 +150,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 #    'django_extensions',
     'specify',
+    'stored_queries',
     'businessrules',
     'express_search',
     'context',
@@ -183,7 +180,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['console'],
+            'handlers': ['mail_admins'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -194,3 +191,8 @@ LOGGING = {
         },
     }
 }
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
