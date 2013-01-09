@@ -1,18 +1,12 @@
 from urllib import urlencode
 import json
-from collections import defaultdict
 import re
 
 from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest,\
-    Http404, HttpResponseNotAllowed, QueryDict
+from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
 
-from django.contrib.auth.decorators import login_required
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
-from django.utils import simplejson
-from django.views.decorators.csrf import csrf_exempt
 
 from specify import models
 from specify.autonumbering import autonumber
@@ -48,21 +42,8 @@ class MissingVersionException(OptimisticLockException): pass
 
 class StaleObjectException(OptimisticLockException): pass
 
-class HttpResponseConflict(HttpResponse):
-    status_code = 409
-
 class HttpResponseCreated(HttpResponse):
     status_code = 201
-
-@login_required
-@csrf_exempt
-def resource(*args, **kwargs):
-    try:
-        return resource_dispatch(*args, **kwargs)
-    except StaleObjectException as e:
-        return HttpResponseConflict(e)
-    except MissingVersionException as e:
-        return HttpResponseBadRequest(e)
 
 def resource_dispatch(request, model, id):
     request_params = QueryDict(request.META['QUERY_STRING'])
@@ -102,9 +83,7 @@ def resource_dispatch(request, model, id):
         resp = HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     return resp
 
-@login_required
-@csrf_exempt
-def collection(request, model):
+def collection_dispatch(request, model):
     if request.method == 'GET':
         data = get_collection(request.specify_collection,
                               model, request.GET)

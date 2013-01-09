@@ -12,8 +12,8 @@ urlpatterns = patterns(
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specify.views.properties'),
 
-    url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specify.api.resource'),
-    url(r'^api/specify/(?P<model>\w+)/$', 'specify.api.collection'),
+    url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specify.views.resource'),
+    url(r'^api/specify/(?P<model>\w+)/$', 'specify.views.collection'),
 
 
     url(r'^express_search/', include('express_search.urls')),
