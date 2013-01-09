@@ -12,17 +12,21 @@ from specify import models
 from specify.autonumbering import autonumber
 from specify.filter_by_col import filter_by_collection
 
+# Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
-inlined_fields = set([
+# A set of fields that represent relations to other resources which
+# should be included as nested objects when resources are fetched.
+inlined_fields = {
     'Collector.agent',
     'Collectingevent.collectors',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.determinations',
     'Picklist.picklistitems',
-])
+}
 
-class JsonDateEncoder(json.JSONEncoder):
+class JsonEncoder(json.JSONEncoder):
+    """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
         from decimal import Decimal
         if isinstance(obj, Decimal):
@@ -32,23 +36,46 @@ class JsonDateEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def toJson(obj):
-    return json.dumps(obj, cls=JsonDateEncoder)
+    return json.dumps(obj, cls=JsonEncoder)
 
-class RecordSetException(Exception): pass
+class RecordSetException(Exception):
+    """Raised for problems related to record sets."""
+    pass
 
-class OptimisticLockException(Exception): pass
+class OptimisticLockException(Exception):
+    """Raised when there is a problem related to optimistic locking."""
+    pass
 
-class MissingVersionException(OptimisticLockException): pass
+class MissingVersionException(OptimisticLockException):
+    """Raised when an object is expected to have an optimistic locking
+    version number, but none can be determined from the request.
+    """
+    pass
 
-class StaleObjectException(OptimisticLockException): pass
+class StaleObjectException(OptimisticLockException):
+    """Raised when attempting to mutate a resource with a newer
+    version than the client has supplied.
+    """
+    pass
 
 class HttpResponseCreated(HttpResponse):
+    """Returned to the client when a POST request succeeds and a new
+    resource is created.
+    """
     status_code = 201
 
 def resource_dispatch(request, model, id):
+    """Handles requests related to individual resources.
+
+    Determines the client's version of the resource.
+    Determines the logged-in user and collection from the request.
+    Dispatches on the request type.
+    De/Encodes structured data as JSON.
+    """
     request_params = QueryDict(request.META['QUERY_STRING'])
 
-    # Get the version the client has.
+    # Get the version the client has, if it is given
+    # in URL query string or in the HTTP if-match header.
     try:
         version = request_params['version']
     except KeyError:
@@ -57,12 +84,14 @@ def resource_dispatch(request, model, id):
         except KeyError:
             version = None
 
+    # Dispatch on the request type.
     if request.method == 'GET':
         data = get_resource(model, id, request.GET.get('recordsetid', None))
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'PUT':
         data = json.load(request)
+        # Look for a version field in the resource data itself.
         try:
             version = data['version']
         except KeyError:
@@ -80,10 +109,18 @@ def resource_dispatch(request, model, id):
         resp = HttpResponse('', status=204)
 
     else:
+        # Unhandled request type.
         resp = HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
+
     return resp
 
 def collection_dispatch(request, model):
+    """Handles requests related to collections of resources.
+
+    Dispatches on the request type.
+    Determines the logged-in user and collection from the request.
+    De/Encodes structured data as JSON.
+    """
     if request.method == 'GET':
         data = get_collection(request.specify_collection,
                               model, request.GET)
@@ -98,18 +135,21 @@ def collection_dispatch(request, model):
         resp = HttpResponseCreated(toJson(obj_to_data(obj)),
                                    content_type='application/json')
     else:
+        # Unhandled request type.
         resp = HttpResponseNotAllowed(['GET', 'POST'])
+
     return resp
 
 def get_model_or_404(name):
-    if not isinstance(name, basestring): return name
-
+    """Lookup a specify model by name. Raise Http404 if not found."""
     try:
         return getattr(models, name.capitalize())
     except AttributeError as e:
         raise Http404(e)
 
 def get_object_or_404(model, *args, **kwargs):
+    """A version of get_object_or_404 that can accept a model name
+    in place of the model class."""
     from django.shortcuts import get_object_or_404 as get_object
 
     if isinstance(model, basestring):
@@ -117,6 +157,11 @@ def get_object_or_404(model, *args, **kwargs):
     return get_object(model, *args, **kwargs)
 
 def get_resource(name, id, recordsetid=None):
+    """Return a dict of the fields from row 'id' in model 'name'.
+
+    If given a recordset id, the data will be suplemented with
+    data about the resources relationship to the given record set.
+    """
     obj = get_object_or_404(name, id=int(id))
     data = obj_to_data(obj)
     if recordsetid is not None:
@@ -124,16 +169,25 @@ def get_resource(name, id, recordsetid=None):
     return data
 
 def get_recordset_info(obj, recordsetid):
+    """Return a dict of info about how the resource 'obj' is related to
+    the recordset with id 'recordsetid'.
+    """
+    # Queryset of record set items in the given record set with
+    # the additional condition that they match the resource's table.
     rsis = models.Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.tableid)
+
+    # Get the one which points to the resource 'obj'.
     try:
         rsi = rsis.get(recordid=obj.id)
     except models.Recordsetitem.DoesNotExist:
         return None
 
+    # Querysets for the recordset items before and after the one in question.
     prev_rsis = rsis.filter(recordid__lt=obj.id).order_by('-recordid')
     next_rsis = rsis.filter(recordid__gt=obj.id).order_by('recordid')
 
+    # Build URIs for the previous and the next recordsetitem, if present.
     try:
         prev = uri_for_model(obj.__class__, prev_rsis[0].recordid)
     except IndexError:
@@ -154,21 +208,36 @@ def get_recordset_info(obj, recordsetid):
 
 @transaction.commit_on_success
 def post_resource(collection, agent, name, data, recordsetid=None):
+    """Create a new resource in the database.
+
+    collection - the collection the client is logged into.
+    agent - the agent associated with the specify user logged in.
+    name - the model name of the resource to be created.
+    data - a dict of the data for the resource to be created.
+    recordsetid - created resource will be added to the given recordset (optional)
+    """
     obj = create_obj(collection, agent, name, data)
+
     if recordsetid is not None:
+        # add the resource to the record set
         try:
             recordset = models.Recordset.objects.get(id=recordsetid)
         except models.Recordset.DoesNotExist, e:
             raise RecordSetException(e)
 
         if recordset.dbtableid != obj.tableid:
-            raise RecordSetException("expected %s, got %s when adding object to recordset",
-                                     (models.models_by_tableid[recordset.dbtableid],
-                                      obj.__class__))
+            # the resource is not of the right kind to go in the recordset
+            raise RecordSetException(
+                "expected %s, got %s when adding object to recordset",
+                (models.models_by_tableid[recordset.dbtableid], obj.__class__))
+
         recordset.recordsetitems.create(recordid=obj.id)
     return obj
 
 def set_field_if_exists(obj, field, value):
+    """Where 'obj' is a Django model instance, a resource object, check
+    if a field named 'field' exists and set it to 'value' if so. Do nothing otherwise.
+    """
     try:
         obj._meta.get_field(field)
     except FieldDoesNotExist:
@@ -176,8 +245,11 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
-def create_obj(collection, agent, name, data):
-    obj = get_model_or_404(name)()
+def create_obj(collection, agent, model, data):
+    """Create a new instance of 'model' and populate it with 'data'."""
+    if isinstance(model, basestring):
+        model = get_model_or_404(model)
+    obj = model()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
@@ -192,15 +264,25 @@ def create_obj(collection, agent, name, data):
     return obj
 
 def set_fields_from_data(obj, data):
+    """Where 'obj' is a Django model instance and 'data' is a dict,
+    set all fields provided by data that are not related object fields.
+    """
     for field_name, val in data.items():
-        if field_name in ('resource_uri', 'recordset_info'): continue
+        if field_name in ('resource_uri', 'recordset_info'):
+            # These fields are meta data, not part of the resource.
+            continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
 
 def handle_fk_fields(collection, agent, obj, data):
+    """Where 'obj' is a Django model instance and 'data' is a dict,
+    set foreign key fields in the object from the provided data.
+    """
     for field_name, val in data.items():
-        if field_name in ('resource_uri', 'recordset_info'): continue
+        if field_name in ('resource_uri', 'recordset_info'):
+            # These fields are meta data, not part of the resource.
+            continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
@@ -208,17 +290,21 @@ def handle_fk_fields(collection, agent, obj, data):
             setattr(obj, field_name, None)
 
         elif isinstance(val, basestring):
+            # The related object is given by a URI reference.
             fk_model, fk_id = parse_uri(val)
             assert fk_model == field.related.parent_model.__name__.lower()
             setattr(obj, field_name + '_id', fk_id)
 
         elif hasattr(val, 'items'):
+            # The related object is represented by a nested dict of data.
             rel_model = field.related.parent_model
             if 'id' in val:
+                # The related object is an existing resource with an id.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
                                      val['version'], val)
             else:
+                # The related object is to be created.
                 rel_obj = create_obj(collection, agent,
                                      rel_model, val)
 
@@ -228,22 +314,38 @@ def handle_fk_fields(collection, agent, obj, data):
             raise Exception('bad foreign key field in data')
 
 def handle_to_many(collection, agent, obj, data):
+    """For every key in the dict 'data' which is a *-to-many field in the
+    Django model instance 'obj', if nested data is provided, use it to
+    update the set of related objects.
+
+    The assumption is that provided data represents ALL related objects for
+    'obj'. Any existing related objects not in the nested data will be deleted.
+    Nested data items with ids will be updated. Those without ids will be
+    created as new resources.
+    """
     for field_name, val in data.items():
-        if not isinstance(val, list): continue
+        if not isinstance(val, list):
+            # The field contains something other than nested data.
+            # Probably the URI of the collection of objects.
+            continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
-        if direct: continue
+        if direct: continue # Skip *-to-one fields.
         rel_model = field.model
-        ids = []
+        ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:
             rel_data[field.field.name] = uri_for_model(obj.__class__, obj.id)
             if 'id' in rel_data:
+                # Update an existing related object.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, rel_data['id'],
                                      rel_data['version'], rel_data)
             else:
+                # Create a new related object.
                 rel_obj = create_obj(collection, agent, rel_model, rel_data)
-            ids.append(rel_obj.id)
+            ids.append(rel_obj.id) # Record the id as one to keep.
 
+        # Delete related objects not in the ids list.
+        # TODO: Check versions for optimistic locking.
         getattr(obj, field_name).exclude(id__in=ids).delete()
 
 @transaction.commit_on_success
@@ -251,6 +353,9 @@ def delete_resource(name, id, version):
     return delete_obj(name, id, version)
 
 def delete_obj(name, id, version):
+    """Delete the resource with 'id' and model named 'name' with optimistic
+    locking 'version'.
+    """
     obj = get_object_or_404(name, id=int(id))
     bump_version(obj, version)
     obj.delete()
@@ -260,6 +365,9 @@ def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
 
 def update_obj(collection, agent, name, id, version, data):
+    """Update the resource with 'id' in model named 'name' with given
+    'data'.
+    """
     obj = get_object_or_404(name, id=int(id))
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
@@ -277,7 +385,14 @@ def update_obj(collection, agent, name, id, version, data):
     return obj
 
 def bump_version(obj, version):
-    # If the object has no version field, just save it.
+    """Implements the optimistic locking mechanism.
+
+    If the Django model resource 'obj' has a version field and it
+    does not match 'version' which comes from the client, an
+    OptimisticLockingException is raised. Otherwise the version
+    is incremented.
+    """
+    # If the object has no version field, there's nothing to do.
     try:
         obj._meta.get_field('version')
     except FieldDoesNotExist:
@@ -288,7 +403,7 @@ def bump_version(obj, version):
     except (ValueError, TypeError):
         raise MissingVersionException("%s object cannot be updated without version info" % obj.__class__.__name__)
 
-    # Update a row with the PK and the version no. we have.
+    # Try to update a row with the PK and the version number we have.
     # If our version is stale, the rows updated will be 0.
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
@@ -302,20 +417,30 @@ def prepare_value(field, val):
     return val
 
 def parse_uri(uri):
+    """Return the model name and id from a resource or collection URI."""
     match = URI_RE.match(uri)
     if match is not None:
         groups = match.groups()
         return (groups[0], groups[2])
 
 def obj_to_data(obj):
+    """Return a (potentially nested) dictionary of the fields of the
+    Django model instance 'obj'.
+    """
+    # Get regular and *-to-one fields.
     data = dict((field.name, field_to_val(obj, field))
                 for field in obj._meta.fields)
+    # Get *-to-many fields.
     data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro))
                      for ro in obj._meta.get_all_related_objects()))
+    # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
     return data
 
 def to_many_to_data(obj, related_object):
+    """Return the URI or nested data of the 'related_object' collection
+    depending on if the field is included in the 'inlined_fields' global.
+    """
     parent_model = related_object.parent_model.__name__
     if '.'.join((parent_model, related_object.get_accessor_name())) in inlined_fields:
         objs = getattr(obj, related_object.get_accessor_name())
@@ -325,6 +450,9 @@ def to_many_to_data(obj, related_object):
     return collection_uri + '?' + urlencode([(related_object.field.name.lower(), str(obj.id))])
 
 def field_to_val(obj, field):
+    """Return the value or nested data or URI for the given field which should
+    be either a regular field or a *-to-one field.
+    """
     if isinstance(field, ForeignKey):
         if '.'.join((obj.__class__.__name__, field.name)) in inlined_fields:
             related_obj = getattr(obj, field.name)
@@ -338,26 +466,36 @@ def field_to_val(obj, field):
         return getattr(obj, field.name)
 
 def get_collection(logged_in_collection, model, params={}):
+    """Return a list of structured data for the objects from 'model'
+    subject to the request 'params'."""
     if isinstance(model, basestring):
         model = get_model_or_404(model)
+
+    # Default values for request parameters.
     offset = 0
     limit = 20
     filters = {}
     do_domain_filter = False
+
     for param, val in params.items():
         if param == 'domainfilter':
+            # Use the logged_in_collection to limit request
+            # to relevant items.
             do_domain_filter = True
             continue
 
         if param == 'limit':
+            # Return at most 'limit' items.
+            # Zero for all.
             limit = int(val)
             continue
 
         if param == 'offset':
+            # Return items starting from 'offset'.
             offset = int(val)
             continue
 
-        # param is a related field
+        # param is a field for filtering
         filters.update({param: val})
     objs = model.objects.filter(**filters)
     if do_domain_filter:
@@ -365,6 +503,9 @@ def get_collection(logged_in_collection, model, params={}):
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):
+    """Return a collection structure with a list of the data of given objects
+    and collection meta data.
+    """
     total_count = objs.count()
 
     if limit == 0:
@@ -378,6 +519,9 @@ def objs_to_data(objs, offset=0, limit=20):
                      'total_count': total_count}}
 
 def uri_for_model(model, id=None):
+    """Given a Django model and optionally an id, return a URI
+    for the collection or resource (if an id is given).
+    """
     if not isinstance(model, basestring):
         model = model.__name__
     uri = '/api/specify/%s/' % model.lower()

@@ -12,6 +12,8 @@ class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
 def api_view(dispatch_func):
+    """Create a Django view function that handles exceptions arising
+    in the api logic."""
     @login_required
     @csrf_exempt
     def view(*args, **kwargs):
@@ -32,6 +34,7 @@ collection = api_view(api.collection_dispatch)
 @login_required
 @require_GET
 def images(request, path):
+    """A Django view that serves images and icons from the Specify thickclient jar file."""
     mimetype = mimetypes.guess_type(path)[0]
     path = 'edu/ku/brc/specify/images/' + path
     return http.HttpResponse(specify_jar.read(path), content_type=mimetype)
@@ -39,5 +42,6 @@ def images(request, path):
 @login_required
 @require_GET
 def properties(request, name):
+    """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
