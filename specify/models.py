@@ -5,55 +5,12 @@ import os
 import re
 
 from specify_jar import specify_jar
+from businessrules import deletion_policies
 
 appname = __name__.split('.')[-2]
 
 orderings = {
     'Recordsetitem': ('recordid', ),
-}
-
-cascade_delete = {
-    'Address.agent',
-    'Agentgeography.agent',
-    'Agentspecialty.agent',
-    'Commonnametx.taxon',
-    'Determination.collectionobject',
-    'Geography.parent',
-    'Geologictimeperiod.parent',
-    'Lithostrat.parent',
-    'Recordsetitem.recordset',
-    'Storage.parent',
-    'Taxon.parent',
-}
-
-protect_delete = {
-    'Accessionauthorization.permit',
-    'Agentgeography.geography',
-    'Collectingevent.locality',
-    'Collectingeventattribute.hosttaxon',
-    'Collectionobject.accession',
-    'Collectionobject.appraisal',
-    'Collectionobject.collectingevent',
-    'Collectionobject.collection',
-    'Container.storage',
-    'Determination.preferredtaxon',
-    'Determination.taxon',
-    'Geography.definitionitem',
-    'Geologictimeperiod.definitionitem',
-    'Lithostrat.definitionitem',
-    'Locality.geography',
-    'Paleocontext.biostrat',
-    'Paleocontext.chronosstrat',
-    'Paleocontext.chronosstratend',
-    'Paleocontext.lithostrat',
-    'Preparation.preptype',
-    'Preparation.storage',
-    'Referencework.journal',
-    'Storage.definitionitem',
-    'Taxon.definitionitem',
-    'Taxon.hybridparent1',
-    'Taxon.hybridparent2',
-    'Taxoncitation.taxon',
 }
 
 def make_model(tabledef):
@@ -133,9 +90,9 @@ def make_relationship(modelname, relname, reldef):
                                       null=nullable, editable=editable)
 
     fieldname = '.'.join((modelname, relname))
-    if  fieldname in cascade_delete:
+    if  fieldname in deletion_policies.cascade:
         on_delete = models.CASCADE
-    elif fieldname in protect_delete:
+    elif fieldname in deletion_policies.protect:
         on_delete = models.PROTECT
     else:
         on_delete = models.SET_NULL if nullable else models.DO_NOTHING
