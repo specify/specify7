@@ -37,6 +37,7 @@ require([
     'tests/testuiparse',
     'tests/testforms',
     'cs!tests/testbusinessrules',
+    'tests/testdomain',
 //    'cs!tests/testquerycbx'
 ], function testmain(_, QUnit, setupmockjax) {
     setupmockjax();

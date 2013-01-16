@@ -30,14 +30,6 @@ define([
                 self.next && (self.next.recordsetid = self.model.recordsetid);
             }
 
-            self.model.on('error', function(resource, jqxhr, options) {
-                switch (jqxhr.status) {
-                case 404:
-                    self.$el.html(templates.fourohfour());
-                    return;
-                }
-            });
-
             if (!self.readOnly) {
                 self.saveBtn = new SaveButton({
                     model: self.model,

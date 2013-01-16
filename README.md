@@ -26,13 +26,6 @@ On Fedora:
 
     sudo pip-python install Django
 
-The choice is yours.
---------------------
-At this point you can switch over to the [Eclipse
-instructions](README-ECLIPSE.md) if you want to use Eclipse for your
-development. Or continue with these instructions and work from the
-command line.
-
 Get the specifyweb source code.
 ----------------------------------
 Clone this repository:
@@ -44,6 +37,12 @@ tree. From this point all commands will be with respect to that as the
 working directory.
 
     cd specifyweb
+
+Run the test suite.
+-------------------
+There is a preliminary test suite which can be ran as follows:
+
+    python manage.py test
 
 Set up the settings file.
 -------------------------
@@ -87,9 +86,4 @@ Visit the running app with your browser.
 Paste this URL in your browser's location bar:
 [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-Run the test suite.
--------------------
-There is a preliminary test suite which can be ran as follows:
-
-    python manage.py test specify
 

@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
-    'datamodelview', 'resourceview', 'localizeform', 'beautify-html', 'navigation',
+    'datamodelview', 'resourceview', 'othercollectionview', 'localizeform', 'beautify-html', 'navigation',
     'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview,
-    ResourceView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
+    ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
     "use strict";
 
     var app = {
@@ -102,14 +102,23 @@ define([
                 recordSet && (resource.recordsetid = recordSet.id);
 
                 function doIt() {
-                    setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: 'edit' }));
-                    app.currentView.on('redisplay', function() {
-                        resource = new (specifyapi.Resource.forModel(model))({ id: id });
-                        doIt();
-                    });
-                    app.currentView.on('addanother', function(newResource) {
-                        resource = newResource;
-                        doIt();
+                    domain.collectionsForResource(resource).done(function(collections) {
+                        function loggedIn(collection) { return collection.id == domain.levels.collection.id; }
+
+                        if (!resource.isNew() && !_.any(collections, loggedIn)) {
+                            setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
+                            return;
+                        }
+
+                        setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: 'edit' }));
+                        app.currentView.on('redisplay', function() {
+                            resource = new (specifyapi.Resource.forModel(model))({ id: id });
+                            doIt();
+                        });
+                        app.currentView.on('addanother', function(newResource) {
+                            resource = newResource;
+                            doIt();
+                        });
                     });
                 }
 
