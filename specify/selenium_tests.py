@@ -116,11 +116,6 @@ class WithFixturesTest(SeleniumTests):
         self.selenium_wait().until(
             lambda driver: not driver.title.lower().startswith('new'))
 
-        import ipdb; ipdb.set_trace()
-        return
-
-
-
 
 class FreshDBTests(MainSetupTearDown, SeleniumTests):
     import context

@@ -31,4 +31,6 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
 
         collectionsForResource: (resource) ->
             domainField = resource.specifyModel.orgRelationship()
-            domainField and resource.rget(domainField.name).pipe domain.collectionsInDomain
+            if domainField
+                resource.rget(domainField.name).pipe domain.collectionsInDomain
+            else $.when null
