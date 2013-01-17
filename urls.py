@@ -10,7 +10,10 @@ urlpatterns = patterns(
     # just redirect root url to the main specify view
     url(r'^$', redirect_to, {'url': '/specify/'}),
 
-    # this is the main specify view
+    # This is the main specify view.
+    # Every URL beginning with '/specify/' is handled
+    # by the frontend. 'frontend.urls' just serves the
+    # empty webapp container for all these URLs.
     url(r'^specify/', include('frontend.urls')),
 
     # the main business data API
