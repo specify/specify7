@@ -1,5 +1,7 @@
 define([
     'jquery', 'underscore',
+    'text!tmpls/othercollectiontemplate.html',
+    'text!tmpls/othercollectionstemplate.html',
     'text!tmpls/recordsetheader.html',
     'text!tmpls/recordsetform.html',
     'text!tmpls/formtemplate.html',
@@ -26,6 +28,8 @@ define([
     var withNames = {};
 
     _([
+        'othercollection',
+        'othercollections',
         'recordsetheader',
         'recordsetform',
         'form',

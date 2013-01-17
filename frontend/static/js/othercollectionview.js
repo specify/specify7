@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone',
-], function($, _, Backbone) {
+    'jquery', 'underscore', 'backbone', 'templates', 'jquery-ui'
+], function($, _, Backbone, templates) {
     "use strict";
 
     return Backbone.View.extend({
@@ -9,16 +9,23 @@ define([
         },
         render: function() {
             var self = this;
+            var collections = self.options.collections;
             self.$el.empty();
-            self.$el.append("<p>The requested resource cannot be viewed while logged into the current collection. Select one of the following collections:</p>");
-            var ul = $('<ul>').appendTo(self.el);
-
-            _.each(self.options.collections, function(collection) {
-                var li = $('<li>').append(
-                    $('<a>').data('collection-id', collection.id)
-                        .text(collection.get('collectionname')));
-                ul.append(li);
-            });
+            if (collections.length > 1) {
+                self.$el.html(templates.othercollections());
+                var ul = self.$('ul');
+                var li = ul.find('li').detach();
+                _.each(collections, function(collection) {
+                    li.clone().appendTo(ul).find('a')
+                        .text(collection.get('collectionname'))
+                        .data('collection-id', collection.id)
+                        .button();
+                });
+            } else {
+                self.$el.html(templates.othercollection());
+                self.$('a').data('collection-id', collections[0].id).button();
+                self.$('span.collection-name').text(collections[0].get('collectionname'));
+            }
             return self;
         },
         clicked: function(evt) {
