@@ -3,6 +3,7 @@ from specify.models import Collection, Specifyuser, Agent
 from specify.filter_by_col import filter_by_collection
 
 class ContextMiddleware(object):
+    """Adds information about the logged in user and collection to requests."""
     def process_request(self, request):
         if not request.user.is_authenticated(): return
         qs = Collection.objects.select_related('discipline',

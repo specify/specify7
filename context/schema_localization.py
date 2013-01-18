@@ -1,8 +1,5 @@
 from collections import defaultdict
 
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_GET
 from django.utils import simplejson
 
 from specify.models import Splocalecontainer as Container
@@ -53,8 +50,3 @@ def get_schema_localization(collection):
     sl = schema_localization_cache[disc] =  simplejson.dumps(containers)
     return sl
 
-@require_GET
-@login_required
-def schema_localization(request):
-    sl = get_schema_localization(request.specify_collection)
-    return HttpResponse(sl, content_type='application/json')

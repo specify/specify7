@@ -8,11 +8,13 @@ from django.utils import simplejson
 from specify.models import Collection
 
 from app_resource import get_app_resource
-
-from viewsets import view
-from schema_localization import schema_localization
+from viewsets import get_view
+from schema_localization import get_schema_localization
 
 def login(request):
+    """A Django view to log users into the system.
+    Supplements the stock Django login with a collection selection.
+    """
     if request.method == 'POST':
         request.session['collection'] = request.POST['collection_id']
 
@@ -22,12 +24,14 @@ def login(request):
     return auth_views.login(request, **kwargs)
 
 def logout(request):
+    """A Django view to log users out."""
     return auth_views.logout(request, template_name='logged_out.html')
 
 @login_required
 @csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def collection(request):
+    """Allows the frontend to query or set the logged in collection."""
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.raw_post_data))
@@ -44,6 +48,7 @@ def collection(request):
 @login_required
 @require_GET
 def domain(request):
+    """Return the context hierarchy of the logged in collection."""
     levels = ('collection', 'discipline', 'division', 'institution')
     domain = {}
     obj = type('dummy', (object,), {'collection': request.specify_collection})
@@ -56,6 +61,7 @@ def domain(request):
 @login_required
 @require_GET
 def app_resource(request):
+    """Return a Specify app resource by name taking into account the logged in user and collection."""
     resource_name = request.GET['name']
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
@@ -67,6 +73,28 @@ def app_resource(request):
 
 @require_GET
 def available_related_searches(request):
+    """Return a list of the available 'related' express searches."""
     import express_search.related_searches
     return HttpResponse(simplejson.dumps(express_search.related_searches.__all__),
                         content_type='application/json')
+
+@require_GET
+@login_required
+def schema_localization(request):
+    """Return the schema localization information for the logged in collection."""
+    sl = get_schema_localization(request.specify_collection)
+    return HttpResponse(sl, content_type='application/json')
+
+@require_GET
+@login_required
+def view(request):
+    """Return a Specify view definition by name taking into account the logged in user and collection."""
+    if 'collectionid' in request.GET:
+        # Allow a URL parameter to override the logged in collection.
+        collection = Collection.objects.get(id=request.GET['collectionid'])
+    else:
+        collection = request.specify_collection
+
+    data = get_view(collection, request.specify_user, request.GET['name'])
+
+    return HttpResponse(simplejson.dumps(data), content_type="application/json")
