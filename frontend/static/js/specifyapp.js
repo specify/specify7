@@ -42,9 +42,6 @@ define([
             rootContainer.append(app.currentView.el);
         }
 
-        // helper that retrieves any viewdef parameter from the URL
-        function getViewdef() { return $.deparam.querystring().viewdef; }
-
         var SpecifyRouter = Backbone.Router.extend({
             // maps the final portion of the URL to the appropriate backbone view
             routes: {
