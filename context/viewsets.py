@@ -48,10 +48,10 @@ def get_view(collection, user, viewname):
         return definition_viewdef
 
     # add any viewdefs referenced in other viewdefs to the set
-    viewdefs.update(definition
+    viewdefs.update([definition
                     for viewdef in viewdefs
                     for definition in [ get_definition(viewdef) ]
-                    if definition is not None)
+                    if definition is not None])
 
     # build the data to send to the client
     data = view.attrib.copy()
