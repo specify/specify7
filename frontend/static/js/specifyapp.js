@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
-    'datamodelview', 'resourceview', 'othercollectionview', 'localizeform', 'beautify-html', 'navigation',
-    'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
+    'datamodelview', 'errorview', 'resourceview', 'othercollectionview', 'localizeform',
+    'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
 ], function(
-    $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview,
+    $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview, ErrorView,
     ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
     "use strict";
 
@@ -61,12 +61,13 @@ define([
             // this view shows the user the welcome screen
             welcome: function() {
                 setCurrentView(new WelcomeView());
-                window.document.title = 'Welcome | Specify WebApp'
+                window.document.title = 'Welcome | Specify WebApp';
             },
 
             // this view executes an express search and displays the results
             esearch: function() {
                 setCurrentView(new esearch.ResultsView());
+                window.document.title = 'Express Search | Specify WebApp';
             },
 
             // this function starts the process for viewing resources from a recordset
@@ -155,7 +156,9 @@ define([
 
                 // we preload the resource and recordset to make sure they exist. this prevents
                 // an unfilled view from being displayed.
-                $.when(resource.isNew() || resource.fetch(), recordSet && recordSet.fetch()).done(doIt);
+                $.when(resource.isNew() || resource.fetch(), recordSet && recordSet.fetch())
+                    .fail(function(jqhxr) { setCurrentView(new ErrorView({ request: jqhxr })); })
+                    .done(doIt);
             },
 
             // begins the process of creating a new resource
