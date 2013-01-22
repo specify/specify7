@@ -16,9 +16,12 @@ def api_view(dispatch_func):
     in the api logic."""
     @login_required
     @csrf_exempt
-    def view(*args, **kwargs):
+    def view(request, *args, **kwargs):
+        if request.method != "GET" and \
+                request.specify_user.usertype not in ('Manager', 'FullAccess'):
+            return http.HttpResponseForbidden()
         try:
-            return dispatch_func(*args, **kwargs)
+            return dispatch_func(request, *args, **kwargs)
         except api.StaleObjectException as e:
             return HttpResponseConflict(e)
         except api.MissingVersionException as e:
