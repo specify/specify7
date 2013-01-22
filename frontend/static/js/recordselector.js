@@ -1,6 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
 ], function($, _, Backbone, specifyform, navigation, templates) {
+    "use strict";
     var debug = false;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
@@ -41,7 +42,8 @@ define([
             });
         },
         currentIndex: function() {
-            return this.slider.slider('value');
+            var value = this.slider.slider('value');
+            return _.isNumber(value) ? value : 0;
         },
         resourceAt: function(index) {
             return this.collection.at(index);
@@ -56,7 +58,7 @@ define([
             var at = offset - offset % BLOCK_SIZE;
             self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
                 debug && console.log('got collection at offset ' + at);
-                request = null;
+                self.request = null;
                 self.redraw(self.currentIndex());
             });
             return self.request;
