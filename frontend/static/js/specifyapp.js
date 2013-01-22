@@ -1,16 +1,19 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
     'datamodelview', 'errorview', 'resourceview', 'othercollectionview', 'localizeform',
-    'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!domain', 'jquery-bbq'
+    'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!domain',
+    'text!context/user.json!noinline', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview, ErrorView,
-    ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView, domain) {
+    ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView,
+    domain, userJSON) {
     "use strict";
 
     // the exported interface
     var app = {
         currentView: null,  // a reference to the current view, mostly for debugging
-        start: appStart     // called by main.js to launch the webapp frontend
+        start: appStart,    // called by main.js to launch the webapp frontend
+        user: $.parseJSON(userJSON)  // the currently logged in SpecifyUser
     };
 
     function appStart() {
@@ -138,7 +141,8 @@ define([
                         }
 
                         // show the resource
-                        setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: 'edit' }));
+                        var viewMode = _(['Manager', 'FullAccess']).contains(app.user.usertype) ? 'edit' : 'view';
+                        setCurrentView(new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode }));
 
                         // allow the view to "reload" itself. this is used after updates to make things easy.
                         app.currentView.on('redisplay', function() {

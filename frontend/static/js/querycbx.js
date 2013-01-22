@@ -156,16 +156,18 @@ define([
 
                 var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
 
-                if (!resource.isNew() && !self.readOnly) {
-                    var deleteButton = new DeleteButton({ model: resource });
-                    deleteButton.render().$el.appendTo(dialogForm);
-                    deleteButton.on('deleted', function() {
-                        self.model.set(self.fieldName, null);
-                        dialog.dialog('close');
-                    });
-
+                if (!resource.isNew()) {
                     title = '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
                         + title;
+
+                    if (!self.readOnly) {
+                        var deleteButton = new DeleteButton({ model: resource });
+                        deleteButton.render().$el.appendTo(dialogForm);
+                        deleteButton.on('deleted', function() {
+                            self.model.set(self.fieldName, null);
+                            dialog.dialog('close');
+                        });
+                    }
                 }
 
                 self.options.populateform(dialogForm, resource);

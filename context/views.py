@@ -47,6 +47,14 @@ def collection(request):
 
 @login_required
 @require_GET
+def user(request):
+    """Return json representation of the currently logged in SpecifyUser."""
+    from specify.api import obj_to_data, toJson
+    data = obj_to_data(request.specify_user)
+    return HttpResponse(toJson(data), content_type='application/json')
+
+@login_required
+@require_GET
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
     levels = ('collection', 'discipline', 'division', 'institution')

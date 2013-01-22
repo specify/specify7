@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns
 urlpatterns = patterns(
     'context.views',
     (r'^collection/$', 'collection'),
+    (r'^user.json$', 'user'),
     (r'^domain.json$', 'domain'),
     (r'^view.json$', 'view'),
     (r'^schema_localization.json$', 'schema_localization'),

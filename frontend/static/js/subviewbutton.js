@@ -67,6 +67,7 @@ define([
                     collection: self.collection,
                     populateform: self.options.populateform,
                     form: form,
+                    readOnly: self.readOnly,
                     noHeader: true
                 });
                 recordSelector.render();

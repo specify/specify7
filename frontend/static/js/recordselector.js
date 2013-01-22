@@ -11,7 +11,7 @@ define([
         initialize: function(options) {
             var self = this;
             self.form = self.options.form;
-            self.readOnly = specifyform.getFormMode(self.form) === 'view';
+            self.readOnly = self.options.readOnly || specifyform.getFormMode(self.form) === 'view';
 
             self.field = options.field;
             if (self.field && !self.collection.parent)
