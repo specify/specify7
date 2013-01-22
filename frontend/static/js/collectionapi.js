@@ -19,10 +19,10 @@ define([
         parse: function(resp, xhr) {
             _.extend(this, {
                 populated: true,   // have data now
-                totalCount: resp.meta.total_count,
+                totalCount: resp.meta ? resp.meta.total_count : resp.length,
                 meta: resp.meta
             });
-            return resp.objects;
+            return resp.meta ? resp.objects : resp;
         },
         fetchIfNotPopulated: function () {
             var collection = this;
@@ -42,7 +42,8 @@ define([
             if (self._fetch) throw new Error('already fetching');
 
             options = options || {};
-            options.add = true;
+            options.update = true;
+            options.remove = false;
             options.silent = true;
             options.at = _.isUndefined(options.at) ? self.length : options.at;
             options.data = options.data || _.extend({}, self.queryParams);

@@ -22,6 +22,7 @@ require({
         'jquery-ui'      : ['jquery'],
         'jquery-bbq'     : ['jquery'],
         'jquery-mockjax' : ['jquery'],
+        'underscore'     : { exports: '_' },
         'backbone'       : { deps: ['jquery', 'underscore'], exports: 'Backbone' },
         'qunit'          : { deps: ['jquery'], exports: 'QUnit' }
     }

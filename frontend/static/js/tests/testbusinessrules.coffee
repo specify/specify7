@@ -61,8 +61,8 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 AAs.add newagent
 
                 checks.push(
-                    requireEvent newagent, 'saverequired', 'saverequired on newagent',
-                    requireEvent newagent, 'saveblocked', 'saveblocked fired on newagent'
+                    (requireEvent newagent, 'saverequired', 'saverequired on newagent'),
+                    (requireEvent newagent, 'saveblocked', 'saveblocked fired on newagent')
                 )
 
                 whenAll(checks).done ->
