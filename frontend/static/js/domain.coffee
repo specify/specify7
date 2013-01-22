@@ -21,6 +21,8 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
 
         collectionsInDomain: (domainResource) ->
             domainLevel = domainResource.specifyModel.name.toLowerCase()
+            if domainLevel == 'collectionobject'
+                return domainResource.rget('collection', true).pipe (collection) -> [collection]
             if domainLevel == 'collection'
                 return domainResource.fetchIfNotPopulated().pipe () -> [domainResource]
             path = takeBetween schema.orgHierarchy, 'collection', domainLevel
@@ -30,6 +32,11 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
 
 
         collectionsForResource: (resource) ->
+            collectionmemberid = resource.get('collectionmemberid')
+            if _.isNumber collectionmemberid
+                collection = new (api.Resource.forModel 'collection') id: collectionmemberid
+                return collection.fetchIfNotPopulated()
+
             domainField = resource.specifyModel.orgRelationship()
             if domainField
                 resource.rget(domainField.name).pipe domain.collectionsInDomain

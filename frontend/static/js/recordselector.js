@@ -170,8 +170,7 @@ define([
             if (self.collection.dependent) {
                 self.collection.remove(resource);
             } else {
-                if (resource.isNew()) resource.destroy()
-                else self.makeDeleteDialog();
+                resource.isNew() ? resource.destroy() : self.makeDeleteDialog();
             }
         },
         makeDeleteDialog: function() {
