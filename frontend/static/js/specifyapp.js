@@ -2,11 +2,11 @@ define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
     'datamodelview', 'errorview', 'resourceview', 'othercollectionview', 'localizeform',
     'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!domain',
-    'text!context/user.json!noinline', 'jquery-bbq'
+    'notfoundview', 'text!context/user.json!noinline', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview, ErrorView,
     ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView,
-    domain, userJSON) {
+    domain, NotFoundView, userJSON) {
     "use strict";
 
     // the exported interface
@@ -48,17 +48,22 @@ define([
         var SpecifyRouter = Backbone.Router.extend({
             // maps the final portion of the URL to the appropriate backbone view
             routes: {
-                // these must be ordered from most to least specific
+                ''                      : 'welcome',
+                'express_search/'       : 'esearch',
+                'recordset/:id/:index/' : 'recordSet',
+                'recordset/:id/'        : 'recordSet',
+                'view/:model/new/'      : 'newResource',
+                'view/:model/:id/'      : 'view',
+                'viewashtml/'           : 'viewashtml',
+                'datamodel/:model/'     : 'datamodel',
+                'datamodel/'            : 'datamodel',
+                '*whatever'             : 'notFound'   // match anything else.
+            },
 
-                'express_search/*splat'       : 'esearch',
-                'recordset/:id/:index/*splat' : 'recordSet',
-                'recordset/:id/*splat'        : 'recordSet',
-                'view/:model/new/*splat'      : 'newResource',
-                'view/:model/:id/*splat'      : 'view',
-                'viewashtml/*splat'           : 'viewashtml',
-                'datamodel/:model/'           : 'datamodel',
-                'datamodel/'                  : 'datamodel',
-                '*splat'                      : 'welcome',
+            // show a 'page not found' view for URLs we don't know how to handle
+            notFound: function() {
+                setCurrentView(new NotFoundView());
+                window.document.title = 'Page Not Found | Specify WebApp';
             },
 
             // this view shows the user the welcome screen
@@ -196,6 +201,14 @@ define([
                 rootContainer.append(app.currentView.el);
             }
         });
+
+        // make the Backbone routing mechanisms ignore queryparams in urls
+        // this gets rid of all that *splat cruft in the routes
+        var loadUrl = Backbone.history.loadUrl;
+        Backbone.history.loadUrl = function(url) {
+            var stripped = url && url.replace(/\?.*$/, '');
+            return loadUrl.call(this, stripped);
+        };
 
         // start processing the urls to draw the corresponding views
         var specifyRouter = new SpecifyRouter();
