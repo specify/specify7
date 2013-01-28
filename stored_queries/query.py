@@ -1,4 +1,5 @@
 import re
+from django.db.models.fields import FieldDoesNotExist
 
 from specify import models
 
@@ -7,11 +8,8 @@ from specify.filter_by_col import filter_by_collection
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
-def field_key(field):
-    return stringid_to_field_lookup(field.stringid)
-
-def stringid_to_field_lookup(stringid):
-    path, table_name, field_name = STRINGID_RE.match(stringid).groups()
+def field_spec(field):
+    path, table_name, field_name = STRINGID_RE.match(field.stringid).groups()
     path_elems = path.split(',')
 
     path_fields = []
@@ -22,42 +20,34 @@ def stringid_to_field_lookup(stringid):
         except ValueError:
             tableid, fieldname = elem, None
 
-        path_fields.append(
-            get_field_by_tableid(node, int(tableid)) if fieldname is None else fieldname)
+        table = models.models_by_tableid[int(tableid)]
+        if fieldname is None:
+            try:
+                fieldname = table.__name__.lower()
+                node._meta.get_field(fieldname)
+            except FieldDoesNotExist:
+                raise Exception("couldn't find related field for table %s in %s" % (table.__name__, node))
 
-        node = models.models_by_tableid[int(tableid)]
+        path_fields.append(fieldname)
+        node = table
 
-    return '__'.join(path_fields + field_name.split('.')).lower()
-
-def get_field_by_tableid(model, tableid):
-    for f in model._meta.fields:
-        ro = getattr(f, 'related', None)
-        if ro is not None and ro.parent_model.tableid == tableid:
-            return ro.field.name
-
-    for ro in model._meta.get_all_related_objects():
-        if ro.model.tableid == tableid:
-            return ro.var_name
-
-    raise Exception("couldn't find related field for tableid %d in %s" % (tableid, model))
-
-
-def field_specs_for(query):
-    return [(field_key(f), f) for f in query.fields.all()]
-
+    return {
+        'query_field': field,
+        'table': node,
+        'key': '__'.join(path_fields + field_name.split('.')).lower()}
 
 def execute(query, collection_filter=None):
     model = models.models_by_tableid[query.contexttableid]
-    field_specs = field_specs_for(query)
-
-    filters = [make_filter(model, k, f.operstart, f.startvalue, f.isnot)
-               for k, f in field_specs]
+    field_specs = [field_spec(field) for field in query.fields.all()]
+    filters = [make_filter(model, **fs) for fs in field_specs]
 
     qs = model.objects.filter(*filters)
     if collection_filter is not None:
         qs = filter_by_collection(qs, collection_filter)
     if query.selectdistinct:
         qs = qs.distinct()
+
+    return qs
 
     if query.countonly:
         return qs.count()
@@ -74,7 +64,7 @@ def make_results(field_specs, qs):
     date_parts = [dp for _, dp, _ in display_fields]
 
     def process(row):
-        return [v if date_part is None else getattr(v, date_part)
+        return [v if date_part is None else getattr(v, date_part, None)
                 for v, date_part in zip(row, date_parts)]
 
     results.extend(process(row) for row in rows)

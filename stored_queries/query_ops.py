@@ -1,6 +1,7 @@
 import re
-
 from django.db.models import Q
+from django.db.models.fields import FieldDoesNotExist
+from specify import models
 
 def op_like(key, value):
     class Dummy(object):
@@ -67,19 +68,52 @@ def key_to_key_and_date_part(key):
         date_part = None
     return key, date_part
 
-def make_filter(model, key, op_num, value, negate):
+def is_tree(table):
+    try:
+        for field in  ('definition', 'definitionitem', 'nodenumber', 'highestchildnodenumber'):
+            table._meta.get_field(field)
+    except FieldDoesNotExist:
+        return False
+    else:
+        return True
+
+def get_treedefitems_by_rank(table, key):
+    rank = key.split('__')[-1]
+    Treedefitem = getattr(models, table.__name__ + 'treedefitem')
+    return Treedefitem.objects.filter(name__iexact=rank)
+
+def make_subtree_filter(tree, treedefitems, key, value):
+    tree_lookup = '__'.join(key.split('__')[:-1])
+    def make_q(subtree):
+        return Q(**{
+            tree_lookup + '__nodenumber__range': (
+                subtree.nodenumber, subtree.highestchildnodenumber)})
+
+    subtrees = tree.objects.filter(definitionitem__in=treedefitems, name=value)
+    return reduce(lambda p,q: p|q,
+                  (make_q(subtree) for subtree in subtrees),
+                  Q())
+
+def make_filter(model, table, key, query_field):
+    op_num, value, negate = [getattr(query_field, a) for a in ('operstart', 'startvalue', 'isnot')]
+    op = OPERATIONS[op_num]
+
     if isinstance(value, basestring) and len(value.strip()) == 0:
         return Q()
 
-    key, date_part = key_to_key_and_date_part(key)
+    treedefitems = get_treedefitems_by_rank(table, key) if is_tree(table) else None
 
-    op = OPERATIONS[op_num]
+    if treedefitems is not None and treedefitems.count() > 0:
+        filtr = make_subtree_filter(table, treedefitems, key, value)
+    else:
+        key, date_part = key_to_key_and_date_part(key)
 
-    if date_part is not None:
-        assert op is op_equals, 'only equality is supported for now'
-        op = DATE_PART_OPS[date_part]
+        if date_part is not None:
+            assert op is op_equals, 'only equality is supported for now'
+            op = DATE_PART_OPS[date_part]
 
-    filtr = op(key, value)
+        filtr = op(key, value)
+
     return -filtr if negate else filtr
 
 OPERATIONS = [
