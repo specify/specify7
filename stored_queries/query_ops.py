@@ -82,17 +82,18 @@ def get_treedefitems_by_rank(table, key):
     Treedefitem = getattr(models, table.__name__ + 'treedefitem')
     return Treedefitem.objects.filter(name__iexact=rank)
 
-def make_subtree_filter(tree, treedefitems, key, value):
+def get_subtrees(tree, treedefitems, op, value):
+    q = op('name', value) & Q(definitionitem__in=treedefitems)
+    return tree.objects.filter(q)
+
+def make_subtree_filter(key, subtrees):
     tree_lookup = '__'.join(key.split('__')[:-1])
     def make_q(subtree):
         return Q(**{
             tree_lookup + '__nodenumber__range': (
                 subtree.nodenumber, subtree.highestchildnodenumber)})
 
-    subtrees = tree.objects.filter(definitionitem__in=treedefitems, name=value)
-    return reduce(lambda p,q: p|q,
-                  (make_q(subtree) for subtree in subtrees),
-                  Q())
+    return reduce(lambda p,q: p|q, map(make_q, subtrees), Q())
 
 def make_filter(model, table, key, query_field):
     op_num, value, negate = [getattr(query_field, a) for a in ('operstart', 'startvalue', 'isnot')]
@@ -104,7 +105,8 @@ def make_filter(model, table, key, query_field):
     treedefitems = get_treedefitems_by_rank(table, key) if is_tree(table) else None
 
     if treedefitems is not None and treedefitems.count() > 0:
-        filtr = make_subtree_filter(table, treedefitems, key, value)
+        subtrees = get_subtrees(table, treedefitems, op, value)
+        q = make_subtree_filter(key, subtrees)
     else:
         key, date_part = key_to_key_and_date_part(key)
 
@@ -112,9 +114,9 @@ def make_filter(model, table, key, query_field):
             assert op is op_equals, 'only equality is supported for now'
             op = DATE_PART_OPS[date_part]
 
-        filtr = op(key, value)
+        q = op(key, value)
 
-    return -filtr if negate else filtr
+    return -q if negate else q
 
 OPERATIONS = [
     op_like,
