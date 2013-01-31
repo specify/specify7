@@ -1,137 +1,77 @@
-import re
-from django.db.models import Q
-from django.db.models.fields import FieldDoesNotExist
-from specify import models
 
-def op_like(key, value):
-    class Dummy(object):
-        """Trick the django __contains lookup into doing an unescaped LIKE query"""
-        def as_sql(self):
-            return "%s", (value,)
-    return Q(**{key + '__contains': Dummy()})
+class QueryOps(object):
+    OPERATIONS = [
+        'op_like',              # 0
+        'op_equals',            # 1
+        'op_greaterthan',       # 2
+        'op_lessthan',          # 3
+        'op_greaterthanequals', # 4
+        'op_lessthanequals',    # 5
+        'op_true',              # 6
+        'op_false',             # 7
+        'op_dontcare',          # 8
+        'op_between',           # 9
+        'op_in',                # 10
+        'op_contains',          # 11
+        'op_empty',             # 12
+        'op_trueornull',        # 13
+        'op_falseornull',       # 14
+        ]
 
-def op_equals(key, value):
-    return Q(**{key: value})
+    def __init__(self, Q):
+        self.Q = Q
 
-def op_greaterthan(key, value):
-    return Q(**{key + '__gt': value})
+    def by_op_num(self, op_num):
+        return getattr(self, self.OPERATIONS[op_num])
 
-def op_lessthan(key, value):
-    return Q(**{key + '__lt': value})
+    def op_like(self, key, value):
+        class Dummy(object):
+            """Trick the django __contains lookup into doing an unescaped LIKE query"""
+            def as_sql(self):
+                return "%s", (value,)
+        return self.Q(**{key + '__contains': Dummy()})
 
-def op_greaterthanequals(key, value):
-    return Q(**{key + '__gte': value})
+    def op_equals(self, key, value):
+        return self.Q(**{key: value})
 
-def op_lessthanequals(key, value):
-    return Q(**{key + '__lte': value})
+    def op_greaterthan(self, key, value):
+        return self.Q(**{key + '__gt': value})
 
-def op_true(key, value):
-    return Q(**{key: True})
+    def op_lessthan(self, key, value):
+        return self.Q(**{key + '__lt': value})
 
-def op_false(key, value):
-    return Q(**{key: False})
+    def op_greaterthanequals(self, key, value):
+        return self.Q(**{key + '__gte': value})
 
-def op_dontcare(key, value):
-    return Q()
+    def op_lessthanequals(self, key, value):
+        return self.Q(**{key + '__lte': value})
 
-def op_between(key, value):
-    return Q(**{key + '__range': value.split(',')[:2]})
+    def op_true(self, key, value):
+        return self.Q(**{key: True})
 
-def op_in(key, value):
-    return Q(**{key + '__in': value.split(',')})
+    def op_false(self, key, value):
+        return self.Q(**{key: False})
 
-def op_contains(key, value):
-    return Q(**{key + '__contains': value})
+    def op_dontcare(self, key, value):
+        return self.Q()
 
-def op_empty(key, value):
-    return Q(**{key + '__exact': ''})
+    def op_between(self, key, value):
+        values = value.split(',')[:2]
+        return self.Q(**{key + '__range': values})
 
-def op_trueornull(key, value):
-    return Q(**{key: True}) | Q(**{key + '__isnull': True})
+    def op_in(self, key, value):
+        values = value.split(',')
+        return self.Q(**{key + '__in': values})
 
-def op_falseornull(key, value):
-    return Q(**{key: False}) | Q(**{key + '__isnull': True})
+    def op_contains(self, key, value):
+        return self.Q(**{key + '__contains': value})
 
-DATE_PART_RE = re.compile(r'(.*)((numericday)|(numericmonth)|(numericyear))$')
-DATE_PART_OPS = {
-    'day': lambda key, val: Q(**{key + '__day': val}),
-    'month': lambda key, val: Q(**{key + '__month': val}),
-    'year': lambda key, val: Q(**{key + '__year': val}),
-    }
+    def op_empty(self, key, value):
+        return self.Q(**{key + '__exact': ''})
 
-def key_to_key_and_date_part(key):
-    match = DATE_PART_RE.match(key)
-    if match:
-        key, date_part = match.groups()[:2]
-        date_part = date_part.replace('numeric', '')
-    else:
-        date_part = None
-    return key, date_part
+    def op_trueornull(self, key, value):
+        return self.Q(**{key: True}) | self.Q(**{key + '__isnull': True})
 
-def is_tree(table):
-    try:
-        for field in  ('definition', 'definitionitem', 'nodenumber', 'highestchildnodenumber'):
-            table._meta.get_field(field)
-    except FieldDoesNotExist:
-        return False
-    else:
-        return True
+    def op_falseornull(self, key, value):
+        return self.Q(**{key: False}) | self.Q(**{key + '__isnull': True})
 
-def get_treedefitems_by_rank(table, key):
-    rank = key.split('__')[-1]
-    Treedefitem = getattr(models, table.__name__ + 'treedefitem')
-    return Treedefitem.objects.filter(name__iexact=rank)
-
-def get_subtrees(tree, treedefitems, op, value):
-    q = op('name', value) & Q(definitionitem__in=treedefitems)
-    return tree.objects.filter(q)
-
-def make_subtree_filter(key, subtrees):
-    tree_lookup = '__'.join(key.split('__')[:-1])
-    def make_q(subtree):
-        return Q(**{
-            tree_lookup + '__nodenumber__range': (
-                subtree.nodenumber, subtree.highestchildnodenumber)})
-
-    return reduce(lambda p,q: p|q, map(make_q, subtrees), Q())
-
-def make_filter(model, table, key, query_field):
-    op_num, value, negate = [getattr(query_field, a) for a in ('operstart', 'startvalue', 'isnot')]
-    op = OPERATIONS[op_num]
-
-    if isinstance(value, basestring) and len(value.strip()) == 0:
-        return Q()
-
-    treedefitems = get_treedefitems_by_rank(table, key) if is_tree(table) else None
-
-    if treedefitems is not None and treedefitems.count() > 0:
-        subtrees = get_subtrees(table, treedefitems, op, value)
-        q = make_subtree_filter(key, subtrees)
-    else:
-        key, date_part = key_to_key_and_date_part(key)
-
-        if date_part is not None:
-            assert op is op_equals, 'only equality is supported for now'
-            op = DATE_PART_OPS[date_part]
-
-        q = op(key, value)
-
-    return -q if negate else q
-
-OPERATIONS = [
-    op_like,
-    op_equals,
-    op_greaterthan,
-    op_lessthan,
-    op_greaterthanequals,
-    op_lessthanequals,
-    op_true,
-    op_false,
-    op_dontcare,
-    op_between,
-    op_in,
-    op_contains,
-    op_empty,
-    op_trueornull,
-    op_falseornull,
-    ]

@@ -3,7 +3,7 @@ from django.db.models.fields import FieldDoesNotExist
 
 from specify import models
 
-from query_ops import make_filter, key_to_key_and_date_part
+from make_filter import make_filter, extract_date_part
 from specify.filter_by_col import filter_by_collection
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
@@ -47,15 +47,10 @@ def execute(query, collection_filter=None):
     if query.selectdistinct:
         qs = qs.distinct()
 
-    return qs
-
-    if query.countonly:
-        return qs.count()
-    else:
-        return make_results(field_specs, qs)
+    return qs, field_specs
 
 def make_results(field_specs, qs):
-    display_fields = [key_to_key_and_date_part(k) + (f,)
+    display_fields = [extract_date_part(k) + (f,)
                       for k, f in field_specs if f.isdisplay]
 
     results = [tuple(f.columnalias for _, _, f in display_fields)]
