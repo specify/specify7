@@ -1,6 +1,11 @@
 
 class QueryOps(object):
+    """Instances of this class turn Spqueryfield operation numbers into
+    functions that turn lookup keys and predicate values into Django filters.
+    """
+
     OPERATIONS = [
+        # operation,      # op number
         'op_like',              # 0
         'op_equals',            # 1
         'op_greaterthan',       # 2
@@ -19,14 +24,22 @@ class QueryOps(object):
         ]
 
     def __init__(self, Q):
+        """Allow dependency injection of the filter generator, in case
+        we want to specialize the behavior.
+        """
         self.Q = Q
 
     def by_op_num(self, op_num):
+        """Given an operation number return a function that turns
+        lookup keys and predicate values into Django filters.
+        """
         return getattr(self, self.OPERATIONS[op_num])
 
     def op_like(self, key, value):
         class Dummy(object):
-            """Trick the django __contains lookup into doing an unescaped LIKE query"""
+            """Trick the django __contains lookup into doing an
+            unescaped LIKE query.
+            """
             def as_sql(self):
                 return "%s", (value,)
         return self.Q(**{key + '__contains': Dummy()})
