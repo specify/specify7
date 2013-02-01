@@ -3,7 +3,7 @@ from django.db.models.fields import FieldDoesNotExist
 
 from specify import models
 
-from make_filter import make_filter, extract_date_part
+from make_filter import make_filter
 from specify.filter_by_col import filter_by_collection
 
 STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
@@ -48,21 +48,3 @@ def execute(query, collection_filter=None):
         qs = qs.distinct()
 
     return qs, field_specs
-
-def make_results(field_specs, qs):
-    display_fields = [extract_date_part(k) + (f,)
-                      for k, f in field_specs if f.isdisplay]
-
-    results = [tuple(f.columnalias for _, _, f in display_fields)]
-    rows = qs.values_list(*[k for k, _, _ in display_fields])
-
-    date_parts = [dp for _, dp, _ in display_fields]
-
-    def process(row):
-        return [v if date_part is None else getattr(v, date_part, None)
-                for v, date_part in zip(row, date_parts)]
-
-    results.extend(process(row) for row in rows)
-
-    return results
-

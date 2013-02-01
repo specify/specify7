@@ -27,4 +27,5 @@ urlpatterns = patterns(
     url(r'^express_search/', include('express_search.urls')),
     url(r'^context/', include('context.urls')),
     url(r'^testcontext/', include('context.testurls')),
+    url(r'^stored_query/', include('stored_queries.urls')),
 )
