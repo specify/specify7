@@ -9,6 +9,7 @@ appname = __name__.split('.')[-2]
 
 orderings = {
     'Recordsetitem': ('recordid', ),
+    'Spqueryfield': ('position', ),
 }
 
 def make_model(module, tabledef):

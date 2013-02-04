@@ -160,7 +160,7 @@ def get_resource(name, id, recordsetid=None):
     """Return a dict of the fields from row 'id' in model 'name'.
 
     If given a recordset id, the data will be suplemented with
-    data about the resources relationship to the given record set.
+    data about the resource's relationship to the given record set.
     """
     obj = get_object_or_404(name, id=int(id))
     data = obj_to_data(obj)
@@ -528,7 +528,3 @@ def uri_for_model(model, id=None):
     if id is not None:
         uri += '%d/' % int(id)
     return uri
-
-
-
-

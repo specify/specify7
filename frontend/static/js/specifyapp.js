@@ -1,12 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
     'datamodelview', 'errorview', 'resourceview', 'othercollectionview', 'localizeform',
-    'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!domain',
-    'notfoundview', 'text!context/user.json!noinline', 'jquery-bbq'
+    'beautify-html', 'navigation', 'cs!express-search', 'cs!welcomeview', 'cs!stored_query',
+    'cs!domain', 'notfoundview', 'text!context/user.json!noinline', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview, ErrorView,
     ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView,
-    domain, NotFoundView, userJSON) {
+    StoredQueryView, domain, NotFoundView, userJSON) {
     "use strict";
 
     // the exported interface
@@ -45,10 +45,15 @@ define([
             rootContainer.append(app.currentView.el);
         }
 
+        function handleError(jqhxr) {
+            setCurrentView(new ErrorView({ request: jqhxr }));
+        }
+
         var SpecifyRouter = Backbone.Router.extend({
             // maps the final portion of the URL to the appropriate backbone view
             routes: {
                 ''                      : 'welcome',
+                'stored_query/:id/'     : 'storedQuery',
                 'express_search/'       : 'esearch',
                 'recordset/:id/:index/' : 'recordSet',
                 'recordset/:id/'        : 'recordSet',
@@ -70,6 +75,13 @@ define([
             welcome: function() {
                 setCurrentView(new WelcomeView());
                 window.document.title = 'Welcome | Specify WebApp';
+            },
+
+            storedQuery: function(id) {
+                var query = new (specifyapi.Resource.forModel('spquery'))({ id: id });
+                query.fetch().fail(handleError).done(function() {
+                    setCurrentView(new StoredQueryView({ query: query }));
+                });
             },
 
             // this view executes an express search and displays the results
@@ -166,8 +178,7 @@ define([
                 // we preload the resource and recordset to make sure they exist. this prevents
                 // an unfilled view from being displayed.
                 $.when(resource.isNew() || resource.fetch(), recordSet && recordSet.fetch())
-                    .fail(function(jqhxr) { setCurrentView(new ErrorView({ request: jqhxr })); })
-                    .done(doIt);
+                    .fail(handleError).done(doIt);
             },
 
             // begins the process of creating a new resource
