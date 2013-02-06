@@ -1,5 +1,7 @@
 import os
 import sys
+sys.dont_write_bytecode = True
+
 from django.utils.crypto import get_random_string
 import specify_settings
 
