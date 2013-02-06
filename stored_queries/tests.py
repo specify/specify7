@@ -2,8 +2,13 @@ import unittest
 
 from specify import models
 from specify.api_tests import ApiTests
+from fieldspec import FieldSpec
+from views import make_queryset
 
-from execute import execute
+def execute(query):
+    field_specs = [FieldSpec(field) for field in query.fields.all()]
+    qs = make_queryset(query, field_specs)
+    return qs
 
 class StoredQueriesTests(ApiTests):
     def setUp(self):
@@ -26,7 +31,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,5-cataloger.agent.lastName',
             tablelist='1,5-cataloger')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE "agent"."LastName" = %s' in sql)
         self.assertEqual(params, (u'Bentley',))
@@ -43,7 +48,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericYear',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE YEAR("collectingevent"."StartDate") = %s' in sql)
         self.assertEqual(params, (2000,))
@@ -60,7 +65,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericMonth',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE (MONTH("collectingevent"."StartDate") BETWEEN %s and %s AND '
                         '"collectingevent"."StartDatePrecision" IN (%s, %s))' in sql)
@@ -89,7 +94,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,5-cataloger.agent.lastName',
             tablelist='1,5-cataloger')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('"agent"."LastName" = %s' in sql)
         self.assertTrue('YEAR("collectingevent"."StartDate") = %s' in sql)
@@ -108,7 +113,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericYear',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE YEAR("collectingevent"."StartDate") BETWEEN %s and %s' in sql)
         self.assertEqual(params, (2000, 1990))
@@ -125,7 +130,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericYear',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE YEAR("collectingevent"."StartDate") IN (%s, %s, %s)' in sql)
         self.assertEqual(params, (2000, 1990, 1980))
@@ -142,7 +147,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericYear',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE ("collectingevent"."StartDate" IS NULL)' in sql)
 
@@ -158,7 +163,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericMonth',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE ("collectingevent"."StartDate" IS NULL OR '
                         'NOT (("collectingevent"."StartDatePrecision" IN (%s, %s) AND '
@@ -178,7 +183,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10.collectingevent.startDateNumericDay',
             tablelist='1,10')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE ("collectingevent"."StartDate" IS NULL OR '
                         'NOT (("collectingevent"."StartDatePrecision" = %s  AND '
@@ -209,7 +214,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10,1-collectionObjects,9-determinations.determination.determinedDateNumericYear',
             tablelist='1,10,1-collectionObjects,9-determinations')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE (YEAR("determination"."DeterminedDate") = %s  AND '
                         'YEAR(T5."DeterminedDate") = %s )' in sql)
@@ -238,7 +243,7 @@ class StoredQueriesTests(ApiTests):
             stringid='1,10,1-collectionObjects,9-determinations.determination.determinedDateNumericMonth',
             tablelist='1,10,1-collectionObjects,9-determinations')
 
-        qs, __ = execute(self.q)
+        qs = execute(self.q)
         sql, params = qs.query.sql_with_params()
         self.assertTrue('WHERE ((MONTH("determination"."DeterminedDate") = %s  AND '
                         '"determination"."DeterminedDatePrecision" IN (%s, %s)) AND '
