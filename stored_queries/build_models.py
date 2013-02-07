@@ -10,16 +10,14 @@ Base = declarative_base()
 def make_model(module, tabledef):
     classname = tabledef.attrib['classname'].split('.')[-1].capitalize()
 
-
     attrs = dict(__tablename__ = tabledef.attrib['table'],
                  tableid       = int(tabledef.attrib['tableid']),
                  id            = make_id_field(tabledef.find('id')))
 
     for flddef in tabledef.findall('field'):
         fldname = flddef.attrib['name'].lower()
-        fldtype = flddef.attrib['type']
-        maker = field_type_map[fldtype]
-        attrs[fldname.lower()] = maker(flddef)
+        if fldname == 'metadata': fldname = 'metadata_'
+        attrs[fldname] = make_field(flddef)
 
     for reldef in tabledef.findall('relationship'):
         relname = reldef.attrib['relationshipname'].lower()
@@ -73,7 +71,7 @@ def make_relationship(classname, relname, reldef):
         relationship_args['backref'] = orm.backref(related_name)
 
     fk = Column(column_name,
-                ForeignKey(related_class + ".id", link_to_name=True),
+                ForeignKey(related_class + ".id"),
                 nullable=nullable,
                 unique=one_to_one)
 
