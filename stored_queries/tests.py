@@ -250,3 +250,21 @@ class StoredQueriesTests(ApiTests):
                         '(MONTH(T5."DeterminedDate") = %s  AND '
                         'T5."DeterminedDatePrecision" IN (%s, %s)))' in sql)
         self.assertEqual(params, (7, 1, 2, 8, 1, 2))
+
+
+import sqlalchemy
+from sqlalchemy.orm.query import Query
+engine = sqlalchemy.create_engine('mysql://Master:Master@localhost/KU_Fish_Tissue')
+from models import tables, classes
+
+class SqlAlchemyTests(ApiTests):
+    def test_select(self):
+        s = sqlalchemy.sql.select([tables['agent']])
+        connection = engine.connect()
+        # for result in  connection.execute(s):
+        #     print result
+
+    def test_orm(self):
+        Agent = classes['Agent']
+        import ipdb; ipdb.set_trace()
+        q = Query(Agent).filter(Agent.addresses.City == 'Lawrence')

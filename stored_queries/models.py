@@ -1,8 +1,16 @@
-from build_models import build_models
 
-models_by_tableid = build_models(__name__)
 
-# inject the model definitions into this module's namespace
-globals().update((model.__name__, model)
-                 for model in models_by_tableid.values())
+def generate():
+    import build_models
+    datamodel = build_models.get_datamodel()
+    tables = build_models.make_tables(datamodel)
+    classes = build_models.make_classes(datamodel)
+    build_models.map_classes(datamodel, tables, classes)
+    return tables, classes
+
+tables, classes = generate()
+del generate
+
+globals().update(classes)
+
 
