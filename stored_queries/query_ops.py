@@ -23,68 +23,53 @@ class QueryOps(object):
         'op_falseornull',       # 14
         ]
 
-    def __init__(self, Q):
-        """Allow dependency injection of the filter generator, in case
-        we want to specialize the behavior.
-        """
-        self.Q = Q
-
     def by_op_num(self, op_num):
-        """Given an operation number return a function that turns
-        lookup keys and predicate values into Django filters.
-        """
         return getattr(self, self.OPERATIONS[op_num])
 
-    def op_like(self, key, value):
-        class Dummy(object):
-            """Trick the django __contains lookup into doing an
-            unescaped LIKE query.
-            """
-            def as_sql(self):
-                return "%s", (value,)
-        return self.Q(**{key + '__contains': Dummy()})
+    def op_like(self, field, value):
+        return field.like(value)
 
-    def op_equals(self, key, value):
-        return self.Q(**{key: value})
+    def op_equals(self, field, value):
+        return field == value
 
-    def op_greaterthan(self, key, value):
-        return self.Q(**{key + '__gt': value})
+    def op_greaterthan(self, field, value):
+        return field > value
 
-    def op_lessthan(self, key, value):
-        return self.Q(**{key + '__lt': value})
+    def op_lessthan(self, field, value):
+        return field < value
 
-    def op_greaterthanequals(self, key, value):
-        return self.Q(**{key + '__gte': value})
+    def op_greaterthanequals(self, field, value):
+        return field >= value
 
-    def op_lessthanequals(self, key, value):
-        return self.Q(**{key + '__lte': value})
+    def op_lessthanequals(self, field, value):
+        return field <= value
 
-    def op_true(self, key, value):
-        return self.Q(**{key: True})
+    def op_true(self, field, value):
+        return field == True
 
-    def op_false(self, key, value):
-        return self.Q(**{key: False})
+    def op_false(self, field, value):
+        return field == False
 
-    def op_dontcare(self, key, value):
-        return self.Q()
+    def op_dontcare(self, field, value):
+        return None
 
-    def op_between(self, key, value):
+    def op_between(self, field, value):
         values = value.split(',')[:2]
-        return self.Q(**{key + '__range': values})
+        return field.between(*values)
 
-    def op_in(self, key, value):
+    def op_in(self, field, value):
         values = value.split(',')
-        return self.Q(**{key + '__in': values})
+        return field.in_(values)
 
-    def op_contains(self, key, value):
-        return self.Q(**{key + '__contains': value})
+    def op_contains(self, field, value):
+        return field.contains(value)
 
-    def op_empty(self, key, value):
-        return self.Q(**{key + '__exact': ''})
+    def op_empty(self, field, value):
+        return field == ''
 
-    def op_trueornull(self, key, value):
-        return self.Q(**{key: True}) | self.Q(**{key + '__isnull': True})
+    def op_trueornull(self, field, value):
+        return (field == True) | (field == None)
 
-    def op_falseornull(self, key, value):
-        return self.Q(**{key: False}) | self.Q(**{key + '__isnull': True})
+    def op_falseornull(self, field, value):
+        return (field == False) | (field == None)
 

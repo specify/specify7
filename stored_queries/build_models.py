@@ -89,9 +89,10 @@ def make_tables(datamodel):
 
 def make_classes(datamodel):
     tabledefs = datamodel.findall('table')
-    return dict((class_name, type(class_name, (object,), {}))
+    return dict((class_name, type(class_name, (object,), { 'tableid': tableid }))
                 for td in tabledefs
-                for class_name in [ get_class_name(td) ])
+                for class_name in [ get_class_name(td) ]
+                for tableid in [ int(td.attrib['tableid']) ])
 
 def map_classes(datamodel, tables, classes):
 
@@ -130,6 +131,10 @@ def map_classes(datamodel, tables, classes):
                           for definition in tabledef.findall('relationship')
                           for relationship in [ make_relationship(definition) ]
                           if relationship is not None)
+
+        properties.update((definition.attrib['name'], getattr(table.c, definition.attrib['column']))
+                          for definition in tabledef.findall('id') + tabledef.findall('field'))
+
 
         orm.mapper(cls, table, properties=properties)
 

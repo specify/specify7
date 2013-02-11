@@ -13,4 +13,4 @@ del generate
 
 globals().update(classes)
 
-
+models_by_tableid = dict((cls.tableid, cls) for cls in classes.values())
