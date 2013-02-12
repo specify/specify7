@@ -18,7 +18,7 @@ def make_model(module, tabledef):
     """
     modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
     attrs = dict(id=make_id_field(tabledef.find('id')),
-                 tableid=int(tabledef.attrib['tableid']),
+                 table_id=int(tabledef.attrib['tableid']),
                  __module__=module)
     for flddef in tabledef.findall('field'):
         fldname = flddef.attrib['name'].lower()
@@ -252,6 +252,6 @@ def build_models(module):
     """Parse the specify_datamodel.xml file and generate the Django model definitions."""
     datamodel = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
 
-    return dict((model.tableid, model)
+    return dict((model.table_id, model)
                 for table in datamodel.findall('table')
                 for model in [ make_model(module, table) ])

@@ -110,7 +110,7 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
         super(RecordSetTests, self).setUp()
         self.recordset = models.Recordset.objects.create(
             collectionmemberid=self.collection.id,
-            dbtableid=models.Collectionobject.tableid,
+            dbtableid=models.Collectionobject.table_id,
             name="Test recordset",
             type=0,
             specifyuser=self.specifyuser)

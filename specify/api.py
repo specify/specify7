@@ -175,7 +175,7 @@ def get_recordset_info(obj, recordsetid):
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
     rsis = models.Recordsetitem.objects.filter(
-        recordset__id=recordsetid, recordset__dbtableid=obj.tableid)
+        recordset__id=recordsetid, recordset__dbtableid=obj.table_id)
 
     # Get the one which points to the resource 'obj'.
     try:
@@ -225,7 +225,7 @@ def post_resource(collection, agent, name, data, recordsetid=None):
         except models.Recordset.DoesNotExist, e:
             raise RecordSetException(e)
 
-        if recordset.dbtableid != obj.tableid:
+        if recordset.dbtableid != obj.table_id:
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
