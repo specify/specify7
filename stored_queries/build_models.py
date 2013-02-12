@@ -89,10 +89,11 @@ def make_tables(datamodel):
 
 def make_classes(datamodel):
     tabledefs = datamodel.findall('table')
-    return dict((class_name, type(class_name, (object,), { 'tableid': tableid }))
+    return dict((class_name, type(class_name, (object,), { 'tableid': tableid, '_id': id_field }))
                 for td in tabledefs
                 for class_name in [ get_class_name(td) ]
-                for tableid in [ int(td.attrib['tableid']) ])
+                for tableid in [ int(td.attrib['tableid']) ]
+                for id_field in [ td.find('id').attrib['name'] ])
 
 def map_classes(datamodel, tables, classes):
 

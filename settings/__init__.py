@@ -1,5 +1,7 @@
 import os
 import sys
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
@@ -45,8 +47,15 @@ TESTING_DATABASES = {
 if 'test' in sys.argv:
     TESTING = True
     DATABASES = TESTING_DATABASES
+    SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
     TESTING = False
+    SA_DATABASE_URL = 'mysql://%s:%s@localhost/%s' % (specify_settings.MASTER_NAME,
+                                                      specify_settings.MASTER_PASSWORD,
+                                                      specify_settings.DATABASE_NAME)
+
+SA_SESSION = sessionmaker(
+    bind=sqlalchemy.create_engine(SA_DATABASE_URL))
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 

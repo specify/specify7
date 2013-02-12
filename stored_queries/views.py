@@ -1,11 +1,10 @@
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.conf import settings
 
-from specify import models
-from specify.filter_by_col import filter_by_collection
 from specify.api import toJson
+import models
 
 from fieldspec import FieldSpec
 
@@ -63,9 +62,17 @@ def make_results(qs, field_specs):
 @require_GET
 @login_required
 def query(request, id):
-    query = get_object_or_404(models.Spquery, id=id)
-    field_specs = [FieldSpec(field) for field in query.fields.all()]
-    qs = make_queryset(query, field_specs)
-    results = make_results(qs, field_specs)
+    session = settings.SA_SESSION()
+    sp_query = session.query(models.SpQuery).get(int(id))
+    field_specs = [FieldSpec.from_spqueryfield(field) for field in sp_query.fields]
+    model = models.models_by_tableid[sp_query.contextTableId]
+    id_field = getattr(model, model._id)
+    query = session.query(id_field)
+    fields = []
+    for fs in field_specs:
+        query, field = fs.add_to_query(query)
+        fields.append(field)
+
+    results = list(query)
     return HttpResponse(toJson(results), content_type='application/json')
 
