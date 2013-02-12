@@ -198,6 +198,10 @@ input[type="submit"].saveblocked {
     display: inline-block;
 }
 
+.specify-attachment-container {
+    position: relative;
+}
+
 .specify-attachment-display {
     width: 510px;
     height: 510px;
@@ -206,6 +210,13 @@ input[type="submit"].saveblocked {
     text-align: center;
     border: 1px solid #aaa;
     background-color: #000;
+}
+
+a.specify-attachment-original {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: #eee;
 }
 
 .recordselector-slider {

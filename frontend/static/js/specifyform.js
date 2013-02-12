@@ -8,11 +8,6 @@ define([
     "use strict";
     var formCounter = 0;
 
-    function getModelFromView(view) {
-        view = _(view).isString() ? findView(view) : view;
-        return view.attr('class').split('.').pop();
-    }
-
     function getModelFromViewdef(viewdef) {
         return viewdef.attr('class').split('.').pop();
     }
@@ -107,7 +102,7 @@ define([
             var defaultType = node.data('specify-viewtype') === 'table' ? 'formtable' : 'form';
             var viewName = node.data('specify-viewname');
             var mode = node.data('specify-viewmode');
-            var buildView = specifyform.buildViewByName(viewName, defaultType, mode)
+            var buildView = specifyform.buildViewByName(viewName, defaultType, mode);
 
             return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();

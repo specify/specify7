@@ -48,9 +48,11 @@ define([
         AttachmentPlugin: UIPlugin.extend({
             render: function() {
                 var self = this;
-                var control = $('<div class="specify-attachment-display">')
+                var control = $('<div class="specify-attachment-container">');
                 self.$el.replaceWith(control);
                 self.setElement(control);
+
+                $('<div class="specify-attachment-display">').appendTo(self.el);
 
                 if (!self.model.isNew()) {
                     self.model.rget('attachment', true).done(function(attachment) {
@@ -61,8 +63,19 @@ define([
             },
             displayAttachment: function(attachment) {
                 var self = this;
+
                 function dsp(src) {
-                    $('<img>', {src: src, style: 'vertical-align: middle'}).appendTo(self.el);
+                    if (/^image/.exec(attachment.get('mimetype'))) {
+                        $('<img>', {src: src, style: 'vertical-align: middle'})
+                            .appendTo(self.$('.specify-attachment-display'));
+                    }
+                    var url = "http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/"
+                        + attachment.get('attachmentlocation');
+                    $('<a>', {href: url, 'class': 'specify-attachment-original'})
+                        .text('Original').appendTo(self.el).click(function(evt) {
+                            evt.preventDefault();
+                            window.open(url);
+                        });
                 }
 
                 if (attachment.src) {
