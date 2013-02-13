@@ -217,6 +217,8 @@ input[type="submit"].saveblocked {
 }
 
 .specify-attachment-container {
+    width: 510px;
+    height: 510px;
     position: relative;
 }
 

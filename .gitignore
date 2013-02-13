@@ -7,3 +7,4 @@ settings/local_settings.py
 settings/local_specify_settings.py
 settings/secret_key.py
 /attachment_upload/static
+

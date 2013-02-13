@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'businessrules',
     'express_search',
     'context',
+    'attachment_upload',
     'frontend',
 )
 

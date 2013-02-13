@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css">
+  <link rel="stylesheet" href="/static/css/specifyform.css">
+  <script data-main="/static/js/main.js" src="/static/js/vendor/require.js"></script>
+</head>
+
+<body>
+<div id="container">
+    <div id="header">
+        <div id="branding">
+          <h1 id="site-name"><a href="/specify/">Specify WebApp</a></h1>
+
+          <form id="express-search" action="/specify/express_search/">
+            <input type="text" class="express-search-query" name="q">
+            <input type="submit" value="Search">
+          </form>
+        </div>
+        <div id="user-tools">
+          <a href="/accounts/logout/">Log out</a>
+        </div>
+    </div>
+    <div id="content">
+    </div>
+</div>
+</body>
+</html>
