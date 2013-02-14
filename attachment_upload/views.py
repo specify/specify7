@@ -9,7 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from specify.models import Attachment
 
-ATTACHMENT_DIR = join_path(abspath(dirname(__file__)), 'static', 'attachments') 
+ATTACHMENT_DIR = join_path(abspath(dirname(__file__)), 'static', 'attachments')
+ATTACHMENT_THUMBS = join_path(abspath(dirname(__file__)), 'static', 'attachment_thumbs')
+
 
 @login_required
 @require_POST

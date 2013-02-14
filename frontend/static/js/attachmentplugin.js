@@ -22,31 +22,68 @@ define([
         addAttachment: function() {
             var self = this;
             var form = '<form enctype="multipart/form-data"><input type="file" name="file"></form>';
+
+            self.gotAttachment = false;
+
             self.dialog = $('<div>', {title: 'Upload'}).append(form).appendTo(self.el).dialog({
                 modal:true,
                 buttons: {
                     'Ok': function() { self.startUpload(); }
                 },
-                close: function() { $(this).remove(); self.dialog = null; }
+                close: function() {
+                    $(this).remove();
+                    self.dialog = null;
+                    if (!self.gotAttachment) self.model.destroy();
+                }
             });
 
         },
         startUpload: function() {
             var self = this;
             var files = $(':file', self.dialog).get(0).files;
-            if (files.length < 1) {
-                self.model.destroy();
-                self.dialog.dialog('close');
-            } else {
-                var formData = new FormData(self.dialog.find('form').get(0));
-                $.ajax({
+            var formData = new FormData(self.dialog.find('form').get(0));
+
+            if (files.length > 0) {
+                self.gotAttachment = true;
+
+                self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
+
+                self.progressDialog = $('<div>', {title: 'Uploading'})
+                    .appendTo(self.el)
+                    .append(self.progressBar)
+                    .dialog({
+                        modal:true
+                    });
+
+                var jqxhr = $.ajax({
                     url: '/upload_attachment/',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function(data) { self.uploadComplete(data); }
+                    success: function(data) { self.uploadComplete(data); },
+                    xhr: function() {
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function(evt) {
+                                self.uploadProgress(evt);
+                            });
+                        }
+                        return xhr;
+                    }
                 });
+            }
+            self.dialog.dialog('close');
+        },
+        uploadProgress: function (evt) {
+            var self = this;
+            if (evt.lengthComputable) {
+                self.progressBar.progressbar('option', {
+                    value: evt.loaded,
+                    max: evt.total
+                });
+            } else {
+                self.progressBar.progressbar('option', 'value', false);
             }
         },
         uploadComplete: function(data) {
@@ -56,8 +93,8 @@ define([
                 self.model.set('attachment', attachment);
                 self.model.save();
                 self.displayAttachment(attachment);
-                self.dialog.dialog('close');
-                });
+                self.progressDialog.dialog('close');
+            });
         },
         displayAttachment: function(attachment) {
             var self = this;
