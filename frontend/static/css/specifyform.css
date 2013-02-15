@@ -378,3 +378,24 @@ div.results div {
 .specify-plugin-weblink a .ui-button-text {
     padding: 5px;
 }
+
+.specify-attachment-browser div {
+    display: inline-block;
+    width: 180px;
+    height: 180px;
+    margin: 3px;
+}
+
+.specify-attachment-browser img {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    vertical-align: middle;
+    display: block;
+    border: solid 3px;
+    border-radius: 3px;
+    box-shadow: -2px 5px 12px;
+    max-width: 160px;
+    max-height: 160px;
+}
+

@@ -112,7 +112,6 @@ define([
         }).delegate('form', 'submit', false);
     }
 
-
     // the exported interface
     var app = {
         router: new SpecifyRouter(),
