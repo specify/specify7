@@ -19,7 +19,8 @@ define([
     function appStart() {
         // get a reference to the content div
         // where we will draw the rest of the app
-        var rootContainer = $('#content');
+        //var rootContainer = $('#content');
+        var rootContainer = $('#content-body');
 
         businessRules.enable(true);
 
