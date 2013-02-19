@@ -3,7 +3,7 @@ import re
 import models
 
 from query_ops import QueryOps
-from sqlalchemy import orm, inspect
+from sqlalchemy import orm, inspect, sql
 from sqlalchemy.sql.expression import extract
 
 query_ops = QueryOps()
@@ -73,14 +73,21 @@ class FieldSpec(object):
         op = query_ops.by_op_num(self.op_num)
         query, table = self.build_join(query)
 
-        tree_ranks = get_tree_ranks(table, self.field_name)
+        insp = inspect(table)
+        if is_tree(insp) and self.field_name not in insp.mapper.c.keys():
+            node = table
+            treedef_column = insp.class_.__name__ + 'TreeDefID'
 
-        if tree_ranks is not None:
-            tree = table
-            ancestor = orm.aliased(tree)
-            ancestor_p = tree.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
-            rank_p = ancestor.rankId.in_(tree_ranks)
-            query = query.join(ancestor, ancestor_p).filter(rank_p)
+            ancestor = orm.aliased(node)
+            ancestor_p = sql.and_(
+                getattr(node, treedef_column) == getattr(ancestor, treedef_column),
+                node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
+                )
+
+            treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
+            rank_p = (treedefitem.name == self.field_name)
+
+            query = query.join(ancestor, ancestor_p).join(treedefitem).filter(rank_p)
             field = ancestor.name
 
         elif self.date_part is not None:
@@ -93,15 +100,6 @@ class FieldSpec(object):
             query = query.filter(op(field, self.value))
 
         return query.reset_joinpoint(), field
-
-def get_tree_ranks(table, rank):
-    insp = inspect(table)
-    if not is_tree(insp) or rank in insp.mapper.c.keys():
-        return None
-
-    TreeDefItem = models.classes[insp.class_.__name__ + 'TreeDefItem']
-    tree_ranks = orm.Query(TreeDefItem.rankId).filter(TreeDefItem.name == rank)
-    return tree_ranks
 
 def is_tree(insp):
     fields = insp.class_.__dict__
