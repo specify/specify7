@@ -21,11 +21,11 @@ define([
         // where we will draw the rest of the app
         //var rootContainer = $('#content');
         var rootContainer = $('#content-body');
-
+	var expSrchContainer = $('#express-search-view-body');
         businessRules.enable(true);
 
         // make the express search field functional
-        app.expressSearch = new esearch.SearchView({ el: $('#express-search') });
+        //app.expressSearch = new esearch.SearchView({ el: $('#express-search-view-body') });
 
         // take over the site name link so that the page doesn't
         // reload when it is used
@@ -74,8 +74,10 @@ define([
 
             // this view shows the user the welcome screen
             welcome: function() {
-                setCurrentView(new WelcomeView());
-                window.document.title = 'Welcome | Specify WebApp';
+                //setCurrentView(new WelcomeView());
+		//app.expressSearch.render();
+		//expSrchContainer.append(app.expressSearch.el);
+                //window.document.title = 'Welcome | Specify WebApp';
             },
 
             storedQuery: function(id) {
@@ -106,7 +108,7 @@ define([
                         if (!recordsetitem) {
                             if (recordSetItems.length === 0) {
                                 // TODO: Do something better for empty record sets.
-                                specifyRouter.resourceView(specifyModel, null, recordSet);
+                              specifyRouter.resourceView(specifyModel, null, recordSet);
                             } else {
                                 // index must be past the end
                                 // re-do with index set to the last record
