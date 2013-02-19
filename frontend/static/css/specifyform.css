@@ -234,3 +234,11 @@ div.results div {
     max-height: 20em;
     overflow: scroll;
 }
+
+.spqueryfield {
+    list-style-type: none;
+}
+
+.spqueryfield span {
+    margin: 0 10px 0 10px;
+}

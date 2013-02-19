@@ -20,7 +20,7 @@ class FieldSpec(object):
             setattr(self, arg, value)
 
     @classmethod
-    def from_spqueryfield(cls, field):
+    def from_spqueryfield(cls, field, value=None):
         path, table_name, field_name = cls.STRINGID_RE.match(field.stringId).groups()
         path_elems = path.split(',')
         root_table = models.models_by_tableid[int(path_elems[0])]
@@ -56,7 +56,7 @@ class FieldSpec(object):
                    root_table   = root_table,
                    join_path    = join_path,
                    op_num       = field.operStart,
-                   value        = field.startValue,
+                   value        = field.startValue if value is None else value,
                    negate       = field.isNot,
                    display      = field.isDisplay,
                    spqueryfieldid = field.spQueryFieldId)
