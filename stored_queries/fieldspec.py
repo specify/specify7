@@ -57,7 +57,9 @@ class FieldSpec(object):
                    join_path    = join_path,
                    op_num       = field.operStart,
                    value        = field.startValue,
-                   negate       = field.isNot)
+                   negate       = field.isNot,
+                   display      = field.isDisplay,
+                   spqueryfieldid = field.spQueryFieldId)
 
     def build_join(self, query):
         table = self.root_table
