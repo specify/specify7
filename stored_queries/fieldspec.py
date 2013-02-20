@@ -70,11 +70,10 @@ class FieldSpec(object):
         return query, table
 
     def add_to_query(self, query):
-        op = query_ops.by_op_num(self.op_num)
         query, table = self.build_join(query)
 
         insp = inspect(table)
-        if is_tree(insp) and self.field_name not in insp.mapper.c.keys():
+        if is_tree(insp) and not is_regular_field(insp, self.field_name):
             node = table
             treedef_column = insp.class_.__name__ + 'TreeDefID'
 
@@ -97,9 +96,13 @@ class FieldSpec(object):
             field = getattr(table, self.field_name)
 
         if self.value != '':
+            op = query_ops.by_op_num(self.op_num)
             query = query.filter(op(field, self.value))
 
         return query.reset_joinpoint(), field
+
+def is_regular_field(insp, field_name):
+    return field_name in insp.class_.__dict__
 
 def is_tree(insp):
     fields = insp.class_.__dict__
