@@ -35,7 +35,7 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource',
             @$('.results').accordion accordionOptions
             query = $.deparam.querystring().q
             $('.express-search-query').val query
-            ajaxUrl = $.param.querystring '/express_search/', q: query
+            ajaxUrl = $.param.querystring '/specify/express_search/', q: query
             $.get ajaxUrl, _.bind(@showResults, @)
             @doRelatedSearches query
             @
