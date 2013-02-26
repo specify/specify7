@@ -38,12 +38,6 @@ working directory.
 
     cd specifyweb
 
-Run the test suite.
--------------------
-There is a preliminary test suite which can be ran as follows:
-
-    python manage.py test
-
 Set up the settings file.
 -------------------------
 Edit the `specify_settings.py` file and configure the settings
@@ -62,13 +56,19 @@ according to your system.
     MASTER_NAME = 'Master'
     MASTER_PASSWORD = 'Master'
 
+Run the test suite.
+-------------------
+There is a preliminary test suite which can be ran as follows:
+
+    python manage.py test
+
 Sync the database:
 ------------------
 The authentication system in django makes use of a couple extra tables. This
 command will generate them:
 
     python manage.py syncdb
-    
+
 Django will ask whether it should create a superuser. It is safe to answer 'no',
 since the superuser for the Django admin system which is not being used.
 
