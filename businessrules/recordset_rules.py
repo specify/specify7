@@ -3,9 +3,9 @@ from specify.models import Recordsetitem
 
 @orm_signal_handler('post_delete')
 def remove_from_recordsets(sender, obj):
-    if not hasattr(sender, 'tableid'): return
+    if not hasattr(sender, 'table_id'): return
     rsis = Recordsetitem.objects.filter(
-        recordset__dbtableid=sender.tableid,
+        recordset__dbtableid=sender.table_id,
         recordid=obj.id)
     rsis.delete()
 

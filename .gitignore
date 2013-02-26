@@ -5,3 +5,4 @@
 virtenv
 /local_settings.py
 /secret_key.py
+/attachment_upload/static

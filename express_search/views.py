@@ -57,6 +57,7 @@ class Term:
         if self.discipline:
             from specify.models import Splocalecontaineritem
             fieldinfo = Splocalecontaineritem.objects.get(
+                container__schematype=0, # core schema
                 container__discipline=self.discipline,
                 name=field.name,
                 container__name=field.model.__name__.lower())

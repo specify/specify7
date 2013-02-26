@@ -140,7 +140,7 @@ define([
                 }
 
                 self.options.populateform(dialogForm, self.related);
-                var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
+                var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
                 self.dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',
                     title: title,
