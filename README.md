@@ -16,15 +16,15 @@ On Fedora:
 
     sudo yum install MySQL-python python-pip python-crypto
 
-Install Django 1.4.
--------------------
+Install Django 1.4.5
+--------------------
 On Ubuntu:
 
-    sudo pip install Django
+    sudo pip install Django==1.4.5
 
 On Fedora:
 
-    sudo pip-python install Django
+    sudo pip-python install Django==1.4.5
 
 Get the specifyweb source code.
 ----------------------------------
