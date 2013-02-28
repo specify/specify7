@@ -6,7 +6,7 @@ Ext.application({
     id: 'sp-thinclient-app-obj',
     autoCreateViewport: true,
 
-    controllers: ['Welcome', 'Data', 'ExpressSearch'],
+    controllers: ['Welcome', 'Data', 'ExpressSearch', 'Query'],
 
     init: function () {
 	console.info("ExtJS app.init()");

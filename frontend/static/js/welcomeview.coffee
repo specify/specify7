@@ -159,6 +159,8 @@ define [
 
 
     WelcomeView = Backbone.View.extend
+        attributes:
+                ViewType: 'WelcomeView'
         render: ->
             @$el.addClass "welcome"
             @$el.append templates.welcome()

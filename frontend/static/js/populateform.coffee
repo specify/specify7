@@ -10,6 +10,9 @@ RecordSelector, SubViewButton, FormTable, \
 SubView, CheckBox, TreeLevelPickList) ->
 
     MultiView = Backbone.View.extend
+        attributes:
+                viewType: 'MultiView'
+        
         render: -> specifyform.buildSubView(@$el).done (form) =>
             @options.form = form
 

@@ -21,7 +21,6 @@ define([
         // where we will draw the rest of the app
         //var rootContainer = $('#content');
         var rootContainer = $('#content-body');
-	var expSrchContainer = $('#express-search-view-body');
         businessRules.enable(true);
 
         // make the express search field functional
@@ -44,8 +43,20 @@ define([
             app.currentView = view;
             app.currentView.render();
             rootContainer.append(app.currentView.el);
+	    notifyFrameworkOnViewChange();
         }
 
+	function notifyFrameworkOnViewChange() {
+	    try {
+		var viewListener = Ext.getCmp('appviewport');
+		if (viewListener) {
+		    viewListener.fireEvent('gone', {newView: app.currentView});
+		}
+	    } catch (e) { 
+		//guess there's no Ext framework
+	    }
+	}
+	    
         function handleError(jqhxr) {
             setCurrentView(new ErrorView({ request: jqhxr }));
         }

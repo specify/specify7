@@ -11,6 +11,9 @@ define([
     function setWindowTitle(title) { window && (window.document.title = title); }
 
     return Backbone.View.extend({
+	attributes: {
+	    ViewType: 'ResourceView'
+	},
         events: {
             'click .recordset-prev, .recordset-next': 'nav'
         },

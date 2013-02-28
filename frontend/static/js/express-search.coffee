@@ -17,6 +17,8 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource',
 
 
     SearchView: Backbone.View.extend
+        attributes: 
+                viewType: 'ExpressSearch'
         events:
             'click :submit': 'search'
         search: (evt) ->
@@ -27,15 +29,17 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource',
                 navigation.go url
 
     ResultsView: Backbone.View.extend
+        attributes:
+                viewType: 'ExpressSearchResults'
         events:
-            'click a.express-search-result': 'navToResult'
+           'click a.express-search-result': 'navToResult' 
         render: ->
             @$el.append '<h3>Primary Search</h3><p class="status primary">Running...</p><div class="results primary"></div>'
             @$el.append '<h3>Secondary Search</h3><p class="status related">Running...</p><div class="results related"></div>'
             @$('.results').accordion accordionOptions
             query = $.deparam.querystring().q
             $('.express-search-query').val query
-            ajaxUrl = $.param.querystring '/specify/express_search/', q: query
+            ajaxUrl = $.param.querystring '/express_search/', q: query
             $.get ajaxUrl, _.bind(@showResults, @)
             @doRelatedSearches query
             @

@@ -17,6 +17,7 @@ Ext.define('SpThinClient.view.NavBarItemGroupView', {
         'SpThinClient.view.NavBarItemView',
 	'SpThinClient.view.NavBarViewView',
 	'SpThinClient.view.NavBarRsView',
+	'SpThinClient.view.NavBarQbView',
 	'Ext.Array'
     ],
     

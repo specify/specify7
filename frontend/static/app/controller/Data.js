@@ -7,10 +7,23 @@ Ext.define('SpThinClient.controller.Data', {
 	this.control({
 	    'sp-taskbarbtn-view[itemid="data"]': {
 		click: this.onTaskBtnClk
+	    },
+	    '#appviewport': {
+		gone: this.onGone
 	    }
 	});
 
 	this.callParent(arguments);
+    },
+
+    onGone: function(goneWhere) {
+	console.info("Data.onGone");
+	var viewType = goneWhere.newView.$el.attr('ViewType');
+	console.info(viewType);
+	if (viewType == 'ResourceView') {
+	    console.info('Opening Data Task');
+	    this.onTaskBtnClk();
+	}
     },
 
     onTaskBtnClk: function() {

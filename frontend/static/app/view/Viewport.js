@@ -2,7 +2,7 @@ Ext.define('SpThinClient.view.Viewport', {
     extend: 'Ext.container.Viewport',
     title: 'Specify',
     layout: 'border',
-    id: 'container',
+    id: 'appviewport',
 
     //localizable text...
     viewportTitle: 'Specify',
@@ -40,6 +40,7 @@ Ext.define('SpThinClient.view.Viewport', {
 	this.items = [
 	    {
 		xtype: 'sp-taskbar-view',
+		id: 'chrometaskbar',
 		region: 'north',
 		height: 80,
 		items: [
@@ -55,6 +56,12 @@ Ext.define('SpThinClient.view.Viewport', {
 			icon: '/images/Data_Entry.png',
 			itemid: 'data'
 		    }, 
+		    {
+			xtype: 'sp-taskbarbtn-view',
+			text: 'Query',
+			icon: '/images/Query32x32.png',
+			itemid: 'query'
+		    },
 		    {
 			xtype: 'sp-expresssearch-view',
 			id: 'express-search-view',

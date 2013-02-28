@@ -4,6 +4,9 @@ define ['jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource',
 ], ($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll) ->
 
     Backbone.View.extend
+        attributes:
+                ViewType: 'StoredQuery'
+                
         events:
             'click a.query-result': 'navToResult'
         render: ->

@@ -4,6 +4,9 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+	attributes: {
+	    ViewType: 'OtherCollectionView'
+	},
         events: {
             'click a': 'clicked'
         },
