@@ -2,7 +2,8 @@
 *~
 .emacs.desktop*
 .directory
-virtenv
+/virtenv
 /local_settings.py
+/local_specify_settings.py
 /secret_key.py
 /attachment_upload/static

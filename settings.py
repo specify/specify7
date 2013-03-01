@@ -3,7 +3,11 @@ import sys
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
-import specify_settings
+
+try:
+    import local_specify_settings as specify_settings
+except ImportError:
+    import specify_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -44,7 +48,7 @@ if 'test' in sys.argv:
 else:
     TESTING = False
 
-SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
+SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 
