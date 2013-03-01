@@ -40,21 +40,27 @@ working directory.
 
 Set up the settings file.
 -------------------------
-Edit the `specify_settings.py` file and configure the settings
-according to your system.
+Copy the `specify_settings.py` file to `local_specify_settings.py` and
+configure the settings according to your system.
 
-    # The webapp server piggy backs on the thick client.
-    # Set the path to a thick client installation.
-    THICK_CLIENT_LOCATION = '/home/ben/Specify6.4.10'
+```python
+# The webapp server piggy backs on the thick client.
+# Set the path to a thick client installation.
+THICK_CLIENT_LOCATION = '~/Specify'
 
-    # Set the database name to the mysql data base you
-    # want to access.
-    DATABASE_NAME = 'old_kufish'
+# Set the database name to the mysql database you
+# want to access.
+DATABASE_NAME = 'SpecifyDB'
 
-    # The master user login. Use the same values as
-    # you did setting up the thick client.
-    MASTER_NAME = 'Master'
-    MASTER_PASSWORD = 'Master'
+# The master user login. Use the same values as
+# you did setting up the thick client.
+MASTER_NAME = 'MasterUser'
+MASTER_PASSWORD = 'MasterPassword'
+```
+
+You can edit `specify_settings.py` directly but then it will always show
+up as a modified file in version control and generally make a nuisance
+of itself.
 
 Run the test suite.
 -------------------
