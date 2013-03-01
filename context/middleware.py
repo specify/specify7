@@ -18,21 +18,15 @@ class ContextMiddleware(object):
             try:
                 agent = filter_by_collection(Agent.objects, collection) \
                     .select_related('specifyuser') \
-                    .get(specifyuser__name=request.user.username)
+                    .get(specifyuser=request.user)
             except Agent.DoesNotExist:
                 agent = None
         else:
             agent = None
 
-        if agent is not None:
-            user = agent.specifyuser
-        else:
-            user = None
-
-
         request.specify_collection = collection
         request.specify_user_agent = agent
-        request.specify_user = user
+        request.specify_user = request.user
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)

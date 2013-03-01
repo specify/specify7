@@ -141,7 +141,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'context.middleware.ContextMiddleware'
 )
 
@@ -154,17 +153,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-#    'django_extensions',
     'specify',
     'stored_queries',
     'businessrules',
@@ -172,6 +162,8 @@ INSTALLED_APPS = (
     'context',
     'frontend',
 )
+
+AUTH_USER_MODEL = 'specify.Specifyuser'
 
 AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',
                            'django.contrib.auth.backends.ModelBackend')
@@ -185,9 +177,15 @@ LOGIN_REDIRECT_URL = '/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+            }
+     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {

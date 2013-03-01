@@ -1,5 +1,5 @@
-from django.conf.urls.defaults import patterns, include, url
-from django.views.generic.simple import redirect_to
+from django.conf.urls import patterns, include, url
+from django.views.generic.base import RedirectView
 
 urlpatterns = patterns(
     '',
@@ -8,7 +8,7 @@ urlpatterns = patterns(
     (r'^accounts/logout/$', 'context.views.logout'),
 
     # just redirect root url to the main specify view
-    url(r'^$', redirect_to, {'url': '/specify/'}),
+    url(r'^$', RedirectView.as_view(url='/specify/')),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled
