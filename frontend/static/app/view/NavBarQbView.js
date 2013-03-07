@@ -9,7 +9,7 @@ Ext.define('SpThinClient.view.NavBarQbView', {
     },
 
     setupFromItemDef: function(){
-	console.info("NavBarQbView.setupFromItemDef");
+	//console.info("NavBarQbView.setupFromItemDef");
 	this.setModel(require('schema').getModelById(this.getItemDef().get('contexttableid')));
 	this.down('image').setSrc(this.getModel().getIcon());		
 	this.down('button').setText(this.getItemDef().get('name'));

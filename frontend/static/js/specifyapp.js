@@ -36,15 +36,23 @@ define([
         // gets rid of any backbone view currently showing
         // and replaces it with the rendered view given
         // also manages other niceties involved in changing views
-        function setCurrentView(view) {
+        function setCurrentView(view, skipNotification) {
             app.currentView && app.currentView.remove(); // remove old view
             $('.ui-autocomplete').remove(); // these are getting left behind sometimes
             $('.ui-dialog-content').dialog('close'); // close any open dialogs
             app.currentView = view;
             app.currentView.render();
             rootContainer.append(app.currentView.el);
-	    notifyFrameworkOnViewChange();
+	    if (typeof skipNotification === "undefined" || skipNotification) {
+		notifyFrameworkOnViewChange();
+	    }
         }
+
+	function defaultView(viewType) {
+	    var defView = new WelcomeView();
+	    defView.$el.attr('ViewType', viewType);
+	    setCurrentView(defView, false);
+	}
 
 	function notifyFrameworkOnViewChange() {
 	    try {
@@ -74,6 +82,8 @@ define([
                 'viewashtml/'           : 'viewashtml',
                 'datamodel/:model/'     : 'datamodel',
                 'datamodel/'            : 'datamodel',
+		'data/default/'         : 'defaultData',
+		'qb/default/'           : 'defaultQb',
                 '*whatever'             : 'notFound'   // match anything else.
             },
 
@@ -82,6 +92,14 @@ define([
                 setCurrentView(new NotFoundView());
                 window.document.title = 'Page Not Found | Specify WebApp';
             },
+
+	    defaultData: function() {
+		defaultView('resourceView');
+	    },
+
+	    defaultQb: function() {
+		defaultView('StoredQuery');
+	    },
 
             // this view shows the user the welcome screen
             welcome: function() {

@@ -16,7 +16,7 @@ Ext.define('SpThinClient.view.NavBarRsView', {
     },
 
     setupFromItemDef: function(){
-	console.info("NavBarRsView.setupFromItemDef");
+	//console.info("NavBarRsView.setupFromItemDef");
 	this.setModel(require('schema').getModelById(this.getItemDef().get('dbtableid')));
 	this.down('image').setSrc(this.getModel().getIcon());		
 	this.down('button').setText(this.getItemDef().get('name'));

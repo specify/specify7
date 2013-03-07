@@ -5,7 +5,8 @@ Ext.define('SpThinClient.controller.TaskBase', {
     config: {
 	navigateAfterBuild: false,
 	building: false,
-	viewType: null
+	viewType: null,
+	sideBar: null
     },
 
     onGone: function(goneWhere) {
@@ -14,15 +15,15 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	console.info(vt);
 	if (vt == this.getViewType()) {
 	    console.info('Opening ' + this.getViewType() + " Task");
-	    this.buildGroups(false);
+	    this.showSideBar(false);
 	}
     },
 
     onTaskBtnClk: function() {
-	this.buildGroups(true);
+	this.showSideBar(true);
     },
 
-    buildGroups: function(navigate) {
+    showSideBar: function(navigate) {
 	var navbar = Ext.getCmp('ext-main-navbar');
 	if (navbar) {
 	    this.setBuilding(true);
@@ -30,18 +31,18 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	    if (!navbar.getCollapsed()) {
 		navbar.toggleCollapse();
 	    } else {
-		this.buildGroups2(navbar);
+		this.showSideBar2(navbar);
 	    }
 	}
     },
 
-    buildGroups2: function(navbar) {
+    showSideBar2: function(navbar) {
 	if (this.getBuilding()) {
 	    navbar.clearGroups();
-	    this.buildGroups3(navbar);
+	    this.buildSideBar(navbar);
 	}
     },
 
-    buildGroups3: function(navbar) {
+    buildSideBar: function(navbar) {
     }
 });

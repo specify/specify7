@@ -51,7 +51,10 @@ Ext.define('SpThinClient.view.NavigationBarView', {
 	for (var i = 0; i < this.getGroups().length; i++) {
 	    if (!this.getGroups()[i].getIsSetup()) return;
 	}
-	this.expand();
+	if (this.getCollapsed()) {
+	    //console.info("expanding nav bar");
+	    this.toggleCollapse();
+	}
     }
 		   
 });

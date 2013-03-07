@@ -1,6 +1,8 @@
 Ext.define('SpThinClient.controller.Query', {
-    extend: 'Ext.app.Controller',
+    extend: 'SpThinClient.controller.TaskBase',
     xtype: 'querycontroller',
+
+    viewType: 'StoredQuery',
 
     init: function() {
 	console.info("Query Controller Init");
@@ -10,47 +12,35 @@ Ext.define('SpThinClient.controller.Query', {
 	    },
 	    '#appviewport': {
 		gone: this.onGone
+	    },
+	    '#ext-main-navbar': {
+		collapse: this.showSideBar2
 	    }
 	});
-
 	this.callParent(arguments);
     },
 
-    onGone: function(goneWhere) {
-	console.info("Query.onGone");
-	var viewType = goneWhere.newView.$el.attr('ViewType');
-	console.info(viewType);
-	if (viewType == 'StoredQuery') {
-	    console.info('Opening Query Task');
-	    this.onTaskBtnClk();
-	}
-    },
-
-    onTaskBtnClk: function() {
-	console.info("Query Task activated");
-	var navbar = Ext.getCmp('ext-main-navbar');
-	if (navbar) {
-	    if (!navbar.getCollapsed()) {
-		navbar.toggleCollapse();
-	    }
-	}
-	navbar.clearGroups();
-
+    buildSideBar: function(navbar) {
 	var api = require('specifyapi');
 	var qList = api.Collection.fromUri('/api/specify/spquery/');
-	console.info(qList);
+	//console.info(qList);
+	var me = this;
 	qList.fetch().done(function() {
-	    console.info("qList fetch done");
-	    console.info(qList);
+	    //console.info("qList fetch done");
+	    //console.info(qList);
 	    var qGroup = Ext.create('SpThinClient.view.NavBarItemGroupView', {
 		containedClass: 'SpThinClient.view.NavBarQbView',
 		itemDefs: qList.models,
 		title: 'Queries',
-		position: 'middle',
+		position: 'top',
 		frame: true
 	    });
 	    navbar.addGroup(qGroup);
 	    navbar.setupGroups();
+	    if (me.getNavigateAfterBuild()) {
+		require('navigation').go('/specify/qb/default/');
+	    }
+	    me.setBuilding(false);
 	});
     }
 

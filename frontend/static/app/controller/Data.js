@@ -1,7 +1,15 @@
 Ext.define('SpThinClient.controller.Data', {
-    extend: 'Ext.app.Controller',
+    extend: 'SpThinClient.controller.TaskBase',
     xtype: 'datacontroller',
 
+    viewType: 'ResourceView',
+
+    config: {
+	//seems like putting these here is polluting controller with view??
+	viewGroup: null,
+	rsGroup: null
+    },
+	
     init: function() {
 	console.info("Data Controller Init");
 	this.control({
@@ -10,74 +18,80 @@ Ext.define('SpThinClient.controller.Data', {
 	    },
 	    '#appviewport': {
 		gone: this.onGone
+	    },
+	    '#ext-main-navbar': {
+		collapse: this.showSideBar2
 	    }
 	});
 
 	this.callParent(arguments);
     },
 
-    onGone: function(goneWhere) {
-	console.info("Data.onGone");
-	var viewType = goneWhere.newView.$el.attr('ViewType');
-	console.info(viewType);
-	if (viewType == 'ResourceView') {
-	    console.info('Opening Data Task');
-	    this.onTaskBtnClk();
-	}
-    },
-
-    onTaskBtnClk: function() {
-	var navbar = Ext.getCmp('ext-main-navbar');
-	if (navbar) {
-	    if (!navbar.getCollapsed()) {
-		navbar.toggleCollapse();
-	    }
-	}
-	navbar.clearGroups();
-
-	var getApper = require('cs!appresource');
-	var formsList = getApper('DataEntryTaskInit');
-	formsList.done(function(forms) {
-	    console.info("formsList done?");
-	    console.info(forms);
-	    //var gps = [];       
-            var upcreate = Ext.create('SpThinClient.view.NavBarItemGroupView', {
-		containedClass: 'SpThinClient.view.NavBarViewView',
-		itemDefs: $('view', forms), 
-		position: 'top',
-		title: 'Create/Update', 
-		//region: 'center', 
-		frame: true
+    buildSideBar: function(navbar) {
+	if (!this.getRsGroup() || !this.getViewGroup()) {
+	    var getApper = require('cs!appresource');
+	    var formsList = getApper('DataEntryTaskInit');
+	    var me = this;
+	    formsList.done(function(forms) {
+		//console.info("formsList done?");
+		//console.info(forms);
+		//var gps = [];       
+		var vg = Ext.create('SpThinClient.view.NavBarItemGroupView', {
+		    //me.setViewGroup(Ext.create('SpThinClient.view.NavBarItemGroupView', {
+		    containedClass: 'SpThinClient.view.NavBarViewView',
+		    itemDefs: $('view', forms), 
+		    position: 'top',
+		    title: 'Create/Update', 
+		    //region: 'center', 
+		    frame: true
+		});
+		navbar.addGroup(vg);
+		if (navbar.getGroups().length == 2) {
+		    //console.info("setting up groups after FormList done");
+		    navbar.setupGroups();
+		    if (me.getNavigateAfterBuild()) {
+			require('navigation').go('/specify/data/default/');
+		    }
+		    me.setBuilding(false);
+		}
 	    });
-	    console.info(upcreate);
-	    //navbar.clearGroups();
-	    navbar.addGroup(upcreate);
-	    //upcreate.setupItems();
-	    if (navbar.getGroups().length == 2) {
-		console.info("setting up groups after FormList done");
-		navbar.setupGroups();
-	    }
-	});
-	var api = require('specifyapi');
-	var rsList = new (api.Collection.forModel('recordset'))();
-	console.info(rsList);
-	rsList.queryParams.domainfilter = true;
-	rsList.fetch().done(function() {
-	    console.info("rsList fetch done");
-	    console.info(rsList);
-	    var rsGroup = Ext.create('SpThinClient.view.NavBarItemGroupView', {
-		containedClass: 'SpThinClient.view.NavBarRsView',
-		itemDefs: rsList.models,
-		title: 'Recordsets',
-		position: 'middle',
-		//region: 'center',
-		frame: true
+	    var api = require('specifyapi');
+	    var rsList = new (api.Collection.forModel('recordset'))();
+	    //console.info(rsList);
+	    rsList.queryParams.domainfilter = true;
+	    rsList.fetch().done(function() {
+		//console.info("rsList fetch done");
+		//console.info(rsList);
+		var rsg = Ext.create('SpThinClient.view.NavBarItemGroupView', {
+		    //me.setRsGroup(Ext.create('SpThinClient.view.NavBarItemGroupView', {
+		    containedClass: 'SpThinClient.view.NavBarRsView',
+		    itemDefs: rsList.models,
+		    title: 'Recordsets',
+		    position: 'middle',
+		    //region: 'center',
+		    frame: true
+		});
+		//navbar.addGroup(me.getRsGroup());
+		navbar.addGroup(rsg);
+		if (navbar.getGroups().length == 2) {
+		    //console.info("setting up groups after rsList done");
+		    navbar.setupGroups();
+		    if (me.getNavigateAfterBuild()) {
+			require('navigation').go('/specify/data/default/');
+		    }
+		    me.setBuilding(false);
+		}
 	    });
-	    navbar.addGroup(rsGroup);
-	    if (navbar.getGroups().length == 2) {
-		console.info("setting up groups after rsList done");
-		navbar.setupGroups();
+	} else {
+	    navbar.addGroup(this.getViewGroup());
+	    navbar.addGroup(this.getRsGroup());
+	    navbar.setupGroups();
+	    if (this.getNavigateAfterBuild()) {
+		require('navigation').go('/specify/data/default/');
 	    }
-	});
+	    this.setBuilding(false);
+	}
+	
     }
+
 });	
