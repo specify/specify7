@@ -72,7 +72,7 @@ Ext.define('SpThinClient.view.NavBarItemGroupView', {
 	    if (!this.getNavBarItems()[i].getIsSetup()) return;
 	}
 	this.setIsSetup(true);
-	var parent = this.findParentByType('sp-navigationbar-view');
+	var parent = this.findParentByType('sp-tasknavbar-view');
 	if (parent) {
 	    parent.groupIsSetup(this);
 	}

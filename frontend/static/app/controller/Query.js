@@ -35,12 +35,13 @@ Ext.define('SpThinClient.controller.Query', {
 		position: 'top',
 		frame: true
 	    });
-	    navbar.addGroup(qGroup);
-	    navbar.setupGroups();
+	    me.getSideBar().addGroup(qGroup);
+	    me.getSideBar().setupGroups();
 	    if (me.getNavigateAfterBuild()) {
 		require('navigation').go('/specify/qb/default/');
 	    }
-	    me.setBuilding(false);
+	    //me.activateSideBar(this, navbar, true);
+	    //me.setShowingSideBar(false);
 	});
     }
 

@@ -73,7 +73,7 @@ Ext.define('SpThinClient.view.Viewport', {
 	    {
 		xtype: 'sp-navigationbar-view',
 		id: 'ext-main-navbar',
-		//layout: 'border',
+		layout: 'card',
 		region: 'west',
 		header: false,
 		width: 250,

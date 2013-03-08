@@ -2,11 +2,24 @@ Ext.define('SpThinClient.controller.TaskBase', {
     extend: 'Ext.app.Controller',
     xtype: 'taskbasecontroller',
     
+    requires: ['SpThinClient.view.TaskNavBarView'],
+
     config: {
 	navigateAfterBuild: false,
-	building: false,
+	showingSideBar: false,
+	buildingSideBar: false, 
 	viewType: null,
-	sideBar: null
+	sideBar: null,
+	autoExpandSideBar: true
+    },
+
+    init: function() {
+	console.info("TaskBase Controller Init");
+	this.control({
+	    'sp-tasknavbar-view': {
+		setupcomplete: this.onTaskNavBarSetupComplete
+	    }
+	});
     },
 
     onGone: function(goneWhere) {
@@ -26,7 +39,7 @@ Ext.define('SpThinClient.controller.TaskBase', {
     showSideBar: function(navigate) {
 	var navbar = Ext.getCmp('ext-main-navbar');
 	if (navbar) {
-	    this.setBuilding(true);
+	    this.setShowingSideBar(true);
 	    this.setNavigateAfterBuild(navigate);
 	    if (!navbar.getCollapsed()) {
 		navbar.toggleCollapse();
@@ -37,10 +50,57 @@ Ext.define('SpThinClient.controller.TaskBase', {
     },
 
     showSideBar2: function(navbar) {
-	if (this.getBuilding()) {
-	    navbar.clearGroups();
-	    this.buildSideBar(navbar);
+	if (this.getShowingSideBar()) {
+	    if (this.getBuildingSideBar() || !this.getSideBar()) {
+		if (this.getSideBar()) {
+		    this.getSideBar().clearGroups();
+		} else {
+		    this.setSideBar(this.createSideBar());
+		}
+		this.buildSideBar(navbar);
+	    } else {
+		this.activateSideBar(this.getSideBar(), navbar);
+		this.setShowingSideBar(false);
+	    }
 	}
+    },
+
+    onTaskNavBarSetupComplete: function(sidebar, navbar) {
+	if (sidebar == this.getSideBar()) {
+	    this.activateSideBar(sidebar, navbar);
+	    this.setShowingSideBar(false);
+	}
+    },
+
+    activateSideBar: function(sidebar, navbar) {
+	var theNavBar = null;
+	if (navbar) {
+	    theNavBar = navbar;
+	} else {
+	    theNavBar = Ext.getCmp('ext-main-navbar');
+	}
+	if (!theNavBar.child('#' + sidebar.getId())) {
+	    theNavBar.add(sidebar);
+	}
+	theNavBar.getLayout().setActiveItem(sidebar);
+	if (theNavBar.getCollapsed() && this.getAutoExpandSideBar()) {
+	    theNavBar.toggleCollapse();
+	} else {
+	    //this.fireEvent('taskready');
+	    theNavBar.fireEvent('expand');
+	}
+    },
+
+    createSideBar: function() {
+	return Ext.create('SpThinClient.view.TaskNavBarView', {
+	    id: this.id + '-sidebar',
+	    region: 'center',
+	    header: false
+	    //width: 250,
+	    //collapsible: true,
+	    //collapsed: true,
+	    //split: true
+	    });
     },
 
     buildSideBar: function(navbar) {

@@ -86,9 +86,10 @@ Ext.define('SpThinClient.controller.ExpressSearch', {
 		//region: 'center',
 		frame: true
 	    });
-	    navbar.addGroup(rsGroup);
-	    navbar.setupGroups();
-	    me.setBuilding(false);
+	    me.getSideBar().addGroup(rsGroup);
+	    me.getSideBar().setupGroups();
+	    //me.activateSideBar(this, navbar, true);
+	    //me.setShowingSideBar(false);
 	});
     }
 

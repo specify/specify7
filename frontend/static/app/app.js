@@ -6,7 +6,11 @@ Ext.application({
     id: 'sp-thinclient-app-obj',
     autoCreateViewport: true,
 
-    controllers: ['TaskBase', 'Welcome', 'Data', 'ExpressSearch', 'Query'],
+    controllers: ['TaskBar', 'TaskBase', 'Welcome', 'Data', 'ExpressSearch', 'Query'],
+    views: ['ExpressSearchView', 'NavBarRsView', 'TaskBarView',
+	    'NavBarItemGroupView', 'NavBarViewView',  
+	    'NavigationBarView', 'TaskNavBarView', 'NavBarQbView',
+	    'TaskBarBtnView'],
 
     init: function () {
 	console.info("ExtJS app.init()");

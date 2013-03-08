@@ -41,7 +41,7 @@ Ext.define('SpThinClient.view.NavBarRsView', {
     
     determineViewName: function(){
 	this.setViewName(null);
-	var nav = this.up('sp-navigationbar-view');
+	var nav = this.up('sp-tasknavbar-view');
 	if (nav) {
 	    var viewGrp = nav.down('sp-navbaritemgroup-view[containedClass="SpThinClient.view.NavBarViewView"]');
 	    if (viewGrp) {

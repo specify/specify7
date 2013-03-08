@@ -45,14 +45,15 @@ Ext.define('SpThinClient.controller.Data', {
 		    //region: 'center', 
 		    frame: true
 		});
-		navbar.addGroup(vg);
-		if (navbar.getGroups().length == 2) {
+		me.getSideBar().addGroup(vg);
+		if (me.getSideBar().getGroups().length == 2) {
 		    //console.info("setting up groups after FormList done");
-		    navbar.setupGroups();
+		    me.getSideBar().setupGroups();
 		    if (me.getNavigateAfterBuild()) {
 			require('navigation').go('/specify/data/default/');
 		    }
-		    me.setBuilding(false);
+		    //me.activateSideBar(me, navbar, true);
+		    //me.setShowingSideBar(false);
 		}
 	    });
 	    var api = require('specifyapi');
@@ -72,24 +73,26 @@ Ext.define('SpThinClient.controller.Data', {
 		    frame: true
 		});
 		//navbar.addGroup(me.getRsGroup());
-		navbar.addGroup(rsg);
-		if (navbar.getGroups().length == 2) {
+		me.getSideBar().addGroup(rsg);
+		if (me.getSideBar().getGroups().length == 2) {
 		    //console.info("setting up groups after rsList done");
-		    navbar.setupGroups();
+		    me.getSideBar().setupGroups();
 		    if (me.getNavigateAfterBuild()) {
 			require('navigation').go('/specify/data/default/');
 		    }
-		    me.setBuilding(false);
+		    //me.activateSideBar(me, navbar, true);
+		    //me.setShowingSideBar(false);
 		}
 	    });
 	} else {
-	    navbar.addGroup(this.getViewGroup());
-	    navbar.addGroup(this.getRsGroup());
-	    navbar.setupGroups();
+	    this.getSideBar().addGroup(this.getViewGroup());
+	    this.getSideBar().addGroup(this.getRsGroup());
+	    this.getSideBar().setupGroups();
 	    if (this.getNavigateAfterBuild()) {
 		require('navigation').go('/specify/data/default/');
 	    }
-	    this.setBuilding(false);
+	    //this.activateSideBar(this, navbar, true);
+	    //this.setShowingSideBar(false);
 	}
 	
     }
