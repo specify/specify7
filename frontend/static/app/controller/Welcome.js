@@ -2,6 +2,7 @@ Ext.define('SpThinClient.controller.Welcome', {
     extend: 'SpThinClient.controller.TaskBase',
     xtype: 'welcomecontroller',
 
+    viewType: 'Welcome',
     autoExpandSideBar: false,
 
     init: function() {

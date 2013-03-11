@@ -83,13 +83,10 @@ Ext.define('SpThinClient.controller.ExpressSearch', {
 		itemDefs: rsList.models,
 		title: 'Recordsets',
 		position: 'top',
-		//region: 'center',
 		frame: true
 	    });
 	    me.getSideBar().addGroup(rsGroup);
 	    me.getSideBar().setupGroups();
-	    //me.activateSideBar(this, navbar, true);
-	    //me.setShowingSideBar(false);
 	});
     }
 

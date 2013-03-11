@@ -3,6 +3,7 @@ Ext.define('SpThinClient.controller.Query', {
     xtype: 'querycontroller',
 
     viewType: 'StoredQuery',
+    defaultUrl: '/specify/qb/default/',
 
     init: function() {
 	console.info("Query Controller Init");
@@ -37,12 +38,12 @@ Ext.define('SpThinClient.controller.Query', {
 	    });
 	    me.getSideBar().addGroup(qGroup);
 	    me.getSideBar().setupGroups();
-	    if (me.getNavigateAfterBuild()) {
-		require('navigation').go('/specify/qb/default/');
-	    }
-	    //me.activateSideBar(this, navbar, true);
-	    //me.setShowingSideBar(false);
+	    //if (me.getNavigateAfterSetup()) {
+	//	require('navigation').go('/specify/qb/default/');
+	   // }
 	});
     }
+
+
 
 });

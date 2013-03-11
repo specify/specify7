@@ -5,7 +5,8 @@ Ext.define('SpThinClient.controller.TaskBase', {
     requires: ['SpThinClient.view.TaskNavBarView'],
 
     config: {
-	navigateAfterBuild: false,
+	navigateAfterSetup: false,
+	defaultUrl: null,
 	showingSideBar: false,
 	buildingSideBar: false, 
 	viewType: null,
@@ -40,7 +41,7 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	var navbar = Ext.getCmp('ext-main-navbar');
 	if (navbar) {
 	    this.setShowingSideBar(true);
-	    this.setNavigateAfterBuild(navigate);
+	    this.setNavigateAfterSetup(navigate);
 	    if (!navbar.getCollapsed()) {
 		navbar.toggleCollapse();
 	    } else {
@@ -83,6 +84,9 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	    theNavBar.add(sidebar);
 	}
 	theNavBar.getLayout().setActiveItem(sidebar);
+	if (this.getNavigateAfterSetup()) {
+	    this.navigateTo();
+	}
 	if (theNavBar.getCollapsed() && this.getAutoExpandSideBar()) {
 	    theNavBar.toggleCollapse();
 	} else {
@@ -96,13 +100,19 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	    id: this.id + '-sidebar',
 	    region: 'center',
 	    header: false
-	    //width: 250,
-	    //collapsible: true,
-	    //collapsed: true,
-	    //split: true
 	    });
     },
 
     buildSideBar: function(navbar) {
+    },
+
+    navigateTo: function(url) {
+	var goTo = url ? url : this.getDefaultUrl();
+	if (goTo) { 
+	    require('navigation').go(goTo);
+	} else {
+	    console.warn('Ignoring request to navigate nowhere');
+	}
     }
+    
 });
