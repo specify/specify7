@@ -4,10 +4,13 @@ Ext.define('SpThinClient.view.TaskNavBarView', {
     alias: 'widget.tasknavbar-view',
 
     config: {
-	groups: []
+	groups: null
     },
 
     addGroup: function(group) {
+	if (!this.getGroups()) {
+	    this.setGroups([]);
+	}
 	if (group.getGrpPosition() == 'top') {
 	    this.getGroups().unshift(group);
 	    this.insert(0, group);
@@ -47,11 +50,6 @@ Ext.define('SpThinClient.view.TaskNavBarView', {
 	    if (!this.getGroups()[i].getIsSetup()) return;
 	}
 	console.info("groupIsSetup");
-	//var mainNavBar = this.findParentByType('sp-navigationbar-view');
-	//if (mainNavBar && mainNavBar.getCollapsed()) {
-	//    console.info("expanding nav bar");
-	//    mainNavBar.toggleCollapse();
-	//}
 	this.fireEvent('setupcomplete', this, this.findParentByType('sp-navigationbar-view'));
     }
 });

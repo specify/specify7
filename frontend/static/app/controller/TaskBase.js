@@ -100,7 +100,7 @@ Ext.define('SpThinClient.controller.TaskBase', {
 	    id: this.id + '-sidebar',
 	    region: 'center',
 	    header: false
-	    });
+	});
     },
 
     buildSideBar: function(navbar) {

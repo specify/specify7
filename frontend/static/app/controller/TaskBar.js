@@ -3,7 +3,7 @@ Ext.define('SpThinClient.controller.TaskBar', {
     xtype: 'taskbarcontroller',
 
     init: function() {
-	console.info("Welcome Controller Init");
+	console.info("Taskbar Controller Init");
 	this.control({
 	    'sp-taskbarbtn-view': {
 		click: this.onBeforeOpenTask

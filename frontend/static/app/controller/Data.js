@@ -40,7 +40,7 @@ Ext.define('SpThinClient.controller.Data', {
 	    });
 	    me.getSideBar().addGroup(vg);
 	    if (me.getSideBar().getGroups().length == 2) {
-		//console.info("setting up groups after FormList done");
+		console.info("setting up groups after FormList done");
 		me.getSideBar().setupGroups();
 		//if (me.getNavigateAfterSetup()) {
 		//    require('navigation').go('/specify/data/default/');
@@ -63,7 +63,7 @@ Ext.define('SpThinClient.controller.Data', {
 	    });
 	    me.getSideBar().addGroup(rsg);
 	    if (me.getSideBar().getGroups().length == 2) {
-		//console.info("setting up groups after rsList done");
+		console.info("setting up groups after rsList done");
 		me.getSideBar().setupGroups();
 		//if (me.getNavigateAfterSetup()) {
 		//    require('navigation').go('/specify/data/default/');
