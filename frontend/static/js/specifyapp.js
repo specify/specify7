@@ -43,7 +43,7 @@ define([
             app.currentView = view;
             app.currentView.render();
             rootContainer.append(app.currentView.el);
-	    if (typeof skipNotification === "undefined" || skipNotification) {
+	    if (typeof skipNotification === "undefined" || !skipNotification) {
 		notifyFrameworkOnViewChange();
 	    }
         }
@@ -103,6 +103,7 @@ define([
 
             // this view shows the user the welcome screen
             welcome: function() {
+		defaultView('Welcome');
                 //setCurrentView(new WelcomeView());
 		//app.expressSearch.render();
 		//expSrchContainer.append(app.expressSearch.el);

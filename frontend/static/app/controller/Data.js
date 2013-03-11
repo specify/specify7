@@ -2,7 +2,7 @@ Ext.define('SpThinClient.controller.Data', {
     extend: 'SpThinClient.controller.TaskBase',
     xtype: 'datacontroller',
 
-    viewType: 'ResourceView',
+    viewType: 'resourceView',
     defaultUrl: '/specify/data/default/',
 
 	
