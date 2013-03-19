@@ -18,6 +18,76 @@ define([
         active: false
     };
 
+    var RelatedResults = Backbone.View.extend({
+        events: {
+            'scroll': 'scroll'
+        },
+        initialize: function(options) {
+            this.relatedSearch = options.data;
+            this.ajaxUrl = options.ajaxUrl;
+            this.model = schema.getModel(this.relatedSearch.definition.root);
+            this.displayFields = _.map(this.relatedSearch.definition.columns, this.model.getField, this.model);
+        },
+        getHeading: function() {
+            var rsName = this.relatedSearch.definition.name;
+            return (getProp(rsName) || rsName) + ' - ' + this.relatedSearch.totalCount;
+        },
+        shouldFetchMore: function() {
+            var visible = this.$el.is(':visible');
+            var scrolledToBottom = this.$('table').height() - this.$el.scrollTop() - this.$el.height() < 1;
+            return !this.fetchedAll && scrolledToBottom && visible && !this.fetch;
+        },
+        fetchMore: function() {
+            if (this.fetch) return this.fetch;
+            var url = $.param.querystring(this.ajaxUrl, {last_id: _.last(this.lastRecord)});
+            var _this = this;
+            return this.fetch = $.get(url, function(data) {
+                _this.fetch = null;
+                if (data.results.length < 1) {
+                    _this.fetchedAll = true;
+                } else {
+                    _this.addResults(data.results);
+                }
+            });
+        },
+        fetchMoreWhileAppropriate: function() {
+            var _this = this;
+            function recur() {
+                _this.shouldFetchMore() && _this.fetchMore().done(recur);
+            }
+            recur();
+        },
+        addResults: function(results) {
+            var table = this.$('table');
+            _.each(results, function(values) {
+                var row = $('<tr>').appendTo(table);
+                var resource = new (api.Resource.forModel(this.model))({id: _.last(values)});
+                var href = resource.viewUrl();
+                _.each(this.displayFields, function(field, i) {
+                    var value = fieldformat(field, values[i]);
+                    row.append($('<td>').append($('<a>', {
+                        href: href,
+                        "class": "express-search-result"
+                    }).text(value)));
+                });
+            }, this);
+            this.lastRecord = _.last(results);
+        },
+        render: function() {
+            this.$el.data('view', this);
+            var table = $('<table width="100%">').appendTo(this.el);
+            var header = $('<tr>').appendTo(table);
+            _.each(this.displayFields, function(field) {
+                return header.append($('<th>').text(field.getLocalizedName()));
+            });
+            this.addResults(this.relatedSearch.results);
+            return this;
+        },
+        scroll: function(evt) {
+            this.fetchMoreWhileAppropriate();
+        }
+    });
+
     return {
         SearchView: Backbone.View.extend({
             events: {
@@ -36,7 +106,8 @@ define([
 
         ResultsView: Backbone.View.extend({
             events: {
-                'click a.express-search-result': 'navToResult'
+                'click a.express-search-result': 'navToResult',
+                'accordionchange': 'panelOpened'
             },
             render: function() {
                 this.$el.append('<h3>Primary Search</h3><p class="status primary">Running...</p><div class="results primary"></div>');
@@ -73,7 +144,7 @@ define([
                 var _this = this;
                 var deferreds = _.map(relatedSearches, function(rs) {
                     var ajaxUrl = $.param.querystring('/express_search/related/', {q: query, name: rs});
-                    var showResults = _.bind(_this.showRelatedResults, _this);
+                    var showResults = _.bind(_this.showRelatedResults, _this, ajaxUrl);
                     return $.get(ajaxUrl).pipe(showResults);
                 });
                 whenAll(deferreds).then(function(counts) {
@@ -84,40 +155,14 @@ define([
                     }
                 });
             },
-            showRelatedResults: function(relatedSearch) {
-                if (relatedSearch.totalCount < 1) return 0;
-                var rsName = relatedSearch.definition.name;
-                var heading = (getProp(rsName) || rsName) + ' - ' + relatedSearch.totalCount;
+            showRelatedResults: function(ajaxUrl, data) {
+                if (data.totalCount < 1) return 0;
+                var results = new RelatedResults({data: data, ajaxUrl: ajaxUrl});
+                var heading = results.getHeading();
                 this.$('.related.results').append($('<h4>').append($('<a>').text(heading)));
-                var div = $('<div>').appendTo(this.$('.related.results'));
-                var table = $('<table width="100%">').appendTo(div);
-                div.scroll(function() {
-                    return console.log(table.height() - div.scrollTop() - div.height());
-                });
-                var model = schema.getModel(relatedSearch.definition.root);
-                var displayFields = _.map(relatedSearch.definition.columns, _.bind(model.getField, model));
-                var header = $('<tr>').appendTo(table);
-                _.each(displayFields, function(field) {
-                    return header.append($('<th>').text(field.getLocalizedName()));
-                });
-                _.each(relatedSearch.results, function(values) {
-                    var href, resource, row;
-                    row = $('<tr>').appendTo(table);
-                    resource = new (api.Resource.forModel(model))({
-                        id: values.pop()
-                    });
-                    href = resource.viewUrl();
-                    return _.each(displayFields, function(field, i) {
-                        var value;
-                        value = fieldformat(field, values[i]);
-                        return row.append($('<td>').append($('<a>', {
-                            href: href,
-                            "class": "express-search-result"
-                        }).text(value)));
-                    });
-                });
+                results.render().$el.appendTo(this.$('.related.results'));
                 this.$('.results.related').accordion('destroy').accordion(accordionOptions);
-                return relatedSearch.totalCount;
+                return data.totalCount;
             },
             showResultsForTable: function(allResults, searchTable) {
                 var model = schema.getModel($('tableName', searchTable).text());
@@ -154,6 +199,10 @@ define([
                     });
                 });
                 return results.length;
+            },
+            panelOpened: function(evt, ui) {
+                var resultsView = ui.newContent.data('view');
+                resultsView && resultsView.fetchMoreWhileAppropriate();
             },
             navToResult: function(evt) {
                 evt.preventDefault();

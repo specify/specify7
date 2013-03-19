@@ -159,5 +159,5 @@ def related_search(request):
 
     terms = parse_search_str(request.specify_collection, request.GET['q'])
     qs = build_queryset(searchtable, terms, request.specify_collection)
-    results = rs.do_search(qs)
+    results = rs.do_search(qs, request.GET.get('last_id', None))
     return HttpResponse(toJson(results), content_type='application/json')

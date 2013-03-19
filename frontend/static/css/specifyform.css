@@ -229,3 +229,8 @@ a.specify-attachment-original {
     text-align: center;
     padding: 2px 3px 2px 3px;
 }
+
+div.results div {
+    max-height: 20em;
+    overflow: scroll;
+}

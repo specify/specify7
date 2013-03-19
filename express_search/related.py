@@ -58,20 +58,22 @@ class RelatedSearch(object):
             'columns': self.columns,
             }
 
-    def result_as_dict(self, queryset):
-        results = list( queryset )
+    def result_as_dict(self, total_count, queryset):
         data = {
             'definition': self.def_as_dict(),
-            'totalCount': len(results),
-            'results': results,
+            'totalCount': total_count,
+            'results': list(queryset[:10]),
             }
         if settings.DEBUG:
             data['sql'] = str(queryset.query)
         return data
 
-    def do_search(self, queryset):
+    def do_search(self, queryset, last_id=None):
         rqs = self.build_related_queryset(queryset)
-        results = self.to_values(rqs)
-        return self.result_as_dict(results)
+        results = self.to_values(rqs).order_by('id')
+        total_count = results.count()
+        if last_id is not None:
+            results = results.filter(id__gt=last_id)
+        return self.result_as_dict(total_count, results)
 
 
