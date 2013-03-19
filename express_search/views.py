@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
-from django.db.models import fields as django_fields
 
 from specify import models
 from specify.filter_by_col import filter_by_collection
@@ -107,11 +106,15 @@ def build_queryset(searchtable, terms, collection):
     tablename = searchtable.find('tableName').text.capitalize()
     model = getattr(models, tablename)
 
-    fields = [model._meta.get_field(fn.text.lower()) \
-                  for fn in searchtable.findall('.//searchfield/fieldName')]
+    fields = [model._meta.get_field(fn.text.lower())
+              for fn in searchtable.findall('.//searchfield/fieldName')]
 
-    filters = filter(None,
-                     [term.create_filter(field) for term in terms for field in fields])
+    filters = [filtr
+               for filtr in [
+                   term.create_filter(field)
+                   for term in terms
+                   for field in fields]
+               if filtr is not None]
 
     if len(filters) > 0:
         reduced = reduce(lambda p, q: p | q, filters)
@@ -128,21 +131,30 @@ def get_express_search_config(request):
 def search(request):
     express_search_config = get_express_search_config(request)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
-    results = {}
-    for searchtable in express_search_config.findall('tables/searchtable'):
-        tablename = searchtable.find('tableName').text.capitalize()
+    specific_table = request.GET.get('name', None)
+
+    def do_search(tablename, searchtable):
         qs = build_queryset(searchtable, terms, request.specify_collection)
         if not qs:
-            results[tablename] = []
-            continue
+            return dict(totalCount=0, results=[])
 
         display_fields = [fn.text.lower() \
                               for fn in searchtable.findall('.//displayfield/fieldName')]
         display_fields.append('id')
+        qs = qs.values(*display_fields).order_by('id')
+        total_count = qs.count()
 
-        results[tablename] = list(qs.values(*display_fields))
+        if specific_table is not None and 'last_id' in request.GET:
+            qs = qs.filter(id__gt=request.GET['last_id'])
 
-    return HttpResponse(toJson(results), content_type='application/json')
+        return dict(totalCount=total_count, results=list(qs[:10]))
+
+    data = dict((tablename, do_search(tablename, searchtable))
+                for searchtable in express_search_config.findall('tables/searchtable')
+                for tablename in [ searchtable.find('tableName').text.capitalize() ]
+                if specific_table is None or tablename == specific_table)
+
+    return HttpResponse(toJson(data), content_type='application/json')
 
 @require_GET
 @login_required
