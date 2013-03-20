@@ -1,1 +1,2 @@
 Django==1.5
+SQLAlchemy==0.8.0b2
