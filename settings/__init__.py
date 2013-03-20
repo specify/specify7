@@ -144,7 +144,7 @@ MIDDLEWARE_CLASSES = (
     'context.middleware.ContextMiddleware'
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'settings.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
