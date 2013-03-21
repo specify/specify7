@@ -35,7 +35,7 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
             collectionmemberid = resource.get('collectionmemberid')
             if _.isNumber collectionmemberid
                 collection = new (api.Resource.forModel 'collection') id: collectionmemberid
-                return collection.fetchIfNotPopulated()
+                return collection.fetchIfNotPopulated().pipe () -> [collection]
 
             domainField = resource.specifyModel.orgRelationship()
             if domainField
