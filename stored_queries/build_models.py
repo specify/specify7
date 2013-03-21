@@ -52,7 +52,7 @@ def make_column(flddef):
                 nullable = (flddef.attrib['required'] == 'false'))
 
     field_type = field_type_map[ flddef.attrib['type'] ]
-    if 'length' in flddef.attrib:
+    if 'length' in flddef.attrib and field_type in (types.Text, types.String):
         field_type = field_type(flddef.attrib['length'])
 
     return Column(flddef.attrib['column'], field_type, **args)
