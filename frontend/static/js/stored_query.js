@@ -4,20 +4,72 @@ define([
 ], function($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll) {
     "use strict";
 
+    var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
+
+    function stringIdToFieldSpec(stringId) {
+        var match = STRINGID_RE.exec(stringId);
+        var path = match[1].split(',');
+        var tableName = match[2];
+        var fieldName = match[3];
+        var rootTable = schema.getModelById(parseInt(path.shift(), 10));
+
+        var joinPath = [];
+        var node = rootTable;
+        _.each(path, function(elem) {
+            var tableId_fieldName = elem.split('-');
+            var table = schema.getModelById(parseInt(tableId_fieldName[0], 10));
+            var fieldName = tableId_fieldName[1];
+            var field = _.isUndefined(fieldName) ? node.getField(table.name) : node.getField(fieldName);
+            joinPath.push(field);
+            node = table;
+        });
+
+        return _.extend({joinPath: joinPath, table: node}, extractDatePart(fieldName));
+    }
+
+    var DATE_PART_RE = /(.*)((NumericDay)|(NumericMonth)|(NumericYear))$/;
+
+    function extractDatePart(fieldName) {
+        var match = DATE_PART_RE.exec(fieldName);
+        return match ? {
+            fieldName: match[1],
+            datePart: match[2].replace('Numeric', '')
+        } : {
+            fieldName: fieldName,
+            datePart: null
+        };
+    }
+
     var FieldUI = Backbone.View.extend({
         opName: 'NA',
         input: '<input type="text">',
+        initialize: function(options) {
+            this.field = options.field;
+            this.fieldSpec = stringIdToFieldSpec(this.field.get('stringid'));
+        },
         render: function() {
             var self = this;
-            var field = self.options.field;
-            self.queryParamKey = 'f' + field.id;
-            $('<label>').text(field.get('columnalias')).appendTo(self.el);
+            self.queryParamKey = 'f' + self.field.id;
+            $('<label>').text(this.getLabel()).appendTo(self.el);
             $('<span>').text(self.opName).appendTo(self.el);
             if (self.input) {
                 $(self.input).appendTo(self.el);
-                self.setValue(field.get('startvalue'));
+                self.setValue(self.field.get('startvalue'));
             }
             return self;
+        },
+        getFieldName: function() {
+            var predField = this.fieldSpec.table.getField(this.fieldSpec.fieldName);
+            var fieldName = predField ? predField.getLocalizedName() : this.fieldSpec.fieldName;
+            if (this.fieldSpec.datePart) {
+                fieldName += ' (' + this.fieldSpec.datePart + ') ';
+            }
+            return fieldName;
+        },
+        getLabel: function() {
+            var fieldName = this.getFieldName();
+            var joinPath = _.invoke(this.fieldSpec.joinPath, 'getLocalizedName').concat(fieldName);
+            return joinPath.join(' -> ');
         },
         getQueryParam: function() {
             var result = {};
@@ -132,8 +184,8 @@ define([
         renderHeader: function(fields) {
             var header;
             header = $('<tr>').appendTo(this.$('.results'));
-            return fields.each(function(field) {
-                return header.append($('<th>').text(field.get('columnalias')));
+            return _.each(this.fieldUIs, function(fieldUI) {
+                return header.append($('<th>').text(fieldUI.getFieldName()));
             });
         },
         navToResult: function(evt) {
