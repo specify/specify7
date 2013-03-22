@@ -1,11 +1,11 @@
 define([
 'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
-'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall',
+'specifyapi', 'cs!fieldformat', 'cs!props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, navigation, getAppResource, schema,
-            api, fieldformat, props, whenAll,
+            api, fieldformat, props, ScrollResults, whenAll,
             availableRelatedJson, propstext) {
     "use strict";
 
@@ -21,50 +21,6 @@ define([
         collapsible: true,
         active: false
     };
-
-    var ScrollResults = Backbone.View.extend({
-        events: {
-            'scroll': 'scroll'
-        },
-        initialize: function(options) {
-            this.ajaxUrl = options.ajaxUrl;
-            this.resultsView = new options.View(_.extend({el: this.el}, options.viewOptions));
-        },
-        shouldFetchMore: function() {
-            var visible = this.$el.is(':visible');
-            var scrolledToBottom = this.$('table').height() - this.$el.scrollTop() - this.$el.height() < 1;
-            return !this.fetchedAll && scrolledToBottom && visible && !this.fetch;
-        },
-        fetchMore: function() {
-            if (this.fetch) return this.fetch;
-            var url = $.param.querystring(this.ajaxUrl, {last_id: this.resultsView.getLastID()});
-            var _this = this;
-            return this.fetch = $.get(url, function(data) {
-                _this.fetch = null;
-                var results = _this.resultsView.resultsFromData(data);
-                if (results.length < 1) {
-                    _this.fetchedAll = true;
-                } else {
-                    _this.resultsView.addResults(results);
-                }
-            });
-        },
-        fetchMoreWhileAppropriate: function() {
-            var _this = this;
-            function recur() {
-                _this.shouldFetchMore() && _this.fetchMore().done(recur);
-            }
-            recur();
-        },
-        render: function() {
-            this.$el.data('view', this);
-            this.resultsView.render();
-            return this;
-        },
-        scroll: function(evt) {
-            this.fetchMoreWhileAppropriate();
-        }
-    });
 
     var PrimaryResults = Backbone.View.extend({
         initialize: function(options) {
