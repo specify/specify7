@@ -32,6 +32,9 @@ define([
                 .map(function(df) {return this.model.getField($('fieldName', df).text());}, this)
                 .value();
         },
+        getContentEl: function() {
+            return this.$('table');
+        },
         resultsFromData: function(data) {
             return _.first( _.values(data) ).results;
         },
@@ -71,6 +74,9 @@ define([
             this.relatedSearch = options.data;
             this.model = schema.getModel(this.relatedSearch.definition.root);
             this.displayFields = _.map(this.relatedSearch.definition.columns, this.model.getField, this.model);
+        },
+        getContentEl: function() {
+            return this.$('table');
         },
         addResults: function(results) {
             var table = this.$('table');

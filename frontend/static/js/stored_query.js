@@ -1,7 +1,8 @@
 define([
 'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
-'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall', 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll) {
+'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall', 'scrollresults',
+'jquery-bbq', 'jquery-ui'
+], function($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll, ScrollResults) {
     "use strict";
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
@@ -114,9 +115,61 @@ define([
         {opName: 'True or False', input: null}
     ], function(extras) { return FieldUI.extend(extras); });
 
+    var Results = Backbone.View.extend({
+        events: {
+            'click a.query-result': 'navToResult'
+        },
+        initialize: function(options) {
+            this.fields = options.fields;
+            this.model = options.model;
+            this.fieldUIs = options.fieldUIs;
+            this.initResults = options.results;
+        },
+        render: function() {
+            this.addResults(this.initResults);
+            return this;
+        },
+        detectEndOfResults: function(results) {
+            return results.length < 2;
+        },
+        addResults: function(results) {
+            var self = this;
+            var columns = results.shift();
+            var fieldToCol = function(field) {
+                return _(columns).indexOf(field.id);
+            };
+
+            _.each(results, function(result) {
+                var row = $('<tr>').appendTo(self.el);
+                var resource = new (api.Resource.forModel(self.model))({
+                    id: result[0]
+                });
+                var href = resource.viewUrl();
+                _.each(self.fieldUIs, function(fieldUI) {
+                    var value = result[fieldToCol(fieldUI.field)];
+                    var field = fieldUI.fieldSpec.field;
+                    if (field) {
+                        value = fieldformat(field, value);
+                    }
+                    row.append($('<td>').append($('<a>', {
+                        href: href,
+                        "class": "query-result"
+                    }).text(value)));
+                });
+            });
+            this.lastID = _.last(results)[0];
+        },
+        getLastID: function() {
+            return this.lastID;
+        },
+        navToResult: function(evt) {
+            evt.preventDefault();
+            return navigation.go($(evt.currentTarget).prop('href'));
+        }
+    });
+
     return Backbone.View.extend({
         events: {
-            'click a.query-result': 'navToResult',
             'click :button': 'search'
         },
         initialize: function(options) {
@@ -146,10 +199,16 @@ define([
 
             return self;
         },
+        renderHeader: function() {
+            var header = $('<tr>');
+            _.each(this.fieldUIs, function(fieldUI) {
+                header.append($('<th>').text(fieldUI.getFieldName()));
+            });
+            return header;
+        },
         search: function(evt) {
             var self = this;
             var table = self.$('table.results');
-            var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
 
             var queryParams = {};
             _.each(self.fieldUIs, function(fieldUI) {
@@ -157,45 +216,26 @@ define([
             });
 
             table.empty();
+            table.append(self.renderHeader());
 
-            $.get(ajaxUrl, queryParams).done(function(results) {
-                self.renderHeader(self.fields);
-                var columns = results.shift();
-                var fieldToCol = function(field) {
-                    return _(columns).indexOf(field.id);
-                };
+            var ajaxUrl = $.param.querystring("/stored_query/query/" + self.query.id + "/",
+                                              queryParams);
 
-                _.each(results, function(result) {
-                    var href, resource, row;
-                    row = $('<tr>').appendTo(table);
-                    resource = new (api.Resource.forModel(self.model))({
-                        id: result[0]
-                    });
-                    href = resource.viewUrl();
-                    _.each(self.fieldUIs, function(fieldUI) {
-                        var value = result[fieldToCol(fieldUI.field)];
-                        var field = fieldUI.fieldSpec.field;
-                        if (field) {
-                            value = fieldformat(field, value);
-                        }
-                        row.append($('<td>').append($('<a>', {
-                            href: href,
-                            "class": "query-result"
-                        }).text(value)));
-                    });
+            $.get(ajaxUrl).done(function(results) {
+                var view = new ScrollResults({
+                    View: Results,
+                    el: table,
+                    viewOptions: {
+                        fields: self.fields,
+                        model: self.model,
+                        fieldUIs: self.fieldUIs,
+                        results: results
+                    },
+                    ajaxUrl: ajaxUrl
                 });
+                view.render();
+                view.fetchMoreWhileAppropriate();
             });
-        },
-        renderHeader: function(fields) {
-            var header;
-            header = $('<tr>').appendTo(this.$('.results'));
-            return _.each(this.fieldUIs, function(fieldUI) {
-                return header.append($('<th>').text(fieldUI.getFieldName()));
-            });
-        },
-        navToResult: function(evt) {
-            evt.preventDefault();
-            return navigation.go($(evt.currentTarget).prop('href'));
         }
     });
 });

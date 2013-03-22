@@ -23,7 +23,9 @@ def query(request, id):
                    for field in sp_query.fields]
     model = models.models_by_tableid[sp_query.contextTableId]
     id_field = getattr(model, model._id)
-    query = session.query(id_field)
+    query = session.query(id_field).order_by(id_field)
+    if 'last_id' in request.GET:
+        query = query.filter(id_field > int(request.GET['last_id']))
     headers = ['id']
     for fs in field_specs:
         query, field = fs.add_to_query(query)
@@ -32,6 +34,6 @@ def query(request, id):
             headers.append(fs.spqueryfieldid)
 
     results = [headers]
-    results.extend(query)
+    results.extend(query.limit(20))
     return HttpResponse(toJson(results), content_type='application/json')
 
