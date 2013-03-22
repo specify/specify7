@@ -26,6 +26,10 @@ define([
         events: {
             'scroll': 'scroll'
         },
+        initialize: function(options) {
+            this.ajaxUrl = options.ajaxUrl;
+            this.resultsView = new options.View(_.extend({el: this.el}, options.viewOptions));
+        },
         shouldFetchMore: function() {
             var visible = this.$el.is(':visible');
             var scrolledToBottom = this.$('table').height() - this.$el.scrollTop() - this.$el.height() < 1;
@@ -33,15 +37,15 @@ define([
         },
         fetchMore: function() {
             if (this.fetch) return this.fetch;
-            var url = $.param.querystring(this.ajaxUrl, {last_id: this.lastID});
+            var url = $.param.querystring(this.ajaxUrl, {last_id: this.resultsView.getLastID()});
             var _this = this;
             return this.fetch = $.get(url, function(data) {
                 _this.fetch = null;
-                var results = _this.resultsFromData(data);
+                var results = _this.resultsView.resultsFromData(data);
                 if (results.length < 1) {
                     _this.fetchedAll = true;
                 } else {
-                    _this.addResults(results);
+                    _this.resultsView.addResults(results);
                 }
             });
         },
@@ -52,12 +56,17 @@ define([
             }
             recur();
         },
+        render: function() {
+            this.$el.data('view', this);
+            this.resultsView.render();
+            return this;
+        },
         scroll: function(evt) {
             this.fetchMoreWhileAppropriate();
         }
     });
 
-    var PrimaryResults = ScrollResults.extend({
+    var PrimaryResults = Backbone.View.extend({
         initialize: function(options) {
             this.searchTable = options.searchTable;
             this.data = options.data;
@@ -66,11 +75,13 @@ define([
                 .sortBy(function(df) {return parseInt($('order', df).text(), 10);})
                 .map(function(df) {return this.model.getField($('fieldName', df).text());}, this)
                 .value();
-
-            this.ajaxUrl = $.param.querystring(options.ajaxUrl,
-                                               {name: capitalize(this.model.name)});
         },
-        resultsFromData: function(data) { return _.first( _.values(data) ).results; },
+        resultsFromData: function(data) {
+            return _.first( _.values(data) ).results;
+        },
+        getLastID: function() {
+            return this.lastID;
+        },
         addResults: function(results) {
             _.each(results, function(result) {
                 var row = $('<tr>').appendTo(this.$('table'));
@@ -84,10 +95,9 @@ define([
                     }).text(value)));
                 }, this);
             }, this);
-            this.lastID = _.last(results).id;
+            this.lastID =  _.last(results).id;
         },
         render: function() {
-            this.$el.data('view', this);
             var table = $('<table width="100%">').appendTo(this.el);
 
             var header = $('<tr>').appendTo(table);
@@ -100,16 +110,11 @@ define([
         }
     });
 
-    var RelatedResults = ScrollResults.extend({
+    var RelatedResults = Backbone.View.extend({
         initialize: function(options) {
             this.relatedSearch = options.data;
-            this.ajaxUrl = options.ajaxUrl;
             this.model = schema.getModel(this.relatedSearch.definition.root);
             this.displayFields = _.map(this.relatedSearch.definition.columns, this.model.getField, this.model);
-        },
-        getHeading: function() {
-            var rsName = this.relatedSearch.definition.name;
-            return (getProp(rsName) || rsName) + ' - ' + this.relatedSearch.totalCount;
         },
         addResults: function(results) {
             var table = this.$('table');
@@ -125,11 +130,15 @@ define([
                     }).text(value)));
                 });
             }, this);
-            this.lastID = _.last( _.last(results) );
+            this.lastID =  _.last( _.last(results) );
         },
-        resultsFromData: function(data) { return data.results; },
+        resultsFromData: function(data) {
+            return data.results;
+        },
+        getLastID: function(results) {
+            return this.lastID;
+        },
         render: function() {
-            this.$el.data('view', this);
             var table = $('<table width="100%">').appendTo(this.el);
             var header = $('<tr>').appendTo(table);
             _.each(this.displayFields, function(field) {
@@ -209,8 +218,9 @@ define([
             },
             showRelatedResults: function(ajaxUrl, data) {
                 if (data.totalCount < 1) return 0;
-                var results = new RelatedResults({data: data, ajaxUrl: ajaxUrl});
-                var heading = results.getHeading();
+                var results = new ScrollResults({View: RelatedResults, viewOptions: {data: data}, ajaxUrl: ajaxUrl});
+                var rsName = data.definition.name;
+                var heading = (getProp(rsName) || rsName) + ' - ' + data.totalCount;
                 this.$('.related.results').append($('<h4>').append($('<a>').text(heading)));
                 results.render().$el.appendTo(this.$('.related.results'));
                 this.$('.results.related').accordion('destroy').accordion(accordionOptions);
@@ -224,7 +234,11 @@ define([
                 var heading = model.getLocalizedName() + ' - ' + data.totalCount;
                 this.$('.primary.results').append($('<h4>').append($('<a>').text(heading)));
 
-                var results = new PrimaryResults({data: data, model: model, searchTable: searchTable, ajaxUrl: this.ajaxUrl});
+                var results = new ScrollResults({
+                    View: PrimaryResults,
+                    viewOptions: {data: data, model: model, searchTable: searchTable},
+                    ajaxUrl: $.param.querystring(this.ajaxUrl, {name: capitalize(model.name)})
+                });
                 results.render().$el.appendTo(this.$('.primary.results'));
                 return data.totalCount;
             },
