@@ -34,7 +34,7 @@ Ext.define('SpThinClient.controller.Query', {
 		itemDefs: qList.models,
 		title: 'Queries',
 		position: 'top',
-		frame: true
+		frame: false
 	    });
 	    me.getSideBar().addGroup(qGroup);
 	    me.getSideBar().setupGroups();

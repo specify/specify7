@@ -36,7 +36,7 @@ Ext.define('SpThinClient.controller.Data', {
 		itemDefs: $('view', forms), 
 		position: 'top',
 		title: 'Create/Update', 
-		frame: true
+		frame: false
 	    });
 	    me.getSideBar().addGroup(vg);
 	    if (me.getSideBar().getGroups().length == 2) {
@@ -59,7 +59,7 @@ Ext.define('SpThinClient.controller.Data', {
 		itemDefs: rsList.models,
 		title: 'Recordsets',
 		position: 'middle',
-		frame: true
+		frame: false
 	    });
 	    me.getSideBar().addGroup(rsg);
 	    if (me.getSideBar().getGroups().length == 2) {
