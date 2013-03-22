@@ -24,7 +24,8 @@ define([
             node = table;
         });
 
-        return _.extend({joinPath: joinPath, table: node}, extractDatePart(fieldName));
+        var field = node.getField(fieldName);
+        return _.extend({joinPath: joinPath, table: node, field: field}, extractDatePart(fieldName));
     }
 
     var DATE_PART_RE = /(.*)((NumericDay)|(NumericMonth)|(NumericYear))$/;
@@ -59,7 +60,7 @@ define([
             return self;
         },
         getFieldName: function() {
-            var predField = this.fieldSpec.table.getField(this.fieldSpec.fieldName);
+            var predField = this.fieldSpec.field || this.fieldSpec.table.getField(this.fieldSpec.fieldName);
             var fieldName = predField ? predField.getLocalizedName() : this.fieldSpec.fieldName;
             if (this.fieldSpec.datePart) {
                 fieldName += ' (' + this.fieldSpec.datePart + ') ';
@@ -171,8 +172,12 @@ define([
                         id: result[0]
                     });
                     href = resource.viewUrl();
-                    self.fields.each(function(field) {
-                        var value = result[fieldToCol(field)];
+                    _.each(self.fieldUIs, function(fieldUI) {
+                        var value = result[fieldToCol(fieldUI.field)];
+                        var field = fieldUI.fieldSpec.field;
+                        if (field) {
+                            value = fieldformat(field, value);
+                        }
                         row.append($('<td>').append($('<a>', {
                             href: href,
                             "class": "query-result"
