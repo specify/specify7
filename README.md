@@ -6,25 +6,19 @@ server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
 
-Install the Python MySQL drivers, Crypto package, and the package installer, pip.
----------------------------------------------------------------------------------
+Install system Python dependencies.
+-----------------------------------
+The code is known to work with Python2.7. It might also work with
+2.6. Python3 support is contingent on the MySQL drivers being ported.
+
 On Ubuntu:
 
-    sudo apt-get install python-mysqldb python-pip python-crypto
+    sudo apt-get install python-mysqldb python-crypto python-virtualenv
 
-On Fedora:
+On Fedora (these need to be checked):
 
-    sudo yum install MySQL-python python-pip python-crypto
+    sudo yum install MySQL-python python-crypto python-virtualenv
 
-Install Django 1.4.5
---------------------
-On Ubuntu:
-
-    sudo pip install Django==1.4.5
-
-On Fedora:
-
-    sudo pip-python install Django==1.4.5
 
 Get the specifyweb source code.
 ----------------------------------
@@ -38,9 +32,16 @@ working directory.
 
     cd specifyweb
 
+Setup the development environment.
+----------------------------------
+The following command will setup the Python virtual environment for
+the project:
+
+    ./setup.sh
+
 Set up the settings file.
 -------------------------
-Copy the `specify_settings.py` file to `local_specify_settings.py` and
+Copy the `settings/specify_settings.py` file to `settings/local_specify_settings.py` and
 configure the settings according to your system.
 
 ```python
@@ -66,17 +67,14 @@ Run the test suite.
 -------------------
 There is a preliminary test suite which can be ran as follows:
 
-    python manage.py test
+    ./manage.sh test
 
 Sync the database:
 ------------------
-The authentication system in django makes use of a couple extra tables. This
-command will generate them:
+Django keeps track of browser sessions using the `django_session` table. This table
+must be created.
 
-    python manage.py syncdb
-
-Django will ask whether it should create a superuser. It is safe to answer 'no',
-since the superuser for the Django admin system which is not being used.
+    ./manage.sh syncdb
 
 If this step fails because the master user does not have `CREATE TABLE` privileges, you can
 change the `specify_settings.py` file to use the 'IT user' as a temporary work-around.
@@ -84,7 +82,7 @@ change the `specify_settings.py` file to use the 'IT user' as a temporary work-a
 Run the test server:
 --------------------
 
-    python manage.py runserver
+    manage.sh runserver
 
 
 Visit the running app with your browser.
