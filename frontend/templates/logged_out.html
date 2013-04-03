@@ -1,13 +1,17 @@
-{% extends "base_site.html" %}
-{% load i18n %}
-{% load url from future %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+</head>
 
-{% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a></div>{% endblock %}
-
-{% block content %}
-
-<p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
-
-<p><a href="/accounts/login/">{% trans 'Log in again' %}</a></p>
-
-{% endblock %}
+<body style="background-image: url(/images/SpecifyBigSplash.png); background-repeat: no-repeat; background-position: center 100px;">
+  <div id="user-tools">
+    <a href="/accounts/login/">Log in</a>
+  </div>
+  <div id="content">
+    <h2>You have been logged out.</h2>
+    <p>Thank you for using Specify.</p>
+  </div>
+</body>
+</html>

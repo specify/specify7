@@ -114,7 +114,7 @@ define([
     return {
         SearchView: Backbone.View.extend({
             events: {
-                'click :submit': 'search'
+                'submit': 'search'
             },
             search: function(evt) {
                 var query, url;

@@ -9,22 +9,22 @@
 </head>
 
 <body>
-<div id="container">
-    <div id="header">
-        <div id="branding">
-          <h1 id="site-name"><a href="/specify/">Specify WebApp</a></h1>
-
-          <form id="express-search" action="/specify/express_search/">
-            <input type="text" class="express-search-query" name="q">
-            <input type="submit" value="Search">
-          </form>
-        </div>
-        <div id="user-tools">
-          <a href="/accounts/logout/">Log out</a>
-        </div>
+  <header>
+    <div id="user-tools">
+      <a href="/accounts/logout/">Log out</a>
     </div>
-    <div id="content">
-    </div>
-</div>
+    <form id="express-search" action="/specify/express_search/">
+      <input type="text" class="express-search-query" name="q" placeholder="Search">
+    </form>
+    <nav>
+      <ul>
+        <li><a href="/specify/"><img src="/images/specify32.png">Welcome</a></li>
+        <li><a href="/specify/data/"><img src="/images/Data_Entry.png">Data</a></li>
+        <li><a href="/specify/stored_query/"><img src="/images/Query32x32.png">Query</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div id="content">
+  </div>
 </body>
 </html>

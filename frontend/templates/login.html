@@ -1,67 +1,48 @@
-{% extends "base_site.html" %}
-{% load i18n %}
-{% load url from future %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
+</head>
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="/static/css/login.css" />{% endblock %}
+<body style="background-image: url(/images/SpecifyBigSplash.png); background-repeat: no-repeat; background-position: center 100px;">
+  <div id="content">
+    {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+    {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+    <p class="errornote">
+      {{ error }}
+    </p>
+    {% endfor %}
+    {% endif %}
 
-{% block bodyclass %}login{% endblock %}
-
-{% block nav-global %}{% endblock %}
-
-{% block content_title %}{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
-
-{% block content %}
-{% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
-<p class="errornote">
-{% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-</p>
-{% endif %}
-
-{% if form.non_field_errors or form.this_is_the_login_form.errors %}
-{% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
-<p class="errornote">
-    {{ error }}
-</p>
-{% endfor %}
-{% endif %}
-
-<div id="content-main">
-<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
-    <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
+    <form action="{{ app_path }}" method="post" id="login-form">
+      {% csrf_token %}
+      <div class="form-row">
+        {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+        <label for="id_username" class="required">Username</label> {{ form.username }}
+      </div>
+      <div class="form-row">
+        {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
+        <label for="id_password" class="required">Password</label> {{ form.password }}
+        <input type="hidden" name="this_is_the_login_form" value="1" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+      {% if collections %}
+      <div class="form-row">
+        <label>Collection</label>
+        <select name="collection_id">
+          {% for collection in collections %}
+          <option value="{{ collection.id }}">{{ collection.collectionname }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="submit-row">
+        <input type="submit" value="Log in" />
+      </div>
+    </form>
   </div>
-  <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
-    <label for="id_password" class="required">{% trans 'Password:' %}</label> {{ form.password }}
-    <input type="hidden" name="this_is_the_login_form" value="1" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </div>
-  {% if collections %}
-  <div class="form-row">
-    <label>Collection:</label>
-    <select name="collection_id">
-      {% for collection in collections %}
-      <option value="{{ collection.id }}">{{ collection.collectionname }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  {% endif %}
-  {% url 'admin_password_reset' as password_reset_url %}
-  {% if password_reset_url %}
-  <div class="password-reset-link">
-    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
-  </div>
-  {% endif %}
-  <div class="submit-row">
-    <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />
-  </div>
-</form>
+</body>
+</html>
 
-<script type="text/javascript">
-document.getElementById('id_username').focus()
-</script>
-</div>
-{% endblock %}

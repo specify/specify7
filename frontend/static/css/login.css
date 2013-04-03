@@ -1,34 +1,33 @@
 /* LOGIN FORM */
 
-body.login {
-    background: #eee;
-}
-
-.login #container {
-    background: white;
-    border: 1px solid #ccc;
+#content {
+    background: rgb(240,240,240);
     width: 28em;
     min-width: 300px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 100px;
+    margin-top: 200px;
+
+    box-shadow: 5px 5px 15px #000;
+    border: solid 1px #000;
+    border-radius: 10px;
 }
 
-.login #content-main {
+#content-main {
     width: 100%;
 }
 
-.login form {
+form {
     margin-top: 1em;
 }
 
-.login .form-row {
+.form-row {
     padding: 4px 0;
     float: left;
     width: 100%;
 }
 
-.login .form-row label {
+.form-row label {
     float: left;
     width: 9em;
     padding-right: 0.5em;
@@ -38,20 +37,20 @@ body.login {
     color: #333;
 }
 
-.login .form-row #id_username, .login .form-row #id_password {
+.form-row #id_username, .form-row #id_password {
     width: 14em;
 }
 
-.login span.help {
+span.help {
     font-size: 10px;
     display: block;
 }
 
-.login .submit-row {
+.submit-row {
     clear: both;
-    padding: 1em 0 0 9.4em;
+    padding: 1em 0 1em 9.4em;
 }
 
-.login .password-reset-link {
+.password-reset-link {
     text-align: center;
 }

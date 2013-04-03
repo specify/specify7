@@ -12,13 +12,11 @@
 /*     border-width: 1px; */
 /* } */
 
-td, th {
-    border: none;
-    vertical-align: middle;
-}
-
-thead th {
-    background: #F8F8F8;
+#express-search {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px 5px;
 }
 
 .specify-form-header, .specify-subview-header {
@@ -36,12 +34,13 @@ thead th {
     height: 24px;
 }
 
-textarea {
+textarea.specify-field {
     width: 100%;
 }
 
 input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
     width: 100%;
+    box-sizing: border-box;
 }
 
 select.specify-field {
@@ -80,8 +79,8 @@ select.specify-field {
     width: 16px;
 }
 
-.querycbx-edit, .querycbx-display {
-    padding-left: 6px;
+table.partialdateui-strct td:first-child {
+    padding: 0px;
 }
 
 ul.ui-autocomplete li.ui-menu-item {
