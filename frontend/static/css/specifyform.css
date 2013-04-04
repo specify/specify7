@@ -89,10 +89,11 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-subview-button-count {
     padding: 3px;
+    font-weight: bold;
     vertical-align: middle;
     background-color: white;
-    border: 1px solid #CCC;
-    color: #555;
+    border: 1px solid #777;
+    color: #444;
 }
 
 .specify-subviewbutton-icon {
@@ -193,8 +194,8 @@ input[type="submit"].saveblocked {
     display: inline;
 }
 
-.ui-dialog-title .ui-icon {
-    display: inline-block;
+.ui-dialog-titlebar a {
+    float: left;
 }
 
 .specify-attachment-container {

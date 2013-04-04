@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: 12px;
-    font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    font-family: Verdana,Arial,sans-serif;
     background: rgb(245, 250, 255);
 }
 
@@ -124,7 +124,7 @@ td, th {
     font-size: 11px;
     line-height: 13px;
     padding: 5px;
-    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    font-family: Verdana, Arial, sans-serif;
 }
 
 th {
@@ -150,7 +150,7 @@ input, textarea, select, .form-row p {
     margin: 2px 0;
     padding: 2px 3px;
     vertical-align: middle;
-    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    font-family: Verdana, Arial, sans-serif;
     font-weight: normal;
     font-size: 11px;
 }

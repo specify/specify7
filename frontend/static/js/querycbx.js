@@ -156,18 +156,13 @@ define([
 
                 var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
 
-                if (!resource.isNew()) {
-                    title = '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                        + title;
-
-                    if (!self.readOnly) {
-                        var deleteButton = new DeleteButton({ model: resource });
-                        deleteButton.render().$el.appendTo(dialogForm);
-                        deleteButton.on('deleted', function() {
-                            self.model.set(self.fieldName, null);
-                            dialog.dialog('close');
-                        });
-                    }
+                if (!resource.isNew() && !self.readOnly) {
+                    var deleteButton = new DeleteButton({ model: resource });
+                    deleteButton.render().$el.appendTo(dialogForm);
+                    deleteButton.on('deleted', function() {
+                        self.model.set(self.fieldName, null);
+                        dialog.dialog('close');
+                    });
                 }
 
                 self.options.populateform(dialogForm, resource);
@@ -179,11 +174,17 @@ define([
                         close: function() { $(this).remove(); self.dialog = null; }
                     });
 
-                dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                    evt.preventDefault();
-                    navigation.go(resource.viewUrl());
-                    dialog.dialog('close');
-                });
+                if (!resource.isNew()) {
+                    dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
+                        '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+
+                    dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                        evt.preventDefault();
+                        navigation.go(resource.viewUrl());
+                        dialog.dialog('close');
+                    });
+                }
+
             });
         },
         display: function(event, ui) {
