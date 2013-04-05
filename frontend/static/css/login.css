@@ -1,5 +1,11 @@
 /* LOGIN FORM */
 
+body {
+    background-image: url(/images/SpecifyBigSplash.png);
+    background-repeat: no-repeat;
+    background-position: center 100px;
+}
+
 #content {
     background: rgb(240,240,240);
     width: 28em;
