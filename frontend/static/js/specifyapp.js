@@ -149,12 +149,14 @@ define([
                 function doIt() {
                     // first check that it makes sense to view this resource when logged into current collection
                     domain.collectionsForResource(resource).done(function(collections) {
-                        function loggedIn(collection) { return collection.id == domain.levels.collection.id; }
+                        if (collections) {
+                            var loggedIn = function(collection) { return collection.id == domain.levels.collection.id; };
 
-                        if (!resource.isNew() && !_.any(collections, loggedIn)) {
-                            // the resource is not "native" to this collection. ask user to change collections.
-                            setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
-                            return;
+                            if (!resource.isNew() && !_.any(collections, loggedIn)) {
+                                // the resource is not "native" to this collection. ask user to change collections.
+                                setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
+                                return;
+                            }
                         }
 
                         // show the resource
