@@ -1,9 +1,30 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'express-search', 'jquery-ui'
-], function(require, $, _, Backbone, navigation, esearch) {
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'jquery-bbq'
+], function(require, $, _, Backbone, navigation) {
     "use strict";
 
     var toolModules = ['toolbarwelcome', 'toolbardataentry', 'toolbarquery'];
+
+    var ExpressSearchInput = Backbone.View.extend({
+        events: {
+            'submit': 'search'
+        },
+        el: $('<form id="express-search" action="/specify/express_search/">'),
+        render: function() {
+            this.$el.append('<input type="text" class="express-search-query" name="q" placeholder="Search">');
+            return this;
+        },
+        search: function(evt) {
+            var query, url;
+            evt.preventDefault();
+            query = this.$('.express-search-query').val().trim();
+            if (query) {
+                url = $.param.querystring('/specify/express_search/', {q: query});
+                navigation.go(url);
+            }
+        }
+    });
+
 
     return Backbone.View.extend({
         events: {
@@ -12,7 +33,7 @@ define([
         el: $('#site-header'),
         render: function() {
             var _this = this;
-            (new esearch.SearchView()).render().$el.appendTo(_this.el);
+            (new ExpressSearchInput()).render().$el.appendTo(_this.el);
             require(toolModules, function() {
                 _this.$('#header-loading').remove();
                 _this.$el.append('<nav id="site-nav">');

@@ -1,10 +1,9 @@
 define([
-'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
-'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall', 'scrollresults',
-'jquery-bbq', 'jquery-ui'
+    'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
+    'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall', 'scrollresults',
+    'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll, ScrollResults) {
     "use strict";
-
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
     function stringIdToFieldSpec(stringId) {
@@ -168,7 +167,7 @@ define([
         }
     });
 
-    return Backbone.View.extend({
+    var StoredQueryView = Backbone.View.extend({
         events: {
             'click :button': 'search'
         },
@@ -238,4 +237,13 @@ define([
             });
         }
     });
+
+    return function(app) {
+        app.router.route('stored_query/:id/', 'storedQuery', function(id) {
+            var query = new (api.Resource.forModel('spquery'))({ id: id });
+            query.fetch().fail(app.handleError).done(function() {
+                app.setCurrentView(new StoredQueryView({ query: query }));
+            });
+        });
+    };
 });
