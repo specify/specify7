@@ -242,3 +242,27 @@ div.results div {
 .spqueryfield span {
     margin: 0 10px 0 10px;
 }
+
+.list-dialog ul {
+    padding: 0;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.list-dialog li img {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.list-dialog li {
+    position: relative;
+}
+
+.list-dialog li a {
+    display: inline-block;
+    float: right;
+}
+
+.list-dialog li a:first-child {
+    float: none;
+}

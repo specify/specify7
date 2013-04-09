@@ -168,7 +168,12 @@ header {
     border-radius: 10px;
     margin: 15px;
     position: relative;
-    min-height: 32px;
+    min-height: 64px;
+}
+
+#header-loading {
+    margin-top: 18px;
+    margin-left: 48px;
 }
 
 header nav {

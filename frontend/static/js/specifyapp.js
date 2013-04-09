@@ -1,12 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'cs!businessrules',
     'datamodelview', 'errorview', 'resourceview', 'othercollectionview', 'localizeform',
-    'beautify-html', 'navigation', 'express-search', 'cs!welcomeview', 'stored_query',
-    'cs!domain', 'notfoundview', 'text!context/user.json!noinline', 'jquery-bbq'
+    'beautify-html', 'navigation', 'express-search', 'welcomeview', 'stored_query',
+    'headerui', 'cs!domain', 'notfoundview', 'text!context/user.json!noinline', 'jquery-bbq'
 ], function(
     $, _, Backbone, specifyapi, schema, specifyform, businessRules, datamodelview, ErrorView,
     ResourceView, OtherCollectionView, localizeForm, beautify, navigation, esearch, WelcomeView,
-    StoredQueryView, domain, NotFoundView, userJSON) {
+    StoredQueryView, HeaderUI, domain, NotFoundView, userJSON) {
     "use strict";
 
     // the exported interface
@@ -22,22 +22,14 @@ define([
         var rootContainer = $('#content');
 
         businessRules.enable(true);
-
-        // make the express search field functional
-        app.expressSearch = new esearch.SearchView({ el: $('#express-search') });
-
-        // take over the site name link so that the page doesn't
-        // reload when it is used
-        $('#site-name a').click(function(evt) {
-            evt.preventDefault();
-            navigation.go($(evt.currentTarget).prop('href'));
-        });
+        (new HeaderUI()).render();
 
         // gets rid of any backbone view currently showing
         // and replaces it with the rendered view given
         // also manages other niceties involved in changing views
         function setCurrentView(view) {
             app.currentView && app.currentView.remove(); // remove old view
+            rootContainer.empty();
             $('.ui-autocomplete').remove(); // these are getting left behind sometimes
             $('.ui-dialog-content').dialog('close'); // close any open dialogs
             app.currentView = view;

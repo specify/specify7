@@ -15,7 +15,7 @@ def get_view(collection, user, viewname):
     # setup a generator that looks for the view in the proper discovery order
     matches = ((viewset, view, src, level)
                # db first, then disk
-               for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'))
+               for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'), (web_only, 'web_only'))
                # then by directory level
                for level in AR.DIR_LEVELS
                # then in the viewset files in a given directory level
@@ -91,6 +91,9 @@ def load_viewsets(collection, user, level):
     # Load them all.
     return (get_viewset_from_file(path, f.attrib['file'])
             for f in registry.findall('file'))
+
+def web_only(collection, user, level):
+    return [get_viewset_from_file(os.path.dirname(__file__), 'web_only_views.xml')]
 
 def get_viewset_from_file(path, filename):
     """Just load the XML for a viewset from path and pull out the root."""
