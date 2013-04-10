@@ -21,3 +21,4 @@
 * permit numbers uniqueness is global. probably not ideal
 * usergroupscopeid must be unique across all tables
 * do something about queries being deleted while being displayed
+* use 'raw' signal attribute in business rules to stop exception during fixture loading
