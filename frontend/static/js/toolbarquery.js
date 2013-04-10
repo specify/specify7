@@ -26,8 +26,10 @@ define([
             var ul = $('<ul>');
             this.options.queries.each(function(query) {
                 var icon = schema.getModelById(query.get('contexttableid')).getIcon();
-                var href = '/specify/query/' + query.id + '/';
-                ul.append(dialogEntry({ icon: icon, href: href, name: query.get('name') }));
+                var href = 'href="/specify/query/' + query.id + '/"';
+                var entry = $(dialogEntry({ icon: icon, href: href, name: query.get('name') }));
+                query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
+                ul.append(entry);
             });
             this.$el.append(ul);
             this.$el.dialog({

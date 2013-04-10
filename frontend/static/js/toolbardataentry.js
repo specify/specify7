@@ -22,7 +22,9 @@ define([
             this.options.recordSets.each(function(recordSet) {
                 var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
                 var href = 'href="/specify/recordset/' + recordSet.id + '/"';
-                ul.append(dialogEntry({ icon: icon, href: href, name: recordSet.get('name') }));
+                var entry = $(dialogEntry({ icon: icon, href: href, name: recordSet.get('name') }));
+                recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
+                ul.append(entry);
             });
             this.$el.append(ul);
             this.$el.dialog({
