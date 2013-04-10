@@ -239,7 +239,7 @@ define([
     });
 
     return function(app) {
-        app.router.route('stored_query/:id/', 'storedQuery', function(id) {
+        app.router.route('query/:id/', 'storedQuery', function(id) {
             var query = new (api.Resource.forModel('spquery'))({ id: id });
             query.fetch().fail(app.handleError).done(function() {
                 app.setCurrentView(new StoredQueryView({ query: query }));
