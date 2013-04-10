@@ -105,10 +105,10 @@ define([
 
     return function(appIn) {
         app = appIn;
-        app.router.route('recordset/:id/:index/', 'recordSet', recordSet);
         app.router.route('recordset/:id/', 'recordSet', recordSet);
-        app.router.route('view/:model/new/', 'newResource', newResource);
+        app.router.route('recordset/:id/:index/', 'recordSet', recordSet);
         app.router.route('view/:model/:id/', 'view', view);
+        app.router.route('view/:model/new/', 'newResource', newResource);
     };
 });
 
