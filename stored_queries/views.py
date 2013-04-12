@@ -33,7 +33,8 @@ def query(request, id):
             query = query.add_columns(field)
             headers.append(fs.spqueryfieldid)
 
+    print query
     results = [headers]
-    results.extend(query.limit(20))
+    results.extend(query.limit(20).distinct())
     return HttpResponse(toJson(results), content_type='application/json')
 

@@ -1,118 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
-    'specifyapi', 'cs!fieldformat', 'cs!props', 'whenall', 'scrollresults',
+    'jquery', 'underscore', 'backbone', 'navigation', 'schema', 'queryfield', 'templates',
+    'specifyapi', 'cs!fieldformat', 'cs!savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, navigation, getAppResource, schema, api, fieldformat, props, whenAll, ScrollResults) {
+], function($, _, Backbone, navigation, schema, QueryFieldUI, templates,
+            api, fieldformat, SaveButton, whenAll, ScrollResults) {
     "use strict";
-    var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
-
-    function stringIdToFieldSpec(stringId) {
-        var match = STRINGID_RE.exec(stringId);
-        var path = match[1].split(',');
-        var tableName = match[2];
-        var fieldName = match[3];
-        var rootTable = schema.getModelById(parseInt(path.shift(), 10));
-
-        var joinPath = [];
-        var node = rootTable;
-        _.each(path, function(elem) {
-            var tableId_fieldName = elem.split('-');
-            var table = schema.getModelById(parseInt(tableId_fieldName[0], 10));
-            var fieldName = tableId_fieldName[1];
-            var field = _.isUndefined(fieldName) ? node.getField(table.name) : node.getField(fieldName);
-            joinPath.push(field);
-            node = table;
-        });
-
-        var field = node.getField(fieldName);
-        return _.extend({joinPath: joinPath, table: node, field: field}, extractDatePart(fieldName));
-    }
-
-    var DATE_PART_RE = /(.*)((NumericDay)|(NumericMonth)|(NumericYear))$/;
-
-    function extractDatePart(fieldName) {
-        var match = DATE_PART_RE.exec(fieldName);
-        return match ? {
-            fieldName: match[1],
-            datePart: match[2].replace('Numeric', '')
-        } : {
-            fieldName: fieldName,
-            datePart: null
-        };
-    }
-
-    var FieldUI = Backbone.View.extend({
-        opName: 'NA',
-        input: '<input type="text">',
-        initialize: function(options) {
-            this.field = options.field;
-            this.fieldSpec = stringIdToFieldSpec(this.field.get('stringid'));
-        },
-        render: function() {
-            var self = this;
-            self.queryParamKey = 'f' + self.field.id;
-            $('<label>').text(this.getLabel()).appendTo(self.el);
-            $('<span>').text(self.opName).appendTo(self.el);
-            if (self.input) {
-                $(self.input).appendTo(self.el);
-                self.setValue(self.field.get('startvalue'));
-            }
-            return self;
-        },
-        getFieldName: function() {
-            var predField = this.fieldSpec.field || this.fieldSpec.table.getField(this.fieldSpec.fieldName);
-            var fieldName = predField ? predField.getLocalizedName() : this.fieldSpec.fieldName;
-            if (this.fieldSpec.datePart) {
-                fieldName += ' (' + this.fieldSpec.datePart + ') ';
-            }
-            return fieldName;
-        },
-        getLabel: function() {
-            var fieldName = this.getFieldName();
-            var joinPath = _.invoke(this.fieldSpec.joinPath, 'getLocalizedName').concat(fieldName);
-            return joinPath.join(' -> ');
-        },
-        getQueryParam: function() {
-            var result = {};
-            result[this.queryParamKey] = this.getValue();
-            return result;
-        },
-        getValue: function() {
-            return this.$('input').val();
-        },
-        setValue: function(value) {
-            this.$('input').val(value);
-        }
-    });
-
-    var FieldUIByOp = _.map([
-        {opName: 'Like'},
-        {opName: '='},
-        {opName: '>'},
-        {opName: '<'},
-        {opName: '>='},
-        {opName: '<='},
-        {opName: 'True', input: null},
-        {opName: 'False', input: null},
-        {opName: 'Does not matter', input: null},
-
-        {opName: 'Between',
-         input: '<input type="text"> and <input type="text">',
-         getValue: function() {
-             return _.map(this.$('input'), function(input) { return $(input).val(); }).join(',');
-         },
-         setValue: function(value) {
-             var values = value.split(',');
-             _.each(this.$('input'), function(input, i) { $(input).val(values[i]); });
-         }
-        },
-
-        {opName: 'In'},
-        {opName: 'Contains'},
-        {opName: 'Empty', input: null},
-        {opName: 'True or Null', input: null},
-        {opName: 'True or False', input: null}
-    ], function(extras) { return FieldUI.extend(extras); });
 
     var Results = Backbone.View.extend({
         events: {
@@ -121,7 +13,6 @@ define([
         initialize: function(options) {
             this.fields = options.fields;
             this.model = options.model;
-            this.fieldUIs = options.fieldUIs;
             this.initResults = options.results;
         },
         render: function() {
@@ -144,22 +35,22 @@ define([
                     id: result[0]
                 });
                 var href = resource.viewUrl();
-                _.each(self.fieldUIs, function(fieldUI) {
-                    var value = result[fieldToCol(fieldUI.field)];
-                    var field = fieldUI.fieldSpec.field;
-                    if (field) {
-                        value = fieldformat(field, value);
-                    }
+                self.fields.each(function(field) {
+                    var value = result[fieldToCol(field)];
+                    // var field = fieldUI.fieldSpec.field;
+                    // if (field) {
+                    //     value = fieldformat(field, value);
+                    // }
                     row.append($('<td>').append($('<a>', {
                         href: href,
                         "class": "query-result"
                     }).text(value)));
                 });
             });
-            this.lastID = _.last(results)[0];
+            this.lastResult = _.last(results);
         },
         getLastID: function() {
-            return this.lastID;
+            return this.lastResult && this.lastResult[0];
         },
         navToResult: function(evt) {
             evt.preventDefault();
@@ -169,34 +60,83 @@ define([
 
     var StoredQueryView = Backbone.View.extend({
         events: {
-            'click :button': 'search'
+            'click .query-execute': 'search',
+            'click .field-add': 'addField',
+            'click .querybuilder-expand': 'queryBuilderExpand',
+            'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
         initialize: function(options) {
             var self = this;
             self.query = options.query;
             self.model = schema.getModel(self.query.get('contextname'));
+            self.saveButton = new SaveButton({ model: self.query });
+            self.saveButton.on('savecomplete', function() { this.trigger('redisplay'); }, this);
         },
         render: function() {
             var self = this;
-            self.$el.append($('<h2>').text(self.query.get('name')));
-            var ul = $('<ul>').appendTo(self.el);
-            $('<input type="button" value="Search">').appendTo(self.el);
+            $('<h2>').text(self.query.get('name')).appendTo(self.el);
+            self.$el.append(templates.querybuilder());
+            self.$('.querybuilder').append(self.saveButton.render().el);
 
-            self.query.rget('fields', true).done(function(fields) {
-                self.fields = fields;
-                self.fieldUIs = fields.chain()
-                    .filter(function(field) { return field.get('isprompt'); })
-                    .map(function(field) {
-                        var fieldUICtr = FieldUIByOp[field.get('operstart')];
-                        return new fieldUICtr({field: field, el: $('<li class="spqueryfield">')});
-                    }).value();
+            self.$('button.field-add').button({
+                icons: { primary: 'ui-icon-plus' }, text: false
+            });
 
-                _.each(self.fieldUIs, function(fieldUI) { ul.append(fieldUI.render().el); });
+            $('<a class="querybuilder-expand">Expand</a>').button({
+                icons: { primary: 'ui-icon-triangle-1-s' },
+                text: false
+            }).hide().appendTo(self.el);
+
+            self.query.on('saverequired', this.saveRequired, this);
+
+            self.query.rget('fields', true).done(function(spqueryfields) {
+                self.fields = spqueryfields;
+                var ul = self.$('.spqueryfields');
+                ul.append.apply(
+                    ul, spqueryfields.map(function(spqueryfield) {
+                        var ui = new QueryFieldUI({
+                            parentView: self,
+                            model: self.model,
+                            spqueryfield: spqueryfield,
+                            el: $('<li class="spqueryfield">')
+                        });
+                        ui.on('remove', function(ui, field) { self.fields.remove(field); });
+                        return ui.render().el;
+                    })
+                );
+                self.$('ul.sortable').sortable({
+                    connectWith: 'ul.sortable',
+                    items: '.spqueryfield',
+                    distance: 20,
+                    update: function (event, ui) {
+                        self.trigger('positionschanged');
+                    },
+                    start: function(evt, ui) { self.$('.spqueryfield-delete').show('blind', 250); },
+                    stop: function(evt, ui) { self.$('.spqueryfield-delete').hide('blind', 200); }
+                });
             });
 
             $('<table class="results" width="100%"></div>').appendTo(self.el);
 
             return self;
+        },
+        saveRequired: function() {
+            this.$('.query-execute').prop('disabled', true);
+            this.$('.abandon-changes').prop('disabled', false);
+        },
+        addField: function() {
+            var newField = new (api.Resource.forModel('spqueryfield'))();
+            newField.set({sorttype: 0, isdisplay: true, query: this.query.url()});
+
+            var addFieldUI = new QueryFieldUI({
+                parentView: this,
+                model: this.model,
+                el: $('<li class="spqueryfield">'),
+                spqueryfield: newField
+            });
+            this.$('.spqueryfields').append(addFieldUI.render().el).sortable('refresh');
+            addFieldUI.on('completed', function() { this.fields.add(newField); }, this);
+            this.trigger('positionschanged');
         },
         renderHeader: function() {
             var header = $('<tr>');
@@ -205,21 +145,28 @@ define([
             });
             return header;
         },
+        queryBuilderExpand: function() {
+            this.$('.querybuilder').show('blind', 300);
+            this.$('.querybuilder-expand').hide();
+        },
         search: function(evt) {
             var self = this;
             var table = self.$('table.results');
+            self.$('.querybuilder-expand').show();
+            self.$('.querybuilder').hide('blind', 300);
 
-            var queryParams = {};
-            _.each(self.fieldUIs, function(fieldUI) {
-                _.extend(queryParams, fieldUI.getQueryParam());
-            });
+            // var queryParams = {};
+            // _.each(self.fieldUIs, function(fieldUI) {
+            //     _.extend(queryParams, fieldUI.getQueryParam());
+            // });
 
             table.empty();
-            table.append(self.renderHeader());
+            //table.append(self.renderHeader());
 
-            var ajaxUrl = $.param.querystring("/stored_query/query/" + self.query.id + "/",
-                                              queryParams);
+            // var ajaxUrl = $.param.querystring("/stored_query/query/" + self.query.id + "/",
+            //                                   queryParams);
 
+            var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
             $.get(ajaxUrl).done(function(results) {
                 var view = new ScrollResults({
                     View: Results,
@@ -227,7 +174,6 @@ define([
                     viewOptions: {
                         fields: self.fields,
                         model: self.model,
-                        fieldUIs: self.fieldUIs,
                         results: results
                     },
                     ajaxUrl: ajaxUrl
@@ -240,10 +186,14 @@ define([
 
     return function(app) {
         app.router.route('query/:id/', 'storedQuery', function(id) {
-            var query = new (api.Resource.forModel('spquery'))({ id: id });
-            query.fetch().fail(app.handleError).done(function() {
-                app.setCurrentView(new StoredQueryView({ query: query }));
-            });
+            function doIt() {
+                var query = new (api.Resource.forModel('spquery'))({ id: id });
+                query.fetch().fail(app.handleError).done(function() {
+                    app.setCurrentView(new StoredQueryView({ query: query }));
+                    app.getCurrentView().on('redisplay', doIt);
+                });
+            }
+            doIt();
         });
     };
 });

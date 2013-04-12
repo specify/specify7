@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 import os
 
 from sqlalchemy import Table, Column, ForeignKey, types, orm, MetaData
+from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 
 metadata = MetaData()
 
@@ -69,7 +70,7 @@ field_type_map = {'text'                 : types.Text,
                   'java.lang.Double'     : types.Float,
                   'java.sql.Timestamp'   : types.DateTime,
                   'java.math.BigDecimal' : types.Numeric,
-                  'java.lang.Boolean'    : types.Boolean}
+                  'java.lang.Boolean'    : mysql_bit_type}
 
 def get_class_name(tabledef):
     return tabledef.attrib['classname'].split('.')[-1]

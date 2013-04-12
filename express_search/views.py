@@ -55,11 +55,13 @@ class Term:
     def create_text_filter(self, field):
         if self.discipline:
             from specify.models import Splocalecontaineritem
-            fieldinfo = Splocalecontaineritem.objects.get(
+            args = dict(
                 container__schematype=0, # core schema
                 container__discipline=self.discipline,
-                name=field.name,
-                container__name=field.model.__name__.lower())
+                name__iexact=field.name,
+                container__name__iexact=field.model.__name__)
+            print args
+            fieldinfo = Splocalecontaineritem.objects.get(**args)
             if fieldinfo.format == 'CatalogNumberNumeric':
                 if not self.is_integer: return None
                 term = "%.9d" % int(self.term)

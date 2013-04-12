@@ -65,7 +65,6 @@ define([
         }
     });
 
-
     function appStart() {
         businessRules.enable(true);
         (new HeaderUI()).render();

@@ -16,8 +16,20 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
             if parentResource?
                 resource.set domainField.name, parentResource.url()
 
+    treeDefLevels =
+        geography: 'discipline'
+        geologictimeperiod: 'discipline'
+        lithostrat: 'discipline'
+        storage: 'institution'
+        taxon: 'discipline'
+
     domain =
         levels: levels
+
+        getTreeDef: (treeName) ->
+            treeName = treeName.toLowerCase()
+            level = treeDefLevels[treeName]
+            if level? then levels[level].rget(treeName + 'treedef') else null
 
         collectionsInDomain: (domainResource) ->
             domainLevel = domainResource.specifyModel.name.toLowerCase()

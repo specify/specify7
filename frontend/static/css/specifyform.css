@@ -51,7 +51,17 @@ select.specify-field {
     background-color: #C8E6FF;
 }
 
-.separator {
+h1.separator,
+h2.separator,
+h3.separator,
+h4.separator,
+h5.separator {
+    border-bottom: solid 1px;
+}
+
+hr.separator {
+    border: none;
+    margin: 0;
     padding-bottom: 3px;
     border-bottom: solid 1px;
 }
@@ -235,14 +245,6 @@ div.results div {
     overflow: scroll;
 }
 
-.spqueryfield {
-    list-style-type: none;
-}
-
-.spqueryfield span {
-    margin: 0 10px 0 10px;
-}
-
 .list-dialog ul {
     padding: 0;
     font-size: 13px;
@@ -265,4 +267,61 @@ div.results div {
 
 .list-dialog li a:first-child {
     float: none;
+}
+
+.querybuilder-expand {
+    width: 100%
+}
+
+.querybuilder-expand .ui-button-text {
+    padding: 0;
+}
+
+.spqueryfields {
+    padding: 0;
+    margin-bottom: 4px;
+}
+
+
+.spqueryfield-delete {
+    height: 24px;
+    border: 1px inset;
+    background-color: #fff;
+}
+
+.spqueryfield-delete span {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spqueryfield span {
+    margin: 0;  /* 10px 0 10px; */
+}
+
+.spqueryfield .field-operation,
+.spqueryfield .field-label-field,
+.spqueryfield .field-label-datepart,
+.spqueryfield .field-label-treerank,
+.spqueryfield button {
+    margin-right: 10px;
+}
+
+.spqueryfield label.ui-state-active {
+    background-color: #ffa;
+}
+
+.spqueryfield button {
+    vertical-align: middle;
+    padding-bottom: 8px;
+}
+
+.spqueryfield .field-sort {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding: 0;
+    width: 20px;
+}
+
+.spqueryfield .field-sort span {
+    padding: 0;
 }

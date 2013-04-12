@@ -23,6 +23,7 @@ inlined_fields = {
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.determinations',
     'Picklist.picklistitems',
+    'Spquery.fields',
 }
 
 class JsonEncoder(json.JSONEncoder):

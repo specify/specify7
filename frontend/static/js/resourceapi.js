@@ -165,6 +165,7 @@ define([
             related.dependent = field.isDependent();
 
             switch (field.type) {
+            case 'one-to-one':
             case 'many-to-one':
                 self.relatedCache[field.name.toLowerCase()] = related;
                 break;
@@ -276,6 +277,7 @@ define([
 
                 var related = field.getRelatedModel();
                 switch (field.type) {
+                case 'one-to-one':
                 case 'many-to-one':
                     // a foreign key field.
                     if (!value) return value;  // no related object

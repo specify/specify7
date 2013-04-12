@@ -3,7 +3,7 @@ import re
 import models
 
 from query_ops import QueryOps
-from sqlalchemy import orm, inspect, sql
+from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
 
 query_ops = QueryOps()
@@ -97,7 +97,9 @@ class FieldSpec(object):
 
         if self.value != '':
             op = query_ops.by_op_num(self.op_num)
-            query = query.filter(op(field, self.value))
+            f = op(field, self.value)
+            if self.negate: f = not_(f)
+            query = query.filter(f)
 
         return query.reset_joinpoint(), field
 
