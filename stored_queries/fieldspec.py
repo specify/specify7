@@ -1,4 +1,5 @@
 import re
+from collections import namedtuple
 
 import models
 
@@ -8,16 +9,24 @@ from sqlalchemy.sql.expression import extract
 
 query_ops = QueryOps()
 
-class FieldSpec(object):
+class FieldSpec(namedtuple('FieldSpec', [
+    'field_name',
+    'date_part',
+    'root_table',
+    'join_path',
+    'op_num',
+    'value',
+    'negate',
+    'display',
+    'sort_type',
+    'spqueryfieldid'])):
+    __slots__ = ()
+
     # The stringid is a structure consisting of three fields seperated by '.':
     # (1) the join path to the specify field.
     # (2) the name of the table containing the field.
     # (3) name of the specify field.
     STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
-
-    def __init__(self, **kwargs):
-        for arg, value in kwargs.items():
-            setattr(self, arg, value)
 
     @classmethod
     def from_spqueryfield(cls, field, value=None):
@@ -59,6 +68,7 @@ class FieldSpec(object):
                    value        = field.startValue if value is None else value,
                    negate       = field.isNot,
                    display      = field.isDisplay,
+                   sort_type    = field.sortType,
                    spqueryfieldid = field.spQueryFieldId)
 
     def build_join(self, query):
@@ -69,7 +79,7 @@ class FieldSpec(object):
             table = aliased
         return query, table
 
-    def add_to_query(self, query):
+    def add_to_query(self, query, no_filter=False):
         query, table = self.build_join(query)
 
         insp = inspect(table)
@@ -95,7 +105,7 @@ class FieldSpec(object):
         else:
             field = getattr(table, self.field_name)
 
-        if self.value != '':
+        if self.value != '' and not no_filter:
             op = query_ops.by_op_num(self.op_num)
             f = op(field, self.value)
             if self.negate: f = not_(f)
