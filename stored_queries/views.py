@@ -72,7 +72,7 @@ def query(request, id):
         field_op_values = [(field, op, value)
                            for field_and_op, value in zip(field_and_ops, last_record[1:])
                            for field, op in [field_and_op]]
-        field_op_values.append((id_field, operator.gt, last_record[0]))
+        field_op_values.append((id_field, operator.ge, last_record[0]))
 
         query = query.filter(build_filter_previous(field_op_values))
 

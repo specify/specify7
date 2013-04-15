@@ -30,6 +30,7 @@ define([
             };
 
             _.each(results, function(result) {
+                if (self.lastResult && sameRow(result, self.lastResult)) return;
                 var row = $('<tr>').appendTo(self.el);
                 var resource = new (api.Resource.forModel(self.model))({
                     id: result[0]
