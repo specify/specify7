@@ -80,6 +80,7 @@ class FieldSpec(namedtuple('FieldSpec', [
         return query, table
 
     def add_to_query(self, query, no_filter=False):
+        using_subquery = False
         query, table = self.build_join(query)
 
         insp = inspect(table)
@@ -95,9 +96,11 @@ class FieldSpec(namedtuple('FieldSpec', [
 
             treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
             rank_p = (treedefitem.name == self.field_name)
-
-            query = query.join(ancestor, ancestor_p).join(treedefitem).filter(rank_p)
-            field = ancestor.name
+            field = query.session.query(ancestor.name)\
+                    .join(treedefitem)\
+                    .filter(ancestor_p, rank_p)\
+                    .limit(1).as_scalar()
+            using_subquery = True
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -109,9 +112,12 @@ class FieldSpec(namedtuple('FieldSpec', [
             op = query_ops.by_op_num(self.op_num)
             f = op(field, self.value)
             if self.negate: f = not_(f)
-            query = query.filter(f)
+            query = query.having(f) if using_subquery else query.filter(f)
 
-        return query.reset_joinpoint(), field
+        if not using_subquery:
+            query = query.reset_joinpoint()
+
+        return query, field
 
 def is_regular_field(insp, field_name):
     return field_name in insp.class_.__dict__
