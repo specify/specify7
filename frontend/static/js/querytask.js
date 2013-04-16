@@ -24,9 +24,7 @@ define([
                 return _(columns).indexOf(fieldUI.spqueryfield.id);
             };
 
-            var count = 0;
             _.each(results, function(result) {
-                count += 1;
                 var row = $('<tr>').appendTo(self.el);
                 var resource = new (api.Resource.forModel(self.model))({
                     id: result[0]
@@ -44,17 +42,7 @@ define([
                     }).text(value)));
                 });
             });
-            return count;
-        },
-        showFetchingMore: function(fetchingMore) {
-            if (fetchingMore) {
-                this.$el.append('<tr class="fetching-more"><td>Fetching More</td></tr>');
-            } else {
-                this.$('.fetching-more').remove();
-            }
-        },
-        showFetchedAll: function() {
-            this.$el.append('<tr class="fetched-all"><td>All Results Retrieved</td></tr>');
+            return results.length;
         },
         navToResult: function(evt) {
             evt.preventDefault();
@@ -122,7 +110,9 @@ define([
             });
 
             $('<table class="results" width="100%"></div>').appendTo(self.el);
-
+            self.$el.append(
+                '<div style="text-align: center" class="fetching-more"><img src="/static/img/specify128spinner.gif"></div>');
+            self.$('.fetching-more').hide();
             return self;
         },
         saveRequired: function() {
@@ -173,8 +163,10 @@ define([
                 el: table,
                 viewOptions: {fieldUIs: self.fieldUIs, model: self.model},
                 ajaxUrl: ajaxUrl
-            });
-            view.render();
+            }).render()
+                .on('fetching', function() { this.$('.fetching-more').show(); }, this)
+                .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
+
             view.fetchMoreWhileAppropriate();
         }
     });

@@ -39,17 +39,16 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         fetchMore: function() {
             if (this.fetch) return this.fetch;
             var url = $.param.querystring(this.ajaxUrl, {offset: this.offset});
-            this.resultsView.showFetchingMore && this.resultsView.showFetchingMore(true);
-            console.log('fetching more', url);
+            this.trigger('fetching', this);
             return this.fetch = $.get(url, _.bind(this.gotData, this));
         },
         gotData: function(data) {
             var results = this.resultsFromData(data);
             this.fetch = null;
-            this.resultsView.showFetchingMore && this.resultsView.showFetchingMore(false);
+            this.trigger('gotdata', this);
             if (this.detectEndOfResults(results)) {
                 this.fetchedAll = true;
-                this.resultsView.showFetchedAll && this.resultsView.showFetchedAll();
+                this.trigger('fetchedall', this);
             } else {
                 this.offset += this.resultsView.addResults(results);
             }
