@@ -13,11 +13,6 @@ define([
         initialize: function(options) {
             this.fields = options.fields;
             this.model = options.model;
-            this.initResults = options.results;
-        },
-        render: function() {
-            this.addResults(this.initResults);
-            return this;
         },
         detectEndOfResults: function(results) {
             return results.length < 2;
@@ -29,8 +24,9 @@ define([
                 return _(columns).indexOf(field.id);
             };
 
+            var count = 0;
             _.each(results, function(result) {
-                if (self.lastResult && sameRow(result, self.lastResult)) return;
+                count += 1;
                 var row = $('<tr>').appendTo(self.el);
                 var resource = new (api.Resource.forModel(self.model))({
                     id: result[0]
@@ -48,10 +44,17 @@ define([
                     }).text(value)));
                 });
             });
-            this.lastResult = _.last(results);
+            return count;
         },
-        getLastID: function() {
-            return this.lastResult && this.lastResult[0];
+        showFetchingMore: function(fetchingMore) {
+            if (fetchingMore) {
+                this.$el.append('<tr class="fetching-more"><td>Fetching More</td></tr>');
+            } else {
+                this.$('.fetching-more').remove();
+            }
+        },
+        showFetchedAll: function() {
+            this.$el.append('<tr class="fetched-all"><td>All Results Retrieved</td></tr>');
         },
         navToResult: function(evt) {
             evt.preventDefault();
@@ -156,32 +159,19 @@ define([
             self.$('.querybuilder-expand').show();
             self.$('.querybuilder').hide('blind', 300);
 
-            // var queryParams = {};
-            // _.each(self.fieldUIs, function(fieldUI) {
-            //     _.extend(queryParams, fieldUI.getQueryParam());
-            // });
-
             table.empty();
             //table.append(self.renderHeader());
-
-            // var ajaxUrl = $.param.querystring("/stored_query/query/" + self.query.id + "/",
-            //                                   queryParams);
+            table.append('<tr class="fetching-more"><td>Running</td></tr>');
 
             var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
-            $.get(ajaxUrl).done(function(results) {
-                var view = new ScrollResults({
-                    View: Results,
-                    el: table,
-                    viewOptions: {
-                        fields: self.fields,
-                        model: self.model,
-                        results: results
-                    },
-                    ajaxUrl: ajaxUrl
-                });
-                view.render();
-                view.fetchMoreWhileAppropriate();
+            var view = new ScrollResults({
+                View: Results,
+                el: table,
+                viewOptions: {fields: self.fields, model: self.model},
+                ajaxUrl: ajaxUrl
             });
+            view.render();
+            view.fetchMoreWhileAppropriate();
         }
     });
 

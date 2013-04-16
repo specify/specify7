@@ -146,10 +146,14 @@ def search(request):
         qs = qs.values(*display_fields).order_by('id')
         total_count = qs.count()
 
-        if specific_table is not None and 'last_id' in request.GET:
-            qs = qs.filter(id__gt=request.GET['last_id'])
+        if specific_table is not None:
+            limit = int(request.GET.get('limit', 20))
+            offset = int(request.GET.get('offset', 0))
+            results = list(qs[offset:offset+limit])
+        else:
+            results = list(qs)
 
-        return dict(totalCount=total_count, results=list(qs[:10]))
+        return dict(totalCount=total_count, results=results)
 
     data = dict((tablename, do_search(tablename, searchtable))
                 for searchtable in express_search_config.findall('tables/searchtable')
@@ -173,5 +177,7 @@ def related_search(request):
 
     terms = parse_search_str(request.specify_collection, request.GET['q'])
     qs = build_queryset(searchtable, terms, request.specify_collection)
-    results = rs.do_search(qs, request.GET.get('last_id', None))
+    results = rs.do_search(qs,
+                           offset=int(request.GET.get('offset', 0)),
+                           limit=int(request.GET.get('limit', 20)))
     return HttpResponse(toJson(results), content_type='application/json')

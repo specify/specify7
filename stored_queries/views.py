@@ -35,6 +35,9 @@ def build_filter_previous(field_op_values):
 @require_GET
 @login_required
 def query(request, id):
+    limit = int(request.GET.get('limit', 20))
+    offset = int(request.GET.get('offset', 0))
+
     session = settings.SA_SESSION()
     sp_query = session.query(models.SpQuery).get(int(id))
     field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
@@ -42,19 +45,8 @@ def query(request, id):
     model = models.models_by_tableid[sp_query.contextTableId]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
-    if 'last_id' in request.GET:
-        last_record = query.filter(id_field == int(request.GET['last_id']))
-        for fs in field_specs:
-            if SORT_TYPES[fs.sort_type] is not None:
-                last_record, field = fs.add_to_query(last_record, no_filter=True)
-                last_record = last_record.add_columns(field)
-        last_record = last_record.first()
-        print last_record
-    else:
-        last_record = None
 
     headers = ['id']
-    field_and_ops = []
     order_by_exprs = []
     for fs in field_specs:
         query, field = fs.add_to_query(query)
@@ -63,22 +55,12 @@ def query(request, id):
             headers.append(fs.spqueryfieldid)
         sort_type = SORT_TYPES[fs.sort_type]
         if sort_type is not None:
-            field_and_ops.append(FieldAndOp(field, SORT_OPS[fs.sort_type]))
             order_by_exprs.append(sort_type(field))
-    order_by_exprs.append(asc(id_field))
-    query = query.order_by(*order_by_exprs)
-
-    if last_record is not None:
-        field_op_values = [(field, op, value)
-                           for field_and_op, value in zip(field_and_ops, last_record[1:])
-                           for field, op in [field_and_op]]
-        field_op_values.append((id_field, operator.ge, last_record[0]))
-
-        query = query.filter(build_filter_previous(field_op_values))
+    query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
 
     print query
     results = [headers]
-    results.extend(query.distinct()[:20])
+    results.extend(query)
     session.close()
     return HttpResponse(toJson(results), content_type='application/json')
 

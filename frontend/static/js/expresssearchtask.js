@@ -25,7 +25,6 @@ define([
     var PrimaryResults = Backbone.View.extend({
         initialize: function(options) {
             this.searchTable = options.searchTable;
-            this.data = options.data;
             this.model = options.model;
             this.displayFields = _.chain($('displayfield', this.searchTable))
                 .sortBy(function(df) {return parseInt($('order', df).text(), 10);})
@@ -36,10 +35,7 @@ define([
             return this.$('table');
         },
         resultsFromData: function(data) {
-            return _.first( _.values(data) ).results;
-        },
-        getLastID: function() {
-            return this.lastID;
+            return data[capitalize(this.model.name)].results;
         },
         addResults: function(results) {
             _.each(results, function(result) {
@@ -54,7 +50,7 @@ define([
                     }).text(value)));
                 }, this);
             }, this);
-            this.lastID =  _.last(results).id;
+            return results.length;
         },
         render: function() {
             var table = $('<table width="100%">').appendTo(this.el);
@@ -63,8 +59,6 @@ define([
             _.each(this.displayFields, function(displayField) {
                 header.append($('<th>').text(displayField.getLocalizedName()));
             });
-
-            this.addResults(this.data.results);
             return this;
         }
     });
@@ -92,13 +86,10 @@ define([
                     }).text(value)));
                 });
             }, this);
-            this.lastID =  _.last( _.last(results) );
+            return results.length;
         },
         resultsFromData: function(data) {
             return data.results;
-        },
-        getLastID: function(results) {
-            return this.lastID;
         },
         render: function() {
             var table = $('<table width="100%">').appendTo(this.el);
@@ -106,7 +97,6 @@ define([
             _.each(this.displayFields, function(field) {
                 return header.append($('<th>').text(field.getLocalizedName()));
             });
-            this.addResults(this.relatedSearch.results);
             return this;
         }
     });
@@ -164,7 +154,12 @@ define([
         },
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
-            var results = new ScrollResults({View: RelatedResults, viewOptions: {data: data}, ajaxUrl: ajaxUrl});
+            var results = new ScrollResults({
+                View: RelatedResults,
+                viewOptions: {data: data},
+                initialData: data,
+                ajaxUrl: ajaxUrl
+            });
             var rsName = data.definition.name;
             var heading = (getProp(rsName) || rsName) + ' - ' + data.totalCount;
             this.$('.related.results').append($('<h4>').append($('<a>').text(heading)));
@@ -172,9 +167,9 @@ define([
             this.$('.results.related').accordion('destroy').accordion(accordionOptions);
             return data.totalCount;
         },
-        showResultsForTable: function(data, searchTable) {
+        showResultsForTable: function(allData, searchTable) {
             var tableName = capitalize($('tableName', searchTable).text());
-            data = data[tableName];
+            var data = allData[tableName];
             if (data.results.length < 1) return 0;
             var model = schema.getModel(tableName);
             var heading = model.getLocalizedName() + ' - ' + data.totalCount;
@@ -182,7 +177,8 @@ define([
 
             var results = new ScrollResults({
                 View: PrimaryResults,
-                viewOptions: {data: data, model: model, searchTable: searchTable},
+                viewOptions: {model: model, searchTable: searchTable},
+                initialData: allData,
                 ajaxUrl: $.param.querystring(this.ajaxUrl, {name: capitalize(model.name)})
             });
             results.render().$el.appendTo(this.$('.primary.results'));

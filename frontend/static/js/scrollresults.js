@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         initialize: function(options) {
             this.ajaxUrl = options.ajaxUrl;
             this.resultsView = new options.View(_.extend({el: this.el}, options.viewOptions));
+            this.offset = 0;
 
             this.scrolledToBottom = this.resultsView.getContentEl ? function() {
                 return this.resultsView.getContentEl().height() - this.$el.scrollTop() - this.$el.height() < 1;
@@ -37,17 +38,21 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         },
         fetchMore: function() {
             if (this.fetch) return this.fetch;
-            var url = $.param.querystring(this.ajaxUrl, {last_id: this.resultsView.getLastID()});
-            var _this = this;
-            return this.fetch = $.get(url, function(data) {
-                var results = _this.resultsFromData(data);
-                _this.fetch = null;
-                if (_this.detectEndOfResults(results)) {
-                    _this.fetchedAll = true;
-                } else {
-                    _this.resultsView.addResults(results);
-                }
-            });
+            var url = $.param.querystring(this.ajaxUrl, {offset: this.offset});
+            this.resultsView.showFetchingMore && this.resultsView.showFetchingMore(true);
+            console.log('fetching more', url);
+            return this.fetch = $.get(url, _.bind(this.gotData, this));
+        },
+        gotData: function(data) {
+            var results = this.resultsFromData(data);
+            this.fetch = null;
+            this.resultsView.showFetchingMore && this.resultsView.showFetchingMore(false);
+            if (this.detectEndOfResults(results)) {
+                this.fetchedAll = true;
+                this.resultsView.showFetchedAll && this.resultsView.showFetchedAll();
+            } else {
+                this.offset += this.resultsView.addResults(results);
+            }
         },
         fetchMoreWhileAppropriate: function() {
             var _this = this;
@@ -59,6 +64,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         render: function() {
             this.$el.data('view', this);
             this.resultsView.render();
+            this.options.initialData && this.gotData(this.options.initialData);
             return this;
         },
         scroll: function(evt) {
