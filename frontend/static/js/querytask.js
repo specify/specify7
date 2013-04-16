@@ -11,7 +11,7 @@ define([
             'click a.query-result': 'navToResult'
         },
         initialize: function(options) {
-            this.fields = options.fields;
+            this.fieldUIs = options.fieldUIs;
             this.model = options.model;
         },
         detectEndOfResults: function(results) {
@@ -20,8 +20,8 @@ define([
         addResults: function(results) {
             var self = this;
             var columns = results.shift();
-            var fieldToCol = function(field) {
-                return _(columns).indexOf(field.id);
+            var fieldToCol = function(fieldUI) {
+                return _(columns).indexOf(fieldUI.spqueryfield.id);
             };
 
             var count = 0;
@@ -32,12 +32,12 @@ define([
                     id: result[0]
                 });
                 var href = resource.viewUrl();
-                self.fields.each(function(field) {
-                    var value = result[fieldToCol(field)];
-                    // var field = fieldUI.fieldSpec.field;
-                    // if (field) {
-                    //     value = fieldformat(field, value);
-                    // }
+                _.each(self.fieldUIs, function(fieldUI) {
+                    var value = result[fieldToCol(fieldUI)];
+                    var field = fieldUI.getField();
+                    if (field) {
+                        value = fieldformat(field, value);
+                    }
                     row.append($('<td>').append($('<a>', {
                         href: href,
                         "class": "query-result"
@@ -95,19 +95,20 @@ define([
 
             self.query.rget('fields', true).done(function(spqueryfields) {
                 self.fields = spqueryfields;
+                self.fieldUIs = spqueryfields.map(function(spqueryfield) {
+                    var ui = new QueryFieldUI({
+                        parentView: self,
+                        model: self.model,
+                        spqueryfield: spqueryfield,
+                        el: $('<li class="spqueryfield">')
+                    });
+                    ui.on('remove', function(ui, field) { self.fields.remove(field); });
+                    return ui.render();
+                });
+
                 var ul = self.$('.spqueryfields');
-                ul.append.apply(
-                    ul, spqueryfields.map(function(spqueryfield) {
-                        var ui = new QueryFieldUI({
-                            parentView: self,
-                            model: self.model,
-                            spqueryfield: spqueryfield,
-                            el: $('<li class="spqueryfield">')
-                        });
-                        ui.on('remove', function(ui, field) { self.fields.remove(field); });
-                        return ui.render().el;
-                    })
-                );
+                ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
+
                 self.$('ul.sortable').sortable({
                     connectWith: 'ul.sortable',
                     items: '.spqueryfield',
@@ -145,7 +146,11 @@ define([
         renderHeader: function() {
             var header = $('<tr>');
             _.each(this.fieldUIs, function(fieldUI) {
-                header.append($('<th>').text(fieldUI.getFieldName()));
+                var field = fieldUI.getField();
+                var icon = field.model.getIcon();
+                var name = fieldUI.treeRank || field.getLocalizedName();
+                fieldUI.datePart && ( name += ' (' + fieldUI.datePart + ')' );
+                $('<th>').text(name).prepend($('<img>', {src: icon})).appendTo(header);
             });
             return header;
         },
@@ -160,14 +165,13 @@ define([
             self.$('.querybuilder').hide('blind', 300);
 
             table.empty();
-            //table.append(self.renderHeader());
-            table.append('<tr class="fetching-more"><td>Running</td></tr>');
+            table.append(self.renderHeader());
 
             var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
             var view = new ScrollResults({
                 View: Results,
                 el: table,
-                viewOptions: {fields: self.fields, model: self.model},
+                viewOptions: {fieldUIs: self.fieldUIs, model: self.model},
                 ajaxUrl: ajaxUrl
             });
             view.render();

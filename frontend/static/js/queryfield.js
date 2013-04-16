@@ -131,6 +131,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             }
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
+        getField: function() {
+            return _.last(this.joinPath);
+        },
         getTypeForOp: function() {
             if (this.datePart) return 'numbers';
             if (this.treeRank) return 'strings';
