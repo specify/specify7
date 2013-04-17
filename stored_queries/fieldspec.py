@@ -96,7 +96,7 @@ class FieldSpec(namedtuple('FieldSpec', [
 
             treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
             rank_p = (treedefitem.name == self.field_name)
-            field = query.session.query(ancestor.name)\
+            field = orm.Query(ancestor.name).with_session(query.session)\
                     .join(treedefitem)\
                     .filter(ancestor_p, rank_p)\
                     .limit(1).as_scalar()

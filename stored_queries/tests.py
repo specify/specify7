@@ -24,7 +24,10 @@ class StoredQueriesTests(ApiTests):
                        join_path=[('cataloger', models.Agent)],
                        op_num=1,
                        value='Bentley',
-                       negate=False)
+                       negate=False,
+                       display=True,
+                       sort_type=0,
+                       spqueryfieldid=None)
 
         q, f = fs.add_to_query(orm.Query(models.CollectionObject.collectionObjectId))
         sql = str(q)
@@ -37,7 +40,10 @@ class StoredQueriesTests(ApiTests):
                        join_path=[('collectingEvent', models.CollectingEvent)],
                        op_num=1,
                        value='2000',
-                       negate=False)
+                       negate=False,
+                       display=True,
+                       sort_type=0,
+                       spqueryfieldid=None)
 
         q, f = fs.add_to_query(orm.Query(models.CollectionObject.collectionObjectId))
         sql = str(q)
@@ -50,18 +56,21 @@ class StoredQueriesTests(ApiTests):
                        join_path=[],
                        op_num=1,
                        value='Percidae',
-                       negate=False)
+                       negate=False,
+                       display=True,
+                       sort_type=0,
+                       spqueryfieldid=None)
 
         q, f = fs.add_to_query(orm.Query(models.Taxon.taxonId))
         sql = str(q)
         self.assertEqual(sql,
                          'SELECT taxon."TaxonID" AS "taxon_TaxonID" \n'
-                         'FROM taxon JOIN taxon AS taxon_1 ON taxon."NodeNumber" BETWEEN '
-                         'taxon_1."NodeNumber" AND taxon_1."HighestChildNodeNumber" \n'
-                         'WHERE taxon_1."RankID" IN '
-                         '(SELECT taxontreedefitem."RankID" AS "taxontreedefitem_RankID" \n'
-                         'FROM taxontreedefitem \n'
-                         'WHERE taxontreedefitem."Name" = :Name_1) AND taxon_1."Name" = :Name_2')
+                         'FROM taxon \nHAVING (SELECT taxon_1."Name" \n'
+                         'FROM taxon AS taxon_1 JOIN taxontreedefitem AS taxontreedefitem_1 '
+                         'ON taxontreedefitem_1."TaxonTreeDefItemID" = taxon_1."TaxonTreeDefItemID" \n'
+                         'WHERE taxon."TaxonTreeDefID" = taxon_1."TaxonTreeDefID" '
+                         'AND taxon."NodeNumber" BETWEEN taxon_1."NodeNumber" AND taxon_1."HighestChildNodeNumber" '
+                         'AND taxontreedefitem_1."Name" = :Name_1\n LIMIT :param_1) = :param_2')
 
     # def test_month_between_predicate(self):
     #     self.q.fields.create(
@@ -88,7 +97,10 @@ class StoredQueriesTests(ApiTests):
                         join_path=[('collectingEvent', models.CollectingEvent)],
                         op_num=1,
                         value='2000',
-                        negate=False)
+                        negate=False,
+                       display=True,
+                       sort_type=0,
+                       spqueryfieldid=None)
 
         fs2 = FieldSpec(field_name='lastName',
                         date_part=None,
@@ -96,7 +108,10 @@ class StoredQueriesTests(ApiTests):
                         join_path=[('cataloger', models.Agent)],
                         op_num=1,
                         value='Bentley',
-                        negate=False)
+                        negate=False,
+                       display=True,
+                       sort_type=0,
+                       spqueryfieldid=None)
 
         q = orm.Query(models.CollectionObject.collectionObjectId)
         q, f1 = fs1.add_to_query(q)
