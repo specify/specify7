@@ -229,7 +229,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             var optGroup = $('<optgroup label="Tree Ranks">').appendTo(fieldSelect);
 
             getTreeDef.pipe(function(treeDef) {
-                return treeDef.rget('treedefitems', true);
+                return treeDef.rget('treedefitems').pipe(function (treeDefItems) {
+                    return treeDefItems.fetch({limit: 0}).pipe(function() { return treeDefItems; });
+                });
             }).done(function(treeDefItems) {
                 treeDefItems.each(function(item) {
                     $('<option>', {value: 'treerank-' + item.get('name')})
