@@ -8,11 +8,12 @@ from specify.models import Splocaleitemstr as SpString
 
 schema_localization_cache = {}
 
-dependent_fields = set((
-        'Collectionobject.determinations',
-        'Collectionobject.collectionobjectattribute',
-        'Collectionobject.preparations',
-))
+dependent_fields = {
+    'Collectionobject.determinations',
+    'Collectionobject.collectionobjectattribute',
+    'Collectionobject.preparations',
+    'Spquery.fields'
+}
 
 def get_schema_localization(collection):
     disc = collection.discipline

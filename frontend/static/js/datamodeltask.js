@@ -27,7 +27,7 @@ define([
     datamodelview.SchemaView = NavView.extend({
         render: function() {
             var self = this;
-            self.$el.append('<h2>Specify Schema</h2>')
+            self.$el.append('<h2>Specify Schema</h2>');
             var table = $('<table>').appendTo(self.el);
             _(schema.models).each(function(model) {
                 table.append('<tr><td><a href="' + model.name.toLowerCase() + '/">' + model.name + '</a></td></tr>');
@@ -57,5 +57,14 @@ define([
         }
     });
 
-    return datamodelview;
+
+    return function(app) {
+        function view(model) {
+            var View = model ? datamodelview.DataModelView : datamodelview.SchemaView;
+            app.setCurrentView(new View({ model: model }));
+        }
+
+        app.router.route('datamodel/:model/', 'datamodel', view);
+        app.router.route('datamodel/', 'datamodel', view);
+    };
 });

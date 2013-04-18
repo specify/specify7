@@ -1,23 +1,41 @@
 import re
-from django.db.models.fields import FieldDoesNotExist
+from collections import namedtuple
 
-from specify import models
+import models
 
-from make_filter import make_filter
+from query_ops import QueryOps
+from sqlalchemy import orm, inspect, sql, not_
+from sqlalchemy.sql.expression import extract
 
-class FieldSpec(object):
+query_ops = QueryOps()
+
+class FieldSpec(namedtuple('FieldSpec', [
+    'field_name',
+    'date_part',
+    'root_table',
+    'join_path',
+    'op_num',
+    'value',
+    'negate',
+    'display',
+    'sort_type',
+    'spqueryfieldid'])):
+    __slots__ = ()
+
     # The stringid is a structure consisting of three fields seperated by '.':
     # (1) the join path to the specify field.
     # (2) the name of the table containing the field.
     # (3) name of the specify field.
     STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 
-    def __init__(self, field):
-        path, table_name, field_name = self.STRINGID_RE.match(field.stringid).groups()
+    @classmethod
+    def from_spqueryfield(cls, field, value=None):
+        path, table_name, field_name = cls.STRINGID_RE.match(field.stringId).groups()
         path_elems = path.split(',')
+        root_table = models.models_by_tableid[int(path_elems[0])]
 
-        path_fields = []
-        node = models.models_by_tableid[int(path_elems[0])]
+        join_path = []
+        node = root_table
         for elem in path_elems[1:]:
             # the elements of the stringid path consist of the join tableid with
             # optionally the join field name.
@@ -30,64 +48,93 @@ class FieldSpec(object):
             if fieldname is None:
                 # if the join field name is not given, the field should have
                 # the same name as the table
-                try:
-                    fieldname = table.__name__.lower()
-                    node._meta.get_field(fieldname)
-                except FieldDoesNotExist:
-                    raise Exception("couldn't find related field for table %s in %s" % (table.__name__, node))
+                tablename = inspect(table).class_.__name__.lower()
+                fields = inspect(node).class_.__dict__
+                for fieldname in fields:
+                    if fieldname.lower() == tablename: break
+                else:
+                    raise Exception("couldn't find related field for table %s in %s" % (tablename, node))
 
-            path_fields.append(fieldname)
+            join_path.append((fieldname, table))
             node = table
 
-        key = '__'.join(path_fields + field_name.split('.')).lower()
-        key, self.date_part = extract_date_part(key)
-        key, self.treedefitems = get_treedefitems(node, key)
+        field_name, date_part = extract_date_part(field_name)
 
-        self.table = node
-        self.key = key
-        self.spqueryfield = field
+        return cls(field_name   = field_name,
+                   date_part    = date_part,
+                   root_table   = root_table,
+                   join_path    = join_path,
+                   op_num       = field.operStart,
+                   value        = field.startValue if value is None else value,
+                   negate       = field.isNot,
+                   display      = field.isDisplay,
+                   sort_type    = field.sortType,
+                   spqueryfieldid = field.spQueryFieldId)
 
-    def make_filter(self):
-        return make_filter(self.table, self.key, self.spqueryfield, self.treedefitems, self.date_part)
+    def build_join(self, query):
+        table = self.root_table
+        for fieldname, next_table in self.join_path:
+            aliased = orm.aliased(next_table)
+            query = query.join(aliased, getattr(table, fieldname))
+            table = aliased
+        return query, table
 
-def get_treedefitems(table, key):
-    """Try to find tree definition levels that have a named rank matching the
-    final element of the lookup key. These are used for subtree filters.
-    """
-    if not is_tree(table):
-        return key, None
+    def add_to_query(self, query, no_filter=False):
+        using_subquery = False
+        query, table = self.build_join(query)
 
-    rank = key.split('__')[-1]
-    tree_key = '__'.join(key.split('__')[:-1])
+        insp = inspect(table)
+        if is_tree(insp) and not is_regular_field(insp, self.field_name):
+            node = table
+            treedef_column = insp.class_.__name__ + 'TreeDefID'
 
-    Treedefitem = getattr(models, table.__name__ + 'treedefitem')
-    treedefitems = Treedefitem.objects.filter(name__iexact=rank)
-    return (tree_key, treedefitems) if treedefitems.count() > 0 else (key, None)
+            ancestor = orm.aliased(node)
+            ancestor_p = sql.and_(
+                getattr(node, treedef_column) == getattr(ancestor, treedef_column),
+                node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
+                )
 
-def is_tree(table):
-    """True if the django model, table, has fields consistent with being a tree."""
-    try:
-        for field in  ('definition', 'definitionitem', 'nodenumber', 'highestchildnodenumber'):
-            table._meta.get_field(field)
-    except FieldDoesNotExist:
-        return False
-    else:
-        return True
+            treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
+            rank_p = (treedefitem.name == self.field_name)
+            field = orm.Query(ancestor.name).with_session(query.session)\
+                    .join(treedefitem)\
+                    .filter(ancestor_p, rank_p)\
+                    .limit(1).as_scalar()
+            using_subquery = True
+
+        elif self.date_part is not None:
+            field = extract(self.date_part, getattr(table, self.field_name))
+
+        else:
+            field = getattr(table, self.field_name)
+
+        if self.value != '' and not no_filter:
+            op = query_ops.by_op_num(self.op_num)
+            f = op(field, self.value)
+            if self.negate: f = not_(f)
+            query = query.having(f) if using_subquery else query.filter(f)
+
+        if not using_subquery:
+            query = query.reset_joinpoint()
+
+        return query, field
+
+def is_regular_field(insp, field_name):
+    return field_name in insp.class_.__dict__
+
+def is_tree(insp):
+    fields = insp.class_.__dict__
+    return all(field in fields for field in ('definition', 'definitionItem', 'nodeNumber', 'highestChildNodeNumber'))
 
 # A date field name can be suffixed with 'numericday', 'numericmonth' or 'numericyear'
 # to request a filter on that subportion of the date.
-DATE_PART_RE = re.compile(r'(.*)((numericday)|(numericmonth)|(numericyear))$')
+DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
-def extract_date_part(key):
-    """Process a lookup key into the field lookup and the date part if the key
-    represents a partial date filter on a date field. Returns None for the date
-    part if the lookup is not a partial date predicate.
-    """
-    match = DATE_PART_RE.match(key)
+def extract_date_part(fieldname):
+    match = DATE_PART_RE.match(fieldname)
     if match:
-        key, date_part = match.groups()[:2]
-        date_part = date_part.replace('numeric', '')
+        fieldname, date_part = match.groups()[:2]
+        date_part = date_part.replace('Numeric', '')
     else:
         date_part = None
-    return key, date_part
-
+    return fieldname, date_part

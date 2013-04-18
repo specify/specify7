@@ -1,71 +1,66 @@
+import operator
+from collections import namedtuple
+
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.conf import settings
 
-from specify import models
-from specify.filter_by_col import filter_by_collection
+from sqlalchemy.sql.expression import asc, desc, and_, or_
+
 from specify.api import toJson
+import models
 
 from fieldspec import FieldSpec
 
-def make_queryset(query, field_specs):
-    model = models.models_by_tableid[query.contexttableid]
-    filters = [fs.make_filter() for fs in field_specs]
+SORT_TYPES = [None, asc, desc]
+SORT_OPS = [None, operator.gt, operator.lt]
 
-    qs = model.objects.filter(*filters)
-
-    if query.selectdistinct:
-        qs = qs.distinct()
-
-    return qs
-
-def process_value(value, field_spec):
-    if value is None: return None
-
-    date_part = field_spec.date_part
-    if date_part is not None:
-        return getattr(value, date_part)
-
-    tdis = field_spec.treedefitems
-    if tdis is None: return value
-
-    tree = field_spec.table
-    def get_subtrees(tdi):
-        subtrees = tree.objects.filter(
-            definitionitem__in=tdis,
-            nodenumber__lte=value,
-            highestchildnodenumber__gte=value)
-        return subtrees.values('name')
-
-    ancestors = (subtree['name']
-                 for tdi in tdis
-                 for subtree in get_subtrees(tdi))
+def value_from_request(field, get):
     try:
-        return ancestors.next()
-    except StopIteration:
+        return get['f%s' % field.spQueryFieldId]
+    except KeyError:
         return None
 
-def make_results(qs, field_specs):
-    display_fields = [fs for fs in field_specs
-                      if fs.spqueryfield.isdisplay]
+FieldAndOp = namedtuple('FieldAndOp', 'field op')
 
-    display_keys = ['id'] + [fs.key for fs in display_fields]
-
-    results = [['id'] + [fs.spqueryfield.id for fs in display_fields]]
-
-    results.extend(
-        [values[0]] + [process_value(v, fs) for v, fs in zip(values[1:], display_fields)]
-        for values in qs.values_list(*display_keys))
-
-    return results
-
+def build_filter_previous(field_op_values):
+    field, op, value = field_op_values.pop(0)
+    if len(field_op_values) < 1:
+        return op(field, value)
+    else:
+        return or_(op(field, value),
+                   and_(field == value,
+                        build_filter_previous(field_op_values)))
 @require_GET
 @login_required
 def query(request, id):
-    query = get_object_or_404(models.Spquery, id=id)
-    field_specs = [FieldSpec(field) for field in query.fields.all()]
-    qs = make_queryset(query, field_specs)
-    results = make_results(qs, field_specs)
+    limit = int(request.GET.get('limit', 20))
+    offset = int(request.GET.get('offset', 0))
+
+    session = settings.SA_SESSION()
+    sp_query = session.query(models.SpQuery).get(int(id))
+    field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
+                   for field in sorted(sp_query.fields, key=lambda field: field.position)]
+    model = models.models_by_tableid[sp_query.contextTableId]
+    id_field = getattr(model, model._id)
+    query = session.query(id_field)
+
+    headers = ['id']
+    order_by_exprs = []
+    for fs in field_specs:
+        query, field = fs.add_to_query(query)
+        if fs.display:
+            query = query.add_columns(field)
+            headers.append(fs.spqueryfieldid)
+        sort_type = SORT_TYPES[fs.sort_type]
+        if sort_type is not None:
+            order_by_exprs.append(sort_type(field))
+    query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
+
+    print query
+    results = [headers]
+    results.extend(query)
+    session.close()
     return HttpResponse(toJson(results), content_type='application/json')
 

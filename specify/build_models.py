@@ -139,12 +139,7 @@ class make_field(object):
         return dict(
             db_column=flddef.attrib['column'],
             db_index=(flddef.attrib['indexed'] == 'true'),
-            # For some reason setting unique makes
-            # django complain mysql CharField
-            # field length even when it is legal (<256).
-            # So, just ignoring that option for now.
-            #
-            # unique=(flddef.attrib['unique'] == 'true'),
+            unique=(flddef.attrib['unique'] == 'true'),
             editable=(flddef.attrib['updatable'] == 'true'),
             null=(flddef.attrib['required'] == 'false'),
             )
@@ -172,7 +167,7 @@ class make_string_field(make_field):
         """
         args = super(make_string_field, cls).make_args(flddef)
         args.update(dict(
-                max_length=flddef.attrib['length'],
+                max_length=int( flddef.attrib['length'] ),
                 blank=(flddef.attrib['required'] == 'false'),
                 ))
         return args

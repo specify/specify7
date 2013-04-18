@@ -20,6 +20,7 @@ define([
     'text!tmpls/viewheader.html',
     'text!tmpls/recordsetchooser.html',
     'text!tmpls/geolocateplugin.html',
+    'text!tmpls/querybuilder.html',
     'text!tmpls/attachmentview.html'
 ], function parseTemplates($, _) {
     "use strict";
@@ -48,6 +49,7 @@ define([
         'viewheader',
         'recordsetchooser',
         'geolocate',
+        'querybuilder',
         'attachmentview'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 

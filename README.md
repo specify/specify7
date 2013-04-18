@@ -6,25 +6,19 @@ server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
 
-Install the Python MySQL drivers, Crypto package, and the package installer, pip.
----------------------------------------------------------------------------------
+Install system Python dependencies.
+-----------------------------------
+The code is known to work with Python2.7. It might also work with
+2.6. Python3 support is contingent on the MySQL drivers being ported.
+
 On Ubuntu:
 
-    sudo apt-get install python-mysqldb python-pip python-crypto
+    sudo apt-get install python-mysqldb python-crypto python-virtualenv
 
-On Fedora:
+On Fedora (these need to be checked):
 
-    sudo yum install MySQL-python python-pip python-crypto
+    sudo yum install MySQL-python python-crypto python-virtualenv
 
-Install Django 1.4.5
---------------------
-On Ubuntu:
-
-    sudo pip install Django==1.4.5
-
-On Fedora:
-
-    sudo pip-python install Django==1.4.5
 
 Get the specifyweb source code.
 ----------------------------------
@@ -38,39 +32,49 @@ working directory.
 
     cd specifyweb
 
+Setup the development environment.
+----------------------------------
+The following command will setup the Python virtual environment for
+the project:
+
+    ./setup.sh
+
 Set up the settings file.
 -------------------------
-Edit the `specify_settings.py` file and configure the settings
-according to your system.
+Copy the `settings/specify_settings.py` file to `settings/local_specify_settings.py` and
+configure the settings according to your system.
 
-    # The webapp server piggy backs on the thick client.
-    # Set the path to a thick client installation.
-    THICK_CLIENT_LOCATION = '/home/ben/Specify6.4.10'
+```python
+# The webapp server piggy backs on the thick client.
+# Set the path to a thick client installation.
+THICK_CLIENT_LOCATION = '~/Specify'
 
-    # Set the database name to the mysql data base you
-    # want to access.
-    DATABASE_NAME = 'old_kufish'
+# Set the database name to the mysql database you
+# want to access.
+DATABASE_NAME = 'SpecifyDB'
 
-    # The master user login. Use the same values as
-    # you did setting up the thick client.
-    MASTER_NAME = 'Master'
-    MASTER_PASSWORD = 'Master'
+# The master user login. Use the same values as
+# you did setting up the thick client.
+MASTER_NAME = 'MasterUser'
+MASTER_PASSWORD = 'MasterPassword'
+```
+
+You can edit `specify_settings.py` directly but then it will always show
+up as a modified file in version control and generally make a nuisance
+of itself.
 
 Run the test suite.
 -------------------
 There is a preliminary test suite which can be ran as follows:
 
-    python manage.py test
+    ./manage.sh test
 
 Sync the database:
 ------------------
-The authentication system in django makes use of a couple extra tables. This
-command will generate them:
+Django keeps track of browser sessions using the `django_session` table. This table
+must be created.
 
-    python manage.py syncdb
-
-Django will ask whether it should create a superuser. It is safe to answer 'no',
-since the superuser for the Django admin system which is not being used.
+    ./manage.sh syncdb
 
 If this step fails because the master user does not have `CREATE TABLE` privileges, you can
 change the `specify_settings.py` file to use the 'IT user' as a temporary work-around.
@@ -78,7 +82,7 @@ change the `specify_settings.py` file to use the 'IT user' as a temporary work-a
 Run the test server:
 --------------------
 
-    python manage.py runserver
+    manage.sh runserver
 
 
 Visit the running app with your browser.

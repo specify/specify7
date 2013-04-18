@@ -44,6 +44,9 @@ define([
         isRequiredBySchemaLocalization: function() {
             return this._localization && this._localization.isrequired;
         },
+        isHidden: function() {
+            return this._localization && this._localization.ishidden;
+        },
         isDependent: function() {
             return this._localization && this._localization.isdependent;
         }

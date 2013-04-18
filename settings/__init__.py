@@ -1,9 +1,15 @@
 import os
 import sys
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
-import specify_settings
+
+try:
+    import local_specify_settings as specify_settings
+except ImportError:
+    import specify_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -41,10 +47,17 @@ TESTING_DATABASES = {
 if 'test' in sys.argv:
     TESTING = True
     DATABASES = TESTING_DATABASES
+    SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
     TESTING = False
+    SA_DATABASE_URL = 'mysql://%s:%s@localhost/%s' % (specify_settings.MASTER_NAME,
+                                                      specify_settings.MASTER_PASSWORD,
+                                                      specify_settings.DATABASE_NAME)
 
-SPECIFY_THICK_CLIENT = specify_settings.THICK_CLIENT_LOCATION
+SA_SESSION = sessionmaker(
+    bind=sqlalchemy.create_engine(SA_DATABASE_URL))
+
+SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 
@@ -137,11 +150,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'context.middleware.ContextMiddleware'
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'settings.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -150,17 +162,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-#    'django_extensions',
     'specify',
     'stored_queries',
     'businessrules',
@@ -169,8 +172,10 @@ INSTALLED_APPS = (
     'frontend',
 )
 
-AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',
-                           'django.contrib.auth.backends.ModelBackend')
+AUTH_USER_MODEL = 'specify.Specifyuser'
+
+AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',)
+#                           'django.contrib.auth.backends.ModelBackend')
 LOGIN_REDIRECT_URL = '/'
 
 # A sample logging configuration. The only tangible logging
@@ -181,9 +186,15 @@ LOGIN_REDIRECT_URL = '/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+            }
+     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {

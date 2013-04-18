@@ -12,13 +12,11 @@
 /*     border-width: 1px; */
 /* } */
 
-td, th {
-    border: none;
-    vertical-align: middle;
-}
-
-thead th {
-    background: #F8F8F8;
+#express-search {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px 5px;
 }
 
 .specify-form-header, .specify-subview-header {
@@ -36,12 +34,13 @@ thead th {
     height: 24px;
 }
 
-textarea {
+textarea.specify-field {
     width: 100%;
 }
 
 input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
     width: 100%;
+    box-sizing: border-box;
 }
 
 select.specify-field {
@@ -52,7 +51,17 @@ select.specify-field {
     background-color: #C8E6FF;
 }
 
-.separator {
+h1.separator,
+h2.separator,
+h3.separator,
+h4.separator,
+h5.separator {
+    border-bottom: solid 1px;
+}
+
+hr.separator {
+    border: none;
+    margin: 0;
     padding-bottom: 3px;
     border-bottom: solid 1px;
 }
@@ -80,8 +89,8 @@ select.specify-field {
     width: 16px;
 }
 
-.querycbx-edit, .querycbx-display {
-    padding-left: 6px;
+table.partialdateui-strct td:first-child {
+    padding: 0px;
 }
 
 ul.ui-autocomplete li.ui-menu-item {
@@ -90,10 +99,11 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-subview-button-count {
     padding: 3px;
+    font-weight: bold;
     vertical-align: middle;
     background-color: white;
-    border: 1px solid #CCC;
-    color: #555;
+    border: 1px solid #777;
+    color: #444;
 }
 
 .specify-subviewbutton-icon {
@@ -194,8 +204,8 @@ input[type="submit"].saveblocked {
     display: inline;
 }
 
-.ui-dialog-title .ui-icon {
-    display: inline-block;
+.ui-dialog-titlebar a {
+    float: left;
 }
 
 .specify-attachment-container {
@@ -228,4 +238,90 @@ a.specify-attachment-original {
     width: auto;
     text-align: center;
     padding: 2px 3px 2px 3px;
+}
+
+div.results div {
+    max-height: 20em;
+    overflow: scroll;
+}
+
+.list-dialog ul {
+    padding: 0;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.list-dialog li img {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.list-dialog li {
+    position: relative;
+}
+
+.list-dialog li a {
+    display: inline-block;
+    float: right;
+}
+
+.list-dialog li a:first-child {
+    float: none;
+}
+
+.querybuilder-expand {
+    width: 100%
+}
+
+.querybuilder-expand .ui-button-text {
+    padding: 0;
+}
+
+.spqueryfields {
+    padding: 0;
+    margin-bottom: 4px;
+}
+
+
+.spqueryfield-delete {
+    height: 24px;
+    border: 1px inset;
+    background-color: #fff;
+}
+
+.spqueryfield-delete span {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spqueryfield span {
+    margin: 0;  /* 10px 0 10px; */
+}
+
+.spqueryfield .field-operation,
+.spqueryfield .field-label-field,
+.spqueryfield .field-label-datepart,
+.spqueryfield .field-label-treerank,
+.spqueryfield button {
+    margin-right: 10px;
+}
+
+.spqueryfield label.ui-state-active {
+    background-color: #ffa;
+}
+
+.spqueryfield button {
+    vertical-align: middle;
+    padding-bottom: 8px;
+}
+
+.spqueryfield .field-sort {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding: 0;
+    width: 20px;
+}
+
+.spqueryfield .field-sort span {
+    padding: 0;
 }
