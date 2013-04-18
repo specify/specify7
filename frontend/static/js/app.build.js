@@ -5,7 +5,7 @@
     inlineText: true,
     paths: {
         'jquery'         : "vendor/jquery-1.7.2",
-        'jquery-ui'      : "vendor/jquery-ui",
+        'jquery-ui'      : "vendor/jquery-ui-1.10.2.custom",
         'jquery-bbq'     : "vendor/jquery.ba-bbq",
         'jquery-mockjax' : "vendor/jquery.mockjax",
         'underscore'     : "vendor/underscore",
