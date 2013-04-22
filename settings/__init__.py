@@ -220,11 +220,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
-
-from sh import git, ErrorReturnCode
-try:
-    REVISION = git('--git-dir', os.path.join(os.path.dirname(__file__), '../.git'), 'rev-parse', 'HEAD')
-except ErrorReturnCode:
-    REVISION = 'unknown'
-

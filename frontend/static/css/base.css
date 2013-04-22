@@ -154,53 +154,17 @@ input[type=text], input[type=password], textarea {
     border: 1px inset;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-#main-wrapper {
-    position: relative;
-    min-height: 100%;
-}
-
-#content {
-    margin-top: 25px;
-    padding-bottom: 76px;
-}
-
-footer {
-    bottom: 8px;
-    left: 0;
-    position: absolute;
-    height: 64px;
-    width: 100%;
-    padding-top: 3px;
-}
-
-header, footer {
-    background: #f0f0f0;
-    box-shadow: 3px 3px 10px #333;
-    border-top: solid 1px #fff;
-}
-
-footer p {
-    text-align: center;
-    font-size: 8px;
-}
-
 /* HEADER */
 
 header {
+    background: #f0f0f0;
+    box-shadow: 3px 3px 10px #333;
     border: solid 1px #fff;
     border-radius: 10px;
-    margin: 0 15px;
+    margin: 15px;
     position: relative;
-    top: 10px;
     min-height: 64px;
 }
-
 
 #header-loading {
     margin-top: 18px;

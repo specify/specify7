@@ -11,7 +11,7 @@ define([
         },
         el: $('<form id="express-search" action="/specify/express_search/">'),
         render: function() {
-            this.$el.append('<input type="search" class="express-search-query" name="q" placeholder="Search">');
+            this.$el.append('<input type="text" class="express-search-query" name="q" placeholder="Search">');
             return this;
         },
         search: function(evt) {
