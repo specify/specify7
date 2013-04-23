@@ -54,7 +54,7 @@ def make_id_field(flddef):
     from specify_datamodel.xml.
     """
     assert flddef.attrib['type'] == 'java.lang.Integer'
-    return models.AutoField(primary_key=True, db_column=flddef.attrib['column'])
+    return models.AutoField(primary_key=True, db_column=flddef.attrib['column'].lower())
 
 def make_relationship(modelname, relname, reldef):
     """Return a Django relationship field for the given relationship definition.
@@ -104,7 +104,7 @@ def make_relationship(modelname, relname, reldef):
             related_name = reldef.attrib['othersidename'].lower()
         except KeyError:
             related_name = '+' # magic symbol means don't make reverse field
-        column = reldef.attrib['columnname']
+        column = reldef.attrib['columnname'].lower()
         return Field('.'.join((appname, relatedmodel)),
                      db_column=column, related_name=related_name,
                      null=nullable, on_delete=on_delete,
@@ -137,7 +137,7 @@ class make_field(object):
         used by most field types.
         """
         return dict(
-            db_column=flddef.attrib['column'],
+            db_column=flddef.attrib['column'].lower(),
             db_index=(flddef.attrib['indexed'] == 'true'),
             unique=(flddef.attrib['unique'] == 'true'),
             editable=(flddef.attrib['updatable'] == 'true'),
