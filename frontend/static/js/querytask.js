@@ -54,7 +54,6 @@ define([
         events: {
             'click .query-execute': 'search',
             'click .field-add': 'addField',
-            'click .querybuilder-expand': 'queryBuilderExpand',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
         initialize: function(options) {
@@ -73,11 +72,6 @@ define([
             self.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
             });
-
-            $('<a class="querybuilder-expand">Expand</a>').button({
-                icons: { primary: 'ui-icon-triangle-1-s' },
-                text: false
-            }).hide().appendTo(self.el);
 
             self.query.on('saverequired', this.saveRequired, this);
 
@@ -144,15 +138,9 @@ define([
             });
             return header;
         },
-        queryBuilderExpand: function() {
-            this.$('.querybuilder').show('blind', 300);
-            this.$('.querybuilder-expand').hide();
-        },
         search: function(evt) {
             var self = this;
             var table = self.$('table.results');
-            self.$('.querybuilder-expand').show();
-            self.$('.querybuilder').hide('blind', 300);
 
             table.empty();
             table.append(self.renderHeader());
