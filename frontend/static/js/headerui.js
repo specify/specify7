@@ -1,9 +1,10 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'jquery-bbq'
-], function(require, $, _, Backbone, navigation) {
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'jquery-bbq',
+    'toolbarwelcome', 'toolbardataentry', 'toolbarquery'
+], function headerUI(require, $, _, Backbone, navigation, jquery_bbq) {
     "use strict";
 
-    var toolModules = ['toolbarwelcome', 'toolbardataentry', 'toolbarquery'];
+    var toolModules = _.tail(arguments, headerUI.length);
 
     var ExpressSearchInput = Backbone.View.extend({
         events: {
@@ -32,27 +33,23 @@ define([
         },
         el: $('#site-header'),
         render: function() {
-            var _this = this;
-            (new ExpressSearchInput()).render().$el.appendTo(_this.el);
-            require(toolModules, function() {
-                _this.$('#header-loading').remove();
-                _this.$el.append('<nav id="site-nav">');
-                var ul = $('<ul>');
-                _(arguments).each(function(toolDef) {
-                    $('<a>')
-                        .text(toolDef.title)
-                        .prepend($('<img>', {src: toolDef.icon}))
-                        .appendTo($('<li>').appendTo(ul));
-                });
-                _this.$('#site-nav').append(ul);
-                _this.modules = _(arguments).toArray();
+            (new ExpressSearchInput()).render().$el.appendTo(this.el);
+            this.$('#header-loading').remove();
+            this.$el.append('<nav id="site-nav">');
+            var ul = $('<ul>');
+            _(toolModules).each(function(toolDef) {
+                $('<a>')
+                    .text(toolDef.title)
+                    .prepend($('<img>', {src: toolDef.icon}))
+                    .appendTo($('<li>').appendTo(ul));
             });
-            return _this;
+            this.$('#site-nav').append(ul);
+            return this;
         },
         siteNavClick: function(evt) {
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
-            this.modules[index].execute();
+            toolModules[index].execute();
         }
     });
 });

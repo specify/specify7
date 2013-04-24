@@ -22,5 +22,4 @@
 * usergroupscopeid must be unique across all tables
 * do something about queries being deleted while being displayed
 * use 'raw' signal attribute in business rules to stop exception during fixture loading
-* toolbar modules are not being included in optimized js
 * check that more than 20 queries show up in the query task
