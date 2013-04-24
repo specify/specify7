@@ -79,7 +79,7 @@ class FieldSpec(namedtuple('FieldSpec', [
             table = aliased
         return query, table
 
-    def add_to_query(self, query, no_filter=False):
+    def add_to_query(self, query, no_filter=False, collection=None):
         using_subquery = False
         no_filter = no_filter or self.value == ''
 
@@ -87,7 +87,7 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         insp = inspect(table)
         if is_tree(insp) and not is_regular_field(insp, self.field_name):
-            query, field, using_subquery = handle_tree_field(query, self.field_name, table, insp, no_filter)
+            query, field, using_subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -106,26 +106,48 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         return query, field
 
-def handle_tree_field(query, field_name, node, insp, no_filter):
+def get_tree_def(query, collection, tree_name):
+    if tree_name == 'Storage':
+        return collection.discipline.division.institution.storagetreedef_id
+    else:
+        treedef_field = "%streedef_id" % tree_name.lower()
+        return  getattr(collection.discipline, treedef_field)
+
+
+def handle_tree_field(query, field_name, node, insp, no_filter, collection):
     treedef_column = insp.class_.__name__ + 'TreeDefID'
-
-    ancestor = orm.aliased(node)
-    ancestor_p = sql.and_(
-        getattr(node, treedef_column) == getattr(ancestor, treedef_column),
-        node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
-        )
-
     treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
+
     rank_p = (treedefitem.name == field_name)
 
-    if no_filter:
-        field = orm.Query(ancestor.name).with_session(query.session)\
-                .join(treedefitem)\
+    ancestor = orm.aliased(node)
+
+    if collection is not None:
+        treedef = get_tree_def(query, collection, insp.class_.__name__)
+        same_tree_p = getattr(ancestor, treedef_column) == treedef
+        rank_p = ancestor.rankId == query.session.query(treedefitem.rankId).filter(rank_p).one()[0]
+        join_treedefitem = False
+    else:
+        same_tree_p = getattr(node, treedef_column) == getattr(ancestor, treedef_column)
+        join_treedefitem = True
+
+    ancestor_p = sql.and_(
+        same_tree_p,
+        node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
+
+    if False:#no_filter:
+        subquery = orm.Query(ancestor.name).with_session(query.session)
+        if join_treedefitem:
+            subquery = subquery.join(treedefitem)
+        field = subquery\
                 .filter(ancestor_p, rank_p)\
                 .limit(1).as_scalar()
         using_subquery = True
     else:
-        query = query.join(ancestor, ancestor_p).join(treedefitem).filter(rank_p)
+        query = query.join(ancestor, ancestor_p)
+        if join_treedefitem:
+            query = query.join(treedefitem)
+        query = query.filter(rank_p)
         field = ancestor.name
         using_subquery = False
 

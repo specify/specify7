@@ -49,7 +49,8 @@ def query(request, id):
     headers = ['id']
     order_by_exprs = []
     for fs in field_specs:
-        query, field = fs.add_to_query(query)
+        query, field = fs.add_to_query(query,
+                                       collection=request.specify_collection)
         if fs.display:
             query = query.add_columns(field)
             headers.append(fs.spqueryfieldid)
