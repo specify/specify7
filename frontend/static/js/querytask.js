@@ -31,6 +31,7 @@ define([
                 });
                 var href = resource.viewUrl();
                 _.each(self.fieldUIs, function(fieldUI) {
+                    if (!fieldUI.spqueryfield.get('isdisplay')) return;
                     var value = result[fieldToCol(fieldUI)];
                     var field = fieldUI.getField();
                     if (field) {
@@ -130,6 +131,7 @@ define([
         renderHeader: function() {
             var header = $('<tr>');
             _.each(this.fieldUIs, function(fieldUI) {
+                if (!fieldUI.spqueryfield.get('isdisplay')) return;
                 var field = fieldUI.getField();
                 var icon = field.model.getIcon();
                 var name = fieldUI.treeRank || field.getLocalizedName();
