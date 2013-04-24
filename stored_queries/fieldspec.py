@@ -81,26 +81,13 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     def add_to_query(self, query, no_filter=False):
         using_subquery = False
+        no_filter = no_filter or self.value == ''
+
         query, table = self.build_join(query)
 
         insp = inspect(table)
         if is_tree(insp) and not is_regular_field(insp, self.field_name):
-            node = table
-            treedef_column = insp.class_.__name__ + 'TreeDefID'
-
-            ancestor = orm.aliased(node)
-            ancestor_p = sql.and_(
-                getattr(node, treedef_column) == getattr(ancestor, treedef_column),
-                node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
-                )
-
-            treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
-            rank_p = (treedefitem.name == self.field_name)
-            field = orm.Query(ancestor.name).with_session(query.session)\
-                    .join(treedefitem)\
-                    .filter(ancestor_p, rank_p)\
-                    .limit(1).as_scalar()
-            using_subquery = True
+            field, using_subquery = handle_tree_field(query, self.field_name, table, insp)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -108,7 +95,7 @@ class FieldSpec(namedtuple('FieldSpec', [
         else:
             field = getattr(table, self.field_name)
 
-        if self.value != '' and not no_filter:
+        if not no_filter:
             op = query_ops.by_op_num(self.op_num)
             f = op(field, self.value)
             if self.negate: f = not_(f)
@@ -118,6 +105,23 @@ class FieldSpec(namedtuple('FieldSpec', [
             query = query.reset_joinpoint()
 
         return query, field
+
+def handle_tree_field(query, field_name, node, insp):
+    treedef_column = insp.class_.__name__ + 'TreeDefID'
+
+    ancestor = orm.aliased(node)
+    ancestor_p = sql.and_(
+        getattr(node, treedef_column) == getattr(ancestor, treedef_column),
+        node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber)
+        )
+
+    treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
+    rank_p = (treedefitem.name == field_name)
+    field = orm.Query(ancestor.name).with_session(query.session)\
+            .join(treedefitem)\
+            .filter(ancestor_p, rank_p)\
+            .limit(1).as_scalar()
+    return field, True
 
 def is_regular_field(insp, field_name):
     return field_name in insp.class_.__dict__
