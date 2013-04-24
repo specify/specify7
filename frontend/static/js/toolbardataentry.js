@@ -5,7 +5,13 @@ define([
 ], function($, _, Backbone, schema, api, navigation, icons, specifyform,
             whenAll, populateform, SaveButton, DeleteButton, getAppResource) {
     "use strict";
+
     var dialog;
+    var commonDialogOpts = {
+        modal: true,
+        close: function() { dialog = null; $(this).remove(); }
+    };
+
     var formsList = getAppResource('DataEntryTaskInit');
 
     var dialogEntry = _.template('<li><a class="select" <%= href %>><img src="<%= icon %>"><%= name %></a>'
@@ -27,7 +33,7 @@ define([
                 ul.append(entry);
             });
             this.$el.append(ul);
-            this.$el.dialog({
+            this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Record Sets",
                 maxHeight: 400,
                 close: function() { dialog = null; $(this).remove(); },
@@ -35,7 +41,7 @@ define([
                     { text: 'New', click: function() { $(this).prop('disabled', true); openFormsDialog(); }},
                     { text: 'Cancel', click: function() { $(this).dialog('close'); }}
                 ]
-            });
+            }));
             return this;
         },
         getIndex: function(evt, selector) {
@@ -67,12 +73,12 @@ define([
             });
             ul.find('a.edit').remove();
             this.$el.append(ul);
-            this.$el.dialog({
+            this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Forms",
                 maxHeight: 400,
                 close: function() { dialog = null; $(this).remove(); },
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
-            });
+            }));
             return this;
         },
         selected: function(evt) {
@@ -138,11 +144,11 @@ define([
 
                 populateform(form, _this.recordset);
 
-                _this.$el.append(form).dialog({
+                _this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
                         width: 'auto',
                         title: title,
                         close: function() { $(this).remove(); dialog = null; }
-                });
+                }));
 
             });
             return this;

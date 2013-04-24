@@ -12,6 +12,10 @@ define([
     var title = "Query";
 
     var dialog;
+    var commonDialogOpts = {
+        modal: true,
+        close: function() { dialog = null; $(this).remove(); }
+    };
 
     var dialogEntry = _.template('<li><a class="select" <%= href %>><img src="<%= icon %>"><%= name %></a>'
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
@@ -32,15 +36,14 @@ define([
                 ul.append(entry);
             });
             this.$el.append(ul);
-            this.$el.dialog({
+            this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: title,
                 maxHeight: 400,
-                close: function() { dialog = null; $(this).remove(); },
                 buttons: [
                     {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                 ]
-            });
+            }));
             return this;
         },
         selected: function(evt) {
@@ -78,12 +81,11 @@ define([
             });
             ul.find('a.edit').remove();
             this.$el.append(ul);
-            this.$el.dialog({
+            this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "New Query Type",
                 maxHeight: 400,
-                close: function() { dialog = null; $(this).remove(); },
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
-            });
+            }));
             return this;
         },
         selected: function(evt) {
@@ -137,12 +139,11 @@ define([
 
                 populateform(form, _this.spquery);
 
-                _this.$el.append(form).dialog({
+                _this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
                         width: 'auto',
                         title: title,
                         close: function() { $(this).remove(); dialog = null; }
-                });
-
+                }));
             });
             return this;
         }
