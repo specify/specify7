@@ -51,8 +51,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             this.$('input').val(value);
         },
         render: function() {
-            var text = (this.options.negate ? 'Not ' : '') + this.opName;
-            $('<a class="field-operation">').text(text).appendTo(this.el);
+            $('<a class="field-operation">').text(this.opName).appendTo(this.el);
             this.input && $(this.input).appendTo(this.el);
             return this;
         },
@@ -104,8 +103,8 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         events: {
             'change .field-show': 'fieldShowChanged',
             'change .field-select': 'fieldSelected',
-            'change .op-select.op-type': 'opSelected',
-            'change .op-select.op-negate': 'opNegateSelected',
+            'change .op-type': 'opSelected',
+            'change input.op-negate': 'opNegateChanged',
             'change .datepart-select': 'datePartSelected',
             'click .field-sort': 'fieldSortClicked',
             'click .field-operation': 'backUpToOperation',
@@ -127,7 +126,6 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
                 this.datePart = fs.datePart;
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');
-                this.negate = this.spqueryfield.get('isnot');
             }
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
@@ -153,19 +151,13 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
                 '<button class="field-sort" title="Sort.">Sort</button>',
                 '<span class="field-label">',
                 '<select class="field-select">',
-                '<select class="op-select op-negate">',
+                '<input type="checkbox" class="op-negate" id="' + this.cid + '-negate">',
+                '<label title="Negate." for="' + this.cid + '-negate" class="op-negate ui-icon ui-icon-cancel"></label>',
                 '<select class="op-select op-type">',
                 '<select class="datepart-select">'
             );
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
-
-            this.$('button.field-trash').button({
-                icons: { primary: "ui-icon-trash" },
-                text: false
-            });
-            this.$('.op-negate').append('<option value="undefined">Negate?</option>',
-                                        '<option value="no">No</option>',
-                                        '<option value="yes">Yes</option>');
+            this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 
             this.$('.field-sort').button({
                 icons: { primary: "ui-icon-bullet" },
@@ -204,7 +196,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             });
         },
         setupFieldSelect: function() {
-            this.$('.op-select, .datepart-select').hide();
+            this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').remove();
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
 
@@ -244,8 +236,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         setupOpSelect: function() {
             this.$('.field-select, .datepart-select').hide();
             this.$('.field-input').remove();
-            this.$('.op-select').show();
-            this.$('.op-negate').val('undefined');
+            this.$('.op-select, label.op-negate').show();
             var opSelect = this.$('.op-type').empty().append('<option>Select Op...</option>');
             var type = this.getTypeForOp();
             _.each(opInfo, function(info, i) {
@@ -312,8 +303,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         fieldComplete: function() {
             this.$('.field-select, .datepart-select, .op-select').hide();
             this.inputUI = new (FieldInputUIByOp[this.operation])({
-                el: $('<span class="field-input">'),
-                negate: this.negate
+                el: $('<span class="field-input">')
             });
             this.inputUI.render().$el.appendTo(this.el);
             this.inputUI.on('changed', this.valueChanged, this);
@@ -325,11 +315,10 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         },
         opSelected: function() {
             this.operation = this.$('.op-type').val();
-            _(this.negate).isUndefined() || this.update();
+            this.update();
         },
-        opNegateSelected: function() {
-            this.negate = this.$('.op-negate').val() === 'yes';
-            _(this.operation).isUndefined() || this.update();
+        opNegateChanged: function() {
+            this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
         },
         datePartSelected: function() {
             this.datePart = this.$('.datepart-select').val();

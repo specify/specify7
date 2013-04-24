@@ -310,6 +310,14 @@ div.results div {
     background-color: #ffa;
 }
 
+.spqueryfield label.op-negate {
+    margin-right: 5px;
+}
+
+.spqueryfield label.op-negate.ui-state-active {
+    background-color: #f55;
+}
+
 .spqueryfield button {
     vertical-align: middle;
     padding-bottom: 8px;
