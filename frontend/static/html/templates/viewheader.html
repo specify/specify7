@@ -8,6 +8,9 @@
   </span>
   <% if (prevUrl) { %><a class="recordset-prev" href="<%= prevUrl %>">previous</a><% } %>
   <% if (nextUrl) { %><a class="recordset-next" href="<%= nextUrl %>">next</a><% } %>
+  <% if (newUrl) { %>
+  <a href="<%= newUrl %>" class="recordset-new">new</a>
+  <% } %>
 </h2>
 
 

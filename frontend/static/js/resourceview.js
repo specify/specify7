@@ -12,7 +12,7 @@ define([
 
     return Backbone.View.extend({
         events: {
-            'click .recordset-prev, .recordset-next': 'nav'
+            'click .specify-form-header a': 'nav'
         },
         initialize: function(options) {
             var self = this;
@@ -28,6 +28,10 @@ define([
 
                 self.next = self.recordsetInfo.next && specifyapi.Resource.fromUri(self.recordsetInfo.next);
                 self.next && (self.next.recordsetid = self.model.recordsetid);
+
+                var newResource = new (specifyapi.Resource.forModel(self.model.specifyModel))();
+                newResource.recordsetid = self.model.recordsetid;
+                self.newUrl = newResource.viewUrl();
             }
 
             if (!self.readOnly) {
@@ -51,7 +55,8 @@ define([
                 recordsetInfo: self.recordsetInfo,
                 recordsetName: self.recordSet && self.recordSet.get('name'),
                 prevUrl: self.prev && self.prev.viewUrl(),
-                nextUrl: self.next && self.next.viewUrl()
+                nextUrl: self.next && self.next.viewUrl(),
+                newUrl: self.newUrl
             }));
             specifyform.buildViewByName(self.model.specifyModel.view, 'form', self.mode).done(function(form) {
                 populateForm(form, self.model);
