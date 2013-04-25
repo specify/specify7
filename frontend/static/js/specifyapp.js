@@ -41,8 +41,38 @@ define([
         rootContainer.append(currentView.el);
     }
 
-    function handleError(jqhxr) {
-        setCurrentView(new ErrorView({ request: jqhxr }));
+    function handleError(jqxhr) {
+        setCurrentView(new ErrorView({ request: jqxhr }));
+        jqxhr.errorHandled = true;
+    }
+
+    function handleUnexpectedError(event, jqxhr, settings, exception) {
+        if (jqxhr.errorHandled) return;
+        if (jqxhr.status === 403) {
+            showErrorDialog($('<div title="Session Logged Out">'
+                              + 'Your current session has been logged out.'
+                              + '</div>'),
+                            { buttons: [{
+                                text: 'Login',
+                                click: function() {
+                                    window.location = "/accounts/login/?next=" +
+                                        window.location.href;
+                                }
+                            }]});
+            return;
+        }
+        showErrorDialog($('<div title="Unexpected Error">'
+                          + 'An unexpected error has occured during communication with the server.'
+                          + '</div>'));
+
+        console.log(arguments);
+    }
+
+    function showErrorDialog(el, options) {
+            el.appendTo('body').dialog(_.extend({
+            modal: true,
+            open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); }
+        }, options));
     }
 
     var SpecifyRouter = Backbone.Router.extend({
@@ -66,6 +96,7 @@ define([
     });
 
     function appStart() {
+        $(document).ajaxError(handleUnexpectedError);
         businessRules.enable(true);
         (new HeaderUI()).render();
         _.each(tasks, function(task) { task(app); });
