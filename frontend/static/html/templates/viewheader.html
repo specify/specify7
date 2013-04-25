@@ -6,10 +6,10 @@
     <% } %>
     <% if (recordsetName) { %>in &quot;<%= recordsetName %>&quot;<% } %>
   </span>
-  <% if (prevUrl) { %><a class="recordset-prev" href="<%= prevUrl %>">previous</a><% } %>
-  <% if (nextUrl) { %><a class="recordset-next" href="<%= nextUrl %>">next</a><% } %>
+  <% if (prevUrl) { %><a class="intercept-navigation recordset-prev" href="<%= prevUrl %>">previous</a><% } %>
+  <% if (nextUrl) { %><a class="intercept-navigation recordset-next" href="<%= nextUrl %>">next</a><% } %>
   <% if (newUrl) { %>
-  <a href="<%= newUrl %>" class="recordset-new">new</a>
+  <a href="<%= newUrl %>" class="intercept-navigation recordset-new">new</a>
   <% } %>
 </h2>
 

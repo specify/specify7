@@ -1,15 +1,12 @@
 define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'schema', 'queryfield', 'templates',
+    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
     'specifyapi', 'cs!fieldformat', 'cs!savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, navigation, schema, QueryFieldUI, templates,
+], function($, _, Backbone, schema, QueryFieldUI, templates,
             api, fieldformat, SaveButton, whenAll, ScrollResults) {
     "use strict";
 
     var Results = Backbone.View.extend({
-        events: {
-            'click a.query-result': 'navToResult'
-        },
         initialize: function(options) {
             this.fieldUIs = options.fieldUIs;
             this.model = options.model;
@@ -39,15 +36,11 @@ define([
                     }
                     row.append($('<td>').append($('<a>', {
                         href: href,
-                        "class": "query-result"
+                        "class": "intercept-navigation query-result"
                     }).text(value)));
                 });
             });
             return results.length;
-        },
-        navToResult: function(evt) {
-            evt.preventDefault();
-            return navigation.go($(evt.currentTarget).prop('href'));
         }
     });
 

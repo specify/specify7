@@ -1,18 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation'
-], function($, _, Backbone, schema, navigation) {
+    'jquery', 'underscore', 'backbone', 'schema'
+], function($, _, Backbone, schema) {
     "use strict";
     var datamodelview = {};
-
-    var NavView = Backbone.View.extend({
-        events: {
-            'click a': 'nav'
-        },
-        nav: function(evt) {
-            evt.preventDefault();
-            navigation.go($(evt.currentTarget).prop('href'));
-        }
-    });
 
     function attrsToDl(node) {
         var dl = $('<dl class="specify-datamodel-attrs">');
@@ -23,20 +13,20 @@ define([
         return dl;
     }
 
-
-    datamodelview.SchemaView = NavView.extend({
+    datamodelview.SchemaView = Backbone.View.extend({
         render: function() {
             var self = this;
             self.$el.append('<h2>Specify Schema</h2>');
             var table = $('<table>').appendTo(self.el);
             _(schema.models).each(function(model) {
-                table.append('<tr><td><a href="' + model.name.toLowerCase() + '/">' + model.name + '</a></td></tr>');
+                table.append('<tr><td><a class="intercept-navigation" href="' + model.name.toLowerCase() + '/">'
+                             + model.name + '</a></td></tr>');
             });
             return this;
         }
     });
 
-    datamodelview.DataModelView = NavView.extend({
+    datamodelview.DataModelView = Backbone.View.extend({
         render: function() {
             var self = this, model = schema.getModel(self.options.model);
             self.$el.append('<h2>' + model.name + '</h2>');
@@ -48,7 +38,8 @@ define([
                 tr.append('<td>' + field.type + '</td>');
                 if (field.isRelationship) {
                     var related = field.getRelatedModel();
-                    tr.append('<td><a href="../' + related.name.toLowerCase() + '/">' + related.name + '</a></td>');
+                    tr.append('<td><a class="intercept-navigation" href="../' + related.name.toLowerCase() + '/">'
+                              + related.name + '</a></td>');
                 } else tr.append('<td>');
                 field.node && $('<td>').append(attrsToDl(field.node.get(0))).appendTo(tr);
                 table.append(tr);

@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'cs!savebutton', 'cs!deletebutton'
-], function($, _, Backbone, specifyform, navigation, templates, SaveButton, DeleteButton) {
+    'jquery', 'underscore', 'backbone', 'specifyform', 'templates', 'cs!savebutton', 'cs!deletebutton'
+], function($, _, Backbone, specifyform, templates, SaveButton, DeleteButton) {
 
     return Backbone.View.extend({
         events: {

@@ -17,13 +17,12 @@ define([
         close: function() { dialog = null; $(this).remove(); }
     };
 
-    var dialogEntry = _.template('<li><a class="select" <%= href %>><img src="<%= icon %>"><%= name %></a>'
+    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>"><%= name %></a>'
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var dialogView = Backbone.View.extend({
         className: "stored-queries-dialog list-dialog",
         events: {
-            'click a.select': 'selected',
             'click a.edit': 'edit'
         },
         render: function() {
@@ -45,12 +44,6 @@ define([
                 ]
             }));
             return this;
-        },
-        selected: function(evt) {
-            evt.preventDefault();
-            var index = this.$('a.select').index(evt.currentTarget);
-            var queryId = this.options.queries.at(index).id;
-            navigation.go('/query/' + queryId + '/');
         },
         edit: function(evt) {
             evt.preventDefault();

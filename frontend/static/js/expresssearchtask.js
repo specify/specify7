@@ -1,10 +1,10 @@
 define([
-'jquery', 'underscore', 'backbone', 'navigation', 'cs!appresource', 'schema',
+'jquery', 'underscore', 'backbone', 'cs!appresource', 'schema',
 'specifyapi', 'cs!fieldformat', 'cs!props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, navigation, getAppResource, schema,
+], function($, _, Backbone, getAppResource, schema,
             api, fieldformat, props, ScrollResults, whenAll,
             availableRelatedJson, propstext) {
     "use strict";
@@ -82,7 +82,7 @@ define([
                     var value = fieldformat(field, values[i]);
                     row.append($('<td>').append($('<a>', {
                         href: href,
-                        "class": "express-search-result"
+                        "class": "intercept-navigation express-search-result"
                     }).text(value)));
                 });
             }, this);
@@ -103,7 +103,6 @@ define([
 
     var ResultsView = Backbone.View.extend({
         events: {
-            'click a.express-search-result': 'navToResult',
             'accordionchange': 'panelOpened'
         },
         render: function() {
@@ -187,10 +186,6 @@ define([
         panelOpened: function(evt, ui) {
             var resultsView = ui.newContent.data('view');
             resultsView && resultsView.fetchMoreWhileAppropriate();
-        },
-        navToResult: function(evt) {
-            evt.preventDefault();
-            return navigation.go($(evt.currentTarget).prop('href'));
         }
     });
 

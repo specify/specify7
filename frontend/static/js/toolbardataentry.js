@@ -14,13 +14,12 @@ define([
 
     var formsList = getAppResource('DataEntryTaskInit');
 
-    var dialogEntry = _.template('<li><a class="select" <%= href %>><img src="<%= icon %>"><%= name %></a>'
+    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>"><%= name %></a>'
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var RecordSetsDialog = Backbone.View.extend({
         className: "recordsets-dialog list-dialog",
         events: {
-            'click a.select': 'selected',
             'click a.edit': 'edit'
         },
         render: function() {
@@ -47,11 +46,6 @@ define([
         getIndex: function(evt, selector) {
             evt.preventDefault();
             return this.$(selector).index(evt.currentTarget);
-        },
-        selected: function(evt) {
-            var index = this.getIndex(evt, 'a.select');
-            var recordSetId = this.options.recordSets.at(index).id;
-            navigation.go('/recordset/' + recordSetId + '/');
         },
         edit: function(evt) {
             var index = this.getIndex(evt, 'a.edit');

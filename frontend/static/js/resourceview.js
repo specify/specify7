@@ -11,9 +11,6 @@ define([
     function setWindowTitle(title) { window && (window.document.title = title); }
 
     return Backbone.View.extend({
-        events: {
-            'click .specify-form-header a': 'nav'
-        },
         initialize: function(options) {
             var self = this;
             self.model.on('change', self.setTitle, self);
@@ -85,10 +82,6 @@ define([
         },
         setFormTitle: function(title) {
             this.header.find('.view-title').text(title);
-        },
-        nav: function(evt) {
-            evt.preventDefault();
-            navigation.go($(evt.currentTarget).prop('href'));
         },
         saved: function(options) {
             var self = this;

@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'cs!businessrules',
-    'errorview', 'welcomeview', 'headerui', 'notfoundview',
+    'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
     'text!context/user.json!noinline',
 // Tasks
     'datatask',
@@ -9,7 +9,8 @@ define([
     'datamodeltask'
 ], function module(
     $, _, Backbone, schema, businessRules, ErrorView,
-    WelcomeView, HeaderUI, NotFoundView, userJSON) {
+    WelcomeView, HeaderUI, NotFoundView, navigation,
+    userJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
 
@@ -103,6 +104,11 @@ define([
 
         // start processing the urls to draw the corresponding views
         Backbone.history.start({pushState: true, root: '/specify/'});
+
+        $('body').delegate('a.intercept-navigation', 'click', function(evt) {
+            evt.preventDefault();
+            navigation.go($(evt.currentTarget).prop('href'));
+        });
     }
 
 
