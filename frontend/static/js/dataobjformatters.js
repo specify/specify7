@@ -1,7 +1,7 @@
 define([
-    'jquery', 'specifyapi', 'whenall', 'cs!fieldformat',
+    'jquery', 'underscore', 'whenall', 'cs!fieldformat',
     'text!context/app.resource?name=DataObjFormatters!noinline'
-], function($, api, whenAll, fieldformat, xml) {
+], function($, _, whenAll, fieldformat, xml) {
     "use strict";
     var formatters = $.parseXML(xml);
 
