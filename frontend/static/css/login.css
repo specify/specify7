@@ -60,3 +60,16 @@ span.help {
 .password-reset-link {
     text-align: center;
 }
+
+.errornote {
+    margin: 10px;
+    padding: 3px;
+    background-color: red;
+}
+
+.errorlist li {
+    width: auto;
+    padding-left: 3px;
+    margin-right: 20px;
+    background-color: red;
+}

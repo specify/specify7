@@ -8,8 +8,8 @@
 
 <body>
   <div id="content">
-    {% if form.non_field_errors or form.this_is_the_login_form.errors %}
-    {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+    {% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
     <p class="errornote">
       {{ error }}
     </p>
