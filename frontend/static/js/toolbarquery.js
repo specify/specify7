@@ -134,8 +134,7 @@ define([
 
                 _this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
                         width: 'auto',
-                        title: title,
-                        close: function() { $(this).remove(); dialog = null; }
+                        title: title
                 }));
             });
             return this;

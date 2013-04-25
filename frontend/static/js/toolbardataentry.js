@@ -35,7 +35,6 @@ define([
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Record Sets",
                 maxHeight: 400,
-                close: function() { dialog = null; $(this).remove(); },
                 buttons: [
                     { text: 'New', click: function() { $(this).prop('disabled', true); openFormsDialog(); }},
                     { text: 'Cancel', click: function() { $(this).dialog('close'); }}
@@ -70,7 +69,6 @@ define([
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Forms",
                 maxHeight: 400,
-                close: function() { dialog = null; $(this).remove(); },
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             }));
             return this;
@@ -140,8 +138,7 @@ define([
 
                 _this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
                         width: 'auto',
-                        title: title,
-                        close: function() { $(this).remove(); dialog = null; }
+                        title: title
                 }));
 
             });
