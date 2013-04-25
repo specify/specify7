@@ -5,11 +5,11 @@ from xml.etree import ElementTree
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
-from django.contrib.auth.decorators import login_required
 
 from specify import models
 from specify.filter_by_col import filter_by_collection
 from specify.api import toJson
+from specify.views import login_required
 
 from context.app_resource import get_app_resource
 

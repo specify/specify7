@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
@@ -10,6 +9,7 @@ from specify.models import Collection
 from app_resource import get_app_resource
 from viewsets import get_view
 from schema_localization import get_schema_localization
+from specify.views import login_required
 
 def login(request):
     """A Django view to log users into the system.

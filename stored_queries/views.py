@@ -3,12 +3,12 @@ from collections import namedtuple
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
 from specify.api import toJson
+from specify.views import login_required
 import models
 
 from fieldspec import FieldSpec

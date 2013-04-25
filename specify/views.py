@@ -1,12 +1,20 @@
 import mimetypes
+from functools import wraps
 
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django import http
 
 from specify_jar import specify_jar
 import api
+
+def login_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return http.HttpResponseForbidden()
+        return view(request, *args, **kwargs)
+    return wrapped
 
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
