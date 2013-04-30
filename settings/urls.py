@@ -17,6 +17,7 @@ urlpatterns = patterns(
     url(r'^specify/', include('frontend.urls')),
 
     # the main business data API
+    url(r'^api/specify_rows/(?P<model>\w+)/$', 'specify.views.rows'),
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specify.views.collection'),
 

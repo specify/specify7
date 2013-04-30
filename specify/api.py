@@ -529,3 +529,16 @@ def uri_for_model(model, id=None):
     if id is not None:
         uri += '%d/' % int(id)
     return uri
+
+def rows(request, model):
+    query = getattr(models, model.capitalize()).objects.all()
+    fields = request.GET['fields'].split(',')
+    query = query.values_list(*fields).order_by(*fields)
+    query = filter_by_collection(query, request.specify_collection)
+    if request.GET.get('distinct', False):
+        query = query.distinct()
+    limit = request.GET.get('limit', 0)
+    if limit > 0:
+        query = query[:limit]
+    data = list(query)
+    return HttpResponse(toJson(data), content_type='application/json')

@@ -1,6 +1,16 @@
-define(['underscore', 'collectionapi'], function(_, api) {
+define(['jquery', 'underscore', 'collectionapi'], function($, _, api) {
 
     return _.extend(api, {
+        getRows: function(table, options) {
+            table = _.isString(table) ? table : table.name;
+            var url = '/api/specify_rows/' + table.toLowerCase() + '/';
+            var data = {
+                fields: options.fields.join(',').toLowerCase(),
+                limit: options.limit.toString(),
+                distinct: options.distinct ? 'true' : 'false'
+            };
+            return $.get(url, data).promise();
+        },
         getPickListByName: function(pickListName) {
             var pickListUri = "/api/specify/picklist/?name=" + pickListName;
             var collection = api.Collection.fromUri(pickListUri);

@@ -72,14 +72,19 @@ define [
                 api.getPickListByName(@pickListName).pipe (picklist) ->
                     plTable = picklist.get 'tablename'
                     plModel = schema.getModel plTable if plTable
+                    plFieldName = picklist.get 'fieldname'
+                    limit = picklist.get 'sizelimit'
+                    limit = 0 if limit < 1
                     if not plModel
                         picklist.rget('picklistitems').pipe (plItemCollection) ->
-                            plItemCollection.fetch(limit: 0).pipe ->
+                            plItemCollection.fetch(limit: limit).pipe ->
                                 plItemCollection.toJSON()
+                    else if plFieldName
+                        api.getRows(plModel, {limit: limit, fields: [plFieldName], distinct: true}).pipe (rows) ->
+                            _.map rows, (row) -> {value: row[0], title: row[0]}
                     else
-                        # items come from another table
                         plItemCollection = new (api.Collection.forModel plModel)()
-                        plItemCollection.fetch(limit: 0).pipe -> plItemCollection.map (item) ->
+                        plItemCollection.fetch(limit: limit).pipe -> plItemCollection.map (item) ->
                                 value: item.url()
                                 title: item.get 'name'
 

@@ -41,6 +41,11 @@ def api_view(dispatch_func):
 resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
 
+@login_required
+@require_GET
+def rows(request, model):
+    return api.rows(request, model)
+
 @require_GET
 def images(request, path):
     """A Django view that serves images and icons from the Specify thickclient jar file."""
