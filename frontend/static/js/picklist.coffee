@@ -31,7 +31,9 @@ define [
             @initialized = true
 
 
-        setValueIntoModel: -> @model.set @field.name, @$el.val()
+        setValueIntoModel: ->
+            value = @$el.val() or null
+            @model.set @field.name, value
 
         setupOptions: (items, value) ->
             # value maybe undefined, null, a string, or a Backbone model
@@ -43,7 +45,8 @@ define [
                 @$el.append '<option>'
 
             _(items).each (item) =>
-                @$el.append $('<option>', value: item.value).text item.title
+                if item.value
+                    @$el.append $('<option>', value: item.value).text item.title
 
             # value will be undefined when creating picklist for new resource
             # so we set the model to have whatever the select element is set to
