@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'jquery-bbq',
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'cs!domain', 'jquery-bbq',
     'toolbarwelcome', 'toolbardataentry', 'toolbarquery'
-], function headerUI(require, $, _, Backbone, navigation, jquery_bbq) {
+], function headerUI(require, $, _, Backbone, navigation, domain, jquery_bbq) {
     "use strict";
 
     var toolModules = _.tail(arguments, headerUI.length);
@@ -12,7 +12,7 @@ define([
         },
         el: $('<form id="express-search" action="/specify/express_search/">'),
         render: function() {
-            this.$el.append('<input type="text" class="express-search-query" name="q" placeholder="Search">');
+            this.$el.append('<input type="search" class="express-search-query" name="q" placeholder="Search">');
             return this;
         },
         search: function(evt) {
@@ -33,7 +33,14 @@ define([
         },
         el: $('#site-header'),
         render: function() {
+            var _this = this;
+            var app = require('specifyapp');
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
+            domain.levels.collection.fetchIfNotPopulated().done(function (collection) {
+                _this.$('#user-tools').prepend(app.user.name + ' | '
+                                               + collection.get('collectionname')
+                                               + ' | ');
+            });
             this.$('#header-loading').remove();
             this.$el.append('<nav id="site-nav">');
             var ul = $('<ul>');
