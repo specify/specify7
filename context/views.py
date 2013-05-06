@@ -1,7 +1,7 @@
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.utils import simplejson
 
 from specify.models import Collection
@@ -26,6 +26,35 @@ def login(request):
 def logout(request):
     """A Django view to log users out."""
     return auth_views.logout(request, template_name='logged_out.html')
+
+@require_http_methods(['GET', 'PUT'])
+@csrf_exempt
+def api_login(request):
+    if request.method == 'PUT':
+        data = simplejson.load(request)
+        if any(data[key] is None for key in 'username password collection'.split()):
+            auth_logout(request)
+            return HttpResponse('', status=204)
+
+        user = authenticate(username=data['username'],
+                            password=data['password'])
+        if user is None:
+            return HttpResponseForbidden()
+        auth_login(request, user)
+
+        try:
+            collection = Collection.objects.get(id=data['collection'])
+        except Collection.DoesNotExist:
+            return HttpResponseBadRequest('collection %s does not exist' % data['collection'])
+        request.session['collection'] = collection.id
+
+        return HttpResponse('', status=204)
+
+    return HttpResponse(simplejson.dumps(dict(
+        collections={c.collectionname: c.id for c in Collection.objects.all()},
+        username=None,
+        password=None,
+        collection=None)), content_type='application/json')
 
 @login_required
 @csrf_exempt
