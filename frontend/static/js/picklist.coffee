@@ -4,10 +4,12 @@ define [
         'specifyapi'
         'schema'
         'backbone'
+        'dataobjformatters'
         'cs!saveblockers'
         'cs!agenttypepicklist'
         'cs!tooltipmgr'
-], ( $, _, api, schema, Backbone, saveblockers, agentTypesPL, ToolTipMgr) ->
+        'whenall'
+], ( $, _, api, schema, Backbone, objformat, saveblockers, agentTypesPL, ToolTipMgr, whenAll) ->
 
     Backbone.View.extend
         events:
@@ -73,23 +75,28 @@ define [
         getPickListItems: ->
             if @isAgentType then agentTypesPL else
                 api.getPickListByName(@pickListName).pipe (picklist) ->
-                    plTable = picklist.get 'tablename'
-                    plModel = schema.getModel plTable if plTable
-                    plFieldName = picklist.get 'fieldname'
                     limit = picklist.get 'sizelimit'
                     limit = 0 if limit < 1
-                    if not plModel
-                        picklist.rget('picklistitems').pipe (plItemCollection) ->
-                            plItemCollection.fetch(limit: limit).pipe ->
+                    switch picklist.get 'type'
+                        when 0 # items in picklistitems table
+                            picklist.rget('picklistitems').pipe (plItemCollection) ->
+                                # all picklist items are inlined.
                                 plItemCollection.toJSON()
-                    else if plFieldName
-                        api.getRows(plModel, {limit: limit, fields: [plFieldName], distinct: true}).pipe (rows) ->
-                            _.map rows, (row) -> {value: row[0], title: row[0]}
-                    else
-                        plItemCollection = new (api.Collection.forModel plModel)()
-                        plItemCollection.fetch(limit: limit).pipe -> plItemCollection.map (item) ->
-                                value: item.url()
-                                title: item.get 'name'
+                        when 1 # items are objects from a table
+                            plModel = schema.getModel picklist.get 'tablename'
+                            plItemCollection = new (api.Collection.forModel plModel)()
+                            plItemCollection.fetch(limit: limit).pipe ->
+                                whenAll plItemCollection.map (item) ->
+                                    objformat(item, picklist.get 'formatter').pipe (title) ->
+                                        value: item.url()
+                                        title: title
+                        when 2 # items are fields from a table
+                            plModel = schema.getModel picklist.get 'tablename'
+                            plFieldName = picklist.get 'fieldname'
+                            api.getRows(plModel, {limit: limit, fields: [plFieldName], distinct: true}).pipe (rows) ->
+                                _.map rows, (row) -> {value: row[0], title: row[0]}
+                        else
+                            throw new Error 'unknown picklist type'
 
         render: ->
             if not @initialized

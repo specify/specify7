@@ -8,6 +8,7 @@ from businessrules import deletion_policies
 appname = __name__.split('.')[-2]
 
 orderings = {
+    'Picklistitem': ('ordinal', ),
     'Recordsetitem': ('recordid', ),
     'Spqueryfield': ('position', ),
 }
