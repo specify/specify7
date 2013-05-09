@@ -46,6 +46,52 @@ define([
         }
     });
 
+    var Slider = Backbone.View.extend({
+        className: 'recordselector-slider',
+        events: {
+            'slidestop': 'onslidestop',
+            'slide': 'onslide'
+        },
+        initialize: function(options) {
+            this.recordSelector = options.recordSelector;
+
+            var _this = this;
+            this.throttledSlideStop = _.throttle(function() {
+                _this.recordSelector.fetchThenRedraw(_this.getOffset());
+            }, 750);
+
+            Backbone.View.prototype.initialize.apply(this, arguments);
+        },
+        render: function() {
+            this.$el.slider();
+            this.$('.ui-slider-handle').text(1);
+            return this;
+        },
+        setOptions: function(options) {
+            this.$el.slider('option', options);
+        },
+        getOffset: function() {
+            return this.$el.slider('value');
+        },
+        setOffset: function(val) {
+            this.$el.slider('value', val);
+        },
+        onslidestop: function() {
+            this.throttledSlideStop();
+        },
+        onslide: function() {
+            var offset = this.getOffset();
+            this.$('.ui-slider-handle').text(offset + 1);
+            this.recordSelector.onSlide(offset);
+        },
+        hide: function() {
+            this.$el.hide();
+        },
+        show: function() {
+            this.$el.show();
+        }
+    });
+
     return Backbone.View.extend({
         events: {
             'remove': function (evt) {
@@ -71,7 +117,7 @@ define([
         },
         onAdd: function() {
             var end = this.collection.length - 1;
-            this.slider.slider('option', { max: end, value: end });
+            this.slider.setOptions({ max: end, value: end });
             this.fetchThenRedraw(end) || this.redraw(end);
             this.showHide();
         },
@@ -80,13 +126,13 @@ define([
             if (this.collection.length > 0) {
                 var currentIndex = this.currentIndex();
                 var value = Math.min(currentIndex, end);
-                this.slider.slider('option', { max: end, value: value });
+                this.slider.setOptions({ max: end, value: value });
                 this.fetchThenRedraw(value) || this.redraw(value);
             }
             this.showHide();
         },
         currentIndex: function() {
-            var value = this.slider.slider('value');
+            var value = this.slider.getOffset();
             return _.isNumber(value) ? value : 0;
         },
         resourceAt: function(index) {
@@ -110,16 +156,16 @@ define([
         render: function() {
             var self = this;
             self.$el.empty();
-            self.slider = $('<div>');
+            self.slider = new Slider({ recordSelector: this }).render();
+            self.slider.setOptions({ max: self.collection.length - 1 });
 
-            if (!self.noHeader) {
-                new Header({
-                    recordSelector: this,
-                    readOnly: this.readOnly
-                }).render().$el.appendTo(this.el);
-            }
+            self.noHeader || new Header({
+                recordSelector: this,
+                readOnly: this.readOnly
+            }).render().$el.appendTo(this.el);
 
-            self.sliderAtTop && self.$el.append(self.slider);
+            self.sliderAtTop && self.$el.append(self.slider.el);
+
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
 
@@ -128,31 +174,23 @@ define([
             self.content = $('<div>').appendTo(self.el).append(self.form.clone());
 
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
-            self.sliderAtTop || self.$el.append(self.slider);
+
+            self.sliderAtTop || self.$el.append(self.slider.el);
 
             if (self.noHeader && !self.readOnly) {
                 new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(this.el);
             }
 
-            self.slider.slider({
-                max: self.collection.length - 1,
-                stop: _.throttle(function(event, ui) { self.fetchThenRedraw(ui.value); }, 750),
-                slide: function(event, ui) { self.onSlide(ui.value); }
-            }).addClass('recordselector-slider');
-
-            self.slider.find('.ui-slider-handle').text(1);
-
             var params = $.deparam.querystring(true);
             var index = params[self.urlParam] || 0;
             index === 'end' && (index = self.collection.length - 1);
 
-            self.slider.slider('value', index);
+            self.slider.setOffset(index);
             self.fetchThenRedraw(index) || self.redraw(index);
             self.showHide();
             return self;
         },
         onSlide: function(offset) {
-            $('.ui-slider-handle', this.slider).text(offset + 1);
             if (_(this.collection.at(offset)).isUndefined()) this.showSpinner();
             else _.defer(_.bind(this.redraw, this, offset));
         },
@@ -171,7 +209,6 @@ define([
                 params[self.urlParam] = offset;
                 navigation.push($.param.querystring(window.location.pathname, params));
             }
-            $('.ui-slider-handle', this.slider).text(offset + 1);
         },
         showSpinner: function() {
             if (!this.spinner.is(':hidden')) return;
