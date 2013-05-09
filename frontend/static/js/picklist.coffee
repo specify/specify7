@@ -80,8 +80,11 @@ define [
                     switch picklist.get 'type'
                         when 0 # items in picklistitems table
                             picklist.rget('picklistitems').pipe (plItemCollection) ->
-                                # all picklist items are inlined.
-                                plItemCollection.toJSON()
+                                if plItemCollection.wasInline
+                                     plItemCollection.toJSON()
+                                else
+                                     plItemCollection.fetch(limit: limit).pipe ->
+                                        plItemCollection.toJSON()
                         when 1 # items are objects from a table
                             plModel = schema.getModel picklist.get 'tablename'
                             plItemCollection = new (api.Collection.forModel plModel)()
