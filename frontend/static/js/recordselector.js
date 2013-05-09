@@ -9,37 +9,41 @@ define([
     var BLOCK_SIZE = 20;
 
     return Backbone.View.extend({
+        events: {
+            'remove': function () { this.collection.off(null, null, this); }
+        },
         initialize: function(options) {
-            var self = this;
-            self.form = self.options.form;
-            self.readOnly = self.options.readOnly || specifyform.getFormMode(self.form) === 'view';
+            this.form = this.options.form;
+            this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
 
-            self.field = options.field;
-            if (self.field && !self.collection.parent)
+            this.field = options.field;
+            if (this.field && !this.collection.parent)
                 throw new Error('parent not defined for collection');
 
-            self.title = self.field ? self.field.getLocalizedName() : self.collection.model.specifyModel.getLocalizedName();
-            self.noHeader = _.isUndefined(options.noHeader) ? self.$el.hasClass('no-header') : options.noHeader;
-            self.sliderAtTop = _.isUndefined(options.sliderAtTop) ? self.$el.hasClass('slider-at-top') : options.sliderAtTop;
-            self.urlParam = options.urlParam || self.$el.data('url-param');
+            this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
+            this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
+            this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;
+            this.urlParam = options.urlParam || this.$el.data('url-param');
 
-            self.collection.on('add', function() {
-                var end = self.collection.length - 1;
-                self.slider.slider('option', { max: end, value: end });
-                self.fetchThenRedraw(end) || self.redraw(end);
-                self.showHide();
-            });
+            this.collection.on('add', this.onAdd, this);
 
-            self.collection.on('remove destroy', function() {
-                var end = self.collection.length - 1;
-                if (self.collection.length > 0) {
-                    var currentIndex = self.currentIndex();
-                    var value = Math.min(currentIndex, end);
-                    self.slider.slider('option', { max: end, value: value });
-                    self.fetchThenRedraw(value) || self.redraw(value);
-                }
-                self.showHide();
-            });
+            this.collection.on('remove destroy', this.onRemove, this);
+        },
+        onAdd: function() {
+            var end = this.collection.length - 1;
+            this.slider.slider('option', { max: end, value: end });
+            this.fetchThenRedraw(end) || this.redraw(end);
+            this.showHide();
+        },
+        onRemove: function() {
+            var end = this.collection.length - 1;
+            if (this.collection.length > 0) {
+                var currentIndex = this.currentIndex();
+                var value = Math.min(currentIndex, end);
+                this.slider.slider('option', { max: end, value: value });
+                this.fetchThenRedraw(value) || this.redraw(value);
+            }
+            this.showHide();
         },
         currentIndex: function() {
             var value = this.slider.slider('value');
