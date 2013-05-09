@@ -8,9 +8,49 @@ define([
 
     var BLOCK_SIZE = 20;
 
+    var Controls = Backbone.View.extend({
+        initialize: function(options) {
+            this.recordSelector = options.recordSelector;
+            Backbone.View.prototype.initialize.call(this, options);
+        },
+        events: {
+            'click .specify-add-related': function (evt) {
+                evt.preventDefault();
+                this.recordSelector.add();
+            },
+            'click .specify-delete-related': function (evt) {
+                evt.preventDefault();
+                this.recordSelector.delete();
+            },
+            'click .specify-visit-related': function (evt) {
+                evt.preventDefault();
+                this.recordSelector.visit();
+            }
+        }
+    });
+
+    var Header = Controls.extend({
+        el: templates.subviewheader(),
+        render: function () {
+            this.options.readOnly &&
+                this.$('.specify-add-related, .specify-delete-related').remove();
+            return this;
+        }
+    });
+
+    var AddDeleteBtns = Controls.extend({
+        render: function () {
+            this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
+                            '<input type="button" value="Delete" class="specify-delete-related">');
+            return this;
+        }
+    });
+
     return Backbone.View.extend({
         events: {
-            'remove': function () { this.collection.off(null, null, this); }
+            'remove': function (evt) {
+                (evt.target === this.el) && this.collection.off(null, null, this);
+            }
         },
         initialize: function(options) {
             this.form = this.options.form;
@@ -71,7 +111,14 @@ define([
             var self = this;
             self.$el.empty();
             self.slider = $('<div>');
-            var header = self.noHeader ? null : self.$el.append(templates.subviewheader());
+
+            if (!self.noHeader) {
+                new Header({
+                    recordSelector: this,
+                    readOnly: this.readOnly
+                }).render().$el.appendTo(this.el);
+            }
+
             self.sliderAtTop && self.$el.append(self.slider);
             self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
@@ -83,17 +130,8 @@ define([
             self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
             self.sliderAtTop || self.$el.append(self.slider);
 
-            if (header) {
-                if (self.readOnly) {
-                    header.find('.specify-add-related, .specify-delete-related').remove();
-                } else {
-                    header.find('.specify-add-related').click(_.bind(self.add, self));
-                    header.find('.specify-delete-related').click(_.bind(self.delete, self));
-                }
-                header.find('.specify-visit-related').click(_.bind(self.visit, self));
-            } else if (!self.readOnly) {
-                $('<input type="button" value="Add">').appendTo(self.el).click(_.bind(self.add, self));
-                $('<input type="button" value="Delete">').appendTo(self.el).click(_.bind(self.delete, self));
+            if (self.noHeader && !self.readOnly) {
+                new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(this.el);
             }
 
             self.slider.slider({
@@ -167,14 +205,12 @@ define([
                 break;
             }
         },
-        delete: function(evt) {
-            var self = this;
-            evt.preventDefault();
-            var resource = self.currentResource();
-            if (self.collection.dependent) {
-                self.collection.remove(resource);
+        delete: function() {
+            var resource = this.currentResource();
+            if (this.collection.dependent) {
+                this.collection.remove(resource);
             } else {
-                resource.isNew() ? resource.destroy() : self.makeDeleteDialog();
+                resource.isNew() ? resource.destroy() : this.makeDeleteDialog();
             }
         },
         makeDeleteDialog: function() {
