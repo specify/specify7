@@ -13,7 +13,7 @@ define([
                 if (related.dependent) this.needsSaved = true;
                 else args[0] = 'subsaverequired';
             case 'subsaverequired':
-                return this.trigger.apply(this, args);
+                this.trigger.apply(this, args);
                 break;
             case 'change:id':
                 this.set(field.name, related.url());
@@ -43,7 +43,6 @@ define([
             case 'add':
             case 'remove':
                 // annotate add and remove events with the field in which they occured
-                var args = _(arguments).toArray();
                 args[0] = event + ':' + field.name.toLowerCase();
                 this.trigger.apply(this, args);
                 break;
@@ -332,6 +331,8 @@ define([
                         self.setToOneCache(field, value);
                         return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
                     });
+                default:
+                    throw new Error('unhandled relationship type');
                 }
             });
         },
@@ -461,7 +462,7 @@ define([
         },
         onChange: function(fieldName, callback) {
             // bind a callback to the change event for the named field
-            var fieldName = fieldName.toLowerCase();
+            fieldName = fieldName.toLowerCase();
             var event = fieldName.split('.').length === 1 ? 'change:' : 'rchange:';
             this.on(event + fieldName, function(resource, value) { callback(value); });
         },
@@ -469,8 +470,8 @@ define([
             var self = this;
             var myPath = self.specifyModel.orgPath();
             var otherPath = other.specifyModel.orgPath();
-            if (!myPath || !otherPath) return;
-            if (myPath.length > otherPath.length) return;
+            if (!myPath || !otherPath) return null;
+            if (myPath.length > otherPath.length) return null;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();
             return other.rget(diff.join('.')).done(function(common) {
                 self.set(_(diff).last(), common.url());
@@ -479,7 +480,7 @@ define([
     }, {
         forModel: function(model) {
             // given a model name or object, return a constructor for resources of that type
-            var model = _(model).isString() ? schema.getModel(model) : model;
+            model = _(model).isString() ? schema.getModel(model) : model;
             if (!model) return null;
 
             if (!_(resources).has(model.name)) {
