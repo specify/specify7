@@ -180,9 +180,13 @@ define([
             // make the keys case insensitive
             var attrs = {}, self = this;
             if (_.isObject(key) || key == null) {
+                // in the two argument case, so
+                // "key" is actually an object mapping keys to values
                 _(key).each(function(value, key) { attrs[key.toLowerCase()] = value; });
+                // and the options are actually in "value" argument
                 options = value;
             } else {
+                // three argument case
                 attrs[key.toLowerCase()] = value;
             }
 
@@ -190,6 +194,7 @@ define([
             // relationships depend on it
             if ('id' in attrs) self.id = attrs.id;
 
+            // handle relationship fields
             _.each(attrs, function(value, fieldName) {
                 var field = self.specifyModel.getField(fieldName);
                 if (!field || !field.isRelationship) return;
@@ -198,20 +203,25 @@ define([
 
                 var oldRelated = self.relatedCache[fieldName];
                 if (_.isString(value)) {
+                    // got a URI
                     if (oldRelated && field.type ===  'many-to-one') {
                         if (oldRelated.url() !== value) {
+                            // the reference changed
                             delete self.relatedCache[fieldName];
                             oldRelated.off('all', null, this);
                         }
                     }
                 } else {
+                    // got an inlined resource or collection
                     switch (field.type) {
                     case 'one-to-many':
+                        // should we handle passing in an api.Collection instance here??
                         self.setToManyCache(field, new (api.Collection.forModel(relatedModel))(value, {parse: true}));
-                        delete attrs[fieldName];
+                        delete attrs[fieldName]; // because the foreign key is on the other side
                         return;
                     case 'many-to-one':
                         if (!value) {
+                            // the FK is null, or not a URI or inlined resource at any rate
                             self.setToOneCache(field, value);
                             return;
                         }
@@ -220,15 +230,17 @@ define([
                             new (self.constructor.forModel(relatedModel))(value, {parse: true});
 
                         self.setToOneCache(field, value);
-                        attrs[fieldName] = self.relatedCache[fieldName].url();
+                        attrs[fieldName] = self.relatedCache[fieldName].url(); // the FK as a URI
                         return;
                     case 'zero-to-one':
+                        // this actually a one-to-many where the related collection is only a single resource
+                        // basically a one-to-one from the 'to' side
                         if (_.isArray(value)) {
                             value = (value.length < 1) ? null :
                                 new (self.constructor.forModel(relatedModel))(_.first(value), {parse: true});
                         }
                         self.setToOneCache(field, value);
-                        delete attrs[fieldName];
+                        delete attrs[fieldName]; // because the FK is on the other side
                         return;
                     }
                 }
