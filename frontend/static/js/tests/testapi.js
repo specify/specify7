@@ -169,7 +169,7 @@ define([
             resource.rget('agent').done(function(agent) {
                 equal(requestCounter, 1, 'one request to get the parent resource');
                 ok(agent instanceof api.Resource.forModel('agent'), 'the related resource has the right type');
-                equal(agent.parent, resource, 'the related resource has link back to parent')
+                equal(agent.parent, resource, 'the related resource has link back to parent');
                 ok(agent.populated, 'for an in-lined field the related resource is populated');
                 equal(agent.url(), '/api/specify/agent/638/', 'the related resource is the right one');
                 equal(agent.parent, resource, 'parent reference is correct');
@@ -178,7 +178,7 @@ define([
         });
 
         test('rget one-to-many', function() {
-            expect(6);
+            expect(7);
             stop();
             var resource = new (api.Resource.forModel('collectionobject'))({id: 100});
             resource.rget('preparations').done(function(prepCol) {
@@ -186,6 +186,7 @@ define([
                 ok(prepCol instanceof api.Collection.forModel('preparation'), 'the result is the correct type of collection');
                 equal(prepCol.parent, resource, 'the related collection has a link back to the parent resource');
                 ok(!prepCol.populated, 'the collection starts out unpopulated');
+                equal(prepCol.wasInline, false, 'the collection is flagged as not inlined');
                 equal(prepCol.url(), '/api/specify/preparation/', 'the collection has the correct url');
                 equal(prepCol.parent, resource, 'parent reference is correct');
                 start();
@@ -193,7 +194,7 @@ define([
         });
 
         test('rget inlined one-to-many', function() {
-            expect(6);
+            expect(7);
             stop();
             var resource = new (api.Resource.forModel('picklist'))({id: 1});
             resource.rget('picklistitems').done(function(result) {
@@ -201,6 +202,7 @@ define([
                 ok(result instanceof api.Collection.forModel('picklistitem'));
                 equal(result.parent, resource, 'inlined collection also get parent link');
                 ok(result.populated);
+                equal(result.wasInline, true, 'the collection is flagged as inlined');
                 equal(result.url(), '/api/specify/picklistitem/');
                 equal(result.parent, resource, 'parent reference is correct');
                 start();

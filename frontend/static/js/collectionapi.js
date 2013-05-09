@@ -5,6 +5,7 @@ define([
     api.Collection = Backbone.Collection.extend({
         populated: false,   // set if the collection has been fetched or filled in
         dependent: false,   // set when the collection is related to a parent resource by a dependent field
+        wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
 
         initialize: function(models) {
             this.queryParams = {}; // these define the filters on the collection
@@ -18,11 +19,12 @@ define([
         },
         parse: function(resp, xhr) {
             _.extend(this, {
+                wasInline: _.isUndefined(resp.meta),
                 populated: true,   // have data now
                 totalCount: resp.meta ? resp.meta.total_count : resp.length,
                 meta: resp.meta
             });
-            return resp.meta ? resp.objects : resp;
+            return this.wasInline ? resp : resp.objects;
         },
         fetchIfNotPopulated: function () {
             var collection = this;
