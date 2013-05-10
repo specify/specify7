@@ -1,10 +1,15 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'dataobjformatters', 'uiplugin', 'whenall'
-], function($, _, api, dataObjFormat, UIPlugin, whenAll) {
+    'jquery', 'underscore', 'specifyapi', 'dataobjformatters',
+    'navigation', 'uiplugin', 'whenall'
+], function($, _, api, dataObjFormat, navigation, UIPlugin, whenAll) {
     "use strict";
 
     return UIPlugin.extend({
+        events: {
+            'click a': 'go'
+        },
         render: function() {
+            var _this = this;
             var table = $('<table>').addClass('collectionrelonetomanyplugin');
             this.$el.replaceWith(table);
             this.setElement(table);
@@ -16,6 +21,7 @@ define([
                 related.queryParams.collectionreltype = reltype.id;
 
                 var getCollection = reltype.rget('leftsidecollection', true).pipe(function(lsCol) {
+                    _this.otherCollection = lsCol;
                     return dataObjFormat(lsCol);
                 });
 
@@ -43,6 +49,10 @@ define([
                 });
             });
             return this;
+        },
+        go: function(evt) {
+            evt.preventDefault();
+            navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         }
     });
 });

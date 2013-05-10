@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'templates', 'jquery-ui'
-], function($, _, Backbone, templates) {
+    'jquery', 'underscore', 'backbone', 'templates', 'navigation', 'jquery-ui'
+], function($, _, Backbone, templates, navigation) {
     "use strict";
 
     return Backbone.View.extend({
@@ -30,14 +30,7 @@ define([
         },
         clicked: function(evt) {
             evt.preventDefault();
-            var collectionId = $(evt.currentTarget).data('collection-id');
-            var request = $.ajax({
-                url: '/context/collection/',
-                type: 'POST',
-                data: collectionId,
-                processData: false});
-
-            request.done(function() { window.location.reload(); });
+            navigation.switchCollection($(evt.currentTarget).data('collection-id'));
         }
     });
 });
