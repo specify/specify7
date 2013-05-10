@@ -333,3 +333,8 @@ div.results div {
 .spqueryfield .field-sort span {
     padding: 0;
 }
+
+.collectionrelonetomanyplugin {
+    background-color: #fff;
+    border: 1px inset;
+}

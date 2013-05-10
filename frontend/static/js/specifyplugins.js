@@ -1,11 +1,16 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui', 'uiplugin', 'geolocateplugin', 'templates'
-], function($, _, api, LatLonUI, PartialDateUI, UIPlugin, GeoLocatePlugin, templates) {
+    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
+    'collectionrelonetomanyplugin',
+    'uiplugin', 'geolocateplugin', 'templates', 'whenall'
+], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
+            UIPlugin, GeoLocatePlugin, templates, whenAll) {
     "use strict";
 
     return {
+        CollectionRelOneToManyPlugin: collectionrelonetomanyplugin,
         PartialDateUI: PartialDateUI,
         LatLonUI: LatLonUI,
+        LocalityGeoRef: GeoLocatePlugin,
         WebLinkButton: UIPlugin.extend({
             render: function() {
                 var self = this;
@@ -44,7 +49,6 @@ define([
                 });
             }
         }),
-        LocalityGeoRef: GeoLocatePlugin,
         AttachmentPlugin: UIPlugin.extend({
             render: function() {
                 var self = this;

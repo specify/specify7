@@ -22,6 +22,11 @@ define(['jquery', 'underscore', 'collectionapi'], function($, _, api) {
             collection.queryParams[searchfield.toLowerCase() + '__icontains'] = searchterm;
             collection.queryParams.domainfilter = true;
             return collection;
+        },
+        getCollectionObjectRelTypeByName: function(name) {
+            var collection = new(api.Collection.forModel('collectionreltype'))();
+            collection.queryParams.name = name;
+            return collection.fetch().pipe(function() { return collection.first(); });
         }
     });
 });
