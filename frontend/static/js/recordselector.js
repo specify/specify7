@@ -2,7 +2,7 @@ define([
     'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
 ], function($, _, Backbone, specifyform, navigation, templates) {
     "use strict";
-    var debug = false;
+    var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
@@ -56,8 +56,8 @@ define([
             this.recordSelector = options.recordSelector;
 
             var _this = this;
-            this.throttledSlideStop = _.throttle(function() {
-                _this.recordSelector.fetchThenRedraw(_this.getOffset());
+            this.throttledSlideStop = _.throttle(function(offset) {
+                _this.recordSelector.fetchThenRedraw(offset);
             }, 750);
 
             Backbone.View.prototype.initialize.apply(this, arguments);
@@ -67,28 +67,31 @@ define([
             this.$('.ui-slider-handle').text(1);
             return this;
         },
-        setOptions: function(options) {
-            this.$el.slider('option', options);
+        setMax: function(val) {
+            this.$el.slider('option', 'max', val);
         },
         getOffset: function() {
             return this.$el.slider('value');
         },
         setOffset: function(val) {
             this.$el.slider('value', val);
+            this.setText(val);
         },
-        onslidestop: function() {
-            this.throttledSlideStop();
+        onslidestop: function(evt, ui) {
+            this.throttledSlideStop(ui.value);
         },
-        onslide: function() {
-            var offset = this.getOffset();
-            this.$('.ui-slider-handle').text(offset + 1);
-            this.recordSelector.onSlide(offset);
+        onslide: function(evt, ui) {
+            this.setText(ui.value);
+            this.recordSelector.onSlide(ui.value);
         },
         hide: function() {
             this.$el.hide();
         },
         show: function() {
             this.$el.show();
+        },
+        setText: function(offset) {
+            this.$('.ui-slider-handle').text(offset + 1);
         }
     });
 
@@ -117,7 +120,7 @@ define([
         },
         onAdd: function() {
             var end = this.collection.length - 1;
-            this.slider.setOptions({ max: end, value: end });
+            this.slider.setMax(end);
             this.fetchThenRedraw(end) || this.redraw(end);
             this.showHide();
         },
@@ -126,7 +129,7 @@ define([
             if (this.collection.length > 0) {
                 var currentIndex = this.currentIndex();
                 var value = Math.min(currentIndex, end);
-                this.slider.setOptions({ max: end, value: value });
+                this.slider.setMax(end);
                 this.fetchThenRedraw(value) || this.redraw(value);
             }
             this.showHide();
@@ -157,7 +160,7 @@ define([
             var self = this;
             self.$el.empty();
             self.slider = new Slider({ recordSelector: this }).render();
-            self.slider.setOptions({ max: self.collection.length - 1 });
+            self.slider.setMax(self.collection.length - 1);
 
             self.noHeader || new Header({
                 recordSelector: this,
@@ -185,7 +188,6 @@ define([
             var index = params[self.urlParam] || 0;
             index === 'end' && (index = self.collection.length - 1);
 
-            self.slider.setOffset(index);
             self.fetchThenRedraw(index) || self.redraw(index);
             self.showHide();
             return self;
@@ -196,6 +198,7 @@ define([
         },
         redraw: function(offset) {
             var self = this;
+            self.slider.setOffset(offset);
             debug && console.log('want to redraw at ' + offset);
             var resource = self.resourceAt(offset);
             if (_(resource).isUndefined()) return;
