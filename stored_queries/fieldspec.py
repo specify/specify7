@@ -75,7 +75,7 @@ class FieldSpec(namedtuple('FieldSpec', [
         table = self.root_table
         for fieldname, next_table in self.join_path:
             aliased = orm.aliased(next_table)
-            query = query.join(aliased, getattr(table, fieldname))
+            query = query.join(aliased, get_field(table, fieldname))
             table = aliased
         return query, table
 
@@ -172,3 +172,9 @@ def extract_date_part(fieldname):
     else:
         date_part = None
     return fieldname, date_part
+
+def get_field(table, fieldname):
+    fieldname = fieldname.lower()
+    for attrname in dir(inspect(table).class_):
+        if attrname.lower() == fieldname:
+            return getattr(table, attrname)

@@ -59,7 +59,6 @@ def query(request, id):
             order_by_exprs.append(sort_type(field))
     query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
 
-    print query
     results = [headers]
     results.extend(query)
     session.close()

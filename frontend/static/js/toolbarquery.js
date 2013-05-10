@@ -65,7 +65,7 @@ define([
 
     var QueryTypeDialog = Backbone.View.extend({
         className: "query-type-dialog list-dialog",
-        events: {'click a.select': 'selected'},
+        events: {'click a': 'selected'},
         render: function() {
             var ul = $('<ul>');
             _.each(this.options.tables, function(table) {
@@ -83,7 +83,7 @@ define([
         },
         selected: function(evt) {
             var app = require('specifyapp');
-            var index = this.$('a.select').index(evt.currentTarget);
+            var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var table = this.options.tables[index];
             var query = new (api.Resource.forModel('spquery'))();
