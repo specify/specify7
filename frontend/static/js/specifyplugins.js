@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
     'collectionrelonetomanyplugin', 'collectionrelonetooneplugin',
-    'uiplugin', 'geolocateplugin', 'templates', 'whenall'
+    'uiplugin', 'geolocateplugin', 'templates'
 ], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
-            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, templates, whenAll) {
+            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, templates) {
     "use strict";
 
     return {

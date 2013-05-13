@@ -20,7 +20,7 @@ define([
     var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>"><%= name %></a>'
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
-    var dialogView = Backbone.View.extend({
+    var QueryListDialog = Backbone.View.extend({
         className: "stored-queries-dialog list-dialog",
         events: {
             'click a.edit': 'edit'
@@ -72,6 +72,7 @@ define([
                 var model = schema.getModel(table.attr('name'));
                 ul.append(dialogEntry({ icon: model.getIcon(), href: '', name: model.getLocalizedName() }));
             });
+            ul.find('a').removeClass('intercept-navigation');
             ul.find('a.edit').remove();
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
@@ -148,7 +149,7 @@ define([
             if (dialog) return;
             var queries = new (api.Collection.forModel('spquery'))();
             queries.fetch().done(function() {
-                dialog = new dialogView({ queries: queries });
+                dialog = new QueryListDialog({ queries: queries });
                 $('body').append(dialog.el);
                 dialog.render();
             });
