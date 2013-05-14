@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
     'collectionrelonetomanyplugin', 'collectionrelonetooneplugin',
-    'uiplugin', 'geolocateplugin', 'templates'
+    'uiplugin', 'geolocateplugin', 'weblinkbutton', 'templates'
 ], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
-            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, templates) {
+            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, WebLinkButton, templates) {
     "use strict";
 
     return {
@@ -12,26 +12,7 @@ define([
         PartialDateUI: PartialDateUI,
         LatLonUI: LatLonUI,
         LocalityGeoRef: GeoLocatePlugin,
-        WebLinkButton: UIPlugin.extend({
-            render: function() {
-                var self = this;
-                var init = self.init;
-                var form = self.$el.closest('.specify-view-content');
-                var watched = form.find(
-                    '#' + 'specify-field-' + form.prop('id').split('-').pop() + '-' + init.watch);
-                switch(init.weblink) {
-                case 'MailTo':
-                    self.$el.click(function() {
-                        var addr = watched.val();
-                        addr && window.open('mailto:' + addr);
-                    });
-                    self.$el.attr('value', 'EMail');
-                    break;
-                }
-                self.$el.prop('disabled', false);
-                return self;
-            }
-        }),
+        WebLinkButton: WebLinkButton,
         LocalityGoogleEarth: UIPlugin.extend({
             events: {
                 'click': 'click'
