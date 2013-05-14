@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'uiplugin', 'icons', 'uifield',
+    'jquery', 'underscore', 'specifyapi', 'uiplugin', 'icons', 'uifield',
     'text!context/app.resource?name=WebLinks!noinline'
-], function($, _, UIPlugin, icons, UIField, webLinksXML) {
+], function($, _, api, UIPlugin, icons, UIField, webLinksXML) {
     "use strict";
 
     var webLinksDefs = {};
@@ -10,6 +10,14 @@ define([
         def = $(def);
         webLinksDefs[def.find('> name').text()] = def;
     });
+
+    var specialResourcesFields = {
+        Taxon: function(resource) {
+            return api.getTreePath(resource).pipe(function(path) {
+                return { genus: path.Genus.name, species: path.Species.name };
+            });
+        }
+    };
 
     return  UIPlugin.extend({
         render: function() {
@@ -31,13 +39,27 @@ define([
 
             var title = this.def.find('> desc').text();
 
-            var button = $('<a>', { href: this.buildUrl(), title: title }).prependTo(this.el);
-            button.append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }));
-            this.$('a').button();
-            this.$el.prop('disabled', false);
+            $('<a>', { title: title })
+                .prependTo(this.el)
+                .append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }))
+                .button();
+
+            this.model.on('change', this.setLink, this);
+            this.setLink();
+
             return this;
         },
+        setLink: function() {
+            var a = this.$('a');
+            this.buildUrl().done(function(url) { a.attr('href', url); });
+        },
         buildUrl: function() {
+            var template = this.def.find('baseURLStr').text()
+                    .replace(/<\s*this\s*>/g, '<_this>')
+                    .replace(/AMP/g, '&')
+                    .replace(/</g, '<%= ')
+                    .replace(/>/g, ' %>');
+
             var args = {};
             _.each(this.def.find('weblinkdefarg > name'),function(argName) {
                 argName = $(argName).text();
@@ -45,17 +67,18 @@ define([
                 args[argName] = null;
             });
 
+            var getSpecialFields =
+                    specialResourcesFields[this.model.specifyModel.name] ||
+                    function() { return $.when({}); };
+
             var data = this.model.toJSON();
             _.extend(args, data, { _this: data[this.fieldName] });
 
-            var template = this.def.find('baseURLStr').text()
-                    .replace(/<\s*this\s*>/g, '<_this>')
-                    .replace(/AMP/g, '&')
-                    .replace(/</g, '<%= ')
-                    .replace(/>/g, ' %>');
-
-            console.log(args, template);
-            return _.template(template)(args);
+            return getSpecialFields(this.model).pipe(function(specialFields) {
+                _.extend(args, specialFields);
+                console.log(args, template);
+                return _.template(template)(args);
+            });
         }
     });
 });

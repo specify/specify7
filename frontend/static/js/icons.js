@@ -16,6 +16,7 @@ define([
         datamodel: $.parseXML(datamodelIcons),
         discipline: $.parseXML(disciplineIcons),
         imgproc: $.parseXML(imgprocIcons),
+        plugin: $.parseXML(pluginIcons),
         default: $.parseXML(defaultIcons)
     };
 
@@ -23,6 +24,7 @@ define([
         datamodel: '/images/datamodel/',
         discipline: '/images/discipline/',
         imgproc: '/images/imgproc/',
+        plugin: '/images/',
         default: '/images/'
     };
 

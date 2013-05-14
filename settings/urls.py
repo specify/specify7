@@ -21,6 +21,9 @@ urlpatterns = patterns(
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specify.views.collection'),
 
+    # special tree apis
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/', 'specify.tree_views.path'),
+
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specify.views.properties'),

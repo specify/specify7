@@ -27,6 +27,11 @@ define(['jquery', 'underscore', 'collectionapi'], function($, _, api) {
             var collection = new(api.Collection.forModel('collectionreltype'))();
             collection.queryParams.name = name;
             return collection.fetch().pipe(function() { return collection.first(); });
+        },
+        getTreePath: function(treeResource) {
+            var model = treeResource.specifyModel.name.toLowerCase();
+            var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
+            return $.get(url).promise();
         }
     });
 });
