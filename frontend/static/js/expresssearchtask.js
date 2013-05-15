@@ -46,7 +46,7 @@ define([
                     var value = fieldformat(field, result[field.name.toLowerCase()]);
                     row.append($('<td>').append($('<a>', {
                         href: href,
-                        "class": "express-search-result"
+                        "class": "intercept-navigation express-search-result"
                     }).text(value)));
                 }, this);
             }, this);

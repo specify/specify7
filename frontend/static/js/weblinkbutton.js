@@ -76,7 +76,6 @@ define([
 
             return getSpecialFields(this.model).pipe(function(specialFields) {
                 _.extend(args, specialFields);
-                console.log(args, template);
                 return _.template(template)(args);
             });
         }

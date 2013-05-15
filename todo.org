@@ -23,4 +23,3 @@
 * do something about queries being deleted while being displayed
 * handle picklists from tables with formatters
 * check that more than 20 queries show up in the query task
-* add navigation intercept to primary express search results
