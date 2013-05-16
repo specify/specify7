@@ -112,7 +112,11 @@ define([
             }
             var dialogDef = $('dialog[type="search"][name="' + self.relatedModel.searchDialog + '"]', dialogdefs);
             specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(function(form) {
-                localizeForm(form);
+                var searchTemplateResource = new (api.Resource.forModel(self.relatedModel))({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+                self.options.populateform(form, searchTemplateResource);
                 form.find('.specify-form-header, input[value="Delete"], :submit').remove();
                 self.dialog = $('<div title="Search" class="querycbx-dialog-search">').append(form).dialog({
                     width: 'auto',

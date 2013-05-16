@@ -23,7 +23,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
 
 
     api.on 'initresource', (resource) ->
-        if enabled then attachTo resource
+        if enabled and not resource.noBusinessRules then attachTo resource
 
     attachTo = (resource) ->
         mgr = resource.businessRuleMgr = new BusinessRuleMgr resource

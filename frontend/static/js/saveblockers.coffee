@@ -64,5 +64,6 @@ define ['jquery', 'underscore'], ($, _) ->
             @control.removeClass 'saveblocked'
 
         sendToolTips: ->
+            if not @view.model.saveBlockers? then return
             _.each @view.model.saveBlockers.blockersForField(@field), (blocker) =>
                 @view.trigger 'tooltipitem', blocker.reason

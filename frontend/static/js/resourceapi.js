@@ -62,6 +62,9 @@ define([
             Backbone.Model.apply(this, arguments);
         },
         initialize: function(attributes, options) {
+            this.noBusinessRules = options && options.noBusinessRules;
+            this.noValidation = options && options.noValidation;
+
             // if initialized with some attributes that include a resource_uri,
             // assume that represents all the fields for the resource
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;

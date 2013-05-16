@@ -39,8 +39,11 @@ define([
 
             fillItIn();
             self.model.onChange(fieldName, fillItIn);
-            self.toolTipMgr = new ToolTipMgr(self).enable();
-            self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
+
+            if (!self.model.noValidation) {
+                self.toolTipMgr = new ToolTipMgr(self).enable();
+                self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
+            }
 
             if (self.model.isNew()) {
                 if (self.fieldName.split('.').length === 1 &&
@@ -54,11 +57,14 @@ define([
         },
         validate: function(deferred) {
             var value = this.$el.val().trim();
+            if (this.model.noValidation) {
+                return { parsed: value };
+            }
 
             var isRequired = this.$el.is('.specify-required-field');
             if (value === '' && isRequired) {
                 this.addSaveBlocker('fieldrequired', "Field is required.", deferred);
-                return;
+                return undefined;
             } else {
                 this.removeSaveBlocker('fieldrequired');
             }
@@ -67,7 +73,7 @@ define([
                 var formatterVals = this.formatter.parse(value);
                 if (!formatterVals) {
                     this.addSaveBlocker('badformat', "Required format: " + this.formatter.value(), deferred);
-                    return;
+                    return undefined;
                 } else {
                     this.removeSaveBlocker('badformat');
                     value = this.formatter.canonicalize(formatterVals);
@@ -77,7 +83,7 @@ define([
             var parseResult = uiparse(this.field, value);
             if (!parseResult.isValid) {
                 this.addSaveBlocker('cantparse', parseResult.reason, deferred);
-                return;
+                return undefined;
             } else {
                 this.removeSaveBlocker('cantparse');
                 return parseResult;
