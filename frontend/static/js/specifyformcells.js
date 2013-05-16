@@ -9,6 +9,10 @@ define([
             field: function() {
                 var td = $('<td>');
                 var fieldName = cell.attr('name');
+                if (mode === 'search') {
+                    // Hack for querycbx search fields that have spurious prefixes.
+                    fieldName = fieldName.replace(/^(\w+\.)*/, '');
+                }
                 var initialize = cell.attr('initialize');
                 var isRequired = cell.attr('isrequired');
                 processField(doingFormTable, mode, cell, id).appendTo(td);
@@ -32,8 +36,8 @@ define([
                 return $('<td class="specify-form-label">').append(label);
             },
             separator: function() {
-                var label = cell.attr('label'),
-                elem = label ? $('<h3>').text(label) : $('<hr>');
+                var label = cell.attr('label');
+                var elem = label ? $('<h3>').text(label) : $('<hr>');
                 return $('<td>').append(elem.addClass('separator'));
             },
             subview: function() {
@@ -64,20 +68,20 @@ define([
                 });
                 return $('<td>').append(table);
             },
-	        command: function() {
-		        var button = $('<input type=button>').attr({
-		            value: cell.attr('label'),
-		            name: cell.attr('name')
-		        });
-		        return $('<td>').append(button);
-	        },
+	    command: function() {
+		var button = $('<input type=button>').attr({
+		    value: cell.attr('label'),
+		    name: cell.attr('name')
+		});
+		return $('<td>').append(button);
+	    },
             other: function() {
                 return $('<td>').text("unsupported cell type: " + cell.attr('type'));
             }
-        },
+        };
 
-        td = (byType[cell.attr('type')] || byType.other)(),
-        colspan = cell.attr('colspan');
+        var td = (byType[cell.attr('type')] || byType.other)();
+        var colspan = cell.attr('colspan');
         if (!doingFormTable && colspan) {
             td.attr('colspan', Math.ceil(parseInt(colspan, 10)/2));
         }

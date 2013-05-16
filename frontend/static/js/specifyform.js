@@ -72,7 +72,8 @@ define([
 
         var formNumber = formCounter++;
         var doingFormTable = viewdef.attr('type') === 'formtable';
-        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable, altview.mode);
+        var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable,
+                                 mode === 'search' ? 'search' : altview.mode);
 
         var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
 

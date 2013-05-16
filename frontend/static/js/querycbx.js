@@ -111,7 +111,7 @@ define([
                 if (closeOnly) return;
             }
             var dialogDef = $('dialog[type="search"][name="' + self.relatedModel.searchDialog + '"]', dialogdefs);
-            specifyform.buildViewByName(dialogDef.attr('view')).done(function(form) {
+            specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(function(form) {
                 localizeForm(form);
                 form.find('.specify-form-header, input[value="Delete"], :submit').remove();
                 self.dialog = $('<div title="Search" class="querycbx-dialog-search">').append(form).dialog({
