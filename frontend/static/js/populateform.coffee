@@ -1,11 +1,11 @@
 define [
     'jquery', 'underscore','localizeform', 'specifyform'
-    'specifyapi', 'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
+    'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
     'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
     'cs!treelevelpicklist'
 ], ( \
 $, _, localizeForm, specifyform, \
-api, PickList, UIField, QueryCbx, uiplugins, \
+PickList, UIField, QueryCbx, uiplugins, \
 RecordSelector, SubViewButton, FormTable, \
 SubView, CheckBox, TreeLevelPickList) ->
 
@@ -42,9 +42,8 @@ SubView, CheckBox, TreeLevelPickList) ->
         view.render()
 
     populateSubview = (resource, node) ->
-        model = resource.specifyModel
         fieldName = node.data 'specify-field-name'
-        field = model.getField fieldName
+        field = resource.specifyModel.getField fieldName
 
         viewOptions =
             el: node
