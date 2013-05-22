@@ -18,6 +18,7 @@ define([
         makeDialog: function(form) {
             this.options.populateform(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
+            form.find('.specify-required-field').removeClass('specify-required-field');
             this.$el.append(form).append('<ul class="querycbx-search-results">');
             this.$el.dialog({
                 title: 'Search',
