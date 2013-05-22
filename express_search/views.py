@@ -1,4 +1,5 @@
 import re
+from operator import and_, or_
 from datetime import date, datetime
 from xml.etree import ElementTree
 
@@ -8,7 +9,7 @@ from django.views.decorators.http import require_GET
 
 from specify import models
 from specify.filter_by_col import filter_by_collection
-from specify.api import toJson
+from specify.api import toJson, get_model_or_404, obj_to_data
 from specify.views import login_required
 
 from context.app_resource import get_app_resource
@@ -60,7 +61,6 @@ class Term:
                 container__discipline=self.discipline,
                 name__iexact=field.name,
                 container__name__iexact=field.model.__name__)
-            print args
             fieldinfo = Splocalecontaineritem.objects.get(**args)
             if fieldinfo.format == 'CatalogNumberNumeric':
                 if not self.is_integer: return None
@@ -119,7 +119,7 @@ def build_queryset(searchtable, terms, collection):
                if filtr is not None]
 
     if len(filters) > 0:
-        reduced = reduce(lambda p, q: p | q, filters)
+        reduced = reduce(or_, filters)
         return filter_by_collection(model.objects.filter(reduced), collection)
 
 def get_express_search_config(request):
@@ -180,4 +180,31 @@ def related_search(request):
     results = rs.do_search(qs,
                            offset=int(request.GET.get('offset', 0)),
                            limit=int(request.GET.get('limit', 20)))
+    return HttpResponse(toJson(results), content_type='application/json')
+
+@require_GET
+@login_required
+def querycbx_search(request, model):
+    model = get_model_or_404(model)
+    fields = [fieldname
+              for fieldname in request.GET
+              if fieldname not in ('limit', 'offset')]
+
+    filters = []
+    for field in fields:
+        filters_for_field = []
+        for term in parse_search_str(request.specify_collection, request.GET[field]):
+            filter_for_term = term.create_filter(model._meta.get_field(field))
+            if filter_for_term is not None:
+                filters_for_field.append(filter_for_term)
+        if len(filters_for_field) > 0:
+            filters.append(reduce(or_, filters_for_field))
+
+    if len(filters) > 0:
+        combined = reduce(and_, filters)
+        qs = filter_by_collection(model.objects.filter(combined), request.specify_collection)
+    else:
+        qs = model.objects.empty()
+
+    results = [obj_to_data(obj) for obj in qs[:10]]
     return HttpResponse(toJson(results), content_type='application/json')

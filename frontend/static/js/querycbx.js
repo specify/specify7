@@ -1,21 +1,19 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr',
+    'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr', 'querycbxsearch',
     'text!context/app.resource?name=TypeSearches!noinline',
-    'text!context/app.resource?name=DialogDefs!noinline',
     'jquery-ui'
 ], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
              whenAll, parseselect, localizeForm, navigation, SaveButton,
-             DeleteButton, saveblockers, ToolTipMgr, typesearchxml, dialogdefxml) {
+             DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
-    var dialogdefs = $.parseXML(dialogdefxml);
 
     var QueryCbx = Backbone.View.extend({
         events: {
             'click .querycbx-edit, .querycbx-display': 'display',
             'click .querycbx-add': 'add',
-            'click .querycbx-search': 'search',
+            'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
         },
@@ -100,7 +98,7 @@ define([
                 return { label: label || value, value: value, resource: resource };
             });
         },
-        search: function(event, ui) {
+        openSearch: function(event, ui) {
             var self = this;
             event.preventDefault();
 
@@ -110,25 +108,18 @@ define([
                 self.dialog.dialog('close');
                 if (closeOnly) return;
             }
-            var dialogDef = $('dialog[type="search"][name="' + self.relatedModel.searchDialog + '"]', dialogdefs);
-            specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(function(form) {
-                var searchTemplateResource = new (api.Resource.forModel(self.relatedModel))({}, {
-                    noBusinessRules: true,
-                    noValidation: true
-                });
-                self.options.populateform(form, searchTemplateResource);
-                form.find('.specify-form-header, input[value="Delete"], :submit').remove();
-                self.dialog = $('<div title="Search" class="querycbx-dialog-search">').append(form).dialog({
-                    width: 'auto',
-                    buttons: [
-                        { text: "Search", click: function() {} }
-                    ],
-                    close: function() {
-                        $(this).remove();
-                        self.dialog = null;
-                    }
-                });
+            var searchTemplateResource = new (api.Resource.forModel(this.relatedModel))({}, {
+                noBusinessRules: true,
+                noValidation: true
             });
+
+            self.dialog = new QueryCbxSearch({
+                model: searchTemplateResource,
+                populateform: this.options.populateform,
+                selected: function(resource) {
+                    self.model.set(self.fieldName, resource);
+                }
+            }).render().$el.on('remove', function() { self.dialog = null; });
         },
         add: function(event, ui) {
             var self = this;

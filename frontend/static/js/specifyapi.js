@@ -23,6 +23,20 @@ define(['jquery', 'underscore', 'collectionapi'], function($, _, api) {
             collection.queryParams.domainfilter = true;
             return collection;
         },
+        queryCbxExtendedSearch: function(templateResource) {
+            var url = '/express_search/querycbx/' +
+                    templateResource.specifyModel.name.toLowerCase() +
+                    '/';
+            var data = {};
+            _.each(templateResource.toJSON(), function(value, key) {
+                var field = templateResource.specifyModel.getField(key);
+                if (field && !field.isRelationship && value) {
+                    data[key] = value;
+                }
+            });
+
+            return $.get(url, data).promise();
+        },
         getCollectionObjectRelTypeByName: function(name) {
             var collection = new(api.Collection.forModel('collectionreltype'))();
             collection.queryParams.name = name;
