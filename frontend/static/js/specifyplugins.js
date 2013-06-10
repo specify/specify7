@@ -55,7 +55,7 @@ define([
                         $('<img>', {src: src, style: 'vertical-align: middle'})
                             .appendTo(self.$('.specify-attachment-display'));
                     }
-                    var url = "http://anza.nhm.ku.edu/specifyassets/Ichthyology/originals/"
+                    var url = "http://specifyassets.nhm.ku.edu/Ichthyology/originals/"
                         + attachment.get('attachmentlocation');
                     $('<a>', {href: url, 'class': 'specify-attachment-original'})
                         .text('Original').appendTo(self.el).click(function(evt) {
@@ -71,7 +71,7 @@ define([
 
                 var location = attachment.get('attachmentlocation');
                 $.ajax({
-                    url: "http://anza.nhm.ku.edu/getfileref.php",
+                    url: "http://specifyassets.nhm.ku.edu/Informatics/getfileref.php",
                     data: {
                         coll: "KUFishvoucher",
                         type: 0,
