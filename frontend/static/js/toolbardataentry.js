@@ -57,7 +57,7 @@ define([
 
     var FormsDialog = Backbone.View.extend({
         className: "forms-dialog list-dialog",
-        events: {'click a.select': 'selected'},
+        events: {'click a': 'selected'},
         render: function() {
             var ul = $('<ul>');
             _.each(this.options.views, function(view) {
@@ -74,7 +74,7 @@ define([
             return this;
         },
         selected: function(evt) {
-            var index = this.$('a.select').index(evt.currentTarget);
+            var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var form = this.options.forms[index];
             var recordset = new (api.Resource.forModel('recordset'))();

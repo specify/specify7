@@ -108,7 +108,7 @@ define([
         $('body').delegate('a.intercept-navigation', 'click', function(evt) {
             evt.preventDefault();
             var href = $(evt.currentTarget).prop('href');
-            navigation.go(href);
+            href && navigation.go(href);
         }).delegate('form', 'submit', false);
     }
 
