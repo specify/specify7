@@ -215,3 +215,7 @@ header a:hover {
     font-size: 11px;
     text-align: right;
 }
+
+.ui-autocomplete {
+    z-index: 110;
+}
