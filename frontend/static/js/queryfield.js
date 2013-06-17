@@ -106,6 +106,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             'change .op-type': 'opSelected',
             'change input.op-negate': 'opNegateChanged',
             'change .datepart-select': 'datePartSelected',
+            'click .field-move-up': 'moveUpClicked',
+            'click .field-move-down': 'moveDownClicked',
+            'click .field-delete': 'deleteClicked',
             'click .field-sort': 'fieldSortClicked',
             'click .field-operation': 'backUpToOperation',
             'click .field-label-field': 'backUpToField',
@@ -146,6 +149,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         },
         render: function() {
             this.$el.append(
+                '<button class="field-move-up" title="Move up.">Move up</button>',
+                '<button class="field-move-down" title="Move down.">Move down</button>',
+                '<button class="field-delete" title="Remove.">Remove</button>',
                 '<input type="checkbox" class="field-show" id="' + this.cid + '-show">',
                 '<label title="Show in results." for="' + this.cid + '-show" class="ui-icon ui-icon-lightbulb"></label>',
                 '<button class="field-sort" title="Sort.">Sort</button>',
@@ -159,10 +165,17 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 
-            this.$('.field-sort').button({
-                icons: { primary: "ui-icon-bullet" },
-                text: false
-            });
+            _.each({
+                '.field-sort': "ui-icon-bullet",
+                '.field-delete': "ui-icon-trash",
+                '.field-move-up': "ui-icon-arrowthick-1-n",
+                '.field-move-down': "ui-icon-arrowthick-1-s"
+            }, function(icon, selector) {
+                this.$(selector).button({
+                    icons: { primary: icon  },
+                    text: false
+                });
+            }, this);
 
             this.spqueryfield.on('change:sorttype', this.sortTypeChanged, this);
             this.sortTypeChanged();
@@ -171,13 +184,13 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             this.inputUI && this.inputUI.setValue(this.value);
             return this;
         },
+        moveUpClicked: function() {
+            this.options.parentView.moveUp(this);
+        },
+        moveDownClicked: function() {
+            this.options.parentView.moveDown(this);
+        },
         positionChange: function() {
-            if (this.$el.parent().is('.spqueryfield-delete')) {
-                this.trigger('remove', this, this.spqueryfield);
-                this.remove();
-                return;
-            }
-
             var position = this.$el.parent().find('li').index(this.el);
             this.spqueryfield.set('position', position);
         },
@@ -185,6 +198,11 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             var val = this.$('.field-show').prop('checked');
             this.spqueryfield.set('isdisplay', val);
             return true;
+        },
+        deleteClicked: function() {
+            this.trigger('remove', this, this.spqueryfield);
+            this.remove();
+            return;
         },
         fieldSortClicked: function() {
             var val = (this.spqueryfield.get('sorttype') + 1) % SORT_ICONS.length;

@@ -84,17 +84,6 @@ define([
 
                 var ul = self.$('.spqueryfields');
                 ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
-
-                self.$('ul.sortable').sortable({
-                    connectWith: 'ul.sortable',
-                    items: '.spqueryfield',
-                    distance: 20,
-                    update: function (event, ui) {
-                        self.trigger('positionschanged');
-                    },
-                    start: function(evt, ui) { self.$('.spqueryfield-delete').show('blind', 250); },
-                    stop: function(evt, ui) { self.$('.spqueryfield-delete').hide('blind', 200); }
-                });
             });
 
             $('<table class="results" width="100%"></div>').appendTo(self.el);
@@ -117,7 +106,7 @@ define([
                 el: $('<li class="spqueryfield">'),
                 spqueryfield: newField
             });
-            this.$('.spqueryfields').append(addFieldUI.render().el).sortable('refresh');
+            this.$('.spqueryfields').append(addFieldUI.render().el);
             addFieldUI.on('completed', function() { this.fields.add(newField); }, this);
             this.trigger('positionschanged');
         },
@@ -151,6 +140,14 @@ define([
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
 
             view.fetchMoreWhileAppropriate();
+        },
+        moveUp: function(queryField) {
+            queryField.$el.prev().insertAfter(queryField.el);
+            this.trigger('positionschanged');
+        },
+        moveDown: function(queryField) {
+            queryField.$el.next().insertBefore(queryField.el);
+            this.trigger('positionschanged');
         }
     });
 

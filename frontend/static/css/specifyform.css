@@ -315,7 +315,11 @@ div.results div {
 }
 
 .spqueryfield label.ui-state-active {
-    background-color: #ffa;
+    background-color: #afa;
+}
+
+.spqueryfield label.ui-button {
+    margin-right: 4px;
 }
 
 .spqueryfield label.op-negate {
@@ -331,14 +335,13 @@ div.results div {
     padding-bottom: 8px;
 }
 
-.spqueryfield .field-sort {
-    margin-left: 4px;
+.spqueryfield button.ui-button {
     margin-right: 4px;
     padding: 0;
     width: 20px;
 }
 
-.spqueryfield .field-sort span {
+.spqueryfield button.ui-button span {
     padding: 0;
 }
 
