@@ -120,6 +120,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             if (this.spqueryfield.isNew()) {
                 this.joinPath = [];
                 this.table = this.model;
+                this.formattedRecord = false;
             } else {
                 var fs = stringIdToFieldSpec(this.spqueryfield.get('stringid'));
                 this.table = fs.table;
@@ -129,6 +130,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
                 this.datePart = fs.datePart;
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');
+                this.formattedRecord = this.spqueryfield.get('isrelfld');
             }
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
@@ -216,7 +218,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         setupFieldSelect: function() {
             this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').remove();
-            var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
+            var fieldSelect = this.$('.field-select').empty()
+                    .append('<option>Select Field...</option>')
+                    .append('<option value="format record">Show Formatted</option>');
 
             _.chain(this.table.getAllFields())
                 .reject(function(field) { return field.isHidden(); })
@@ -276,23 +280,38 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             _.chain(this.joinPath)
                 .invoke('getLocalizedName')
                 .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
-            this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
-            this.datePart && $('<a class="field-label-datepart">').text('(' + this.datePart + ')').appendTo(fieldLabel);
+            if (this.formattedRecord) {
+                $('<a class="field-label-field">').text('(formatted)').appendTo(fieldLabel);
+                this.$('label.op-negate').hide();
+            } else {
+                this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
+                this.datePart && $('<a class="field-label-datepart">').text('(' + this.datePart + ')').appendTo(fieldLabel);
+            }
         },
         fieldSelected: function() {
             var fieldName = this.$('.field-select').val();
-            var treeRankMatch = /^treerank-(.*)/.exec(fieldName);
-            if (treeRankMatch) {
-                this.treeRank = treeRankMatch[1];
+            if (fieldName === 'format record') {
+                this.formattedRecord = true;
+                this.operation = 0; // Doesn't matter, but can't be left undefined.
             } else {
-                var field = this.table.getField(fieldName);
-                this.joinPath.push(field);
+                var treeRankMatch = /^treerank-(.*)/.exec(fieldName);
+                if (treeRankMatch) {
+                    this.treeRank = treeRankMatch[1];
+                } else {
+                    var field = this.table.getField(fieldName);
+                    this.joinPath.push(field);
+                }
             }
             this.update();
         },
         update: function() {
             var field = _.last(this.joinPath);
             this.updateLabel();
+            if (this.formattedRecord) {
+                this.fieldComplete();
+                return;
+            }
+
             if (!field) {
                 this.table = this.model;
                 this.setupFieldSelect();
@@ -320,11 +339,13 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         },
         fieldComplete: function() {
             this.$('.field-select, .datepart-select, .op-select').hide();
-            this.inputUI = new (FieldInputUIByOp[this.operation])({
-                el: $('<span class="field-input">')
-            });
-            this.inputUI.render().$el.appendTo(this.el);
-            this.inputUI.on('changed', this.valueChanged, this);
+            if (!this.formattedRecord) {
+                this.inputUI = new (FieldInputUIByOp[this.operation])({
+                    el: $('<span class="field-input">')
+                });
+                this.inputUI.render().$el.appendTo(this.el);
+                this.inputUI.on('changed', this.valueChanged, this);
+            }
             if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
                 this.updateSpQueryField();
             }
@@ -347,6 +368,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             var index = this.$('.field-label-field').index(evt.currentTarget);
             this.joinPath = _(this.joinPath).first(index);
             this.value = this.operation = this.datePart = this.treeRank = undefined;
+            this.formattedRecord = false;
             this.update();
         },
         backUpToDatePart: function() {
@@ -366,12 +388,15 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             this.spqueryfield.set('startvalue', value);
         },
         makeTableList: function() {
+            var path = (this.treeRank || this.formattedRecord) ?
+                    this.joinPath : _.initial(this.joinPath);
+
             var first = [this.model.tableId];
-            var rest =  _.chain(this.joinPath).initial(this.treeRank ? 0 : 1).map(function(field) {
+            var rest = _.map(path, function(field) {
                 var relatedModel = field.getRelatedModel();
                 return relatedModel.name.toLowerCase() === field.name.toLowerCase() ?
                     relatedModel.tableId : (relatedModel.tableId + '-' + field.name.toLowerCase());
-            }).value();
+            });
             return first.concat(rest).join(',');
         },
         makeStringId: function(tableList) {
@@ -390,7 +415,8 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
                 stringid: stringId.join('.'),
                 fieldname: _.last(stringId),
                 isdisplay: true,
-                isnot: this.negate
+                isnot: this.negate,
+                isrelfld: this.formattedRecord
             };
             this.spqueryfield.set(attrs);
         }

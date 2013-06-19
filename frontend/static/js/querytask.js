@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'specifyapi', 'cs!fieldformat', 'cs!savebutton', 'whenall', 'scrollresults',
+    'specifyapi', 'cs!fieldformat', 'dataobjformatters',
+    'cs!savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            api, fieldformat, SaveButton, whenAll, ScrollResults) {
+            api, fieldformat, objformat, SaveButton, whenAll, ScrollResults) {
     "use strict";
 
     var Results = Backbone.View.extend({
@@ -30,17 +31,28 @@ define([
                 _.each(self.fieldUIs, function(fieldUI) {
                     if (!fieldUI.spqueryfield.get('isdisplay')) return;
                     var value = result[fieldToCol(fieldUI)];
-                    var field = fieldUI.getField();
-                    if (field) {
-                        value = fieldformat(field, value);
-                    }
-                    row.append($('<td>').append($('<a>', {
-                        href: href,
-                        "class": "intercept-navigation query-result"
-                    }).text(value)));
+                    self.makeCell(href, fieldUI, value).appendTo(
+                        $('<td>').appendTo(row));
                 });
             });
             return results.length;
+        },
+        makeCell: function(rowHref, cellFieldUI, cellValue) {
+            var field = cellFieldUI.getField();
+            var href = rowHref;
+            var cell = $('<a class="intercept-navigation query-result">');
+
+            if (cellFieldUI.formattedRecord) {
+                var resource = new (api.Resource.forModel(field.getRelatedModel()))({
+                    id: cellValue
+                });
+                cell.prop('href', resource.viewUrl()).text('(loading...)');
+                objformat(resource).done(function(formatted) { cell.text(formatted); });
+            } else {
+                field && ( cellValue = fieldformat(field, cellValue) );
+                cell.prop('href', rowHref).text(cellValue);
+            }
+            return cell;
         }
     });
 

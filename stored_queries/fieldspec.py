@@ -14,13 +14,13 @@ class FieldSpec(namedtuple('FieldSpec', [
     'date_part',
     'root_table',
     'join_path',
+    'is_relation',
     'op_num',
     'value',
     'negate',
     'display',
     'sort_type',
     'spqueryfieldid'])):
-    __slots__ = ()
 
     # The stringid is a structure consisting of three fields seperated by '.':
     # (1) the join path to the specify field.
@@ -64,6 +64,7 @@ class FieldSpec(namedtuple('FieldSpec', [
                    date_part    = date_part,
                    root_table   = root_table,
                    join_path    = join_path,
+                   is_relation  = field.isRelFld,
                    op_num       = field.operStart,
                    value        = field.startValue if value is None else value,
                    negate       = field.isNot,
@@ -75,7 +76,7 @@ class FieldSpec(namedtuple('FieldSpec', [
         table = self.root_table
         for fieldname, next_table in self.join_path:
             aliased = orm.aliased(next_table)
-            query = query.join(aliased, get_field(table, fieldname))
+            query = query.outerjoin(aliased, get_field(table, fieldname))
             table = aliased
         return query, table
 
@@ -91,6 +92,9 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
+
+        elif self.is_relation:
+            field = getattr(table, table._id)
 
         else:
             field = getattr(table, self.field_name)
