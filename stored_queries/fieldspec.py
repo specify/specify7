@@ -1,11 +1,12 @@
 import re
-from collections import namedtuple
+from collections import namedtuple, deque
 
 import models
 
 from query_ops import QueryOps
 from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
+from sqlalchemy.util.langhelpers import symbol
 
 query_ops = QueryOps()
 
@@ -74,7 +75,16 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     def build_join(self, query):
         table = self.root_table
-        for fieldname, next_table in self.join_path:
+        path = deque(self.join_path)
+
+        while len(path) > 0:
+            fieldname, next_table = path.popleft()
+            if self.is_relation and len(path) == 0:
+                rel = inspect(table).mapper.relationships[fieldname]
+                if rel.direction is symbol('ONETOMANY'):
+                    # when returning a one-to-many field stop short so
+                    # the client can do the final 'join' to handle aggregation
+                    break
             aliased = orm.aliased(next_table)
             query = query.outerjoin(aliased, get_field(table, fieldname))
             table = aliased

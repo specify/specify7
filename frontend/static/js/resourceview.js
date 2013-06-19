@@ -4,7 +4,7 @@ define([
     'cs!savebutton', 'cs!deletebutton',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm, specifyapi,
-            specifyform, dataobjformat, navigation, templates,
+            specifyform, dataobjformatters, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
 
@@ -72,7 +72,7 @@ define([
 
             self.setFormTitle(title);
             setWindowTitle(title);
-            dataobjformat(self.model).done(function(str) {
+            dataobjformatters.format(self.model).done(function(str) {
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);

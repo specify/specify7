@@ -6,9 +6,13 @@ define([
     var formatters = $.parseXML(xml);
 
     function dataobjformat(resource, formatter) {
-        return !resource ? $.when(null) : resource.fetchIfNotPopulated().pipe(function() {
-            formatter = formatter || resource.specifyModel.name;
-            var sw = $('format[name="' + formatter + '"]', formatters).find('switch');
+        if (!resource) return $.when(null);
+        return resource.fetchIfNotPopulated().pipe(function() {
+            formatter = formatter || resource.specifyModel.getFormat();
+            var formatterDef = formatter ? $('format[name="' + formatter + '"]', formatters) :
+                    $('format[class="' + resource.specifyModel.longName + '"]', formatters);
+
+            var sw = formatterDef.find('switch');
             // external dataobjFormatters not supported
             if (!sw.length || sw.find('external').length) return null;
 
@@ -43,5 +47,24 @@ define([
         });
     }
 
-    return dataobjformat;
+    function aggregate(collection) {
+        var aggregatorName = collection.model.specifyModel.getAggregator();
+        var aggregator = aggregatorName ? $('aggregator[name="' + aggregatorName + '"]', formatters) :
+                $('aggregator[class="' + collection.model.specifyModel.longName + '"]', formatters);
+
+        var format = aggregator.attr('format');
+        var separator = aggregator.attr('separator');
+
+        console.log(aggregator);
+
+        return collection.fetchIfNotPopulated().pipe(function() {
+            var formatting = collection.map(function(resource) { return dataobjformat(resource, format); });
+            return whenAll(formatting);
+        }).pipe(function(formatted) {
+            console.log(formatted);
+            return formatted.join(separator);
+        });
+    }
+
+    return { format: dataobjformat, aggregate: aggregate };
 });

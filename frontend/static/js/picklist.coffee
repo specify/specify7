@@ -9,7 +9,9 @@ define [
         'cs!agenttypepicklist'
         'cs!tooltipmgr'
         'whenall'
-], ( $, _, api, schema, Backbone, objformat, saveblockers, agentTypesPL, ToolTipMgr, whenAll) ->
+], ( $, _, api, schema, Backbone, dataobjformatters, saveblockers, agentTypesPL, ToolTipMgr, whenAll) ->
+
+    objformat = dataobjformatters.format
 
     Backbone.View.extend
         events:

@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
     'text!context/app.resource?name=DialogDefs!noinline'
-], function ($, _, Backbone, specifyform, api, dataObjFormat, whenAll, dialogdefxml) {
+], function ($, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
     "use strict";
     var dialogdefs = $.parseXML(dialogdefxml);
 
@@ -38,7 +38,7 @@ define([
         },
         search: function() {
             function format(obj) {
-                return dataObjFormat(obj);
+                return dataobjformatters.format(obj);
             }
 
             this.$('.querycbx-search-results').empty();

@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'dataobjformatters',
     'navigation', 'uiplugin', 'whenall'
-], function($, _, api, dataObjFormat, navigation, UIPlugin, whenAll) {
+], function($, _, api, dataobjformatters, navigation, UIPlugin, whenAll) {
     "use strict";
+    var format = dataobjformatters.format;
 
     return UIPlugin.extend({
         events: {
@@ -22,15 +23,13 @@ define([
 
                 var getCollection = reltype.rget('leftsidecollection', true).pipe(function(lsCol) {
                     _this.otherCollection = lsCol;
-                    return dataObjFormat(lsCol);
+                    return format(lsCol);
                 });
 
                 var getCollectionObjects = related.fetch().pipe(function() {
                     return whenAll(related.map(function(rel) {
                         return rel.rget('leftside', true).pipe(function(co) {
-                            return whenAll([
-                                co.viewUrl(),
-                                dataObjFormat(co)]);
+                            return whenAll([co.viewUrl(), format(co)]);
                         });
                     }));
                 });

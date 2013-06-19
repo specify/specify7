@@ -4,8 +4,9 @@ define([
     'cs!savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            api, fieldformat, objformat, SaveButton, whenAll, ScrollResults) {
+            api, fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {
     "use strict";
+    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var Results = Backbone.View.extend({
         initialize: function(options) {
@@ -39,20 +40,30 @@ define([
         },
         makeCell: function(rowHref, cellFieldUI, cellValue) {
             var field = cellFieldUI.getField();
-            var href = rowHref;
-            var cell = $('<a class="intercept-navigation query-result">');
+            var cell = $('<a class="intercept-navigation query-result">')
+                    .prop('href', rowHref);
 
             if (cellFieldUI.formattedRecord) {
-                var resource = new (api.Resource.forModel(field.getRelatedModel()))({
-                    id: cellValue
-                });
-                cell.prop('href', resource.viewUrl()).text('(loading...)');
-                objformat(resource).done(function(formatted) { cell.text(formatted); });
+                (field.type === 'many-to-one') ?
+                    this.setupToOneCell(cell, field, cellValue) :
+                    this.setupToManyCell(cell, field, cellValue);
             } else {
                 field && ( cellValue = fieldformat(field, cellValue) );
-                cell.prop('href', rowHref).text(cellValue);
+                cell.text(cellValue);
             }
             return cell;
+        },
+        setupToOneCell: function(cell, field, cellValue) {
+            var resource = new (api.Resource.forModel(field.getRelatedModel()))({ id: cellValue });
+            cell.prop('href', resource.viewUrl()).text('(loading...)');
+            objformat(resource).done(function(formatted) { cell.text(formatted); });
+        },
+        setupToManyCell: function(cell, field, cellValue) {
+            cell.text('(loading...)');
+            var parentResource = new (api.Resource.forModel(field.model))({ id: cellValue });
+            parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
+                cell.text(formatted);
+            });
         }
     });
 

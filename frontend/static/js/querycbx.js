@@ -4,10 +4,11 @@ define([
     'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr', 'querycbxsearch',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
-], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformat,
+], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformatters,
              whenAll, parseselect, localizeForm, navigation, SaveButton,
              DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
+    var dataobjformat = dataobjformatters.format;
 
     var QueryCbx = Backbone.View.extend({
         events: {

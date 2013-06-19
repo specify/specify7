@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'dataobjformatters', 'cs!fieldformat', 'uiparse',
     'cs!saveblockers', 'cs!tooltipmgr'
-], function($, _, Backbone, dataObjFormat, fieldformat, uiparse, saveblockers, ToolTipMgr) {
+], function($, _, Backbone, dataobjformatters, fieldformat, uiparse, saveblockers, ToolTipMgr) {
     "use strict";
+    var objformat = dataobjformatters.format;
 
     var UIField = Backbone.View.extend({
         events: {
@@ -28,7 +29,7 @@ define([
 
             var fetch = function() {
                 return self.model.rget(fieldName).pipe(function(value) {
-                    return field.isRelationship ? dataObjFormat(value) :
+                    return field.isRelationship ? objformat(value) :
                         fieldformat(field, value);
                 });
             };

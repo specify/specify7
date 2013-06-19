@@ -41,6 +41,12 @@ define([
         getLocalizedName: function() {
             return this._localization ? schema.unescape(this._localization.name) : this.name;
         },
+        getFormat: function() {
+            return this._localization && this._localization.format;
+        },
+        getAggregator: function() {
+            return this._localization && this._localization.aggregator;
+        },
         getIcon: function() {
             return icons.getIcon(this.name);
         },
