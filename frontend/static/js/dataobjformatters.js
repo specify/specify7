@@ -55,13 +55,10 @@ define([
         var format = aggregator.attr('format');
         var separator = aggregator.attr('separator');
 
-        console.log(aggregator);
-
         return collection.fetchIfNotPopulated().pipe(function() {
             var formatting = collection.map(function(resource) { return dataobjformat(resource, format); });
             return whenAll(formatting);
         }).pipe(function(formatted) {
-            console.log(formatted);
             return formatted.join(separator);
         });
     }

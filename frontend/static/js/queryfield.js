@@ -1,4 +1,6 @@
-define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, _, Backbone, schema, domain) {
+define([
+    'jquery', 'underscore', 'backbone', 'schema', 'cs!domain', 'cs!fieldformat'
+], function($, _, Backbone, schema, domain, fieldformat) {
     "use strict";
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
@@ -43,11 +45,17 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             'change input': 'changed'
         },
         opName: 'NA',
+        format: false,
         input: '<input type="text">',
+        initialize: function(options) {
+            this.inputFormatter = options.field.getUIFormatter();
+            this.outputFormatter = function(value) { return fieldformat(options.field, value); };
+        },
         getValue: function() {
             return this.$('input').val();
         },
         setValue: function(value) {
+            this.format && (value = this.outputFormatter(value));
             this.$('input').val(value);
         },
         render: function() {
@@ -56,7 +64,13 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             return this;
         },
         changed: function() {
-            this.trigger('changed', this, this.getValue());
+            var value = this.getValue();
+            if (this.format) {
+                var formatterValues = this.inputFormatter.parse(value); // TODO: don't accept autonumber patterns maybe...
+                formatterValues && (value = this.inputFormatter.canonicalize(formatterValues));
+                // TODO: make a warning for badly formatted input values?
+            }
+            this.trigger('changed', this, value);
         }
     });
 
@@ -70,11 +84,11 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
 
     var opInfo = [
         {opName: 'Like', types: ['strings']},
-        {opName: '=', types: ['strings', 'numbers', 'dates']},
-        {opName: '>', types: ['numbers', 'dates']},
-        {opName: '<', types: ['numbers', 'dates']},
-        {opName: '>=', types: ['numbers']},
-        {opName: '<=', types: ['numbers']},
+        {opName: '=', types: ['strings', 'numbers', 'dates'], format: true},
+        {opName: '>', types: ['numbers', 'dates'], format: true},
+        {opName: '<', types: ['numbers', 'dates'], format: true},
+        {opName: '>=', types: ['numbers'], format: true},
+        {opName: '<=', types: ['numbers'], format: true},
         {opName: 'True', types: ['bools'], input: null},
         {opName: 'False', types: ['bools'], input: null},
         {opName: 'Does not matter', types: ['bools'], input: null},
@@ -346,6 +360,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             this.$('.field-select, .datepart-select, .op-select').hide();
             if (!this.formattedRecord) {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
+                    field: _.last(this.joinPath),
                     el: $('<span class="field-input">')
                 });
                 this.inputUI.render().$el.appendTo(this.el);
