@@ -218,9 +218,11 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
         setupFieldSelect: function() {
             this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').remove();
-            var fieldSelect = this.$('.field-select').empty()
-                    .append('<option>Select Field...</option>')
-                    .append('<option value="format record">Show Formatted</option>');
+
+            var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
+            if (this.joinPath.length > 0) {
+                fieldSelect.append('<option value="format record">(' + this.formatOrAggregate() + ')</option>');
+            }
 
             _.chain(this.table.getAllFields())
                 .reject(function(field) { return field.isHidden(); })
@@ -237,6 +239,9 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
             } else {
                 fieldSelect.show();
             }
+        },
+        formatOrAggregate: function() {
+            return  (_.last(this.joinPath).type === 'one-to-many') ? 'aggregate' : 'format';
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
             var fieldSelect = this.$('.field-select');
@@ -281,7 +286,7 @@ define(['jquery', 'underscore', 'backbone', 'schema', 'cs!domain'], function($, 
                 .invoke('getLocalizedName')
                 .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
             if (this.formattedRecord) {
-                $('<a class="field-label-field">').text('(formatted)').appendTo(fieldLabel);
+                $('<a class="field-label-field">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
                 this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
