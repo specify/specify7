@@ -6,7 +6,8 @@ define([
     'datatask',
     'querytask',
     'expresssearchtask',
-    'datamodeltask'
+    'datamodeltask',
+    'attachmentstask'
 ], function module(
     $, _, Backbone, schema, businessRules, ErrorView,
     WelcomeView, HeaderUI, NotFoundView, navigation,

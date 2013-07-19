@@ -217,14 +217,14 @@ input[type="submit"].saveblocked {
 }
 
 .specify-attachment-container {
-    width: 510px;
-    height: 510px;
+    width: 266px;
+    height: 266px;
     position: relative;
 }
 
 .specify-attachment-display {
-    width: 510px;
-    height: 510px;
+    width: 266px;
+    height: 266px;
     display: table-cell;
     vertical-align: middle;
     text-align: center;
@@ -379,10 +379,15 @@ div.results div {
     padding: 5px;
 }
 
+.specify-attachment-browser {
+    text-align: center;
+}
+
 .specify-attachment-browser div {
     display: inline-block;
-    width: 180px;
-    height: 180px;
+    vertical-align: top;
+    width: 145px;
+    height: 145px;
     margin: 3px;
 }
 
@@ -390,12 +395,11 @@ div.results div {
     margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
-    vertical-align: middle;
     display: block;
     border: solid 3px;
     border-radius: 3px;
     box-shadow: -2px 5px 12px;
-    max-width: 160px;
-    max-height: 160px;
+    max-width: 125px;
+    max-height: 125px;
 }
 

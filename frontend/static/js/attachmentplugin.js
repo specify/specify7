@@ -100,17 +100,29 @@ define([
             var self = this;
 
             $('<div class="specify-attachment-display">').appendTo(self.el);
-            var src = '/static/attachments/' + attachment.get('attachmentlocation');
+            $.ajax({
+                url: "http://dhwd99p1.nhm.ku.edu:3088/getfileref",
+                data: {
+                    coll: "KUFishvoucher",
+                    type: "T",
+                    filename: attachment.get('attachmentlocation'),
+                    scale: 256
+                },
+                success: function(src) {
+                    $('<img>', {src: src, style: 'vertical-align: middle; max-width:256px; max-height:256px;'})
+                        .appendTo(self.$('.specify-attachment-display'));
+                },
+                error: function(jqxhr) {
+                    self.$('.specify-attachment-display').text("N/A");
+                    jqxhr.errorHandled = true;
+                }
+            });
 
-            if (/^image/.exec(attachment.get('mimetype'))) {
-                $('<img>', {src: src, style: 'vertical-align: middle; max-width:500px; max-height:500px;'})
-                    .appendTo(self.$('.specify-attachment-display'));
-            }
-            $('<a>', {href: src, 'class': 'specify-attachment-original'})
-                .text('Original').appendTo(self.el).click(function(evt) {
-                    evt.preventDefault();
-                    window.open(src);
-                });
+            // $('<a>', {href: src, 'class': 'specify-attachment-original'})
+            //     .text('Original').appendTo(self.el).click(function(evt) {
+            //         evt.preventDefault();
+            //         window.open(src);
+            //     });
         }
     });
 });

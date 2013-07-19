@@ -7,7 +7,7 @@ define([
     var win = $(window);
     var doc = $(document);
 
-    return Backbone.View.extend({
+    var AttachmentsView = Backbone.View.extend({
         initialize: function() {
             var self = this;
             self.fetching = false;
@@ -29,12 +29,24 @@ define([
             }
         },
         makeThumbnail: function(attachment) {
-            var filename = attachment.get('attachmentlocation').split('.');
-            filename.pop();
-            filename.push('png');
-            var src = '/static/attachment_thumbs/' + filename.join('.');
+            var filename = attachment.get('attachmentlocation');
             var cell = $('<div>');
-            $('<img>', {src: src}).appendTo(cell);
+            $.ajax({
+                url: "http://dhwd99p1.nhm.ku.edu:3088/getfileref",
+                data: {
+                    coll: "KUFishvoucher",
+                    type: "T",
+                    filename: filename,
+                    scale: 123
+                },
+                success: function(src) {
+                    $('<img>', {src: src}).appendTo(cell);
+                },
+                error: function(jqxhr) {
+                    cell.text("N/A");
+                    jqxhr.errorHandled = true;
+                }
+            });
             return cell;
         },
         fillPage: function() {
@@ -54,4 +66,10 @@ define([
             self.fillPage();
         }
     });
+
+    return function(app) {
+        app.router.route('attachments/', 'attachments', function () {
+            app.setCurrentView(new AttachmentsView());
+        });
+    };
 });
