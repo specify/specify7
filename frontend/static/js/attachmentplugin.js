@@ -23,17 +23,21 @@ define([
             var self = this;
             var form = '<form enctype="multipart/form-data"><input type="file" name="file"></form>';
 
-            self.gotAttachment = false;
+            self.doingUpload = false;
 
             self.dialog = $('<div>', {title: 'Upload'}).append(form).appendTo(self.el).dialog({
                 modal:true,
                 buttons: {
-                    'Ok': function() { self.startUpload(); }
+                    'Ok': function() {
+                        self.startUpload();
+                        self.doingUpload = true;
+                        self.dialog.dialog('close');
+                    }
                 },
                 close: function() {
                     $(this).remove();
                     self.dialog = null;
-                    if (!self.gotAttachment) self.model.destroy();
+                    self.doingUpload || self.model.destroy();
                 }
             });
 
@@ -42,12 +46,9 @@ define([
             var self = this;
             var files = $(':file', self.dialog).get(0).files;
             var formData = new FormData(self.dialog.find('form').get(0));
-            self.dialog.dialog('close');
 
             if (files.length === 0) return;
             var file = files[0];
-
-            self.gotAttachment = true;
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
 
