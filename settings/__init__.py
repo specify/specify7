@@ -169,7 +169,7 @@ INSTALLED_APPS = (
     'businessrules',
     'express_search',
     'context',
-    'attachment_upload',
+    'attachment_gw',
     'frontend',
 )
 
@@ -221,3 +221,7 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+WEB_ATTACHMENT_URL = specify_settings.WEB_ATTACHMENT_URL
+WEB_ATTACHMENT_KEY = specify_settings.WEB_ATTACHMENT_KEY
+WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION

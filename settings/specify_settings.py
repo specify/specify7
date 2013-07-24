@@ -11,3 +11,12 @@ DATABASE_NAME = 'SpecifyDB'
 # you did setting up the thick client.
 MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
+
+# The Specify web attachement server URL.
+WEB_ATTACHMENT_URL = "http://example.com/web_asset_store.xml"
+
+# The Specify web attachment server key.
+WEB_ATTACHMENT_KEY = None
+
+# The collection name to use with the web attachment server.
+WEB_ATTACHMENT_COLLECTION = None

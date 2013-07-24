@@ -32,5 +32,5 @@ urlpatterns = patterns(
     url(r'^context/', include('context.urls')),
     url(r'^testcontext/', include('context.testurls')),
     url(r'^stored_query/', include('stored_queries.urls')),
-    url(r'^attachment_gw/', include('attachment_upload.urls')),
+    url(r'^attachment_gw/', include('attachment_gw.urls')),
 )

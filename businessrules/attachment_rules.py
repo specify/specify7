@@ -1,6 +1,6 @@
 from orm_signal_handler import orm_signal_handler
 
-from attachment_upload.views import delete_attachment_file
+from attachment_gw.views import delete_attachment_file
 
 @orm_signal_handler('post_delete')
 def attachment_deletion(sender, obj):
