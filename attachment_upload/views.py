@@ -1,41 +1,60 @@
 from uuid import uuid4
-from os.path import join as join_path, dirname, abspath
-from mimetypes import guess_type, guess_all_extensions
+from os.path import join as join_path, dirname, abspath, splitext
+import requests, time, hmac, json
 
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 
-from specify.models import Attachment
+ATTACHMENT_SERVER = "http://dhwd99p1.nhm.ku.edu:3088/"
+ATTACHMENT_KEY = "test_attachment_key"
 
-ATTACHMENT_DIR = join_path(abspath(dirname(__file__)), 'static', 'attachments')
-ATTACHMENT_THUMBS = join_path(abspath(dirname(__file__)), 'static', 'attachment_thumbs')
-
+server_time_delta = None
 
 @login_required
-@require_POST
-@csrf_exempt
-def upload(request):
-    assert len(request.FILES) == 1
-    f = request.FILES.values()[0]
-    filename = make_attachment_filename(f.name)
-    with open(join_path(ATTACHMENT_DIR, filename), 'wb') as fp:
-        for chunk in f.chunks():
-            fp.write(chunk)
-
-    attachment = Attachment.objects.create(
-        attachmentlocation=filename,
-        mimetype=f.content_type,
-        origfilename=f.name)
-
-    return HttpResponse(str(attachment.id), content_type='text/plain')
+@require_GET
+def get_upload_params(request):
+    filename = request.GET['filename']
+    attch_loc = make_attachment_filename(filename)
+    data = {'attachmentlocation': attch_loc,
+            'token': generate_token(get_timestamp(), attch_loc)}
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 def make_attachment_filename(filename):
     uuid = str(uuid4())
-    mimetype, encoding = guess_type(filename)
-    for extension in guess_all_extensions(mimetype):
-        if filename.lower().endswith(extension): break
-    else:
-        extension = ''
+    name, extension = splitext(filename)
     return uuid + extension
+
+def generate_token(timestamp, filename):
+    """Generate the auth token for the given filename and timestamp. """
+    timestamp = str(timestamp)
+    mac = hmac.new(ATTACHMENT_KEY, timestamp + filename)
+    return ':'.join((mac.hexdigest(), timestamp))
+
+def get_timestamp():
+    """Return an integer timestamp with one second resolution for
+    the current moment.
+    """
+    return int(time.time()) + server_time_delta
+
+def test_key():
+    r = requests.get(ATTACHMENT_SERVER + "web_asset_store.xml")
+    timestamp = r.headers['X-Timestamp']
+    global server_time_delta
+    server_time_delta = int(timestamp) - int(time.time())
+
+    random = str(uuid4())
+    token = generate_token(get_timestamp(), random)
+    r = requests.get(ATTACHMENT_SERVER + "testkey",
+                     params={'random': random, 'token': token})
+
+    if r.status_code == 200:
+        return
+    elif r.status_code == 403:
+        raise Exception("Bad attachment key.")
+    else:
+        raise Exception("Attachment key test failed.")
+
+test_key()
+

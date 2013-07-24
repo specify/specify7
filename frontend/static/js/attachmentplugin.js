@@ -42,38 +42,47 @@ define([
             var self = this;
             var files = $(':file', self.dialog).get(0).files;
             var formData = new FormData(self.dialog.find('form').get(0));
-
-            if (files.length > 0) {
-                self.gotAttachment = true;
-
-                self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
-
-                self.progressDialog = $('<div>', {title: 'Uploading'})
-                    .appendTo(self.el)
-                    .append(self.progressBar)
-                    .dialog({
-                        modal:true
-                    });
-
-                var jqxhr = $.ajax({
-                    url: '/upload_attachment/',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) { self.uploadComplete(data); },
-                    xhr: function() {
-                        var xhr = $.ajaxSettings.xhr();
-                        if (xhr.upload) {
-                            xhr.upload.addEventListener('progress', function(evt) {
-                                self.uploadProgress(evt);
-                            });
-                        }
-                        return xhr;
-                    }
-                });
-            }
             self.dialog.dialog('close');
+
+            if (files.length === 0) return;
+            var file = files[0];
+
+            self.gotAttachment = true;
+
+            self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
+
+            self.progressDialog = $('<div>', {title: 'Uploading'})
+                .appendTo(self.el)
+                .append(self.progressBar)
+                .dialog({
+                    modal:true
+                });
+
+            $.get('/attachment_gw/get_upload_params/', {filename: file.name})
+                .done(function(uploadParams) {
+                    formData.append('token', uploadParams.token);
+                    formData.append('store', uploadParams.attachmentlocation);
+                    formData.append('type', "O");
+                    formData.append('coll', "KUFishvoucher");
+
+                    return $.ajax({
+                        url: 'http://dhwd99p1.nhm.ku.edu:3080/fileupload',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function() { self.uploadComplete(file, uploadParams.attachmentlocation); },
+                        xhr: function() {
+                            var xhr = $.ajaxSettings.xhr();
+                            if (xhr.upload) {
+                                xhr.upload.addEventListener('progress', function(evt) {
+                                    self.uploadProgress(evt);
+                                });
+                            }
+                            return xhr;
+                        }
+                    });
+                });
         },
         uploadProgress: function (evt) {
             var self = this;
@@ -86,10 +95,14 @@ define([
                 self.progressBar.progressbar('option', 'value', false);
             }
         },
-        uploadComplete: function(data) {
+        uploadComplete: function(file, attachmentLocation) {
             var self = this;
-            var attachment = new (api.Resource.forModel('attachment'))({ id: data });
-            attachment.fetchIfNotPopulated().done(function() {
+            var attachment = new (api.Resource.forModel('attachment'))({
+                attachmentlocation: attachmentLocation,
+                mimetype: file.type,
+                origfilename: file.name
+            });
+            attachment.save().done(function() {
                 self.model.set('attachment', attachment);
                 self.model.save();
                 self.displayAttachment(attachment);
