@@ -10,3 +10,4 @@ import discipline_rules
 import agent_rules
 import groupperson_rules
 import shipment_rules
+import attachment_rules

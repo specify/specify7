@@ -9,22 +9,38 @@ from django.views.decorators.csrf import csrf_exempt
 
 ATTACHMENT_SERVER = "http://dhwd99p1.nhm.ku.edu:3088/"
 ATTACHMENT_KEY = "test_attachment_key"
+ATTACHMENT_COLLECTION = "KUFishvoucher"
 
 server_time_delta = None
+
+class AttachmentError(Exception):
+    pass
 
 @login_required
 @require_GET
 def get_upload_params(request):
     filename = request.GET['filename']
     attch_loc = make_attachment_filename(filename)
-    data = {'attachmentlocation': attch_loc,
-            'token': generate_token(get_timestamp(), attch_loc)}
+    data = {
+        'attachmentlocation': attch_loc,
+        'token': generate_token(get_timestamp(), attch_loc)
+        }
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 def make_attachment_filename(filename):
     uuid = str(uuid4())
     name, extension = splitext(filename)
     return uuid + extension
+
+def delete_attachment_file(attch_loc):
+    data = {
+        'filename': attch_loc,
+        'coll': ATTACHMENT_COLLECTION,
+        'token': generate_token(get_timestamp(), attch_loc)
+        }
+    r = requests.post(ATTACHMENT_SERVER + "filedelete", data=data)
+    if r.status_code != 200:
+        raise AttachmentError("Deletion failed: " + r.text)
 
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
@@ -52,9 +68,9 @@ def test_key():
     if r.status_code == 200:
         return
     elif r.status_code == 403:
-        raise Exception("Bad attachment key.")
+        raise AttachmentError("Bad attachment key.")
     else:
-        raise Exception("Attachment key test failed.")
+        raise AttachmentError("Attachment key test failed.")
 
 test_key()
 
