@@ -38,7 +38,7 @@ def delete_attachment_file(attch_loc):
         }
     r = requests.post(server_urls["delete"], data=data)
     update_time_delta(r)
-    if r.status_code != 200:
+    if r.status_code not in (200, 404):
         raise AttachmentError("Deletion failed: " + r.text)
 
 def generate_token(timestamp, filename):

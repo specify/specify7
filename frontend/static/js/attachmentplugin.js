@@ -4,6 +4,9 @@ define([
     "use strict";
 
     return UIPlugin.extend({
+        events: {
+            'change :file': 'fileSelected'
+        },
         render: function() {
             var self = this;
             var control = $('<div class="specify-attachment-container">');
@@ -21,43 +24,23 @@ define([
         },
         addAttachment: function() {
             var self = this;
-            var form = '<form enctype="multipart/form-data"><input type="file" name="file"></form>';
-
-            self.doingUpload = false;
-
-            self.dialog = $('<div>', {title: 'Upload'}).append(form).appendTo(self.el).dialog({
-                modal:true,
-                buttons: {
-                    'Ok': function() {
-                        self.startUpload();
-                        self.doingUpload = true;
-                        self.dialog.dialog('close');
-                    }
-                },
-                close: function() {
-                    $(this).remove();
-                    self.dialog = null;
-                    self.doingUpload || self.model.destroy();
-                }
-            });
-
+            self.$el.append('<form enctype="multipart/form-data"><input type="file" name="file"></form>');
         },
-        startUpload: function() {
-            var self = this;
-            var files = $(':file', self.dialog).get(0).files;
-            var formData = new FormData(self.dialog.find('form').get(0));
-
+        fileSelected: function(evt) {
+            var files = this.$(':file').get(0).files;
             if (files.length === 0) return;
-            var file = files[0];
+            this.startUpload(files[0]);
+        },
+        startUpload: function(file) {
+            var self = this;
+            var formData = new FormData(self.$('form').get(0));
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
 
             self.progressDialog = $('<div>', {title: 'Uploading'})
                 .appendTo(self.el)
                 .append(self.progressBar)
-                .dialog({
-                    modal:true
-                });
+                .dialog({ modal:true });
 
             $.get('/attachment_gw/get_upload_params/', {filename: file.name})
                 .done(function(uploadParams) {
@@ -105,13 +88,13 @@ define([
             });
             attachment.save().done(function() {
                 self.model.set('attachment', attachment);
-                self.model.save();
                 self.displayAttachment(attachment);
                 self.progressDialog.dialog('close');
             });
         },
         displayAttachment: function(attachment) {
             var self = this;
+            self.$el.empty();
 
             $('<div class="specify-attachment-display">').appendTo(self.el);
             $.ajax({

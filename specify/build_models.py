@@ -4,6 +4,7 @@ from xml.etree import ElementTree
 import os
 
 from businessrules import deletion_policies
+from businessrules.exceptions import AbortSave
 
 appname = __name__.split('.')[-2]
 
@@ -48,7 +49,16 @@ def make_model(module, tabledef):
             ordering += ('rankid', )
 
     attrs['Meta'] = Meta
-    return type(modelname, (models.Model,), attrs)
+    model = type(modelname, (models.Model,), attrs)
+
+    def save(self, *args, **kwargs):
+        try:
+            return super(model, self).save(*args, **kwargs)
+        except AbortSave:
+            return
+    model.save = save
+
+    return model
 
 def make_id_field(flddef):
     """Returns a primary key 'id' field based on the XML field definition
