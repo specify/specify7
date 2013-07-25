@@ -1,7 +1,9 @@
 import re
 
 from orm_signal_handler import orm_signal_handler
+from specify.scoping import Scoping
 from specify import models
+
 from attachment_gw.views import delete_attachment_file
 from exceptions import AbortSave
 
@@ -16,20 +18,21 @@ def attachment_save(sender, obj):
 
     if obj.attachment_id is None: raise AbortSave()
 
-    set_attachment_tableid(obj)
+    attachee = get_attachee(obj)
+    obj.attachment.tableid = attachee.__class__.table_id
+    obj.attachment.scopetype, obj.attachment.scopeid = Scoping(attachee)()
     obj.attachment.save()
 
 @orm_signal_handler('post_delete')
-def attachment_deletion(sender, obj):
+def attachment_jointable_deletion(sender, obj):
     if sender in attachment_tables:
-        delete_attachment_file(obj.attachment.attachmentlocation)
         obj.attachment.delete()
 
+@orm_signal_handler('post_delete', 'Attachment')
+def attachment_deletion(attachment):
+    delete_attachment_file(attachment.attachmentlocation)
 
-def set_attachment_tableid(jointable_inst):
+def get_attachee(jointable_inst):
     main_table_name = JOINTABLE_NAME_RE.match(jointable_inst.__class__.__name__).group(1)
-    if main_table_name == 'Dnasequencerun':
-        main_table_name = 'Dnasequencingrun'
+    return getattr(jointable_inst, main_table_name.lower())
 
-    main_table = getattr(models, main_table_name)
-    jointable_inst.attachment.tableid = main_table.table_id
