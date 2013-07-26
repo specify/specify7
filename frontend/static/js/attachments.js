@@ -35,6 +35,12 @@ define([
         return icons.getIcon('unknown');
     }
 
+    function getToken(filename) {
+        return settings.token_required_for_get ?
+                    $.get('/attachment_gw/get_token/', { filename: filename })
+                    : $.when(null);
+    }
+
     var attachments = {
         getThumbnail: function(attachment, scale) {
             scale || (scale = 256);
@@ -48,11 +54,7 @@ define([
 
             var attachmentLocation = attachment.get('attachmentlocation');
 
-            var getToken = settings.token_required_for_get ?
-                    $.get('/attachment_gw/get_token/', { filename: attachmentLocation })
-                    : $.when(null);
-
-            return getToken.pipe(function(token) {
+            return getToken(attachmentLocation).pipe(function(token) {
                 var src = settings.read + "?" + $.param({
                     coll: settings.collection,
                     type: "T",
@@ -62,6 +64,21 @@ define([
                 });
 
                 return $('<img>', {src: src, style: style});
+            });
+        },
+        openOriginal: function(attachment) {
+            var attachmentLocation = attachment.get('attachmentlocation');
+
+            getToken(attachmentLocation).done(function(token) {
+                var src = settings.read + "?" + $.param({
+                    coll: settings.collection,
+                    type: "O",
+                    filename: attachmentLocation,
+                    downloadname: attachment.get('origfilename'),
+                    token: token
+                });
+
+                window.open(src);
             });
         }
     };

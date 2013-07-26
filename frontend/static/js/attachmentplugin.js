@@ -5,8 +5,8 @@ define([
 
     return UIPlugin.extend({
         events: {
-            'change :file': 'fileSelected'
-//            'click .specify-attachment-display a': 'openOriginal'
+            'change :file': 'fileSelected',
+            'click .specify-attachment-display a': 'openOriginal'
         },
         render: function() {
             var self = this;
@@ -99,6 +99,12 @@ define([
 
             attachments.getThumbnail(attachment).done(function(img) {
                 $('<a>').append(img).appendTo(self.$('.specify-attachment-display'));
+            });
+        },
+        openOriginal: function(evt) {
+            evt.preventDefault();
+            this.model.rget('attachment', true).done(function(attachment) {
+                attachments.openOriginal(attachment);
             });
         }
     });
