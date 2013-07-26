@@ -34,7 +34,6 @@ define([
         },
         startUpload: function(file) {
             var self = this;
-            var formData = new FormData(self.$('form').get(0));
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
 
@@ -43,31 +42,11 @@ define([
                 .append(self.progressBar)
                 .dialog({ modal:true });
 
-            $.get('/attachment_gw/get_upload_params/', {filename: file.name})
-                .done(function(uploadParams) {
-                    formData.append('token', uploadParams.token);
-                    formData.append('store', uploadParams.attachmentlocation);
-                    formData.append('type', "O");
-                    formData.append('coll', "KUFishvoucher");
-
-                    return $.ajax({
-                        url: 'http://dhwd99p1.nhm.ku.edu:3080/fileupload',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function() { self.uploadComplete(file, uploadParams.attachmentlocation); },
-                        xhr: function() {
-                            var xhr = $.ajaxSettings.xhr();
-                            if (xhr.upload) {
-                                xhr.upload.addEventListener('progress', function(evt) {
-                                    self.uploadProgress(evt);
-                                });
-                            }
-                            return xhr;
-                        }
-                    });
-                });
+            attachments.uploadFile(file, function(progressEvt) {
+                self.uploadProgress(progressEvt);
+            }).done(function(attachment) {
+                self.uploadComplete(attachment);
+            });
         },
         uploadProgress: function (evt) {
             var self = this;
@@ -80,18 +59,11 @@ define([
                 self.progressBar.progressbar('option', 'value', false);
             }
         },
-        uploadComplete: function(file, attachmentLocation) {
+        uploadComplete: function(attachment) {
             var self = this;
-            var attachment = new (api.Resource.forModel('attachment'))({
-                attachmentlocation: attachmentLocation,
-                mimetype: file.type,
-                origfilename: file.name
-            });
-            attachment.save().done(function() {
-                self.model.set('attachment', attachment);
-                self.displayAttachment(attachment);
-                self.progressDialog.dialog('close');
-            });
+            self.model.set('attachment', attachment);
+            self.displayAttachment(attachment);
+            self.progressDialog.dialog('close');
         },
         displayAttachment: function(attachment) {
             var self = this;

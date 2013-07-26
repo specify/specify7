@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'icons',
+    'jquery', 'underscore', 'icons',  'specifyapi',
     'text!context/attachment_settings.json!noinline'
-], function($, _, icons, settingsJson) {
+], function($, _, icons, api, settingsJson) {
     "use strict";
 
     var settings = $.parseJSON(settingsJson);
@@ -81,6 +81,44 @@ define([
 
                 window.open(src);
             });
+        },
+        uploadFile: function(file, progressCB) {
+            var formData = new FormData();
+            var attachmentLocation;
+            var attachment;
+
+            return $.get('/attachment_gw/get_upload_params/', {filename: file.name})
+                .pipe(function(uploadParams) {
+                    attachmentLocation = uploadParams.attachmentlocation;
+
+                    formData.append('file', file);
+                    formData.append('token', uploadParams.token);
+                    formData.append('store', attachmentLocation);
+                    formData.append('type', "O");
+                    formData.append('coll', settings.collection);
+
+                    return $.ajax({
+                        url: settings.write,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        xhr: function() {
+                            var xhr = $.ajaxSettings.xhr();
+                            xhr.upload && xhr.upload.addEventListener('progress', progressCB);
+                            return xhr;
+                        }
+                    });
+                }).pipe(function() {
+                    attachment = new (api.Resource.forModel('attachment'))({
+                        attachmentlocation: attachmentLocation,
+                        mimetype: file.type,
+                        origfilename: file.name
+                    });
+                    return attachment.save();
+                }).pipe(function() {
+                    return attachment;
+                });
         }
     };
 
