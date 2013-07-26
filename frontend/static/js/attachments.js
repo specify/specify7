@@ -68,6 +68,7 @@ define([
         },
         openOriginal: function(attachment) {
             var attachmentLocation = attachment.get('attachmentlocation');
+            var origFilename = attachment.get('origfilename').replace(/^.*[\\\/]/, '');
 
             getToken(attachmentLocation).done(function(token) {
                 var src = settings.read + "?" + $.param({
