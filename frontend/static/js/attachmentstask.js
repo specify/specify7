@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi',
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'attachments',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, api) {
+], function($, _, Backbone, api, attachments) {
     "use strict";
 
     var win = $(window);
@@ -31,21 +31,8 @@ define([
         makeThumbnail: function(attachment) {
             var filename = attachment.get('attachmentlocation');
             var cell = $('<div>');
-            $.ajax({
-                url: "http://dhwd99p1.nhm.ku.edu:3088/getfileref",
-                data: {
-                    coll: "KUFishvoucher",
-                    type: "T",
-                    filename: filename,
-                    scale: 123
-                },
-                success: function(src) {
-                    $('<img>', {src: src}).appendTo(cell);
-                },
-                error: function(jqxhr) {
-                    cell.text("N/A");
-                    jqxhr.errorHandled = true;
-                }
+            attachments.getThumbnail(attachment, 123).done(function(img) {
+                cell.append(img);
             });
             return cell;
         },

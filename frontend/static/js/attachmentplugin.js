@@ -1,11 +1,12 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'uiplugin', 'jquery-ui'
-], function($, _, api, UIPlugin) {
+    'jquery', 'underscore', 'specifyapi', 'uiplugin', 'attachments', 'jquery-ui'
+], function($, _, api, UIPlugin, attachments) {
     "use strict";
 
     return UIPlugin.extend({
         events: {
             'change :file': 'fileSelected'
+//            'click .specify-attachment-display a': 'openOriginal'
         },
         render: function() {
             var self = this;
@@ -94,32 +95,11 @@ define([
         },
         displayAttachment: function(attachment) {
             var self = this;
-            self.$el.empty();
+            self.$el.empty().append('<div class="specify-attachment-display">');
 
-            $('<div class="specify-attachment-display">').appendTo(self.el);
-            $.ajax({
-                url: "http://dhwd99p1.nhm.ku.edu:3088/getfileref",
-                data: {
-                    coll: "KUFishvoucher",
-                    type: "T",
-                    filename: attachment.get('attachmentlocation'),
-                    scale: 256
-                },
-                success: function(src) {
-                    $('<img>', {src: src, style: 'vertical-align: middle; max-width:256px; max-height:256px;'})
-                        .appendTo(self.$('.specify-attachment-display'));
-                },
-                error: function(jqxhr) {
-                    self.$('.specify-attachment-display').text("N/A");
-                    jqxhr.errorHandled = true;
-                }
+            attachments.getThumbnail(attachment).done(function(img) {
+                $('<a>').append(img).appendTo(self.$('.specify-attachment-display'));
             });
-
-            // $('<a>', {href: src, 'class': 'specify-attachment-original'})
-            //     .text('Original').appendTo(self.el).click(function(evt) {
-            //         evt.preventDefault();
-            //         window.open(src);
-            //     });
         }
     });
 });

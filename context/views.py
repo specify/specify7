@@ -10,6 +10,7 @@ from app_resource import get_app_resource
 from viewsets import get_view
 from schema_localization import get_schema_localization
 from specify.views import login_required
+from attachment_gw.views import get_settings as attachment_settings
 
 def login(request):
     """A Django view to log users into the system.

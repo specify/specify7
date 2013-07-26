@@ -20,3 +20,6 @@ WEB_ATTACHMENT_KEY = None
 
 # The collection name to use with the web attachment server.
 WEB_ATTACHMENT_COLLECTION = None
+
+# Set to true if asset server requires auth token to get files.
+WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False

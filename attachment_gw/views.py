@@ -16,6 +16,23 @@ class AttachmentError(Exception):
 
 @login_required
 @require_GET
+def get_settings(request):
+    data = {
+        'collection': settings.WEB_ATTACHMENT_COLLECTION,
+        'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
+        }
+    data.update(server_urls)
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+@login_required
+@require_GET
+def get_token(request):
+    filename = request.GET['filename']
+    token = generate_token(get_timestamp(), filename)
+    return HttpResponse(token, content_type='text/plain')
+
+@login_required
+@require_GET
 def get_upload_params(request):
     filename = request.GET['filename']
     attch_loc = make_attachment_filename(filename)
