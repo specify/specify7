@@ -30,9 +30,12 @@ define([
         },
         makeThumbnail: function(attachment) {
             var filename = attachment.get('attachmentlocation');
+            var title = attachment.get('title');
             var cell = $('<div>');
             attachments.getThumbnail(attachment, 123).done(function(img) {
-                cell.append(img);
+                $('<a>', {title: title}).appendTo(cell).append(img).click(function() {
+                    attachments.openOriginal(attachment);
+                });
             });
             return cell;
         },
