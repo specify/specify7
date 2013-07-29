@@ -29,7 +29,7 @@ define([
             while (self.index < self.attachments.length) {
                 var attachment = self.attachments.at(self.index);
                 if (_.isUndefined(attachment)) return;
-                self.$el.append(self.makeThumbnail(attachment));
+                self.$('.specify-attachment-cells').append(self.makeThumbnail(attachment));
                 self.index++;
             }
         },
@@ -53,20 +53,40 @@ define([
         },
         fillPage: function() {
             var self = this;
+            if (self.fetching) return;
             if (self.attachments.populated && self.index >= self.attachments.length) return;
-            if (!self.fetching && win.scrollTop() + win.height() + 100 > doc.height()) {
+
+            var browser = self.$('.specify-attachment-browser');
+            var cells = self.$('.specify-attachment-cells');
+
+            if (browser.scrollTop() + browser.height() + 100 > cells.height()) {
                 self.fetchMore().done(function () {
                     self.renderAvailable();
                     self.fillPage();
                 });
             }
         },
+        setSize: function() {
+            var winHeight = win.height();
+            var offset = this.$('.specify-attachment-browser').offset().top;
+            this.$('.specify-attachment-browser').height(winHeight - offset - 50);
+        },
         render: function() {
             var self = this;
-            self.$el.addClass('specify-attachment-browser');
-            var onScroll = function() { self.fillPage(); };
-            win.scroll(onScroll);
-            self.$el.on("remove", function() { win.off('scroll', onScroll); });
+            self.$el.append(
+                '<h2>Attachments</h2>' +
+                '<div class="specify-attachment-browser"><div class="specify-attachment-cells"></div>');
+
+            var resize = function() {
+                self.setSize();
+                self.fillPage();
+            };
+
+            win.resize(resize);
+            self.$el.on("remove", function() { win.off('resize', resize); });
+            _.defer(function() { self.setSize(); });
+
+            self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
             self.fillPage();
         },
         openOriginal: function(evt) {

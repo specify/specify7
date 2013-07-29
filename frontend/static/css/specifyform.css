@@ -381,6 +381,10 @@ div.results div {
 
 .specify-attachment-browser {
     text-align: center;
+    background-color: white;
+    border: inset 2px;
+    padding-top: 20px;
+    overflow-y: scroll;
 }
 
 .specify-attachment-cell {
