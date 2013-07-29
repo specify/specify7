@@ -46,18 +46,18 @@ define([
             var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
                     schema.getModelById(tableId).getIcon();
 
-            var cell = $('<div class="specify-attachment-cell">');
+            var wrapper = $('<div>');
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
                 src: icon
-            }).appendTo(cell);
+            }).appendTo(wrapper);
 
             attachments.getThumbnail(attachment, 123).done(function(img) {
                 img.addClass('specify-attachment-thumbnail')
                     .attr('title', title)
-                    .appendTo(cell);
+                    .appendTo(wrapper);
             });
-            return cell;
+            return $('<div class="specify-attachment-cell">').append(wrapper);
         },
         fillPage: function(recurDepth) {
             // prevent infinite loop.
@@ -88,11 +88,12 @@ define([
                             '<select class="specify-attachment-type">' +
                             '<option value="all">All</option>' +
                             '<option value="unused">Unused</option>' +
+                            '<optgroup label="Tables"></optgroup>' +
                             '<select>' +
                             '<div class="specify-attachment-browser"><div class="specify-attachment-cells"></div>');
 
             _.each(tablesWithAttachments, function(table) {
-                self.$('select').append('<option value="' + table.tableId + '">' + table.getLocalizedName() + '</option>');
+                self.$('select optgroup').append('<option value="' + table.tableId + '">' + table.getLocalizedName() + '</option>');
             });
 
             var resize = function() {

@@ -393,6 +393,10 @@ div.results div {
     width: 145px;
     height: 145px;
     margin: 3px;
+}
+
+.specify-attachment-cell > div {
+    display: inline;
     position: relative;
 }
 
@@ -408,7 +412,6 @@ div.results div {
     margin-top: 10px;
     margin-left: 8px;
     margin-right: auto;
-    display: block;
     border: solid 3px;
     border-radius: 3px;
     box-shadow: -2px 5px 12px;
