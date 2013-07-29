@@ -52,7 +52,9 @@ define([
         render: function() {
             var self = this;
             self.$el.addClass('specify-attachment-browser');
-            win.scroll(function() { self.fillPage(); });
+            var onScroll = function() { self.fillPage(); };
+            win.scroll(onScroll);
+            self.$el.on("remove", function() { win.off('scroll', onScroll); });
             self.fillPage();
         }
     });
