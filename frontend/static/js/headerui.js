@@ -1,6 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'navigation', 'cs!domain', 'jquery-bbq',
-    'toolbarwelcome', 'toolbardataentry', 'toolbarquery'
+    'toolbarwelcome', 'toolbardataentry', 'toolbarquery', 'toolbarattachments'
 ], function headerUI(require, $, _, Backbone, navigation, domain, jquery_bbq) {
     "use strict";
 
