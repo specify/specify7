@@ -5,32 +5,37 @@ define([
 ], function($, _, Backbone, api, attachments, schema, populateform, specifyform, navigation) {
     "use strict";
 
-    var win = $(window);
-    var doc = $(document);
+    var tablesWithAttachments = _(
+        ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
+         "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
+         "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
+    ).map(function(table) { return schema.getModel(table); });
 
     var AttachmentsView = Backbone.View.extend({
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
-            'click .specify-attachment-dataobj-icon': 'openDataObj'
+            'click .specify-attachment-dataobj-icon': 'openDataObj',
+            'change select': 'selectChanged'
         },
         initialize: function() {
             var self = this;
             self.fetching = false;
             self.attachments = new (api.Collection.forModel('attachment'))();
-            self.index = 0;
+        },
+        index: function() {
+            return this.$('.specify-attachment-cell').length;
         },
         fetchMore: function() {
             var self = this;
             self.fetching = true;
-            return self.attachments.fetch({ at: self.index }).done(function() { self.fetching = false; });
+            return self.attachments.fetch({ at: self.index() }).done(function() { self.fetching = false; });
         },
         renderAvailable: function() {
             var self = this;
-            while (self.index < self.attachments.length) {
-                var attachment = self.attachments.at(self.index);
+            while (self.index() < self.attachments.length) {
+                var attachment = self.attachments.at(self.index());
                 if (_.isUndefined(attachment)) return;
                 self.$('.specify-attachment-cells').append(self.makeThumbnail(attachment));
-                self.index++;
             }
         },
         makeThumbnail: function(attachment) {
@@ -38,10 +43,13 @@ define([
             var title = attachment.get('title');
             var tableId = attachment.get('tableid');
 
+            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
+                    schema.getModelById(tableId).getIcon();
+
             var cell = $('<div class="specify-attachment-cell">');
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
-                src: schema.getModelById(tableId).getIcon()
+                src: icon
             }).appendTo(cell);
 
             attachments.getThumbnail(attachment, 123).done(function(img) {
@@ -51,10 +59,13 @@ define([
             });
             return cell;
         },
-        fillPage: function() {
+        fillPage: function(recurDepth) {
+            // prevent infinite loop.
+            if ((recurDepth || (recurDepth = 0)) > 10) return;
+
             var self = this;
             if (self.fetching) return;
-            if (self.attachments.populated && self.index >= self.attachments.length) return;
+            if (self.attachments.populated && self.index() >= self.attachments.length) return;
 
             var browser = self.$('.specify-attachment-browser');
             var cells = self.$('.specify-attachment-cells');
@@ -62,32 +73,40 @@ define([
             if (browser.scrollTop() + browser.height() + 100 > cells.height()) {
                 self.fetchMore().done(function () {
                     self.renderAvailable();
-                    self.fillPage();
+                    self.fillPage(recurDepth + 1);
                 });
             }
         },
         setSize: function() {
-            var winHeight = win.height();
+            var winHeight = $(window).height();
             var offset = this.$('.specify-attachment-browser').offset().top;
             this.$('.specify-attachment-browser').height(winHeight - offset - 50);
         },
         render: function() {
             var self = this;
-            self.$el.append(
-                '<h2>Attachments</h2>' +
-                '<div class="specify-attachment-browser"><div class="specify-attachment-cells"></div>');
+            self.$el.append('<h2>Attachments</h2>' +
+                            '<select class="specify-attachment-type">' +
+                            '<option value="all">All</option>' +
+                            '<option value="unused">Unused</option>' +
+                            '<select>' +
+                            '<div class="specify-attachment-browser"><div class="specify-attachment-cells"></div>');
+
+            _.each(tablesWithAttachments, function(table) {
+                self.$('select').append('<option value="' + table.tableId + '">' + table.getLocalizedName() + '</option>');
+            });
 
             var resize = function() {
                 self.setSize();
                 self.fillPage();
             };
 
-            win.resize(resize);
-            self.$el.on("remove", function() { win.off('resize', resize); });
+            $(window).resize(resize);
+            self.$el.on("remove", function() { $(window).off('resize', resize); });
             _.defer(function() { self.setSize(); });
 
             self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
             self.fillPage();
+            return this;
         },
         openOriginal: function(evt) {
             var index = this.$('.specify-attachment-thumbnail').index(evt.currentTarget);
@@ -97,14 +116,22 @@ define([
             var self = this;
             self.dialog && self.dialog.dialog('close');
 
+            var index = self.$('.specify-attachment-dataobj-icon').index(evt.currentTarget);
+            var attachment = self.attachments.at(index);
+            var tableId = attachment.get('tableid');
+            if (_.isNull(tableId)) {
+                // TODO: something for unused attachments.
+//                self.buildDialog(attachment);
+                return;
+            }
+
             self.dialog = $('<div>').dialog({
                 title: "Opening...",
                 modal: true
             });
 
-            var index = self.$('.specify-attachment-dataobj-icon').index(evt.currentTarget);
-            var attachment = self.attachments.at(index);
-            var model = schema.getModelById(attachment.get('tableid'));
+
+            var model = schema.getModelById(tableId);
             attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
                 return dataObjs.at(0).rget(model.name.toLowerCase());
             }).done(function(dataObj) {
@@ -120,10 +147,10 @@ define([
 
                 self.dialog.dialog('close');
                 var dialog = self.dialog = $('<div>').append(dialogForm).dialog({
-                        width: 'auto',
-                        title:  resource.specifyModel.getLocalizedName(),
-                        close: function() { $(this).remove(); self.dialog = null; }
-                    });
+                    width: 'auto',
+                    title:  resource.specifyModel.getLocalizedName(),
+                    close: function() { $(this).remove(); self.dialog = null; }
+                });
 
                 if (!resource.isNew()) {
                     dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
@@ -136,6 +163,23 @@ define([
                     });
                 }
             });
+        },
+        selectChanged: function(evt) {
+            var tableId = this.$('select').val();
+            this.attachments = new (api.Collection.forModel('attachment'))();
+
+            switch (tableId) {
+            case "all":
+                break;
+            case "unused":
+                this.attachments.queryParams.tableid__isnull = true;
+                break;
+            default:
+                this.attachments.queryParams.tableid = tableId;
+                break;
+            }
+            this.$('.specify-attachment-cells').empty();
+            this.fillPage();
         }
     });
 
