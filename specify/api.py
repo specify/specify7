@@ -475,6 +475,7 @@ def get_collection(logged_in_collection, model, params={}):
     # Default values for request parameters.
     offset = 0
     limit = 20
+    order_by = None
     filters = {}
     do_domain_filter = False
 
@@ -496,11 +497,17 @@ def get_collection(logged_in_collection, model, params={}):
             offset = int(val)
             continue
 
+        if param == 'orderby':
+            order_by = val
+            continue
+
         # param is a field for filtering
         filters.update({param: val})
     objs = model.objects.filter(**filters)
     if do_domain_filter:
         objs = filter_by_collection(objs, logged_in_collection)
+    if order_by is not None:
+        objs = objs.order_by(order_by)
     return objs_to_data(objs, offset, limit)
 
 def objs_to_data(objs, offset=0, limit=20):

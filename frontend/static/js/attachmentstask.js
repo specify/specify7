@@ -21,6 +21,7 @@ define([
             var self = this;
             self.fetching = false;
             self.attachments = new (api.Collection.forModel('attachment'))();
+            this.attachments.queryParams.orderby = "-timestampcreated";
         },
         index: function() {
             return this.$('.specify-attachment-cell').length;
@@ -149,6 +150,7 @@ define([
                 self.dialog.dialog('close');
                 var dialog = self.dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',
+                    position: { my: "top", at: "top+20", of: self.$('.specify-attachment-browser') },
                     title:  resource.specifyModel.getLocalizedName(),
                     close: function() { $(this).remove(); self.dialog = null; }
                 });
@@ -168,6 +170,7 @@ define([
         selectChanged: function(evt) {
             var tableId = this.$('select').val();
             this.attachments = new (api.Collection.forModel('attachment'))();
+            this.attachments.queryParams.orderby = "-timestampcreated";
 
             switch (tableId) {
             case "all":
