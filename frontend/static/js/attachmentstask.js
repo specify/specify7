@@ -72,7 +72,7 @@ define([
             var index = this.index();
             var _this = this;
 
-            if (browser.scrollTop() + browser.height() + 100 > cells.height() &&
+            if (browser.scrollTop() + browser.height() + 200 > cells.height() &&
                 index < this.attachments.totalCount)
             {
                 this.$('.specify-attachment-cells').append(
