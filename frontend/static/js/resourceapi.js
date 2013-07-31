@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'whenall', 'jquery-bbq'
-], function($, _, Backbone, schema, whenAll) {
-    var api = _.extend({}, Backbone.Events);
+    'jquery', 'underscore', 'backbone', 'schema', 'apibase', 'whenall', 'jquery-bbq'
+], function($, _, Backbone, schema, api, whenAll) {
+    "use strict";
 
-    function isResourceOrCollection(obj) { return obj instanceof Resource || obj instanceof Collection; }
+    var resources = {};
 
     function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -515,8 +515,4 @@ define([
             return api.Collection.forModel(this.specifyModel);
         }
     });
-
-    var resources = {};
-
-    return api;
 });

@@ -1,6 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'resourceapi', 'schema', 'whenall', 'jquery-bbq'
+    'jquery', 'underscore', 'backbone', 'apibase', 'schema', 'whenall', 'jquery-bbq'
 ], function($, _, Backbone, api, schema, whenAll) {
+    "use strict";
+
+    var collections = {};
 
     api.Collection = Backbone.Collection.extend({
         populated: false,   // set if the collection has been fetched or filled in
@@ -97,9 +100,4 @@ define([
             return collection;
         }
     });
-
-
-    var collections = {};
-
-    return api;
 });
