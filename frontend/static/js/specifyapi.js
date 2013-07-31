@@ -1,1 +1,1 @@
-define(['apibase', 'resourceapi', 'collectionapi'], function(api) { return api; });
+define(['apibase', 'resourceapi', 'collectionapi', 'lazycollectionapi'], function(api) { return api; });
