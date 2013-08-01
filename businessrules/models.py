@@ -11,3 +11,4 @@ import agent_rules
 import groupperson_rules
 import shipment_rules
 import attachment_rules
+import guid_rules
