@@ -26,13 +26,14 @@ define([
                     return format(lsCol);
                 });
 
-                var getCollectionObjects = related.fetch().pipe(function() {
-                    return whenAll(related.map(function(rel) {
-                        return rel.rget('leftside', true).pipe(function(co) {
-                            return whenAll([co.viewUrl(), format(co)]);
+                var getCollectionObjects = related.isNew ? [] :
+                        related.fetch().pipe(function() {
+                            return whenAll(related.map(function(rel) {
+                                return rel.rget('leftside', true).pipe(function(co) {
+                                    return whenAll([co.viewUrl(), format(co)]);
+                                });
+                            }));
                         });
-                    }));
-                });
 
                 return $.when(getCollection, getCollectionObjects);
             }).done(function(collection, coInfo) {
