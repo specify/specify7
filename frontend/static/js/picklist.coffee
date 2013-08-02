@@ -37,6 +37,8 @@ define [
 
         setValueIntoModel: ->
             value = @$el.val() or null
+            if @isAgentType and value?
+                value = parseInt value, 10
             @model.set @field.name, value
 
         setupOptions: (items, value) ->
