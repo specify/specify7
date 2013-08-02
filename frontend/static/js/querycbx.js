@@ -138,8 +138,7 @@ define([
             new (require('resourceview'))({
                 el: this.dialog,
                 model: related,
-                mode: this.readOnly ? 'view' : 'edit',
-                handleSaveDelete: false
+                mode: this.readOnly ? 'view' : 'edit'
             }).render()
                 .on('saved', this.resourceSaved, this)
                 .on('deleted', this.resourceDeleted, this);

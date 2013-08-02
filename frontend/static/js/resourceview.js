@@ -12,7 +12,7 @@ define([
 
     return Backbone.View.extend({
         // triggered events = {
-        //   saved(this.model, wasNew),
+        //   saved(this.model, options),
         //   deleted(),
         //   addanother(newResource) when resource is saved if user selected save-and-add-another,
         //   redisplay() when the view wants its container to "reload" it,
@@ -22,16 +22,13 @@ define([
             //   model: api.Resource to view,
             //   el: $element to render in,
             //   recordSet: api.Resource('recordset')? resource is included in,
-            //   mode: 'view' | 'edit',
-            //   handleSaveDelete: boolean? = true. set to false to prevent view
-            //     from doing anything after save or deletes.
+            //   mode: 'view' | 'edit'
             // }
             var self = this;
             self.model.on('change', self.setTitle, self);
             self.recordSet = options.recordSet;
             self.mode = options.mode;
             self.readOnly = self.mode === 'view';
-            self.handleSaveDelete = _.isUndefined(options.handleSaveDelete) || options.handleSaveDelete;
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
@@ -99,31 +96,10 @@ define([
             this.header.find('.view-title').text(title);
         },
         saved: function(options) {
-            var self = this;
-            this.trigger('saved', this.model, options.wasNew);
-            if (!this.handleSaveDelete) return;
-
-            if (options.addAnother) {
-                self.trigger('addanother', options.newResource);
-            } else if (options.wasNew) {
-                navigation.go(self.model.viewUrl());
-            } else {
-                self.trigger('redisplay');
-            }
+            this.trigger('saved', this.model, options);
         },
         deleted: function() {
-            var self = this;
             this.trigger('deleted');
-            if (!this.handleSaveDelete) return;
-
-            if (self.next) {
-                navigation.go(self.next.viewUrl());
-            } else if (self.prev) {
-                navigation.go(self.prev.viewUrl());
-            } else {
-                self.$el.empty();
-                self.$el.append('<p>Item deleted.</p>');
-            }
         }
     });
 });
