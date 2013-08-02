@@ -11,12 +11,27 @@ define([
     function setWindowTitle(title) { window && (window.document.title = title); }
 
     return Backbone.View.extend({
+        // triggered events = {
+        //   saved(this.model, wasNew),
+        //   deleted(),
+        //   addanother(newResource) when resource is saved if user selected save-and-add-another,
+        //   redisplay() when the view wants its container to "reload" it,
+        // }
         initialize: function(options) {
+            // options = {
+            //   model: api.Resource to view,
+            //   el: $element to render in,
+            //   recordSet: api.Resource('recordset')? resource is included in,
+            //   mode: 'view' | 'edit',
+            //   handleSaveDelete: boolean? = true. set to false to prevent view
+            //     from doing anything after save or deletes.
+            // }
             var self = this;
             self.model.on('change', self.setTitle, self);
             self.recordSet = options.recordSet;
             self.mode = options.mode;
             self.readOnly = self.mode === 'view';
+            self.handleSaveDelete = _.isUndefined(options.handleSaveDelete) || options.handleSaveDelete;
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
@@ -85,6 +100,9 @@ define([
         },
         saved: function(options) {
             var self = this;
+            this.trigger('saved', this.model, options.wasNew);
+            if (!this.handleSaveDelete) return;
+
             if (options.addAnother) {
                 self.trigger('addanother', options.newResource);
             } else if (options.wasNew) {
@@ -95,6 +113,9 @@ define([
         },
         deleted: function() {
             var self = this;
+            this.trigger('deleted');
+            if (!this.handleSaveDelete) return;
+
             if (self.next) {
                 navigation.go(self.next.viewUrl());
             } else if (self.prev) {

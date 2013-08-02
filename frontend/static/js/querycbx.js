@@ -12,8 +12,7 @@ define([
 
     var QueryCbx = Backbone.View.extend({
         events: {
-            'click .querycbx-edit, .querycbx-display': 'display',
-            'click .querycbx-add': 'add',
+            'click .querycbx-edit, .querycbx-display, .querycbx-add': 'display',
             'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
@@ -121,79 +120,57 @@ define([
                 }
             }).render().$el.on('remove', function() { self.dialog = null; });
         },
-        add: function(event, ui) {
-            var self = this;
-            event.preventDefault();
-            if (self.dialog) {
-                // if the open dialog is for adding, just close it and don't open a new one
-                var closeOnly = self.dialog.hasClass('querycbx-dialog-add');
-                self.dialog.dialog('close');
-                if (closeOnly) return;
-            }
-            var relatedModel = self.model.specifyModel.getField(self.fieldName).getRelatedModel();
-            var newResource = new (api.Resource.forModel(relatedModel))();
-            self.buildDialog(newResource, 'add');
-        },
-        buildDialog: function(resource, addOrDisplay) {
-            var self = this;
-            var mode = self.readOnly ? 'view' : 'edit';
-            specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
-                dialogForm.find('.specify-form-header:first').remove();
-
-                if (!self.readOnly) {
-                    var saveButton = new SaveButton({ model: resource });
-                    saveButton.render().$el.appendTo(dialogForm);
-                    saveButton.on('savecomplete', function() {
-                        dialog.dialog('close');
-                        self.model.set(self.fieldName, resource);
-                    });
-                }
-
-                var title = (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName();
-
-                if (!resource.isNew() && !self.readOnly) {
-                    var deleteButton = new DeleteButton({ model: resource });
-                    deleteButton.render().$el.appendTo(dialogForm);
-                    deleteButton.on('deleted', function() {
-                        self.model.set(self.fieldName, null);
-                        dialog.dialog('close');
-                    });
-                }
-
-                require('cs!populateform')(dialogForm, resource);
-
-                var dialog = self.dialog = $('<div>', {'class': 'querycbx-dialog-' + addOrDisplay})
-                    .append(dialogForm).dialog({
-                        width: 'auto',
-                        title: title,
-                        close: function() { $(this).remove(); self.dialog = null; }
-                    });
-
-                if (!resource.isNew()) {
-                    dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                        '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
-
-                    dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                        evt.preventDefault();
-                        navigation.go(resource.viewUrl());
-                        dialog.dialog('close');
-                    });
-                }
-
-            });
-        },
         display: function(event, ui) {
-            var self = this;
             event.preventDefault();
-            if (self.dialog) {
-                // if the open dialog is for display, just close it and don't open a new one
-                var closeOnly = self.dialog.hasClass('querycbx-dialog-display');
-                self.dialog.dialog('close');
+            var mode = $(event.currentTarget).is('.querycbx-add')? 'add' : 'display';
+            if (this.dialog) {
+                // if the open dialog is for selected mode, just close it and don't open a new one
+                var closeOnly = this.dialog.hasClass('querycbx-dialog-' + mode);
+                this.dialog.dialog('close');
                 if (closeOnly) return;
             }
-            self.model.rget(self.fieldName, true).done(function(related) {
-                related && self.buildDialog(related, 'display');
+            this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
+
+            var related = (mode === 'add') ?
+                    new (api.Resource.forModel(this.relatedModel))() :
+                    new api.Resource.fromUri(this.model.get(this.fieldName));
+
+            new (require('resourceview'))({
+                el: this.dialog,
+                model: related,
+                mode: this.readOnly ? 'view' : 'edit',
+                handleSaveDelete: false
+            }).render()
+                .on('saved', this.resourceSaved, this)
+                .on('deleted', this.resourceDeleted, this);
+
+            var _this = this;
+            this.dialog.dialog({
+                position: { my: "left top", at: "left+20 top+20", of: $('#content') },
+                width: 'auto',
+                close: function() { $(this).remove(); _this.dialog = null; }
             });
+
+            if (!related.isNew()) {
+                this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
+                    '<a href="' + related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+
+                this.dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                    evt.preventDefault();
+                    navigation.go(related.viewUrl());
+                    _this.dialog.dialog('close');
+                });
+            }
+        },
+        resourceSaved: function(related) {
+            this.dialog.dialog('close');
+            this.model.set(this.fieldName, related);
+            this.fillIn();
+        },
+        resourceDeleted: function() {
+            this.dialog.dialog('close');
+            this.model.set(this.fieldName, null);
+            this.fillIn();
         },
         blur: function() {
             var val = this.$('input').val().trim();
