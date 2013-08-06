@@ -138,27 +138,27 @@ define([
             new (require('resourceview'))({
                 el: this.dialog,
                 model: related,
-                mode: this.readOnly ? 'view' : 'edit'
+                mode: this.readOnly ? 'view' : 'edit',
+                noHeader: true
             }).render()
                 .on('saved', this.resourceSaved, this)
-                .on('deleted', this.resourceDeleted, this);
+                .on('deleted', this.resourceDeleted, this)
+                .on('changetitle', this.changeDialogTitle, this);
 
             var _this = this;
             this.dialog.dialog({
                 position: { my: "left top", at: "left+20 top+20", of: $('#content') },
                 width: 'auto',
                 close: function() { $(this).remove(); _this.dialog = null; }
+            }).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                evt.preventDefault();
+                navigation.go(related.viewUrl());
+                _this.dialog.dialog('close');
             });
 
             if (!related.isNew()) {
                 this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
                     '<a href="' + related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
-
-                this.dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                    evt.preventDefault();
-                    navigation.go(related.viewUrl());
-                    _this.dialog.dialog('close');
-                });
             }
         },
         resourceSaved: function(related) {
@@ -170,6 +170,9 @@ define([
             this.dialog.dialog('close');
             this.model.set(this.fieldName, null);
             this.fillIn();
+        },
+        changeDialogTitle: function(title) {
+            this.dialog.dialog('option', 'title', title);
         },
         blur: function() {
             var val = this.$('input').val().trim();
