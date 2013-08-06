@@ -261,7 +261,7 @@ define([
         delete: function() {
             var resource = this.currentResource();
             if (!this.collection.dependent) {
-                // TODO: this might not be possible is the
+                // TODO: this might not be possible if the
                 // fk field is not nullable....
                 resource.set(this.field.otherSideName, null);
                 resource.save();  // TODO: make confirmation
