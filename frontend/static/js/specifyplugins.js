@@ -15,6 +15,7 @@ define([
         LocalityGeoRef: GeoLocatePlugin,
         WebLinkButton: WebLinkButton,
         LocalityGoogleEarth: UIPlugin.extend({
+            __name__: "LocalityGoogleEarthPlugin",
             events: {
                 'click': 'click'
             },

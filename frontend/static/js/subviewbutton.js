@@ -3,7 +3,7 @@ define([
 ], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
 
     var Base =  Backbone.View.extend({
-        __name__: "SubviewButton",
+        __name__: "SubviewButtonBaseView",
         events: {
             'click a': 'clicked'
         },
@@ -46,6 +46,7 @@ define([
     });
 
     var ToMany = Base.extend({
+        __name__: "ToManySubViewButton",
         initialize: function(options) {
             Base.prototype.initialize.call(this, options);
             this.collection.on('add remove destroy', this.collectionChanged, this);
@@ -83,6 +84,7 @@ define([
     });
 
     var ToOne = Base.extend({
+        __name__: "ToOneSubViewButton",
         initialize: function(options) {
             Base.prototype.initialize.call(this, options);
             this.model.on('change:' + this.field.name.toLowerCase(), this.resourceChanged, this);

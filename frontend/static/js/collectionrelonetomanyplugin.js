@@ -6,6 +6,7 @@ define([
     var format = dataobjformatters.format;
 
     return UIPlugin.extend({
+        __name__: "CollectionRelOneToManyPlugin",
         events: {
             'click a': 'go'
         },

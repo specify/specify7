@@ -20,6 +20,7 @@ define([
     };
 
     return  UIPlugin.extend({
+        __name__: "WebLinkButton",
         render: function() {
             this.def = webLinksDefs[this.init.weblink];
             if (_.isUndefined(this.def)) {

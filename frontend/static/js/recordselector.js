@@ -32,6 +32,7 @@ define([
     });
 
     var Header = Controls.extend({
+        __name__: "RecordSelectorHeader",
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
@@ -40,6 +41,7 @@ define([
     });
 
     var AddDeleteBtns = Controls.extend({
+        __name__: "RecordSelectorAddDeleteButtons",
         render: function () {
             this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
                             '<input type="button" value="Delete" class="specify-delete-related">');

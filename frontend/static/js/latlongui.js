@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return UIPlugin.extend({
+        __name__: "LatLongUI",
         initialize: function() {
             UIPlugin.prototype.initialize.apply(this, arguments);
             this.disabled = this.$el.prop('disabled');

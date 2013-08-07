@@ -78,6 +78,7 @@ define([
     };
 
     var NumericField = Field.extend({
+        __name__: "NumericField",
         constructor: function(options) {
             options.value = Array(options.size+1).join('#');
             Field.call(this, options);
@@ -88,23 +89,27 @@ define([
     });
 
     var YearField = Field.extend({
+        __name__: "YearField",
         valueRegexp: function() {
             return '\\d{' + this.size + '}';
         }
     });
 
     var AlphaNumField = Field.extend({
+        __name__: "AlphaNumField",
         valueRegexp: function() {
             return '[a-zA-Z0-9]{' + this.size + '}';
         }
     });
 
     var SeparatorField = Field.extend({
+        __name__: "SeparatorField",
         isWild: function() { return false; },
         valueRegexp: Field.prototype.wildRegexp
     });
 
     var CatalogNumberNumeric = UIFormatter.extend({
+        __name__: "CatalogNumberNumeric",
         constructor: function() {
             UIFormatter.call(this,  [
                 new CatalogNumberNumeric.Field({ size: 9, inc: true })
@@ -112,6 +117,7 @@ define([
         }
     }, {
         Field: NumericField.extend({
+            __name__: "CatalogNumberNumericField",
             valueRegexp: function() {
                 return '\\d{0,' + this.size + '}';
             },
