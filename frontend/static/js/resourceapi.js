@@ -1,9 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'apibase', 'whenall', 'jquery-bbq'
-], function($, _, Backbone, schema, api, whenAll) {
+    'require', 'jquery', 'underscore', 'backbone', 'whenall', 'jquery-bbq'
+], function(require, $, _, Backbone, whenAll) {
     "use strict";
-
-    var resources = {};
 
     function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -45,13 +43,15 @@ define([
             }};
     }
 
-    api.Resource = Backbone.Model.extend({
+    var ResourceBase = Backbone.Model.extend({
+        __name__: "ResourceBase",
         populated: false,   // indicates if this resource has data
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
 
         constructor: function(attributes, options) {
+            this.api = require('specifyapi');
             this.specifyModel = this.constructor.specifyModel;
             this.relatedCache = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments);
@@ -93,8 +93,8 @@ define([
                 // TODO: set value on parent object if necessary
             });
 
-            api.trigger('initresource', this);
-            if (this.isNew()) api.trigger('newresource', this);
+            this.api.trigger('initresource', this);
+            if (this.isNew()) this.api.trigger('newresource', this);
         },
         clone: function() {
             var self = this;
@@ -234,7 +234,7 @@ define([
                     switch (field.type) {
                     case 'one-to-many':
                         // should we handle passing in an api.Collection instance here??
-                        self.setToManyCache(field, new (api.Collection.forModel(relatedModel))(value, {parse: true}));
+                        self.setToManyCache(field, new (self.api.Collection.forModel(relatedModel))(value, {parse: true}));
                         delete attrs[fieldName]; // because the foreign key is on the other side
                         return;
                     case 'many-to-one':
@@ -244,8 +244,8 @@ define([
                             return;
                         }
 
-                        value = (value instanceof api.Resource) ? value :
-                            new (self.constructor.forModel(relatedModel))(value, {parse: true});
+                        value = (value instanceof ResourceBase) ? value :
+                            new (self.api.Resource.forModel(relatedModel))(value, {parse: true});
 
                         self.setToOneCache(field, value);
                         attrs[fieldName] = value.url(); // the FK as a URI
@@ -255,7 +255,7 @@ define([
                         // basically a one-to-one from the 'to' side
                         if (_.isArray(value)) {
                             value = (value.length < 1) ? null :
-                                new (self.constructor.forModel(relatedModel))(_.first(value), {parse: true});
+                                new (self.api.Resource.forModel(relatedModel))(_.first(value), {parse: true});
                         }
                         self.setToOneCache(field, value);
                         delete attrs[fieldName]; // because the FK is on the other side
@@ -292,7 +292,7 @@ define([
                     // is the related resource cached?
                     var toOne = self.relatedCache[fieldName];
                     if (!toOne) {
-                        toOne = self.constructor.fromUri(value);
+                        toOne = self.api.Resource.fromUri(value);
                         self.setToOneCache(field, toOne);
                     }
                     // if we want a field within the related resource then recur
@@ -309,7 +309,7 @@ define([
                     if (!toMany) {
                         // value might not exist if resource is null, or the server didn't send it.
                         // since the URI is implicit in the data we have, it doesn't matter.
-                        toMany = value ? api.Collection.fromUri(value) : new (api.Collection.forModel(related))();
+                        toMany = value ? self.api.Collection.fromUri(value) : new (self.api.Collection.forModel(related))();
                         self.setToManyCache(field, toMany);
                     }
 
@@ -331,7 +331,7 @@ define([
 
                     // it is a uri pointing to the collection
                     // that contains the resource
-                    var collection = api.Collection.fromUri(value);
+                    var collection = self.api.Collection.fromUri(value);
 
                     // fetch the collection and pretend like it is a single resource
                     return collection.fetchIfNotPopulated().pipe(function() {
@@ -455,26 +455,11 @@ define([
             });
         }
     }, {
-        forModel: function(model) {
-            // given a model name or object, return a constructor for resources of that type
-            model = _(model).isString() ? schema.getModel(model) : model;
-            if (!model) return null;
-
-            if (!_(resources).has(model.name)) {
-                resources[model.name] = api.Resource.extend({}, { specifyModel: model });
-            }
-            return resources[model.name];
-        },
-        fromUri: function(uri) {
-            // given a resource uri, find the appropriate constructor and instantiate
-            // a resource object representing the resource. will not be populated.
-            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
-            var ResourceForModel = api.Resource.forModel(match[1]);
-            return new ResourceForModel({id: parseInt(match[2], 10) });
-        },
         collectionFor: function() {
             // return the collection constructor for this type of resource
-            return api.Collection.forModel(this.specifyModel);
+            return self.api.Collection.forModel(this.specifyModel);
         }
     });
+
+    return ResourceBase;
 });

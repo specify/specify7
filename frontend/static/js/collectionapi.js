@@ -1,11 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'apibase', 'schema', 'whenall', 'jquery-bbq'
-], function($, _, Backbone, api, schema, whenAll) {
+    'jquery', 'underscore', 'backbone', 'whenall', 'jquery-bbq'
+], function($, _, Backbone, whenAll) {
     "use strict";
 
-    var collections = {};
-
-    api.Collection = Backbone.Collection.extend({
+    return  Backbone.Collection.extend({
+        __name__: "CollectionBase",
         populated: false,   // set if the collection has been fetched or filled in
         wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
 
@@ -80,23 +79,6 @@ define([
             if (self.isNew) return $.when(self.length);
             if (self._fetch) return self._fetch.pipe(function() { return self.totalCount; });
             return self.fetchIfNotPopulated().pipe(function() { return self.totalCount; });
-        }
-    }, {
-        forModel: function(model) {
-            model = _(model).isString() ? schema.getModel(model) : model;
-            if (!_(collections).has(model.name)) {
-                collections[model.name] = api.Collection.extend({
-                    model: api.Resource.forModel(model)
-                });
-            }
-            return collections[model.name];
-        },
-        fromUri: function(uri) {
-            var match = /api\/specify\/(\w+)\//.exec(uri);
-            var collection = new (api.Collection.forModel(match[1]))();
-            if (uri.indexOf("?") !== -1)
-                _.extend(collection.queryParams, $.deparam.querystring(uri));
-            return collection;
         }
     });
 });
