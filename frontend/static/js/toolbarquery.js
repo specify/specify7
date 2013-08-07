@@ -21,6 +21,7 @@ define([
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var QueryListDialog = Backbone.View.extend({
+        __name__: "QueryListDialog",
         className: "stored-queries-dialog list-dialog",
         events: {
             'click a.edit': 'edit'
@@ -64,6 +65,7 @@ define([
     }
 
     var QueryTypeDialog = Backbone.View.extend({
+        __name__: "QueryTypeDialog",
         className: "query-type-dialog list-dialog",
         events: {'click a': 'selected'},
         render: function() {
@@ -101,6 +103,7 @@ define([
 
 
     var EditQueryDialog = Backbone.View.extend({
+        __name__: "EditQueryDialog",
         className: "query-edit-dialog",
         initialize: function(options) {
             this.spquery = options.spquery;

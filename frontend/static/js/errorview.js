@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: "ErrorView",
         render: function() {
             var self = this;
             var request = self.options.request;

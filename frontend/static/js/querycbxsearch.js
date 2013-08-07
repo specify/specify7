@@ -6,6 +6,7 @@ define([
     var dialogdefs = $.parseXML(dialogdefxml);
 
     return Backbone.View.extend({
+        __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
             'click .querycbx-search-results a': 'select'

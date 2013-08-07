@@ -6,6 +6,7 @@ define [
 ], ($, _, Backbone, api) ->
 
     Backbone.View.extend
+        __name__: "TreeLevelPickListView"
         events: change: 'changed'
 
         initialize: (options) ->

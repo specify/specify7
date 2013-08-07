@@ -41,6 +41,7 @@ define([
     }
 
     var FieldInputUI = Backbone.View.extend({
+        __name__: "FieldInputUI",
         events: {
             'change input': 'changed'
         },
@@ -114,6 +115,7 @@ define([
     var FieldInputUIByOp = _.map(opInfo, function(extras) { return FieldInputUI.extend(extras); });
 
     return Backbone.View.extend({
+        __name__: "QueryField",
         events: {
             'change .field-show': 'fieldShowChanged',
             'change .field-select': 'fieldSelected',

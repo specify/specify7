@@ -5,6 +5,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
     var doc = $(document);
 
     return Backbone.View.extend({
+        __name__: "ScrollResults",
         events: {
             'scroll': 'scroll'
         },

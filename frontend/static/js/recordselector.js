@@ -10,6 +10,7 @@ define([
     var BLOCK_SIZE = 20;
 
     var Controls = Backbone.View.extend({
+        __name__: "RecordSelectorControls",
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
             Backbone.View.prototype.initialize.call(this, options);
@@ -47,6 +48,7 @@ define([
     });
 
     var Slider = Backbone.View.extend({
+        __name__: "RecordSelectorSlider",
         className: 'recordselector-slider',
         events: {
             'slidestop': 'onslidestop',
@@ -96,6 +98,7 @@ define([
     });
 
     return Backbone.View.extend({
+        __name__: "RecordSelector",
         events: {
             'remove': function (evt) {
                 (evt.target === this.el) && this.collection.off(null, null, this);

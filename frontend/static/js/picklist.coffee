@@ -14,6 +14,7 @@ define [
     objformat = dataobjformatters.format
 
     Backbone.View.extend
+        __name__: "PickListView"
         events:
             change: 'setValueIntoModel'
 

@@ -4,6 +4,7 @@ define([
 ], function(require, $, _, Backbone, api, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
     return Backbone.View.extend({
+        __name__: "Subview",
         events: {
             'click .specify-subview-header .specify-delete-related' : 'delete',
             'click .specify-subview-header .specify-add-related' : 'add'

@@ -14,6 +14,7 @@ define([
     }
 
     datamodelview.SchemaView = Backbone.View.extend({
+        __name__: "SchemaView",
         render: function() {
             var self = this;
             self.$el.append('<h2>Specify Schema</h2>');
@@ -27,6 +28,7 @@ define([
     });
 
     datamodelview.DataModelView = Backbone.View.extend({
+        __name__: "DataModelView",
         render: function() {
             var self = this, model = schema.getModel(self.options.model);
             self.$el.append('<h2>' + model.name + '</h2>');

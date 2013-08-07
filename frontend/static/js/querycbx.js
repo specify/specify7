@@ -11,6 +11,7 @@ define([
     var dataobjformat = dataobjformatters.format;
 
     var QueryCbx = Backbone.View.extend({
+        __name__: "QueryCbx",
         events: {
             'click .querycbx-edit, .querycbx-display, .querycbx-add': 'display',
             'click .querycbx-search': 'openSearch',

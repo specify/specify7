@@ -6,6 +6,7 @@ define([
     var objformat = dataobjformatters.format;
 
     var UIField = Backbone.View.extend({
+        __name__: "UIField",
         events: {
             'change': 'change'
         },

@@ -23,6 +23,7 @@ define([
     };
 
     var PrimaryResults = Backbone.View.extend({
+        __name__: "PrimaryResultsView",
         initialize: function(options) {
             this.searchTable = options.searchTable;
             this.model = options.model;
@@ -64,6 +65,7 @@ define([
     });
 
     var RelatedResults = Backbone.View.extend({
+        __name__: "RelatedResultsView",
         initialize: function(options) {
             this.relatedSearch = options.data;
             this.model = schema.getModel(this.relatedSearch.definition.root);
@@ -102,6 +104,7 @@ define([
     });
 
     var ResultsView = Backbone.View.extend({
+        __name__: "ResultsView",
         events: {
             'accordionchange': 'panelOpened'
         },

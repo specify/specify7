@@ -9,6 +9,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: "ResourceView",
         // triggered events = {
         //   saved(this.model, options),
         //   deleted(),

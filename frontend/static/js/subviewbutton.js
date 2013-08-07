@@ -3,6 +3,7 @@ define([
 ], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
 
     var Base =  Backbone.View.extend({
+        __name__: "SubviewButton",
         events: {
             'click a': 'clicked'
         },

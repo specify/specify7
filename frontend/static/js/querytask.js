@@ -9,6 +9,7 @@ define([
     var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var Results = Backbone.View.extend({
+        __name__: "QueryResultsView",
         initialize: function(options) {
             this.fieldUIs = options.fieldUIs;
             this.model = options.model;
@@ -68,6 +69,7 @@ define([
     });
 
     var StoredQueryView = Backbone.View.extend({
+        __name__: "QueryBuilder",
         events: {
             'click .query-execute': 'search',
             'click .field-add': 'addField',

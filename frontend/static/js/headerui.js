@@ -7,6 +7,7 @@ define([
     var toolModules = _.tail(arguments, headerUI.length);
 
     var ExpressSearchInput = Backbone.View.extend({
+        __name__: "ExpressSearchInput",
         events: {
             'submit': 'search'
         },
@@ -28,6 +29,7 @@ define([
 
 
     return Backbone.View.extend({
+        __name__: "HeaderUI",
         events: {
             'click #site-nav > ul > li > a': 'siteNavClick'
         },

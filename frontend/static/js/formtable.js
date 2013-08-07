@@ -5,6 +5,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: "FormTableView",
         events: {
             'click a.specify-edit, a.specify-display': 'edit',
             'click .specify-subview-header a.specify-add-related': 'add'

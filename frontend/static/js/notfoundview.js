@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: "NotFoundView",
         render: function() {
             var self = this;
             self.$el.empty();

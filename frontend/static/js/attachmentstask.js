@@ -12,6 +12,7 @@ define([
     ).map(function(table) { return schema.getModel(table); });
 
     var AttachmentsView = Backbone.View.extend({
+        __name__: "AttachmentsView",
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
             'click .specify-attachment-dataobj-icon': 'openDataObj',

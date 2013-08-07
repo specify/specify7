@@ -18,6 +18,7 @@ define([
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var RecordSetsDialog = Backbone.View.extend({
+        __name__: "RecordSetsDialog",
         className: "recordsets-dialog list-dialog",
         events: {
             'click a.edit': 'edit'
@@ -56,6 +57,7 @@ define([
     });
 
     var FormsDialog = Backbone.View.extend({
+        __name__: "FormsDialog",
         className: "forms-dialog list-dialog",
         events: {'click a': 'selected'},
         render: function() {
@@ -102,6 +104,7 @@ define([
     }
 
     var EditRecordSetDialog = Backbone.View.extend({
+        __name__: "EditRecordSetDialog",
         className: "recordset-edit-dialog",
         initialize: function(options) {
             this.recordset = options.recordset;
