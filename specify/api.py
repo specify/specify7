@@ -17,14 +17,7 @@ URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
 # A set of fields that represent relations to other resources which
 # should be included as nested objects when resources are fetched.
-inlined_fields = {
-    'Collector.agent',
-    'Collectingevent.collectors',
-    'Collectionobject.collectionobjectattribute',
-    'Collectionobject.determinations',
-    'Picklist.picklistitems',
-    'Spquery.fields',
-}
+from specify.dependent_fields import dependent_fields as inlined_fields
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""

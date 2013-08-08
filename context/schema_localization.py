@@ -5,29 +5,9 @@ from django.utils import simplejson
 from specify.models import Splocalecontainer as Container
 from specify.models import Splocalecontaineritem as Item
 from specify.models import Splocaleitemstr as SpString
-
-from businessrules.attachment_rules import tables_with_attachments
+from specify.dependent_fields import dependent_fields
 
 schema_localization_cache = {}
-
-dependent_fields = {
-    'Accession.accessionagents',
-    'Accession.accessionauthorizations',
-    'Agent.addresses',
-    'Agent.variants',
-    'Agent.groups',
-    'Collectionobject.determinations',
-    'Collectionobject.collectionobjectattribute',
-    'Collectionobject.preparations',
-    'Collectingevent.collectors',
-    'Collectingevent.collectingeventattribute',
-    'Locality.localitydetails',
-    'Picklist.picklistitems',
-    'Spquery.fields'
-}
-
-dependent_fields.update(model.__name__ + '.' + model.__name__.lower() + 'attachments'
-                        for model in tables_with_attachments)
 
 def get_schema_localization(collection):
     disc = collection.discipline
