@@ -199,7 +199,7 @@ define([
         },
         set: function(key, value, options) {
             // make the keys case insensitive
-            var attrs = {}, self = this;
+            var attrs = {};
             if (_.isObject(key) || key == null) {
                 // in the two argument case, so
                 // "key" is actually an object mapping keys to values
@@ -213,60 +213,78 @@ define([
 
             // need to set the id right way if we have it because
             // relationships depend on it
-            if ('id' in attrs) self.id = attrs.id;
+            if ('id' in attrs) this.id = attrs.id;
 
             // handle relationship fields
+            var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
-                var field = self.specifyModel.getField(fieldName);
-                if (!field || !field.isRelationship) return;
+                adjustedAttrs[fieldName] = this._handleRelationshipField(value, fieldName);
+            }, this);
 
-                var relatedModel = field.getRelatedModel();
+            return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
+        },
+        _handleRelationshipField: function(value, fieldName) {
+            if (_(['id', 'resource_uri']).contains(fieldName)) return value; // special fields
 
-                var oldRelated = self.relatedCache[fieldName];
-                if (_.isString(value)) {
-                    // got a URI
-                    if (oldRelated && field.type ===  'many-to-one') {
-                        if (oldRelated.url() !== value) {
-                            // the reference changed
-                            delete self.relatedCache[fieldName];
-                            oldRelated.off('all', null, this);
-                        }
-                    }
-                } else {
-                    // got an inlined resource or collection
-                    switch (field.type) {
-                    case 'one-to-many':
-                        // should we handle passing in an api.Collection instance here??
-                        self.setToManyCache(field, new (self.api.Collection.forModel(relatedModel))(value, {parse: true}));
-                        delete attrs[fieldName]; // because the foreign key is on the other side
-                        return;
-                    case 'many-to-one':
-                        if (!value) {
-                            // the FK is null, or not a URI or inlined resource at any rate
-                            self.setToOneCache(field, value);
-                            return;
-                        }
+            var field = this.specifyModel.getField(fieldName);
+            field || console.warn("setting unknown field", fieldName, "on",
+                                  this.specifyModel.name, "value is",
+                                  value);
 
-                        value = (value instanceof ResourceBase) ? value :
-                            new (self.api.Resource.forModel(relatedModel))(value, {parse: true});
+            if (!field || !field.isRelationship) return value; // not a relationship
 
-                        self.setToOneCache(field, value);
-                        attrs[fieldName] = value.url(); // the FK as a URI
-                        return;
-                    case 'zero-to-one':
-                        // this actually a one-to-many where the related collection is only a single resource
-                        // basically a one-to-one from the 'to' side
-                        if (_.isArray(value)) {
-                            value = (value.length < 1) ? null :
-                                new (self.api.Resource.forModel(relatedModel))(_.first(value), {parse: true});
-                        }
-                        self.setToOneCache(field, value);
-                        delete attrs[fieldName]; // because the FK is on the other side
-                        return;
+            var relatedModel = field.getRelatedModel();
+
+            var oldRelated = this.relatedCache[fieldName];
+            if (_.isString(value)) {
+                // got a URI
+                field.isDependent() && console.warn("expected inline data for dependent field",
+                                                    fieldName, "in", this);
+
+                if (oldRelated && field.type ===  'many-to-one') {
+                    // probably should never get here since the presence of an oldRelated
+                    // value implies a dependent field which wouldn't be receiving a URI value
+                    console.warn("unexpect condition");
+                    if (oldRelated.url() !== value) {
+                        // the reference changed
+                        delete this.relatedCache[fieldName];
+                        oldRelated.off('all', null, this);
                     }
                 }
-            });
-            return Backbone.Model.prototype.set.call(this, attrs, options);
+                return value;
+            }
+
+            // got an inlined resource or collection
+            switch (field.type) {
+            case 'one-to-many':
+                // should we handle passing in an api.Collection instance here??
+                this.setToManyCache(field, new (this.api.Collection.forModel(relatedModel))(value, {parse: true}));
+                return undefined;  // because the foreign key is on the other side
+            case 'many-to-one':
+                if (!value) {
+                    // the FK is null, or not a URI or inlined resource at any rate
+                    this.setToOneCache(field, value);
+                    return value;
+                }
+
+                value = (value instanceof ResourceBase) ? value :
+                    new (this.api.Resource.forModel(relatedModel))(value, {parse: true});
+
+                this.setToOneCache(field, value);
+                return value.url();  // the FK as a URI
+            case 'zero-to-one':
+                // this actually a one-to-many where the related collection is only a single resource
+                // basically a one-to-one from the 'to' side
+                if (_.isArray(value)) {
+                    value = (value.length < 1) ? null :
+                        new (this.api.Resource.forModel(relatedModel))(_.first(value), {parse: true});
+                }
+                this.setToOneCache(field, value);
+                return undefined; // because the FK is on the other side
+            }
+            console.error("unhandled setting of relationship field", fieldName,
+                          "on", this, "value is", value);
+            return value;
         },
         rget: function(fieldName, prePop) {
             // get the value of the named field where the name may traverse related objects
@@ -283,6 +301,7 @@ define([
                 // fetch the value, otherwise return the unpopulated resource
                 // or collection
                 if (prePop) {
+                    if (!value) return value; // ok if the related resource doesn't exist
                     if (_(value.fetchIfNotPopulated).isFunction()) {
                         return value.fetchIfNotPopulated();
                     } else {
@@ -297,7 +316,7 @@ define([
             var fieldName = path[0].toLowerCase();
             var value = this.get(fieldName);
             var field = this.specifyModel.getField(fieldName);
-            field || console.warn("unknown field", fieldName, "in",
+            field || console.warn("accessing unknown field", fieldName, "in",
                                   this.specifyModel.name, "value is",
                                   value);
 
@@ -321,6 +340,7 @@ define([
                 // is the related resource cached?
                 var toOne = this.relatedCache[fieldName];
                 if (!toOne) {
+                    _(value).isString() || console.error("expected URI, got", value);
                     toOne = this.api.Resource.fromUri(value);
                     this.setToOneCache(field, toOne);
                 }
