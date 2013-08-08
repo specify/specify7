@@ -88,7 +88,7 @@ define([
         },
         renderItem: function (resource) {
             var str = this.typesearch.attr('format');
-            var rget = _.bind(resource.rget, resource);
+            var rget = function(field) { return resource.rget(field); };
             var buildLabel = str &&
                 whenAll(_(this.displaycols).map(rget)).pipe(function(vals) {
                     _(vals).each(function (val) { str = str.replace(/%s/, val); });

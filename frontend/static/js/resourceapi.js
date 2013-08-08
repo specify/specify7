@@ -91,6 +91,9 @@ define([
                 });
 
                 // TODO: set value on parent object if necessary
+                // Actually, I think that should be taken care of
+                // by the event handler any parent resource will
+                // have placed on this resource.
             });
 
             this.api.trigger('initresource', this);
@@ -270,79 +273,102 @@ define([
             // using dot notation. if the named field represents a resource or collection,
             // then prePop indicates whether to return the named object or the contents of
             // the field that represents it
-            var self = this;
+            var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
+
+            var rget = function(_this) { return _this._rget(path); };
+
             // first make sure we actually have this object.
-            return this.fetchIfNotPopulated().pipe(function() {
-                var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
-                fieldName = path[0].toLowerCase();
-                var field = self.specifyModel.getField(fieldName);
-                var value = self.get(fieldName);
-
-                // if field represents a value, then return that if we are done,
-                // otherwise we can't traverse any farther...
-                if (!field || !field.isRelationship) return path.length === 1 ? value : undefined;
-
-                var related = field.getRelatedModel();
-                switch (field.type) {
-                case 'one-to-one':
-                case 'many-to-one':
-                    // a foreign key field.
-                    if (!value) return value;  // no related object
-
-                    // is the related resource cached?
-                    var toOne = self.relatedCache[fieldName];
-                    if (!toOne) {
-                        toOne = self.api.Resource.fromUri(value);
-                        self.setToOneCache(field, toOne);
+            return this.fetchIfNotPopulated().pipe(rget).pipe(function(value) {
+                // if the requested value is fetchable, and prePop is true,
+                // fetch the value, otherwise return the unpopulated resource
+                // or collection
+                if (prePop) {
+                    if (_(value.fetchIfNotPopulated).isFunction()) {
+                        return value.fetchIfNotPopulated();
+                    } else {
+                        console.warn("rget(" + fieldName + ", prePop=true) where"
+                                     + " resulting value has no fetch method");
                     }
-                    // if we want a field within the related resource then recur
-                    // otherwise, start the resource fetching if prePop and return
-                    return (path.length > 1) ? toOne.rget(_.tail(path), prePop) : (
-                        prePop ? toOne.fetchIfNotPopulated() : toOne
-                    );
-                case 'one-to-many':
-                    // can't traverse into a collection using dot notation
-                    if (path.length > 1) return undefined;
-
-                    // is the collection cached?
-                    var toMany =  self.relatedCache[fieldName];
-                    if (!toMany) {
-                        // value might not exist if resource is null, or the server didn't send it.
-                        // since the URI is implicit in the data we have, it doesn't matter.
-                        toMany = value ? self.api.Collection.fromUri(value) : new (self.api.Collection.forModel(related))();
-                        self.setToManyCache(field, toMany);
-                    }
-
-                    // start the fetch if requested and return the collection
-                    return prePop ? toMany.fetchIfNotPopulated() : toMany;
-                case 'zero-to-one':
-                    // this is like a one-to-many where the many cannot be more than one
-                    // i.e. the current resource is the target of a FK
-
-                    // is it already cached?
-                    if (self.relatedCache[fieldName]) {
-                        value = self.relatedCache[fieldName];
-                        // recur if we need to traverse more
-                        return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
-                    }
-
-                    // if this resource is not yet persisted, the related object can't point to it yet
-                    if (self.isNew()) return undefined;
-
-                    // it is a uri pointing to the collection
-                    // that contains the resource
-                    var collection = self.api.Collection.fromUri(value);
-
-                    // fetch the collection and pretend like it is a single resource
-                    return collection.fetchIfNotPopulated().pipe(function() {
-                        var value = collection.isEmpty() ? null : collection.first();
-                        self.setToOneCache(field, value);
-                        return (path.length === 1) ? value : value.rget(_.tail(path), prePop);
-                    });
-                default:
-                    throw new Error('unhandled relationship type');
                 }
+                return value;
             });
+        },
+        _rget: function(path) {
+            var fieldName = path[0].toLowerCase();
+            var value = this.get(fieldName);
+            var field = this.specifyModel.getField(fieldName);
+            field || console.warn("unknown field", fieldName, "in",
+                                  this.specifyModel.name, "value is",
+                                  value);
+
+            // if field represents a value, then return that if we are done,
+            // otherwise we can't traverse any farther...
+            if (!field || !field.isRelationship) {
+                if (path.length > 1) {
+                    console.error("expected related field");
+                    return undefined;
+                }
+                return value;
+            }
+
+            var related = field.getRelatedModel();
+            switch (field.type) {
+            case 'one-to-one':
+            case 'many-to-one':
+                // a foreign key field.
+                if (!value) return value;  // no related object
+
+                // is the related resource cached?
+                var toOne = this.relatedCache[fieldName];
+                if (!toOne) {
+                    toOne = this.api.Resource.fromUri(value);
+                    this.setToOneCache(field, toOne);
+                }
+                // if we want a field within the related resource then recur
+                return (path.length > 1) ? toOne.rget(_.tail(path)) : toOne;
+            case 'one-to-many':
+                // can't traverse into a collection using dot notation
+                if (path.length > 1) return undefined;
+
+                // is the collection cached?
+                var toMany =  this.relatedCache[fieldName];
+                if (!toMany) {
+                    // value might not exist if resource is null, or the server didn't send it.
+                    // since the URI is implicit in the data we have, it doesn't matter.
+                    toMany = value ? this.api.Collection.fromUri(value) : new (this.api.Collection.forModel(related))();
+                    this.setToManyCache(field, toMany);
+                }
+
+                // start the fetch if requested and return the collection
+                return toMany;
+            case 'zero-to-one':
+                // this is like a one-to-many where the many cannot be more than one
+                // i.e. the current resource is the target of a FK
+
+                // is it already cached?
+                if (this.relatedCache[fieldName]) {
+                    value = this.relatedCache[fieldName];
+                    // recur if we need to traverse more
+                    return (path.length === 1) ? value : value.rget(_.tail(path));
+                }
+
+                // if this resource is not yet persisted, the related object can't point to it yet
+                if (this.isNew()) return undefined;
+
+                // it is a uri pointing to the collection
+                // that contains the resource
+                var collection = this.api.Collection.fromUri(value);
+
+                // fetch the collection and pretend like it is a single resource
+                var _this = this;
+                return collection.fetchIfNotPopulated().pipe(function() {
+                    var value = collection.isEmpty() ? null : collection.first();
+                    _this.setToOneCache(field, value);
+                    return (path.length === 1) ? value : value.rget(_.tail(path));
+                });
+            default:
+                throw new Error('unhandled relationship type');
+            }
         },
         save: function() {
             var resource = this;
