@@ -71,9 +71,6 @@ define([
             }
             return Backbone.Collection.prototype.add.apply(this, arguments);
         },
-        rsave: function() {
-            return whenAll(_.chain(this.models).compact().invoke('rsave').value());
-        },
         getTotalCount: function() {
             var self = this;
             if (self.isNew) return $.when(self.length);

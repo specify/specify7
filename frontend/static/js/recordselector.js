@@ -3,7 +3,6 @@ define([
     'navigation', 'templates', 'assert', 'jquery-ui'
 ], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, assert) {
     "use strict";
-    var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
     var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
 
@@ -162,7 +161,7 @@ define([
             self.collection.abortFetch();
             var at = offset - offset % BLOCK_SIZE;
             self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
-                debug && console.log('got collection at offset ' + at);
+                console.debug('got collection at offset ' + at);
                 self.request = null;
                 self.redraw(self.currentIndex());
             });
@@ -214,12 +213,12 @@ define([
         redraw: function(offset) {
             var self = this;
             self.slider.setOffset(offset);
-            debug && console.log('want to redraw at ' + offset);
+            console.debug('want to redraw at ' + offset);
             var resource = self.resourceAt(offset);
             if (_(resource).isUndefined()) return;
             var form = self.form.clone();
             self.populateForm(form, resource);
-            debug && console.log('filling in at ' + offset);
+            console.debug('filling in at ' + offset);
             self.content.empty().append(form);
             self.hideSpinner();
             if (self.urlParam) {
