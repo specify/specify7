@@ -54,7 +54,7 @@ define([
             this.api = require('specifyapi');
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
-            Backbone.Model.apply(this, arguments);
+            Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
         },
         initialize: function(attributes, options) {
             this.noBusinessRules = options && options.noBusinessRules;
@@ -212,11 +212,10 @@ define([
                 attrs[key.toLowerCase()] = value;
             }
 
-            // need to set the id right way if we have it because
+            // need to set the id right away if we have it because
             // relationships depend on it
             if ('id' in attrs) this.id = attrs.id;
 
-            // handle relationship fields
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
                 adjustedAttrs[fieldName] = this._handleField(value, fieldName);
@@ -229,35 +228,21 @@ define([
 
             var field = this.specifyModel.getField(fieldName);
             field || console.warn("setting unknown field", fieldName, "on",
-                                  this.specifyModel.name, "value is",
-                                  value);
+                                  this.specifyModel.name, "value is", value);
 
-            if (!field || !field.isRelationship) return value; // not a relationship
-
+            if (!field || !field.isRelationship) return value;
+            // relationship field
+            var handler =  _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource';
+            return this[handler](value, fieldName);
+        },
+        _handleInlineDataOrResource: function(value, fieldName) {
+            // TODO: check type of value
+            var field = this.specifyModel.getField(fieldName);
             var relatedModel = field.getRelatedModel();
 
-            var oldRelated = this.dependentResources[fieldName];
-            if (_.isString(value)) {
-                // got a URI
-                field.isDependent() && console.warn("expected inline data for dependent field",
-                                                    fieldName, "in", this);
-
-                if (oldRelated && field.type ===  'many-to-one') {
-                    // probably should never get here since the presence of an oldRelated
-                    // value implies a dependent field which wouldn't be receiving a URI value
-                    console.warn("unexpected condition");
-                    if (oldRelated.url() !== value) {
-                        // the reference changed
-                        delete this.dependentResources[fieldName];
-                        oldRelated.off('all', null, this);
-                    }
-                }
-                return value;
-            }
-
-            // got an inlined resource or collection
             if (value && !field.isDependent()) {
-                console.warn("unexpected inline data for independent field", fieldName, "in", this);
+                console.warn("unexpected inline data for independent field", fieldName,
+                             "in", this.specifyModel.name, "data is", value);
             }
 
             var related;
@@ -268,7 +253,7 @@ define([
                 field.isDependent() && this.storeDependent(field, related);
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
-                if (!value) {
+                if (!value) { // TODO: tighten up this check.
                     // the FK is null, or not a URI or inlined resource at any rate
                     field.isDependent() && this.storeDependent(field, null);
                     return value;
@@ -286,7 +271,7 @@ define([
                     related = (value.length < 1) ? null :
                         new relatedModel.Resource(_.first(value), {parse: true});
                 } else {
-                    assert(value instanceof ResourceBase);
+                    assert(_.isNull(value) || value instanceof ResourceBase);
                     related = value;
                 }
                 field.isDependent() && this.storeDependent(field, related);
@@ -294,6 +279,25 @@ define([
             }
             console.error("unhandled setting of relationship field", fieldName,
                           "on", this, "value is", value);
+            return value;
+        },
+        _handleUri: function(value, fieldName) {
+            var field = this.specifyModel.getField(fieldName);
+            var oldRelated = this.dependentResources[fieldName];
+
+            field.isDependent() && console.warn("expected inline data for dependent field",
+                                                fieldName, "in", this);
+
+            if (oldRelated && field.type ===  'many-to-one') {
+                // probably should never get here since the presence of an oldRelated
+                // value implies a dependent field which wouldn't be receiving a URI value
+                console.warn("unexpected condition");
+                if (oldRelated.url() !== value) {
+                    // the reference changed
+                    delete this.dependentResources[fieldName];
+                    oldRelated.off('all', null, this);
+                }
+            }
             return value;
         },
         rget: function(fieldName, prePop) {
@@ -380,14 +384,14 @@ define([
                 // i.e. the current resource is the target of a FK
 
                 // is it already cached?
-                if (this.dependentResources[fieldName]) {
+                if (!_.isUndefined(this.dependentResources[fieldName])) {
                     value = this.dependentResources[fieldName];
                     // recur if we need to traverse more
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
 
                 // if this resource is not yet persisted, the related object can't point to it yet
-                if (this.isNew()) return undefined;
+                if (this.isNew()) return undefined; // TODO: this seems iffy
 
                 // it is a uri pointing to the collection
                 // that contains the resource
