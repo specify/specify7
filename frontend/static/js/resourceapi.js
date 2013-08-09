@@ -146,16 +146,13 @@ define([
             this[setter](field, related);
         },
         _setDependentToOne: function(field, related) {
-            var self = this;
-            if (!field.isDependent()) return;
-
-            var oldRelated = self.dependentResources[field.name.toLowerCase()];
+            var oldRelated = this.dependentResources[field.name.toLowerCase()];
             if (!related) {
                 if (oldRelated) {
                     oldRelated.off("all", null, this);
-                    self.trigger('saverequired');
+                    this.trigger('saverequired');
                 }
-                self.dependentResources[field.name.toLowerCase()] = null;
+                this.dependentResources[field.name.toLowerCase()] = null;
                 return;
             }
 
@@ -163,31 +160,30 @@ define([
 
             oldRelated && oldRelated.off("all", null, this);
 
-            related.on('all', eventHandlerForToOne(related, field), self);
-            related.parent = self;
+            related.on('all', eventHandlerForToOne(related, field), this);
+            related.parent = this;
 
             switch (field.type) {
             case 'one-to-one':
             case 'many-to-one':
-                self.dependentResources[field.name.toLowerCase()] = related;
+                this.dependentResources[field.name.toLowerCase()] = related;
                 break;
             case 'zero-to-one':
-                self.dependentResources[field.name.toLowerCase()] = related;
-                related.set(field.otherSideName, self.url());
+                this.dependentResources[field.name.toLowerCase()] = related;
+                related.set(field.otherSideName, this.url()); // TODO: this logic belongs somewhere else. up probably
                 break;
             default:
                 throw new Error("setDependentToOne: unhandled field type: " + field.type);
             }
         },
         _setDependentToMany: function(field, toMany) {
-            var self = this;
-            if (!field.isDependent()) return;
             // set the back ref
-            toMany.parent = self;
+            toMany.parent = this;
 
-            if (!self.isNew()) {
+            // TODO: this logic doesn't belong here anymore.. move up probably.
+            if (!this.isNew()) {
                 // filter the related objects to be those that have a FK to this resource
-                toMany.queryParams[field.otherSideName.toLowerCase()] = self.id;
+                toMany.queryParams[field.otherSideName.toLowerCase()] = this.id;
             } else {
                 // if this resource has no id, we can't set up the filter yet.
                 // we'll set a flag to indicate this collection represents a set
@@ -195,12 +191,12 @@ define([
                 toMany.isNew = true;
             }
 
-            var oldToMany = self.dependentResources[field.name.toLowerCase()];
+            var oldToMany = this.dependentResources[field.name.toLowerCase()];
             oldToMany && oldToMany.off("all", null, this);
 
             // cache it and set up event handlers
-            self.dependentResources[field.name.toLowerCase()] = toMany;
-            toMany.on('all', eventHandlerForToMany(toMany, field), self);
+            this.dependentResources[field.name.toLowerCase()] = toMany;
+            toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
         set: function(key, value, options) {
             // make the keys case insensitive
@@ -223,12 +219,12 @@ define([
             // handle relationship fields
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
-                adjustedAttrs[fieldName] = this._handleRelationshipField(value, fieldName);
+                adjustedAttrs[fieldName] = this._handleField(value, fieldName);
             }, this);
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
-        _handleRelationshipField: function(value, fieldName) {
+        _handleField: function(value, fieldName) {
             if (_(['id', 'resource_uri']).contains(fieldName)) return value; // special fields
 
             var field = this.specifyModel.getField(fieldName);
