@@ -164,7 +164,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     if _.any inDatabase, hasSameValue then invalid else valid
         else
             # no toOneField indicates globally unique field
-            others = new (resource.constructor.collectionFor())()
+            others = new resource.specifyModel.Collection()
             others.queryParams[valueField] = valueId or value
             others.fetch().pipe -> if _.any others.models, hasSameValue then invalid else valid
 

@@ -502,11 +502,6 @@ define([
                 self.set(_(diff).last(), common.url());
             });
         }
-    }, {
-        collectionFor: function() {
-            // return the collection constructor for this type of resource
-            return this.specifyModel.Collection;
-        }
     });
 
     return ResourceBase;
