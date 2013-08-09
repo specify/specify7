@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'whenall', 'jquery-bbq'
-], function(require, $, _, Backbone, whenAll) {
+    'require', 'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
+], function(require, $, _, Backbone, whenAll, assert) {
     "use strict";
 
     function eventHandlerForToOne(related, field) {
@@ -244,7 +244,7 @@ define([
                 if (oldRelated && field.type ===  'many-to-one') {
                     // probably should never get here since the presence of an oldRelated
                     // value implies a dependent field which wouldn't be receiving a URI value
-                    console.warn("unexpect condition");
+                    console.warn("unexpected condition");
                     if (oldRelated.url() !== value) {
                         // the reference changed
                         delete this.relatedCache[fieldName];
@@ -255,6 +255,10 @@ define([
             }
 
             // got an inlined resource or collection
+            if (value && !field.isDependent()) {
+                console.warn("unexpected inline data for independent field", fieldName, "in", this);
+            }
+
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
@@ -348,16 +352,12 @@ define([
                 // if we want a field within the related resource then recur
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : toOne;
             case 'one-to-many':
-                // can't traverse into a collection using dot notation
-                if (path.length > 1) return undefined;
+                assert(path.length === 1, "can't traverse into a collection using dot notation");
 
                 // is the collection cached?
-                var toMany =  this.relatedCache[fieldName];
+                var toMany = this.relatedCache[fieldName];
                 if (!toMany) {
-                    // value might not exist if resource is null, or the server didn't send it.
-                    // since the URI is implicit in the data we have, it doesn't matter.
-                    // TODO: this needs to be some kind of "to-many" collection
-                    toMany = value ? this.api.getCollectionFromUri(value) : new related.Collection();
+                    toMany = new related.ToOneCollection([], { field: field.getReverse(), related: this });
                     this.setToManyCache(field, toMany);
                 }
 

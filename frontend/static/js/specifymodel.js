@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi',
     'text!context/schema_localization.json!noinline'
-], function($, _, icons, schema, ResourceBase, CollectionBase, slJSON) {
+], function($, _, icons, schema, ResourceBase, collectionapi, slJSON) {
     "use strict";
     var localization = $.parseJSON(slJSON);
 
@@ -19,8 +19,11 @@ define([
         this.Resource = ResourceBase.extend({ __name__: this.name + 'Resource' },
                                             { specifyModel: this });
 
-        this.Collection = CollectionBase.extend({ __name__: this.name + 'Collection',
-                                                  model: this.Resource });
+        this.Collection = collectionapi.Base.extend({ __name__: this.name + 'Collection',
+                                                      model: this.Resource });
+
+        this.ToOneCollection = collectionapi.ToOne.extend({ __name__: this.name + 'ToOneCollection',
+                                                            model: this.Resource });
     };
     _.extend(schema.Model.prototype, {
         getField: function(name) {

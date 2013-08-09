@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'uiformatters', 'schemabase'
-], function($, _, uiformatters, schema) {
+    'jquery', 'underscore', 'uiformatters', 'schemabase', 'assert'
+], function($, _, uiformatters, schema, assert) {
     "use strict";
 
     schema.Field = function(model, node) {
@@ -23,8 +23,11 @@ define([
 
     _.extend(schema.Field.prototype, {
         getRelatedModel: function() {
-            if (!this.isRelationship) return undefined;
+            assert(this.isRelationship, "field is not a relationship field");
             return schema.getModel(this.relatedModelName);
+        },
+        getReverse: function() {
+            return this.getRelatedModel().getField(this.otherSideName);
         },
         getLocalizedName: function() {
             return this._localization && schema.unescape(this._localization.name);

@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'whenall', 'jquery-bbq'
-], function($, _, Backbone, whenAll) {
+    'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
+], function($, _, Backbone, whenAll, assert) {
     "use strict";
 
-    return  Backbone.Collection.extend({
+    var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
         populated: false,   // set if the collection has been fetched or filled in
         wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
@@ -78,4 +78,22 @@ define([
             return self.fetchIfNotPopulated().pipe(function() { return self.totalCount; });
         }
     });
+
+    var ToOne = Base.extend({
+        __name__: "ToOneCollectionBase",
+        initialize: function(models, options) {
+            // options = {
+            //    field: schema.Model.getField(...): the toOne field this collection represents,
+            //    related: schema.Model.Resource: the resource this collecion is "to",
+            //    [Base options]
+            // }
+            assert(!options.related.isNew(), "can't build ToOne collection for unpersisted resource");
+            assert(options.field.model === this.model.specifyModel, "field doesn't belong to model");
+
+            Base.prototype.initialize.apply(this, arguments);
+            this.queryParams[options.field.name.toLowerCase()] = options.related.id;
+        }
+    });
+
+    return { Base: Base, ToOne: ToOne };
 });
