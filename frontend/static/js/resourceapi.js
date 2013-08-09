@@ -53,7 +53,7 @@ define([
         constructor: function(attributes, options) {
             this.api = require('specifyapi');
             this.specifyModel = this.constructor.specifyModel;
-            this.relatedCache = {};   // references to related objects referred to by field in this resource
+            this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments);
         },
         initialize: function(attributes, options) {
@@ -82,7 +82,7 @@ define([
             // set correctly.
             this.on('change:id', function() {
                 var resource = this;
-                _(resource.relatedCache).each(function(related, fieldName) {
+                _(resource.dependentResources).each(function(related, fieldName) {
                     var field = resource.specifyModel.getField(fieldName);
                     if(field.type === 'one-to-many') {
                         _.chain(related.models).compact().invoke(
@@ -105,7 +105,7 @@ define([
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
-            _.each(self.relatedCache, function(related, fieldName) {
+            _.each(self.dependentResources, function(related, fieldName) {
                 var field = self.specifyModel.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one':
@@ -140,17 +140,22 @@ define([
             // case insensitive
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },
-        setToOneCache: function(field, related) {
+        storeDependent: function(field, related) {
+            assert(field.isDependent);
+            var setter = (field.type === 'one-to-many') ? "_setDependentToMany" : "_setDependentToOne";
+            this[setter](field, related);
+        },
+        _setDependentToOne: function(field, related) {
             var self = this;
             if (!field.isDependent()) return;
 
-            var oldRelated = self.relatedCache[field.name.toLowerCase()];
+            var oldRelated = self.dependentResources[field.name.toLowerCase()];
             if (!related) {
                 if (oldRelated) {
                     oldRelated.off("all", null, this);
                     self.trigger('saverequired');
                 }
-                self.relatedCache[field.name.toLowerCase()] = null;
+                self.dependentResources[field.name.toLowerCase()] = null;
                 return;
             }
 
@@ -164,17 +169,17 @@ define([
             switch (field.type) {
             case 'one-to-one':
             case 'many-to-one':
-                self.relatedCache[field.name.toLowerCase()] = related;
+                self.dependentResources[field.name.toLowerCase()] = related;
                 break;
             case 'zero-to-one':
-                self.relatedCache[field.name.toLowerCase()] = related;
+                self.dependentResources[field.name.toLowerCase()] = related;
                 related.set(field.otherSideName, self.url());
                 break;
             default:
-                throw new Error("setToOneCache: unhandled field type: " + field.type);
+                throw new Error("setDependentToOne: unhandled field type: " + field.type);
             }
         },
-        setToManyCache: function(field, toMany) {
+        _setDependentToMany: function(field, toMany) {
             var self = this;
             if (!field.isDependent()) return;
             // set the back ref
@@ -190,11 +195,11 @@ define([
                 toMany.isNew = true;
             }
 
-            var oldToMany = self.relatedCache[field.name.toLowerCase()];
+            var oldToMany = self.dependentResources[field.name.toLowerCase()];
             oldToMany && oldToMany.off("all", null, this);
 
             // cache it and set up event handlers
-            self.relatedCache[field.name.toLowerCase()] = toMany;
+            self.dependentResources[field.name.toLowerCase()] = toMany;
             toMany.on('all', eventHandlerForToMany(toMany, field), self);
         },
         set: function(key, value, options) {
@@ -235,7 +240,7 @@ define([
 
             var relatedModel = field.getRelatedModel();
 
-            var oldRelated = this.relatedCache[fieldName];
+            var oldRelated = this.dependentResources[fieldName];
             if (_.isString(value)) {
                 // got a URI
                 field.isDependent() && console.warn("expected inline data for dependent field",
@@ -247,7 +252,7 @@ define([
                     console.warn("unexpected condition");
                     if (oldRelated.url() !== value) {
                         // the reference changed
-                        delete this.relatedCache[fieldName];
+                        delete this.dependentResources[fieldName];
                         oldRelated.off('all', null, this);
                     }
                 }
@@ -259,31 +264,36 @@ define([
                 console.warn("unexpected inline data for independent field", fieldName, "in", this);
             }
 
+            var related;
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
-                this.setToManyCache(field, new relatedModel.Collection(value, {parse: true}));
+                related = new relatedModel.Collection(value, {parse: true});
+                field.isDependent() && this.storeDependent(field, related);
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
                 if (!value) {
                     // the FK is null, or not a URI or inlined resource at any rate
-                    this.setToOneCache(field, value);
+                    field.isDependent() && this.storeDependent(field, null);
                     return value;
                 }
 
-                value = (value instanceof ResourceBase) ? value :
+                related = (value instanceof ResourceBase) ? value :
                     new relatedModel.Resource(value, {parse: true});
 
-                this.setToOneCache(field, value);
-                return value.url();  // the FK as a URI
+                field.isDependent() && this.storeDependent(field, related);
+                return related.url();  // the FK as a URI
             case 'zero-to-one':
                 // this actually a one-to-many where the related collection is only a single resource
                 // basically a one-to-one from the 'to' side
                 if (_.isArray(value)) {
-                    value = (value.length < 1) ? null :
+                    related = (value.length < 1) ? null :
                         new relatedModel.Resource(_.first(value), {parse: true});
+                } else {
+                    assert(value instanceof ResourceBase);
+                    related = value;
                 }
-                this.setToOneCache(field, value);
+                field.isDependent() && this.storeDependent(field, related);
                 return undefined; // because the FK is on the other side
             }
             console.error("unhandled setting of relationship field", fieldName,
@@ -342,12 +352,15 @@ define([
                 if (!value) return value;  // no related object
 
                 // is the related resource cached?
-                var toOne = this.relatedCache[fieldName];
+                var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
                     toOne = this.api.getResourceFromUri(value);
                     // TODO: make sure resource is of the right model
-                    this.setToOneCache(field, toOne);
+                    if (field.isDependent()) {
+                        console.warn("expected dependent resource to be in cache");
+                        this.storeDependent(field, toOne);
+                    }
                 }
                 // if we want a field within the related resource then recur
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : toOne;
@@ -355,10 +368,13 @@ define([
                 assert(path.length === 1, "can't traverse into a collection using dot notation");
 
                 // is the collection cached?
-                var toMany = this.relatedCache[fieldName];
+                var toMany = this.dependentResources[fieldName];
                 if (!toMany) {
                     toMany = new related.ToOneCollection([], { field: field.getReverse(), related: this });
-                    this.setToManyCache(field, toMany);
+                    if (field.isDependent()) {
+                        console.warn("expected dependent resource to be in cache");
+                        this.storeDependent(field, toMany);
+                    }
                 }
 
                 // start the fetch if requested and return the collection
@@ -368,8 +384,8 @@ define([
                 // i.e. the current resource is the target of a FK
 
                 // is it already cached?
-                if (this.relatedCache[fieldName]) {
-                    value = this.relatedCache[fieldName];
+                if (this.dependentResources[fieldName]) {
+                    value = this.dependentResources[fieldName];
                     // recur if we need to traverse more
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
@@ -385,7 +401,10 @@ define([
                 var _this = this;
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
-                    _this.setToOneCache(field, value);
+                    if (field.isDependent()) {
+                        console.warn("expect dependent resource to be in cache");
+                        _this.storeDependent(field, value);
+                    }
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             default:
@@ -416,7 +435,7 @@ define([
             var self = this;
             var json = Backbone.Model.prototype.toJSON.apply(self, arguments);
 
-            _.each(self.relatedCache, function(related, fieldName) {
+            _.each(self.dependentResources, function(related, fieldName) {
                 var field = self.specifyModel.getField(fieldName);
                 if (field.type === 'zero-to-one') {
                     json[fieldName] = related ? [related.toJSON()] : [];
