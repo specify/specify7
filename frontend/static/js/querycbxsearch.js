@@ -46,7 +46,7 @@ define([
 
             var _this = this;
             api.queryCbxExtendedSearch(this.model).pipe(function(results) {
-                _this.results = new (api.Collection.forModel(_this.model.specifyModel))(results, { parse: true });
+                _this.results = new _this.model.specifyModel.Collection(results, { parse: true });
                 return whenAll(_this.results.map(format));
             }).done(function(formattedResults) {
                 _.each(formattedResults, function(formattedResult) {

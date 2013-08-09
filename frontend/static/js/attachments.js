@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'icons',  'specifyapi',
+    'jquery', 'underscore', 'icons',  'schema',
     'text!context/attachment_settings.json!noinline'
-], function($, _, icons, api, settingsJson) {
+], function($, _, icons, schema, settingsJson) {
     "use strict";
 
     var settings = $.parseJSON(settingsJson);
@@ -110,7 +110,7 @@ define([
                         }
                     });
                 }).pipe(function() {
-                    attachment = new (api.Resource.forModel('attachment'))({
+                    attachment = new schema.models.Attachment.Resource({
                         attachmentlocation: attachmentLocation,
                         mimetype: file.type,
                         origfilename: file.name

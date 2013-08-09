@@ -110,7 +110,7 @@ define([
             //   form: form DOM fragment,
             //   readOnly: bool,
             //   field: field object? if collection represents related objects,
-            //   collection: api.Collection instance,
+            //   collection: schema.Model.Collection instance,
             //   noHeader: boolean? overrides form definition,
             //   sliderAtTop: boolean? overrides form definition,
             //   urlParam: string? url parameter name for storing the current index

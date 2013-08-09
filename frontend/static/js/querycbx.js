@@ -109,7 +109,7 @@ define([
                 self.dialog.dialog('close');
                 if (closeOnly) return;
             }
-            var searchTemplateResource = new (api.Resource.forModel(this.relatedModel))({}, {
+            var searchTemplateResource = new this.relatedModel.Resource({}, {
                 noBusinessRules: true,
                 noValidation: true
             });
@@ -133,8 +133,8 @@ define([
             this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
             var related = (mode === 'add') ?
-                    new (api.Resource.forModel(this.relatedModel))() :
-                    new api.Resource.fromUri(this.model.get(this.fieldName));
+                    new this.relatedModel.Resource() :
+                    api.getResourceFromUri(this.model.get(this.fieldName));
 
             new (require('resourceview'))({
                 el: this.dialog,

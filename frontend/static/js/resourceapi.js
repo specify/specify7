@@ -257,8 +257,8 @@ define([
             // got an inlined resource or collection
             switch (field.type) {
             case 'one-to-many':
-                // should we handle passing in an api.Collection instance here??
-                this.setToManyCache(field, new (this.api.Collection.forModel(relatedModel))(value, {parse: true}));
+                // should we handle passing in an schema.Model.Collection instance here??
+                this.setToManyCache(field, new relatedModel.Collection(value, {parse: true}));
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
                 if (!value) {
@@ -268,7 +268,7 @@ define([
                 }
 
                 value = (value instanceof ResourceBase) ? value :
-                    new (this.api.Resource.forModel(relatedModel))(value, {parse: true});
+                    new relatedModel.Resource(value, {parse: true});
 
                 this.setToOneCache(field, value);
                 return value.url();  // the FK as a URI
@@ -277,7 +277,7 @@ define([
                 // basically a one-to-one from the 'to' side
                 if (_.isArray(value)) {
                     value = (value.length < 1) ? null :
-                        new (this.api.Resource.forModel(relatedModel))(_.first(value), {parse: true});
+                        new relatedModel.Resource(_.first(value), {parse: true});
                 }
                 this.setToOneCache(field, value);
                 return undefined; // because the FK is on the other side
@@ -341,7 +341,8 @@ define([
                 var toOne = this.relatedCache[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = this.api.Resource.fromUri(value);
+                    toOne = this.api.getResourceFromUri(value);
+                    // TODO: make sure resource is of the right model
                     this.setToOneCache(field, toOne);
                 }
                 // if we want a field within the related resource then recur
@@ -355,7 +356,8 @@ define([
                 if (!toMany) {
                     // value might not exist if resource is null, or the server didn't send it.
                     // since the URI is implicit in the data we have, it doesn't matter.
-                    toMany = value ? this.api.Collection.fromUri(value) : new (this.api.Collection.forModel(related))();
+                    // TODO: this needs to be some kind of "to-many" collection
+                    toMany = value ? this.api.getCollectionFromUri(value) : new related.Collection();
                     this.setToManyCache(field, toMany);
                 }
 
@@ -377,7 +379,7 @@ define([
 
                 // it is a uri pointing to the collection
                 // that contains the resource
-                var collection = this.api.Collection.fromUri(value);
+                var collection = this.api.getCollectionFromUri(value);
 
                 // fetch the collection and pretend like it is a single resource
                 var _this = this;
@@ -503,7 +505,7 @@ define([
     }, {
         collectionFor: function() {
             // return the collection constructor for this type of resource
-            return self.api.Collection.forModel(this.specifyModel);
+            return this.specifyModel.Collection;
         }
     });
 

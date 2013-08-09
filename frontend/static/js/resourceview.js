@@ -3,7 +3,7 @@ define([
     'specifyform', 'dataobjformatters', 'navigation', 'templates',
     'cs!savebutton', 'cs!deletebutton',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, specifyapi,
+], function($, _, Backbone, populateForm, api,
             specifyform, dataobjformatters, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
@@ -19,9 +19,9 @@ define([
         // }
         initialize: function(options) {
             // options = {
-            //   model: api.Resource to view,
+            //   model: specifyModel.Resource to view,
             //   el: $element to render in,
-            //   recordSet: api.Resource('recordset')? resource is included in,
+            //   recordSet: schema.models.RecordSet.Resource? resource is included in,
             //   mode: 'view' | 'edit',
             //   noHeader: boolean?
             // }
@@ -33,13 +33,13 @@ define([
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
-                self.prev = self.recordsetInfo.previous && specifyapi.Resource.fromUri(self.recordsetInfo.previous);
+                self.prev = self.recordsetInfo.previous && api.getResourceFromUri(self.recordsetInfo.previous);
                 self.prev && (self.prev.recordsetid = self.model.recordsetid);
 
-                self.next = self.recordsetInfo.next && specifyapi.Resource.fromUri(self.recordsetInfo.next);
+                self.next = self.recordsetInfo.next && api.getResourceFromUri(self.recordsetInfo.next);
                 self.next && (self.next.recordsetid = self.model.recordsetid);
 
-                var newResource = new (specifyapi.Resource.forModel(self.model.specifyModel))();
+                var newResource = new self.model.specifyModel.Resource(); // TODO: self.model.constructor?
                 newResource.recordsetid = self.model.recordsetid;
                 self.newUrl = newResource.viewUrl();
             }

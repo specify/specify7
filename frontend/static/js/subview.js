@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyapi',
+    'require', 'jquery', 'underscore', 'backbone',
     'specifyform', 'querycbxsearch', 'templates', 'assert'
-], function(require, $, _, Backbone, api, specifyform, QueryCbxSearch, templates, assert) {
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
     return Backbone.View.extend({
         __name__: "Subview",
@@ -12,8 +12,8 @@ define([
         initialize: function(options) {
             // options = {
             //   field: specify field object that this subview is showing a record for,
-            //   model: api.Resource? the resource this subview is showing,
-            //   parentResource: api.Resource
+            //   model: schema.Model.Resource? the resource this subview is showing,
+            //   parentResource: schema.Model.Resource
             // }
             this.field = options.field;
             this.parentResource = options.parentResource;
@@ -50,13 +50,13 @@ define([
             var relatedModel = this.field.getRelatedModel();
 
             if (this.field.isDependent()) {
-                this.model = new (api.Resource.forModel(relatedModel))();
+                this.model = new relatedModel.Resource();
                 this.model.placeInSameHierarchy(this.parentResource);
                 this.parentResource.set(this.field.name, this.model);
                 this.render();
             } else {
                 // TODO: this should be factored out from common code in querycbx
-                var searchTemplateResource = new (api.Resource.forModel(relatedModel))({}, {
+                var searchTemplateResource = new relatedModel.Resource({}, {
                     noBusinessRules: true,
                     noValidation: true
                 });

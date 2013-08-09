@@ -92,7 +92,7 @@ define [
                                         plItemCollection.toJSON()
                         when 1 # items are objects from a table
                             plModel = schema.getModel picklist.get 'tablename'
-                            plItemCollection = new (api.Collection.forModel plModel)()
+                            plItemCollection = new plModel.Collection()
                             plItemCollection.fetch(limit: limit).pipe ->
                                 whenAll plItemCollection.map (item) ->
                                     objformat(item, picklist.get 'formatter').pipe (title) ->

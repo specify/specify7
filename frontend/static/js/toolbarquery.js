@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'specifyform', 'cs!populateform', 'cs!savebutton', 'cs!deletebutton',
     'text!resources/querybuilder.xml!noinline',
     'jquery-ui'
-], function(require, $, _, Backbone, schema, api, navigation,
+], function(require, $, _, Backbone, schema, navigation,
             specifyform, populateform, SaveButton, DeleteButton,
             querybuilderXML) {
     "use strict";
@@ -89,7 +89,7 @@ define([
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var table = this.options.tables[index];
-            var query = new (api.Resource.forModel('spquery'))();
+            var query = new schema.models.SpQuery.Resource();
 
             var model = schema.getModel(table.attr('name'));
             query.set('contextname', model.name);
@@ -150,7 +150,7 @@ define([
         icon: '/images/Query32x32.png',
         execute: function() {
             if (dialog) return;
-            var queries = new (api.Collection.forModel('spquery'))();
+            var queries = new schema.models.SpQuery.Collection();
             queries.fetch().done(function() {
                 dialog = new QueryListDialog({ queries: queries });
                 $('body').append(dialog.el);

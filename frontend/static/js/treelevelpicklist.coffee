@@ -38,5 +38,5 @@ define [
             @
 
         changed: ->
-            selected = api.Resource.fromUri @$el.val()
+            selected = api.getResourceFromUri @$el.val()
             @model.set @$el.attr('name'), selected

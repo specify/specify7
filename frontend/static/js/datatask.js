@@ -1,15 +1,16 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyapi', 'navigation', 'cs!domain',
+    'jquery', 'underscore', 'schema', 'navigation', 'cs!domain',
     'resourceview', 'othercollectionview',
     'jquery-bbq'
-], function($, _, schema, api, navigation, domain, ResourceView, OtherCollectionView) {
+], function($, _, schema, navigation, domain, ResourceView, OtherCollectionView) {
     "use strict";
     var app;
 
     function recordSetView(id, index) {
         index = index ? parseInt(index, 10) : 0;
-        var recordSet = new (api.Resource.forModel('recordset'))({ id: id });
-        var recordSetItems = new (api.Collection.forModel('recordsetitem'))();
+        var recordSet = new schema.models.RecordSet.Resource({ id: id });
+        // TODO: this is a to-many collection
+        var recordSetItems = new schema.models.RecordSetItem.Collection();
         recordSetItems.queryParams.recordset = id;
 
         $.when(recordSetItems.fetch({at: index, limit: 1}), recordSet.fetch()).done(function() {
@@ -29,9 +30,7 @@ define([
             }
 
             var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
-            var resource = new (api.Resource.forModel(specifyModel))({
-                id: recordId
-            });
+            var resource = new specifyModel.Resource({ id: recordId });
 
             // go to the actual resource
             var url = resource.viewUrl();
@@ -51,9 +50,9 @@ define([
         // look to see if we are in the context of a recordset
         var params = $.deparam.querystring();
         var recordSet = params.recordsetid &&
-                new (api.Resource.forModel('recordset'))({ id: params.recordsetid });
+                new schema.models.RecordSet.Resource({ id: params.recordsetid });
 
-        var resource = new (api.Resource.forModel(modelName))({ id: id });
+        var resource = new (schema.getModel(modelName).Resource)({ id: id });
         recordSet && (resource.recordsetid = recordSet.id);
 
         // we preload the resource and recordset to make sure they exist. this prevents

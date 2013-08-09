@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation',
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'icons', 'specifyform', 'whenall', 'cs!populateform', 'cs!savebutton',
     'cs!deletebutton', 'cs!appresource', 'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, api, navigation, icons, specifyform,
+], function($, _, Backbone, schema, navigation, icons, specifyform,
             whenAll, populateform, SaveButton, DeleteButton, getAppResource) {
     "use strict";
 
@@ -79,7 +79,7 @@ define([
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var form = this.options.forms[index];
-            var recordset = new (api.Resource.forModel('recordset'))();
+            var recordset = new schema.models.RecordSet.Resource();
             var model = schema.getModel(form['class'].split('.').pop());
             recordset.set('dbtableid', model.tableId);
             recordset.set('type', 0);
@@ -120,7 +120,8 @@ define([
                     var saveButton = new SaveButton({ model: _this.recordset });
                     saveButton.render().$el.appendTo(form);
                     saveButton.on('savecomplete', function() {
-                        var url = $.param.querystring(new (api.Resource.forModel(_this.model))().viewUrl(),
+                        // TODO: got to be a better way to get the url
+                        var url = $.param.querystring(new _this.model.Resource().viewUrl(),
                                                       {recordsetid: _this.recordset.id});
                         navigation.go(url);
                     });
@@ -154,7 +155,7 @@ define([
         icon: '/images/Data_Entry.png',
         execute: function() {
             if (dialog) return;
-            var recordSets = new (api.Collection.forModel('recordset'))();
+            var recordSets = new schema.models.RecordSet.Collection();
             recordSets.fetch().done(function() {
                 dialog = new RecordSetsDialog({ recordSets: recordSets });
                 $('body').append(dialog.el);

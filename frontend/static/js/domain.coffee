@@ -7,7 +7,7 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
 
     levels = {}
     _.each $.parseJSON(json), (id, level) ->
-        levels[level] = new (api.Resource.forModel level) id: id
+        levels[level] = new (schema.getModel(level).Resource) id: id
 
     api.on 'newresource', (resource) ->
         domainField = resource.specifyModel.orgRelationship()
@@ -38,7 +38,7 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
             if domainLevel == 'collection'
                 return domainResource.fetchIfNotPopulated().pipe () -> [domainResource]
             path = takeBetween schema.orgHierarchy, 'collection', domainLevel
-            collections = new (api.Collection.forModel 'collection')()
+            collections = new schema.models.Collection.Collection()
             collections.queryParams[path.join '__'] = domainResource.id
             collections.fetch().pipe -> collections.models
 
@@ -46,7 +46,7 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
         collectionsForResource: (resource) ->
             collectionmemberid = resource.get('collectionmemberid')
             if _.isNumber collectionmemberid
-                collection = new (api.Resource.forModel 'collection') id: collectionmemberid
+                collection = new schema.models.Collection.Resource id: collectionmemberid
                 return collection.fetchIfNotPopulated().pipe () -> [collection]
 
             domainField = resource.specifyModel.orgRelationship()

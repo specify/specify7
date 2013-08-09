@@ -13,7 +13,7 @@ define([
         initialize: function(options) {
             // options = {
             //   field: specifyfield object?
-            //   collection: specifyapi.Collection instance for table
+            //   collection: schema.Model.Collection instance for table
             //   form: form DOM fragment
 
             this.field = this.options.field;
