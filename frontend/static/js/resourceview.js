@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'cs!populateform', 'specifyapi',
+    'jquery', 'underscore', 'backbone', 'cs!populateform',
     'specifyform', 'dataobjformatters', 'navigation', 'templates',
     'cs!savebutton', 'cs!deletebutton',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, api,
+], function($, _, Backbone, populateForm,
             specifyform, dataobjformatters, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
@@ -33,10 +33,10 @@ define([
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
-                self.prev = self.recordsetInfo.previous && api.getResourceFromUri(self.recordsetInfo.previous);
+                self.prev = self.recordsetInfo.previous && self.model.constructor.fromUri(self.recordsetInfo.previous);
                 self.prev && (self.prev.recordsetid = self.model.recordsetid);
 
-                self.next = self.recordsetInfo.next && api.getResourceFromUri(self.recordsetInfo.next);
+                self.next = self.recordsetInfo.next && self.model.constructor.fromUri(self.recordsetInfo.next);
                 self.next && (self.next.recordsetid = self.model.recordsetid);
 
                 var newResource = new self.model.specifyModel.Resource(); // TODO: self.model.constructor?

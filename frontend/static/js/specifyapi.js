@@ -15,8 +15,8 @@ define([
             return $.get(url, data).promise();
         },
         getPickListByName: function(pickListName) {
-            var pickListUri = "/api/specify/picklist/?name=" + pickListName;
-            var collection = api.getCollectionFromUri(pickListUri);
+            var collection = new schema.models.PickList.Collection();
+            collection.queryParams.name = pickListName;
             collection.queryParams.domainfilter = true;
             return collection.fetch().pipe(function() { return collection.first(); });
         },
@@ -49,20 +49,6 @@ define([
             var model = treeResource.specifyModel.name.toLowerCase();
             var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
             return $.get(url).promise();
-        },
-        getResourceFromUri: function(uri) {
-            // given a resource uri, find the appropriate constructor and instantiate
-            // a resource object representing the resource. will not be populated.
-            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
-            var Resource = schema.getModel(match[1]).Resource;
-            return new Resource({ id: parseInt(match[2], 10) });
-        },
-        getCollectionFromUri: function(uri) {
-            var match = /api\/specify\/(\w+)\//.exec(uri);
-            var collection = new (schema.getModel(match[1]).Collection)();
-            if (uri.indexOf("?") !== -1)
-                _.extend(collection.queryParams, $.deparam.querystring(uri));
-            return collection;
         }
     });
 

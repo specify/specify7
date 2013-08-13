@@ -2,8 +2,7 @@ define [
     'jquery'
     'underscore'
     'backbone'
-    'specifyapi'
-], ($, _, Backbone, api) ->
+], ($, _, Backbone) ->
 
     Backbone.View.extend
         __name__: "TreeLevelPickListView"
@@ -12,6 +11,7 @@ define [
         initialize: (options) ->
             @model.on 'change:parent', @render, @
             @lastFetch = null
+            @field = @model.specifyModel.getField @$el.attr 'name'
 
         render: ->
             @$el.empty()
@@ -38,5 +38,5 @@ define [
             @
 
         changed: ->
-            selected = api.getResourceFromUri @$el.val()
+            selected = @field.getRelatedModel().Resource.fromUri @$el.val()
             @model.set @$el.attr('name'), selected

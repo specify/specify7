@@ -134,7 +134,7 @@ define([
 
             var related = (mode === 'add') ?
                     new this.relatedModel.Resource() :
-                    api.getResourceFromUri(this.model.get(this.fieldName));
+                    this.relatedModel.Resource.fromUri(this.model.get(this.fieldName));
 
             new (require('resourceview'))({
                 el: this.dialog,

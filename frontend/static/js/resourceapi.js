@@ -51,7 +51,6 @@ define([
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
 
         constructor: function(attributes, options) {
-            this.api = require('specifyapi');
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
             Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
@@ -74,8 +73,9 @@ define([
                 }
             });
 
-            this.api.trigger('initresource', this);
-            if (this.isNew()) this.api.trigger('newresource', this);
+            var api = require('specifyapi');
+            api.trigger('initresource', this);
+            this.isNew() && api.trigger('newresource', this);
         },
         clone: function() {
             var self = this;
@@ -322,8 +322,7 @@ define([
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = this.api.getResourceFromUri(value);
-                    // TODO: make sure resource is of the right model
+                    toOne = related.Resource.fromUri(value);
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
                         this.storeDependent(field, toOne);
@@ -361,9 +360,7 @@ define([
                 // if this resource is not yet persisted, the related object can't point to it yet
                 if (this.isNew()) return undefined; // TODO: this seems iffy
 
-                // it is a uri pointing to the collection
-                // that contains the resource
-                var collection = this.api.getCollectionFromUri(value);
+                var collection = related.ToOneCollection([], { field: field.getReverse(), related: this });
 
                 // fetch the collection and pretend like it is a single resource
                 var _this = this;
@@ -487,6 +484,12 @@ define([
             return other.rget(diff.join('.')).done(function(common) {
                 self.set(_(diff).last(), common.url());
             });
+        }
+    }, {
+        fromUri: function(uri) {
+            var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
+            assert(match[1] === this.specifyModel.name.toLowerCase());
+            return new this({ id: parseInt(match[2], 10) });
         }
     });
 
