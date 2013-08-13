@@ -17,13 +17,7 @@ define([
             //   form: form DOM fragment
 
             this.field = this.options.field;
-            assert(!this.field || this.collection.parent,
-                   "Collection represents a field " +
-                   "but collection.parent does not exist.");
-
-            assert(this.collection.parent,
-                   "Form table can only be used with dependent fields: " +
-                   this.field.longName);
+            assert(this.collection.isDependent, "formtable is only for dependent collections");
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
@@ -78,7 +72,7 @@ define([
 
                 if (readOnly) {
                     // don't add anything.
-                } else if (self.collection.parent) {
+                } else if (self.collection.isDependent) {
                     $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
                     });
@@ -117,9 +111,9 @@ define([
 
             var newResource = new (self.collection.model)();
             if (self.field) {
-                newResource.set(self.field.otherSideName, self.collection.parent.url());
+                newResource.set(self.field.otherSideName, self.collection.related.url());
             }
-            self.collection.parent && self.collection.add(newResource);
+            self.collection.related && self.collection.add(newResource);
 
             self.buildDialog(newResource);
         }

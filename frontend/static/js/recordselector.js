@@ -157,7 +157,7 @@ define([
         },
         fetchThenRedraw: function(offset) {
             var self = this;
-            if (self.collection.isNew === true || self.collection.at(offset)) return null;
+            if (self.collection.related.isNew() || self.collection.at(offset)) return null;
             self.collection.abortFetch();
             var at = offset - offset % BLOCK_SIZE;
             self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
@@ -176,7 +176,7 @@ define([
             self.noHeader || new Header({
                 el: templates.subviewheader({
                     title: self.title,
-                    dependent: !_.isUndefined(this.collection.parent)
+                    dependent: self.collection.isDependent
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
@@ -261,7 +261,7 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            if (_.isUndefined(this.collection.parent)) {
+            if (!this.collection.isDependent) {
                 // TODO: this might not be possible if the
                 // fk field is not nullable....
                 resource.set(this.field.otherSideName, null);
@@ -270,10 +270,10 @@ define([
             this.collection.remove(resource);
         },
         add: function() {
-            if (this.collection.parent) {
+            if (this.collection.isDependent) {
                 var newResource = new this.collection.model();
                 if (this.field) {
-                    newResource.set(this.field.otherSideName, this.collection.parent.url());
+                    newResource.set(this.field.otherSideName, this.collection.related.url());
                 }
                 this.collection.add(newResource);
             } else {
@@ -287,7 +287,7 @@ define([
                 this.dialog = new QueryCbxSearch({
                     model: searchTemplateResource,
                     selected: function(resource) {
-                        resource.set(_this.field.otherSideName, _this.collection.parent.url());
+                        resource.set(_this.field.otherSideName, _this.collection.related.url());
                         resource.save(); // TODO: make confirmation dialog
                         _this.collection.add(resource);
                     }

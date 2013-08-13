@@ -5,10 +5,10 @@ define ['jquery', 'underscore'], ($, _) ->
             @blockers = {}
             @resource.on 'saveblocked', (blocker) =>
                 @resource.parent?.trigger 'saveblocked', blocker
-                @resource.collection?.parent?.trigger 'saveblocked', blocker
+                @resource.collection?.related?.trigger 'saveblocked', blocker
             @resource.on 'oktosave', (source) =>
                 @resource.parent?.trigger 'oktosave', source
-                @resource.collection?.parent.trigger 'oktosave', source
+                @resource.collection?.related?.trigger 'oktosave', source
 
         add: (key, field, reason, deferred) ->
             deferred ?= false

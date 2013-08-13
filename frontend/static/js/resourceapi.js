@@ -74,28 +74,6 @@ define([
                 }
             });
 
-            // if the id of this resource changes, we go through and update
-            // all the objects that point to it with the new pointer.
-            // this is to support having collections of objects attached to
-            // newly created resources that don't have ids yet. when the
-            // resource is saved, the related objects can have their FKs
-            // set correctly.
-            this.on('change:id', function() {
-                var resource = this;
-                _(resource.dependentResources).each(function(related, fieldName) {
-                    var field = resource.specifyModel.getField(fieldName);
-                    if(field.type === 'one-to-many') {
-                        _.chain(related.models).compact().invoke(
-                            'set', field.otherSideName, resource.url());
-                    }
-                });
-
-                // TODO: set value on parent object if necessary
-                // Actually, I think that should be taken care of
-                // by the event handler any parent resource will
-                // have placed on this resource.
-            });
-
             this.api.trigger('initresource', this);
             if (this.isNew()) this.api.trigger('newresource', this);
         },
@@ -161,7 +139,7 @@ define([
             oldRelated && oldRelated.off("all", null, this);
 
             related.on('all', eventHandlerForToOne(related, field), this);
-            related.parent = this;
+            related.parent = this;  // TODO: this doesn't belong here
 
             switch (field.type) {
             case 'one-to-one':
@@ -177,20 +155,6 @@ define([
             }
         },
         _setDependentToMany: function(field, toMany) {
-            // set the back ref
-            toMany.parent = this;
-
-            // TODO: this logic doesn't belong here anymore.. move up probably.
-            if (!this.isNew()) {
-                // filter the related objects to be those that have a FK to this resource
-                toMany.queryParams[field.otherSideName.toLowerCase()] = this.id;
-            } else {
-                // if this resource has no id, we can't set up the filter yet.
-                // we'll set a flag to indicate this collection represents a set
-                // of related objects for a new resource
-                toMany.isNew = true;
-            }
-
             var oldToMany = this.dependentResources[field.name.toLowerCase()];
             oldToMany && oldToMany.off("all", null, this);
 
@@ -214,7 +178,10 @@ define([
 
             // need to set the id right away if we have it because
             // relationships depend on it
-            if ('id' in attrs) this.id = attrs.id;
+            if ('id' in attrs) {
+                attrs.id = attrs.id && parseInt(attrs.id, 10);
+                this.id = attrs.id;
+            }
 
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
@@ -240,17 +207,17 @@ define([
             var field = this.specifyModel.getField(fieldName);
             var relatedModel = field.getRelatedModel();
 
-            if (value && !field.isDependent()) {
-                console.warn("unexpected inline data for independent field", fieldName,
-                             "in", this.specifyModel.name, "data is", value);
-            }
-
             var related;
+            var options = { parse: true, related: this, field: field.getReverse() };
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
-                related = new relatedModel.Collection(value, {parse: true});
-                field.isDependent() && this.storeDependent(field, related);
+                if (field.isDependent()) {
+                    related = new relatedModel.DependentCollection(value, options);
+                    this.storeDependent(field, related);
+                } else {
+                    related = new relatedModel.ToOneCollection(value, options);
+                }
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
                 if (!value) { // TODO: tighten up this check.
@@ -370,14 +337,15 @@ define([
                 // is the collection cached?
                 var toMany = this.dependentResources[fieldName];
                 if (!toMany) {
-                    toMany = new related.ToOneCollection([], { field: field.getReverse(), related: this });
                     if (field.isDependent()) {
-                        console.warn("expected dependent resource to be in cache");
+                        this.isNew() || console.warn("expected dependent resource to be in cache");
+                        toMany = new related.DependentCollection([], { field: field.getReverse(), related: this });
                         this.storeDependent(field, toMany);
+                    } else {
+                        toMany = new related.ToOneCollection([], { field: field.getReverse(), related: this });
                     }
                 }
 
-                // start the fetch if requested and return the collection
                 return toMany;
             case 'zero-to-one':
                 // this is like a one-to-many where the many cannot be more than one
@@ -469,7 +437,6 @@ define([
         parse: function(resp) {
             // since we are putting in data, the resource in now populated
             this.populated = true;
-            if (resp.id) resp.id = parseInt(resp.id, 10);
             return Backbone.Model.prototype.parse.apply(this, arguments);
         },
         getRelatedObjectCount: function(fieldName) {

@@ -27,7 +27,7 @@ define([
             return schema.getModel(this.relatedModelName);
         },
         getReverse: function() {
-            return this.getRelatedModel().getField(this.otherSideName);
+            return this.otherSideName && this.getRelatedModel().getField(this.otherSideName);
         },
         getLocalizedName: function() {
             return this._localization && schema.unescape(this._localization.name);

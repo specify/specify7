@@ -142,7 +142,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
 
         if toOneField?
             fieldInfo = resource.specifyModel.getField toOneField
-            haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
+            haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.related?.specifyModel
             localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
 
             dupes = _.filter localCollection, hasSameValue
@@ -150,10 +150,11 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                 invalid.localDupes = dupes
                 return $.when invalid
 
-            resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
-                if not collection? then return valid
-                others = new collection.constructor()
-                others.queryParams[toOneField] = collection.parent.id
+            resource.rget(toOneField).pipe (related) ->
+                if not related then return valid
+                others = new resource.specifyModel.ToOneCollection [],
+                    related: related,
+                    field: fieldInfo
                 others.queryParams[valueField] = valueId or value
                 others.fetch().pipe ->
                     inDatabase = others.chain().compact()

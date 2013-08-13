@@ -87,13 +87,35 @@ define([
             //    related: schema.Model.Resource: the resource this collecion is "to",
             //    [Base options]
             // }
-            assert(!options.related.isNew(), "can't build ToOne collection for unpersisted resource");
             assert(options.field.model === this.model.specifyModel, "field doesn't belong to model");
 
+            this.field = options.field;
+            this.related = options.related;
+
+            // If the id of the related resource changes, we go through and update
+            // all the objects that point to it with the new pointer.
+            // This is to support having collections of objects attached to
+            // newly created resources that don't have ids yet. When the
+            // resource is saved, the related objects can have their FKs
+            // set correctly.
+            this.related.on('change:id', function() {
+                var relatedUrl = this.related.url();
+                _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
+            }, this);
+
             Base.prototype.initialize.apply(this, arguments);
-            this.queryParams[options.field.name.toLowerCase()] = options.related.id;
+        },
+        fetch: function() {
+            assert(this.related.id, "Can't fetch many-to-one collection for nonexistent resource.");
+            this.queryParams[this.field.name.toLowerCase()] = this.related.id;
+            return Base.prototype.fetch.apply(this, arguments);
         }
     });
 
-    return { Base: Base, ToOne: ToOne };
+    var Dependent = ToOne.extend({
+        __name__: "DependentCollectionBase",
+        isDependent: true
+    });
+
+    return { Base: Base, ToOne: ToOne, Dependent: Dependent };
 });
