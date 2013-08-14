@@ -476,7 +476,7 @@ def get_collection(logged_in_collection, model, params={}):
         if param == 'domainfilter':
             # Use the logged_in_collection to limit request
             # to relevant items.
-            do_domain_filter = True
+            do_domain_filter = val == 'true'
             continue
 
         if param == 'limit':

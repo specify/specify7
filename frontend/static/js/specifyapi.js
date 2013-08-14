@@ -15,16 +15,17 @@ define([
             return $.get(url, data).promise();
         },
         getPickListByName: function(pickListName) {
-            var collection = new schema.models.PickList.Collection();
-            collection.queryParams.name = pickListName;
-            collection.queryParams.domainfilter = true;
+            var collection = new schema.models.PickList.QueryCollection({
+                filters: { name: pickListName },
+                domainfilter: true,
+                limit: 1
+            });
             return collection.fetch().pipe(function() { return collection.first(); });
         },
         queryCbxSearch: function(model, searchfield, searchterm) {
-            var collection = new model.Collection();
-            collection.queryParams[searchfield.toLowerCase() + '__icontains'] = searchterm;
-            collection.queryParams.domainfilter = true;
-            return collection;
+            var filters = {};
+            filters[searchfield.toLowerCase() + '__icontains'] = searchterm;
+            return new model.QueryCollection({ filters: filters, domainfilter: true });
         },
         queryCbxExtendedSearch: function(templateResource) {
             var url = '/express_search/querycbx/' +
@@ -38,11 +39,15 @@ define([
                 }
             });
 
-            return $.get(url, data).promise();
+            return $.get(url, data).pipe(function(results) {
+                return new templateResource.specifyModel.Collection(results);
+            });
         },
         getCollectionObjectRelTypeByName: function(name) {
-            var collection = new schema.models.CollectionRelType.Collection();
-            collection.queryParams.name = name;
+            var collection = new schema.models.CollectionRelType.QueryCollection({
+                filters: { name: name },
+                limit: 1
+            });
             return collection.fetch().pipe(function() { return collection.first(); });
         },
         getTreePath: function(treeResource) {

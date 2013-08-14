@@ -5,50 +5,103 @@ define([
 
     var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
-        populated: false,   // set if the collection has been fetched or filled in
-        wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
+        hasData: false,
+        isComplete: false,
 
-        initialize: function(models) {
+        initialize: function(models, options) {
             this.queryParams = {}; // these define the filters on the collection
-            if (models) this.populated = true;
+            this.options = _({}).extend(options);
+            this.isToOne() && this._initToOne();
+            this.isDependent = this.options.dependent || false;
+            this.isDependent && assert(this.isToOne(), "only to-one collections can be dependent");
+            this.limit = this.options.limit;
+
+            if (models) {
+                this.hasData = true;
+                this.isComplete = true;
+            }
+
             this.on('add remove', function() {
                 this.trigger('saverequired');
+            }, this);
+        },
+        isToOne: function() {
+            return _(this.options).has('related');
+        },
+        _initToOne: function () {
+            this.field = this.options.field;
+            this.related = this.options.related;
+
+            assert(this.field.model === this.model.specifyModel, "field doesn't belong to model");
+            assert(this.field.getRelatedModel() === this.related.specifyModel, "field is not to related resource");
+
+            // If the id of the related resource changes, we go through and update
+            // all the objects that point to it with the new pointer.
+            // This is to support having collections of objects attached to
+            // newly created resources that don't have ids yet. When the
+            // resource is saved, the related objects can have their FKs
+            // set correctly.
+            this.isDependent && this.related.on('change:id', function() {
+                var relatedUrl = this.related.url();
+                _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
             }, this);
         },
         url: function() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
         },
         parse: function(resp, xhr) {
-            _.extend(this, {
-                wasInline: _.isUndefined(resp.meta),
-                populated: true,   // have data now
-                totalCount: resp.meta ? resp.meta.total_count : resp.length,
-                meta: resp.meta
-            });
-            return this.wasInline ? resp : resp.objects;
+            var objects;
+            if (resp.meta) {
+                this.totalCount = resp.meta.total_count;
+                this.meta = resp.meta;
+                if (resp.objects.length === this.totalCount) this.isComplete = true;
+                objects = resp.objects;
+            } else {
+                console.warn("expected 'meta' in response");
+                this.totalCount = resp.length;
+                this.isComplete = true;
+                objects = resp;
+            }
+
+            this.hasData = true;
+            return objects;
         },
         fetchIfNotPopulated: function () {
             var collection = this;
             // a new collection is used for to-many collections related to new resources
-            if (this.isNew) return $.when(collection);
+            if (this.isDependent && this.related.isNew()) return $.when(collection);
             if (this._fetch) return this._fetch.pipe(function () { return collection; });
 
-            return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
+            return this.hasData ? $.when(collection) : this.fetch().pipe(function () { return collection; });
         },
         fetch: function(options) {
             var self = this;
+
             // block trying to fetch data for collections that represent new to-many collections
-            if (self.isNew) {
-                throw new Error("can't fetch non-existant collection");
+            if (self.isToOne()) {
+                assert(this.related.id, "Can't fetch many-to-one collection for nonexistent resource.");
+                this.queryParams[this.field.name.toLowerCase()] = this.related.id;
             }
 
             if (self._fetch) throw new Error('already fetching');
 
+            if (self.isComplete) {
+                console.error("fetching for already filled collection");
+            }
+
             options = options || {};
+
+
             options.update = true;
             options.remove = false;
             options.silent = true;
             options.at = _.isUndefined(options.at) ? self.length : options.at;
+
+            if (_.isNumber(self.limit)) {
+                assert(options.at === 0, "only fetching at beginning of collection is allowed with limit parameter");
+                options.limit = self.limit;
+            }
+
             options.data = options.data || _.extend({}, self.queryParams);
             options.data.offset = options.at;
             if (_(options).has('limit')) options.data.limit = options.limit;
@@ -59,6 +112,12 @@ define([
             if (!this._fetch) return;
             this._fetch.abort();
             this._fetch = null;
+        },
+        at: function(index, deferred) {
+            if (!this.isComplete && !deferred) {
+                console.error("'at' on incomplete collections must be deferred");
+            }
+            return Backbone.Collection.prototype.at.call(this, index);
         },
         add: function(models, options) {
             options = options || {};
@@ -79,43 +138,17 @@ define([
         }
     });
 
-    var ToOne = Base.extend({
-        __name__: "ToOneCollectionBase",
-        initialize: function(models, options) {
-            // options = {
-            //    field: schema.Model.getField(...): the toOne field this collection represents,
-            //    related: schema.Model.Resource: the resource this collecion is "to",
-            //    [Base options]
-            // }
-            assert(options.field.model === this.model.specifyModel, "field doesn't belong to model");
-
-            this.field = options.field;
-            this.related = options.related;
-
-            // If the id of the related resource changes, we go through and update
-            // all the objects that point to it with the new pointer.
-            // This is to support having collections of objects attached to
-            // newly created resources that don't have ids yet. When the
-            // resource is saved, the related objects can have their FKs
-            // set correctly.
-            this.related.on('change:id', function() {
-                var relatedUrl = this.related.url();
-                _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
-            }, this);
-
-            Base.prototype.initialize.apply(this, arguments);
+    var Query = Base.extend({
+        __name__: "QueryCollectionBase",
+        constructor: function(options) {
+            Base.call(this, null, options);
+            this.filters = options.filters || {};
         },
         fetch: function() {
-            assert(this.related.id, "Can't fetch many-to-one collection for nonexistent resource.");
-            this.queryParams[this.field.name.toLowerCase()] = this.related.id;
+            _(this.queryParams).extend(this.filters);
             return Base.prototype.fetch.apply(this, arguments);
         }
     });
 
-    var Dependent = ToOne.extend({
-        __name__: "DependentCollectionBase",
-        isDependent: true
-    });
-
-    return { Base: Base, ToOne: ToOne, Dependent: Dependent };
+    return { Base: Base, Query: Query };
 });

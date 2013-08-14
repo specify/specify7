@@ -17,7 +17,8 @@ define([
             //   form: form DOM fragment
 
             this.field = this.options.field;
-            assert(this.collection.isDependent, "formtable is only for dependent collections");
+            assert(this.field.isDependent(), "formtable is only for dependent fields");
+            assert(this.collection.field === this.field.getReverse(), "collection doesn't represent field");
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
@@ -72,7 +73,7 @@ define([
 
                 if (readOnly) {
                     // don't add anything.
-                } else if (self.collection.isDependent) {
+                } else if (self.field.isDependent()) {
                     $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
                     });

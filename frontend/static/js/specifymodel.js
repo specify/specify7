@@ -22,11 +22,8 @@ define([
         this.Collection = collectionapi.Base.extend({ __name__: this.name + 'Collection',
                                                       model: this.Resource });
 
-        this.ToOneCollection = collectionapi.ToOne.extend({ __name__: this.name + 'ToOneCollection',
+        this.QueryCollection = collectionapi.Query.extend({ __name__: this.name + 'QueryCollection',
                                                             model: this.Resource });
-
-        this.DependentCollection = collectionapi.Dependent.extend({ __name__: this.name + 'DependentCollection',
-                                                                    model: this.Resource });
     };
     _.extend(schema.Model.prototype, {
         getField: function(name) {

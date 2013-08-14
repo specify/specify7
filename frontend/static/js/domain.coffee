@@ -38,8 +38,10 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
             if domainLevel == 'collection'
                 return domainResource.fetchIfNotPopulated().pipe () -> [domainResource]
             path = takeBetween schema.orgHierarchy, 'collection', domainLevel
-            collections = new schema.models.Collection.Collection()
-            collections.queryParams[path.join '__'] = domainResource.id
+            filter = {}; filter[path.join '__'] = domainResource.id
+            collections = new schema.models.Collection.QueryCollection
+                filters: filter
+                # TODO: query collection should check that it returned all results
             collections.fetch().pipe -> collections.models
 
 

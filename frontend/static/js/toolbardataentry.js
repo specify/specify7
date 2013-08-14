@@ -155,7 +155,7 @@ define([
         icon: '/images/Data_Entry.png',
         execute: function() {
             if (dialog) return;
-            var recordSets = new schema.models.RecordSet.Collection();
+            var recordSets = new schema.models.RecordSet.QueryCollection();
             recordSets.fetch().done(function() {
                 dialog = new RecordSetsDialog({ recordSets: recordSets });
                 $('body').append(dialog.el);

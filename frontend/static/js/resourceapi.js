@@ -119,7 +119,7 @@ define([
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },
         storeDependent: function(field, related) {
-            assert(field.isDependent);
+            assert(field.isDependent());
             var setter = (field.type === 'one-to-many') ? "_setDependentToMany" : "_setDependentToOne";
             this[setter](field, related);
         },
@@ -194,8 +194,10 @@ define([
             if (_(['id', 'resource_uri']).contains(fieldName)) return value; // special fields
 
             var field = this.specifyModel.getField(fieldName);
-            field || console.warn("setting unknown field", fieldName, "on",
-                                  this.specifyModel.name, "value is", value);
+            if (!field) {
+                console.warn("setting unknown field", fieldName, "on",
+                             this.specifyModel.name, "value is", value);
+            }
 
             if (!field || !field.isRelationship) return value;
             // relationship field
@@ -208,16 +210,17 @@ define([
             var relatedModel = field.getRelatedModel();
 
             var related;
-            var options = { parse: true, related: this, field: field.getReverse() };
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
-                if (field.isDependent()) {
-                    related = new relatedModel.DependentCollection(value, options);
-                    this.storeDependent(field, related);
-                } else {
-                    related = new relatedModel.ToOneCollection(value, options);
-                }
+                related = new relatedModel.Collection(value, {
+                    related: this,
+                    field: field.getReverse(),
+                    dependent: field.isDependent()
+                });
+
+                field.isDependent() && this.storeDependent(field, related);
+
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
                 if (!value) { // TODO: tighten up this check.
@@ -336,12 +339,14 @@ define([
                 // is the collection cached?
                 var toMany = this.dependentResources[fieldName];
                 if (!toMany) {
+                    toMany = new related.Collection(null, {
+                        field: field.getReverse(),
+                        related: this,
+                        dependent: field.isDependent()
+                    });
                     if (field.isDependent()) {
                         this.isNew() || console.warn("expected dependent resource to be in cache");
-                        toMany = new related.DependentCollection([], { field: field.getReverse(), related: this });
                         this.storeDependent(field, toMany);
-                    } else {
-                        toMany = new related.ToOneCollection([], { field: field.getReverse(), related: this });
                     }
                 }
 
@@ -360,7 +365,7 @@ define([
                 // if this resource is not yet persisted, the related object can't point to it yet
                 if (this.isNew()) return undefined; // TODO: this seems iffy
 
-                var collection = related.ToOneCollection([], { field: field.getReverse(), related: this });
+                var collection = related.QueryCollection({ field: field.getReverse(), related: this, limit: 1 });
 
                 // fetch the collection and pretend like it is a single resource
                 var _this = this;

@@ -152,10 +152,12 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
 
             resource.rget(toOneField).pipe (related) ->
                 if not related then return valid
-                others = new resource.specifyModel.ToOneCollection [],
+                filters = {}; filters[valueField] = valueId or value
+                others = new resource.specifyModel.QueryCollection
                     related: related,
-                    field: fieldInfo
-                others.queryParams[valueField] = valueId or value
+                    field: fieldInfo,
+                    filters: filters
+
                 others.fetch().pipe ->
                     inDatabase = others.chain().compact()
                     inDatabase = if haveLocalColl
@@ -165,8 +167,9 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     if _.any inDatabase, hasSameValue then invalid else valid
         else
             # no toOneField indicates globally unique field
-            others = new resource.specifyModel.Collection()
-            others.queryParams[valueField] = valueId or value
+            filters = {}; filters[valueField] = valueId or value
+            others = new resource.specifyModel.QueryCollection
+                filters: filters
             others.fetch().pipe -> if _.any others.models, hasSameValue then invalid else valid
 
     rules =

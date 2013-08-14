@@ -85,15 +85,15 @@ define [
                     switch picklist.get 'type'
                         when 0 # items in picklistitems table
                             picklist.rget('picklistitems').pipe (plItemCollection) ->
-                                if plItemCollection.wasInline
+                                if plItemCollection.isComplete
                                      plItemCollection.toJSON()
                                 else
                                      plItemCollection.fetch(limit: limit).pipe ->
                                         plItemCollection.toJSON()
                         when 1 # items are objects from a table
                             plModel = schema.getModel picklist.get 'tablename'
-                            plItemCollection = new plModel.Collection()
-                            plItemCollection.fetch(limit: limit).pipe ->
+                            plItemCollection = new plModel.QueryCollection limit: limit
+                            plItemCollection.fetch().pipe ->
                                 whenAll plItemCollection.map (item) ->
                                     objformat(item, picklist.get 'formatter').pipe (title) ->
                                         value: item.url()

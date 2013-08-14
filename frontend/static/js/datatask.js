@@ -10,8 +10,10 @@ define([
         index = index ? parseInt(index, 10) : 0;
         var recordSet = new schema.models.RecordSet.Resource({ id: id });
         // TODO: this is a to-many collection
-        var recordSetItems = new schema.models.RecordSetItem.Collection();
-        recordSetItems.queryParams.recordset = id;
+        var recordSetItems = new schema.models.RecordSetItem.QueryCollection({
+            related: recordSet,
+            field: schema.models.RecordSetItem.getField('recordset')
+        });
 
         $.when(recordSetItems.fetch({at: index, limit: 1}), recordSet.fetch()).done(function() {
             var recordsetitem = recordSetItems.at(index);
