@@ -7,6 +7,7 @@ define([
         __name__: "CollectionBase",
         hasData: false,
         isComplete: false,
+        blockSize: 20,
 
         initialize: function(models, options) {
             this.queryParams = {}; // these define the filters on the collection
@@ -114,10 +115,20 @@ define([
             this._fetch = null;
         },
         at: function(index, deferred) {
-            if (!this.isComplete && !deferred) {
-                console.error("'at' on incomplete collections must be deferred");
-            }
-            return Backbone.Collection.prototype.at.call(this, index);
+            assert(this.isComplete || deferred, "'at' on incomplete collections must be deferred");
+            if (!deferred) return Backbone.Collection.prototype.at.call(this, index);
+
+            if (index >= this.totalCount) return $.when(undefined);
+            var model = this.models[index];
+            if (model) return $.when(model);
+
+            var _this = this;
+            if (this._fetch) return this._fetch.pipe(_.defer(function() { return _this.at(index, true); }));
+
+            var offset = index - index % this.blockSize;
+            return this.fetch({ at: offset, limit: this.blockSize }).pipe(_.defer(function() {
+                return _this.at(index, true);
+            }));
         },
         add: function(models, options) {
             options = options || {};
@@ -132,7 +143,7 @@ define([
         },
         getTotalCount: function() {
             var self = this;
-            if (self.isNew) return $.when(self.length);
+            if (self.isToOne() && self.related.isNew()) return $.when(self.length);
             if (self._fetch) return self._fetch.pipe(function() { return self.totalCount; });
             return self.fetchIfNotPopulated().pipe(function() { return self.totalCount; });
         }

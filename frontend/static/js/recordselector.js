@@ -85,7 +85,7 @@ define([
         },
         onslide: function(evt, ui) {
             this.setText(ui.value);
-            this.recordSelector.onSlide(ui.value);
+            //this.recordSelector.onSlide(ui.value);
         },
         hide: function() {
             this.$el.hide();
@@ -132,7 +132,7 @@ define([
         onAdd: function() {
             var end = this.collection.length - 1;
             this.slider.setMax(end);
-            this.fetchThenRedraw(end) || this.redraw(end);
+            this.redraw(end);
             this.showHide();
         },
         onRemove: function() {
@@ -141,7 +141,7 @@ define([
                 var currentIndex = this.currentIndex();
                 var value = Math.min(currentIndex, end);
                 this.slider.setMax(end);
-                this.fetchThenRedraw(value) || this.redraw(value);
+                this.redraw(value);
             }
             this.showHide();
         },
@@ -149,23 +149,8 @@ define([
             var value = this.slider.getOffset();
             return _.isNumber(value) ? value : 0;
         },
-        resourceAt: function(index) {
-            return this.collection.at(index);
-        },
         currentResource: function() {
-            return this.resourceAt(this.currentIndex());
-        },
-        fetchThenRedraw: function(offset) {
-            var self = this;
-            if (self.collection.related.isNew() || self.collection.at(offset)) return null;
-            self.collection.abortFetch();
-            var at = offset - offset % BLOCK_SIZE;
-            self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
-                console.debug('got collection at offset ' + at);
-                self.request = null;
-                self.redraw(self.currentIndex());
-            });
-            return self.request;
+            return this.current;
         },
         render: function() {
             var self = this;
@@ -202,20 +187,27 @@ define([
             var index = params[self.urlParam] || 0;
             index === 'end' && (index = self.collection.length - 1);
 
-            self.fetchThenRedraw(index) || self.redraw(index);
+            self.redraw(index);
             self.showHide();
             return self;
         },
         onSlide: function(offset) {
-            if (_(this.collection.at(offset)).isUndefined()) this.showSpinner();
-            else _.defer(_.bind(this.redraw, this, offset));
+            
         },
         redraw: function(offset) {
-            var self = this;
-            self.slider.setOffset(offset);
+            this.slider.setOffset(offset);
             console.debug('want to redraw at ' + offset);
-            var resource = self.resourceAt(offset);
-            if (_(resource).isUndefined()) return;
+            this.showSpinner();
+            var _this = this;
+            this.collection.at(offset, true).done(function(resource) {
+                if (_this.currentIndex() === offset) {
+                    _this.fillIn(resource, offset);
+                }
+            });
+        },
+        fillIn: function(resource, offset) {
+            self = this;
+            self.current = resource;
             var form = self.form.clone();
             self.populateForm(form, resource);
             console.debug('filling in at ' + offset);
