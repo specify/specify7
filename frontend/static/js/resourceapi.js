@@ -8,16 +8,15 @@ define([
     function eventHandlerForToOne(related, field) {
         return function(event) {
             var args = _.toArray(arguments);
-            switch (event) {
-            case 'saverequired':
-                if (related.dependent) {
-                    this.needsSaved = true;
-                    this.trigger.apply(this, args);
-                }
-                break;
-            case 'change:id':
+
+            if (event === 'saverequired') {
+                this.needsSaved = true;
+                this.trigger.apply(this, args);
+                return;
+            }
+            if (event === 'change:id') {
                 this.set(field.name, related.url());
-                break;
+                return;
             }
 
             // pass change:field events up the tree, updating fields with dot notation
@@ -34,10 +33,8 @@ define([
             var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
-                if (related.dependent) {
-                    this.needsSaved = true;
-                    this.trigger.apply(this, args);
-                }
+                this.needsSaved = true;
+                this.trigger.apply(this, args);
                 break;
             case 'add':
             case 'remove':
@@ -53,7 +50,6 @@ define([
         _fetch: null,       // stores reference to the ajax deferred while the resource is being fetched
         needsSaved: false,  // set when a local field is changed
         _save: null,        // stores reference to the ajax deferred while the resource is being saved
-        dependent: false,   // set when resource is a related to it parent by a dependent field
 
         constructor: function(attributes, options) {
             this.specifyModel = this.constructor.specifyModel;
@@ -104,7 +100,6 @@ define([
             var self = this;
             var newResource = Backbone.Model.prototype.clone.call(self);
             newResource.needsSaved = self.needsSaved;
-            newResource.dependent = self.dependent;
             newResource.recordsetid = self.recordsetid;
 
             _.each(self.relatedCache, function(related, fieldName) {
@@ -126,11 +121,6 @@ define([
             });
             return newResource;
         },
-        logAllEvents: function() {
-            this.on('all', function() {
-                console.log(arguments);
-            });
-        },
         url: function() {
             // returns the api uri for this resource. if the resource is newly created
             // (no id), return the uri for the collection it belongs to
@@ -149,11 +139,15 @@ define([
         },
         setToOneCache: function(field, related) {
             var self = this;
+            if (!field.isDependent()) return;
 
             var oldRelated = self.relatedCache[field.name.toLowerCase()];
             if (!related) {
-                oldRelated && oldRelated.off("all", null, this);
-                delete self.relatedCache[field.name.toLowerCase()];
+                if (oldRelated) {
+                    oldRelated.off("all", null, this);
+                    self.trigger('saverequired');
+                }
+                self.relatedCache[field.name.toLowerCase()] = null;
                 return;
             }
 
@@ -163,7 +157,6 @@ define([
 
             related.on('all', eventHandlerForToOne(related, field), self);
             related.parent = self;
-            related.dependent = field.isDependent();
 
             switch (field.type) {
             case 'one-to-one':
@@ -177,6 +170,29 @@ define([
             default:
                 throw new Error("setToOneCache: unhandled field type: " + field.type);
             }
+        },
+        setToManyCache: function(field, toMany) {
+            var self = this;
+            if (!field.isDependent()) return;
+            // set the back ref
+            toMany.parent = self;
+
+            if (!self.isNew()) {
+                // filter the related objects to be those that have a FK to this resource
+                toMany.queryParams[field.otherSideName.toLowerCase()] = self.id;
+            } else {
+                // if this resource has no id, we can't set up the filter yet.
+                // we'll set a flag to indicate this collection represents a set
+                // of related objects for a new resource
+                toMany.isNew = true;
+            }
+
+            var oldToMany = self.relatedCache[field.name.toLowerCase()];
+            oldToMany && oldToMany.off("all", null, this);
+
+            // cache it and set up event handlers
+            self.relatedCache[field.name.toLowerCase()] = toMany;
+            toMany.on('all', eventHandlerForToMany(toMany, field), self);
         },
         set: function(key, value, options) {
             // make the keys case insensitive
@@ -192,7 +208,7 @@ define([
                 attrs[key.toLowerCase()] = value;
             }
 
-            // need to set the id right way, if we have it because
+            // need to set the id right way if we have it because
             // relationships depend on it
             if ('id' in attrs) self.id = attrs.id;
 
@@ -232,7 +248,7 @@ define([
                             new (self.constructor.forModel(relatedModel))(value, {parse: true});
 
                         self.setToOneCache(field, value);
-                        attrs[fieldName] = self.relatedCache[fieldName].url(); // the FK as a URI
+                        attrs[fieldName] = value.url(); // the FK as a URI
                         return;
                     case 'zero-to-one':
                         // this actually a one-to-many where the related collection is only a single resource
@@ -248,28 +264,6 @@ define([
                 }
             });
             return Backbone.Model.prototype.set.call(this, attrs, options);
-        },
-        setToManyCache: function(field, toMany) {
-            var self = this;
-            // set the back ref
-            toMany.parent = self;
-            toMany.dependent = field.isDependent();
-            if (!self.isNew()) {
-                // filter the related objects to be those that have a FK to this resource
-                toMany.queryParams[field.otherSideName.toLowerCase()] = self.id;
-            } else {
-                // if this resource has no id, we can't set up the filter yet.
-                // we'll set a flag to indicate this collection represents a set
-                // of related objects for a new resource
-                toMany.isNew = true;
-            }
-
-            var oldToMany = self.relatedCache[field.name.toLowerCase()];
-            oldToMany && oldToMany.off("all", null, this);
-
-            // cache it and set up event handlers
-            self.relatedCache[field.name.toLowerCase()] = toMany;
-            toMany.on('all', eventHandlerForToMany(toMany, field), self);
         },
         rget: function(fieldName, prePop) {
             // get the value of the named field where the name may traverse related objects
@@ -370,47 +364,16 @@ define([
 
             return resource._save;
         },
-        rsave: function() {
-            // descend the object tree and save everything that needs it
-            var resource = this;
-            if (resource._save) {
-                throw new Error('resource is already being saved');
-            }
-
-            var isToOne = function(related, fieldName) {
-                var field = resource.specifyModel.getField(fieldName);
-                return field.type === 'many-to-one' && !related.dependent;
-            };
-            var isToMany = function(related, fieldName) {
-                var field = resource.specifyModel.getField(fieldName);
-                return _(['one-to-many', 'zero-to-one']).contains(field.type) && !related.dependent;
-            };
-            var saveIfExists = function(related) { return related && related.rsave(); };
-
-            var saveIf = function(pred) {
-                return _.chain(resource.relatedCache).filter(pred).map(saveIfExists).value();
-            };
-
-            var saveResource = function() {
-                return resource.needsSaved && resource.save();
-            };
-
-            return whenAll(saveIf(isToOne)).pipe(function() {
-                return $.when(saveResource()).pipe(function() {
-                    return whenAll(saveIf(isToMany));
-                });
-            });
-        },
         toJSON: function() {
             var self = this;
             var json = Backbone.Model.prototype.toJSON.apply(self, arguments);
 
             _.each(self.relatedCache, function(related, fieldName) {
                 var field = self.specifyModel.getField(fieldName);
-
-                if (related.dependent) {
-                    var relatedData = field.type === 'zero-to-one' ? [related.toJSON()] : related.toJSON() ;
-                    json[fieldName] = relatedData;
+                if (field.type === 'zero-to-one') {
+                    json[fieldName] = related ? [related.toJSON()] : [];
+                } else {
+                    json[fieldName] = related ? related.toJSON() : null;
                 }
             });
             return json;

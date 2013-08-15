@@ -71,7 +71,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 newResource = @model.clone() if addAnother
                 wasNew = @model.isNew()
 
-                @model.rsave().done => @trigger 'savecomplete',
+                @model.save().done => @trigger 'savecomplete',
                     addAnother: addAnother
                     newResource: newResource
                     wasNew: wasNew

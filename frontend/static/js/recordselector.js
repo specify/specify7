@@ -115,9 +115,6 @@ define([
             this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
 
             this.field = options.field;
-            assert(!this.field || this.collection.parent,
-                   "Record set view created with parentless collection but given a field ref.");
-
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
             this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;
@@ -175,7 +172,7 @@ define([
             self.noHeader || new Header({
                 el: templates.subviewheader({
                     title: self.title,
-                    dependent: this.collection.dependent
+                    dependent: !_.isUndefined(this.collection.parent)
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
@@ -260,7 +257,7 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            if (!this.collection.dependent) {
+            if (_.isUndefined(this.collection.parent)) {
                 // TODO: this might not be possible if the
                 // fk field is not nullable....
                 resource.set(this.field.otherSideName, null);
@@ -269,7 +266,7 @@ define([
             this.collection.remove(resource);
         },
         add: function() {
-            if (this.collection.dependent) {
+            if (this.collection.parent) {
                 var newResource = new this.collection.model();
                 if (this.field) {
                     newResource.set(this.field.otherSideName, this.collection.parent.url());

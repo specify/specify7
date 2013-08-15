@@ -20,7 +20,7 @@ define([
                    "Collection represents a field " +
                    "but collection.parent does not exist.");
 
-            assert(this.collection.dependent,
+            assert(this.collection.parent,
                    "Form table can only be used with dependent fields: " +
                    this.field.longName);
 
@@ -77,7 +77,7 @@ define([
 
                 if (readOnly) {
                     // don't add anything.
-                } else if (self.collection.dependent) {
+                } else if (self.collection.parent) {
                     $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
                         dialog.dialog('close');
                     });
@@ -118,7 +118,7 @@ define([
             if (self.field) {
                 newResource.set(self.field.otherSideName, self.collection.parent.url());
             }
-            self.collection.dependent && self.collection.add(newResource);
+            self.collection.parent && self.collection.add(newResource);
 
             self.buildDialog(newResource);
         }

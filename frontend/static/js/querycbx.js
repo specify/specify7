@@ -172,7 +172,7 @@ define([
             this.fillIn();
         },
         changeDialogTitle: function(title) {
-            this.dialog.dialog('option', 'title', title);
+            this.dialog && this.dialog.dialog('option', 'title', title);
         },
         blur: function() {
             var val = this.$('input').val().trim();

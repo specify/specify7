@@ -7,7 +7,6 @@ define([
 
     api.Collection = Backbone.Collection.extend({
         populated: false,   // set if the collection has been fetched or filled in
-        dependent: false,   // set when the collection is related to a parent resource by a dependent field
         wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
 
         initialize: function(models) {
