@@ -22,6 +22,7 @@ dependent_fields = {
     'Collectingevent.collectors',
     'Collectingevent.collectingeventattribute',
     'Locality.localitydetails',
+    'Picklist.picklistitems',
     'Spquery.fields'
 }
 
