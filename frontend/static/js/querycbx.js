@@ -1,11 +1,11 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'templates',
-    'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
     'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr', 'querycbxsearch',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
-], function ($, _, Backbone, api, schema, specifyform, templates, dataobjformatters,
-             whenAll, parseselect, localizeForm, navigation, SaveButton,
+], function (require, $, _, Backbone, api, schema, specifyform, templates,
+             dataobjformatters, whenAll, parseselect, localizeForm, navigation, SaveButton,
              DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
@@ -116,7 +116,6 @@ define([
 
             self.dialog = new QueryCbxSearch({
                 model: searchTemplateResource,
-                populateform: this.options.populateform,
                 selected: function(resource) {
                     self.model.set(self.fieldName, resource);
                 }
@@ -161,7 +160,7 @@ define([
                     });
                 }
 
-                self.options.populateform(dialogForm, resource);
+                require('cs!populateform')(dialogForm, resource);
 
                 var dialog = self.dialog = $('<div>', {'class': 'querycbx-dialog-' + addOrDisplay})
                     .append(dialogForm).dialog({

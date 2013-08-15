@@ -8,6 +8,7 @@ define([
         if (!node) return;
         this.node = $(node);
         this.name = this.node.attr('name') || this.node.attr('relationshipname');
+        this.longName = this.model.name + '.' + this.name;
         this.isRelationship = this.node.is('relationship');
         this.isRequired = this.node.attr('required') === 'true';
         this.type = this.node.attr('type');

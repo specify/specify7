@@ -11,7 +11,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
             if @model.isNew() then @setButtonsDisabled false
 
-            @model.on 'saverequired subsaverequired', (resource) =>
+            @model.on 'saverequired', (resource) =>
                 @setButtonsDisabled false
 
             @model.on 'oktosave', (resource) =>

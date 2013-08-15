@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
     'text!context/app.resource?name=DialogDefs!noinline'
-], function ($, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
+], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
     "use strict";
     var dialogdefs = $.parseXML(dialogdefxml);
 
@@ -16,7 +16,7 @@ define([
             return this;
         },
         makeDialog: function(form) {
-            this.options.populateform(form, this.model);
+            require("cs!populateform")(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             form.find('.specify-required-field').removeClass('specify-required-field');
             this.$el.append(form).append('<ul class="querycbx-search-results">');

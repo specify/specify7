@@ -1,6 +1,6 @@
 define([
-    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'recordselector', 'jquery-bbq'
-], function($, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
+    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'recordselector', 'jquery-bbq'
+], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
 
     var Base =  Backbone.View.extend({
         events: {
@@ -11,8 +11,8 @@ define([
             self.field = options.field;
             self.relatedModel = self.field.getRelatedModel();
 
-            self.related = self.options.model;
-            self.model = self.options.parentResource;
+            self.related = self.options.model || self.options.collection;
+            self.model = self.options.parentResource || self.options.collection.parent;
 
             var props = specifyform.parseSpecifyProperties(self.$el.data('specify-initialize'));
             self.icon = props.icon ? icons.getIcon(props.icon) : self.relatedModel.getIcon();
@@ -65,7 +65,6 @@ define([
                 var recordSelector = new RecordSelector({
                     field: self.field,
                     collection: self.collection,
-                    populateform: self.options.populateform,
                     form: form,
                     readOnly: self.readOnly,
                     noHeader: true
@@ -99,54 +98,57 @@ define([
             if (self.readOnly && !self.related) return;
 
             specifyform.buildSubView(self.$el).done(function(dialogForm) {
-                var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
+                self.buildDialog(dialogForm);
+            });
+        },
+        buildDialog: function(dialogForm) {
+            var self = this;
+            var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
 
-                dialogForm.find('.specify-form-header:first').remove();
+            dialogForm.find('.specify-form-header:first').remove();
 
-                if (!self.related) {
-                    if (formReadOnly) return;
-                    self.related = new (self.model.constructor.forModel(self.relatedModel))();
-                    self.related.placeInSameHierarchy(self.model);
+            if (!self.related) {
+                if (formReadOnly) return;
+                self.related = new (self.model.constructor.forModel(self.relatedModel))();
+                self.related.placeInSameHierarchy(self.model);
+                self.model.set(self.field.name, self.related);
+                self.resourceChanged();
+            }
+
+            // $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+            //     self.dialog.dialog('close');
+            // });
+
+            var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
+
+            if (!self.readOnly) {
+                $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                    self.dialog.dialog('close');
+                    self.related = null;
                     self.model.set(self.field.name, self.related);
                     self.resourceChanged();
-                }
+                });
+            }
 
-                $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+            require("cs!populateform")(dialogForm, self.related);
+            var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
+            self.dialog = $('<div>').append(dialogForm).dialog({
+                width: 'auto',
+                title: title,
+                close: function() { $(this).remove(); self.dialog = null; }
+            });
+
+            // TODO: this was copied from querycbx. should factor out somehow.
+            if (!self.related.isNew() && !self.field.isDependent()) {
+                self.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
+                    '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+
+                self.dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                    evt.preventDefault();
+                    navigation.go(self.related.viewUrl());
                     self.dialog.dialog('close');
                 });
-
-                var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
-
-                if (self.related.isNew()) {
-                    $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
-                        self.dialog.dialog('close');
-                        self.related = null;
-                        self.model.set(self.field.name, self.related);
-                        self.resourceChanged();
-                    });
-                } else {
-                    if (!self.readOnly) {
-                        var deleteButton = new DeleteButton({ model: self.related });
-                        deleteButton.render().$el.appendTo(dialogForm);
-                        deleteButton.on('deleted', function() {
-                            self.dialog.dialog('close');
-                            self.related = null;
-                            self.model.set(self.field.name, self.related);
-                            self.resourceChanged();
-                        });
-                    }
-                    title = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>'
-                        + title;
-                }
-
-                self.options.populateform(dialogForm, self.related);
-                var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
-                self.dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title: title,
-                    close: function() { $(this).remove(); self.dialog = null; }
-                });
-            });
+            }
         }
     });
 

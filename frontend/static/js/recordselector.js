@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
-], function($, _, Backbone, specifyform, navigation, templates) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'assert', 'jquery-ui'
+], function(require, $, _, Backbone, specifyform, navigation, templates, assert) {
     "use strict";
     var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
@@ -34,6 +34,8 @@ define([
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
+            this.recordSelector.collection.dependent &&
+                this.$('.specify-visit-related').remove();
             return this;
         }
     });
@@ -102,12 +104,21 @@ define([
             }
         },
         initialize: function(options) {
+            // options = {
+            //   form: form DOM fragment,
+            //   readOnly: bool,
+            //   field: field object? if collection represents related objects,
+            //   collection: api.Collection instance,
+            //   noHeader: boolean? overrides form definition,
+            //   sliderAtTop: boolean? overrides form definition,
+            //   urlParam: string? url parameter name for storing the current index
+            // }
             this.form = this.options.form;
             this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
 
             this.field = options.field;
-            if (this.field && !this.collection.parent)
-                throw new Error('parent not defined for collection');
+            assert(!this.field || this.collection.parent,
+                   "Record set view created with parentless collection but given a field ref.");
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
@@ -117,6 +128,7 @@ define([
             this.collection.on('add', this.onAdd, this);
 
             this.collection.on('remove destroy', this.onRemove, this);
+            this.populateForm = require('cs!populateform');
         },
         onAdd: function() {
             var end = this.collection.length - 1;
@@ -203,7 +215,7 @@ define([
             var resource = self.resourceAt(offset);
             if (_(resource).isUndefined()) return;
             var form = self.form.clone();
-            self.options.populateform(form, resource);
+            self.populateForm(form, resource);
             debug && console.log('filling in at ' + offset);
             self.content.empty().append(form);
             self.hideSpinner();

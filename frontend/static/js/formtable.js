@@ -1,6 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'templates', 'cs!savebutton', 'cs!deletebutton'
-], function($, _, Backbone, specifyform, templates, SaveButton, DeleteButton) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
+    'cs!savebutton', 'cs!deletebutton', 'assert'
+], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
+    "use strict";
 
     return Backbone.View.extend({
         events: {
@@ -8,9 +10,18 @@ define([
             'click .specify-subview-header a.specify-add-related': 'add'
         },
         initialize: function(options) {
+            // options = {
+            //   field: specifyfield object?
+            //   collection: specifyapi.Collection instance for table
+            //   form: form DOM fragment
+
             this.field = this.options.field;
-            if (this.field && !this.collection.parent)
-                throw new Error('collection for field does not have parent resource');
+            assert(!this.field || this.collection.parent,
+                   "Collection represents a field of some other object " +
+                   "but collection.parent does not exist.");
+
+            assert(this.collection.dependent,
+                   "Form table can only be used with dependent fields");
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
@@ -18,6 +29,8 @@ define([
             this.collection.on('remove destroy', this.render, this);
 
             this.readOnly = specifyform.getFormMode(this.options.form) === 'view';
+
+            this.populateForm = require('cs!populateform');
         },
         render: function() {
             var self = this;
@@ -38,7 +51,7 @@ define([
                 var url = resource.viewUrl();
                 $('a.specify-' + (self.readOnly ? 'edit' : 'display'), form).remove();
                 $('a.specify-edit, a.specify-display', form).data('index', index);
-                return self.options.populateform(form, resource);
+                return self.populateForm(form, resource);
             });
 
             self.$el.append(rows[0]);
@@ -70,6 +83,7 @@ define([
                         dialog.dialog('close');
                     });
                 } else {
+                    // TODO: dead code
                     var saveButton = new SaveButton({ model: resource });
                     saveButton.render().$el.appendTo(dialogForm);
                     saveButton.on('savecomplete', function() {
@@ -84,7 +98,7 @@ define([
                     }
                 }
 
-                self.options.populateform(dialogForm, resource);
+                self.populateForm(dialogForm, resource);
 
                 var dialog = $('<div>').append(dialogForm).dialog({
                     width: 'auto',

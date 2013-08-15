@@ -38,7 +38,7 @@ SubView, CheckBox, TreeLevelPickList) ->
 
             ).find (__, selector) -> control.is selector
 
-        view = new ( getView?() or UIField ) { el: control, model: resource, populateform: populateForm }
+        view = new ( getView?() or UIField ) { el: control, model: resource }
         view.render()
 
     populateSubview = (resource, node) ->
@@ -48,8 +48,6 @@ SubView, CheckBox, TreeLevelPickList) ->
         viewOptions =
             el: node
             field: field
-            parentResource: resource
-            populateform: populateForm
 
         resource.rget(fieldName, true).done (related) ->
 
@@ -64,6 +62,7 @@ SubView, CheckBox, TreeLevelPickList) ->
 
                 when 'zero-to-one', 'many-to-one'
                     viewOptions.model = related
+                    viewOptions.parentResource = resource
 
                     if specifyform.isSubViewButton node
                         SubViewButton.ToOne

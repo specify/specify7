@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'templates'
-], function($, _, Backbone, api, specifyform, templates) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'templates', 'assert'
+], function(require, $, _, Backbone, api, specifyform, templates, assert) {
     "use strict";
     return Backbone.View.extend({
         events: {
@@ -8,8 +8,13 @@ define([
             'click .specify-subview-header .specify-add-related' : 'add'
         },
         initialize: function(options) {
-            this.parentResource = options.parentResource;
+            // options = {
+            //   field: specify field object that this subview is showing a record for,
+            //   model: api.Resource? the resource this subview is showing,
+            //   parentResource: api.Resource
+            // }
             this.field = options.field;
+            this.parentResource = options.parentResource;
             this.title = this.field.getLocalizedName();
         },
         render: function() {
@@ -31,7 +36,7 @@ define([
                     $('.specify-add-related', header).remove();
                 }
 
-                self.options.populateform(form, self.model);
+                require("cs!populateform")(form, self.model);
                 self.$el.append(form);
             });
             return self;
@@ -44,30 +49,10 @@ define([
             self.parentResource.set(self.field.name, self.model);
             self.render();
         },
-        makeDeleteDialog: function(resource, callback) {
-            var self = this;
-            $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false,
-                modal: true,
-                buttons: {
-                    'Delete': function() {
-                        $(this).dialog('close');
-                        resource.destroy().done(callback);
-                    },
-                    'Cancel': function() { $(this).remove(); }
-                }
-            });
-        },
         delete: function() {
-            var self = this;
-            function done() {
-                self.model = null;
-                self.parentResource.set(self.field.name, null);
-                self.render();
-            }
-            if (self.model.isNew()) done()
-            else self.makeDeleteDialog(self.model, done);
-
+            this.parentResource.set(this.field.name, null);
+            this.model = null;
+            this.render();
         }
     });
 });

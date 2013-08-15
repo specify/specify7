@@ -10,10 +10,10 @@ define([
             var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
-                if (related.dependent) this.needsSaved = true;
-                else args[0] = 'subsaverequired';
-            case 'subsaverequired':
-                this.trigger.apply(this, args);
+                if (related.dependent) {
+                    this.needsSaved = true;
+                    this.trigger.apply(this, args);
+                }
                 break;
             case 'change:id':
                 this.set(field.name, related.url());
@@ -34,11 +34,10 @@ define([
             var args = _.toArray(arguments);
             switch (event) {
             case 'saverequired':
-                if (related.dependent) this.needsSaved = true;
-                else args[0] = 'subsaverequired';
-            case 'subsaverequired':
-                // propagate the above events up the object tree
-                this.trigger.apply(this, args);
+                if (related.dependent) {
+                    this.needsSaved = true;
+                    this.trigger.apply(this, args);
+                }
                 break;
             case 'add':
             case 'remove':
