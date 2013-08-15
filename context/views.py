@@ -11,6 +11,7 @@ from viewsets import get_view
 from schema_localization import get_schema_localization
 from specify.views import login_required
 from attachment_gw.views import get_settings as attachment_settings
+from build_datamodel_json import build_datamodel_json
 
 def login(request):
     """A Django view to log users into the system.
@@ -115,6 +116,17 @@ def available_related_searches(request):
     import express_search.related_searches
     return HttpResponse(simplejson.dumps(express_search.related_searches.__all__),
                         content_type='application/json')
+
+datamodel_json = None
+
+@require_GET
+@login_required
+def datamodel(request):
+    global datamodel_json
+    if datamodel_json is None:
+        datamodel_json = build_datamodel_json()
+
+    return HttpResponse(datamodel_json, content_type='application/json')
 
 @require_GET
 @login_required

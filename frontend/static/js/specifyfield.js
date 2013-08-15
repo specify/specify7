@@ -3,20 +3,17 @@ define([
 ], function($, _, uiformatters, schema, assert) {
     "use strict";
 
-    schema.Field = function(model, node) {
+    schema.Field = function(model, fieldDef) {
         this.model = model;
-        if (!node) return;
-        this.node = $(node);
-        this.name = this.node.attr('name') || this.node.attr('relationshipname');
-        this.longName = this.model.name + '.' + this.name;
-        this.isRelationship = this.node.is('relationship');
-        this.isRequired = this.node.attr('required') === 'true';
-        this.type = this.node.attr('type');
-        this.length = this.node.attr('length');
-        if (this.isRelationship) {
-            this.otherSideName = this.node.attr('othersidename');
-            this.relatedModelName = this.node.attr('classname').split('.').pop();
-        }
+        this.isRelationship = false;
+
+        if (!fieldDef) return;
+        this.name = fieldDef.name;
+
+        this.isRequired = fieldDef.required;
+        this.type = fieldDef.type;
+        this.length = fieldDef.length;
+
         this._localization = this.model._localization &&
             this.model._localization.items[this.name.toLowerCase()];
     };
@@ -52,9 +49,20 @@ define([
             return this._localization && this._localization.ishidden;
         },
         isDependent: function() {
-            return this._localization && this._localization.isdependent;
+            return this.dependent;
         }
     });
+
+    schema.Relationship = function(model, relDef) {
+        schema.Field.apply(this, arguments);
+        this.isRelationship = true;
+
+        this.otherSideName = relDef.otherSideName;
+        this.relatedModelName = relDef.relatedModelName;
+        this.dependent = relDef.dependent;
+    };
+
+    _.extend(schema.Relationship.prototype, schema.Field.prototype);
 
     return schema;
 });

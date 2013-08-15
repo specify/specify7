@@ -1,14 +1,15 @@
 define([
     'jquery', 'underscore', 'schemabase', 'schemaextras',
-    'text!resources/specify_datamodel.xml!noinline',
+    'text!context/datamodel.json!noinline',
     'specifymodel', 'specifyfield'
-], function($, _, schema, extras, xml) {
+], function($, _, schema, extras, json) {
     "use strict";
+    var tables = $.parseJSON(json);
 
     schema.models = {};
 
-    $('table', $.parseXML(xml)).each(function() {
-        var model = new schema.Model(this);
+    _.each(tables, function(tableDef) {
+        var model = new schema.Model(tableDef);
         var extra = extras[model.name];
         extra && extra(model);
         schema.models[model.name] = model;

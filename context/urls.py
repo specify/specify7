@@ -7,6 +7,7 @@ urlpatterns = patterns(
     (r'^user.json$', 'user'),
     (r'^domain.json$', 'domain'),
     (r'^view.json$', 'view'),
+    (r'^datamodel.json$', 'datamodel'),
     (r'^schema_localization.json$', 'schema_localization'),
     (r'^app.resource$', 'app_resource'),
     (r'^available_related_searches.json$', 'available_related_searches'),
