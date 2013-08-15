@@ -6,14 +6,21 @@ from specify.models import Splocalecontainer as Container
 from specify.models import Splocalecontaineritem as Item
 from specify.models import Splocaleitemstr as SpString
 
+from businessrules.attachment_rules import tables_with_attachments
+
 schema_localization_cache = {}
 
 dependent_fields = {
     'Collectionobject.determinations',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.preparations',
+    'Collectingevent.collectors',
+    'Collectingevent.collectingeventattribute',
     'Spquery.fields'
 }
+
+dependent_fields.update(model.__name__ + '.' + model.__name__.lower() + 'attachments'
+                        for model in tables_with_attachments)
 
 def get_schema_localization(collection):
     disc = collection.discipline

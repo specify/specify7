@@ -9,8 +9,11 @@ from exceptions import AbortSave
 
 JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 
-attachment_tables = [model for model in models.models_by_tableid.values()
-                     if model.__name__.endswith('attachment')]
+attachment_tables = {model for model in models.models_by_tableid.values()
+                     if model.__name__.endswith('attachment')}
+
+tables_with_attachments = {getattr(models, model.__name__.replace('attachment', ''))
+                           for model in attachment_tables}
 
 @orm_signal_handler('pre_save')
 def attachment_save(sender, obj):
