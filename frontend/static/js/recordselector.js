@@ -1,6 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'assert', 'jquery-ui'
-], function(require, $, _, Backbone, specifyform, navigation, templates, assert) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
+    'navigation', 'templates', 'assert', 'jquery-ui'
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, assert) {
     "use strict";
     var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
@@ -30,12 +31,9 @@ define([
     });
 
     var Header = Controls.extend({
-        el: templates.subviewheader(),
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
-            this.recordSelector.collection.dependent &&
-                this.$('.specify-visit-related').remove();
             return this;
         }
     });
@@ -175,13 +173,16 @@ define([
             self.slider.setMax(self.collection.length - 1);
 
             self.noHeader || new Header({
+                el: templates.subviewheader({
+                    title: self.title,
+                    dependent: this.collection.dependent
+                }),
                 recordSelector: this,
                 readOnly: this.readOnly
             }).render().$el.appendTo(this.el);
 
             self.sliderAtTop && self.$el.append(self.slider.el);
 
-            self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
 
             // we build the form and add it to the DOM immediately so that if it is
@@ -259,35 +260,38 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            if (this.collection.dependent) {
-                this.collection.remove(resource);
-            } else {
-                resource.isNew() ? resource.destroy() : this.makeDeleteDialog();
+            if (!this.collection.dependent) {
+                // TODO: this might not be possible is the
+                // fk field is not nullable....
+                resource.set(this.field.otherSideName, null);
+                resource.save();  // TODO: make confirmation
             }
-        },
-        makeDeleteDialog: function() {
-            var self = this;
-            $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false,
-                modal: true,
-                buttons: {
-                    'Delete': function() {
-                        $(this).dialog('close');
-                        self.doDestroy();
-                    },
-                    'Cancel': function() { $(this).remove(); }
-                }
-            });
-        },
-        doDestroy: function() {
-            this.currentResource().destroy();
+            this.collection.remove(resource);
         },
         add: function() {
-            var newResource = new (this.collection.model)();
-            if (this.field) {
-                newResource.set(this.field.otherSideName, this.collection.parent.url());
+            if (this.collection.dependent) {
+                var newResource = new this.collection.model();
+                if (this.field) {
+                    newResource.set(this.field.otherSideName, this.collection.parent.url());
+                }
+                this.collection.add(newResource);
+            } else {
+                // TODO: this should be factored out from common code in querycbx
+                var searchTemplateResource = new this.collection.model({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+
+                var _this = this;
+                this.dialog = new QueryCbxSearch({
+                    model: searchTemplateResource,
+                    selected: function(resource) {
+                        resource.set(_this.field.otherSideName, _this.collection.parent.url());
+                        resource.save(); // TODO: make confirmation dialog
+                        _this.collection.add(resource);
+                    }
+                }).render().$el.on('remove', function() { _this.dialog = null; });
             }
-            this.collection.add(newResource);
         },
         visit: function() {
             navigation.go(this.currentResource().viewUrl());

@@ -1,6 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'templates', 'assert'
-], function(require, $, _, Backbone, api, specifyform, templates, assert) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyapi',
+    'specifyform', 'querycbxsearch', 'templates', 'assert'
+], function(require, $, _, Backbone, api, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
     return Backbone.View.extend({
         events: {
@@ -20,9 +21,12 @@ define([
         render: function() {
             var self = this;
             self.$el.empty();
-            var header = $(templates.subviewheader());
+            var header = $(templates.subviewheader({
+                title: self.title,
+                dependent: self.field.isDependent()
+            }));
             $('.specify-visit-related', header).remove();
-            $('.specify-subview-title', header).text(self.title);
+
             specifyform.buildSubView(self.$el).done(function(form) {
                 if (specifyform.getFormMode(form) === 'view') {
                     $('.specify-delete-related, .specify-add-related', header).remove();
@@ -42,12 +46,28 @@ define([
             return self;
         },
         add: function() {
-            var self = this;
-            var relatedModel = self.field.getRelatedModel();
-            self.model = new (api.Resource.forModel(relatedModel))();
-            self.model.placeInSameHierarchy(self.parentResource);
-            self.parentResource.set(self.field.name, self.model);
-            self.render();
+            var relatedModel = this.field.getRelatedModel();
+
+            if (this.field.isDependent()) {
+                this.model = new (api.Resource.forModel(relatedModel))();
+                this.model.placeInSameHierarchy(this.parentResource);
+                this.parentResource.set(this.field.name, this.model);
+                this.render();
+            } else {
+                // TODO: this should be factored out from common code in querycbx
+                var searchTemplateResource = new (api.Resource.forModel(relatedModel))({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+
+                var _this = this;
+                this.dialog = new QueryCbxSearch({
+                    model: searchTemplateResource,
+                    selected: function(resource) {
+                        _this.model.set(_this.fieldName, resource);
+                    }
+                }).render().$el.on('remove', function() { _this.dialog = null; });
+            }
         },
         delete: function() {
             this.parentResource.set(this.field.name, null);

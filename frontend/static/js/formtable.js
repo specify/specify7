@@ -17,11 +17,12 @@ define([
 
             this.field = this.options.field;
             assert(!this.field || this.collection.parent,
-                   "Collection represents a field of some other object " +
+                   "Collection represents a field " +
                    "but collection.parent does not exist.");
 
             assert(this.collection.dependent,
-                   "Form table can only be used with dependent fields");
+                   "Form table can only be used with dependent fields: " +
+                   this.field.longName);
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
@@ -34,12 +35,14 @@ define([
         },
         render: function() {
             var self = this;
-            var header = $(templates.subviewheader());
+            var header = $(templates.subviewheader({
+                title: self.title,
+                dependent: self.field.isDependent()
+            }));
 
             header.find('.specify-delete-related, .specify-visit-related').remove();
             if (self.readOnly) header.find('.specify-add-related').remove();
             self.$el.empty().append(header);
-            self.$('.specify-subview-title').text(self.title);
 
             if (self.collection.length < 1) {
                 self.$el.append('<p>nothing here...</p>');

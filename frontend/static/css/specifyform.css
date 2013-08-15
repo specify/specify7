@@ -105,6 +105,10 @@ ul.ui-autocomplete li.ui-menu-item {
     list-style-type: none;
 }
 
+.specify-subview-header .ui-icon {
+    display: inline-block;
+}
+
 .specify-subview-button-count {
     padding: 3px;
     font-weight: bold;
