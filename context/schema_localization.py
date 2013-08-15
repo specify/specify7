@@ -11,11 +11,17 @@ from businessrules.attachment_rules import tables_with_attachments
 schema_localization_cache = {}
 
 dependent_fields = {
+    'Accession.accessionagents',
+    'Accession.accessionauthorizations',
+    'Agent.addresses',
+    'Agent.variants',
+    'Agent.groups',
     'Collectionobject.determinations',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.preparations',
     'Collectingevent.collectors',
     'Collectingevent.collectingeventattribute',
+    'Locality.localitydetails',
     'Spquery.fields'
 }
 
