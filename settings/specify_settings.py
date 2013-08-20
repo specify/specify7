@@ -1,7 +1,7 @@
 
 # The webapp server piggy backs on the thick client.
 # Set the path to a thick client installation.
-THICK_CLIENT_LOCATION = '~/Specify'
+THICK_CLIENT_LOCATION = '/opt/Specify'
 
 # Set the database name to the mysql database you
 # want to access.
