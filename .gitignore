@@ -1,8 +1,10 @@
 *.pyc
 *~
+.vagrant
 .emacs.desktop*
 .directory
-/virtenv
-settings/local_settings.py
-settings/local_specify_settings.py
-settings/secret_key.py
+testing
+specify7/virtenv
+specify7/settings/local_settings.py
+specify7/settings/local_specify_settings.py
+specify7/settings/secret_key.py
