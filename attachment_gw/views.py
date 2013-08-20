@@ -17,6 +17,9 @@ class AttachmentError(Exception):
 @login_required
 @require_GET
 def get_settings(request):
+    if server_urls is None:
+        return HttpResponse("{}", content_type='application/json')
+
     data = {
         'collection': settings.WEB_ATTACHMENT_COLLECTION,
         'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
@@ -72,19 +75,30 @@ def get_timestamp():
     return int(time.time()) + server_time_delta
 
 def update_time_delta(response):
-    timestamp = response.headers['X-Timestamp']
+    try:
+        timestamp = response.headers['X-Timestamp']
+    except KeyError:
+        return
     global server_time_delta
     server_time_delta = int(timestamp) - int(time.time())
 
 def init():
+    global server_urls
+
     r = requests.get(settings.WEB_ATTACHMENT_URL)
+    if r.status_code != 200:
+        return
+
     update_time_delta(r)
 
     urls_xml = ElementTree.fromstring(r.text)
-    global server_urls
     server_urls = {url.attrib['type']: url.text
                    for url in urls_xml.findall('url')}
-    test_key()
+
+    try:
+        test_key()
+    except AttachmentError:
+        server_urls = None
 
 def test_key():
     random = str(uuid4())

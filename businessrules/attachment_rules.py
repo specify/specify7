@@ -4,7 +4,6 @@ from orm_signal_handler import orm_signal_handler
 from specify.scoping import Scoping
 from specify import models
 
-from attachment_gw.views import delete_attachment_file
 from exceptions import AbortSave
 
 JOINTABLE_NAME_RE = re.compile('(.*)attachment')
@@ -30,6 +29,7 @@ def attachment_jointable_deletion(sender, obj):
 
 @orm_signal_handler('post_delete', 'Attachment')
 def attachment_deletion(attachment):
+    from attachment_gw.views import delete_attachment_file
     delete_attachment_file(attachment.attachmentlocation)
 
 def get_attachee(jointable_inst):
