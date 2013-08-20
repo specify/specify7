@@ -91,7 +91,11 @@ def init():
 
     update_time_delta(r)
 
-    urls_xml = ElementTree.fromstring(r.text)
+    try:
+        urls_xml = ElementTree.fromstring(r.text)
+    except:
+        return
+
     server_urls = {url.attrib['type']: url.text
                    for url in urls_xml.findall('url')}
 
