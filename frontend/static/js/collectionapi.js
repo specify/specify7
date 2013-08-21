@@ -10,6 +10,11 @@ define([
 
     function notSupported() { throw new Error("method is not supported"); }
 
+    function fakeFetch() {
+        console.error("fetch called on", this);
+        return $.when(null);
+    }
+
     var collectionapi = {};
 
     collectionapi.Static = Base.extend({
@@ -20,7 +25,7 @@ define([
             Base.call(this, models, options);
             this._initialized = true;
         },
-        fetch: notSupported,
+        fetch: fakeFetch,
         sync: notSupported,
         add: function() {
             this._initialized && notSupported();
@@ -71,7 +76,7 @@ define([
                 _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
             }, this);
         },
-        fetch: notSupported,
+        fetch: fakeFetch,
         sync: notSupported,
         create: notSupported
     });
@@ -129,8 +134,9 @@ define([
         },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
-            if (!self._fetch) self.fetch();
-            return self._fetch.pipe(function() { return self.totalCount; });
+            if (!this._fetch) this.fetch();
+            var _this = this;
+            return this._fetch.pipe(function() { return _this.totalCount; });
         }
     });
 

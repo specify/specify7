@@ -20,7 +20,7 @@ define([
                 this.model.rget('rightsiderels'),
                 api.getCollectionObjectRelTypeByName(this.init.relname)
             ).pipe(function(related, reltype) {
-                related.queryParams.collectionreltype = reltype.id;
+                related.filters.collectionreltype = reltype.id;
 
                 var getCollection = reltype.rget('leftsidecollection', true).pipe(function(lsCol) {
                     _this.otherCollection = lsCol;

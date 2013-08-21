@@ -1,12 +1,9 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
-    'navigation', 'templates', 'assert', 'jquery-ui'
-], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, assert) {
+    'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
     "use strict";
     var emptyTemplate = '<p>nothing here...</p>';
-    var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
-
-    var BLOCK_SIZE = 20;
 
     var Controls = Backbone.View.extend({
         __name__: "RecordSelectorControls",
@@ -57,13 +54,6 @@ define([
         },
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
-
-            var _this = this;
-            this.throttledSlideStop = _.throttle(function(offset) {
-                _this.recordSelector.fetchThenRedraw(offset);
-            }, 750);
-
-            Backbone.View.prototype.initialize.apply(this, arguments);
         },
         render: function() {
             this.$el.slider();
@@ -81,11 +71,10 @@ define([
             this.setText(val);
         },
         onslidestop: function(evt, ui) {
-            this.throttledSlideStop(ui.value);
+            this.recordSelector.redraw(ui.value);
         },
         onslide: function(evt, ui) {
             this.setText(ui.value);
-            //this.recordSelector.onSlide(ui.value);
         },
         hide: function() {
             this.$el.hide();
@@ -115,6 +104,8 @@ define([
             //   sliderAtTop: boolean? overrides form definition,
             //   urlParam: string? url parameter name for storing the current index
             // }
+            assert(this.collection instanceof collectionapi.Dependent); // TODO: meh, instanceof
+
             this.form = this.options.form;
             this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
 
@@ -161,7 +152,7 @@ define([
             self.noHeader || new Header({
                 el: templates.subviewheader({
                     title: self.title,
-                    dependent: self.collection.isDependent
+                    dependent: true
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
@@ -174,8 +165,6 @@ define([
             // we build the form and add it to the DOM immediately so that if it is
             // embedded in a dialog it will be sized properly
             self.content = $('<div>').appendTo(self.el).append(self.form.clone());
-
-            self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
 
             self.sliderAtTop || self.$el.append(self.slider.el);
 
@@ -191,48 +180,25 @@ define([
             self.showHide();
             return self;
         },
-        onSlide: function(offset) {
-            
-        },
-        redraw: function(offset) {
+       redraw: function(offset) {
             this.slider.setOffset(offset);
-            console.debug('want to redraw at ' + offset);
-            this.showSpinner();
-            var _this = this;
-            this.collection.at(offset, true).done(function(resource) {
-                if (_this.currentIndex() === offset) {
-                    _this.fillIn(resource, offset);
-                }
-            });
+            this.fillIn(this.collection.at(offset), offset);
         },
         fillIn: function(resource, offset) {
             self = this;
             self.current = resource;
+            if (!resource) return;
+
             var form = self.form.clone();
             self.populateForm(form, resource);
-            console.debug('filling in at ' + offset);
             self.content.empty().append(form);
-            self.hideSpinner();
             if (self.urlParam) {
                 var params = {};
                 params[self.urlParam] = offset;
                 navigation.push($.param.querystring(window.location.pathname, params));
             }
         },
-        showSpinner: function() {
-            if (!this.spinner.is(':hidden')) return;
-            var height = Math.min(64, this.content.height());
-            this.spinner.height(height);
-            this.spinner.find('img').height(0.9*height);
-            this.content.hide();
-            this.spinner.show();
-        },
-        hideSpinner: function() {
-            this.spinner.hide();
-            this.content.show();
-        },
         showHide: function() {
-            this.spinner.hide();
             switch (this.collection.length) {
             case 0:
                 this.noContent.show();
@@ -253,38 +219,14 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            if (!this.collection.isDependent) {
-                // TODO: this might not be possible if the
-                // fk field is not nullable....
-                resource.set(this.field.otherSideName, null);
-                resource.save();  // TODO: make confirmation
-            }
             this.collection.remove(resource);
         },
         add: function() {
-            if (this.collection.isDependent) {
-                var newResource = new this.collection.model();
-                if (this.field) {
-                    newResource.set(this.field.otherSideName, this.collection.related.url());
-                }
-                this.collection.add(newResource);
-            } else {
-                // TODO: this should be factored out from common code in querycbx
-                var searchTemplateResource = new this.collection.model({}, {
-                    noBusinessRules: true,
-                    noValidation: true
-                });
-
-                var _this = this;
-                this.dialog = new QueryCbxSearch({
-                    model: searchTemplateResource,
-                    selected: function(resource) {
-                        resource.set(_this.field.otherSideName, _this.collection.related.url());
-                        resource.save(); // TODO: make confirmation dialog
-                        _this.collection.add(resource);
-                    }
-                }).render().$el.on('remove', function() { _this.dialog = null; });
+            var newResource = new this.collection.model();
+            if (this.field) {
+                newResource.set(this.field.otherSideName, this.collection.related.url());
             }
+            this.collection.add(newResource);
         },
         visit: function() {
             navigation.go(this.currentResource().viewUrl());
