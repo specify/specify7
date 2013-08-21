@@ -4,20 +4,29 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y mysql-server python-mysqldb python-crypto python-pip openjdk-7-jre-headless apache2 libapache2-mod-wsgi
 
-cd /vagrant
-
 echo "Installing Specify 7 requirements..."
-pip install -r requirements.txt
+pip install -r /vagrant/specify7/requirements.txt
 
-echo "Importing Specify Database..."
 mysql -uroot -e "create user 'MasterUser'@'localhost' identified by 'MasterPassword';"
 mysql -uroot -e "grant all on *.* to 'MasterUser'@'localhost';"
-mysql -uMasterUser -pMasterPassword -e "create database SpecifyDB;"
-mysql -uMasterUser -pMasterPassword SpecifyDB < testing/SpecifyDB.sql
 
-echo "Downloading Specify 6...."
-wget -nv -O testing/Specify_unix.sh http://update.specifysoftware.org/Specify_unix.sh
-yes '' | sh testing/Specify_unix.sh
+if mysql -uMasterUser -pMasterPassword -e "create database SpecifyDB;"
+then
+    echo "Importing Specify Database..."
+    mysql -uMasterUser -pMasterPassword SpecifyDB < /vagrant/testing/SpecifyDB.sql
+fi
 
-python manage.py syncdb
-python manage.py runserver
+if [ ! -e /vagrant/testing/Specify_unix.sh ]; then
+    echo "Downloading Specify 6...."
+    wget -nv -O /vagrant/testing/Specify_unix.sh http://update.specifysoftware.org/Specify_unix.sh
+fi
+
+if [ ! -d /opt/Specify ]; then
+    yes '' | sh /vagrant/testing/Specify_unix.sh
+fi
+
+python /vagrant/specify7/manage.py syncdb
+
+rm /etc/apache2/sites-enabled/*
+ln -sf /vagrant/specify_apache.conf /etc/apache2/sites-enabled/
+invoke-rc.d apache2 restart
