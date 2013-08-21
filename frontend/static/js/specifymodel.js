@@ -19,10 +19,16 @@ define([
         this.Resource = ResourceBase.extend({ __name__: this.name + 'Resource' },
                                             { specifyModel: this });
 
-        this.Collection = collectionapi.Base.extend({ __name__: this.name + 'Collection',
-                                                      model: this.Resource });
+        this.LazyCollection = collectionapi.Lazy.extend({ __name__: this.name + 'LazyCollection',
+                                                          model: this.Resource });
 
-        this.QueryCollection = collectionapi.Query.extend({ __name__: this.name + 'QueryCollection',
+        this.StaticCollection = collectionapi.Static.extend({ __name__: this.name + 'StaticCollection',
+                                                             model: this.Resource });
+
+        this.DependentCollection = collectionapi.Dependent.extend({ __name__: this.name + "DependentCollection",
+                                                                    model: this.Resource });
+
+        this.ToOneCollection = collectionapi.ToOne.extend({ __name__: this.name + 'ToOneCollection',
                                                             model: this.Resource });
     };
     _.extend(schema.Model.prototype, {
@@ -72,6 +78,7 @@ define([
                 path.push(up.name);
                 return path;
             }
+            return undefined;
         }
     });
 

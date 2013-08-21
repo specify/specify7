@@ -213,13 +213,14 @@ define([
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
-                related = new relatedModel.Collection(value, {
-                    related: this,
-                    field: field.getReverse(),
-                    dependent: field.isDependent()
-                });
+                var collectionOptions = { related: this, field: field.getReverse() };
 
-                field.isDependent() && this.storeDependent(field, related);
+                if (field.isDependent()) {
+                    related = new relatedModel.DependentCollection(value, collectionOptions);
+                    this.storeDependent(field, related);
+                } else {
+                    console.warn("got unexpected inline data for independent collection field");
+                }
 
                 return undefined;  // because the foreign key is on the other side
             case 'many-to-one':
@@ -314,6 +315,7 @@ define([
                 return value;
             }
 
+            var _this = this;
             var related = field.getRelatedModel();
             switch (field.type) {
             case 'one-to-one':
@@ -339,18 +341,24 @@ define([
                 // is the collection cached?
                 var toMany = this.dependentResources[fieldName];
                 if (!toMany) {
-                    toMany = new related.Collection(null, {
-                        field: field.getReverse(),
-                        related: this,
-                        dependent: field.isDependent()
-                    });
-                    if (field.isDependent()) {
-                        this.isNew() || console.warn("expected dependent resource to be in cache");
+                    var collectionOptions = { field: field.getReverse(), related: this };
+
+                    if (!field.isDependent()) {
+                        return new related.ToOneCollection(collectionOptions);
+                    }
+
+                    if (this.isNew()) {
+                        toMany = new related.DependentCollection([], collectionOptions);
                         this.storeDependent(field, toMany);
+                        return toMany;
+                    } else {
+                        console.warn("expected dependent resource to be in cache");
+                        var tempCollection = new related.ToOneCollection(collectionOptions);
+                        return tempCollection.fetch({ limit: 0 }).pipe(function() {
+                            return new related.DependentCollection(tempCollection.models, collectionOptions);
+                        }).done(function (toMany) { _this.storeDependent(field, toMany); });
                     }
                 }
-
-                return toMany;
             case 'zero-to-one':
                 // this is like a one-to-many where the many cannot be more than one
                 // i.e. the current resource is the target of a FK
@@ -365,10 +373,9 @@ define([
                 // if this resource is not yet persisted, the related object can't point to it yet
                 if (this.isNew()) return undefined; // TODO: this seems iffy
 
-                var collection = related.QueryCollection({ field: field.getReverse(), related: this, limit: 1 });
+                var collection = related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
 
                 // fetch the collection and pretend like it is a single resource
-                var _this = this;
                 return collection.fetchIfNotPopulated().pipe(function() {
                     var value = collection.isEmpty() ? null : collection.first();
                     if (field.isDependent()) {

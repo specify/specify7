@@ -92,8 +92,8 @@ define [
                                         plItemCollection.toJSON()
                         when 1 # items are objects from a table
                             plModel = schema.getModel picklist.get 'tablename'
-                            plItemCollection = new plModel.QueryCollection limit: limit
-                            plItemCollection.fetch().pipe ->
+                            plItemCollection = new plModel.LazyCollection()
+                            plItemCollection.fetch( limit: limit ).pipe ->
                                 whenAll plItemCollection.map (item) ->
                                     objformat(item, picklist.get 'formatter').pipe (title) ->
                                         value: item.url()

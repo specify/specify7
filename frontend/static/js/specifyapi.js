@@ -15,17 +15,16 @@ define([
             return $.get(url, data).promise();
         },
         getPickListByName: function(pickListName) {
-            var collection = new schema.models.PickList.QueryCollection({
+            var collection = new schema.models.PickList.LazyCollection({
                 filters: { name: pickListName },
-                domainfilter: true,
-                limit: 1
+                domainfilter: true
             });
-            return collection.fetch().pipe(function() { return collection.first(); });
+            return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
         queryCbxSearch: function(model, searchfield, searchterm) {
             var filters = {};
             filters[searchfield.toLowerCase() + '__icontains'] = searchterm;
-            return new model.QueryCollection({ filters: filters, domainfilter: true });
+            return new model.LazyCollection({ filters: filters, domainfilter: true });
         },
         queryCbxExtendedSearch: function(templateResource) {
             var url = '/express_search/querycbx/' +
@@ -40,15 +39,14 @@ define([
             });
 
             return $.get(url, data).pipe(function(results) {
-                return new templateResource.specifyModel.Collection(results);
+                return new templateResource.specifyModel.StaticCollection(results);
             });
         },
         getCollectionObjectRelTypeByName: function(name) {
-            var collection = new schema.models.CollectionRelType.QueryCollection({
-                filters: { name: name },
-                limit: 1
+            var collection = new schema.models.CollectionRelType.LazyCollection({
+                filters: { name: name }
             });
-            return collection.fetch().pipe(function() { return collection.first(); });
+            return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
         getTreePath: function(treeResource) {
             var model = treeResource.specifyModel.name.toLowerCase();

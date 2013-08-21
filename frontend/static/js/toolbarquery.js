@@ -150,8 +150,8 @@ define([
         icon: '/images/Query32x32.png',
         execute: function() {
             if (dialog) return;
-            var queries = new schema.models.SpQuery.QueryCollection();
-            queries.fetch().done(function() {
+            var queries = new schema.models.SpQuery.LazyCollection();
+            queries.fetch().done(function() { // TODO: fetch all?
                 dialog = new QueryListDialog({ queries: queries });
                 $('body').append(dialog.el);
                 dialog.render();

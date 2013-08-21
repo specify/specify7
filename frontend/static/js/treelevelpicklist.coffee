@@ -18,10 +18,10 @@ define [
 
             @lastFetch = fetch = @model.rget('parent.definitionitem', true).pipe (parentTreeDefItem) ->
                 if not parentTreeDefItem then return _([])
-                children = new parentTreeDefItem.specifyModel.QueryCollection
+                children = new parentTreeDefItem.specifyModel.LazyCollection
                     filters: rankid__gt: parentTreeDefItem.get 'rankid'
 
-                children.fetch().pipe -> children
+                children.fetch().pipe -> children # TODO: did we fetch them all?
 
             fetch.done (children) => if fetch is @lastFetch
                 fieldName = @$el.attr 'name'
