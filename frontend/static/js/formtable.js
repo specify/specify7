@@ -16,7 +16,7 @@ define([
             //   collection: schema.Model.Collection instance for table
             //   form: form DOM fragment
 
-            this.field = this.options.field;
+            this.field = this.options.field; // TODO: field can be gotten from collection
             assert(this.field.isDependent(), "formtable is only for dependent fields");
             assert(this.collection.field === this.field.getReverse(), "collection doesn't represent field");
 

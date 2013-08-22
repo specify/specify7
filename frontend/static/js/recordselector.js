@@ -104,12 +104,13 @@ define([
             //   sliderAtTop: boolean? overrides form definition,
             //   urlParam: string? url parameter name for storing the current index
             // }
-            assert(this.collection instanceof collectionapi.Dependent); // TODO: meh, instanceof
+            assert(this.collection instanceof collectionapi.Dependent,
+                  "record selector supports dependent collections only"); // TODO: meh, instanceof
 
             this.form = this.options.form;
             this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
 
-            this.field = options.field;
+            this.field = options.field; // TODO: this can be gotten from the dependent collection
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
             this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;

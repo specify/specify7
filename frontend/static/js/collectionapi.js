@@ -132,11 +132,16 @@ define([
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
             return self._fetch.then(function() { self._fetch = null; });
         },
+        fetchIfNotPopulated: function() {
+            this._fetch || this.fetch();
+            var _this = this;
+            return this._fetch.pipe(function() { return _this; });
+        },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
-            if (!this._fetch) this.fetch();
-            var _this = this;
-            return this._fetch.pipe(function() { return _this.totalCount; });
+            return this.fetchIfNotPopulated().pipe(function(_this) {
+                return _this._totalCount;
+            });
         }
     });
 
