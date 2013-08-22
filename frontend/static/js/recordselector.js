@@ -104,8 +104,8 @@ define([
             //   sliderAtTop: boolean? overrides form definition,
             //   urlParam: string? url parameter name for storing the current index
             // }
-            assert(this.collection instanceof collectionapi.Dependent,
-                  "record selector supports dependent collections only"); // TODO: meh, instanceof
+            this.lazy = this.collection instanceof collectionapi.Lazy; // TODO: meh, instanceof
+            this.dependent = this.collection instanceof collectionapi.Dependent;
 
             this.form = this.options.form;
             this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
@@ -153,7 +153,7 @@ define([
             self.noHeader || new Header({
                 el: templates.subviewheader({
                     title: self.title,
-                    dependent: true
+                    dependent: self.dependent
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
@@ -181,12 +181,24 @@ define([
             self.showHide();
             return self;
         },
-       redraw: function(offset) {
+        redraw: function(offset) {
             this.slider.setOffset(offset);
             this.fillIn(this.collection.at(offset), offset);
+            if (this.lazy && offset === this.collection.length - 1 && !this.collection.isComplete()) {
+                this.fetchMore();
+            }
+        },
+        fetchMore: function() {
+            var _this = this;
+
+            // TODO: maybe add isFetching method to collection
+            this.collection._fetch || this.collection.fetch().done(function() {
+                _this.slider.setMax(_this.collection.length - 1);
+            });
         },
         fillIn: function(resource, offset) {
             self = this;
+            if (resource === self.current) return;
             self.current = resource;
             if (!resource) return;
 
@@ -220,14 +232,49 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            this.collection.remove(resource);
+            if (this.dependent) {
+                this.collection.remove(resource);
+            } else {
+                var _this = this;
+                var dialog = $('<div>').text("Remove?").dialog({ // TODO: better message
+                    modal: true,
+                    title: resource.specifyModel.getLocalizedName(),
+                    buttons: {
+                        Ok: function() {
+                            _this.collection.remove(resource);
+                            resource.set(_this.field.otherSideName, null);
+                            resource.save();
+                            dialog.dialog('close');
+                        },
+                        Cancel: function() { dialog.dialog('close'); }
+                    }
+                });
+            }
         },
         add: function() {
-            var newResource = new this.collection.model();
-            if (this.field) {
-                newResource.set(this.field.otherSideName, this.collection.related.url());
+            if (this.dependent) {
+                var newResource = new this.collection.model();
+                if (this.field) {
+                    newResource.set(this.field.otherSideName, this.collection.related.url());
+                }
+                this.collection.add(newResource);
+            } else {
+
+                // TODO: this should be factored out from common code in querycbx
+                var searchTemplateResource = new this.collection.model({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+
+                var _this = this;
+                new QueryCbxSearch({
+                    model: searchTemplateResource,
+                    selected: function(resource) {
+                        resource.set(_this.field.otherSideName, _this.collection.related.url());
+                        resource.save(); // TODO: make confirmation dialog
+                    }
+                }).render();
             }
-            this.collection.add(newResource);
         },
         visit: function() {
             navigation.go(this.currentResource().viewUrl());

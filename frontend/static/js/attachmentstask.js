@@ -5,7 +5,7 @@ define([
 ], function($, _, Backbone, attachments, schema, populateform, specifyform, navigation, whenAll) {
     "use strict";
 
-    var tablesWithAttachments = _(
+    var tablesWithAttachments = _( // TODO: get these from server or something
         ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
          "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
          "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
