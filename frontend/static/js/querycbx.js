@@ -130,11 +130,17 @@ define([
                 this.dialog.dialog('close');
                 if (closeOnly) return;
             }
-            this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
-            var related = (mode === 'add') ?
-                    new this.relatedModel.Resource() :
-                    this.relatedModel.Resource.fromUri(this.model.get(this.fieldName));
+            var related;
+            if (mode === 'add') {
+                related = new this.relatedModel.Resource();
+            } else {
+                var uri = this.model.get(this.fieldName);
+                if (!uri) return;
+                related = this.relatedModel.Resource.fromUri(uri);
+            }
+
+            this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
             new (require('resourceview'))({
                 el: this.dialog,
