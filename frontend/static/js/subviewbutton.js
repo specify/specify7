@@ -109,15 +109,16 @@ define([
 
             if (!self.related) {
                 if (formReadOnly) return;
-                self.related = new (self.model.constructor.forModel(self.relatedModel))();
-                self.related.placeInSameHierarchy(self.model);
-                self.model.set(self.field.name, self.related);
-                self.resourceChanged();
+                if (this.field.isDependent()) {
+                    self.related = new self.relatedModel.Resource();
+                    self.related.placeInSameHierarchy(self.model);
+                    self.model.set(self.field.name, self.related);
+                    self.resourceChanged();
+                } else {
+                    // TODO: same as querycbx search
+                    throw new Error("not implemented");
+                }
             }
-
-            // $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
-            //     self.dialog.dialog('close');
-            // });
 
             var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
