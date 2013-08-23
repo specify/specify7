@@ -7,6 +7,7 @@ dependent_fields = {
     'Agent.variants',
     'Agent.groups',
     'Collectionobject.determinations',
+    'Collectionobject.dnasequences',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.preparations',
     'Collectingevent.collectors',

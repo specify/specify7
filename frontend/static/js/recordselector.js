@@ -101,12 +101,15 @@ define([
             //   collection: schema.Model.Collection instance,
             //   noHeader: boolean? overrides form definition,
             //   sliderAtTop: boolean? overrides form definition,
-            //   urlParam: string? url parameter name for storing the current index
+            //   urlParam: string? url parameter name for storing the current index,
+            //   subformNode: $(subformNode)? used if the record selector element is not the subview node
             // }
             this.lazy = this.collection instanceof collectionapi.Lazy; // TODO: meh, instanceof
             this.dependent = this.collection instanceof collectionapi.Dependent;
 
-            this.readOnly = this.options.readOnly || specifyform.subViewMode(this.$el) === 'view';
+            this.subformNode = this.options.subformNode || this.$el;
+
+            this.readOnly = this.options.readOnly || specifyform.subViewMode(this.subformNode) === 'view';
 
             this.field = options.field; // TODO: this can be gotten from the dependent collection
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
@@ -174,7 +177,7 @@ define([
             index === 'end' && (index = self.collection.length - 1);
 
             var mode = self.dependent && !self.readOnly ? 'edit' : 'view';
-            specifyform.buildSubView(self.$el, mode).done(function(form) {
+            specifyform.buildSubView(self.subformNode, mode).done(function(form) {
                 self.form = form;
                 self.redraw(index);
                 self.showHide();
