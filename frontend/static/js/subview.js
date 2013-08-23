@@ -18,6 +18,7 @@ define([
             this.field = options.field;
             this.parentResource = options.parentResource;
             this.title = this.field.getLocalizedName();
+            this.readOnly = specifyform.subViewMode(this.$el) === 'view';
         },
         render: function() {
             var self = this;
@@ -28,10 +29,10 @@ define([
             }));
             $('.specify-visit-related', header).remove();
 
-            specifyform.buildSubView(self.$el).done(function(form) {
-                if (specifyform.getFormMode(form) === 'view') {
-                    $('.specify-delete-related, .specify-add-related', header).remove();
-                }
+            var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
+            specifyform.buildSubView(self.$el, mode).done(function(form) {
+                self.readOnly && $('.specify-delete-related, .specify-add-related', header).remove();
+
                 self.$el.append(header);
                 if (!self.model) {
                     $('.specify-delete-related', header).remove();
