@@ -4,13 +4,16 @@ import re
 
 from django.db import transaction
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 
 from specify import models
 from specify.autonumbering import autonumber
 from specify.filter_by_col import filter_by_collection
+
+from specify.dependent_fields import is_dependent
+
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
@@ -280,20 +283,32 @@ def handle_fk_fields(collection, agent, obj, data):
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
+        try:
+            old_related = getattr(obj, field_name)
+        except ObjectDoesNotExist:
+            old_related = None
+
+        dependent = is_dependent(obj.__class__.__name__, field_name)
+
         if val is None:
             setattr(obj, field_name, None)
+            if dependent and old_related:
+                old_related.delete()
 
         elif isinstance(val, basestring):
             # The related object is given by a URI reference.
+            assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = parse_uri(val)
             assert fk_model == field.related.parent_model.__name__.lower()
             setattr(obj, field_name + '_id', fk_id)
 
-        elif hasattr(val, 'items'):
+        elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
+            assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
             rel_model = field.related.parent_model
             if 'id' in val:
                 # The related object is an existing resource with an id.
+                # This should never happen.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
                                      val['version'], val)
@@ -303,6 +318,8 @@ def handle_fk_fields(collection, agent, obj, data):
                                      rel_model, val)
 
             setattr(obj, field_name, rel_obj)
+            if dependent and old_related and old_related.id != rel_obj.id:
+                old_related.delete()
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
@@ -318,12 +335,23 @@ def handle_to_many(collection, agent, obj, data):
     created as new resources.
     """
     for field_name, val in data.items():
-        if not isinstance(val, list):
-            # The field contains something other than nested data.
-            # Probably the URI of the collection of objects.
+        if field_name in ('resource_uri', 'recordset_info'):
+            # These fields are meta data, not part of the resource.
             continue
+
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct: continue # Skip *-to-one fields.
+
+        if isinstance(val, list):
+            assert is_dependent(obj.__class__.__name__, field_name), \
+                   "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
+        else:
+            # The field contains something other than nested data.
+            # Probably the URI of the collection of objects.
+            assert not is_dependent(obj.__class__.__name__, field_name), \
+                   "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
+            continue
+
         rel_model = field.model
         ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:

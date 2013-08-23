@@ -12,7 +12,6 @@ dependent_fields = {
     'Collectionobject.preparations',
     'Collectingevent.collectors',
     'Collectingevent.collectingeventattribute',
-    'Collector.agent',
     'Locality.localitydetails',
     'Picklist.picklistitems',
     'Spquery.fields'
@@ -20,3 +19,7 @@ dependent_fields = {
 
 dependent_fields.update(model.__name__ + '.' + model.__name__.lower() + 'attachments'
                         for model in tables_with_attachments)
+
+
+def is_dependent(model_name, field_name):
+    return model_name.capitalize() + '.' + field_name.lower() in dependent_fields

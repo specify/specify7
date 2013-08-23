@@ -126,10 +126,15 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
         invalid = { valid: false, reason: "Value must be unique to #{ toOneField or 'database' }" }
 
         value = resource.get valueField
-        valueIsToOne = resource.specifyModel.getField(valueField).type is 'many-to-one'
+        valueFieldInfo = resource.specifyModel.getField(valueField)
+        valueIsToOne = valueFieldInfo.type is 'many-to-one'
         if valueIsToOne
+            if _.isNull value then return $.when valid
             # kinda kludgy way to get id
-            valueId = if _.isString value then resource.constructor.fromUri(value).id else value.id
+            valueId = if _.isString value
+                valueFieldInfo.getRelatedModel().Resource.fromUri(value).id
+            else
+                value.id
 
         hasSameValue = (other) ->
             if other.id? and other.id is resource.id then return false
