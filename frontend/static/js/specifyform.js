@@ -99,16 +99,22 @@ define([
             return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode); });
         },
 
-        buildSubView: function (node) {
-            var defaultType = node.data('specify-viewtype') === 'table' ? 'formtable' : 'form';
+        buildSubView: function (node, mode) {
+            var defaultType = specifyform.getSubViewType(node);
+            mode = mode === 'view' || specifyform.subViewMode(node) === 'view' ? 'view' : 'edit';
             var viewName = node.data('specify-viewname');
-            var mode = node.data('specify-viewmode');
             var buildView = specifyform.buildViewByName(viewName, defaultType, mode);
 
             return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
                 return form;
             });
+        },
+
+        getSubViewType: function (node) {
+            // This the form type desired by the superform. May or may not be respected
+            // when the form is actually built.
+            return node.data('specify-viewtype') === 'table' ? 'formtable' : 'form';
         },
 
         isSubViewButton: function (node) {

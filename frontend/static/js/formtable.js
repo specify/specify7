@@ -14,7 +14,7 @@ define([
             // options = {
             //   field: specifyfield object?
             //   collection: schema.Model.Collection instance for table
-            //   form: form DOM fragment
+            //   subformNode: subform stub from parent form
 
             this.field = this.options.field; // TODO: field can be gotten from collection
             assert(this.field.isDependent(), "formtable is only for dependent fields");
@@ -25,7 +25,7 @@ define([
             this.collection.on('add', this.render, this);
             this.collection.on('remove destroy', this.render, this);
 
-            this.readOnly = specifyform.getFormMode(this.options.form) === 'view';
+            this.readOnly = specifyform.subViewMode(this.$el) === 'view';
 
             this.populateForm = require('cs!populateform');
         },
@@ -42,21 +42,23 @@ define([
 
             if (self.collection.length < 1) {
                 self.$el.append('<p>nothing here...</p>');
-                return;
+                return this;
             }
 
-            var rows = self.collection.map(function(resource, index) {
-                var form = self.options.form.clone();
-                var url = resource.viewUrl();
-                $('a.specify-' + (self.readOnly ? 'edit' : 'display'), form).remove();
-                $('a.specify-edit, a.specify-display', form).data('index', index);
-                return self.populateForm(form, resource);
-            });
+            specifyform.buildSubView(self.$el).done(function(subform) {
+                var rows = self.collection.map(function(resource, index) {
+                    var form = subform.clone();
+                    $('a.specify-' + (self.readOnly ? 'edit' : 'display'), form).remove();
+                    $('a.specify-edit, a.specify-display', form).data('index', index);
+                    return self.populateForm(form, resource);
+                });
 
-            self.$el.append(rows[0]);
-            _(rows).chain().tail().each(function(row) {
-                self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
+                self.$el.append(rows[0]);
+                _(rows).chain().tail().each(function(row) {
+                    self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
+                });
             });
+            return this;
         },
         edit: function(evt) {
             evt.preventDefault();

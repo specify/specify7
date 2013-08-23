@@ -96,7 +96,6 @@ define([
         },
         initialize: function(options) {
             // options = {
-            //   form: form DOM fragment,
             //   readOnly: bool,
             //   field: field object? if collection represents related objects,
             //   collection: schema.Model.Collection instance,
@@ -107,8 +106,7 @@ define([
             this.lazy = this.collection instanceof collectionapi.Lazy; // TODO: meh, instanceof
             this.dependent = this.collection instanceof collectionapi.Dependent;
 
-            this.form = this.options.form;
-            this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
+            this.readOnly = this.options.readOnly || specifyform.subViewMode(this.$el) === 'view';
 
             this.field = options.field; // TODO: this can be gotten from the dependent collection
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
@@ -163,9 +161,7 @@ define([
 
             self.noContent = $(emptyTemplate).appendTo(self.el);
 
-            // we build the form and add it to the DOM immediately so that if it is
-            // embedded in a dialog it will be sized properly
-            self.content = $('<div>').appendTo(self.el).append(self.form.clone());
+            self.content = $('<div>').appendTo(self.el);
 
             self.sliderAtTop || self.$el.append(self.slider.el);
 
@@ -177,8 +173,12 @@ define([
             var index = params[self.urlParam] || 0;
             index === 'end' && (index = self.collection.length - 1);
 
-            self.redraw(index);
-            self.showHide();
+            var mode = self.dependent && !self.readOnly ? 'edit' : 'view';
+            specifyform.buildSubView(self.$el, mode).done(function(form) {
+                self.form = form;
+                self.redraw(index);
+                self.showHide();
+            });
             return self;
         },
         redraw: function(offset) {

@@ -12,7 +12,7 @@ SubView, CheckBox, TreeLevelPickList) ->
     MultiView = Backbone.View.extend
         __name__: "MultiView"
         render: -> specifyform.buildSubView(@$el).done (form) =>
-            @options.form = form
+            # The form has to actually be built to tell if it is a formtable.
 
             View = if form.hasClass 'specify-form-type-formtable'
                 FormTable

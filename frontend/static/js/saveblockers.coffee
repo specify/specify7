@@ -1,5 +1,7 @@
 define ['jquery', 'underscore'], ($, _) ->
 
+# TODO: only propagate for dependent resources
+
     SaveBlockers: class SaveBlockers
         constructor: (@resource) ->
             @blockers = {}
