@@ -30,3 +30,5 @@ python /vagrant/specify7/manage.py syncdb
 rm /etc/apache2/sites-enabled/*
 ln -sf /vagrant/specify_apache.conf /etc/apache2/sites-enabled/
 invoke-rc.d apache2 restart
+
+echo "Test server is up and running at http://localhost:8000/"

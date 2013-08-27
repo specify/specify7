@@ -1,4 +1,24 @@
-Quick Start Instructions
+Quick Start Instructions Using Vagrant
+======================================
+
+[Vagrant](http://www.vagrantup.com) can be used to deploy a test environment
+running the Specify 7 server on any machine.
+
+1. Download and install [Vagrant](http://www.vagrantup.com).
+2. Clone this repository or download it using the "Download ZIP" button to the right.
+3. In the top level directory where `Vagrantfile` is located create a new directory called `testing`.
+4. Copy a Specify 6.5.00 database dump into the `testing` directory with the filename `SpecifyDB.sql`.
+5. Run `vagrant up` in the top level directory.
+6. The system will build and configure a virtual machine and setup a Specify 7 server
+   with the database you provided.
+7. When the 'Test server is up and running...' message appears, the system is ready.
+8. Use `vagrant halt` to stop the test system without deleting anything, or
+   `vagrant destroy` to remove the test system completely. To bring it back again,
+   reissue `vagrant up`.
+
+
+
+Developer Instructions
 ========================
 
 After completing these instructions you will be able to run the test
