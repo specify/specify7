@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'icons',  'schema',
+    'jquery', 'underscore', 'icons',  'schema', 'assert',
     'text!context/attachment_settings.json!noinline'
-], function($, _, icons, schema, settingsJson) {
+], function($, _, icons, schema, assert, settingsJson) {
     "use strict";
 
     var settings = $.parseJSON(settingsJson);
@@ -110,14 +110,11 @@ define([
                         }
                     });
                 }).pipe(function() {
-                    attachment = new schema.models.Attachment.Resource({
+                    return new schema.models.Attachment.Resource({
                         attachmentlocation: attachmentLocation,
                         mimetype: file.type,
                         origfilename: file.name
                     });
-                    return attachment.save();
-                }).pipe(function() {
-                    return attachment;
                 });
         }
     };

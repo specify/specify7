@@ -75,6 +75,8 @@ dependent_fields.update(
      else model.__name__.lower() + 'attachments')
     for model in tables_with_attachments)
 
+dependent_fields.update(model.__name__ + 'attachment.attachment' for model in tables_with_attachments)
+
 for field in dependent_fields:
     model_name, field_name = field.split('.')
     model = getattr(models, model_name)

@@ -295,6 +295,10 @@ def handle_fk_fields(collection, agent, obj, data):
             if dependent and old_related:
                 old_related.delete()
 
+        elif isinstance(val, field.related.parent_model):
+            # The related value was patched into the data by a parent object.
+            setattr(obj, field_name, val)
+
         elif isinstance(val, basestring):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
@@ -355,7 +359,7 @@ def handle_to_many(collection, agent, obj, data):
         rel_model = field.model
         ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:
-            rel_data[field.field.name] = uri_for_model(obj.__class__, obj.id)
+            rel_data[field.field.name] = obj
             if 'id' in rel_data:
                 # Update an existing related object.
                 rel_obj = update_obj(collection, agent,
