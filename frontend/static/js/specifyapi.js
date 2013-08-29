@@ -21,6 +21,19 @@ define([
             });
             return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
+        getRecordSetItem: function(recordSet, index) {
+            return $.when(recordSet.fetchIfNotPopulated(), $.get('/api/specify/recordsetitem/', {
+                recordset: recordSet.id,
+                offset: index,
+                limit: 1
+            })).pipe(function(__, data) {
+                var itemData = data[0].objects[0];
+                if (!itemData) return null;
+
+                var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
+                return new specifyModel.Resource({ id: itemData.recordid });
+            });
+        },
         queryCbxSearch: function(model, searchfield, searchterm) {
             var filters = {};
             filters[searchfield.toLowerCase() + '__icontains'] = searchterm;
