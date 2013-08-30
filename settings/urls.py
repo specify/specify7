@@ -6,6 +6,9 @@ urlpatterns = patterns(
     # log in and log out pages
     (r'^accounts/login/$', 'context.views.login'),
     (r'^accounts/logout/$', 'context.views.logout'),
+    (r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
+     {'template_name': 'password_change.html',
+      'post_change_redirect': '/'}),
 
     # just redirect root url to the main specify view
     url(r'^$', RedirectView.as_view(url='/specify/')),
