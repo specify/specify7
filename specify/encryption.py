@@ -32,7 +32,7 @@ def encrypt(text, password):
 
     des = DES.new(deskey, DES.MODE_CBC, iv)
     ciphertext = des.encrypt(padded)
-    return str(salt + ciphertext).encode('hex')
+    return str(salt + ciphertext).encode('hex').upper()
 
 def rand_byte():
     return randint(0, 0xff)
