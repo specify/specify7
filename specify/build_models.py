@@ -6,6 +6,8 @@ import os
 from businessrules import deletion_policies
 from businessrules.exceptions import AbortSave
 
+import model_extras
+
 appname = __name__.split('.')[-2]
 
 orderings = {
@@ -48,15 +50,17 @@ def make_model(module, tabledef):
         if 'rankid' in attrs:
             ordering += ('rankid', )
 
-    attrs['Meta'] = Meta
-    model = type(modelname, (models.Model,), attrs)
-
     def save(self, *args, **kwargs):
         try:
             return super(model, self).save(*args, **kwargs)
         except AbortSave:
             return
-    model.save = save
+
+    attrs['save'] = save
+    attrs['Meta'] = Meta
+
+    supercls = getattr(model_extras, modelname, models.Model)
+    model = type(modelname, (supercls,), attrs)
 
     return model
 

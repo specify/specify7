@@ -175,8 +175,8 @@ INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
-AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',)
-#                           'django.contrib.auth.backends.ModelBackend')
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
+
 LOGIN_REDIRECT_URL = '/'
 
 # A sample logging configuration. The only tangible logging
