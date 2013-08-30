@@ -35,6 +35,48 @@ class Specifyuser(models.Model):
         decrypted = decrypt(self.password, password)
         return decrypted == password
 
+    def is_admin(self):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+        SELECT 1
+        FROM specifyuser_spprincipal, spprincipal
+        WHERE %s = specifyuser_spprincipal.SpecifyUserId
+        AND specifyuser_spprincipal.SpPrincipalId = spprincipal.SpPrincipalId
+        AND spprincipal.Name = 'Administrator'
+        LIMIT 1
+        """, [self.id])
+        return cursor.fetchone() is not None
+
+    def set_admin(self):
+        from django.db import connection, transaction
+        from django.db.utils import IntegrityError
+
+        cursor = connection.cursor()
+        try:
+            cursor.execute("""
+            INSERT INTO specifyuser_spprincipal (SpPrincipalId, SpecifyUserId)
+            SELECT SpPrincipalId, %s FROM spprincipal
+            WHERE Name = 'Administrator'
+            """, [self.id])
+            transaction.commit_unless_managed()
+        except IntegrityError:
+            pass
+
+    def clear_admin(self):
+        from django.db import connection, transaction
+
+        cursor = connection.cursor()
+        cursor.execute("""
+        DELETE FROM specifyuser_spprincipal
+        WHERE SpecifyUserId = %s
+        AND SpPrincipalId IN (
+          SELECT SpPrincipalId FROM spprincipal
+          WHERE Name = 'Administrator'
+        )
+        """, [self.id])
+        transaction.commit_unless_managed()
+
     def save(self, *args, **kwargs):
         # There is a signal handler that updates last_login when
         # a user logs in. Since there is no last_login field in
