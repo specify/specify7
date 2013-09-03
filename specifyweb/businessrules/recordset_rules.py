@@ -1,5 +1,5 @@
-from orm_signal_handler import orm_signal_handler
-from specify.models import Recordsetitem
+from .orm_signal_handler import orm_signal_handler
+from specifyweb.specify.models import Recordsetitem
 
 @orm_signal_handler('post_delete')
 def remove_from_recordsets(sender, obj):

@@ -1,6 +1,6 @@
-from orm_signal_handler import orm_signal_handler
-from specify.models import Specifyuser
-from exceptions import BusinessRuleException
+from .orm_signal_handler import orm_signal_handler
+from specifyweb.specify.models import Specifyuser
+from .exceptions import BusinessRuleException
 
 @orm_signal_handler('pre_delete', 'Agent')
 def agent_delete_blocked_by_related_specifyuser(agent):
@@ -18,7 +18,7 @@ def agent_delete_blocked_by_related_specifyuser(agent):
 
 @orm_signal_handler('pre_save', 'Agent')
 def agent_types_other_and_group_do_not_have_addresses(agent):
-    from specify.agent_types import agent_types
+    from specifyweb.specify.agent_types import agent_types
     if agent.agenttype is None:
         raise BusinessRuleException("agenttype cannot be null")
     if agent_types[agent.agenttype] in ('Other', 'Group'):

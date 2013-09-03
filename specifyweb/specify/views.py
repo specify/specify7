@@ -5,8 +5,8 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django import http
 
-from specify_jar import specify_jar
-import api
+from .specify_jar import specify_jar
+from . import api
 
 def login_required(view):
     @wraps(view)

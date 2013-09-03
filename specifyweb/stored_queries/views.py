@@ -7,11 +7,11 @@ from django.conf import settings
 
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
-from specify.api import toJson
-from specify.views import login_required
-import models
+from specifyweb.specify.api import toJson
+from specifyweb.specify.views import login_required
+from . import models
 
-from fieldspec import FieldSpec
+from .fieldspec import FieldSpec
 
 SORT_TYPES = [None, asc, desc]
 SORT_OPS = [None, operator.gt, operator.lt]

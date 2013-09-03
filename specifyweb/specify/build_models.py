@@ -3,8 +3,8 @@ from django.conf import settings
 from xml.etree import ElementTree
 import os
 
-from businessrules import deletion_policies
-from businessrules.exceptions import AbortSave
+from specifyweb.businessrules import deletion_policies
+from specifyweb.businessrules.exceptions import AbortSave
 
 appname = __name__.split('.')[-2]
 

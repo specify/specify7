@@ -4,13 +4,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.utils import simplejson
 
-from specify.models import Collection
+from specifyweb.specify.models import Collection
+from specifyweb.specify.views import login_required
 
-from app_resource import get_app_resource
-from viewsets import get_view
-from schema_localization import get_schema_localization
-from specify.views import login_required
-from attachment_gw.views import get_settings as attachment_settings
+
+from specifyweb.attachment_gw.views import get_settings as attachment_settings
+from .app_resource import get_app_resource
+from .viewsets import get_view
+from .schema_localization import get_schema_localization
 
 def login(request):
     """A Django view to log users into the system.
@@ -79,7 +80,7 @@ def collection(request):
 @require_GET
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
-    from specify.api import obj_to_data, toJson
+    from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     return HttpResponse(toJson(data), content_type='application/json')
 
@@ -112,8 +113,8 @@ def app_resource(request):
 @require_GET
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
-    import express_search.related_searches
-    return HttpResponse(simplejson.dumps(express_search.related_searches.__all__),
+    from specifyweb.express_search import related_searches
+    return HttpResponse(simplejson.dumps(related_searches.__all__),
                         content_type='application/json')
 
 @require_GET

@@ -7,9 +7,9 @@ sys.dont_write_bytecode = True
 from django.utils.crypto import get_random_string
 
 try:
-    import local_specify_settings as specify_settings
+    from . import local_specify_settings as specify_settings
 except ImportError:
-    import specify_settings
+    from . import specify_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -22,7 +22,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'hibernateboolsbackend.backends.mysql',
+        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
         'NAME': specify_settings.DATABASE_NAME,
         'USER': specify_settings.MASTER_NAME,
         'PASSWORD': specify_settings.MASTER_PASSWORD,
@@ -125,7 +125,7 @@ STATICFILES_FINDERS = (
 )
 
 try:
-    from secret_key import SECRET_KEY
+    from .secret_key import SECRET_KEY
 except ImportError:
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'secret_key.py'), 'w') as fp:
         fp.write("""
@@ -134,7 +134,7 @@ except ImportError:
 SECRET_KEY = '%s'
 """ % get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'))
 
-    from secret_key import SECRET_KEY
+    from .secret_key import SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -150,10 +150,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'context.middleware.ContextMiddleware'
+    'specifyweb.context.middleware.ContextMiddleware'
 )
 
-ROOT_URLCONF = 'settings.urls'
+ROOT_URLCONF = 'specifyweb.settings.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -164,18 +164,18 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'specify',
-    'stored_queries',
-    'businessrules',
-    'express_search',
-    'context',
-    'attachment_gw',
-    'frontend',
+    'specifyweb.specify',
+    'specifyweb.stored_queries',
+    'specifyweb.businessrules',
+    'specifyweb.express_search',
+    'specifyweb.context',
+    'specifyweb.attachment_gw',
+    'specifyweb.frontend',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
-AUTHENTICATION_BACKENDS = ('specify.authbackend.SpecifyUserBackend',)
+AUTHENTICATION_BACKENDS = ('specifyweb.specify.authbackend.SpecifyUserBackend',)
 #                           'django.contrib.auth.backends.ModelBackend')
 LOGIN_REDIRECT_URL = '/'
 
@@ -218,7 +218,7 @@ LOGGING = {
 }
 
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
 

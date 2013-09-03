@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 import os
 import re
 
-from specify_jar import specify_jar
+from .specify_jar import specify_jar
 
 def check_versions(Spversion):
     """Check schema and application version compatibility."""

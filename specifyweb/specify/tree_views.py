@@ -1,8 +1,8 @@
 from django.views.decorators.http import require_GET
 from django.http import HttpResponse
 
-from specify.views import login_required
-from specify.api import get_object_or_404, obj_to_data, toJson
+from .views import login_required
+from .api import get_object_or_404, obj_to_data, toJson
 
 
 @login_required

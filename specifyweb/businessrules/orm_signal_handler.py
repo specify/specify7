@@ -1,7 +1,7 @@
 from django.db.models import signals
 from django.dispatch import receiver
 
-from specify import models
+from specifyweb.specify import models
 
 def orm_signal_handler(signal, model=None):
     def _dec(rule):

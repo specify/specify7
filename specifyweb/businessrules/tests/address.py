@@ -1,4 +1,4 @@
-from specify.api_tests import ApiTests
+from specifyweb.specify.api_tests import ApiTests
 
 class AddressTests(ApiTests):
     def test_at_most_one_primary_address_per_agent(self):

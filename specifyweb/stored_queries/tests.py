@@ -1,8 +1,8 @@
 from sqlalchemy import orm
 
-from specify.api_tests import ApiTests
-from fieldspec import FieldSpec
-import models
+from specifyweb.specify.api_tests import ApiTests
+from .fieldspec import FieldSpec
+from . import models
 
 
 class StoredQueriesTests(ApiTests):

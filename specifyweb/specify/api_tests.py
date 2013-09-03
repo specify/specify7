@@ -1,6 +1,6 @@
 from django.test import TestCase, TransactionTestCase
 from django.db.models import Max
-from specify import api, models
+from specifyweb.specify import api, models
 
 class MainSetupTearDown:
     def setUp(self):

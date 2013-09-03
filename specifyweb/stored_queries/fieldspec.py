@@ -1,12 +1,12 @@
 import re
 from collections import namedtuple, deque
 
-import models
-
-from query_ops import QueryOps
 from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
 from sqlalchemy.util.langhelpers import symbol
+
+from . import models
+from .query_ops import QueryOps
 
 query_ops = QueryOps()
 

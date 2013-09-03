@@ -1,7 +1,7 @@
 from django.db.models import signals
 from django.dispatch import receiver
 
-from specify.models import Spauditlog
+from specifyweb.specify.models import Spauditlog
 
 INSERT = 0
 UPDATE = 1

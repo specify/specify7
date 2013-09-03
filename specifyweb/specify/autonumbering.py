@@ -3,8 +3,8 @@ logger = logging.getLogger(__name__)
 
 from django.db import connection, transaction
 
-from specify.models import Splocalecontaineritem as Item
-from specify.uiformatters import get_uiformatter
+from .models import Splocalecontaineritem as Item
+from .uiformatters import get_uiformatter
 
 def autonumber(collection, user, obj):
     filters = dict(container__discipline=collection.discipline,

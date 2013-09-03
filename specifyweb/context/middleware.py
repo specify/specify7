@@ -1,6 +1,6 @@
 from django.http import HttpResponseBadRequest
-from specify.models import Collection, Specifyuser, Agent
-from specify.filter_by_col import filter_by_collection
+from specifyweb.specify.models import Collection, Specifyuser, Agent
+from specifyweb.specify.filter_by_col import filter_by_collection
 
 class ContextMiddleware(object):
     """Adds information about the logged in user and collection to requests."""

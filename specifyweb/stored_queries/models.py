@@ -1,7 +1,7 @@
 
 
 def generate():
-    import build_models
+    from . import build_models
     datamodel = build_models.get_datamodel()
     tables = build_models.make_tables(datamodel)
     classes = build_models.make_classes(datamodel)

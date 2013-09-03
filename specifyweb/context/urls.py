@@ -1,7 +1,7 @@
 from django.conf.urls import patterns
 
 urlpatterns = patterns(
-    'context.views',
+    'specifyweb.context.views',
     (r'^login/$', 'api_login'),
     (r'^collection/$', 'collection'),
     (r'^user.json$', 'user'),

@@ -3,8 +3,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from django.test import LiveServerTestCase
 
-from api_tests import MainSetupTearDown
-from selenium_testsuite_runner import SeleniumTestSuiteRunner as TestRunner
+from .api_tests import MainSetupTearDown
+from .selenium_testsuite_runner import SeleniumTestSuiteRunner as TestRunner
 
 def jquery_selector(selector):
     return lambda driver: driver.execute_script('''return $('%s')[0]''' % selector)
@@ -118,8 +118,7 @@ class WithFixturesTest(SeleniumTests):
 
 
 class FreshDBTests(MainSetupTearDown, SeleniumTests):
-    import context
-    from context.schema_localization import schema_localization_cache
+    from specifyweb import context
 
     sl_path = os.path.dirname(context.__file__)
     sl_filename = os.path.join(sl_path, 'data', 'schemalocalization.json')

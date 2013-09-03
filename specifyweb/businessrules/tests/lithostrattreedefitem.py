@@ -1,7 +1,7 @@
 from django.db.models import ProtectedError
-from specify.api_tests import ApiTests
+from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
-from specify import models
+from specifyweb.specify import models
 
 class LithostrattreedefitemTests(ApiTests):
     def setUp(self):

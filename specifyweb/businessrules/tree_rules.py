@@ -1,5 +1,5 @@
-from orm_signal_handler import orm_signal_handler
-from exceptions import BusinessRuleException
+from .orm_signal_handler import orm_signal_handler
+from .exceptions import BusinessRuleException
 
 @orm_signal_handler('pre_save')
 def set_rankid(sender, obj):

@@ -7,7 +7,7 @@ from xml.etree import ElementTree
 
 from django.conf import settings
 
-from specify.models import Spappresourcedir, Spappresourcedata
+from specifyweb.specify.models import Spappresourcedir, Spappresourcedata
 
 # The resource hierarchy procedes from resources that are specific to the user
 # up through resources that are valid in any context. More specific resources

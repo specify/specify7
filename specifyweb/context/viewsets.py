@@ -6,9 +6,9 @@ import os
 from xml.etree import ElementTree
 
 from django.http import Http404
-from specify.models import Spappresourcedata
+from specifyweb.specify.models import Spappresourcedata
 
-import app_resource as AR
+from . import app_resource as AR
 
 def get_view(collection, user, viewname):
     """Return the data for the named view for the given user logged into the given collection."""

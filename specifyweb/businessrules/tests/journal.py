@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
-from specify import models
-from specify.api_tests import ApiTests
+from specifyweb.specify import models
+from specifyweb.specify.api_tests import ApiTests
 
 class JournalBusinessRuleTests(ApiTests):
     def test_referenceworks_block_delete(self):

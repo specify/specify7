@@ -2,7 +2,7 @@ from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor
 from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
 from django.conf import settings
 
-from specify import models
+from specifyweb.specify import models
 
 def dots2dunders(lookups):
     return dict(

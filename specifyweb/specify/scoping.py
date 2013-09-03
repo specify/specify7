@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-import models
+from . import models
 
 COLLECTION_SCOPE  = 0
 DISCIPLINE_SCOPE  = 1

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns
 
 urlpatterns = patterns(
-    'context.testsviews',
+    'specifyweb.context.testsviews',
     (r'^collection/$', 'collection'),
     (r'^domain.json$', 'domain'),
     (r'^viewsets/(?P<level>\d+).xml$', 'viewsets'),

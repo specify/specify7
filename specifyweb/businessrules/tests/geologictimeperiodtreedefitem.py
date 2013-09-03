@@ -1,5 +1,5 @@
 from django.db.models import ProtectedError
-from specify.api_tests import ApiTests
+from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
 class GeologictimeperiodtreedefitemTests(ApiTests):

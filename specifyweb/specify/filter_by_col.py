@@ -1,5 +1,5 @@
 from django.core.exceptions import FieldError
-from models import *
+from .models import Geography, Taxon
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 

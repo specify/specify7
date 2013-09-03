@@ -1,7 +1,7 @@
 
-from specify import models, api
-from specify.api_tests import ApiTests
-from context import viewsets
+from specifyweb.specify import models, api
+from specifyweb.specify.api_tests import ApiTests
+from . import viewsets
 
 class ViewTests(ApiTests):
     def setUp(self):

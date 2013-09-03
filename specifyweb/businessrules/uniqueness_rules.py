@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
-from specify import models
-from orm_signal_handler import orm_signal_handler
-from exceptions import BusinessRuleException
+from specifyweb.specify import models
+from .orm_signal_handler import orm_signal_handler
+from .exceptions import BusinessRuleException
 
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)

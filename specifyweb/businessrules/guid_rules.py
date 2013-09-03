@@ -1,5 +1,5 @@
 from uuid import uuid4
-from orm_signal_handler import orm_signal_handler
+from .orm_signal_handler import orm_signal_handler
 
 @orm_signal_handler('pre_save')
 def set_guids(sender, obj):

@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic.base import RedirectView
 
 urlpatterns = patterns(
-    '',
+    'specifyweb',
     # log in and log out pages
     (r'^accounts/login/$', 'context.views.login'),
     (r'^accounts/logout/$', 'context.views.logout'),
@@ -14,7 +14,7 @@ urlpatterns = patterns(
     # Every URL beginning with '/specify/' is handled
     # by the frontend. 'frontend.urls' just serves the
     # empty webapp container for all these URLs.
-    url(r'^specify/', include('frontend.urls')),
+    url(r'^specify/', include('specifyweb.frontend.urls')),
 
     # the main business data API
     url(r'^api/specify_rows/(?P<model>\w+)/$', 'specify.views.rows'),
@@ -28,9 +28,9 @@ urlpatterns = patterns(
     url(r'^images/(?P<path>.+)$', 'specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specify.views.properties'),
 
-    url(r'^express_search/', include('express_search.urls')),
-    url(r'^context/', include('context.urls')),
-    url(r'^testcontext/', include('context.testurls')),
-    url(r'^stored_query/', include('stored_queries.urls')),
-    url(r'^attachment_gw/', include('attachment_gw.urls')),
+    url(r'^express_search/', include('specifyweb.express_search.urls')),
+    url(r'^context/', include('specifyweb.context.urls')),
+    url(r'^testcontext/', include('specifyweb.context.testurls')),
+    url(r'^stored_query/', include('specifyweb.stored_queries.urls')),
+    url(r'^attachment_gw/', include('specifyweb.attachment_gw.urls')),
 )

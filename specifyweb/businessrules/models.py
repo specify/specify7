@@ -1,14 +1,15 @@
-#import audit_log
-import uniqueness_rules
-import recordset_rules
-import collector_rules
-import collectionobject_rules
-import determination_rules
-import tree_rules
-import address_rules
-import discipline_rules
-import agent_rules
-import groupperson_rules
-import shipment_rules
-import attachment_rules
-import guid_rules
+from . import (
+    uniqueness_rules,
+    recordset_rules,
+    collector_rules,
+    collectionobject_rules,
+    determination_rules,
+    tree_rules,
+    address_rules,
+    discipline_rules,
+    agent_rules,
+    groupperson_rules,
+    shipment_rules,
+    attachment_rules,
+    guid_rules,
+)

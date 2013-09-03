@@ -1,5 +1,5 @@
-from encryption import decrypt
-from models import Specifyuser
+from .encryption import decrypt
+from .models import Specifyuser
 
 class SpecifyUserBackend:
     def authenticate(self, username=None, password=None):

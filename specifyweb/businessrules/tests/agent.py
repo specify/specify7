@@ -1,6 +1,6 @@
 import unittest
-from specify import models
-from specify.api_tests import ApiTests
+from specifyweb.specify import models
+from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
 class AgentTests(ApiTests):
@@ -62,7 +62,7 @@ class AgentTests(ApiTests):
 
 
     def test_other_and_group_do_not_have_addresses(self):
-        from specify.agent_types import agent_types
+        from specifyweb.specify.agent_types import agent_types
         agent = models.Agent.objects.create(
             agenttype=agent_types.index('Person'),
             firstname="Test",

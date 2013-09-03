@@ -8,9 +8,9 @@ from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 
-from specify import models
-from specify.autonumbering import autonumber
-from specify.filter_by_col import filter_by_collection
+from . import models
+from .autonumbering import autonumber
+from .filter_by_col import filter_by_collection
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')

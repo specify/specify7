@@ -7,12 +7,12 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 
-from specify import models
-from specify.filter_by_col import filter_by_collection
-from specify.api import toJson, get_model_or_404, obj_to_data
-from specify.views import login_required
+from specifyweb.specify import models
+from specifyweb.specify.filter_by_col import filter_by_collection
+from specifyweb.specify.api import toJson, get_model_or_404, obj_to_data
+from specifyweb.specify.views import login_required
 
-from context.app_resource import get_app_resource
+from specifyweb.context.app_resource import get_app_resource
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
@@ -55,7 +55,7 @@ class Term:
 
     def create_text_filter(self, field):
         if self.discipline:
-            from specify.models import Splocalecontaineritem
+            from specifyweb.specify.models import Splocalecontaineritem
             args = dict(
                 container__schematype=0, # core schema
                 container__discipline=self.discipline,
@@ -165,7 +165,7 @@ def search(request):
 @require_GET
 @login_required
 def related_search(request):
-    import related_searches
+    from . import related_searches
     express_search_config = get_express_search_config(request)
     rs = getattr(related_searches, request.GET['name'])()
     model = rs.pivot()

@@ -1,6 +1,6 @@
-from orm_signal_handler import orm_signal_handler
-from specify import models
-from exceptions import BusinessRuleException
+from .orm_signal_handler import orm_signal_handler
+from specifyweb.specify import models
+from .exceptions import BusinessRuleException
 
 @orm_signal_handler('pre_save', 'Shipment')
 def shipped_to_agent_must_exist(shipment):

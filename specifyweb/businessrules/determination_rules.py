@@ -1,4 +1,4 @@
-from orm_signal_handler import orm_signal_handler
+from .orm_signal_handler import orm_signal_handler
 
 @orm_signal_handler('pre_save', 'Determination')
 def determination_pre_save(det):

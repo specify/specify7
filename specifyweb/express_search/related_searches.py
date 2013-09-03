@@ -1,6 +1,6 @@
 from django.db.models import F
 
-from related import RelatedSearch
+from .related import RelatedSearch
 
 class ColObjCollectors(RelatedSearch):
     definition = 'Collectionobject.collectingevent.collectors.agent'

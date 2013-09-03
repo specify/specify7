@@ -1,6 +1,6 @@
-from specify import models
-from specify.api_tests import ApiTests
-from specify.agent_types import agent_types
+from specifyweb.specify import models
+from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.agent_types import agent_types
 from ..exceptions import BusinessRuleException
 
 class GroupPersonTests(ApiTests):

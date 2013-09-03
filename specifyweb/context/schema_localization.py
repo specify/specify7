@@ -2,9 +2,10 @@ from collections import defaultdict
 
 from django.utils import simplejson
 
-from specify.models import Splocalecontainer as Container
-from specify.models import Splocalecontaineritem as Item
-from specify.models import Splocaleitemstr as SpString
+from specifyweb.specify.models import (
+    Splocalecontainer as Container,
+    Splocalecontaineritem as Item,
+    Splocaleitemstr as SpString)
 
 schema_localization_cache = {}
 
