@@ -61,6 +61,7 @@ class Specifyuser(models.Model):
             """, [self.id])
             transaction.commit_unless_managed()
         except IntegrityError:
+            # It's already in there.
             pass
 
     def clear_admin(self):
