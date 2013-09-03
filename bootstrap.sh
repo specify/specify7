@@ -5,7 +5,7 @@ apt-get update
 apt-get install -y mysql-server python-mysqldb python-crypto python-pip openjdk-7-jre-headless apache2 libapache2-mod-wsgi
 
 echo "Installing Specify 7 requirements..."
-pip install -r /vagrant/specify7/requirements.txt
+pip install -r /vagrant/specifyweb/requirements.txt
 
 mysql -uroot -e "create user 'MasterUser'@'localhost' identified by 'MasterPassword';"
 mysql -uroot -e "grant all on *.* to 'MasterUser'@'localhost';"
@@ -25,7 +25,7 @@ if [ ! -d /opt/Specify ]; then
     yes '' | sh /vagrant/testing/Specify_unix.sh
 fi
 
-python /vagrant/specify7/manage.py syncdb
+python /vagrant/specifyweb/manage.py syncdb
 
 rm /etc/apache2/sites-enabled/*
 ln -sf /vagrant/specify_apache.conf /etc/apache2/sites-enabled/

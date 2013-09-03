@@ -4,7 +4,7 @@
 .emacs.desktop*
 .directory
 testing
-specify7/virtenv
-specify7/settings/local_settings.py
-specify7/settings/local_specify_settings.py
-specify7/settings/secret_key.py
+specifyweb/virtenv
+specifyweb/settings/local_settings.py
+specifyweb/settings/local_specify_settings.py
+specifyweb/settings/secret_key.py
