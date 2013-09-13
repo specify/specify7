@@ -11,9 +11,8 @@ from django.db.models.fields import DateTimeField, FieldDoesNotExist
 from specify import models
 from specify.autonumbering import autonumber
 from specify.filter_by_col import filter_by_collection
-
 from specify.dependent_fields import is_dependent
-
+from specify.auditlog import auditlog
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
@@ -242,7 +241,7 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
-def create_obj(collection, agent, model, data):
+def create_obj(collection, agent, model, data, parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     if isinstance(model, basestring):
         model = get_model_or_404(model)
@@ -257,6 +256,7 @@ def create_obj(collection, agent, model, data):
     obj.save()
     autonumber(collection, agent.specifyuser, obj)
     obj.save()
+    auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -293,6 +293,7 @@ def handle_fk_fields(collection, agent, obj, data):
         if val is None:
             setattr(obj, field_name, None)
             if dependent and old_related:
+                auditlog.remove(old_related, agent, obj)
                 old_related.delete()
 
         elif isinstance(val, field.related.parent_model):
@@ -315,14 +316,17 @@ def handle_fk_fields(collection, agent, obj, data):
                 # This should never happen.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
-                                     val['version'], val)
+                                     val['version'], val,
+                                     parent_obj=obj)
             else:
                 # The related object is to be created.
                 rel_obj = create_obj(collection, agent,
-                                     rel_model, val)
+                                     rel_model, val,
+                                     parent_obj=obj)
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
+                auditlog.remove(old_related, agent, obj)
                 old_related.delete()
             data[field_name] = obj_to_data(rel_obj)
         else:
@@ -364,33 +368,38 @@ def handle_to_many(collection, agent, obj, data):
                 # Update an existing related object.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, rel_data['id'],
-                                     rel_data['version'], rel_data)
+                                     rel_data['version'], rel_data,
+                                     parent_obj=obj)
             else:
                 # Create a new related object.
-                rel_obj = create_obj(collection, agent, rel_model, rel_data)
+                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
             ids.append(rel_obj.id) # Record the id as one to keep.
 
         # Delete related objects not in the ids list.
         # TODO: Check versions for optimistic locking.
-        getattr(obj, field_name).exclude(id__in=ids).delete()
+        to_delete = getattr(obj, field_name).exclude(id__in=ids)
+        for rel_obj in to_delete:
+            auditlog.remove(rel_obj, agent, obj)
+        to_delete.delete()
 
 @transaction.commit_on_success
 def delete_resource(name, id, version):
     return delete_obj(name, id, version)
 
-def delete_obj(name, id, version):
+def delete_obj(name, id, version, parent_obj=None):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
     bump_version(obj, version)
     obj.delete()
+    auditlog.delete(obj, agent, parent_obj)
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
 
-def update_obj(collection, agent, name, id, version, data):
+def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
@@ -407,6 +416,7 @@ def update_obj(collection, agent, name, id, version, data):
 
     bump_version(obj, version)
     obj.save(force_update=True)
+    auditlog.update(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
