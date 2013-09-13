@@ -82,6 +82,7 @@ def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
+    data['isadmin'] = request.specify_user.is_admin()
     return HttpResponse(toJson(data), content_type='application/json')
 
 @login_required

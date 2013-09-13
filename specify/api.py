@@ -452,6 +452,7 @@ def parse_uri(uri):
 def obj_to_data(obj):
     """Return a (potentially nested) dictionary of the fields of the
     Django model instance 'obj'.
+    TODO: Add hidden field function (mainly for specifyuser password field).
     """
     # Get regular and *-to-one fields.
     data = dict((field.name, field_to_val(obj, field))
