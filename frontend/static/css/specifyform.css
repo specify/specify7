@@ -423,3 +423,16 @@ div.results div {
     max-height: 125px;
 }
 
+.specify-auditlog-entry {
+    margin-bottom: 16px;
+}
+
+.specify-auditlog-entry h3 img {
+    height: 1.5em;
+    margin-right: 0.8em;
+    float: left;
+}
+
+.specify-auditlog-entry p {
+    clear: both;
+}
