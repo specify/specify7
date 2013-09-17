@@ -37,6 +37,10 @@ define(['jquery', 'underscore'], function($, _) {
                               'data-specify-picklist': cell.attr('picklist')});
                 return control;
             },
+            spinner: function() {
+                return $('<input type=text class="specify-spinner specify-field">')
+                    .attr('readonly', doingFormTable || mode === 'view');
+            },
             querycbx: function() {
                 return $('<input type=text class="specify-querycbx specify-field">')
                     .attr('readonly', doingFormTable || mode === 'view');

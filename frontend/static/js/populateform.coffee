@@ -1,13 +1,14 @@
 define [
     'jquery', 'underscore','localizeform', 'specifyform'
     'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
-    'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
+    'recordselector', 'subviewbutton', 'formtable'
+    'subview', 'checkbox', 'spinnerui'
     'cs!treelevelpicklist'
 ], ( \
 $, _, localizeForm, specifyform, \
 PickList, UIField, QueryCbx, uiplugins, \
 RecordSelector, SubViewButton, FormTable, \
-SubView, CheckBox, TreeLevelPickList) ->
+SubView, CheckBox, SpinnerUI, TreeLevelPickList) ->
 
     MultiView = Backbone.View.extend
         __name__: "MultiView"
@@ -25,6 +26,7 @@ SubView, CheckBox, TreeLevelPickList) ->
     populateField = (resource, control) ->
         getView = _(
             ':checkbox': -> CheckBox
+            '.specify-spinner': -> SpinnerUI
             '.specify-querycbx': -> QueryCbx
 
             '.specify-uiplugin': ->
