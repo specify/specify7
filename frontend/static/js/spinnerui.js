@@ -5,6 +5,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: 'SpinnerFieldUI',
         events: {
             'spinstop': 'change',
             'change': 'change'
