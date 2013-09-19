@@ -52,7 +52,7 @@ SubView, CheckBox, SpinnerUI, TreeLevelPickList) ->
             el: node
             field: field
 
-        resource.rget(fieldName, true).done (related) ->
+        resource.rget(fieldName).done (related) ->
 
             View = switch field.type
                 when 'one-to-many'

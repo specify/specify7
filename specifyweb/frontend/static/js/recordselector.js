@@ -146,6 +146,13 @@ define([
             return this.current;
         },
         render: function() {
+            var _this = this;
+            (this.lazy ? this.collection.fetchIfNotPopulated() : $.when(null)).done(function() {
+                _this._render();
+            });
+            return this;
+        },
+        _render: function() {
             var self = this;
             self.$el.empty();
             self.slider = new Slider({ recordSelector: this }).render();
@@ -181,8 +188,8 @@ define([
                 self.form = form;
                 self.redraw(index);
                 self.showHide();
+
             });
-            return self;
         },
         redraw: function(offset) {
             this.slider.setOffset(offset);
@@ -195,7 +202,7 @@ define([
             var _this = this;
 
             // TODO: maybe add isFetching method to collection
-            this.collection._fetch || this.collection.fetch().done(function() {
+            (this.collection._fetch || this.collection.fetch()).done(function() {
                 _this.slider.setMax(_this.collection.length - 1);
             });
         },

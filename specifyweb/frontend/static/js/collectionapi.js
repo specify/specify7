@@ -83,9 +83,9 @@ define([
         create: notSupported
     });
 
-
     collectionapi.Lazy = Base.extend({
         __name__: "LazyCollectionBase",
+        _neverFetched: true,
         constructor: function(options) {
             options || (options = {});
             Base.call(this, null, options);
@@ -113,6 +113,7 @@ define([
         },
         fetch: function(options) {
             var self = this;
+            self.neverFetched = false;
 
             if (self._fetch) throw new Error('already fetching');
 
@@ -135,9 +136,10 @@ define([
             return self._fetch.then(function() { self._fetch = null; });
         },
         fetchIfNotPopulated: function() {
-            this._fetch || this.fetch();
             var _this = this;
-            return this._fetch.pipe(function() { return _this; });
+            return (this._neverFetched ? this.fetch() : $.when(null)).pipe(function() {
+                return _this;
+            });
         },
         getTotalCount: function() {
             if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
