@@ -1,6 +1,7 @@
 define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templates) ->
 
     Backbone.View.extend
+        __name__: "DeleteButton"
         events:
             'click .delete-button': 'openDialog'
 

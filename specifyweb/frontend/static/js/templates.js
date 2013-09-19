@@ -21,7 +21,8 @@ define([
     'text!tmpls/recordsetchooser.html',
     'text!tmpls/geolocateplugin.html',
     'text!tmpls/querybuilder.html',
-    'text!tmpls/attachmentview.html'
+    'text!tmpls/attachmentview.html',
+    'text!tmpls/usertools.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -50,7 +51,8 @@ define([
         'recordsetchooser',
         'geolocate',
         'querybuilder',
-        'attachmentview'
+        'attachmentview',
+        'usertools'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

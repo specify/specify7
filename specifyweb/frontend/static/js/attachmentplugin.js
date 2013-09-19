@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return UIPlugin.extend({
+        __name__: "AttachmentsPlugin",
         events: {
             'change :file': 'fileSelected',
             'click .specify-attachment-display a': 'openOriginal'

@@ -20,6 +20,7 @@ define([
     };
 
     return UIPlugin.extend({
+        __name__: "PartialDateUI",
         render: function() {
             var self = this;
             var init = self.init;

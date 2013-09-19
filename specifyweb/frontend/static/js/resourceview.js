@@ -1,17 +1,30 @@
 define([
-    'jquery', 'underscore', 'backbone', 'cs!populateform', 'specifyapi',
+    'jquery', 'underscore', 'backbone', 'cs!populateform',
     'specifyform', 'dataobjformatters', 'navigation', 'templates',
     'cs!savebutton', 'cs!deletebutton',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm, specifyapi,
+], function($, _, Backbone, populateForm,
             specifyform, dataobjformatters, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
 
-    function setWindowTitle(title) { window && (window.document.title = title); }
-
     return Backbone.View.extend({
+        __name__: "ResourceView",
+        // triggered events = {
+        //   saved(this.model, options),
+        //   deleted(),
+        //   addanother(newResource) when resource is saved if user selected save-and-add-another,
+        //   redisplay() when the view wants its container to "reload" it,
+        //   changetitle(string title)
+        // }
         initialize: function(options) {
+            // options = {
+            //   model: specifyModel.Resource to view,
+            //   el: $element to render in,
+            //   recordSet: schema.models.RecordSet.Resource? resource is included in,
+            //   mode: 'view' | 'edit',
+            //   noHeader: boolean?
+            // }
             var self = this;
             self.model.on('change', self.setTitle, self);
             self.recordSet = options.recordSet;
@@ -20,13 +33,13 @@ define([
 
             self.recordsetInfo = self.model.get('recordset_info');
             if (self.recordsetInfo) {
-                self.prev = self.recordsetInfo.previous && specifyapi.Resource.fromUri(self.recordsetInfo.previous);
+                self.prev = self.recordsetInfo.previous && self.model.constructor.fromUri(self.recordsetInfo.previous);
                 self.prev && (self.prev.recordsetid = self.model.recordsetid);
 
-                self.next = self.recordsetInfo.next && specifyapi.Resource.fromUri(self.recordsetInfo.next);
+                self.next = self.recordsetInfo.next && self.model.constructor.fromUri(self.recordsetInfo.next);
                 self.next && (self.next.recordsetid = self.model.recordsetid);
 
-                var newResource = new (specifyapi.Resource.forModel(self.model.specifyModel))();
+                var newResource = new self.model.specifyModel.Resource(); // TODO: self.model.constructor?
                 newResource.recordsetid = self.model.recordsetid;
                 self.newUrl = newResource.viewUrl();
             }
@@ -47,7 +60,7 @@ define([
         render: function() {
             var self = this;
             self.$el.empty();
-            self.header = $(templates.viewheader({
+            self.header = self.options.noHeader ? null : $(templates.viewheader({
                 viewTitle: self.model.specifyModel.getLocalizedName(),
                 recordsetInfo: self.recordsetInfo,
                 recordsetName: self.recordSet && self.recordSet.get('name'),
@@ -57,7 +70,8 @@ define([
             }));
             specifyform.buildViewByName(self.model.specifyModel.view, 'form', self.mode).done(function(form) {
                 populateForm(form, self.model);
-                form.find('.specify-form-header').replaceWith(self.header);
+                self.header ? form.find('.specify-form-header').replaceWith(self.header) :
+                    form.find('.specify-form-header').remove();
                 self.$el.append(form);
                 self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
                 self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
@@ -71,38 +85,24 @@ define([
                 self.model.specifyModel.getLocalizedName();
 
             self.setFormTitle(title);
-            setWindowTitle(title);
+            self.trigger('changetitle', self, title);
+
             dataobjformatters.format(self.model).done(function(str) {
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);
-                    setWindowTitle(title);
+                    self.trigger('changetitle', title);
                 }
             });
         },
         setFormTitle: function(title) {
-            this.header.find('.view-title').text(title);
+            this.header && this.header.find('.view-title').text(title);
         },
         saved: function(options) {
-            var self = this;
-            if (options.addAnother) {
-                self.trigger('addanother', options.newResource);
-            } else if (options.wasNew) {
-                navigation.go(self.model.viewUrl());
-            } else {
-                self.trigger('redisplay');
-            }
+            this.trigger('saved', this.model, options);
         },
         deleted: function() {
-            var self = this;
-            if (self.next) {
-                navigation.go(self.next.viewUrl());
-            } else if (self.prev) {
-                navigation.go(self.prev.viewUrl());
-            } else {
-                self.$el.empty();
-                self.$el.append('<p>Item deleted.</p>');
-            }
+            this.trigger('deleted');
         }
     });
 });

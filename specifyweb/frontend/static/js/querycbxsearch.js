@@ -1,11 +1,12 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
     'text!context/app.resource?name=DialogDefs!noinline'
-], function ($, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
+], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
     "use strict";
     var dialogdefs = $.parseXML(dialogdefxml);
 
     return Backbone.View.extend({
+        __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
             'click .querycbx-search-results a': 'select'
@@ -16,7 +17,7 @@ define([
             return this;
         },
         makeDialog: function(form) {
-            this.options.populateform(form, this.model);
+            require("cs!populateform")(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             form.find('.specify-required-field').removeClass('specify-required-field');
             this.$el.append(form).append('<ul class="querycbx-search-results">');
@@ -45,7 +46,7 @@ define([
 
             var _this = this;
             api.queryCbxExtendedSearch(this.model).pipe(function(results) {
-                _this.results = new (api.Collection.forModel(_this.model.specifyModel))(results, { parse: true });
+                _this.results = results;
                 return whenAll(_this.results.map(format));
             }).done(function(formattedResults) {
                 _.each(formattedResults, function(formattedResult) {

@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'specifyform', 'cs!populateform', 'cs!savebutton', 'cs!deletebutton',
     'text!resources/querybuilder.xml!noinline',
     'jquery-ui'
-], function(require, $, _, Backbone, schema, api, navigation,
+], function(require, $, _, Backbone, schema, navigation,
             specifyform, populateform, SaveButton, DeleteButton,
             querybuilderXML) {
     "use strict";
@@ -21,6 +21,7 @@ define([
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var QueryListDialog = Backbone.View.extend({
+        __name__: "QueryListDialog",
         className: "stored-queries-dialog list-dialog",
         events: {
             'click a.edit': 'edit'
@@ -64,6 +65,7 @@ define([
     }
 
     var QueryTypeDialog = Backbone.View.extend({
+        __name__: "QueryTypeDialog",
         className: "query-type-dialog list-dialog",
         events: {'click a': 'selected'},
         render: function() {
@@ -87,7 +89,7 @@ define([
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var table = this.options.tables[index];
-            var query = new (api.Resource.forModel('spquery'))();
+            var query = new schema.models.SpQuery.Resource();
 
             var model = schema.getModel(table.attr('name'));
             query.set('contextname', model.name);
@@ -101,6 +103,7 @@ define([
 
 
     var EditQueryDialog = Backbone.View.extend({
+        __name__: "EditQueryDialog",
         className: "query-edit-dialog",
         initialize: function(options) {
             this.spquery = options.spquery;
@@ -147,8 +150,8 @@ define([
         icon: '/images/Query32x32.png',
         execute: function() {
             if (dialog) return;
-            var queries = new (api.Collection.forModel('spquery'))();
-            queries.fetch().done(function() {
+            var queries = new schema.models.SpQuery.LazyCollection();
+            queries.fetch().done(function() { // TODO: fetch all?
                 dialog = new QueryListDialog({ queries: queries });
                 $('body').append(dialog.el);
                 dialog.render();

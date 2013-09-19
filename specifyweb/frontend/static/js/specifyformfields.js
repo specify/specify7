@@ -1,7 +1,13 @@
 define(['jquery', 'underscore'], function($, _) {
     "use strict";
     return function(doingFormTable, mode, cell, id) {
-        return {
+        var uitype = cell.attr('uitype');
+        if (!uitype) {
+            console.error('field is missing uitype', cell);
+            uitype = 'text';
+        }
+
+        var makeField = {
             checkbox: function() {
                 var control = $('<input type=checkbox class="specify-field">');
                 control.attr('disabled', doingFormTable || mode === 'view');
@@ -31,6 +37,10 @@ define(['jquery', 'underscore'], function($, _) {
                               'data-specify-picklist': cell.attr('picklist')});
                 return control;
             },
+            spinner: function() {
+                return $('<input type=text class="specify-spinner specify-field">')
+                    .attr('readonly', doingFormTable || mode === 'view');
+            },
             querycbx: function() {
                 return $('<input type=text class="specify-querycbx specify-field">')
                     .attr('readonly', doingFormTable || mode === 'view');
@@ -56,6 +66,14 @@ define(['jquery', 'underscore'], function($, _) {
             browse: function() {
                 return $('<input type=file class="specify-field">');
             }
-        }[cell.attr('uitype') || 'text']();
+        };
+
+        var maker = makeField[uitype];
+        if (!maker) {
+            console.error('unknown field uitype:', uitype);
+            maker = makeField['text'];
+        }
+
+        return maker();
     };
 });

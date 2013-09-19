@@ -7,14 +7,9 @@ from specifyweb.specify.models import (
     Splocalecontaineritem as Item,
     Splocaleitemstr as SpString)
 
-schema_localization_cache = {}
+from specifyweb.specify.dependent_fields import dependent_fields
 
-dependent_fields = {
-    'Collectionobject.determinations',
-    'Collectionobject.collectionobjectattribute',
-    'Collectionobject.preparations',
-    'Spquery.fields'
-}
+schema_localization_cache = {}
 
 def get_schema_localization(collection):
     disc = collection.discipline

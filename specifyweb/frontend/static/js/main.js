@@ -7,7 +7,7 @@ require({
         'jquery-bbq'     : "vendor/jquery.ba-bbq",
         'jquery-mockjax' : "vendor/jquery.mockjax",
         'underscore'     : "vendor/underscore",
-        'backbone'       : "vendor/backbone",
+        'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
         'beautify-html'  : "vendor/beautify-html",
         'CoffeeScript'   : "vendor/CoffeeScript",
@@ -23,9 +23,9 @@ require({
         'jquery-bbq'     : ['jquery'],
         'jquery-mockjax' : ['jquery'],
         'underscore'     : { exports: '_' },
-        'backbone'       : { deps: ['jquery', 'underscore'], exports: 'Backbone' },
+        'backbone-orig'  : { deps: ['jquery', 'underscore'], exports: 'Backbone' },
         'qunit'          : { deps: ['jquery'], exports: 'QUnit' }
-    },
+    }
 });
 
 require(['jquery', 'specifyapp'], function($, app) { $(app.start()); });

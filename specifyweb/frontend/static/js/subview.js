@@ -1,27 +1,38 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'specifyform', 'templates'
-], function($, _, Backbone, api, specifyform, templates) {
+    'require', 'jquery', 'underscore', 'backbone',
+    'specifyform', 'querycbxsearch', 'templates', 'assert'
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
     return Backbone.View.extend({
+        __name__: "Subview",
         events: {
             'click .specify-subview-header .specify-delete-related' : 'delete',
             'click .specify-subview-header .specify-add-related' : 'add'
         },
         initialize: function(options) {
-            this.parentResource = options.parentResource;
+            // options = {
+            //   field: specify field object that this subview is showing a record for,
+            //   model: schema.Model.Resource? the resource this subview is showing,
+            //   parentResource: schema.Model.Resource
+            // }
             this.field = options.field;
+            this.parentResource = options.parentResource;
             this.title = this.field.getLocalizedName();
+            this.readOnly = specifyform.subViewMode(this.$el) === 'view';
         },
         render: function() {
             var self = this;
             self.$el.empty();
-            var header = $(templates.subviewheader());
+            var header = $(templates.subviewheader({
+                title: self.title,
+                dependent: self.field.isDependent()
+            }));
             $('.specify-visit-related', header).remove();
-            $('.specify-subview-title', header).text(self.title);
-            specifyform.buildSubView(self.$el).done(function(form) {
-                if (specifyform.getFormMode(form) === 'view') {
-                    $('.specify-delete-related, .specify-add-related', header).remove();
-                }
+
+            var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
+            specifyform.buildSubView(self.$el, mode).done(function(form) {
+                self.readOnly && $('.specify-delete-related, .specify-add-related', header).remove();
+
                 self.$el.append(header);
                 if (!self.model) {
                     $('.specify-delete-related', header).remove();
@@ -31,43 +42,39 @@ define([
                     $('.specify-add-related', header).remove();
                 }
 
-                self.options.populateform(form, self.model);
+                require("cs!populateform")(form, self.model);
                 self.$el.append(form);
             });
             return self;
         },
         add: function() {
-            var self = this;
-            var relatedModel = self.field.getRelatedModel();
-            self.model = new (api.Resource.forModel(relatedModel))();
-            self.model.placeInSameHierarchy(self.parentResource);
-            self.parentResource.set(self.field.name, self.model);
-            self.render();
-        },
-        makeDeleteDialog: function(resource, callback) {
-            var self = this;
-            $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false,
-                modal: true,
-                buttons: {
-                    'Delete': function() {
-                        $(this).dialog('close');
-                        resource.destroy().done(callback);
-                    },
-                    'Cancel': function() { $(this).remove(); }
-                }
-            });
+            var relatedModel = this.field.getRelatedModel();
+
+            if (this.field.isDependent()) {
+                this.model = new relatedModel.Resource();
+                this.model.placeInSameHierarchy(this.parentResource);
+                this.parentResource.set(this.field.name, this.model);
+                this.render();
+            } else {
+                // TODO: this should be factored out from common code in querycbx
+                var searchTemplateResource = new relatedModel.Resource({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+
+                var _this = this;
+                this.dialog = new QueryCbxSearch({
+                    model: searchTemplateResource,
+                    selected: function(resource) {
+                        _this.model.set(_this.fieldName, resource);
+                    }
+                }).render().$el.on('remove', function() { _this.dialog = null; });
+            }
         },
         delete: function() {
-            var self = this;
-            function done() {
-                self.model = null;
-                self.parentResource.set(self.field.name, null);
-                self.render();
-            }
-            if (self.model.isNew()) done()
-            else self.makeDeleteDialog(self.model, done);
-
+            this.parentResource.set(this.field.name, null);
+            this.model = null;
+            this.render();
         }
     });
 });

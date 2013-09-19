@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return Backbone.View.extend({
+        __name__: "CheckBox",
         events: {
             'change': 'change'
         },

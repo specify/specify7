@@ -1,12 +1,17 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'cs!domain', 'jquery-bbq',
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'cs!domain', 'templates',
+    'jquery-bbq', 'jquery-ui',
     'toolbarwelcome', 'toolbardataentry', 'toolbarquery', 'toolbarattachments'
-], function headerUI(require, $, _, Backbone, navigation, domain, jquery_bbq) {
+], function headerUI(
+    require, $, _, Backbone, navigation, domain, templates,
+    jquery_bbq, jquery_ui
+) {
     "use strict";
 
     var toolModules = _.tail(arguments, headerUI.length);
 
     var ExpressSearchInput = Backbone.View.extend({
+        __name__: "ExpressSearchInput",
         events: {
             'submit': 'search'
         },
@@ -28,18 +33,22 @@ define([
 
 
     return Backbone.View.extend({
+        __name__: "HeaderUI",
         events: {
-            'click #site-nav > ul > li > a': 'siteNavClick'
+            'click #site-nav > ul > li > a': 'siteNavClick',
+            'click .username': 'openUserTools'
         },
         el: $('#site-header'),
+        initialize: function() {
+            this.app = require('specifyapp');
+        },
         render: function() {
             var _this = this;
-            var app = require('specifyapp');
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
             domain.levels.collection.fetchIfNotPopulated().done(function (collection) {
-                _this.$('#user-tools').prepend(app.user.name + ' | '
-                                               + collection.get('collectionname')
-                                               + ' | ');
+                _this.$('#user-tools').prepend(
+                    $('<a>', {'class': 'username'}).text(_this.app.user.name), ' | ',
+                    collection.get('collectionname'), ' | ');
             });
             this.$('#header-loading').remove();
             this.$el.append('<nav id="site-nav">');
@@ -57,6 +66,16 @@ define([
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
             toolModules[index].execute();
+        },
+        openUserTools: function(evt) {
+            $(templates.usertools({user: this.app.user}))
+                .appendTo(this.el)
+                .dialog({
+                    modal: true,
+                    buttons: [
+                        {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    ]
+                });
         }
     });
 });

@@ -6,12 +6,12 @@ from django.utils import simplejson
 
 from specifyweb.specify.models import Collection
 from specifyweb.specify.views import login_required
-
-
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
+
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
+from .build_datamodel_json import build_datamodel_json
 
 def login(request):
     """A Django view to log users into the system.
@@ -82,6 +82,7 @@ def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
+    data['isadmin'] = request.specify_user.is_admin()
     return HttpResponse(toJson(data), content_type='application/json')
 
 @login_required
@@ -116,6 +117,17 @@ def available_related_searches(request):
     from specifyweb.express_search import related_searches
     return HttpResponse(simplejson.dumps(related_searches.__all__),
                         content_type='application/json')
+
+datamodel_json = None
+
+@require_GET
+@login_required
+def datamodel(request):
+    global datamodel_json
+    if datamodel_json is None:
+        datamodel_json = build_datamodel_json()
+
+    return HttpResponse(datamodel_json, content_type='application/json')
 
 @require_GET
 @login_required

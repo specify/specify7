@@ -6,6 +6,7 @@ define([
     var format = dataobjformatters.format;
 
     return UIPlugin.extend({
+        __name__: "CollectionRelOneToManyPlugin",
         events: {
             'click a': 'go'
         },
@@ -15,11 +16,11 @@ define([
             this.$el.replaceWith(table);
             this.setElement(table);
             table.append('<tr><th>Collection Object</th><th>Collection</th></tr>');
-            $.when(
+            this.model.isNew() || $.when(
                 this.model.rget('rightsiderels'),
                 api.getCollectionObjectRelTypeByName(this.init.relname)
             ).pipe(function(related, reltype) {
-                related.queryParams.collectionreltype = reltype.id;
+                related.filters.collectionreltype = reltype.id;
 
                 var getCollection = reltype.rget('leftsidecollection', true).pipe(function(lsCol) {
                     _this.otherCollection = lsCol;

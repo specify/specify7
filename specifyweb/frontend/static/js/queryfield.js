@@ -41,6 +41,7 @@ define([
     }
 
     var FieldInputUI = Backbone.View.extend({
+        __name__: "FieldInputUI",
         events: {
             'change input': 'changed'
         },
@@ -111,9 +112,13 @@ define([
         {opName: 'False or Null', types: ['bools'], input: null}
     ];
 
-    var FieldInputUIByOp = _.map(opInfo, function(extras) { return FieldInputUI.extend(extras); });
+    var FieldInputUIByOp = _.map(opInfo, function(extras) {
+        var options = _.extend({ __name__: "OpFieldInputUI" }, extras);
+        return FieldInputUI.extend(options);
+    });
 
     return Backbone.View.extend({
+        __name__: "QueryField",
         events: {
             'change .field-show': 'fieldShowChanged',
             'change .field-select': 'fieldSelected',

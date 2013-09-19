@@ -6,6 +6,7 @@ define([
     var format = dataobjformatters.format;
 
     return UIPlugin.extend({
+        __name__: "CollectionRelOneToOnePlugin",
         events: {
             'click a': 'go',
             'click button': 'set'
@@ -21,7 +22,7 @@ define([
                 this.model.rget('leftsiderels'),
                 api.getCollectionObjectRelTypeByName(this.init.relname)
             ).pipe(function(related, reltype) {
-                related.queryParams.collectionreltype = reltype.id;
+                related.filters.collectionreltype = reltype.id;
 
                 var getCollection = reltype.rget('rightsidecollection', true).pipe(function(rsCol) {
                     _this.otherCollection = rsCol;

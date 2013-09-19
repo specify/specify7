@@ -2,24 +2,26 @@ define [
     'jquery'
     'underscore'
     'backbone'
-    'specifyapi'
-], ($, _, Backbone, api) ->
+], ($, _, Backbone) ->
 
     Backbone.View.extend
+        __name__: "TreeLevelPickListView"
         events: change: 'changed'
 
         initialize: (options) ->
             @model.on 'change:parent', @render, @
             @lastFetch = null
+            @field = @model.specifyModel.getField @$el.attr 'name'
 
         render: ->
             @$el.empty()
 
             @lastFetch = fetch = @model.rget('parent.definitionitem', true).pipe (parentTreeDefItem) ->
                 if not parentTreeDefItem then return _([])
-                children = new (parentTreeDefItem.constructor.collectionFor())()
-                children.queryParams.rankid__gt = parentTreeDefItem.get 'rankid'
-                children.fetch(limit: 0).pipe -> children
+                children = new parentTreeDefItem.specifyModel.LazyCollection
+                    filters: rankid__gt: parentTreeDefItem.get 'rankid'
+
+                children.fetch().pipe -> children # TODO: did we fetch them all?
 
             fetch.done (children) => if fetch is @lastFetch
                 fieldName = @$el.attr 'name'
@@ -37,5 +39,5 @@ define [
             @
 
         changed: ->
-            selected = api.Resource.fromUri @$el.val()
+            selected = @field.getRelatedModel().Resource.fromUri @$el.val()
             @model.set @$el.attr('name'), selected

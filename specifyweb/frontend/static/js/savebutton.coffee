@@ -1,6 +1,7 @@
 define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templates) ->
 
     Backbone.View.extend
+        __name__: "SaveButton"
         events:
             'click :submit': 'submit'
 
@@ -11,7 +12,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
 
             if @model.isNew() then @setButtonsDisabled false
 
-            @model.on 'saverequired subsaverequired', (resource) =>
+            @model.on 'saverequired', (resource) =>
                 @setButtonsDisabled false
 
             @model.on 'oktosave', (resource) =>
@@ -71,7 +72,7 @@ define ['jquery', 'underscore', 'backbone', 'templates'], ($, _, Backbone, templ
                 newResource = @model.clone() if addAnother
                 wasNew = @model.isNew()
 
-                @model.rsave().done => @trigger 'savecomplete',
+                @model.save().done => @trigger 'savecomplete',
                     addAnother: addAnother
                     newResource: newResource
                     wasNew: wasNew

@@ -1,17 +1,19 @@
 define [
     'jquery', 'underscore','localizeform', 'specifyform'
     'cs!picklist', 'uifield', 'querycbx', 'specifyplugins'
-    'recordselector', 'subviewbutton', 'formtable', 'subview', 'checkbox'
+    'recordselector', 'subviewbutton', 'formtable'
+    'subview', 'checkbox', 'spinnerui'
     'cs!treelevelpicklist'
 ], ( \
 $, _, localizeForm, specifyform, \
 PickList, UIField, QueryCbx, uiplugins, \
 RecordSelector, SubViewButton, FormTable, \
-SubView, CheckBox, TreeLevelPickList) ->
+SubView, CheckBox, SpinnerUI, TreeLevelPickList) ->
 
     MultiView = Backbone.View.extend
+        __name__: "MultiView"
         render: -> specifyform.buildSubView(@$el).done (form) =>
-            @options.form = form
+            # The form has to actually be built to tell if it is a formtable.
 
             View = if form.hasClass 'specify-form-type-formtable'
                 FormTable
@@ -24,6 +26,7 @@ SubView, CheckBox, TreeLevelPickList) ->
     populateField = (resource, control) ->
         getView = _(
             ':checkbox': -> CheckBox
+            '.specify-spinner': -> SpinnerUI
             '.specify-querycbx': -> QueryCbx
 
             '.specify-uiplugin': ->
@@ -38,7 +41,7 @@ SubView, CheckBox, TreeLevelPickList) ->
 
             ).find (__, selector) -> control.is selector
 
-        view = new ( getView?() or UIField ) { el: control, model: resource, populateform: populateForm }
+        view = new ( getView?() or UIField ) { el: control, model: resource }
         view.render()
 
     populateSubview = (resource, node) ->
@@ -48,8 +51,6 @@ SubView, CheckBox, TreeLevelPickList) ->
         viewOptions =
             el: node
             field: field
-            parentResource: resource
-            populateform: populateForm
 
         resource.rget(fieldName, true).done (related) ->
 
@@ -64,6 +65,7 @@ SubView, CheckBox, TreeLevelPickList) ->
 
                 when 'zero-to-one', 'many-to-one'
                     viewOptions.model = related
+                    viewOptions.parentResource = resource
 
                     if specifyform.isSubViewButton node
                         SubViewButton.ToOne

@@ -78,6 +78,7 @@ define([
     }
 
     var SpecifyRouter = Backbone.Router.extend({
+        __name__: "SpecifyRouter",
         // maps the final portion of the URL to the appropriate backbone view
         routes: {
             ''                      : 'welcome',

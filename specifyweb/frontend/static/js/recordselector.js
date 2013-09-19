@@ -1,14 +1,12 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'navigation', 'templates', 'jquery-ui'
-], function($, _, Backbone, specifyform, navigation, templates) {
+    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
+    'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
     "use strict";
-    var debug = true;
     var emptyTemplate = '<p>nothing here...</p>';
-    var spinnerTemplate = '<div style="text-align: center"><img src="/static/img/specify128spinner.gif"></div>';
-
-    var BLOCK_SIZE = 20;
 
     var Controls = Backbone.View.extend({
+        __name__: "RecordSelectorControls",
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
             Backbone.View.prototype.initialize.call(this, options);
@@ -30,7 +28,7 @@ define([
     });
 
     var Header = Controls.extend({
-        el: templates.subviewheader(),
+        __name__: "RecordSelectorHeader",
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
@@ -39,6 +37,7 @@ define([
     });
 
     var AddDeleteBtns = Controls.extend({
+        __name__: "RecordSelectorAddDeleteButtons",
         render: function () {
             this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
                             '<input type="button" value="Delete" class="specify-delete-related">');
@@ -47,6 +46,7 @@ define([
     });
 
     var Slider = Backbone.View.extend({
+        __name__: "RecordSelectorSlider",
         className: 'recordselector-slider',
         events: {
             'slidestop': 'onslidestop',
@@ -54,13 +54,6 @@ define([
         },
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
-
-            var _this = this;
-            this.throttledSlideStop = _.throttle(function(offset) {
-                _this.recordSelector.fetchThenRedraw(offset);
-            }, 750);
-
-            Backbone.View.prototype.initialize.apply(this, arguments);
         },
         render: function() {
             this.$el.slider();
@@ -78,11 +71,10 @@ define([
             this.setText(val);
         },
         onslidestop: function(evt, ui) {
-            this.throttledSlideStop(ui.value);
+            this.recordSelector.redraw(ui.value);
         },
         onslide: function(evt, ui) {
             this.setText(ui.value);
-            this.recordSelector.onSlide(ui.value);
         },
         hide: function() {
             this.$el.hide();
@@ -96,19 +88,30 @@ define([
     });
 
     return Backbone.View.extend({
+        __name__: "RecordSelector",
         events: {
             'remove': function (evt) {
                 (evt.target === this.el) && this.collection.off(null, null, this);
             }
         },
         initialize: function(options) {
-            this.form = this.options.form;
-            this.readOnly = this.options.readOnly || specifyform.getFormMode(this.form) === 'view';
+            // options = {
+            //   readOnly: bool,
+            //   field: field object? if collection represents related objects,
+            //   collection: schema.Model.Collection instance,
+            //   noHeader: boolean? overrides form definition,
+            //   sliderAtTop: boolean? overrides form definition,
+            //   urlParam: string? url parameter name for storing the current index,
+            //   subformNode: $(subformNode)? used if the record selector element is not the subview node
+            // }
+            this.lazy = this.collection instanceof collectionapi.Lazy; // TODO: meh, instanceof
+            this.dependent = this.collection instanceof collectionapi.Dependent;
 
-            this.field = options.field;
-            if (this.field && !this.collection.parent)
-                throw new Error('parent not defined for collection');
+            this.subformNode = this.options.subformNode || this.$el;
 
+            this.readOnly = this.options.readOnly || specifyform.subViewMode(this.subformNode) === 'view';
+
+            this.field = options.field; // TODO: this can be gotten from the dependent collection
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
             this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;
@@ -117,11 +120,12 @@ define([
             this.collection.on('add', this.onAdd, this);
 
             this.collection.on('remove destroy', this.onRemove, this);
+            this.populateForm = require('cs!populateform');
         },
         onAdd: function() {
             var end = this.collection.length - 1;
             this.slider.setMax(end);
-            this.fetchThenRedraw(end) || this.redraw(end);
+            this.redraw(end);
             this.showHide();
         },
         onRemove: function() {
@@ -130,7 +134,7 @@ define([
                 var currentIndex = this.currentIndex();
                 var value = Math.min(currentIndex, end);
                 this.slider.setMax(end);
-                this.fetchThenRedraw(value) || this.redraw(value);
+                this.redraw(value);
             }
             this.showHide();
         },
@@ -138,23 +142,8 @@ define([
             var value = this.slider.getOffset();
             return _.isNumber(value) ? value : 0;
         },
-        resourceAt: function(index) {
-            return this.collection.at(index);
-        },
         currentResource: function() {
-            return this.resourceAt(this.currentIndex());
-        },
-        fetchThenRedraw: function(offset) {
-            var self = this;
-            if (self.collection.isNew === true || self.collection.at(offset)) return null;
-            self.collection.abortFetch();
-            var at = offset - offset % BLOCK_SIZE;
-            self.request = self.collection.fetch({at: at, limit: BLOCK_SIZE}).done(function() {
-                debug && console.log('got collection at offset ' + at);
-                self.request = null;
-                self.redraw(self.currentIndex());
-            });
-            return self.request;
+            return this.current;
         },
         render: function() {
             var self = this;
@@ -163,20 +152,19 @@ define([
             self.slider.setMax(self.collection.length - 1);
 
             self.noHeader || new Header({
+                el: templates.subviewheader({
+                    title: self.title,
+                    dependent: self.dependent
+                }),
                 recordSelector: this,
                 readOnly: this.readOnly
             }).render().$el.appendTo(this.el);
 
             self.sliderAtTop && self.$el.append(self.slider.el);
 
-            self.$('.specify-subview-title').text(self.title);
             self.noContent = $(emptyTemplate).appendTo(self.el);
 
-            // we build the form and add it to the DOM immediately so that if it is
-            // embedded in a dialog it will be sized properly
-            self.content = $('<div>').appendTo(self.el).append(self.form.clone());
-
-            self.spinner = $(spinnerTemplate).appendTo(self.el).hide();
+            self.content = $('<div>').appendTo(self.el);
 
             self.sliderAtTop || self.$el.append(self.slider.el);
 
@@ -188,45 +176,45 @@ define([
             var index = params[self.urlParam] || 0;
             index === 'end' && (index = self.collection.length - 1);
 
-            self.fetchThenRedraw(index) || self.redraw(index);
-            self.showHide();
+            var mode = self.dependent && !self.readOnly ? 'edit' : 'view';
+            specifyform.buildSubView(self.subformNode, mode).done(function(form) {
+                self.form = form;
+                self.redraw(index);
+                self.showHide();
+            });
             return self;
         },
-        onSlide: function(offset) {
-            if (_(this.collection.at(offset)).isUndefined()) this.showSpinner();
-            else _.defer(_.bind(this.redraw, this, offset));
-        },
         redraw: function(offset) {
-            var self = this;
-            self.slider.setOffset(offset);
-            debug && console.log('want to redraw at ' + offset);
-            var resource = self.resourceAt(offset);
-            if (_(resource).isUndefined()) return;
+            this.slider.setOffset(offset);
+            this.fillIn(this.collection.at(offset), offset);
+            if (this.lazy && offset === this.collection.length - 1 && !this.collection.isComplete()) {
+                this.fetchMore();
+            }
+        },
+        fetchMore: function() {
+            var _this = this;
+
+            // TODO: maybe add isFetching method to collection
+            this.collection._fetch || this.collection.fetch().done(function() {
+                _this.slider.setMax(_this.collection.length - 1);
+            });
+        },
+        fillIn: function(resource, offset) {
+            self = this;
+            if (resource === self.current) return;
+            self.current = resource;
+            if (!resource) return;
+
             var form = self.form.clone();
-            self.options.populateform(form, resource);
-            debug && console.log('filling in at ' + offset);
+            self.populateForm(form, resource);
             self.content.empty().append(form);
-            self.hideSpinner();
             if (self.urlParam) {
                 var params = {};
                 params[self.urlParam] = offset;
                 navigation.push($.param.querystring(window.location.pathname, params));
             }
         },
-        showSpinner: function() {
-            if (!this.spinner.is(':hidden')) return;
-            var height = Math.min(64, this.content.height());
-            this.spinner.height(height);
-            this.spinner.find('img').height(0.9*height);
-            this.content.hide();
-            this.spinner.show();
-        },
-        hideSpinner: function() {
-            this.spinner.hide();
-            this.content.show();
-        },
         showHide: function() {
-            this.spinner.hide();
             switch (this.collection.length) {
             case 0:
                 this.noContent.show();
@@ -247,35 +235,49 @@ define([
         },
         delete: function() {
             var resource = this.currentResource();
-            if (this.collection.dependent) {
+            if (this.dependent) {
                 this.collection.remove(resource);
             } else {
-                resource.isNew() ? resource.destroy() : this.makeDeleteDialog();
+                var _this = this;
+                var dialog = $('<div>').text("Remove?").dialog({ // TODO: better message
+                    modal: true,
+                    title: resource.specifyModel.getLocalizedName(),
+                    buttons: {
+                        Ok: function() {
+                            _this.collection.remove(resource);
+                            resource.set(_this.field.otherSideName, null);
+                            resource.save();
+                            dialog.dialog('close');
+                        },
+                        Cancel: function() { dialog.dialog('close'); }
+                    }
+                });
             }
-        },
-        makeDeleteDialog: function() {
-            var self = this;
-            $(templates.confirmdelete()).appendTo(self.el).dialog({
-                resizable: false,
-                modal: true,
-                buttons: {
-                    'Delete': function() {
-                        $(this).dialog('close');
-                        self.doDestroy();
-                    },
-                    'Cancel': function() { $(this).remove(); }
-                }
-            });
-        },
-        doDestroy: function() {
-            this.currentResource().destroy();
         },
         add: function() {
-            var newResource = new (this.collection.model)();
-            if (this.field) {
-                newResource.set(this.field.otherSideName, this.collection.parent.url());
+            if (this.dependent) {
+                var newResource = new this.collection.model();
+                if (this.field) {
+                    newResource.set(this.field.otherSideName, this.collection.related.url());
+                }
+                this.collection.add(newResource);
+            } else {
+
+                // TODO: this should be factored out from common code in querycbx
+                var searchTemplateResource = new this.collection.model({}, {
+                    noBusinessRules: true,
+                    noValidation: true
+                });
+
+                var _this = this;
+                new QueryCbxSearch({
+                    model: searchTemplateResource,
+                    selected: function(resource) {
+                        resource.set(_this.field.otherSideName, _this.collection.related.url());
+                        resource.save(); // TODO: make confirmation dialog
+                    }
+                }).render();
             }
-            this.collection.add(newResource);
         },
         visit: function() {
             navigation.go(this.currentResource().viewUrl());

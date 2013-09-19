@@ -4,27 +4,22 @@ import re
 
 from django.db import transaction
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 
 from . import models
 from .autonumbering import autonumber
 from .filter_by_col import filter_by_collection
+from .dependent_fields import is_dependent
+from .auditlog import auditlog
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
 # A set of fields that represent relations to other resources which
 # should be included as nested objects when resources are fetched.
-inlined_fields = {
-    'Collector.agent',
-    'Collectingevent.collectors',
-    'Collectionobject.collectionobjectattribute',
-    'Collectionobject.determinations',
-    'Picklist.picklistitems',
-    'Spquery.fields',
-}
+from .dependent_fields import dependent_fields as inlined_fields
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
@@ -246,7 +241,7 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
-def create_obj(collection, agent, model, data):
+def create_obj(collection, agent, model, data, parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     if isinstance(model, basestring):
         model = get_model_or_404(model)
@@ -261,6 +256,7 @@ def create_obj(collection, agent, model, data):
     obj.save()
     autonumber(collection, agent.specifyuser, obj)
     obj.save()
+    auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -287,29 +283,51 @@ def handle_fk_fields(collection, agent, obj, data):
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
+        try:
+            old_related = getattr(obj, field_name)
+        except ObjectDoesNotExist:
+            old_related = None
+
+        dependent = is_dependent(obj.__class__.__name__, field_name)
+
         if val is None:
             setattr(obj, field_name, None)
+            if dependent and old_related:
+                auditlog.remove(old_related, agent, obj)
+                old_related.delete()
+
+        elif isinstance(val, field.related.parent_model):
+            # The related value was patched into the data by a parent object.
+            setattr(obj, field_name, val)
 
         elif isinstance(val, basestring):
             # The related object is given by a URI reference.
+            assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = parse_uri(val)
             assert fk_model == field.related.parent_model.__name__.lower()
             setattr(obj, field_name + '_id', fk_id)
 
-        elif hasattr(val, 'items'):
+        elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
+            assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
             rel_model = field.related.parent_model
             if 'id' in val:
                 # The related object is an existing resource with an id.
+                # This should never happen.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, val['id'],
-                                     val['version'], val)
+                                     val['version'], val,
+                                     parent_obj=obj)
             else:
                 # The related object is to be created.
                 rel_obj = create_obj(collection, agent,
-                                     rel_model, val)
+                                     rel_model, val,
+                                     parent_obj=obj)
 
             setattr(obj, field_name, rel_obj)
+            if dependent and old_related and old_related.id != rel_obj.id:
+                auditlog.remove(old_related, agent, obj)
+                old_related.delete()
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
@@ -325,47 +343,63 @@ def handle_to_many(collection, agent, obj, data):
     created as new resources.
     """
     for field_name, val in data.items():
-        if not isinstance(val, list):
-            # The field contains something other than nested data.
-            # Probably the URI of the collection of objects.
+        if field_name in ('resource_uri', 'recordset_info'):
+            # These fields are meta data, not part of the resource.
             continue
+
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct: continue # Skip *-to-one fields.
+
+        if isinstance(val, list):
+            assert is_dependent(obj.__class__.__name__, field_name), \
+                   "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
+        else:
+            # The field contains something other than nested data.
+            # Probably the URI of the collection of objects.
+            assert not is_dependent(obj.__class__.__name__, field_name), \
+                   "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
+            continue
+
         rel_model = field.model
         ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:
-            rel_data[field.field.name] = uri_for_model(obj.__class__, obj.id)
+            rel_data[field.field.name] = obj
             if 'id' in rel_data:
                 # Update an existing related object.
                 rel_obj = update_obj(collection, agent,
                                      rel_model, rel_data['id'],
-                                     rel_data['version'], rel_data)
+                                     rel_data['version'], rel_data,
+                                     parent_obj=obj)
             else:
                 # Create a new related object.
-                rel_obj = create_obj(collection, agent, rel_model, rel_data)
+                rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
             ids.append(rel_obj.id) # Record the id as one to keep.
 
         # Delete related objects not in the ids list.
         # TODO: Check versions for optimistic locking.
-        getattr(obj, field_name).exclude(id__in=ids).delete()
+        to_delete = getattr(obj, field_name).exclude(id__in=ids)
+        for rel_obj in to_delete:
+            auditlog.remove(rel_obj, agent, obj)
+        to_delete.delete()
 
 @transaction.commit_on_success
 def delete_resource(name, id, version):
     return delete_obj(name, id, version)
 
-def delete_obj(name, id, version):
+def delete_obj(name, id, version, parent_obj=None):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
     bump_version(obj, version)
     obj.delete()
+    auditlog.delete(obj, agent, parent_obj)
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
 
-def update_obj(collection, agent, name, id, version, data):
+def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     """Update the resource with 'id' in model named 'name' with given
     'data'.
     """
@@ -382,6 +416,7 @@ def update_obj(collection, agent, name, id, version, data):
 
     bump_version(obj, version)
     obj.save(force_update=True)
+    auditlog.update(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -427,6 +462,7 @@ def parse_uri(uri):
 def obj_to_data(obj):
     """Return a (potentially nested) dictionary of the fields of the
     Django model instance 'obj'.
+    TODO: Add hidden field function (mainly for specifyuser password field).
     """
     # Get regular and *-to-one fields.
     data = dict((field.name, field_to_val(obj, field))
@@ -483,7 +519,7 @@ def get_collection(logged_in_collection, model, params={}):
         if param == 'domainfilter':
             # Use the logged_in_collection to limit request
             # to relevant items.
-            do_domain_filter = True
+            do_domain_filter = val == 'true'
             continue
 
         if param == 'limit':

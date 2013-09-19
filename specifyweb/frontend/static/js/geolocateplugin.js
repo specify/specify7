@@ -4,6 +4,7 @@ define([
     "use strict";
 
     return UIPlugin.extend({
+        __name__: "GeoLocatePlugin",
         events: {
             'click': 'click'
         },

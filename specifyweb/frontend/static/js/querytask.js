@@ -1,14 +1,15 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'specifyapi', 'cs!fieldformat', 'dataobjformatters',
+    'cs!fieldformat', 'dataobjformatters',
     'cs!savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            api, fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {
+            fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {
     "use strict";
     var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var Results = Backbone.View.extend({
+        __name__: "QueryResultsView",
         initialize: function(options) {
             this.fieldUIs = options.fieldUIs;
             this.model = options.model;
@@ -25,7 +26,7 @@ define([
 
             _.each(results, function(result) {
                 var row = $('<tr>').appendTo(self.el);
-                var resource = new (api.Resource.forModel(self.model))({
+                var resource = new self.model.Resource({
                     id: result[0]
                 });
                 var href = resource.viewUrl();
@@ -54,13 +55,13 @@ define([
             return cell;
         },
         setupToOneCell: function(cell, field, cellValue) {
-            var resource = new (api.Resource.forModel(field.getRelatedModel()))({ id: cellValue });
+            var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
             cell.prop('href', resource.viewUrl()).text('(loading...)');
             objformat(resource).done(function(formatted) { cell.text(formatted); });
         },
         setupToManyCell: function(cell, field, cellValue) {
             cell.text('(loading...)');
-            var parentResource = new (api.Resource.forModel(field.model))({ id: cellValue });
+            var parentResource = new field.model.Resource({ id: cellValue });
             parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
                 cell.text(formatted);
             });
@@ -68,6 +69,7 @@ define([
     });
 
     var StoredQueryView = Backbone.View.extend({
+        __name__: "QueryBuilder",
         events: {
             'click .query-execute': 'search',
             'click .field-add': 'addField',
@@ -120,7 +122,7 @@ define([
             this.$('.abandon-changes').prop('disabled', false);
         },
         addField: function() {
-            var newField = new (api.Resource.forModel('spqueryfield'))();
+            var newField = new schema.models.SpQueryField.Resource();
             newField.set({sorttype: 0, isdisplay: true, query: this.query.url()});
 
             var addFieldUI = new QueryFieldUI({
@@ -177,7 +179,7 @@ define([
     return function(app) {
         app.router.route('query/:id/', 'storedQuery', function(id) {
             function doIt() {
-                var query = new (api.Resource.forModel('spquery'))({ id: id });
+                var query = new schema.models.SpQuery.Resource({ id: id });
                 query.fetch().fail(app.handleError).done(function() {
                     app.setCurrentView(new StoredQueryView({ query: query }));
                     app.getCurrentView().on('redisplay', doIt);

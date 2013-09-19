@@ -1,6 +1,13 @@
 <h3 class="specify-subview-header">
-  <span class="specify-subview-title"></span>
+<% if (dependent) { %>
+  <span class="specify-subview-title"><%- title %></span>
   <a class="specify-add-related">Add</a>
   <a class="specify-delete-related">Delete</a>
+<% } else { %>
+  <span class="ui-icon ui-icon-arrowthick-1-e">Link</span>
+  <span class="specify-subview-title"><%- title %></span>
+  <a class="specify-add-related">Add</a>
+  <a class="specify-delete-related">Remove</a>
   <a class="specify-visit-related">Visit</a>
+<% } %>
 </h3>

@@ -1,17 +1,20 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'attachments',
+    'jquery', 'underscore', 'backbone', 'attachments',
     'schema', 'cs!populateform', 'specifyform', 'navigation', 'whenall',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, api, attachments, schema, populateform, specifyform, navigation, whenAll) {
+], function($, _, Backbone, attachments, schema, populateform, specifyform, navigation, whenAll) {
     "use strict";
 
-    var tablesWithAttachments = _(
+    var tablesWithAttachments = _( // TODO: get these from server or something
         ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
          "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
          "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
     ).map(function(table) { return schema.getModel(table); });
 
+    var AttachmentModel = schema.models.Attachment;
+
     var AttachmentsView = Backbone.View.extend({
+        __name__: "AttachmentsView",
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
             'click .specify-attachment-dataobj-icon': 'openDataObj',
@@ -19,19 +22,19 @@ define([
         },
         initialize: function() {
             var collections = this.attachmentCollections = {
-                all: new api.LazyCollection('attachment'),
-                unused: new api.LazyCollection('attachment')
+                all: new AttachmentModel.LazyCollection(),
+                unused: new AttachmentModel.LazyCollection({
+                    filters: { tableid__isnull: true }
+                })
             };
-
-            collections.unused.queryParams.tableid__isnull = true;
-
             _.each(tablesWithAttachments, function(table) {
-                var collection = collections[table.tableId] = new api.LazyCollection('attachment');
-                collection.queryParams.tableid = table.tableId;
+                collections[table.tableId] = new AttachmentModel.LazyCollection({
+                    filters: { tableid: table.tableId }
+                });
             });
 
             _.each(collections, function(collection) {
-                collection.queryParams.orderby = "-timestampcreated";
+                collection.filters.orderby = "-timestampcreated"; // TODO: not really a filter
             });
 
             this.attachments = collections.all;
@@ -39,26 +42,24 @@ define([
         index: function() {
             return this.$('.specify-attachment-cell').length;
         },
-        makeThumbnail: function(index) {
+        makeThumbnail: function() {
             var wrapper = $('<div>');
             var cell = $('<div class="specify-attachment-cell">').append(wrapper);
-            var title;
 
-            this.attachments.at(index).pipe(function(attachment) {
-                var filename = attachment.get('attachmentlocation');
-                var tableId = attachment.get('tableid');
-                title = attachment.get('title');
+            var attachment = this.attachments.at(this.index());
+            var filename = attachment.get('attachmentlocation');
+            var tableId = attachment.get('tableid');
+            var title = attachment.get('title');
 
-                var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
-                        schema.getModelById(tableId).getIcon();
+            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
+                    schema.getModelById(tableId).getIcon();
 
-                var dataObjIcon = $('<img>', {
-                    'class': "specify-attachment-dataobj-icon",
-                    src: icon
-                }).appendTo(wrapper);
+            var dataObjIcon = $('<img>', {
+                'class': "specify-attachment-dataobj-icon",
+                src: icon
+            }).appendTo(wrapper);
 
-                return attachments.getThumbnail(attachment, 123);
-            }).done(function(img) {
+            attachments.getThumbnail(attachment, 123).done(function(img) {
                 img.addClass('specify-attachment-thumbnail')
                     .attr('title', title)
                     .appendTo(wrapper);
@@ -67,18 +68,19 @@ define([
             return cell;
         },
         fillPage: function() {
-            var browser = self.$('.specify-attachment-browser');
-            var cells = self.$('.specify-attachment-cells');
-            var index = this.index();
-            var _this = this;
+            var browser = this.$('.specify-attachment-browser');
+            var cells = this.$('.specify-attachment-cells');
 
-            if (browser.scrollTop() + browser.height() + 200 > cells.height() &&
-                index < this.attachments.totalCount)
-            {
-                this.$('.specify-attachment-cells').append(
-                    this.makeThumbnail(index));
+            if (browser.scrollTop() + browser.height() + 200 > cells.height()) {
+                while (this.index() < this.attachments.length) {
+                    this.$('.specify-attachment-cells').append(
+                        this.makeThumbnail());
+                }
 
-                _.defer(function() { _this.fillPage(); });
+                var _this = this;
+                this.attachments.isComplete() || this.attachments.fetch().done(function() {
+                    _this.fillPage();
+                });
             }
         },
         setSize: function() {
@@ -86,9 +88,9 @@ define([
             var offset = this.$('.specify-attachment-browser').offset().top;
             this.$('.specify-attachment-browser').height(winHeight - offset - 50);
         },
-        primeCollections: function() {
+        getCounts: function() {
             return whenAll(_.map(this.attachmentCollections, function(collection) {
-                return collection.at(0);
+                return collection.getTotalCount();
             }));
         },
         render: function() {
@@ -107,12 +109,13 @@ define([
             _.defer(function() { self.setSize(); });
             self.$('.specify-attachment-browser').scroll(function() { self.fillPage(); });
 
-            self.primeCollections().done(function() {
+            self.getCounts().done(function(counts) {
                 var cols = self.attachmentCollections;
                 var tables = $('<optgroup label="Tables"></optgroup>');
 
+                var i = 0;
                 _.each(self.attachmentCollections, function(collection, key) {
-                    var count = collection.totalCount;
+                    var count = counts[i++];
                     var name = key === 'all' ? "All" : key === 'unused' ? "Unused" :
                             schema.getModelById(parseInt(key)).getLocalizedName();
 
@@ -130,7 +133,8 @@ define([
         },
         openOriginal: function(evt) {
             var index = this.$('.specify-attachment-thumbnail').index(evt.currentTarget);
-            this.attachments.at(index).done(function(attachment) { attachments.openOriginal(attachment); });
+            var attachment = this.attachments.at(index);
+            attachments.openOriginal(attachment);
         },
         openDataObj: function(evt) {
             var self = this;
@@ -143,18 +147,16 @@ define([
 
             var index = self.$('.specify-attachment-dataobj-icon').index(evt.currentTarget);
 
-            var model;
-            self.attachments.at(index).pipe(function(attachment) {
-                var tableId = attachment.get('tableid');
-                if (_.isNull(tableId)) {
-                    // TODO: something for unused attachments.
-                    //                self.buildDialog(attachment);
-                    return null;
-                }
+            var attachment = self.attachments.at(index);
+            var tableId = attachment.get('tableid');
+            if (_.isNull(tableId)) {
+                // TODO: something for unused attachments.
+                //                self.buildDialog(attachment);
+                return;
+            }
 
-                model = schema.getModelById(tableId);
-                return attachment.rget(model.name.toLowerCase() + 'attachments', true);
-            }).pipe(function(dataObjs) {
+            var model = schema.getModelById(tableId);
+            attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
                 return dataObjs.at(0).rget(model.name.toLowerCase());
             }).done(function(dataObj) {
                 self.buildDialog(dataObj);

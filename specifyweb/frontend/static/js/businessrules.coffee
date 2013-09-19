@@ -126,10 +126,15 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
         invalid = { valid: false, reason: "Value must be unique to #{ toOneField or 'database' }" }
 
         value = resource.get valueField
-        valueIsToOne = resource.specifyModel.getField(valueField).type is 'many-to-one'
+        valueFieldInfo = resource.specifyModel.getField(valueField)
+        valueIsToOne = valueFieldInfo.type is 'many-to-one'
         if valueIsToOne
+            if _.isNull value then return $.when valid
             # kinda kludgy way to get id
-            valueId = if _.isString value then resource.constructor.fromUri(value).id else value.id
+            valueId = if _.isString value
+                valueFieldInfo.getRelatedModel().Resource.fromUri(value).id
+            else
+                value.id
 
         hasSameValue = (other) ->
             if other.id? and other.id is resource.id then return false
@@ -142,7 +147,7 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
 
         if toOneField?
             fieldInfo = resource.specifyModel.getField toOneField
-            haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.parent?.specifyModel
+            haveLocalColl = fieldInfo.getRelatedModel() is resource.collection?.related?.specifyModel
             localCollection = if haveLocalColl then (_.compact resource.collection.models) else []
 
             dupes = _.filter localCollection, hasSameValue
@@ -150,12 +155,15 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                 invalid.localDupes = dupes
                 return $.when invalid
 
-            resource.rget("#{ toOneField }.#{ fieldInfo.otherSideName }").pipe (collection) ->
-                if not collection? then return valid
-                others = new collection.constructor()
-                others.queryParams[toOneField] = collection.parent.id
-                others.queryParams[valueField] = valueId or value
-                others.fetch().pipe ->
+            resource.rget(toOneField).pipe (related) ->
+                if not related then return valid
+                filters = {}; filters[valueField] = valueId or value
+                others = new resource.specifyModel.ToOneCollection
+                    related: related,
+                    field: fieldInfo,
+                    filters: filters
+
+                others.fetch().pipe -> # TODO: check that we fetched all
                     inDatabase = others.chain().compact()
                     inDatabase = if haveLocalColl
                         # remove items that we have locally
@@ -164,8 +172,10 @@ define ['jquery', 'underscore', 'specifyapi', 'whenall', 'cs!saveblockers'], ($,
                     if _.any inDatabase, hasSameValue then invalid else valid
         else
             # no toOneField indicates globally unique field
-            others = new (resource.constructor.collectionFor())()
-            others.queryParams[valueField] = valueId or value
+            filters = {}; filters[valueField] = valueId or value
+            others = new resource.specifyModel.LazyCollection
+                filters: filters
+                # TODO: check that we fetch all
             others.fetch().pipe -> if _.any others.models, hasSameValue then invalid else valid
 
     rules =

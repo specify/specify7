@@ -1,29 +1,30 @@
 define([
-    'jquery', 'underscore', 'uiformatters', 'schemabase'
-], function($, _, uiformatters, schema) {
+    'jquery', 'underscore', 'uiformatters', 'schemabase', 'assert'
+], function($, _, uiformatters, schema, assert) {
     "use strict";
 
-    schema.Field = function(model, node) {
+    schema.Field = function(model, fieldDef) {
         this.model = model;
-        if (!node) return;
-        this.node = $(node);
-        this.name = this.node.attr('name') || this.node.attr('relationshipname');
-        this.isRelationship = this.node.is('relationship');
-        this.isRequired = this.node.attr('required') === 'true';
-        this.type = this.node.attr('type');
-        this.length = this.node.attr('length');
-        if (this.isRelationship) {
-            this.otherSideName = this.node.attr('othersidename');
-            this.relatedModelName = this.node.attr('classname').split('.').pop();
-        }
+        this.isRelationship = false;
+
+        if (!fieldDef) return;
+        this.name = fieldDef.name;
+
+        this.isRequired = fieldDef.required;
+        this.type = fieldDef.type;
+        this.length = fieldDef.length;
+
         this._localization = this.model._localization &&
             this.model._localization.items[this.name.toLowerCase()];
     };
 
     _.extend(schema.Field.prototype, {
         getRelatedModel: function() {
-            if (!this.isRelationship) return undefined;
+            assert(this.isRelationship, "field is not a relationship field");
             return schema.getModel(this.relatedModelName);
+        },
+        getReverse: function() {
+            return this.otherSideName && this.getRelatedModel().getField(this.otherSideName);
         },
         getLocalizedName: function() {
             return this._localization && schema.unescape(this._localization.name);
@@ -48,9 +49,20 @@ define([
             return this._localization && this._localization.ishidden;
         },
         isDependent: function() {
-            return this._localization && this._localization.isdependent;
+            return this.dependent;
         }
     });
+
+    schema.Relationship = function(model, relDef) {
+        schema.Field.apply(this, arguments);
+        this.isRelationship = true;
+
+        this.otherSideName = relDef.otherSideName;
+        this.relatedModelName = relDef.relatedModelName;
+        this.dependent = relDef.dependent;
+    };
+
+    _.extend(schema.Relationship.prototype, schema.Field.prototype);
 
     return schema;
 });

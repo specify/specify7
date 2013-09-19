@@ -105,6 +105,10 @@ ul.ui-autocomplete li.ui-menu-item {
     list-style-type: none;
 }
 
+.specify-subview-header .ui-icon {
+    display: inline-block;
+}
+
 .specify-subview-button-count {
     padding: 3px;
     font-weight: bold;
@@ -419,3 +423,16 @@ div.results div {
     max-height: 125px;
 }
 
+.specify-auditlog-entry {
+    margin-bottom: 16px;
+}
+
+.specify-auditlog-entry h3 img {
+    height: 1.5em;
+    margin-right: 0.8em;
+    float: left;
+}
+
+.specify-auditlog-entry p {
+    clear: both;
+}

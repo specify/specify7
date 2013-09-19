@@ -14,6 +14,7 @@ define [
     objformat = dataobjformatters.format
 
     Backbone.View.extend
+        __name__: "PickListView"
         events:
             change: 'setValueIntoModel'
 
@@ -37,6 +38,8 @@ define [
 
         setValueIntoModel: ->
             value = @$el.val() or null
+            if @isAgentType and value?
+                value = parseInt value, 10
             @model.set @field.name, value
 
         setupOptions: (items, value) ->
@@ -82,15 +85,15 @@ define [
                     switch picklist.get 'type'
                         when 0 # items in picklistitems table
                             picklist.rget('picklistitems').pipe (plItemCollection) ->
-                                if plItemCollection.wasInline
+                                if plItemCollection.isComplete
                                      plItemCollection.toJSON()
                                 else
                                      plItemCollection.fetch(limit: limit).pipe ->
                                         plItemCollection.toJSON()
                         when 1 # items are objects from a table
                             plModel = schema.getModel picklist.get 'tablename'
-                            plItemCollection = new (api.Collection.forModel plModel)()
-                            plItemCollection.fetch(limit: limit).pipe ->
+                            plItemCollection = new plModel.LazyCollection()
+                            plItemCollection.fetch( limit: limit ).pipe ->
                                 whenAll plItemCollection.map (item) ->
                                     objformat(item, picklist.get 'formatter').pipe (title) ->
                                         value: item.url()

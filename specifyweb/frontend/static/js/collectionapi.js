@@ -1,103 +1,164 @@
 define([
-    'jquery', 'underscore', 'backbone', 'apibase', 'schema', 'whenall', 'jquery-bbq'
-], function($, _, Backbone, api, schema, whenAll) {
+    'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
+], function($, _, Backbone, whenAll, assert) {
     "use strict";
 
-    var collections = {};
+    var Base =  Backbone.Collection.extend({
+        __name__: "CollectionBase",
+        getTotalCount: function() { return $.when(this.length); }
+    });
 
-    api.Collection = Backbone.Collection.extend({
-        populated: false,   // set if the collection has been fetched or filled in
-        dependent: false,   // set when the collection is related to a parent resource by a dependent field
-        wasInline: false,   // set when a collection is populated from inlined data for a one-to-many
+    function notSupported() { throw new Error("method is not supported"); }
 
-        initialize: function(models) {
-            this.queryParams = {}; // these define the filters on the collection
-            if (models) this.populated = true;
+    function fakeFetch() {
+        console.error("fetch called on", this);
+        return $.when(null);
+    }
+
+    var collectionapi = {};
+
+    collectionapi.Static = Base.extend({
+        __name__: "StaticCollectionBase",
+        _initialized: false,
+        constructor: function(models, options) {
+            assert(_.isArray(models));
+            Base.call(this, models, options);
+            this._initialized = true;
+        },
+        fetch: fakeFetch,
+        sync: notSupported,
+        add: function() {
+            this._initialized && notSupported();
+            Base.prototype.add.apply(this, arguments);
+        },
+        remove: notSupported,
+        reset: function() {
+            this._initialized && notSupported();
+            Base.prototype.reset.apply(this, arguments);
+        },
+        set: notSupported,
+        push: notSupported,
+        pop: notSupported,
+        unshift: notSupported,
+        shift: notSupported,
+        create: notSupported
+    });
+
+    function setupToOne(collection, options) {
+        collection.field = options.field;
+        collection.related = options.related;
+
+        assert(collection.field.model === collection.model.specifyModel, "field doesn't belong to model");
+        assert(collection.field.getRelatedModel() === collection.related.specifyModel, "field is not to related resource");
+    }
+
+    collectionapi.Dependent = Base.extend({
+        __name__: "DependentCollectionBase",
+        constructor: function(models, options) {
+            assert(_.isArray(models));
+            Base.call(this, models, options);
+        },
+        initialize: function(models, options) {
             this.on('add remove', function() {
                 this.trigger('saverequired');
             }, this);
+
+            setupToOne(this, options);
+
+            // If the id of the related resource changes, we go through and update
+            // all the objects that point to it with the new pointer.
+            // This is to support having collections of objects attached to
+            // newly created resources that don't have ids yet. When the
+            // resource is saved, the related objects can have their FKs
+            // set correctly.
+            this.related.on('change:id', function() {
+                var relatedUrl = this.related.url();
+                _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
+            }, this);
+        },
+        fetch: fakeFetch,
+        sync: notSupported,
+        create: notSupported
+    });
+
+
+    collectionapi.Lazy = Base.extend({
+        __name__: "LazyCollectionBase",
+        constructor: function(options) {
+            options || (options = {});
+            Base.call(this, null, options);
+            this.filters = options.filters || {};
         },
         url: function() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
         },
-        parse: function(resp, xhr) {
-            _.extend(this, {
-                wasInline: _.isUndefined(resp.meta),
-                populated: true,   // have data now
-                totalCount: resp.meta ? resp.meta.total_count : resp.length,
-                meta: resp.meta
-            });
-            return this.wasInline ? resp : resp.objects;
+        isComplete: function() {
+            return this.length === this._totalCount;
         },
-        fetchIfNotPopulated: function () {
-            var collection = this;
-            // a new collection is used for to-many collections related to new resources
-            if (this.isNew) return $.when(collection);
-            if (this._fetch) return this._fetch.pipe(function () { return collection; });
+        parse: function(resp, xhr) {
+            var objects;
+            if (resp.meta) {
+                this._totalCount = resp.meta.total_count;
+                objects = resp.objects;
+            } else {
+                console.warn("expected 'meta' in response");
+                this._totalCount = resp.length;
+                objects = resp;
+            }
 
-            return this.populated ? $.when(collection) : this.fetch().pipe(function () { return collection; });
+            this.hasData = true;
+            return objects;
         },
         fetch: function(options) {
             var self = this;
-            // block trying to fetch data for collections that represent new to-many collections
-            if (self.isNew) {
-                throw new Error("can't fetch non-existant collection");
-            }
 
             if (self._fetch) throw new Error('already fetching');
 
-            options = options || {};
+            if (self.isComplete()) {
+                console.error("fetching for already filled collection");
+            }
+
+            options || (options =  {});
+
             options.update = true;
             options.remove = false;
             options.silent = true;
-            options.at = _.isUndefined(options.at) ? self.length : options.at;
-            options.data = options.data || _.extend({}, self.queryParams);
-            options.data.offset = options.at;
-            if (_(options).has('limit')) options.data.limit = options.limit;
+            assert(options.at == null);
+
+            options.data = options.data || _.extend({}, self.filters);
+            options.data.offset = self.length;
+
+            _(options).has('limit') && ( options.data.limit = options.limit );
             self._fetch = Backbone.Collection.prototype.fetch.call(self, options);
             return self._fetch.then(function() { self._fetch = null; });
         },
-        abortFetch: function() {
-            if (!this._fetch) return;
-            this._fetch.abort();
-            this._fetch = null;
-        },
-        add: function(models, options) {
-            options = options || {};
-            options.at = _.isUndefined(options.at) ? this.length : options.at;
-            models = _.isArray(models) ? models.slice() : [models];
-            if (this.totalCount) {
-                if (this.models.length < this.totalCount) this.models[this.totalCount-1] = undefined;
-                this.models.splice(options.at, models.length);
-                this.length = this.models.length;
-            }
-            return Backbone.Collection.prototype.add.apply(this, arguments);
-        },
-        rsave: function() {
-            return whenAll(_.chain(this.models).compact().invoke('rsave').value());
+        fetchIfNotPopulated: function() {
+            this._fetch || this.fetch();
+            var _this = this;
+            return this._fetch.pipe(function() { return _this; });
         },
         getTotalCount: function() {
-            var self = this;
-            if (self.isNew) return $.when(self.length);
-            if (self._fetch) return self._fetch.pipe(function() { return self.totalCount; });
-            return self.fetchIfNotPopulated().pipe(function() { return self.totalCount; });
-        }
-    }, {
-        forModel: function(model) {
-            model = _(model).isString() ? schema.getModel(model) : model;
-            if (!_(collections).has(model.name)) {
-                collections[model.name] = api.Collection.extend({
-                    model: api.Resource.forModel(model)
-                });
-            }
-            return collections[model.name];
-        },
-        fromUri: function(uri) {
-            var match = /api\/specify\/(\w+)\//.exec(uri);
-            var collection = new (api.Collection.forModel(match[1]))();
-            if (uri.indexOf("?") !== -1)
-                _.extend(collection.queryParams, $.deparam.querystring(uri));
-            return collection;
+            if (_.isNumber(this._totalCount)) return $.when(this._totalCount);
+            return this.fetchIfNotPopulated().pipe(function(_this) {
+                return _this._totalCount;
+            });
         }
     });
+
+    collectionapi.ToOne = collectionapi.Lazy.extend({
+        __name__: "LazyToOneCollectionBase",
+        initialize: function(models, options) {
+            setupToOne(this, options);
+        },
+        fetch: function() {
+            if (this.related.isNew()) {
+                throw new Error("can't fetch collection related to unpersistent resource");
+            }
+            this.filters[this.field.name.toLowerCase()] = this.related.id;
+            return collectionapi.Lazy.prototype.fetch.apply(this, arguments);
+        }
+    });
+
+
+    return collectionapi;
 });

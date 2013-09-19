@@ -1,11 +1,11 @@
 define([
 'jquery', 'underscore', 'backbone', 'cs!appresource', 'schema',
-'specifyapi', 'cs!fieldformat', 'cs!props', 'scrollresults', 'whenall',
+'cs!fieldformat', 'cs!props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, getAppResource, schema,
-            api, fieldformat, props, ScrollResults, whenAll,
+            fieldformat, props, ScrollResults, whenAll,
             availableRelatedJson, propstext) {
     "use strict";
 
@@ -23,6 +23,7 @@ define([
     };
 
     var PrimaryResults = Backbone.View.extend({
+        __name__: "PrimaryResultsView",
         initialize: function(options) {
             this.searchTable = options.searchTable;
             this.model = options.model;
@@ -41,7 +42,7 @@ define([
             _.each(results, function(result) {
                 var row = $('<tr>').appendTo(this.$('table'));
                 _.each(this.displayFields, function(field) {
-                    var resource = new (api.Resource.forModel(this.model))({id: result.id});
+                    var resource = new this.model.Resource({id: result.id});
                     var href = resource.viewUrl();
                     var value = fieldformat(field, result[field.name.toLowerCase()]);
                     row.append($('<td>').append($('<a>', {
@@ -64,6 +65,7 @@ define([
     });
 
     var RelatedResults = Backbone.View.extend({
+        __name__: "RelatedResultsView",
         initialize: function(options) {
             this.relatedSearch = options.data;
             this.model = schema.getModel(this.relatedSearch.definition.root);
@@ -76,7 +78,7 @@ define([
             var table = this.$('table');
             _.each(results, function(values) {
                 var row = $('<tr>').appendTo(table);
-                var resource = new (api.Resource.forModel(this.model))({id: _.last(values)});
+                var resource = new this.model.Resource({id: _.last(values)});
                 var href = resource.viewUrl();
                 _.each(this.displayFields, function(field, i) {
                     var value = fieldformat(field, values[i]);
@@ -102,6 +104,7 @@ define([
     });
 
     var ResultsView = Backbone.View.extend({
+        __name__: "ResultsView",
         events: {
             'accordionchange': 'panelOpened'
         },
