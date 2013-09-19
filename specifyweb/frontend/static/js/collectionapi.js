@@ -25,6 +25,7 @@ define([
             Base.call(this, models, options);
             this._initialized = true;
         },
+        isComplete: function() { return true; },
         fetch: fakeFetch,
         sync: notSupported,
         add: function() {
@@ -76,6 +77,7 @@ define([
                 _.chain(this.models).compact().invoke('set', this.field.name, relatedUrl);
             }, this);
         },
+        isComplete: function() { return true; },
         fetch: fakeFetch,
         sync: notSupported,
         create: notSupported
