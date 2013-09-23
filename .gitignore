@@ -8,3 +8,4 @@ specifyweb/virtenv
 specifyweb/settings/local_settings.py
 specifyweb/settings/local_specify_settings.py
 specifyweb/settings/secret_key.py
+/db_map.json
