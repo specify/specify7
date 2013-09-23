@@ -1,7 +1,4 @@
 from django.db import models
-from django.conf import settings
-from xml.etree import ElementTree
-import os
 
 from specifyweb.businessrules import deletion_policies
 from specifyweb.businessrules.exceptions import AbortSave
@@ -16,18 +13,17 @@ orderings = {
     'Spqueryfield': ('position', ),
 }
 
-def make_model(module, tabledef):
-    """Returns a Django model class based on the specify_datamodel.xml
+def make_model(module, table):
+    """Returns a Django model class based on the
     definition of a Specify table.
     """
-    modelname = tabledef.attrib['classname'].split('.')[-1].capitalize()
-    attrs = dict(id=make_id_field(tabledef.find('id')),
-                 table_id=int(tabledef.attrib['tableid']),
-                 __module__=module)
-    for flddef in tabledef.findall('field'):
-        fldname = flddef.attrib['name'].lower()
-        fldtype = flddef.attrib['type']
-        maker = field_type_map[fldtype]
+    attrs = dict(id = make_id_field(table.idColumn),
+                 specify_model = table,
+                 __module__ = module)
+
+    for field in table.fields:
+        fldname = field.name.lower()
+        maker = field_type_map[field.type]
         fldargs = {}
         if fldname == 'timestampcreated':
             fldargs['auto_now_add'] = True
@@ -35,18 +31,19 @@ def make_model(module, tabledef):
             fldargs['auto_now'] = True
         if fldname == 'version':
             fldargs['default'] = 0
-        attrs[fldname.lower()] = maker(flddef, fldargs)
-    for reldef in tabledef.findall('relationship'):
-        relname = reldef.attrib['relationshipname'].lower()
-        relationship = make_relationship(modelname, relname, reldef)
+        attrs[fldname] = maker(field, fldargs)
+
+    for rel in table.relationships:
+        relname = rel.name.lower()
+        relationship = make_relationship(table.name, rel)
         if relationship is not None:
             attrs[relname] = relationship
 
     class Meta:
-        db_table = tabledef.attrib['table']
+        db_table = table.table
         ordering = tuple()
-        if modelname in orderings:
-            ordering += orderings[modelname]
+        if table.django_name in orderings:
+            ordering += orderings[table.django_name]
         if 'rankid' in attrs:
             ordering += ('rankid', )
 
@@ -59,76 +56,61 @@ def make_model(module, tabledef):
     attrs['save'] = save
     attrs['Meta'] = Meta
 
-    supercls = getattr(model_extras, modelname, models.Model)
-    model = type(modelname, (supercls,), attrs)
+    supercls = getattr(model_extras, table.django_name, models.Model)
+    model = type(table.django_name, (supercls,), attrs)
 
     return model
 
-def make_id_field(flddef):
-    """Returns a primary key 'id' field based on the XML field definition
-    from specify_datamodel.xml.
-    """
-    assert flddef.attrib['type'] == 'java.lang.Integer'
-    return models.AutoField(primary_key=True, db_column=flddef.attrib['column'].lower())
+def make_id_field(column):
+    return models.AutoField(primary_key=True, db_column=column.lower())
 
-def make_relationship(modelname, relname, reldef):
+def make_relationship(modelname, rel):
     """Return a Django relationship field for the given relationship definition.
 
     modelname - name of the model this field will be part of
     relname - name of the field
-    reldef - the definition XML node
+    rel - the relationship definition from the Specify datamodel
     """
-    relatedmodel = reldef.attrib['classname'].split('.')[-1].capitalize()
+    relatedmodel = rel.relatedModelName.capitalize()
     # Usergroupscope breaks things.
     # I think maybe it is a superclass thing and not really a table?
     # Ignore it for now.
     if relatedmodel == 'Usergroupscope':
         return None
-    reltype = reldef.attrib['type']
-    nullable = reldef.attrib['required'] == 'false'
-    editable = reldef.attrib['updatable'] == 'true'
 
-    if reltype == 'one-to-many':
+    if rel.type == 'one-to-many':
         return None # only define the "to" side of the relationship
-    if reltype == 'many-to-many':
+    if rel.type == 'many-to-many':
         # skip many-to-many fields for now.
         return None
-        try:
-            jointable = reldef.attrib['jointable']
-        except KeyError:
-            return None # define the m2m on the side that names the jointable
-        related_name = reldef.attrib['othersidename'].lower()
-        return models.ManyToManyField('.'.join((appname, relatedmodel)),
-                                      db_table=jointable,
-                                      related_name=related_name,
-                                      null=nullable, editable=editable)
 
-    fieldname = '.'.join((modelname, relname))
+    fieldname = '.'.join((modelname, rel.name.lower()))
     if  fieldname in deletion_policies.cascade:
         on_delete = models.CASCADE
     elif fieldname in deletion_policies.protect:
         on_delete = models.PROTECT
     else:
-        on_delete = models.SET_NULL if nullable else models.DO_NOTHING
+        on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
 
     def make_to_one(Field):
         """Setup a field of the given 'Field' type which can be either
         ForeignKey (many-to-one) or OneToOneField.
         """
-        try:
-            related_name = reldef.attrib['othersidename'].lower()
-        except KeyError:
+        if hasattr(rel, 'otherSideName'):
+            related_name = rel.otherSideName.lower()
+        else:
             related_name = '+' # magic symbol means don't make reverse field
-        column = reldef.attrib['columnname'].lower()
-        return Field('.'.join((appname, relatedmodel)),
-                     db_column=column, related_name=related_name,
-                     null=nullable, on_delete=on_delete,
-                     editable=editable)
 
-    if reltype == 'many-to-one':
+        return Field('.'.join((appname, relatedmodel)),
+                     db_column = rel.column,
+                     related_name = related_name,
+                     null = not rel.required,
+                     on_delete = on_delete)
+
+    if rel.type == 'many-to-one':
         return make_to_one(models.ForeignKey)
 
-    if reltype == 'one-to-one' and 'columnname' in reldef.attrib:
+    if rel.type == 'one-to-one' and hasattr(rel, 'column'):
         return make_to_one(models.OneToOneField)
 
 class make_field(object):
@@ -137,7 +119,7 @@ class make_field(object):
     mechanism to factor out common aspects of Field configuration.
     """
     @classmethod
-    def get_field_class(cls, flddef):
+    def get_field_class(cls, fld):
         """Return the Django model field class to be used for
         the given field definition. Defaults to returning the
         'field_class' attribute of the class, but can be overridden
@@ -146,28 +128,26 @@ class make_field(object):
         return cls.field_class
 
     @classmethod
-    def make_args(cls, flddef):
+    def make_args(cls, fld):
         """Return a dict of arguments for the field constructor
         based on the XML definition. These are common arguements
         used by most field types.
         """
         return dict(
-            db_column=flddef.attrib['column'].lower(),
-            db_index=(flddef.attrib['indexed'] == 'true'),
-            unique=(flddef.attrib['unique'] == 'true'),
-            editable=(flddef.attrib['updatable'] == 'true'),
-            null=(flddef.attrib['required'] == 'false'),
-            )
+            db_column = fld.column.lower(),
+            db_index = fld.indexed,
+            unique = fld.unique,
+            null = not fld.required)
 
-    def __new__(cls, flddef, fldargs):
+    def __new__(cls, fld, fldargs):
         """Override the instance constructor to return configured instances
         of the appropriant Django model field for given parameters.
 
         flddef - the XML node defining the field
         fldargs - custom arguments for the field. will override any defaults.
         """
-        field_class = cls.get_field_class(flddef)
-        args = cls.make_args(flddef)
+        field_class = cls.get_field_class(fld)
+        args = cls.make_args(fld)
         args.update(fldargs)
         return field_class(**args)
 
@@ -176,15 +156,14 @@ class make_string_field(make_field):
     field_class = models.CharField
 
     @classmethod
-    def make_args(cls, flddef):
+    def make_args(cls, fld):
         """Supplement the standard field options with the 'length'
         and 'blank' options supported by the Django CharField type.
         """
-        args = super(make_string_field, cls).make_args(flddef)
+        args = super(make_string_field, cls).make_args(fld)
         args.update(dict(
-                max_length=int( flddef.attrib['length'] ),
-                blank=(flddef.attrib['required'] == 'false'),
-                ))
+                max_length = fld.length,
+                blank = not fld.required))
         return args
 
 class make_text_field(make_field):
@@ -212,33 +191,30 @@ class make_decimal_field(make_field):
     field_class = models.DecimalField
 
     @classmethod
-    def make_args(cls, flddef):
+    def make_args(cls, fld):
         """Augment the standard field options with those specific
         to Decimal fields.
         """
-        args = super(make_decimal_field, cls).make_args(flddef)
+        args = super(make_decimal_field, cls).make_args(fld)
         args.update(dict(
-                # The precision info is not included in the
-                # XML schema def. I don't think it really
-                # matters what values are here since
-                # the schema is already built.
-                max_digits=22, decimal_places=10,
-                blank=(flddef.attrib['required'] == 'false'),
-                ))
+            # The precision info is not included in the
+            # XML schema def. I don't think it really
+            # matters what values are here since
+            # the schema is already built.
+            max_digits = 22,
+            decimal_places = 10,
+            blank = not fld.required))
         return args
 
 class make_boolean_field(make_field):
     """A specialization of make_field for Boolean type fields."""
     @classmethod
-    def get_field_class(cls, flddef):
+    def get_field_class(cls, fld):
         """Django differentiates between boolean fields which
         can contain nulls and those that cannot with different
         types.
         """
-        if flddef.attrib['required'] == 'true':
-            return models.BooleanField
-        else:
-            return models.NullBooleanField
+        return models.BooleanField if fld.required else models.NullBooleanField
 
 # Map the field types used in specify_datamodel.xml to the
 # appropriate field constructor functions.
@@ -258,10 +234,7 @@ field_type_map = {
     'java.lang.Boolean': make_boolean_field,
     }
 
-def build_models(module):
-    """Parse the specify_datamodel.xml file and generate the Django model definitions."""
-    datamodel = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
-
-    return dict((model.table_id, model)
-                for table in datamodel.findall('table')
+def build_models(module, datamodel):
+    return dict((model.specify_model.tableId, model)
+                for table in datamodel.tables
                 for model in [ make_model(module, table) ])

@@ -19,10 +19,10 @@ class AuditLog(object):
         return Spauditlog.objects.create(
             action=action,
             parentrecordid=parent_record and parent_record.id,
-            parenttablenum=parent_record and parent_record.__class__.table_id,
+            parenttablenum=parent_record and parent_record.specify_model.tableId,
             recordid=obj.id,
             recordversion=obj.version,
-            tablenum=obj.__class__.table_id,
+            tablenum=obj.specify_model.tableId,
             createdbyagent=agent,
             modifiedbyagent=agent)
 

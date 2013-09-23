@@ -21,7 +21,7 @@ def attachment_save(sender, obj):
     if obj.attachment_id is None: raise AbortSave()
 
     attachee = get_attachee(obj)
-    obj.attachment.tableid = attachee.__class__.table_id
+    obj.attachment.tableid = attachee.specify_model.tableId
     obj.attachment.scopetype, obj.attachment.scopeid = Scoping(attachee)()
     obj.attachment.save()
 

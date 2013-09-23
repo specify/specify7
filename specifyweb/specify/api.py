@@ -11,15 +11,10 @@ from django.db.models.fields import DateTimeField, FieldDoesNotExist
 from . import models
 from .autonumbering import autonumber
 from .filter_by_col import filter_by_collection
-from .dependent_fields import is_dependent
 from .auditlog import auditlog
 
 # Regex matching api uris for extracting the model name and id number.
 URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
-
-# A set of fields that represent relations to other resources which
-# should be included as nested objects when resources are fetched.
-from .dependent_fields import dependent_fields as inlined_fields
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
@@ -171,7 +166,7 @@ def get_recordset_info(obj, recordsetid):
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
     rsis = models.Recordsetitem.objects.filter(
-        recordset__id=recordsetid, recordset__dbtableid=obj.table_id)
+        recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
 
     # Get the one which points to the resource 'obj'.
     try:
@@ -221,7 +216,7 @@ def post_resource(collection, agent, name, data, recordsetid=None):
         except models.Recordset.DoesNotExist, e:
             raise RecordSetException(e)
 
-        if recordset.dbtableid != obj.table_id:
+        if recordset.dbtableid != obj.specify_model.tableId:
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
@@ -288,7 +283,7 @@ def handle_fk_fields(collection, agent, obj, data):
         except ObjectDoesNotExist:
             old_related = None
 
-        dependent = is_dependent(obj.__class__.__name__, field_name)
+        dependent = obj.specify_model.get_field(field_name)
 
         if val is None:
             setattr(obj, field_name, None)
@@ -351,12 +346,12 @@ def handle_to_many(collection, agent, obj, data):
         if direct: continue # Skip *-to-one fields.
 
         if isinstance(val, list):
-            assert is_dependent(obj.__class__.__name__, field_name), \
+            assert obj.specify_model.get_field(field_name).dependent, \
                    "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
         else:
             # The field contains something other than nested data.
             # Probably the URI of the collection of objects.
-            assert not is_dependent(obj.__class__.__name__, field_name), \
+            assert not obj.specify_model.get_field(field_name).dependent, \
                    "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             continue
 
@@ -478,9 +473,10 @@ def to_many_to_data(obj, related_object):
     """Return the URI or nested data of the 'related_object' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
-    parent_model = related_object.parent_model.__name__
-    if '.'.join((parent_model, related_object.get_accessor_name())) in inlined_fields:
-        objs = getattr(obj, related_object.get_accessor_name())
+    parent_model = related_object.parent_model.specify_model
+    field_name = related_object.get_accessor_name()
+    if parent_model.get_field(field_name).dependent:
+        objs = getattr(obj, field_name)
         return [obj_to_data(o) for o in objs.all()]
 
     collection_uri = uri_for_model(related_object.model)
@@ -491,7 +487,7 @@ def field_to_val(obj, field):
     be either a regular field or a *-to-one field.
     """
     if isinstance(field, ForeignKey):
-        if '.'.join((obj.__class__.__name__, field.name)) in inlined_fields:
+        if obj.specify_model.get_field(field.name).dependent:
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
             return obj_to_data(related_obj)

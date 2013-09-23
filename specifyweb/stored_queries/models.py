@@ -1,8 +1,9 @@
 
 
 def generate():
+    from specifyweb.specify.models import datamodel
     from . import build_models
-    datamodel = build_models.get_datamodel()
+
     tables = build_models.make_tables(datamodel)
     classes = build_models.make_classes(datamodel)
     build_models.map_classes(datamodel, tables, classes)

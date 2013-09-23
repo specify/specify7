@@ -17,7 +17,7 @@ def audit_save(sender, instance, created, raw, **kwargs):
         action = INSERT if created else UPDATE,
         recordid = instance.id,
         recordversion = instance.version,
-        tablenum = sender.table_id)
+        tablenum = sender.specify_model.tableId)
 
 @receiver(signals.post_delete)
 def audit_delete(sender, instance, **kwargs):
@@ -28,4 +28,4 @@ def audit_delete(sender, instance, **kwargs):
         action = REMOVE,
         recordid = instance.id,
         recordversion = instance.version,
-        tablenum = sender.table_id)
+        tablenum = sender.specify_model.tableId)
