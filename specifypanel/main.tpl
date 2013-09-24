@@ -15,7 +15,7 @@
         <td><a href="http://{{server + '.' + host}}/">{{server}}</a></td>
         <td>
           <select name="{{server}}">
-            %if db_map.get(server, None) is None:
+            %if db_map.get(server, None) not in available_dbs:
             <option value="None" selected>None</option>
             %end
             %for choice in available_dbs:
