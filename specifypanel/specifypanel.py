@@ -28,7 +28,7 @@ def main():
 
     show_databases = check_output(["/usr/bin/mysql", "-uMasterUser", "-pMasterPassword", "-e", "show databases"])
     available_dbs = set(show_databases.split()[1:]) - {'information_schema', 'performance_schema', 'mysql'}
-    return template('main.tpl', servers=SERVERS, db_map=db_map, available_dbs=available_dbs)
+    return template('main.tpl', servers=SERVERS, db_map=db_map, available_dbs=available_dbs, host=request.get_header('Host'))
 
 @route('/set_dbs/', method='POST')
 def set_dbs():

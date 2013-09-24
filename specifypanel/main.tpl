@@ -1,4 +1,4 @@
-<!-- -*- html -*- -->
+%#  -*- html -*-
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +12,7 @@
       <tr><th>Server</th><th>Database</th></tr>
       %for server in servers:
       <tr>
-        <td>{{server}}</td>
+        <td><a href="http://{{server + '.' + host}}/">{{server}}</a></td>
         <td>
           <select name="{{server}}">
             %if db_map.get(server, None) is None:
