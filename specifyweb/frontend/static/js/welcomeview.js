@@ -28,17 +28,22 @@ define([
                 $('span', content).text(formatted || 'Unknown');
             });
 
-            if (action !== 'Deleted') {
-                var resource = new specifyModel.Resource({ id: this.model.get('recordid') });
+            var resource = new specifyModel.Resource({ id: this.model.get('recordid') });
 
-                resource.fetch().pipe(
-                    function() { return format(resource); },
-                    function(jqXHR) { jqXHR.errorHandled = true; }
-                ).done(function(formatted) {
-                    var link = $('a', header).append(formatted || '');
-                    specifyModel.view && link.attr('href', resource.viewUrl());
-                });
-            }
+            resource.fetch().pipe(
+                function() { return format(resource); },
+                function(jqXHR) {
+                    if (jqXHR.status === 404) {
+                        jqXHR.errorHandled = true;
+                        return '(deleted)';
+                    }
+                    return jqXHR;
+                }
+            ).always(function(formatted) {
+                var link = $('a', header).append(formatted || specifyModel.getLocalizedName());
+                specifyModel.view && link.attr('href', resource.viewUrl());
+            });
+
             return this;
         }
     });
@@ -55,7 +60,8 @@ define([
 
             log.fetch().done(function() {
                 log.each(function(entry) {
-                    new LogEntry({model: entry}).render().$el.appendTo(_this.el);
+                    var isSystem = schema.getModelById(entry.get('tablenum')).system;
+                    isSystem || new LogEntry({model: entry}).render().$el.appendTo(_this.el);
                 });
             });
             return this;

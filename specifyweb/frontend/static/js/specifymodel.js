@@ -11,6 +11,7 @@ define([
         this.view = tableDef.view;
         this.searchDialog = tableDef.searchDialog;
         this.tableId = tableDef.tableId;
+        this.system = tableDef.system;
         this._fieldAliases = tableDef.fieldAliases;
         this._localization = localization[this.name.toLowerCase()];
 
