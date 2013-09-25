@@ -96,7 +96,7 @@ def resource_dispatch(request, model, id):
                             content_type='application/json')
 
     elif request.method == 'DELETE':
-        delete_resource(model, id, version)
+        delete_resource(request.specify_user_agent, model, id, version)
         resp = HttpResponse('', status=204)
 
     else:
@@ -378,17 +378,17 @@ def handle_to_many(collection, agent, obj, data):
         to_delete.delete()
 
 @transaction.commit_on_success
-def delete_resource(name, id, version):
-    return delete_obj(name, id, version)
+def delete_resource(agent, name, id, version):
+    return delete_obj(agent, name, id, version)
 
-def delete_obj(name, id, version, parent_obj=None):
+def delete_obj(agent, name, id, version, parent_obj=None):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
     bump_version(obj, version)
     obj.delete()
-    auditlog.delete(obj, agent, parent_obj)
+    auditlog.remove(obj, agent, parent_obj)
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
