@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'whenall', 'cs!fieldformat',
+    'jquery', 'underscore', 'whenall', 'cs!fieldformat', 'assert',
     'text!context/app.resource?name=DataObjFormatters!noinline'
-], function($, _, whenAll, fieldformat, xml) {
+], function($, _, whenAll, fieldformat, assert, xml) {
     "use strict";
     var formatters = $.parseXML(xml);
 
@@ -55,10 +55,13 @@ define([
         var format = aggregator.attr('format');
         var separator = aggregator.attr('separator');
 
-        return collection.fetchIfNotPopulated().pipe(function() {
-            var formatting = collection.map(function(resource) { return dataobjformat(resource, format); });
-            return whenAll(formatting);
-        }).pipe(function(formatted) {
+        assert(collection.isComplete());
+
+        var formatting = collection.map(function(resource) {
+            return dataobjformat(resource, format);
+        });
+
+        return whenAll(formatting).pipe(function(formatted) {
             return formatted.join(separator);
         });
     }
