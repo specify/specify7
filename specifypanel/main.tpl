@@ -26,7 +26,7 @@
       </tr>
       %end
     </table>
-    <input type="submit" value="submit">
+    <input type="submit" value="Set Databases">
   </form>
   <h3>Test Databases</h3>
   <dl>

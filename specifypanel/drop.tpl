@@ -5,10 +5,10 @@
 </head>
 
 <body>
-  <h3>Dcop Database</h3>
+  <h3>Drop Database</h3>
   <form method="post" action=".">
     <p>
-      Really drop database, {{db}}?
+      Really drop database, {{repr(db)}}?
     </p>
     <input type="hidden" name="dbname" value="{{db}}" />
     <input type="submit" value="Yes" />
