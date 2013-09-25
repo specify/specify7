@@ -95,6 +95,7 @@ define([
             query.set('contextname', model.name);
             query.set('contexttableid', model.tableId);
             query.set('specifyuser', app.user.resource_uri);
+            query.set('isfavorite', true);
             dialog = new EditQueryDialog({ spquery: query });
             $('body').append(dialog.el);
             dialog.render();
