@@ -40,5 +40,10 @@
     <dt>New</dt>
     <dd><a href="/upload/">upload</a></dd>
   </dl>
+  <h3>Git Log</h3>
+  <pre>
+{{git_log}}
+  </pre>
+  <a href="https://github.com/specify/specifyweb/commits/master">(more)</a>
 </body>
 </html>

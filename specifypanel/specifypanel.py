@@ -30,9 +30,20 @@ def main():
         else:
             raise
 
+    git_log = check_output(["/usr/bin/git",
+                            "--work-tree=" + SPECIFYWEB_DIR,
+                            "--git-dir=" + path.join(SPECIFYWEB_DIR, '.git'),
+                            "log", "-n", "10"])
+
+
     show_databases = check_output(["/usr/bin/mysql", MYSQL_USER, MYSQL_PASS, "-e", "show databases"])
     available_dbs = set(show_databases.split()[1:]) - {'information_schema', 'performance_schema', 'mysql'}
-    return template('main.tpl', servers=SERVERS, db_map=db_map, available_dbs=available_dbs, host=request.get_header('Host'))
+    return template('main.tpl',
+                    servers=SERVERS,
+                    db_map=db_map,
+                    available_dbs=available_dbs,
+                    git_log=git_log,
+                    host=request.get_header('Host'))
 
 @route('/set_dbs/', method='POST')
 def set_dbs():
