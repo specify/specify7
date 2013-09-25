@@ -4,6 +4,7 @@
 .emacs.desktop*
 .directory
 testing
+specifypanel/ve
 specifyweb/virtenv
 specifyweb/settings/local_settings.py
 specifyweb/settings/local_specify_settings.py
