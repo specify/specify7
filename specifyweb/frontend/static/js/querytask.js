@@ -84,7 +84,10 @@ define([
         },
         render: function() {
             var self = this;
-            $('<h2>').text(self.query.get('name')).appendTo(self.el);
+            $('<h2 class="querybuilder-header">')
+                .text('Query: ' + self.query.get('name'))
+                .prepend($('<img>', {src: self.model.getIcon()}))
+                .appendTo(self.el);
             self.$el.append(templates.querybuilder());
             self.$('.querybuilder').append(self.saveButton.render().el);
 
@@ -111,7 +114,7 @@ define([
                 ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
             });
 
-            $('<table class="results" width="100%"></div>').appendTo(self.el);
+            $('<table class="query-results" width="100%"></div>').appendTo(self.el);
             self.$el.append(
                 '<div style="text-align: center" class="fetching-more"><img src="/static/img/specify128spinner.gif"></div>');
             self.$('.fetching-more').hide();
@@ -149,7 +152,7 @@ define([
         },
         search: function(evt) {
             var self = this;
-            var table = self.$('table.results');
+            var table = self.$('table.query-results');
 
             table.empty();
             table.append(self.renderHeader());

@@ -283,6 +283,15 @@ div.results div {
     float: none;
 }
 
+.querybuilder-header {
+    vertical-align: top;
+}
+
+.querybuilder-header img {
+    height: 1.2em;
+    margin-right: 0.8em;
+}
+
 .querybuilder-expand {
     width: 100%
 }
@@ -291,11 +300,19 @@ div.results div {
     padding: 0;
 }
 
+.query-results th {
+    vertical-align: top;
+}
+
+.query-results th img {
+    height: 1.2em;
+    margin-right: 0.8em;
+}
+
 .spqueryfields {
     padding: 0;
     margin-bottom: 4px;
 }
-
 
 .spqueryfield-delete {
     height: 24px;
