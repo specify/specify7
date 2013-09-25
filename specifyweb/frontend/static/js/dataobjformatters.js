@@ -17,7 +17,7 @@ define([
             if (!sw.length || sw.find('external').length) return null;
 
             // doesn't support switch fields that are in child objects
-            var fields = (sw.attr('field') ?
+            var fields = (sw.attr('field') && (sw.attr('single') !== 'true') ?
                           sw.find('fields[value="' + resource.get(sw.attr('field')) + '"]:first') :
                           sw.find('fields:first')).find('field');
 
