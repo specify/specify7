@@ -283,7 +283,7 @@ def handle_fk_fields(collection, agent, obj, data):
         except ObjectDoesNotExist:
             old_related = None
 
-        dependent = obj.specify_model.get_field(field_name)
+        dependent = obj.specify_model.get_field(field_name).dependent
 
         if val is None:
             setattr(obj, field_name, None)
