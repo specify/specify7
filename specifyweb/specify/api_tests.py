@@ -4,9 +4,6 @@ from specifyweb.specify import api, models
 
 class MainSetupTearDown:
     def setUp(self):
-        self.orig_inlined_fields = api.inlined_fields
-        api.inlined_fields = api.inlined_fields.copy()
-
         self.institution = models.Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -62,9 +59,6 @@ class MainSetupTearDown:
                 catalognumber="num-%d" % i)
             for i in range(5)]
 
-    def tearDown(self):
-        api.inlined_fields = self.orig_inlined_fields
-
 class ApiTests(MainSetupTearDown, TestCase): pass
 
 class SimpleApiTests(ApiTests):
@@ -85,6 +79,7 @@ class SimpleApiTests(ApiTests):
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
                 'collection': api.uri_for_model('collection', self.collection.id),
                 'catalognumber': 'foobar'})
+        obj = models.Collectionobject.objects.get(id=obj.id)
         self.assertTrue(obj.id is not None)
         self.assertEqual(obj.collection, self.collection)
         self.assertEqual(obj.catalognumber, 'foobar')
@@ -102,7 +97,7 @@ class SimpleApiTests(ApiTests):
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
                 'collection': api.uri_for_model('collection', self.collection.id),
                 'catalognumber': 'foobar'})
-        api.delete_obj('collectionobject', obj.id, obj.version)
+        api.delete_obj(self.agent, 'collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
 
 class RecordSetTests(MainSetupTearDown, TransactionTestCase):
@@ -229,23 +224,19 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
 
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
-        api.inlined_fields.difference_update(set(['Collectionobject.determinations']))
-
-        data = api.get_resource('collectionobject', self.collectionobjects[0].id)
-        self.assertEqual(data['determinations'],
-                         api.uri_for_model('determination') +
-                         '?collectionobject=%d' % self.collectionobjects[0].id)
+        data = api.get_resource('agent', self.agent.id)
+        self.assertEqual(data['agentattachments'],
+                         api.uri_for_model('agentattachment') +
+                         '?agent=%d' % self.agent.id)
 
     def test_get_to_many_uris_with_special_othersidename(self):
-        api.inlined_fields.difference_update(set(['Agent.groups','Agent.collectors']))
-
         data = api.get_resource('agent', self.agent.id)
         self.assertEqual(data['collectors'],
                          api.uri_for_model('collector') +
                          '?agent=%d' % self.agent.id)
-        self.assertEqual(data['groups'],
-                         api.uri_for_model('groupperson') +
-                         '?group=%d' % self.agent.id)
+        self.assertEqual(data['orgmembers'],
+                         api.uri_for_model('agent') +
+                         '?organization=%d' % self.agent.id)
 
 
 class VersionCtrlApiTests(ApiTests):
@@ -275,7 +266,7 @@ class VersionCtrlApiTests(ApiTests):
         obj.version += 1
         obj.save()
         with self.assertRaises(api.StaleObjectException) as cm:
-            api.delete_obj('collectionobject', data['id'], data['version'])
+            api.delete_obj(self.agent, 'collectionobject', data['id'], data['version'])
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 1)
 
     def test_missing_version(self):
@@ -289,7 +280,6 @@ class VersionCtrlApiTests(ApiTests):
 
 class InlineApiTests(ApiTests):
     def test_get_resource_with_to_many_inlines(self):
-        api.inlined_fields.add('Collectionobject.determinations')
         for i in range(3):
             self.collectionobjects[0].determinations.create(
                 iscurrent=False, number1=i)
@@ -301,7 +291,6 @@ class InlineApiTests(ApiTests):
             self.assertTrue(det.id in ids)
 
     def test_get_resource_with_to_one_inlines(self):
-        api.inlined_fields.add('Collectionobject.collectionobjectattribute')
         self.collectionobjects[0].collectionobjectattribute = \
             models.Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
         self.collectionobjects[0].save()
@@ -331,18 +320,19 @@ class InlineApiTests(ApiTests):
         self.assertEqual(co.collectionobjectattribute.text1, 'some text')
 
     def test_create_object_with_inlined_existing_resource(self):
-        collection_data = api.get_resource('collection', self.collection.id)
+        coa = models.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id)
+
+        coa_data = api.get_resource('collectionobjectattribute', coa.id)
         co_data = {
-            'collection': collection_data,
+            'collection': api.uri_for_model('collection', self.collection.id),
+            'collectionobjectattribute': coa_data,
             'catalognumber': 'foobar'}
         obj = api.create_obj(self.collection, self.agent, 'collectionobject', co_data)
         co = models.Collectionobject.objects.get(id=obj.id)
-        self.assertEqual(co.collection, self.collection)
+        self.assertEqual(co.collectionobjectattribute, coa)
 
     def test_update_object_with_inlines(self):
-        for f in ('determinations', 'collectionobjectattribute'):
-            api.inlined_fields.add(f)
-
         self.collectionobjects[0].determinations.create(
             collectionmemberid=self.collection.id,
             number1=1,
@@ -366,9 +356,6 @@ class InlineApiTests(ApiTests):
         self.assertEqual(obj.collectionobjectattribute.text1, 'added an attribute')
 
     def test_update_object_with_more_inlines(self):
-        for f in ('determinations', 'collectionobjectattribute'):
-            api.inlined_fields.add(f)
-
         for i in range(6):
             self.collectionobjects[0].determinations.create(
                 collectionmemberid=self.collection.id,
