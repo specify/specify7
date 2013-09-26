@@ -5,6 +5,7 @@ from ..exceptions import BusinessRuleException
 class AuthorTests(ApiTests):
     def test_agent_is_unique_in_referencework(self):
         referencework = models.Referencework.objects.create(
+            institution=self.institution,
             referenceworktype=0)
 
         referencework.authors.create(
@@ -26,6 +27,7 @@ class AuthorTests(ApiTests):
 
     def test_ordernumber_unique(self):
         referencework = models.Referencework.objects.create(
+            institution=self.institution,
             referenceworktype=0)
 
         referencework.authors.create(

@@ -90,6 +90,7 @@ class TaxonTests(ApiTests):
 
     def test_delete_blocked_by_taxoncitations(self):
         rw = models.Referencework.objects.create(
+            institution=self.institution,
             referenceworktype=0)
 
         tc = self.roottaxon.taxoncitations.create(

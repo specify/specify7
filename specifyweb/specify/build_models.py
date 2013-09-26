@@ -35,7 +35,7 @@ def make_model(module, table):
 
     for rel in table.relationships:
         relname = rel.name.lower()
-        relationship = make_relationship(table.name, rel)
+        relationship = make_relationship(table.django_name, rel)
         if relationship is not None:
             attrs[relname] = relationship
 

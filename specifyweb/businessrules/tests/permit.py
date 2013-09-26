@@ -6,6 +6,7 @@ from ..exceptions import BusinessRuleException
 class PermitTests(ApiTests):
     def test_number_is_unique(self):
         models.Permit.objects.create(
+            institution=self.institution,
             permitnumber='1')
 
         with self.assertRaises(BusinessRuleException):
@@ -13,10 +14,12 @@ class PermitTests(ApiTests):
                 permitnumber='1')
 
         models.Permit.objects.create(
+            institution=self.institution,
             permitnumber='2')
 
     def test_delete_blocked_by_accessionauthorization(self):
         permit = models.Permit.objects.create(
+            institution=self.institution,
             permitnumber='1')
 
         aa = permit.accessionauthorizations.create()
