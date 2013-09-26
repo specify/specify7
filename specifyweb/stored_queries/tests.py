@@ -22,6 +22,7 @@ class StoredQueriesTests(ApiTests):
                        date_part=None,
                        root_table=models.CollectionObject,
                        join_path=[('cataloger', models.Agent)],
+                       is_relation=False,
                        op_num=1,
                        value='Bentley',
                        negate=False,
@@ -38,6 +39,7 @@ class StoredQueriesTests(ApiTests):
                        date_part='year',
                        root_table=models.CollectionObject,
                        join_path=[('collectingEvent', models.CollectingEvent)],
+                       is_relation=False,
                        op_num=1,
                        value='2000',
                        negate=False,
@@ -54,6 +56,7 @@ class StoredQueriesTests(ApiTests):
                        date_part=None,
                        root_table=models.Taxon,
                        join_path=[],
+                       is_relation=False,
                        op_num=1,
                        value='Percidae',
                        negate=False,
@@ -65,12 +68,13 @@ class StoredQueriesTests(ApiTests):
         sql = str(q)
         self.assertEqual(sql,
                          'SELECT taxon."TaxonID" AS "taxon_TaxonID" \n'
-                         'FROM taxon \nHAVING (SELECT taxon_1."Name" \n'
-                         'FROM taxon AS taxon_1 JOIN taxontreedefitem AS taxontreedefitem_1 '
-                         'ON taxontreedefitem_1."TaxonTreeDefItemID" = taxon_1."TaxonTreeDefItemID" \n'
-                         'WHERE taxon."TaxonTreeDefID" = taxon_1."TaxonTreeDefID" '
+                         'FROM taxon '
+                         'JOIN taxon AS taxon_1 '
+                         'ON taxon."TaxonTreeDefID" = taxon_1."TaxonTreeDefID" '
                          'AND taxon."NodeNumber" BETWEEN taxon_1."NodeNumber" AND taxon_1."HighestChildNodeNumber" '
-                         'AND taxontreedefitem_1."Name" = :Name_1\n LIMIT :param_1) = :param_2')
+                         'JOIN taxontreedefitem AS taxontreedefitem_1 '
+                         'ON taxontreedefitem_1."TaxonTreeDefItemID" = taxon_1."TaxonTreeDefItemID" \n'
+                         'WHERE taxontreedefitem_1."Name" = :Name_1 AND taxon_1."Name" = :Name_2')
 
     # def test_month_between_predicate(self):
     #     self.q.fields.create(
@@ -95,6 +99,7 @@ class StoredQueriesTests(ApiTests):
                         date_part='year',
                         root_table=models.CollectionObject,
                         join_path=[('collectingEvent', models.CollectingEvent)],
+                        is_relation=False,
                         op_num=1,
                         value='2000',
                         negate=False,
@@ -106,6 +111,7 @@ class StoredQueriesTests(ApiTests):
                         date_part=None,
                         root_table=models.CollectionObject,
                         join_path=[('cataloger', models.Agent)],
+                        is_relation=False,
                         op_num=1,
                         value='Bentley',
                         negate=False,
