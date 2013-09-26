@@ -6,6 +6,8 @@ define([
 
     function format(resource) { return dataobjectformatters.format(resource); }
 
+    var userTables = _.chain(schema.models).where({system: false}).pluck('tableId').value().join(',');
+
     var LogEntry = Backbone.View.extend({
         __name__: "AuditLogEntryView",
         className: "specify-auditlog-entry",
@@ -55,13 +57,14 @@ define([
             this.$el.append(templates.welcome());
 
             var log = new schema.models.SpAuditLog.LazyCollection({
-                filters: { parentrecordid__isnull: true, orderby: '-timestampcreated' }
+                filters: { parentrecordid__isnull: true,
+                           tablenum__in: userTables,
+                           orderby: '-timestampcreated' }
             });
 
             log.fetch().done(function() {
                 log.each(function(entry) {
-                    var isSystem = schema.getModelById(entry.get('tablenum')).system;
-                    isSystem || new LogEntry({model: entry}).render().$el.appendTo(_this.el);
+                    new LogEntry({model: entry}).render().$el.appendTo(_this.el);
                 });
             });
             return this;

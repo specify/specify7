@@ -533,6 +533,10 @@ def get_collection(logged_in_collection, model, params={}):
             order_by = val
             continue
 
+        if param.endswith('__in'):
+            # this is a bit kludgy
+            val = val.split(',')
+
         # param is a field for filtering
         filters.update({param: val})
     objs = model.objects.filter(**filters)

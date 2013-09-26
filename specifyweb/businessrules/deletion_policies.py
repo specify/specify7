@@ -1,5 +1,6 @@
 """Defines how deletions of related rows should be handled. """
 
+# TODO: A lot of this is implicit in the dependent fields information.
 
 # Set of ForeignKey fields for which the referencing row should be
 # deleted if the pointed to foreign row is deleted.
