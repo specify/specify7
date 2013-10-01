@@ -16,7 +16,9 @@ require({
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
         'context'        : '/testcontext',
-        'properties'     : '/static/js/tests/fixtures/properties'
+        'properties'     : '/static/js/tests/fixtures/properties',
+
+        'load_datamodel' : 'tests/load_datamodel'
     },
     shim: {
         'jquery-ui'      : ['jquery'],

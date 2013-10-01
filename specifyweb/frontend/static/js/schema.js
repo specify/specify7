@@ -1,10 +1,8 @@
 define([
-    'jquery', 'underscore', 'schemabase', 'schemaextras',
-    'text!context/datamodel.json!noinline',
+    'jquery', 'underscore', 'schemabase', 'schemaextras', 'load_datamodel',
     'specifymodel', 'specifyfield'
-], function($, _, schema, extras, json) {
+], function($, _, schema, extras, tables) {
     "use strict";
-    var tables = $.parseJSON(json);
 
     schema.models = {};
 

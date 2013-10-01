@@ -336,7 +336,9 @@ define([
                 // if we want a field within the related resource then recur
                 return (path.length > 1) ? toOne.rget(_.tail(path)) : toOne;
             case 'one-to-many':
-                assert(path.length === 1, "can't traverse into a collection using dot notation");
+                if (path.length !== 1) {
+                    return $.Deferred().reject("can't traverse into a collection using dot notation");
+                }
 
                 // is the collection cached?
                 var toMany = this.dependentResources[fieldName];
@@ -373,7 +375,7 @@ define([
                 // if this resource is not yet persisted, the related object can't point to it yet
                 if (this.isNew()) return undefined; // TODO: this seems iffy
 
-                var collection = related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
+                var collection = new related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
 
                 // fetch the collection and pretend like it is a single resource
                 return collection.fetchIfNotPopulated().pipe(function() {
@@ -500,6 +502,7 @@ define([
     }, {
         fromUri: function(uri) {
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
+            assert(!_(match).isNull(), "Bad resource uri: " + uri);
             assert(match[1] === this.specifyModel.name.toLowerCase());
             return new this({ id: parseInt(match[2], 10) });
         }

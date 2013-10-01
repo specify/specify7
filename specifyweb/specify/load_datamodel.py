@@ -149,7 +149,6 @@ dependent_fields = {
     'Collectionobject.collectionobjectattrs',
     'Collectionobject.collectionobjectcitations',
     'Collectionobject.conservdescriptions',
-    'Collectionobject.dnasequences',
     'Collectionobject.exsiccataitems',
     'Collectionobject.otheridentifiers',
     'Collectionobject.treatmentevents',

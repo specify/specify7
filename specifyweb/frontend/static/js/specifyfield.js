@@ -20,7 +20,7 @@ define([
 
     _.extend(schema.Field.prototype, {
         getRelatedModel: function() {
-            assert(this.isRelationship, "field is not a relationship field");
+            assert(this.isRelationship, this.model.name + '.' + this.name + " is not a relationship field");
             return schema.getModel(this.relatedModelName);
         },
         getReverse: function() {
