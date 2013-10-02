@@ -112,7 +112,6 @@ def flag_dependent_fields(datamodel):
         field.dependent = True
 
     for table in datamodel.tables:
-        table = datamodel.get_table(tablename)
         if table.is_attachment_jointable:
             table.get_field('attachment').dependent = True
         if table.attachments_field:

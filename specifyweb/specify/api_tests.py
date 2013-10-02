@@ -290,6 +290,36 @@ class InlineApiTests(ApiTests):
         for det in self.collectionobjects[0].determinations.all():
             self.assertTrue(det.id in ids)
 
+    def test_inlined_in_collection(self):
+        dets = [self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
+                for i in range(3)]
+
+        data = api.get_collection(self.collection, 'collectionobject')
+        for obj in data['objects']:
+            self.assertTrue(isinstance(obj['determinations'], list))
+            if obj['id'] == self.collectionobjects[0].id:
+                serialized_dets = obj['determinations']
+                self.assertEqual(len(obj['determinations']), 3)
+            else:
+                self.assertEqual(len(obj['determinations']), 0)
+
+        ids = {d['id'] for d in serialized_dets}
+        for det in dets:
+            self.assertTrue(det.id in ids)
+
+    def test_inlined_inlines(self):
+        preptype = models.Preptype.objects.create(
+            collection=self.collection)
+
+        for i in range(3):
+            self.collectionobjects[0].preparations.create(
+                collectionmemberid=self.collection.id,
+                preptype=preptype)
+        data = api.get_collection(self.collection, 'collectionobject')
+        co = next(obj for obj in data['objects'] if obj['id'] == self.collectionobjects[0].id)
+        self.assertTrue(isinstance(co['preparations'], list))
+        self.assertEqual(co['preparations'][0]['preparationattachments'], [])
+
     def test_get_resource_with_to_one_inlines(self):
         self.collectionobjects[0].collectionobjectattribute = \
             models.Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
