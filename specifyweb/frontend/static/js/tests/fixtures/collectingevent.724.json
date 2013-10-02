@@ -40,5 +40,5 @@
  "method": "seines & shocker",
  "createdbyagent": "/api/specify/agent/1/",
  "starttime": null,
- "collectingeventattachments": "/api/specify/collectingeventattachment/?collectingevent=724",
+ "collectingeventattachments": [],
  "resource_uri": "/api/specify/collectingevent/724/"}

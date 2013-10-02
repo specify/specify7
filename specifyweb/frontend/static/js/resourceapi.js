@@ -256,8 +256,9 @@ define([
             var field = this.specifyModel.getField(fieldName);
             var oldRelated = this.dependentResources[fieldName];
 
-            field.isDependent() && console.warn("expected inline data for dependent field",
-                                                fieldName, "in", this);
+            if (field.isDependent()) {
+                console.warn("expected inline data for dependent field", fieldName, "in", this);
+            }
 
             if (oldRelated && field.type ===  'many-to-one') {
                 // probably should never get here since the presence of an oldRelated

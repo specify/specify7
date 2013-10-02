@@ -193,7 +193,7 @@ define(['jquery'], function($) {
                     "name": "accessionAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "AccessionAttachment",
                     "otherSideName": "accession"
                 },
@@ -1202,7 +1202,7 @@ define(['jquery'], function($) {
                     "name": "agentAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "AgentAttachment",
                     "otherSideName": "agent"
                 },
@@ -2406,7 +2406,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "Attachment",
                     "otherSideName": "attachmentImageAttribute"
                 },
@@ -3103,7 +3103,7 @@ define(['jquery'], function($) {
                     "name": "borrowAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "BorrowAttachment",
                     "otherSideName": "borrow"
                 },
@@ -3747,7 +3747,7 @@ define(['jquery'], function($) {
                     "name": "collectingEventAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "CollectingEventAttachment",
                     "otherSideName": "collectingEvent"
                 },
@@ -7134,7 +7134,7 @@ define(['jquery'], function($) {
                     "name": "conservDescriptionAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "ConservDescriptionAttachment",
                     "otherSideName": "conservDescription"
                 },
@@ -7456,7 +7456,7 @@ define(['jquery'], function($) {
                     "name": "conservEventAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "ConservEventAttachment",
                     "otherSideName": "conservEvent"
                 },
@@ -7981,7 +7981,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "DNASequenceAttachment",
                     "otherSideName": "dnaSequence"
                 },
@@ -8379,7 +8379,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "DNASequencingRunAttachment",
                     "otherSideName": "dnaSequencingRun"
                 },
@@ -10726,7 +10726,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "FieldNotebookAttachment",
                     "otherSideName": "fieldNotebook"
                 },
@@ -10937,7 +10937,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "FieldNotebookPageAttachment",
                     "otherSideName": "fieldNotebookPage"
                 },
@@ -11155,7 +11155,7 @@ define(['jquery'], function($) {
                     "name": "attachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "FieldNotebookPageSetAttachment",
                     "otherSideName": "fieldNotebookPageSet"
                 },
@@ -12922,7 +12922,7 @@ define(['jquery'], function($) {
                     "name": "giftAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "GiftAttachment",
                     "otherSideName": "gift"
                 },
@@ -15078,7 +15078,7 @@ define(['jquery'], function($) {
                     "name": "loanAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "LoanAttachment",
                     "otherSideName": "loan"
                 },
@@ -15921,7 +15921,7 @@ define(['jquery'], function($) {
                     "name": "localityAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "LocalityAttachment",
                     "otherSideName": "locality"
                 },
@@ -17234,7 +17234,7 @@ define(['jquery'], function($) {
                     "name": "permitAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "PermitAttachment",
                     "otherSideName": "permit"
                 }
@@ -17925,7 +17925,7 @@ define(['jquery'], function($) {
                     "name": "preparationAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "PreparationAttachment",
                     "otherSideName": "preparation"
                 },
@@ -19272,7 +19272,7 @@ define(['jquery'], function($) {
                     "name": "referenceWorkAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "ReferenceWorkAttachment",
                     "otherSideName": "referenceWork"
                 },
@@ -19584,7 +19584,7 @@ define(['jquery'], function($) {
                     "name": "repositoryAgreementAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "RepositoryAgreementAttachment",
                     "otherSideName": "repositoryAgreement"
                 },
@@ -23762,7 +23762,7 @@ define(['jquery'], function($) {
                     "name": "taxonAttachments",
                     "type": "one-to-many",
                     "required": false,
-                    "dependent": false,
+                    "dependent": true,
                     "relatedModelName": "TaxonAttachment",
                     "otherSideName": "taxon"
                 },

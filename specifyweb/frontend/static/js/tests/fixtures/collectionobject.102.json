@@ -6,7 +6,7 @@
                    "exchangeoutpreps": "/api/specify/exchangeoutprep/?preparation=3752",
                    "id": 3752,
                    "preparedbyagent": null,
-                   "preparationattachments": "/api/specify/preparationattachment/?preparation=3752",
+                   "preparationattachments": [],
                    "collectionobject": "/api/specify/collectionobject/102/",
                    "modifiedbyagent": "/api/specify/agent/1514/",
                    "storage": null,

@@ -199,7 +199,7 @@ define([
                 equal(collection.parent, undefined, 'the related collection has no link back to the parent resource');
                 equal(collection.length, 0, 'the collection starts out unpopulated');
                 start();
-            });
+            }).fail(function() { console.log(arguments); });
         });
 
         asyncTest('rget one-to-many dependent', function() {
@@ -225,12 +225,12 @@ define([
 
         asyncTest('rget zero-to-one', function() {
             expect(5);
-            var resource = new schema.models.Locality.Resource({id: 341});
+            var resource = new schema.models.Locality.Resource({id: 100});
             resource.rget('localitydetails').done(function(result) {
-                equal(requestCounter, 2);
+                equal(requestCounter, 1);
                 ok(result instanceof schema.models.LocalityDetail.Resource);
                 equal(result.parent, resource, 'zero-to-one related resource gets correct parent link');
-                equal(result.id, 126);
+                equal(result.id, 42);
                 equal(result.parent, resource, 'parent reference is correct');
                 start();
             });
@@ -238,9 +238,9 @@ define([
 
         asyncTest('rget zero-to-one null', function() {
             expect(2);
-            var resource = new schema.models.Locality.Resource({id: 100});
+            var resource = new schema.models.Locality.Resource({id: 341});
             resource.rget('localitydetails').done(function(result) {
-                equal(requestCounter, 2);
+                equal(requestCounter, 1);
                 equal(result, null);
                 start();
             });
@@ -296,18 +296,20 @@ define([
             });
         });
 
-        asyncTest('rget zero-to-one cached', function() {
-            expect(3);
-            var resource = new schema.models.Locality.Resource({id: 341});
-            resource.rget('localitydetails').done(function(outer) {
-                equal(requestCounter, 2);
-                resource.rget('localitydetails').done(function(inner) {
-                    equal(requestCounter, 2);
-                    strictEqual(inner, outer);
-                    start();
-                });
-            });
-        });
+
+        // Currently there are no zero-to-one fields that are not dependent.
+        // asyncTest('rget zero-to-one cached', function() {
+        //     expect(3);
+        //     var resource = new schema.models.Locality.Resource({id: 341});
+        //     resource.rget('localitydetails').done(function(outer) {
+        //         equal(requestCounter, 2);
+        //         resource.rget('localitydetails').done(function(inner) {
+        //             equal(requestCounter, 2);
+        //             strictEqual(inner, outer);
+        //             start();
+        //         });
+        //     });
+        // });
 
         asyncTest('needsSaved', function() {
             expect(4);
