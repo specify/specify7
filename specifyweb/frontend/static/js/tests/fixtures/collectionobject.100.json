@@ -35,7 +35,7 @@
                    "preptype": "/api/specify/preptype/2/",
                    "deaccessionpreparations": "/api/specify/deaccessionpreparation/?preparation=20462",
                    "resource_uri": "/api/specify/preparation/20462/"}],
- "accession": "/api/specify/accession/19/",
+ "accession": "/api/specify/accession/1/",
  "leftsiderels": "/api/specify/collectionrelationship/?leftside=100",
  "paleocontext": null,
  "conservdescriptions": [],

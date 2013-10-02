@@ -1,7 +1,7 @@
-define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, schema, whenAll) -> ->
+define ['jquery', 'underscore', 'schema', 'whenall'], ($, _, schema, whenAll) -> ->
 
     getCollectionObject = (id, callback) ->
-        collectionobject = new (api.Resource.forModel 'collectionobject') id: id
+        collectionobject = new schema.models.CollectionObject.Resource id: id
         collectionobject.fetch().done callback
         collectionobject
 
@@ -17,46 +17,35 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
         null
 
     module 'businessrules'
-    test 'saverequired event', ->
-        expect 4
-        stop()
-        collectionobject = getCollectionObject 100, ->
-            collectionobject.rget('collectingevent.modifiedbyagent.remarks').done (remarks) ->
-                collectingevent = collectionobject.relatedCache.collectingevent
-                agent = collectingevent.relatedCache.modifiedbyagent
+    asyncTest 'saverequired event', ->
+        expect 3
+        collectionobject = new schema.models.CollectionObject.Resource id: 100
+        collectionobject.rget('collectionobjectattribute').done (coa) ->
+            checks = [
+                requireEvent collectionobject, 'saverequired', 'saverequired on CO'
+                rejectEvent collectionobject, 'change', 'change on CO'
+                requireEvent coa, 'saverequired', 'saverequired on COA'
+                requireEvent coa, 'change', 'change on COA'
+            ]
 
+            whenAll(checks).done -> start()
+
+            coa.set 'remarks', 'foobar'
+
+    asyncTest 'saveblocked event', ->
+        expect 5
+        collectionobject = new schema.models.CollectionObject.Resource id: 100
+        collectionobject.rget('accession', true).done (accession) ->
+            accession.rget('accessionagents').done (AAs) ->
                 checks = [
-                    rejectEvent collectionobject, 'saverequired', 'saverequired on CO'
-                    requireEvent collectionobject, 'subsaverequired', 'subsaverequired on CO'
-                    rejectEvent collectionobject, 'change', 'change on CO'
-
-                    rejectEvent collectingevent, 'saverequired', 'saverequired on CE'
-                    requireEvent collectingevent, 'subsaverequired', 'subsaverequired on CE'
-                    rejectEvent collectingevent, 'change', 'change on CE'
-
-                    requireEvent agent, 'saverequired', 'saverequired on agent'
-                    rejectEvent agent, 'subsaverequired', 'subsaverequired on agent'
-                    requireEvent agent, 'change', 'change on agent'
-                ]
-                whenAll(checks).done -> start()
-
-                agent.set 'remarks', if remarks is 'foo' then 'bar' else 'foo'
-
-    test 'saveblocked event', ->
-        stop()
-        collectionobject = getCollectionObject 100, ->
-            collectionobject.rget('accession.accessionagents', true).done (AAs) ->
-                accession = collectionobject.relatedCache.accession
-
-                checks = [
-                    requireEvent collectionobject, 'saveblocked', 'saveblocked reaches CO'
-                    requireEvent collectionobject, 'subsaverequired', 'subsaverequired reaches CO'
+                    rejectEvent collectionobject, 'saveblocked', 'saveblocked reaches CO'
+                    rejectEvent collectionobject, 'saverequired', 'saverequired reaches CO'
 
                     requireEvent accession, 'saveblocked', 'saveblocked reaches accession'
-                    requireEvent accession, 'subsaverequired', 'subsaverequired reaches accession'
+                    requireEvent accession, 'saverequired', 'saverequired reaches accession'
                 ]
 
-                newagent = new (api.Resource.forModel 'accessionagent')()
+                newagent = new schema.models.AccessionAgent.Resource()
                 newagent.set 'accession', accession.url()
                 AAs.add newagent
 
@@ -72,11 +61,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 existingRole = AAs.at(0).get 'role'
                 newagent.set 'role', existingRole
 
-    test 'delete blockers', ->
+    asyncTest 'delete blockers', ->
         expect 3
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 3
-        accession.rget('collectionobjects', true).done (COs) ->
+        accession = new schema.models.Accession.Resource id: 3
+        accession.rget('collectionobjects').done (COs) ->
             ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
             accession.on 'candelete', ->
                 ok true, 'candelete event triggered'
@@ -87,21 +75,19 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 if fieldname is 'collectionobjects' then $.when 0 else orig fieldname
             accession.trigger 'remove:collectionobjects'
 
-    test 'checkCanDelete with block', ->
+    asyncTest 'checkCanDelete with block', ->
         expect 1
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 3
-        accession.rget('collectionobjects', true).done (COs) ->
+        accession = new schema.models.Accession.Resource id: 3
+        accession.rget('collectionobjects').done (COs) ->
             ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
             accession.on 'candelete', ->
                 ok false, 'candelete event should not be triggered'
             accession.businessRuleMgr.checkCanDelete().done ->
                 _.delay start, 1000
 
-    test 'checkCanDelete with no block', ->
+    asyncTest 'checkCanDelete with no block', ->
         expect 2
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 1
+        accession = new schema.models.Accession.Resource id: 1
         accession.rget('collectionobjects', true).done (COs) ->
             ok (not accession.businessRuleMgr.canDelete()), 'starts with delete blocked'
             accession.on 'candelete', ->
@@ -109,10 +95,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 start()
             accession.businessRuleMgr.checkCanDelete()
 
-    test 'checkCanDelete with no blocking fields', ->
+    asyncTest 'checkCanDelete with no blocking fields', ->
         expect 1
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 1
+        accession = new schema.models.Accession.Resource id: 1
         accession.fetch().done ->
             accession.businessRuleMgr.deleteBlockers = {}
             accession.on 'candelete', ->
@@ -121,10 +106,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             accession.businessRuleMgr.checkCanDelete()
 
     module 'collection object businessrules'
-    test 'dup catalognumber', ->
+    asyncTest 'dup catalognumber', ->
         expect 3
-        stop()
-        collectionobject = getCollectionObject 100, ->
+        collectionobject = new schema.models.CollectionObject.Resource id: 100
+        collectionobject.fetch().done ->
             collectionobject.on 'saveblocked:catalognumber', (blocker) ->
                 ok true, 'save is blocked by catalognumber'
                 blockers = blocker.resource.saveBlockers.blockersForField 'catalognumber'
@@ -133,10 +118,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 start()
             collectionobject.set 'catalognumber',  "000037799"
 
-    test 'catalognumber unique', ->
+    asyncTest 'catalognumber unique', ->
         expect 3
-        stop()
-        collectionobject = getCollectionObject 100, ->
+        collectionobject = new schema.models.CollectionObject.Resource id: 100
+        collectionobject.fetch().done ->
             collectionobject.on 'saveblocked', (resource) ->
                 ok true, 'save is blocked'
 
@@ -148,10 +133,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 _.defer -> collectionobject.set 'catalognumber', "999999999"
             collectionobject.set 'catalognumber', "000037799"
 
-    test 'catalognumber set to original value', ->
+    asyncTest 'catalognumber set to original value', ->
         expect 2
-        stop()
-        collectionobject = getCollectionObject 100, ->
+        collectionobject = new schema.models.CollectionObject.Resource id: 100
+        collectionobject.fetch().done ->
             origCatNum = collectionobject.get 'catalognumber'
             collectionobject.on 'saveblocked', (resource) ->
                 ok true, 'save is blocked'
@@ -161,11 +146,10 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
                 _.defer -> collectionobject.set 'catalognumber', origCatNum
             collectionobject.set 'catalognumber', "000037799"
 
-    test 'catalognumber unique in collection where some collection objects have been fetched', ->
+    asyncTest 'catalognumber unique in collection where some collection objects have been fetched', ->
         expect 6
-        stop()
-        collection = new (api.Resource.forModel 'collection') id: 4
-        collection.rget('collectionobjects', true).done (COs) ->
+        collection = new schema.models.Collection.Resource id: 4
+        collection.rget('collectionobjects').done (COs) -> COs.fetch().done ->
             tests = [
                 #i, catNumber,  [required events], [reject events], doc string
 
@@ -199,10 +183,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             nextTest()
 
     module 'institution business rules'
-    test 'institution name is not unique', ->
+    asyncTest 'institution name is not unique', ->
         expect 4
-        stop()
-        institution = new (api.Resource.forModel 'institution')()
+        institution = new schema.models.Institution.Resource()
         checkReason = (blocker) ->
                 ok (_.isString blocker.reason), blocker.reason
 
@@ -213,10 +196,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
 
         institution.set 'name', 'Natural History Museum'
 
-    test 'institution name is unique', ->
+    asyncTest 'institution name is unique', ->
         expect 2
-        stop()
-        institution = new (api.Resource.forModel 'institution')()
+        institution = new schema.models.Institution.Resource()
         requireEvent(institution, 'saveblocked', 'saveblocked triggered').done ->
             requireEvent(institution, 'oktosave', 'oktosave').done -> _.defer start
             _.defer -> institution.set 'name', 'foobar'
@@ -224,12 +206,11 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
         institution.set 'name', 'Natural History Museum'
 
     module 'collector business rules'
-    test 'collector agent not unique in collectingevent', ->
+    asyncTest 'collector agent not unique in collectingevent', ->
         expect 4
-        stop()
-        collectingevent = new (api.Resource.forModel 'collectingevent') id: 715
-        collectingevent.rget('collectors', true).done (collectors) ->
-            newcollector = new (api.Resource.forModel 'collector')()
+        collectingevent = new schema.models.CollectingEvent.Resource id: 715
+        collectingevent.rget('collectors').done (collectors) ->
+            newcollector = new schema.models.Collector.Resource()
             newcollector.set 'collectingevent', collectingevent.url()
 
             requireEvent(newcollector, 'saveblocked:agent', 'saveblocked').done (blocker) ->
@@ -244,10 +225,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             newcollector.set 'agent', '/api/specify/agent/634/'
 
     module 'accessionagent business rules'
-    test 'accessionagent with undefined accession', ->
+    asyncTest 'accessionagent with undefined accession', ->
         expect 1
-        stop()
-        accessionagent = new (api.Resource.forModel 'accessionagent')()
+        accessionagent = new schema.models.AccessionAgent.Resource()
         whenAll([
             requireEvent accessionagent, 'saverequired'
             rejectEvent accessionagent, 'saveblocked'
@@ -255,10 +235,9 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
 
         accessionagent.set 'role', 'Donor'
 
-    test 'accessionagent with null accession', ->
+    asyncTest 'accessionagent with null accession', ->
         expect 1
-        stop()
-        accessionagent = new (api.Resource.forModel 'accessionagent')()
+        accessionagent = new schema.models.AccessionAgent.Resource()
         accessionagent.set 'accession', null
         whenAll([
             requireEvent accessionagent, 'saverequired'
@@ -266,12 +245,11 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
         ]).done -> _.defer start
         accessionagent.set 'role', 'Donor'
 
-    test 'accessionagent with new role in accession', ->
+    asyncTest 'accessionagent with new role in accession', ->
         expect 1
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 1
-        accession.rget('accessionagents', true).done (AAs) ->
-            newagent = new (api.Resource.forModel 'accessionagent')()
+        accession = new schema.models.Accession.Resource id: 1
+        accession.rget('accessionagents').done (AAs) ->
+            newagent = new schema.models.AccessionAgent.Resource()
             newagent.set 'accession', accession.url()
             AAs.add newagent
             whenAll([
@@ -280,12 +258,11 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             ]).done -> _.defer start
             newagent.set 'role', 'Donor'
 
-    test 'accessionagent with duped role in accession', ->
+    asyncTest 'accessionagent with duped role in accession', ->
         expect 2
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 1
-        accession.rget('accessionagents', true).done (AAs) ->
-            newagent = new (api.Resource.forModel 'accessionagent')()
+        accession = new schema.models.Accession.Resource id: 1
+        accession.rget('accessionagents').done (AAs) ->
+            newagent = new schema.models.AccessionAgent.Resource()
             newagent.set 'accession', accession.url()
             AAs.add newagent
             whenAll([
@@ -294,35 +271,33 @@ define ['jquery', 'underscore', 'specifyapi', 'schema', 'whenall'], ($, _, api, 
             ]).done -> _.defer start
             newagent.set 'role', 'Collector'
 
-    test 'accessionagent with duped role in repositoryagreement', ->
+    asyncTest 'accessionagent with duped role in repositoryagreement', ->
         expect 1
-        stop()
-        repositoryagreement = new (api.Resource.forModel 'repositoryagreement') id: 1
-        repositoryagreement.rget('repositoryagreementagents', true).done (AAs) ->
-            newagent1 = new (api.Resource.forModel 'accessionagent')()
+        repositoryagreement = new schema.models.RepositoryAgreement.Resource id: 1
+        repositoryagreement.rget('repositoryagreementagents').done (AAs) ->
+            newagent1 = new schema.models.AccessionAgent.Resource()
             newagent1.set 'repositoryagreement', repositoryagreement.url()
             AAs.add newagent1
             newagent1.set 'role', 'Collector'
 
-            newagent2 = new (api.Resource.forModel 'accessionagent')()
+            newagent2 = new schema.models.AccessionAgent.Resource()
             requireEvent(newagent2, 'saveblocked:role').done -> _.defer start
 
             newagent2.set 'repositoryagreement', repositoryagreement.url()
             AAs.add newagent2
             newagent2.set 'role', 'Collector'
 
-    test 'accessionagent with duped role in both accession and repositoryagreement', ->
+    asyncTest 'accessionagent with duped role in both accession and repositoryagreement', ->
         expect 7
-        stop()
-        accession = new (api.Resource.forModel 'accession') id: 1
-        repositoryagreement = new (api.Resource.forModel 'repositoryagreement') id: 1
-        repositoryagreement.rget('repositoryagreementagents', true).done (RAAs) ->
-            newagent1 = new (api.Resource.forModel 'accessionagent')()
+        accession = new schema.models.Accession.Resource id: 1
+        repositoryagreement = new schema.models.RepositoryAgreement.Resource id: 1
+        repositoryagreement.rget('repositoryagreementagents').done (RAAs) ->
+            newagent1 = new schema.models.AccessionAgent.Resource()
             newagent1.set 'repositoryagreement', repositoryagreement.url()
             RAAs.add newagent1
             newagent1.set 'role', 'Collector'
 
-            newagent = new (api.Resource.forModel 'accessionagent')()
+            newagent = new schema.models.AccessionAgent.Resource()
 
             whenAll([
                 requireEvent newagent, 'saveblocked'

@@ -67,7 +67,7 @@ define(['underscore', 'schema'], function(_, schema) {
             ok(!field.isRequired, 'catalognumber is not required');
             equal(field.type, 'java.lang.String', 'catalognumber is String');
             ok(_.isUndefined(field.otherSideName), 'catalognumber has no othersidename');
-            ok(_.isUndefined(field.getRelatedModel()), 'relatedModel returns undefined');
+            throws(function() { field.getRelatedModel(); }, 'getRelatedModel throws error');
         });
 
         test('relationship field attributes', function () {
