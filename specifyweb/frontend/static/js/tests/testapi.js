@@ -420,7 +420,7 @@ define([
                 collectionobjects.add(newCO);
                 newCO.set('remarks', 'test');
                 ok(newCO.needsSaved, "now collectionobject does need saved");
-                ok(!resource.needsSaved, "the collecting event doesn't need saved");
+                ok(resource.needsSaved, "the collecting event needs saved");
                 return resource.save();
             }).done(function() {
                 equal(requestCounter, 1, 'one POST request');
@@ -716,7 +716,7 @@ define([
         });
 
         asyncTest('saverequired event on independent collection', function() {
-            expect(6);
+            expect(5);
             var accession = new schema.models.Accession.Resource({id: 3});
             accession.rget('collectionobjects').pipe(function(collectionobjects) {
                 return collectionobjects.fetch().done(function() {
@@ -726,7 +726,6 @@ define([
                         rejectEvent(accession, 'change', 'change on accession'),
                         rejectEvent(accession, 'saverequired', 'saverequired on accession'),
                         requireEvent(collectionobjects, 'change', 'change on collection objects'),
-                        rejectEvent(collectionobjects, 'saverequired', 'saverequired on collection objects'),
                         requireEvent(co, 'change', 'change on co'),
                         requireEvent(co, 'saverequired', 'saverequired on co')
                     ];

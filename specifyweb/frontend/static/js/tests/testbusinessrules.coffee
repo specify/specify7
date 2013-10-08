@@ -6,10 +6,8 @@ define ['jquery', 'underscore', 'schema', 'whenall'], ($, _, schema, whenAll) ->
         collectionobject
 
     requireEvent = (object, event, message) ->
-        deferred = $.Deferred()
-        object.on event, ->
-            deferred.resolve.apply deferred, arguments
-            ok true, (message or event)
+        deferred = $.Deferred().done -> ok true, (message or event)
+        object.on event, -> deferred.resolve.apply deferred, arguments
         deferred
 
     rejectEvent = (object, event, message) ->
@@ -288,7 +286,7 @@ define ['jquery', 'underscore', 'schema', 'whenall'], ($, _, schema, whenAll) ->
             newagent2.set 'role', 'Collector'
 
     asyncTest 'accessionagent with duped role in both accession and repositoryagreement', ->
-        expect 7
+        expect 5
         accession = new schema.models.Accession.Resource id: 1
         repositoryagreement = new schema.models.RepositoryAgreement.Resource id: 1
         repositoryagreement.rget('repositoryagreementagents').done (RAAs) ->
@@ -300,14 +298,15 @@ define ['jquery', 'underscore', 'schema', 'whenall'], ($, _, schema, whenAll) ->
             newagent = new schema.models.AccessionAgent.Resource()
 
             whenAll([
-                requireEvent newagent, 'saveblocked'
-                requireEvent newagent, 'saverequired'
+                requireEvent newagent, 'saveblocked newagent'
+                requireEvent newagent, 'saverequired newagent'
             ]).done -> _.defer ->
                 blockers = newagent.saveBlockers.getAll()
-                equal _.keys(blockers).length, 1
+                equal _.keys(blockers).length, 1, "one blocker"
                 _(blockers).each (blocker) ->
-                    equal blocker.field, 'role'
-                    equal blocker.reason, "Value must be unique to accession, Value must be unique to repositoryagreement"
+                    equal blocker.field, 'role', "blocker field is 'role'"
+                    equal blocker.reason, "Value must be unique to accession, Value must be unique to repositoryagreement",
+                        'blocker reason is correct'
                 start()
 
             newagent.set 'accession', accession.url()
