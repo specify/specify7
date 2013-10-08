@@ -483,11 +483,15 @@ define([
             }
             return Backbone.sync(method, resource, options);
         },
-        onChange: function(fieldName, callback) {
-            // bind a callback to the change event for the named field
-            fieldName = fieldName.toLowerCase();
-            var event = fieldName.split('.').length === 1 ? 'change:' : 'rchange:';
-            this.on(event + fieldName, function(resource, value) { callback(value); });
+        getResourceAndField: function(fieldName) {
+            var path = fieldName.split('.');
+            var getResource = path.length == 1 ? this.fetchIfNotPopulated() : (
+                fieldName = path.pop(), this.rget(path, true)
+            );
+
+            return getResource.pipe(function(resource) {
+                return $.when(resource, resource.specifyModel.getField(fieldName));
+            });
         },
         placeInSameHierarchy: function(other) {
             var self = this;

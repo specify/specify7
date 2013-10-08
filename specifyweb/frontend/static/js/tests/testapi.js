@@ -568,35 +568,10 @@ define([
             });
         });
 
-        asyncTest('onChange', function() {
-            expect(3);
-            var resource = new schema.models.CollectionObject.Resource({id: 100});
-            var ce, agent;
-            resource.rget('collectingevent').pipe(function(collectingevent) {
-                ce = collectingevent;
-                return ce.rget('modifiedbyagent');
-            }).pipe(function(a) {
-                agent = a;
-
-                var value = agent.get('remarks') === 'foo'? 'bar' : 'foo';
-
-                resource.onChange(
-                    'collectingevent.modifiedbyagent.remarks',
-                    function (val) {
-                        equal(val, value, 'onChange resource');
-                    });
-
-                ce.onChange('modifiedbyagent.remarks', function(val) {
-                    equal(val, value, 'onChange collectingevent');
-                });
-
-                agent.onChange('remarks', function(val) {
-                    equal(val, value, 'onChange agent');
-                });
-
-                agent.set('remarks', value);
-                start();
-            });
+        asyncTest('getResourceAndField', function() {
+            // TODO: write this
+            expect(0);
+            start();
         });
 
         asyncTest('placeInSameHierarchy', function() {

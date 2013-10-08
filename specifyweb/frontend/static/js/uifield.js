@@ -11,51 +11,52 @@ define([
             'change': 'change'
         },
         render: function() {
-            var self = this;
-            var fieldName = self.$el.attr('name');
-            var field = self.model.specifyModel.getField(fieldName);
-            if (!field) return self;
-            self.fieldName = fieldName;
-            self.field = field;
-
-            if (field.isRelationship) {
-                self.$el.removeClass('specify-field').addClass('specify-object-formatted');
-                self.$el.prop('readonly', true);
+            var render = _.bind(this._render, this);
+            this.model.getResourceAndField(this.$el.attr('name')).done(render);
+            return this;
+        },
+        _render: function(resource, field) {
+            if (!field) {
+                console.error('unknown field', this.$el.attr('name'), 'in', this.model);
+                return;
             }
+            var remote = resource != this.model;
+            this.readOnly = remote || field.isRelationship;
+            var fieldName = this.fieldName = field.name.toLowerCase();
+            this.field = field;
 
-            field.isRequired && self.$el.addClass('specify-required-field');
+            field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
 
-            self.formatter = self.field.getUIFormatter();
-            self.formatter && self.$el.attr('title', 'Format: ' + self.formatter.value());
+            this.readOnly && this.$el.prop('readonly', true);
 
-            var fetch = function() {
-                return self.model.rget(fieldName).pipe(function(value) {
-                    return field.isRelationship ? objformat(value) :
-                        fieldformat(field, value);
-                });
+            field.isRequired && this.$el.addClass('specify-required-field');
+
+            this.formatter = this.field.getUIFormatter();
+            this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
+
+            var setControl =_(this.$el.val).bind(this.$el);
+            var format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
+
+            var fillItIn = function() {
+                resource.rget(fieldName).pipe(format).then(setControl);
             };
 
-            var setControl =_(self.$el.val).bind(self.$el);
-
-            var fillItIn = function() { fetch().done(setControl); };
-
             fillItIn();
-            self.model.onChange(fieldName, fillItIn);
+            resource.on('change:' + fieldName, fillItIn);
+            if (this.readOnly) return;
 
-            if (!self.model.noValidation) {
-                self.toolTipMgr = new ToolTipMgr(self).enable();
-                self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, fieldName);
+            if (!this.model.noValidation) {
+                this.toolTipMgr = new ToolTipMgr(this).enable();
+                this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, fieldName);
             }
 
-            if (self.model.isNew()) {
-                if (self.fieldName.split('.').length === 1 &&
-                    self.formatter && self.formatter.canAutonumber())
+            if (this.model.isNew()) {
+                if (this.formatter && this.formatter.canAutonumber())
                 {
-                    self.model.set(self.fieldName, self.formatter.value());
+                    this.model.set(this.fieldName, this.formatter.value());
                 }
-                self.validate(true);
+                this.validate(true);
             }
-            return this;
         },
         validate: function(deferred) {
             var value = this.$el.val().trim();
@@ -92,6 +93,7 @@ define([
             }
         },
         change: function() {
+            if (this.readOnly) return;
             var result = this.validate();
             if (_.isUndefined(result)) return;
 

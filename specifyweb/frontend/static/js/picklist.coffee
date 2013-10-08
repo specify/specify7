@@ -19,21 +19,24 @@ define [
             change: 'setValueIntoModel'
 
         initialize: (options) ->
-            @field = @model.specifyModel.getField @$el.attr 'name'
-            if not @field?
-                console.log "can't setup picklist for unknown field #{ @model.specifyModel.name }.#{ @$el.attr 'name' }"
-                return
+            @initializing = @model.getResourceAndField(@$el.attr 'name').done (resource, field) =>
+                if not field
+                    console.log "can't setup picklist for unknown field #{ @model.specifyModel.name }.#{ @$el.attr 'name' }"
+                    return
 
-            @isAgentType = @model.specifyModel.name is 'Agent' and @field.name is 'agentType'
-            @pickListName = @field.getPickList()
+                @isAgentType = resource.specifyModel.name is 'Agent' and field.name is 'agentType'
+                @pickListName = field.getPickList()
 
-            # TODO: should check for picklist attribute on element
+                # TODO: should check for picklist attribute on element
 
-            if not @pickListName and not @isAgentType
-                console.log "can't determine picklist for field #{ @model.specifyModel.name }.#{ @field.name }"
-                return
+                if not @pickListName and not @isAgentType
+                    console.log "can't determine picklist for field #{ resource.specifyModel.name }.#{ field.name }"
+                    return
 
-            @initialized = true
+                @remote = resource != @model
+                @resource = resource
+                @field = field
+                @initialized = true
 
 
         setValueIntoModel: ->
@@ -107,19 +110,19 @@ define [
                             throw new Error 'unknown picklist type'
 
         render: ->
-            if not @initialized
-                console.log 'not initialized'
-                return @
-            if @rendered
-                throw new Exception 'already rendered'
-            @rendered = true
+            @initializing.then =>
+                if not @initialized
+                    console.error 'not initialized'
+                    return @
+                if @rendered
+                    throw new Exception 'already rendered'
+                @rendered = true
 
-            getValue = @model.rget @field.name
+                @getPickListItems().done (items) =>
+                    @setupOptions items, @resource.get(@field.name)
+                    @resource.on 'change:#{ field.name.toLowerCase() }', => @$el.val @resource.get @field.name
 
-            $.when(@getPickListItems(), getValue).done (items, value) =>
-                @setupOptions items, value
-                @model.onChange @field.name, (value) => @$el.val value
-
-            @toolTipMgr = new ToolTipMgr(@).enable()
-            @saveblockerEnhancement = new saveblockers.FieldViewEnhancer @, @field.name
+                if not @remote
+                    @toolTipMgr = new ToolTipMgr(@).enable()
+                    @saveblockerEnhancement = new saveblockers.FieldViewEnhancer @, @field.name
             @

@@ -9,19 +9,25 @@ define([
             'change': 'change'
         },
         render: function() {
-            var self = this;
-            var fieldName = self.$el.attr('name');
+            var render = _.bind(this._render, this);
+            this.model.getResourceAndField(this.$el.attr('name')).done(render);
+            return this;
+        },
+        _render: function(resource, field) {
+            if (!field) {
+                console.error('unknown field', this.$el.attr('name'), 'in', this.model);
+                return;
+            }
 
-            var fillItIn = function() {
-                self.model.rget(fieldName).done(function(value) {
-                    self.$el.prop('checked', value);
-                });
+            var fieldName = field.name.toLowerCase();
+
+            var $el = this.$el;
+            var set = function() {
+                $el.prop('checked', resource.get(fieldName));
             };
 
-            fillItIn();
-            self.model.onChange(fieldName, fillItIn);
-
-            return this;
+            set();
+            resource.on('change:' + fieldName, set);
         },
         change: function() {
             this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
