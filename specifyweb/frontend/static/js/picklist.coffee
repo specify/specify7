@@ -81,7 +81,7 @@ define [
             @model.businessRuleMgr.checkField @field.name
 
         getPickListItems: ->
-            if @isAgentType then agentTypesPL else
+            if @isAgentType then $.when(agentTypesPL) else
                 api.getPickListByName(@pickListName).pipe (picklist) ->
                     limit = picklist.get 'sizelimit'
                     limit = 0 if limit < 1
