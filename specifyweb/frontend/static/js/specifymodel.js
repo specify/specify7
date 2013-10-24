@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi',
+    'jquery', 'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi', 'domaindata',
     'text!context/schema_localization.json!noinline'
-], function($, _, icons, schema, ResourceBase, collectionapi, slJSON) {
+], function($, _, icons, schema, ResourceBase, collectionapi, domainData, slJSON) {
     "use strict";
     var localization = $.parseJSON(slJSON);
 
@@ -33,7 +33,11 @@ define([
         this.fields = _.map(tableDef.fields, function(fieldDef) {
             return new schema.Field(model, fieldDef);
         }).concat(_.map(tableDef.relationships, function(relDef) {
-            return new schema.Relationship(model, relDef);
+            var rel = new schema.Relationship(model, relDef);
+            if (model.name == 'CollectionObject' && rel.name == 'collectingEvent') {
+                rel.dependent = domainData.embeddedCollectingEvent;
+            }
+            return rel;
         }));
     };
     _.extend(schema.Model.prototype, {
@@ -51,13 +55,7 @@ define([
             return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
         },
         getAllFields: function () {
-            var self = this;
-            if (self.fields) return self.fields;
-            self.fields = _.map(self.
-                self.node.find('field, relationship').map(function() {
-                    return new schema.Field(self, this);
-                }));
-            return self.fields;
+            return this.fields;
         },
         getLocalizedName: function() {
             return this._localization ? schema.unescape(this._localization.name) : this.name;

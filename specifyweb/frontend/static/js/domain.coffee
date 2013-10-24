@@ -1,4 +1,4 @@
-define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.json!noinline'], ($, _, schema, api, json) ->
+define ['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], ($, _, schema, api, data) ->
 
     takeBetween = (items, startElem, endElem) ->
         start = 1 +  _.indexOf items, startElem
@@ -6,8 +6,8 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'text!context/domain.jso
         _.rest (_.first items, end), start
 
     levels = {}
-    _.each $.parseJSON(json), (id, level) ->
-        levels[level] = new (schema.getModel(level).Resource) id: id
+    _.each ['collection', 'discipline', 'division', 'institution'], (level) ->
+        levels[level] = new (schema.getModel(level).Resource) id: data[level]
 
     api.on 'newresource', (resource) ->
         domainField = resource.specifyModel.orgRelationship()

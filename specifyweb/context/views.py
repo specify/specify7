@@ -89,12 +89,14 @@ def user(request):
 @require_GET
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
-    levels = ('collection', 'discipline', 'division', 'institution')
-    domain = {}
-    obj = type('dummy', (object,), {'collection': request.specify_collection})
-    for level in levels:
-        obj = getattr(obj, level)
-        domain[level] = obj.id
+    collection = request.specify_collection
+    domain = {
+        'collection': collection.id,
+        'discipline': collection.discipline.id,
+        'division': collection.discipline.division.id,
+        'institution': collection.discipline.division.institution.id,
+        'embeddedCollectingEvent': collection.isembeddedcollectingevent,
+        }
 
     return HttpResponse(simplejson.dumps(domain), content_type='application/json')
 

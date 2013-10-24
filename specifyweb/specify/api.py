@@ -283,7 +283,10 @@ def handle_fk_fields(collection, agent, obj, data):
         except ObjectDoesNotExist:
             old_related = None
 
-        dependent = obj.specify_model.get_field(field_name).dependent
+        dependent = obj.specify_model.get_field(field_name).dependent or (
+            obj.__class__ is models.Collectionobject and
+            field_name == 'collectingevent' and
+            obj.collection.isembeddedcollectingevent)
 
         if val is None:
             setattr(obj, field_name, None)
@@ -487,7 +490,11 @@ def field_to_val(obj, field):
     be either a regular field or a *-to-one field.
     """
     if isinstance(field, ForeignKey):
-        if obj.specify_model.get_field(field.name).dependent:
+        dependent = obj.specify_model.get_field(field.name).dependent or (
+            obj.__class__ is models.Collectionobject and
+            field.name == 'collectingevent' and
+            obj.collection.isembeddedcollectingevent)
+        if dependent:
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
             return obj_to_data(related_obj)
