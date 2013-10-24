@@ -2,7 +2,7 @@
 Specify Application resources are hierarchical in nature and may be stored in either the
 database or the filesystem with database resources taking precedence over the filesystem.
 """
-import os
+import os, errno
 from xml.etree import ElementTree
 
 from django.conf import settings
@@ -53,6 +53,7 @@ def load_resource_at_level(collection, user, level, resource_name):
     path = get_path_for_level(collection, user, level)
     if path is None: return None
     registry = load_registry(path)
+    if registry is None: return None
     return load_resource(path, registry, resource_name)
 
 def get_path_for_level(collection, user, level):
@@ -76,7 +77,11 @@ def load_registry(path, registry_filename='app_resources.xml'):
     The registry maps resource names to filename in the directory.
     """
     pathname = os.path.join(path, registry_filename)
-    return ElementTree.parse(pathname)
+    try:
+        return ElementTree.parse(pathname)
+    except IOError as e:
+        if e.errno == errno.ENOENT: return None
+        else: raise
 
 def load_resource(path, registry, resource_name):
     """Try to load the named resource using the given directory

@@ -87,6 +87,7 @@ def load_viewsets(collection, user, level):
 
     # The viewset registry lists all the viewset files for that directory.
     registry = AR.load_registry(path, 'viewset_registry.xml')
+    if registry is None: return []
 
     # Load them all.
     return (get_viewset_from_file(path, f.attrib['file'])
