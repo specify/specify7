@@ -303,6 +303,7 @@ def handle_fk_fields(collection, agent, obj, data):
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = parse_uri(val)
             assert fk_model == field.related.parent_model.__name__.lower()
+            assert fk_id is not None
             setattr(obj, field_name + '_id', fk_id)
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
