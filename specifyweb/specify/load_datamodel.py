@@ -36,7 +36,7 @@ class Table(object):
 
     @property
     def is_attachment_jointable(self):
-        return self.name.endswith('attachment')
+        return self.name.endswith('Attachment') and self.name != 'Attachment'
 
 
 class Field(object):
