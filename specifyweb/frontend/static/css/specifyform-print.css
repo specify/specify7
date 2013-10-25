@@ -35,6 +35,10 @@ a {
     display: none !important;
 }
 
+.specify-attachment-display {
+    background-color: #fff;
+}
+
 select, input, textarea, .ui-button, .specify-subview-button-count {
     border: 1px solid #000 !important;
     color: #000 !important;
