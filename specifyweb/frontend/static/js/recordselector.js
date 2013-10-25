@@ -9,6 +9,7 @@ define([
         __name__: "RecordSelectorControls",
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
+            this.recordSelector.collection.on('add remove destroy', this.showHide, this);
             Backbone.View.prototype.initialize.call(this, options);
         },
         events: {
@@ -24,6 +25,10 @@ define([
                 evt.preventDefault();
                 this.recordSelector.visit();
             }
+        },
+        showHide: function() {
+            var action = this.recordSelector.collection.length == 0 ? 'hide' : 'show';
+            this.$('.specify-delete-related')[action]();
         }
     });
 
@@ -32,6 +37,7 @@ define([
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
+            this.showHide();
             return this;
         }
     });
@@ -41,6 +47,7 @@ define([
         render: function () {
             this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
                             '<input type="button" value="Delete" class="specify-delete-related">');
+            this.showHide();
             return this;
         }
     });
@@ -118,7 +125,6 @@ define([
             this.urlParam = options.urlParam || this.$el.data('url-param');
 
             this.collection.on('add', this.onAdd, this);
-
             this.collection.on('remove destroy', this.onRemove, this);
             this.populateForm = require('cs!populateform');
         },
