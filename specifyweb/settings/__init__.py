@@ -50,9 +50,10 @@ if 'test' in sys.argv:
     SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
     TESTING = False
-    SA_DATABASE_URL = 'mysql://%s:%s@localhost/%s' % (specify_settings.MASTER_NAME,
-                                                      specify_settings.MASTER_PASSWORD,
-                                                      specify_settings.DATABASE_NAME)
+    SA_DATABASE_URL = 'mysql://%s:%s@localhost/%s?charset=utf8' % (
+        specify_settings.MASTER_NAME,
+        specify_settings.MASTER_PASSWORD,
+        specify_settings.DATABASE_NAME)
 
 SA_SESSION = sessionmaker(
     bind=sqlalchemy.create_engine(SA_DATABASE_URL))
