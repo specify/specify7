@@ -1,4 +1,5 @@
 import operator
+import logging
 from collections import namedtuple
 
 from django.http import HttpResponse
@@ -13,6 +14,8 @@ from . import models
 
 from .fieldspec import FieldSpec
 
+logger = logging.getLogger(__name__)
+
 SORT_TYPES = [None, asc, desc]
 SORT_OPS = [None, operator.gt, operator.lt]
 
@@ -23,6 +26,47 @@ def value_from_request(field, get):
         return None
 
 FieldAndOp = namedtuple('FieldAndOp', 'field op')
+
+def filter_by_collection(model, query, collection):
+    if (model is models.Accession and
+        collection.discipline.division.institution.isaccessionsglobal):
+        logger.info("not filtering query b/c accessions are global in this database")
+        return query
+
+    if model is models.Taxon:
+        logger.info("filtering taxon to discipline: %s", collection.discipline.name)
+        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+
+    if model is models.Geography:
+        logger.info("filtering geography to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
+
+    if model is models.LithoStrat:
+        logger.info("filtering lithostrat to discipline: %s", collection.discipline.name)
+        return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
+
+    if model is models.GeologicTimePeriod:
+        logger.info("filtering geologic time period to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+
+    if model is models.Storage:
+        logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
+        return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
+
+    for filter_col, scope, scope_name in (
+        ('CollectionID'       , lambda collection: collection, lambda o: o.collectionname),
+        ('collectionMemberId' , lambda collection: collection, lambda o: o.collectionname),
+        ('DisciplineID'       , lambda collection: collection.discipline, lambda o: o.name),
+        ('DivisionID'         , lambda collection: collection.discipline.division, lambda o: o.name),
+        ('InstitutionID'      , lambda collection: collection.discipline.division.institution, lambda o: o.name)):
+
+        if hasattr(model, filter_col):
+            o = scope(collection)
+            logger.info("filtering query by %s: %s", filter_col, scope_name(o))
+            return query.filter(getattr(model, filter_col) == o.id)
+
+    logger.warn("query not filtered by scope")
+    return query
 
 @require_GET
 @login_required
@@ -37,6 +81,7 @@ def query(request, id):
     model = models.models_by_tableid[sp_query.contextTableId]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
+    query = filter_by_collection(model, query, request.specify_collection)
 
     headers = ['id']
     order_by_exprs = []
