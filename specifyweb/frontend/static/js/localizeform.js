@@ -56,9 +56,14 @@ define(['jquery', 'cs!props', 'schema',
 
             $('.specify-field', form).each(function() {
                 var control = $(this);
-                var field = model.getField(getControlFieldName(control));
-                if (field && field.isRequiredBySchemaLocalization())
-                    control.addClass('specify-required-field');
+                var fieldName = getControlFieldName(control);
+                if (fieldName) {
+                    var field = model.getField(fieldName);
+                    if (field && field.isRequiredBySchemaLocalization())
+                        control.addClass('specify-required-field');
+                } else {
+                    console.error("control without name", this);
+                }
             });
         }
 

@@ -12,7 +12,12 @@ define([
         },
         render: function() {
             var render = _.bind(this._render, this);
-            this.model.getResourceAndField(this.$el.attr('name')).done(render);
+            var fieldName = this.$el.attr('name');
+            if (!fieldName) {
+                console.error("missing field name", this.el);
+                return this;
+            }
+            this.model.getResourceAndField(fieldName).done(render);
             return this;
         },
         _render: function(resource, field) {
