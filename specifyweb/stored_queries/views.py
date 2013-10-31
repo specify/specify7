@@ -24,14 +24,6 @@ def value_from_request(field, get):
 
 FieldAndOp = namedtuple('FieldAndOp', 'field op')
 
-def build_filter_previous(field_op_values):
-    field, op, value = field_op_values.pop(0)
-    if len(field_op_values) < 1:
-        return op(field, value)
-    else:
-        return or_(op(field, value),
-                   and_(field == value,
-                        build_filter_previous(field_op_values)))
 @require_GET
 @login_required
 def query(request, id):
