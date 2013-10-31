@@ -65,6 +65,7 @@ define([
     Field.forNode = function(node) {
         node = $(node);
         return new ({
+            'constant': ConstantField,
             'year': YearField,
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
@@ -76,6 +77,12 @@ define([
             byYear: node.attr('byyear') === 'true'
         });
     };
+
+    var ConstantField = Field.extend({
+        __name__: "ConstantField",
+        isWild: function() { return false; },
+        valueRegexp: Field.prototype.wildRegexp
+    });
 
     var NumericField = Field.extend({
         __name__: "NumericField",
@@ -102,10 +109,8 @@ define([
         }
     });
 
-    var SeparatorField = Field.extend({
-        __name__: "SeparatorField",
-        isWild: function() { return false; },
-        valueRegexp: Field.prototype.wildRegexp
+    var SeparatorField = ConstantField.extend({
+        __name__: "SeparatorField"
     });
 
     var CatalogNumberNumeric = UIFormatter.extend({
