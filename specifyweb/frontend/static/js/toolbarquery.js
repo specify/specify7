@@ -151,8 +151,11 @@ define([
         icon: '/images/Query32x32.png',
         execute: function() {
             if (dialog) return;
-            var queries = new schema.models.SpQuery.LazyCollection();
-            queries.fetch().done(function() { // TODO: fetch all?
+            var app = require('specifyapp');
+            var queries = new schema.models.SpQuery.LazyCollection({
+                filters: { specifyuser: app.user.id }
+            });
+            queries.fetch({ limit: 0 }).done(function() {
                 dialog = new QueryListDialog({ queries: queries });
                 $('body').append(dialog.el);
                 dialog.render();
