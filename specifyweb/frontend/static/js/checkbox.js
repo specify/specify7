@@ -9,8 +9,10 @@ define([
             'change': 'change'
         },
         render: function() {
-            var render = _.bind(this._render, this);
-            this.model.getResourceAndField(this.$el.attr('name')).done(render);
+            if (!this.$el.hasClass('specify-ignore-field')) {
+                var render = _.bind(this._render, this);
+                this.model.getResourceAndField(this.$el.attr('name')).done(render);
+            }
             return this;
         },
         _render: function(resource, field) {
@@ -30,7 +32,9 @@ define([
             resource.on('change:' + fieldName, set);
         },
         change: function() {
-            this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
+            if (!this.$el.hasClass('specify-ignore-field')) {
+                this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
+            }
         }
     });
 });

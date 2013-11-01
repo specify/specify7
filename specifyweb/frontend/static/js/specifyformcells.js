@@ -15,6 +15,7 @@ define([
                 }
                 var initialize = cell.attr('initialize');
                 var isRequired = cell.attr('isrequired');
+                var ignore = cell.attr('ignore');
                 processField(doingFormTable, mode, cell, id).appendTo(td);
                 var control = td.find('.specify-field');
                 if (control) {
@@ -23,6 +24,9 @@ define([
                     initialize && control.attr('data-specify-initialize', initialize);
                     if (isRequired && isRequired.toLowerCase() === 'true') {
                         control.addClass('specify-required-field');
+                    }
+                    if (ignore && ignore.toLowerCase() == 'true') {
+                        control.addClass('specify-ignore-field');
                     }
                 }
                 return td;
