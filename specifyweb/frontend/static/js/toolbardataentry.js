@@ -151,6 +151,7 @@ define([
     });
 
     return {
+        task: 'data',
         title: 'Data',
         icon: '/images/Data_Entry.png',
         execute: function() {

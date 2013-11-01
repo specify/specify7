@@ -40,21 +40,26 @@ define([
         },
         el: $('#site-header'),
         initialize: function() {
-            this.app = require('specifyapp');
+            var app = require('specifyapp');
+            this.user = app.user;
+
+            _.each(toolModules, function(module) {
+                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
+            });
         },
         render: function() {
             var _this = this;
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
             domain.levels.collection.fetchIfNotPopulated().done(function (collection) {
                 _this.$('#user-tools').prepend(
-                    $('<a>', {'class': 'username'}).text(_this.app.user.name), ' | ',
+                    $('<a>', {'class': 'username'}).text(_this.user.name), ' | ',
                     collection.get('collectionname'), ' | ');
             });
             this.$('#header-loading').remove();
             this.$el.append('<nav id="site-nav">');
             var ul = $('<ul>');
             _(toolModules).each(function(toolDef) {
-                $('<a>')
+                $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                     .text(toolDef.title)
                     .prepend($('<img>', {src: toolDef.icon}))
                     .appendTo($('<li>').appendTo(ul));
@@ -68,7 +73,7 @@ define([
             toolModules[index].execute();
         },
         openUserTools: function(evt) {
-            $(templates.usertools({user: this.app.user}))
+            $(templates.usertools({user: this.user}))
                 .appendTo(this.el)
                 .dialog({
                     modal: true,

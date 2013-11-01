@@ -147,6 +147,7 @@ define([
     });
 
     return {
+        task: 'query',
         title: title,
         icon: '/images/Query32x32.png',
         execute: function() {
