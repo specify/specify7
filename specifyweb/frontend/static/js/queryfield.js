@@ -66,7 +66,7 @@ define([
         },
         changed: function() {
             var value = this.getValue();
-            if (this.format) {
+            if (this.format && this.inputFormatter) {
                 var formatterValues = this.inputFormatter.parse(value); // TODO: don't accept autonumber patterns maybe...
                 formatterValues && (value = this.inputFormatter.canonicalize(formatterValues));
                 // TODO: make a warning for badly formatted input values?
@@ -150,6 +150,9 @@ define([
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');
                 this.formattedRecord = this.spqueryfield.get('isrelfld');
+                if (this.operation == 1 && this.value === "") {
+                    this.operation = 'anything';
+                }
             }
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
@@ -283,7 +286,9 @@ define([
             this.$('.field-select, .datepart-select').hide();
             this.$('.field-input').remove();
             this.$('.op-select, label.op-negate').show();
-            var opSelect = this.$('.op-type').empty().append('<option>Select Op...</option>');
+            var opSelect = this.$('.op-type').empty()
+                    .append('<option>Select Op...</option>')
+                    .append('<option value="anything">(anything)</option>');
             var type = this.getTypeForOp();
             _.each(opInfo, function(info, i) {
                 if (_(info.types).contains(type)) {
@@ -306,6 +311,9 @@ define([
                 .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
             if (this.formattedRecord) {
                 $('<a class="field-label-field">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
+                this.$('label.op-negate').hide();
+            } else if (this.operation == 'anything') {
+                $('<a class="field-operation">').text('(anything)').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
                 this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
@@ -363,7 +371,7 @@ define([
         },
         fieldComplete: function() {
             this.$('.field-select, .datepart-select, .op-select').hide();
-            if (!this.formattedRecord) {
+            if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
                     field: _.last(this.joinPath),
                     el: $('<span class="field-input">')
@@ -379,6 +387,9 @@ define([
         },
         opSelected: function() {
             this.operation = this.$('.op-type').val();
+            if (this.operation == 'anything') {
+                this.valueChanged(null, "");
+            }
             this.update();
         },
         opNegateChanged: function() {
@@ -435,7 +446,7 @@ define([
             var tableList = this.makeTableList();
             var stringId = this.makeStringId(tableList);
             var attrs = {
-                operstart: this.operation,
+                operstart: this.operation == 'anything' ? 1 : this.operation,
                 tablelist: tableList,
                 stringid: stringId.join('.'),
                 fieldname: _.last(stringId),
