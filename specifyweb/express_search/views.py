@@ -1,4 +1,5 @@
-import re
+import re, logging
+from collections import namedtuple
 from operator import and_, or_
 from datetime import date, datetime
 from xml.etree import ElementTree
@@ -14,31 +15,42 @@ from specifyweb.specify.views import login_required
 
 from specifyweb.context.app_resource import get_app_resource
 
+logger = logging.getLogger(__name__)
+
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
-class Term:
+
+class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_integer as_date")):
     discipline = None
-    def __init__(self, term):
-        self.is_suffix = term.startswith('*')
-        self.is_prefix = term.endswith('*')
-        self.term = term.strip('*')
+
+    @classmethod
+    def make_term(cls, term):
+        is_suffix = term.startswith('*')
+        is_prefix = term.endswith('*')
+        term = term.strip('*')
 
         try:
-            float(self.term)
-            self.is_number = True
+            float(term)
+            is_number = True
         except ValueError:
-            self.is_number = False
+            is_number = False
 
         try:
-            self.maybe_year = 1000 <= int(self.term) <= date.today().year
-            self.is_integer = True
+            maybe_year = 1000 <= int(term) <= date.today().year
+            is_integer = True
         except ValueError:
-            self.maybe_year = self.is_integer = False
+            maybe_year = is_integer = False
 
-        try:
-            self.as_date = datetime.strptime(self.term, '%m/%d/%Y').date()
-        except ValueError:
-            self.as_date = None
+        for format in ('%m/%d/%Y', '%Y-%m-%d',):
+            try:
+                as_date = datetime.strptime(term, format).date()
+                break
+            except ValueError:
+                pass
+        else:
+            as_date = None
+
+        return cls(term, is_suffix, is_prefix, is_number, maybe_year, is_integer, as_date)
 
     def create_filter(self, field):
         filter_map = {
@@ -78,19 +90,19 @@ class Term:
         return Q(**{ field.name + op: self.term })
 
     def create_integer_filter(self, field):
-        if not self.is_integer: return None
-        return Q(**{ field.name: int(self.term) })
+        if self.is_integer:
+            return Q(**{ field.name: int(self.term) })
 
     def create_date_filter(self, field):
         if self.maybe_year:
             return Q(**{ field.name + '__year': int(self.term) })
 
-        if not self.as_date: return None
-        return Q(**{ field.name: self.as_date })
+        if self.as_date:
+            return Q(**{ field.name: self.as_date })
 
     def create_float_filter(self, field):
-        if not self.is_number: return None
-        return Q(**{ field.name: float(self.term) })
+        if self.is_number:
+            return Q(**{ field.name: float(self.term) })
 
 def parse_search_str(collection, search_str):
     class TermForCollection(Term):
@@ -102,7 +114,7 @@ def parse_search_str(collection, search_str):
     else:
         terms = search_str.split()
 
-    return map(TermForCollection, terms)
+    return map(TermForCollection.make_term, terms)
 
 def build_queryset(searchtable, terms, collection):
     tablename = searchtable.find('tableName').text.capitalize()
@@ -193,10 +205,14 @@ def querycbx_search(request, model):
     filters = []
     for field in fields:
         filters_for_field = []
-        for term in parse_search_str(request.specify_collection, request.GET[field]):
+        terms = parse_search_str(request.specify_collection, request.GET[field])
+        logger.debug("found terms: %s for %s", terms, field)
+        for term in terms:
             filter_for_term = term.create_filter(model._meta.get_field(field))
             if filter_for_term is not None:
                 filters_for_field.append(filter_for_term)
+
+        logger.debug("filtering %s with %s", field, filters_for_field)
         if len(filters_for_field) > 0:
             filters.append(reduce(or_, filters_for_field))
 
