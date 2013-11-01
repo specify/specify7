@@ -191,7 +191,7 @@ define([
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
         _handleField: function(value, fieldName) {
-            if (_(['id', 'resource_uri']).contains(fieldName)) return value; // special fields
+            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return value; // special fields
 
             var field = this.specifyModel.getField(fieldName);
             if (!field) {
