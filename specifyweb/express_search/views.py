@@ -204,7 +204,7 @@ def querycbx_search(request, model):
         combined = reduce(and_, filters)
         qs = filter_by_collection(model.objects.filter(combined), request.specify_collection)
     else:
-        qs = model.objects.empty()
+        qs = model.objects.none()
 
     results = [obj_to_data(obj) for obj in qs[:10]]
     return HttpResponse(toJson(results), content_type='application/json')
