@@ -65,7 +65,7 @@ class RelatedSearch(object):
             'results': list(queryset),
             }
         if settings.DEBUG:
-            data['sql'] = str(queryset.query)
+            data['sql'] = unicode(queryset.query)
         return data
 
     def do_search(self, queryset, offset, limit):
