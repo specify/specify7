@@ -25,7 +25,7 @@ define([
                 console.error('unknown field', this.$el.attr('name'), 'in', this.model);
                 return;
             }
-            var remote = resource != this.model;
+            var remote = _.isNull(resource) || resource != this.model;
             this.readOnly = remote || field.isRelationship;
             var fieldName = this.fieldName = field.name.toLowerCase();
             this.field = field;
@@ -43,11 +43,11 @@ define([
             var format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
 
             var fillItIn = function() {
-                resource.rget(fieldName).pipe(format).then(setControl);
+                resource && resource.rget(fieldName).pipe(format).then(setControl);
             };
 
             fillItIn();
-            resource.on('change:' + fieldName, fillItIn);
+            resource && resource.on('change:' + fieldName, fillItIn);
             if (this.readOnly) return;
 
             if (!this.model.noValidation) {

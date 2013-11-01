@@ -484,13 +484,15 @@ define([
             return Backbone.sync(method, resource, options);
         },
         getResourceAndField: function(fieldName) {
+            var field = this.specifyModel.getField(fieldName);
+
             var path = fieldName.split('.');
             var getResource = path.length == 1 ? this.fetchIfNotPopulated() : (
-                fieldName = path.pop(), this.rget(path, true)
+                path.pop(), this.rget(path, true)
             );
 
             return getResource.pipe(function(resource) {
-                return $.when(resource, resource.specifyModel.getField(fieldName));
+                return $.when(resource, field);
             });
         },
         placeInSameHierarchy: function(other) {
