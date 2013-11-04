@@ -164,8 +164,10 @@ define([
             });
 
             if (!related.isNew()) {
-                this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                    '<a href="' + related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+                $('<a>', { href: related.viewUrl() })
+                    .addClass('intercept-navigation')
+                    .append('<span class="ui-icon ui-icon-link">link</span>')
+                    .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
             }
         },
         resourceSaved: function(related) {
