@@ -21,7 +21,7 @@ define [
                 children = new parentTreeDefItem.specifyModel.LazyCollection
                     filters: rankid__gt: parentTreeDefItem.get 'rankid'
 
-                children.fetch().pipe -> children # TODO: did we fetch them all?
+                children.fetch(limit: 0).pipe -> children
 
             fetch.done (children) => if fetch is @lastFetch
                 fieldName = @$el.attr 'name'

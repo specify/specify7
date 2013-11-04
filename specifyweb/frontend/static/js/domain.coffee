@@ -41,8 +41,7 @@ define ['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], ($, _, sc
             filter = {}; filter[path.join '__'] = domainResource.id
             collections = new schema.models.Collection.LazyCollection
                 filters: filter
-                # TODO: query collection should check that it returned all results
-            collections.fetch().pipe -> collections.models
+            collections.fetch({ limit: 0 }).pipe -> collections.models
 
 
         collectionsForResource: (resource) ->

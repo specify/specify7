@@ -32,6 +32,7 @@ define([
                 recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
                 ul.append(entry);
             });
+            this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Record Sets",
@@ -157,11 +158,12 @@ define([
         execute: function() {
             if (dialog) return;
             var recordSets = new schema.models.RecordSet.LazyCollection();
-            recordSets.fetch().done(function() { // TODO: fetch all, or something
-                dialog = new RecordSetsDialog({ recordSets: recordSets });
-                $('body').append(dialog.el);
-                dialog.render();
-            });
+            recordSets.fetch({ limit: 100 }) // That's a lot of record sets
+                .done(function() {
+                    dialog = new RecordSetsDialog({ recordSets: recordSets });
+                    $('body').append(dialog.el);
+                    dialog.render();
+                });
         }
     };
 });
