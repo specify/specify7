@@ -48,7 +48,8 @@ define([
                 latitude1: data[0],
                 long1text: data[1],
                 longitude1: data[1],
-                latlongtype: "Point"
+                latlongtype: "Point",
+                latlongmethod: "GEOLocate" // Presumably available in picklist.
             });
 
             $('#geolocate-dialog').dialog('close');

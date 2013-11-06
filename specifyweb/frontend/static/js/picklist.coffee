@@ -120,7 +120,7 @@ define [
 
                 @getPickListItems().done (items) =>
                     @setupOptions items, @resource.get(@field.name)
-                    @resource.on 'change:#{ field.name.toLowerCase() }', => @$el.val @resource.get @field.name
+                    @resource.on 'change:' + @field.name.toLowerCase(), => @$el.val @resource.get @field.name
 
                 if not @remote
                     @toolTipMgr = new ToolTipMgr(@).enable()
