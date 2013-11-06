@@ -84,11 +84,24 @@ def upload_db():
     mysql.wait()
 
     yield "syncing db.\n"
+    do_sync(db_name)
+    yield "done.\n"
+
+def do_sync(db_name):
     env = environ.copy()
     env['SPECIFY_DATABASE_NAME'] = db_name
     check_call(["/usr/bin/python", MANAGE_PY, "syncdb"], env=env)
 
-    yield "done.\n"
+@route('/sync/')
+def sync_confirm():
+    db_name = request.query['dbname']
+    return template('sync_confirm.tpl', db=db_name)
+
+@route('/sync/', method='POST')
+def sync():
+    db_name = request.forms['dbname']
+    do_sync(db_name)
+    redirect('/')
 
 @route('/export/')
 def export():
