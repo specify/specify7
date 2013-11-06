@@ -37,7 +37,7 @@ def main():
 
 
     show_databases = check_output(["/usr/bin/mysql", MYSQL_USER, MYSQL_PASS, "-e", "show databases"])
-    available_dbs = set(show_databases.split()[1:]) - {'information_schema', 'performance_schema', 'mysql'}
+    available_dbs = set(show_databases.split('\n')[1:]) - {'', 'information_schema', 'performance_schema', 'mysql'}
     return template('main.tpl',
                     servers=SERVERS,
                     db_map=db_map,
