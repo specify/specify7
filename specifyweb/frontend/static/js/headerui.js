@@ -59,7 +59,7 @@ define([
             this.$el.append('<nav id="site-nav">');
             var ul = $('<ul>');
             _(toolModules).each(function(toolDef) {
-                $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
+                toolDef.disabled || $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                     .text(toolDef.title)
                     .prepend($('<img>', {src: toolDef.icon}))
                     .appendTo($('<li>').appendTo(ul));
