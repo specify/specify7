@@ -14,6 +14,11 @@ server_time_delta = None
 class AttachmentError(Exception):
     pass
 
+def get_collection():
+    "Assumes that all collections are stored together."
+    from specifyweb.specify.models import Collection
+    return Collection.objects.all()[0].collectionname
+
 @login_required
 @require_GET
 def get_settings(request):
@@ -21,7 +26,7 @@ def get_settings(request):
         return HttpResponse("{}", content_type='application/json')
 
     data = {
-        'collection': settings.WEB_ATTACHMENT_COLLECTION,
+        'collection': get_collection(),
         'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
         }
     data.update(server_urls)
@@ -53,7 +58,7 @@ def make_attachment_filename(filename):
 def delete_attachment_file(attch_loc):
     data = {
         'filename': attch_loc,
-        'coll': settings.WEB_ATTACHMENT_COLLECTION,
+        'coll': get_collection(),
         'token': generate_token(get_timestamp(), attch_loc)
         }
     r = requests.post(server_urls["delete"], data=data)
