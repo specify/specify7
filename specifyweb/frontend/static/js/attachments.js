@@ -6,6 +6,11 @@ define([
 
     var settings = $.parseJSON(settingsJson);
 
+    if (_.isEmpty(settings)) {
+        console.warn("attachments unavailable");
+        return null;
+    }
+
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 
     function iconForMimeType(mimetype) {
