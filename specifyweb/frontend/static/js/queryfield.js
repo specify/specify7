@@ -308,15 +308,12 @@ define([
         },
         updateLabel: function() {
             var fieldLabel = this.$('.field-label').empty();
-            _.chain(this.joinPath)
-                .each(function(field) {
-                    $('<a class="field-label-field">')
-                        .text(field.getLocalizedName())
-                        .prepend($('<img>', { src: field.model.getIcon() }))
-                        .appendTo(fieldLabel);
-                });
-                // .invoke('getLocalizedName')
-                // .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
+            _.each(this.joinPath, function(field) {
+                $('<a class="field-label-field">')
+                    .text(field.getLocalizedName())
+                    .prepend($('<img>', { src: field.model.getIcon() }))
+                    .appendTo(fieldLabel);
+            });
             if (this.formattedRecord) {
                 $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
