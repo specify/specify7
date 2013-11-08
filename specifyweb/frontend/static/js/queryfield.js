@@ -84,17 +84,17 @@ define([
     };
 
     var opInfo = [
-        {opName: 'Like', types: ['strings']},
-        {opName: '=', types: ['strings', 'numbers', 'dates'], format: true},
-        {opName: '>', types: ['numbers', 'dates'], format: true},
-        {opName: '<', types: ['numbers', 'dates'], format: true},
-        {opName: '\u2265', types: ['numbers'], format: true},
-        {opName: '\u2264', types: ['numbers'], format: true},
-        {opName: 'True', types: ['bools'], input: null},
-        {opName: 'False', types: ['bools'], input: null},
+        {opName: 'Like', negation: 'Not Like', types: ['strings']},
+        {opName: '=', negation: '≠', types: ['strings', 'numbers', 'dates'], format: true},
+        {opName: '>', negation: '≯', types: ['numbers', 'dates'], format: true},
+        {opName: '<', negation: '≮', types: ['numbers', 'dates'], format: true},
+        {opName: '≥', negation: '≱', types: ['numbers'], format: true},
+        {opName: '≤', negation: '≰', types: ['numbers'], format: true},
+        {opName: 'True', negation: 'Not True', types: ['bools'], input: null},
+        {opName: 'False', negation: 'Not False', types: ['bools'], input: null},
         {opName: 'Does not matter', types: ['bools'], input: null},
 
-        {opName: 'Between', types: ['strings', 'dates', 'numbers'],
+        {opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers'],
          input: '<input type="text"> and <input type="text">',
          getValue: function() {
              return _.map(this.$('input'), function(input) { return $(input).val(); }).join(',');
@@ -105,11 +105,11 @@ define([
          }
         },
 
-        {opName: 'In', types: ['strings', 'numbers']},
-        {opName: 'Contains', types: ['strings']},
-        {opName: 'Empty', types: ['strings', 'bools', 'dates', 'numbers'], input: null},
-        {opName: 'True or Null', types: ['bools'], input: null},
-        {opName: 'False or Null', types: ['bools'], input: null}
+        {opName: 'In', negation: 'Not In', types: ['strings', 'numbers']},
+        {opName: 'Contains', negation: "Doesn't Contain", types: ['strings']},
+        {opName: 'Empty', negation: 'Not Empty', types: ['strings', 'bools', 'dates', 'numbers'], input: null},
+        {opName: 'True or Null', negation: 'False', types: ['bools'], input: null},
+        {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];
 
     var FieldInputUIByOp = _.map(opInfo, function(extras) {
