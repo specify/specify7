@@ -88,8 +88,8 @@ define([
         {opName: '=', types: ['strings', 'numbers', 'dates'], format: true},
         {opName: '>', types: ['numbers', 'dates'], format: true},
         {opName: '<', types: ['numbers', 'dates'], format: true},
-        {opName: '>=', types: ['numbers'], format: true},
-        {opName: '<=', types: ['numbers'], format: true},
+        {opName: '\u2265', types: ['numbers'], format: true},
+        {opName: '\u2264', types: ['numbers'], format: true},
         {opName: 'True', types: ['bools'], input: null},
         {opName: 'False', types: ['bools'], input: null},
         {opName: 'Does not matter', types: ['bools'], input: null},
@@ -173,18 +173,19 @@ define([
         },
         render: function() {
             this.$el.append(
-                '<button class="field-move-up" title="Move up.">Move up</button>',
-                '<button class="field-move-down" title="Move down.">Move down</button>',
                 '<button class="field-delete" title="Remove.">Remove</button>',
-                '<input type="checkbox" class="field-show" id="' + this.cid + '-show">',
-                '<label title="Show in results." for="' + this.cid + '-show" class="ui-icon ui-icon-lightbulb"></label>',
-                '<button class="field-sort" title="Sort.">Sort</button>',
                 '<span class="field-label">',
-                '<select class="field-select">',
+                '<span class="field-select-grp"><img><select class="field-select"></span>',
                 '<input type="checkbox" class="op-negate" id="' + this.cid + '-negate">',
                 '<label title="Negate." for="' + this.cid + '-negate" class="op-negate ui-icon ui-icon-cancel"></label>',
                 '<select class="op-select op-type">',
-                '<select class="datepart-select">'
+                '<select class="datepart-select">',
+                $('<span class="field-controls">').append(
+                    '<button class="field-move-up" title="Move up.">Move up</button>',
+                    '<button class="field-move-down" title="Move down.">Move down</button>',
+                    '<input type="checkbox" class="field-show" id="' + this.cid + '-show">',
+                    '<label title="Show in results." for="' + this.cid + '-show" class="ui-icon ui-icon-lightbulb"></label>',
+                    '<button class="field-sort" title="Sort.">Sort</button>')
             );
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
@@ -241,6 +242,7 @@ define([
             this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').remove();
 
+            this.$('.field-select-grp img').attr('src', this.table.getIcon());
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
             if (this.joinPath.length > 0) {
                 fieldSelect.append('<option value="format record">(' + this.formatOrAggregate() + ')</option>');
@@ -251,7 +253,7 @@ define([
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {
                     $('<option>', {value: field.name})
-                        .text(field.getLocalizedName())
+                        .text(field.getLocalizedName() + (field.isRelationship ? ' \u21a6' : ''))
                         .appendTo(fieldSelect);
                 });
 
@@ -259,15 +261,15 @@ define([
             if (getTreeDef) {
                 this.addTreeLevelsToFieldSelect(getTreeDef);
             } else {
-                fieldSelect.show();
+                this.$('.field-select-grp').show();
             }
         },
         formatOrAggregate: function() {
             return  (_.last(this.joinPath).type === 'one-to-many') ? 'aggregate' : 'format';
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
-            var fieldSelect = this.$('.field-select');
-            var optGroup = $('<optgroup label="Tree Ranks">').appendTo(fieldSelect);
+            var show = function() { this.$('.field-select-grp').show(); }.bind(this);
+            var optGroup = $('<optgroup label="Tree Ranks">').appendTo( this.$('.field-select') );
 
             getTreeDef.pipe(function(treeDef) {
                 return treeDef.rget('treedefitems').pipe(function (treeDefItems) {
@@ -279,11 +281,11 @@ define([
                         .text(item.get('name'))
                         .appendTo(optGroup);
                 });
-                fieldSelect.show();
+                show();
             });
         },
         setupOpSelect: function() {
-            this.$('.field-select, .datepart-select').hide();
+            this.$('.field-select-grp, .datepart-select').hide();
             this.$('.field-input').remove();
             this.$('.op-select, label.op-negate').show();
             var opSelect = this.$('.op-type').empty()
@@ -297,7 +299,7 @@ define([
             }, this);
         },
         setupDatePartSelect: function() {
-            this.$('.field-select, .op-select').hide();
+            this.$('.field-select-grp, .op-select').hide();
             this.$('.field-input').remove();
             var select = this.$('.datepart-select').empty().show();
             var options = _(['Extract...', 'None', 'Year', 'Month', 'Day']).each(function(datepart) {
@@ -307,10 +309,16 @@ define([
         updateLabel: function() {
             var fieldLabel = this.$('.field-label').empty();
             _.chain(this.joinPath)
-                .invoke('getLocalizedName')
-                .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
+                .each(function(field) {
+                    $('<a class="field-label-field">')
+                        .text(field.getLocalizedName())
+                        .prepend($('<img>', { src: field.model.getIcon() }))
+                        .appendTo(fieldLabel);
+                });
+                // .invoke('getLocalizedName')
+                // .each(function(fieldName) { $('<a class="field-label-field">').text(fieldName).appendTo(fieldLabel); });
             if (this.formattedRecord) {
-                $('<a class="field-label-field">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
+                $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else if (this.operation == 'anything') {
                 $('<a class="field-operation">').text('(anything)').appendTo(fieldLabel);
@@ -339,6 +347,7 @@ define([
         update: function() {
             var field = _.last(this.joinPath);
             this.updateLabel();
+            this.$('.field-controls').hide();
             if (this.formattedRecord) {
                 this.fieldComplete();
                 return;
@@ -349,6 +358,7 @@ define([
                 this.setupFieldSelect();
                 return;
             }
+
             if (!this.treeRank) {
 
                 if (field.isRelationship) {
@@ -370,13 +380,15 @@ define([
             this.fieldComplete();
         },
         fieldComplete: function() {
-            this.$('.field-select, .datepart-select, .op-select').hide();
+            this.$('.field-select-grp, .datepart-select, .op-select').hide();
+            this.$('.field-controls').show();
+            this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide();
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
                     field: _.last(this.joinPath),
                     el: $('<span class="field-input">')
                 });
-                this.inputUI.render().$el.appendTo(this.el);
+                this.inputUI.render().$el.insertBefore(this.$('.field-controls'));
                 this.inputUI.on('changed', this.valueChanged, this);
             }
             if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
