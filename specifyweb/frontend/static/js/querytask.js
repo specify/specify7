@@ -112,6 +112,7 @@ define([
 
                 var ul = self.$('.spqueryfields');
                 ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
+                ul.sortable({ update: self.trigger.bind(self, 'positionschanged') });
             });
 
             $('<table class="query-results" width="100%"></div>').appendTo(self.el);
@@ -134,7 +135,7 @@ define([
                 el: $('<li class="spqueryfield">'),
                 spqueryfield: newField
             });
-            this.$('.spqueryfields').append(addFieldUI.render().el);
+            this.$('.spqueryfields').append(addFieldUI.render().el).sortable('refresh');
             addFieldUI.on('completed', function() { this.fields.add(newField); }, this);
             this.trigger('positionschanged');
         },
