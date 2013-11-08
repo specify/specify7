@@ -379,7 +379,9 @@ define([
         fieldComplete: function() {
             this.$('.field-select-grp, .datepart-select, .op-select').hide();
             this.$('.field-controls').show();
-            this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide();
+            _.defer(function() {
+                this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide(500);
+            }.bind(this));
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
                     field: _.last(this.joinPath),
