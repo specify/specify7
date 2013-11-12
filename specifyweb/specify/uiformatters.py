@@ -11,9 +11,7 @@ def get_uiformatter(collection, user, formatter_name):
     node = ElementTree.XML(xml).find('.//format[@name="%s"]' % formatter_name)
     if node is None: return None
     external = node.find('external')
-    print external
     if external is not None:
-        print external.text
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
             return CatalogNumberNumeric()
