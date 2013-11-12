@@ -4,9 +4,9 @@ logger = logging.getLogger(__name__)
 from django.db import connection, transaction
 
 from .models import Splocalecontaineritem as Item
-from .uiformatters import get_uiformatter
+from .uiformatters import get_uiformatter, AutonumberOverflowException
 
-def autonumber(collection, user, obj):
+def autonumber_and_save(collection, user, obj):
     filters = dict(container__discipline=collection.discipline,
                    container__name=obj.__class__.__name__.lower(),
                    format__isnull=False)
@@ -24,9 +24,20 @@ def autonumber(collection, user, obj):
 
     if len(autonumber_fields) > 0:
         do_autonumbering(collection, obj, autonumber_fields)
-
+    else:
+        obj.save()
 
 def do_autonumbering(collection, obj, fields):
+    # Have to save the object before autonumbering b/c
+    # autonumber acquires a write lock on the model,
+    # but save touches other tables.
+
+    for formatter, vals in fields:
+        # Set all the fields to be autonumbered to NULL to
+        # avoid saving the placeholder value into db.
+        setattr(obj, formatter.field_name.lower(), None)
+    obj.save()
+
     table = obj._meta.db_table
     cursor = connection.cursor()
 

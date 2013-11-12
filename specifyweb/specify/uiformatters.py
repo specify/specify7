@@ -86,7 +86,9 @@ class UIFormatter(object):
             if field.inc:
                 new_val = ("%0" + str(field.size) + "d") % (1 + int(val))
                 if len(new_val) > field.size:
-                    raise AutonumberOverflowException()
+                    raise AutonumberOverflowException(
+                        'created value: %s longer than limit: %d current max: %s' %
+                        (new_val, field.size, prior))
                 filled.append(new_val)
             else:
                 filled.append(val)
