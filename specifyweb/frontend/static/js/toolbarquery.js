@@ -107,6 +107,7 @@ define([
     var EditQueryDialog = Backbone.View.extend({
         __name__: "EditQueryDialog",
         className: "query-edit-dialog",
+        events: {'click .query-export': 'exportQuery'},
         initialize: function(options) {
             this.spquery = options.spquery;
             this.model = schema.getModelById(this.spquery.get('contexttableid'));
@@ -134,6 +135,8 @@ define([
                         dialog.$el.dialog('close');
                         dialog = null;
                     });
+
+                    $('<input type="button" value="Export" class="query-export">').appendTo(form);
                 }
 
                 populateform(form, _this.spquery);
@@ -144,6 +147,40 @@ define([
                 }));
             });
             return this;
+        },
+        exportQuery: function() {
+            this.spquery.rget('fields').done(function(fields) {
+                var doc = document.implementation.createDocument("", "", null);
+                var query = doc.createElement("query");
+                query.setAttribute("name", this.spquery.get("name"));
+                query.setAttribute("contextName", this.spquery.get("contextname"));
+                query.setAttribute("contextTableId", this.spquery.get("contexttableid"));
+                query.setAttribute("isFavorite", this.spquery.get("isfavorite"));
+                query.setAttribute("named", "true");
+                query.setAttribute("ordinal", this.spquery.get("ordinal"));
+                query.setAttribute("appversion", "6.5.02"); // TODO: get appropriate value from somewhere
+
+                fields.each(this.exportField.bind(this, doc, query));
+
+                var queries = doc.createElement("queries");
+                queries.appendChild(query);
+                doc.appendChild(queries);
+
+                var blob = new Blob([
+                    new XMLSerializer().serializeToString(doc)
+                ], {type: 'application/xml'});
+
+                window.open(window.URL.createObjectURL(blob));
+            }.bind(this));
+        },
+        exportField: function(doc, query, field) {
+            var f = doc.createElement("field");
+            _.each(["position", "fieldName", "isNot", "isDisplay", "isPrompt", "isRelFld",
+                    "alwaysFilter", "stringId", "operStart", "operEnd", "startValue", "endValue",
+                    "sortType", "tableList", "contextTableIdent", "columnAlias"], function(attr) {
+                        f.setAttribute(attr, field.get(attr.toLowerCase()));
+                    });
+            query.appendChild(f);
         }
     });
 
