@@ -22,7 +22,7 @@ define([
         },
         _render: function(resource, field) {
             if (!field) {
-                console.error('unknown field', this.$el.attr('name'), 'in', this.model);
+                console.error('unknown field', this.$el.attr('name'), 'in', this.model, 'element:', this.$el);
                 return;
             }
             var remote = _.isNull(resource) || resource != this.model;
