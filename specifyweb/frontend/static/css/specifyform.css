@@ -132,6 +132,8 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-subviewbutton-icon, .specify-subview-button-count {
     display: table-cell;
+    max-width: 40px;
+    max-height: 20px;
 }
 
 .specify-formtable td, .specify-formtable th {
