@@ -1,4 +1,4 @@
-import re
+import re, logging
 from collections import namedtuple, deque
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,6 +9,8 @@ from sqlalchemy.util.langhelpers import symbol
 
 from . import models
 from .query_ops import QueryOps
+
+logger = logging.getLogger(__name__)
 
 class FieldSpec(namedtuple('FieldSpec', [
     'field_name',
@@ -91,8 +93,9 @@ class FieldSpec(namedtuple('FieldSpec', [
         return query, table
 
     def add_to_query(self, query, no_filter=False, collection=None):
+        logger.info("adding field %s to query", self)
         using_subquery = False
-        no_filter = no_filter or self.value == ''
+        no_filter = no_filter or (self.value == '' and not self.negate)
 
         query, table = self.build_join(query)
 
@@ -110,6 +113,7 @@ class FieldSpec(namedtuple('FieldSpec', [
             field = getattr(table, self.field_name)
 
         if not no_filter:
+            logger.debug("filtering field using value: %r", self.value)
             uiformatter = get_uiformatter(collection, table, self.field_name)
 
             op = QueryOps(uiformatter).by_op_num(self.op_num)
