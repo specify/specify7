@@ -1,14 +1,14 @@
 import re
 from collections import namedtuple, deque
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
 from sqlalchemy.util.langhelpers import symbol
 
 from . import models
 from .query_ops import QueryOps
-
-query_ops = QueryOps()
 
 class FieldSpec(namedtuple('FieldSpec', [
     'field_name',
@@ -110,7 +110,9 @@ class FieldSpec(namedtuple('FieldSpec', [
             field = getattr(table, self.field_name)
 
         if not no_filter:
-            op = query_ops.by_op_num(self.op_num)
+            uiformatter = get_uiformatter(collection, table, self.field_name)
+
+            op = QueryOps(uiformatter).by_op_num(self.op_num)
             f = op(field, self.value)
             if self.negate: f = not_(f)
             query = query.having(f) if using_subquery else query.filter(f)
@@ -119,6 +121,22 @@ class FieldSpec(namedtuple('FieldSpec', [
             query = query.reset_joinpoint()
 
         return query, field
+
+
+def get_uiformatter(collection, table, field_name):
+    from specifyweb.specify.models import Splocalecontaineritem
+    from specifyweb.specify.uiformatters import get_uiformatter
+    try:
+        field_format = Splocalecontaineritem.objects.get(
+            container__discipline=collection.discipline,
+            container__name=inspect(table).class_.__name__.lower(),
+            name=field_name,
+            format__isnull=False).format
+    except ObjectDoesNotExist:
+        return None
+    else:
+        return get_uiformatter(collection, None, field_format)
+
 
 def get_tree_def(query, collection, tree_name):
     if tree_name == 'Storage':

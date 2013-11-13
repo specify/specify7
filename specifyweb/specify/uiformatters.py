@@ -101,6 +101,9 @@ class UIFormatter(object):
                 filled.append(val)
         return filled
 
+    def canonicalize(self, values):
+        return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
+
 def new_field(node):
     Field = {
         'numeric': NumericField,
@@ -138,6 +141,9 @@ class Field(object):
         else:
             return self.value_regexp()
 
+    def canonicalize(self, value):
+        return value
+
 class NumericField(Field):
     def __init__(self, size, value=None, inc=False, by_year=False):
         value = size * '#'
@@ -165,6 +171,12 @@ class CatalogNumberNumeric(UIFormatter):
     class CNNField(NumericField):
         def __init__(self):
             NumericField.__init__(self, size=9, inc=True)
+
+        def value_regexp(self):
+            return r'[0-9]{0,%d}' % self.size
+
+        def canonicalize(self, value):
+            return '0' * (self.size - len(value)) + value
 
     def __init__(self):
         UIFormatter.__init__(self,
