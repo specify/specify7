@@ -29,6 +29,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return getattr(self, self.OPERATIONS[op_num])
 
     def format(self, value):
+        if self.uiformatter is None: return value
         return self.uiformatter.canonicalize(self.uiformatter.parse(value))
 
     def op_like(self, field, value):
