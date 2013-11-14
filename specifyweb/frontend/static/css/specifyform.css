@@ -276,13 +276,10 @@ div.results div {
     position: relative;
 }
 
-.list-dialog li a {
-    display: inline-block;
-    float: right;
-}
-
-.list-dialog li a:first-child {
-    float: none;
+.list-dialog li a.edit {
+    position: absolute;
+    right: 0px;
+    top: 0px;
 }
 
 .querybuilder-header {

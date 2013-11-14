@@ -1,10 +1,34 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyapi', 'navigation', 'cs!domain',
+    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'cs!domain',
     'resourceview', 'othercollectionview',
     'jquery-bbq'
-], function($, _, schema, api, navigation, domain, ResourceView, OtherCollectionView) {
+], function($, _, Backbone, schema, api, navigation, domain, ResourceView, OtherCollectionView) {
     "use strict";
     var app;
+
+    var EmptyRecordSetView = Backbone.View.extend({
+        __name__: "EmptyRecordSetView",
+        events: {
+            'click .recordset-delete': 'delete'
+        },
+        template: _.template('<h2>The Record Set "<%= name %>" contains no records.</h2>'
+                             + '<p>You can <a class="recordset-delete">delete</a> the record set or '
+                             + '<a class="recordset-add intercept-navigation">add</a> records to it.</p>'
+                             + '<p>Be aware that another user maybe getting ready to add records, '
+                             + 'so only delete this record set if you are sure it is not to be used.</p>'),
+        render: function() {
+            var specifyModel = schema.getModelById(this.model.get('dbtableid'));
+            this.$el.empty().append(this.template({ name: this.model.get('name') }));
+            this.$('.recordset-add, .recordset-delete').button();
+
+            var url = api.makeResourceViewUrl(specifyModel, null, this.model.id);
+            this.$('.recordset-add').attr('href', url);
+            return this;
+        },
+        delete: function() {
+            this.model.destroy().done(function() { navigation.go('/specify/'); });
+        }
+    });
 
     function recordSetView(id, index) {
         index = index ? parseInt(index, 10) : 0;
@@ -12,7 +36,8 @@ define([
 
         api.getRecordSetItem(recordSet, index).done(function(resource) {
             if (!resource) {
-                // TODO: something
+                app.setCurrentView(new EmptyRecordSetView({ model: recordSet }));
+                return;
             }
 
             // go to the actual resource

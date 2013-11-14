@@ -65,6 +65,10 @@ define([
             var model = treeResource.specifyModel.name.toLowerCase();
             var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
             return $.get(url).promise();
+        },
+        makeResourceViewUrl: function(specifyModel, resourceId, recordSetId) {
+            var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
+            return $.param.querystring(url, {recordsetid: recordSetId});
         }
     });
 

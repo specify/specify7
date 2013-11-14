@@ -14,7 +14,8 @@ define([
 
     var formsList = getAppResource('DataEntryTaskInit');
 
-    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>"><%= name %></a>'
+    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>">'
+                                 + '<%= name %><span class="item-count" style="display:none"> - </span></a>'
                                  + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
 
     var RecordSetsDialog = Backbone.View.extend({
@@ -31,6 +32,9 @@ define([
                 var entry = $(dialogEntry({ icon: icon, href: href, name: recordSet.get('name') }));
                 recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
                 ul.append(entry);
+                recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
+                    $('.item-count', entry).append(count).show();
+                });
             });
             this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);

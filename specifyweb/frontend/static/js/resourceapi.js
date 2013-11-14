@@ -111,8 +111,8 @@ define([
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
-            var url = '/specify/view/' + this.specifyModel.name.toLowerCase() + '/' + (this.id || 'new') + '/';
-            return $.param.querystring(url, {recordsetid: this.recordsetid});
+            var api = require('specifyapi');
+            return api.makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
         },
         get: function(attribute) {
             // case insensitive
