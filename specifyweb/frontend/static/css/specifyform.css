@@ -365,6 +365,10 @@ div.results div {
     right: 25px;
 }
 
+.spqueryfield .field-controls.hidden {
+    display: none;
+}
+
 .spqueryfield label.ui-state-active {
     background-color: #afa;
 }

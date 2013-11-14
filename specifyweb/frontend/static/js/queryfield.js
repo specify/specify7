@@ -60,6 +60,7 @@ define([
             this.$('input').val(value);
         },
         render: function() {
+            this.$el.empty();
             $('<a class="field-operation">').text(this.opName).appendTo(this.el);
             this.input && $(this.input).appendTo(this.el);
             return this;
@@ -180,6 +181,7 @@ define([
                 '<label title="Negate." for="' + this.cid + '-negate" class="op-negate ui-icon ui-icon-cancel"></label>',
                 '<select class="op-select op-type">',
                 '<select class="datepart-select">',
+                '<span class="field-input">',
                 $('<span class="field-controls">').append(
                     '<button class="field-move-up" title="Move up.">Move up</button>',
                     '<button class="field-move-down" title="Move down.">Move down</button>',
@@ -240,7 +242,7 @@ define([
         },
         setupFieldSelect: function() {
             this.$('.op-select, .datepart-select, label.op-negate').hide();
-            this.$('.field-input').remove();
+            this.$('.field-input').empty();
 
             this.$('.field-select-grp img').attr('src', this.table.getIcon());
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
@@ -286,7 +288,7 @@ define([
         },
         setupOpSelect: function() {
             this.$('.field-select-grp, .datepart-select').hide();
-            this.$('.field-input').remove();
+            this.$('.field-input').empty();
             this.$('.op-select, label.op-negate').show();
             var opSelect = this.$('.op-type').empty()
                     .append('<option>Select Op...</option>')
@@ -300,7 +302,7 @@ define([
         },
         setupDatePartSelect: function() {
             this.$('.field-select-grp, .op-select').hide();
-            this.$('.field-input').remove();
+            this.$('.field-input').empty();
             var select = this.$('.datepart-select').empty().show();
             var options = _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
                 $('<option>', {value: datepart}).text(datepart).appendTo(select);
@@ -351,7 +353,9 @@ define([
         update: function() {
             var field = _.last(this.joinPath);
             this.updateLabel();
-            this.$('.field-controls').hide();
+            this.$('.field-controls').addClass('hidden'); // jquery.hide() doesn't work.
+            // for some reason it causes display: block to be set when show is called.
+
             if (this.formattedRecord) {
                 this.fieldComplete();
                 return;
@@ -384,16 +388,16 @@ define([
         },
         fieldComplete: function() {
             this.$('.field-select-grp, .datepart-select, .op-select').hide();
-            this.$('.field-controls').show();
+            this.$('.field-controls').removeClass('hidden');
             _.defer(function() {
                 this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide(500);
             }.bind(this));
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
                     field: _.last(this.joinPath),
-                    el: $('<span class="field-input">')
+                    el: this.$('.field-input')
                 });
-                this.inputUI.render().$el.insertBefore(this.$('.field-controls'));
+                this.inputUI.render();
                 this.inputUI.on('changed', this.valueChanged, this);
             }
             if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
