@@ -24,7 +24,8 @@ define([
                 var tbody = plugin.find('tbody');
                 tbody.append(tbody.find('tr').clone().hide());
                 tbody.find('input').each(function(i) {
-                    var input = $(this), ptInx = Math.floor(i/2) + 1;
+                    var input = $(this);
+                    var ptInx = Math.floor(i/2) + 1;
                     var interpreted = $(tbody.find('span')[i]);
                     var expectedType = ['Lat', 'Long'][i%2];
                     var fieldName = expectedType.toLowerCase() + ptInx + 'text';
@@ -36,7 +37,7 @@ define([
                             parsed ? parsed.format() : '???'
                         );
                     });
-                    var value = resource.get(fieldName);
+                    var value = resource.get(fieldName) || resource.get(inferredField);
                     input.val(value).keyup();
                     input.change(function() {
                         var parsed = input.data('parsed');

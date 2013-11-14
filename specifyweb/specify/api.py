@@ -1,6 +1,8 @@
 from urllib import urlencode
 import json
 import re
+import logging
+logger = logging.getLogger(__name__)
 
 from django.db import transaction
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
@@ -9,7 +11,7 @@ from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 
 from . import models
-from .autonumbering import autonumber
+from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
 
@@ -245,12 +247,11 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     set_fields_from_data(obj, data)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
-    # Have to save the object before autonumbering b/c
-    # autonumber acquires a write lock on the model,
-    # but save touches other tables.
-    obj.save()
-    autonumber(collection, agent.specifyuser, obj)
-    obj.save()
+    try:
+        autonumber_and_save(collection, agent.specifyuser, obj)
+    except AutonumberOverflowException as e:
+        logger.warn("autonumbering overflow: %s", e)
+
     auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj

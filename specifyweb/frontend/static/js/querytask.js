@@ -97,7 +97,7 @@ define([
 
             self.query.on('saverequired', this.saveRequired, this);
 
-            self.query.rget('fields', true).done(function(spqueryfields) {
+            self.query.rget('fields').done(function(spqueryfields) {
                 self.fields = spqueryfields;
                 self.fieldUIs = spqueryfields.map(function(spqueryfield) {
                     var ui = new QueryFieldUI({

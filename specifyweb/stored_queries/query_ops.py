@@ -1,5 +1,7 @@
+from collections import namedtuple
 
-class QueryOps(object):
+
+class QueryOps(namedtuple("QueryOps", "uiformatter")):
     """Instances of this class turn Spqueryfield operation numbers into
     functions that turn lookup keys and predicate values into Django filters.
     """
@@ -26,22 +28,31 @@ class QueryOps(object):
     def by_op_num(self, op_num):
         return getattr(self, self.OPERATIONS[op_num])
 
+    def format(self, value):
+        if self.uiformatter is None: return value
+        return self.uiformatter.canonicalize(self.uiformatter.parse(value))
+
     def op_like(self, field, value):
         return field.like(value)
 
     def op_equals(self, field, value):
+        value = self.format(value)
         return field == value
 
     def op_greaterthan(self, field, value):
+        value = self.format(value)
         return field > value
 
     def op_lessthan(self, field, value):
+        value = self.format(value)
         return field < value
 
     def op_greaterthanequals(self, field, value):
+        value = self.format(value)
         return field >= value
 
     def op_lessthanequals(self, field, value):
+        value = self.format(value)
         return field <= value
 
     def op_true(self, field, value):
@@ -54,17 +65,19 @@ class QueryOps(object):
         return None
 
     def op_between(self, field, value):
-        values = value.split(',')[:2]
+        values = [self.format(v) for v in value.split(',')[:2]]
         return field.between(*values)
 
     def op_in(self, field, value):
-        values = value.split(',')
+        values = [self.format(v) for v in value.split(',')]
         return field.in_(values)
 
     def op_contains(self, field, value):
+        value = self.format(value)
         return field.contains(value)
 
     def op_empty(self, field, value):
+        value = self.format(value)
         return field == ''
 
     def op_trueornull(self, field, value):

@@ -22,17 +22,18 @@ define([
         },
         _render: function(resource, field) {
             if (!field) {
-                console.error('unknown field', this.$el.attr('name'), 'in', this.model);
+                console.error('unknown field', this.$el.attr('name'), 'in', this.model, 'element:', this.$el);
                 return;
             }
             var remote = _.isNull(resource) || resource != this.model;
-            this.readOnly = remote || field.isRelationship;
+
+            this.readOnly = remote || field.isRelationship || this.$el.prop('readonly');
+            this.readOnly && this.$el.prop('readonly', true);
+
             var fieldName = this.fieldName = field.name.toLowerCase();
             this.field = field;
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
-
-            this.readOnly && this.$el.prop('readonly', true);
 
             field.isRequired && this.$el.addClass('specify-required-field');
 

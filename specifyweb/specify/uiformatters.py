@@ -11,9 +11,7 @@ def get_uiformatter(collection, user, formatter_name):
     node = ElementTree.XML(xml).find('.//format[@name="%s"]' % formatter_name)
     if node is None: return None
     external = node.find('external')
-    print external
     if external is not None:
-        print external.text
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
             return CatalogNumberNumeric()
@@ -86,7 +84,9 @@ class UIFormatter(object):
             if field.inc:
                 new_val = ("%0" + str(field.size) + "d") % (1 + int(val))
                 if len(new_val) > field.size:
-                    raise AutonumberOverflowException()
+                    raise AutonumberOverflowException(
+                        'created value: %s longer than limit: %d current max: %s' %
+                        (new_val, field.size, prior))
                 filled.append(new_val)
             else:
                 filled.append(val)
@@ -100,6 +100,9 @@ class UIFormatter(object):
             else:
                 filled.append(val)
         return filled
+
+    def canonicalize(self, values):
+        return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
 
 def new_field(node):
     Field = {
@@ -138,6 +141,9 @@ class Field(object):
         else:
             return self.value_regexp()
 
+    def canonicalize(self, value):
+        return value
+
 class NumericField(Field):
     def __init__(self, size, value=None, inc=False, by_year=False):
         value = size * '#'
@@ -165,6 +171,12 @@ class CatalogNumberNumeric(UIFormatter):
     class CNNField(NumericField):
         def __init__(self):
             NumericField.__init__(self, size=9, inc=True)
+
+        def value_regexp(self):
+            return r'[0-9]{0,%d}' % self.size
+
+        def canonicalize(self, value):
+            return '0' * (self.size - len(value)) + value
 
     def __init__(self):
         UIFormatter.__init__(self,

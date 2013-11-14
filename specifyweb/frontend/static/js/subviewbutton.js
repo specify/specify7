@@ -23,7 +23,7 @@ define([
             self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
-            var button = $('<a>').appendTo(self.el);
+            var button = $('<a>', {title: self.field.getLocalizedName()}).appendTo(self.el);
 
             $('<div style="display: table-row">')
                 .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
