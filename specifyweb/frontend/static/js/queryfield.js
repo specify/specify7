@@ -302,7 +302,7 @@ define([
             this.$('.field-select-grp, .op-select').hide();
             this.$('.field-input').remove();
             var select = this.$('.datepart-select').empty().show();
-            var options = _(['Extract...', 'None', 'Year', 'Month', 'Day']).each(function(datepart) {
+            var options = _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
                 $('<option>', {value: datepart}).text(datepart).appendTo(select);
             });
         },
@@ -337,6 +337,13 @@ define([
                 } else {
                     var field = this.table.getField(fieldName);
                     this.joinPath.push(field);
+                    if (field.isRelationship) {
+                        this.formattedRecord = true;
+                        this.operation = 'anything';
+                    } else {
+                        this.operation = 'anything';
+                        this.datePart = field.isTemporal() ? 'Full Date' : undefined;
+                    }
                 }
             }
             this.update();
@@ -363,8 +370,7 @@ define([
                     this.setupFieldSelect();
                     return;
                 }
-                if (_.isUndefined(this.datePart) &&
-                    _(['java.util.Date', 'java.util.Calendar']).contains(field.type)) {
+                if (_.isUndefined(this.datePart) && field.isTemporal()) {
                     this.setupDatePartSelect();
                     return;
                 }
@@ -408,7 +414,7 @@ define([
         },
         datePartSelected: function() {
             this.datePart = this.$('.datepart-select').val();
-            this.datePart === 'None' && (this.datePart = null);
+            this.datePart === 'Full Date' && (this.datePart = null);
             this.update();
         },
         backUpToField: function(evt) {

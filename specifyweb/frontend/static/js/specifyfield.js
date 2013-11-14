@@ -50,6 +50,9 @@ define([
         },
         isDependent: function() {
             return this.dependent;
+        },
+        isTemporal: function() {
+            return _(['java.util.Date', 'java.util.Calendar']).contains(this.type);
         }
     });
 
