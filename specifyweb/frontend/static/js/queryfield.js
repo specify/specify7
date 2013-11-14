@@ -183,11 +183,11 @@ define([
                 '<select class="datepart-select">',
                 '<span class="field-input">',
                 $('<span class="field-controls">').append(
-                    '<button class="field-move-up" title="Move up.">Move up</button>',
-                    '<button class="field-move-down" title="Move down.">Move down</button>',
                     '<input type="checkbox" class="field-show" id="' + this.cid + '-show">',
                     '<label title="Show in results." for="' + this.cid + '-show" class="ui-icon ui-icon-lightbulb"></label>',
-                    '<button class="field-sort" title="Sort.">Sort</button>')
+                    '<button class="field-sort" title="Sort.">Sort</button>',
+                    '<button class="field-move-up" title="Move up.">Move up</button>',
+                    '<button class="field-move-down" title="Move down.">Move down</button>')
             );
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
