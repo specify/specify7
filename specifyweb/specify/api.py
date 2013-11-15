@@ -391,9 +391,9 @@ def delete_obj(agent, name, id, version, parent_obj=None):
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
+    auditlog.remove(obj, agent, parent_obj)
     bump_version(obj, version)
     obj.delete()
-    auditlog.remove(obj, agent, parent_obj)
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
