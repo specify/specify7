@@ -112,6 +112,7 @@ define([
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
             var api = require('specifyapi');
+            if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
             return api.makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
         },
         get: function(attribute) {

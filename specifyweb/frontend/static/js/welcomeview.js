@@ -30,21 +30,27 @@ define([
                 $('span', content).text(formatted || 'Unknown');
             });
 
-            var resource = new specifyModel.Resource({ id: this.model.get('recordid') });
+            var id = this.model.get('recordid');
+            if (_.isNumber(id)) {
+                var resource = new specifyModel.Resource({ id: id });
 
-            resource.fetch().pipe(
-                function() { return format(resource); },
-                function(jqXHR) {
-                    if (jqXHR.status === 404) {
-                        jqXHR.errorHandled = true;
-                        return '(deleted)';
+                resource.fetch().pipe(
+                    function() { return format(resource); },
+                    function(jqXHR) {
+                        if (jqXHR.status === 404) {
+                            jqXHR.errorHandled = true;
+                            return '(deleted)';
+                        }
+                        return jqXHR;
                     }
-                    return jqXHR;
-                }
-            ).always(function(formatted) {
-                var link = $('a', header).append(formatted || specifyModel.getLocalizedName());
-                specifyModel.view && link.attr('href', resource.viewUrl());
-            });
+                ).done(function() {
+                    specifyModel.view && $('a', header).attr('href', resource.viewUrl());
+                }).always(function(formatted) {
+                    $('a', header).append(formatted || specifyModel.getLocalizedName());
+                });
+            } else {
+                $('a', header).append(specifyModel.getLocalizedName());
+            }
 
             return this;
         }
