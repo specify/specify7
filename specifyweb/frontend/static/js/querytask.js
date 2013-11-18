@@ -55,11 +55,13 @@ define([
             return cell;
         },
         setupToOneCell: function(cell, field, cellValue) {
+            if (cellValue == null) return;
             var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
             cell.prop('href', resource.viewUrl()).text('(loading...)');
             objformat(resource).done(function(formatted) { cell.text(formatted); });
         },
         setupToManyCell: function(cell, field, cellValue) {
+            if (cellValue == null) return;
             cell.text('(loading...)');
             var parentResource = new field.model.Resource({ id: cellValue });
             parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
