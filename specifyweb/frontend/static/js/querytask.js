@@ -15,16 +15,17 @@ define([
             this.model = options.model;
         },
         detectEndOfResults: function(results) {
-            return results.length < 2;
+            $('.query-results-count').text(results.count);
+            return results.results.length < 1;
         },
         addResults: function(results) {
             var self = this;
-            var columns = results.shift();
+            var columns = results.columns;
             var fieldToCol = function(fieldUI) {
                 return _(columns).indexOf(fieldUI.spqueryfield.id);
             };
 
-            _.each(results, function(result) {
+            _.each(results.results, function(result) {
                 var row = $('<tr>').appendTo(self.el);
                 var resource = new self.model.Resource({
                     id: result[0]
@@ -37,7 +38,7 @@ define([
                         $('<td>').appendTo(row));
                 });
             });
-            return results.length;
+            return results.results.length;
         },
         makeCell: function(rowHref, cellFieldUI, cellValue) {
             var field = cellFieldUI.getField();
@@ -156,6 +157,8 @@ define([
         search: function(evt) {
             var self = this;
             var table = self.$('table.query-results');
+            self.$('h3').show();
+            self.$('.query-results-count').empty();
 
             table.empty();
             table.append(self.renderHeader());

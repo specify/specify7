@@ -94,10 +94,14 @@ def query(request, id):
         sort_type = SORT_TYPES[fs.sort_type]
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
+    count = query.distinct().count()
     query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
 
-    results = [headers]
-    results.extend(query)
+    results = {
+        'columns': headers,
+        'results': list(query),
+        'count': count
+    }
     session.close()
     return HttpResponse(toJson(results), content_type='application/json')
 
