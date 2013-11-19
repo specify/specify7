@@ -25,17 +25,19 @@ def autonumber_and_save(collection, user, obj):
     if len(autonumber_fields) > 0:
         do_autonumbering(collection, obj, autonumber_fields)
     else:
+        logger.debug("no fields to autonumber for %s", obj)
         obj.save()
 
 def do_autonumbering(collection, obj, fields):
-    # Have to save the object before autonumbering b/c
-    # autonumber acquires a write lock on the model,
-    # but save touches other tables.
+    logger.debug("autonumbering %s fields: %s", obj, fields)
 
     for formatter, vals in fields:
         # Set all the fields to be autonumbered to NULL to
         # avoid saving the placeholder value into db.
         setattr(obj, formatter.field_name.lower(), None)
+    # Have to save the object before autonumbering b/c
+    # autonumber acquires a write lock on the model,
+    # but save touches other tables.
     obj.save()
 
     table = obj._meta.db_table

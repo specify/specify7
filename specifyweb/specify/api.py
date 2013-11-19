@@ -240,6 +240,7 @@ def set_field_if_exists(obj, field, value):
 
 def create_obj(collection, agent, model, data, parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
+    logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, basestring):
         model = get_model_or_404(model)
     obj = model()
