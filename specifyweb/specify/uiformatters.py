@@ -1,6 +1,8 @@
-import re
+import re, logging
+from collections import namedtuple
 from xml.etree import ElementTree
 from datetime import date
+logger = logging.getLogger(__name__)
 
 from specifyweb.context.app_resource import get_app_resource
 
@@ -26,12 +28,7 @@ def get_uiformatter(collection, user, formatter_name):
 class AutonumberOverflowException(Exception):
     pass
 
-class UIFormatter(object):
-    def __init__(self, model_name, field_name, fields):
-        self.model_name = model_name
-        self.field_name = field_name
-        self.fields = fields
-
+class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
         return '^%s$' % regexp
@@ -44,7 +41,10 @@ class UIFormatter(object):
 
     def needs_autonumber(self, vals):
         for f, v in zip(self.fields, vals):
-            if f.is_wild(v): return True
+            if f.is_wild(v):
+                logger.debug("found wild field: %s with value: %s", f, v)
+                return True
+        logger.debug("no wild fields found")
         return False
 
     def autonumber_regexp(self, vals):
@@ -118,13 +118,7 @@ def new_field(node):
         by_year = node.attrib.get('byyear') == 'true')
 
 
-class Field(object):
-    def __init__(self, size, value, inc, by_year):
-        self.size = size
-        self.value = value
-        self.inc = inc
-        self.by_year = by_year
-
+class Field(namedtuple("Field", "size value inc by_year")):
     def can_autonumber(self):
         return self.inc or self.by_year
 
@@ -132,8 +126,9 @@ class Field(object):
         return re.escape(self.value)
 
     def is_wild(self, value):
-        return re.match(self.wild_regexp(), value) \
-            and not re.match(self.value_regexp(), value)
+        logger.debug("%s checking if value %s is wild", self, value)
+        return (re.match("^%s$" % self.wild_regexp(), value) and not
+                re.match("^%s$" % self.value_regexp(), value))
 
     def wild_or_value_regexp(self):
         if self.can_autonumber():
@@ -145,9 +140,9 @@ class Field(object):
         return value
 
 class NumericField(Field):
-    def __init__(self, size, value=None, inc=False, by_year=False):
+    def __new__(cls, size, value=None, inc=False, by_year=False):
         value = size * '#'
-        Field.__init__(self, size, value, inc, by_year)
+        return Field.__new__(cls, size, value, inc, by_year)
 
     def value_regexp(self):
         return r'[0-9]{%d}' % self.size
@@ -169,8 +164,8 @@ class SeparatorField(Field):
 
 class CatalogNumberNumeric(UIFormatter):
     class CNNField(NumericField):
-        def __init__(self):
-            NumericField.__init__(self, size=9, inc=True)
+        def __new__(cls):
+            return NumericField.__new__( cls, size=9, inc=9)
 
         def value_regexp(self):
             return r'[0-9]{0,%d}' % self.size
@@ -178,8 +173,8 @@ class CatalogNumberNumeric(UIFormatter):
         def canonicalize(self, value):
             return '0' * (self.size - len(value)) + value
 
-    def __init__(self):
-        UIFormatter.__init__(self,
-                             model_name='CollectionObject',
-                             field_name='catalogNumber',
-                             fields=[CatalogNumberNumeric.CNNField()])
+    def __new__(cls):
+        return UIFormatter.__new__(cls,
+                                   model_name='CollectionObject',
+                                   field_name='catalogNumber',
+                                   fields=[CatalogNumberNumeric.CNNField()])

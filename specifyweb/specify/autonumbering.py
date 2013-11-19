@@ -1,8 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from django.db import connection, transaction
-
+from .lock_tables import lock_tables
 from .models import Splocalecontaineritem as Item
 from .uiformatters import get_uiformatter, AutonumberOverflowException
 
@@ -14,13 +13,21 @@ def autonumber_and_save(collection, user, obj):
     uiformatters = [get_uiformatter(collection, user, f)
                     for f in Item.objects.filter(**filters).values_list('format', flat=True)]
 
-    autonumber_fields = []
-    for formatter in uiformatters:
-        value = getattr(obj, formatter.field_name.lower())
-        if value is None: continue
-        vals = formatter.parse(value)
-        if formatter.needs_autonumber(vals):
-            autonumber_fields.append((formatter, vals))
+    logger.debug("uiformatters for %s: %s", obj, uiformatters)
+
+    autonumber_fields = [(formatter, vals)
+                         for formatter in uiformatters
+                         for value in [getattr(obj, formatter.field_name.lower())]
+                         if value is not None
+                         for vals in [formatter.parse(value)]
+                         if formatter.needs_autonumber(vals)]
+
+    # for formatter in uiformatters:
+    #     value = getattr(obj, formatter.field_name.lower())
+    #     if value is None: continue
+    #     vals = formatter.parse(value)
+    #     if formatter.needs_autonumber(vals):
+    #         autonumber_fields.append((formatter, vals))
 
     if len(autonumber_fields) > 0:
         do_autonumbering(collection, obj, autonumber_fields)
@@ -40,22 +47,11 @@ def do_autonumbering(collection, obj, fields):
     # but save touches other tables.
     obj.save()
 
-    table = obj._meta.db_table
-    cursor = connection.cursor()
-
-    try:
-        if cursor.db.vendor == 'mysql':
-            cursor.execute('lock tables %s write' % table)
-        else:
-            logger.warning("unable to lock tables for autonumbering.")
-
+    with lock_tables(obj._meta.db_table):
         for formatter, vals in fields:
             value = formatter.autonumber(collection, obj.__class__, vals)
             setattr(obj, formatter.field_name.lower(), value)
         obj.save()
-    finally:
-        if cursor.db.vendor == 'mysql':
-            cursor.execute('unlock tables')
 
 
 
