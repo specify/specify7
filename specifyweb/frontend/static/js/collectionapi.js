@@ -156,7 +156,7 @@ define([
         },
         fetch: function() {
             if (this.related.isNew()) {
-                throw new Error("can't fetch collection related to unpersistent resource");
+                throw new Error("can't fetch collection related to unpersisted resource");
             }
             this.filters[this.field.name.toLowerCase()] = this.related.id;
             return collectionapi.Lazy.prototype.fetch.apply(this, arguments);
