@@ -4,6 +4,7 @@ from . import (
     collector_rules,
     collectionobject_rules,
     determination_rules,
+    locality_rules,
     tree_rules,
     address_rules,
     discipline_rules,
