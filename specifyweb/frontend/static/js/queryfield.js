@@ -255,7 +255,7 @@ define([
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {
                     $('<option>', {value: field.name})
-                        .text((field.isRelationship ? '⇨ ' : '') + field.getLocalizedName())
+                        .text((field.isRelationship ? '➔ ' : '') + field.getLocalizedName())
                         .appendTo(fieldSelect);
                 });
 
