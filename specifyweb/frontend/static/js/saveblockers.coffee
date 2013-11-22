@@ -8,8 +8,10 @@ define ['jquery', 'underscore'], ($, _) ->
             @resource.on 'saveblocked', (blocker) =>
                 @resource.parent?.trigger 'saveblocked', blocker
                 @resource.collection?.related?.trigger 'saveblocked', blocker
-            @resource.on 'oktosave', (source) =>
+            @resource.on 'oktosave destory', (source) =>
                 @resource.parent?.trigger 'oktosave', source
+                @resource.collection?.related?.trigger 'oktosave', source
+            @resource.on 'remove', (source) =>
                 @resource.collection?.related?.trigger 'oktosave', source
 
         add: (key, field, reason, deferred) ->
