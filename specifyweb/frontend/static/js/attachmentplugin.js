@@ -15,12 +15,12 @@ define([
             self.$el.replaceWith(control);
             self.setElement(control);
 
-            if (self.model.isNew()) {
-                self.addAttachment();
-            } else {
+            if (self.model.get('attachment')) {
                 self.model.rget('attachment', true).done(function(attachment) {
                     self.displayAttachment(attachment);
                 });
+            } else {
+                self.addAttachment();
             }
             return this;
         },
