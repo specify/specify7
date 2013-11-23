@@ -79,11 +79,10 @@ define([
             'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
         initialize: function(options) {
-            var self = this;
-            self.query = options.query;
-            self.model = schema.getModel(self.query.get('contextname'));
-            self.saveButton = new SaveButton({ model: self.query });
-            self.saveButton.on('savecomplete', function() { this.trigger('redisplay'); }, this);
+            this.query = options.query;
+            this.model = schema.getModel(this.query.get('contextname'));
+            this.saveButton = new SaveButton({ model: this.query });
+            this.saveButton.on('savecomplete', function() { this.trigger('redisplay'); }, this);
         },
         render: function() {
             var self = this;
@@ -102,20 +101,11 @@ define([
 
             self.query.rget('fields').done(function(spqueryfields) {
                 self.fields = spqueryfields;
-                self.fieldUIs = spqueryfields.map(function(spqueryfield) {
-                    var ui = new QueryFieldUI({
-                        parentView: self,
-                        model: self.model,
-                        spqueryfield: spqueryfield,
-                        el: $('<li class="spqueryfield">')
-                    });
-                    ui.on('remove', function(ui, field) { self.fields.remove(field); });
-                    return ui.render();
-                });
-
+                self.fieldUIs = spqueryfields.map(self.addFieldUI.bind(self));
                 var ul = self.$('.spqueryfields');
                 ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
                 ul.sortable({ update: self.trigger.bind(self, 'positionschanged') });
+                _.defer(self.contractFields.bind(self));
             });
 
             $('<table class="query-results" width="100%"></div>').appendTo(self.el);
@@ -124,22 +114,35 @@ define([
             self.$('.fetching-more').hide();
             return self;
         },
+        addFieldUI: function(spqueryfield) {
+            var ui = new QueryFieldUI({
+                parentView: this,
+                model: this.model,
+                spqueryfield: spqueryfield,
+                el: $('<li class="spqueryfield">')
+            });
+            ui.on('remove', function(ui, field) {
+                this.fieldUIs = _(this.fieldUIs).without(ui);
+                this.fields.remove(field);
+            }, this);
+            return ui.render();
+        },
+        contractFields: function() {
+            _.each(this.fieldUIs, function(field) { field.contract(); });
+        },
         saveRequired: function() {
             this.$('.query-execute').prop('disabled', true);
             this.$('.abandon-changes').prop('disabled', false);
         },
         addField: function() {
+            this.contractFields();
             var newField = new schema.models.SpQueryField.Resource();
             newField.set({sorttype: 0, isdisplay: true, query: this.query.url()});
 
-            var addFieldUI = new QueryFieldUI({
-                parentView: this,
-                model: this.model,
-                el: $('<li class="spqueryfield">'),
-                spqueryfield: newField
-            });
-            this.$('.spqueryfields').append(addFieldUI.render().el).sortable('refresh');
-            addFieldUI.on('completed', function() { this.fields.add(newField); }, this);
+            var ui = this.addFieldUI(newField);
+            this.fieldUIs.push(ui);
+            this.$('.spqueryfields').append(ui.el).sortable('refresh');
+            ui.on('completed', function() { this.fields.add(newField); }, this);
             this.trigger('positionschanged');
         },
         renderHeader: function() {

@@ -129,6 +129,7 @@ define([
             'click .field-move-up': 'moveUpClicked',
             'click .field-move-down': 'moveDownClicked',
             'click .field-delete': 'deleteClicked',
+            'click .field-complete': 'expandToggle',
             'click .field-sort': 'fieldSortClicked',
             'click .field-operation': 'backUpToOperation',
             'click .field-label-field': 'backUpToField',
@@ -174,6 +175,7 @@ define([
         },
         render: function() {
             this.$el.append(
+                '<button class="field-complete" title="Field is valid and will be saved. Click to expand.">Expand.</button>',
                 '<button class="field-delete" title="Remove.">Remove</button>',
                 '<span class="field-label">',
                 '<span class="field-select-grp"><img><select class="field-select"></span>',
@@ -195,6 +197,7 @@ define([
             _.each({
                 '.field-sort': "ui-icon-bullet",
                 '.field-delete': "ui-icon-trash",
+                '.field-complete': "ui-icon-check",
                 '.field-move-up': "ui-icon-arrowthick-1-n",
                 '.field-move-down': "ui-icon-arrowthick-1-s"
             }, function(icon, selector) {
@@ -353,6 +356,8 @@ define([
         update: function() {
             var field = _.last(this.joinPath);
             this.updateLabel();
+
+            this.$('.field-complete').hide();
             this.$('.field-controls').addClass('hidden'); // jquery.hide() doesn't work.
             // for some reason it causes display: block to be set when show is called.
 
@@ -386,12 +391,19 @@ define([
             }
             this.fieldComplete();
         },
+        contract: function() {
+            this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide(500);
+        },
+        expand: function() {
+            this.$('.field-label-field').show(500);
+        },
+        expandToggle: function() {
+            this.$('.field-label-field:not(.field-label-virtual):not(:last)').toggle(500);
+        },
         fieldComplete: function() {
+            this.$('.field-complete').show();
             this.$('.field-select-grp, .datepart-select, .op-select').hide();
             this.$('.field-controls').removeClass('hidden');
-            _.defer(function() {
-                this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide(500);
-            }.bind(this));
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (FieldInputUIByOp[this.operation])({
                     field: _.last(this.joinPath),
@@ -403,8 +415,10 @@ define([
             if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
                 this.updateSpQueryField();
             }
-            this.alreadyCompletedOnce = true;
-            this.trigger('completed', this);
+            if (!this.alreadyCompletedOnce) {
+                this.alreadyCompletedOnce = true;
+                this.trigger('completed', this);
+            }
         },
         opSelected: function() {
             this.operation = this.$('.op-type').val();
