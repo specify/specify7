@@ -56,46 +56,63 @@ define([
         __name__: "RecordSelectorSlider",
         className: 'recordselector-slider',
         events: {
-            'slidestop': 'onslidestop',
-            'slide': 'onslide'
+            'slidestop': 'updateRecordSelector',
+            'slide': 'updateRecordSelector'
         },
         initialize: function(options) {
             this.recordSelector = options.recordSelector;
         },
         render: function() {
-            this.$el.slider();
-            this.$('.ui-slider-handle').text(1);
+            $('<div>').appendTo(this.el).slider();
+            _.defer(function() {
+                this.$el.closest('.ui-dialog')
+                    .on("dialogresizestart", this.startResizing.bind(this))
+                    .on("dialogresizestop", this.stopResizing.bind(this));
+            }.bind(this));
             return this;
         },
         setMax: function(val) {
-            this.$el.slider('option', 'max', val);
+            this.$('.ui-slider').slider('option', 'max', val);
+            this.adjustSize();
         },
         getOffset: function() {
-            return this.$el.slider('value');
+            return this.$('.ui-slider').slider('value');
         },
         setOffset: function(val) {
-            this.$el.slider('value', val);
-            this.setText(val);
+            this.$('.ui-slider').slider('value', val);
         },
-        onslidestop: function(evt, ui) {
+        updateRecordSelector: function(evt, ui) {
             this.recordSelector.redraw(ui.value);
-        },
-        onslide: function(evt, ui) {
-            this.setText(ui.value);
         },
         hide: function() {
             this.$el.hide();
         },
         show: function() {
             this.$el.show();
+            _.defer(this.adjustSize.bind(this));
         },
-        setText: function(offset) {
-            this.$('.ui-slider-handle').text(offset + 1);
+        adjustSize: function() {
+            var slider = this.$('.ui-slider');
+            var max = slider.slider('option', 'max');
+            var size = this.$el.width() / (max + 1);
+            slider.width(this.$el.width() - size);
+            this.$('.ui-slider-handle').css({
+                width: size,
+                "margin-left": -size/2
+            });
+        },
+        startResizing: function() {
+            this.$('.ui-slider').hide();
+        },
+        stopResizing: function() {
+            this.$('.ui-slider').show();
+            _.defer(this.adjustSize.bind(this));
         }
     });
 
     return Backbone.View.extend({
         __name__: "RecordSelector",
+        className: "recordselector",
         events: {
             'remove': function (evt) {
                 (evt.target === this.el) && this.collection.off(null, null, this);
