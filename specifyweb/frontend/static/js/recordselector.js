@@ -34,11 +34,22 @@ define([
 
     var Header = Controls.extend({
         __name__: "RecordSelectorHeader",
+        initialize: function(options) {
+            Controls.prototype.initialize.apply(this, arguments);
+            this.recordSelector.collection.on('sync add remove', this.updateCount, this);
+        },
         render: function () {
             this.options.readOnly &&
                 this.$('.specify-add-related, .specify-delete-related').remove();
+            this.updateCount();
             this.showHide();
             return this;
+        },
+        updateCount: function() {
+            var countEl = this.$('.specify-subview-count');
+            this.recordSelector.collection.getTotalCount().done(function(count) {
+                countEl.show().text('(' + count + ')');
+            });
         }
     });
 
