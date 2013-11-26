@@ -108,7 +108,7 @@ define([
             var size = this.$el.width() / (max + 1);
             slider.width(this.$el.width() - size);
             this.$('.ui-slider-handle').css({
-                width: size,
+                width: size - 2, // 2px for border
                 "margin-left": -size/2
             });
         },
