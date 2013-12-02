@@ -226,6 +226,7 @@ input[type="submit"].saveblocked {
     width: 266px;
     height: 266px;
     position: relative;
+    margin: 5px;
 }
 
 .specify-attachment-display {
@@ -272,6 +273,10 @@ a.specify-attachment-original {
     margin: -8px auto 0;
     position: relative;
     top: 50%;
+}
+
+.recordselector-add-delete-buttons {
+    margin-top: 5px;
 }
 
 div.results div {
