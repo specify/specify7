@@ -9,7 +9,7 @@
         'jquery-bbq'     : "vendor/jquery.ba-bbq",
         'jquery-mockjax' : "vendor/jquery.mockjax",
         'underscore'     : "vendor/underscore",
-        'backbone-orig'  : "vendor/bacbone",
+        'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
         'beautify-html'  : "vendor/beautify-html",
         'CoffeeScript'   : "vendor/CoffeeScript",
