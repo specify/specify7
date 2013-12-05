@@ -1,5 +1,6 @@
 require({
     baseUrl: "/static/js",
+    waitSeconds: 0,
     priority: ['jquery'],
     paths: {
         'jquery'         : "vendor/jquery-1.7.2",
