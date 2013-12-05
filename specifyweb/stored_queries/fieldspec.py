@@ -83,7 +83,10 @@ class FieldSpec(namedtuple('FieldSpec', [
             fieldname, next_table = path.popleft()
             logger.debug("joining: %r to %r via %r", table, next_table, fieldname)
             if self.is_relation and len(path) == 0:
-                rel = inspect(table).mapper.relationships[fieldname]
+                lowercase_fn = fieldname.lower()
+                rels = inspect(table).mapper.relationships.items()
+                rel = next(rel for name, rel in rels if name.lower() == lowercase_fn)
+
                 if rel.direction is symbol('ONETOMANY'):
                     # when returning a one-to-many field stop short so
                     # the client can do the final 'join' to handle aggregation
