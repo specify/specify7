@@ -81,6 +81,7 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         while len(path) > 0:
             fieldname, next_table = path.popleft()
+            logger.debug("joining: %r to %r via %r", table, next_table, fieldname)
             if self.is_relation and len(path) == 0:
                 rel = inspect(table).mapper.relationships[fieldname]
                 if rel.direction is symbol('ONETOMANY'):
@@ -100,14 +101,15 @@ class FieldSpec(namedtuple('FieldSpec', [
         query, table = self.build_join(query)
 
         insp = inspect(table)
-        if is_tree(insp) and not is_regular_field(insp, self.field_name):
+        if self.is_relation:
+            # will be formatting or aggregating related objects
+            field = getattr(table, table._id)
+
+        elif is_tree(insp) and not is_regular_field(insp, self.field_name):
             query, field, using_subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
-
-        elif self.is_relation:
-            field = getattr(table, table._id)
 
         else:
             field = getattr(table, self.field_name)
