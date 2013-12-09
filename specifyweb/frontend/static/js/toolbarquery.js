@@ -1,6 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'specifyform', 'cs!populateform', 'cs!savebutton', 'cs!deletebutton',
+    'specifyform', 'populateform', 'savebutton', 'deletebutton',
     'text!resources/querybuilder.xml!noinline',
     'jquery-ui'
 ], function(require, $, _, Backbone, schema, navigation,

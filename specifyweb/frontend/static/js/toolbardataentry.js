@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'icons', 'specifyform', 'whenall', 'cs!populateform', 'cs!savebutton',
-    'cs!deletebutton', 'cs!appresource', 'jquery-ui', 'jquery-bbq'
+    'icons', 'specifyform', 'whenall', 'populateform', 'savebutton',
+    'deletebutton', 'appresource', 'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, schema, navigation, icons, specifyform,
             whenAll, populateform, SaveButton, DeleteButton, getAppResource) {
     "use strict";

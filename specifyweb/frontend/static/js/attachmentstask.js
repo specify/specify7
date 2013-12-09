@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone', 'attachments',
-    'schema', 'cs!populateform', 'specifyform', 'navigation', 'whenall',
+    'schema', 'populateform', 'specifyform', 'navigation', 'whenall',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, attachments, schema, populateform, specifyform, navigation, whenAll) {
     "use strict";

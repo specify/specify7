@@ -1,5 +1,5 @@
 define([
-    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'cs!deletebutton', 'recordselector', 'jquery-bbq'
+    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'deletebutton', 'recordselector', 'jquery-bbq'
 ], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
 
     var Base =  Backbone.View.extend({
@@ -131,7 +131,7 @@ define([
                 });
             }
 
-            require("cs!populateform")(dialogForm, self.related);
+            require("populateform")(dialogForm, self.related);
             var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
             self.dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',

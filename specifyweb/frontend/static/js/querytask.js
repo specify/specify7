@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'cs!fieldformat', 'dataobjformatters',
-    'cs!savebutton', 'whenall', 'scrollresults',
+    'fieldformat', 'dataobjformatters',
+    'savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
             fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {

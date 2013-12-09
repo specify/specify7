@@ -1,5 +1,5 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'cs!domain', 'templates',
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'templates',
     'jquery-bbq', 'jquery-ui',
     'toolbarwelcome', 'toolbardataentry', 'toolbarquery', 'toolbarattachments'
 ], function headerUI(

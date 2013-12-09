@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'cs!fieldformat', 'uiparse',
-    'cs!saveblockers', 'cs!tooltipmgr'
+    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
+    'saveblockers', 'tooltipmgr'
 ], function($, _, Backbone, dataobjformatters, fieldformat, uiparse, saveblockers, ToolTipMgr) {
     "use strict";
     var objformat = dataobjformatters.format;

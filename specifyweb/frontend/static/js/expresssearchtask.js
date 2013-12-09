@@ -1,6 +1,6 @@
 define([
-'jquery', 'underscore', 'backbone', 'cs!appresource', 'schema',
-'cs!fieldformat', 'cs!props', 'scrollresults', 'whenall',
+'jquery', 'underscore', 'backbone', 'appresource', 'schema',
+'fieldformat', 'props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'

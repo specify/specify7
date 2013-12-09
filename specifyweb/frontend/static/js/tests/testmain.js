@@ -9,9 +9,6 @@ require({
         'underscore'     : "vendor/underscore",
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
-        'beautify-html'  : "vendor/beautify-html",
-        'CoffeeScript'   : "vendor/CoffeeScript",
-        'cs'             : "vendor/cs",
         'text'           : "vendor/text",
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
@@ -31,7 +28,7 @@ require({
 });
 
 require([
-    'underscore', 'qunit', 'cs!tests/setupmockjax',
+    'underscore', 'qunit', 'tests/setupmockjax',
     'tests/testlatlongutils',
     'tests/testapi',
     'tests/testschema',
@@ -39,9 +36,9 @@ require([
 //    'tests/testuiformatters',
     'tests/testuiparse',
     'tests/testforms',
-    'cs!tests/testbusinessrules',
-    'tests/testdomain',
-//    'cs!tests/testquerycbx'
+    'tests/testbusinessrules',
+//    'cs!tests/testquerycbx',
+    'tests/testdomain'
 ], function testmain(_, QUnit, setupmockjax) {
     setupmockjax();
     QUnit.config.reorder = false;

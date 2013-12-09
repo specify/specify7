@@ -1,7 +1,7 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
     'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'cs!savebutton', 'cs!deletebutton', 'cs!saveblockers', 'cs!tooltipmgr', 'querycbxsearch',
+    'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
 ], function (require, $, _, Backbone, api, schema, specifyform, templates,

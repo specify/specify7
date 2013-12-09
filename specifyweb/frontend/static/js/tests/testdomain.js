@@ -1,4 +1,4 @@
-define(['underscore', 'schema', 'cs!domain', 'whenall'], function(_, schema, domain, whenAll) {
+define(['underscore', 'schema', 'domain', 'whenall'], function(_, schema, domain, whenAll) {
     "use strict";
     return function() {
         module('domain');

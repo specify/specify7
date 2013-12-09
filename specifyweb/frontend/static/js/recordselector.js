@@ -155,7 +155,7 @@ define([
 
             this.collection.on('add', this.onAdd, this);
             this.collection.on('remove destroy', this.onRemove, this);
-            this.populateForm = require('cs!populateform');
+            this.populateForm = require('populateform');
         },
         onAdd: function() {
             var end = this.collection.length - 1;

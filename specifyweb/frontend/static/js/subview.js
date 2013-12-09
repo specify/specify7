@@ -42,7 +42,7 @@ define([
                     $('.specify-add-related', header).remove();
                 }
 
-                require("cs!populateform")(form, self.model);
+                require("populateform")(form, self.model);
                 self.$el.append(form);
             });
             return self;

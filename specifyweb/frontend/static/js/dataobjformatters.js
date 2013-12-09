@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'whenall', 'cs!fieldformat', 'assert',
+    'jquery', 'underscore', 'whenall', 'fieldformat', 'assert',
     'text!context/app.resource?name=DataObjFormatters!noinline'
 ], function($, _, whenAll, fieldformat, assert, xml) {
     "use strict";

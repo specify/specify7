@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'cs!domain',
+    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'domain',
     'resourceview', 'othercollectionview',
     'jquery-bbq'
 ], function($, _, Backbone, schema, api, navigation, domain, ResourceView, OtherCollectionView) {

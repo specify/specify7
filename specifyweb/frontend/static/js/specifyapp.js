@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'cs!businessrules',
+    'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
     'text!context/user.json!noinline',
 // Tasks

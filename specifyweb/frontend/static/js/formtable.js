@@ -1,6 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
-    'cs!savebutton', 'cs!deletebutton', 'assert'
+    'savebutton', 'deletebutton', 'assert'
 ], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
     "use strict";
 
@@ -27,7 +27,7 @@ define([
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
 
-            this.populateForm = require('cs!populateform');
+            this.populateForm = require('populateform');
         },
         render: function() {
             var self = this;

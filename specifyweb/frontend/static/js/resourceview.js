@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'cs!populateform',
+    'jquery', 'underscore', 'backbone', 'populateform',
     'specifyform', 'dataobjformatters', 'navigation', 'templates',
-    'cs!savebutton', 'cs!deletebutton',
+    'savebutton', 'deletebutton',
     'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, populateForm,
             specifyform, dataobjformatters, navigation, templates,

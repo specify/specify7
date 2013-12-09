@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'cs!domain', 'cs!fieldformat'
+    'jquery', 'underscore', 'backbone', 'schema', 'domain', 'fieldformat'
 ], function($, _, Backbone, schema, domain, fieldformat) {
     "use strict";
 

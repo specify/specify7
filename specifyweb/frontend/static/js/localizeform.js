@@ -1,4 +1,4 @@
-define(['jquery', 'cs!props', 'schema',
+define(['jquery', 'props', 'schema',
     'text!properties/views_en.properties!noinline',
     'text!properties/global_views_en.properties!noinline'
 ], function($, props, schema, viewsprops, globalviewsprops) {

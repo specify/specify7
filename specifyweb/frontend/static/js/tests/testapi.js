@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'cs!businessrules'
+    'jquery', 'underscore', 'backbone', 'schema', 'businessrules'
 ], function($, _, Backbone, schema, businessrules) {
     "use strict";
     return function() {
