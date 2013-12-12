@@ -14,6 +14,9 @@ define(['jquery', 'underscore', 'agenttypepicklist'], function($, _, agenttypes)
         } else if (field.name === 'agentType' && field.model.name === 'Agent') {
             var agentType = _.find(agenttypes, function(type) { return type.value === asInt; });
             return agentType ? agentType.title : value || '';
+        } else if (field.type === 'java.lang.Boolean') {
+            if (_.isNull(value)) return '';
+            return value ? 'True' : 'False';
         } else {
             return value || '';
         }
