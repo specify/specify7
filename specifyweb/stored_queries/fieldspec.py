@@ -99,7 +99,17 @@ class FieldSpec(namedtuple('FieldSpec', [
     def add_to_query(self, query, no_filter=False, collection=None):
         logger.info("adding field %s to query", self)
         using_subquery = False
-        no_filter = no_filter or (self.value == '' and not self.negate)
+        value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
+            'op_true',              # 6
+            'op_false',             # 7
+            'op_empty',             # 12
+            'op_trueornull',        # 13
+            'op_falseornull',       # 14
+        )
+
+        no_filter = no_filter or (self.value == ''
+                                  and value_required_for_filter
+                                  and not self.negate)
 
         query, table = self.build_join(query)
 
