@@ -507,3 +507,9 @@ div.results div {
 .specify-auditlog-entry p {
     clear: both;
 }
+
+
+.specify-barvis-bar {
+    height: 30px;
+    display: inline-block;
+}

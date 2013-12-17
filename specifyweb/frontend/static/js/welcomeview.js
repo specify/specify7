@@ -60,6 +60,19 @@ define([
         __name__: "WelcomeView",
         render: function() {
             var _this = this;
+            var bar = $('<div class="specify-barvis">').appendTo(this.el);
+            $.get('/barvis/taxon_bar/').done(function(taxonBarData) {
+                function f(x) { return x; }
+                var total = _.reduce(taxonBarData, function(memo, idAndCount) { return memo + f(idAndCount[1]); }, 0);
+                _.each(taxonBarData, function(idAndCount) {
+                    var id = idAndCount[0], count = idAndCount[1];
+                    var hue = (id % 12) * 30;
+                    $('<div class="specify-barvis-bar">').appendTo(bar)
+                        .width(f(count)/total*800)
+                        .css("background-color", "hsl(" + hue + ",50%,50%)");
+                });
+            });
+
             this.$el.append(templates.welcome());
 
             var log = new schema.models.SpAuditLog.LazyCollection({
