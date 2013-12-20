@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 
 from .models import Spauditlog
 
@@ -16,6 +18,7 @@ class AuditLog(object):
         return self._log(self.REMOVE, obj, agent, parent_record)
 
     def _log(self, action, obj, agent, parent_record):
+        logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
         assert obj.id is not None, "attempt to add object with null id to audit log"
         return Spauditlog.objects.create(
             action=action,

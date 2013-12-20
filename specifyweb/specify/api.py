@@ -253,7 +253,8 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
-    auditlog.insert(obj, agent, parent_obj)
+    if obj.id is not None: # was the object actually saved?
+        auditlog.insert(obj, agent, parent_obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
