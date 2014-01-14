@@ -3,6 +3,7 @@
     name: 'main',
     out: 'main-built.js',
     inlineText: true,
+    optimize: 'none',
     paths: {
         'jquery'         : "vendor/jquery-1.7.2",
         'jquery-ui'      : "vendor/jquery-ui-1.10.2.custom",
