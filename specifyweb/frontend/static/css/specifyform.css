@@ -509,7 +509,13 @@ div.results div {
 }
 
 
-.specify-barvis-bar {
-    height: 30px;
-    display: inline-block;
+
+.treemap .node {
+    border: solid 1px white;
+    font: 10px sans-serif;
+    line-height: 12px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 2px;
 }
+

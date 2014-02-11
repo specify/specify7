@@ -13,7 +13,8 @@ require({
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
         'context'        : '/context',
-        'properties'     : '/properties'
+        'properties'     : '/properties',
+        'd3'             : 'http://d3js.org/d3.v3.min'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
