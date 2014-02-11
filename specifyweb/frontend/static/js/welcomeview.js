@@ -65,7 +65,8 @@ define([
 
         var treemap = d3.layout.treemap()
                 .size([width, height])
-                .sticky(true)
+                // .sticky(true)
+                .sort(function(a, b) { return b.id - a.id; })
                 .value(function(d) { return d.count; });
 
         var div = d3.select(parentEl).append("div")
@@ -76,7 +77,7 @@ define([
                 .style("left", margin.left + "px")
                 .style("top", margin.top + "px");
 
-        d3.json('/barvis/taxon_bar/', function(error, data) {
+        d3.json('/barvis/taxon_bar/', function buildFromData(error, data) {
             var root = buildTree(data);
             var node = div.datum(root).selectAll(".node")
                     .data(treemap.nodes)
@@ -85,10 +86,10 @@ define([
                     .call(position)
                     .attr("title", makeName)
                     .style("background", function(d) { return d.children ? color(d.name) : null; });
-                    //.text(function(d) { return d.children ? null : d.name; });
-            _.defer(function() {
-                $('.treemap .node').tooltip({track: true, show: false, hide: false});
-            });
+
+            // _.defer(function addToolTips() {
+            //     $('.treemap .node').tooltip({track: true, show: false, hide: false});
+            // });
         });
     }
 
@@ -119,7 +120,7 @@ define([
                 children:[]
             };
 
-            node.count > 0 && node.children.push({count: node.count, name: node.name});
+            // node.count > 0 && node.children.push({count: node.count, name: node.name});
             _.isNull(node.parentId) && roots.push(node);
             nodes[node.id] = node;
         });
@@ -134,9 +135,38 @@ define([
             }
         });
 
+        var thres = 10;
+        function pullUp(node) {
+            if (node.children) {
+                var children = [];
+                var thisCount = node.count;
+                var total = node.count;
+                _.each(node.children, function(child) {
+                    var childCount = pullUp(child);
+                    total += childCount;
+                    if (childCount < thres) {
+                        thisCount += childCount;
+                    } else {
+                        children.push(child);
+                    }
+                });
+                if (thisCount > 0) {
+                    // if (thisCount < thres) {
+                    //     children = [{count: total, name: node.name}];
+                    // } else {
+                        children.push({count: thisCount, name: node.name});
+                    // }
+                }
+                node.children = children;
+                return total;
+            } else {
+                return node.count;
+            }
+        }
+
+
         var root = roots[0];
-
-
+        pullUp(root);
         return root;
     }
 
