@@ -56,8 +56,8 @@ define([
         }
     });
 
-    function makeTreeMap(parentEl) {
-        var margin = {top: 40, right: 10, bottom: 10, left: 10},
+    function makeTreeMap() {
+        var margin = {top: 10, right: 10, bottom: 10, left: 10},
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
@@ -69,7 +69,7 @@ define([
                 .sort(function(a, b) { return b.id - a.id; })
                 .value(function(d) { return d.count; });
 
-        var div = d3.select(parentEl).append("div")
+        var div = d3.select("#taxon-treemap").append("div")
                 .attr("class", "treemap")
                 .style("position", "relative")
                 .style("width", (width + margin.left + margin.right) + "px")
@@ -78,25 +78,31 @@ define([
                 .style("top", margin.top + "px");
 
         d3.json('/barvis/taxon_bar/', function buildFromData(error, data) {
-            var root = buildTree(data);
-            var node = div.datum(root).selectAll(".node")
-                    .data(treemap.nodes)
-                    .enter().append("div")
+            var tree = buildTree(data);
+            var root = tree[0];
+            var thres = tree[1];
+
+            var node = div.selectAll(".node")
+                    .data(treemap.nodes(root).filter(function(d) { return !d.children; }))
+                    .enter()
+                    .append("div")
                     .attr("class", "node")
                     .call(position)
                     .attr("title", makeName)
-                    .style("background", function(d) { return d.children ? color(d.name) : null; });
+                    .style("background", function(d) { return d.children ? null : color(d.name); });
 
-            // _.defer(function addToolTips() {
-            //     $('.treemap .node').tooltip({track: true, show: false, hide: false});
-            // });
+            _.defer(function addToolTips() {
+                $('.treemap .node').tooltip({track: true, show: false, hide: false});
+            });
+
+            $(div[0]).append("<p>Tree map of taxa with " + thres + " or more specimens</p>");
         });
     }
 
     function makeName(d) {
         return (function recur(d) {
-            return (d.parent ? recur(d.parent) + ' ' : "") + d.name;
-        })(d) + " " + d.count;
+            return d.parent ? recur(d.parent) + ' ' + d.name : "";
+        })(d.parent) + " " + d.count;
     }
 
 
@@ -110,6 +116,8 @@ define([
     function buildTree(data) {
         var roots = [];
         var nodes = [];
+        var histo = [];
+
         _.each(data, function(datum) {
             var i = 0;
             var node = {
@@ -123,10 +131,21 @@ define([
             // node.count > 0 && node.children.push({count: node.count, name: node.name});
             _.isNull(node.parentId) && roots.push(node);
             nodes[node.id] = node;
+            histo[node.count] = (histo[node.count] || 0) + 1;
         });
 
+        // This is to try to limit the number of treemap squares to ~1000. For some
+        // reason it doesn't quite do that, but since this is just for eye candy
+        // anyways, it seems to work well enough.
+
+        var thres = histo.length - 1;
+        for (var total = 0; thres > 0; thres--) {
+            total += (histo[thres] || 0);
+            if (total > 1000) break;
+        }
+
         _.each(nodes, function(node) {
-            if (!node) return;
+            if (!node || !node.parentId) return;
             var parent = nodes[node.parentId];
             if (parent) {
                 parent.children.push(node);
@@ -135,7 +154,7 @@ define([
             }
         });
 
-        var thres = 10;
+
         function pullUp(node) {
             if (node.children) {
                 var children = [];
@@ -150,7 +169,7 @@ define([
                         children.push(child);
                     }
                 });
-                if (thisCount > 0) {
+                if (thisCount > thres) {
                     // if (thisCount < thres) {
                     //     children = [{count: total, name: node.name}];
                     // } else {
@@ -167,16 +186,17 @@ define([
 
         var root = roots[0];
         pullUp(root);
-        return root;
+        return [root, thres];
     }
 
     return Backbone.View.extend({
         __name__: "WelcomeView",
         render: function() {
             var _this = this;
-            makeTreeMap(this.el);
 
             this.$el.append(templates.welcome());
+
+            _.defer(makeTreeMap);
 
             var log = new schema.models.SpAuditLog.LazyCollection({
                 filters: { parentrecordid__isnull: true,
