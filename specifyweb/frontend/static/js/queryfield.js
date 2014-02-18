@@ -270,7 +270,7 @@ define([
             }
         },
         formatOrAggregate: function() {
-            return  (_.last(this.joinPath).type === 'one-to-many') ? 'aggregate' : 'format';
+            return  (_.last(this.joinPath).type === 'one-to-many') ? 'aggregated' : 'formatted';
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
             var show = function() { this.$('.field-select-grp').show(); }.bind(this);
@@ -295,7 +295,7 @@ define([
             this.$('.op-select, label.op-negate').show();
             var opSelect = this.$('.op-type').empty()
                     .append('<option>Select Op...</option>')
-                    .append('<option value="anything">(anything)</option>');
+                    .append('<option value="anything">(any)</option>');
             var type = this.getTypeForOp();
             _.each(opInfo, function(info, i) {
                 if (_(info.types).contains(type)) {
@@ -323,7 +323,7 @@ define([
                 $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else if (this.operation == 'anything') {
-                $('<a class="field-operation">').text('(anything)').appendTo(fieldLabel);
+                $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
                 this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);

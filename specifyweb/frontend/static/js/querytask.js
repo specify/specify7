@@ -86,8 +86,9 @@ define([
         },
         render: function() {
             var self = this;
+            document.title = 'Query: ' + self.query.get('name');
             $('<h2 class="querybuilder-header">')
-                .text('Query: ' + self.query.get('name'))
+                .text(document.title)
                 .prepend($('<img>', {src: self.model.getIcon()}))
                 .appendTo(self.el);
             self.$el.append(templates.querybuilder());

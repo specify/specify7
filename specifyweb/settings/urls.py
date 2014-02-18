@@ -25,6 +25,9 @@ urlpatterns = patterns('',
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specifyweb.specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specifyweb.specify.views.collection'),
 
+    # this url always triggers a 500 for testing purposes
+    url(r'^api/test_error/', 'specifyweb.specify.views.raise_error'),
+
     # special tree apis
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/', 'specifyweb.specify.tree_views.path'),
 

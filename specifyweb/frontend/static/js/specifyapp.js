@@ -9,7 +9,7 @@ define([
     'datamodeltask',
     'attachmentstask'
 ], function module(
-    $, _, Backbone, schema, businessRules, ErrorView,
+    $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
     userJSON) {
     "use strict";
@@ -44,45 +44,37 @@ define([
     }
 
     function handleError(jqxhr) {
-        setCurrentView(new ErrorView({ request: jqxhr }));
+        setCurrentView(new errorview.ErrorView({ request: jqxhr }));
         jqxhr.errorHandled = true;
     }
 
     function handleUnexpectedError(event, jqxhr, settings, exception) {
-        if (jqxhr.errorHandled) return;
+        if (jqxhr.errorHandled) return; // Not unexpected.
         if (jqxhr.status === 403) {
-            showErrorDialog($('<div title="Session Logged Out">'
-                              + 'Your current session has been logged out.'
-                              + '</div>'),
-                            { buttons: [{
-                                text: 'Login',
-                                click: function() {
-                                    window.location = "/accounts/login/?next=" +
-                                        window.location.href;
-                                }
-                            }]});
+            $('<div title="Session Logged Out">Your current session has been logged out.</div>')
+                .appendTo('body').dialog({
+                    modal: true,
+                    open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                    buttons: [{
+                        text: 'Login',
+                        click: function() {
+                            window.location = "/accounts/login/?next=" + window.location.href;
+                        }
+                    }]});
             return;
         }
-        showErrorDialog($('<div title="Unexpected Error">'
-                          + 'An unexpected error has occured during communication with the server.'
-                          + '</div>'));
+        new errorview.UnhandledErrorView({jqxhr: jqxhr}).render();
 
         console.log(arguments);
-    }
-
-    function showErrorDialog(el, options) {
-            el.appendTo('body').dialog(_.extend({
-            modal: true,
-            open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); }
-        }, options));
     }
 
     var SpecifyRouter = Backbone.Router.extend({
         __name__: "SpecifyRouter",
         // maps the final portion of the URL to the appropriate backbone view
         routes: {
-            ''                      : 'welcome',
-            '*whatever'             : 'notFound'   // match anything else.
+            ''           : 'welcome',
+            'test_error/': 'testError', // cause a internal server error for testing
+            '*whatever'  : 'notFound'   // match anything else.
         },
 
         // show a 'page not found' view for URLs we don't know how to handle
@@ -95,6 +87,10 @@ define([
         welcome: function() {
             setCurrentView(new WelcomeView());
             window.document.title = 'Welcome | Specify WebApp';
+        },
+
+        testError: function() {
+            $.get('/api/test_error/');
         }
     });
 
