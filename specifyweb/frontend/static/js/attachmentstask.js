@@ -78,7 +78,7 @@ define([
                 }
 
                 var _this = this;
-                this.attachments.isComplete() || this.attachments.fetch().done(function() {
+                this.attachments.isComplete() || this.attachments._fetch || this.attachments.fetch().done(function() {
                     _this.fillPage();
                 });
             }
