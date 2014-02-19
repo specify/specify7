@@ -204,7 +204,7 @@ define([
                            orderby: '-timestampcreated' }
             });
 
-            log.fetch().done(function() {
+            log.fetch({limit: 5}).done(function() {
                 log.each(function(entry) {
                     new LogEntry({model: entry}).render().$el.appendTo(_this.el);
                 });
