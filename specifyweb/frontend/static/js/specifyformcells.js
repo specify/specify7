@@ -77,7 +77,7 @@ define([
 		    value: cell.attr('label'),
 		    name: cell.attr('name')
 		});
-		return $('<td>').append(button);
+		return $('<td>'); // .append(button);  // Not implemented.
 	    },
             other: function() {
                 return $('<td>').text("unsupported cell type: " + cell.attr('type'));
