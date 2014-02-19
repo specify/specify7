@@ -47,6 +47,15 @@ define(['underscore', 'schemabase'], function(_, schema) {
             fields.push(preparations);
         },
         Preparation: function(model) {
+            var fields = model.getAllFields();
+            var isOnLoan = _(new schema.Field(model)).extend({
+                name: 'isOnLoan',
+                isRelationship: false,
+                isRequired: false,
+                type: 'java.lang.Boolean'
+            });
+            fields.push(isOnLoan);
+
             var preptype = model.getField('preptype');
             preptype.otherSideName = 'preparations';
         }

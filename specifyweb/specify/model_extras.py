@@ -10,7 +10,6 @@ class SpecifyUserManager(BaseUserManager):
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
 
-
 class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
@@ -89,6 +88,28 @@ class Specifyuser(models.Model):
             pass
 
         return super(Specifyuser, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+
+
+class Preparation(models.Model):
+    def isonloan(self):
+        # TODO: needs unit tests
+        from django.db import connection
+        cursor = connection.cursor()
+
+        cursor.execute("""
+        SELECT COALESCE(
+           SUM(GREATEST(0, COALESCE(Quantity - QuantityResolved, 0))),
+           0)
+        FROM loanpreparation
+        WHERE PreparationID = %s AND NOT IsResolved
+        """, [self.id])
+
+        result = cursor.fetchone()
+        return result[0] > 0
 
     class Meta:
         abstract = True
