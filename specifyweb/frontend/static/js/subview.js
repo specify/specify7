@@ -6,8 +6,8 @@ define([
     return Backbone.View.extend({
         __name__: "Subview",
         events: {
-            'click .specify-subview-header .specify-delete-related' : 'delete',
-            'click .specify-subview-header .specify-add-related' : 'add'
+            'click .specify-subview-header:first .specify-delete-related' : 'delete',
+            'click .specify-subview-header:first .specify-add-related' : 'add'
         },
         initialize: function(options) {
             // options = {
