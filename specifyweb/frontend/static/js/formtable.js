@@ -22,8 +22,9 @@ define([
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
-            this.collection.on('add', this.render, this);
-            this.collection.on('remove destroy', this.render, this);
+            // This is a bit overkill. Especially the change event, but it is cheap way
+            // to get collector.agent.*name to update in collecting event subforms. Gag.
+            this.collection.on('add remove distroy change', this.render, this);
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
 
