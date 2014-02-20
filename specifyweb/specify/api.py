@@ -238,11 +238,28 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
+def cleanData(model, data):
+    """Returns a copy of data with only fields that are part of model, removing
+    metadata fields and warning on unexpected extra fields."""
+    cleaned = {}
+    for field_name in data.keys():
+        if field_name in ('resource_uri', 'recordset_info'):
+            # These fields are meta data, not part of the resource.
+            continue
+        try:
+            model._meta.get_field_by_name(field_name)
+        except FieldDoesNotExist:
+            logger.warn('field "%s" does not exist in %s', field_name, model)
+        else:
+            cleaned[field_name] = data[field_name]
+    return cleaned
+
 def create_obj(collection, agent, model, data, parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, basestring):
         model = get_model_or_404(model)
+    data = cleanData(model, data)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
@@ -263,9 +280,6 @@ def set_fields_from_data(obj, data):
     set all fields provided by data that are not related object fields.
     """
     for field_name, val in data.items():
-        if field_name in ('resource_uri', 'recordset_info'):
-            # These fields are meta data, not part of the resource.
-            continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
@@ -275,9 +289,6 @@ def handle_fk_fields(collection, agent, obj, data):
     set foreign key fields in the object from the provided data.
     """
     for field_name, val in data.items():
-        if field_name in ('resource_uri', 'recordset_info'):
-            # These fields are meta data, not part of the resource.
-            continue
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
@@ -345,10 +356,6 @@ def handle_to_many(collection, agent, obj, data):
     created as new resources.
     """
     for field_name, val in data.items():
-        if field_name in ('resource_uri', 'recordset_info'):
-            # These fields are meta data, not part of the resource.
-            continue
-
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if direct: continue # Skip *-to-one fields.
 
@@ -406,6 +413,7 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
+    data = cleanData(obj.__class__, data)
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
 
