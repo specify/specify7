@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'uiplugin', 'templates', 'jquery-bbq'
-], function($, _, UIPlugin, templates) {
+    'jquery', 'underscore', 'uiplugin', 'jquery-bbq'
+], function($, _, UIPlugin) {
     "use strict";
 
     return UIPlugin.extend({
@@ -29,15 +29,16 @@ define([
 
                 window.addEventListener('message', listener, false);
 
-                $('<div id="geolocate-dialog">').append(templates.geolocate({ url: url })).dialog({
-                    width: 1038,
-                    height: 786,
-                    title: 'GEOLocate',
-                    close: function() {
-                        window.removeEventListener('message', listener, false);
-                        $(this).remove();
-                    }
-                });
+                $('<div id="geolocate-dialog">')
+                    .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
+                    .dialog({
+                        width: 'auto',
+                        title: 'GEOLocate',
+                        close: function() {
+                            window.removeEventListener('message', listener, false);
+                            $(this).remove();
+                        }
+                    });
             });
         },
         gotGeoRef: function(dataStr) {
@@ -58,6 +59,8 @@ define([
             var self = this;
             var data = {
                 v: 1,
+                w: 900,
+                h: 400,
                 georef: 'run',
                 locality: self.model.get('localityname') };
 

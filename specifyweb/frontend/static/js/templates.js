@@ -19,7 +19,6 @@ define([
     'text!tmpls/welcome.html',
     'text!tmpls/viewheader.html',
     'text!tmpls/recordsetchooser.html',
-    'text!tmpls/geolocateplugin.html',
     'text!tmpls/querybuilder.html',
     'text!tmpls/attachmentview.html',
     'text!tmpls/usertools.html'
@@ -49,7 +48,6 @@ define([
         'welcome',
         'viewheader',
         'recordsetchooser',
-        'geolocate',
         'querybuilder',
         'attachmentview',
         'usertools'
