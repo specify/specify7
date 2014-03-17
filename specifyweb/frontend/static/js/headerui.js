@@ -1,7 +1,12 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'templates',
     'jquery-bbq', 'jquery-ui',
-    'toolbarwelcome', 'toolbardataentry', 'toolbarquery', 'toolbarattachments'
+// Tasks included in header:
+    'toolbarwelcome',
+    'toolbardataentry',
+    'toolbarquery',
+    // 'toolbarreport',
+    'toolbarattachments'
 ], function headerUI(
     require, $, _, Backbone, navigation, domain, templates,
     jquery_bbq, jquery_ui

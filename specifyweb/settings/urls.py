@@ -41,4 +41,5 @@ urlpatterns = patterns('',
     url(r'^stored_query/', include('specifyweb.stored_queries.urls')),
     url(r'^attachment_gw/', include('specifyweb.attachment_gw.urls')),
     url(r'^barvis/', include('specifyweb.barvis.urls')),
+    url(r'^report_runner/', include('specifyweb.report_runner.urls')),
 )
