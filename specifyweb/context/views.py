@@ -3,6 +3,7 @@ from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.utils import simplejson
+from django.conf import settings
 
 from specifyweb.specify.models import Collection
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
@@ -83,6 +84,8 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isadmin'] = request.specify_user.is_admin()
+    if settings.SAFE_MODE:
+        data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
 
 @login_required

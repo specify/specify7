@@ -25,8 +25,10 @@ def api_view(dispatch_func):
     @login_required
     @csrf_exempt
     def view(request, *args, **kwargs):
-        if request.method != "GET" and \
-                request.specify_user.usertype not in ('Manager', 'FullAccess'):
+        if request.method != "GET" and (
+            settings.SAFE_MODE or
+            request.specify_user.usertype not in ('Manager', 'FullAccess')
+        ):
             return http.HttpResponseForbidden()
         try:
             return dispatch_func(request, *args, **kwargs)
