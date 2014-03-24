@@ -24,8 +24,8 @@ DATABASES = {
         'NAME': specify_settings.DATABASE_NAME,
         'USER': specify_settings.MASTER_NAME,
         'PASSWORD': specify_settings.MASTER_PASSWORD,
-        'HOST': '',
-        'PORT': '',
+        'HOST': specify_settings.DATABASE_HOST,
+        'PORT': specify_settings.DATABASE_PORT,
      }
  }
 

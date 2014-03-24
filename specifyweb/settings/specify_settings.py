@@ -7,6 +7,9 @@ THICK_CLIENT_LOCATION = '/opt/Specify'
 # want to access.
 DATABASE_NAME = 'SpecifyDB'
 
+DATABASE_HOST = ''
+DATABASE_PORT = ''
+
 # The master user login. Use the same values as
 # you did setting up the thick client.
 MASTER_NAME = 'MasterUser'
