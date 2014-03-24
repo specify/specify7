@@ -26,7 +26,7 @@ def api_view(dispatch_func):
     @csrf_exempt
     def view(request, *args, **kwargs):
         if request.method != "GET" and (
-            settings.SAFE_MODE or
+            settings.RO_MODE or
             request.specify_user.usertype not in ('Manager', 'FullAccess')
         ):
             return http.HttpResponseForbidden()

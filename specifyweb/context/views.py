@@ -84,7 +84,7 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isadmin'] = request.specify_user.is_admin()
-    if settings.SAFE_MODE:
+    if settings.RO_MODE:
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
 
