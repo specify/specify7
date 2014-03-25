@@ -14,7 +14,7 @@ require({
         'tmpls'          : '/static/html/templates',
         'context'        : '/context',
         'properties'     : '/properties',
-        'd3'             : 'http://d3js.org/d3.v3.min'
+        'd3'             : '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.3/d3.min'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
