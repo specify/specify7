@@ -17,6 +17,7 @@ def taxon_bar(request):
     cursor = connection.cursor()
     cursor.execute("""
     SELECT t.TaxonID,
+    t.RankID,
     t.ParentID,
     t.Name,
     (SELECT COUNT(*) FROM determination d WHERE t.TaxonID = d.TaxonID AND d.IsCurrent = 1)

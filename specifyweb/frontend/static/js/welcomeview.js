@@ -77,10 +77,39 @@ define([
                 .style("left", margin.left + "px")
                 .style("top", margin.top + "px");
 
-        d3.json('/barvis/taxon_bar/', function buildFromData(error, data) {
-            var tree = buildTree(data);
+        var genusTreeDefItem = new schema.models.TaxonTreeDefItem.LazyCollection({
+            filters: {name: "Genus"} });
+
+        var getGenusRankID = genusTreeDefItem.fetch({limit: 1}).pipe(function() {
+            return genusTreeDefItem.length > 0 ? genusTreeDefItem.at(0).get('rankid') : null;
+        });
+
+        var getTreeData = $.getJSON('/barvis/taxon_bar/');
+
+        $.when(getTreeData, getGenusRankID).done(function buildFromData(data, genusRankID) {
+            var tree = buildTree(data[0]);
             var root = tree[0];
             var thres = tree[1];
+            var makeName;
+
+            if (_.isNull(genusRankID)) {
+                makeName = function(d) {
+                    return (function recur(d) {
+                        return d.parent ? recur(d.parent) + ' ' + d.name : "";
+                    })(d.parent) + " " + d.count;
+                };
+            } else {
+                makeName = function(d) {
+                    var name = (d.rankId <= genusRankID) ? d.name :
+                            (function recur(d) {
+                                return (d.parent && d.rankId >= genusRankID) ? recur(d.parent) + ' ' + d.name : "";
+                            })(d.parent);
+
+                    name === "" && console.error("empty name for", d, "with rankId", d.rankId);
+                        
+                    return name + " " + d.count;
+                };
+            }
 
             var node = div.selectAll(".node")
                     .data(treemap.nodes(root).filter(function(d) { return !d.children; }))
@@ -97,12 +126,6 @@ define([
 
             $(div[0]).append("<p>Tree map of taxa with " + thres + " or more specimens</p>");
         });
-    }
-
-    function makeName(d) {
-        return (function recur(d) {
-            return d.parent ? recur(d.parent) + ' ' + d.name : "";
-        })(d.parent) + " " + d.count;
     }
 
 
@@ -122,6 +145,7 @@ define([
             var i = 0;
             var node = {
                 id: datum[i++],
+                rankId: datum[i++],
                 parentId: datum[i++],
                 name: datum[i++],
                 count: datum[i++],
@@ -173,7 +197,7 @@ define([
                     // if (thisCount < thres) {
                     //     children = [{count: total, name: node.name}];
                     // } else {
-                        children.push({count: thisCount, name: node.name});
+                        children.push({count: thisCount, name: node.name, rankId: node.rankId});
                     // }
                 }
                 node.children = children;
