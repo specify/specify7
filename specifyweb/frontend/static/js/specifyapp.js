@@ -14,6 +14,7 @@ define([
     userJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
+    var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
 
     var currentView;
 
@@ -51,7 +52,9 @@ define([
     function handleUnexpectedError(event, jqxhr, settings, exception) {
         if (jqxhr.errorHandled) return; // Not unexpected.
         if (jqxhr.status === 403) {
-            $('<div title="Session Logged Out">Your current session has been logged out.</div>')
+            $('<div title="Insufficient Privileges">'
+              + 'You lack sufficient privileges for that action, '
+              + 'or your current session has been logged out.</div>')
                 .appendTo('body').dialog({
                     modal: true,
                     open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
@@ -117,9 +120,9 @@ define([
         setCurrentView: setCurrentView,
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
-        user: $.parseJSON(userJSON)  // the currently logged in SpecifyUser
+        user: user,
+        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype)
     };
-
 
     return app;
 });

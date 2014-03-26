@@ -17,9 +17,6 @@ define([
         close: function() { dialog = null; $(this).remove(); }
     };
 
-    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>"><%= name %></a>'
-                                 + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
-
     var QueryListDialog = Backbone.View.extend({
         __name__: "QueryListDialog",
         className: "stored-queries-dialog list-dialog",
@@ -28,24 +25,39 @@ define([
         },
         render: function() {
             var ul = $('<ul>');
+            var makeEntry = this.dialogEntry.bind(this);
             this.options.queries.each(function(query) {
-                var icon = schema.getModelById(query.get('contexttableid')).getIcon();
-                var href = 'href="/specify/query/' + query.id + '/"';
-                var entry = $(dialogEntry({ icon: icon, href: href, name: query.get('name') }));
-                query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
-                ul.append(entry);
+                ul.append(makeEntry(query));
             });
             this.options.queries.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: title,
                 maxHeight: 400,
-                buttons: [
-                    {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
+                buttons: this.buttons()
             }));
             return this;
+        },
+        dialogEntry: function(query) {
+            var img = $('<img>', { src: schema.getModelById(query.get('contexttableid')).getIcon() });
+            var entry = $('<li>').append(
+                $('<a>', { href: '/specify/query/' + query.id + '/' })
+                    .addClass("intercept-navigation")
+                    .text(query.get('name'))
+                    .prepend(img));
+
+            this.options.readOnly || entry.append(
+                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
+                
+            query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
+            return entry;
+        },
+        buttons: function() {
+            var buttons = this.options.readOnly ? [] : [
+                {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }}
+            ];
+            buttons.push({text: 'Cancel', click: function() { $(this).dialog('close'); }});
+            return buttons;
         },
         edit: function(evt) {
             evt.preventDefault();
@@ -195,7 +207,7 @@ define([
                 filters: { specifyuser: app.user.id }
             });
             queries.fetch({ limit: 100 }).done(function() {
-                dialog = new QueryListDialog({ queries: queries });
+                dialog = new QueryListDialog({ queries: queries, readOnly: app.isReadOnly });
                 $('body').append(dialog.el);
                 dialog.render();
             });

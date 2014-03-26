@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'icons', 'specifyform', 'whenall', 'populateform', 'savebutton',
     'deletebutton', 'appresource', 'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, navigation, icons, specifyform,
+], function(require, $, _, Backbone, schema, navigation, icons, specifyform,
             whenAll, populateform, SaveButton, DeleteButton, getAppResource) {
     "use strict";
 
@@ -14,10 +14,6 @@ define([
 
     var formsList = getAppResource('DataEntryTaskInit');
 
-    var dialogEntry = _.template('<li><a class="intercept-navigation" <%= href %>><img src="<%= icon %>">'
-                                 + '<%= name %><span class="item-count" style="display:none"> - </span></a>'
-                                 + '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
-
     var RecordSetsDialog = Backbone.View.extend({
         __name__: "RecordSetsDialog",
         className: "recordsets-dialog list-dialog",
@@ -26,27 +22,43 @@ define([
         },
         render: function() {
             var ul = $('<ul>');
+            var makeEntry = this.dialogEntry.bind(this);
             this.options.recordSets.each(function(recordSet) {
-                var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
-                var href = 'href="/specify/recordset/' + recordSet.id + '/"';
-                var entry = $(dialogEntry({ icon: icon, href: href, name: recordSet.get('name') }));
-                recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
-                ul.append(entry);
-                recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
-                    $('.item-count', entry).append(count).show();
-                });
+                ul.append(makeEntry(recordSet));
             });
             this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Record Sets",
                 maxHeight: 400,
-                buttons: [
-                    { text: 'New', click: function() { $(this).prop('disabled', true); openFormsDialog(); }},
-                    { text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
+                buttons: this.buttons()
             }));
             return this;
+        },
+        dialogEntry: function(recordSet) {
+            var img = $('<img>', { src: schema.getModelById(recordSet.get('dbtableid')).getIcon() });
+            var entry = $('<li>').append(
+                $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
+                    .addClass("intercept-navigation")
+                    .text(recordSet.get('name'))
+                    .prepend(img)
+                    .append('<span class="item-count" style="display:none"> - </span>'));
+
+            this.options.readOnly || entry.append(
+                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
+
+            recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
+            recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
+                $('.item-count', entry).append(count).show();
+            });
+            return entry;
+        },
+        buttons: function() {
+            var buttons = this.options.readOnly ? [] : [
+                    { text: 'New', click: function() { $(this).prop('disabled', true); openFormsDialog(); }}
+            ];
+            buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
+            return buttons;
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();
@@ -161,10 +173,11 @@ define([
         icon: '/images/Data_Entry.png',
         execute: function() {
             if (dialog) return;
+            var app = require('specifyapp');
             var recordSets = new schema.models.RecordSet.LazyCollection();
             recordSets.fetch({ limit: 100 }) // That's a lot of record sets
                 .done(function() {
-                    dialog = new RecordSetsDialog({ recordSets: recordSets });
+                    dialog = new RecordSetsDialog({ recordSets: recordSets, readOnly: app.isReadOnly });
                     $('body').append(dialog.el);
                     dialog.render();
                 });

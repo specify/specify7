@@ -89,7 +89,7 @@ define([
 
     // build the actual view
     function showResource(resource, recordSet) {
-        var viewMode = _(['Manager', 'FullAccess']).contains(app.user.usertype) ? 'edit' : 'view';
+        var viewMode = app.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode });
 
         view.on('saved', function(resource, options) {
