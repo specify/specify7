@@ -39,9 +39,11 @@ define([
                 self.next = self.recordsetInfo.next && self.model.constructor.fromUri(self.recordsetInfo.next);
                 self.next && (self.next.recordsetid = self.model.recordsetid);
 
-                var newResource = new self.model.specifyModel.Resource(); // TODO: self.model.constructor?
-                newResource.recordsetid = self.model.recordsetid;
-                self.newUrl = newResource.viewUrl();
+                if (!self.readOnly) {
+                    var newResource = new self.model.specifyModel.Resource(); // TODO: self.model.constructor?
+                    newResource.recordsetid = self.model.recordsetid;
+                    self.newUrl = newResource.viewUrl();
+                }
             }
 
             if (!self.readOnly) {
