@@ -3,6 +3,7 @@ from functools import wraps
 
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 from django import http
 
 from .specify_jar import specify_jar
