@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from django.conf import settings
 
 from specifyweb.specify.views import login_required
+from specifyweb.specify.api import objs_to_data, toJson
+from specifyweb.specify.models import Spappresource
 
 TEST_JSON = '''
 {
@@ -79,3 +81,14 @@ def call_java(options):
     report_runner.stdin.close()
     report_runner.wait()
     return options['outputFile']
+
+@require_GET
+@login_required
+def get_reports(request):
+    reports = Spappresource.objects.filter(
+        specifyuser=request.specify_user,
+        mimetype__startswith="jrxml",
+        spappresourcedir__collection=request.specify_collection)
+
+    data = objs_to_data(reports)
+    return HttpResponse(toJson(data), content_type="application/json")
