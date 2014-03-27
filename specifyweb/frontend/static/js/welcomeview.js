@@ -124,7 +124,10 @@ define([
                 $('.treemap .node').tooltip({track: true, show: false, hide: false});
             });
 
-            $(div[0]).append("<p>Tree map of taxa with " + thres + " or more specimens</p>");
+            $('<p>', { title: "Showing Taxa with " + thres + " or more Collection Objects" })
+                .text("Taxon Tiles")
+                .appendTo(div[0])
+                .tooltip({track: true, show: false, hide: false});
         });
     }
 
