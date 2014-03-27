@@ -508,10 +508,17 @@ div.results div {
     clear: both;
 }
 
+#taxon-treemap {
+    position: relative;
+}
+
+#taxon-treemap img {
+    position: absolute;
+    bottom: 0px;
+}
 
 .treemap {
-    background-repeat: no-repeat;
-    background-position: center;
+    margin-left: 110px;
 }
 
 .treemap .node {
@@ -526,8 +533,8 @@ div.results div {
 
 .treemap p {
     position: absolute;
-    bottom: 15px;
-    right: 30px;
+    bottom: 0px;
+    right: 10px;
     background-color: white;
     padding: 0px 5px;
     opacity: 0.9;

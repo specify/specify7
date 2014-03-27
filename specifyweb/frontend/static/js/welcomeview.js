@@ -57,25 +57,21 @@ define([
     });
 
     function makeTreeMap() {
-        var margin = {top: 10, right: 10, bottom: 10, left: 10},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+        var width = 800;
+        var height = 400;
 
         var color = d3.scale.category20c();
 
         var treemap = d3.layout.treemap()
                 .size([width, height])
-                // .sticky(true)
                 .sort(function(a, b) { return b.id - a.id; })
                 .value(function(d) { return d.count; });
 
         var div = d3.select("#taxon-treemap").append("div")
                 .attr("class", "treemap")
                 .style("position", "relative")
-                .style("width", (width + margin.left + margin.right) + "px")
-                .style("height", (height + margin.top + margin.bottom) + "px")
-                .style("left", margin.left + "px")
-                .style("top", margin.top + "px");
+                .style("width", width + "px")
+                .style("height", height + "px");
 
         var genusTreeDefItem = new schema.models.TaxonTreeDefItem.LazyCollection({
             filters: {name: "Genus"} });
