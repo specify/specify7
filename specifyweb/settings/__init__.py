@@ -48,9 +48,11 @@ if 'test' in sys.argv:
     SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
     TESTING = False
-    SA_DATABASE_URL = 'mysql://%s:%s@localhost/%s?charset=utf8' % (
+    SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
         specify_settings.MASTER_NAME,
         specify_settings.MASTER_PASSWORD,
+        specify_settings.DATABASE_HOST,
+        specify_settings.DATABASE_PORT or 3306,
         specify_settings.DATABASE_NAME)
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
