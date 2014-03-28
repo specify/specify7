@@ -5,8 +5,8 @@ from django.conf import settings
 from specifyweb.specify import models
 
 def dots2dunders(lookups):
-    return dict(
-        (k.replace('.', '__'), v) for k, v in lookups.items())
+    return {k.replace('.', '__'): v
+            for k, v in lookups.items()}
 
 class RelatedSearch(object):
     distinct = False
@@ -35,6 +35,9 @@ class RelatedSearch(object):
         return pivot
 
     def build_related_queryset(self, queryset):
+        if queryset is None:
+            return self.root().objects.none()
+
         assert queryset.model is self.pivot()
         if self.pivot_path() == '':
             relatedqs = queryset
@@ -64,7 +67,7 @@ class RelatedSearch(object):
             'totalCount': total_count,
             'results': list(queryset),
             }
-        if settings.DEBUG:
+        if settings.DEBUG and hasattr(queryset, 'query'):
             data['sql'] = unicode(queryset.query)
         return data
 

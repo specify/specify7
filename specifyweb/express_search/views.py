@@ -133,6 +133,8 @@ def build_queryset(searchtable, terms, collection):
     if len(filters) > 0:
         reduced = reduce(or_, filters)
         return filter_by_collection(model.objects.filter(reduced), collection)
+    logger.info("no filters for query. model: %s fields: %s terms: %s", model, fields, terms)
+    return None
 
 def get_express_search_config(request):
     resource, __ = get_app_resource(request.specify_collection,
@@ -149,7 +151,7 @@ def search(request):
 
     def do_search(tablename, searchtable):
         qs = build_queryset(searchtable, terms, request.specify_collection)
-        if not qs:
+        if qs is None:
             return dict(totalCount=0, results=[])
 
         display_fields = [fn.text.lower() \
