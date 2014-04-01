@@ -79,9 +79,9 @@ define([
         events: {'click a': 'selected'},
         render: function() {
             var ul = $('<ul>');
+            var makeEntry = this.dialogEntry.bind(this);
             _.each(this.options.views, function(view) {
-                var icon = icons.getIcon(view.attr('iconname'));
-                ul.append(dialogEntry({ icon: icon, href: '', name: view.attr('title') }));
+                ul.append($('<li>').append(makeEntry(view)));
             });
             ul.find('a.edit').remove();
             this.$el.append(ul);
@@ -91,6 +91,10 @@ define([
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             }));
             return this;
+        },
+        dialogEntry: function(view) {
+            var img = $('<img>', { src: icons.getIcon(view.attr('iconname')) });
+            return $('<a>').addClass("intercept-navigation").text(view.attr('title')).prepend(img);
         },
         selected: function(evt) {
             var index = this.$('a').index(evt.currentTarget);

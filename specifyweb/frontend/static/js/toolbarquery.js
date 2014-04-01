@@ -83,9 +83,9 @@ define([
         events: {'click a': 'selected'},
         render: function() {
             var ul = $('<ul>');
+            var makeEntry = this.dialogEntry.bind(this);
             _.each(this.options.tables, function(table) {
-                var model = schema.getModel(table.attr('name'));
-                ul.append(dialogEntry({ icon: model.getIcon(), href: '', name: model.getLocalizedName() }));
+                ul.append($('<li>').append(makeEntry(table)));
             });
             ul.find('a').removeClass('intercept-navigation');
             ul.find('a.edit').remove();
@@ -96,6 +96,11 @@ define([
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             }));
             return this;
+        },
+        dialogEntry: function(table) {
+            var model = schema.getModel(table.attr('name'));
+            var img = $('<img>', { src: model.getIcon() });
+            return $('<a>').addClass("intercept-navigation").text(model.getLocalizedName()).prepend(img);
         },
         selected: function(evt) {
             var app = require('specifyapp');
