@@ -23,10 +23,6 @@ define([
         __name__: "WebLinkButton",
         render: function() {
             this.def = webLinksDefs[this.init.weblink];
-            if (_.isUndefined(this.def)) {
-                this.$el.attr('value', 'undefined weblink type: ' + this.init.weblink);
-                return this;
-            }
             var placeHolder = this.$el;
             this.setElement(
                 placeHolder.wrap('<div class="specify-plugin-weblink">').hide().parent()
@@ -38,7 +34,7 @@ define([
                 uiField.render().$el.appendTo(this.el).show();
             }
 
-            var title = this.def.find('> desc').text();
+            var title = this.def && this.def.find('> desc').text();
 
             $('<a>', { title: title })
                 .prependTo(this.el)
@@ -55,6 +51,8 @@ define([
             this.buildUrl().done(function(url) { a.attr('href', url); });
         },
         buildUrl: function() {
+            if (!this.def) return this.model.rget(this.fieldName);
+
             var template = this.def.find('baseURLStr').text()
                     .replace(/<\s*this\s*>/g, '<_this>')
                     .replace(/AMP/g, '&')
