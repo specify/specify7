@@ -29,7 +29,7 @@ define([
             this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
-                title: "Record Sets",
+                title: "Record Sets (" + this.options.recordSets._totalCount + ")",
                 maxHeight: 400,
                 buttons: this.buttons()
             }));
@@ -178,8 +178,10 @@ define([
         execute: function() {
             if (dialog) return;
             var app = require('specifyapp');
-            var recordSets = new schema.models.RecordSet.LazyCollection();
-            recordSets.fetch({ limit: 100 }) // That's a lot of record sets
+            var recordSets = new schema.models.RecordSet.LazyCollection({ 
+                filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
+            });
+            recordSets.fetch({ limit: 5000 }) // That's a lot of record sets
                 .done(function() {
                     dialog = new RecordSetsDialog({ recordSets: recordSets, readOnly: app.isReadOnly });
                     $('body').append(dialog.el);

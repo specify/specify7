@@ -32,7 +32,7 @@ define([
             this.options.queries.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
-                title: title,
+                title: "Queries (" + this.options.queries._totalCount + ")",
                 maxHeight: 400,
                 buttons: this.buttons()
             }));
@@ -209,9 +209,9 @@ define([
             if (dialog) return;
             var app = require('specifyapp');
             var queries = new schema.models.SpQuery.LazyCollection({
-                filters: { specifyuser: app.user.id }
+                filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
             });
-            queries.fetch({ limit: 100 }).done(function() {
+            queries.fetch({ limit: 5000 }).done(function() {
                 dialog = new QueryListDialog({ queries: queries, readOnly: app.isReadOnly });
                 $('body').append(dialog.el);
                 dialog.render();
