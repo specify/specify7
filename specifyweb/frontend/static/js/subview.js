@@ -3,12 +3,9 @@ define([
     'specifyform', 'querycbxsearch', 'templates', 'assert'
 ], function(require, $, _, Backbone, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
+
     return Backbone.View.extend({
         __name__: "Subview",
-        events: {
-            'click .specify-subview-header:first .specify-delete-related' : 'delete',
-            'click .specify-subview-header:first .specify-add-related' : 'add'
-        },
         initialize: function(options) {
             // options = {
             //   field: specify field object that this subview is showing a record for,
@@ -28,6 +25,9 @@ define([
                 dependent: self.field.isDependent()
             }));
             $('.specify-visit-related', header).remove();
+
+            header.on('click', '.specify-delete-related', this.delete.bind(this));
+            header.on('click', '.specify-add-related', this.add.bind(this));
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
             specifyform.buildSubView(self.$el, mode).done(function(form) {
