@@ -288,7 +288,21 @@ def handle_fk_fields(collection, agent, obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
-    for field_name, val in data.items():
+    if obj.__class__ is models.Collectionobject and 'collection' in data:
+        # This is ugly. For collection objects, we need to make sure the
+        # collection attribute gets set before collecting event so that
+        # we can see if the collecting event is supposed to be embedded.
+        # We could just look at the logged in collection, but that would
+        # implicitly assume the object being saved is in same collection,
+        # which seems like a bad idea. The fact that this sets up a
+        # dependence on the order we go through the for-loop below is
+        # kinda funky, but it works.
+        items = [('collection', data['collection'])] # put the collection attribute first
+        items.extend(item for item in data.items() if item[0] != 'collection')
+    else:
+        items = data.items()
+    
+    for field_name, val in items:
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
