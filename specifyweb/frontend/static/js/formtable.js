@@ -24,7 +24,11 @@ define([
 
             // This is a bit overkill. Especially the change event, but it is cheap way
             // to get collector.agent.*name to update in collecting event subforms. Gag.
-            this.collection.on('add remove distroy change', this.render, this);
+            this.collection.on('add remove distroy', this.render, this);
+            if (this.field.model.name === 'CollectingEvent' && this.field.name === 'collectors') {
+                // TODO: this is really bad. There has to be a better way.
+                this.collection.on('change', this.render, this);
+            }
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
 
@@ -63,7 +67,7 @@ define([
         },
         edit: function(evt) {
             evt.preventDefault();
-            var index = $(evt.currentTarget).data('index');
+            var index = $(evt.currentTarget).data('index'); // TODO: get the index from the DOM ordering?
             this.buildDialog(this.collection.at(index));
         },
         buildDialog: function(resource) {
