@@ -132,7 +132,7 @@ def build_queryset(searchtable, terms, collection):
 
     if len(filters) > 0:
         reduced = reduce(or_, filters)
-        return filter_by_collection(model.objects.filter(reduced), collection)
+        return filter_by_collection(model.objects.filter(reduced), collection, strict=False)
     logger.info("no filters for query. model: %s fields: %s terms: %s", model, fields, terms)
     return None
 
@@ -220,7 +220,7 @@ def querycbx_search(request, model):
 
     if len(filters) > 0:
         combined = reduce(and_, filters)
-        qs = filter_by_collection(model.objects.filter(combined), request.specify_collection)
+        qs = filter_by_collection(model.objects.filter(combined), request.specify_collection, strict=False)
     else:
         qs = model.objects.none()
 

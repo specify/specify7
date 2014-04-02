@@ -3,7 +3,10 @@ from .models import Geography, Taxon
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 
-def filter_by_collection(queryset, collection):
+class HierarchyException(Exception):
+    pass
+
+def filter_by_collection(queryset, collection, strict=True):
     if queryset.model is Geography:
         return queryset.filter(definition__disciplines=collection.discipline)
 
@@ -19,7 +22,10 @@ def filter_by_collection(queryset, collection):
         if getattr(queryset.model, fieldname, None):
             break
     else:
-        raise Exception('queryset model ' + queryset.model.__name__ + ' has no hierarchy field')
+        if strict:
+            raise HierarchyException('queryset model ' + queryset.model.__name__ + ' has no hierarchy field')
+        else:
+            return queryset
 
     if fieldname == 'collectionobject':
         lookup = 'collectionobject__collection'
