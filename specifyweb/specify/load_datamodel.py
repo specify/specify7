@@ -150,6 +150,7 @@ dependent_fields = {
     'Collectionobject.dnasequences',
     'Collectionobject.exsiccataitems',
     'Collectionobject.otheridentifiers',
+    'Collectionobject.paleocontext',
     'Collectionobject.preparations',
     'Collectionobject.treatmentevents',
     'Commonnametx.citations',
