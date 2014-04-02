@@ -41,6 +41,7 @@ textarea.specify-field {
 input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
     width: 100%;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 select.specify-field {
