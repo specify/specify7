@@ -114,6 +114,9 @@ define([
             query.set('contexttableid', model.tableId);
             query.set('specifyuser', app.user.resource_uri);
             query.set('isfavorite', true);
+            // ordinal seems to always get set to 32767 by Specify 6
+            // needs to be set for the query to be visible in Specify 6
+            query.set('ordinal', 32767);
             dialog = new EditQueryDialog({ spquery: query });
             $('body').append(dialog.el);
             dialog.render();
