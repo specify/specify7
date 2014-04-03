@@ -20,7 +20,7 @@ define([
             evt.preventDefault();
             self.geoRefData().done(function(data) {
                 var url = $.param.querystring(
-                    "http://www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data);
+                    "//www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data);
 
                 var listener = function(evt) {
                     if (evt.origin === "http://www.museum.tulane.edu")
