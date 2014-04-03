@@ -23,17 +23,21 @@ define([
             self.readOnly = specifyform.subViewMode(self.$el) === 'view';
             self.$el.empty();
 
-            var button = $('<a>', {title: self.field.getLocalizedName()}).appendTo(self.el);
+            var link = $('<a>', {title: self.field.getLocalizedName()}).appendTo(self.el);
 
-            $('<div style="display: table-row">')
-                .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
-                .append('<span class="specify-subview-button-count">')
-                .appendTo(button);
+            if (!self.$el.hasClass('specify-subview-in-table')) {
+                $('<div style="display: table-row">')
+                    .append($('<img>', {'class': "specify-subviewbutton-icon", src: self.icon}))
+                    .append('<span class="specify-subview-button-count">')
+                    .appendTo(link);
 
-            button.button();
+                link.button();
+            } else {
+                link.addClass('specify-subview-link');
+            }
         },
         setCount: function (c) {
-            this.$('.specify-subview-button-count').text(c);
+            this.$('.specify-subview-button-count, .specify-subview-link').text(c);
         },
         clicked: function(evt) {
             evt.preventDefault();

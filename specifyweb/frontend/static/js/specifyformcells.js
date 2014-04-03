@@ -28,6 +28,7 @@ define([
                     if (ignore && ignore.toLowerCase() == 'true') {
                         control.addClass('specify-ignore-field');
                     }
+                    doingFormTable && control.addClass('specify-field-in-table');
                 }
                 return td;
             },
@@ -57,6 +58,7 @@ define([
                     id && td.prop('id', id);
                     td.attr('data-specify-initialize', cell.attr('initialize'));
                     props.align && td.addClass('align-' + props.align);
+                    doingFormTable && td.addClass('specify-subview-in-table');
                 }
                 return td;
             },

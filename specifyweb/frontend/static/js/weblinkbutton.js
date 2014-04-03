@@ -23,23 +23,32 @@ define([
         __name__: "WebLinkButton",
         render: function() {
             this.def = webLinksDefs[this.init.weblink];
+            this.inFormTable = this.$el.hasClass('specify-field-in-table');
             var placeHolder = this.$el;
-            this.setElement(
-                placeHolder.wrap('<div class="specify-plugin-weblink">').hide().parent()
-            );
+            var newEl;
+
             this.fieldName = placeHolder.attr('name');
-            if (this.fieldName && this.fieldName !== 'this') {
-                placeHolder.prop('type', 'text');
-                var uiField = new UIField({ el: placeHolder, model: this.model });
-                uiField.render().$el.appendTo(this.el).show();
+            if (this.inFormTable) {
+                newEl = $('<div class="specify-plugin-weblink-in-table">').append('<a>');
+                placeHolder.replaceWith(newEl);
+                this.setElement(newEl);
+            } else {
+                newEl = placeHolder.wrap('<div class="specify-plugin-weblink">').hide().parent();
+                this.setElement(newEl);
+
+                if (this.fieldName && this.fieldName !== 'this') {
+                    placeHolder.prop('type', 'text');
+                    var uiField = new UIField({ el: placeHolder, model: this.model });
+                    uiField.render().$el.appendTo(this.el).show();
+                }
+
+                var title = this.def && this.def.find('> desc').text();
+
+                $('<a>', { title: title })
+                    .prependTo(this.el)
+                    .append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }))
+                    .button();
             }
-
-            var title = this.def && this.def.find('> desc').text();
-
-            $('<a>', { title: title })
-                .prependTo(this.el)
-                .append($('<img>', { src: icons.getIcon(this.init.icon || "WebLink") }))
-                .button();
 
             this.model.on('change', this.setLink, this);
             this.setLink();
@@ -48,7 +57,11 @@ define([
         },
         setLink: function() {
             var a = this.$('a');
-            this.buildUrl().done(function(url) { a.attr('href', url); });
+            var inFormTable = this.inFormTable;
+            this.buildUrl().done(function(url) {
+                a.attr('href', url);
+                inFormTable && !this.def && a.text(url || '');
+           });
         },
         buildUrl: function() {
             if (!this.def) return this.model.rget(this.fieldName);

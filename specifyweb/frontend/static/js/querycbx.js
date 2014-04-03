@@ -31,9 +31,11 @@ define([
             self.$('input').replaceWith(control);
             self.fieldName = control.attr('name');
             self.readOnly = control.prop('readonly');
-            if (self.readOnly) {
+            self.inFormTable = control.hasClass('specify-field-in-table');
+            if (self.readOnly || self.inFormTable) {
                 self.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
-            } else {
+            }
+            if (!self.readOnly || self.inFormTable) {
                 self.$('.querycbx-display').hide();
             }
             self.isRequired = self.$('input').is('.specify-required-field');
