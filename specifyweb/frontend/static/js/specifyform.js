@@ -48,6 +48,7 @@ define([
     function buildView(view, defaultType, mode) {
         defaultType || (defaultType = 'form');
         mode || (mode = 'edit');
+        console.log("buildView", view, "defaultType:", defaultType, 'mode:', mode);
         var altviews = _.filter(view.altviews, function(av) { return av.mode == mode; });
         altviews.length > 0 || (altviews = view.altviews);
 
@@ -63,12 +64,16 @@ define([
         });
 
         if (!altview) {
+            console.log("no altview for defaultType:", defaultType);
             altview = _.first(altviews);
             viewdef = viewdefs[altview.viewdef];
         }
+        console.log("using altview:", altview);
 
         var definition = viewdef.find('definition').text();
+        definition && console.log("viewdef is defined by", definition);
         var actual_viewdef = definition ? viewdefs[definition] : viewdef;
+        console.log("using viewdef:", actual_viewdef);
 
         var formNumber = formCounter++;
         var doingFormTable = viewdef.attr('type') === 'formtable';
