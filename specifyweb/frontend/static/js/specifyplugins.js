@@ -28,9 +28,10 @@ define([
                 evt.preventDefault();
                 $('<div>').append(templates.gmapplugin(self.model.toJSON())).dialog({
                     width: 455,
+                    height: 300,
                     title: self.model.specifyModel.getLocalizedName(),
                     close: function() { $(this).remove(); }
-                });
+                }).css({ overflow: 'hidden' });
             }
         }),
         AttachmentPlugin: AttachmentPlugin
