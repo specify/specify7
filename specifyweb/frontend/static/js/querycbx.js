@@ -46,7 +46,11 @@ define([
 
             var typesearchTxt = self.typesearch.text().trim();
             var mapper = typesearchTxt ? parseselect.colToFieldMapper(typesearchTxt) : _.identity;
-            self.displaycols = _(self.typesearch.attr('displaycols').split(',')).map(mapper);
+            var displaycolsRaw = _.map(self.typesearch.attr('displaycols').split(','), function trim(s) {
+                return s.trim();
+            });
+
+            self.displaycols = _(displaycolsRaw).map(mapper);
 
             var field = self.model.specifyModel.getField(self.fieldName);
             self.relatedModel = field.getRelatedModel();
@@ -93,7 +97,7 @@ define([
             var rget = function(field) { return resource.rget(field); };
             var buildLabel = str &&
                 whenAll(_(this.displaycols).map(rget)).pipe(function(vals) {
-                    _(vals).each(function (val) { str = str.replace(/%s/, val); });
+                    _(vals).each(function (val) { str = str.replace(/%s/, val || ''); });
                     return str;
                 });
             var buildValue = dataobjformat(resource, this.typesearch.attr('dataobjformatter'));
