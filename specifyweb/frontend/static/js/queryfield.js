@@ -24,7 +24,9 @@ define([
             node = table;
         });
 
-        return _.extend({joinPath: joinPath, table: node}, extractDatePart(fieldName));
+        var result = _.extend({joinPath: joinPath, table: node}, extractDatePart(fieldName));
+        console.log("parsed", stringId, result);
+        return result;
     }
 
     var DATE_PART_RE = /(.*)((NumericDay)|(NumericMonth)|(NumericYear))$/;
@@ -146,7 +148,10 @@ define([
                 var fs = stringIdToFieldSpec(this.spqueryfield.get('stringid'));
                 this.table = fs.table;
                 var field = this.table.getField(fs.fieldName);
-                field || (this.treeRank = fs.fieldName);
+                if (!field) {
+                    this.treeRank = fs.fieldName;
+                    console.log("using fieldname as treerank", this.treeRank);
+                }
                 this.joinPath = field ? fs.joinPath.concat(field) : fs.joinPath;
                 this.datePart = fs.datePart;
                 this.operation = this.spqueryfield.get('operstart');
@@ -322,12 +327,13 @@ define([
             if (this.formattedRecord) {
                 $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
-            } else if (this.operation == 'anything') {
-                $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
-                this.$('label.op-negate').hide();
             } else {
                 this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
                 this.datePart && $('<a class="field-label-datepart">').text('(' + this.datePart + ')').appendTo(fieldLabel);
+                if (this.operation == 'anything') {
+                    $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
+                    this.$('label.op-negate').hide();
+                }
             }
         },
         fieldSelected: function() {
