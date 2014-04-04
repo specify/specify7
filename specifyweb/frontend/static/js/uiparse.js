@@ -93,19 +93,33 @@ define(['jquery', 'underscore'], function($, _) {
         },
 
         "java.math.BigDecimal": function(field, value) {
-            return (parsers["java.lang.String"])(field, value);
+            return (parsers["java.lang.Double"])(field, value);
         },
 
         "java.sql.Timestamp": function(field, value) {
-            return (parsers["java.lang.String"])(field, value);
+            var parsed = Date.parse(value);
+            if (_.isNaN(parsed)) {
+                return {
+                    isValid: false,
+                    value: value,
+                    parsed: null,
+                    reason: "YYYY-MM-DD(THH:MM:SS)"
+                };
+            } else {
+                return {
+                    isValid: true,
+                    value: value,
+                    parsed: new Date(parsed).toISOString().replace(/Z$/, '')
+                };
+            }
         },
 
         "java.util.Calendar": function(field, value) {
-            return (parsers["java.lang.String"])(field, value);
+            return (parsers["java.sql.Timestamp"])(field, value);
         },
 
         "java.util.Date": function(field, value) {
-            return (parsers["java.lang.String"])(field, value);
+            return (parsers["java.sql.Timestamp"])(field, value);
         },
 
         "text": function(field, value) {
