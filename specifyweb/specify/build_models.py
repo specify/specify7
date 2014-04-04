@@ -225,7 +225,7 @@ field_type_map = {
     'java.lang.Long': make_integer_field,
     'java.lang.Byte': make_integer_field,
     'java.lang.Short': make_integer_field,
-    'java.util.Calendar': make_date_field,
+    'java.util.Calendar': make_datetime_field,
     'java.util.Date': make_date_field,
     'java.lang.Float': make_float_field,
     'java.lang.Double': make_float_field,
