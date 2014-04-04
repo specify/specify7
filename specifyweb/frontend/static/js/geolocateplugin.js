@@ -33,6 +33,7 @@ define([
                     .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
                     .dialog({
                         width: 'auto',
+                        resizable: false,
                         title: 'GEOLocate',
                         close: function() {
                             window.removeEventListener('message', listener, false);
