@@ -55,6 +55,7 @@ define([
             if (group) {
                 return iconDirs[group] + iconFile;
             } else {
+                console.warn("unknown icon:", icon); 
                 return '/images/unknown.png';
             }
         }

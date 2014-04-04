@@ -67,7 +67,7 @@ define([
             return this._localization && this._localization.aggregator;
         },
         getIcon: function() {
-            return icons.getIcon(this.name);
+            return icons.getIcon(this.name.toLowerCase());
         },
         orgRelationship: function() {
             return _.chain(schema.orgHierarchy).map(this.getField, this).filter(function(field) {
