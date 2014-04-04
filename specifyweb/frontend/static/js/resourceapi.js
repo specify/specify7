@@ -87,6 +87,10 @@ define([
                 var field = self.specifyModel.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one':
+                    // many-to-one wouldn't ordinarily be dependent, but
+                    // this is the case for paleocontext. really more like
+                    // a one-to-one.
+                    newResource.set(fieldName, related);
                     break;
                 case 'one-to-many':
                     newResource.rget(fieldName).done(function(newCollection) {
