@@ -55,10 +55,28 @@ define([
         },
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
-                    { text: 'New', click: function() { $(this).prop('disabled', true); openFormsDialog(); }}
+                { text: 'Skip', click: this.openFormsDialog.bind(this, false),
+                  title: 'Add new items directly to the database without any record set.' },
+                { text: 'New', click: this.openFormsDialog.bind(this, true),
+                  title: 'Create a new record set.' }
             ];
             buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
             return buttons;
+        },
+        openFormsDialog: function(createRS) {
+            this.$el.parent().find('.ui-button').addClass('ui-state-disabled').prop('disabled', true);
+
+            formsList.done(function(views) {
+                views = _.map($('view', views), $);
+                whenAll(_.map(views, function(view) {
+                    return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
+                })).done(function(forms) {
+                    dialog && dialog.$el.dialog('close');
+                    dialog = new FormsDialog({ views: views, forms: forms, createRecordSet: createRS });
+                    $('body').append(dialog.el);
+                    dialog.render();
+                });
+            });
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();
@@ -100,29 +118,19 @@ define([
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var form = this.options.forms[index];
-            var recordset = new schema.models.RecordSet.Resource();
             var model = schema.getModel(form['class'].split('.').pop());
-            recordset.set('dbtableid', model.tableId);
-            recordset.set('type', 0);
-            dialog = new EditRecordSetDialog({ recordset: recordset });
-            $('body').append(dialog.el);
-            dialog.render();
-        }
-    });
-
-    function openFormsDialog() {
-        formsList.done(function(views) {
-            views = _.map($('view', views), $);
-            whenAll(_.map(views, function(view) {
-                return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
-            })).done(function(forms) {
-                dialog && dialog.$el.dialog('close');
-                dialog = new FormsDialog({ views: views, forms: forms });
+            if(this.options.createRecordSet) {
+                var recordset = new schema.models.RecordSet.Resource();
+                recordset.set('dbtableid', model.tableId);
+                recordset.set('type', 0);
+                dialog = new EditRecordSetDialog({ recordset: recordset });
                 $('body').append(dialog.el);
                 dialog.render();
-            });
-        });
-    }
+            } else {
+                navigation.go(new model.Resource().viewUrl());
+            }
+        }
+    });
 
     var EditRecordSetDialog = Backbone.View.extend({
         __name__: "EditRecordSetDialog",

@@ -49,7 +49,8 @@ define([
             if (!self.readOnly) {
                 self.saveBtn = new SaveButton({
                     model: self.model,
-                    addAnother: self.model.isNew() && self.recordSet });
+                    addAnother: self.model.isNew()
+                });
 
                 self.saveBtn.on('savecomplete', self.saved, self);
             }
