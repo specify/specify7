@@ -247,8 +247,8 @@ define([
                     related = (value.length < 1) ? null :
                         new relatedModel.Resource(_.first(value), {parse: true});
                 } else {
-                    assert(_.isNull(value) || value instanceof ResourceBase);
-                    related = value;
+                    assert(value == null || value instanceof ResourceBase);
+                    related = value || null; // in case it was undefined
                 }
                 field.isDependent() && this.storeDependent(field, related);
                 return undefined; // because the FK is on the other side
