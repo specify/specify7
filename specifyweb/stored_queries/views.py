@@ -124,8 +124,11 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     query = filter_by_collection(model, query, collection)
 
     order_by_exprs = []
+    join_cache = {}
     for fs in field_specs:
-        query, field = fs.add_to_query(query, collection=collection)
+        query, field = fs.add_to_query(query,
+                                       join_cache=join_cache,
+                                       collection=collection)
         if fs.display:
             query = query.add_columns(field)
         sort_type = SORT_TYPES[fs.sort_type]

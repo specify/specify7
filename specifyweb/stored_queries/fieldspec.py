@@ -75,7 +75,7 @@ class FieldSpec(namedtuple('FieldSpec', [
                    display      = field.isDisplay,
                    sort_type    = field.sortType)
 
-    def build_join(self, query):
+    def build_join(self, query, join_cache):
         table = self.root_table
         path = deque(self.join_path)
 
@@ -91,12 +91,20 @@ class FieldSpec(namedtuple('FieldSpec', [
                     # when returning a one-to-many field stop short so
                     # the client can do the final 'join' to handle aggregation
                     break
-            aliased = orm.aliased(next_table)
+            if join_cache is not None and (table, fieldname) in join_cache:
+                aliased = join_cache[(table, fieldname)]
+                logger.debug("using join cache for %r.%s", table, fieldname)
+            else:
+                aliased = orm.aliased(next_table)
+                if join_cache is not None:
+                    join_cache[(table, fieldname)] = aliased
+                    logger.debug("adding to join cache %r, %r", (table, fieldname), aliased)
+
             query = query.outerjoin(aliased, get_field(table, fieldname))
             table = aliased
         return query, table
 
-    def add_to_query(self, query, no_filter=False, collection=None):
+    def add_to_query(self, query, no_filter=False, collection=None, join_cache=None):
         logger.info("adding field %s to query", self)
         using_subquery = False
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
@@ -111,7 +119,7 @@ class FieldSpec(namedtuple('FieldSpec', [
                                   and value_required_for_filter
                                   and not self.negate)
 
-        query, table = self.build_join(query)
+        query, table = self.build_join(query, join_cache)
 
         insp = inspect(table)
         if self.is_relation:
