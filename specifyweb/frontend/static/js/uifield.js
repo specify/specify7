@@ -40,6 +40,8 @@ define([
             this.formatter = this.field.getUIFormatter();
             this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
 
+            resource.isNew() && this.$el.val() && this.change(); // set default value into resource;
+
             var setControl =_(this.$el.val).bind(this.$el);
             var format = field.isRelationship ? objformat : _.bind(fieldformat, null, field);
 

@@ -47,6 +47,7 @@ define(['jquery', 'underscore'], function($, _) {
             },
             text: function() {
                 return $('<input type=text class="specify-field">')
+                    .attr('value', cell.attr('default'))
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             dsptextfield: function() {
