@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, views as auth_views, logout as aut
 from django.utils import simplejson
 from django.conf import settings
 
-from specifyweb.specify.models import Collection
+from specifyweb.specify.models import Collection, Spappresourcedata
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_required
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
@@ -155,3 +155,13 @@ def view(request):
     data = get_view(collection, request.specify_user, request.GET['name'])
 
     return HttpResponse(simplejson.dumps(data), content_type="application/json")
+
+@require_GET
+@login_required
+def remote_prefs(request):
+    res = Spappresourcedata.objects.filter(
+        spappresource__name='preferences',
+        spappresource__spappresourcedir__usertype='Prefs')
+
+    data = '\n'.join(r.data for r in res)
+    return HttpResponse(data, content_type='text/x-java-properties')

@@ -1,4 +1,7 @@
-define(['jquery', 'underscore'], function($, _) {
+define(['jquery', 'underscore', 'moment', 'remoteprefs'], function($, _, moment, remoteprefs) {
+    "use strict";
+
+    var dateFormatStr = remoteprefs['ui.formatting.scrdateformat'].toUpperCase() || 'YYYY-MM-DD';
 
     var parsers = {
         "java.lang.Boolean": function(field, value) {
@@ -97,19 +100,19 @@ define(['jquery', 'underscore'], function($, _) {
         },
 
         "java.sql.Timestamp": function(field, value) {
-            var parsed = Date.parse(value);
-            if (_.isNaN(parsed)) {
+            var parsed = moment(value, dateFormatStr, true);
+            if (!parsed.isValid()) {
                 return {
                     isValid: false,
                     value: value,
                     parsed: null,
-                    reason: "YYYY-MM-DD(THH:MM:SS)"
+                    reason: "Required Format: " + dateFormatStr
                 };
             } else {
                 return {
                     isValid: true,
                     value: value,
-                    parsed: new Date(parsed).toISOString().replace(/Z$/, '')
+                    parsed: parsed.format('YYYY-MM-DD')
                 };
             }
         },

@@ -3,11 +3,14 @@ Specify Application resources are hierarchical in nature and may be stored in ei
 database or the filesystem with database resources taking precedence over the filesystem.
 """
 import os, errno
+import logging
 from xml.etree import ElementTree
 
 from django.conf import settings
 
 from specifyweb.specify.models import Spappresourcedir, Spappresourcedata
+
+logger = logging.getLogger(__name__)
 
 # The resource hierarchy procedes from resources that are specific to the user
 # up through resources that are valid in any context. More specific resources
@@ -28,6 +31,8 @@ def get_app_resource(collection, user, resource_name):
     """Fetch the named app resource in the context of the given user and collection.
     Returns the resource data and mimetype as a pair.
     """
+    logger.info('looking for app resource %r for user %s in %s',
+                resource_name, user.name, collection.collectionname)
     # Traverse the hierarchy.
     for level in DIR_LEVELS:
         # First look in the database.
@@ -50,6 +55,7 @@ def load_resource_at_level(collection, user, level, resource_name):
     level of the resource hierarchy.
     Returns the resource data and mimetype as a pair.
     """
+    logger.info('looking in FS at level: %s', level)
     path = get_path_for_level(collection, user, level)
     if path is None: return None
     registry = load_registry(path)
@@ -96,7 +102,7 @@ def load_resource(path, registry, resource_name):
 def get_app_resource_from_db(collection, user, level, resource_name):
     """Try to get the named resource at a given level from the database.
     Returns the resource data and mimetype as a pair."""
-
+    logger.info('looking in DB at level: %s', level)
     # The database structure mimics a filesystem.
     # Here we get the SpAppResourceDir for the given level.
     dirs = get_app_resource_dirs_for_level(collection, user, level)

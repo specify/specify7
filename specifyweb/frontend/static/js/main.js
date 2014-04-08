@@ -14,12 +14,14 @@ require({
         'tmpls'          : '/static/html/templates',
         'context'        : '/context',
         'properties'     : '/properties',
+        'moment'         : '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min',
         'd3'             : '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.3/d3.min'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
         'jquery-bbq'     : ['jquery'],
         'underscore'     : { exports: '_' },
+        'moment'         : { exports: 'moment' },
         'backbone-orig'  : { deps: ['jquery', 'underscore'], exports: 'Backbone' }
     }
 });
