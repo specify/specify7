@@ -148,6 +148,7 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specifyplugin-latlonui table {
     width: 100%;
+    border: 1px solid;
 }
 
 .specifyplugin-latlonui th, .specifyplugin-latlonui td {
