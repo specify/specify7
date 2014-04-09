@@ -1,7 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
-    'saveblockers', 'tooltipmgr'
-], function($, _, Backbone, dataobjformatters, fieldformat, uiparse, saveblockers, ToolTipMgr) {
+    'saveblockers', 'tooltipmgr', 'dateformat'
+], function(
+    $, _, Backbone, dataobjformatters, fieldformat, uiparse,
+    saveblockers, ToolTipMgr, dateFormatStr) {
     "use strict";
     var objformat = dataobjformatters.format;
 
@@ -39,6 +41,7 @@ define([
 
             this.formatter = this.field.getUIFormatter();
             this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
+            this.field.isTemporal() && this.$el.attr('placeholder', dateFormatStr);
 
             resource.isNew() && this.$el.val() && this.change(); // set default value into resource;
 
