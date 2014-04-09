@@ -1,7 +1,5 @@
-define(['jquery', 'underscore', 'moment', 'remoteprefs'], function($, _, moment, remoteprefs) {
+define(['jquery', 'underscore', 'moment', 'dateformat'], function($, _, moment, dateFormatStr) {
     "use strict";
-
-    var dateFormatStr = remoteprefs['ui.formatting.scrdateformat'].toUpperCase() || 'YYYY-MM-DD';
 
     var parsers = {
         "java.lang.Boolean": function(field, value) {

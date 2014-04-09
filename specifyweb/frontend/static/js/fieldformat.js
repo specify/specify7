@@ -1,9 +1,7 @@
 define([
-    'jquery', 'underscore', 'agenttypepicklist', 'moment', 'remoteprefs'
-], function($, _, agenttypes, moment, remoteprefs) {
+    'jquery', 'underscore', 'agenttypepicklist', 'moment', 'dateformat'
+], function($, _, agenttypes, moment, dateFormatStr) {
     "use strict";
-
-    var dateFormatStr = remoteprefs['ui.formatting.scrdateformat'].toUpperCase() || 'YYYY-MM-DD';
 
     function formatDate(value) {
         var m = moment(value);
