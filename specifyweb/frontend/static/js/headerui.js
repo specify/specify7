@@ -1,5 +1,5 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'templates',
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'templates', 'schema',
     'jquery-bbq', 'jquery-ui',
 // Tasks included in header:
     'toolbarwelcome',
@@ -8,7 +8,7 @@ define([
     // 'toolbarreport',
     'toolbarattachments'
 ], function headerUI(
-    require, $, _, Backbone, navigation, domain, templates,
+    require, $, _, Backbone, navigation, domain, templates, schema,
     jquery_bbq, jquery_ui
 ) {
     "use strict";
@@ -41,7 +41,8 @@ define([
         __name__: "HeaderUI",
         events: {
             'click #site-nav > ul > li > a': 'siteNavClick',
-            'click .username': 'openUserTools'
+            'click .username': 'openUserTools',
+            'change #user-tools select': 'changeCollection'
         },
         el: $('#site-header'),
         initialize: function() {
@@ -55,10 +56,19 @@ define([
         render: function() {
             var _this = this;
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
-            domain.levels.collection.fetchIfNotPopulated().done(function (collection) {
-                _this.$('#user-tools').prepend(
-                    $('<a>', {'class': 'username'}).text(_this.user.name), ' | ',
-                    collection.get('collectionname'), ' | ');
+            this.$('#user-tools a.username').text(this.user.name);
+
+            var collectionSelector = this.$('#user-tools select');
+            var collections = new schema.models.Collection.LazyCollection();
+            $.when(
+                domain.levels.collection.fetchIfNotPopulated(),
+                collections.fetch({limit: 0})
+            ).done(function (currentCollection) {
+               collections.each(function(collection) {
+                   $("<option>", {selected: collection.id === currentCollection.id, value: collection.id})
+                       .text(collection.get('collectionname'))
+                       .appendTo(collectionSelector);
+               });
             });
             this.$('#header-loading').remove();
             this.$el.append('<nav id="site-nav">');
@@ -86,6 +96,9 @@ define([
                         {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                     ]
                 });
+        },
+        changeCollection: function(evt) {
+            navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');
         }
     });
 });
