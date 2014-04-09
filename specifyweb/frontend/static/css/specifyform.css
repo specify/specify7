@@ -98,8 +98,13 @@ hr.separator {
     padding: 0.5em 1em;
 }
 
-table.partialdateui-strct td:first-child {
+table.partialdateui-strct td:first-child,
+table.partialdateui-strct td:last-child {
     padding: 0px;
+}
+
+.partialdateui-month-year {
+    white-space: nowrap;
 }
 
 ul.ui-autocomplete li.ui-menu-item {

@@ -10,7 +10,8 @@ define([
             'change select': 'updatePrecision',
             'change input.partialdateui-full': 'updateFullDate',
             'change input.partialdateui-month': 'updateMonth',
-            'change input.partialdateui-year': 'updateYear'
+            'change input.partialdateui-year': 'updateYear',
+            'click a.partialdateui-current-date': 'setToday'
         },
         render: function() {
             var init = this.init;
@@ -28,7 +29,10 @@ define([
             var label = ui.parents().last().find('label[for="' + select.prop('id') + '"]');
             label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
 
-            this.$('input.partialdateui-full').attr('size', dateFormatStr.length);
+            this.$('input.partialdateui-full').attr({
+                'size': dateFormatStr.length + 1,
+                'placeholder': dateFormatStr
+            });
 
             this.toolTipMgr = new ToolTipMgr(this).enable();
             this.saveblockerEhancement = new saveblockers.FieldViewEnhancer(this, init.df);
@@ -95,6 +99,9 @@ define([
             var val = parseInt(this.$('input.partialdateui-year:visible').val(), 10);
             var m = (orig ? moment(orig) : moment()).year(val);
             this.updateIfValid(m);
+        },
+        setToday: function() {
+            this.model.set(this.init.df, moment().format());
         }
     });
 });
