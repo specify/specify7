@@ -24,7 +24,10 @@ define([
             this.setElement(ui);
             ui.find('select, input').prop('readonly', disabled);
 
-            disabled && select.hide();
+            if (disabled) {
+                select.hide();
+                this.$('.partialdateui-current-date').hide();
+            }
 
             var label = ui.parents().last().find('label[for="' + select.prop('id') + '"]');
             label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
