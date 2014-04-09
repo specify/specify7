@@ -32,7 +32,7 @@ def get_app_resource(collection, user, resource_name):
     Returns the resource data and mimetype as a pair.
     """
     logger.info('looking for app resource %r for user %s in %s',
-                resource_name, user.name, collection.collectionname)
+                resource_name, user and user.name, collection.collectionname)
     # Traverse the hierarchy.
     for level in DIR_LEVELS:
         # First look in the database.
