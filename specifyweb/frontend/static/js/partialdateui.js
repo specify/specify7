@@ -46,7 +46,6 @@ define([
             this.model.on('change:' + init.tp.toLowerCase(), setPrecision);
 
             this.model.fetchIfNotPopulated().done(setInput).done(setPrecision);
-            this.model.isNew() && this.model.set(init.tp, 1); // full date
             return this;
         },
         setInput: function() {
@@ -57,11 +56,11 @@ define([
             this.$('.partialdateui-year').val(value ? m.format('YYYY') : '');
         },
         setPrecision: function() {
-            var precisionIdx = this.model.get(this.init.tp);
+            var precisionIdx = this.model.get(this.init.tp) || 1; // default full date
             _.each(precisions, function(p, i) {
                 this.$("td.partialdateui-" + p)[(i + 1 === precisionIdx) ? 'show' : 'hide']();
             }, this);
-            
+
             this.$('select').val(precisionIdx);
         },
         updatePrecision: function() {
@@ -72,12 +71,15 @@ define([
         updateIfValid: function(m, invalidMessage) {
             if (m == null) {
                 this.model.set(this.init.df, null);
+                this.model.set(this.init.tp, null); // set precision to null if value is null
                 this.setInput();
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
                 console.log('setting date to null');
             } else if (m.isValid()) {
                 var value = m.format('YYYY-MM-DD');
                 this.model.set(this.init.df, value);
+                // precision should be consistent with UI
+                this.model.set(this.init.tp, parseInt(this.$('select').val()));
                 this.setInput();
                 console.log('setting date to', value);
                 this.model.saveBlockers.remove('invaliddate:' + this.init.df);
@@ -104,7 +106,7 @@ define([
             this.updateIfValid(m);
         },
         setToday: function() {
-            this.model.set(this.init.df, moment().format());
+            this.updateIfValid(moment());
         }
     });
 });
