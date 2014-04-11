@@ -11,6 +11,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         },
         initialize: function(options) {
             this.ajaxUrl = options.ajaxUrl;
+            this.doFetch = options.fetch || this.doFetchSimple.bind(this);
             this.resultsView = new options.View(_.extend({el: this.el}, options.viewOptions));
             this.offset = 0;
 
@@ -39,9 +40,12 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         },
         fetchMore: function() {
             if (this.fetch) return this.fetch;
-            var url = $.param.querystring(this.ajaxUrl, {offset: this.offset});
             this.trigger('fetching', this);
-            return this.fetch = $.get(url, _.bind(this.gotData, this));
+            return this.fetch = this.doFetch(this.offset).done(this.gotData.bind(this));
+        },
+        doFetchSimple: function(offset) {
+            var url = $.param.querystring(this.ajaxUrl, {offset: offset});
+            return $.get(url);
         },
         gotData: function(data) {
             var results = this.resultsFromData(data);

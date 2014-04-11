@@ -1,9 +1,11 @@
 import operator
 import logging
+import json
 from collections import namedtuple
 
 from django.http import HttpResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 import sqlalchemy
@@ -76,21 +78,45 @@ def filter_by_collection(model, query, collection):
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
-
     session = Session()
     sp_query = session.query(models.SpQuery).get(int(id))
     field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
                    for field in sorted(sp_query.fields, key=lambda field: field.position)]
-    model = models.models_by_tableid[sp_query.contextTableId]
+
+    return execute(session, request.specify_collection, sp_query.contextTableId, field_specs, limit, offset)
+
+class EphemeralField(
+    namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType, spQueryFieldId")):
+    @classmethod
+    def from_json(cls, data):
+        data['spqueryfieldid'] = data['id'] # kinda kludgie
+        return cls(**{field: data[field.lower()] for field in cls._fields})
+
+@require_POST
+@csrf_exempt
+@login_required
+def ephemeral(request):
+    spquery = json.load(request)
+    logger.info('ephemeral query: %s', spquery)
+    limit = spquery.get('limit', 20)
+    offset = spquery.get('offset', 0)
+    session = Session()
+    
+    field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
+                   for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+
+    return execute(session, request.specify_collection, spquery['contexttableid'], field_specs, limit, offset)
+
+def execute(session, collection, tableid, field_specs, limit, offset):
+    model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
-    query = filter_by_collection(model, query, request.specify_collection)
+    query = filter_by_collection(model, query, collection)
 
     headers = ['id']
     order_by_exprs = []
     for fs in field_specs:
-        query, field = fs.add_to_query(query,
-                                       collection=request.specify_collection)
+        query, field = fs.add_to_query(query, collection=collection)
         if fs.display:
             query = query.add_columns(field)
             headers.append(fs.spqueryfieldid)
@@ -107,4 +133,4 @@ def query(request, id):
     }
     session.close()
     return HttpResponse(toJson(results), content_type='application/json')
-
+    

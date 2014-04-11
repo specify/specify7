@@ -132,7 +132,7 @@ define([
             _.each(this.fieldUIs, function(field) { field.contract(); });
         },
         saveRequired: function() {
-            this.$('.query-execute').prop('disabled', true);
+            //this.$('.query-execute').prop('disabled', true);
             this.$('.abandon-changes').prop('disabled', false);
         },
         addField: function() {
@@ -167,17 +167,20 @@ define([
             table.empty();
             table.append(self.renderHeader());
 
-            var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
             var view = new ScrollResults({
                 View: Results,
                 el: table,
                 viewOptions: {fieldUIs: self.fieldUIs, model: self.model},
-                ajaxUrl: ajaxUrl
+                fetch: this.fetchResults.bind(this)
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
 
             view.fetchMoreWhileAppropriate();
+        },
+        fetchResults: function(offset) {
+            var query = _.extend(this.query.toJSON(), {offset: offset});
+            return $.post('/stored_query/ephemeral/', JSON.stringify(query));
         },
         moveUp: function(queryField) {
             queryField.$el.prev().insertAfter(queryField.el);
