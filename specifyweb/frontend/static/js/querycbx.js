@@ -94,10 +94,13 @@ define([
         },
         renderItem: function (resource) {
             var str = this.typesearch.attr('format');
-            var rget = function(field) { return resource.rget(field); };
+            var rget = resource.rget.bind(resource);
             var buildLabel = str &&
                 whenAll(_(this.displaycols).map(rget)).pipe(function(vals) {
-                    _(vals).each(function (val) { str = str.replace(/%s/, val || ''); });
+                    // TODO: utilize precision values for %f format fields.
+                    // I tried using sprintf.js for this, but couldn't get
+                    // to handle nulls nicely.
+                    _(vals).each(function (val) { str = str.replace(/(%s)|(%[0-9\.]*f)/, val || ''); });
                     return str;
                 });
             var buildValue = dataobjformat(resource, this.typesearch.attr('dataobjformatter'));
