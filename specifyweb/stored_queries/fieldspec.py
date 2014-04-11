@@ -176,7 +176,10 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
     if collection is not None:
         treedef = get_tree_def(query, collection, insp.class_.__name__)
         same_tree_p = getattr(ancestor, treedef_column) == treedef
-        rank_p = ancestor.rankId == query.session.query(treedefitem.rankId).filter(rank_p).one()[0]
+        rankId = query.session.query(treedefitem.rankId) \
+                 .filter(rank_p, getattr(treedefitem, treedef_column) == treedef) \
+                 .one()[0]
+        rank_p = ancestor.rankId == rankId
         join_treedefitem = False
     else:
         same_tree_p = getattr(node, treedef_column) == getattr(ancestor, treedef_column)
