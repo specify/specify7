@@ -27,6 +27,7 @@ define([
             var placeHolder = this.$el;
             var newEl;
 
+            placeHolder.val() === 'plugin' && placeHolder.val('');
             this.fieldName = placeHolder.attr('name');
             if (this.inFormTable) {
                 newEl = $('<div class="specify-plugin-weblink-in-table">').append('<a>');
