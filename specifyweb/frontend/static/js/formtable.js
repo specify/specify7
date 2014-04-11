@@ -118,9 +118,12 @@ define([
             evt.preventDefault();
 
             var newResource = new (self.collection.model)();
-            if (self.field) {
-                newResource.set(self.field.otherSideName, self.collection.related.url());
-            }
+            // Setting the backref here is superfulous because it will be set by parent object
+            // when it is saved. Trying to do so now messes things up if the parent object
+            // is not yet persisted.
+            // if (self.field) {
+            //     newResource.set(self.field.otherSideName, self.collection.related.url());
+            // }
             self.collection.related && self.collection.add(newResource);
 
             self.buildDialog(newResource);

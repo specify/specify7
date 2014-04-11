@@ -27,6 +27,10 @@ define([
                 console.error('unknown field', this.$el.attr('name'), 'in', this.model, 'element:', this.$el);
                 return;
             }
+            if (!resource) {
+                console.error("resource doesn't exist");
+                return;
+            }
             var remote = _.isNull(resource) || resource != this.model;
 
             this.readOnly = remote || field.isRelationship || this.$el.prop('readonly');
