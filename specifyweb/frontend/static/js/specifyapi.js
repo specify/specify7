@@ -36,7 +36,7 @@ define([
         },
         queryCbxSearch: function(model, searchfield, searchterm) {
             var filters = {};
-            filters[searchfield.toLowerCase() + '__icontains'] = searchterm;
+            filters[searchfield.toLowerCase() + '__istartswith'] = searchterm;
             return new model.LazyCollection({ filters: filters, domainfilter: true });
         },
         queryCbxExtendedSearch: function(templateResource) {
