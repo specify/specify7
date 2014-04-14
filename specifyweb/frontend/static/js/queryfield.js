@@ -478,7 +478,7 @@ define([
         },
         makeStringId: function(tableList) {
             var fieldName = this.treeRank || _.last(this.joinPath).name;
-            if (this.datePart) {
+            if (this.datePart && this.datePart !== 'Full Date') {
                 fieldName += 'Numeric' + this.datePart;
             }
             return [tableList, this.table.name.toLowerCase(), fieldName];
