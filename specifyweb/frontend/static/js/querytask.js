@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'fieldformat', 'dataobjformatters',
+    'fieldformat', 'dataobjformatters', 'navigation',
     'savebutton', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates,
-            fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {
+], function($, _, Backbone, schema, QueryFieldUI, templates, fieldformat, 
+            dataobjformatters, navigation, SaveButton, whenAll, ScrollResults) {
     "use strict";
     var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
@@ -64,7 +64,7 @@ define([
         }
     });
 
-    var StoredQueryView = Backbone.View.extend({
+    var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         events: {
             'click .query-execute': 'search',
@@ -85,6 +85,7 @@ define([
                 .prepend($('<img>', {src: self.model.getIcon()}))
                 .appendTo(self.el);
             self.$el.append(templates.querybuilder());
+            self.query.isNew() && self.$('.abandon-changes').remove();
             self.$('.querybuilder').append(self.saveButton.render().el);
 
             self.$('button.field-add').button({
@@ -195,14 +196,33 @@ define([
 
     return function(app) {
         app.router.route('query/:id/', 'storedQuery', function(id) {
-            function doIt() {
+            (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
                 query.fetch().fail(app.handleError).done(function() {
-                    app.setCurrentView(new StoredQueryView({ query: query }));
-                    app.getCurrentView().on('redisplay', doIt);
+                    var view = new QueryBuilder({ query: query });
+                    view.on('redisplay', showView);
+                    app.setCurrentView(view);
                 });
-            }
-            doIt();
+            })();
+        });
+
+        app.router.route('query/new/:table/', 'ephemeralQuery', function(table) {
+            var query = new schema.models.SpQuery.Resource();
+            var model = schema.getModel(table);
+            query.set({
+                'name': "New Query",
+                'contextname': model.name,
+                'contexttableid': model.tableId,
+                'specifyuser': app.user.resource_uri,
+                'isfavorite': true,
+                // ordinal seems to always get set to 32767 by Specify 6
+                // needs to be set for the query to be visible in Specify 6
+                'ordinal': 32767
+            });
+
+            var view = new QueryBuilder({ query: query });
+            view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
+            app.setCurrentView(view);
         });
     };
 });
