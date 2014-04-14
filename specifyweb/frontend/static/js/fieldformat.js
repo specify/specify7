@@ -10,7 +10,7 @@ define([
 
     var byType = {
         'java.lang.Boolean': function(value) {
-            return _isNull(value) ? '' : (
+            return _.isNull(value) ? '' : (
                 value ? 'True' : 'False');
         },
         "java.sql.Timestamp": formatDate,

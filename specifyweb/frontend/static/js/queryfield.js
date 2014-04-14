@@ -487,12 +487,12 @@ define([
             var tableList = this.makeTableList();
             var stringId = this.makeStringId(tableList);
             var attrs = {
-                operstart: this.operation == 'anything' ? 1 : this.operation,
+                operstart: this.operation == 'anything' ? 1 : parseInt(this.operation),
                 tablelist: tableList,
                 stringid: stringId.join('.'),
                 fieldname: _.last(stringId),
                 isdisplay: true,
-                isnot: this.negate,
+                isnot: !!this.negate,
                 isrelfld: this.formattedRecord
             };
             this.spqueryfield.set(attrs);

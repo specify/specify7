@@ -86,11 +86,10 @@ def query(request, id):
     return execute(session, request.specify_collection, sp_query.contextTableId, field_specs, limit, offset)
 
 class EphemeralField(
-    namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType, spQueryFieldId")):
+    namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
     @classmethod
-    def from_json(cls, data):
-        data['spqueryfieldid'] = data['id'] # kinda kludgie
-        return cls(**{field: data[field.lower()] for field in cls._fields})
+    def from_json(cls, json):
+        return cls(**{field: json[field.lower()] for field in cls._fields})
 
 @require_POST
 @csrf_exempt
@@ -113,13 +112,11 @@ def execute(session, collection, tableid, field_specs, limit, offset):
     query = session.query(id_field)
     query = filter_by_collection(model, query, collection)
 
-    headers = ['id']
     order_by_exprs = []
     for fs in field_specs:
         query, field = fs.add_to_query(query, collection=collection)
         if fs.display:
             query = query.add_columns(field)
-            headers.append(fs.spqueryfieldid)
         sort_type = SORT_TYPES[fs.sort_type]
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -127,7 +124,6 @@ def execute(session, collection, tableid, field_specs, limit, offset):
     query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
 
     results = {
-        'columns': headers,
         'results': list(query),
         'count': count
     }

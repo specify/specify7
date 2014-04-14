@@ -19,25 +19,18 @@ define([
             return results.results.length < 1;
         },
         addResults: function(results) {
-            var self = this;
-            var columns = results.columns;
-            var fieldToCol = function(fieldUI) {
-                return _(columns).indexOf(fieldUI.spqueryfield.id);
-            };
-
             _.each(results.results, function(result) {
-                var row = $('<tr>').appendTo(self.el);
-                var resource = new self.model.Resource({
-                    id: result[0]
-                });
+                var row = $('<tr>').appendTo(this.el);
+                var resource = new this.model.Resource({ id: result[0] });
                 var href = resource.viewUrl();
-                _.each(self.fieldUIs, function(fieldUI) {
-                    if (!fieldUI.spqueryfield.get('isdisplay')) return;
-                    var value = result[fieldToCol(fieldUI)];
-                    self.makeCell(href, fieldUI, value).appendTo(
-                        $('<td>').appendTo(row));
-                });
-            });
+                _.chain(this.fieldUIs)
+                    .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                    .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                    .each(function(fieldUI, i) {
+                        var cell = this.makeCell(href, fieldUI, result[i + 1]);
+                        $('<td>').appendTo(row).append(cell);
+                    }, this);
+            }, this);
             return results.results.length;
         },
         makeCell: function(rowHref, cellFieldUI, cellValue) {
@@ -138,7 +131,13 @@ define([
         addField: function() {
             this.contractFields();
             var newField = new schema.models.SpQueryField.Resource();
-            newField.set({sorttype: 0, isdisplay: true, query: this.query.url()});
+            newField.set({
+                sorttype: 0,
+                isdisplay: true,
+                isnot: false,
+                startvalue: '',
+                query: this.query.url()
+            });
 
             var ui = this.addFieldUI(newField);
             this.fieldUIs.push(ui);
@@ -148,13 +147,15 @@ define([
         },
         renderHeader: function() {
             var header = $('<tr>');
-            _.each(this.fieldUIs, function(fieldUI) {
-                if (!fieldUI.spqueryfield.get('isdisplay')) return;
-                var field = fieldUI.getField();
-                var icon = field.model.getIcon();
-                var name = fieldUI.treeRank || field.getLocalizedName();
-                fieldUI.datePart && ( name += ' (' + fieldUI.datePart + ')' );
-                $('<th>').text(name).prepend($('<img>', {src: icon})).appendTo(header);
+            _.chain(this.fieldUIs)
+                .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                .each(function(fieldUI) {
+                    var field = fieldUI.getField();
+                    var icon = field.model.getIcon();
+                    var name = fieldUI.treeRank || field.getLocalizedName();
+                    fieldUI.datePart && ( name += ' (' + fieldUI.datePart + ')' );
+                    $('<th>').text(name).prepend($('<img>', {src: icon})).appendTo(header);
             });
             return header;
         },

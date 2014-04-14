@@ -22,8 +22,7 @@ class FieldSpec(namedtuple('FieldSpec', [
     'value',
     'negate',
     'display',
-    'sort_type',
-    'spqueryfieldid'])):
+    'sort_type'])):
 
     # The stringid is a structure consisting of three fields seperated by '.':
     # (1) the join path to the specify field.
@@ -33,6 +32,8 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     @classmethod
     def from_spqueryfield(cls, field, value=None):
+        logger.info('generating field spec from %r', field)
+        logger.debug('parsing %s', field.stringId)
         path, table_name, field_name = cls.STRINGID_RE.match(field.stringId).groups()
         path_elems = path.split(',')
         root_table = models.models_by_tableid[int(path_elems[0])]
@@ -72,8 +73,7 @@ class FieldSpec(namedtuple('FieldSpec', [
                    value        = field.startValue if value is None else value,
                    negate       = field.isNot,
                    display      = field.isDisplay,
-                   sort_type    = field.sortType,
-                   spqueryfieldid = field.spQueryFieldId)
+                   sort_type    = field.sortType)
 
     def build_join(self, query):
         table = self.root_table
