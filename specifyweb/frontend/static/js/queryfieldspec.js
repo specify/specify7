@@ -1,4 +1,4 @@
-define(['underscore'], function(_) {
+define(['underscore', 'schema'], function(_, schema) {
     "use strict";
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
