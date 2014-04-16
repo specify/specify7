@@ -40,12 +40,8 @@ define([
             } else {
                 var fs = queryfieldspec(this.spqueryfield.get('stringid'));
                 this.table = fs.table;
-                var field = this.table.getField(fs.fieldName);
-                if (!field) {
-                    this.treeRank = fs.fieldName;
-                    console.log("using fieldname as treerank", this.treeRank);
-                }
-                this.joinPath = field ? fs.joinPath.concat(field) : fs.joinPath;
+                this.treeRank = fs.treeRank;
+                this.joinPath = fs.joinPath;
                 this.datePart = fs.datePart;
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');

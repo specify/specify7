@@ -21,7 +21,18 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
-        var result = _.extend({joinPath: joinPath, table: node}, extractDatePart(fieldName));
+        var result = {joinPath: joinPath, table: node};
+        _.extend(result, extractDatePart(fieldName));
+
+        var field = node.getField(result.fieldName);
+        if (field) {
+            result.joinPath.push(field);
+            result.treeRank = null;
+        } else {
+            result.treeRank = result.fieldName;
+            console.log("using fieldname as treerank", result.treeRank);
+        }
+
         console.log("parsed", stringId, result);
         return result;
     }
