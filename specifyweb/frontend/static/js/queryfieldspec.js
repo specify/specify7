@@ -64,8 +64,42 @@ define(['underscore', 'schema'], function(_, schema) {
         };
     }
 
+    function makeTableList(fs, formattedRecord) {
+        var path = (fs.treeRank || formattedRecord) ?
+                fs.joinPath : _.initial(fs.joinPath);
+
+        var first = [fs.table.tableId];
+        var rest = _.map(path, function(field) {
+            var relatedModel = field.getRelatedModel();
+            return relatedModel.name.toLowerCase() === field.name.toLowerCase() ?
+                relatedModel.tableId : (relatedModel.tableId + '-' + field.name.toLowerCase());
+        });
+        return first.concat(rest).join(',');
+    }
+
+    function makeStringId(fs, tableList) {
+        var fieldName = fs.treeRank || _.last(fs.joinPath).name;
+        if (fs.datePart) {
+            fieldName += 'Numeric' + fs.datePart;
+        }
+        return [tableList, fs.table.name.toLowerCase(), fieldName];
+    }
+
+    function toSpQueryAttrs(fs, formattedRecord) {
+        var tableList = makeTableList(fs, formattedRecord);
+        var stringId = makeStringId(fs, tableList);
+
+        return {
+            tablelist: tableList,
+            stringid: stringId.join('.'),
+            fieldname: _.last(stringId),
+            isrelfld: formattedRecord
+        };
+    }
+
     return {
         fromStringId: stringIdToFieldSpec,
-        forNewField: forNewField
+        forNewField: forNewField,
+        toSpQueryAttrs: toSpQueryAttrs
     };
 });

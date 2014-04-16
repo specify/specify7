@@ -329,37 +329,13 @@ define([
             this.value = value;
             this.spqueryfield.set('startvalue', value);
         },
-        makeTableList: function() {
-            var path = (this.fieldSpec.treeRank || this.formattedRecord) ?
-                    this.fieldSpec.joinPath : _.initial(this.fieldSpec.joinPath);
-
-            var first = [this.model.tableId];
-            var rest = _.map(path, function(field) {
-                var relatedModel = field.getRelatedModel();
-                return relatedModel.name.toLowerCase() === field.name.toLowerCase() ?
-                    relatedModel.tableId : (relatedModel.tableId + '-' + field.name.toLowerCase());
-            });
-            return first.concat(rest).join(',');
-        },
-        makeStringId: function(tableList) {
-            var fieldName = this.fieldSpec.treeRank || _.last(this.fieldSpec.joinPath).name;
-            if (this.fieldSpec.datePart) {
-                fieldName += 'Numeric' + this.fieldSpec.datePart;
-            }
-            return [tableList, this.fieldSpec.table.name.toLowerCase(), fieldName];
-        },
         updateSpQueryField: function() {
-            var tableList = this.makeTableList();
-            var stringId = this.makeStringId(tableList);
-            var attrs = {
+            var attrs = queryfieldspec.toSpQueryAttrs(this.fieldSpec, this.formattedRecord);
+            _.extend(attrs, {
                 operstart: this.operation == 'anything' ? 1 : parseInt(this.operation),
-                tablelist: tableList,
-                stringid: stringId.join('.'),
-                fieldname: _.last(stringId),
                 isdisplay: true,
-                isnot: !!this.negate,
-                isrelfld: this.formattedRecord
-            };
+                isnot: !!this.negate
+            });
             this.spqueryfield.set(attrs);
         }
     });
