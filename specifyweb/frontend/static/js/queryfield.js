@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone', 'templates', 'schema', 'domain', 'queryfieldspec', 'queryfieldinput'
-], function($, _, Backbone, templates, schema, domain, queryfieldspec, QueryFieldInputUI) {
+], function($, _, Backbone, templates, schema, domain, QueryFieldSpec, QueryFieldInputUI) {
     "use strict";
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
@@ -34,10 +34,10 @@ define([
         initialize: function(options) {
             this.spqueryfield = options.spqueryfield;
             if (this.spqueryfield.isNew()) {
-                this.fieldSpec = queryfieldspec.forNewField(this.model);
+                this.fieldSpec = new QueryFieldSpec(this.model);
                 this.formattedRecord = false;
             } else {
-                this.fieldSpec = queryfieldspec.fromStringId(this.spqueryfield.get('stringid'));
+                this.fieldSpec = QueryFieldSpec.fromStringId(this.spqueryfield.get('stringid'));
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');
                 this.formattedRecord = this.spqueryfield.get('isrelfld');
@@ -53,7 +53,7 @@ define([
         getTypeForOp: function() {
             if (this.fieldSpec.datePart) return 'numbers';
             if (this.fieldSpec.treeRank) return 'strings';
-            var field = _.last(this.fieldSpec.joinPath);
+            var field = this.getField();
             if (field.model.name === 'CollectionObject' &&
                 field.name === 'catalogNumber') return 'numbers';
 
@@ -330,7 +330,7 @@ define([
             this.spqueryfield.set('startvalue', value);
         },
         updateSpQueryField: function() {
-            var attrs = queryfieldspec.toSpQueryAttrs(this.fieldSpec, this.formattedRecord);
+            var attrs = this.fieldSpec.toSpQueryAttrs(this.formattedRecord);
             _.extend(attrs, {
                 operstart: this.operation == 'anything' ? 1 : parseInt(this.operation),
                 isdisplay: true,
