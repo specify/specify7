@@ -34,15 +34,10 @@ define([
         initialize: function(options) {
             this.spqueryfield = options.spqueryfield;
             if (this.spqueryfield.isNew()) {
-                this.joinPath = [];
-                this.table = this.model;
+                this.fieldSpec = queryfieldspec.forNewField(this.model);
                 this.formattedRecord = false;
             } else {
-                var fs = queryfieldspec(this.spqueryfield.get('stringid'));
-                this.table = fs.table;
-                this.treeRank = fs.treeRank;
-                this.joinPath = fs.joinPath;
-                this.datePart = fs.datePart;
+                this.fieldSpec = queryfieldspec.fromStringId(this.spqueryfield.get('stringid'));
                 this.operation = this.spqueryfield.get('operstart');
                 this.value = this.spqueryfield.get('startvalue');
                 this.formattedRecord = this.spqueryfield.get('isrelfld');
@@ -53,12 +48,12 @@ define([
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
         getField: function() {
-            return _.last(this.joinPath);
+            return _.last(this.fieldSpec.joinPath);
         },
         getTypeForOp: function() {
-            if (this.datePart) return 'numbers';
-            if (this.treeRank) return 'strings';
-            var field = _.last(this.joinPath);
+            if (this.fieldSpec.datePart) return 'numbers';
+            if (this.fieldSpec.treeRank) return 'strings';
+            var field = _.last(this.fieldSpec.joinPath);
             if (field.model.name === 'CollectionObject' &&
                 field.name === 'catalogNumber') return 'numbers';
 
@@ -125,13 +120,13 @@ define([
             this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').empty();
 
-            this.$('.field-select-grp img').attr('src', this.table.getIcon());
+            this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
-            if (this.joinPath.length > 0) {
+            if (this.fieldSpec.joinPath.length > 0) {
                 fieldSelect.append('<option value="format record">(' + this.formatOrAggregate() + ')</option>');
             }
 
-            _.chain(this.table.getAllFields())
+            _.chain(this.fieldSpec.table.getAllFields())
                 .reject(function(field) { return field.isHidden(); })
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {
@@ -140,7 +135,7 @@ define([
                         .appendTo(fieldSelect);
                 });
 
-            var getTreeDef = domain.getTreeDef(this.table.name);
+            var getTreeDef = domain.getTreeDef(this.fieldSpec.table.name);
             if (getTreeDef) {
                 this.addTreeLevelsToFieldSelect(getTreeDef);
             } else {
@@ -148,7 +143,7 @@ define([
             }
         },
         formatOrAggregate: function() {
-            return  (_.last(this.joinPath).type === 'one-to-many') ? 'aggregated' : 'formatted';
+            return  (_.last(this.fieldSpec.joinPath).type === 'one-to-many') ? 'aggregated' : 'formatted';
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
             var show = function() { this.$('.field-select-grp').show(); }.bind(this);
@@ -191,7 +186,7 @@ define([
         },
         updateLabel: function() {
             var fieldLabel = this.$('.field-label').empty();
-            _.each(this.joinPath, function(field) {
+            _.each(this.fieldSpec.joinPath, function(field) {
                 $('<a class="field-label-field">')
                     .text(field.getLocalizedName())
                     .prepend($('<img>', { src: field.model.getIcon() }))
@@ -201,8 +196,8 @@ define([
                 $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
-                this.treeRank && $('<a class="field-label-treerank">').text(this.treeRank).appendTo(fieldLabel);
-                this.datePart && $('<a class="field-label-datepart">').text('(' + this.datePart + ')').appendTo(fieldLabel);
+                this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
+                this.fieldSpec.datePart && $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
                 if (this.operation == 'anything') {
                     $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
                     this.$('label.op-negate').hide();
@@ -217,23 +212,23 @@ define([
             } else {
                 var treeRankMatch = /^treerank-(.*)/.exec(fieldName);
                 if (treeRankMatch) {
-                    this.treeRank = treeRankMatch[1];
+                    this.fieldSpec.treeRank = treeRankMatch[1];
                 } else {
-                    var field = this.table.getField(fieldName);
-                    this.joinPath.push(field);
+                    var field = this.fieldSpec.table.getField(fieldName);
+                    this.fieldSpec.joinPath.push(field);
                     if (field.isRelationship) {
                         this.formattedRecord = true;
                         this.operation = 'anything';
                     } else {
                         this.operation = 'anything';
-                        this.datePart = field.isTemporal() ? 'Full Date' : undefined;
+                        this.fieldSpec.datePart = field.isTemporal() ? 'Full Date' : undefined;
                     }
                 }
             }
             this.update();
         },
         update: function() {
-            var field = _.last(this.joinPath);
+            var field = _.last(this.fieldSpec.joinPath);
             this.updateLabel();
 
             this.$el.addClass('field-incomplete');
@@ -244,19 +239,19 @@ define([
             }
 
             if (!field) {
-                this.table = this.model;
+                this.fieldSpec.table = this.model;
                 this.setupFieldSelect();
                 return;
             }
 
-            if (!this.treeRank) {
+            if (!this.fieldSpec.treeRank) {
 
                 if (field.isRelationship) {
-                    this.table = field.getRelatedModel();
+                    this.fieldSpec.table = field.getRelatedModel();
                     this.setupFieldSelect();
                     return;
                 }
-                if (_.isUndefined(this.datePart) && field.isTemporal()) {
+                if (_.isUndefined(this.fieldSpec.datePart) && field.isTemporal()) {
                     this.setupDatePartSelect();
                     return;
                 }
@@ -282,7 +277,7 @@ define([
             this.$('.field-select-grp, .datepart-select, .op-select').hide();
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
-                    field: _.last(this.joinPath),
+                    field: _.last(this.fieldSpec.joinPath),
                     el: this.$('.field-input')
                 });
                 this.inputUI.render();
@@ -307,23 +302,23 @@ define([
             this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
         },
         datePartSelected: function() {
-            this.datePart = this.$('.datepart-select').val();
-            this.datePart === 'Full Date' && (this.datePart = null);
+            this.fieldSpec.datePart = this.$('.datepart-select').val();
+            this.fieldSpec.datePart === 'Full Date' && (this.fieldSpec.datePart = null);
             this.update();
         },
         backUpToField: function(evt) {
             var index = this.$('.field-label-field').index(evt.currentTarget);
-            this.joinPath = _(this.joinPath).first(index);
-            this.value = this.operation = this.datePart = this.treeRank = undefined;
+            this.fieldSpec.joinPath = _(this.fieldSpec.joinPath).first(index);
+            this.value = this.operation = this.fieldSpec.datePart = this.fieldSpec.treeRank = undefined;
             this.formattedRecord = false;
             this.update();
         },
         backUpToDatePart: function() {
-            this.value = this.operation = this.datePart = undefined;
+            this.value = this.operation = this.fieldSpec.datePart = undefined;
             this.update();
         },
         backUpToTreeRank: function() {
-            this.value = this.operation = this.treeRank = undefined;
+            this.value = this.operation = this.fieldSpec.treeRank = undefined;
             this.update();
         },
         backUpToOperation: function() {
@@ -335,8 +330,8 @@ define([
             this.spqueryfield.set('startvalue', value);
         },
         makeTableList: function() {
-            var path = (this.treeRank || this.formattedRecord) ?
-                    this.joinPath : _.initial(this.joinPath);
+            var path = (this.fieldSpec.treeRank || this.formattedRecord) ?
+                    this.fieldSpec.joinPath : _.initial(this.fieldSpec.joinPath);
 
             var first = [this.model.tableId];
             var rest = _.map(path, function(field) {
@@ -347,11 +342,11 @@ define([
             return first.concat(rest).join(',');
         },
         makeStringId: function(tableList) {
-            var fieldName = this.treeRank || _.last(this.joinPath).name;
-            if (this.datePart) {
-                fieldName += 'Numeric' + this.datePart;
+            var fieldName = this.fieldSpec.treeRank || _.last(this.fieldSpec.joinPath).name;
+            if (this.fieldSpec.datePart) {
+                fieldName += 'Numeric' + this.fieldSpec.datePart;
             }
-            return [tableList, this.table.name.toLowerCase(), fieldName];
+            return [tableList, this.fieldSpec.table.name.toLowerCase(), fieldName];
         },
         updateSpQueryField: function() {
             var tableList = this.makeTableList();

@@ -21,15 +21,20 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
-        var result = {joinPath: joinPath, table: node};
-        _.extend(result, extractDatePart(fieldName));
+        var extracted = extractDatePart(fieldName);
+        var result = {
+            joinPath: joinPath,
+            table: node,
+            datePart: extracted.datePart
+        };
 
-        var field = node.getField(result.fieldName);
+
+        var field = node.getField(extracted.fieldName);
         if (field) {
             result.joinPath.push(field);
             result.treeRank = null;
         } else {
-            result.treeRank = result.fieldName;
+            result.treeRank = extracted.fieldName;
             console.log("using fieldname as treerank", result.treeRank);
         }
 
@@ -50,5 +55,17 @@ define(['underscore', 'schema'], function(_, schema) {
         };
     }
 
-    return stringIdToFieldSpec;
+    function forNewField(table) {
+        return {
+            joinPath: [],
+            table: table,
+            datePart: null,
+            treeRank: null
+        };
+    }
+
+    return {
+        fromStringId: stringIdToFieldSpec,
+        forNewField: forNewField
+    };
 });
