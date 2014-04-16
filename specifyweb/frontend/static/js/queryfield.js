@@ -25,10 +25,7 @@ define([
             'click .field-delete': 'deleteClicked',
             'click .field-expand': 'expandToggle',
             'click .field-sort': 'fieldSortClicked',
-            'click .field-operation': 'backUpToOperation',
-            'click .field-label-field': 'backUpToField',
-            'click .field-label-datepart': 'backUpToDatePart',
-            'click .field-label-treerank': 'backUpToTreeRank'
+            'click .field-operation, .field-label-field, .field-label-datepart, .field-label-treerank': 'goBack'
         },
         initialize: function(options) {
             this.spqueryfield = options.spqueryfield;
@@ -293,23 +290,27 @@ define([
             this.fieldSpec.datePart === 'Full Date' && (this.fieldSpec.datePart = null);
             this.update();
         },
-        backUpToField: function(evt) {
-            var index = this.$('.field-label-field').index(evt.currentTarget);
-            this.fieldSpec.joinPath = _(this.fieldSpec.joinPath).first(index);
-            this.value = this.operation = this.fieldSpec.datePart = this.fieldSpec.treeRank = undefined;
-            this.formattedRecord = false;
-            this.update();
-        },
-        backUpToDatePart: function() {
-            this.value = this.operation = this.fieldSpec.datePart = undefined;
-            this.update();
-        },
-        backUpToTreeRank: function() {
-            this.value = this.operation = this.fieldSpec.treeRank = undefined;
-            this.update();
-        },
-        backUpToOperation: function() {
-            this.value = this.operation = this.negate = undefined;
+        goBack: function(evt) {
+            var state = /field-(label-)?([a-z]+)/.exec($(evt.currentTarget).attr('class')).pop();
+            console.log('backing up to', state);
+
+            var toClear = {
+                field     : ['value', 'operation', 'datePart', 'treeRank'],
+                datepart  : ['value', 'operation', 'datePart'],
+                treerank  : ['value', 'operation', 'treeRank'],
+                operation : ['value', 'operation', 'negate']
+            }[state];
+
+            _.each(toClear, function(field) {
+                var target = _.has(this.fieldSpec, field) ? this.fieldSpec : this;
+                target[field] = undefined;
+            }, this);
+
+            if (state === 'field') {
+                var index = this.$('.field-label-field').index(evt.currentTarget);
+                this.fieldSpec.joinPath = _(this.fieldSpec.joinPath).first(index);
+                this.formattedRecord = false;
+            }
             this.update();
         },
         valueChanged: function(inputUI, value) {
