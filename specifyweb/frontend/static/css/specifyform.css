@@ -351,6 +351,11 @@ div.results div {
     border-radius: 8px;
 }
 
+.spqueryfield.field-incomplete .field-expand,
+.spqueryfield.field-incomplete .field-controls {
+    display: none;
+}
+
 .spqueryfield-delete {
     height: 24px;
     border: 1px inset;

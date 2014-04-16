@@ -24,7 +24,7 @@ define([
             'click .field-move-up': 'moveUpClicked',
             'click .field-move-down': 'moveDownClicked',
             'click .field-delete': 'deleteClicked',
-            'click .field-complete': 'expandToggle',
+            'click .field-expand': 'expandToggle',
             'click .field-sort': 'fieldSortClicked',
             'click .field-operation': 'backUpToOperation',
             'click .field-label-field': 'backUpToField',
@@ -79,7 +79,7 @@ define([
             _.each({
                 '.field-sort': "ui-icon-bullet",
                 '.field-delete': "ui-icon-trash",
-                '.field-complete': "ui-icon-check",
+                '.field-expand': "ui-icon-check",
                 '.field-move-up': "ui-icon-arrowthick-1-n",
                 '.field-move-down': "ui-icon-arrowthick-1-s"
             }, function(icon, selector) {
@@ -240,9 +240,7 @@ define([
             var field = _.last(this.joinPath);
             this.updateLabel();
 
-            this.$('.field-complete').hide();
-            this.$('.field-controls').addClass('hidden'); // jquery.hide() doesn't work.
-            // for some reason it causes display: block to be set when show is called.
+            this.$el.addClass('field-incomplete');
 
             if (this.formattedRecord) {
                 this.fieldComplete();
@@ -284,9 +282,8 @@ define([
             this.$('.field-label-field:not(.field-label-virtual):not(:last)').toggle(500);
         },
         fieldComplete: function() {
-            this.$('.field-complete').show();
+            this.$el.removeClass('field-incomplete');
             this.$('.field-select-grp, .datepart-select, .op-select').hide();
-            this.$('.field-controls').removeClass('hidden');
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
                     field: _.last(this.joinPath),
