@@ -123,7 +123,7 @@ define([
             return ui.render();
         },
         contractFields: function() {
-            _.each(this.fieldUIs, function(field) { field.contract(); });
+            _.each(this.fieldUIs, function(field) { field.expandToggle('hide'); });
         },
         saveRequired: function() {
             //this.$('.query-execute').prop('disabled', true);
@@ -184,12 +184,11 @@ define([
             var query = _.extend(this.query.toJSON(), {offset: offset});
             return $.post('/stored_query/ephemeral/', JSON.stringify(query));
         },
-        moveUp: function(queryField) {
-            queryField.$el.prev().insertAfter(queryField.el);
-            this.trigger('positionschanged');
-        },
-        moveDown: function(queryField) {
-            queryField.$el.next().insertBefore(queryField.el);
+        moveField: function(queryField, dir) {
+            ({
+                up:   function() { queryField.$el.prev().insertAfter(queryField.el); },
+                down: function() { queryField.$el.next().insertBefore(queryField.el); }
+            })[dir]();
             this.trigger('positionschanged');
         }
     });

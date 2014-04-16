@@ -21,8 +21,7 @@ define([
             'change .op-type': 'opSelected',
             'change input.op-negate': 'opNegateChanged',
             'change .datepart-select': 'datePartSelected',
-            'click .field-move-up': 'moveUpClicked',
-            'click .field-move-down': 'moveDownClicked',
+            'click .field-move-up, .field-move-down': 'changePosition',
             'click .field-delete': 'deleteClicked',
             'click .field-expand': 'expandToggle',
             'click .field-sort': 'fieldSortClicked',
@@ -33,18 +32,23 @@ define([
         },
         initialize: function(options) {
             this.spqueryfield = options.spqueryfield;
-            if (this.spqueryfield.isNew()) {
-                this.fieldSpec = new QueryFieldSpec(this.model);
-                this.formattedRecord = false;
-            } else {
-                this.fieldSpec = QueryFieldSpec.fromStringId(this.spqueryfield.get('stringid'));
-                this.operation = this.spqueryfield.get('operstart');
-                this.value = this.spqueryfield.get('startvalue');
-                this.formattedRecord = this.spqueryfield.get('isrelfld');
-                if (this.operation == 1 && this.value === "") {
-                    this.operation = 'anything';
-                }
-            }
+            var attrs = this.spqueryfield.toJSON();
+
+            _(this).extend(
+                this.spqueryfield.isNew() ? {
+                    fieldSpec       : new QueryFieldSpec(this.model),
+                    formattedRecord : false,
+                    value           : '',
+                    operation       : undefined
+                } : {
+                    fieldSpec       : QueryFieldSpec.fromStringId(attrs.stringid),
+                    formattedRecord : attrs.isrelfld,
+                    value           : attrs.startvalue,
+                    operation       : attrs.operstart
+                });
+
+            (this.operation === 1 && this.value === "") && (this.operation = 'anything');
+
             this.options.parentView.on('positionschanged', this.positionChange, this);
         },
         getField: function() {
@@ -67,18 +71,10 @@ define([
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 
-            _.each({
-                '.field-sort': "ui-icon-bullet",
-                '.field-delete': "ui-icon-trash",
-                '.field-expand': "ui-icon-check",
-                '.field-move-up': "ui-icon-arrowthick-1-n",
-                '.field-move-down': "ui-icon-arrowthick-1-s"
-            }, function(icon, selector) {
-                this.$(selector).button({
-                    icons: { primary: icon  },
-                    text: false
-                });
-            }, this);
+            _(this.$('button')).each(function(button) {
+                button = $(button);
+                button.button({icons: { primary: 'ui-icon-' + button.data('icon') }, text: false});
+            });
 
             this.spqueryfield.on('change:sorttype', this.sortTypeChanged, this);
             this.sortTypeChanged();
@@ -87,11 +83,9 @@ define([
             this.inputUI && this.inputUI.setValue(this.value);
             return this;
         },
-        moveUpClicked: function() {
-            this.options.parentView.moveUp(this);
-        },
-        moveDownClicked: function() {
-            this.options.parentView.moveDown(this);
+        changePosition: function(evt) {
+            var dir = /field-move-((up)|(down))/.exec($(evt.currentTarget).attr('class'))[1];
+            this.options.parentView.moveField(this, dir);
         },
         positionChange: function() {
             var position = this.$el.parent().find('li').index(this.el);
@@ -100,12 +94,10 @@ define([
         fieldShowChanged: function() {
             var val = this.$('.field-show').prop('checked');
             this.spqueryfield.set('isdisplay', val);
-            return true;
         },
         deleteClicked: function() {
             this.trigger('remove', this, this.spqueryfield);
             this.remove();
-            return;
         },
         fieldSortClicked: function() {
             var val = (this.spqueryfield.get('sorttype') + 1) % SORT_ICONS.length;
@@ -122,8 +114,10 @@ define([
 
             this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
+
             if (this.fieldSpec.joinPath.length > 0) {
-                fieldSelect.append('<option value="format record">(' + this.formatOrAggregate() + ')</option>');
+                var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
+                fieldSelect.append('<option value="format record">(' + formatOrAggregate + ')</option>');
             }
 
             _.chain(this.fieldSpec.table.getAllFields())
@@ -141,9 +135,6 @@ define([
             } else {
                 this.$('.field-select-grp').show();
             }
-        },
-        formatOrAggregate: function() {
-            return  (_.last(this.fieldSpec.joinPath).type === 'one-to-many') ? 'aggregated' : 'formatted';
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
             var show = function() { this.$('.field-select-grp').show(); }.bind(this);
@@ -193,7 +184,8 @@ define([
                     .appendTo(fieldLabel);
             });
             if (this.formattedRecord) {
-                $('<a class="field-label-field field-label-virtual">').text('(' + this.formatOrAggregate() + ')').appendTo(fieldLabel);
+                var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
+                $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
                 this.$('label.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
@@ -263,14 +255,9 @@ define([
             }
             this.fieldComplete();
         },
-        contract: function() {
-            this.$('.field-label-field:not(.field-label-virtual):not(:last)').hide(500);
-        },
-        expand: function() {
-            this.$('.field-label-field').show(500);
-        },
-        expandToggle: function() {
-            this.$('.field-label-field:not(.field-label-virtual):not(:last)').toggle(500);
+        expandToggle: function(state) {
+            _(['hide', 'show']).contains(state) || (state = 'toggle');
+            this.$('.field-label-field:not(.field-label-virtual):not(:last)')[state](500);
         },
         fieldComplete: function() {
             this.$el.removeClass('field-incomplete');
