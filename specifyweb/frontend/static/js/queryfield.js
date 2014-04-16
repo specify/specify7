@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'domain', 'queryfieldspec', 'queryfieldinput'
-], function($, _, Backbone, schema, domain, queryfieldspec, QueryFieldInputUI) {
+    'jquery', 'underscore', 'backbone', 'templates', 'schema', 'domain', 'queryfieldspec', 'queryfieldinput'
+], function($, _, Backbone, templates, schema, domain, queryfieldspec, QueryFieldInputUI) {
     "use strict";
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
@@ -72,23 +72,7 @@ define([
             return null;
         },
         render: function() {
-            this.$el.append(
-                '<button class="field-complete" title="Field is valid and will be saved. Click to expand.">Expand.</button>',
-                '<button class="field-delete" title="Remove.">Remove</button>',
-                '<span class="field-label">',
-                '<span class="field-select-grp"><img><select class="field-select"></span>',
-                '<input type="checkbox" class="op-negate" id="' + this.cid + '-negate">',
-                '<label title="Negate." for="' + this.cid + '-negate" class="op-negate ui-icon ui-icon-cancel"></label>',
-                '<select class="op-select op-type">',
-                '<select class="datepart-select">',
-                '<span class="field-input">',
-                $('<span class="field-controls">').append(
-                    '<input type="checkbox" class="field-show" id="' + this.cid + '-show">',
-                    '<label title="Show in results." for="' + this.cid + '-show" class="ui-icon ui-icon-lightbulb"></label>',
-                    '<button class="field-sort" title="Sort.">Sort</button>',
-                    '<button class="field-move-up" title="Move up.">Move up</button>',
-                    '<button class="field-move-down" title="Move down.">Move down</button>')
-            );
+            this.$el.append(templates.queryfield({cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 
