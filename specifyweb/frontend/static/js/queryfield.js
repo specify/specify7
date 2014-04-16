@@ -46,22 +46,7 @@ define([
 
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
 
-            this.options.parentView.on('positionschanged', this.positionChange, this);
-        },
-        getField: function() {
-            return _.last(this.fieldSpec.joinPath);
-        },
-        getTypeForOp: function() {
-            if (this.fieldSpec.datePart) return 'numbers';
-            if (this.fieldSpec.treeRank) return 'strings';
-            var field = this.getField();
-            if (field.model.name === 'CollectionObject' &&
-                field.name === 'catalogNumber') return 'numbers';
-
-            for (var type in types) {
-                if (_(types[type]).contains(field.type)) return type;
-            }
-            return null;
+            this.options.parentView.on('positionschanged', this.positionChanged, this);
         },
         render: function() {
             this.$el.append(templates.queryfield({cid: this.cid}));
@@ -80,31 +65,102 @@ define([
             this.inputUI && this.inputUI.setValue(this.value);
             return this;
         },
+
+        // Simple UI event handlers.
+
         changePosition: function(evt) {
             var dir = /field-move-((up)|(down))/.exec($(evt.currentTarget).attr('class'))[1];
             this.options.parentView.moveField(this, dir);
-        },
-        positionChange: function() {
-            var position = this.$el.parent().find('li').index(this.el);
-            this.spqueryfield.set('position', position);
         },
         fieldShowChanged: function() {
             var val = this.$('.field-show').prop('checked');
             this.spqueryfield.set('isdisplay', val);
         },
-        deleteClicked: function() {
-            this.trigger('remove', this, this.spqueryfield);
-            this.remove();
-        },
         fieldSortClicked: function() {
             var val = (this.spqueryfield.get('sorttype') + 1) % SORT_ICONS.length;
             this.spqueryfield.set('sorttype', val);
         },
-        sortTypeChanged: function() {
-            this.$('.field-sort').button('option', 'icons', {
-                primary: SORT_ICONS[this.spqueryfield.get('sorttype')]
-            });
+        valueChanged: function(inputUI, value) {
+            this.value = value;
+            this.spqueryfield.set('startvalue', value);
         },
+        opNegateChanged: function() {
+            this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
+        },
+        deleteClicked: function() {
+            this.trigger('remove', this, this.spqueryfield);
+            this.remove();
+        },
+        expandToggle: function(state) {
+            _(['hide', 'show']).contains(state) || (state = 'toggle');
+            this.$('.field-label-field:not(.field-label-virtual):not(:last)')[state](500);
+        },
+
+        // This works like an implicit state machine controlled by the values
+        // formattedRecord, joinPath, treeRank, datePart and operation.
+
+        // This method determines the current state.
+
+        update: function() {
+            var field = _.last(this.fieldSpec.joinPath);
+            this.updateLabel();
+
+            this.$el.addClass('field-incomplete');
+
+            if (this.formattedRecord) {
+                this.fieldComplete();
+                return;
+            }
+
+            if (!field) {
+                this.fieldSpec.table = this.model;
+                this.setupFieldSelect();
+                return;
+            }
+
+            if (!this.fieldSpec.treeRank) {
+
+                if (field.isRelationship) {
+                    this.fieldSpec.table = field.getRelatedModel();
+                    this.setupFieldSelect();
+                    return;
+                }
+                if (_.isUndefined(this.fieldSpec.datePart) && field.isTemporal()) {
+                    this.setupDatePartSelect();
+                    return;
+                }
+            }
+
+            if (_.isUndefined(this.operation)) {
+                this.setupOpSelect();
+                return;
+            }
+            this.fieldComplete();
+        },
+        updateLabel: function() {
+            var fieldLabel = this.$('.field-label').empty();
+            _.each(this.fieldSpec.joinPath, function(field) {
+                $('<a class="field-label-field">')
+                    .text(field.getLocalizedName())
+                    .prepend($('<img>', { src: field.model.getIcon() }))
+                    .appendTo(fieldLabel);
+            });
+            if (this.formattedRecord) {
+                var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
+                $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
+                this.$('label.op-negate').hide();
+            } else {
+                this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
+                this.fieldSpec.datePart && $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
+                if (this.operation == 'anything') {
+                    $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
+                    this.$('label.op-negate').hide();
+                }
+            }
+        },
+
+        // These methods are involved with setting up the UI when entering different states.
+
         setupFieldSelect: function() {
             this.$('.op-select, .datepart-select, label.op-negate').hide();
             this.$('.field-input').empty();
@@ -172,27 +228,28 @@ define([
                 $('<option>', {value: datepart}).text(datepart).appendTo(select);
             });
         },
-        updateLabel: function() {
-            var fieldLabel = this.$('.field-label').empty();
-            _.each(this.fieldSpec.joinPath, function(field) {
-                $('<a class="field-label-field">')
-                    .text(field.getLocalizedName())
-                    .prepend($('<img>', { src: field.model.getIcon() }))
-                    .appendTo(fieldLabel);
-            });
-            if (this.formattedRecord) {
-                var formatOrAggregate = (this.getField().type === 'one-to-many') ? 'aggregated' : 'formatted';
-                $('<a class="field-label-field field-label-virtual">').text('(' + formatOrAggregate + ')').appendTo(fieldLabel);
-                this.$('label.op-negate').hide();
-            } else {
-                this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
-                this.fieldSpec.datePart && $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
-                if (this.operation == 'anything') {
-                    $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
-                    this.$('label.op-negate').hide();
-                }
+        fieldComplete: function() {
+            this.$el.removeClass('field-incomplete');
+            this.$('.field-select-grp, .datepart-select, .op-select').hide();
+            if (!this.formattedRecord && this.operation != 'anything') {
+                this.inputUI = new (QueryFieldInputUI[this.operation])({
+                    field: _.last(this.fieldSpec.joinPath),
+                    el: this.$('.field-input')
+                });
+                this.inputUI.render();
+                this.inputUI.on('changed', this.valueChanged, this);
+            }
+            if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
+                this.updateSpQueryField();
+            }
+            if (!this.alreadyCompletedOnce) {
+                this.alreadyCompletedOnce = true;
+                this.trigger('completed', this);
             }
         },
+
+        // These methods respond to events which change the state.
+        
         fieldSelected: function() {
             var fieldName = this.$('.field-select').val();
             if (fieldName === 'format record') {
@@ -216,74 +273,12 @@ define([
             }
             this.update();
         },
-        update: function() {
-            var field = _.last(this.fieldSpec.joinPath);
-            this.updateLabel();
-
-            this.$el.addClass('field-incomplete');
-
-            if (this.formattedRecord) {
-                this.fieldComplete();
-                return;
-            }
-
-            if (!field) {
-                this.fieldSpec.table = this.model;
-                this.setupFieldSelect();
-                return;
-            }
-
-            if (!this.fieldSpec.treeRank) {
-
-                if (field.isRelationship) {
-                    this.fieldSpec.table = field.getRelatedModel();
-                    this.setupFieldSelect();
-                    return;
-                }
-                if (_.isUndefined(this.fieldSpec.datePart) && field.isTemporal()) {
-                    this.setupDatePartSelect();
-                    return;
-                }
-            }
-
-            if (_.isUndefined(this.operation)) {
-                this.setupOpSelect();
-                return;
-            }
-            this.fieldComplete();
-        },
-        expandToggle: function(state) {
-            _(['hide', 'show']).contains(state) || (state = 'toggle');
-            this.$('.field-label-field:not(.field-label-virtual):not(:last)')[state](500);
-        },
-        fieldComplete: function() {
-            this.$el.removeClass('field-incomplete');
-            this.$('.field-select-grp, .datepart-select, .op-select').hide();
-            if (!this.formattedRecord && this.operation != 'anything') {
-                this.inputUI = new (QueryFieldInputUI[this.operation])({
-                    field: _.last(this.fieldSpec.joinPath),
-                    el: this.$('.field-input')
-                });
-                this.inputUI.render();
-                this.inputUI.on('changed', this.valueChanged, this);
-            }
-            if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
-                this.updateSpQueryField();
-            }
-            if (!this.alreadyCompletedOnce) {
-                this.alreadyCompletedOnce = true;
-                this.trigger('completed', this);
-            }
-        },
         opSelected: function() {
             this.operation = this.$('.op-type').val();
             if (this.operation == 'anything') {
                 this.valueChanged(null, "");
             }
             this.update();
-        },
-        opNegateChanged: function() {
-            this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
         },
         datePartSelected: function() {
             this.fieldSpec.datePart = this.$('.datepart-select').val();
@@ -313,10 +308,21 @@ define([
             }
             this.update();
         },
-        valueChanged: function(inputUI, value) {
-            this.value = value;
-            this.spqueryfield.set('startvalue', value);
+
+        // External event handlers.
+
+        positionChanged: function() {
+            var position = this.$el.parent().find('li').index(this.el);
+            this.spqueryfield.set('position', position);
         },
+        sortTypeChanged: function() {
+            this.$('.field-sort').button('option', 'icons', {
+                primary: SORT_ICONS[this.spqueryfield.get('sorttype')]
+            });
+        },
+
+        // Utility methods.
+
         updateSpQueryField: function() {
             var attrs = this.fieldSpec.toSpQueryAttrs(this.formattedRecord);
             _.extend(attrs, {
@@ -325,6 +331,21 @@ define([
                 isnot: !!this.negate
             });
             this.spqueryfield.set(attrs);
+        },
+        getField: function() {
+            return _.last(this.fieldSpec.joinPath);
+        },
+        getTypeForOp: function() {
+            if (this.fieldSpec.datePart) return 'numbers';
+            if (this.fieldSpec.treeRank) return 'strings';
+            var field = this.getField();
+            if (field.model.name === 'CollectionObject' &&
+                field.name === 'catalogNumber') return 'numbers';
+
+            for (var type in types) {
+                if (_(types[type]).contains(field.type)) return type;
+            }
+            return null;
         }
     });
 });
