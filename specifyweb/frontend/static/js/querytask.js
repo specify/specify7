@@ -188,17 +188,20 @@ define([
             var view = new ScrollResults({
                 View: Results,
                 el: table,
-                viewOptions: {fieldUIs: this.fieldUIs, model: this.model},
-                fetch: this.fetchResults.bind(this)
+                viewOptions: {fieldUIs: this.fieldUIs.slice(), model: this.model},
+                fetch: this.fetchResults()
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
 
             view.fetchMoreWhileAppropriate();
         },
-        fetchResults: function(offset) {
-            var query = _.extend(this.query.toJSON(), {offset: offset});
-            return $.post('/stored_query/ephemeral/', JSON.stringify(query));
+        fetchResults: function() {
+            var query = this.query.toJSON();
+            return function(offset) {
+                query.offset = offset;
+                return $.post('/stored_query/ephemeral/', JSON.stringify(query));
+            };
         },
         moveField: function(queryField, dir) {
             ({
