@@ -36,17 +36,18 @@ define([
                     spqueryfield: options.spqueryfield,
                     inputUI: undefined
                 },
-
                 options.spqueryfield.isNew() ? {
                     fieldSpec       : new QueryFieldSpec(this.model),
                     formattedRecord : false,
                     value           : '',
-                    operation       : undefined
+                    operation       : undefined,
+                    renderExisting  : false
                 } : {
                     fieldSpec       : QueryFieldSpec.fromStringId(attrs.stringid),
                     formattedRecord : attrs.isrelfld,
                     value           : attrs.startvalue,
-                    operation       : attrs.operstart
+                    operation       : attrs.operstart,
+                    renderExisting  : true  // so that we know not to update the model when rendering is complete
                 });
 
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
@@ -93,7 +94,7 @@ define([
             this.remove();
         },
         expandToggle: function(state) {
-            _(['hide', 'show']).contains(state) || (state = 'toggle');
+            _(['hide', 'show']).contains(state) || (state = 'toggle'); // querybuilder calls with 'show' or 'hide'
             this.$('.field-label-field:not(.field-label-virtual):not(:last)')[state](500);
         },
 
@@ -240,13 +241,12 @@ define([
                 this.inputUI.render();
                 this.inputUI.on('changed', this.valueChanged, this);
             }
-            if (this.spqueryfield.isNew() || this.alreadyCompletedOnce) {
+            if (!this.renderExisting) {
+                // Don't want to change existing model if we are rendering it for the first time.
                 this.updateSpQueryField();
-            }
-            if (!this.alreadyCompletedOnce) {
-                this.alreadyCompletedOnce = true;
                 this.trigger('completed', this);
             }
+            this.renderExisting = false; // Done rendering existing field.
         },
 
         // These methods respond to events which change the state.
