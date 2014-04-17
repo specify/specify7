@@ -1,11 +1,11 @@
 <button class="field-expand" title="Field is valid and will be saved. Click to expand." data-icon="check">Expand.</button>
 <button class="field-delete" title="Remove." data-icon="trash">Remove</button>
 <span class="field-label"></span>
-<span class="field-select-grp"><img /><select class="field-select"></select></span>
+<span class="field-select-grp operation-state-hide datepart-state-hide complete-state-hide"><img /><select class="field-select"></select></span>
+<select class="datepart-select field-state-hide operation-state-hide datepart-state-show complete-state-hide"></select>
 <input type="checkbox" class="op-negate" id="<%= cid %>-negate" />
-<label title="Negate." for="<%= cid %>-negate" class="op-negate ui-icon ui-icon-cancel"></label>
-<select class="op-select op-type"></select>
-<select class="datepart-select"></select>
+<label title="Negate." for="<%= cid %>-negate" class="op-negate field-state-hide operation-state-show datepart-state-hide ui-icon ui-icon-cancel"></label>
+<select class="op-select op-type field-state-hide operation-state-show datepart-state-hide complete-state-hide"></select>
 <span class="field-input"></span>
 <span class="field-controls">
   <input type="checkbox" class="field-show" id="<%= cid %>-show" />

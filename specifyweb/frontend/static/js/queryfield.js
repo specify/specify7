@@ -103,41 +103,41 @@ define([
 
         // This method determines the current state.
 
-        update: function() {
-            this.updateLabel();
-
-            this.$el.addClass('field-incomplete');
-
+        whatState: function() {
             if (this.formattedRecord) {
-                this.fieldComplete();
-                return;
+                return 'Complete';
             }
 
             var field = this.getField();
             if (field == null) {
-                this.fieldSpec.table = this.model;
-                this.setupFieldSelect();
-                return;
+                return 'Field';
             }
 
             if (this.fieldSpec.treeRank == null) {
 
                 if (field.isRelationship) {
-                    this.fieldSpec.table = field.getRelatedModel();
-                    this.setupFieldSelect();
-                    return;
+                    return 'Field';
                 }
                 if (field.isTemporal() && this.fieldSpec.datePart == null) {
-                    this.setupDatePartSelect();
-                    return;
+                    return 'DatePart';
                 }
             }
 
             if (this.operation == null) {
-                this.setupOpSelect();
-                return;
+                return 'Operation';
             }
-            this.fieldComplete();
+
+            return 'Complete';
+        },
+
+        update: function() {
+            this.updateLabel();
+            this.$el.addClass('field-incomplete');
+            var state = this.whatState();
+            var $$ = this.$.bind(this);
+            _.each(['hide', 'show'], function(action) { $$('.' + state.toLowerCase() + '-state-' + action)[action](); });
+            this.$('.field-input').empty();
+            this['setup' + state + 'State']();
         },
         updateLabel: function() {
             var fieldLabel = this.$('.field-label').empty();
@@ -153,7 +153,9 @@ define([
                 this.$('label.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
-                this.fieldSpec.datePart && $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
+                if (_(['Month', 'Year']).contains(this.fieldSpec.datePart)) {
+                    $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
+                }
                 if (this.operation == 'anything') {
                     $('<a class="field-operation">').text('(any)').appendTo(fieldLabel);
                     this.$('label.op-negate').hide();
@@ -163,9 +165,13 @@ define([
 
         // These methods are involved with setting up the UI when entering different states.
 
-        setupFieldSelect: function() {
-            this.$('.op-select, .datepart-select, label.op-negate').hide();
-            this.$('.field-input').empty();
+        setupFieldState: function() {
+            var field = this.getField();
+            if (field == null) {
+                this.fieldSpec.table = this.model;
+            } else if (this.fieldSpec.treeRank == null && field.isRelationship) {
+                this.fieldSpec.table = field.getRelatedModel();
+            }
 
             this.$('.field-select-grp img').attr('src', this.fieldSpec.table.getIcon());
             var fieldSelect = this.$('.field-select').empty().append('<option>Select Field...</option>');
@@ -205,10 +211,7 @@ define([
                 });
             });
         },
-        setupOpSelect: function() {
-            this.$('.field-select-grp, .datepart-select').hide();
-            this.$('.field-input').empty();
-            this.$('.op-select, label.op-negate').show();
+        setupOperationState: function() {
             var opSelect = this.$('.op-type').empty()
                     .append('<option>Select Op...</option>')
                     .append('<option value="anything">(any)</option>');
@@ -221,17 +224,14 @@ define([
                         .appendTo(opSelect);
                 });
         },
-        setupDatePartSelect: function() {
-            this.$('.field-select-grp, .op-select').hide();
-            this.$('.field-input').empty();
-            var select = this.$('.datepart-select').empty().show();
+        setupDatePartState: function() {
+            var select = this.$('.datepart-select').empty();
             var options = _(['Extract...', 'Full Date', 'Year', 'Month', 'Day']).each(function(datepart) {
                 $('<option>', {value: datepart}).text(datepart).appendTo(select);
             });
         },
-        fieldComplete: function() {
+        setupCompleteState: function() {
             this.$el.removeClass('field-incomplete');
-            this.$('.field-select-grp, .datepart-select, .op-select').hide();
             if (!this.formattedRecord && this.operation != 'anything') {
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
                     field: _.last(this.fieldSpec.joinPath),
@@ -254,7 +254,7 @@ define([
             var fieldName = this.$('.field-select').val();
             if (fieldName === 'format record') {
                 this.formattedRecord = true;
-                this.operation = 0; // Doesn't matter, but can't be left undefined.
+                this.operation = 'anything'; // Doesn't matter, but can't be left undefined.
             } else {
                 var treeRankMatch = /^treerank-(.*)/.exec(fieldName);
                 if (treeRankMatch) {
@@ -285,22 +285,22 @@ define([
             this.update();
         },
         goBack: function(evt) {
-            var state = /field-(label-)?([a-z]+)/.exec($(evt.currentTarget).attr('class')).pop();
-            console.log('backing up to', state);
+            var element = /field-(label-)?([a-z]+)/.exec($(evt.currentTarget).attr('class')).pop();
+            console.log('backing up to', element);
 
             var toClear = {
                 field     : ['value', 'operation', 'datePart', 'treeRank'],
                 datepart  : ['value', 'operation', 'datePart'],
                 treerank  : ['value', 'operation', 'treeRank'],
-                operation : ['value', 'operation', 'negate']
-            }[state];
+                operation : ['value', 'operation', 'datePart']
+            }[element];
 
             _.each(toClear, function(field) {
                 var target = _.has(this.fieldSpec, field) ? this.fieldSpec : this;
                 target[field] = undefined;
             }, this);
 
-            if (state === 'field') {
+            if (element === 'field') {
                 var index = this.$('.field-label-field').index(evt.currentTarget);
                 this.fieldSpec.joinPath = _(this.fieldSpec.joinPath).first(index);
                 this.formattedRecord = false;
