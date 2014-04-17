@@ -31,7 +31,7 @@ define(['underscore', 'schema'], function(_, schema) {
 
     function makeStringId(fs, tableList) {
         var fieldName = fs.treeRank || _.last(fs.joinPath).name;
-        if (fs.datePart) {
+        if (fs.datePart && fs.datePart !== "Full Date") {
             fieldName += 'Numeric' + fs.datePart;
         }
         return [tableList, fs.table.name.toLowerCase(), fieldName];
@@ -65,11 +65,6 @@ define(['underscore', 'schema'], function(_, schema) {
         });
 
         var extracted = extractDatePart(fieldName);
-        var result = _.extend(new QueryFieldSpec(node), {
-            joinPath: joinPath,
-            datePart: extracted.datePart
-        });
-
         var field = node.getField(extracted.fieldName);
         if (field) {
             result.joinPath.push(field);
@@ -78,6 +73,9 @@ define(['underscore', 'schema'], function(_, schema) {
             result.treeRank = extracted.fieldName;
             console.log("using fieldname as treerank", result.treeRank);
         }
+
+        var result = _.extend(new QueryFieldSpec(node), {joinPath: joinPath});
+        field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
 
         console.log("parsed", stringId, result);
         return result;

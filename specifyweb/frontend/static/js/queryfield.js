@@ -114,26 +114,26 @@ define([
             }
 
             var field = this.getField();
-            if (!field) {
+            if (field == null) {
                 this.fieldSpec.table = this.model;
                 this.setupFieldSelect();
                 return;
             }
 
-            if (!this.fieldSpec.treeRank) {
+            if (this.fieldSpec.treeRank == null) {
 
                 if (field.isRelationship) {
                     this.fieldSpec.table = field.getRelatedModel();
                     this.setupFieldSelect();
                     return;
                 }
-                if (_.isUndefined(this.fieldSpec.datePart) && field.isTemporal()) {
+                if (field.isTemporal() && this.fieldSpec.datePart == null) {
                     this.setupDatePartSelect();
                     return;
                 }
             }
 
-            if (_.isUndefined(this.operation)) {
+            if (this.operation == null) {
                 this.setupOpSelect();
                 return;
             }
@@ -265,7 +265,7 @@ define([
                         this.operation = 'anything';
                     } else {
                         this.operation = 'anything';
-                        this.fieldSpec.datePart = field.isTemporal() ? 'Full Date' : undefined;
+                        this.fieldSpec.datePart = field.isTemporal() ? 'Full Date' : null;
                     }
                 }
             }
@@ -280,7 +280,6 @@ define([
         },
         datePartSelected: function() {
             this.fieldSpec.datePart = this.$('.datepart-select').val();
-            this.fieldSpec.datePart === 'Full Date' && (this.fieldSpec.datePart = null);
             this.update();
         },
         goBack: function(evt) {
@@ -328,13 +327,14 @@ define([
         updateSpQueryField: function() {
             var attrs = this.fieldSpec.toSpQueryAttrs(this.formattedRecord);
             attrs.operstart = (this.operation == 'anything') ? 1 : parseInt(this.operation);
+            console.log('updating spqueryfield with', attrs);
             this.spqueryfield.set(attrs);
         },
         getField: function() {
             return _.last(this.fieldSpec.joinPath);
         },
         getTypeForOp: function() {
-            if (this.fieldSpec.datePart) return 'numbers';
+            if (_(['Month', 'Year']).contains(this.fieldSpec.datePart)) return 'numbers';
             if (this.fieldSpec.treeRank) return 'strings';
             var field = this.getField();
             if (field.model.name === 'CollectionObject' &&
