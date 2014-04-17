@@ -213,11 +213,13 @@ define([
                     .append('<option>Select Op...</option>')
                     .append('<option value="anything">(any)</option>');
             var type = this.getTypeForOp();
-            _.each(QueryFieldInputUI, function(ui, i) {
-                if (_(ui.prototype.types).contains(type)) {
-                    $('<option>', {value: i}).text(ui.prototype.opName).appendTo(opSelect);
-                }
-            }, this);
+            _.chain(QueryFieldInputUI)
+                .filter(function(ui) { return _(ui.prototype.types).contains(type); })
+                .each(function(ui) {
+                    $('<option>', {value: ui.prototype.index})
+                        .text(ui.prototype.opName)
+                        .appendTo(opSelect);
+                });
         },
         setupDatePartSelect: function() {
             this.$('.field-select-grp, .op-select').hide();
@@ -311,6 +313,7 @@ define([
         valueChanged: function(inputUI, value) {
             this.value = value;
             this.spqueryfield.set('startvalue', value);
+            console.log('updating value to', value);
         },
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);

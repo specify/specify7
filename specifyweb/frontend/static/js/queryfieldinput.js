@@ -68,8 +68,8 @@ define([
         {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];
 
-    return _.map(opInfo, function(extras) {
-        var options = _.extend({ __name__: "OpFieldInputUI" }, extras);
+    return _.map(opInfo, function(extras, i) {
+        var options = _.extend({ __name__: "OpFieldInputUI", index: i }, extras);
         return FieldInputUI.extend(options);
     });
 });
