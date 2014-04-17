@@ -16,23 +16,28 @@ define([
     return Backbone.View.extend({
         __name__: "QueryField",
         events: {
+            'click .field-expand': 'expandToggle',
+            'click .field-delete': 'deleteClicked',
+            'change input.op-negate': 'opNegateChanged',
             'change .field-show': 'fieldShowChanged',
+            'click .field-sort': 'fieldSortClicked',
+            'click .field-move-up, .field-move-down': 'changePosition',
+
             'change .field-select': 'fieldSelected',
             'change .op-type': 'opSelected',
-            'change input.op-negate': 'opNegateChanged',
             'change .datepart-select': 'datePartSelected',
-            'click .field-move-up, .field-move-down': 'changePosition',
-            'click .field-delete': 'deleteClicked',
-            'click .field-expand': 'expandToggle',
-            'click .field-sort': 'fieldSortClicked',
             'click .field-operation, .field-label-field, .field-label-datepart, .field-label-treerank': 'goBack'
         },
         initialize: function(options) {
-            this.spqueryfield = options.spqueryfield;
-            var attrs = this.spqueryfield.toJSON();
+            var attrs = options.spqueryfield.toJSON();
 
             _(this).extend(
-                this.spqueryfield.isNew() ? {
+                {
+                    spqueryfield: options.spqueryfield,
+                    inputUI: undefined
+                },
+
+                options.spqueryfield.isNew() ? {
                     fieldSpec       : new QueryFieldSpec(this.model),
                     formattedRecord : false,
                     value           : '',
@@ -80,10 +85,6 @@ define([
             var val = (this.spqueryfield.get('sorttype') + 1) % SORT_ICONS.length;
             this.spqueryfield.set('sorttype', val);
         },
-        valueChanged: function(inputUI, value) {
-            this.value = value;
-            this.spqueryfield.set('startvalue', value);
-        },
         opNegateChanged: function() {
             this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
         },
@@ -102,7 +103,6 @@ define([
         // This method determines the current state.
 
         update: function() {
-            var field = _.last(this.fieldSpec.joinPath);
             this.updateLabel();
 
             this.$el.addClass('field-incomplete');
@@ -112,6 +112,7 @@ define([
                 return;
             }
 
+            var field = this.getField();
             if (!field) {
                 this.fieldSpec.table = this.model;
                 this.setupFieldSelect();
@@ -311,6 +312,10 @@ define([
 
         // External event handlers.
 
+        valueChanged: function(inputUI, value) {
+            this.value = value;
+            this.spqueryfield.set('startvalue', value);
+        },
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);
             this.spqueryfield.set('position', position);
@@ -325,11 +330,7 @@ define([
 
         updateSpQueryField: function() {
             var attrs = this.fieldSpec.toSpQueryAttrs(this.formattedRecord);
-            _.extend(attrs, {
-                operstart: this.operation == 'anything' ? 1 : parseInt(this.operation),
-                isdisplay: true,
-                isnot: !!this.negate
-            });
+            attrs.operstart = (this.operation == 'anything') ? 1 : parseInt(this.operation);
             this.spqueryfield.set(attrs);
         },
         getField: function() {
