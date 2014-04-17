@@ -64,6 +64,7 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
+        var result = _.extend(new QueryFieldSpec(node), {joinPath: joinPath});
         var extracted = extractDatePart(fieldName);
         var field = node.getField(extracted.fieldName);
         if (field) {
@@ -74,7 +75,6 @@ define(['underscore', 'schema'], function(_, schema) {
             console.log("using fieldname as treerank", result.treeRank);
         }
 
-        var result = _.extend(new QueryFieldSpec(node), {joinPath: joinPath});
         field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
 
         console.log("parsed", stringId, result);

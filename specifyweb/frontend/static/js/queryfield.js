@@ -51,8 +51,6 @@ define([
                 });
 
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
-
-            this.options.parentView.on('positionschanged', this.positionChanged, this);
         },
         render: function() {
             this.$el.append(templates.queryfield({cid: this.cid}));
@@ -90,8 +88,8 @@ define([
             this.spqueryfield.set('isnot', this.$('input.op-negate').prop('checked'));
         },
         deleteClicked: function() {
-            this.trigger('remove', this, this.spqueryfield);
             this.remove();
+            this.options.parentView.removeFieldUI(this, this.spqueryfield);
         },
         expandToggle: function(state) {
             _(['hide', 'show']).contains(state) || (state = 'toggle'); // querybuilder calls with 'show' or 'hide'
@@ -243,7 +241,6 @@ define([
             if (!this.renderExisting) {
                 // Don't want to change existing model if we are rendering it for the first time.
                 this.updateSpQueryField();
-                this.trigger('completed', this);
             }
             this.renderExisting = false; // Done rendering existing field.
         },
@@ -318,11 +315,15 @@ define([
         positionChanged: function() {
             var position = this.$el.parent().find('li').index(this.el);
             this.spqueryfield.set('position', position);
+            console.log('set position to', position);
         },
         sortTypeChanged: function() {
             this.$('.field-sort').button('option', 'icons', {
                 primary: SORT_ICONS[this.spqueryfield.get('sorttype')]
             });
+        },
+        deleteIfIncomplete: function() {
+            this.$el.hasClass('field-incomplete') && this.deleteClicked();
         },
 
         // Utility methods.

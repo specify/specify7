@@ -1,10 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'fieldformat', 'dataobjformatters', 'navigation',
-    'savebutton', 'whenall', 'scrollresults',
+    'fieldformat', 'dataobjformatters', 'navigation', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates, fieldformat, 
-            dataobjformatters, navigation, SaveButton, whenAll, ScrollResults) {
+            dataobjformatters, navigation, whenAll, ScrollResults) {
     "use strict";
     var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
@@ -68,14 +67,13 @@ define([
         __name__: "QueryBuilder",
         events: {
             'click .query-execute': 'search',
+            'click .query-save': 'save',
             'click .field-add': 'addField',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
         initialize: function(options) {
             this.query = options.query;
             this.model = schema.getModel(this.query.get('contextname'));
-            this.saveButton = new SaveButton({ model: this.query });
-            this.saveButton.on('savecomplete', function() { this.trigger('redisplay'); }, this);
         },
         render: function() {
             var self = this;
@@ -86,7 +84,6 @@ define([
                 .appendTo(self.el);
             self.$el.append(templates.querybuilder());
             self.query.isNew() && self.$('.abandon-changes').remove();
-            self.$('.querybuilder').append(self.saveButton.render().el);
 
             self.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
@@ -99,7 +96,7 @@ define([
                 self.fieldUIs = spqueryfields.map(self.addFieldUI.bind(self));
                 var ul = self.$('.spqueryfields');
                 ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
-                ul.sortable({ update: self.trigger.bind(self, 'positionschanged') });
+                ul.sortable({ update: self.updatePositions.bind(self) });
                 _.defer(self.contractFields.bind(self));
             });
 
@@ -120,14 +117,31 @@ define([
                 this.fieldUIs = _(this.fieldUIs).without(ui);
                 this.fields.remove(field);
             }, this);
+            this.$('.query-execute').prop('disabled', false);
             return ui.render();
+        },
+        removeFieldUI: function(ui, spqueryfield) {
+            this.fieldUIs = _(this.fieldUIs).without(ui);
+            this.fields.remove(spqueryfield);
+            this.updatePositions();
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save').prop('disabled', true);
+        },
+        updatePositions: function() {
+            _.invoke(this.fieldUIs, 'positionChanged');
         },
         contractFields: function() {
             _.each(this.fieldUIs, function(field) { field.expandToggle('hide'); });
         },
+        deleteIncompleteFields: function() {
+            _.invoke(this.fieldUIs, 'deleteIfIncomplete');
+        },
         saveRequired: function() {
-            //this.$('.query-execute').prop('disabled', true);
-            this.$('.abandon-changes').prop('disabled', false);
+            this.$('.abandon-changes, .query-save').prop('disabled', false);
+        },
+        save: function() {
+            this.deleteIncompleteFields();
+            if (this.fieldUIs.length < 1) return;
+            this.query.save().done(this.trigger.bind(this, 'redisplay'));
         },
         addField: function() {
             this.contractFields();
@@ -139,12 +153,12 @@ define([
                 startvalue: '',
                 query: this.query.url()
             });
+            this.fields.add(newField);
 
             var ui = this.addFieldUI(newField);
             this.fieldUIs.push(ui);
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
-            ui.on('completed', function() { this.fields.add(newField); }, this);
-            this.trigger('positionschanged');
+            this.updatePositions();
         },
         renderHeader: function() {
             var header = $('<tr>');
@@ -161,18 +175,20 @@ define([
             return header;
         },
         search: function(evt) {
-            var self = this;
-            var table = self.$('table.query-results');
-            self.$('h3').show();
-            self.$('.query-results-count').empty();
+            this.deleteIncompleteFields();
+            if (this.fieldUIs.length < 1) return;
+
+            var table = this.$('table.query-results');
+            this.$('h3').show();
+            this.$('.query-results-count').empty();
 
             table.empty();
-            table.append(self.renderHeader());
+            table.append(this.renderHeader());
 
             var view = new ScrollResults({
                 View: Results,
                 el: table,
-                viewOptions: {fieldUIs: self.fieldUIs, model: self.model},
+                viewOptions: {fieldUIs: this.fieldUIs, model: this.model},
                 fetch: this.fetchResults.bind(this)
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
@@ -189,7 +205,7 @@ define([
                 up:   function() { queryField.$el.prev().insertAfter(queryField.el); },
                 down: function() { queryField.$el.next().insertBefore(queryField.el); }
             })[dir]();
-            this.trigger('positionschanged');
+            this.updatePositions();
         }
     });
 
