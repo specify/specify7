@@ -184,28 +184,25 @@ define([
                         .appendTo(fieldSelect);
                 });
 
+            var fieldGrp = this.$('.field-select-grp');
             var getTreeDef = domain.getTreeDef(this.fieldSpec.table.name);
-            if (getTreeDef) {
-                this.addTreeLevelsToFieldSelect(getTreeDef);
-            } else {
-                this.$('.field-select-grp').show();
-            }
+            $.when( getTreeDef && this.addTreeLevelsToFieldSelect(getTreeDef) ).done(function() {
+                fieldGrp.show();
+            });
         },
         addTreeLevelsToFieldSelect: function(getTreeDef) {
-            var show = function() { this.$('.field-select-grp').show(); }.bind(this);
             var optGroup = $('<optgroup label="Tree Ranks">').appendTo( this.$('.field-select') );
 
             getTreeDef.pipe(function(treeDef) {
-                return treeDef.rget('treedefitems').pipe(function (treeDefItems) {
-                    return treeDefItems.fetch({limit: 0}).pipe(function() { return treeDefItems; });
-                });
+                return treeDef.rget('treedefitems');
+            }).pipe(function (treeDefItems) {
+                return treeDefItems.fetch({limit: 0}).pipe(function() { return treeDefItems; });
             }).done(function(treeDefItems) {
                 treeDefItems.each(function(item) {
                     $('<option>', {value: 'treerank-' + item.get('name')})
                         .text(item.get('name'))
                         .appendTo(optGroup);
                 });
-                show();
             });
         },
         setupOpSelect: function() {
