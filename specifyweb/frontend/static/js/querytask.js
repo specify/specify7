@@ -76,49 +76,39 @@ define([
             this.model = schema.getModel(this.query.get('contextname'));
         },
         render: function() {
-            var self = this;
-            document.title = 'Query: ' + self.query.get('name');
-            $('<h2 class="querybuilder-header">')
-                .text(document.title)
-                .prepend($('<img>', {src: self.model.getIcon()}))
-                .appendTo(self.el);
-            self.$el.append(templates.querybuilder());
-            self.query.isNew() && self.$('.abandon-changes').remove();
+            document.title = 'Query: ' + this.query.get('name');
+            this.$el.append(templates.querybuilder());
+            this.$('.querybuilder-header span').text(document.title);
+            this.$('.querybuilder-header img').attr('src', this.model.getIcon());
+            this.query.isNew() && this.$('.abandon-changes').remove();
 
-            self.$('button.field-add').button({
+            this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
             });
 
-            self.query.on('saverequired', this.saveRequired, this);
+            this.query.on('saverequired', this.saveRequired, this);
 
-            self.query.rget('fields').done(function(spqueryfields) {
-                self.fields = spqueryfields;
-                self.fieldUIs = spqueryfields.map(self.addFieldUI.bind(self));
-                var ul = self.$('.spqueryfields');
-                ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
-                ul.sortable({ update: self.updatePositions.bind(self) });
-                _.defer(self.contractFields.bind(self));
-            });
+            this.query.rget('fields').done(this.gotFields.bind(this));
 
-            $('<table class="query-results" width="100%"></div>').appendTo(self.el);
-            self.$el.append(
-                '<div style="text-align: center" class="fetching-more"><img src="/static/img/specify128spinner.gif"></div>');
-            self.$('.fetching-more').hide();
-            return self;
+            this.$('.fetching-more').hide();
+            return this;
+        },
+        gotFields: function(spqueryfields) {
+            this.fields = spqueryfields;
+            this.fieldUIs = spqueryfields.map(this.addFieldUI.bind(this));
+            var ul = this.$('.spqueryfields');
+            ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
+            ul.sortable({ update: this.updatePositions.bind(this) });
+            _.defer(this.contractFields.bind(this));
         },
         addFieldUI: function(spqueryfield) {
-            var ui = new QueryFieldUI({
+            this.$('.query-execute').prop('disabled', false);
+            return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
                 spqueryfield: spqueryfield,
                 el: $('<li class="spqueryfield">')
-            });
-            ui.on('remove', function(ui, field) {
-                this.fieldUIs = _(this.fieldUIs).without(ui);
-                this.fields.remove(field);
-            }, this);
-            this.$('.query-execute').prop('disabled', false);
-            return ui.render();
+            }).render();
         },
         removeFieldUI: function(ui, spqueryfield) {
             this.fieldUIs = _(this.fieldUIs).without(ui);
