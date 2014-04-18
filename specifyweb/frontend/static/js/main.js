@@ -10,12 +10,12 @@ require({
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
         'textbase'       : "vendor/text",
+        'moment'         : "vendor/moment",
+        'd3'             : "vendor/d3",
         'resources'      : '/static/config',
         'tmpls'          : '/static/html/templates',
         'context'        : '/context',
-        'properties'     : '/properties',
-        'moment'         : '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min',
-        'd3'             : '//cdnjs.cloudflare.com/ajax/libs/d3/3.4.3/d3.min'
+        'properties'     : '/properties'
     },
     shim: {
         'jquery-ui'      : ['jquery'],
