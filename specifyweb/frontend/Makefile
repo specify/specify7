@@ -10,9 +10,8 @@ clean:
 	rm templates/specify-built.html static/js/main-built.js static/css/main-built.css
 
 templates/specify-built.html: templates/specify.html static/js/main-built.js static/css/main-built.css
-	sed s/main.css/main-built.css/ templates/specify.html | \
-	sed 's:data-main="/static/js/main.js"::' | \
-	sed s:/static/js/vendor/require.js:/static/js/main-built.js: > $@
+	sed 's:main.css:main-built.css:;s: data-main="/static/js/main.js"::;s:/static/js/vendor/require.js:/static/js/main-built.js:' \
+		templates/specify.html > $@
 
 static/js/main-built.js: ${JS_FILES}
 	node ${R_JS} -o static/js/app.build.js out=$@
