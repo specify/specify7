@@ -111,3 +111,13 @@ Paste this URL in your browser's location bar:
 [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 
+Optimizing JS and CSS files.
+----------------------------
+The Js and CSS files that comprise the web app can be optimized by
+`requirejs`. For this to work `nodejs` and `make` must be installed.
+
+    cd specifyweb/frontend/
+    make
+
+Thereafter the web app will automatically use the optimized files. If
+any JS or CSS files are updated, `make` should be ran again.
