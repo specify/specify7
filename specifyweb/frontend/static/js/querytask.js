@@ -66,6 +66,7 @@ define([
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         events: {
+            'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
             'click .query-save': 'save',
             'click .field-add': 'addField',
@@ -77,7 +78,7 @@ define([
         },
         render: function() {
             document.title = 'Query: ' + this.query.get('name');
-            this.$el.append(templates.querybuilder());
+            this.$el.append(templates.querybuilder({ cid: this.cid }));
             this.$('.querybuilder-header span').text(document.title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
@@ -89,6 +90,9 @@ define([
             this.query.on('saverequired', this.saveRequired, this);
 
             this.query.rget('fields').done(this.gotFields.bind(this));
+
+            this.$('input[name="selectDistinct"]').prop('checked', this.query.get('selectdistinct'));
+            this.$('input[name="countOnly"]').prop('checked', this.query.get('countonly'));
 
             this.$('.fetching-more').hide();
             return this;
@@ -173,7 +177,7 @@ define([
             this.$('.query-results-count').empty();
 
             table.empty();
-            table.append(this.renderHeader());
+            this.query.get('countonly') || table.append(this.renderHeader());
 
             var view = new ScrollResults({
                 View: Results,
@@ -199,6 +203,12 @@ define([
                 down: function() { queryField.$el.next().insertBefore(queryField.el); }
             })[dir]();
             this.updatePositions();
+        },
+        optionChanged: function() {
+            this.query.set({
+                selectdistinct: this.$('input[name="selectDistinct"]').prop('checked'),
+                countonly: this.$('input[name="countOnly"]').prop('checked')
+            });
         }
     });
 
@@ -221,6 +231,8 @@ define([
                 'name': "New Query",
                 'contextname': model.name,
                 'contexttableid': model.tableId,
+                'selectdistinct': false,
+                'countonly': false,
                 'specifyuser': app.user.resource_uri,
                 'isfavorite': true,
                 // ordinal seems to always get set to 32767 by Specify 6

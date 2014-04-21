@@ -80,10 +80,16 @@ def query(request, id):
     offset = int(request.GET.get('offset', 0))
     session = Session()
     sp_query = session.query(models.SpQuery).get(int(id))
+    distinct = sp_query.selectDistinct
+    tableid = sp_query.contextTableId
+    count_only = sp_query.countOnly
+
     field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
                    for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-    return execute(session, request.specify_collection, sp_query.contextTableId, field_specs, limit, offset)
+    return execute(session, request.specify_collection,
+                   tableid, distinct, count_only,
+                   field_specs, limit, offset)
 
 class EphemeralField(
     namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
@@ -99,14 +105,19 @@ def ephemeral(request):
     logger.info('ephemeral query: %s', spquery)
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
+    distinct = spquery['selectdistinct']
+    tableid = spquery['contexttableid']
+    count_only = spquery['countonly']
     session = Session()
     
     field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
                    for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
-    return execute(session, request.specify_collection, spquery['contexttableid'], field_specs, limit, offset)
+    return execute(session, request.specify_collection,
+                   tableid, distinct, count_only,
+                   field_specs, limit, offset)
 
-def execute(session, collection, tableid, field_specs, limit, offset):
+def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset):
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
@@ -120,11 +131,13 @@ def execute(session, collection, tableid, field_specs, limit, offset):
         sort_type = SORT_TYPES[fs.sort_type]
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
-    count = query.distinct().count()
-    query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
+    if distinct:
+        query = query.distinct()
+    count = query.count()
+    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
 
     results = {
-        'results': list(query),
+        'results': [] if count_only else list(query),
         'count': count
     }
     session.close()

@@ -329,6 +329,11 @@ div.results div {
     padding: 0;
 }
 
+.querybuilder input[type="checkbox"],
+.querybuilder input[type="button"] {
+   margin-left: 5px;
+}
+
 .query-results th {
     vertical-align: top;
 }
