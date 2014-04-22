@@ -159,13 +159,7 @@ define([
             _.chain(this.fieldUIs)
                 .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                 .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                .each(function(fieldUI) {
-                    var field = fieldUI.getField();
-                    var icon = field.model.getIcon();
-                    var name = fieldUI.treeRank || field.getLocalizedName();
-                    fieldUI.datePart && ( name += ' (' + fieldUI.datePart + ')' );
-                    $('<th>').text(name).prepend($('<img>', {src: icon})).appendTo(header);
-            });
+                .each(function(fieldUI) { header.append(fieldUI.renderHeader()); });
             return header;
         },
         search: function(evt) {

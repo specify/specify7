@@ -348,6 +348,15 @@ define([
                 if (_(types[type]).contains(field.type)) return type;
             }
             return null;
+        },
+        renderHeader: function() {
+            var field = this.getField();
+            var icon = field.model.getIcon();
+            var name = this.fieldSpec.treeRank || field.getLocalizedName();
+            if (this.fieldSpec.datePart &&  this.fieldSpec.datePart != 'Full Date') {
+                name += ' (' + this.fieldSpec.datePart + ')';
+            }
+            return $('<th>').text(name).prepend($('<img>', {src: icon}));
         }
     });
 });
