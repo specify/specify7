@@ -75,7 +75,7 @@ define(['underscore', 'schema'], function(_, schema) {
             console.log("using fieldname as treerank", result.treeRank);
         }
 
-        field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
+        field && field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
 
         console.log("parsed", stringId, result);
         return result;
