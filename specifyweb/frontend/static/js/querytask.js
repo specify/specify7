@@ -1,11 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'fieldformat', 'dataobjformatters', 'navigation', 'whenall', 'scrollresults',
+    'navigation', 'whenall', 'scrollresults',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates, fieldformat, 
-            dataobjformatters, navigation, whenAll, ScrollResults) {
+], function($, _, Backbone, schema, QueryFieldUI, templates,
+            navigation, whenAll, ScrollResults) {
     "use strict";
-    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var Results = Backbone.View.extend({
         __name__: "QueryResultsView",
@@ -25,41 +24,9 @@ define([
                 _.chain(this.fieldUIs)
                     .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                     .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                    .each(function(fieldUI, i) {
-                        var cell = this.makeCell(href, fieldUI, result[i + 1]);
-                        $('<td>').appendTo(row).append(cell);
-                    }, this);
+                    .each(function(f, i) { row.append(f.renderResult(href, result[i + 1])); });
             }, this);
             return results.results.length;
-        },
-        makeCell: function(rowHref, cellFieldUI, cellValue) {
-            var field = cellFieldUI.getField();
-            var cell = $('<a class="intercept-navigation query-result">')
-                    .prop('href', rowHref);
-
-            if (cellFieldUI.formattedRecord) {
-                (field.type === 'many-to-one') ?
-                    this.setupToOneCell(cell, field, cellValue) :
-                    this.setupToManyCell(cell, field, cellValue);
-            } else {
-                field && ( cellValue = fieldformat(field, cellValue) );
-                cell.text(cellValue);
-            }
-            return cell;
-        },
-        setupToOneCell: function(cell, field, cellValue) {
-            if (cellValue == null) return;
-            var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
-            cell.prop('href', resource.viewUrl()).text('(loading...)');
-            objformat(resource).done(function(formatted) { cell.text(formatted); });
-        },
-        setupToManyCell: function(cell, field, cellValue) {
-            if (cellValue == null) return;
-            cell.text('(loading...)');
-            var parentResource = new field.model.Resource({ id: cellValue });
-            parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
-                cell.text(formatted);
-            });
         }
     });
 

@@ -1,7 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'templates', 'schema', 'domain', 'queryfieldspec', 'queryfieldinput'
-], function($, _, Backbone, templates, schema, domain, QueryFieldSpec, QueryFieldInputUI) {
+    'jquery', 'underscore', 'backbone', 'templates', 'schema', 'domain',
+    'queryfieldspec', 'queryfieldinput', 'fieldformat', 'dataobjformatters'
+], function($, _, Backbone, templates, schema, domain,
+            QueryFieldSpec, QueryFieldInputUI, fieldformat, dataobjformatters) {
     "use strict";
+    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -349,6 +352,9 @@ define([
             }
             return null;
         },
+
+        // Results rendering.
+
         renderHeader: function() {
             var field = this.getField();
             var icon = field.model.getIcon();
@@ -357,6 +363,45 @@ define([
                 name += ' (' + this.fieldSpec.datePart + ')';
             }
             return $('<th>').text(name).prepend($('<img>', {src: icon}));
+        },
+        renderResult: function(rowHref, value) {
+            var field = this.getField();
+            var cell = $('<a class="intercept-navigation query-result">')
+                    .prop('href', rowHref);
+
+            if (this.formattedRecord) {
+                (field.type === 'many-to-one') ?
+                    this.setupToOneCell(cell, field, value) :
+                    this.setupToManyCell(cell, field, value);
+            } else {
+                cell.text(this.formatValue(value));
+            }
+            return $('<td>').append(cell);
+        },
+        formatValue: function(value) {
+            var field = this.getField();
+            if (!field) return value;
+            if (!this.fieldSpec.datePart || this.fieldSpec.datePart == 'Full Date') {
+                return fieldformat(field, value);
+            }
+            return value;
+        },
+        setupToOneCell: function(cell, cellValue) {
+            var field = this.getField();
+            if (cellValue == null) return;
+            var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
+            cell.prop('href', resource.viewUrl()).text('(loading...)');
+            objformat(resource).done(function(formatted) { cell.text(formatted); });
+        },
+        setupToManyCell: function(cell, cellValue) {
+            var field = this.getField();
+            if (cellValue == null) return;
+            cell.text('(loading...)');
+            var parentResource = new field.model.Resource({ id: cellValue });
+            parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
+                cell.text(formatted);
+            });
         }
+
     });
 });
