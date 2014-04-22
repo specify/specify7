@@ -121,13 +121,14 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         query, table = self.build_join(query, join_cache)
 
+        subquery = None
         insp = inspect(table)
         if self.is_relation:
             # will be formatting or aggregating related objects
             field = getattr(table, table._id)
 
         elif is_tree(insp) and not is_regular_field(insp, self.field_name):
-            query, field, using_subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
+            query, field, subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -144,10 +145,9 @@ class FieldSpec(namedtuple('FieldSpec', [
             if self.negate: f = not_(f)
             query = query.having(f) if using_subquery else query.filter(f)
 
-        if not using_subquery:
-            query = query.reset_joinpoint()
+        query = query.reset_joinpoint()
 
-        return query, field
+        return query, field, subquery
 
 
 def get_uiformatter(collection, table, field_name):
@@ -197,23 +197,25 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
         same_tree_p,
         node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
-    if False:#no_filter:
-        subquery = orm.Query(ancestor.name).with_session(query.session)
-        if join_treedefitem:
-            subquery = subquery.join(treedefitem)
-        field = subquery\
-                .filter(ancestor_p, rank_p)\
-                .limit(1).as_scalar()
-        using_subquery = True
+    if no_filter:
+        field = getattr(node, node._id)
+
+        def subquery(value):
+            subquery = orm.Query(ancestor.name).with_session(query.session)
+            subquery = subquery.filter(field == value)
+            if join_treedefitem:
+                subquery = subquery.join(treedefitem)
+            result = subquery.filter(ancestor_p, rank_p).first()
+            return result and result[0]
     else:
         query = query.join(ancestor, ancestor_p)
         if join_treedefitem:
             query = query.join(treedefitem)
         query = query.filter(rank_p)
         field = ancestor.name
-        using_subquery = False
+        subquery = None
 
-    return query, field, using_subquery
+    return query, field, subquery
 
 def is_regular_field(insp, field_name):
     return field_name in insp.class_.__dict__
