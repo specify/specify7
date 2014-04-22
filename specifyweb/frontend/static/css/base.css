@@ -195,7 +195,7 @@ nav li img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 32px;
+    height: 32px;
 }
 
 header a:link, header a:visited {

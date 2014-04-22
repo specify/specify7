@@ -521,21 +521,23 @@ div.results div {
 
 #taxon-treemap img {
     position: absolute;
-    bottom: 0px;
+    bottom: -8px;
+    width: 62px;
+    height: 400px;
 }
 
 .treemap {
-    margin-left: 110px;
+    margin-left: 62px;
 }
 
 .treemap .node {
-    border: solid 1px white;
+    border: solid 1px black;
     font: 10px sans-serif;
     line-height: 12px;
     overflow: hidden;
     position: absolute;
     text-indent: 2px;
-    opacity: 0.7;
+    opacity: 0.85;
 }
 
 .treemap p {

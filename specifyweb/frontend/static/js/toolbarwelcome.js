@@ -4,7 +4,7 @@ define(['navigation'], function(navigation) {
     return {
         task: 'welcome',
         title: 'Welcome',
-        icon: '/images/specify32.png',
+        icon: '/static/img/specify_welcome_small.png',
         execute: function() {
             navigation.go('/specify/');
         }
