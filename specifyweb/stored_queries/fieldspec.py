@@ -104,7 +104,7 @@ class FieldSpec(namedtuple('FieldSpec', [
             table = aliased
         return query, table
 
-    def add_to_query(self, query, no_filter=False, collection=None, join_cache=None):
+    def add_to_query(self, query, no_filter=False, sorting=False, collection=None, join_cache=None):
         logger.info("adding field %s to query", self)
         using_subquery = False
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
@@ -128,7 +128,8 @@ class FieldSpec(namedtuple('FieldSpec', [
             field = getattr(table, table._id)
 
         elif is_tree(insp) and not is_regular_field(insp, self.field_name):
-            query, field, subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
+            query, field, subquery = handle_tree_field(
+                query, self.field_name, table, insp, no_filter, sorting, collection)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -173,7 +174,7 @@ def get_tree_def(query, collection, tree_name):
         return  getattr(collection.discipline, treedef_field)
 
 
-def handle_tree_field(query, field_name, node, insp, no_filter, collection):
+def handle_tree_field(query, field_name, node, insp, no_filter, sorting, collection):
     treedef_column = insp.class_.__name__ + 'TreeDefID'
     treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
 
@@ -197,7 +198,7 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
         same_tree_p,
         node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
-    if no_filter:
+    if no_filter and not sorting:
         field = getattr(node, node._id)
 
         def deferred(value):

@@ -127,13 +127,16 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     join_cache = {}
     deferreds = [None]
     for fs in field_specs:
+        sort_type = SORT_TYPES[fs.sort_type]
+
         query, field, deferred = fs.add_to_query(query,
+                                                 sorting=sort_type is not None,
                                                  join_cache=join_cache,
                                                  collection=collection)
         if fs.display:
             query = query.add_columns(field)
             deferreds.append(deferred)
-        sort_type = SORT_TYPES[fs.sort_type]
+
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
     if distinct:
