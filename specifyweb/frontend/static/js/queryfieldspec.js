@@ -20,7 +20,7 @@ define(['underscore', 'schema'], function(_, schema) {
         var path = (fs.treeRank || formattedRecord) ?
                 fs.joinPath : _.initial(fs.joinPath);
 
-        var first = [fs.table.tableId];
+        var first = [fs.rootTable.tableId];
         var rest = _.map(path, function(field) {
             var relatedModel = field.getRelatedModel();
             return relatedModel.name.toLowerCase() === field.name.toLowerCase() ?
@@ -37,10 +37,11 @@ define(['underscore', 'schema'], function(_, schema) {
         return [tableList, fs.table.name.toLowerCase(), fieldName];
     }
 
-    function QueryFieldSpec(table) {
+    function QueryFieldSpec(rootTable) {
         _(this).extend({
+            rootTable: rootTable,
             joinPath: [],
-            table: table,
+            table: rootTable,
             datePart: null,
             treeRank: null
         });
@@ -64,7 +65,7 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
-        var result = _.extend(new QueryFieldSpec(node), {joinPath: joinPath});
+        var result = _.extend(new QueryFieldSpec(rootTable), {joinPath: joinPath, table: node});
         var extracted = extractDatePart(fieldName);
         var field = node.getField(extracted.fieldName);
         if (field) {
