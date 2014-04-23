@@ -125,14 +125,14 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
 
     order_by_exprs = []
     join_cache = {}
-    subqueries = [None]
+    deferreds = [None]
     for fs in field_specs:
-        query, field, subquery = fs.add_to_query(query,
+        query, field, deferred = fs.add_to_query(query,
                                                  join_cache=join_cache,
                                                  collection=collection)
         if fs.display:
             query = query.add_columns(field)
-            subqueries.append(subquery)
+            deferreds.append(deferred)
         sort_type = SORT_TYPES[fs.sort_type]
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -141,17 +141,14 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     count = query.count()
     query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
 
-    results = {
-        'results': [] if count_only else make_results(query, subqueries),
-        'count': count
-    }
-    session.close()
-    return HttpResponse(toJson(results), content_type='application/json')
-    
+    if not count_only:
+        results = [[deferred(value) if deferred else value
+                    for value, deferred in zip(row, deferreds)]
+                   for row in query] if any(deferreds) else list(query)
+    else:
+        results = []
 
-def make_results(query, subqueries):
-    ident = lambda x: x
-    return [
-        [(subquery or ident)(value) for value, subquery in zip(row, subqueries)]
-        for row in query
-    ]
+    session.close()
+
+    data = {'count': count, 'results': results}
+    return HttpResponse(toJson(data), content_type='application/json')

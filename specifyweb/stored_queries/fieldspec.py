@@ -200,7 +200,7 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
     if no_filter:
         field = getattr(node, node._id)
 
-        def subquery(value):
+        def deferred(value):
             subquery = orm.Query(ancestor.name).with_session(query.session)
             subquery = subquery.filter(field == value)
             if join_treedefitem:
@@ -213,9 +213,9 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
             query = query.join(treedefitem)
         query = query.filter(rank_p)
         field = ancestor.name
-        subquery = None
+        deferred = None
 
-    return query, field, subquery
+    return query, field, deferred
 
 def is_regular_field(insp, field_name):
     return field_name in insp.class_.__dict__
