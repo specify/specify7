@@ -7,7 +7,8 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
     return Backbone.View.extend({
         __name__: "ScrollResults",
         events: {
-            'scroll': 'scroll'
+            'scroll': 'scroll',
+            'remove': 'undelegateEvents'
         },
         initialize: function(options) {
             this.ajaxUrl = options.ajaxUrl;
@@ -73,7 +74,6 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
             return this;
         },
         scroll: function(evt) {
-            console.log(this.cid);
             this.fetchMoreWhileAppropriate();
         },
         undelegateEvents: function() {
