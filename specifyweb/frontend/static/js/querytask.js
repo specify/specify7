@@ -136,11 +136,12 @@ define([
             var table = this.$('table.query-results');
             this.$('h3').show();
             this.$('.query-results-count').empty();
+            this.results && this.results.undelegateEvents();
 
             table.empty();
             this.query.get('countonly') || table.append(this.renderHeader());
 
-            var view = new ScrollResults({
+            this.results = new ScrollResults({
                 View: Results,
                 el: table,
                 viewOptions: {fieldUIs: this.fieldUIs.slice(), model: this.model},
@@ -149,7 +150,7 @@ define([
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
 
-            view.fetchMoreWhileAppropriate();
+            this.results.fetchMoreWhileAppropriate();
         },
         fetchResults: function() {
             var query = this.query.toJSON();

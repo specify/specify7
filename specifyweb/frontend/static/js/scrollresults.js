@@ -21,9 +21,6 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
                 return win.scrollTop() + win.height() + 100 > doc.height();
             };
 
-            if (!this.resultsView.getContentEl) {
-                win.scroll(_.bind(this.scroll, this));
-            }
         },
         shouldFetchMore: function() {
             var visible = this.$el.is(':visible');
@@ -69,10 +66,19 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
             this.$el.data('view', this);
             this.resultsView.render();
             this.options.initialData && this.gotData(this.options.initialData);
+            if (!this.resultsView.getContentEl) {
+                this.onScroll = this.scroll.bind(this);
+                win.on('scroll', this.onScroll);
+            }
             return this;
         },
         scroll: function(evt) {
+            console.log(this.cid);
             this.fetchMoreWhileAppropriate();
+        },
+        undelegateEvents: function() {
+            this.onScroll && win.off('scroll', this.onScroll);
+            Backbone.View.prototype.undelegateEvents.apply(this, arguments);
         }
     });
 });
