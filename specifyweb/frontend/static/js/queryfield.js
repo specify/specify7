@@ -371,8 +371,8 @@ define([
 
             if (this.formattedRecord) {
                 (field.type === 'many-to-one') ?
-                    this.setupToOneCell(cell, field, value) :
-                    this.setupToManyCell(cell, field, value);
+                    this.setupToOneCell(cell, value) :
+                    this.setupToManyCell(cell, value);
             } else {
                 cell.text(this.formatValue(value));
             }
