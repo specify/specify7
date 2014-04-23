@@ -127,7 +127,7 @@ define([
                 .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                 .sortBy(function(f) { return f.spqueryfield.get('position'); })
                 .each(function(fieldUI) { header.append(fieldUI.renderHeader()); });
-            return header;
+            return $('<thead>').append(header);
         },
         search: function(evt) {
             this.deleteIncompleteFields();
