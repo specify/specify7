@@ -179,6 +179,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
 
 LOGIN_REDIRECT_URL = '/'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
 from .logging import LOGGING
 
@@ -192,4 +193,4 @@ WEB_ATTACHMENT_KEY = specify_settings.WEB_ATTACHMENT_KEY
 WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
 
-RO_MODE = True
+RO_MODE = False
