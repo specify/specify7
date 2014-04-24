@@ -105,28 +105,19 @@ define([
         // This method determines the current state.
 
         whatState: function() {
-            if (this.formattedRecord) {
-                return 'Complete';
-            }
-
             var field = this.getField();
-            if (field == null) {
-                return 'Field';
-            }
+            if (this.formattedRecord) return 'Complete';
+
+            if (field == null) return 'Field';
 
             if (this.fieldSpec.treeRank == null) {
 
-                if (field.isRelationship) {
-                    return 'Field';
-                }
-                if (field.isTemporal() && this.fieldSpec.datePart == null) {
-                    return 'DatePart';
-                }
+                if (field.isRelationship) return 'Field';
+
+                if (field.isTemporal() && this.fieldSpec.datePart == null) return 'DatePart';
             }
 
-            if (this.operation == null) {
-                return 'Operation';
-            }
+            if (this.operation == null) return 'Operation';
 
             return 'Complete';
         },
