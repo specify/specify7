@@ -212,26 +212,29 @@ define([
         return [root, thres];
     }
 
+    function showRecentActivity(view) {
+        var log = new schema.models.SpAuditLog.LazyCollection({
+            filters: { parentrecordid__isnull: true,
+                       tablenum__in: userTables,
+                       orderby: '-timestampcreated' }
+        });
+
+        log.fetch({limit: 5}).done(function() {
+            log.each(function(entry) {
+                new LogEntry({model: entry}).render().$el.appendTo(view.el);
+            });
+        });
+    }
+
     return Backbone.View.extend({
         __name__: "WelcomeView",
         render: function() {
-            var _this = this;
-
             this.$el.append(templates.welcome());
 
             _.defer(makeTreeMap);
 
-            var log = new schema.models.SpAuditLog.LazyCollection({
-                filters: { parentrecordid__isnull: true,
-                           tablenum__in: userTables,
-                           orderby: '-timestampcreated' }
-            });
+            // showRecentActivity(this);
 
-            log.fetch({limit: 5}).done(function() {
-                log.each(function(entry) {
-                    new LogEntry({model: entry}).render().$el.appendTo(_this.el);
-                });
-            });
             return this;
         }
     });
