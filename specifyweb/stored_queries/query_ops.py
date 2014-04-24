@@ -78,7 +78,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return field.contains(value)
 
     def op_empty(self, field, value):
-        if isinstance(field.type, sqlalchemy.sql.sqltypes.String):
+        if isinstance(field.type, sqlalchemy.types.String):
             value = self.format(value)
             return field == ''
         else:
