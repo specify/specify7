@@ -20,6 +20,7 @@ define([
     'text!tmpls/viewheader.html',
     'text!tmpls/recordsetchooser.html',
     'text!tmpls/querybuilder.html',
+    'text!tmpls/queryfield.html',
     'text!tmpls/attachmentview.html',
     'text!tmpls/usertools.html'
 ], function parseTemplates($, _) {
@@ -49,6 +50,7 @@ define([
         'viewheader',
         'recordsetchooser',
         'querybuilder',
+        'queryfield',
         'attachmentview',
         'usertools'
     ]).each(function(name, i) { withNames[name] = templates[i]; });

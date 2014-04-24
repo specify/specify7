@@ -329,13 +329,46 @@ div.results div {
     padding: 0;
 }
 
+.querybuilder input[type="checkbox"],
+.querybuilder input[type="button"] {
+   margin-left: 5px;
+}
+
+.fetching-more img {
+    height: 32px;
+    width: 32px;
+}
+
+.query-results {
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+
 .query-results th {
     vertical-align: top;
+    white-space: nowrap;
+    border-bottom: 1px solid;
 }
 
 .query-results th img {
     height: 1.2em;
     margin-right: 0.8em;
+}
+
+.query-results th, .query-results td {
+    border-right: 1px solid;
+}
+
+.query-results thead tr {
+    background-color: #d3d3d3;
+}
+
+.query-results tbody tr {
+    background-color: #e0ffff;
+}
+
+.query-results tr:nth-child(even) {
+    background-color: white;
 }
 
 .spqueryfields {
@@ -349,6 +382,11 @@ div.results div {
     padding: 5px 0px 4px 12px;
     border: 1px inset;
     border-radius: 8px;
+}
+
+.spqueryfield.field-incomplete .field-expand,
+.spqueryfield.field-incomplete .field-controls {
+    display: none;
 }
 
 .spqueryfield-delete {

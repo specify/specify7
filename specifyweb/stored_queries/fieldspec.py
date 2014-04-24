@@ -22,8 +22,7 @@ class FieldSpec(namedtuple('FieldSpec', [
     'value',
     'negate',
     'display',
-    'sort_type',
-    'spqueryfieldid'])):
+    'sort_type'])):
 
     # The stringid is a structure consisting of three fields seperated by '.':
     # (1) the join path to the specify field.
@@ -33,6 +32,8 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     @classmethod
     def from_spqueryfield(cls, field, value=None):
+        logger.info('generating field spec from %r', field)
+        logger.debug('parsing %s', field.stringId)
         path, table_name, field_name = cls.STRINGID_RE.match(field.stringId).groups()
         path_elems = path.split(',')
         root_table = models.models_by_tableid[int(path_elems[0])]
@@ -72,10 +73,9 @@ class FieldSpec(namedtuple('FieldSpec', [
                    value        = field.startValue if value is None else value,
                    negate       = field.isNot,
                    display      = field.isDisplay,
-                   sort_type    = field.sortType,
-                   spqueryfieldid = field.spQueryFieldId)
+                   sort_type    = field.sortType)
 
-    def build_join(self, query):
+    def build_join(self, query, join_cache):
         table = self.root_table
         path = deque(self.join_path)
 
@@ -91,12 +91,20 @@ class FieldSpec(namedtuple('FieldSpec', [
                     # when returning a one-to-many field stop short so
                     # the client can do the final 'join' to handle aggregation
                     break
-            aliased = orm.aliased(next_table)
+            if join_cache is not None and (table, fieldname) in join_cache:
+                aliased = join_cache[(table, fieldname)]
+                logger.debug("using join cache for %r.%s", table, fieldname)
+            else:
+                aliased = orm.aliased(next_table)
+                if join_cache is not None:
+                    join_cache[(table, fieldname)] = aliased
+                    logger.debug("adding to join cache %r, %r", (table, fieldname), aliased)
+
             query = query.outerjoin(aliased, get_field(table, fieldname))
             table = aliased
         return query, table
 
-    def add_to_query(self, query, no_filter=False, collection=None):
+    def add_to_query(self, query, no_filter=False, sorting=False, collection=None, join_cache=None):
         logger.info("adding field %s to query", self)
         using_subquery = False
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
@@ -111,15 +119,17 @@ class FieldSpec(namedtuple('FieldSpec', [
                                   and value_required_for_filter
                                   and not self.negate)
 
-        query, table = self.build_join(query)
+        query, table = self.build_join(query, join_cache)
 
+        subquery = None
         insp = inspect(table)
         if self.is_relation:
             # will be formatting or aggregating related objects
             field = getattr(table, table._id)
 
         elif is_tree(insp) and not is_regular_field(insp, self.field_name):
-            query, field, using_subquery = handle_tree_field(query, self.field_name, table, insp, no_filter, collection)
+            query, field, subquery = handle_tree_field(
+                query, self.field_name, table, insp, no_filter, sorting, collection)
 
         elif self.date_part is not None:
             field = extract(self.date_part, getattr(table, self.field_name))
@@ -136,10 +146,9 @@ class FieldSpec(namedtuple('FieldSpec', [
             if self.negate: f = not_(f)
             query = query.having(f) if using_subquery else query.filter(f)
 
-        if not using_subquery:
-            query = query.reset_joinpoint()
+        query = query.reset_joinpoint()
 
-        return query, field
+        return query, field, subquery
 
 
 def get_uiformatter(collection, table, field_name):
@@ -165,7 +174,7 @@ def get_tree_def(query, collection, tree_name):
         return  getattr(collection.discipline, treedef_field)
 
 
-def handle_tree_field(query, field_name, node, insp, no_filter, collection):
+def handle_tree_field(query, field_name, node, insp, no_filter, sorting, collection):
     treedef_column = insp.class_.__name__ + 'TreeDefID'
     treedefitem = orm.aliased( models.classes[insp.class_.__name__ + 'TreeDefItem'] )
 
@@ -189,23 +198,25 @@ def handle_tree_field(query, field_name, node, insp, no_filter, collection):
         same_tree_p,
         node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
-    if False:#no_filter:
-        subquery = orm.Query(ancestor.name).with_session(query.session)
-        if join_treedefitem:
-            subquery = subquery.join(treedefitem)
-        field = subquery\
-                .filter(ancestor_p, rank_p)\
-                .limit(1).as_scalar()
-        using_subquery = True
+    if no_filter and not sorting:
+        field = getattr(node, node._id)
+
+        def deferred(value):
+            subquery = orm.Query(ancestor.name).with_session(query.session)
+            subquery = subquery.filter(field == value)
+            if join_treedefitem:
+                subquery = subquery.join(treedefitem)
+            result = subquery.filter(ancestor_p, rank_p).first()
+            return result and result[0]
     else:
         query = query.join(ancestor, ancestor_p)
         if join_treedefitem:
             query = query.join(treedefitem)
         query = query.filter(rank_p)
         field = ancestor.name
-        using_subquery = False
+        deferred = None
 
-    return query, field, using_subquery
+    return query, field, deferred
 
 def is_regular_field(insp, field_name):
     return field_name in insp.class_.__dict__

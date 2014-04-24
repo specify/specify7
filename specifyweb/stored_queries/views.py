@@ -1,9 +1,11 @@
 import operator
 import logging
+import json
 from collections import namedtuple
 
 from django.http import HttpResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 import sqlalchemy
@@ -76,35 +78,80 @@ def filter_by_collection(model, query, collection):
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
-
     session = Session()
     sp_query = session.query(models.SpQuery).get(int(id))
+    distinct = sp_query.selectDistinct
+    tableid = sp_query.contextTableId
+    count_only = sp_query.countOnly
+
     field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
                    for field in sorted(sp_query.fields, key=lambda field: field.position)]
-    model = models.models_by_tableid[sp_query.contextTableId]
+
+    return execute(session, request.specify_collection,
+                   tableid, distinct, count_only,
+                   field_specs, limit, offset)
+
+class EphemeralField(
+    namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
+    @classmethod
+    def from_json(cls, json):
+        return cls(**{field: json[field.lower()] for field in cls._fields})
+
+@require_POST
+@csrf_exempt
+@login_required
+def ephemeral(request):
+    spquery = json.load(request)
+    logger.info('ephemeral query: %s', spquery)
+    limit = spquery.get('limit', 20)
+    offset = spquery.get('offset', 0)
+    distinct = spquery['selectdistinct']
+    tableid = spquery['contexttableid']
+    count_only = spquery['countonly']
+    session = Session()
+    
+    field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
+                   for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+
+    return execute(session, request.specify_collection,
+                   tableid, distinct, count_only,
+                   field_specs, limit, offset)
+
+def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset):
+    model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
-    query = filter_by_collection(model, query, request.specify_collection)
+    query = filter_by_collection(model, query, collection)
 
-    headers = ['id']
     order_by_exprs = []
+    join_cache = {}
+    deferreds = [None]
     for fs in field_specs:
-        query, field = fs.add_to_query(query,
-                                       collection=request.specify_collection)
+        sort_type = SORT_TYPES[fs.sort_type]
+
+        query, field, deferred = fs.add_to_query(query,
+                                                 sorting=sort_type is not None,
+                                                 join_cache=join_cache,
+                                                 collection=collection)
         if fs.display:
             query = query.add_columns(field)
-            headers.append(fs.spqueryfieldid)
-        sort_type = SORT_TYPES[fs.sort_type]
+            deferreds.append(deferred)
+
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
-    count = query.distinct().count()
-    query = query.order_by(*order_by_exprs).distinct().limit(limit).offset(offset)
+    if distinct:
+        query = query.distinct()
+    count = query.count()
+    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
 
-    results = {
-        'columns': headers,
-        'results': list(query),
-        'count': count
-    }
+    if not count_only:
+        results = [[deferred(value) if deferred else value
+                    for value, deferred in zip(row, deferreds)]
+                   for row in query] if any(deferreds) else list(query)
+    else:
+        results = []
+
     session.close()
-    return HttpResponse(toJson(results), content_type='application/json')
 
+    data = {'count': count, 'results': results}
+    return HttpResponse(toJson(data), content_type='application/json')

@@ -1,15 +1,16 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'fieldformat', 'dataobjformatters',
-    'savebutton', 'whenall', 'scrollresults',
+    'navigation', 'whenall', 'scrollresults', 'specifyform', 'populateform',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            fieldformat, dataobjformatters, SaveButton, whenAll, ScrollResults) {
+            navigation, whenAll, ScrollResults, specifyform, populateform) {
     "use strict";
-    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
     var Results = Backbone.View.extend({
         __name__: "QueryResultsView",
+        events: {
+            'click .query-result-link': 'openRecord'
+        },
         initialize: function(options) {
             this.fieldUIs = options.fieldUIs;
             this.model = options.model;
@@ -19,186 +20,220 @@ define([
             return results.results.length < 1;
         },
         addResults: function(results) {
-            var self = this;
-            var columns = results.columns;
-            var fieldToCol = function(fieldUI) {
-                return _(columns).indexOf(fieldUI.spqueryfield.id);
-            };
-
             _.each(results.results, function(result) {
-                var row = $('<tr>').appendTo(self.el);
-                var resource = new self.model.Resource({
-                    id: result[0]
-                });
+                var resource = new this.model.Resource({ id: result[0] });
+                var row = $('<tr class="query-result">').appendTo(this.el).data('resource', resource);
                 var href = resource.viewUrl();
-                _.each(self.fieldUIs, function(fieldUI) {
-                    if (!fieldUI.spqueryfield.get('isdisplay')) return;
-                    var value = result[fieldToCol(fieldUI)];
-                    self.makeCell(href, fieldUI, value).appendTo(
-                        $('<td>').appendTo(row));
-                });
-            });
+                _.chain(this.fieldUIs)
+                    .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                    .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                    .each(function(f, i) { row.append(f.renderResult(href, result[i + 1])); });
+            }, this);
             return results.results.length;
         },
-        makeCell: function(rowHref, cellFieldUI, cellValue) {
-            var field = cellFieldUI.getField();
-            var cell = $('<a class="intercept-navigation query-result">')
-                    .prop('href', rowHref);
+        openRecord: function(evt) {
+            evt.preventDefault();
+            var resource = $(evt.currentTarget).closest('.query-result').data('resource');
 
-            if (cellFieldUI.formattedRecord) {
-                (field.type === 'many-to-one') ?
-                    this.setupToOneCell(cell, field, cellValue) :
-                    this.setupToManyCell(cell, field, cellValue);
-            } else {
-                field && ( cellValue = fieldformat(field, cellValue) );
-                cell.text(cellValue);
-            }
-            return cell;
-        },
-        setupToOneCell: function(cell, field, cellValue) {
-            if (cellValue == null) return;
-            var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
-            cell.prop('href', resource.viewUrl()).text('(loading...)');
-            objformat(resource).done(function(formatted) { cell.text(formatted); });
-        },
-        setupToManyCell: function(cell, field, cellValue) {
-            if (cellValue == null) return;
-            cell.text('(loading...)');
-            var parentResource = new field.model.Resource({ id: cellValue });
-            parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
-                cell.text(formatted);
+            specifyform.buildViewByName(resource.specifyModel.view, null, 'view').done(function(dialogForm) {
+                dialogForm.find('.specify-form-header:first').remove();
+
+                populateform(dialogForm, resource);
+
+                var dialog = $('<div>').append(dialogForm).dialog({
+                    width: 'auto',
+                    title:  resource.specifyModel.getLocalizedName(),
+                    close: function() { $(this).remove(); }
+                });
+
+                // if (!resource.isNew()) {  // <- always true.
+                dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
+                    '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
+
+                dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                    evt.preventDefault();
+                    navigation.go(resource.viewUrl());
+                    dialog.dialog('close');
+                });
             });
         }
     });
 
-    var StoredQueryView = Backbone.View.extend({
+    var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         events: {
+            'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
+            'click .query-save': 'save',
             'click .field-add': 'addField',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
         initialize: function(options) {
             this.query = options.query;
             this.model = schema.getModel(this.query.get('contextname'));
-            this.saveButton = new SaveButton({ model: this.query });
-            this.saveButton.on('savecomplete', function() { this.trigger('redisplay'); }, this);
         },
         render: function() {
-            var self = this;
-            document.title = 'Query: ' + self.query.get('name');
-            $('<h2 class="querybuilder-header">')
-                .text(document.title)
-                .prepend($('<img>', {src: self.model.getIcon()}))
-                .appendTo(self.el);
-            self.$el.append(templates.querybuilder());
-            self.$('.querybuilder').append(self.saveButton.render().el);
+            document.title = 'Query: ' + this.query.get('name');
+            this.$el.append(templates.querybuilder({ cid: this.cid }));
+            this.$('.querybuilder-header span').text(document.title);
+            this.$('.querybuilder-header img').attr('src', this.model.getIcon());
+            this.query.isNew() && this.$('.abandon-changes').remove();
 
-            self.$('button.field-add').button({
+            this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
             });
 
-            self.query.on('saverequired', this.saveRequired, this);
+            this.query.on('saverequired', this.saveRequired, this);
 
-            self.query.rget('fields').done(function(spqueryfields) {
-                self.fields = spqueryfields;
-                self.fieldUIs = spqueryfields.map(self.addFieldUI.bind(self));
-                var ul = self.$('.spqueryfields');
-                ul.append.apply(ul, _.pluck(self.fieldUIs, 'el'));
-                ul.sortable({ update: self.trigger.bind(self, 'positionschanged') });
-                _.defer(self.contractFields.bind(self));
-            });
+            this.query.rget('fields').done(this.gotFields.bind(this));
 
-            $('<table class="query-results" width="100%"></div>').appendTo(self.el);
-            self.$el.append(
-                '<div style="text-align: center" class="fetching-more"><img src="/static/img/specify128spinner.gif"></div>');
-            self.$('.fetching-more').hide();
-            return self;
+            this.$('input[name="selectDistinct"]').prop('checked', this.query.get('selectdistinct'));
+            this.$('input[name="countOnly"]').prop('checked', this.query.get('countonly'));
+
+            this.$('.fetching-more').hide();
+            return this;
+        },
+        gotFields: function(spqueryfields) {
+            this.fields = spqueryfields;
+            this.fieldUIs = spqueryfields.map(this.addFieldUI.bind(this));
+            var ul = this.$('.spqueryfields');
+            ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
+            ul.sortable({ update: this.updatePositions.bind(this) });
+            _.defer(this.contractFields.bind(this));
         },
         addFieldUI: function(spqueryfield) {
-            var ui = new QueryFieldUI({
+            this.$('.query-execute').prop('disabled', false);
+            return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
                 spqueryfield: spqueryfield,
                 el: $('<li class="spqueryfield">')
-            });
-            ui.on('remove', function(ui, field) {
-                this.fieldUIs = _(this.fieldUIs).without(ui);
-                this.fields.remove(field);
-            }, this);
-            return ui.render();
+            }).render();
+        },
+        removeFieldUI: function(ui, spqueryfield) {
+            this.fieldUIs = _(this.fieldUIs).without(ui);
+            this.fields.remove(spqueryfield);
+            this.updatePositions();
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save').prop('disabled', true);
+        },
+        updatePositions: function() {
+            _.invoke(this.fieldUIs, 'positionChanged');
         },
         contractFields: function() {
-            _.each(this.fieldUIs, function(field) { field.contract(); });
+            _.each(this.fieldUIs, function(field) { field.expandToggle('hide'); });
+        },
+        deleteIncompleteFields: function() {
+            _.invoke(this.fieldUIs, 'deleteIfIncomplete');
         },
         saveRequired: function() {
-            this.$('.query-execute').prop('disabled', true);
-            this.$('.abandon-changes').prop('disabled', false);
+            this.$('.abandon-changes, .query-save').prop('disabled', false);
+        },
+        save: function() {
+            this.deleteIncompleteFields();
+            if (this.fieldUIs.length < 1) return;
+            this.query.save().done(this.trigger.bind(this, 'redisplay'));
         },
         addField: function() {
             this.contractFields();
             var newField = new schema.models.SpQueryField.Resource();
-            newField.set({sorttype: 0, isdisplay: true, query: this.query.url()});
+            newField.set({
+                sorttype: 0,
+                isdisplay: true,
+                isnot: false,
+                startvalue: '',
+                query: this.query.url()
+            });
+            this.fields.add(newField);
 
             var ui = this.addFieldUI(newField);
             this.fieldUIs.push(ui);
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
-            ui.on('completed', function() { this.fields.add(newField); }, this);
-            this.trigger('positionschanged');
+            this.updatePositions();
         },
         renderHeader: function() {
             var header = $('<tr>');
-            _.each(this.fieldUIs, function(fieldUI) {
-                if (!fieldUI.spqueryfield.get('isdisplay')) return;
-                var field = fieldUI.getField();
-                var icon = field.model.getIcon();
-                var name = fieldUI.treeRank || field.getLocalizedName();
-                fieldUI.datePart && ( name += ' (' + fieldUI.datePart + ')' );
-                $('<th>').text(name).prepend($('<img>', {src: icon})).appendTo(header);
-            });
-            return header;
+            _.chain(this.fieldUIs)
+                .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                .each(function(fieldUI) { header.append(fieldUI.renderHeader()); });
+            return $('<thead>').append(header);
         },
         search: function(evt) {
-            var self = this;
-            var table = self.$('table.query-results');
-            self.$('h3').show();
-            self.$('.query-results-count').empty();
+            this.deleteIncompleteFields();
+            if (this.fieldUIs.length < 1) return;
+
+            var table = this.$('table.query-results');
+            this.$('h3').show();
+            this.$('.query-results-count').empty();
+            this.results && this.results.undelegateEvents();
 
             table.empty();
-            table.append(self.renderHeader());
+            this.query.get('countonly') || table.append(this.renderHeader());
 
-            var ajaxUrl = "/stored_query/query/" + self.query.id + "/";
-            var view = new ScrollResults({
+            this.results = new ScrollResults({
                 View: Results,
                 el: table,
-                viewOptions: {fieldUIs: self.fieldUIs, model: self.model},
-                ajaxUrl: ajaxUrl
+                viewOptions: {fieldUIs: this.fieldUIs.slice(), model: this.model},
+                fetch: this.fetchResults()
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
 
-            view.fetchMoreWhileAppropriate();
+            this.results.fetchMoreWhileAppropriate();
         },
-        moveUp: function(queryField) {
-            queryField.$el.prev().insertAfter(queryField.el);
-            this.trigger('positionschanged');
+        fetchResults: function() {
+            var query = this.query.toJSON();
+            return function(offset) {
+                query.offset = offset;
+                return $.post('/stored_query/ephemeral/', JSON.stringify(query));
+            };
         },
-        moveDown: function(queryField) {
-            queryField.$el.next().insertBefore(queryField.el);
-            this.trigger('positionschanged');
+        moveField: function(queryField, dir) {
+            ({
+                up:   function() { queryField.$el.prev().insertAfter(queryField.el); },
+                down: function() { queryField.$el.next().insertBefore(queryField.el); }
+            })[dir]();
+            this.updatePositions();
+        },
+        optionChanged: function() {
+            this.query.set({
+                selectdistinct: this.$('input[name="selectDistinct"]').prop('checked'),
+                countonly: this.$('input[name="countOnly"]').prop('checked')
+            });
         }
     });
 
     return function(app) {
         app.router.route('query/:id/', 'storedQuery', function(id) {
-            function doIt() {
+            (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
                 query.fetch().fail(app.handleError).done(function() {
-                    app.setCurrentView(new StoredQueryView({ query: query }));
-                    app.getCurrentView().on('redisplay', doIt);
+                    var view = new QueryBuilder({ query: query });
+                    view.on('redisplay', showView);
+                    app.setCurrentView(view);
                 });
-            }
-            doIt();
+            })();
+        });
+
+        app.router.route('query/new/:table/', 'ephemeralQuery', function(table) {
+            var query = new schema.models.SpQuery.Resource();
+            var model = schema.getModel(table);
+            query.set({
+                'name': "New Query",
+                'contextname': model.name,
+                'contexttableid': model.tableId,
+                'selectdistinct': false,
+                'countonly': false,
+                'specifyuser': app.user.resource_uri,
+                'isfavorite': true,
+                // ordinal seems to always get set to 32767 by Specify 6
+                // needs to be set for the query to be visible in Specify 6
+                'ordinal': 32767
+            });
+
+            var view = new QueryBuilder({ query: query });
+            view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
+            app.setCurrentView(view);
         });
     };
 });

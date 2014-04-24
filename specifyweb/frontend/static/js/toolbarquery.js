@@ -107,19 +107,7 @@ define([
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var table = this.options.tables[index];
-            var query = new schema.models.SpQuery.Resource();
-
-            var model = schema.getModel(table.attr('name'));
-            query.set('contextname', model.name);
-            query.set('contexttableid', model.tableId);
-            query.set('specifyuser', app.user.resource_uri);
-            query.set('isfavorite', true);
-            // ordinal seems to always get set to 32767 by Specify 6
-            // needs to be set for the query to be visible in Specify 6
-            query.set('ordinal', 32767);
-            dialog = new EditQueryDialog({ spquery: query });
-            $('body').append(dialog.el);
-            dialog.render();
+            navigation.go('/query/new/' + table.attr('name').toLowerCase() + '/');
         }
     });
 
