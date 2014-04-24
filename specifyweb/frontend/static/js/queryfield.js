@@ -366,7 +366,7 @@ define([
         },
         renderResult: function(rowHref, value) {
             var field = this.getField();
-            var cell = $('<a class="intercept-navigation query-result">')
+            var cell = $('<a class="query-result-link">')
                     .prop('href', rowHref);
 
             if (this.formattedRecord) {
@@ -389,8 +389,8 @@ define([
         setupToOneCell: function(cell, cellValue) {
             var field = this.getField();
             if (cellValue == null) return;
+            cell.text('(loading...)');
             var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
-            cell.prop('href', resource.viewUrl()).text('(loading...)');
             objformat(resource).done(function(formatted) { cell.text(formatted); });
         },
         setupToManyCell: function(cell, cellValue) {
