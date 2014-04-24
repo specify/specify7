@@ -1,4 +1,5 @@
 from collections import namedtuple
+import sqlalchemy
 
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
@@ -77,8 +78,11 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return field.contains(value)
 
     def op_empty(self, field, value):
-        value = self.format(value)
-        return field == ''
+        if isinstance(field.type, sqlalchemy.sql.sqltypes.String):
+            value = self.format(value)
+            return field == ''
+        else:
+            return field == None
 
     def op_trueornull(self, field, value):
         return (field == True) | (field == None)
