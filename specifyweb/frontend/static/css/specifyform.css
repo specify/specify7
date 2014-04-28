@@ -12,6 +12,12 @@
 /*     border-width: 1px; */
 /* } */
 
+img.specify-splash {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
 #express-search {
     position: absolute;
     right: 0;
@@ -555,6 +561,9 @@ div.results div {
 
 #taxon-treemap {
     position: relative;
+    width: 863px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #taxon-treemap img {
