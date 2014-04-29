@@ -36,9 +36,17 @@ div.specify-view-content-container,
     border-bottom: solid 1px;
 }
 
-.specify-form-header > a, .specify-subview-header > a {
+.specify-form-header > .recordset-prev,
+.specify-form-header > .recordset-next,
+.specify-form-header > a,
+.specify-subview-header > a {
     margin-left: 1em;
     font-size: 0.5em;
+}
+
+.specify-form-header > span.recordset-prev,
+.specify-form-header > span.recordset-next {
+    color: lightgrey;
 }
 
 .specify-form-header img {
