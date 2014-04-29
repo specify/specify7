@@ -77,21 +77,22 @@ define([
                 var readOnly = specifyform.getFormMode(dialogForm) === 'view';
 
                 dialogForm.find('.specify-form-header:first').remove();
+                var buttons = $('<div class="specify-form-buttons">').appendTo(dialogForm);
 
                 if (readOnly) {
                     // don't add anything.
                 } else if (self.field.isDependent()) {
-                    $('<input type="button" value="Done">').appendTo(dialogForm).click(function() {
+                    $('<input type="button" value="Done">').appendTo(buttons).click(function() {
                         dialog.dialog('close');
                     });
-                    $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                    $('<input type="button" value="Remove">').appendTo(buttons).click(function() {
                         self.collection.remove(resource);
                         dialog.dialog('close');
                     });
                 } else {
                     // TODO: dead code
                     var saveButton = new SaveButton({ model: resource });
-                    saveButton.render().$el.appendTo(dialogForm);
+                    saveButton.render().$el.appendTo(buttons);
                     saveButton.on('savecomplete', function() {
                         dialog.dialog('close');
                         self.collection.add(resource);
@@ -99,7 +100,7 @@ define([
 
                     if (!resource.isNew()) {
                         var deleteButton = new DeleteButton({ model: resource });
-                        deleteButton.render().$el.appendTo(dialogForm);
+                        deleteButton.render().$el.appendTo(buttons);
                         deleteButton.on('deleted', function() { dialog.dialog('close'); });
                     }
                 }

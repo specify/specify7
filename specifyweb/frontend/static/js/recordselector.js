@@ -55,7 +55,7 @@ define([
 
     var AddDeleteBtns = Controls.extend({
         __name__: "RecordSelectorAddDeleteButtons",
-        className: "recordselector-add-delete-buttons",
+        className: "recordselector-add-delete-buttons specify-form-buttons",
         render: function () {
             this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
                             '<input type="button" value="Delete" class="specify-delete-related">');

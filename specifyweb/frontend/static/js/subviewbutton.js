@@ -110,6 +110,7 @@ define([
             var formReadOnly = specifyform.getFormMode(dialogForm) === 'view';
 
             dialogForm.find('.specify-form-header:first').remove();
+            var buttons = $('<div class="specify-form-buttons">').appendTo(dialogForm);
 
             if (!self.related) {
                 if (formReadOnly) return;
@@ -127,7 +128,7 @@ define([
             var title = (self.related.isNew() ? "New " : "") + self.relatedModel.getLocalizedName();
 
             if (!self.readOnly) {
-                $('<input type="button" value="Remove">').appendTo(dialogForm).click(function() {
+                $('<input type="button" value="Remove">').appendTo(buttons).click(function() {
                     self.dialog.dialog('close');
                     self.related = null;
                     self.model.set(self.field.name, self.related);

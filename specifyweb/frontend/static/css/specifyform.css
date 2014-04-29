@@ -25,6 +25,13 @@ img.specify-splash {
     padding: 0 10px 5px;
 }
 
+
+div.specify-view-content,
+div.specify-view-content-container,
+.specify-form-type-form {
+    display: inline-block;
+}
+
 .specify-form-header, .specify-subview-header {
     border-bottom: solid 1px;
 }
@@ -38,6 +45,14 @@ img.specify-splash {
     vertical-align: bottom;
     margin: 0 2px 2px 0;
     height: 24px;
+}
+
+.specify-form-buttons {
+    text-align: right;
+}
+
+.specify-form-buttons input {
+    margin-right: 10px;
 }
 
 textarea.specify-field {

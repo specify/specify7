@@ -75,9 +75,11 @@ define([
                 populateForm(form, self.model);
                 self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                     form.find('.specify-form-header').remove();
+
+                var buttons = $('<div class="specify-form-buttons">').appendTo(form);
                 self.$el.append(form);
-                self.saveBtn && self.saveBtn.render().$el.appendTo(self.el);
-                self.deleteBtn && self.deleteBtn.render().$el.appendTo(self.el);
+                self.saveBtn && self.saveBtn.render().$el.appendTo(buttons);
+                self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
                 self.setTitle();
             });
             return self;
