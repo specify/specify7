@@ -97,11 +97,23 @@ def load_datamodel():
 
     datamodel = Datamodel()
     datamodel.tables = [make_table(tabledef) for tabledef in datamodeldef.findall('table')]
+    add_collectingevents_to_locality(datamodel)
 
     flag_dependent_fields(datamodel)
     flag_system_tables(datamodel)
 
     return datamodel
+
+def add_collectingevents_to_locality(datamodel):
+    rel = Relationship()
+    rel.name = 'collectingEvents'
+    rel.type = 'one-to-many'
+    rel.required = False
+    rel.relatedModelName = 'collectingEvent'
+    rel.otherSideName = 'locality'
+
+    datamodel.get_table('collectingevent').get_field('locality').otherSideName = 'collectingEvents'
+    datamodel.get_table('locality').relationships.append(rel)
 
 def flag_dependent_fields(datamodel):
     for name in dependent_fields:

@@ -2,17 +2,6 @@ from django.db.models import F
 
 from .related import RelatedSearch
 
-class ColObjCollectors(RelatedSearch):
-    id = 5
-    definition = 'Collectionobject.collectingevent.collectors.agent'
-    distinct = True
-    columns = [
-        'catalognumber',
-        'catalogeddate',
-        'collectingevent.startdate',
-        'collectingevent.collectors.agent.lastname',
-        ]
-
 class CollObjToDeterminer(RelatedSearch):
     id = 1
     definition = 'Collectionobject.determinations.determiner'
@@ -55,6 +44,17 @@ class GeoToTaxon(RelatedSearch):
     columns = [
         'collectionobjects.determinations.taxon.fullname',
         'locality.geography.fullname',
+        ]
+
+class ColObjCollectors(RelatedSearch):
+    id = 5
+    definition = 'Collectionobject.collectingevent.collectors.agent'
+    distinct = True
+    columns = [
+        'catalognumber',
+        'catalogeddate',
+        'collectingevent.startdate',
+        'collectingevent.collectors.agent.lastname',
         ]
 
 class AcceptedTaxon(RelatedSearch):
@@ -126,16 +126,16 @@ class CEToCO(RelatedSearch):
         'enddate',
         ]
 
-# class LocToCo(RelatedSearch):
-#     id = 29
-#     definition = 'Locality.collectingevents.collectionobjects'
-#     columns = [
-#         'collectingevent.collectionobjects.catalognumber',
-#         'collectingevent.startdate',
-#         'localityname',
-#         'latitude1',
-#         'longitude1',
-#         ]
+class LocToCo(RelatedSearch):
+    id = 29
+    definition = 'Locality.collectingevents.collectionobjects'
+    columns = [
+        'collectingevents.collectionobjects.catalognumber',
+        'collectingevents.startdate',
+        'localityname',
+        'latitude1',
+        'longitude1',
+        ]
 
 class AccessionToCo(RelatedSearch):
     id = 31
@@ -222,22 +222,22 @@ class AgentExchangeOut(RelatedSearch):
         'agentsentto.abbreviation'
         ]
 
-# class GeographyCE(RelatedSearch):
-#     id = 40
-#     definition = 'Geography.localities.collectingevents'
-#     columns = [
-#         'localities.collectingevents.startdate',
-#         'localities.collectingevents.stationfieldnumber',
-#         'fullname'
-#         ]
+class GeographyCE(RelatedSearch):
+    id = 40
+    definition = 'Geography.localities.collectingevents'
+    columns = [
+        'localities.collectingevents.startdate',
+        'localities.collectingevents.stationfieldnumber',
+        'fullname'
+        ]
 
-# class GeographyCO(RelatedSearch):
-#     id = 41
-#     definition = 'Geography.localities.collectingevents.collectionobjects'
-#     columns = [
-#         'localities.collectingevents.collectionobjects.catalognumber',
-#         'fullname'
-#         ]
+class GeographyCO(RelatedSearch):
+    id = 41
+    definition = 'Geography.localities.collectingevents.collectionobjects'
+    columns = [
+        'localities.collectingevents.collectionobjects.catalognumber',
+        'fullname'
+        ]
 
 class GiftCO(RelatedSearch):
     id = 42
