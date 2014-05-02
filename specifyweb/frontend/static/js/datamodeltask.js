@@ -32,7 +32,6 @@ define([
         render: function() {
             var self = this, model = schema.getModel(self.options.model);
             self.$el.append('<h2>' + model.name + '</h2>');
-            self.$el.append(attrsToDl(model.node.get(0)));
             var table = $('<table>').appendTo(self.el);
             _(model.getAllFields()).each(function(field) {
                 var tr = $('<tr>');
@@ -43,7 +42,6 @@ define([
                     tr.append('<td><a class="intercept-navigation" href="../' + related.name.toLowerCase() + '/">'
                               + related.name + '</a></td>');
                 } else tr.append('<td>');
-                field.node && $('<td>').append(attrsToDl(field.node.get(0))).appendTo(tr);
                 table.append(tr);
             });
             return this;
