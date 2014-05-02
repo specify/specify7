@@ -193,11 +193,12 @@ def related_search(request):
 
         terms = parse_search_str(request.specify_collection, request.GET['q'])
         qs = build_queryset(searchtable, terms, request.specify_collection)
-        related_qss.append(rs.do_search(qs,
-                                    offset=int(request.GET.get('offset', 0)),
-                                    limit=int(request.GET.get('limit', 20))))
+        related_qss.append(rs.do_search(qs))
+                           
+    final_result = related_search.final_result(related_qss,
+                                               offset=int(request.GET.get('offset', 0)),
+                                               limit=int(request.GET.get('limit', 20)))
 
-    final_result = related_search.final_result(related_qss)
     return HttpResponse(toJson(final_result), content_type='application/json')
 
 @require_GET

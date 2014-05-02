@@ -18,9 +18,11 @@ class RelatedSearch(object):
         return [cls(defn) for defn in cls.definitions]
 
     @classmethod
-    def final_result(cls, querysets):
+    def final_result(cls, querysets, offset, limit):
         total_count = sum(qs.count() for qs in querysets)
-        results = sum((list(qs) for qs in querysets), [])
+        results = [item
+                   for qs in querysets
+                   for item in qs[offset:offset+limit]]
         data = {
             'definition': cls.def_as_dict(),
             'totalCount': total_count,
@@ -84,9 +86,9 @@ class RelatedSearch(object):
         fields.append('id')
         return queryset.values_list(*fields)
 
-    def do_search(self, queryset, offset, limit):
+    def do_search(self, queryset):
         rqs = self.build_related_queryset(queryset)
-        rqs = self.to_values(rqs).order_by('id')
-        return rqs[offset:offset+limit]
+        return self.to_values(rqs).order_by('id')
+
 
 
