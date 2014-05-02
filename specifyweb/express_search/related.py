@@ -13,8 +13,38 @@ class RelatedSearch(object):
     filters = {}
     excludes = {}
 
-    def root(self):
-        return getattr(models, self.definition.split('.')[0])
+    @classmethod
+    def get_all(cls):
+        return [cls(defn) for defn in cls.definitions]
+
+    @classmethod
+    def final_result(cls, querysets):
+        total_count = sum(qs.count() for qs in querysets)
+        results = sum((list(qs) for qs in querysets), [])
+        data = {
+            'definition': cls.def_as_dict(),
+            'totalCount': total_count,
+            'results': results
+            }
+        if settings.DEBUG:
+            data['sqls'] = [unicode(qs.query) for qs in querysets
+                            if hasattr(qs, 'query')]
+        return data
+
+    @classmethod
+    def def_as_dict(cls):
+        return {
+            'name': cls.__name__,
+            'root': cls.root().__name__,
+            'columns': cls.columns,
+            }
+
+    @classmethod
+    def root(cls):
+        return getattr(models, cls.definitions[0].split('.')[0])
+
+    def __init__(self, definition):
+        self.definition = definition
 
     def pivot_path(self):
         return '__'.join( self.definition.split('.')[1:] )
@@ -54,28 +84,9 @@ class RelatedSearch(object):
         fields.append('id')
         return queryset.values_list(*fields)
 
-    def def_as_dict(self):
-        return {
-            'name': self.__class__.__name__,
-            'root': self.root().__name__,
-            'columns': self.columns,
-            }
-
-    def result_as_dict(self, total_count, queryset):
-        data = {
-            'definition': self.def_as_dict(),
-            'totalCount': total_count,
-            'results': list(queryset),
-            }
-        if settings.DEBUG and hasattr(queryset, 'query'):
-            data['sql'] = unicode(queryset.query)
-        return data
-
     def do_search(self, queryset, offset, limit):
         rqs = self.build_related_queryset(queryset)
-        results = self.to_values(rqs).order_by('id')
-        total_count = results.count()
-        results = results[offset:offset+limit]
-        return self.result_as_dict(total_count, results)
+        rqs = self.to_values(rqs).order_by('id')
+        return rqs[offset:offset+limit]
 
 

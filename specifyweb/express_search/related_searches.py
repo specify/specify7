@@ -4,7 +4,7 @@ from .related import RelatedSearch
 
 class CollObjToDeterminer(RelatedSearch):
     id = 1
-    definition = 'Collectionobject.determinations.determiner'
+    definitions = ['Collectionobject.determinations.determiner']
     distinct = True
     filters = { 'determinations.iscurrent': True }
     columns = [
@@ -17,7 +17,7 @@ class CollObjToDeterminer(RelatedSearch):
 
 class CollObToLocality(RelatedSearch):
     id = 2
-    definition = 'Collectingevent.locality'
+    definitions = ['Collectingevent.locality']
     columns = [
         'locality.localityname',
         'startdate',
@@ -28,7 +28,7 @@ class CollObToLocality(RelatedSearch):
 
 class CollObject(RelatedSearch):
     id = 3
-    definition = 'Collectionobject.determinations.taxon'
+    definitions = ['Collectionobject.determinations.taxon']
     distinct = True
     columns = [
         'catalognumber',
@@ -38,7 +38,7 @@ class CollObject(RelatedSearch):
 
 class GeoToTaxon(RelatedSearch):
     id = 4
-    definition = 'Collectingevent.collectionobjects.determinations.taxon'
+    definitions = ['Collectingevent.collectionobjects.determinations.taxon']
     distinct = True
     filters = { 'collectionobjects.determinations.iscurrent': True }
     columns = [
@@ -48,7 +48,7 @@ class GeoToTaxon(RelatedSearch):
 
 class ColObjCollectors(RelatedSearch):
     id = 5
-    definition = 'Collectionobject.collectingevent.collectors.agent'
+    definitions = ['Collectionobject.collectingevent.collectors.agent']
     distinct = True
     columns = [
         'catalognumber',
@@ -59,7 +59,7 @@ class ColObjCollectors(RelatedSearch):
 
 class AcceptedTaxon(RelatedSearch):
     id = 6
-    definition = 'Taxon.acceptedtaxon'
+    definitions = ['Taxon.acceptedtaxon']
     columns = [
         'fullname',
         'acceptedtaxon.fullname',
@@ -67,7 +67,7 @@ class AcceptedTaxon(RelatedSearch):
 
 class SynonymCollObjs(RelatedSearch):
     id = 7
-    definition = 'Collectionobject.determinations.taxon'
+    definitions = ['Collectionobject.determinations.taxon']
     distinct = True
     excludes = { 'determinations.taxon': F('determinations__preferredtaxon') }
     columns = [
@@ -78,7 +78,7 @@ class SynonymCollObjs(RelatedSearch):
 
 class OtherSynsCollObjs(RelatedSearch):
     id = 9
-    definition = 'Collectionobject.determinations.preferredtaxon.acceptedchildren'
+    definitions = ['Collectionobject.determinations.preferredtaxon.acceptedchildren']
     distinct = True
     excludes = { 'determinations.preferredtaxon.acceptedchildren': F('determinations__preferredtaxon') }
     columns = [
@@ -90,7 +90,7 @@ class OtherSynsCollObjs(RelatedSearch):
 
 class CurrCollObject(RelatedSearch):
     id = 10
-    definition = 'Collectionobject.determinations.taxon'
+    definitions = ['Collectionobject.determinations.taxon']
     distinct = True
     filters = { 'determinations.iscurrent': True }
     columns = [
@@ -101,7 +101,7 @@ class CurrCollObject(RelatedSearch):
 
 class AgentFromAgentVariant(RelatedSearch):
     id = 11
-    definition = 'Agentvariant.agent'
+    definitions = ['Agentvariant.agent']
     columns = [
         'name',
         'agent.lastname',
@@ -110,7 +110,7 @@ class AgentFromAgentVariant(RelatedSearch):
 
 class LocalityAlias(RelatedSearch):
     id = 12
-    definition = 'Locality'
+    definitions = ['Locality']
     filters = { 'localitynamealiass.isnull': False }
     columns = [
         'localityname',
@@ -119,7 +119,7 @@ class LocalityAlias(RelatedSearch):
 
 class CEToCO(RelatedSearch):
     id = 13
-    definition = 'Collectingevent.collectionobjects'
+    definitions = ['Collectingevent.collectionobjects']
     columns = [
         'collectionobjects.catalognumber',
         'startdate',
@@ -128,7 +128,7 @@ class CEToCO(RelatedSearch):
 
 class LocToCo(RelatedSearch):
     id = 29
-    definition = 'Locality.collectingevents.collectionobjects'
+    definitions = ['Locality.collectingevents.collectionobjects']
     columns = [
         'collectingevents.collectionobjects.catalognumber',
         'collectingevents.startdate',
@@ -139,7 +139,7 @@ class LocToCo(RelatedSearch):
 
 class AccessionToCo(RelatedSearch):
     id = 31
-    definition = 'Accession.collectionobjects.determinations.taxon'
+    definitions = ['Accession.collectionobjects.determinations.taxon']
     distinct = True
     filters = { 'collectionobjects.determinations.iscurrent': True }
     columns = [
@@ -150,7 +150,7 @@ class AccessionToCo(RelatedSearch):
 
 class AccessionToAgent(RelatedSearch):
     id = 32
-    definition = 'Accession.accessionagents.agent'
+    definitions = ['Accession.accessionagents.agent']
     columns = [
         'accessionagents.agent.lastname',
         'accessionagents.agent.firstname',
@@ -160,7 +160,7 @@ class AccessionToAgent(RelatedSearch):
 
 class BorrowToAgent(RelatedSearch):
     id = 33
-    definition = 'Borrow.borrowagents.agent'
+    definitions = ['Borrow.borrowagents.agent']
     columns = [
         'invoicenumber',
         'borrowagents.agent.lastname',
@@ -170,7 +170,7 @@ class BorrowToAgent(RelatedSearch):
 
 class AppraisalToAgent(RelatedSearch):
     id = 34
-    definition = 'Appraisal.agent'
+    definitions = ['Appraisal.agent']
     columns = [
         'appraisalnumber',
         'agent.lastname',
@@ -179,7 +179,7 @@ class AppraisalToAgent(RelatedSearch):
 
 class GeoTimePeriodToCO(RelatedSearch):
     id = 35
-    definition = 'Geologictimeperiod.chronosstratspaleocontext.collectionobjects'
+    definitions = ['Geologictimeperiod.chronosstratspaleocontext.collectionobjects']
     columns = [
         'fullname',
         'chronosstratspaleocontext.collectionobjects.catalognumber'
@@ -187,7 +187,7 @@ class GeoTimePeriodToCO(RelatedSearch):
 
 class CollEventToCollectors(RelatedSearch):
     id = 36
-    definition = 'Collectingevent.collectors.agent'
+    definitions = ['Collectingevent.collectors.agent']
     columns = [
         'collectors.agent.lastname',
         'collectors.agent.firstname',
@@ -197,7 +197,7 @@ class CollEventToCollectors(RelatedSearch):
 
 # class CollTripCollEvent(RelatedSearch):
 #     id = 37
-#     definition = 'Collectingevent.collectingtrip'
+#     definitions = ['Collectingevent.collectingtrip']
 #     columns = [
 #         'stationfieldnumber',
 #         'collectingtrip.collectingtripname',
@@ -206,7 +206,7 @@ class CollEventToCollectors(RelatedSearch):
 
 class AgentExchangeIn(RelatedSearch):
     id = 38
-    definition = 'Exchangein.agentreceivedfrom'
+    definitions = ['Exchangein.agentreceivedfrom']
     columns = [
         'exchangedate',
         'descriptionofmaterial',
@@ -215,7 +215,7 @@ class AgentExchangeIn(RelatedSearch):
 
 class AgentExchangeOut(RelatedSearch):
     id = 39
-    definition = 'Exchangeout.agentsentto'
+    definitions = ['Exchangeout.agentsentto']
     columns = [
         'exchangedate',
         'descriptionofmaterial',
@@ -224,7 +224,7 @@ class AgentExchangeOut(RelatedSearch):
 
 class GeographyCE(RelatedSearch):
     id = 40
-    definition = 'Geography.localities.collectingevents'
+    definitions = ['Geography.localities.collectingevents']
     columns = [
         'localities.collectingevents.startdate',
         'localities.collectingevents.stationfieldnumber',
@@ -233,7 +233,7 @@ class GeographyCE(RelatedSearch):
 
 class GeographyCO(RelatedSearch):
     id = 41
-    definition = 'Geography.localities.collectingevents.collectionobjects'
+    definitions = ['Geography.localities.collectingevents.collectionobjects']
     columns = [
         'localities.collectingevents.collectionobjects.catalognumber',
         'fullname'
@@ -241,7 +241,7 @@ class GeographyCO(RelatedSearch):
 
 class GiftCO(RelatedSearch):
     id = 42
-    definition = 'Gift.giftpreparations.preparation.collectionobject'
+    definitions = ['Gift.giftpreparations.preparation.collectionobject']
     columns = [
         'giftpreparations.preparation.collectionobject.catalognumber',
         'giftpreparations.preparation.preptype.name',
@@ -250,7 +250,7 @@ class GiftCO(RelatedSearch):
 
 class GiftAgent(RelatedSearch):
     id = 43
-    definition = 'Gift.giftagents.agent'
+    definitions = ['Gift.giftagents.agent']
     columns = [
         'giftagents.agent.lastname',
         'giftagents.agent.firstname',
@@ -260,7 +260,7 @@ class GiftAgent(RelatedSearch):
 
 class LoanCO(RelatedSearch):
     id = 44
-    definition = 'Loan.loanpreparations.preparation.collectionobject'
+    definitions = ['Loan.loanpreparations.preparation.collectionobject']
     columns = [
         'loanpreparations.preparation.collectionobject.catalognumber',
         'loanpreparations.preparation.preptype.name',
@@ -269,7 +269,7 @@ class LoanCO(RelatedSearch):
 
 class LoanAgent(RelatedSearch):
     id = 45
-    definition = 'Loan.loanagents.agent'
+    definitions = ['Loan.loanagents.agent']
     columns = [
         'loanagents.agent.lastname',
         'loanagents.agent.firstname',
@@ -279,7 +279,7 @@ class LoanAgent(RelatedSearch):
 
 class LithoStratToCO(RelatedSearch):
     id = 46
-    definition = 'Lithostrat.paleocontexts.collectionobjects'
+    definitions = ['Lithostrat.paleocontexts.collectionobjects']
     columns = [
         'paleocontexts.collectionobjects.catalognumber',
         'fullname'
@@ -287,7 +287,7 @@ class LithoStratToCO(RelatedSearch):
 
 class PermitToCO(RelatedSearch):
     id = 47
-    definition = 'Permit.accessionauthorizations.accession.collectionobjects'
+    definitions = ['Permit.accessionauthorizations.accession.collectionobjects']
     columns = [
         'accessionauthorizations.accession.collectionobjects.catalognumber',
         'permitnumber'
@@ -295,7 +295,7 @@ class PermitToCO(RelatedSearch):
 
 class PermitIssuedToAgent(RelatedSearch):
     id = 48
-    definition = 'Permit.issuedto'
+    definitions = ['Permit.issuedto']
     columns = [
         'issuedto.lastname',
         'issuedto.firstname',
@@ -304,7 +304,7 @@ class PermitIssuedToAgent(RelatedSearch):
 
 class PermitIssuedByAgent(RelatedSearch):
     id = 49
-    definition = 'Permit.issuedby'
+    definitions = ['Permit.issuedby']
     columns = [
         'issuedby.lastname',
         'issuedby.firstname',
@@ -313,7 +313,7 @@ class PermitIssuedByAgent(RelatedSearch):
 
 # class ProjectCO(RelatedSearch):
 #     id = 50
-#     definition = 'Project.collectionobjects'
+#     definitions = ['Project.collectionobjects']
 #     columns = [
 #         'collectionobjects.catalognumber',
 #         'projectname',
@@ -322,7 +322,7 @@ class PermitIssuedByAgent(RelatedSearch):
 
 class ProjectAgent(RelatedSearch):
     id = 51
-    definition = 'Project.agent'
+    definitions = ['Project.agent']
     columns = [
         'agent.lastname',
         'agent.firstname',
@@ -332,7 +332,7 @@ class ProjectAgent(RelatedSearch):
 
 class RepoAgreeAgent(RelatedSearch):
     id = 52
-    definition = 'Repositoryagreement.originator'
+    definitions = ['Repositoryagreement.originator']
     columns = [
         'originator.lastname',
         'originator.firstname',
@@ -341,7 +341,7 @@ class RepoAgreeAgent(RelatedSearch):
 
 class StorageCO(RelatedSearch):
     id = 53
-    definition = 'Storage.preparations.collectionobject'
+    definitions = ['Storage.preparations.collectionobject']
     columns = [
         'preparations.collectionobject.catalognumber',
         'name',
@@ -351,7 +351,7 @@ class StorageCO(RelatedSearch):
 class TaxCollObject(RelatedSearch):
     id = 54
     distinct = True
-    definition = 'Collectionobject.determinations.taxon'
+    definitions = ['Collectionobject.determinations.taxon']
     columns = [
         'catalognumber',
         'catalogeddate',
@@ -361,7 +361,7 @@ class TaxCollObject(RelatedSearch):
 
 # class ColObjToContainer(RelatedSearch):
 #     id = 55
-#     definition = 'Collectionobject.container'
+#     definitions = ['Collectionobject.container']
 #     columns = [
 #         'container.type',
 #         'container.name',
@@ -370,7 +370,7 @@ class TaxCollObject(RelatedSearch):
 
 # class ContainerToKids(RelatedSearch):
 #     id = 56
-#     definition = "Collectionobject.container"
+#     definitions = ["Collectionobject.container"]
 #     columns = [
 #         'catalognumber',
 #         'catalogeddate',
@@ -379,7 +379,7 @@ class TaxCollObject(RelatedSearch):
 
 # class ContainerToContainerKids(RelatedSearch):
 #     id = 57
-#     definition = "Container.children"
+#     definitions = ["Container.children"]
 #     columns = [
 #         'name',
 #         'children.name'
@@ -387,7 +387,7 @@ class TaxCollObject(RelatedSearch):
 
 class ExchangeInCO(RelatedSearch):
     id = 58
-    definition = 'Exchangein.exchangeinpreps.preparation.collectionobject'
+    definitions = ['Exchangein.exchangeinpreps.preparation.collectionobject']
     columns = [
         'exchangeinpreps.preparation.collectionobject.catalognumber',
         'exchangeinpreps.preparation.preptype.name',
@@ -396,7 +396,7 @@ class ExchangeInCO(RelatedSearch):
 
 class ExchangeOutCO(RelatedSearch):
     id = 59
-    definition = 'Exchangeout.exchangeoutpreps.preparation.collectionobject'
+    definitions = ['Exchangeout.exchangeoutpreps.preparation.collectionobject']
     columns = [
         'exchangeoutpreps.preparation.collectionobject.catalognumber',
         'exchangeoutpreps.preparation.preptype.name',

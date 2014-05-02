@@ -181,20 +181,24 @@ def search(request):
 def related_search(request):
     from . import related_searches
     express_search_config = get_express_search_config(request)
-    rs = getattr(related_searches, request.GET['name'])()
-    model = rs.pivot()
-    for searchtable in express_search_config.findall('tables/searchtable'):
-        tablename = searchtable.find('tableName').text.capitalize()
-        if tablename == model.__name__: break
-    else:
-        raise Exception('no matching primary search for related search: ' + rs)
+    related_search = getattr(related_searches, request.GET['name'])
+    related_qss = []
+    for rs in related_search.get_all():
+        model = rs.pivot()
+        for searchtable in express_search_config.findall('tables/searchtable'):
+            tablename = searchtable.find('tableName').text.capitalize()
+            if tablename == model.__name__: break
+        else:
+            continue
 
-    terms = parse_search_str(request.specify_collection, request.GET['q'])
-    qs = build_queryset(searchtable, terms, request.specify_collection)
-    results = rs.do_search(qs,
-                           offset=int(request.GET.get('offset', 0)),
-                           limit=int(request.GET.get('limit', 20)))
-    return HttpResponse(toJson(results), content_type='application/json')
+        terms = parse_search_str(request.specify_collection, request.GET['q'])
+        qs = build_queryset(searchtable, terms, request.specify_collection)
+        related_qss.append(rs.do_search(qs,
+                                    offset=int(request.GET.get('offset', 0)),
+                                    limit=int(request.GET.get('limit', 20))))
+
+    final_result = related_search.final_result(related_qss)
+    return HttpResponse(toJson(final_result), content_type='application/json')
 
 @require_GET
 @login_required
