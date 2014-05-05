@@ -118,6 +118,26 @@ def ephemeral(request):
                    field_specs, limit, offset)
 
 def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset):
+    query, order_by_exprs, deferreds = build_query(session, collection, tableid, field_specs)
+
+    if distinct:
+        query = query.distinct()
+    count = query.count()
+    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
+
+    if not count_only:
+        results = [[deferred(value) if deferred else value
+                    for value, deferred in zip(row, deferreds)]
+                   for row in query] if any(deferreds) else list(query)
+    else:
+        results = []
+
+    session.close()
+
+    data = {'count': count, 'results': results}
+    return HttpResponse(toJson(data), content_type='application/json')
+
+def build_query(session, collection, tableid, field_specs):
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
@@ -139,19 +159,6 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
-    if distinct:
-        query = query.distinct()
-    count = query.count()
-    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
 
-    if not count_only:
-        results = [[deferred(value) if deferred else value
-                    for value, deferred in zip(row, deferreds)]
-                   for row in query] if any(deferreds) else list(query)
-    else:
-        results = []
+    return query, order_by_exprs, deferreds
 
-    session.close()
-
-    data = {'count': count, 'results': results}
-    return HttpResponse(toJson(data), content_type='application/json')

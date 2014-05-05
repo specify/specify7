@@ -134,15 +134,19 @@ def parse_search_str(collection, search_str):
 
     return map(TermForCollection.make_term, terms)
 
-def build_query(session, searchtable, terms, collection):
+def build_query(session, searchtable, terms, collection, as_scalar=False):
     table = datamodel.get_table(searchtable.find('tableName').text)
     model = getattr(models, table.name)
+    id_field = getattr(model, table.idFieldName)
 
     fields = [table.get_field(fn.text)
               for fn in searchtable.findall('.//searchfield/fieldName')]
 
-    q_fields = [getattr(model, table.get_field(fn.text).name)
-                for fn in searchtable.findall('.//displayfield/fieldName')]
+    q_fields = [] if as_scalar else [
+        getattr(model, table.get_field(fn.text).name)
+        for fn in searchtable.findall('.//displayfield/fieldName')]
+
+    q_fields.append(id_field)
 
     filters = [fltr for fltr in [
                 t.create_filter(table, f) for f in fields for t in terms]
@@ -150,9 +154,9 @@ def build_query(session, searchtable, terms, collection):
 
     if len(filters) > 0:
         reduced = reduce(or_, filters)
-        id_field = getattr(model, table.idFieldName)
-        query = session.query(*q_fields).filter(reduced).add_column(id_field).order_by(id_field)
-        return filter_by_collection(model, query, collection)
+        query = session.query(*q_fields).filter(reduced)
+        query = filter_by_collection(model, query, collection)
+        return query.as_scalar() if as_scalar else query.order_by(id_field)
 
     logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
     return None
@@ -201,52 +205,55 @@ def related_search(request):
     from . import related_searches
     express_search_config = get_express_search_config(request)
     related_search = getattr(related_searches, request.GET['name'])
-    related_qss = []
+    session = Session()
+    
+    related_queries = []
     for rs in related_search.get_all():
-        model = rs.pivot()
-        for searchtable in express_search_config.findall('tables/searchtable'):
-            tablename = searchtable.find('tableName').text.capitalize()
-            if tablename == model.__name__: break
-        else:
-            continue
+        pivot = rs.pivot()
+        searchtable = (searchtable
+                       for searchtable in express_search_config.findall('tables/searchtable')
+                       if searchtable.find('tableName').text == pivot.name)
+        
+        searchtable = next(searchtable, None)
+        if searchtable is not None:
+            terms = parse_search_str(request.specify_collection, request.GET['q'])
+            query = build_query(session, searchtable, terms, request.specify_collection, as_scalar=True)
+            related_queries.append(rs.build_related_query(session, query, request.specify_collection))
 
-        terms = parse_search_str(request.specify_collection, request.GET['q'])
-        qs = build_queryset(searchtable, terms, request.specify_collection)
-        related_qss.append(rs.do_search(qs))
-
-    final_result = related_search.final_result(related_qss,
+    final_result = related_search.final_result(related_queries,
                                                offset=int(request.GET.get('offset', 0)),
                                                limit=int(request.GET.get('limit', 20)))
 
+    session.close()
     return HttpResponse(toJson(final_result), content_type='application/json')
 
-@require_GET
-@login_required
-def querycbx_search(request, model):
-    model = get_model_or_404(model)
-    fields = [fieldname
-              for fieldname in request.GET
-              if fieldname not in ('limit', 'offset')]
+# @require_GET
+# @login_required
+# def querycbx_search(request, model):
+#     model = get_model_or_404(model)
+#     fields = [fieldname
+#               for fieldname in request.GET
+#               if fieldname not in ('limit', 'offset')]
 
-    filters = []
-    for field in fields:
-        filters_for_field = []
-        terms = parse_search_str(request.specify_collection, request.GET[field])
-        logger.debug("found terms: %s for %s", terms, field)
-        for term in terms:
-            filter_for_term = term.create_filter(model._meta.get_field(field))
-            if filter_for_term is not None:
-                filters_for_field.append(filter_for_term)
+#     filters = []
+#     for field in fields:
+#         filters_for_field = []
+#         terms = parse_search_str(request.specify_collection, request.GET[field])
+#         logger.debug("found terms: %s for %s", terms, field)
+#         for term in terms:
+#             filter_for_term = term.create_filter(model._meta.get_field(field))
+#             if filter_for_term is not None:
+#                 filters_for_field.append(filter_for_term)
 
-        logger.debug("filtering %s with %s", field, filters_for_field)
-        if len(filters_for_field) > 0:
-            filters.append(reduce(or_, filters_for_field))
+#         logger.debug("filtering %s with %s", field, filters_for_field)
+#         if len(filters_for_field) > 0:
+#             filters.append(reduce(or_, filters_for_field))
 
-    if len(filters) > 0:
-        combined = reduce(and_, filters)
-        qs = filter_by_collection(model.objects.filter(combined), request.specify_collection, strict=False)
-    else:
-        qs = model.objects.none()
+#     if len(filters) > 0:
+#         combined = reduce(and_, filters)
+#         qs = filter_by_collection(model.objects.filter(combined), request.specify_collection, strict=False)
+#     else:
+#         qs = model.objects.none()
 
-    results = [obj_to_data(obj) for obj in qs[:10]]
-    return HttpResponse(toJson(results), content_type='application/json')
+#     results = [obj_to_data(obj) for obj in qs[:10]]
+#     return HttpResponse(toJson(results), content_type='application/json')

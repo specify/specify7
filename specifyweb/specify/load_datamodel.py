@@ -38,11 +38,18 @@ class Table(object):
     def is_attachment_jointable(self):
         return self.name.endswith('Attachment') and self.name != 'Attachment'
 
+    def __repr__(self):
+        return "<SpecifyTable: %s>" % self.name
+
 
 class Field(object):
-    pass
+    is_relationship = False
+    
+    def __repr__(self):
+        return "<SpecifyField: %s>" % self.name
 
 class Relationship(object):
+    is_relationship = True
     dependent = False
 
 
