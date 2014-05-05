@@ -41,7 +41,7 @@ div.specify-view-content-container,
 .specify-form-header > a,
 .specify-subview-header > a {
     margin-left: 1em;
-    font-size: 0.5em;
+    font-size: 0.8em;
 }
 
 .specify-form-header > span.recordset-prev,
@@ -553,8 +553,8 @@ div.results div {
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 .specify-attachment-thumbnail {
