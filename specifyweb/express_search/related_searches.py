@@ -1,6 +1,6 @@
-from django.db.models import F
+from specifyweb.stored_queries.query_ops import QueryOps
 
-from .related import RelatedSearch
+from .related import RelatedSearch, F
 
 class CollObjToDeterminer(RelatedSearch):
     id = 1
@@ -11,7 +11,7 @@ class CollObjToDeterminer(RelatedSearch):
         'Collectionobject'
         ]
     distinct = True
-    filters = { 'determinations.iscurrent': True }
+    filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
         'determinations.taxon.fullname',
         'determinations.taxon.commonname',
@@ -54,7 +54,7 @@ class GeoToTaxon(RelatedSearch):
         'Collectionobject.collectingevent.locality.geography'
         ]
     distinct = True
-    filters = { 'determinations.iscurrent': True }
+    filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
         'determinations.taxon.fullname',
         'collectingevent.locality.geography.fullname',
@@ -89,7 +89,7 @@ class SynonymCollObjs(RelatedSearch):
         'Collectionobject.determinations.taxon'
         ]
     distinct = True
-    excludes = { 'determinations.taxon': F('determinations__preferredtaxon') }
+    excludes = [['determinations.taxon.taxonid', QueryOps.op_equals, F('determinations.preferredtaxon.taxonid')]]
     columns = [
         'catalognumber',
         'determinations.taxon.fullname',
@@ -102,7 +102,7 @@ class OtherSynsCollObjs(RelatedSearch):
         'Collectionobject.determinations.preferredtaxon.acceptedchildren'
         ]
     distinct = True
-    excludes = { 'determinations.preferredtaxon.acceptedchildren': F('determinations__preferredtaxon') }
+    excludes = [['determinations.preferredtaxon.acceptedchildren', QueryOps.op_equals, F('determinations.preferredtaxon')]]
     columns = [
         'catalognumber',
         'determinations.taxon.fullname',
@@ -116,7 +116,7 @@ class CurrCollObject(RelatedSearch):
         'Collectionobject.determinations.taxon'
         ]
     distinct = True
-    filters = { 'determinations.iscurrent': True }
+    filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
         'catalognumber',
         'catalogeddate',
@@ -139,7 +139,6 @@ class LocalityAlias(RelatedSearch):
     definitions = [
         'Locality'
         ]
-    filters = { 'localitynamealiass.isnull': False }
     columns = [
         'localityname',
         'localitynamealiass.name'
@@ -175,7 +174,7 @@ class AccessionToCo(RelatedSearch):
         'Accession.collectionobjects.determinations.taxon'
         ]
     distinct = True
-    filters = { 'collectionobjects.determinations.iscurrent': True }
+    filters = [['collectionobjects.determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
         'collectionobjects.catalognumber',
         'collectionobjects.determinations.taxon.fullname',

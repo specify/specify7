@@ -12,51 +12,20 @@ from specifyweb.stored_queries.views import build_query
 
 logger = logging.getLogger(__name__)
 
-def dots2dunders(lookups):
-    return {k.replace('.', '__'): v
-            for k, v in lookups.items()}
+class F(str):
+    pass
 
-    
 class RelatedSearch(object):
-    __fielspec_std_vals = __display_fieldspecs = __root = None
+    __fielspec_template = None
+    __display_fieldspecs = None
+    __filter_fieldspecs = None
+    __root = None
 
     distinct = False
-    filters = {}
-    excludes = {}
+    filters = []
+    excludes = []
     definitions = None
     columns = None
-
-    @classmethod
-    def root(cls):
-        if cls.__root is None:
-            cls.__root = datamodel.get_table(cls.definitions[0].split('.')[0])
-        return cls.__root
-
-    @classmethod
-    def display_fieldspecs(cls):
-        if cls.__display_fieldspecs is None:
-            cls.__display_fieldspecs = [
-                FieldSpec(field_name=fieldname,
-                          join_path=joinpath,
-                          op_num=1,
-                          value="",
-                          display=True,
-                          **cls.fieldspec_std_vals())
-                for (fieldname, joinpath) in [cls.make_join_path(col.split('.'))
-                                              for col in cls.columns]
-                ]
-        return cls.__display_fieldspecs
-
-    @classmethod
-    def fieldspec_std_vals(cls):
-        if cls.__fielspec_std_vals is None:
-            cls.__fieldspec_std_vals = dict(
-                date_part=None,
-                root_table=getattr(models, cls.root().name),
-                is_relation=False,
-                negate=False,
-                sort_type=0)
-        return cls.__fieldspec_std_vals
 
     @classmethod
     def execute(cls, session, config, terms, collection, limit, offset):
@@ -81,6 +50,80 @@ class RelatedSearch(object):
                 'columns': cls.columns}}
 
     @classmethod
+    def root(cls):
+        if cls.__root is None:
+            cls.__root = datamodel.get_table(cls.definitions[0].split('.')[0])
+        return cls.__root
+
+    @classmethod
+    def display_fieldspecs(cls):
+        if cls.__display_fieldspecs is None:
+            cls.__display_fieldspecs = [
+                cls.fieldspec_template()._replace(
+                    field_name=fieldname,
+                    join_path=joinpath,
+                    op_num=1,
+                    value="",
+                    display=True)
+                for (fieldname, joinpath) in [cls.make_join_path(col.split('.'))
+                                              for col in cls.columns]
+            ]
+        return cls.__display_fieldspecs
+
+    @classmethod
+    def filter_fieldspecs(cls):
+        if cls.__filter_fieldspecs is None:
+            def process_filter(f, negate):
+                (field, op, val) = f
+                op_num = QueryOps.OPERATIONS.index(op.__name__)
+                value = cls.process_value(val)
+                return cls.make_join_path(field.split('.')) + (op_num, value, negate)
+
+            filters  = [process_filter(f, False) for f in cls.filters]
+            excludes = [process_filter(f, True) for f in cls.excludes]
+
+            cls.__filter_fieldspecs = [
+                cls.fieldspec_template()._replace(
+                    field_name=fieldname,
+                    join_path=joinpath,
+                    op_num=op_num,
+                    value=value,
+                    negate=negate,
+                    display=False)
+                for (fieldname, joinpath, op_num, value, negate)
+                in filters + excludes]
+
+        return cls.__filter_fieldspecs
+
+    @classmethod
+    def process_value(cls, val):
+        if not isinstance(val, F):
+            return val
+        fieldname, joinpath = cls.make_join_path(val.split('.'))
+        return cls.fieldspec_template()._replace(
+            field_name=fieldname,
+            join_path=joinpath,
+            op_num=1,
+            value="")
+
+
+    @classmethod
+    def fieldspec_template(cls):
+        if cls.__fielspec_template is None:
+            cls.__fieldspec_template = FieldSpec(
+                field_name=None,
+                date_part=None,
+                root_table=getattr(models, cls.root().name),
+                join_path=None,
+                is_relation=False,
+                op_num=None,
+                value=None,
+                negate=False,
+                display=False,
+                sort_type=0)
+        return cls.__fieldspec_template
+
+    @classmethod
     def make_join_path(cls, path):
         table = cls.root()
         logger.info("make_join_path from %s : %s" % (table, path))
@@ -88,7 +131,7 @@ class RelatedSearch(object):
         fieldname, join_path = None, []
 
         for element in path:
-            field = table.get_field(element)
+            field = table.get_field(element, strict=True)
             fieldname = field.name
             if field.is_relationship:
                 table = datamodel.get_table(field.relatedModelName)
@@ -104,19 +147,18 @@ class RelatedSearch(object):
         _, jp = self.make_join_path(self.definition.split('.')[1:])
         logger.debug('definition %s resulted in join path %s', self.definition, jp)
 
-        return FieldSpec(
+        return self.fieldspec_template()._replace(
             field_name=jp[-1][1]._id if jp else self.root().idFieldName,
             join_path=jp,
             op_num=QueryOps.OPERATIONS.index('op_in'),
             value=primary_query,
-            display=False,
-            **self.fieldspec_std_vals())
-                
+            display=False)
+
     def pivot(self):
         pivot = self.root()
         path = self.definition.split('.')[1:]
         while len(path):
-            field = pivot.get_field(path[0])
+            field = pivot.get_field(path[0], strict=True)
             pivot = datamodel.get_table(field.relatedModelName)
             path = path[1:]
         return pivot
@@ -130,13 +172,15 @@ class RelatedSearch(object):
                 break
         else:
             return None
-        
+
         primary_query = build_primary_query(session, searchtable, terms, collection, as_scalar=True)
 
         if primary_query is None:
             return None
 
-        field_specs = self.display_fieldspecs() + [self.make_fieldspec(primary_query)]
+        field_specs = (self.display_fieldspecs() +
+                       self.filter_fieldspecs() +
+                       [self.make_fieldspec(primary_query)])
 
         related_query, _, _ = build_query(session, collection, self.root().tableId, field_specs)
 
@@ -144,7 +188,3 @@ class RelatedSearch(object):
             related_query = related_query.distinct()
 
         return related_query
-        # filters = dots2dunders(self.filters)
-        # excludes = dots2dunders(self.excludes)
-        # return relatedqs.filter(**filters).exclude(**excludes)
-
