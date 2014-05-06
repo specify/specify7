@@ -78,10 +78,10 @@ define([
             var table = this.$('table');
             _.each(results, function(values) {
                 var row = $('<tr>').appendTo(table);
-                var resource = new this.model.Resource({id: _.last(values)});
+                var resource = new this.model.Resource({id: values[0]});
                 var href = resource.viewUrl();
                 _.each(this.displayFields, function(field, i) {
-                    var value = fieldformat(field, values[i]);
+                    var value = fieldformat(field, values[i+1]);
                     row.append($('<td>').append($('<a>', {
                         href: href,
                         "class": "intercept-navigation express-search-result"
