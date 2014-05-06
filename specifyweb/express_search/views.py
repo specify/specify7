@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
 
+def get_express_search_config(request):
+    resource, __ = get_app_resource(request.specify_collection,
+                                    request.specify_user,
+                                    'ExpressSearchConfig')
+    return ElementTree.XML(resource)
 
 class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_integer as_date")):
     discipline = None
@@ -134,7 +139,7 @@ def parse_search_str(collection, search_str):
 
     return map(TermForCollection.make_term, terms)
 
-def build_query(session, searchtable, terms, collection, as_scalar=False):
+def build_primary_query(session, searchtable, terms, collection, as_scalar=False):
     table = datamodel.get_table(searchtable.find('tableName').text)
     model = getattr(models, table.name)
     id_field = getattr(model, table.idFieldName)
@@ -161,12 +166,6 @@ def build_query(session, searchtable, terms, collection, as_scalar=False):
     logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
     return None
 
-def get_express_search_config(request):
-    resource, __ = get_app_resource(request.specify_collection,
-                                    request.specify_user,
-                                    'ExpressSearchConfig')
-    return ElementTree.XML(resource)
-
 @require_GET
 @login_required
 def search(request):
@@ -176,7 +175,7 @@ def search(request):
     session = Session()
 
     def do_search(tablename, searchtable):
-        query = build_query(session, searchtable, terms, request.specify_collection)
+        query = build_primary_query(session, searchtable, terms, request.specify_collection)
         if query is None:
             return dict(totalCount=0, results=[])
 
@@ -203,29 +202,21 @@ def search(request):
 @login_required
 def related_search(request):
     from . import related_searches
-    express_search_config = get_express_search_config(request)
     related_search = getattr(related_searches, request.GET['name'])
-    session = Session()
-    
-    related_queries = []
-    for rs in related_search.get_all():
-        pivot = rs.pivot()
-        searchtable = (searchtable
-                       for searchtable in express_search_config.findall('tables/searchtable')
-                       if searchtable.find('tableName').text == pivot.name)
-        
-        searchtable = next(searchtable, None)
-        if searchtable is not None:
-            terms = parse_search_str(request.specify_collection, request.GET['q'])
-            query = build_query(session, searchtable, terms, request.specify_collection, as_scalar=True)
-            related_queries.append(rs.build_related_query(session, query, request.specify_collection))
 
-    final_result = related_search.final_result(related_queries,
-                                               offset=int(request.GET.get('offset', 0)),
-                                               limit=int(request.GET.get('limit', 20)))
+    config = get_express_search_config(request)
+    terms = parse_search_str(request.specify_collection, request.GET['q'])
+
+    session = Session()
+
+    result = related_search.execute(session, config, terms,
+                                    collection=request.specify_collection,
+                                    offset=int(request.GET.get('offset', 0)),
+                                    limit=int(request.GET.get('limit', 20)))
+
 
     session.close()
-    return HttpResponse(toJson(final_result), content_type='application/json')
+    return HttpResponse(toJson(result), content_type='application/json')
 
 # @require_GET
 # @login_required
