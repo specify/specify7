@@ -106,7 +106,6 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     def add_to_query(self, query, no_filter=False, sorting=False, collection=None, join_cache=None):
         logger.info("adding field %s to query", self)
-        using_subquery = False
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             'op_true',              # 6
             'op_false',             # 7
@@ -139,12 +138,17 @@ class FieldSpec(namedtuple('FieldSpec', [
 
         if not no_filter:
             logger.debug("filtering field using value: %r", self.value)
-            uiformatter = get_uiformatter(collection, table, self.field_name)
+            if isinstance(self.value, FieldSpec):
+                query, other_field, _ = self.value.add_to_query(query, no_filter=True, join_cache=join_cache)
+                uiformatter = None
+                value = other_field
+            else:
+                uiformatter = get_uiformatter(collection, table, self.field_name)
+                value = self.value
 
             op = QueryOps(uiformatter).by_op_num(self.op_num)
-            f = op(field, self.value)
-            if self.negate: f = not_(f)
-            query = query.having(f) if using_subquery else query.filter(f)
+            f = op(field, value)
+            query = query.filter(not_(f) if self.negate else f)
 
         query = query.reset_joinpoint()
 
