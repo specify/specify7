@@ -214,7 +214,6 @@ def related_search(request):
                                     offset=int(request.GET.get('offset', 0)),
                                     limit=int(request.GET.get('limit', 20)))
 
-
     session.close()
     return HttpResponse(toJson(result), content_type='application/json')
 

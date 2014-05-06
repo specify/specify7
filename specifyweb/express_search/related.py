@@ -60,22 +60,25 @@ class RelatedSearch(object):
 
     @classmethod
     def execute(cls, session, config, terms, collection, limit, offset):
-        queries = [cls(defn).build_related_query(session, config, terms, collection)
-                   for defn in cls.definitions]
+        queries = filter(None, (
+            cls(defn).build_related_query(session, config, terms, collection)
+            for defn in cls.definitions))
 
-        total_count = sum(q.count() for q in queries if q is not None)
-        results = [item
-                   for q in queries if q is not None
-                   for item in q.limit(limit).offset(offset)]
+        if len(queries) > 0:
+            query = queries[0].union(*queries[1:])
+            count = query.count()
+            results = list(query.limit(limit).offset(offset))
+        else:
+            count = 0
+            results = []
+
         return {
-            'totalCount': total_count,
+            'totalCount': count,
             'results': results,
             'definition': {
                 'name': cls.__name__,
                 'root': cls.root().name,
-                'columns': cls.columns,
-                }
-            }
+                'columns': cls.columns}}
 
     @classmethod
     def make_join_path(cls, path):
