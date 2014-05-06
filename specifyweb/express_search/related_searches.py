@@ -102,7 +102,7 @@ class OtherSynsCollObjs(RelatedSearch):
         'Collectionobject.determinations.preferredtaxon.acceptedchildren'
         ]
     distinct = True
-    excludes = [['determinations.preferredtaxon.acceptedchildren', QueryOps.op_equals, F('determinations.preferredtaxon')]]
+    excludes = [['determinations.preferredtaxon.acceptedchildren.taxonid', QueryOps.op_equals, F('determinations.preferredtaxon.taxonid')]]
     columns = [
         'catalognumber',
         'determinations.taxon.fullname',
