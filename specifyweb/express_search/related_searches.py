@@ -139,6 +139,7 @@ class LocalityAlias(RelatedSearch):
     definitions = [
         'Locality'
         ]
+    excludes = [['localitynamealiass.localitynamealiasid', QueryOps.op_empty, None]]
     columns = [
         'localityname',
         'localitynamealiass.name'
