@@ -168,7 +168,7 @@ class CEToCO(RelatedSearch):
         'enddate',
         ]
 
-class LocToCo(RelatedSearch):
+class LocToCO(RelatedSearch):
     id = 29
     definitions = [
         'Locality.collectingevents.collectionobjects',
