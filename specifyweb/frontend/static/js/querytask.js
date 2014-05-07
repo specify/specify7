@@ -1,9 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'navigation', 'whenall', 'scrollresults', 'queryresults',
-    'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates,
-            navigation, whenAll, ScrollResults, QueryResults) {
+    'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
+], function($, _, Backbone, schema, QueryFieldUI, templates, navigation, QueryResultsTable) {
     "use strict";
 
     var QueryBuilder = Backbone.View.extend({
@@ -36,8 +34,6 @@ define([
 
             this.$('input[name="selectDistinct"]').prop('checked', this.query.get('selectdistinct'));
             this.$('input[name="countOnly"]').prop('checked', this.query.get('countonly'));
-
-            this.$('.fetching-more').hide();
             return this;
         },
         gotFields: function(spqueryfields) {
@@ -97,43 +93,23 @@ define([
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
             this.updatePositions();
         },
-        renderHeader: function() {
-            var header = $('<tr>');
-            _.chain(this.fieldUIs)
-                .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
-                .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                .each(function(f) { header.append(QueryResults.renderHeader(f.fieldSpec)); });
-            return $('<thead>').append(header);
-        },
         search: function(evt) {
             this.deleteIncompleteFields();
             if (this.fieldUIs.length < 1) return;
 
-            var table = this.$('table.query-results');
-            this.$('h3').show();
-            this.$('.query-results-count').empty();
-            this.results && this.results.undelegateEvents();
+            this.results && this.results.remove();
 
-            table.empty();
-            this.query.get('countonly') || table.append(this.renderHeader());
-
-            this.results = new ScrollResults({
-                View: QueryResults,
-                el: table,
-                fetch: this.fetchResults(),
-                viewOptions: {
-                    model: this.model,
-                    fieldSpecs: _.chain(this.fieldUIs)
-                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
-                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                        .pluck('fieldSpec')
-                        .value()
-                }
-            }).render()
-                .on('fetching', function() { this.$('.fetching-more').show(); }, this)
-                .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
-
-            this.results.fetchMoreWhileAppropriate();
+            this.results = new QueryResultsTable({
+                model: this.model,
+                countOnly: this.query.get('countonly'),
+                fetchResults: this.fetchResults(),
+                fieldSpecs: _.chain(this.fieldUIs)
+                    .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                    .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                    .pluck('fieldSpec')
+                    .value()
+            });
+            this.results.render().$el.appendTo(this.el);
         },
         fetchResults: function() {
             var query = this.query.toJSON();

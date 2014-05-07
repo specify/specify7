@@ -20,6 +20,7 @@ define([
     'text!tmpls/viewheader.html',
     'text!tmpls/recordsetchooser.html',
     'text!tmpls/querybuilder.html',
+    'text!tmpls/queryresults.html',
     'text!tmpls/queryfield.html',
     'text!tmpls/attachmentview.html',
     'text!tmpls/usertools.html'
@@ -50,6 +51,7 @@ define([
         'viewheader',
         'recordsetchooser',
         'querybuilder',
+        'queryresults',
         'queryfield',
         'attachmentview',
         'usertools'
