@@ -7,7 +7,6 @@ from specifyweb.specify.views import login_required
 from specifyweb.specify.api import toJson
 
 from specifyweb.stored_queries.models import Determination, Taxon
-from specifyweb.stored_queries.views import Session
 
 from django.db import connection
 
