@@ -102,7 +102,7 @@ define([
             _.chain(this.fieldUIs)
                 .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                 .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                .each(function(fieldUI) { header.append(fieldUI.renderHeader()); });
+                .each(function(f) { header.append(QueryResults.renderHeader(f.fieldSpec)); });
             return $('<thead>').append(header);
         },
         search: function(evt) {
@@ -120,8 +120,15 @@ define([
             this.results = new ScrollResults({
                 View: QueryResults,
                 el: table,
-                viewOptions: {fieldUIs: this.fieldUIs.slice(), model: this.model},
-                fetch: this.fetchResults()
+                fetch: this.fetchResults(),
+                viewOptions: {
+                    model: this.model,
+                    fieldSpecs: _.chain(this.fieldUIs)
+                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                        .pluck('fieldSpec')
+                        .value()
+                }
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
