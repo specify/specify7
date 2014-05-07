@@ -4,7 +4,7 @@ urlpatterns = patterns(
     'specifyweb.express_search.views',
     url(r'^$', 'search'),
     url(r'^related/$', 'related_search'),
-    url(r'^querycbx/(?P<model>\w*)/$', 'querycbx_search'),
+    url(r'^querycbx/(?P<modelname>\w*)/$', 'querycbx_search'),
 )
 
 

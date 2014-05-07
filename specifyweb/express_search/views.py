@@ -3,13 +3,13 @@ from collections import namedtuple
 from datetime import date, datetime
 from xml.etree import ElementTree
 
-from sqlalchemy.sql.expression import extract, or_
+from sqlalchemy.sql.expression import extract, or_, and_
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.api import toJson, get_model_or_404, obj_to_data
+from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_required
 
 from specifyweb.context.app_resource import get_app_resource
@@ -215,33 +215,42 @@ def related_search(request):
 
         return HttpResponse(toJson(result), content_type='application/json')
 
-# @require_GET
-# @login_required
-# def querycbx_search(request, model):
-#     model = get_model_or_404(model)
-#     fields = [fieldname
-#               for fieldname in request.GET
-#               if fieldname not in ('limit', 'offset')]
+@require_GET
+@login_required
+def querycbx_search(request, modelname):
+    table = datamodel.get_table(modelname)
+    model = getattr(models, table.name)
 
-#     filters = []
-#     for field in fields:
-#         filters_for_field = []
-#         terms = parse_search_str(request.specify_collection, request.GET[field])
-#         logger.debug("found terms: %s for %s", terms, field)
-#         for term in terms:
-#             filter_for_term = term.create_filter(model._meta.get_field(field))
-#             if filter_for_term is not None:
-#                 filters_for_field.append(filter_for_term)
+    fields = [table.get_field(fieldname, strict=True)
+              for fieldname in request.GET
+              if fieldname not in ('limit', 'offset')]
 
-#         logger.debug("filtering %s with %s", field, filters_for_field)
-#         if len(filters_for_field) > 0:
-#             filters.append(reduce(or_, filters_for_field))
+    filters = []
+    for field in fields:
+        filters_for_field = []
+        terms = parse_search_str(request.specify_collection, request.GET[field.name.lower()])
+        logger.debug("found terms: %s for %s", terms, field)
+        for term in terms:
+            filter_for_term = term.create_filter(table, field)
+            if filter_for_term is not None:
+                filters_for_field.append(filter_for_term)
 
-#     if len(filters) > 0:
-#         combined = reduce(and_, filters)
-#         qs = filter_by_collection(model.objects.filter(combined), request.specify_collection, strict=False)
-#     else:
-#         qs = model.objects.none()
+        logger.debug("filtering %s with %s", field, filters_for_field)
+        if len(filters_for_field) > 0:
+            filters.append(reduce(or_, filters_for_field))
 
-#     results = [obj_to_data(obj) for obj in qs[:10]]
-#     return HttpResponse(toJson(results), content_type='application/json')
+    if len(filters) > 0:
+        with models.session_context() as session:
+            combined = reduce(and_, filters)
+            query = session.query(getattr(model, table.idFieldName)).filter(combined)
+            query = filter_by_collection(model, query, request.specify_collection).limit(10)
+            ids = [id for (id,) in query]
+    else:
+        ids = []
+
+    from specifyweb.specify.api import get_model_or_404, obj_to_data
+    specify_model = get_model_or_404(modelname)
+    qs = specify_model.objects.filter(id__in=ids)
+
+    results = [obj_to_data(obj) for obj in qs]
+    return HttpResponse(toJson(results), content_type='application/json')
