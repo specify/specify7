@@ -100,7 +100,7 @@ define(['jquery', 'underscore'], function($, _) {
         sendToolTips: function() {
             var view = this.view;
 
-            if (!view) return;
+            if (!view || !view.model.saveBlockers) return;
             _.each(view.model.saveBlockers.blockersForField(this.field), function(blocker) {
                 view.trigger('tooltipitem', blocker.reason);
             });
