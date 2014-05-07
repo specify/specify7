@@ -15,7 +15,7 @@ from specifyweb.specify.views import login_required
 from specifyweb.context.app_resource import get_app_resource
 
 from specifyweb.stored_queries import models
-from specifyweb.stored_queries.views import filter_by_collection, Session
+from specifyweb.stored_queries.views import filter_by_collection
 
 logger = logging.getLogger(__name__)
 
@@ -172,31 +172,31 @@ def search(request):
     express_search_config = get_express_search_config(request)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
     specific_table = request.GET.get('name', None)
-    session = Session()
 
-    def do_search(tablename, searchtable):
-        query = build_primary_query(session, searchtable, terms, request.specify_collection)
-        if query is None:
-            return dict(totalCount=0, results=[])
+    with models.session_context() as session:
 
-        total_count = query.count()
+        def do_search(tablename, searchtable):
+            query = build_primary_query(session, searchtable, terms, request.specify_collection)
+            if query is None:
+                return dict(totalCount=0, results=[])
 
-        if specific_table is not None:
-            limit = int(request.GET.get('limit', 20))
-            offset = int(request.GET.get('offset', 0))
-            results = list(query.limit(limit).offset(offset))
-        else:
-            results = list(query)
+            total_count = query.count()
 
-        return dict(totalCount=total_count, results=results)
+            if specific_table is not None:
+                limit = int(request.GET.get('limit', 20))
+                offset = int(request.GET.get('offset', 0))
+                results = list(query.limit(limit).offset(offset))
+            else:
+                results = list(query)
 
-    data = {tablename: do_search(tablename, searchtable)
-            for searchtable in express_search_config.findall('tables/searchtable')
-            for tablename in [ searchtable.find('tableName').text.capitalize() ]
-            if specific_table is None or tablename == specific_table}
+            return dict(totalCount=total_count, results=results)
 
-    session.close()
-    return HttpResponse(toJson(data), content_type='application/json')
+        data = {tablename: do_search(tablename, searchtable)
+                for searchtable in express_search_config.findall('tables/searchtable')
+                for tablename in [ searchtable.find('tableName').text.capitalize() ]
+                if specific_table is None or tablename == specific_table}
+
+        return HttpResponse(toJson(data), content_type='application/json')
 
 @require_GET
 @login_required
@@ -207,15 +207,13 @@ def related_search(request):
     config = get_express_search_config(request)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
 
-    session = Session()
+    with models.session_context() as session:
+        result = related_search.execute(session, config, terms,
+                                        collection=request.specify_collection,
+                                        offset=int(request.GET.get('offset', 0)),
+                                        limit=int(request.GET.get('limit', 20)))
 
-    result = related_search.execute(session, config, terms,
-                                    collection=request.specify_collection,
-                                    offset=int(request.GET.get('offset', 0)),
-                                    limit=int(request.GET.get('limit', 20)))
-
-    session.close()
-    return HttpResponse(toJson(result), content_type='application/json')
+        return HttpResponse(toJson(result), content_type='application/json')
 
 # @require_GET
 # @login_required

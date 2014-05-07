@@ -6,10 +6,7 @@ from collections import namedtuple
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
 from specifyweb.specify.api import toJson
@@ -19,7 +16,6 @@ from . import models
 from .fieldspec import FieldSpec
 
 logger = logging.getLogger(__name__)
-Session = sessionmaker(bind=sqlalchemy.create_engine(settings.SA_DATABASE_URL))
 
 SORT_TYPES = [None, asc, desc]
 SORT_OPS = [None, operator.gt, operator.lt]
@@ -78,18 +74,19 @@ def filter_by_collection(model, query, collection):
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
-    session = Session()
-    sp_query = session.query(models.SpQuery).get(int(id))
-    distinct = sp_query.selectDistinct
-    tableid = sp_query.contextTableId
-    count_only = sp_query.countOnly
 
-    field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
-                   for field in sorted(sp_query.fields, key=lambda field: field.position)]
+    with models.session_context() as session:
+        sp_query = session.query(models.SpQuery).get(int(id))
+        distinct = sp_query.selectDistinct
+        tableid = sp_query.contextTableId
+        count_only = sp_query.countOnly
 
-    return execute(session, request.specify_collection,
-                   tableid, distinct, count_only,
-                   field_specs, limit, offset)
+        field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
+                       for field in sorted(sp_query.fields, key=lambda field: field.position)]
+
+        return execute(session, request.specify_collection,
+                       tableid, distinct, count_only,
+                       field_specs, limit, offset)
 
 class EphemeralField(
     namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
@@ -108,14 +105,14 @@ def ephemeral(request):
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
-    session = Session()
-    
-    field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
-                   for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
-    return execute(session, request.specify_collection,
-                   tableid, distinct, count_only,
-                   field_specs, limit, offset)
+    with models.session_context() as session:
+        field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
+                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+
+        return execute(session, request.specify_collection,
+                       tableid, distinct, count_only,
+                       field_specs, limit, offset)
 
 def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset):
     query, order_by_exprs, deferreds = build_query(session, collection, tableid, field_specs)
@@ -131,8 +128,6 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
                    for row in query] if any(deferreds) else list(query)
     else:
         results = []
-
-    session.close()
 
     data = {'count': count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
