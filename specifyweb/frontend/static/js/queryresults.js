@@ -10,16 +10,6 @@ define([
         return _.last(fieldSpec.joinPath);
     }
 
-    function renderHeader(fieldSpec) {
-        var field = getField(fieldSpec);
-        var icon = field.model.getIcon();
-        var name = fieldSpec.treeRank || field.getLocalizedName();
-        if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
-            name += ' (' + fieldSpec.datePart + ')';
-        }
-        return $('<th>').text(name).prepend($('<img>', {src: icon}));
-    }
-
     function renderResult(fieldSpec, rowHref, value) {
         var field = getField(fieldSpec);
         var cell = $('<a class="query-result-link">')
@@ -112,8 +102,6 @@ define([
             });
         }
     });
-
-    QueryResultsView.renderHeader = renderHeader;
 
     return QueryResultsView;
 });
