@@ -7,6 +7,8 @@ from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
 from sqlalchemy.util.langhelpers import symbol
 
+from specifyweb.specify.models import datamodel
+
 from . import models
 from .query_ops import QueryOps
 
@@ -74,6 +76,25 @@ class FieldSpec(namedtuple('FieldSpec', [
                    negate       = field.isNot,
                    display      = field.isDisplay,
                    sort_type    = field.sortType)
+
+    def to_stringid(self):
+        table_list = self.make_table_list()
+        fieldname = self.field_name
+        if self.date_part:
+            fieldname += "Numeric" + self.date_part
+        _, table = self.join_path[-1] if self.join_path else ('', self.root_table)
+        return '.'.join((table_list, table.__name__.lower(), fieldname))
+
+    def make_table_list(self):
+        table_list = [self.get_table_id(self.root_table)] + [
+            self.get_table_id(table) if fieldname.lower() == table.__name__.lower() else (
+                self.get_table_id(table) + '-' + fieldname.lower())
+            for fieldname, table in self.join_path]
+
+        return ','.join(table_list)
+
+    def get_table_id(self, table):
+        return str(datamodel.get_table(table.__name__).tableId)
 
     def build_join(self, query, join_cache):
         table = self.root_table
