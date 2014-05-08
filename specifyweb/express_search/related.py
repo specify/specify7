@@ -119,26 +119,22 @@ class RelatedSearch(object):
         table = cls.root
         logger.info("make_join_path from %s : %s" % (table, path))
         model = getattr(models, table.name)
-        fieldname, join_path, is_relation = None, [], False
+        fieldname, join_path, field = None, [], None
 
-        for element in path[:-1]:
+        for element in path:
             field = table.get_field(element, strict=True)
             fieldname = field.name
-            table = datamodel.get_table(field.relatedModelName)
-            model = getattr(models, table.name)
-            join_path.append((fieldname, model))
+            if field.is_relationship:
+                table = datamodel.get_table(field.relatedModelName)
+                model = getattr(models, table.name)
+                join_path.append((fieldname, model))
 
-        if path:
-            field = table.get_field(path[-1], strict=True)
-            fieldname = field.name
-            is_relation = field.is_relationship
-
-        return fieldname, join_path, is_relation
+        return fieldname, join_path, field.is_relationship if field else False
 
     def __init__(self, definition):
         self.definition = definition
 
-    def make_fieldspec(self, primary_query):
+    def make_fieldspec_to_primary(self, primary_query):
         _, jp, is_relation = self.make_join_path(self.definition.split('.')[1:])
         logger.debug('definition %s resulted in join path %s', self.definition, jp)
 
@@ -160,27 +156,39 @@ class RelatedSearch(object):
         return pivot
 
     def build_related_query(self, session, config, terms, collection):
+        logger.info('%s: building related query using definition: %s',
+                    self.__class__.__name__, self.definition)
+
         from .views import build_primary_query
 
         pivot = self.pivot()
+        logger.debug('pivoting on: %s', pivot)
         for searchtable in config.findall('tables/searchtable'):
             if searchtable.find('tableName').text == pivot.name:
                 break
         else:
             return None
 
+        logger.debug('using %s for primary search', searchtable.find('tableName').text)
         primary_query = build_primary_query(session, searchtable, terms, collection, as_scalar=True)
 
         if primary_query is None:
             return None
+        logger.debug('primary query: %s', primary_query)
+
+        fieldspec_to_primary = self.make_fieldspec_to_primary(primary_query)
+        logger.debug("fieldspec to primary: %s", fieldspec_to_primary)
+        logger.debug("fieldspecs for disp: %s", self.display_fieldspecs)
+        logger.debug("fieldspecs for filter: %s", self.filter_fieldspecs)
 
         field_specs = (self.display_fieldspecs +
                        self.filter_fieldspecs +
-                       [self.make_fieldspec(primary_query)])
+                       [fieldspec_to_primary])
 
         related_query, _, _ = build_query(session, collection, self.root.tableId, field_specs)
 
         if self.distinct:
             related_query = related_query.distinct()
 
+        logger.debug('related query: %s', related_query)
         return related_query

@@ -160,7 +160,7 @@ class FieldSpec(namedtuple('FieldSpec', [
         if not no_filter:
             logger.debug("filtering field using value: %r", self.value)
             if isinstance(self.value, FieldSpec):
-                query, other_field, _ = self.value.add_to_query(query, no_filter=True, join_cache=join_cache)
+                _, other_field, _ = self.value.add_to_query(query.reset_joinpoint(), no_filter=True, join_cache=join_cache)
                 uiformatter = None
                 value = other_field
             else:
