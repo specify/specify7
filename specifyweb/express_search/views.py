@@ -15,6 +15,7 @@ from specifyweb.specify.views import login_required
 from specifyweb.context.app_resource import get_app_resource
 
 from specifyweb.stored_queries import models
+from specifyweb.stored_queries.fieldspec import FieldSpec
 from specifyweb.stored_queries.views import filter_by_collection
 
 logger = logging.getLogger(__name__)
@@ -147,11 +148,11 @@ def build_primary_query(session, searchtable, terms, collection, as_scalar=False
     fields = [table.get_field(fn.text)
               for fn in searchtable.findall('.//searchfield/fieldName')]
 
-    q_fields = [] if as_scalar else [
-        getattr(model, table.get_field(fn.text).name)
-        for fn in searchtable.findall('.//displayfield/fieldName')]
-
-    q_fields.append(id_field)
+    q_fields = [id_field]
+    if not as_scalar:
+        q_fields.extend([
+            getattr(model, table.get_field(fn.text).name)
+            for fn in searchtable.findall('.//displayfield/fieldName')])
 
     filters = [fltr for fltr in [
                 t.create_filter(table, f) for f in fields for t in terms]
@@ -166,37 +167,56 @@ def build_primary_query(session, searchtable, terms, collection, as_scalar=False
     logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
     return None
 
+def make_fieldspecs(searchtable):
+    table = getattr(models, searchtable.find('tableName').text)
+
+    return [FieldSpec(field_name=fn.text,
+                      date_part=None,
+                      root_table=table,
+                      join_path=[],
+                      is_relation=False,
+                      op_num=1,
+                      value="",
+                      negate=False,
+                      display=True,
+                      sort_type=0)
+            for fn in searchtable.findall('.//displayfield/fieldName')]
+
+
+def run_primary_search(session, searchtable, terms, collection, limit, offset):
+    query = build_primary_query(session, searchtable, terms, collection)
+
+    if query is not None:
+        total_count = query.count()
+        results = list(query.limit(limit).offset(offset))
+    else:
+        total_count = 0
+        results = []
+
+    return { searchtable.find('tableName').text : {
+        'totalCount': total_count,
+        'results': results,
+        'displayOrder': int( searchtable.find('displayOrder').text ),
+        'fieldSpecs': [f.to_stringid() for f in make_fieldspecs(searchtable)]
+        }}
+
 @require_GET
 @login_required
 def search(request):
+    collection = request.specify_collection
     express_search_config = get_express_search_config(request)
-    terms = parse_search_str(request.specify_collection, request.GET['q'])
-    specific_table = request.GET.get('name', None)
+    terms = parse_search_str(collection, request.GET['q'])
+    specific_table = request.GET.get('name', "").lower()
+    limit = int(request.GET.get('limit', 20))
+    offset = int(request.GET.get('offset', 0))
 
     with models.session_context() as session:
+        results = [run_primary_search(session, searchtable, terms, collection, limit, offset)
+                   for searchtable in express_search_config.findall('tables/searchtable')
+                   if specific_table == "" or searchtable.find('tableName').text.lower() == specific_table]
 
-        def do_search(tablename, searchtable):
-            query = build_primary_query(session, searchtable, terms, request.specify_collection)
-            if query is None:
-                return dict(totalCount=0, results=[])
-
-            total_count = query.count()
-
-            if specific_table is not None:
-                limit = int(request.GET.get('limit', 20))
-                offset = int(request.GET.get('offset', 0))
-                results = list(query.limit(limit).offset(offset))
-            else:
-                results = list(query)
-
-            return dict(totalCount=total_count, results=results)
-
-        data = {tablename: do_search(tablename, searchtable)
-                for searchtable in express_search_config.findall('tables/searchtable')
-                for tablename in [ searchtable.find('tableName').text.capitalize() ]
-                if specific_table is None or tablename == specific_table}
-
-        return HttpResponse(toJson(data), content_type='application/json')
+        result = {k: v for r in results for (k,v) in r.items()}
+        return HttpResponse(toJson(result), content_type='application/json')
 
 @require_GET
 @login_required

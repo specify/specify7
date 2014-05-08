@@ -19,14 +19,8 @@ define([
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
-            this.countOnly = options.countOnly;
-            this.noHeader = options.noHeader;
-            this.embeddedScroll = options.scrollEl;
-            this.fieldSpecs = options.fieldSpecs;
-            this.fetchResults = options.fetchResults;
-            this.initialData = options.initialData;
-            this.ajaxUrl = options.ajaxUrl;
-            this.scrollOnWindow = options.scrollOnWindow;
+            var opNames = "countOnly noHeader fieldSpecs fetchResults initialData ajaxUrl scrollOnWindow";
+            _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
         },
         renderHeader: function() {
             var header = $('<tr>');
