@@ -1,11 +1,11 @@
 define([
-'jquery', 'underscore', 'backbone', 'appresource', 'schema',
-'fieldformat', 'props', 'scrollresults', 'whenall',
+'jquery', 'underscore', 'backbone', 'appresource', 'schema', 'queryresultstable',
+'queryfieldspec', 'fieldformat', 'props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, getAppResource, schema,
-            fieldformat, props, ScrollResults, whenAll,
+], function($, _, Backbone, getAppResource, schema, QueryResultsTable,
+            QueryFieldSpec, fieldformat, props, ScrollResults, whenAll,
             availableRelatedJson, propstext) {
     "use strict";
 
@@ -64,45 +64,6 @@ define([
         }
     });
 
-    var RelatedResults = Backbone.View.extend({
-        __name__: "RelatedResultsView",
-        initialize: function(options) {
-            this.relatedSearch = options.data;
-            this.model = schema.getModel(this.relatedSearch.definition.root);
-            this.displayFields = _.map(this.relatedSearch.definition.columns, this.model.getField, this.model);
-        },
-        getContentEl: function() {
-            return this.$('table');
-        },
-        addResults: function(results) {
-            var table = this.$('table');
-            _.each(results, function(values) {
-                var row = $('<tr>').appendTo(table);
-                var resource = new this.model.Resource({id: values[0]});
-                var href = resource.viewUrl();
-                _.each(this.displayFields, function(field, i) {
-                    var value = fieldformat(field, values[i+1]);
-                    row.append($('<td>').append($('<a>', {
-                        href: href,
-                        "class": "intercept-navigation express-search-result"
-                    }).text(value)));
-                });
-            }, this);
-            return results.length;
-        },
-        resultsFromData: function(data) {
-            return data.results;
-        },
-        render: function() {
-            var table = $('<table width="100%">').appendTo(this.el);
-            var header = $('<tr>').appendTo(table);
-            _.each(this.displayFields, function(field) {
-                return header.append($('<th>').text(field.getLocalizedName()));
-            });
-            return this;
-        }
-    });
-
     var ResultsView = Backbone.View.extend({
         __name__: "ResultsView",
         events: {
@@ -156,9 +117,10 @@ define([
         },
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
-            var results = new ScrollResults({
-                View: RelatedResults,
-                viewOptions: {data: data},
+            var results = new QueryResultsTable({
+                noHeader: true,
+                model: schema.getModel(data.definition.root),
+                fieldSpecs: _.map(data.definition.fieldSpecs, QueryFieldSpec.fromStringId),
                 initialData: data,
                 ajaxUrl: ajaxUrl
             });

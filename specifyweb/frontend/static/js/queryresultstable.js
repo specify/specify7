@@ -20,8 +20,13 @@ define([
         className: "query-results-table",
         initialize: function(options) {
             this.countOnly = options.countOnly;
+            this.noHeader = options.noHeader;
+            this.embeddedScroll = options.scrollEl;
             this.fieldSpecs = options.fieldSpecs;
             this.fetchResults = options.fetchResults;
+            this.initialData = options.initialData;
+            this.ajaxUrl = options.ajaxUrl;
+            this.scrollOnWindow = options.scrollOnWindow;
         },
         renderHeader: function() {
             var header = $('<tr>');
@@ -29,19 +34,21 @@ define([
             return $('<thead>').append(header);
         },
         render: function() {
-            this.$el.append(templates.queryresults());
+            var inner = $(templates.queryresults());
+            this.$el.append(inner);
             var table = this.$('table.query-results');
             this.$('.query-results-count').empty();
             this.countOnly || table.append(this.renderHeader());
+            this.noHeader && this.$('h3').remove();
+            this.$('.fetching-more').hide();
 
             var results = this.results = new ScrollResults({
-                View: QueryResults,
-                el: table,
+                el: this.el,
+                onWindow: this.scrollOnWindow,
+                view: new QueryResults({model: this.model, el: inner, fieldSpecs: this.fieldSpecs}),
                 fetch: this.fetchResults,
-                viewOptions: {
-                    model: this.model,
-                    fieldSpecs: this.fieldSpecs
-                }
+                ajaxUrl: this.ajaxUrl,
+                initialData: this.initialData
             }).render()
                 .on('fetching', function() { this.$('.fetching-more').show(); }, this)
                 .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);

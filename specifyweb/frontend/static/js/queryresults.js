@@ -67,9 +67,10 @@ define([
             return results.results.length < 1;
         },
         addResults: function(results) {
+            var table = this.$('table.query-results');
             _.each(results.results, function(result) {
                 var resource = new this.model.Resource({ id: result[0] });
-                var row = $('<tr class="query-result">').appendTo(this.el).data('resource', resource);
+                var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
                 var href = resource.viewUrl();
                 _.each(this.fieldSpecs, function(f, i) { row.append(renderResult(f, href, result[i + 1])); });
             }, this);

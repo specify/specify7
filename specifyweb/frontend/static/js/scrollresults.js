@@ -13,20 +13,18 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         initialize: function(options) {
             this.ajaxUrl = options.ajaxUrl;
             this.doFetch = options.fetch || this.doFetchSimple.bind(this);
-            this.resultsView = new options.View(_.extend({el: this.el}, options.viewOptions));
+            this.resultsView = options.view;
             this.offset = 0;
 
-            this.scrolledToBottom = this.resultsView.getContentEl ? function() {
-                return this.resultsView.getContentEl().height() - this.$el.scrollTop() - this.$el.height() < 1;
-            } : function() {
-                return win.scrollTop() + win.height() + 100 > doc.height();
-            };
-
+            this.container = options.onWindow ? win : this.$el;
+            this.content = options.onWindow ? doc : this.resultsView.$el;
+        },
+        scrolledToBottom: function() {
+            return this.container.height() + this.container.scrollTop() + 10 > this.content.height();
         },
         shouldFetchMore: function() {
             var visible = this.$el.is(':visible');
-            var scrolledToBottom = this.scrolledToBottom();
-            return !this.fetchedAll && scrolledToBottom && visible && !this.fetch;
+            return !this.fetchedAll && this.scrolledToBottom() && visible && !this.fetch;
         },
         resultsFromData: function(data) {
             var rv = this.resultsView;
@@ -67,7 +65,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
             this.$el.data('view', this);
             this.resultsView.render();
             this.options.initialData && this.gotData(this.options.initialData);
-            if (!this.resultsView.getContentEl) {
+            if (this.options.onWindow) {
                 this.onScroll = this.scroll.bind(this);
                 win.on('scroll', this.onScroll);
             }

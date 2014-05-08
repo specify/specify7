@@ -101,6 +101,7 @@ define([
 
             this.results = new QueryResultsTable({
                 model: this.model,
+                scrollOnWindow: true,
                 countOnly: this.query.get('countonly'),
                 fetchResults: this.fetchResults(),
                 fieldSpecs: _.chain(this.fieldUIs)
