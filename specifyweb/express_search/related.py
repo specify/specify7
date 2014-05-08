@@ -37,13 +37,16 @@ class RelatedSearchMeta(type):
 
         Rs.display_fieldspecs = [
             Rs.fieldspec_template._replace(
-                    field_name=fieldname,
-                    join_path=joinpath,
-                    op_num=1,
-                    value="",
-                    display=True)
-            for (fieldname, joinpath) in [Rs.make_join_path(col.split('.'))
-                                          for col in Rs.columns]]
+                field_name=fieldname,
+                join_path=joinpath,
+                is_relation=is_relation,
+                op_num=1,
+                value="",
+                display=True)
+            for (fieldname, joinpath, is_relation)
+            in [Rs.make_join_path(col.split('.'))
+                for col in Rs.columns]]
+
         def process_filter(f, negate):
             (field, op, val) = f
             op_num = QueryOps.OPERATIONS.index(op.__name__)
@@ -57,11 +60,12 @@ class RelatedSearchMeta(type):
             Rs.fieldspec_template._replace(
                 field_name=fieldname,
                 join_path=joinpath,
+                is_relation=is_relation,  # should prolly always be false
                 op_num=op_num,
                 value=value,
                 negate=negate,
                 display=False)
-            for (fieldname, joinpath, op_num, value, negate)
+            for (fieldname, joinpath, is_relation, op_num, value, negate)
             in filters + excludes]
 
         return Rs
@@ -102,10 +106,11 @@ class RelatedSearch(object):
     def process_value(cls, val):
         if not isinstance(val, F):
             return val
-        fieldname, joinpath = cls.make_join_path(val.split('.'))
+        fieldname, joinpath, is_relation = cls.make_join_path(val.split('.'))
         return cls.fieldspec_template._replace(
             field_name=fieldname,
             join_path=joinpath,
+            is_relation=is_relation,
             op_num=1,
             value="")
 
@@ -114,28 +119,33 @@ class RelatedSearch(object):
         table = cls.root
         logger.info("make_join_path from %s : %s" % (table, path))
         model = getattr(models, table.name)
-        fieldname, join_path = None, []
+        fieldname, join_path, is_relation = None, [], False
 
-        for element in path:
+        for element in path[:-1]:
             field = table.get_field(element, strict=True)
             fieldname = field.name
-            if field.is_relationship:
-                table = datamodel.get_table(field.relatedModelName)
-                model = getattr(models, table.name)
-                join_path.append((fieldname, model))
+            table = datamodel.get_table(field.relatedModelName)
+            model = getattr(models, table.name)
+            join_path.append((fieldname, model))
 
-        return fieldname, join_path
+        if path:
+            field = table.get_field(path[-1], strict=True)
+            fieldname = field.name
+            is_relation = field.is_relationship
+
+        return fieldname, join_path, is_relation
 
     def __init__(self, definition):
         self.definition = definition
 
     def make_fieldspec(self, primary_query):
-        _, jp = self.make_join_path(self.definition.split('.')[1:])
+        _, jp, is_relation = self.make_join_path(self.definition.split('.')[1:])
         logger.debug('definition %s resulted in join path %s', self.definition, jp)
 
         return self.fieldspec_template._replace(
             field_name=jp[-1][1]._id if jp else self.root.idFieldName,
             join_path=jp,
+            is_relation=is_relation,
             op_num=QueryOps.OPERATIONS.index('op_in'),
             value=primary_query,
             display=False)

@@ -15,9 +15,7 @@ class CollObjToDeterminer(RelatedSearch):
     columns = [
         'determinations.taxon.fullname',
         'determinations.taxon.commonname',
-        'determinations.determiner.lastname',
-        'determinations.determiner.firstname',
-        'determinations.determiner.agenttype',
+        'determinations.determiner',
         ]
 
 class CollObToLocality(RelatedSearch):
@@ -72,7 +70,7 @@ class ColObjCollectors(RelatedSearch):
         'catalognumber',
         'catalogeddate',
         'collectingevent.startdate',
-        'collectingevent.collectors.agent.lastname',
+        'collectingevent.collectors.agent',
         ]
 
 class AcceptedTaxon(RelatedSearch):
@@ -140,8 +138,7 @@ class AgentFromAgentVariant(RelatedSearch):
         ]
     columns = [
         'name',
-        'agent.lastname',
-        'agent.firstname',
+        'agent',
         ]
 
 class LocalityAlias(RelatedSearch):
@@ -204,8 +201,7 @@ class AccessionToAgent(RelatedSearch):
         'Accession'
         ]
     columns = [
-        'accessionagents.agent.lastname',
-        'accessionagents.agent.firstname',
+        'accessionagents.agent',
         'accessionagents.role',
         'accessionnumber',
         ]
@@ -218,8 +214,7 @@ class BorrowToAgent(RelatedSearch):
         ]
     columns = [
         'invoicenumber',
-        'borrowagents.agent.lastname',
-        'borrowagents.agent.firstname',
+        'borrowagents.agent',
         'borrowagents.role',
         ]
 
@@ -253,8 +248,7 @@ class CollEventToCollectors(RelatedSearch):
         'Collectingevent'
         ]
     columns = [
-        'collectors.agent.lastname',
-        'collectors.agent.firstname',
+        'collectors.agent',
         'startdate',
         'stationfieldnumber'
         ]
@@ -362,8 +356,7 @@ class LoanAgent(RelatedSearch):
         'Loan'
         ]
     columns = [
-        'loanagents.agent.lastname',
-        'loanagents.agent.firstname',
+        'loanagents.agent',
         'loanagents.role',
         'loannumber'
         ]
@@ -396,8 +389,7 @@ class PermitIssuedToAgent(RelatedSearch):
         'Permit.issuedto'
         ]
     columns = [
-        'issuedto.lastname',
-        'issuedto.firstname',
+        'issuedto',
         'permitnumber'
         ]
 
@@ -408,8 +400,7 @@ class PermitIssuedByAgent(RelatedSearch):
         'Permit'
         ]
     columns = [
-        'issuedby.lastname',
-        'issuedby.firstname',
+        'issuedby',
         'permitnumber'
         ]
 
@@ -432,8 +423,7 @@ class ProjectAgent(RelatedSearch):
         'Project'
         ]
     columns = [
-        'agent.lastname',
-        'agent.firstname',
+        'agent',
         'projectname',
         'projectnumber'
         ]
@@ -445,8 +435,7 @@ class RepoAgreeAgent(RelatedSearch):
         'Repositoryagreement'
         ]
     columns = [
-        'originator.lastname',
-        'originator.firstname',
+        'originator',
         'repositoryagreementnumber'
         ]
 
