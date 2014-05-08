@@ -1,9 +1,7 @@
-import re, logging
-from collections import namedtuple
-from datetime import date, datetime
+import logging
 from xml.etree import ElementTree
 
-from sqlalchemy.sql.expression import extract, or_, and_
+from sqlalchemy.sql.expression import or_, and_
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
@@ -18,9 +16,9 @@ from specifyweb.stored_queries import models
 from specifyweb.stored_queries.fieldspec import FieldSpec
 from specifyweb.stored_queries.views import filter_by_collection
 
-logger = logging.getLogger(__name__)
+from .search_terms import parse_search_str
 
-QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
+logger = logging.getLogger(__name__)
 
 def get_express_search_config(request):
     resource, __ = get_app_resource(request.specify_collection,
@@ -28,117 +26,6 @@ def get_express_search_config(request):
                                     'ExpressSearchConfig')
     return ElementTree.XML(resource)
 
-class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_integer as_date")):
-    discipline = None
-
-    @classmethod
-    def make_term(cls, term):
-        is_suffix = term.startswith('*')
-        is_prefix = term.endswith('*')
-        term = term.strip('*')
-
-        try:
-            float(term)
-            is_number = True
-        except ValueError:
-            is_number = False
-
-        try:
-            maybe_year = 1000 <= int(term) <= date.today().year
-            is_integer = True
-        except ValueError:
-            maybe_year = is_integer = False
-
-        for format in ('%m/%d/%Y', '%Y-%m-%d',):
-            try:
-                as_date = datetime.strptime(term, format).date()
-                break
-            except ValueError:
-                pass
-        else:
-            as_date = None
-
-        return cls(term, is_suffix, is_prefix, is_number, maybe_year, is_integer, as_date)
-
-    def create_filter(self, table, field):
-        model = getattr(models, table.name)
-        column = getattr(model, field.name)
-
-        if (table.name == 'CollectionObject' and
-            field.name == 'catalogNumber' and
-            self.discipline):
-            from specifyweb.specify.models import Splocalecontaineritem
-            fieldinfo = Splocalecontaineritem.objects.get(
-                container__schematype=0, # core schema
-                container__discipline=self.discipline,
-                name__iexact=field.name,
-                container__name__iexact=table.name)
-
-            if fieldinfo.format == 'CatalogNumberNumeric':
-                if not self.is_integer: return None
-                term = "%.9d" % int(self.term)
-                return column == term
-
-        filter_map = {
-            'text': self.create_text_filter,
-            'java.lang.String': self.create_text_filter,
-
-            'java.lang.Integer': self.create_integer_filter,
-            'java.lang.Long': self.create_integer_filter,
-            'java.lang.Byte': self.create_integer_filter,
-            'java.lang.Short': self.create_integer_filter,
-
-            'java.lang.Float': self.create_float_filter,
-            'java.lang.Double': self.create_float_filter,
-            'java.math.BigDecimal': self.create_float_filter,
-
-            'java.util.Calendar': self.create_date_filter,
-            'java.util.Date': self.create_date_filter,
-            'java.sql.Timestamp': self.create_date_filter,
-            }
-
-        create = filter_map.get(field.type, lambda f: None)
-        return create(column)
-
-    def create_text_filter(self, column):
-        if self.is_prefix and self.is_suffix:
-            return column.ilike('%' + self.term + '%')
-
-        if self.is_prefix:
-            return column.ilike(self.term + '%')
-
-        if self.is_suffix:
-            return column.ilike('%' + self.term)
-
-        return column.ilike(self.term)
-
-
-    def create_integer_filter(self, column):
-        if self.is_integer:
-            return column == int(self.term)
-
-    def create_date_filter(self, column):
-        if self.maybe_year:
-            return extract('year', column) == int(self.term)
-
-        if self.as_date:
-            return column == self.as_date
-
-    def create_float_filter(self, column):
-        if self.is_number:
-            return column == float(self.term)
-
-def parse_search_str(collection, search_str):
-    class TermForCollection(Term):
-        discipline = collection.discipline
-
-    match_quoted = QUOTED_STR_RE.match(search_str)
-    if match_quoted:
-        terms = [ match_quoted.groups()[1] ]
-    else:
-        terms = search_str.split()
-
-    return map(TermForCollection.make_term, terms)
 
 def build_primary_query(session, searchtable, terms, collection, as_scalar=False):
     table = datamodel.get_table(searchtable.find('tableName').text)
