@@ -41,7 +41,6 @@ class CollObject(RelatedSearch):
     distinct = True
     columns = [
         'catalognumber',
-        'catalogeddate',
         'determinations.taxon.fullname',
         ]
 
@@ -68,7 +67,6 @@ class ColObjCollectors(RelatedSearch):
     distinct = True
     columns = [
         'catalognumber',
-        'catalogeddate',
         'collectingevent.startdate',
         'collectingevent.collectors.agent',
         ]
@@ -79,6 +77,8 @@ class AcceptedTaxon(RelatedSearch):
         'Taxon.acceptedtaxon',
         'Taxon'
         ]
+    excludes = [['taxonid', QueryOps.op_empty, None],
+                ['acceptedtaxon.taxonid', QueryOps.op_empty, None]]
     columns = [
         'fullname',
         'acceptedtaxon.fullname',
@@ -126,7 +126,6 @@ class CurrCollObject(RelatedSearch):
     filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
         'catalognumber',
-        'catalogeddate',
         'determinations.taxon.fullname',
         ]
 
@@ -459,9 +458,8 @@ class TaxCollObject(RelatedSearch):
         ]
     columns = [
         'catalognumber',
-        'catalogeddate',
+        'determinations.taxon.fullname',
         'determinations.iscurrent',
-        'determinations.taxon.fullname'
         ]
 
 # class ColObjToContainer(RelatedSearch):
