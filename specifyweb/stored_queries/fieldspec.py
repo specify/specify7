@@ -7,6 +7,8 @@ from sqlalchemy import orm, inspect, sql, not_
 from sqlalchemy.sql.expression import extract
 from sqlalchemy.util.langhelpers import symbol
 
+from specifyweb.specify.models import datamodel
+
 from . import models
 from .query_ops import QueryOps
 
@@ -75,6 +77,25 @@ class FieldSpec(namedtuple('FieldSpec', [
                    display      = field.isDisplay,
                    sort_type    = field.sortType)
 
+    def to_stringid(self):
+        table_list = self.make_table_list()
+        fieldname = self.field_name
+        if self.date_part:
+            fieldname += "Numeric" + self.date_part
+        _, table = self.join_path[-1] if self.join_path else ('', self.root_table)
+        return '.'.join((table_list, table.__name__.lower(), fieldname))
+
+    def make_table_list(self):
+        table_list = [self.get_table_id(self.root_table)] + [
+            self.get_table_id(table) if fieldname.lower() == table.__name__.lower() else (
+                self.get_table_id(table) + '-' + fieldname.lower())
+            for fieldname, table in self.join_path]
+
+        return ','.join(table_list)
+
+    def get_table_id(self, table):
+        return str(datamodel.get_table(table.__name__).tableId)
+
     def build_join(self, query, join_cache):
         table = self.root_table
         path = deque(self.join_path)
@@ -106,7 +127,6 @@ class FieldSpec(namedtuple('FieldSpec', [
 
     def add_to_query(self, query, no_filter=False, sorting=False, collection=None, join_cache=None):
         logger.info("adding field %s to query", self)
-        using_subquery = False
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             'op_true',              # 6
             'op_false',             # 7
@@ -138,13 +158,18 @@ class FieldSpec(namedtuple('FieldSpec', [
             field = getattr(table, self.field_name)
 
         if not no_filter:
-            logger.debug("filtering field using value: %r", self.value)
-            uiformatter = get_uiformatter(collection, table, self.field_name)
+            logger.debug("filtering field %r using value: %r", field.name, self.value)
+            if isinstance(self.value, FieldSpec):
+                _, other_field, _ = self.value.add_to_query(query.reset_joinpoint(), no_filter=True, join_cache=join_cache)
+                uiformatter = None
+                value = other_field
+            else:
+                uiformatter = get_uiformatter(collection, table, self.field_name)
+                value = self.value
 
             op = QueryOps(uiformatter).by_op_num(self.op_num)
-            f = op(field, self.value)
-            if self.negate: f = not_(f)
-            query = query.having(f) if using_subquery else query.filter(f)
+            f = op(field, value)
+            query = query.filter(not_(f) if self.negate else f)
 
         query = query.reset_joinpoint()
 

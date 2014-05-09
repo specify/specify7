@@ -1,140 +1,24 @@
-import re, logging
-from collections import namedtuple
-from operator import and_, or_
-from datetime import date, datetime
+import logging
 from xml.etree import ElementTree
 
-from django.db.models import Q
+from sqlalchemy.sql.expression import or_, and_
+
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
 
-from specifyweb.specify import models
-from specifyweb.specify.filter_by_col import filter_by_collection
-from specifyweb.specify.api import toJson, get_model_or_404, obj_to_data
+from specifyweb.specify.models import datamodel
+from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_required
 
 from specifyweb.context.app_resource import get_app_resource
 
+from specifyweb.stored_queries import models
+from specifyweb.stored_queries.fieldspec import FieldSpec
+from specifyweb.stored_queries.views import filter_by_collection
+
+from .search_terms import parse_search_str
+
 logger = logging.getLogger(__name__)
-
-QUOTED_STR_RE = re.compile(r'^([\'"`])(.*)\1$')
-
-
-class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_integer as_date")):
-    discipline = None
-
-    @classmethod
-    def make_term(cls, term):
-        is_suffix = term.startswith('*')
-        is_prefix = term.endswith('*')
-        term = term.strip('*')
-
-        try:
-            float(term)
-            is_number = True
-        except ValueError:
-            is_number = False
-
-        try:
-            maybe_year = 1000 <= int(term) <= date.today().year
-            is_integer = True
-        except ValueError:
-            maybe_year = is_integer = False
-
-        for format in ('%m/%d/%Y', '%Y-%m-%d',):
-            try:
-                as_date = datetime.strptime(term, format).date()
-                break
-            except ValueError:
-                pass
-        else:
-            as_date = None
-
-        return cls(term, is_suffix, is_prefix, is_number, maybe_year, is_integer, as_date)
-
-    def create_filter(self, field):
-        filter_map = {
-            'DateField': self.create_date_filter,
-            'DateTimeField': self.create_date_filter,
-            'CharField': self.create_text_filter,
-            'TextField': self.create_text_filter,
-            'IntegerField': self.create_integer_filter,
-            'FloatField': self.create_float_filter,
-            'DecimalField': self.create_float_filter,}
-
-        create = filter_map.get(field.__class__.__name__, lambda f: None)
-        return create(field)
-
-    def create_text_filter(self, field):
-        if self.discipline:
-            from specifyweb.specify.models import Splocalecontaineritem
-            args = dict(
-                container__schematype=0, # core schema
-                container__discipline=self.discipline,
-                name__iexact=field.name,
-                container__name__iexact=field.model.__name__)
-            fieldinfo = Splocalecontaineritem.objects.get(**args)
-            if fieldinfo.format == 'CatalogNumberNumeric':
-                if not self.is_integer: return None
-                term = "%.9d" % int(self.term)
-                return Q(**{ field.name: term })
-
-        if self.is_prefix and self.is_suffix:
-            op = '__icontains'
-        elif self.is_prefix:
-            op = '__istartswith'
-        elif self.is_suffix:
-            op = '__iendswith'
-        else:
-            op = '__iexact'
-        return Q(**{ field.name + op: self.term })
-
-    def create_integer_filter(self, field):
-        if self.is_integer:
-            return Q(**{ field.name: int(self.term) })
-
-    def create_date_filter(self, field):
-        if self.maybe_year:
-            return Q(**{ field.name + '__year': int(self.term) })
-
-        if self.as_date:
-            return Q(**{ field.name: self.as_date })
-
-    def create_float_filter(self, field):
-        if self.is_number:
-            return Q(**{ field.name: float(self.term) })
-
-def parse_search_str(collection, search_str):
-    class TermForCollection(Term):
-        discipline = collection.discipline
-
-    match_quoted = QUOTED_STR_RE.match(search_str)
-    if match_quoted:
-        terms = [ match_quoted.groups()[1] ]
-    else:
-        terms = search_str.split()
-
-    return map(TermForCollection.make_term, terms)
-
-def build_queryset(searchtable, terms, collection):
-    tablename = searchtable.find('tableName').text.capitalize()
-    model = getattr(models, tablename)
-
-    fields = [model._meta.get_field(fn.text.lower())
-              for fn in searchtable.findall('.//searchfield/fieldName')]
-
-    filters = [filtr
-               for filtr in [
-                   term.create_filter(field)
-                   for term in terms
-                   for field in fields]
-               if filtr is not None]
-
-    if len(filters) > 0:
-        reduced = reduce(or_, filters)
-        return filter_by_collection(model.objects.filter(reduced), collection, strict=False)
-    logger.info("no filters for query. model: %s fields: %s terms: %s", model, fields, terms)
-    return None
 
 def get_express_search_config(request):
     resource, __ = get_app_resource(request.specify_collection,
@@ -142,75 +26,119 @@ def get_express_search_config(request):
                                     'ExpressSearchConfig')
     return ElementTree.XML(resource)
 
+
+def build_primary_query(session, searchtable, terms, collection, as_scalar=False):
+    table = datamodel.get_table(searchtable.find('tableName').text)
+    model = getattr(models, table.name)
+    id_field = getattr(model, table.idFieldName)
+
+    fields = [table.get_field(fn.text)
+              for fn in searchtable.findall('.//searchfield/fieldName')]
+
+    q_fields = [id_field]
+    if not as_scalar:
+        q_fields.extend([
+            getattr(model, table.get_field(fn.text).name)
+            for fn in searchtable.findall('.//displayfield/fieldName')])
+
+    filters = [fltr for fltr in [
+                t.create_filter(table, f) for f in fields for t in terms]
+               if fltr is not None]
+
+    if len(filters) > 0:
+        reduced = reduce(or_, filters)
+        query = session.query(*q_fields).filter(reduced)
+        query = filter_by_collection(model, query, collection)
+        return query.as_scalar() if as_scalar else query.order_by(id_field)
+
+    logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
+    return None
+
+def make_fieldspecs(searchtable):
+    table = getattr(models, searchtable.find('tableName').text)
+
+    return [FieldSpec(field_name=fn.text,
+                      date_part=None,
+                      root_table=table,
+                      join_path=[],
+                      is_relation=False,
+                      op_num=1,
+                      value="",
+                      negate=False,
+                      display=True,
+                      sort_type=0)
+            for fn in searchtable.findall('.//displayfield/fieldName')]
+
+
+def run_primary_search(session, searchtable, terms, collection, limit, offset):
+    query = build_primary_query(session, searchtable, terms, collection)
+
+    if query is not None:
+        total_count = query.count()
+        results = list(query.limit(limit).offset(offset))
+    else:
+        total_count = 0
+        results = []
+
+    return { searchtable.find('tableName').text : {
+        'totalCount': total_count,
+        'results': results,
+        'displayOrder': int( searchtable.find('displayOrder').text ),
+        'fieldSpecs': [f.to_stringid() for f in make_fieldspecs(searchtable)]
+        }}
+
 @require_GET
 @login_required
 def search(request):
+    collection = request.specify_collection
     express_search_config = get_express_search_config(request)
-    terms = parse_search_str(request.specify_collection, request.GET['q'])
-    specific_table = request.GET.get('name', None)
+    terms = parse_search_str(collection, request.GET['q'])
+    specific_table = request.GET.get('name', "").lower()
+    limit = int(request.GET.get('limit', 20))
+    offset = int(request.GET.get('offset', 0))
 
-    def do_search(tablename, searchtable):
-        qs = build_queryset(searchtable, terms, request.specify_collection)
-        if qs is None:
-            return dict(totalCount=0, results=[])
+    with models.session_context() as session:
+        results = [run_primary_search(session, searchtable, terms, collection, limit, offset)
+                   for searchtable in express_search_config.findall('tables/searchtable')
+                   if specific_table == "" or searchtable.find('tableName').text.lower() == specific_table]
 
-        display_fields = [fn.text.lower() \
-                              for fn in searchtable.findall('.//displayfield/fieldName')]
-        display_fields.append('id')
-        qs = qs.values(*display_fields).order_by('id')
-        total_count = qs.count()
-
-        if specific_table is not None:
-            limit = int(request.GET.get('limit', 20))
-            offset = int(request.GET.get('offset', 0))
-            results = list(qs[offset:offset+limit])
-        else:
-            results = list(qs)
-
-        return dict(totalCount=total_count, results=results)
-
-    data = dict((tablename, do_search(tablename, searchtable))
-                for searchtable in express_search_config.findall('tables/searchtable')
-                for tablename in [ searchtable.find('tableName').text.capitalize() ]
-                if specific_table is None or tablename == specific_table)
-
-    return HttpResponse(toJson(data), content_type='application/json')
+        result = {k: v for r in results for (k,v) in r.items()}
+        return HttpResponse(toJson(result), content_type='application/json')
 
 @require_GET
 @login_required
 def related_search(request):
     from . import related_searches
-    express_search_config = get_express_search_config(request)
-    rs = getattr(related_searches, request.GET['name'])()
-    model = rs.pivot()
-    for searchtable in express_search_config.findall('tables/searchtable'):
-        tablename = searchtable.find('tableName').text.capitalize()
-        if tablename == model.__name__: break
-    else:
-        raise Exception('no matching primary search for related search: ' + rs)
+    related_search = getattr(related_searches, request.GET['name'])
 
+    config = get_express_search_config(request)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
-    qs = build_queryset(searchtable, terms, request.specify_collection)
-    results = rs.do_search(qs,
-                           offset=int(request.GET.get('offset', 0)),
-                           limit=int(request.GET.get('limit', 20)))
-    return HttpResponse(toJson(results), content_type='application/json')
+
+    with models.session_context() as session:
+        result = related_search.execute(session, config, terms,
+                                        collection=request.specify_collection,
+                                        offset=int(request.GET.get('offset', 0)),
+                                        limit=int(request.GET.get('limit', 20)))
+
+        return HttpResponse(toJson(result), content_type='application/json')
 
 @require_GET
 @login_required
-def querycbx_search(request, model):
-    model = get_model_or_404(model)
-    fields = [fieldname
+def querycbx_search(request, modelname):
+    table = datamodel.get_table(modelname)
+    model = getattr(models, table.name)
+
+    fields = [table.get_field(fieldname, strict=True)
               for fieldname in request.GET
               if fieldname not in ('limit', 'offset')]
 
     filters = []
     for field in fields:
         filters_for_field = []
-        terms = parse_search_str(request.specify_collection, request.GET[field])
+        terms = parse_search_str(request.specify_collection, request.GET[field.name.lower()])
         logger.debug("found terms: %s for %s", terms, field)
         for term in terms:
-            filter_for_term = term.create_filter(model._meta.get_field(field))
+            filter_for_term = term.create_filter(table, field)
             if filter_for_term is not None:
                 filters_for_field.append(filter_for_term)
 
@@ -219,10 +147,17 @@ def querycbx_search(request, model):
             filters.append(reduce(or_, filters_for_field))
 
     if len(filters) > 0:
-        combined = reduce(and_, filters)
-        qs = filter_by_collection(model.objects.filter(combined), request.specify_collection, strict=False)
+        with models.session_context() as session:
+            combined = reduce(and_, filters)
+            query = session.query(getattr(model, table.idFieldName)).filter(combined)
+            query = filter_by_collection(model, query, request.specify_collection).limit(10)
+            ids = [id for (id,) in query]
     else:
-        qs = model.objects.none()
+        ids = []
 
-    results = [obj_to_data(obj) for obj in qs[:10]]
+    from specifyweb.specify.api import get_model_or_404, obj_to_data
+    specify_model = get_model_or_404(modelname)
+    qs = specify_model.objects.filter(id__in=ids)
+
+    results = [obj_to_data(obj) for obj in qs]
     return HttpResponse(toJson(results), content_type='application/json')

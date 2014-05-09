@@ -1,81 +1,198 @@
+import logging
+
 from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor
 from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
 from django.conf import settings
 
-from specifyweb.specify import models
+from specifyweb.specify.models import datamodel
+from specifyweb.stored_queries import models
+from specifyweb.stored_queries.fieldspec import FieldSpec
+from specifyweb.stored_queries.query_ops import QueryOps
+from specifyweb.stored_queries.views import build_query
 
-def dots2dunders(lookups):
-    return {k.replace('.', '__'): v
-            for k, v in lookups.items()}
+logger = logging.getLogger(__name__)
+
+class F(str):
+    pass
+
+class RelatedSearchMeta(type):
+    def __new__(cls, name, bases, dict):
+        Rs = super(RelatedSearchMeta, cls).__new__(cls, name, bases, dict)
+        if Rs.definitions is None:
+            return Rs
+
+        Rs.root = datamodel.get_table(Rs.definitions[0].split('.')[0])
+
+        Rs.fieldspec_template = FieldSpec(
+                field_name=None,
+                date_part=None,
+                root_table=getattr(models, Rs.root.name),
+                join_path=None,
+                is_relation=False,
+                op_num=None,
+                value=None,
+                negate=False,
+                display=False,
+                sort_type=0)
+
+        Rs.display_fieldspecs = [
+            Rs.fieldspec_template._replace(
+                field_name=fieldname,
+                join_path=joinpath,
+                is_relation=is_relation,
+                op_num=1,
+                value="",
+                display=True)
+            for (fieldname, joinpath, is_relation)
+            in [Rs.make_join_path(col.split('.'))
+                for col in Rs.columns]]
+
+        def process_filter(f, negate):
+            (field, op, val) = f
+            op_num = QueryOps.OPERATIONS.index(op.__name__)
+            value = Rs.process_value(val)
+            return Rs.make_join_path(field.split('.')) + (op_num, value, negate)
+
+        filters  = [process_filter(f, False) for f in Rs.filters]
+        excludes = [process_filter(f, True) for f in Rs.excludes]
+
+        Rs.filter_fieldspecs = [
+            Rs.fieldspec_template._replace(
+                field_name=fieldname,
+                join_path=joinpath,
+                is_relation=is_relation,  # should prolly always be false
+                op_num=op_num,
+                value=value,
+                negate=negate,
+                display=False)
+            for (fieldname, joinpath, is_relation, op_num, value, negate)
+            in filters + excludes]
+
+        return Rs
 
 class RelatedSearch(object):
+    __metaclass__ = RelatedSearchMeta
+
     distinct = False
-    filters = {}
-    excludes = {}
+    filters = []
+    excludes = []
+    definitions = None
+    columns = []
 
-    def root(self):
-        return getattr(models, self.definition.split('.')[0])
+    @classmethod
+    def execute(cls, session, config, terms, collection, limit, offset):
+        queries = filter(None, (
+            cls(defn).build_related_query(session, config, terms, collection)
+            for defn in cls.definitions))
 
-    def pivot_path(self):
-        return '__'.join( self.definition.split('.')[1:] )
-
-    def pivot(self):
-        pivot = self.root()
-        path = self.definition.split('.')[1:]
-        while len(path):
-            fieldname = path[0]
-            field = getattr(pivot, fieldname)
-            if isinstance(field, ReverseSingleRelatedObjectDescriptor):
-                pivot = field.field.related.parent_model
-            elif isinstance(field, ForeignRelatedObjectsDescriptor):
-                pivot = field.related.model
-            else:
-                raise Exception('non relationship field in related search definition')
-            path = path[1:]
-        return pivot
-
-    def build_related_queryset(self, queryset):
-        if queryset is None:
-            return self.root().objects.none()
-
-        assert queryset.model is self.pivot()
-        if self.pivot_path() == '':
-            relatedqs = queryset
+        if len(queries) > 0:
+            query = queries[0].union(*queries[1:])
+            count = query.count()
+            results = list(query.limit(limit).offset(offset))
         else:
-            relatedqs = self.root().objects.filter(**{
-                    self.pivot_path() + '__in': queryset })
-        if self.distinct: relatedqs = relatedqs.distinct()
-        filters = dots2dunders(self.filters)
-        excludes = dots2dunders(self.excludes)
-        return relatedqs.filter(**filters).exclude(**excludes)
+            count = 0
+            results = []
 
-    def to_values(self, queryset):
-        fields = [col.replace('.', '__') for col in self.columns]
-        fields.append('id')
-        return queryset.values_list(*fields)
-
-    def def_as_dict(self):
         return {
-            'name': self.__class__.__name__,
-            'root': self.root().__name__,
-            'columns': self.columns,
-            }
+            'totalCount': count,
+            'results': results,
+            'definition': {
+                'name': cls.__name__,
+                'root': cls.root.name,
+                'columns': cls.columns,
+                'fieldSpecs': [f.to_stringid() for f in cls.display_fieldspecs]}}
 
-    def result_as_dict(self, total_count, queryset):
-        data = {
-            'definition': self.def_as_dict(),
-            'totalCount': total_count,
-            'results': list(queryset),
-            }
-        if settings.DEBUG and hasattr(queryset, 'query'):
-            data['sql'] = unicode(queryset.query)
-        return data
+    @classmethod
+    def process_value(cls, val):
+        if not isinstance(val, F):
+            return val
+        fieldname, joinpath, is_relation = cls.make_join_path(val.split('.'))
+        return cls.fieldspec_template._replace(
+            field_name=fieldname,
+            join_path=joinpath,
+            is_relation=is_relation,
+            op_num=1,
+            value="")
 
-    def do_search(self, queryset, offset, limit):
-        rqs = self.build_related_queryset(queryset)
-        results = self.to_values(rqs).order_by('id')
-        total_count = results.count()
-        results = results[offset:offset+limit]
-        return self.result_as_dict(total_count, results)
+    @classmethod
+    def make_join_path(cls, path):
+        table = cls.root
+        logger.info("make_join_path from %s : %s" % (table, path))
+        model = getattr(models, table.name)
+        fieldname, join_path, field = None, [], None
 
+        for element in path:
+            field = table.get_field(element, strict=True)
+            fieldname = field.name
+            if field.is_relationship:
+                table = datamodel.get_table(field.relatedModelName)
+                model = getattr(models, table.name)
+                join_path.append((fieldname, model))
 
+        return fieldname, join_path, field.is_relationship if field else False
+
+    def __init__(self, definition):
+        self.definition = definition
+
+    def make_fieldspec_to_primary(self, pivot, join_path, primary_query):
+        return self.fieldspec_template._replace(
+            field_name=pivot._id,
+            join_path=join_path,
+            is_relation=False,
+            op_num=QueryOps.OPERATIONS.index('op_in'),
+            value=primary_query,
+            display=False)
+
+    def get_pivot(self):
+        _, jp, is_relation = self.make_join_path(self.definition.split('.')[1:])
+        logger.debug('definition %s resulted in join path %s', self.definition, jp)
+        if jp and not is_relation:
+            logger.error("definition is not a relation: %s", self.definition)
+            return (None, None)
+
+        if jp:
+            _, model = jp[-1]
+        else:
+            model = getattr(models, self.root.name)
+
+        return model, jp
+
+    def build_related_query(self, session, config, terms, collection):
+        logger.info('%s: building related query using definition: %s',
+                    self.__class__.__name__, self.definition)
+
+        from .views import build_primary_query
+
+        pivot, pivot_jp = self.get_pivot()
+        if pivot is None: return None
+
+        logger.debug('pivoting on: %s', pivot)
+        for searchtable in config.findall('tables/searchtable'):
+            if searchtable.find('tableName').text == pivot.__name__:
+                break
+        else:
+            return None
+
+        logger.debug('using %s for primary search', searchtable.find('tableName').text)
+        primary_query = build_primary_query(session, searchtable, terms, collection, as_scalar=True)
+
+        if primary_query is None:
+            return None
+        logger.debug('primary query: %s', primary_query)
+
+        fieldspec_to_primary = self.make_fieldspec_to_primary(pivot, pivot_jp, primary_query)
+        logger.debug("fieldspec to primary: %s", fieldspec_to_primary)
+        logger.debug("fieldspecs for disp: %s", self.display_fieldspecs)
+        logger.debug("fieldspecs for filter: %s", self.filter_fieldspecs)
+
+        field_specs = (self.display_fieldspecs +
+                       self.filter_fieldspecs +
+                       [fieldspec_to_primary])
+
+        related_query, _, _ = build_query(session, collection, self.root.tableId, field_specs)
+
+        if self.distinct:
+            related_query = related_query.distinct()
+
+        logger.debug('related query: %s', related_query)
+        return related_query

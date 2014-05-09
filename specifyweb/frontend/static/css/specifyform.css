@@ -25,6 +25,10 @@ img.specify-splash {
     padding: 0 10px 5px;
 }
 
+.query-results-table.ui-accordion-content {
+    max-height: 20em;
+    padding: 1em 1.2em;
+}
 
 div.specify-view-content,
 div.specify-view-content-container,
@@ -313,11 +317,6 @@ a.specify-attachment-original {
 
 .recordselector-add-delete-buttons {
     margin-top: 5px;
-}
-
-div.results div {
-    max-height: 20em;
-    overflow: scroll;
 }
 
 .list-dialog ul {

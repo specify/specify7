@@ -21,11 +21,14 @@ class Table(object):
     def django_name(self):
         return self.name.capitalize()
 
-    def get_field(self, fieldname):
+    def get_field(self, fieldname, strict=False):
         fieldname = fieldname.lower()
-        for field in self.fields + self.relationships:
+        for field in self.fields + self.relationships + [self.idField]:
             if field.name.lower() == fieldname:
                 return field
+        if strict:
+            raise Exception("Field %s not in table %s. " % (fieldname, self.name) +
+                            "Fields: %s" % [f.name for f in self.fields + self.relationships])
 
     @property
     def attachments_field(self):
@@ -38,11 +41,22 @@ class Table(object):
     def is_attachment_jointable(self):
         return self.name.endswith('Attachment') and self.name != 'Attachment'
 
+    def __repr__(self):
+        return "<SpecifyTable: %s>" % self.name
+
 
 class Field(object):
-    pass
+    is_relationship = False
+    
+    def __repr__(self):
+        return "<SpecifyField: %s>" % self.name
+
+class IdField(Field):
+    def __repr__(self):
+        return "<SpecifyIdField: %s>" % self.name
 
 class Relationship(object):
+    is_relationship = True
     dependent = False
 
 
@@ -53,6 +67,7 @@ def make_table(tabledef):
     table.tableId = int(tabledef.attrib['tableid'])
     table.idColumn = tabledef.find('id').attrib['column']
     table.idFieldName = tabledef.find('id').attrib['name']
+    table.idField = make_id_field(tabledef.find('id'))
 
     display = tabledef.find('display')
     if display is not None:
@@ -63,6 +78,12 @@ def make_table(tabledef):
     table.relationships = [make_relationship(reldef) for reldef in tabledef.findall('relationship')]
     table.fieldAliases = [make_field_alias(aliasdef) for aliasdef in tabledef.findall('fieldalias')]
     return table
+
+def make_id_field(fielddef):
+    field = IdField()
+    field.name = fielddef.attrib['name']
+    field.column = fielddef.attrib['column']
+    return field
 
 def make_field(fielddef):
     field = Field()
@@ -97,11 +118,23 @@ def load_datamodel():
 
     datamodel = Datamodel()
     datamodel.tables = [make_table(tabledef) for tabledef in datamodeldef.findall('table')]
+    add_collectingevents_to_locality(datamodel)
 
     flag_dependent_fields(datamodel)
     flag_system_tables(datamodel)
 
     return datamodel
+
+def add_collectingevents_to_locality(datamodel):
+    rel = Relationship()
+    rel.name = 'collectingEvents'
+    rel.type = 'one-to-many'
+    rel.required = False
+    rel.relatedModelName = 'collectingEvent'
+    rel.otherSideName = 'locality'
+
+    datamodel.get_table('collectingevent').get_field('locality').otherSideName = 'collectingEvents'
+    datamodel.get_table('locality').relationships.append(rel)
 
 def flag_dependent_fields(datamodel):
     for name in dependent_fields:

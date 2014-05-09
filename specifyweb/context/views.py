@@ -120,8 +120,16 @@ def app_resource(request):
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
     from specifyweb.express_search import related_searches
-    return HttpResponse(simplejson.dumps(related_searches.__all__),
-                        content_type='application/json')
+    from specifyweb.express_search.views import get_express_search_config
+
+    express_search_config = get_express_search_config(request)
+    active = [int(q.find('id').text)
+              for q in express_search_config.findall('relatedQueries/relatedquery[@isactive="true"]')]
+
+    result = [name for name in related_searches.__all__
+              if getattr(related_searches, name).id in active]
+
+    return HttpResponse(simplejson.dumps(result), content_type='application/json')
 
 datamodel_json = None
 

@@ -1,19 +1,14 @@
 define([
-'jquery', 'underscore', 'backbone', 'appresource', 'schema',
-'fieldformat', 'props', 'scrollresults', 'whenall',
+'jquery', 'underscore', 'backbone', 'appresource', 'schema', 'queryresultstable',
+'queryfieldspec', 'props', 'scrollresults', 'whenall',
 'text!context/available_related_searches.json!noinline',
 'text!properties/expresssearch_en.properties!noinline',
 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, getAppResource, schema,
-            fieldformat, props, ScrollResults, whenAll,
+], function($, _, Backbone, getAppResource, schema, QueryResultsTable,
+            QueryFieldSpec, props, ScrollResults, whenAll,
             availableRelatedJson, propstext) {
     "use strict";
 
-    function capitalize(s) {
-        return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-    }
-
-    var configFetch = getAppResource('ExpressSearchConfig');
     var relatedSearches = $.parseJSON(availableRelatedJson);
     var getProp = _.bind(props.getProperty, props, propstext);
     var accordionOptions = {
@@ -21,87 +16,6 @@ define([
         collapsible: true,
         active: false
     };
-
-    var PrimaryResults = Backbone.View.extend({
-        __name__: "PrimaryResultsView",
-        initialize: function(options) {
-            this.searchTable = options.searchTable;
-            this.model = options.model;
-            this.displayFields = _.chain($('displayfield', this.searchTable))
-                .sortBy(function(df) {return parseInt($('order', df).text(), 10);})
-                .map(function(df) {return this.model.getField($('fieldName', df).text());}, this)
-                .value();
-        },
-        getContentEl: function() {
-            return this.$('table');
-        },
-        resultsFromData: function(data) {
-            return data[capitalize(this.model.name)].results;
-        },
-        addResults: function(results) {
-            _.each(results, function(result) {
-                var row = $('<tr>').appendTo(this.$('table'));
-                _.each(this.displayFields, function(field) {
-                    var resource = new this.model.Resource({id: result.id});
-                    var href = resource.viewUrl();
-                    var value = fieldformat(field, result[field.name.toLowerCase()]);
-                    row.append($('<td>').append($('<a>', {
-                        href: href,
-                        "class": "intercept-navigation express-search-result"
-                    }).text(value)));
-                }, this);
-            }, this);
-            return results.length;
-        },
-        render: function() {
-            var table = $('<table width="100%">').appendTo(this.el);
-
-            var header = $('<tr>').appendTo(table);
-            _.each(this.displayFields, function(displayField) {
-                header.append($('<th>').text(displayField.getLocalizedName()));
-            });
-            return this;
-        }
-    });
-
-    var RelatedResults = Backbone.View.extend({
-        __name__: "RelatedResultsView",
-        initialize: function(options) {
-            this.relatedSearch = options.data;
-            this.model = schema.getModel(this.relatedSearch.definition.root);
-            this.displayFields = _.map(this.relatedSearch.definition.columns, this.model.getField, this.model);
-        },
-        getContentEl: function() {
-            return this.$('table');
-        },
-        addResults: function(results) {
-            var table = this.$('table');
-            _.each(results, function(values) {
-                var row = $('<tr>').appendTo(table);
-                var resource = new this.model.Resource({id: _.last(values)});
-                var href = resource.viewUrl();
-                _.each(this.displayFields, function(field, i) {
-                    var value = fieldformat(field, values[i]);
-                    row.append($('<td>').append($('<a>', {
-                        href: href,
-                        "class": "intercept-navigation express-search-result"
-                    }).text(value)));
-                });
-            }, this);
-            return results.length;
-        },
-        resultsFromData: function(data) {
-            return data.results;
-        },
-        render: function() {
-            var table = $('<table width="100%">').appendTo(this.el);
-            var header = $('<tr>').appendTo(table);
-            _.each(this.displayFields, function(field) {
-                return header.append($('<th>').text(field.getLocalizedName()));
-            });
-            return this;
-        }
-    });
 
     var ResultsView = Backbone.View.extend({
         __name__: "ResultsView",
@@ -114,51 +28,62 @@ define([
             this.$('.results').accordion(accordionOptions);
             var query = $.deparam.querystring().q;
             $('.express-search-query').val(query);
-            this.ajaxUrl = $.param.querystring('/express_search/', {q: query});
-            $.get(this.ajaxUrl, _.bind(this.showResults, this));
+
+            this.doPrimarySearch(query);
             this.doRelatedSearches(query);
             return this;
         },
-        searchTableOrder: function(searchTable) {
-            return parseInt($('displayOrder', searchTable).text(), 10);
+        doPrimarySearch: function(query) {
+            var ajaxUrl = $.param.querystring('/express_search/', {q: query});
+            $.get(ajaxUrl, _.bind(this.showPrimaryResults, this, ajaxUrl));
         },
-        showResults: function(data) {
-            var _this = this;
-            var showResults = _.bind(this.showResultsForTable, this, data);
-            configFetch.done(function(config) {
-                var totalResults = _.chain($('tables > searchtable', config))
-                        .sortBy(_this.searchTableOrder)
-                        .map(showResults)
-                        .reduce((function(a, b) {return a + b;}), 0);
+        showPrimaryResults: function(ajaxUrl, allTablesResults) {
+            _.each(allTablesResults, _.bind(this.makePrimaryResultView, this, ajaxUrl));
 
-                if (totalResults.value() === 0) {
-                    _this.$('.primary.status').text('No Matches');
-                } else {
-                    _this.$('.primary.status').hide();
+            var counts = _.pluck(allTablesResults, 'totalCount');
+            var totalCount = _.reduce(counts, (function(a, b) {return a + b;}), 0);
+
+            var statusEl = this.$('.primary.status');
+            totalCount < 1 ? statusEl.text('No Matches') : statusEl.hide();
+            this.$('.results.primary').accordion('destroy').accordion(accordionOptions);
+        },
+        makePrimaryResultView: function(ajaxUrl, results, tableName) {
+            if (results.totalCount < 1) return;
+            var model = schema.getModel(tableName);
+            var heading = model.getLocalizedName() + ' - ' + results.totalCount;
+            this.$('.primary.results').append($('<h4>').append($('<a>').text(heading)));
+
+            new QueryResultsTable({
+                noHeader: true,
+                model: model,
+                fieldSpecs: _.map(results.fieldSpecs, QueryFieldSpec.fromStringId),
+                initialData: results,
+                fetchResults: function(offset) {
+                    var url = $.param.querystring(ajaxUrl, {name: model.name, offset: offset});
+                    return $.get(url).pipe(function(data) { return data[model.name]; });
                 }
-                _this.$('.results.primary').accordion('destroy').accordion(accordionOptions);
-            });
+            }).render().$el.appendTo(this.$('.primary.results'));
         },
         doRelatedSearches: function(query) {
-            var _this = this;
+            var statusEl = this.$('.related.status');
+
             var deferreds = _.map(relatedSearches, function(rs) {
                 var ajaxUrl = $.param.querystring('/express_search/related/', {q: query, name: rs});
-                var showResults = _.bind(_this.showRelatedResults, _this, ajaxUrl);
+                var showResults = _.bind(this.showRelatedResults, this, ajaxUrl);
                 return $.get(ajaxUrl).pipe(showResults);
-            });
+            }, this);
+
             whenAll(deferreds).then(function(counts) {
-                if (_.reduce(counts, (function(a, b) {return a + b;}), 0) === 0) {
-                    return _this.$('.related.status').text('No Matches');
-                } else {
-                    return _this.$('.related.status').hide();
-                }
+                var totalCount = _.reduce(counts, (function(a, b) {return a + b;}), 0);
+                totalCount < 1 ? statusEl.text('No Matches') : statusEl.hide();
             });
         },
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
-            var results = new ScrollResults({
-                View: RelatedResults,
-                viewOptions: {data: data},
+            var results = new QueryResultsTable({
+                noHeader: true,
+                model: schema.getModel(data.definition.root),
+                fieldSpecs: _.map(data.definition.fieldSpecs, QueryFieldSpec.fromStringId),
                 initialData: data,
                 ajaxUrl: ajaxUrl
             });
@@ -167,23 +92,6 @@ define([
             this.$('.related.results').append($('<h4>').append($('<a>').text(heading)));
             results.render().$el.appendTo(this.$('.related.results'));
             this.$('.results.related').accordion('destroy').accordion(accordionOptions);
-            return data.totalCount;
-        },
-        showResultsForTable: function(allData, searchTable) {
-            var tableName = capitalize($('tableName', searchTable).text());
-            var data = allData[tableName];
-            if (data.results.length < 1) return 0;
-            var model = schema.getModel(tableName);
-            var heading = model.getLocalizedName() + ' - ' + data.totalCount;
-            this.$('.primary.results').append($('<h4>').append($('<a>').text(heading)));
-
-            var results = new ScrollResults({
-                View: PrimaryResults,
-                viewOptions: {model: model, searchTable: searchTable},
-                initialData: allData,
-                ajaxUrl: $.param.querystring(this.ajaxUrl, {name: capitalize(model.name)})
-            });
-            results.render().$el.appendTo(this.$('.primary.results'));
             return data.totalCount;
         },
         panelOpened: function(evt, ui) {
