@@ -134,26 +134,28 @@ class RelatedSearch(object):
     def __init__(self, definition):
         self.definition = definition
 
-    def make_fieldspec_to_primary(self, primary_query):
-        _, jp, is_relation = self.make_join_path(self.definition.split('.')[1:])
-        logger.debug('definition %s resulted in join path %s', self.definition, jp)
-
+    def make_fieldspec_to_primary(self, pivot, join_path, primary_query):
         return self.fieldspec_template._replace(
-            field_name=jp[-1][1]._id if jp else self.root.idFieldName,
-            join_path=jp,
-            is_relation=is_relation,
+            field_name=pivot._id,
+            join_path=join_path,
+            is_relation=False,
             op_num=QueryOps.OPERATIONS.index('op_in'),
             value=primary_query,
             display=False)
 
-    def pivot(self):
-        pivot = self.root
-        path = self.definition.split('.')[1:]
-        while len(path):
-            field = pivot.get_field(path[0], strict=True)
-            pivot = datamodel.get_table(field.relatedModelName)
-            path = path[1:]
-        return pivot
+    def get_pivot(self):
+        _, jp, is_relation = self.make_join_path(self.definition.split('.')[1:])
+        logger.debug('definition %s resulted in join path %s', self.definition, jp)
+        if jp and not is_relation:
+            logger.error("definition is not a relation: %s", self.definition)
+            return (None, None)
+
+        if jp:
+            _, model = jp[-1]
+        else:
+            model = getattr(models, self.root.name)
+
+        return model, jp
 
     def build_related_query(self, session, config, terms, collection):
         logger.info('%s: building related query using definition: %s',
@@ -161,10 +163,12 @@ class RelatedSearch(object):
 
         from .views import build_primary_query
 
-        pivot = self.pivot()
+        pivot, pivot_jp = self.get_pivot()
+        if pivot is None: return None
+
         logger.debug('pivoting on: %s', pivot)
         for searchtable in config.findall('tables/searchtable'):
-            if searchtable.find('tableName').text == pivot.name:
+            if searchtable.find('tableName').text == pivot.__name__:
                 break
         else:
             return None
@@ -176,7 +180,7 @@ class RelatedSearch(object):
             return None
         logger.debug('primary query: %s', primary_query)
 
-        fieldspec_to_primary = self.make_fieldspec_to_primary(primary_query)
+        fieldspec_to_primary = self.make_fieldspec_to_primary(pivot, pivot_jp, primary_query)
         logger.debug("fieldspec to primary: %s", fieldspec_to_primary)
         logger.debug("fieldspecs for disp: %s", self.display_fieldspecs)
         logger.debug("fieldspecs for filter: %s", self.filter_fieldspecs)
