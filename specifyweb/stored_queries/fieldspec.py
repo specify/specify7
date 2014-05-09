@@ -158,7 +158,6 @@ class FieldSpec(namedtuple('FieldSpec', [
             field = getattr(table, self.field_name)
 
         if not no_filter:
-            logger.debug("filtering field %r using value: %r", field.name, self.value)
             if isinstance(self.value, FieldSpec):
                 _, other_field, _ = self.value.add_to_query(query.reset_joinpoint(), no_filter=True, join_cache=join_cache)
                 uiformatter = None
