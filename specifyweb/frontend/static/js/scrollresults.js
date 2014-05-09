@@ -22,9 +22,15 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         scrolledToBottom: function() {
             return this.container.height() + this.container.scrollTop() + 10 > this.content.height();
         },
-        shouldFetchMore: function() {
-            var visible = this.$el.is(':visible');
-            return !this.fetchedAll && this.scrolledToBottom() && visible && !this.fetch;
+        shouldFetchMore: function(ignoreBottom) {
+            var criteria = {
+                visible: this.$el.is(':visible'),
+                atBottom: this.scrolledToBottom(),
+                moreToFetch: !this.fetchedAll,
+                notCurrentlyFetching: !this.fetch
+            };
+            console.log('should fetch more', criteria, _.all(criteria));
+            return _.all(criteria);
         },
         resultsFromData: function(data) {
             var rv = this.resultsView;
@@ -36,6 +42,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         },
         fetchMore: function() {
             if (this.fetch) return this.fetch;
+            console.log('fetching');
             this.trigger('fetching', this);
             return this.fetch = this.doFetch(this.offset).done(this.gotData.bind(this));
         },
@@ -46,6 +53,7 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         gotData: function(data) {
             var results = this.resultsFromData(data);
             this.fetch = null;
+            console.log('gotdata');
             this.trigger('gotdata', this);
             if (this.detectEndOfResults(results)) {
                 this.fetchedAll = true;
@@ -57,9 +65,14 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
         fetchMoreWhileAppropriate: function() {
             var _this = this;
             function recur() {
+                console.log('fetchMoreWhileAppropriate');
                 _this.shouldFetchMore() && _this.fetchMore().done(recur);
             }
             recur();
+        },
+        start: function() {
+            var recur = this.fetchMoreWhileAppropriate.bind(this);
+            this.fetchMore().done(recur);
         },
         render: function() {
             this.$el.data('view', this);

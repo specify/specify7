@@ -21,6 +21,7 @@ define([
         initialize: function(options) {
             var opNames = "countOnly noHeader fieldSpecs fetchResults initialData ajaxUrl scrollOnWindow";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
+            this.gotDataBefore = false;
         },
         renderHeader: function() {
             var header = $('<tr>');
@@ -43,18 +44,26 @@ define([
                 fetch: this.fetchResults,
                 ajaxUrl: this.ajaxUrl,
                 initialData: this.initialData
-            }).render()
-                .on('fetching', function() { this.$('.fetching-more').show(); }, this)
-                .on('gotdata', function() { this.$('.fetching-more').hide(); }, this);
-
-            _.defer(function() {
-                results.fetchMoreWhileAppropriate();
             });
+            results.render()
+                .on('fetching', this.fetchingMore, this)
+                .on('gotdata', this.gotData, this)
+                .start();
+
             return this;
         },
         remove: function() {
             this.results && this.results.undelegateEvents();
             return Backbone.View.prototype.remove.apply(this, arguments);
+        },
+        fetchingMore: function() {
+            this.$('.fetching-more').show();
+        },
+        gotData: function() {
+            this.$('.fetching-more').hide();
+            var el = this.el;
+            this.gotDataBefore ||_.defer(function() { el.scrollIntoView(); });
+            this.gotDataBefore = true;
         }
     });
 
