@@ -60,7 +60,9 @@ define([
         },
         initialize: function(options) {
             this.fieldSpecs = options.fieldSpecs;
+            this.linkField = options.linkField || 0;
             this.model = options.model;
+            console.log('QueryResultsView options:', options);
         },
         detectEndOfResults: function(results) {
             $('.query-results-count').text(results.count);
@@ -69,7 +71,7 @@ define([
         addResults: function(results) {
             var table = this.$('table.query-results');
             _.each(results.results, function(result) {
-                var resource = new this.model.Resource({ id: result[0] });
+                var resource = new this.model.Resource({ id: result[this.linkField] });
                 var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
                 var href = resource.viewUrl();
                 _.each(this.fieldSpecs, function(f, i) { row.append(renderResult(f, href, result[i + 1])); });

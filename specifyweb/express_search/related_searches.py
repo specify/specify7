@@ -50,6 +50,7 @@ class GeoToTaxon(RelatedSearch):
         'Collectionobject.determinations.taxon',
         'Collectionobject.collectingevent.locality.geography'
         ]
+    link = 'determinations.taxon'
     distinct = True
     filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
@@ -291,24 +292,24 @@ class AgentExchangeOut(RelatedSearch):
 class GeographyCE(RelatedSearch):
     id = 40
     definitions = [
-        'Geography.localities.collectingevents',
-        'Geography'
+        'Collectingevent.locality.geography',
+        'Collectingevent',
         ]
     columns = [
-        'localities.collectingevents.startdate',
-        'localities.collectingevents.stationfieldnumber',
-        'fullname'
+        'startdate',
+        'stationfieldnumber',
+        'locality.geography.fullname'
         ]
 
 class GeographyCO(RelatedSearch):
     id = 41
     definitions = [
-        'Geography.localities.collectingevents.collectionobjects',
-        'Geography'
+        'Collectionobject.collectingevent.locality.geography',
+        'Collectionobject'
         ]
     columns = [
-        'localities.collectingevents.collectionobjects.catalognumber',
-        'fullname'
+        'catalognumber',
+        'collectingevent.locality.geography.fullname'
         ]
 
 class GiftCO(RelatedSearch):

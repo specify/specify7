@@ -35,6 +35,8 @@ class RelatedSearchMeta(type):
                 display=False,
                 sort_type=0)
 
+        link_col = [Rs.link] if Rs.link else []
+
         Rs.display_fieldspecs = [
             Rs.fieldspec_template._replace(
                 field_name=fieldname,
@@ -45,7 +47,7 @@ class RelatedSearchMeta(type):
                 display=True)
             for (fieldname, joinpath, is_relation)
             in [Rs.make_join_path(col.split('.'))
-                for col in Rs.columns]]
+                for col in Rs.columns + link_col]]
 
         def process_filter(f, negate):
             (field, op, val) = f
@@ -77,6 +79,7 @@ class RelatedSearch(object):
     filters = []
     excludes = []
     definitions = None
+    link = None
     columns = []
 
     @classmethod
@@ -99,6 +102,7 @@ class RelatedSearch(object):
             'definition': {
                 'name': cls.__name__,
                 'root': cls.root.name,
+                'link': cls.link,
                 'columns': cls.columns,
                 'fieldSpecs': [f.to_stringid() for f in cls.display_fieldspecs]}}
 

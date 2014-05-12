@@ -19,7 +19,7 @@ define([
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
-            var opNames = "countOnly noHeader fieldSpecs fetchResults initialData ajaxUrl scrollOnWindow";
+            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults initialData ajaxUrl scrollOnWindow";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
@@ -40,7 +40,10 @@ define([
             var results = this.results = new ScrollResults({
                 el: this.el,
                 onWindow: this.scrollOnWindow,
-                view: new QueryResults({model: this.model, el: inner, fieldSpecs: this.fieldSpecs}),
+                view: new QueryResults({model: this.model,
+                                        el: inner,
+                                        fieldSpecs: this.fieldSpecs,
+                                        linkField: this.linkField}),
                 fetch: this.fetchResults,
                 ajaxUrl: this.ajaxUrl,
                 initialData: this.initialData

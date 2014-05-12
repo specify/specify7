@@ -80,10 +80,20 @@ define([
         },
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
+            var fieldSpecs = _.map(data.definition.fieldSpecs, QueryFieldSpec.fromStringId);
+            var model = schema.getModel(data.definition.root);
+            var linkField = 0;
+            if (data.definition.link) {
+                var linkFieldSpec = fieldSpecs.pop();
+                linkField = fieldSpecs.length + 1;
+                model = _.last(linkFieldSpec.joinPath).getRelatedModel();
+            }
+
             var results = new QueryResultsTable({
                 noHeader: true,
-                model: schema.getModel(data.definition.root),
-                fieldSpecs: _.map(data.definition.fieldSpecs, QueryFieldSpec.fromStringId),
+                model: model,
+                fieldSpecs: fieldSpecs,
+                linkField: linkField,
                 initialData: data,
                 ajaxUrl: ajaxUrl
             });
