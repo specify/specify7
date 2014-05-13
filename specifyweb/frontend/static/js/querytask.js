@@ -42,7 +42,6 @@ define([
             var ul = this.$('.spqueryfields');
             ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
             ul.sortable({ update: this.updatePositions.bind(this) });
-            _.defer(this.contractFields.bind(this));
         },
         addFieldUI: function(spqueryfield) {
             this.$('.query-execute').prop('disabled', false);
