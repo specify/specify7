@@ -33,24 +33,28 @@ define([
         initialize: function(options) {
             var attrs = options.spqueryfield.toJSON();
 
-            _(this).extend(
-                {
-                    spqueryfield: options.spqueryfield,
-                    inputUI: undefined
-                },
-                options.spqueryfield.isNew() ? {
+            _(this).extend({
+                spqueryfield: options.spqueryfield,
+                inputUI: undefined
+            });
+            if (options.spqueryfield.isNew()) {
+                _(this).extend({
                     fieldSpec       : new QueryFieldSpec(this.model),
                     formattedRecord : false,
                     value           : '',
                     operation       : undefined,
                     renderExisting  : false
-                } : {
-                    fieldSpec       : QueryFieldSpec.fromStringId(attrs.stringid),
-                    formattedRecord : attrs.isrelfld,
+                });
+            } else {
+                var fieldSpec = QueryFieldSpec.fromStringId(attrs.stringid);
+                _(this).extend({
+                    fieldSpec       : fieldSpec,
+                    formattedRecord : fieldSpec.isRelationship(),
                     value           : attrs.startvalue,
                     operation       : attrs.operstart,
                     renderExisting  : true  // so that we know not to update the model when rendering is complete
                 });
+            }
 
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
@@ -322,13 +326,13 @@ define([
         // Utility methods.
 
         updateSpQueryField: function() {
-            var attrs = this.fieldSpec.toSpQueryAttrs(this.formattedRecord);
+            var attrs = this.fieldSpec.toSpQueryAttrs();
             attrs.operstart = (this.operation == 'anything') ? 1 : parseInt(this.operation);
             console.log('updating spqueryfield with', attrs);
             this.spqueryfield.set(attrs);
         },
         getField: function() {
-            return _.last(this.fieldSpec.joinPath);
+            return this.fieldSpec.getField();
         },
         getTypeForOp: function() {
             if (_(['Month', 'Year']).contains(this.fieldSpec.datePart)) return 'numbers';

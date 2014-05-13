@@ -16,8 +16,8 @@ define(['underscore', 'schema'], function(_, schema) {
         };
     }
 
-    function makeTableList(fs, formattedRecord) {
-        var path = (fs.treeRank || formattedRecord) ?
+    function makeTableList(fs) {
+        var path = (fs.treeRank || fs.isRelationship()) ?
                 fs.joinPath : _.initial(fs.joinPath);
 
         var first = [fs.rootTable.tableId];
@@ -82,17 +82,25 @@ define(['underscore', 'schema'], function(_, schema) {
         return result;
     };
 
-    QueryFieldSpec.prototype.toSpQueryAttrs = function (formattedRecord) {
-        var tableList = makeTableList(this, formattedRecord);
-        var stringId = makeStringId(this, tableList);
+    _.extend(QueryFieldSpec.prototype, {
+        toSpQueryAttrs: function() {
+            var tableList = makeTableList(this);
+            var stringId = makeStringId(this, tableList);
 
-        return {
-            tablelist: tableList,
-            stringid: stringId.join('.'),
-            fieldname: _.last(stringId),
-            isrelfld: formattedRecord
-        };
-    };
+            return {
+                tablelist: tableList,
+                stringid: stringId.join('.'),
+                fieldname: _.last(stringId),
+                isrelfld: this.isRelationship()
+            };
+        },
+        getField: function() {
+            return _.last(this.joinPath);
+        },
+        isRelationship: function() {
+            return this.getField().isRelationship;
+        }
+    });
 
     return QueryFieldSpec;
 });
