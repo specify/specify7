@@ -47,11 +47,13 @@ define(['underscore', 'schema'], function(_, schema) {
         });
     }
 
-    QueryFieldSpec.fromStringId = function (stringId) {
+    QueryFieldSpec.fromStringId = function (stringId, isRelationship) {
         var match = STRINGID_RE.exec(stringId);
         var path = match[1].split(',');
         var tableName = match[2];
         var fieldName = match[3];
+
+        isRelationship && path.pop();
         var rootTable = schema.getModelById(parseInt(path.shift(), 10));
 
         var joinPath = [];

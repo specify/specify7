@@ -46,7 +46,7 @@ define([
                     renderExisting  : false
                 });
             } else {
-                var fieldSpec = QueryFieldSpec.fromStringId(attrs.stringid);
+                var fieldSpec = QueryFieldSpec.fromStringId(attrs.stringid, attrs.isrelfld);
                 _(this).extend({
                     fieldSpec       : fieldSpec,
                     formattedRecord : fieldSpec.isRelationship(),
