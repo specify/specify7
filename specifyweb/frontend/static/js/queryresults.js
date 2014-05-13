@@ -78,29 +78,7 @@ define([
         },
         openRecord: function(evt) {
             evt.preventDefault();
-            var resource = $(evt.currentTarget).closest('.query-result').data('resource');
-
-            specifyform.buildViewByName(resource.specifyModel.view, null, 'view').done(function(dialogForm) {
-                dialogForm.find('.specify-form-header:first').remove();
-
-                populateform(dialogForm, resource);
-
-                var dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title:  resource.specifyModel.getLocalizedName(),
-                    close: function() { $(this).remove(); }
-                });
-
-                // if (!resource.isNew()) {  // <- always true.
-                dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first').prepend(
-                    '<a href="' + resource.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>');
-
-                dialog.parent().delegate('.ui-dialog-title a', 'click', function(evt) {
-                    evt.preventDefault();
-                    navigation.go(resource.viewUrl());
-                    dialog.dialog('close');
-                });
-            });
+            window.open($(evt.currentTarget).attr('href'));
         }
     });
 
