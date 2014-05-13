@@ -10,6 +10,11 @@ class Datamodel(object):
             if table.name.lower() == tablename:
                 return table
 
+    def get_table_by_id(self, table_id):
+        for table in self.tables:
+            if table.tableId == table_id:
+                return table
+
 class Table(object):
     system = False
 
@@ -51,14 +56,16 @@ class Field(object):
     def __repr__(self):
         return "<SpecifyField: %s>" % self.name
 
+    def is_temporal(self):
+        return self.type in ('java.util.Date', 'java.util.Calendar')
+
 class IdField(Field):
     def __repr__(self):
         return "<SpecifyIdField: %s>" % self.name
 
-class Relationship(object):
+class Relationship(Field):
     is_relationship = True
     dependent = False
-
 
 def make_table(tabledef):
     table = Table()
