@@ -84,7 +84,8 @@ def run_primary_search(session, searchtable, terms, collection, limit, offset):
         'totalCount': total_count,
         'results': results,
         'displayOrder': int( searchtable.find('displayOrder').text ),
-        'fieldSpecs': [f.to_stringid() for f in make_fieldspecs(searchtable)]
+        'fieldSpecs': [{'stringId': f.to_stringid(), 'isRelationship': False}
+                       for f in make_fieldspecs(searchtable)]
         }}
 
 @require_GET

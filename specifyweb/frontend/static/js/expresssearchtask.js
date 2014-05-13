@@ -17,6 +17,8 @@ define([
         active: false
     };
 
+    var makeFS = function(fs) { return QueryFieldSpec.fromStringId(fs.stringId, fs.isRelationship); };
+
     var ResultsView = Backbone.View.extend({
         __name__: "ResultsView",
         events: {
@@ -56,7 +58,7 @@ define([
             new QueryResultsTable({
                 noHeader: true,
                 model: model,
-                fieldSpecs: _.map(results.fieldSpecs, QueryFieldSpec.fromStringId),
+                fieldSpecs: _.map(results.fieldSpecs, makeFS),
                 initialData: results,
                 fetchResults: function(offset) {
                     var url = $.param.querystring(ajaxUrl, {name: model.name, offset: offset});
@@ -80,7 +82,7 @@ define([
         },
         showRelatedResults: function(ajaxUrl, data) {
             if (data.totalCount < 1) return 0;
-            var fieldSpecs = _.map(data.definition.fieldSpecs, QueryFieldSpec.fromStringId);
+            var fieldSpecs = _.map(data.definition.fieldSpecs, makeFS);
             var model = schema.getModel(data.definition.root);
             var linkField = 0;
             if (data.definition.link) {

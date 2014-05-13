@@ -104,7 +104,8 @@ class RelatedSearch(object):
                 'root': cls.root.name,
                 'link': cls.link,
                 'columns': cls.columns,
-                'fieldSpecs': [f.to_stringid() for f in cls.display_fieldspecs]}}
+                'fieldSpecs': [{'stringId': f.to_stringid(), 'isRelationship': f.is_relation}
+                               for f in cls.display_fieldspecs]}}
 
     @classmethod
     def process_value(cls, val):
