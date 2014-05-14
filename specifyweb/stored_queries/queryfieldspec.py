@@ -50,10 +50,13 @@ def make_stringid(fs, table_list):
 
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table date_part tree_rank")):
     @classmethod
-    def from_stringid(cls, stringid):
+    def from_stringid(cls, stringid, is_relation):
         path_str, table_name, field_name = STRINGID_RE.match(stringid).groups()
         path = deque(path_str.split(','))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
+
+        if is_relation:
+            path.pop()
 
         join_path = []
         node = root_table

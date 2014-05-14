@@ -26,7 +26,7 @@ class QueryField(namedtuple('QueryField', [
     @classmethod
     def from_spqueryfield(cls, field, value=None):        
         logger.info('processing field from %r', field)
-        fieldspec = QueryFieldSpec.from_stringid(field.stringId)
+        fieldspec = QueryFieldSpec.from_stringid(field.stringId, field.isRelFld)
         
         return cls(fieldspec = fieldspec,
                    op_num    = field.operStart,
