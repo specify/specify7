@@ -16,8 +16,8 @@ define(['underscore', 'schema'], function(_, schema) {
         };
     }
 
-    function makeTableList(fs, formattedRecord) {
-        var path = (fs.treeRank || formattedRecord) ?
+    function makeTableList(fs) {
+        var path = (fs.treeRank || fs.isRelationship()) ?
                 fs.joinPath : _.initial(fs.joinPath);
 
         var first = [fs.rootTable.tableId];
@@ -47,11 +47,13 @@ define(['underscore', 'schema'], function(_, schema) {
         });
     }
 
-    QueryFieldSpec.fromStringId = function (stringId) {
+    QueryFieldSpec.fromStringId = function (stringId, isRelationship) {
         var match = STRINGID_RE.exec(stringId);
         var path = match[1].split(',');
         var tableName = match[2];
         var fieldName = match[3];
+
+        isRelationship && path.pop();
         var rootTable = schema.getModelById(parseInt(path.shift(), 10));
 
         var joinPath = [];
@@ -65,34 +67,48 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
-        var result = _.extend(new QueryFieldSpec(rootTable), {joinPath: joinPath, table: node});
         var extracted = extractDatePart(fieldName);
         var field = node.getField(extracted.fieldName);
-        if (field) {
-            result.joinPath.push(field);
-            result.treeRank = null;
+        var treeRank = null;
+        var datePart = extracted.datePart;
+
+        if (field == null) {
+            treeRank = extracted.fieldName;
+            console.log("using fieldname as treerank", treeRank);
         } else {
-            result.treeRank = extracted.fieldName;
-            console.log("using fieldname as treerank", result.treeRank);
+            joinPath.push(field);
+            field.isTemporal() && datePart || ( datePart = "Full Date" );
         }
 
-        field && field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
-
-        console.log("parsed", stringId, result);
+        var result = _.extend(new QueryFieldSpec(rootTable), {
+            joinPath: joinPath,
+            table: node,
+            datePart: datePart,
+            treeRank: treeRank
+        });
+        console.log("parsed", stringId, "related", isRelationship, result);
         return result;
     };
 
-    QueryFieldSpec.prototype.toSpQueryAttrs = function (formattedRecord) {
-        var tableList = makeTableList(this, formattedRecord);
-        var stringId = makeStringId(this, tableList);
+    _.extend(QueryFieldSpec.prototype, {
+        toSpQueryAttrs: function() {
+            var tableList = makeTableList(this);
+            var stringId = makeStringId(this, tableList);
 
-        return {
-            tablelist: tableList,
-            stringid: stringId.join('.'),
-            fieldname: _.last(stringId),
-            isrelfld: formattedRecord
-        };
-    };
+            return {
+                tablelist: tableList,
+                stringid: stringId.join('.'),
+                fieldname: _.last(stringId),
+                isrelfld: this.isRelationship()
+            };
+        },
+        getField: function() {
+            return _.last(this.joinPath);
+        },
+        isRelationship: function() {
+            return this.getField().isRelationship && !this.treeRank;
+        }
+    });
 
     return QueryFieldSpec;
 });

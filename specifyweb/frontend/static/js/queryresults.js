@@ -6,12 +6,8 @@ define([
 
     var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
 
-    function getField(fieldSpec) {
-        return _.last(fieldSpec.joinPath);
-    }
-
     function renderResult(fieldSpec, rowHref, value) {
-        var field = getField(fieldSpec);
+        var field = fieldSpec.getField();
         var cell = $('<a class="query-result-link">')
                 .prop('href', rowHref);
 
@@ -26,7 +22,7 @@ define([
     }
 
     function formatValue(fieldSpec, value) {
-        var field = getField(fieldSpec);
+        var field = fieldSpec.getField();
         if (!field) return value;
         if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
             return fieldformat(field, value);
@@ -35,7 +31,7 @@ define([
     }
 
     function setupToOneCell(fieldSpec, cell, cellValue) {
-        var field = getField(fieldSpec);
+        var field = fieldSpec.getField();
         if (cellValue == null) return;
         cell.text('(loading...)');
         var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
@@ -43,7 +39,7 @@ define([
     }
 
     function setupToManyCell(fieldSpec, cell, cellValue) {
-        var field = getField(fieldSpec);
+        var field = fieldSpec.getField();
         if (cellValue == null) return;
         cell.text('(loading...)');
         var parentResource = new field.model.Resource({ id: cellValue });
@@ -60,7 +56,9 @@ define([
         },
         initialize: function(options) {
             this.fieldSpecs = options.fieldSpecs;
+            this.linkField = options.linkField || 0;
             this.model = options.model;
+            console.log('QueryResultsView options:', options);
         },
         detectEndOfResults: function(results) {
             $('.query-results-count').text(results.count);
@@ -69,7 +67,7 @@ define([
         addResults: function(results) {
             var table = this.$('table.query-results');
             _.each(results.results, function(result) {
-                var resource = new this.model.Resource({ id: result[0] });
+                var resource = new this.model.Resource({ id: result[this.linkField] });
                 var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
                 var href = resource.viewUrl();
                 _.each(this.fieldSpecs, function(f, i) { row.append(renderResult(f, href, result[i + 1])); });

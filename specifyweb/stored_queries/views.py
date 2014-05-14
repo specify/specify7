@@ -13,7 +13,7 @@ from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_required
 from . import models
 
-from .fieldspec import FieldSpec
+from .queryfield import QueryField
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ def query(request, id):
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
-        field_specs = [FieldSpec.from_spqueryfield(field, value_from_request(field, request.GET))
+        field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
         return execute(session, request.specify_collection,
@@ -107,7 +107,7 @@ def ephemeral(request):
     count_only = spquery['countonly']
 
     with models.session_context() as session:
-        field_specs = [FieldSpec.from_spqueryfield(EphemeralField.from_json(data))
+        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
                        for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
         return execute(session, request.specify_collection,
@@ -155,5 +155,6 @@ def build_query(session, collection, tableid, field_specs):
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
+    logger.debug("query: %s", query)
     return query, order_by_exprs, deferreds
 

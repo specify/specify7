@@ -4,11 +4,20 @@ import os
 from django.conf import settings
 
 class Datamodel(object):
-    def get_table(self, tablename):
+    def get_table(self, tablename, strict=False):
         tablename = tablename.lower()
         for table in self.tables:
             if table.name.lower() == tablename:
                 return table
+        if strict:
+            raise Exception("No table with name: %r" % tablename)
+
+    def get_table_by_id(self, table_id, strict=False):
+        for table in self.tables:
+            if table.tableId == table_id:
+                return table
+        if strict:
+            raise Exception("No table with id: %d" % table_id)
 
 class Table(object):
     system = False
@@ -51,14 +60,16 @@ class Field(object):
     def __repr__(self):
         return "<SpecifyField: %s>" % self.name
 
+    def is_temporal(self):
+        return self.type in ('java.util.Date', 'java.util.Calendar')
+
 class IdField(Field):
     def __repr__(self):
         return "<SpecifyIdField: %s>" % self.name
 
-class Relationship(object):
+class Relationship(Field):
     is_relationship = True
     dependent = False
-
 
 def make_table(tabledef):
     table = Table()
@@ -83,6 +94,7 @@ def make_id_field(fielddef):
     field = IdField()
     field.name = fielddef.attrib['name']
     field.column = fielddef.attrib['column']
+    field.type = fielddef.attrib['type']
     return field
 
 def make_field(fielddef):
