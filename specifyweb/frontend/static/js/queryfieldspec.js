@@ -67,20 +67,26 @@ define(['underscore', 'schema'], function(_, schema) {
             node = table;
         });
 
-        var result = _.extend(new QueryFieldSpec(rootTable), {joinPath: joinPath, table: node});
         var extracted = extractDatePart(fieldName);
         var field = node.getField(extracted.fieldName);
-        if (field) {
-            result.joinPath.push(field);
-            result.treeRank = null;
+        var treeRank = null;
+        var datePart = extracted.datePart;
+
+        if (field == null) {
+            treeRank = extracted.fieldName;
+            console.log("using fieldname as treerank", treeRank);
         } else {
-            result.treeRank = extracted.fieldName;
-            console.log("using fieldname as treerank", result.treeRank);
+            joinPath.push(field);
+            field.isTemporal() && datePart || ( datePart = "Full Date" );
         }
 
-        field && field.isTemporal() && ( result.datePart = extracted.datePart || "Full Date" );
-
-        console.log("parsed", stringId, result);
+        var result = _.extend(new QueryFieldSpec(rootTable), {
+            joinPath: joinPath,
+            table: node,
+            datePart: datePart,
+            treeRank: treeRank
+        });
+        console.log("parsed", stringId, "related", isRelationship, result);
         return result;
     };
 
@@ -100,7 +106,7 @@ define(['underscore', 'schema'], function(_, schema) {
             return _.last(this.joinPath);
         },
         isRelationship: function() {
-            return this.getField().isRelationship;
+            return this.getField().isRelationship && !this.treeRank;
         }
     });
 

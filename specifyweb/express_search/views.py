@@ -13,7 +13,7 @@ from specifyweb.specify.views import login_required
 from specifyweb.context.app_resource import get_app_resource
 
 from specifyweb.stored_queries import models
-from specifyweb.stored_queries.fieldspec import FieldSpec
+from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.stored_queries.views import filter_by_collection
 
 from .search_terms import parse_search_str
@@ -55,19 +55,10 @@ def build_primary_query(session, searchtable, terms, collection, as_scalar=False
     return None
 
 def make_fieldspecs(searchtable):
-    table = getattr(models, searchtable.find('tableName').text)
+    tablename = searchtable.find('tableName').text
 
-    return [FieldSpec(field_name=fn.text,
-                      date_part=None,
-                      root_table=table,
-                      join_path=[],
-                      is_relation=False,
-                      op_num=1,
-                      value="",
-                      negate=False,
-                      display=True,
-                      sort_type=0)
-            for fn in searchtable.findall('.//displayfield/fieldName')]
+    return [QueryFieldSpec.from_path((tablename, fieldname.text))
+            for fieldname in searchtable.findall('.//displayfield/fieldName')]
 
 
 def run_primary_search(session, searchtable, terms, collection, limit, offset):
