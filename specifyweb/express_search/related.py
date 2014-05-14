@@ -1,11 +1,7 @@
 import logging
 
-from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor
-from django.db.models.fields.related import ForeignRelatedObjectsDescriptor
-from django.conf import settings
-
 from specifyweb.specify.models import datamodel
-from specifyweb.stored_queries import models
+
 from specifyweb.stored_queries.queryfield import QueryField
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.stored_queries.query_ops import QueryOps
