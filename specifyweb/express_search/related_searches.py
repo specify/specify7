@@ -10,8 +10,8 @@ class CollObjToDeterminer(RelatedSearch):
         'Collectionobject.determinations.taxon',
         'Collectionobject'
         ]
-    distinct = True
     filters = [['determinations.iscurrent', QueryOps.op_true, None]]
+    link = 'determinations.taxon'
     columns = [
         'determinations.taxon.fullname',
         'determinations.taxon.commonname',
@@ -47,16 +47,29 @@ class CollObject(RelatedSearch):
 class GeoToTaxon(RelatedSearch):
     id = 4
     definitions = [
-        'Collectionobject.determinations.taxon',
-        'Collectionobject.collectingevent.locality.geography'
+        'Taxon.determinations.collectionobject.collectingevent.locality.geography',
+        'Taxon'
         ]
-    link = 'determinations.taxon'
     distinct = True
     filters = [['determinations.iscurrent', QueryOps.op_true, None]]
     columns = [
-        'determinations.taxon.fullname',
-        'collectingevent.locality.geography.fullname',
+        'fullname',
+        'determinations.collectionobject.collectingevent.locality.geography.fullname',
         ]
+
+# class GeoToTaxon(RelatedSearch):
+#     id = 4
+#     definitions = [
+#         'Collectionobject.determinations.taxon',
+#         'Collectionobject.collectingevent.locality.geography'
+#         ]
+#     link = 'determinations.taxon'
+#     distinct = True
+#     filters = [['determinations.iscurrent', QueryOps.op_true, None]]
+#     columns = [
+#         'determinations.taxon.fullname',
+#         'collectingevent.locality.geography.fullname',
+#         ]
 
 class ColObjCollectors(RelatedSearch):
     id = 5
@@ -65,7 +78,6 @@ class ColObjCollectors(RelatedSearch):
         'collectionobject.collectingevent',
         'Collectionobject'
         ]
-    distinct = True
     columns = [
         'catalognumber',
         'collectingevent.startdate',
@@ -78,6 +90,7 @@ class AcceptedTaxon(RelatedSearch):
         'Taxon.acceptedtaxon',
         'Taxon'
         ]
+    link = 'acceptedtaxon'
     excludes = [['taxonid', QueryOps.op_empty, None],
                 ['acceptedtaxon.taxonid', QueryOps.op_empty, None]]
     columns = [
@@ -200,6 +213,7 @@ class AccessionToAgent(RelatedSearch):
         'Accession.accessionagents.agent',
         'Accession'
         ]
+    link = 'accessionagents.agent'
     columns = [
         'accessionagents.agent',
         'accessionagents.role',
@@ -212,6 +226,7 @@ class BorrowToAgent(RelatedSearch):
         'Borrow.borrowagents.agent',
         'Borrow'
         ]
+    link = 'borrowagents.agent'
     columns = [
         'invoicenumber',
         'borrowagents.agent',
@@ -224,10 +239,10 @@ class AppraisalToAgent(RelatedSearch):
         'Appraisal.agent',
         'Appraisal'
         ]
+    link = 'agent'
     columns = [
         'appraisalnumber',
-        'agent.lastname',
-        'agent.firstname',
+        'agent'
         ]
 
 class GeoTimePeriodToCO(RelatedSearch):
@@ -236,6 +251,7 @@ class GeoTimePeriodToCO(RelatedSearch):
         'Geologictimeperiod.chronosstratspaleocontext.collectionobjects',
         'Geologictimeperiod'
         ]
+    link = 'chronosstratspaleocontext.collectionobjects'
     columns = [
         'fullname',
         'chronosstratspaleocontext.collectionobjects.catalognumber'
@@ -247,6 +263,7 @@ class CollEventToCollectors(RelatedSearch):
         'Collectingevent.collectors.agent',
         'Collectingevent'
         ]
+    link = 'collectors.agent'
     columns = [
         'collectors.agent',
         'startdate',
@@ -318,6 +335,7 @@ class GiftCO(RelatedSearch):
         'Gift.giftpreparations.preparation.collectionobject',
         'Gift'
         ]
+    link = 'giftpreparations.preparation.collectionobject'
     columns = [
         'giftpreparations.preparation.collectionobject.catalognumber',
         'giftpreparations.preparation.preptype.name',
@@ -330,9 +348,9 @@ class GiftAgent(RelatedSearch):
         'Gift.giftagents.agent',
         'Gift'
         ]
+    link = 'giftagents.agent'
     columns = [
-        'giftagents.agent.lastname',
-        'giftagents.agent.firstname',
+        'giftagents.agent',
         'giftagents.role',
         'giftnumber'
         ]
@@ -343,6 +361,7 @@ class LoanCO(RelatedSearch):
         'Loan.loanpreparations.preparation.collectionobject',
         'Loan'
         ]
+    link = 'loanpreparations.preparation.collectionobject'
     columns = [
         'loanpreparations.preparation.collectionobject.catalognumber',
         'loanpreparations.preparation.preptype.name',
@@ -355,6 +374,7 @@ class LoanAgent(RelatedSearch):
         'Loan.loanagents.agent',
         'Loan'
         ]
+    link = 'loanagents.agent'
     columns = [
         'loanagents.agent',
         'loanagents.role',
@@ -367,6 +387,7 @@ class LithoStratToCO(RelatedSearch):
         'Lithostrat.paleocontexts.collectionobjects',
         'Lithostrat'
         ]
+    link = 'paleocontexts.collectionobjects'
     columns = [
         'paleocontexts.collectionobjects.catalognumber',
         'fullname'
@@ -378,6 +399,7 @@ class PermitToCO(RelatedSearch):
         'Permit.accessionauthorizations.accession.collectionobjects',
         'Permit'
         ]
+    link = 'accessionauthorizations.accession.collectionobjects'
     columns = [
         'accessionauthorizations.accession.collectionobjects.catalognumber',
         'permitnumber'
@@ -386,7 +408,8 @@ class PermitToCO(RelatedSearch):
 class PermitIssuedToAgent(RelatedSearch):
     id = 48
     definitions = [
-        'Permit.issuedto'
+        'Permit.issuedto',
+        'Permit'
         ]
     columns = [
         'issuedto',
@@ -445,6 +468,7 @@ class StorageCO(RelatedSearch):
         'Storage.preparations.collectionobject',
         'Storage'
         ]
+    link = 'preparations.collectionobject'
     columns = [
         'preparations.collectionobject.catalognumber',
         'name',
@@ -501,6 +525,7 @@ class ExchangeInCO(RelatedSearch):
         'Exchangein.exchangeinpreps.preparation.collectionobject',
         'Exchangein'
         ]
+    link = 'exchangeinpreps.preparation.collectionobject'
     columns = [
         'exchangeinpreps.preparation.collectionobject.catalognumber',
         'exchangeinpreps.preparation.preptype.name',
@@ -513,6 +538,7 @@ class ExchangeOutCO(RelatedSearch):
         'Exchangeout.exchangeoutpreps.preparation.collectionobject',
         'Exchangeout'
         ]
+    link = 'exchangeoutpreps.preparation.collectionobject'
     columns = [
         'exchangeoutpreps.preparation.collectionobject.catalognumber',
         'exchangeoutpreps.preparation.preptype.name',
