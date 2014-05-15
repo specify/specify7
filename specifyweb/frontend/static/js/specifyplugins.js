@@ -27,8 +27,8 @@ define([
                 var self = this;
                 evt.preventDefault();
                 $('<div>').append(templates.gmapplugin(self.model.toJSON())).dialog({
-                    width: 455,
-                    height: 300,
+                    width: 800,
+                    height: 600,
                     title: self.model.specifyModel.getLocalizedName(),
                     close: function() { $(this).remove(); }
                 }).css({ overflow: 'hidden' });
