@@ -100,8 +100,10 @@ define([
                 ajaxUrl: ajaxUrl
             });
             var rsName = data.definition.name;
-            var heading = (getProp(rsName) || rsName) + ' - ' + data.totalCount;
-            this.$('.related.results').append($('<h4>').append($('<a>').text(heading)));
+            var heading = $('<h4>')
+                    .append($('<a>').text((getProp(rsName) || rsName) + ' - ' + data.totalCount))
+                    .attr('title', getProp(rsName + "_desc") || '');
+            this.$('.related.results').append(heading);
             results.render().$el.appendTo(this.$('.related.results'));
             this.$('.results.related').accordion('destroy').accordion(accordionOptions);
             return data.totalCount;
