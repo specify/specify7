@@ -55,6 +55,9 @@ else:
         specify_settings.DATABASE_PORT or 3306,
         specify_settings.DATABASE_NAME)
 
+# Prevent MySQL connection timeouts
+SA_POOL_RECYCLE = 3600
+
 SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")

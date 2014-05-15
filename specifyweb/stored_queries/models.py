@@ -8,7 +8,8 @@ from django.conf import settings
 from specifyweb.specify.models import datamodel
 from . import build_models
 
-Session = sessionmaker(bind=sqlalchemy.create_engine(settings.SA_DATABASE_URL))
+engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE)
+Session = sessionmaker(bind=engine)
 
 @contextmanager
 def session_context():
