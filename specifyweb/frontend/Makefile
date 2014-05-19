@@ -3,6 +3,7 @@ R_JS = ../../tools/r.js
 
 JS_FILES = $(filter-out static/js/main-built.js,$(wildcard static/js/*.js))
 CSS_FILES = $(filter-out static/css/main-built.css,$(wildcard static/css/*.css))
+TEMPLATES = $(wildcard static/html/templates/*)
 
 all: templates/specify-built.html
 
@@ -13,7 +14,7 @@ templates/specify-built.html: templates/specify.html static/js/main-built.js sta
 	sed 's:main.css:main-built.css:;s: data-main="/static/js/main.js"::;s:/static/js/vendor/require.js:/static/js/main-built.js:' \
 		templates/specify.html > $@
 
-static/js/main-built.js: ${JS_FILES}
+static/js/main-built.js: ${JS_FILES} ${TEMPLATES}
 	node ${R_JS} -o static/js/app.build.js out=$@
 
 static/css/main-built.css: ${CSS_FILES}
