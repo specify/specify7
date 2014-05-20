@@ -228,6 +228,7 @@ define([
 
     return Backbone.View.extend({
         __name__: "WelcomeView",
+        className: "specify-welcome",
         render: function() {
             this.$el.append(templates.welcome());
 

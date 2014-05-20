@@ -1,17 +1,3 @@
-/*body {
-    font-family: verdana;
-    font-size: 10px;
-}*/
-
-/* table { */
-/*     border: solid; */
-/* } */
-
-/* td { */
-/*     border: solid; */
-/*     border-width: 1px; */
-/* } */
-
 img.specify-splash {
     margin-left: auto;
     margin-right: auto;
@@ -618,3 +604,12 @@ a.specify-attachment-original {
     opacity: 0.9;
     border: solid 1px black;
 }
+
+.specify-welcome > p,
+.specify-welcome > h2 {
+    max-width: 863px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+
