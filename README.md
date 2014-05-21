@@ -89,16 +89,6 @@ There is a preliminary test suite which can be ran as follows:
 
     ./manage.sh test
 
-Sync the database:
-------------------
-Django keeps track of browser sessions using the `django_session` table. This table
-must be created.
-
-    ./manage.sh syncdb
-
-If this step fails because the master user does not have `CREATE TABLE` privileges, you can
-change the `specify_settings.py` file to use the 'IT user' as a temporary work-around.
-
 Run the test server:
 --------------------
 
