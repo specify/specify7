@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'parsespecifyproperties',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
     'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, parsespecifyproperties) {
+], function(require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties) {
     "use strict";
     var app;
 
@@ -106,7 +106,8 @@ define([
                 dialog && dialog.$el.dialog('close');
                 dialog = new ChooseRecordSetDialog({
                     recordSets: recordSets,
-                    report: report
+                    report: report,
+                    query: query
                 });
                 $('body').append(dialog.el);
                 dialog.render();
@@ -119,9 +120,14 @@ define([
         events: {
             'click a': 'selected'
         },
+        initialize: function(options) {
+            this.report = options.report;
+            this.query = options.query;
+            this.recordSets = options.recordSets;
+        },
         render: function() {
             var ul = $('<ul>');
-            this.options.recordSets.each(function(recordSet) {
+            this.recordSets.each(function(recordSet) {
                 var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
                 var entry = $(dialogEntry({ icon: icon, name: recordSet.get('name') }));
                 recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
@@ -130,26 +136,73 @@ define([
                     $('.item-count', entry).append(count).show();
                 });
             });
-            this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
+            this.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "From Record Set",
                 maxHeight: 400,
-                buttons: [
-                    { text: 'Skip', click: function() { } },
-                    { text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
+                buttons: this.dialogButtons()
             }));
             return this;
         },
+        dialogButtons: function() {
+            var buttons = [{ text: 'Cancel', click: function() { $(this).dialog('close'); }}];
+
+            if (this.query) {
+                var queryParamsDialogOpts = { report: this.report, query: this.query };
+                buttons.unshift({
+                    text: 'Query',
+                    click: function() {
+                        $(this).dialog('close');
+                        dialog = new QueryParamsDialog(queryParamsDialogOpts);
+                        dialog.render();
+                    }
+                });
+            }
+            return buttons;
+        },
         selected: function(evt) {
             evt.preventDefault();
-            var recordSet = this.options.recordSets.at(this.$('a').index(evt.currentTarget));
+            var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
             var url = $.param.querystring("/report_runner/run/", {
-                reportId: this.options.report.id,
+                reportId: this.report.id,
                 recordSetId: recordSet.id });
             window.open(url);
             dialog && dialog.$el.dialog('close');
+        }
+    });
+
+    var QueryParamsDialog = Backbone.View.extend({
+        __name__: "QueryParamsDialog",
+        initialize: function(options) {
+            this.report = options.report;
+            this.query = options.query;
+            this.model = schema.getModel(this.query.get('contextname'));
+        },
+        render: function() {
+            this.$el.append('<ul class="query-params-list">')
+                .dialog(_.extend({}, commonDialogOpts, {
+                    title: this.query.get('name'),
+                    width: 800,
+                    position: { my: "top", at: "top+20", of: $('body') }
+                }));
+            this.query.rget('fields').done(this.gotFields.bind(this));
+            return this;
+        },
+        gotFields: function(spqueryfields) {
+            this.fields = spqueryfields;
+            this.fieldUIs = spqueryfields.map(this.makeFieldUI.bind(this));
+            var ul = this.$('ul');
+            ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
+        },
+        makeFieldUI: function(spqueryfield) {
+            return new QueryFieldUI({
+                forReport: true,
+                parentView: this,
+                model: this.model,
+                spqueryfield: spqueryfield,
+                el: $('<li class="spqueryfield for-report">')
+            }).render();
         }
     });
 

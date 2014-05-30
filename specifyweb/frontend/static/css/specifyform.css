@@ -613,3 +613,18 @@ a.specify-attachment-original {
     text-align: justify;
 }
 
+.query-params-list {
+    padding: 0px;
+}
+
+.spqueryfield.for-report {
+    background-color: rgb(200, 200, 200);
+    margin-top: 7px;
+    padding: 5px 0px 4px 12px;
+}
+
+.spqueryfield .ui-icon-cancel {
+    /* work around for bug in jquery UI themes */
+    /* that seems to effect ui icons in dialogs */
+    background-position: 0 -128px;
+}

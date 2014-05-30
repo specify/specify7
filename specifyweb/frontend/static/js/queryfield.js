@@ -35,7 +35,8 @@ define([
 
             _(this).extend({
                 spqueryfield: options.spqueryfield,
-                inputUI: undefined
+                inputUI: undefined,
+                forReport: options.forReport || false
             });
             if (options.spqueryfield.isNew()) {
                 _(this).extend({
@@ -73,6 +74,10 @@ define([
 
             this.update();
             this.inputUI && this.inputUI.setValue(this.value);
+
+            if (this.forReport) {
+                this.$('.field-controls, .field-expand, .field-delete').remove();
+            }
             return this;
         },
 
@@ -280,8 +285,11 @@ define([
         },
         goBack: function(evt) {
             var element = /field-(label-)?([a-z]+)/.exec($(evt.currentTarget).attr('class')).pop();
-            console.log('backing up to', element);
-
+            console.log('back up to', element);
+            if (this.forReport && element != "operation") {
+                console.log('not backing up because query is for report');
+                return;
+            }
             var toClear = {
                 field     : ['value', 'operation', 'datePart', 'treeRank'],
                 datepart  : ['value', 'operation', 'datePart'],
