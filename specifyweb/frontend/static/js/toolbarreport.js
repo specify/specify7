@@ -184,7 +184,11 @@ define([
                 .dialog(_.extend({}, commonDialogOpts, {
                     title: this.query.get('name'),
                     width: 800,
-                    position: { my: "top", at: "top+20", of: $('body') }
+                    position: { my: "top", at: "top+20", of: $('body') },
+                    buttons: [
+                        {text: "Run", click: this.runReport.bind(this)},
+                        {text: "Cancel", click: function() { $(this).dialog('close'); }}
+                    ]
                 }));
             this.query.rget('fields').done(this.gotFields.bind(this));
             return this;
@@ -203,6 +207,16 @@ define([
                 spqueryfield: spqueryfield,
                 el: $('<li class="spqueryfield for-report">')
             }).render();
+        },
+        runReport: function() {
+            dialog && dialog.$el.dialog('close');
+            var queryParams = {reportId: this.report.id};
+            this.fields.each(function(field) {
+                var oper = (field.get('isnot') ? -1 : 1) * field.get('operstart');
+                queryParams["f" + field.id] = oper + "-" + field.get('startvalue');
+            });
+            var url = $.param.querystring("/report_runner/run/", queryParams);
+            window.open(url);
         }
     });
 

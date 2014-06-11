@@ -44,23 +44,11 @@ class ReportException(Exception):
 @require_GET
 @login_required
 def run(request):
-    options = {
+    options = dict(request.GET)
+    options.update({
         "collectionName": request.specify_collection.collectionname,
-        "userName": request.specify_user.name,
-        "reportId": int(request.GET['reportId']),
-        "recordSetId": int(request.GET['recordSetId']),
-        "reportParameters": {},
-        "queryParameters": [
-            # {
-            #     "queryFieldId": 703,
-            #     "text1": "Andy",
-            #     "text2": "",
-            #     "operator": 1,
-            #     "isNegated": false
-            # }
-        ]
-    }
-    print options
+        "userName": request.specify_user.name
+    })
 
     r = requests.get("http://localhost:8080/report", params=options)
     if r.status_code == 200:
