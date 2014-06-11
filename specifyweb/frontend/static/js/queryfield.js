@@ -228,9 +228,11 @@ define([
         setupCompleteState: function() {
             this.$el.removeClass('field-incomplete');
             if (!this.formattedRecord && this.operation != 'anything') {
+                var field = this.getField();
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
-                    field: _.last(this.fieldSpec.joinPath),
-                    el: this.$('.field-input')
+                    field: field,
+                    el: this.$('.field-input'),
+                    isDatePart: field.isTemporal() && this.fieldSpec.datePart != 'Full Date'
                 });
                 this.inputUI.render();
                 this.inputUI.on('changed', this.valueChanged, this);
