@@ -246,6 +246,7 @@ define([
             $.get("/api/system_info/").done(function(systemInfo) {
                 $(templates.aboutspecify(systemInfo)).dialog({
                     title: "About Specify",
+                    width: 480,
                     close: function() { $(this).remove(); }
                 });
             });
