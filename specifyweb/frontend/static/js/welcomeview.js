@@ -229,6 +229,9 @@ define([
     return Backbone.View.extend({
         __name__: "WelcomeView",
         className: "specify-welcome",
+        events: {
+            'click #about-specify': 'showAboutDialog'
+        },
         render: function() {
             this.$el.append(templates.welcome());
 
@@ -237,6 +240,15 @@ define([
             // showRecentActivity(this);
 
             return this;
+        },
+        showAboutDialog: function(evt) {
+            evt.preventDefault();
+            $.get("/api/system_info/").done(function(systemInfo) {
+                $(templates.aboutspecify(systemInfo)).dialog({
+                    title: "About Specify",
+                    close: function() { $(this).remove(); }
+                });
+            });
         }
     });
 });

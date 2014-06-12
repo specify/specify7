@@ -23,6 +23,7 @@ define([
     'text!tmpls/queryresults.html',
     'text!tmpls/queryfield.html',
     'text!tmpls/attachmentview.html',
+    'text!tmpls/aboutspecify.html',
     'text!tmpls/usertools.html'
 ], function parseTemplates($, _) {
     "use strict";
@@ -54,6 +55,7 @@ define([
         'queryresults',
         'queryfield',
         'attachmentview',
+        'aboutspecify',
         'usertools'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 

@@ -613,3 +613,11 @@ a.specify-attachment-original {
     text-align: justify;
 }
 
+#specify-system-info th {
+    text-align: right;
+}
+
+#specify-system-info h1 {
+    font-size: 12px;
+    text-decoration: underline;
+}

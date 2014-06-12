@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
@@ -197,3 +198,11 @@ WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
 
 RO_MODE = False
+
+try:
+    VERSION = subprocess.check_output(["git",
+                                       "--git-dir=%s" % \
+                                       os.path.join(os.path.dirname(__file__), "../../.git"),
+                                       "describe"]).strip()
+except:
+    VERSION = "N/A"
