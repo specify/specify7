@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'jquery-ui'], function($, _) {
             this.el.find('.tooltip-content').append($('<li>').text(item));
             return this.el.show().position({
                 at: 'bottom center',
-                of: this.content,
+                of: this.control,
                 my: 'top'
             });
         },
