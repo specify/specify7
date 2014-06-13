@@ -14,3 +14,4 @@ specifyweb/settings/secret_key.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js/main-built.js
 /specifyweb/frontend/templates/specify-built.html
+/specifyweb/settings/local_logging_settings.py

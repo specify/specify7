@@ -185,7 +185,10 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
-from .logging import LOGGING
+try:
+    from .local_logging_settings import LOGGING
+except ImportError:
+    from .logging_settings import LOGGING
 
 try:
     from .local_settings import *
