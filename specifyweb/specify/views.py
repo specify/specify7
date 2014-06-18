@@ -1,4 +1,5 @@
 import mimetypes
+import re
 from functools import wraps
 
 from django.views.decorators.http import require_GET
@@ -7,6 +8,7 @@ from django.conf import settings
 from django import http
 
 from .specify_jar import specify_jar
+from .models import Spversion
 from . import api
 
 def login_required(view):
@@ -66,3 +68,15 @@ def properties(request, name):
     """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+
+@require_GET
+def system_info(request):
+    spversion = Spversion.objects.get()
+
+    info = dict(
+        version=settings.VERSION,
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
+        database_version=spversion.appversion,
+        schema_version=spversion.schemaversion,
+        )
+    return http.HttpResponse(api.toJson(info), content_type='application/json')

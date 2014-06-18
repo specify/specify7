@@ -628,3 +628,12 @@ a.specify-attachment-original {
     /* that seems to effect ui icons in dialogs */
     background-position: 0 -128px;
 }
+
+#specify-system-info th {
+    text-align: right;
+}
+
+#specify-system-info h1 {
+    font-size: 12px;
+    text-decoration: underline;
+}

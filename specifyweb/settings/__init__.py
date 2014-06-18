@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
@@ -184,7 +185,10 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
-from .logging import LOGGING
+try:
+    from .local_logging_settings import LOGGING
+except ImportError:
+    from .logging_settings import LOGGING
 
 try:
     from .local_settings import *
@@ -197,3 +201,11 @@ WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
 
 RO_MODE = False
+
+try:
+    VERSION = subprocess.check_output(["git",
+                                       "--git-dir=%s" % \
+                                       os.path.join(os.path.dirname(__file__), "../../.git"),
+                                       "describe"]).strip()
+except:
+    VERSION = "N/A"
