@@ -44,6 +44,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             });
         },
         doDelete: function() {
+            this.trigger('deleting');
             this.model.destroy().done(this.trigger.bind(this, 'deleted'));
         },
         setToolTip: function() {

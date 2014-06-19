@@ -161,7 +161,7 @@ define([
                 if (!_this.recordset.isNew() && !_this.readOnly) {
                     var deleteButton = new DeleteButton({ model: _this.recordset });
                     deleteButton.render().$el.appendTo(form);
-                    deleteButton.on('deleted', function() {
+                    deleteButton.on('deleting', function() {
                         dialog.$el.dialog('close');
                         dialog = null;
                     });
@@ -186,7 +186,7 @@ define([
         execute: function() {
             if (dialog) return;
             var app = require('specifyapp');
-            var recordSets = new schema.models.RecordSet.LazyCollection({ 
+            var recordSets = new schema.models.RecordSet.LazyCollection({
                 filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
             });
             recordSets.fetch({ limit: 5000 }) // That's a lot of record sets
