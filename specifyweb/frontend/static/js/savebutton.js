@@ -82,11 +82,25 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
                 var newResource = addAnother ? this.model.clone() : undefined;
                 var wasNew = this.model.isNew();
 
-                this.model.save().done(this.trigger.bind(this, 'savecomplete', {
-                    addAnother: addAnother,
-                    newResource: newResource,
-                    wasNew: wasNew
-                }));
+                this.model.save()
+                    .done(this.trigger.bind(this, 'savecomplete', {
+                        addAnother: addAnother,
+                        newResource: newResource,
+                        wasNew: wasNew
+                    }))
+                    .fail(function(jqXHR) {
+                        if (jqXHR.status === 409) {
+                            jqXHR.errorHandled = true;
+                            $(templates.conflict()).dialog({
+                                resizable: false,
+                                modal: true,
+                                open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                                buttons: [{text: "Reload", click: function() {
+                                    window.location.reload();
+                                }}]
+                            });
+                        }
+                    });
             } else {
                 var dialog = $(templates.saveblocked()).appendTo(this.el).dialog({
                     resizable: false,
