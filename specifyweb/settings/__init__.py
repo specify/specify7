@@ -10,8 +10,10 @@ try:
 except ImportError:
     from . import specify_settings
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -202,10 +204,11 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_K
 
 RO_MODE = False
 
-try:
+if DEBUG:
     VERSION = subprocess.check_output(["git",
                                        "--git-dir=%s" % \
                                        os.path.join(os.path.dirname(__file__), "../../.git"),
-                                       "describe"]).strip()
-except:
-    VERSION = "N/A"
+                                       "describe"]).strip() \
+        + "(debug)"
+else:
+    from build_version import VERSION
