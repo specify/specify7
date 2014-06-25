@@ -204,11 +204,16 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_K
 
 RO_MODE = False
 
-if DEBUG:
-    VERSION = subprocess.check_output(["git",
+try:
+    git_version = subprocess.check_output(["git",
                                        "--git-dir=%s" % \
                                        os.path.join(os.path.dirname(__file__), "../../.git"),
-                                       "describe"]).strip() \
-        + "(debug)"
+                                       "describe"]).strip()
+except:
+    git_version = 'N/A'
+
+if DEBUG:
+    VERSION = git_version + "(debug)"
 else:
     from build_version import VERSION
+    assert git_version in ('N/A', VERSION), "build is out of date"
