@@ -7,10 +7,26 @@ from django.utils.crypto import get_random_string
 
 try:
     from . import local_specify_settings as specify_settings
+    from .local_specify_settings import (
+        WEB_ATTACHMENT_URL,
+        WEB_ATTACHMENT_KEY,
+        WEB_ATTACHMENT_COLLECTION,
+        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+    )
 except ImportError:
     from . import specify_settings
+    from .specify_settings import (
+        WEB_ATTACHMENT_URL,
+        WEB_ATTACHMENT_KEY,
+        WEB_ATTACHMENT_COLLECTION,
+        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+    )
 
-DEBUG = False
+try:
+    from .debug import DEBUG
+except ImportError:
+    DEBUG = False
+
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
@@ -64,6 +80,8 @@ SA_POOL_RECYCLE = 3600
 SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+
+RO_MODE = False
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -196,13 +214,6 @@ try:
     from .local_settings import *
 except ImportError:
     pass
-
-WEB_ATTACHMENT_URL = specify_settings.WEB_ATTACHMENT_URL
-WEB_ATTACHMENT_KEY = specify_settings.WEB_ATTACHMENT_KEY
-WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION
-WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
-
-RO_MODE = False
 
 try:
     git_version = subprocess.check_output(["git",
