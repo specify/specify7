@@ -47,7 +47,7 @@ resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
 
 def raise_error(request):
-    raise Exception('This error is a test. You may now return to your regularly'
+    raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
 @login_required
