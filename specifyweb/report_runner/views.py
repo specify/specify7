@@ -13,6 +13,11 @@ class ReportException(Exception):
     pass
 
 @require_GET
+def get_status(request):
+    resp = {'available': settings.REPORT_RUNNER_HOST != ''}
+    return HttpResponse(toJson(resp), content_type="application/json")
+
+@require_GET
 @login_required
 def run(request):
     if settings.REPORT_RUNNER_HOST == '':

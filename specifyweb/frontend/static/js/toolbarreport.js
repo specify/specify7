@@ -1,10 +1,11 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
+    'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties) {
+], function(require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties, statusJSON) {
     "use strict";
     var app;
-
+    var status = $.parseJSON(statusJSON);
     var title =  "Reports";
 
     var dialog;
@@ -224,6 +225,7 @@ define([
         task: 'report',
         title: title,
         icon: '/images/Reports32x32.png',
+        disabled: !status.available,
         execute: function() {
             if (dialog) return;
             app = require('specifyapp');
