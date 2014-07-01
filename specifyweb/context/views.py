@@ -9,6 +9,7 @@ from specifyweb.specify.models import Collection, Spappresourcedata
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_required
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
+from specifyweb.report_runner.views import get_status as report_runner_status
 
 from .app_resource import get_app_resource
 from .viewsets import get_view

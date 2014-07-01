@@ -12,6 +12,8 @@ try:
         WEB_ATTACHMENT_KEY,
         WEB_ATTACHMENT_COLLECTION,
         WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+        REPORT_RUNNER_HOST,
+        REPORT_RUNNER_PORT,
     )
 except ImportError:
     from . import specify_settings
@@ -20,6 +22,8 @@ except ImportError:
         WEB_ATTACHMENT_KEY,
         WEB_ATTACHMENT_COLLECTION,
         WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+        REPORT_RUNNER_HOST,
+        REPORT_RUNNER_PORT,
     )
 
 try:

@@ -5,7 +5,7 @@ define([
     'toolbarwelcome',
     'toolbardataentry',
     'toolbarquery',
-    // 'toolbarreport',
+    'toolbarreport',
     'toolbarattachments'
 ], function headerUI(
     require, $, _, Backbone, navigation, domain, templates, schema,
