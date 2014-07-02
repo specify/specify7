@@ -17,7 +17,7 @@ specifyweb/virtenv
 /specifyweb/settings/secret_key.py
 
 # Build artifacts:
-/specifyweb/build_version.py
+/specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js/main-built.js
 /specifyweb/frontend/templates/specify-built.html
