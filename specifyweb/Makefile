@@ -1,6 +1,6 @@
 SUBDIRS = frontend
 
-build_version.py: subdirs
+settings/build_version.py: subdirs
 	echo "VERSION = '`git describe`'" > $@
 
 
@@ -12,5 +12,5 @@ $(SUBDIRS):
 	$(MAKE) -C $@
 
 clean:
-	rm -f build_version.py
+	rm -f settings/build_version.py
 	for d in $(SUBDIRS); do $(MAKE) -C $$d clean; done

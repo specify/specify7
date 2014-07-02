@@ -230,5 +230,5 @@ except:
 if DEBUG:
     VERSION = git_version + "(debug)"
 else:
-    from build_version import VERSION
+    from .build_version import VERSION
     assert git_version in ('N/A', VERSION), "build is out of date"
