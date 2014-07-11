@@ -13,7 +13,7 @@ define([
 ) {
     "use strict";
 
-    var toolModules = _.tail(arguments, headerUI.length);
+    var toolModules = _.chain(arguments).tail(headerUI.length).filter(function(mod){ return !mod.disabled; }).value();
 
     var ExpressSearchInput = Backbone.View.extend({
         __name__: "ExpressSearchInput",
@@ -74,7 +74,7 @@ define([
             this.$el.append('<nav id="site-nav">');
             var ul = $('<ul>');
             _(toolModules).each(function(toolDef) {
-                toolDef.disabled || $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
+                $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
                     .text(toolDef.title)
                     .prepend($('<img>', {src: toolDef.icon}))
                     .appendTo($('<li>').appendTo(ul));
