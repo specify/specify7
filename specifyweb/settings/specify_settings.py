@@ -26,3 +26,7 @@ WEB_ATTACHMENT_COLLECTION = None
 
 # Set to true if asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
+
+# Report runner service
+REPORT_RUNNER_HOST = ''
+REPORT_RUNNER_PORT = ''

@@ -5,17 +5,15 @@ JS_FILES = $(filter-out static/js/main-built.js,$(wildcard static/js/*.js))
 CSS_FILES = $(filter-out static/css/main-built.css,$(wildcard static/css/*.css))
 TEMPLATES = $(wildcard static/html/templates/*)
 
-all: templates/specify-built.html
+all: static/js/main-built.js static/css/main-built.css
 
-clean:
-	rm templates/specify-built.html static/js/main-built.js static/css/main-built.css
-
-templates/specify-built.html: templates/specify.html static/js/main-built.js static/css/main-built.css
-	sed 's:main.css:main-built.css:;s: data-main="/static/js/main.js"::;s:/static/js/vendor/require.js:/static/js/main-built.js:' \
-		templates/specify.html > $@
+.PHONY: clean
 
 static/js/main-built.js: ${JS_FILES} ${TEMPLATES}
 	node ${R_JS} -o static/js/app.build.js out=$@
 
 static/css/main-built.css: ${CSS_FILES}
 	node ${R_JS} -o cssIn=static/css/main.css out=$@
+
+clean:
+	rm -f static/js/main-built.js static/css/main-built.css

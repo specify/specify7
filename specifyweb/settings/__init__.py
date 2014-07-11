@@ -1,16 +1,39 @@
 import os
 import sys
+import subprocess
 sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
 
 try:
     from . import local_specify_settings as specify_settings
+    from .local_specify_settings import (
+        WEB_ATTACHMENT_URL,
+        WEB_ATTACHMENT_KEY,
+        WEB_ATTACHMENT_COLLECTION,
+        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+        REPORT_RUNNER_HOST,
+        REPORT_RUNNER_PORT,
+    )
 except ImportError:
     from . import specify_settings
+    from .specify_settings import (
+        WEB_ATTACHMENT_URL,
+        WEB_ATTACHMENT_KEY,
+        WEB_ATTACHMENT_COLLECTION,
+        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+        REPORT_RUNNER_HOST,
+        REPORT_RUNNER_PORT,
+    )
 
-DEBUG = True
+try:
+    from .debug import DEBUG
+except ImportError:
+    DEBUG = False
+
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -61,6 +84,8 @@ SA_POOL_RECYCLE = 3600
 SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+
+RO_MODE = False
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -184,16 +209,26 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
-from .logging import LOGGING
+try:
+    from .local_logging_settings import LOGGING
+except ImportError:
+    from .logging_settings import LOGGING
 
 try:
     from .local_settings import *
 except ImportError:
     pass
 
-WEB_ATTACHMENT_URL = specify_settings.WEB_ATTACHMENT_URL
-WEB_ATTACHMENT_KEY = specify_settings.WEB_ATTACHMENT_KEY
-WEB_ATTACHMENT_COLLECTION = specify_settings.WEB_ATTACHMENT_COLLECTION
-WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = specify_settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
+try:
+    git_version = subprocess.check_output(["git",
+                                       "--git-dir=%s" % \
+                                       os.path.join(os.path.dirname(__file__), "../../.git"),
+                                       "describe"]).strip()
+except:
+    git_version = 'N/A'
 
-RO_MODE = False
+if DEBUG:
+    VERSION = git_version + "(debug)"
+else:
+    from .build_version import VERSION
+    assert git_version in ('N/A', VERSION), "build is out of date"
