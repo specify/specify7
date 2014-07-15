@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
             'change': 'change'
         },
         initialize: function(options) {
-            this.readOnly = options.readonly;
+            this.readOnly = options.readOnly;
             this.noValidation = options.noValidation;
             this.formatter = options.formatter;
             this.parser = options.parser;
