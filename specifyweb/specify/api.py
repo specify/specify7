@@ -8,7 +8,7 @@ from django import forms
 from django.db import transaction
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, FieldError
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
 
@@ -51,6 +51,10 @@ class StaleObjectException(OptimisticLockException):
     """Raised when attempting to mutate a resource with a newer
     version than the client has supplied.
     """
+    pass
+
+class FilterError(Exception):
+    """Raised when filter a resource collection using a bad value."""
     pass
 
 class HttpResponseCreated(HttpResponse):
@@ -144,8 +148,11 @@ def collection_dispatch(request, model):
         if not control_params.is_valid():
             return HttpResponseBadRequest(toJson(control_params.errors),
                                           content_type='application/json')
-        data = get_collection(request.specify_collection, model,
-                              control_params.cleaned_data, request.GET)
+        try:
+            data = get_collection(request.specify_collection, model,
+                                  control_params.cleaned_data, request.GET)
+        except FilterError as e:
+            return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
@@ -584,7 +591,10 @@ def get_collection(logged_in_collection, model, control_params, params={}):
             val = val.split(',')
 
         filters.update({param: val})
-    objs = model.objects.filter(**filters)
+    try:
+        objs = model.objects.filter(**filters)
+    except (ValueError, FieldError) as e:
+        raise FilterError(e)
     if control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
