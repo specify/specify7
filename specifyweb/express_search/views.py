@@ -3,8 +3,9 @@ from xml.etree import ElementTree
 
 from sqlalchemy.sql.expression import or_, and_
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET
+from django import forms
 
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.api import toJson
@@ -77,15 +78,34 @@ def run_primary_search(session, searchtable, terms, collection, limit, offset):
                        for f in make_fieldspecs(searchtable)]
         }}
 
+class SearchForm(forms.Form):
+    q = forms.CharField()
+    name = forms.CharField(required=False)
+    limit = forms.IntegerField(required=False)
+    offset = forms.IntegerField(required=False)
+
+    def clean_limit(self):
+        limit = self.cleaned_data['limit']
+        return 20 if limit is None else limit
+
+    def clean_offset(self):
+        offset = self.cleaned_data['offset']
+        return 0 if offset is None else offset
+
 @require_GET
 @login_required
 def search(request):
+    form = SearchForm(request.GET)
+    if not form.is_valid():
+        return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
+    logger.debug("parameters: %s", form.cleaned_data)
+
     collection = request.specify_collection
-    express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
-    terms = parse_search_str(collection, request.GET['q'])
-    specific_table = request.GET.get('name', "").lower()
-    limit = int(request.GET.get('limit', 20))
-    offset = int(request.GET.get('offset', 0))
+    express_search_config = get_express_search_config(collection, request.specify_user)
+    terms = parse_search_str(collection, form.cleaned_data['q'])
+    specific_table = form.cleaned_data['name'].lower()
+    limit = form.cleaned_data['limit']
+    offset = form.cleaned_data['offset']
 
     with models.session_context() as session:
         results = [run_primary_search(session, searchtable, terms, collection, limit, offset)
@@ -95,20 +115,28 @@ def search(request):
         result = {k: v for r in results for (k,v) in r.items()}
         return HttpResponse(toJson(result), content_type='application/json')
 
+class RelatedSearchForm(SearchForm):
+    name = forms.CharField(required=True)
+
 @require_GET
 @login_required
 def related_search(request):
     from . import related_searches
-    related_search = getattr(related_searches, request.GET['name'])
+    form = RelatedSearchForm(request.GET)
+    if not form.is_valid():
+        return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
+    logger.debug("parameters: %s", form.cleaned_data)
+
+    related_search = getattr(related_searches, form.cleaned_data['name'])
 
     config = get_express_search_config(request.specify_collection, request.specify_user)
-    terms = parse_search_str(request.specify_collection, request.GET['q'])
+    terms = parse_search_str(request.specify_collection, form.cleaned_data['q'])
 
     with models.session_context() as session:
         result = related_search.execute(session, config, terms,
                                         collection=request.specify_collection,
-                                        offset=int(request.GET.get('offset', 0)),
-                                        limit=int(request.GET.get('limit', 20)))
+                                        offset=form.cleaned_data['offset'],
+                                        limit=form.cleaned_data['limit'])
 
         return HttpResponse(toJson(result), content_type='application/json')
 
