@@ -117,13 +117,14 @@ def app_resource(request):
     return HttpResponse(resource, content_type=mimetype)
 
 
+@login_required
 @require_GET
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
     from specifyweb.express_search import related_searches
     from specifyweb.express_search.views import get_express_search_config
 
-    express_search_config = get_express_search_config(request)
+    express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
     active = [int(q.find('id').text)
               for q in express_search_config.findall('relatedQueries/relatedquery[@isactive="true"]')]
 

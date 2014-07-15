@@ -20,10 +20,8 @@ from .search_terms import parse_search_str
 
 logger = logging.getLogger(__name__)
 
-def get_express_search_config(request):
-    resource, __ = get_app_resource(request.specify_collection,
-                                    request.specify_user,
-                                    'ExpressSearchConfig')
+def get_express_search_config(collection, user):
+    resource, __ = get_app_resource(collection, user, 'ExpressSearchConfig')
     return ElementTree.XML(resource)
 
 
@@ -83,7 +81,7 @@ def run_primary_search(session, searchtable, terms, collection, limit, offset):
 @login_required
 def search(request):
     collection = request.specify_collection
-    express_search_config = get_express_search_config(request)
+    express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
     terms = parse_search_str(collection, request.GET['q'])
     specific_table = request.GET.get('name', "").lower()
     limit = int(request.GET.get('limit', 20))
@@ -103,7 +101,7 @@ def related_search(request):
     from . import related_searches
     related_search = getattr(related_searches, request.GET['name'])
 
-    config = get_express_search_config(request)
+    config = get_express_search_config(request.specify_collection, request.specify_user)
     terms = parse_search_str(request.specify_collection, request.GET['q'])
 
     with models.session_context() as session:
