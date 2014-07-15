@@ -4,8 +4,10 @@ import re
 import logging
 logger = logging.getLogger(__name__)
 
+from django import forms
 from django.db import transaction
-from django.http import HttpResponse, Http404, HttpResponseNotAllowed, QueryDict
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
@@ -107,6 +109,29 @@ def resource_dispatch(request, model, id):
 
     return resp
 
+class GetCollectionForm(forms.Form):
+    # Use the logged_in_collection to limit request
+    # to relevant items.
+    domainfilter = forms.ChoiceField(choices=(('true', 'true'), ('false', 'false')),
+                                     required=False)
+
+    # Return at most 'limit' items.
+    # Zero for all.
+    limit = forms.IntegerField(required=False)
+
+    # Return items starting from 'offset'.
+    offset = forms.IntegerField(required=False)
+
+    orderby = forms.CharField(required=False)
+
+    def clean_limit(self):
+        limit = self.cleaned_data['limit']
+        return 20 if limit is None else limit
+
+    def clean_offset(self):
+        offset = self.cleaned_data['offset']
+        return 0 if offset is None else offset
+
 def collection_dispatch(request, model):
     """Handles requests related to collections of resources.
 
@@ -115,8 +140,12 @@ def collection_dispatch(request, model):
     De/Encodes structured data as JSON.
     """
     if request.method == 'GET':
-        data = get_collection(request.specify_collection,
-                              model, request.GET)
+        control_params = GetCollectionForm(request.GET)
+        if not control_params.is_valid():
+            return HttpResponseBadRequest(toJson(control_params.errors),
+                                          content_type='application/json')
+        data = get_collection(request.specify_collection, model,
+                              control_params.cleaned_data, request.GET)
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
@@ -301,7 +330,7 @@ def handle_fk_fields(collection, agent, obj, data):
         items.extend(item for item in data.items() if item[0] != 'collection')
     else:
         items = data.items()
-    
+
     for field_name, val in items:
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
@@ -537,53 +566,30 @@ def field_to_val(obj, field):
     else:
         return getattr(obj, field.name)
 
-def get_collection(logged_in_collection, model, params={}):
+def get_collection(logged_in_collection, model, control_params, params={}):
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
     if isinstance(model, basestring):
         model = get_model_or_404(model)
 
-    # Default values for request parameters.
-    offset = 0
-    limit = 20
-    order_by = None
     filters = {}
-    do_domain_filter = False
 
     for param, val in params.items():
-        if param == 'domainfilter':
-            # Use the logged_in_collection to limit request
-            # to relevant items.
-            do_domain_filter = val == 'true'
-            continue
-
-        if param == 'limit':
-            # Return at most 'limit' items.
-            # Zero for all.
-            limit = int(val)
-            continue
-
-        if param == 'offset':
-            # Return items starting from 'offset'.
-            offset = int(val)
-            continue
-
-        if param == 'orderby':
-            order_by = val
+        if param in control_params:
+            # filter out control parameters
             continue
 
         if param.endswith('__in'):
             # this is a bit kludgy
             val = val.split(',')
 
-        # param is a field for filtering
         filters.update({param: val})
     objs = model.objects.filter(**filters)
-    if do_domain_filter:
+    if control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
-    if order_by is not None:
-        objs = objs.order_by(order_by)
-    return objs_to_data(objs, offset, limit)
+    if control_params['orderby']:
+        objs = objs.order_by(control_params['orderby'])
+    return objs_to_data(objs, control_params['offset'], control_params['limit'])
 
 def objs_to_data(objs, offset=0, limit=20):
     """Return a collection structure with a list of the data of given objects
