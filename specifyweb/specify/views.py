@@ -60,7 +60,11 @@ def images(request, path):
     """A Django view that serves images and icons from the Specify thickclient jar file."""
     mimetype = mimetypes.guess_type(path)[0]
     path = 'edu/ku/brc/specify/images/' + path
-    return http.HttpResponse(specify_jar.read(path), content_type=mimetype)
+    try:
+        image = specify_jar.read(path)
+    except KeyError as e:
+        raise http.Http404(e)
+    return http.HttpResponse(image, content_type=mimetype)
 
 @login_required
 @require_GET
