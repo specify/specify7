@@ -20,7 +20,10 @@ def login(request):
     Supplements the stock Django login with a collection selection.
     """
     if request.method == 'POST':
-        request.session['collection'] = request.POST['collection_id']
+        try:
+            request.session['collection'] = request.POST['collection_id']
+        except:
+            return HttpResponseBadRequest('collection id value missing')
 
     kwargs = {
         'template_name': 'login.html',
