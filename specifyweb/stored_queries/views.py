@@ -6,6 +6,7 @@ from collections import namedtuple
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
@@ -71,6 +72,7 @@ def filter_by_collection(model, query, collection):
 
 @require_GET
 @login_required
+@never_cache
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
     offset = int(request.GET.get('offset', 0))
@@ -97,6 +99,7 @@ class EphemeralField(
 @require_POST
 @csrf_exempt
 @login_required
+@never_cache
 def ephemeral(request):
     spquery = json.load(request)
     logger.info('ephemeral query: %s', spquery)

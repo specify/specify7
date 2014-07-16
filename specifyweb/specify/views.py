@@ -4,6 +4,7 @@ from functools import wraps
 
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django import http
 
@@ -27,6 +28,7 @@ def api_view(dispatch_func):
     in the api logic."""
     @login_required
     @csrf_exempt
+    @cache_control(private=True, max_age=0)
     def view(request, *args, **kwargs):
         if request.method != "GET" and (
             settings.RO_MODE or
