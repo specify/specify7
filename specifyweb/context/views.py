@@ -111,7 +111,10 @@ def domain(request):
 @require_GET
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
-    resource_name = request.GET['name']
+    try:
+        resource_name = request.GET['name']
+    except:
+        raise Http404()
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
                               resource_name)
@@ -165,7 +168,11 @@ def view(request):
     else:
         collection = request.specify_collection
 
-    data = get_view(collection, request.specify_user, request.GET['name'])
+    try:
+        view_name = request.GET['name']
+    except:
+        raise Http404()
+    data = get_view(collection, request.specify_user, view_name)
 
     return HttpResponse(simplejson.dumps(data), content_type="application/json")
 

@@ -3,7 +3,7 @@ import logging
 import json
 from collections import namedtuple
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
@@ -101,7 +101,10 @@ class EphemeralField(
 @login_required
 @never_cache
 def ephemeral(request):
-    spquery = json.load(request)
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
     logger.info('ephemeral query: %s', spquery)
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)

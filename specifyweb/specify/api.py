@@ -57,6 +57,10 @@ class FilterError(Exception):
     """Raised when filter a resource collection using a bad value."""
     pass
 
+class OrderByError(Exception):
+    """Raised for bad fields in order by clause."""
+    pass
+
 class HttpResponseCreated(HttpResponse):
     """Returned to the client when a POST request succeeds and a new
     resource is created.
@@ -151,7 +155,7 @@ def collection_dispatch(request, model):
         try:
             data = get_collection(request.specify_collection, model,
                                   control_params.cleaned_data, request.GET)
-        except FilterError as e:
+        except (FilterError, OrderByError) as e:
             return HttpResponseBadRequest(e)
         resp = HttpResponse(toJson(data), content_type='application/json')
 
@@ -598,8 +602,14 @@ def get_collection(logged_in_collection, model, control_params, params={}):
     if control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
-        objs = objs.order_by(control_params['orderby'])
-    return objs_to_data(objs, control_params['offset'], control_params['limit'])
+        try:
+            objs = objs.order_by(control_params['orderby'])
+        except FieldError as e:
+            raise OrderByError(e)
+    try:
+        return objs_to_data(objs, control_params['offset'], control_params['limit'])
+    except FieldError as e:
+        raise OrderByError(e)
 
 def objs_to_data(objs, offset=0, limit=20):
     """Return a collection structure with a list of the data of given objects
@@ -628,15 +638,30 @@ def uri_for_model(model, id=None):
         uri += '%d/' % int(id)
     return uri
 
-def rows(request, model):
-    query = getattr(models, model.capitalize()).objects.all()
-    fields = request.GET['fields'].split(',')
-    query = query.values_list(*fields).order_by(*fields)
+class RowsForm(forms.Form):
+    fields = forms.CharField(required=True)
+    distinct = forms.CharField(required=False)
+    limit = forms.IntegerField(required=False)
+
+def rows(request, model_name):
+    form = RowsForm(request.GET)
+    if not form.is_valid():
+        return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
+    try:
+        model = getattr(models, model_name.capitalize())
+    except AttributeError as e:
+        raise Http404(e)
+    query = model.objects.all()
+    fields = form.cleaned_data['fields'].split(',')
+    try:
+        query = query.values_list(*fields).order_by(*fields)
+    except FieldError as e:
+        return HttpResponseBadRequest(e)
     query = filter_by_collection(query, request.specify_collection)
-    if request.GET.get('distinct', False):
+    if form.cleaned_data['distinct']:
         query = query.distinct()
-    limit = request.GET.get('limit', 0)
-    if limit > 0:
+    limit = form.cleaned_data['limit']
+    if limit:
         query = query[:limit]
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
