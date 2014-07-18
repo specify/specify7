@@ -11,7 +11,7 @@ define([
         var cell = $('<a class="query-result-link">')
                 .prop('href', rowHref);
 
-        if (field.isRelationship && !fieldSpec.treeRank) {
+        if (!fieldSpec.treeRank && field.isRelationship) {
             (field.type === 'many-to-one') ?
                 setupToOneCell(fieldSpec, cell, value) :
                 setupToManyCell(fieldSpec, cell, value);

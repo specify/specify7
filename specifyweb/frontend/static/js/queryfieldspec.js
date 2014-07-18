@@ -106,7 +106,11 @@ define(['underscore', 'schema'], function(_, schema) {
             return _.last(this.joinPath);
         },
         isRelationship: function() {
-            return this.getField().isRelationship && !this.treeRank;
+            return !this.treeRank && this.getField().isRelationship;
+        },
+        isTemporal: function() {
+            var field = this.getField();
+            return field && field.isTemporal();
         }
     });
 

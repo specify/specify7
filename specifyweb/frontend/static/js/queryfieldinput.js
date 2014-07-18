@@ -4,6 +4,7 @@ define([
     "use strict";
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
+    var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
 
     var FieldInputUI = Backbone.View.extend({
         __name__: "FieldInputUI",
@@ -13,10 +14,14 @@ define([
         initialize: function(options) {
             this.field = options.field;
             this.isDatePart = options.isDatePart;
+            this.isTreeField = options.isTreeField;
 
-            this.inputFormatter = this.isDatePart ? null : this.field.getUIFormatter();
-            this.outputFormatter = this.isDatePart ? null : function(value) { return fieldformat(options.field, value); };
-            this.parser = this.isDatePart ? intParser : uiparse.bind(null, this.field);
+            this.inputFormatter = (this.isDatePart || this.isTreeField) ? null :
+                this.field.getUIFormatter();
+            this.outputFormatter = (this.isDatePart || this.isTreeField) ? null :
+                function(value) { return fieldformat(options.field, value); };
+            this.parser = this.isDatePart ? intParser : this.isTreeField ? stringParser :
+                uiparse.bind(null, this.field);
             this.values = [];
 
             // A dummy model to keep track of invalid values;
@@ -28,7 +33,7 @@ define([
         },
         setValue: function(value) {
             var values = this.opName == 'Between' ? value.split(',') : [value];
-            this.values = values = this.format ? _.map(values, this.outputFormatter) : values;
+            this.values = values = this.format && this.outputFormatter ? _.map(values, this.outputFormatter) : values;
             _.each(this.inputUIs, function(ui, i) { ui.fillIn(values[i]); });
         },
         render: function() {

@@ -7,12 +7,14 @@ define([
 
     function renderHeader(fieldSpec) {
         var field = _.last(fieldSpec.joinPath);
-        var icon = field.model.getIcon();
+        var icon = field && field.model.getIcon();
         var name = fieldSpec.treeRank || field.getLocalizedName();
         if (fieldSpec.datePart &&  fieldSpec.datePart != 'Full Date') {
             name += ' (' + fieldSpec.datePart + ')';
         }
-        return $('<th>').text(name).prepend($('<img>', {src: icon}));
+        var th = $('<th>').text(name);
+        icon && th.prepend($('<img>', {src: icon}));
+        return th;
     }
 
     var QueryResultsTable = Backbone.View.extend({

@@ -116,11 +116,9 @@ define([
             var field = this.getField();
             if (this.formattedRecord) return 'Complete';
 
-            if (field == null) return 'Field';
-
             if (this.fieldSpec.treeRank == null) {
 
-                if (field.isRelationship) return 'Field';
+                if (field == null || field.isRelationship) return 'Field';
 
                 if (field.isTemporal() && this.fieldSpec.datePart == null) return 'DatePart';
             }
@@ -237,7 +235,8 @@ define([
                 this.inputUI = new (QueryFieldInputUI[this.operation])({
                     field: field,
                     el: this.$('.field-input'),
-                    isDatePart: field.isTemporal() && this.fieldSpec.datePart != 'Full Date'
+                    isTreeField: !!this.fieldSpec.treeRank,
+                    isDatePart: field && field.isTemporal() && this.fieldSpec.datePart != 'Full Date'
                 });
                 this.inputUI.render();
                 this.inputUI.on('changed', this.valueChanged, this);
@@ -268,7 +267,7 @@ define([
                         this.operation = 'anything';
                     } else {
                         this.operation = 'anything';
-                        this.fieldSpec.datePart = field.isTemporal() ? 'Full Date' : null;
+                        this.fieldSpec.datePart = field && field.isTemporal() ? 'Full Date' : null;
                     }
                 }
             }
