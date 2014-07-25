@@ -31,6 +31,8 @@ urlpatterns = patterns('',
 
     # special tree apis
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/', 'specifyweb.specify.tree_views.path'),
+    url(r'^api/specify_tree/taxon/(?P<parentid>\d+)/', 'specifyweb.specify.tree_views.taxon_tree_view'),
+    url(r'^api/specify_tree/geography/(?P<parentid>\d+)/', 'specifyweb.specify.tree_views.geography_tree_view'),
 
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specifyweb.specify.views.images'),

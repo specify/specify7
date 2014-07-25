@@ -5,6 +5,7 @@ define([
 // Tasks
     'datatask',
     'querytask',
+    'treetask',
     'expresssearchtask',
     'datamodeltask',
     'attachmentstask'
