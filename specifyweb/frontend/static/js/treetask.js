@@ -29,7 +29,25 @@ define([
                         collectingevent__locality__geography: this.nodeId},
                     all: {
                         collectingevent__locality__geography__nodenumber__gte: this.nodeNumber,
-                        collectingevent__locality__geography__nodenumber__lte: this.highestNodeNumber}}
+                        collectingevent__locality__geography__nodenumber__lte: this.highestNodeNumber}},
+                lithostrat: {
+                    direct: {
+                        paleocontext__lithostrat: this.nodeId},
+                    all: {
+                        paleocontext__lithostrat__nodenumber__gte: this.nodeNumber,
+                        paleocontext__lithostrat__nodenumber__lte: this.highestNodeNumber}},
+                storage: {
+                    direct: {
+                        preparations__storage: this.nodeId},
+                    all: {
+                        preparations__storage__nodenumber__gte: this.nodeNumber,
+                        preparations__storage__nodenumber__lte: this.highestNodeNumber}},
+                geologictimeperiod: {
+                    direct: {
+                        paleocontext__chronosstrat: this.nodeId},
+                    all: {
+                        paleocontext__chronosstrat__nodenumber__gte: this.nodeNumber,
+                        paleocontext__chronosstrat__nodenumber__lte: this.highestNodeNumber}}
             };
         },
         initialize: function(options) {
