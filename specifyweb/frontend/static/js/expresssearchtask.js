@@ -117,7 +117,7 @@ define([
     return function(app) {
         app.router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
-            window.document.title = 'Express Search | Specify WebApp';
+            app.setTitle('Express Search');
         });
     };
 });

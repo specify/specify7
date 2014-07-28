@@ -83,13 +83,13 @@ define([
         // show a 'page not found' view for URLs we don't know how to handle
         notFound: function() {
             setCurrentView(new NotFoundView());
-            window.document.title = 'Page Not Found | Specify WebApp';
+            app.setTitle('Page Not Found');
         },
 
         // this view shows the user the welcome screen
         welcome: function() {
             setCurrentView(new WelcomeView());
-            window.document.title = 'Welcome | Specify WebApp';
+            app.setTitle('Welcome');
         },
 
         testError: function() {
@@ -121,7 +121,8 @@ define([
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
         user: user,
-        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype)
+        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype),
+        setTitle: function(title) { window.document.title = title + " | Specify 7"; }
     };
 
     return app;

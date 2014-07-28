@@ -199,7 +199,7 @@ define([
     return function(app) {
         app.router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
-            window.document.title = 'Attachments | Specify WebApp';
+            app.setTitle('Attachments');
         });
     };
 });

@@ -4,6 +4,8 @@ define([
 ], function($, _, Backbone, schema, QueryFieldUI, templates, navigation, QueryResultsTable) {
     "use strict";
 
+    var setTitle;
+
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
         events: {
@@ -18,9 +20,10 @@ define([
             this.model = schema.getModel(this.query.get('contextname'));
         },
         render: function() {
-            document.title = 'Query: ' + this.query.get('name');
+            var title = 'Query: ' + this.query.get('name');
+            setTitle(title);
             this.$el.append(templates.querybuilder({ cid: this.cid }));
-            this.$('.querybuilder-header span').text(document.title);
+            this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
 
@@ -134,6 +137,8 @@ define([
     });
 
     return function(app) {
+        setTitle = app.setTitle;
+
         app.router.route('query/:id/', 'storedQuery', function(id) {
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });

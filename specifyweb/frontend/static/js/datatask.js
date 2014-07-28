@@ -110,7 +110,7 @@ define([
                 view.$el.append('<p>Item deleted.</p>');
             }
         }).on('changetitle', function(title) {
-            document.title = title;
+            app.setTitle(title);
         });
 
         app.setCurrentView(view);
