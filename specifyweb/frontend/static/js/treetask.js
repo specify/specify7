@@ -6,6 +6,7 @@ define([
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
         tagName: "li",
+        className: "tree-node",
         events: {
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
@@ -46,7 +47,7 @@ define([
         },
         render: function() {
             this.$el
-                .append('<a class="ui-icon expander" style="display: inline-block; vertical-align: bottom;">')
+                .append('<a class="ui-icon expander">')
                 .append($('<span>').text(this.name))
                 .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
                         ' <a class="all-cos">' + this.allCOs + '</a>)')
