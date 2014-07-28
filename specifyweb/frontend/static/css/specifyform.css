@@ -638,6 +638,10 @@ a.specify-attachment-original {
     text-decoration: underline;
 }
 
+.tree-view > ul:first-of-type {
+    padding-left: 10px;
+}
+
 .tree-node .expander {
     display: inline-block;
     vertical-align: bottom;

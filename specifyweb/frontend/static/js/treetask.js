@@ -129,6 +129,7 @@ define([
 
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
+        className: "tree-view",
         initialize: function(options) {
             this.table = options.table;
             this.treeDef = options.treeDef;
@@ -136,6 +137,8 @@ define([
             this.Collection = schema.getModel(options.table).LazyCollection;
         },
         render: function() {
+            var title = schema.getModel(this.table).getLocalizedName() + " Tree";
+            $('<h1>').text(title).appendTo(this.el);
             var ul = $('<ul>').appendTo(this.el);
             var roots = new this.Collection({filters: {
                 parent__isnull: true,
@@ -149,6 +152,7 @@ define([
                     new TreeNodeView({ table: table, row: row }).render().$el.appendTo(ul);
                 });
             });
+            return this;
         }
     });
 
