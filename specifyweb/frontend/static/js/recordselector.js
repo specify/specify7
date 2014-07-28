@@ -188,43 +188,41 @@ define([
             return this;
         },
         _render: function() {
-            var self = this;
-            self.$el.empty();
-            self.slider = new Slider({ recordSelector: this }).render();
-            self.slider.setMax(self.collection.length - 1);
+            this.$el.empty();
+            this.slider = new Slider({ recordSelector: this }).render();
+            this.slider.setMax(this.collection.length - 1);
 
-            self.noHeader || new Header({
+            this.noHeader || new Header({
                 el: templates.subviewheader({
-                    title: self.title,
-                    dependent: self.dependent
+                    title: this.title,
+                    dependent: this.dependent
                 }),
                 recordSelector: this,
                 readOnly: this.readOnly
             }).render().$el.appendTo(this.el);
 
-            self.sliderAtTop && self.$el.append(self.slider.el);
+            this.sliderAtTop && this.$el.append(this.slider.el);
 
-            self.noContent = $(emptyTemplate).appendTo(self.el);
+            this.noContent = $(emptyTemplate).appendTo(this.el);
 
-            self.content = $('<div>').appendTo(self.el);
+            this.content = $('<div>').appendTo(this.el);
 
-            self.sliderAtTop || self.$el.append(self.slider.el);
+            this.sliderAtTop || this.$el.append(this.slider.el);
 
-            if (self.noHeader && !self.readOnly) {
+            if (this.noHeader && !this.readOnly) {
                 new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(this.el);
             }
 
             var params = $.deparam.querystring(true);
-            var index = params[self.urlParam] || 0;
-            index === 'end' && (index = self.collection.length - 1);
+            var index = params[this.urlParam] || 0;
+            index === 'end' && (index = this.collection.length - 1);
 
-            var mode = self.dependent && !self.readOnly ? 'edit' : 'view';
-            specifyform.buildSubView(self.subformNode, mode).done(function(form) {
-                self.form = form;
-                self.redraw(index);
-                self.showHide();
-
-            });
+            var mode = this.dependent && !this.readOnly ? 'edit' : 'view';
+            specifyform.buildSubView(this.subformNode, mode).done((function(form) {
+                this.form = form;
+                this.redraw(index);
+                this.showHide();
+            }).bind(this));
         },
         redraw: function(offset) {
             this.slider.setOffset(offset);
@@ -242,17 +240,16 @@ define([
             });
         },
         fillIn: function(resource, offset) {
-            self = this;
-            if (resource === self.current) return;
-            self.current = resource;
+            if (resource === this.current) return;
+            this.current = resource;
             if (!resource) return;
 
-            var form = self.form.clone();
-            self.populateForm(form, resource);
-            self.content.empty().append(form);
-            if (self.urlParam) {
+            var form = this.form.clone();
+            this.populateForm(form, resource);
+            this.content.empty().append(form);
+            if (this.urlParam) {
                 var params = {};
-                params[self.urlParam] = offset;
+                params[this.urlParam] = offset;
                 navigation.push($.param.querystring(window.location.pathname, params));
             }
         },
