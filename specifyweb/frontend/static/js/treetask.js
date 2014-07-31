@@ -157,7 +157,7 @@ define([
         render: function() {
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             $('<h1>').text(title).appendTo(this.el);
-            var ul = $('<ul>').appendTo(this.el);
+            var ul = $('<ul>').appendTo(this.el).append('<li>(loading...)</li>');
             var roots = new this.Collection({filters: {
                 parent__isnull: true,
                 definition: this.treeDef.id
@@ -166,6 +166,7 @@ define([
             roots.fetch().pipe(function() {
                 return $.getJSON('/api/specify_tree/' + table + '/' + roots.at(0).id + '/');
             }).done(function(rows) {
+                ul.empty();
                 _.each(rows, function(row) {
                     new TreeNodeView({ table: table, row: row }).render().$el.appendTo(ul);
                 });
