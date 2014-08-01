@@ -262,13 +262,6 @@ define([
                 } else {
                     var field = this.fieldSpec.table.getField(fieldName);
                     this.fieldSpec.joinPath.push(field);
-                    if (field.isRelationship) {
-                        this.formattedRecord = true;
-                        this.operation = 'anything';
-                    } else {
-                        this.operation = 'anything';
-                        this.fieldSpec.datePart = field && field.isTemporal() ? 'Full Date' : null;
-                    }
                 }
             }
             this.update();
