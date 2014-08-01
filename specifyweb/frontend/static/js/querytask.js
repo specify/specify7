@@ -79,7 +79,6 @@ define([
             this.query.save().done(this.trigger.bind(this, 'redisplay'));
         },
         addField: function() {
-            this.contractFields();
             var newField = new schema.models.SpQueryField.Resource();
             newField.set({
                 sorttype: 0,
