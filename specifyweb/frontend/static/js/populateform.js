@@ -26,7 +26,7 @@ define([
             '.specify-querycbx': function() {return QueryCbx;},
             '.specify-uiplugin': function() {
                 var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
-                return uiplugins[init.name];
+                return uiplugins[init.name] || uiplugins.PluginNotAvailable;
             },
             '.specify-combobox': function() {
                 return (control.attr('name') === 'definitionItem') ? TreeLevelPickList : PickList;
