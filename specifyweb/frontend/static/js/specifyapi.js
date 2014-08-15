@@ -35,7 +35,7 @@ define([
             });
         },
         queryCbxSearch: function(model, searchfield, searchterm) {
-            var filters = {};
+            var filters = { orderby: searchfield.toLowerCase() };
             filters[searchfield.toLowerCase() + '__istartswith'] = searchterm;
             return new model.LazyCollection({ filters: filters, domainfilter: true });
         },

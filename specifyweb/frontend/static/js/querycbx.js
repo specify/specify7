@@ -63,8 +63,11 @@ define([
                     var collection = api.queryCbxSearch(self.relatedModel, searchField.name, request.term);
                     collection.fetch().pipe(function() {
                         var rendering = collection.chain().compact().map(_.bind(self.renderItem, self)).value();
-                        return whenAll(rendering).done(response);
-                    }).fail(function() { response([]); });
+                        return whenAll(rendering);
+                    }).pipe(function(rendered) {
+                        collection.isComplete() || rendered.push({ label: "...", value: null, resource: null });
+                        return rendered;
+                    }).done(response).fail(function() { response([]); });
                 }
             });
 
