@@ -4,7 +4,7 @@ from django.views.decorators.http import require_GET
 from django.http import HttpResponse
 from django.conf import settings
 
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import objs_to_data, toJson
 from specifyweb.specify.models import Spappresource
 
@@ -18,7 +18,7 @@ def get_status(request):
     return HttpResponse(toJson(resp), content_type="application/json")
 
 @require_GET
-@login_required
+@login_maybe_required
 def run(request):
     if settings.REPORT_RUNNER_HOST == '':
         raise ReportException("Report service is not configured.")
@@ -44,7 +44,7 @@ def run(request):
         raise ReportException(r.text)
 
 @require_GET
-@login_required
+@login_maybe_required
 def get_reports(request):
     reports = Spappresource.objects.filter(
         specifyuser=request.specify_user,

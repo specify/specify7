@@ -7,7 +7,7 @@ from django.conf import settings
 
 from specifyweb.specify.models import Collection, Spappresourcedata
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
 from specifyweb.report_runner.views import get_status as report_runner_status
 
@@ -63,7 +63,7 @@ def api_login(request):
         password=None,
         collection=None)), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def collection(request):
@@ -81,18 +81,19 @@ def collection(request):
         collection = request.session.get('collection', '')
         return HttpResponse(collection, content_type="text/plain")
 
-@login_required
+@login_maybe_required
 @require_GET
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isadmin'] = request.specify_user.is_admin()
-    if settings.RO_MODE:
+    data['isauthenticated'] = request.user.is_authenticated()
+    if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
@@ -107,7 +108,7 @@ def domain(request):
 
     return HttpResponse(simplejson.dumps(domain), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
@@ -123,7 +124,7 @@ def app_resource(request):
     return HttpResponse(resource, content_type=mimetype)
 
 
-@login_required
+@login_maybe_required
 @require_GET
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
@@ -142,7 +143,7 @@ def available_related_searches(request):
 datamodel_json = None
 
 @require_GET
-@login_required
+@login_maybe_required
 def datamodel(request):
     from specifyweb.specify.models import datamodel
     global datamodel_json
@@ -152,14 +153,14 @@ def datamodel(request):
     return HttpResponse(datamodel_json, content_type='application/json')
 
 @require_GET
-@login_required
+@login_maybe_required
 def schema_localization(request):
     """Return the schema localization information for the logged in collection."""
     sl = get_schema_localization(request.specify_collection)
     return HttpResponse(sl, content_type='application/json')
 
 @require_GET
-@login_required
+@login_maybe_required
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
     if 'collectionid' in request.GET:
@@ -177,7 +178,7 @@ def view(request):
     return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
 @require_GET
-@login_required
+@login_maybe_required
 def remote_prefs(request):
     res = Spappresourcedata.objects.filter(
         spappresource__name='preferences',

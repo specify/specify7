@@ -11,7 +11,7 @@ from django.views.decorators.cache import never_cache
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
 from specifyweb.specify.api import toJson
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 from . import models
 
 from .queryfield import QueryField
@@ -71,7 +71,7 @@ def filter_by_collection(model, query, collection):
     return query
 
 @require_GET
-@login_required
+@login_maybe_required
 @never_cache
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
@@ -98,7 +98,7 @@ class EphemeralField(
 
 @require_POST
 @csrf_exempt
-@login_required
+@login_maybe_required
 @never_cache
 def ephemeral(request):
     try:
