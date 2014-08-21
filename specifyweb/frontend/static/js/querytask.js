@@ -17,6 +17,7 @@ define([
         },
         initialize: function(options) {
             this.query = options.query;
+            this.readOnly = options.readOnly;
             this.model = schema.getModel(this.query.get('contextname'));
         },
         render: function() {
@@ -26,6 +27,7 @@ define([
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
+            this.readOnly && this.$('.query-save').remove();
 
             this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
@@ -74,6 +76,7 @@ define([
             this.$('.abandon-changes, .query-save').prop('disabled', false);
         },
         save: function() {
+            if (this.readOnly) return;
             this.deleteIncompleteFields();
             if (this.fieldUIs.length < 1) return;
             this.query.save().done(this.trigger.bind(this, 'redisplay'));
@@ -142,7 +145,7 @@ define([
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
                 query.fetch().fail(app.handleError).done(function() {
-                    var view = new QueryBuilder({ query: query });
+                    var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
                     view.on('redisplay', showView);
                     app.setCurrentView(view);
                 });
@@ -165,7 +168,7 @@ define([
                 'ordinal': 32767
             });
 
-            var view = new QueryBuilder({ query: query });
+            var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
             view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
             app.setCurrentView(view);
         });

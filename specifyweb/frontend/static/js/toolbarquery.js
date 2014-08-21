@@ -34,7 +34,10 @@ define([
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Queries (" + this.options.queries._totalCount + ")",
                 maxHeight: 400,
-                buttons: this.buttons()
+                buttons: [
+                    {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
             }));
             return this;
         },
@@ -51,13 +54,6 @@ define([
                 
             query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
             return entry;
-        },
-        buttons: function() {
-            var buttons = this.options.readOnly ? [] : [
-                {text: 'New', click: function(evt) { $(evt.target).prop('disabled', true); openQueryTypeDialog(); }}
-            ];
-            buttons.push({text: 'Cancel', click: function() { $(this).dialog('close'); }});
-            return buttons;
         },
         edit: function(evt) {
             evt.preventDefault();
