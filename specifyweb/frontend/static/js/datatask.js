@@ -1,10 +1,14 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'domain',
-    'resourceview', 'othercollectionview',
+    'resourceview', 'othercollectionview', 'notfoundview',
     'jquery-bbq'
-], function($, _, Backbone, schema, api, navigation, domain, ResourceView, OtherCollectionView) {
+], function(
+    $, _, Backbone, schema, api, navigation, domain,
+    ResourceView, OtherCollectionView, NotFoundView) {
     "use strict";
     var app;
+
+    var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
     var EmptyRecordSetView = Backbone.View.extend({
         __name__: "EmptyRecordSetView",
@@ -55,12 +59,17 @@ define([
     // this function shows users individual resources which
     // can optionally be in the context of some recordset
     function resourceView(modelName, id) {
+        var model = schema.getModel(modelName);
+        if (GUID_RE.test(id)) {
+            viewResourceByGUID(model, id);
+            return;
+        }
         // look to see if we are in the context of a recordset
         var params = $.deparam.querystring();
         var recordSet = params.recordsetid &&
                 new schema.models.RecordSet.Resource({ id: params.recordsetid });
 
-        var resource = new (schema.getModel(modelName).Resource)({ id: id });
+        var resource = new model.Resource({ id: id });
         recordSet && (resource.recordsetid = recordSet.id);
 
         // we preload the resource and recordset to make sure they exist. this prevents
@@ -69,6 +78,19 @@ define([
             .fail(app.handleError)
             .done(function() { checkLoggedInCollection(resource, recordSet); });
      }
+
+    function viewResourceByGUID(model, guid) {
+        var byGUID = new model.LazyCollection({ filters: { guid: guid } });
+        byGUID.fetch({ limit: 1 }).done(function() {
+            if (byGUID.length < 1) {
+                app.setCurrentView(new NotFoundView());
+                app.setTitle('Page Not Found');
+                return;
+            }
+            // should we update the url state to the row id version?
+            checkLoggedInCollection(byGUID.at(0));
+        });
+    }
 
     // is user logged into collection?
     function loggedInCollectionP(collection) {
