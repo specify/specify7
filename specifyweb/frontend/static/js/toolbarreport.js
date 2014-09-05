@@ -183,12 +183,13 @@ define([
         },
         selected: function(evt) {
             evt.preventDefault();
-            var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
-            var url = $.param.querystring("/report_runner/run/", {
-                reportId: this.report.id,
-                recordSetId: recordSet.id });
-            window.open(url);
             dialog && dialog.$el.dialog('close');
+            var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
+            (new QueryParamsDialog({
+                report: this.report,
+                query: this.query,
+                recordSetId: recordSet.id
+            })).runQuery();
         }
     });
 
@@ -197,7 +198,23 @@ define([
         initialize: function(options) {
             this.report = options.report;
             this.query = options.query;
+            this.recordSetId = options.recordSetId;
             this.model = schema.getModel(this.query.get('contextname'));
+
+            var makeFieldUI = (function(spqueryfield) {
+                return new QueryFieldUI({
+                    forReport: true,
+                    parentView: this,
+                    model: this.model,
+                    spqueryfield: spqueryfield,
+                    el: $('<li class="spqueryfield for-report">')
+                });
+            }).bind(this);
+
+            this.fieldUIsP = this.query.rget('fields').pipe(function(spqueryfields) {
+                spqueryfields.each(function(field) { field.set('isdisplay', true); });
+                return spqueryfields.map(makeFieldUI);
+            });
         },
         render: function() {
             this.$el.append('<ul class="query-params-list">')
@@ -210,35 +227,24 @@ define([
                         {text: "Cancel", click: function() { $(this).dialog('close'); }}
                     ]
                 }));
-            this.query.rget('fields').done(this.gotFields.bind(this));
-            return this;
-        },
-        gotFields: function(spqueryfields) {
-            this.fields = spqueryfields;
-            spqueryfields.each(function(field) { field.set('isdisplay', true); });
-            this.fieldUIs = spqueryfields.map(this.makeFieldUI.bind(this));
             var ul = this.$('ul');
-            ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
-        },
-        makeFieldUI: function(spqueryfield) {
-            return new QueryFieldUI({
-                forReport: true,
-                parentView: this,
-                model: this.model,
-                spqueryfield: spqueryfield,
-                el: $('<li class="spqueryfield for-report">')
-            }).render();
+            this.fieldUIsP.done(function(fieldUIs) {
+                _.invoke(fieldUIs, 'render');
+                ul.append.apply(ul, _.pluck(fieldUIs, 'el'));
+            });
+            return this;
         },
         runQuery: function() {
             dialog && dialog.$el.dialog('close');
-            runQuery(this.report, this.query, this.fieldUIs);
+            this.fieldUIsP.done(runQuery.bind(null, this.report, this.recordSetId, this.query));
         }
     });
 
 
-    function runQuery(report, spQuery, fieldUIs) {
+    function runQuery(report, recordSetId, spQuery, fieldUIs) {
         var query = spQuery.toJSON();
         query.limit = 0;
+        query.recordsetid = recordSetId;
         $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, report, fieldUIs));
     }
 
