@@ -126,7 +126,9 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     if distinct:
         query = query.distinct()
     count = query.count()
-    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
+    query = query.order_by(*order_by_exprs).offset(offset)
+    if limit:
+        query = query.limit(limit)
 
     if not count_only:
         results = [[deferred(value) if deferred else value
@@ -134,6 +136,10 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
                    for row in query] if any(deferreds) else list(query)
     else:
         results = []
+
+    # if results:
+    #     lengths = (len(results[0]), len(field_specs) + 1)
+    #     assert lengths[0] == lengths[1], lengths
 
     data = {'count': count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
