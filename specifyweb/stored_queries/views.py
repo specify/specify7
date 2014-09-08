@@ -150,9 +150,8 @@ def build_query(session, collection, tableid, field_specs, recordsetid):
     if recordsetid:
         recordset = session.query(models.RecordSet).get(recordsetid)
         assert recordset.dbTableId == tableid
-        recordsetitems = session.query(models.RecordSetItem.recordId) \
-                         .filter(models.RecordSetItem.recordSet == recordset)
-        query = query.filter(id_field.in_(recordsetitems.as_scalar()))
+        query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \
+                .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
     join_cache = {}
