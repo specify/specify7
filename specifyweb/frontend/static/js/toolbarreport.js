@@ -1,11 +1,11 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
-    'whenall', 'dataobjformatters', 'fieldformat',
+    'whenall', 'dataobjformatters', 'fieldformat', 'domain',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(
     require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
-    whenAll, dataobjformatters, fieldformat,
+    whenAll, dataobjformatters, fieldformat, domain,
     statusJSON
 ) {
     "use strict";
@@ -115,7 +115,8 @@ define([
 
             var recordSets = new schema.models.RecordSet.LazyCollection({
                 filters: {
-                    // specifyuser: app.user.id,
+                    specifyuser: app.user.id,
+                    collectionmemberid: domain.levels.collection.id,
                     dbtableid: contextTableId
                 }
             });
@@ -246,14 +247,18 @@ define([
         query.limit = 0;
         query.recordsetid = recordSetId;
         $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, report, fieldUIs));
+        dialog = $('<div title="Running query">Running query...</div>').dialog({ modal: true });
     }
 
 
     function runReport(report, fieldUIs, queryResults) {
+        dialog && dialog.dialog('close');
+        dialog = $('<div title="Formatting records">Formatting records...</div>').dialog({ modal: true });
         var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
         var reportXML = report.XML;
         formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
-            var form = $('<form action="http://localhost:8080/report" method="post" target="_blank">' +
+            dialog && dialog.dialog('close');
+            var form = $('<form action="http://localhost:8080/report" method="post">' +
                          '<textarea name="report"></textarea>' +
                          '<textarea name="data"></textarea>' +
                          '<input type="submit"/>' +
@@ -268,6 +273,7 @@ define([
             $('textarea[name="data"]', form).val(JSON.stringify(reportData, null, 2));
             form[0].submit();
             form.remove();
+            dialog = $('<div title="Building report">Building report...</div>').dialog({ modal: true });
         });
     }
 
