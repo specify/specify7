@@ -258,7 +258,7 @@ define([
         var reportXML = report.XML;
         formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
             dialog && dialog.dialog('close');
-            var form = $('<form action="http://localhost:8080/report" method="post">' +
+            var form = $('<form action="/report_runner/run/" method="post">' +
                          '<textarea name="report"></textarea>' +
                          '<textarea name="data"></textarea>' +
                          '<input type="submit"/>' +

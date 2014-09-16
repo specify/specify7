@@ -1,6 +1,7 @@
 import requests
 
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
 
@@ -17,7 +18,8 @@ def get_status(request):
     resp = {'available': settings.REPORT_RUNNER_HOST != ''}
     return HttpResponse(toJson(resp), content_type="application/json")
 
-@require_GET
+@require_POST
+@csrf_exempt
 @login_maybe_required
 def run(request):
     if settings.REPORT_RUNNER_HOST == '':
@@ -28,15 +30,11 @@ def run(request):
     else:
         port = settings.REPORT_RUNNER_PORT
 
-    options = dict(request.GET)
-    options.update({
-        "collectionName": request.specify_collection.collectionname,
-        "userName": request.specify_user.name
-    })
+    options = dict(request.POST)
 
-    r = requests.get("http://%s:%s/report" %
+    r = requests.post("http://%s:%s/report" %
                      (settings.REPORT_RUNNER_HOST, port),
-                     params=options)
+                     data=options)
 
     if r.status_code == 200:
         return HttpResponse(r.content, content_type="application/pdf")
