@@ -1,9 +1,16 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
+    'whenall', 'dataobjformatters', 'fieldformat', 'domain',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties, statusJSON) {
+], function(
+    require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
+    whenAll, dataobjformatters, fieldformat, domain,
+    statusJSON
+) {
     "use strict";
+    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
+
     var app;
     var status = $.parseJSON(statusJSON);
     var title =  "Reports";
@@ -72,9 +79,16 @@ define([
                     appresource: appResource.id
                 }
             });
+            var dataFetch = appResource.rget('spappresourcedatas', true);
 
             var gotReport = this.gotReport.bind(this);
-            reports.fetch({ limit: 1 }).done(function() {
+            $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
+                if (data.length > 1) {
+                    console.warn("found multiple report definitions for appresource id:", resourceId);
+                } else if (data.length < 1) {
+                    console.error("coundn't find report definition for appresource id:", resourceId);
+                    return;
+                }
                 if (!reports.isComplete()) {
                     console.warn("found multiple report objects for appresource id:", resourceId);
                 } else if (reports.length < 1) {
@@ -82,7 +96,9 @@ define([
                     return;
                 }
                 reports.at(0).rget('query', true).done(function(query) {
-                    gotReport(appResource, reports.at(0), query);
+                    var report = reports.at(0);
+                    report.XML = data.at(0).get('data');
+                    gotReport(appResource, report, query);
                 });
             });
         },
@@ -99,7 +115,8 @@ define([
 
             var recordSets = new schema.models.RecordSet.LazyCollection({
                 filters: {
-                    // specifyuser: app.user.id,
+                    specifyuser: app.user.id,
+                    collectionmemberid: domain.levels.collection.id,
                     dbtableid: contextTableId
                 }
             });
@@ -150,7 +167,10 @@ define([
             var buttons = [{ text: 'Cancel', click: function() { $(this).dialog('close'); }}];
 
             if (this.query) {
-                var queryParamsDialogOpts = { report: this.report, query: this.query };
+                var queryParamsDialogOpts = {
+                    report: this.report,
+                    query: this.query
+                };
                 buttons.unshift({
                     text: 'Query',
                     click: function() {
@@ -164,12 +184,13 @@ define([
         },
         selected: function(evt) {
             evt.preventDefault();
-            var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
-            var url = $.param.querystring("/report_runner/run/", {
-                reportId: this.report.id,
-                recordSetId: recordSet.id });
-            window.open(url);
             dialog && dialog.$el.dialog('close');
+            var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
+            (new QueryParamsDialog({
+                report: this.report,
+                query: this.query,
+                recordSetId: recordSet.id
+            })).runQuery();
         }
     });
 
@@ -178,7 +199,23 @@ define([
         initialize: function(options) {
             this.report = options.report;
             this.query = options.query;
+            this.recordSetId = options.recordSetId;
             this.model = schema.getModel(this.query.get('contextname'));
+
+            var makeFieldUI = (function(spqueryfield) {
+                return new QueryFieldUI({
+                    forReport: true,
+                    parentView: this,
+                    model: this.model,
+                    spqueryfield: spqueryfield,
+                    el: $('<li class="spqueryfield for-report">')
+                });
+            }).bind(this);
+
+            this.fieldUIsP = this.query.rget('fields').pipe(function(spqueryfields) {
+                spqueryfields.each(function(field) { field.set('isdisplay', true); });
+                return spqueryfields.map(makeFieldUI);
+            });
         },
         render: function() {
             this.$el.append('<ul class="query-params-list">')
@@ -187,39 +224,86 @@ define([
                     width: 800,
                     position: { my: "top", at: "top+20", of: $('body') },
                     buttons: [
-                        {text: "Run", click: this.runReport.bind(this)},
+                        {text: "Run", click: this.runQuery.bind(this)},
                         {text: "Cancel", click: function() { $(this).dialog('close'); }}
                     ]
                 }));
-            this.query.rget('fields').done(this.gotFields.bind(this));
+            var ul = this.$('ul');
+            this.fieldUIsP.done(function(fieldUIs) {
+                _.invoke(fieldUIs, 'render');
+                ul.append.apply(ul, _.pluck(fieldUIs, 'el'));
+            });
             return this;
         },
-        gotFields: function(spqueryfields) {
-            this.fields = spqueryfields;
-            this.fieldUIs = spqueryfields.map(this.makeFieldUI.bind(this));
-            var ul = this.$('ul');
-            ul.append.apply(ul, _.pluck(this.fieldUIs, 'el'));
-        },
-        makeFieldUI: function(spqueryfield) {
-            return new QueryFieldUI({
-                forReport: true,
-                parentView: this,
-                model: this.model,
-                spqueryfield: spqueryfield,
-                el: $('<li class="spqueryfield for-report">')
-            }).render();
-        },
-        runReport: function() {
+        runQuery: function() {
             dialog && dialog.$el.dialog('close');
-            var queryParams = {reportId: this.report.id};
-            this.fields.each(function(field) {
-                var oper = (field.get('isnot') ? -1 : 1) * field.get('operstart');
-                queryParams["f" + field.id] = oper + "-" + field.get('startvalue');
-            });
-            var url = $.param.querystring("/report_runner/run/", queryParams);
-            window.open(url);
+            this.fieldUIsP.done(runQuery.bind(null, this.report, this.recordSetId, this.query));
         }
     });
+
+
+    function runQuery(report, recordSetId, spQuery, fieldUIs) {
+        var query = spQuery.toJSON();
+        query.limit = 0;
+        query.recordsetid = recordSetId;
+        $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, report, fieldUIs));
+        dialog = $('<div title="Running query">Running query...</div>').dialog({ modal: true });
+    }
+
+
+    function runReport(report, fieldUIs, queryResults) {
+        dialog && dialog.dialog('close');
+        dialog = $('<div title="Formatting records">Formatting records...</div>').dialog({ modal: true });
+        var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
+        var reportXML = report.XML;
+        formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
+            dialog && dialog.dialog('close');
+            var form = $('<form action="/report_runner/run/" method="post">' +
+                         '<textarea name="report"></textarea>' +
+                         '<textarea name="data"></textarea>' +
+                         '<input type="submit"/>' +
+                         '</form>')
+                    .appendTo('body');
+
+            var reportData = {
+                fields: fields,
+                rows: formattedData
+            };
+            $('textarea[name="report"]', form).val(reportXML);
+            $('textarea[name="data"]', form).val(JSON.stringify(reportData, null, 2));
+            form[0].submit();
+            form.remove();
+            dialog = $('<div title="Building report">Building report...</div>').dialog({ modal: true });
+        });
+    }
+
+    function formatResults(fieldUIs, rows) {
+        function formatRow(row) {
+            return whenAll( _.map(row, function(datum, i) {
+                if (i === 0) return datum; // id field
+                if (datum == null) return null;
+                var fieldSpec = fieldUIs[i-1].fieldSpec;
+                var field = fieldSpec.getField();
+                if (field.type === "java.lang.Boolean") return !!datum;
+                if (field.type === "java.lang.Integer") return datum;
+                if (fieldSpec.treeRank || !field.isRelationship) {
+                    if (field && (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date')) {
+                        return fieldformat(field, datum);
+                    } else return datum;
+                }
+                switch (field.type) {
+                case 'many-to-one':
+                    return objformat(new (field.getRelatedModel().Resource)({ id: datum }));
+                case 'one-to-many':
+                    return (new field.model.Resource({ id: datum })).rget(field.name, true).pipe(aggregate);
+                default:
+                    console.error('unhandled field type:', field.type);
+                    return datum;
+                }
+            }));
+        }
+        return whenAll( _.map(rows, formatRow) );
+    }
 
     return {
         task: 'report',

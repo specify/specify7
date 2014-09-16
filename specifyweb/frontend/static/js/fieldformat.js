@@ -8,11 +8,16 @@ define([
         return m.isValid() ? m.format(dateFormatStr) : (value || '');
     }
 
+    function formatInt(value) {
+        return value == null ? '' : value;
+    }
+
     var byType = {
         'java.lang.Boolean': function(value) {
             return _.isNull(value) ? '' : (
                 value ? 'True' : 'False');
         },
+        "java.lang.Integer": formatInt,
         "java.sql.Timestamp": formatDate,
         "java.util.Calendar": formatDate,
         "java.util.Date": formatDate
