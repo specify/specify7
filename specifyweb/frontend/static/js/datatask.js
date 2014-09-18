@@ -92,6 +92,53 @@ define([
         });
     }
 
+    function byCatNo(collection, catNo) {
+        collection = decodeURIComponent(collection);
+        catNo = decodeURIComponent(catNo);
+        var collectionLookup = new schema.models.Collection.LazyCollection({
+            filters: { code: collection }
+        });
+        collectionLookup.fetch({ limit: 1 }).pipe(function() {
+            if (collectionLookup.length < 1) {
+                return false;
+            } else if (collectionLookup._totalCount > 1) {
+                console.error("multiple collections with code:", collection);
+                return false;
+            }
+            var collection = collectionLookup.at(0);
+            if (!loggedInCollectionP(collection)) {
+                navigation.switchCollection(collection);
+                return false;
+            }
+            var formatter = schema.models.CollectionObject.getField('catalognumber').getUIFormatter();
+            if (formatter) {
+                var parsed = formatter.parse(catNo);
+                if (!parsed) {
+                    console.error("bad catalog number:", catNo);
+                    return false;
+                }
+                catNo = formatter.canonicalize(parsed);
+            }
+            var coLookup = new schema.models.CollectionObject.LazyCollection({
+                filters: { catalognumber: catNo },
+                domainfilter: true
+            });
+            return coLookup.fetch({ limit: 1 })
+                .pipe(function() { return coLookup.at(0); })
+                .pipe(function(collectionobject) {
+                    if (!collectionobject) return false;
+                    // should we update the url state to the row id version?
+                    showResource(collectionobject);
+                    return true;
+                });
+        }).done(function(success) {
+            if (!success) {
+                app.setCurrentView(new NotFoundView());
+                app.setTitle('Page Not Found');
+            }
+        });
+    }
+
     // is user logged into collection?
     function loggedInCollectionP(collection) {
         return collection.id == domain.levels.collection.id;
@@ -144,6 +191,7 @@ define([
         app.router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
         app.router.route('view/:model/:id/', 'resourceView', resourceView);
         app.router.route('view/:model/new/', 'newResourceView', newResourceView);
+        app.router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
     };
 });
 
