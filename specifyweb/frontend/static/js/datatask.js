@@ -100,10 +100,10 @@ define([
         });
         collectionLookup.fetch({ limit: 1 }).pipe(function() {
             if (collectionLookup.length < 1) {
-                return false;
+                return true;
             } else if (collectionLookup._totalCount > 1) {
                 console.error("multiple collections with code:", collection);
-                return false;
+                return true;
             }
             var collection = collectionLookup.at(0);
             if (!loggedInCollectionP(collection)) {
@@ -114,8 +114,8 @@ define([
             if (formatter) {
                 var parsed = formatter.parse(catNo);
                 if (!parsed) {
-                    console.error("bad catalog number:", catNo);
-                    return false;
+                    console.log("bad catalog number:", catNo);
+                    return true;
                 }
                 catNo = formatter.canonicalize(parsed);
             }
@@ -126,13 +126,13 @@ define([
             return coLookup.fetch({ limit: 1 })
                 .pipe(function() { return coLookup.at(0); })
                 .pipe(function(collectionobject) {
-                    if (!collectionobject) return false;
+                    if (!collectionobject) return true;
                     // should we update the url state to the row id version?
                     showResource(collectionobject);
-                    return true;
+                    return false;
                 });
-        }).done(function(success) {
-            if (!success) {
+        }).done(function(notFound) {
+            if (notFound) {
                 app.setCurrentView(new NotFoundView());
                 app.setTitle('Page Not Found');
             }
