@@ -16,10 +16,13 @@ define([
     var title =  "Reports";
 
     var dialog;
-    var commonDialogOpts = {
-        modal: true,
-        close: function() { dialog = null; $(this).remove(); }
-    };
+    function makeDialog(el, options) {
+        dialog && dialog.dialog('close');
+        dialog = el.dialog(_.extend({
+            modal: true,
+            close: function() { dialog = null; $(this).remove(); }
+        }, options));
+    }
 
     var dialogEntry = _.template('<li><a href="#"><img src="<%= icon %>">' +
                                  '<%= name %><span class="item-count" style="display:none"> - </span></a></li>');
@@ -61,13 +64,13 @@ define([
 
             this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
 
-            this.$el.dialog(_.extend({}, commonDialogOpts, {
+            makeDialog(this.$el, {
                 title: title,
                 maxHeight: 400,
                 buttons: [
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                 ]
-            }));
+            });
             return this;
         },
         getReport: function(evt) {
@@ -121,14 +124,11 @@ define([
                 }
             });
             recordSets.fetch({ limit: 100 }).done(function() {
-                dialog && dialog.$el.dialog('close');
-                dialog = new ChooseRecordSetDialog({
+                (new ChooseRecordSetDialog({
                     recordSets: recordSets,
                     report: report,
                     query: query
-                });
-                $('body').append(dialog.el);
-                dialog.render();
+                })).render();
             });
         }});
 
@@ -156,11 +156,11 @@ define([
             });
             this.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
             this.$el.append(ul);
-            this.$el.dialog(_.extend({}, commonDialogOpts, {
+            makeDialog(this.$el, {
                 title: "From Record Set",
                 maxHeight: 400,
                 buttons: this.dialogButtons()
-            }));
+            });
             return this;
         },
         dialogButtons: function() {
@@ -174,9 +174,7 @@ define([
                 buttons.unshift({
                     text: 'Query',
                     click: function() {
-                        $(this).dialog('close');
-                        dialog = new QueryParamsDialog(queryParamsDialogOpts);
-                        dialog.render();
+                        (new QueryParamsDialog(queryParamsDialogOpts)).render();
                     }
                 });
             }
@@ -184,7 +182,6 @@ define([
         },
         selected: function(evt) {
             evt.preventDefault();
-            dialog && dialog.$el.dialog('close');
             var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
             (new QueryParamsDialog({
                 report: this.report,
@@ -218,8 +215,8 @@ define([
             });
         },
         render: function() {
-            this.$el.append('<ul class="query-params-list">')
-                .dialog(_.extend({}, commonDialogOpts, {
+            this.$el.append('<ul class="query-params-list">');
+            makeDialog(this.$el, {
                     title: this.query.get('name'),
                     width: 800,
                     position: { my: "top", at: "top+20", of: $('body') },
@@ -227,7 +224,7 @@ define([
                         {text: "Run", click: this.runQuery.bind(this)},
                         {text: "Cancel", click: function() { $(this).dialog('close'); }}
                     ]
-                }));
+            });
             var ul = this.$('ul');
             this.fieldUIsP.done(function(fieldUIs) {
                 _.invoke(fieldUIs, 'render');
@@ -236,7 +233,6 @@ define([
             return this;
         },
         runQuery: function() {
-            dialog && dialog.$el.dialog('close');
             this.fieldUIsP.done(runQuery.bind(null, this.report, this.recordSetId, this.query));
         }
     });
@@ -247,33 +243,32 @@ define([
         query.limit = 0;
         query.recordsetid = recordSetId;
         $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, report, fieldUIs));
-        dialog = $('<div title="Running query">Running query...</div>').dialog({ modal: true });
+        makeDialog($('<div title="Running query">Running query...</div>'));
     }
-
 
     function runReport(report, fieldUIs, queryResults) {
         dialog && dialog.dialog('close');
-        dialog = $('<div title="Formatting records">Formatting records...</div>').dialog({ modal: true });
+        if (queryResults.count < 1) {
+            makeDialog($('<div title="No results">The query returned no records.</div>'));
+            return;
+        }
+        makeDialog($('<div title="Formatting records">Formatting records...</div>'));
         var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
         var reportXML = report.XML;
         formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
             dialog && dialog.dialog('close');
-            var form = $('<form action="/report_runner/run/" method="post">' +
+            var reportWindowContext = "ReportWindow" + Math.random();
+            window.open("", reportWindowContext);
+            var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
                          '<textarea name="report"></textarea>' +
                          '<textarea name="data"></textarea>' +
                          '<input type="submit"/>' +
-                         '</form>')
-                    .appendTo('body');
+                         '</form>');
 
-            var reportData = {
-                fields: fields,
-                rows: formattedData
-            };
+            var reportData = { fields: fields, rows: formattedData };
             $('textarea[name="report"]', form).val(reportXML);
-            $('textarea[name="data"]', form).val(JSON.stringify(reportData, null, 2));
+            $('textarea[name="data"]', form).val(JSON.stringify(reportData));
             form[0].submit();
-            form.remove();
-            dialog = $('<div title="Building report">Building report...</div>').dialog({ modal: true });
         });
     }
 
@@ -311,7 +306,6 @@ define([
         icon: '/images/Reports32x32.png',
         disabled: !status.available,
         execute: function() {
-            if (dialog) return;
             app = require('specifyapp');
             var appRs = new schema.models.SpAppResource.LazyCollection({
                 filters: {
@@ -320,9 +314,7 @@ define([
                 }
             });
             appRs.fetch({ limit: 100 }).done(function() {
-                dialog = new ReportListDialog({ appResources: appRs });
-                $('body').append(dialog.el);
-                dialog.render();
+                (new ReportListDialog({ appResources: appRs })).render();
             });
         }
     };
