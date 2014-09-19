@@ -90,6 +90,7 @@ define([
             options || (options = {});
             Base.call(this, null, options);
             this.filters = options.filters || {};
+            this.domainfilter = !!options.domainfilter;
         },
         url: function() {
             return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
@@ -128,7 +129,7 @@ define([
             options.silent = true;
             assert(options.at == null);
 
-            options.data = options.data || _.extend({}, self.filters);
+            options.data = options.data || _.extend({domainfilter: self.domainfilter}, self.filters);
             options.data.offset = self.length;
 
             _(options).has('limit') && ( options.data.limit = options.limit );
