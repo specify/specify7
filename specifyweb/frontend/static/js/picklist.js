@@ -64,7 +64,7 @@ define([
             // value is now either null or a string
             value = value || '';
 
-            if (value && _.all(items, function(item) { return item.value !== value; })) {
+            if (value && _.all(items, function(item) { return item.value !== "" + value; })) {
                 // current value is not in picklist
                 this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
             }
