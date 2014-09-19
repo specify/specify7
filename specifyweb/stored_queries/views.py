@@ -141,13 +141,13 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     data = {'count': count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
 
-def build_query(session, collection, tableid, field_specs, recordsetid):
+def build_query(session, collection, tableid, field_specs, recordsetid=None):
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
     query = filter_by_collection(model, query, collection)
 
-    if recordsetid:
+    if recordsetid is not None:
         recordset = session.query(models.RecordSet).get(recordsetid)
         assert recordset.dbTableId == tableid
         query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \
