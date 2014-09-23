@@ -18,6 +18,7 @@ define([
     var systemInfo = $.parseJSON(systemInfoJSON);
 
     var currentView;
+    var versionMismatchWarned = false;
 
     // get a reference to the content div
     // where we will draw the rest of the app
@@ -43,6 +44,16 @@ define([
         currentView = view;
         currentView.render();
         rootContainer.append(currentView.el);
+
+        if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
+            $('<div title="Version Mismatch">' +
+              '<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>' +
+              'The Specify version (' + systemInfo.specify6_version + ') ' +
+              'does not match the database version (' + systemInfo.database_version + ').</p>' +
+              '<p>Some features of Specify 7 may therefore fail to operate correctly.</p>' +
+              '</div>').dialog({ modal: true });
+            versionMismatchWarned = true;
+        }
     }
 
     function handleError(jqxhr) {
