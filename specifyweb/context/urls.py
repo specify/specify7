@@ -5,6 +5,7 @@ urlpatterns = patterns(
     (r'^login/$', 'api_login'),
     (r'^collection/$', 'collection'),
     (r'^user.json$', 'user'),
+    (r'^system_info.json$', 'system_info'),
     (r'^domain.json$', 'domain'),
     (r'^view.json$', 'view'),
     (r'^datamodel.json$', 'datamodel'),

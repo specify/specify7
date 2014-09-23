@@ -1,3 +1,5 @@
+import re
+
 from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
@@ -5,9 +7,10 @@ from django.contrib.auth import authenticate, views as auth_views, logout as aut
 from django.utils import simplejson
 from django.conf import settings
 
-from specifyweb.specify.models import Collection, Spappresourcedata
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
 from specifyweb.report_runner.views import get_status as report_runner_status
 
@@ -186,3 +189,15 @@ def remote_prefs(request):
 
     data = '\n'.join(r.data for r in res)
     return HttpResponse(data, content_type='text/x-java-properties')
+
+@require_GET
+def system_info(request):
+    spversion = Spversion.objects.get()
+
+    info = dict(
+        version=settings.VERSION,
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
+        database_version=spversion.appversion,
+        schema_version=spversion.schemaversion,
+        )
+    return HttpResponse(simplejson.dumps(info), content_type='application/json')

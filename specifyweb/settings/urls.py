@@ -24,7 +24,6 @@ urlpatterns = patterns('',
     url(r'^api/specify_rows/(?P<model>\w+)/$', 'specifyweb.specify.views.rows'),
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specifyweb.specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specifyweb.specify.views.collection'),
-    url(r'^api/system_info/$', 'specifyweb.specify.views.system_info'),
 
     # this url always triggers a 500 for testing purposes
     url(r'^api/test_error/', 'specifyweb.specify.views.raise_error'),

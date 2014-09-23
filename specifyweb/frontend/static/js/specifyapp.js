@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'text!context/user.json!noinline',
+    'text!context/user.json!noinline', 'text!context/system_info.json!noinline',
 // Tasks
     'datatask',
     'querytask',
@@ -11,10 +11,11 @@ define([
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
-    userJSON) {
+    userJSON, systemInfoJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
     var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
+    var systemInfo = $.parseJSON(systemInfoJSON);
 
     var currentView;
 
@@ -121,6 +122,7 @@ define([
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
         user: user,
+        systemInfo: systemInfo,
         isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype),
         setTitle: function(title) { window.document.title = title + " | Specify 7"; }
     };
