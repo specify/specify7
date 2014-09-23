@@ -307,12 +307,8 @@ define([
         disabled: !status.available,
         execute: function() {
             app = require('specifyapp');
-            var appRs = new schema.models.SpAppResource.LazyCollection({
-                filters: {
-                    specifyuser: app.user.id,
-                    mimetype__startswith: "jrxml"
-                }
-            });
+            var appRs = new schema.models.SpAppResource.LazyCollection();
+            appRs.url = function() { return "/report_runner/get_reports/"; };
             appRs.fetch({ limit: 100 }).done(function() {
                 (new ReportListDialog({ appResources: appRs })).render();
             });

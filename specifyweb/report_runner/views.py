@@ -2,6 +2,7 @@ import requests
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
 
@@ -47,7 +48,10 @@ def get_reports(request):
     reports = Spappresource.objects.filter(
         specifyuser=request.specify_user,
         mimetype__startswith="jrxml",
-        spappresourcedir__collection=request.specify_collection)
+        spappresourcedir__discipline=request.specify_collection.discipline) \
+        .filter(
+            Q(spappresourcedir__collection=None) |
+            Q(spappresourcedir__collection=request.specify_collection))
 
     data = objs_to_data(reports)
     return HttpResponse(toJson(data), content_type="application/json")
