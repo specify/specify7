@@ -45,7 +45,7 @@ define([
                     .append('<span class="item-count" style="display:none"> - </span>'));
 
             this.options.readOnly || entry.append(
-                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
+                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a>');
 
             recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
             recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
