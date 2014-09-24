@@ -33,31 +33,23 @@ define([
         events: {
             'click a': 'getReport'
         },
+        initialize: function(options) {
+            var appResources = this.options.appResources;
+            function byType(type) {
+                return appResources.filter(function(r) {
+                    return r.get('mimetype').toLowerCase() === type;
+                });
+            }
+            this.reports = byType('jrxml/report');
+            this.labels = byType('jrxml/label');
+        },
         render: function() {
-            var reports = $('<ul>');
-            var labels = $('<ul>');
+            var reports = $('<ul class="reports">');
+            var labels = $('<ul class="labels">');
 
-            this.options.appResources.each(function(appResource) {
-                var icon, ul;
-                switch (appResource.get('mimetype').toLowerCase()) {
-                case 'jrxml/report':
-                    icon = "/images/Reports16x16.png";
-                    ul = reports;
-                    break;
-                case 'jrxml/label':
-                    icon = "/images/Label16x16.png";
-                    ul = labels;
-                    break;
-                default:
-                    console.warn('unknown report type:', report.get('mimetype'));
-                    return;
-                }
-                var entry = $(dialogEntry({ name: appResource.get('name'), icon: icon, href: "" }));
-                entry.find('a')
-                    .data('resource', appResource)
-                    .attr('title', appResource.get('remarks') || "");
-                ul.append(entry);
-            });
+            reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
+            labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
+
             this.$el
                 .append("<h2>Reports</h2>").append(reports)
                 .append("<h2>Labels</h2>").append(labels);
@@ -73,9 +65,16 @@ define([
             });
             return this;
         },
+        makeEntry: function(icon, appResource) {
+            var a = $('<a class="select">').text(appResource.get('name'))
+                    .prepend($('<img>', {src: icon}))
+                    .attr('title', appResource.get('remarks') || "");
+            return $('<li>').append(a).data('resource', appResource)
+                    .append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
+        },
         getReport: function(evt) {
             evt.preventDefault();
-            var appResource = $(evt.currentTarget).data('resource');
+            var appResource = $(evt.currentTarget).closest('li').data('resource');
             var reports = new schema.models.SpReport.LazyCollection({
                 filters: {
                     specifyuser: app.user.id,
@@ -84,7 +83,7 @@ define([
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 
-            var gotReport = this.gotReport.bind(this);
+            var action = ($(evt.currentTarget).hasClass('edit') ? this.editReport : this.getRecordSets).bind(this);
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", resourceId);
@@ -101,11 +100,11 @@ define([
                 reports.at(0).rget('query', true).done(function(query) {
                     var report = reports.at(0);
                     report.XML = data.at(0).get('data');
-                    gotReport(appResource, report, query);
+                    action(appResource, report, query);
                 });
             });
         },
-        gotReport: function(appResource, report, query) {
+        getRecordSets: function(appResource, report, query) {
             var contextTableId = query ? query.get('contexttableid') :
                     parseInt(
                         parsespecifyproperties(appResource.get('metadata')).tableid,
@@ -130,7 +129,14 @@ define([
                     query: query
                 })).render();
             });
-        }});
+        },
+        editReport: function(appResource, report, query) {
+            makeDialog($('<div title="Report definition">')
+                       .append($('<textarea cols=120 rows=40 readonly>')
+                               .text(report.XML)),
+                      { width: 'auto'});
+        }
+    });
 
     var ChooseRecordSetDialog = Backbone.View.extend({
         __name__: "ChooseRecordSetForReport",
