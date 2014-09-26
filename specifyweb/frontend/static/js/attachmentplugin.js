@@ -15,7 +15,7 @@ define([
             self.$el.replaceWith(control);
             self.setElement(control);
 
-            if (self.model.get('attachment')) {
+            if (self.model && self.model.get('attachment')) {
                 self.model.rget('attachment', true).done(function(attachment) {
                     self.displayAttachment(attachment);
                 });
@@ -62,7 +62,8 @@ define([
         },
         uploadComplete: function(attachment) {
             var self = this;
-            self.model.set('attachment', attachment);
+            self.trigger('uploadcomplete', attachment);
+            self.model && self.model.set('attachment', attachment);
             self.displayAttachment(attachment);
             self.progressDialog.dialog('close');
         },

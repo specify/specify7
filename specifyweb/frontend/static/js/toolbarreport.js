@@ -1,11 +1,11 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
-    'whenall', 'dataobjformatters', 'fieldformat', 'domain',
+    'whenall', 'dataobjformatters', 'fieldformat', 'domain', 'attachmentplugin', 'attachments',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(
     require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
-    whenAll, dataobjformatters, fieldformat, domain,
+    whenAll, dataobjformatters, fieldformat, domain, AttachmentPlugin, attachments,
     statusJSON
 ) {
     "use strict";
@@ -83,7 +83,7 @@ define([
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 
-            var action = ($(evt.currentTarget).hasClass('edit') ? this.editReport : this.getRecordSets).bind(this);
+            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getRecordSets;
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", resourceId);
@@ -97,46 +97,129 @@ define([
                     console.error("couldn't find report object for appresource id:", resourceId);
                     return;
                 }
-                reports.at(0).rget('query', true).done(function(query) {
-                    var report = reports.at(0);
-                    report.XML = data.at(0).get('data');
-                    action(appResource, report, query);
-                });
+                var report = reports.at(0);
+                var reportXML = data.at(0).get('data');
+                $.when(report.rget('query', true), fixupImages(reportXML))
+                    .done(function(query, processedXML) {
+                        if (processedXML.isOK) {
+                            report.XML = processedXML.reportXML;
+                            action(appResource, report, query);
+                        } else (new FixImagesDialog({
+                            appResource: appResource,
+                            report: report,
+                            query: query,
+                            originalReportXML: reportXML,
+                            processedReportXML: processedXML,
+                            action: action
+                        })).render();
+                    });
             });
-        },
-        getRecordSets: function(appResource, report, query) {
-            var contextTableId = query ? query.get('contexttableid') :
-                    parseInt(
-                        parsespecifyproperties(appResource.get('metadata')).tableid,
-                        10);
-
-            if (_.isNaN(contextTableId) || contextTableId === -1) {
-                console.error("couldn't determine table id for report", report.get('name'));
-                return;
-            }
-
-            var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: {
-                    specifyuser: app.user.id,
-                    collectionmemberid: domain.levels.collection.id,
-                    dbtableid: contextTableId
-                }
-            });
-            recordSets.fetch({ limit: 100 }).done(function() {
-                (new ChooseRecordSetDialog({
-                    recordSets: recordSets,
-                    report: report,
-                    query: query
-                })).render();
-            });
-        },
-        editReport: function(appResource, report, query) {
-            makeDialog($('<div title="Report definition">')
-                       .append($('<textarea cols=120 rows=40 readonly>')
-                               .text(report.XML)),
-                      { width: 'auto'});
         }
     });
+
+    var FixImagesDialog = Backbone.View.extend({
+        __name__: "FixImagesDialog",
+        events: {
+            'click .missing-attachments a': 'fixMissingAttachment'
+        },
+        initialize: function(options) {
+            this.appResource = options.appResource;
+            this.report = options.report;
+            this.query = options.query;
+            this.originalReportXML = options.originalReportXML;
+            this.badImageExprs = options.processedReportXML.badImageExpressions;
+            this.missingAttachments = options.processedReportXML.missingAttachments;
+            this.processedXML = options.processedReportXML.reportXML;
+            this.action = options.action;
+        },
+        render: function() {
+            this.$el.attr('title', "Problems with report")
+                .append('<p>The selected report has the following problems:</p>');
+            if (this.badImageExprs.length) {
+                this.$el.append('<b>Bad Image Expressions<b>');
+                $('<ul>').appendTo(this.el).append(
+                    _.map(this.badImageExprs, function(e) {return $('<li>').text(e)[0];}));
+            }
+            if (this.missingAttachments.length) {
+                this.$el.append('<b>Missing attachments</b>');
+                $('<ul class="missing-attachments">').appendTo(this.el).append(
+                    _.map(this.missingAttachments, function(f) {
+                        return $('<li>').append($('<a href="#" title="Fix.">').text(f))[0];
+                    }));
+            }
+            makeDialog(this.$el, {
+                buttons: [{text: "Ignore", click: this.ignoreProblems.bind(this)},
+                          {text: "Cancel", click: function() { $(this).dialog('close'); }}]
+            });
+            return this;
+        },
+        ignoreProblems: function() {
+            this.report.XML = this.processedXML;
+            this.action(this.appResource, this.report, this.query);
+        },
+        fixMissingAttachment: function(evt) {
+            evt.preventDefault();
+            var index = this.$('.missing-attachments a').index(evt.currentTarget);
+            var attachmentPlugin = new AttachmentPlugin();
+            makeDialog(attachmentPlugin.render().$el, {
+                title: "Choose file"
+            });
+            attachmentPlugin.on('uploadcomplete', this.uploadComplete.bind(this, index));
+        },
+        uploadComplete: function(index, attachment) {
+            attachment.set('title', this.missingAttachments[index]);
+            var originalXML = this.originalReportXML;
+            attachment.save().pipe(function() { return fixupImages(originalXML); })
+                .done(this.tryAgain.bind(this));
+        },
+        tryAgain: function(processedXML) {
+            if (processedXML.isOK) {
+                this.report.XML = processedXML.reportXML;
+                this.action(this.appResource, this.report, this.query);
+            } else (new FixImagesDialog({
+                appResource: this.appResource,
+                report: this.report,
+                query: this.query,
+                originalReportXML: this.originalReportXML,
+                processedReportXML: this.processedReportXML,
+                action: this.action
+            })).render();
+        }
+    });
+
+    function getRecordSets(appResource, report, query) {
+        var contextTableId = query ? query.get('contexttableid') :
+                parseInt(
+                    parsespecifyproperties(appResource.get('metadata')).tableid,
+                    10);
+
+        if (_.isNaN(contextTableId) || contextTableId === -1) {
+            console.error("couldn't determine table id for report", report.get('name'));
+            return;
+        }
+
+        var recordSets = new schema.models.RecordSet.LazyCollection({
+            filters: {
+                specifyuser: app.user.id,
+                collectionmemberid: domain.levels.collection.id,
+                dbtableid: contextTableId
+            }
+        });
+        recordSets.fetch({ limit: 100 }).done(function() {
+            (new ChooseRecordSetDialog({
+                recordSets: recordSets,
+                report: report,
+                query: query
+            })).render();
+        });
+    }
+
+    function editReport(appResource, report, query) {
+        makeDialog($('<div title="Report definition">')
+                   .append($('<textarea cols=120 rows=40 readonly>')
+                           .text(report.XML)),
+                   { width: 'auto'});
+    }
 
     var ChooseRecordSetDialog = Backbone.View.extend({
         __name__: "ChooseRecordSetForReport",
@@ -275,6 +358,47 @@ define([
             $('textarea[name="report"]', form).val(reportXML);
             $('textarea[name="data"]', form).val(JSON.stringify(reportData));
             form[0].submit();
+        });
+    }
+
+    function fixupImages(reportXML) {
+        var reportDOM = $.parseXML(reportXML);
+        var badImageUrl = '"http://' + window.location.host + '/images/unknown.png"';
+        var badImageExpressions = [];
+        var filenames = {};
+        var toReplace = $('imageExpression', reportDOM).each(function() {
+            var imageExpression = $(this).text();
+            var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
+            if (!match) {
+                badImageExpressions.push(imageExpression);
+                $(this).text(badImageUrl);
+            } else {
+                filenames[match[1]] ? filenames[match[1]].push($(this)) : (filenames[match[1]] = [$(this)]);
+            }
+        });
+        var titles = _.keys(filenames).join(',');
+        var reportAttachments = new schema.models.Attachment.LazyCollection({ filters: {title__in: titles}});
+        return reportAttachments.fetch().pipe(function() {
+            var byTitles = {};
+            var missingAttachments = [];
+            reportAttachments.each(function(a) { byTitles[a.get('title')] = a; });
+            _.each(filenames, function(imageExprs, filename) {
+                var attachment = byTitles[filename];
+                var imageUrl;
+                if (!attachment) {
+                    missingAttachments.push(filename);
+                    imageUrl = badImageUrl;
+                } else {
+                    imageUrl = '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"';
+                }
+                _.each(imageExprs, function(e) { e.text(imageUrl); });
+            });
+            return {
+                isOK: badImageExpressions.length == 0 && missingAttachments == 0,
+                reportXML: (new XMLSerializer()).serializeToString(reportDOM),
+                badImageExpressions: badImageExpressions,
+                missingAttachments: missingAttachments
+            };
         });
     }
 
