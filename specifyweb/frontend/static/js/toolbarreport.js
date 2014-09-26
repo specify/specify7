@@ -388,6 +388,21 @@ define([
     }
 
     function formatResults(fieldUIs, rows) {
+        var manyToOneCache = {}, oneToManyCache = {};
+        function formatManyToOne(field, id) {
+            var resource = new (field.getRelatedModel().Resource)({ id: id });
+            var key = resource.url();
+            return _.has(manyToOneCache, key) ? manyToOneCache[key] :
+                (manyToOneCache[key] = objformat(resource));
+        }
+
+        function formatOneToMany(field, id) {
+            var resource = new field.model.Resource({ id: datum });
+            var key = resource.url() + " " + field.name;
+            return _.has(oneToManyCache, key) ? oneToManyCache[key] :
+                (oneToManyCache[key] = (resource).rget(field.name, true).pipe(aggregate));
+        }
+
         function formatRow(row) {
             return whenAll( _.map(row, function(datum, i) {
                 if (i === 0) return datum; // id field
@@ -395,7 +410,7 @@ define([
                 var fieldSpec = fieldUIs[i-1].fieldSpec;
                 var field = fieldSpec.getField();
                 if (field.type === "java.lang.Boolean") return !!datum;
-                if (field.type === "java.lang.Integer") return datum;
+                if (field.type === "java.lang.Integer" || field.type === "java.lang.Short") return datum;
                 if (fieldSpec.treeRank || !field.isRelationship) {
                     if (field && (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date')) {
                         return fieldformat(field, datum);
@@ -403,9 +418,9 @@ define([
                 }
                 switch (field.type) {
                 case 'many-to-one':
-                    return objformat(new (field.getRelatedModel().Resource)({ id: datum }));
+                    return formatManyToOne(field, datum);
                 case 'one-to-many':
-                    return (new field.model.Resource({ id: datum })).rget(field.name, true).pipe(aggregate);
+                    return formatOneToMany(field, datum);
                 default:
                     console.error('unhandled field type:', field.type);
                     return datum;
