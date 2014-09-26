@@ -51,8 +51,11 @@ define([
             var tableId = attachment.get('tableid');
             var title = attachment.get('title');
 
-            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
-                    schema.getModelById(tableId).getIcon();
+            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() : (
+                function() {
+                    var model = schema.getModelById(tableId);
+                    return model.system ? "/images/system.png" : model.getIcon();
+                })();
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
@@ -157,9 +160,9 @@ define([
 
             var model = schema.getModelById(tableId);
             attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
-                return dataObjs.at(0).rget(model.name.toLowerCase());
+                return dataObjs && dataObjs.length > 0 ? dataObjs.at(0).rget(model.name.toLowerCase()) : null;
             }).done(function(dataObj) {
-                self.buildDialog(dataObj);
+                dataObj ? self.buildDialog(dataObj) : self.dialog.dialog('close');
             });
         },
         buildDialog: function(resource) {
