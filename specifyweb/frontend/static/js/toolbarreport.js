@@ -86,30 +86,32 @@ define([
             var action = $(evt.currentTarget).hasClass('edit') ? editReport : getRecordSets;
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
-                    console.warn("found multiple report definitions for appresource id:", resourceId);
+                    console.warn("found multiple report definitions for appresource id:", appResource.id);
                 } else if (data.length < 1) {
-                    console.error("coundn't find report definition for appresource id:", resourceId);
+                    console.error("coundn't find report definition for appresource id:", appResource.id);
                     return;
                 }
                 if (!reports.isComplete()) {
-                    console.warn("found multiple report objects for appresource id:", resourceId);
+                    console.warn("found multiple report objects for appresource id:", appResource.id);
                 } else if (reports.length < 1) {
-                    console.error("couldn't find report object for appresource id:", resourceId);
+                    console.error("couldn't find report object for appresource id:", appResource.id);
                     return;
                 }
                 var report = reports.at(0);
                 var reportXML = data.at(0).get('data');
                 $.when(report.rget('query', true), fixupImages(reportXML))
-                    .done(function(query, processedXML) {
-                        if (processedXML.isOK) {
-                            report.XML = processedXML.reportXML;
-                            action(appResource, report, query);
-                        } else (new FixImagesDialog({
+                    .done(function(query, imageFixResult) {
+                        var reportResources = {
                             appResource: appResource,
                             report: report,
-                            query: query,
-                            originalReportXML: reportXML,
-                            processedReportXML: processedXML,
+                            reportXML: reportXML,
+                            query: query
+                        };
+                        if (imageFixResult.isOK) {
+                            action(_({}).extend(reportResources, {reportXML: imageFixResult.reportXML}));
+                        } else (new FixImagesDialog({
+                            reportResources: reportResources,
+                            imageFixResult: imageFixResult,
                             action: action
                         })).render();
                     });
@@ -123,27 +125,24 @@ define([
             'click .missing-attachments a': 'fixMissingAttachment'
         },
         initialize: function(options) {
-            this.appResource = options.appResource;
-            this.report = options.report;
-            this.query = options.query;
-            this.originalReportXML = options.originalReportXML;
-            this.badImageExprs = options.processedReportXML.badImageExpressions;
-            this.missingAttachments = options.processedReportXML.missingAttachments;
-            this.processedXML = options.processedReportXML.reportXML;
+            this.reportResources = options.reportResources;
+            this.imageFixResult = options.imageFixResult;
             this.action = options.action;
         },
         render: function() {
             this.$el.attr('title', "Problems with report")
                 .append('<p>The selected report has the following problems:</p>');
-            if (this.badImageExprs.length) {
+            var badImageExprs = this.imageFixResult.badImageExpressions;
+            var missingAttachments = this.imageFixResult.missingAttachments;
+            if (badImageExprs.length) {
                 this.$el.append('<b>Bad Image Expressions<b>');
                 $('<ul>').appendTo(this.el).append(
-                    _.map(this.badImageExprs, function(e) {return $('<li>').text(e)[0];}));
+                    _.map(badImageExprs, function(e) {return $('<li>').text(e)[0];}));
             }
-            if (this.missingAttachments.length) {
+            if (missingAttachments.length) {
                 this.$el.append('<b>Missing attachments</b>');
                 $('<ul class="missing-attachments">').appendTo(this.el).append(
-                    _.map(this.missingAttachments, function(f) {
+                    _.map(missingAttachments, function(f) {
                         return $('<li>').append($('<a href="#" title="Fix.">').text(f))[0];
                     }));
             }
@@ -154,8 +153,7 @@ define([
             return this;
         },
         ignoreProblems: function() {
-            this.report.XML = this.processedXML;
-            this.action(this.appResource, this.report, this.query);
+            this.action(_({}).extend(this.reportResources, {reportXML: this.imageFixResult.reportXML}));
         },
         fixMissingAttachment: function(evt) {
             evt.preventDefault();
@@ -167,34 +165,28 @@ define([
             attachmentPlugin.on('uploadcomplete', this.uploadComplete.bind(this, index));
         },
         uploadComplete: function(index, attachment) {
-            attachment.set('title', this.missingAttachments[index]);
-            var originalXML = this.originalReportXML;
+            attachment.set('title', this.imageFixResult.missingAttachments[index]);
+            var originalXML = this.reportResources.reportXML;
             attachment.save().pipe(function() { return fixupImages(originalXML); })
                 .done(this.tryAgain.bind(this));
         },
-        tryAgain: function(processedXML) {
-            if (processedXML.isOK) {
-                this.report.XML = processedXML.reportXML;
-                this.action(this.appResource, this.report, this.query);
+        tryAgain: function(imageFixResult) {
+            if (imageFixResult.isOK) {
+                this.action(_({}).extend(this.reportResources, {reportXML: imageFixResult.reportXML}));
             } else (new FixImagesDialog({
-                appResource: this.appResource,
-                report: this.report,
-                query: this.query,
-                originalReportXML: this.originalReportXML,
-                processedReportXML: this.processedReportXML,
+                reportResources: this.reportResources,
+                imageFixResult: imageFixResult,
                 action: this.action
             })).render();
         }
     });
 
-    function getRecordSets(appResource, report, query) {
-        var contextTableId = query ? query.get('contexttableid') :
-                parseInt(
-                    parsespecifyproperties(appResource.get('metadata')).tableid,
-                    10);
+    function getRecordSets(reportResources) {
+        var contextTableId = reportResources.query ? reportResources.query.get('contexttableid') :
+                parseInt(parsespecifyproperties(reportResources.appResource.get('metadata')).tableid, 10);
 
         if (_.isNaN(contextTableId) || contextTableId === -1) {
-            console.error("couldn't determine table id for report", report.get('name'));
+            console.error("couldn't determine table id for report", reportResources.report.get('name'));
             return;
         }
 
@@ -208,16 +200,15 @@ define([
         recordSets.fetch({ limit: 100 }).done(function() {
             (new ChooseRecordSetDialog({
                 recordSets: recordSets,
-                report: report,
-                query: query
+                reportResources: reportResources
             })).render();
         });
     }
 
-    function editReport(appResource, report, query) {
+    function editReport(reportResources) {
         makeDialog($('<div title="Report definition">')
                    .append($('<textarea cols=120 rows=40 readonly>')
-                           .text(report.XML)),
+                           .text(reportResources.reportXML)),
                    { width: 'auto'});
     }
 
@@ -228,8 +219,7 @@ define([
             'click a': 'selected'
         },
         initialize: function(options) {
-            this.report = options.report;
-            this.query = options.query;
+            this.reportResources = options.reportResources;
             this.recordSets = options.recordSets;
         },
         render: function() {
@@ -254,16 +244,12 @@ define([
         },
         dialogButtons: function() {
             var buttons = [{ text: 'Cancel', click: function() { $(this).dialog('close'); }}];
-
-            if (this.query) {
-                var queryParamsDialogOpts = {
-                    report: this.report,
-                    query: this.query
-                };
+            var reportResources = this.reportResources;
+            if (reportResources.query) {
                 buttons.unshift({
                     text: 'Query',
                     click: function() {
-                        (new QueryParamsDialog(queryParamsDialogOpts)).render();
+                        (new QueryParamsDialog({reportResources: reportResources})).render();
                     }
                 });
             }
@@ -273,8 +259,7 @@ define([
             evt.preventDefault();
             var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
             (new QueryParamsDialog({
-                report: this.report,
-                query: this.query,
+                reportResources: this.reportResources,
                 recordSetId: recordSet.id
             })).runQuery();
         }
@@ -283,8 +268,8 @@ define([
     var QueryParamsDialog = Backbone.View.extend({
         __name__: "QueryParamsDialog",
         initialize: function(options) {
-            this.report = options.report;
-            this.query = options.query;
+            this.reportResources = options.reportResources;
+            this.query = this.reportResources.query;
             this.recordSetId = options.recordSetId;
             this.model = schema.getModel(this.query.get('contextname'));
 
@@ -322,20 +307,21 @@ define([
             return this;
         },
         runQuery: function() {
-            this.fieldUIsP.done(runQuery.bind(null, this.report, this.recordSetId, this.query));
+            var runQueryWithFields = runQuery.bind(null, this.reportResources, this.recordSetId);
+            this.fieldUIsP.done(runQueryWithFields);
         }
     });
 
 
-    function runQuery(report, recordSetId, spQuery, fieldUIs) {
-        var query = spQuery.toJSON();
+    function runQuery(reportResources, recordSetId, fieldUIs) {
+        var query = reportResources.query.toJSON();
         query.limit = 0;
         query.recordsetid = recordSetId;
-        $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, report, fieldUIs));
+        $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, reportResources, fieldUIs));
         makeDialog($('<div title="Running query">Running query...</div>'));
     }
 
-    function runReport(report, fieldUIs, queryResults) {
+    function runReport(reportResources, fieldUIs, queryResults) {
         dialog && dialog.dialog('close');
         if (queryResults.count < 1) {
             makeDialog($('<div title="No results">The query returned no records.</div>'));
@@ -343,7 +329,6 @@ define([
         }
         makeDialog($('<div title="Formatting records">Formatting records...</div>'));
         var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
-        var reportXML = report.XML;
         formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
             dialog && dialog.dialog('close');
             var reportWindowContext = "ReportWindow" + Math.random();
@@ -355,7 +340,7 @@ define([
                          '</form>');
 
             var reportData = { fields: fields, rows: formattedData };
-            $('textarea[name="report"]', form).val(reportXML);
+            $('textarea[name="report"]', form).val(reportResources.reportXML);
             $('textarea[name="data"]', form).val(JSON.stringify(reportData));
             form[0].submit();
         });
