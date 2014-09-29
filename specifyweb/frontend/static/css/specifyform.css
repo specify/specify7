@@ -314,6 +314,8 @@ a.specify-attachment-original {
 .list-dialog li img {
     vertical-align: middle;
     margin-right: 10px;
+    width: 16px;
+    height: 16px;
 }
 
 .list-dialog li {

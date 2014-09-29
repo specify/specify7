@@ -36,7 +36,7 @@ define([
             return this;
         },
         dialogEntry: function(recordSet) {
-            var img = $('<img>', { src: schema.getModelById(recordSet.get('dbtableid')).getIcon() });
+            var img = $('<img>', {src: schema.getModelById(recordSet.get('dbtableid')).getIcon()});
             var entry = $('<li>').append(
                 $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
                     .addClass("intercept-navigation")
@@ -44,8 +44,7 @@ define([
                     .prepend(img)
                     .append('<span class="item-count" style="display:none"> - </span>'));
 
-            this.options.readOnly || entry.append(
-                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a>');
+            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil"></a>');
 
             recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
             recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {

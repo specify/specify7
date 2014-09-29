@@ -49,8 +49,7 @@ define([
                     .text(query.get('name'))
                     .prepend(img));
 
-            this.options.readOnly || entry.append(
-                '<a class="edit"><span class="ui-icon ui-icon-pencil">edit</span></a></li>');
+            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a></li>');
                 
             query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
             return entry;

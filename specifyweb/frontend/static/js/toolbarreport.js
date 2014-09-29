@@ -24,9 +24,6 @@ define([
         }, options));
     }
 
-    var dialogEntry = _.template('<li><a href="#"><img src="<%= icon %>">' +
-                                 '<%= name %><span class="item-count" style="display:none"> - </span></a></li>');
-
     var ReportListDialog = Backbone.View.extend({
         __name__: "ReportListDialog",
         className: "reports-dialog list-dialog",
@@ -226,7 +223,11 @@ define([
             var ul = $('<ul>');
             this.recordSets.each(function(recordSet) {
                 var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
-                var entry = $(dialogEntry({ icon: icon, name: recordSet.get('name') }));
+                var entry = $('<li>');
+                $('<a href="#">').text(recordSet.get('name'))
+                    .prepend($('<img>', {src: icon}))
+                    .append($('<span class="item-count" style="display:none"> - </span>'))
+                    .appendTo(entry);
                 recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
                 ul.append(entry);
                 recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
