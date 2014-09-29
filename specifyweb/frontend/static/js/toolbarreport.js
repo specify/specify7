@@ -397,7 +397,7 @@ define([
         }
 
         function formatOneToMany(field, id) {
-            var resource = new field.model.Resource({ id: datum });
+            var resource = new field.model.Resource({ id: id });
             var key = resource.url() + " " + field.name;
             return _.has(oneToManyCache, key) ? oneToManyCache[key] :
                 (oneToManyCache[key] = (resource).rget(field.name, true).pipe(aggregate));
