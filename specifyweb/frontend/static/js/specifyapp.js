@@ -32,6 +32,8 @@ define([
         return loadUrl.call(this, stripped);
     };
 
+    // Stop jquery-ui dialog from autofocusing first tabbable element.
+    $.ui.dialog.prototype._focusTabbable = function(){};
 
     // gets rid of any backbone view currently showing
     // and replaces it with the rendered view given
