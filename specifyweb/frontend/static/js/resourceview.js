@@ -71,7 +71,8 @@ define([
                 nextUrl: self.next && self.next.viewUrl(),
                 newUrl: self.newUrl
             }));
-            specifyform.buildViewByName(self.model.specifyModel.view, 'form', self.mode).done(function(form) {
+            var view = self.model.specifyModel.view || self.model.specifyModel.name;
+            specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
                 populateForm(form, self.model);
                 self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                     form.find('.specify-form-header').remove();
@@ -81,6 +82,12 @@ define([
                 self.saveBtn && self.saveBtn.render().$el.appendTo(buttons);
                 self.deleteBtn && self.deleteBtn.render().$el.appendTo(buttons);
                 self.setTitle();
+            }).fail(function(jqXHR) {
+                if (jqXHR.status !== 404) return;
+                jqXHR.errorHandled = true;
+                self.$el.append('<h1>Missing form definition</h1>' +
+                                '<p>Specify was unable to find the form definition ' +
+                                'to display this resource.</p>');
             });
             return self;
         },
