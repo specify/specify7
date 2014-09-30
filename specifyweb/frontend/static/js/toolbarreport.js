@@ -73,10 +73,7 @@ define([
             evt.preventDefault();
             var appResource = $(evt.currentTarget).closest('li').data('resource');
             var reports = new schema.models.SpReport.LazyCollection({
-                filters: {
-                    specifyuser: app.user.id,
-                    appresource: appResource.id
-                }
+                filters: { appresource: appResource.id }
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 

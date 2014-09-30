@@ -46,12 +46,15 @@ def run(request):
 @login_maybe_required
 def get_reports(request):
     reports = Spappresource.objects.filter(
-        specifyuser=request.specify_user,
         mimetype__startswith="jrxml",
         spappresourcedir__discipline=request.specify_collection.discipline) \
         .filter(
             Q(spappresourcedir__collection=None) |
-            Q(spappresourcedir__collection=request.specify_collection))
+            Q(spappresourcedir__collection=request.specify_collection)) \
+        .filter(
+            Q(spappresourcedir__specifyuser=request.specify_user) |
+            Q(spappresourcedir__ispersonal=False))
+
 
     data = objs_to_data(reports)
     return HttpResponse(toJson(data), content_type="application/json")
