@@ -386,6 +386,9 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 loannumber: 'discipline'
             }
         },
+        Locality: {
+            deleteBlockers: ['collectingevents']
+        },
         Picklist: {
             uniqueIn: {
                 name: 'collection'
