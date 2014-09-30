@@ -16,6 +16,7 @@ cascade = {
     'Recordsetitem.recordset',
     'Storage.parent',
     'Taxon.parent',
+    'Preparation.collectionobject',
 }
 
 # Set of ForeignKey Fields for which deleting the foreign row is
