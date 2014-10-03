@@ -159,34 +159,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return field is not None and field.is_temporal()
 
     def build_join(self, query, join_cache):
-        table = self.root_table
-        model = getattr(models, table.name)
-        path = deque(self.join_path)
-
-        while len(path) > 0:
-            field = path.popleft()
-            if not field.is_relationship:
-                break
-
-            if len(path) == 0 and field.type == 'one-to-many':
-                    # when returning a one-to-many field stop short so
-                    # the client can do the final 'join' to handle aggregation
-                    break
-            next_table = datamodel.get_table(field.relatedModelName)
-            logger.debug("joining: %r to %r via %r", table, next_table, field)
-            if join_cache is not None and (model, field.name) in join_cache:
-                aliased = join_cache[(model, field.name)]
-                logger.debug("using join cache for %r.%s", model, field.name)
-            else:
-                aliased = orm.aliased(getattr(models, next_table.name))
-                if join_cache is not None:
-                    join_cache[(model, field.name)] = aliased
-                    logger.debug("adding to join cache %r, %r", (model, field.name), aliased)
-
-            query = query.outerjoin(aliased, getattr(model, field.name))
-            table, model = next_table, aliased
-        return query, model, table
-
+        model = getattr(models, self.root_table.name)
+        return build_join(query, self.root_table, model, self.join_path, join_cache)
 
     def add_to_query(self, query, value=None, op_num=None, negate=False,
                      sorting=False, collection=None, join_cache=None):
@@ -199,7 +173,11 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if self.is_relationship():
             # will be formatting or aggregating related objects
-            orm_field = getattr(orm_model, orm_model._id)
+            if self.get_field().type == 'many-to-one':
+                from .format import ObjectFormatter
+                query, orm_field = ObjectFormatter(collection, None).objformat(query, orm_model, None, join_cache)
+            else:
+                orm_field = getattr(orm_model, orm_model._id)
 
         elif self.tree_rank is not None:
             query, orm_field, subquery = \
@@ -301,3 +279,32 @@ def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collect
         deferred = None
 
     return query, orm_field, deferred
+
+def build_join(query, table, model, join_path, join_cache):
+    path = deque(join_path)
+    while len(path) > 0:
+        field = path.popleft()
+        if isinstance(field, str):
+            field = table.get_field(field)
+        if not field.is_relationship:
+            break
+
+        if len(path) == 0 and field.type == 'one-to-many':
+                # when returning a one-to-many field stop short so
+                # the client can do the final 'join' to handle aggregation
+                break
+        next_table = datamodel.get_table(field.relatedModelName)
+        logger.debug("joining: %r to %r via %r", table, next_table, field)
+        if join_cache is not None and (model, field.name) in join_cache:
+            aliased = join_cache[(model, field.name)]
+            logger.debug("using join cache for %r.%s", model, field.name)
+        else:
+            aliased = orm.aliased(getattr(models, next_table.name))
+            if join_cache is not None:
+                join_cache[(model, field.name)] = aliased
+                logger.debug("adding to join cache %r, %r", (model, field.name), aliased)
+
+            query = query.outerjoin(aliased, getattr(model, field.name))
+        table, model = next_table, aliased
+    return query, model, table
+

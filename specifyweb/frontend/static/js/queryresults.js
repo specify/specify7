@@ -29,6 +29,8 @@ define([
     }
 
     function setupToOneCell(fieldSpec, cell, cellValue) {
+        cell.text(cellValue);
+        return;
         var field = fieldSpec.getField();
         if (cellValue == null) return;
         cell.text('(loading...)');
