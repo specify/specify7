@@ -84,13 +84,17 @@ class ObjectFormatter(object):
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
         logger.debug("using aggregator: %s", ElementTree.tostring(aggregatorNode))
         formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', '')
+        separator = aggregatorNode.attrib.get('separator', None)
+        order_by = aggregatorNode.attrib.get('orderfieldname', None)
 
         orm_table = getattr(models, field.relatedModelName)
+        if order_by is not None:
+            order_by = getattr(orm_table, order_by)
+
         join_column = list(inspect(getattr(orm_table, field.otherSideName)).property.local_columns)[0]
         subquery = orm.Query([]).select_from(orm_table) \
                              .filter(join_column == getattr(rel_table, rel_table._id)) \
                              .correlate(rel_table)
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, {})
-        aggregated = coalesce(group_concat(formatted, separator), '')
+        aggregated = coalesce(group_concat(formatted, separator, order_by), '')
         return subquery.add_column(aggregated).as_scalar()
