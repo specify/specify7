@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 
 from sqlalchemy.sql.expression import asc, desc, and_, or_
+from sqlalchemy.sql.functions import count
 
 from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_maybe_required
@@ -125,7 +126,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
     if distinct:
         query = query.distinct()
-    count = query.count()
+    total_count = query.with_entities(count(1)).first()[0]
     query = query.order_by(*order_by_exprs).offset(offset)
     if limit:
         query = query.limit(limit)
@@ -137,7 +138,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     else:
         results = []
 
-    data = {'count': count, 'results': results}
+    data = {'count': total_count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
