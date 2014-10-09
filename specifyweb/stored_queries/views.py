@@ -126,19 +126,19 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
     if distinct:
         query = query.distinct()
-    total_count = query.with_entities(count(1)).first()[0]
     query = query.order_by(*order_by_exprs).offset(offset)
     if limit:
         query = query.limit(limit)
 
-    if not count_only:
+    if count_only:
+        total_count = query.with_entities(count(1)).first()[0]
+        data = {'count': total_count}
+    else:
         results = [[deferred(value) if deferred else value
                     for value, deferred in zip(row, deferreds)]
                    for row in query] if any(deferreds) else list(query)
-    else:
-        results = []
+        data = {'results': results}
 
-    data = {'count': total_count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
