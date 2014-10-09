@@ -158,41 +158,43 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         field = self.get_field()
         return field is not None and field.is_temporal()
 
-    def build_join(self, query, join_cache):
+    def build_join(self, query, join_path, join_cache):
         model = getattr(models, self.root_table.name)
-        return build_join(query, self.root_table, model, self.join_path, join_cache)
+        return build_join(query, self.root_table, model, join_path, join_cache)
 
     def add_to_query(self, query, objformatter, value=None, op_num=None, negate=False,
                      sorting=False, collection=None, join_cache=None):
         no_filter = op_num is None
-
-        query, orm_model, table, field = self.build_join(query, join_cache)
 
         subquery = None
 
         if self.is_relationship():
             # will be formatting or aggregating related objects
             if self.get_field().type == 'many-to-one':
+                query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
                 query, orm_field = objformatter.objformat(query, orm_model, None, join_cache)
             else:
-                orm_field = objformatter.aggregate(query, field, orm_model, None)
-
-        elif self.tree_rank is not None:
-            query, orm_field, subquery = \
-                   handle_tree_field(query, orm_model, table, self.tree_rank,
-                                     no_filter, sorting, collection)
+                query, orm_model, table, field = self.build_join(query, self.join_path[:-1], join_cache)
+                orm_field = objformatter.aggregate(query, self.get_field(), orm_model, None)
         else:
-            orm_field = getattr(orm_model, self.get_field().name)
+            query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
 
-            if field.type == "java.sql.Timestamp":
-                # Only consider the date portion of timestamp fields.
-                # This is to replicate the behavior of Sp6. It might
-                # make since to condition this on whether there is a
-                # time component in the input value.
-                orm_field = sql.func.DATE(orm_field)
+            if self.tree_rank is not None:
+                query, orm_field, subquery = \
+                       handle_tree_field(query, orm_model, table, self.tree_rank,
+                                         no_filter, sorting, collection)
+            else:
+                orm_field = getattr(orm_model, self.get_field().name)
 
-            if field.is_temporal() and self.date_part != "Full Date":
-                orm_field = extract(self.date_part, orm_field)
+                if field.type == "java.sql.Timestamp":
+                    # Only consider the date portion of timestamp fields.
+                    # This is to replicate the behavior of Sp6. It might
+                    # make since to condition this on whether there is a
+                    # time component in the input value.
+                    orm_field = sql.func.DATE(orm_field)
+
+                if field.is_temporal() and self.date_part != "Full Date":
+                    orm_field = extract(self.date_part, orm_field)
 
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -281,6 +283,7 @@ def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collect
 
 def build_join(query, table, model, join_path, join_cache):
     path = deque(join_path)
+    field = None
     while len(path) > 0:
         field = path.popleft()
         if isinstance(field, str):
