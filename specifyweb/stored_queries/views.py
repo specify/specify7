@@ -15,6 +15,7 @@ from specifyweb.specify.views import login_maybe_required
 from . import models
 
 from .queryfield import QueryField
+from .format import ObjectFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +87,8 @@ def query(request, id):
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        return execute(session, request.specify_collection,
-                       tableid, distinct, count_only,
-                       field_specs, limit, offset)
+        return execute(session, request.specify_collection, request.specify_user,
+                       tableid, distinct, count_only, field_specs, limit, offset)
 
 class EphemeralField(
     namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
@@ -117,12 +117,11 @@ def ephemeral(request):
         field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
                        for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
-        return execute(session, request.specify_collection,
-                       tableid, distinct, count_only,
-                       field_specs, limit, offset, recordsetid)
+        return execute(session, request.specify_collection, request.specify_user,
+                       tableid, distinct, count_only, field_specs, limit, offset, recordsetid)
 
-def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
-    query, order_by_exprs, deferreds = build_query(session, collection, tableid, field_specs, recordsetid)
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+    query, order_by_exprs, deferreds = build_query(session, collection, user, tableid, field_specs, recordsetid)
 
     if distinct:
         query = query.distinct()
@@ -141,7 +140,8 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     data = {'count': count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
 
-def build_query(session, collection, tableid, field_specs, recordsetid=None):
+def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
+    objectformatter = ObjectFormatter(collection, user)
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
@@ -159,7 +159,7 @@ def build_query(session, collection, tableid, field_specs, recordsetid=None):
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field, deferred = fs.add_to_query(query,
+        query, field, deferred = fs.add_to_query(query, objectformatter,
                                                  sorting=sort_type is not None,
                                                  join_cache=join_cache,
                                                  collection=collection)
