@@ -88,7 +88,7 @@ class ObjectFormatter(object):
         order_by = aggregatorNode.attrib.get('orderfieldname', None)
 
         orm_table = getattr(models, field.relatedModelName)
-        if order_by is not None:
+        if order_by is not None and order_by != '':
             order_by = getattr(orm_table, order_by)
 
         join_column = list(inspect(getattr(orm_table, field.otherSideName)).property.local_columns)[0]
