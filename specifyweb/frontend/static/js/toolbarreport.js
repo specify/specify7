@@ -259,7 +259,7 @@ define([
             (new QueryParamsDialog({
                 reportResources: this.reportResources,
                 recordSetId: recordSet.id
-            })).runQuery();
+            })).runReport();
         }
     });
 
@@ -293,7 +293,7 @@ define([
                     width: 800,
                     position: { my: "top", at: "top+20", of: $('body') },
                     buttons: [
-                        {text: "Run", click: this.runQuery.bind(this)},
+                        {text: "Run", click: this.runReport.bind(this)},
                         {text: "Cancel", click: function() { $(this).dialog('close'); }}
                     ]
             });
@@ -304,9 +304,9 @@ define([
             });
             return this;
         },
-        runQuery: function() {
-            var runQueryWithFields = runQuery.bind(null, this.reportResources, this.recordSetId);
-            this.fieldUIsP.done(runQueryWithFields);
+        runReport: function() {
+            var runReportWithFields = runReport.bind(null, this.reportResources, this.recordSetId);
+            this.fieldUIsP.done(runReportWithFields);
         }
     });
 
@@ -319,29 +319,22 @@ define([
         makeDialog($('<div title="Running query">Running query...</div>'));
     }
 
-    function runReport(reportResources, fieldUIs, queryResults) {
+    function runReport(reportResources, recordSetId, fieldUIs) {
         dialog && dialog.dialog('close');
-        if (queryResults.count < 1) {
-            makeDialog($('<div title="No results">The query returned no records.</div>'));
-            return;
-        }
-        makeDialog($('<div title="Formatting records">Formatting records...</div>'));
-        var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
-        formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
-            dialog && dialog.dialog('close');
-            var reportWindowContext = "ReportWindow" + Math.random();
-            window.open("", reportWindowContext);
-            var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
-                         '<textarea name="report"></textarea>' +
-                         '<textarea name="data"></textarea>' +
-                         '<input type="submit"/>' +
-                         '</form>');
+        var query = reportResources.query.toJSON();
+        query.limit = 0;
+        query.recordsetid = recordSetId;
 
-            var reportData = { fields: fields, rows: formattedData };
-            $('textarea[name="report"]', form).val(reportResources.reportXML);
-            $('textarea[name="data"]', form).val(JSON.stringify(reportData));
-            form[0].submit();
-        });
+        var reportWindowContext = "ReportWindow" + Math.random();
+        window.open("", reportWindowContext);
+        var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
+                     '<textarea name="report"></textarea>' +
+                     '<textarea name="query"></textarea>' +
+                     '<input type="submit"/>' +
+                     '</form>');
+        $('textarea[name="report"]', form).val(reportResources.reportXML);
+        $('textarea[name="query"]', form).val(JSON.stringify(query));
+        form[0].submit();
     }
 
     function fixupImages(reportXML) {

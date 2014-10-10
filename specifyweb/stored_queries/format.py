@@ -1,14 +1,15 @@
 import logging
+import re
 
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, inspect
-from sqlalchemy.sql.expression import case
+from sqlalchemy.sql.expression import case, func
 from sqlalchemy.sql.functions import concat, coalesce, count
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel
+from specifyweb.specify.models import datamodel, Spappresourcedata
 
 from . import models
 from .queryfieldspec import build_join
@@ -19,8 +20,8 @@ logger = logging.getLogger(__name__)
 class ObjectFormatter(object):
     def __init__(self, collection, user):
         formattersXML, _ = get_app_resource(collection, user, 'DataObjFormatters')
-        logger.debug(formattersXML)
         self.formattersDom = ElementTree.fromstring(formattersXML)
+        self.date_format = get_date_format()
 
     def getFormatterDef(self, specify_model, formatter_name):
         def lookup(attr, val):
@@ -98,3 +99,57 @@ class ObjectFormatter(object):
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, {})
         aggregated = coalesce(group_concat(formatted, separator, order_by), '')
         return subquery.add_column(aggregated).as_scalar()
+
+    def field_format(self, query_field, field):
+        field_spec = query_field.fieldspec
+        field_type = field_spec.get_field().type
+        if field_type == "java.lang.Boolean":
+            return None if field is None else (field != 0)
+        if field_type in ("java.lang.Integer", "java.lang.Short"):
+            return field
+        if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") and \
+           field_spec.date_part == "Full Date":
+            return func.date_format(field, self.date_format)
+        if field_spec.tree_rank is not None:
+            return field
+        if field_spec.is_relationship():
+            return field
+        return field
+
+def get_date_format():
+    res = Spappresourcedata.objects.filter(
+        spappresource__name='preferences',
+        spappresource__spappresourcedir__usertype='Prefs')
+    remote_prefs = '\n'.join(r.data for r in res)
+    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', remote_prefs)
+    date_format = match.group(1) if match is not None else 'yyyy-MM-dd'
+    mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
+    logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
+    return mysql_date_format
+
+LDLM_TO_MYSQL = {
+    "MM dd yy":   "%m %d %y",
+    "MM dd yyyy": "%m %d %Y",
+    "MM-dd-yy":   "%m-%d-%y",
+    "MM-dd-yyyy": "%m-%d-%Y",
+    "MM.dd.yy":   "%m.%d.%y",
+    "MM.dd.yyyy": "%m.%d.%Y",
+    "MM/dd/yy":   "%m/%d/%y",
+    "MM/dd/yyyy": "%m/%d/%Y",
+    "dd MM yy":   "%d %m %y",
+    "dd MM yyyy": "%d %m %Y",
+    "dd MMM yyyy":"%d %b %Y",
+    "dd-MM-yy":   "%d-%m-%y",
+    "dd-MM-yyyy": "%d-%m-%Y",
+    "dd-MMM-yyyy":"%d-%b-%Y",
+    "dd.MM.yy":   "%d.%m.%y",
+    "dd.MM.yyyy": "%d.%m.%Y",
+    "dd.MMM.yyyy":"%d.%b.%Y",
+    "dd/MM/yy":   "%d/%m/%y",
+    "dd/MM/yyyy": "%d/%m/%Y",
+    "dd/MMM/yyy": "%d/%b/%Y",
+    "yyyy MM dd": "%Y %m %d",
+    "yyyy-MM-dd": "%Y-%m-%d",
+    "yyyy.MM.dd": "%Y.%m.%d",
+    "yyyy/MM/dd": "%Y/%m/%d",
+}

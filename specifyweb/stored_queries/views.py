@@ -88,8 +88,11 @@ def query(request, id):
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        return execute(session, request.specify_collection, request.specify_user,
+        data = execute(session, request.specify_collection, request.specify_user,
                        tableid, distinct, count_only, field_specs, limit, offset)
+
+    return HttpResponse(toJson(data), content_type='application/json')
+
 
 class EphemeralField(
     namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
@@ -106,6 +109,10 @@ def ephemeral(request):
         spquery = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
+    data = run_ephemeral_query(request.specify_collection, request.specify_user, spquery)
+    return HttpResponse(toJson(data), content_type='application/json')
+
+def run_ephemeral_query(collection, user, spquery):
     logger.info('ephemeral query: %s', spquery)
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
@@ -118,8 +125,8 @@ def ephemeral(request):
         field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
                        for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
-        return execute(session, request.specify_collection, request.specify_user,
-                       tableid, distinct, count_only, field_specs, limit, offset, recordsetid)
+        return execute(session, collection, user, tableid, distinct, count_only,
+                       field_specs, limit, offset, recordsetid)
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
     query, order_by_exprs, deferreds = build_query(session, collection, user, tableid, field_specs, recordsetid)
@@ -132,14 +139,12 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
     if count_only:
         total_count = query.with_entities(count(1)).first()[0]
-        data = {'count': total_count}
+        return {'count': total_count}
     else:
         results = [[deferred(value) if deferred else value
                     for value, deferred in zip(row, deferreds)]
                    for row in query] if any(deferreds) else list(query)
-        data = {'results': results}
-
-    return HttpResponse(toJson(data), content_type='application/json')
+        return {'results': results}
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
     objectformatter = ObjectFormatter(collection, user)
@@ -165,7 +170,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
                                                  join_cache=join_cache,
                                                  collection=collection)
         if fs.display:
-            query = query.add_columns(field)
+            query = query.add_columns(objectformatter.field_format(fs, field))
             deferreds.append(deferred)
 
         if sort_type is not None:
