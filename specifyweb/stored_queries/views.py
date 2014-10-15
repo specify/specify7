@@ -170,7 +170,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
                                                  join_cache=join_cache,
                                                  collection=collection)
         if fs.display:
-            query = query.add_columns(objectformatter.field_format(fs, field))
+            query = query.add_columns(field if deferred else objectformatter.fieldformat(fs, field))
             deferreds.append(deferred)
 
         if sort_type is not None:

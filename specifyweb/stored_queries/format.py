@@ -5,11 +5,12 @@ from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, inspect
-from sqlalchemy.sql.expression import case, func
+from sqlalchemy.sql.expression import case, func, cast
 from sqlalchemy.sql.functions import concat, coalesce, count
+from sqlalchemy import types
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel, Spappresourcedata
+from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontaineritem
 
 from . import models
 from .queryfieldspec import build_join
@@ -17,11 +18,14 @@ from .group_concat import group_concat
 
 logger = logging.getLogger(__name__)
 
+CollectionObject_model = datamodel.get_table('CollectionObject')
+
 class ObjectFormatter(object):
     def __init__(self, collection, user):
         formattersXML, _ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
+        self.collection = collection
 
     def getFormatterDef(self, specify_model, formatter_name):
         def lookup(attr, val):
@@ -34,6 +38,19 @@ class ObjectFormatter(object):
             return self.formattersDom.find('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
         return (aggregator_name and lookup('name', aggregator_name)) \
             or lookup('class', specify_model.classname)
+
+    def catalog_number_is_numeric(self):
+        try:
+            locale_item = Splocalecontaineritem.objects.get(
+                container__discipline=self.collection.discipline,
+                container__name='collectionobject',
+                container__schematype=0,
+                name='catalogNumber')
+            formatter = locale_item.format
+        except Splocalecontaineritem.DoesNotExist:
+            return False
+
+        return formatter == 'CatalogNumberNumeric'
 
     def objformat(self, query, orm_table, formatter_name, join_cache=None):
         logger.info('formatting %s using %s', orm_table, formatter_name)
@@ -100,20 +117,31 @@ class ObjectFormatter(object):
         aggregated = coalesce(group_concat(formatted, separator, order_by), '')
         return subquery.add_column(aggregated).as_scalar()
 
-    def field_format(self, query_field, field):
+    def fieldformat(self, query_field, field):
         field_spec = query_field.fieldspec
         field_type = field_spec.get_field().type
+
         if field_type == "java.lang.Boolean":
-            return None if field is None else (field != 0)
+            return field != 0
+
         if field_type in ("java.lang.Integer", "java.lang.Short"):
             return field
-        if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") and \
-           field_spec.date_part == "Full Date":
+
+        if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
+           and field_spec.date_part == "Full Date":
             return func.date_format(field, self.date_format)
+
         if field_spec.tree_rank is not None:
             return field
+
         if field_spec.is_relationship():
             return field
+
+        if field_spec.table is CollectionObject_model \
+           and field_spec.get_field() is CollectionObject_model.get_field('catalogNumber') \
+           and self.catalog_number_is_numeric():
+            return cast(field, types.Numeric(65)) # 65 is the mysql max precision
+
         return field
 
 def get_date_format():
