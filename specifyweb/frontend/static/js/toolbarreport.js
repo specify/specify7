@@ -1,16 +1,14 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
-    'whenall', 'dataobjformatters', 'fieldformat', 'domain', 'attachmentplugin', 'attachments',
+    'domain', 'attachmentplugin', 'attachments',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(
     require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
-    whenAll, dataobjformatters, fieldformat, domain, AttachmentPlugin, attachments,
+    domain, AttachmentPlugin, attachments,
     statusJSON
 ) {
     "use strict";
-    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
-
     var app;
     var status = $.parseJSON(statusJSON);
     var title =  "Reports";
@@ -376,49 +374,6 @@ define([
                 missingAttachments: missingAttachments
             };
         });
-    }
-
-    function formatResults(fieldUIs, rows) {
-        var manyToOneCache = {}, oneToManyCache = {};
-        function formatManyToOne(field, id) {
-            var resource = new (field.getRelatedModel().Resource)({ id: id });
-            var key = resource.url();
-            return _.has(manyToOneCache, key) ? manyToOneCache[key] :
-                (manyToOneCache[key] = objformat(resource));
-        }
-
-        function formatOneToMany(field, id) {
-            var resource = new field.model.Resource({ id: id });
-            var key = resource.url() + " " + field.name;
-            return _.has(oneToManyCache, key) ? oneToManyCache[key] :
-                (oneToManyCache[key] = (resource).rget(field.name, true).pipe(aggregate));
-        }
-
-        function formatRow(row) {
-            return whenAll( _.map(row, function(datum, i) {
-                if (i === 0) return datum; // id field
-                if (datum == null) return null;
-                var fieldSpec = fieldUIs[i-1].fieldSpec;
-                var field = fieldSpec.getField();
-                if (field.type === "java.lang.Boolean") return !!datum;
-                if (field.type === "java.lang.Integer" || field.type === "java.lang.Short") return datum;
-                if (fieldSpec.treeRank || !field.isRelationship) {
-                    if (field && (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date')) {
-                        return fieldformat(field, datum);
-                    } else return datum;
-                }
-                switch (field.type) {
-                case 'many-to-one':
-                    return formatManyToOne(field, datum);
-                case 'one-to-many':
-                    return formatOneToMany(field, datum);
-                default:
-                    console.error('unhandled field type:', field.type);
-                    return datum;
-                }
-            }));
-        }
-        return whenAll( _.map(rows, formatRow) );
     }
 
     return {
