@@ -19,6 +19,7 @@ from .group_concat import group_concat
 logger = logging.getLogger(__name__)
 
 CollectionObject_model = datamodel.get_table('CollectionObject')
+Agent_model = datamodel.get_table('Agent')
 
 class ObjectFormatter(object):
     def __init__(self, collection, user):
@@ -142,6 +143,9 @@ class ObjectFormatter(object):
            and self.catalog_number_is_numeric():
             return cast(field, types.Numeric(65)) # 65 is the mysql max precision
 
+        if field_spec.table is Agent_model \
+           and field_spec.get_field() is Agent_model.get_field('agentType'):
+            return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
         return field
 
 def get_date_format():
