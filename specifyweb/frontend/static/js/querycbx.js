@@ -1,14 +1,57 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
     'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch',
+    'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
 ], function (require, $, _, Backbone, api, schema, specifyform, templates,
              dataobjformatters, whenAll, parseselect, localizeForm, navigation, SaveButton,
-             DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, typesearchxml) {
+             DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
+
+    function typesearch2query(typesearch, q) {
+        var model = schema.getModelById(parseInt(typesearch.attr('tableid'), 10));
+        var query = new schema.models.SpQuery.Resource();
+        query.set({
+            'name': "Ephemeral QueryCBX query",
+            'contextname': model.name,
+            'contexttableid': model.tableId,
+            'selectdistinct': false,
+            'countonly': false,
+            'specifyuser': null,
+            'isfavorite': false,
+            'ordinal': null,
+            'limit': 0
+        });
+        var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
+
+        var searchFieldSpec = QueryFieldSpec.fromPath([model.name, typesearch.attr('searchfield')]);
+        var searchField = new schema.models.SpQueryField.Resource();
+        searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
+            'sorttype': 0,
+            'isdisplay': false,
+            'isnot': false,
+            'startvalue': q,
+            'operstart': 15,
+            'position': 0
+        });
+        fields.add(searchField);
+
+        var dispFieldSpec = QueryFieldSpec.fromPath([model.name]);
+        var dispField = new schema.models.SpQueryField.Resource();
+        dispField.set(dispFieldSpec.toSpQueryAttrs()).set({
+            'sorttype': 1,
+            'isdisplay': true,
+            'isnot': false,
+            'startvalue': '',
+            'operstart': 0,
+            'position': 1
+        });
+        fields.add(dispField);
+
+        return query;
+    }
 
     var QueryCbx = Backbone.View.extend({
         __name__: "QueryCbx",
@@ -23,92 +66,74 @@ define([
             this.model.set(this.fieldName, resource);
         },
         render: function () {
-            var self = this;
-            var control = self.$el;
+            var control = this.$el;
             var querycbx = $(templates.querycbx());
             control.replaceWith(querycbx);
-            self.setElement(querycbx);
-            self.$('input').replaceWith(control);
-            self.fieldName = control.attr('name');
-            self.readOnly = control.prop('readonly');
-            self.inFormTable = control.hasClass('specify-field-in-table');
-            if (self.readOnly || self.inFormTable) {
-                self.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
+            this.setElement(querycbx);
+            this.$('input').replaceWith(control);
+            this.fieldName = control.attr('name');
+            this.readOnly = control.prop('readonly');
+            this.inFormTable = control.hasClass('specify-field-in-table');
+            if (this.readOnly || this.inFormTable) {
+                this.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
             }
-            if (!self.readOnly || self.inFormTable) {
-                self.$('.querycbx-display').hide();
+            if (!this.readOnly || this.inFormTable) {
+                this.$('.querycbx-display').hide();
             }
-            self.isRequired = self.$('input').is('.specify-required-field');
+            this.isRequired = this.$('input').is('.specify-required-field');
 
             var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
-            self.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
-            if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") self.$('.querycbx-clone').hide();
+            var typesearch = this.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
+            if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
-            var typesearchTxt = self.typesearch.text().trim();
-            var mapper = typesearchTxt ? parseselect.colToFieldMapper(typesearchTxt) : _.identity;
-            var displaycolsRaw = _.map(self.typesearch.attr('displaycols').split(','), function trim(s) {
-                return s.trim();
-            });
-
-            self.displaycols = _(displaycolsRaw).map(mapper);
-
-            var field = self.model.specifyModel.getField(self.fieldName);
-            self.relatedModel = field.getRelatedModel();
-            var searchField = self.relatedModel.getField(self.typesearch.attr('searchfield'));
+            var field = this.model.specifyModel.getField(this.fieldName);
+            var relatedModel = this.relatedModel = field.getRelatedModel();
+            var searchField = this.relatedModel.getField(this.typesearch.attr('searchfield'));
             control.attr('title', 'Searches: ' + searchField.getLocalizedName());
 
             control.autocomplete({
                 minLength: 3,
                 source: function (request, response) {
-                    var collection = api.queryCbxSearch(self.relatedModel, searchField.name, request.term);
-                    collection.fetch().pipe(function() {
-                        var rendering = collection.chain().compact().map(_.bind(self.renderItem, self)).value();
-                        return whenAll(rendering);
-                    }).pipe(function(rendered) {
-                        collection.isComplete() || rendered.push({ label: "...", value: null, resource: null });
-                        return rendered;
-                    }).done(response).fail(function() { response([]); });
+                    var query = typesearch2query(typesearch, request.term);
+                    $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(function(data) {
+                        var items = _.map(data.results, function(row) {
+                            return { label: row[1], value: row[1],
+                                     resource: new relatedModel.Resource({ id: row[0] }) };
+                        });
+                        response(items);
+                    });
                 }
             });
 
-            self.model.on('change:' + self.fieldName.toLowerCase(), self.fillIn, self);
-            self.fillIn();
+            this.model.on('change:' + this.fieldName.toLowerCase(), this.fillIn, this);
+            this.fillIn();
 
-            self.toolTipMgr = new ToolTipMgr(self, control).enable();
-            self.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(self, self.fieldName, control);
-            return self;
+            this.toolTipMgr = new ToolTipMgr(this, control).enable();
+            this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
+            return this;
         },
         fillIn: function () {
-            var self = this;
-            _.defer(function() {
-                self.model.rget(self.fieldName, true).done(function(related) {
+            var _this = this;
+            function fillIn() {
+                _this.model.rget(_this.fieldName, true).done(function(related) {
                     if (related) {
-                        self.renderItem(related).done(function(item) {
-                            self.$('input').val(item.value);
+                        _this.renderItem(related).done(function(item) {
+                            _this.$('input').val(item.value);
                         });
-                        self.model.saveBlockers.remove('fieldrequired:' + self.fieldName);
+                        _this.model.saveBlockers.remove('fieldrequired:' + _this.fieldName);
                     } else {
-                        self.$('input').val('');
-                        self.isRequired && self.model.saveBlockers.add(
-                            'fieldrequired:' + self.fieldName, self.fieldName, 'Field is required', true);
+                        _this.$('input').val('');
+                        _this.isRequired && _this.model.saveBlockers.add(
+                            'fieldrequired:' + _this.fieldName, _this.fieldName, 'Field is required', true);
                     }
                 });
-            });
+            }
+            _.defer(fillIn);
         },
         renderItem: function (resource) {
-            var str = this.typesearch.attr('format');
             var rget = resource.rget.bind(resource);
-            var buildLabel = str &&
-                whenAll(_(this.displaycols).map(rget)).pipe(function(vals) {
-                    // TODO: utilize precision values for %f format fields.
-                    // I tried using sprintf.js for this, but couldn't get
-                    // to handle nulls nicely.
-                    _(vals).each(function (val) { str = str.replace(/(%s)|(%[0-9\.]*f)/, val || ''); });
-                    return str;
-                });
-            var buildValue = dataobjformat(resource, this.typesearch.attr('dataobjformatter'));
-            return $.when(buildLabel, buildValue).pipe(function(label, value) {
-                return { label: label || value, value: value, resource: resource };
+            return dataobjformat(resource, this.typesearch.attr('dataobjformatter')).pipe(function(formatted) {
+                return { label: formatted, value: formatted, resource: resource };
             });
         },
         openSearch: function(event, ui) {

@@ -34,7 +34,7 @@ def extract_date_part(fieldname):
     return fieldname, date_part
 
 def make_table_list(fs):
-    path = fs.join_path if fs.tree_rank or fs.is_relationship() else fs.join_path[:-1]
+    path = fs.join_path if fs.tree_rank or not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
     first = [str(fs.root_table.tableId)]
 
     def field_to_elem(field):
@@ -49,7 +49,7 @@ def make_table_list(fs):
     return ','.join(first + rest)
 
 def make_stringid(fs, table_list):
-    field_name = fs.tree_rank or fs.join_path[-1].name
+    field_name = fs.tree_rank or fs.join_path[-1].name if fs.join_path else ''
     if fs.date_part is not None and fs.date_part != "Full Date":
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
@@ -149,7 +149,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             return None
 
     def is_relationship(self):
-        return self.tree_rank is None and self.get_field().is_relationship
+        return self.tree_rank is None and self.get_field() is not None and self.get_field().is_relationship
 
     def is_temporal(self):
         field = self.get_field()

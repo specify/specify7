@@ -1,7 +1,7 @@
 define(['underscore'], function(_) {
     "use strict";
-    var fromRe = /FROM\s+(\w+)\s+(AS\s+)?(\w+)/i
-    var joinRe = /JOIN\s+(\w+\.\w+)\s+(AS\s+)?(\w+)/ig
+    var fromRe = /FROM\s+(\w+)\s+(AS\s+)?(\w+)/i;
+    var joinRe = /JOIN\s+(\w+\.\w+)\s+(AS\s+)?(\w+)/ig;
     var self = {
         parse: function(select) {
             var colMap = {};
