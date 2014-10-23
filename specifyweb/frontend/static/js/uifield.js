@@ -50,7 +50,10 @@ define([
                     .on('addsaveblocker', this.addSaveBlocker, this)
                     .on('removesaveblocker', this.removeSaveBlocker, this);
 
-            resource.isNew() && this.$el.val() && this.change(); // set default value into resource;
+            if (resource.isNew() && this.$el.val()) {
+                console.log('setting default value', this.$el.val(), 'into', field);
+                inputUI.fillIn(this.$el.val()).change();
+            }
 
             if (resource) {
                 var fillItIn = function() {

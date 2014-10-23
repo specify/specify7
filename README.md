@@ -7,7 +7,7 @@ running the Specify 7 server on any machine.
 1. Download and install [Vagrant 1.2.7](http://downloads.vagrantup.com/tags/v1.2.7).
 2. Clone this repository or download it using the "Download ZIP" button to the right.
 3. In the top level directory where `Vagrantfile` is located create a new directory called `testing`.
-4. Copy a Specify 6.5.00 database dump into the `testing` directory with the filename `SpecifyDB.sql`.
+4. Copy a Specify 6.5.05 database dump into the `testing` directory with the filename `SpecifyDB.sql`.
 5. Run `vagrant up` in the top level directory.
 6. The system will build and configure a virtual machine and setup a Specify 7 server
    with the database you provided.
