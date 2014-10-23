@@ -68,7 +68,7 @@ class ObjectFormatter(object):
                 formatter_name = fieldNode.attrib.get('formatter', None)
                 query, expr = self.objformat(query, table, formatter_name, join_cache)
             else:
-                expr = getattr(table, specify_field.name)
+                expr = self._fieldformat(specify_field, getattr(table, specify_field.name))
 
             if 'sep' in fieldNode.attrib:
                 expr = concat(fieldNode.attrib['sep'], expr)
@@ -120,13 +120,11 @@ class ObjectFormatter(object):
 
     def fieldformat(self, query_field, field):
         field_spec = query_field.fieldspec
+        if field_spec.get_field() is None:
+            return field
+
         field_type = field_spec.get_field().type
 
-        if field_type == "java.lang.Boolean":
-            return field != 0
-
-        if field_type in ("java.lang.Integer", "java.lang.Short"):
-            return field
 
         if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
            and field_spec.date_part == "Full Date":
@@ -138,15 +136,24 @@ class ObjectFormatter(object):
         if field_spec.is_relationship():
             return field
 
-        if field_spec.table is CollectionObject_model \
-           and field_spec.get_field() is CollectionObject_model.get_field('catalogNumber') \
+        return self._fieldformat(field_spec.get_field(), field)
+
+    def _fieldformat(self, specify_field, field):
+        if specify_field.type == "java.lang.Boolean":
+            return field != 0
+
+        if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
+            return field
+
+        if specify_field is CollectionObject_model.get_field('catalogNumber') \
            and self.catalog_number_is_numeric():
             return cast(field, types.Numeric(65)) # 65 is the mysql max precision
 
-        if field_spec.table is Agent_model \
-           and field_spec.get_field() is Agent_model.get_field('agentType'):
+        if specify_field is Agent_model.get_field('agentType'):
             return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
+
         return field
+
 
 def get_date_format():
     res = Spappresourcedata.objects.filter(

@@ -76,12 +76,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         if add_id:
             join_path.append(node.idField)
 
-        assert len(join_path) > 0
-
         return cls(root_table=root_table,
                    join_path=join_path,
                    table=node,
-                   date_part='Full Date' if join_path[-1].is_temporal() else None,
+                   date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
                    tree_rank=None)
 
 
@@ -110,7 +108,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         field = node.get_field(extracted_fieldname, strict=False)
         tree_rank = None
         if field is None:
-            tree_rank = extracted_fieldname
+            tree_rank = extracted_fieldname if extracted_fieldname else None
         else:
             join_path.append(field)
             if field.is_temporal() and date_part is None:
@@ -122,11 +120,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                      date_part=date_part,
                      tree_rank=tree_rank)
 
-        logger.info('parsed %s related %s to %s', stringid, is_relation, result)
+        logger.debug('parsed %s related %s to %s', stringid, is_relation, result)
         return result
 
     def __init__(self, *args, **kwargs):
-        assert self.tree_rank is not None or self.get_field() is not None
         assert self.is_temporal() or self.date_part is None
         assert self.date_part in ('Full Date', 'Day', 'Month', 'Year', None)
 
@@ -168,7 +165,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         subquery = None
 
-        if self.is_relationship():
+        if self.tree_rank is None and self.get_field() is None:
+            query, orm_field = objformatter.objformat(query, getattr(models, self.root_table.name), None, join_cache)
+            no_filter = True
+        elif self.is_relationship():
             # will be formatting or aggregating related objects
             if self.get_field().type == 'many-to-one':
                 query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
