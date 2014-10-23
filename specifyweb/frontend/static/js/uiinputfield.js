@@ -20,6 +20,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         },
         fillIn: function(value) {
             this.$el.val(value);
+            return this;
         },
         change: function() {
             if (this.readOnly) return;
