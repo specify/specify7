@@ -53,7 +53,12 @@ define([
 
     // begins the process of creating a new resource
     function newResourceView(model) {
-        resourceView(model, null);
+        if (app.isReadOnly) {
+            app.setCurrentView(new NotFoundView());
+            app.setTitle('Page Not Found');
+        } else {
+            resourceView(model, null);
+        }
     }
 
     // this function shows users individual resources which
