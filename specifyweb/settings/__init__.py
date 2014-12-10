@@ -216,5 +216,11 @@ except:
 if DEBUG:
     VERSION = git_version + "(debug)"
 else:
-    from .build_version import VERSION
+    try:
+        from .build_version import VERSION
+    except ImportError:
+        raise Exception('Javascript and CSS are not optimized.\n'
+                        'Run make in the specifweb directory\n'
+                        'or turn on DEBUG to use unoptimized files.')
+
     assert git_version in ('N/A', VERSION), "build is out of date"

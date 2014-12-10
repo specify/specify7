@@ -60,6 +60,16 @@ In the directory `specify7/specifyweb/settings` you will find the
 explaining the various settings.
     
 
+Turn on debugging.
+------------------
+For development purposes, Django debugging should be turned on. It
+will enable stacktraces in responses that encounter exceptions, and
+allow operation with the unoptimized Javascript files. 
+
+ Debugging can be enabled by creating the file
+`specify7/specifyweb/settings/debug.py` with the contents, `DEBUG =
+True`.
+
 The development server.
 -----------------------
 Specify7 can be run using the Django development server. If you are
@@ -69,9 +79,7 @@ it first.
     python specify7/specifyweb/manage.py runserver
 
 This will start a development server for testing purposes on
-`localhost:8000`.  Debugging can be enabled by creating the file
-`specify7/specifyweb/settings/debug.py` with the contents, `DEBUG =
-True`.
+`localhost:8000`.
 
 
 Optimizing JS and CSS files.
@@ -82,6 +90,6 @@ optimized by `requirejs`. Then, instead of serving each file
 separately, they are packaged into single optimized `main-built.js`
 and `main-built.css` files.
 
-    make -C specify7
+    make -C specify7/specifyweb
 
 When the Specify7 repository is updated, this step should be repeated.
