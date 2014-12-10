@@ -7,6 +7,8 @@ After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
+Intstructions for deployment follow.
+
 
 Install system dependencies.
 -----------------------------------
@@ -66,7 +68,7 @@ For development purposes, Django debugging should be turned on. It
 will enable stacktraces in responses that encounter exceptions, and
 allow operation with the unoptimized Javascript files. 
 
- Debugging can be enabled by creating the file
+Debugging can be enabled by creating the file
 `specify7/specifyweb/settings/debug.py` with the contents, `DEBUG =
 True`.
 
@@ -82,9 +84,27 @@ This will start a development server for testing purposes on
 `localhost:8000`.
 
 
+Deployment to production.
+==========================
+
+Start by following the development instructions above, but don't
+enable debugging (or disable it if you enabled it previously).
+
+Production requirements.
+------------------------
+For production environments, Specify7 can be hosted by Apache. The
+following packages are needed:
+
+* Apache
+* mod-wsgi to connect Python to Apache
+
+On Ubuntu:
+
+    sudo apt-get install apache2 libapache2-mod-wsgi
+
+
 Optimizing JS and CSS files.
 ----------------------------
-
 The Javascript and CSS files that comprise the web app can be
 optimized by `requirejs`. Then, instead of serving each file
 separately, they are packaged into single optimized `main-built.js`
@@ -93,3 +113,25 @@ and `main-built.css` files.
     make -C specify7/specifyweb
 
 When the Specify7 repository is updated, this step should be repeated.
+
+Setup Apache.
+-------------
+In the `specify7` directory you will find the `specifyweb_apache.conf`
+file. Make a copy of the file as `local_specifyweb_apache.conf` and
+edit the contents to reflect the location of Specify6 and Specify7 on
+your system. There are comments showing what to change.
+
+Then, remove the default Apache welcome page.
+
+    sudo rm /etc/apache2/sites-enabled/000-default.conf
+
+And make a link to your `local_specifyweb_apache.conf` file.
+
+    sudo ln -s `pwd`/specify7/local_specifyweb_apache.conf /etc/apache2/sites-enabled/
+
+Restart Apache.
+--------------
+After changing Apache's config files, restart it.
+
+    sudo invoke-rc.d apache2 restart
+
