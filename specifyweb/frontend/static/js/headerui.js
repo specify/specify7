@@ -4,6 +4,7 @@ define([
 // Tasks included in header:
     'toolbarwelcome',
     'toolbardataentry',
+    'toolbarrecordsets',
     'toolbarquery',
     'toolbarreport',
     'toolbarattachments'
