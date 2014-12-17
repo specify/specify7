@@ -86,10 +86,11 @@ define([
         },
         _render: function(form) {
             form.find('.specify-form-header:first').remove();
+            var buttons = $('<div class="specify-form-buttons">').appendTo(form);
 
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.recordset });
-                saveButton.render().$el.appendTo(form);
+                saveButton.render().$el.appendTo(buttons);
                 saveButton.on('savecomplete', this.recordset.isNew() ?
                               this.gotoForm : this.close, this);
             }
@@ -97,7 +98,7 @@ define([
 
             if (!this.recordset.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.recordset });
-                deleteButton.render().$el.appendTo(form);
+                deleteButton.render().$el.appendTo(buttons);
                 deleteButton.on('deleted', this.close, this);
             }
 
