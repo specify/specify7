@@ -67,20 +67,19 @@ define([
             var self = this;
             if (self.readOnly && self.collection.length < 1) return;
 
-            var recordSelector = new RecordSelector({
+            new RecordSelector({
                 field: self.field,
                 collection: self.collection,
                 subformNode: self.$el,
                 readOnly: self.readOnly,
                 noHeader: true
-            });
-            recordSelector.render();
-
-            self.dialog = $('<div>').append(recordSelector.el).dialog({
-                width: 'auto',
-                title: self.field.getLocalizedName(),
-                close: function() { $(this).remove(); self.dialog = null; }
-            });
+            }).on('renderdone', function(recordSelector) {
+                self.dialog = $('<div>').append(recordSelector.el).dialog({
+                    width: 'auto',
+                    title: self.field.getLocalizedName(),
+                    close: function() { $(this).remove(); self.dialog = null; }
+                });
+            }).render();
         }
     });
 

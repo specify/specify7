@@ -222,6 +222,7 @@ define([
                 this.form = form;
                 this.redraw(index);
                 this.showHide();
+                this.trigger('renderdone', this);
             }).bind(this));
         },
         redraw: function(offset) {
