@@ -81,43 +81,43 @@ define([
             this.model = schema.getModelById(this.recordset.get('dbtableid'));
         },
         render: function() {
-            var _this = this;
-
-            specifyform.buildViewByName('RecordSet').done(function(form) {
-                form.find('.specify-form-header:first').remove();
-
-                if (!_this.readOnly) {
-                    var saveButton = new SaveButton({ model: _this.recordset });
-                    saveButton.render().$el.appendTo(form);
-                    saveButton.on('savecomplete', function() {
-                        // TODO: got to be a better way to get the url
-                        var url = $.param.querystring(new _this.model.Resource().viewUrl(),
-                                                      {recordsetid: _this.recordset.id});
-                        navigation.go(url);
-                    });
-                }
-
-                var title = (_this.recordset.isNew() ? "New " : "") + _this.recordset.specifyModel.getLocalizedName();
-
-                if (!_this.recordset.isNew() && !_this.readOnly) {
-                    var deleteButton = new DeleteButton({ model: _this.recordset });
-                    deleteButton.render().$el.appendTo(form);
-                    deleteButton.on('deleting', function() {
-                        _this.$el.dialog('close');
-                    });
-                }
-
-                populateform(form, _this.recordset);
-
-                _this.$el.append(form).dialog({
-                    width: 'auto',
-                    title: title,
-                    modal: true,
-                    close: function() { $(this).remove(); }
-                });
-
-            });
+            specifyform.buildViewByName('RecordSet').done(this._render.bind(this));
             return this;
+        },
+        _render: function(form) {
+            form.find('.specify-form-header:first').remove();
+
+            if (!this.readOnly) {
+                var saveButton = new SaveButton({ model: this.recordset });
+                saveButton.render().$el.appendTo(form);
+                saveButton.on('savecomplete', this.recordset.isNew() ?
+                              this.gotoForm : this.close, this);
+            }
+            var title = (this.recordset.isNew() ? "New " : "") + this.recordset.specifyModel.getLocalizedName();
+
+            if (!this.recordset.isNew() && !this.readOnly) {
+                var deleteButton = new DeleteButton({ model: this.recordset });
+                deleteButton.render().$el.appendTo(form);
+                deleteButton.on('deleted', this.close, this);
+            }
+
+            populateform(form, this.recordset);
+
+            this.$el.append(form).dialog({
+                width: 'auto',
+                title: title,
+                modal: true,
+                close: function() { $(this).remove(); }
+            });
+        },
+        gotoForm: function() {
+            // TODO: got to be a better way to get the url
+            var url = $.param.querystring(new this.model.Resource().viewUrl(),
+                                          {recordsetid: this.recordset.id});
+            navigation.go(url);
+        },
+        close: function() {
+            this.$el.dialog('close');
         }
     });
 
