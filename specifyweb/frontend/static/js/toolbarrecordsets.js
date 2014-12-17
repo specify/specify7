@@ -123,7 +123,7 @@ define([
 
     return {
         task: 'recordsets',
-        title: 'Records',
+        title: 'Record Sets',
         icon: '/images/RecordSet32x32.png',
         execute: function() {
             var app = require('specifyapp');
