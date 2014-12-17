@@ -62,6 +62,7 @@ define([
             return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
         getTreePath: function(treeResource) {
+            if (treeResource.id == null) return $.when(null);
             var model = treeResource.specifyModel.name.toLowerCase();
             var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
             return $.get(url).promise();
