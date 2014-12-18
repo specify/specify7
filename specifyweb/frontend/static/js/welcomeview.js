@@ -102,7 +102,6 @@ define([
                             })(d.parent);
 
                     name === "" && console.error("empty name for", d, "with rankId", d.rankId);
-                        
                     return name + " " + d.count;
                 };
             }
@@ -235,7 +234,7 @@ define([
         render: function() {
             this.$el.append(templates.welcome());
 
-            _.defer(makeTreeMap);
+            //_.defer(makeTreeMap);
 
             // showRecentActivity(this);
 
