@@ -22,14 +22,19 @@ define([
         },
         initialize: function() {
             var collections = this.attachmentCollections = {
-                all: new AttachmentModel.LazyCollection(),
-                unused: new AttachmentModel.LazyCollection({
-                    filters: { tableid__isnull: true }
-                })
+                all: new AttachmentModel.LazyCollection({ domainfilter: true })
+                // TODO:
+                // So-called "unused" attachments now might be used in reports.
+
+                // unused: new AttachmentModel.LazyCollection({
+                //     filters: { tableid__isnull: true },
+                //     domainfilter: true
+                // })
             };
             _.each(tablesWithAttachments, function(table) {
                 collections[table.tableId] = new AttachmentModel.LazyCollection({
-                    filters: { tableid: table.tableId }
+                    filters: { tableid: table.tableId },
+                    domainfilter: true
                 });
             });
 
