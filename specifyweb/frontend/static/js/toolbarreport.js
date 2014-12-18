@@ -26,7 +26,7 @@ define([
 
     var ReportListDialog = Backbone.View.extend({
         __name__: "ReportListDialog",
-        className: "reports-dialog list-dialog",
+        className: "reports-dialog table-list-dialog",
         events: {
             'click a': 'getReport'
         },
@@ -41,8 +41,8 @@ define([
             this.labels = byType('jrxml/label');
         },
         render: function() {
-            var reports = $('<ul class="reports">');
-            var labels = $('<ul class="labels">');
+            var reports = $('<table class="reports">');
+            var labels = $('<table class="labels">');
 
             reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
             labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
@@ -63,11 +63,15 @@ define([
             return this;
         },
         makeEntry: function(icon, appResource) {
+            var img = $('<img>', {src: icon});
             var a = $('<a class="select">').text(appResource.get('name'))
-                    .prepend($('<img>', {src: icon}))
                     .attr('title', appResource.get('remarks') || "");
-            return $('<li>').append(a).data('resource', appResource)
-                    .append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
+            var entry = $('<tr>').data('resource', appResource)
+                    .append($('<td>').append(img),
+                            $('<td>').append(a));
+
+            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
+            return entry;
         },
         getReport: function(evt) {
             evt.preventDefault();
@@ -208,7 +212,7 @@ define([
 
     var ChooseRecordSetDialog = Backbone.View.extend({
         __name__: "ChooseRecordSetForReport",
-        className: "recordset-for-report-dialog list-dialog",
+        className: "recordset-for-report-dialog table-list-dialog",
         events: {
             'click a': 'selected'
         },
@@ -217,28 +221,35 @@ define([
             this.recordSets = options.recordSets;
         },
         render: function() {
-            var ul = $('<ul>');
-            this.recordSets.each(function(recordSet) {
-                var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
-                var entry = $('<li>');
-                $('<a href="#">').text(recordSet.get('name'))
-                    .prepend($('<img>', {src: icon}))
-                    .append($('<span class="item-count" style="display:none"> - </span>'))
-                    .appendTo(entry);
-                recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
-                ul.append(entry);
-                recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
-                    $('.item-count', entry).append(count).show();
-                });
-            });
-            this.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
-            this.$el.append(ul);
+            var table = $('<table>');
+            this.recordSets.each();
+            this.recordSets.isComplete() ||
+                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+            this.$el.append(table);
             makeDialog(this.$el, {
                 title: "From Record Set",
                 maxHeight: 400,
                 buttons: this.dialogButtons()
             });
             return this;
+        },
+        dialogEntry: function(recordSet) {
+            var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
+            var img = $('<img>', {src: icon});
+            var link = $('<a href="#">').text(recordSet.get('name'))
+                .append($('<span class="item-count" style="display:none"> - </span>'))
+                .appendTo(entry);
+
+            var entry = $('<tri>').append(
+                $('<td>').append(img),
+                $('<td>').append(link),
+                $('<td class="item-count" style="display:none">'));
+
+            recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
+            recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
+                $('.item-count', entry).text('(' + count + ')').show();
+            });
+            return entry;
         },
         dialogButtons: function() {
             var buttons = [{ text: 'Cancel', click: function() { $(this).dialog('close'); }}];

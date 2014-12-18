@@ -19,18 +19,20 @@ define([
 
     var QueryListDialog = Backbone.View.extend({
         __name__: "QueryListDialog",
-        className: "stored-queries-dialog list-dialog",
+        className: "stored-queries-dialog table-list-dialog",
         events: {
             'click a.edit': 'edit'
         },
         render: function() {
-            var ul = $('<ul>');
+            var table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
             this.options.queries.each(function(query) {
-                ul.append(makeEntry(query));
+                table.append(makeEntry(query));
             });
-            this.options.queries.isComplete() || ul.append('<li>(list truncated)</li>');
-            this.$el.append(ul);
+            this.options.queries.isComplete() ||
+                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+
+            this.$el.append(table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "Queries (" + this.options.queries._totalCount + ")",
                 maxHeight: 400,
@@ -43,14 +45,16 @@ define([
         },
         dialogEntry: function(query) {
             var img = $('<img>', { src: schema.getModelById(query.get('contexttableid')).getIcon() });
-            var entry = $('<li>').append(
-                $('<a>', { href: '/specify/query/' + query.id + '/' })
+            var link = $('<a>', { href: '/specify/query/' + query.id + '/' })
                     .addClass("intercept-navigation")
-                    .text(query.get('name'))
-                    .prepend(img));
+                    .text(query.get('name'));
 
-            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a></li>');
-                
+            var entry = $('<tr>').append(
+                $('<td>').append(img),
+                $('<td>').append(link));
+
+            this.options.readOnly || entry.append('<td><a class="edit ui-icon ui-icon-pencil"></a></td>');
+
             query.get('remarks') && entry.find('a').attr('title', query.get('remarks'));
             return entry;
         },
@@ -74,17 +78,15 @@ define([
 
     var QueryTypeDialog = Backbone.View.extend({
         __name__: "QueryTypeDialog",
-        className: "query-type-dialog list-dialog",
+        className: "query-type-dialog table-list-dialog",
         events: {'click a': 'selected'},
         render: function() {
-            var ul = $('<ul>');
+            var $table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
             _.each(this.options.tables, function(table) {
-                ul.append($('<li>').append(makeEntry(table)));
+                $table.append(makeEntry(table));
             });
-            ul.find('a').removeClass('intercept-navigation');
-            ul.find('a.edit').remove();
-            this.$el.append(ul);
+            this.$el.append($table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
                 title: "New Query Type",
                 maxHeight: 400,
@@ -95,7 +97,11 @@ define([
         dialogEntry: function(table) {
             var model = schema.getModel(table.attr('name'));
             var img = $('<img>', { src: model.getIcon() });
-            return $('<a>').addClass("intercept-navigation").text(model.getLocalizedName()).prepend(img);
+            var link = $('<a>').text(model.getLocalizedName());
+            var entry = $('<tr>').append(
+                $('<td>').append(img),
+                $('<td>').append(link));
+            return entry;
         },
         selected: function(evt) {
             var app = require('specifyapp');
@@ -116,40 +122,42 @@ define([
             this.model = schema.getModelById(this.spquery.get('contexttableid'));
         },
         render: function() {
-            var _this = this;
-
-            specifyform.buildViewByName('Query').done(function(form) {
-                form.find('.specify-form-header:first').remove();
-
-                if (!_this.readOnly) {
-                    var saveButton = new SaveButton({ model: _this.spquery });
-                    saveButton.render().$el.appendTo(form);
-                    saveButton.on('savecomplete', function() {
-                        navigation.go('/query/' + _this.spquery.id + '/');
-                    });
-                }
-
-                var title = (_this.spquery.isNew() ? "New " : "") + _this.spquery.specifyModel.getLocalizedName();
-
-                if (!_this.spquery.isNew() && !_this.readOnly) {
-                    var deleteButton = new DeleteButton({ model: _this.spquery });
-                    deleteButton.render().$el.appendTo(form);
-                    deleteButton.on('deleted', function() {
-                        dialog.$el.dialog('close');
-                        dialog = null;
-                    });
-
-                    $('<input type="button" value="Export" class="query-export">').appendTo(form);
-                }
-
-                populateform(form, _this.spquery);
-
-                _this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
-                        width: 'auto',
-                        title: title
-                }));
-            });
+            specifyform.buildViewByName('Query').done(this._render.bind(this));
             return this;
+        },
+        _render: function(form) {
+            form.find('.specify-form-header:first').remove();
+            var buttons = $('<div class="specify-form-buttons">').appendTo(form);
+
+            if (!this.readOnly) {
+                var saveButton = new SaveButton({ model: this.spquery });
+                saveButton.render().$el.appendTo(buttons);
+                saveButton.on('savecomplete', function() {
+                    navigation.go('/query/' + this.spquery.id + '/');
+                    dialog.$el.dialog('close');
+                    dialog = null;
+                }, this);
+            }
+
+            var title = (this.spquery.isNew() ? "New " : "") + this.spquery.specifyModel.getLocalizedName();
+
+            if (!this.spquery.isNew() && !this.readOnly) {
+                var deleteButton = new DeleteButton({ model: this.spquery });
+                deleteButton.render().$el.appendTo(buttons);
+                deleteButton.on('deleted', function() {
+                    dialog.$el.dialog('close');
+                    dialog = null;
+                });
+
+                $('<input type="button" value="Export" class="query-export">').appendTo(buttons);
+            }
+
+            populateform(form, this.spquery);
+
+            this.$el.append(form).dialog(_.extend({}, commonDialogOpts, {
+                width: 'auto',
+                title: title
+            }));
         },
         exportQuery: function() {
             this.spquery.rget('fields').done(function(fields) {

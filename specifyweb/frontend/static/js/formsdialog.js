@@ -15,7 +15,7 @@ define([
 
     return Backbone.View.extend({
         __name__: "FormsDialog",
-        className: "forms-dialog list-dialog",
+        className: "forms-dialog table-list-dialog",
         events: {'click a': 'selected'},
         render: function() {
             var render = this._render.bind(this);
@@ -24,13 +24,12 @@ define([
         },
         _render: function(forms) {
             this.forms = forms;
-            var ul = $('<ul>');
+            var table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
             _.each(views, function(view) {
-                ul.append($('<li>').append(makeEntry(view)));
+                table.append(makeEntry(view));
             });
-            ul.find('a.edit').remove();
-            this.$el.append(ul);
+            this.$el.append(table);
             this.$el.dialog({
                 title: "Forms",
                 maxHeight: 400,
@@ -42,7 +41,8 @@ define([
         },
         dialogEntry: function(view) {
             var img = $('<img>', { src: icons.getIcon(view.attr('iconname')) });
-            return $('<a>').addClass("intercept-navigation").text(view.attr('title')).prepend(img);
+            var link = $('<a>').addClass("intercept-navigation").text(view.attr('title'));
+            return $('<tr>').append($('<td>').append(img), $('<td>').append(link));
         },
         selected: function(evt) {
             var index = this.$('a').index(evt.currentTarget);

@@ -8,18 +8,19 @@ define([
 
     var RecordSetsDialog = Backbone.View.extend({
         __name__: "RecordSetsDialog",
-        className: "recordsets-dialog list-dialog",
+        className: "recordsets-dialog table-list-dialog",
         events: {
             'click a.edit': 'edit'
         },
         render: function() {
-            var ul = $('<ul>');
+            var table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
             this.options.recordSets.each(function(recordSet) {
-                ul.append(makeEntry(recordSet));
+                table.append(makeEntry(recordSet));
             });
-            this.options.recordSets.isComplete() || ul.append('<li>(list truncated)</li>');
-            this.$el.append(ul);
+            this.options.recordSets.isComplete() ||
+                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+            this.$el.append(table);
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
@@ -31,18 +32,19 @@ define([
         },
         dialogEntry: function(recordSet) {
             var img = $('<img>', {src: schema.getModelById(recordSet.get('dbtableid')).getIcon()});
-            var entry = $('<li>').append(
-                $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
+            var link = $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
                     .addClass("intercept-navigation")
-                    .text(recordSet.get('name'))
-                    .prepend(img)
-                    .append('<span class="item-count" style="display:none"> - </span>'));
+                    .text(recordSet.get('name'));
+            var entry = $('<tr>').append(
+                $('<td>').append(img),
+                $('<td>').append(link),
+                $('<td class="item-count" style="display:none">'));
 
-            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil"></a>');
+            this.options.readOnly || entry.append('<td><a class="edit ui-icon ui-icon-pencil"></a></td>');
 
             recordSet.get('remarks') && entry.find('a').attr('title', recordSet.get('remarks'));
             recordSet.getRelatedObjectCount('recordsetitems').done(function(count) {
-                $('.item-count', entry).append(count).show();
+                $('.item-count', entry).text('(' + count + ')').show();
             });
             return entry;
         },
