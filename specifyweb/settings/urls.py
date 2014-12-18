@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic.base import RedirectView
 
 urlpatterns = patterns('',
-    (r'^favicon.ico', RedirectView.as_view(url='/images/specify32.png')),
+    (r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
     (r'^accounts/login/$', 'specifyweb.context.views.login'),
