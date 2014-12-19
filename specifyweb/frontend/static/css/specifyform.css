@@ -605,10 +605,8 @@ a.specify-attachment-original {
 
 .specify-welcome > p,
 .specify-welcome > h2 {
-    max-width: 863px;
     margin-left: auto;
     margin-right: auto;
-    text-align: justify;
 }
 
 .query-params-list {
