@@ -4,6 +4,7 @@ hierarchy level. Depends on the user and logged in collectien of the request.
 """
 import os
 from xml.etree import ElementTree
+from xml.sax.saxutils import quoteattr
 
 from django.http import Http404
 from specifyweb.specify.models import Spappresourcedata
@@ -21,7 +22,7 @@ def get_view(collection, user, viewname):
                # then in the viewset files in a given directory level
                for viewset in get_viewsets(collection, user, level)
                # finally in the list of views in the file
-               for view in viewset.findall('views/view[@name="%s"]' % viewname))
+               for view in viewset.findall('views/view[@name=%s]' % quoteattr(viewname)))
 
     # take the first view from the generator
     try:
@@ -34,14 +35,14 @@ def get_view(collection, user, viewname):
     # make a set of the viewdefs the view points to
     viewdefs = set(viewdef
                    for altview in altviews
-                   for viewdef in viewset.findall('viewdefs/viewdef[@name="%s"]' % altview.attrib['viewdef']))
+                   for viewdef in viewset.findall('viewdefs/viewdef[@name=%s]' % quoteattr(altview.attrib['viewdef'])))
 
     # some viewdefs reference other viewdefs through the 'definition' attribute
     # we will need to make sure those viewdefs are also sent to the client
     def get_definition(viewdef):
         definition = viewdef.find('definition')
         if definition is None: return
-        definition_viewdef = viewset.find('viewdefs/viewdef[@name="%s"]' % definition.text)
+        definition_viewdef = viewset.find('viewdefs/viewdef[@name=%s]' % quoteattr(definition.text))
         if definition_viewdef is None:
             raise Http404("no viewdef: %s for definition of viewdef: %s" % (
                     definition.text, viewdef.attrib['name']))

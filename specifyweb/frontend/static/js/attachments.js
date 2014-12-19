@@ -71,19 +71,21 @@ define([
                 return $('<img>', {src: src, style: style});
             });
         },
+        originalURL: function(attachmentLocation, token, downLoadName) {
+            return settings.read + "?" + $.param({
+                coll: settings.collection,
+                type: "O",
+                filename: attachmentLocation,
+                downloadname: downLoadName,
+                token: token
+            });
+        },
         openOriginal: function(attachment) {
             var attachmentLocation = attachment.get('attachmentlocation');
             var origFilename = attachment.get('origfilename').replace(/^.*[\\\/]/, '');
 
             getToken(attachmentLocation).done(function(token) {
-                var src = settings.read + "?" + $.param({
-                    coll: settings.collection,
-                    type: "O",
-                    filename: attachmentLocation,
-                    downloadname: attachment.get('origfilename'),
-                    token: token
-                });
-
+                var src = attachments.originalURL(attachmentLocation, token, attachment.get('origfilename'));
                 window.open(src);
             });
         },

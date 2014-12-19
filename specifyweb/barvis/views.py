@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from sqlalchemy.sql.expression import func, distinct
 
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
 
 from specifyweb.stored_queries.models import Determination, Taxon
@@ -11,7 +11,7 @@ from specifyweb.stored_queries.models import Determination, Taxon
 from django.db import connection
 
 @require_GET
-@login_required
+@login_maybe_required
 def taxon_bar(request):
     cursor = connection.cursor()
     cursor.execute("""

@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'text!context/user.json!noinline',
+    'text!context/user.json!noinline', 'text!context/system_info.json!noinline',
 // Tasks
     'datatask',
     'querytask',
@@ -11,12 +11,14 @@ define([
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
-    userJSON) {
+    userJSON, systemInfoJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
     var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
+    var systemInfo = $.parseJSON(systemInfoJSON);
 
     var currentView;
+    var versionMismatchWarned = false;
 
     // get a reference to the content div
     // where we will draw the rest of the app
@@ -30,6 +32,8 @@ define([
         return loadUrl.call(this, stripped);
     };
 
+    // Stop jquery-ui dialog from autofocusing first tabbable element.
+    $.ui.dialog.prototype._focusTabbable = function(){};
 
     // gets rid of any backbone view currently showing
     // and replaces it with the rendered view given
@@ -42,6 +46,16 @@ define([
         currentView = view;
         currentView.render();
         rootContainer.append(currentView.el);
+
+        if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
+            $('<div title="Version Mismatch">' +
+              '<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>' +
+              'The Specify version (' + systemInfo.specify6_version + ') ' +
+              'does not match the database version (' + systemInfo.database_version + ').</p>' +
+              '<p>Some features of Specify 7 may therefore fail to operate correctly.</p>' +
+              '</div>').dialog({ modal: true });
+            versionMismatchWarned = true;
+        }
     }
 
     function handleError(jqxhr) {
@@ -83,13 +97,13 @@ define([
         // show a 'page not found' view for URLs we don't know how to handle
         notFound: function() {
             setCurrentView(new NotFoundView());
-            window.document.title = 'Page Not Found | Specify WebApp';
+            app.setTitle('Page Not Found');
         },
 
         // this view shows the user the welcome screen
         welcome: function() {
             setCurrentView(new WelcomeView());
-            window.document.title = 'Welcome | Specify WebApp';
+            app.setTitle('Welcome');
         },
 
         testError: function() {
@@ -121,7 +135,9 @@ define([
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
         user: user,
-        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype)
+        systemInfo: systemInfo,
+        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype),
+        setTitle: function(title) { window.document.title = title + " | Specify 7"; }
     };
 
     return app;

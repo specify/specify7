@@ -104,6 +104,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             } else {
                 var dialog = $(templates.saveblocked()).appendTo(this.el).dialog({
                     resizable: false,
+                    modal: true,
                     close: function() { return dialog.remove(); }
                 });
 

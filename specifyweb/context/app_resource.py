@@ -5,6 +5,7 @@ database or the filesystem with database resources taking precedence over the fi
 import os, errno
 import logging
 from xml.etree import ElementTree
+from xml.sax.saxutils import quoteattr
 
 from django.conf import settings
 
@@ -94,10 +95,14 @@ def load_resource(path, registry, resource_name):
     and registry.
     Returns the resource data and mimetype as a pair.
     """
-    resource = registry.find('file[@name="%s"]' % resource_name)
+    resource = registry.find('file[@name=%s]' % quoteattr(resource_name))
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
-    return (open(pathname).read(), resource.attrib['mimetype'])
+    try:
+        return (open(pathname).read(), resource.attrib['mimetype'])
+    except IOError as e:
+        if e.errno == errno.ENOENT: return None
+        else: raise
 
 def get_app_resource_from_db(collection, user, level, resource_name):
     """Try to get the named resource at a given level from the database.

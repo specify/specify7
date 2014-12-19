@@ -35,7 +35,7 @@ define([
             });
         },
         queryCbxSearch: function(model, searchfield, searchterm) {
-            var filters = {};
+            var filters = { orderby: searchfield.toLowerCase() };
             filters[searchfield.toLowerCase() + '__istartswith'] = searchterm;
             return new model.LazyCollection({ filters: filters, domainfilter: true });
         },
@@ -62,6 +62,7 @@ define([
             return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
         getTreePath: function(treeResource) {
+            if (treeResource.id == null) return $.when(null);
             var model = treeResource.specifyModel.name.toLowerCase();
             var url = '/api/specify_tree/' + model + '/' + treeResource.id + '/path/';
             return $.get(url).promise();

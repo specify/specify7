@@ -126,10 +126,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return result
 
     def __init__(self, *args, **kwargs):
-        assert len(self.join_path) > 0
-        assert self.get_field().is_temporal() or self.date_part is None
-        assert self.date_part in ('Full Date', 'Day', 'Month', 'Year') \
-            or not self.get_field().is_temporal()
+        assert self.tree_rank is not None or self.get_field() is not None
+        assert self.is_temporal() or self.date_part is None
+        assert self.date_part in ('Full Date', 'Day', 'Month', 'Year', None)
 
     def to_spquery_attrs(self):
         table_list = make_table_list(self)
@@ -147,10 +146,17 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return '.'.join(make_stringid(self, table_list))
 
     def get_field(self):
-        return self.join_path[-1]
+        try:
+            return self.join_path[-1]
+        except IndexError:
+            return None
 
     def is_relationship(self):
-        return self.get_field().is_relationship and self.tree_rank is None
+        return self.tree_rank is None and self.get_field().is_relationship
+
+    def is_temporal(self):
+        field = self.get_field()
+        return field is not None and field.is_temporal()
 
     def build_join(self, query, join_cache):
         table = self.root_table
@@ -199,9 +205,16 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query, orm_field, subquery = \
                    handle_tree_field(query, orm_model, table, self.tree_rank,
                                      no_filter, sorting, collection)
-
         else:
             orm_field = getattr(orm_model, self.get_field().name)
+
+            if field.type == "java.sql.Timestamp":
+                # Only consider the date portion of timestamp fields.
+                # This is to replicate the behavior of Sp6. It might
+                # make since to condition this on whether there is a
+                # time component in the input value.
+                orm_field = sql.func.DATE(orm_field)
+
             if field.is_temporal() and self.date_part != "Full Date":
                 orm_field = extract(self.date_part, orm_field)
 
@@ -212,7 +225,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 uiformatter = None
                 value = other_field
             else:
-                uiformatter = get_uiformatter(collection, table.name, field.name)
+                uiformatter = field and get_uiformatter(collection, table.name, field.name)
                 value = value
 
             op = QueryOps(uiformatter).by_op_num(op_num)

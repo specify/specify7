@@ -47,6 +47,10 @@ form {
     width: 14em;
 }
 
+.form-row select {
+    width: 16em;
+}
+
 span.help {
     font-size: 10px;
     display: block;

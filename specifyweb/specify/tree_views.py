@@ -1,11 +1,11 @@
 from django.views.decorators.http import require_GET
 from django.http import HttpResponse
 
-from .views import login_required
+from .views import login_maybe_required
 from .api import get_object_or_404, obj_to_data, toJson
 
 
-@login_required
+@login_maybe_required
 @require_GET
 def path(request, model, id):
     id = int(id)

@@ -7,51 +7,59 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             'click .delete-button': 'openDialog'
         },
         initialize: function(options) {
+            this.blocked = true;
             this.model.on('candelete', function() {
-                this.button.prop('disabled', false);
-                this.setToolTip();
+                this.blocked = false;
+                this.button.attr("value", "Delete");
             }, this);
 
             this.model.on('deleteblocked', function() {
-                this.button.prop('disabled', true);
-                this.setToolTip();
+                this.blocked = true;
+                this.button.attr("value", "Delete ⚠");
             }, this);
         },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $('<input type="button" value="Delete" class="delete-button">').appendTo(this.el);
-            this.button.prop('disabled', true);
-            this.model.businessRuleMgr.checkCanDelete().done(this.setToolTip.bind(this));
+            this.button = $('<input type="button" value="Delete ⚠" class="delete-button">').appendTo(this.el);
+            this.model.businessRuleMgr.checkCanDelete();
             return this;
         },
         openDialog: function(evt) {
             evt.preventDefault();
+            this.blocked ? this.openBlockedDialog() : this.openConfirmDialog();
+        },
+        openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            var dialog = $(templates.confirmdelete()).appendTo(this.el).dialog({
+            $(templates.confirmdelete()).dialog({
                 resizable: false,
-                close: function() { dialog.remove(); },
+                close: function() { $(this).remove(); },
                 modal: true,
                 buttons: {
                     'Delete': function() {
                         doDelete();
-                        dialog.dialog('close');
+                        $(this).dialog('close');
                     },
                     'Cancel': function() {
-                        dialog.dialog('close');
+                        $(this).dialog('close');
                     }
                 }
             });
         },
+        openBlockedDialog: function() {
+            var dialog = $('<div title="Delete Blocked">' +
+	                   '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
+                           'The resource cannot be deleted because it is referenced through the following fields:</p>' +
+                           '<ul></ul></div>').dialog();
+            var model = this.model.specifyModel;
+            var lis = _.map(this.model.businessRuleMgr.deleteBlockers, function(__, field) {
+                return $('<li>').text(model.getField(field).getLocalizedName() || field)[0];
+            });
+            $('ul', dialog).append(lis);
+        },
         doDelete: function() {
             this.trigger('deleting');
             this.model.destroy().done(this.trigger.bind(this, 'deleted'));
-        },
-        setToolTip: function() {
-            var blockers = _.map(this.model.businessRuleMgr.deleteBlockers, function(__, field) {
-                return field;
-            });
-            this.button.attr('title', blockers.join(', '));
         }
     });
 });

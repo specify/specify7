@@ -1,6 +1,8 @@
 import re, logging
 from collections import namedtuple
 from xml.etree import ElementTree
+from xml.sax.saxutils import quoteattr
+
 from datetime import date
 logger = logging.getLogger(__name__)
 
@@ -10,7 +12,7 @@ from .filter_by_col import filter_by_collection
 
 def get_uiformatter(collection, user, formatter_name):
     xml, __ = get_app_resource(collection, user, "UIFormatters")
-    node = ElementTree.XML(xml).find('.//format[@name="%s"]' % formatter_name)
+    node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
     external = node.find('external')
     if external is not None:

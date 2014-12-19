@@ -305,25 +305,23 @@ a.specify-attachment-original {
     margin-top: 5px;
 }
 
-.list-dialog ul {
-    padding: 0;
+.table-list-dialog table {
+    width: 100%;
+}
+
+.table-list-dialog td {
+    padding: 5px 5px 2px 2px;
+}
+
+.table-list-dialog a {
     font-size: 13px;
     font-weight: bold;
 }
 
-.list-dialog li img {
+.table-list-dialog img {
     vertical-align: middle;
-    margin-right: 10px;
-}
-
-.list-dialog li {
-    position: relative;
-}
-
-.list-dialog li a.edit {
-    position: absolute;
-    right: 0px;
-    top: 0px;
+    width: 16px;
+    height: 16px;
 }
 
 .querybuilder-header {
@@ -607,10 +605,8 @@ a.specify-attachment-original {
 
 .specify-welcome > p,
 .specify-welcome > h2 {
-    max-width: 863px;
     margin-left: auto;
     margin-right: auto;
-    text-align: justify;
 }
 
 .query-params-list {

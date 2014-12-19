@@ -1,3 +1,5 @@
+import re
+
 from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
@@ -5,9 +7,10 @@ from django.contrib.auth import authenticate, views as auth_views, logout as aut
 from django.utils import simplejson
 from django.conf import settings
 
-from specifyweb.specify.models import Collection, Spappresourcedata
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.attachment_gw.views import get_settings as attachment_settings
 from specifyweb.report_runner.views import get_status as report_runner_status
 
@@ -20,7 +23,10 @@ def login(request):
     Supplements the stock Django login with a collection selection.
     """
     if request.method == 'POST':
-        request.session['collection'] = request.POST['collection_id']
+        try:
+            request.session['collection'] = request.POST['collection_id']
+        except:
+            return HttpResponseBadRequest('collection id value missing')
 
     kwargs = {
         'template_name': 'login.html',
@@ -60,7 +66,7 @@ def api_login(request):
         password=None,
         collection=None)), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def collection(request):
@@ -78,18 +84,19 @@ def collection(request):
         collection = request.session.get('collection', '')
         return HttpResponse(collection, content_type="text/plain")
 
-@login_required
+@login_maybe_required
 @require_GET
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isadmin'] = request.specify_user.is_admin()
-    if settings.RO_MODE:
+    data['isauthenticated'] = request.user.is_authenticated()
+    if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
@@ -104,11 +111,14 @@ def domain(request):
 
     return HttpResponse(simplejson.dumps(domain), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
-    resource_name = request.GET['name']
+    try:
+        resource_name = request.GET['name']
+    except:
+        raise Http404()
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
                               resource_name)
@@ -117,13 +127,14 @@ def app_resource(request):
     return HttpResponse(resource, content_type=mimetype)
 
 
+@login_maybe_required
 @require_GET
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
     from specifyweb.express_search import related_searches
     from specifyweb.express_search.views import get_express_search_config
 
-    express_search_config = get_express_search_config(request)
+    express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
     active = [int(q.find('id').text)
               for q in express_search_config.findall('relatedQueries/relatedquery[@isactive="true"]')]
 
@@ -135,7 +146,7 @@ def available_related_searches(request):
 datamodel_json = None
 
 @require_GET
-@login_required
+@login_maybe_required
 def datamodel(request):
     from specifyweb.specify.models import datamodel
     global datamodel_json
@@ -145,14 +156,14 @@ def datamodel(request):
     return HttpResponse(datamodel_json, content_type='application/json')
 
 @require_GET
-@login_required
+@login_maybe_required
 def schema_localization(request):
     """Return the schema localization information for the logged in collection."""
     sl = get_schema_localization(request.specify_collection)
     return HttpResponse(sl, content_type='application/json')
 
 @require_GET
-@login_required
+@login_maybe_required
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
     if 'collectionid' in request.GET:
@@ -161,12 +172,16 @@ def view(request):
     else:
         collection = request.specify_collection
 
-    data = get_view(collection, request.specify_user, request.GET['name'])
+    try:
+        view_name = request.GET['name']
+    except:
+        raise Http404()
+    data = get_view(collection, request.specify_user, view_name)
 
     return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
 @require_GET
-@login_required
+@login_maybe_required
 def remote_prefs(request):
     res = Spappresourcedata.objects.filter(
         spappresource__name='preferences',
@@ -174,3 +189,15 @@ def remote_prefs(request):
 
     data = '\n'.join(r.data for r in res)
     return HttpResponse(data, content_type='text/x-java-properties')
+
+@require_GET
+def system_info(request):
+    spversion = Spversion.objects.get()
+
+    info = dict(
+        version=settings.VERSION,
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
+        database_version=spversion.appversion,
+        schema_version=spversion.schemaversion,
+        )
+    return HttpResponse(simplejson.dumps(info), content_type='application/json')
