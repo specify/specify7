@@ -565,24 +565,6 @@ a.specify-attachment-original {
     clear: both;
 }
 
-#taxon-treemap {
-    position: relative;
-    width: 863px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#taxon-treemap img {
-    position: absolute;
-    bottom: -8px;
-    width: 62px;
-    height: 400px;
-}
-
-.treemap {
-    margin-left: 62px;
-}
-
 .treemap .node {
     border: solid 1px black;
     font: 10px sans-serif;
