@@ -1,6 +1,6 @@
 define(['jquery', 'props', 'schema',
-    'text!properties/views_en.properties!noinline',
-    'text!properties/global_views_en.properties!noinline'
+    'requireresource!properties/views_en.properties',
+    'requireresource!properties/global_views_en.properties'
 ], function($, props, schema, viewsprops, globalviewsprops) {
     "use strict";
 

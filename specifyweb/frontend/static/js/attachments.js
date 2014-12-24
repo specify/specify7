@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'icons',  'schema', 'assert',
-    'text!context/attachment_settings.json!noinline'
+    'requireresource!context/attachment_settings.json'
 ], function($, _, icons, schema, assert, settingsJson) {
     "use strict";
 

@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'uiplugin', 'icons', 'uifield',
-    'text!context/app.resource?name=WebLinks!noinline'
+    'requireresource!context/app.resource?name=WebLinks'
 ], function($, _, api, UIPlugin, icons, UIField, webLinksXML) {
     "use strict";
 

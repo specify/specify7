@@ -1,5 +1,5 @@
 define([
-    'underscore', 'text!context/remoteprefs.properties!noinline'
+    'underscore', 'requireresource!context/remoteprefs.properties'
 ], function(_, text) {
     "use strict";
 

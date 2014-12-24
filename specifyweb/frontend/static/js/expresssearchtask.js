@@ -1,8 +1,8 @@
 define([
 'jquery', 'underscore', 'backbone', 'appresource', 'schema', 'queryresultstable',
 'queryfieldspec', 'props', 'scrollresults', 'whenall',
-'text!context/available_related_searches.json!noinline',
-'text!properties/expresssearch_en.properties!noinline',
+'requireresource!context/available_related_searches.json',
+'requireresource!properties/expresssearch_en.properties',
 'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, getAppResource, schema, QueryResultsTable,
             QueryFieldSpec, props, ScrollResults, whenAll,

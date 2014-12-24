@@ -1,6 +1,9 @@
 import re
+from urlparse import urlparse
 
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.core.urlresolvers import resolve
+from django.contrib.staticfiles import finders
+from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden, HttpRequest, QueryDict
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
@@ -17,6 +20,34 @@ from specifyweb.report_runner.views import get_status as report_runner_status
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
+
+
+aggregated_context_urls = '''
+/context/app.resource?name=DataEntryTaskInit
+/context/app.resource?name=DataObjFormatters
+/context/app.resource?name=DialogDefs
+/context/app.resource?name=TypeSearches
+/context/app.resource?name=UIFormatters
+/context/app.resource?name=WebLinks
+/context/attachment_settings.json
+/context/available_related_searches.json
+/context/datamodel.json
+/context/domain.json
+/context/remoteprefs.properties
+/context/report_runner_status.json
+/context/schema_localization.json
+/context/system_info.json
+/context/user.json
+/properties/expresssearch_en.properties
+/properties/global_views_en.properties
+/properties/views_en.properties
+/static/config/icons.xml
+/static/config/icons_datamodel.xml
+/static/config/icons_disciplines.xml
+/static/config/icons_imgproc.xml
+/static/config/icons_plugins.xml
+/static/config/querybuilder.xml
+'''.split()
 
 def login(request):
     """A Django view to log users into the system.
@@ -201,3 +232,42 @@ def system_info(request):
         schema_version=spversion.schemaversion,
         )
     return HttpResponse(simplejson.dumps(info), content_type='application/json')
+
+@require_GET
+def aggregated_context(request):
+    aggregated = {}
+    for url in aggregated_context_urls:
+        if url.startswith(settings.STATIC_URL):
+            path = finders.find(url.replace(settings.STATIC_URL, '', 1))
+            if path is not None:
+                try:
+                    aggregated[url] = open(path).read()
+                except:
+                    pass
+            continue
+
+        try:
+            parsed_url = urlparse(url)
+            view, args, kwargs = resolve(parsed_url.path)
+        except:
+            raise
+            continue
+
+        fake_request = kwargs['request'] = HttpRequest()
+        fake_request.GET = QueryDict(parsed_url.query)
+        fake_request.method = 'GET'
+        for attr in ('user', 'specify_user', 'specify_user_agent', 'specify_collection',):
+            if hasattr(request, attr):
+                setattr(fake_request, attr, getattr(request, attr))
+
+        try:
+            response = view(*args, **kwargs)
+        except:
+            raise
+            continue
+        if response.status_code == 200:
+            aggregated[url] = response.content
+        else:
+            return response
+
+    return HttpResponse(simplejson.dumps(aggregated), content_type='application/json')

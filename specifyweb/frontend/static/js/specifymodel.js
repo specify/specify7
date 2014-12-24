@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi', 'domaindata',
-    'text!context/schema_localization.json!noinline'
+    'requireresource!context/schema_localization.json'
 ], function($, _, icons, schema, ResourceBase, collectionapi, domainData, slJSON) {
     "use strict";
     var localization = $.parseJSON(slJSON);

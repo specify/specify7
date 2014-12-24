@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'whenall', 'fieldformat', 'assert',
-    'text!context/app.resource?name=DataObjFormatters!noinline'
+    'requireresource!context/app.resource?name=DataObjFormatters'
 ], function($, _, whenAll, fieldformat, assert, xml) {
     "use strict";
     var formatters = $.parseXML(xml);

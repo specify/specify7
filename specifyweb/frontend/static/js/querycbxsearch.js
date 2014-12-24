@@ -1,6 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
-    'text!context/app.resource?name=DialogDefs!noinline'
+    'requireresource!context/app.resource?name=DialogDefs'
 ], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
     "use strict";
     var dialogdefs = $.parseXML(dialogdefxml);

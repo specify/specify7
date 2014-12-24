@@ -1,3 +1,3 @@
-define(['jquery', 'text!context/datamodel.json!noinline'], function($, json) {
+define(['jquery', 'requireresource!context/datamodel.json'], function($, json) {
     return $.parseJSON(json);
 });

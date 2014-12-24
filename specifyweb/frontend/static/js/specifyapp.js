@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'text!context/user.json!noinline', 'text!context/system_info.json!noinline',
+    'requireresource!context/user.json', 'requireresource!context/system_info.json',
 // Tasks
     'datatask',
     'querytask',

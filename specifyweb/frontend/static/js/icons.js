@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore',
-    'text!resources/icons_datamodel.xml!noinline',
-    'text!resources/icons_disciplines.xml!noinline',
-    'text!resources/icons_imgproc.xml!noinline',
-    'text!resources/icons_plugins.xml!noinline',
-    'text!resources/icons.xml!noinline'
+    'requireresource!resources/icons_datamodel.xml',
+    'requireresource!resources/icons_disciplines.xml',
+    'requireresource!resources/icons_imgproc.xml',
+    'requireresource!resources/icons_plugins.xml',
+    'requireresource!resources/icons.xml'
 ], function ($, _,
              datamodelIcons,
              disciplineIcons,

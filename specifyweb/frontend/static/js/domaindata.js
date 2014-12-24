@@ -1,4 +1,4 @@
-define(['jquery', 'text!context/domain.json!noinline'], function($, json) {
+define(['jquery', 'requireresource!context/domain.json'], function($, json) {
     "use strict";
     return $.parseJSON(json);
 });

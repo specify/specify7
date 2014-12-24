@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone',
-    'text!context/app.resource?name=UIFormatters!noinline'
+    'requireresource!context/app.resource?name=UIFormatters'
 ], function($, _, Backbone, xml) {
     "use strict";
     var uiformatters =  $($.parseXML(xml));

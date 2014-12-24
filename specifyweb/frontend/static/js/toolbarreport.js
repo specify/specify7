@@ -1,7 +1,7 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
     'whenall', 'dataobjformatters', 'fieldformat', 'domain', 'attachmentplugin', 'attachments',
-    'text!context/report_runner_status.json!noinline',
+    'requireresource!context/report_runner_status.json',
     'jquery-ui', 'jquery-bbq'
 ], function(
     require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,

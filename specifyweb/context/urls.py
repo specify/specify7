@@ -14,5 +14,6 @@ urlpatterns = patterns(
     (r'^available_related_searches.json$', 'available_related_searches'),
     (r'^attachment_settings.json$', 'attachment_settings'),
     (r'^report_runner_status.json$', 'report_runner_status'),
-    (r'^remoteprefs.properties$', 'remote_prefs')
+    (r'^remoteprefs.properties$', 'remote_prefs'),
+    (r'^aggregated_context.json$', 'aggregated_context')
 )

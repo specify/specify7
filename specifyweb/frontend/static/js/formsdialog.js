@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema',
     'icons', 'specifyform', 'whenall',
-    'text!context/app.resource?name=DataEntryTaskInit!noinline',
+    'requireresource!context/app.resource?name=DataEntryTaskInit',
     'jquery-ui'
 ], function($, _, Backbone, schema, icons, specifyform,
             whenAll, dataEntryTaskInit) {
