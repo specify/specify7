@@ -1,7 +1,7 @@
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from .models import Geography, Taxon, Attachment
+from .models import Geography, Taxon, Storage, Attachment
 from . import scoping
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
@@ -24,6 +24,9 @@ def filter_by_collection(queryset, collection, strict=True):
 
     if queryset.model is Taxon:
         return queryset.filter(definition__discipline=collection.discipline)
+
+    if queryset.model is Storage:
+        return queryset.filter(definition__institutions=collection.discipline.division.institution.id)
 
     try:
         return queryset.filter(collectionmemberid=collection.id)
