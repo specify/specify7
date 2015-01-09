@@ -83,8 +83,8 @@ def upload_db():
     mysql.stdin.close()
     mysql.wait()
 
-    yield "syncing db.\n"
-    do_sync(db_name)
+    # yield "syncing db.\n"
+    # do_sync(db_name)
     yield "done.\n"
 
 def do_sync(db_name):
