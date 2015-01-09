@@ -73,7 +73,7 @@ define([
         },
         getReport: function(evt) {
             evt.preventDefault();
-            var appResource = $(evt.currentTarget).closest('li').data('resource');
+            var appResource = $(evt.currentTarget).closest('tr').data('resource');
             var reports = new schema.models.SpReport.LazyCollection({
                 filters: { appresource: appResource.id }
             });
@@ -194,10 +194,14 @@ define([
             }
         });
         recordSets.fetch({ limit: 100 }).done(function() {
-            (new ChooseRecordSetDialog({
-                recordSets: recordSets,
-                reportResources: reportResources
-            })).render();
+            if (recordSets._totalCount > 0) {
+                new ChooseRecordSetDialog({
+                    recordSets: recordSets,
+                    reportResources: reportResources
+                }).render();
+            } else {
+                new QueryParamsDialog({reportResources: reportResources}).render();
+            }
         });
     }
 
@@ -220,7 +224,7 @@ define([
         },
         render: function() {
             var table = $('<table>');
-            this.recordSets.each();
+            table.append.apply(table, this.recordSets.map(this.dialogEntry, this));
             this.recordSets.isComplete() ||
                 table.append('<tr><td></td><td>(list truncated)</td></tr>');
             this.$el.append(table);
@@ -234,11 +238,8 @@ define([
         dialogEntry: function(recordSet) {
             var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
             var img = $('<img>', {src: icon});
-            var link = $('<a href="#">').text(recordSet.get('name'))
-                .append($('<span class="item-count" style="display:none"> - </span>'))
-                .appendTo(entry);
-
-            var entry = $('<tri>').append(
+            var link = $('<a href="#">').text(recordSet.get('name'));
+            var entry = $('<tr>').append(
                 $('<td>').append(img),
                 $('<td>').append(link),
                 $('<td class="item-count" style="display:none">'));
@@ -256,7 +257,7 @@ define([
                 buttons.unshift({
                     text: 'Query',
                     click: function() {
-                        (new QueryParamsDialog({reportResources: reportResources})).render();
+                        new QueryParamsDialog({reportResources: reportResources}).render();
                     }
                 });
             }
