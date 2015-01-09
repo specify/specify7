@@ -68,9 +68,9 @@ class RelatedSearch(object):
     columns = []
 
     @classmethod
-    def execute(cls, session, config, terms, collection, limit, offset):
+    def execute(cls, session, config, terms, collection, user, limit, offset):
         queries = filter(None, (
-            cls(defn).build_related_query(session, config, terms, collection)
+            cls(defn).build_related_query(session, config, terms, collection, user)
             for defn in cls.definitions))
 
         if len(queries) > 0:
@@ -96,7 +96,7 @@ class RelatedSearch(object):
     def __init__(self, definition):
         self.definition = definition
 
-    def build_related_query(self, session, config, terms, collection):
+    def build_related_query(self, session, config, terms, collection, user):
         logger.info('%s: building related query using definition: %s',
                     self.__class__.__name__, self.definition)
 
@@ -134,7 +134,7 @@ class RelatedSearch(object):
 
         queryfields = self.display_fields + self.filter_fields + [primary_field]
 
-        related_query, _, _ = build_query(session, collection, self.root.tableId, queryfields)
+        related_query, _, _ = build_query(session, collection, user, self.root.tableId, queryfields)
 
         if self.distinct:
             related_query = related_query.distinct()

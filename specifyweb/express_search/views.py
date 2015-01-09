@@ -135,6 +135,7 @@ def related_search(request):
     with models.session_context() as session:
         result = related_search.execute(session, config, terms,
                                         collection=request.specify_collection,
+                                        user=request.specify_user,
                                         offset=form.cleaned_data['offset'],
                                         limit=form.cleaned_data['limit'])
 

@@ -17,7 +17,7 @@ define(['underscore', 'schema'], function(_, schema) {
     }
 
     function makeTableList(fs) {
-        var path = (fs.treeRank || fs.isRelationship()) ?
+        var path = (fs.treeRank || (fs.joinPath.length === 0) || fs.isRelationship()) ?
                 fs.joinPath : _.initial(fs.joinPath);
 
         var first = [fs.rootTable.tableId];
@@ -30,7 +30,7 @@ define(['underscore', 'schema'], function(_, schema) {
     }
 
     function makeStringId(fs, tableList) {
-        var fieldName = fs.treeRank || _.last(fs.joinPath).name;
+        var fieldName = fs.joinPath.length ? (fs.treeRank || _.last(fs.joinPath).name) : '';
         if (fs.datePart && fs.datePart !== "Full Date") {
             fieldName += 'Numeric' + fs.datePart;
         }
@@ -47,7 +47,34 @@ define(['underscore', 'schema'], function(_, schema) {
         });
     }
 
-    QueryFieldSpec.fromStringId = function (stringId, isRelationship) {
+    QueryFieldSpec.fromPath = function(pathIn) {
+        var path = pathIn.slice();
+        var rootTable = schema.getModel(path.shift());
+
+        var joinPath = [];
+        var node = rootTable;
+        while (path.length > 0) {
+            (function() {
+                var fieldName = path.shift();
+                var field = node.getField(fieldName);
+                joinPath.push(field);
+                if (field.isRelationship) {
+                    node = field.getRelatedModel();
+                } else if (path.length > 0) {
+                    throw new Error("bad query field spec path");
+                }
+            })();
+        }
+
+        return _.extend(new QueryFieldSpec(rootTable), {
+            joinPath: joinPath,
+            table: node,
+            datePart: (joinPath.length && _.last(joinPath).isTemporal()) ? 'Full Date' : null,
+            treeRank: null
+        });
+    };
+
+    QueryFieldSpec.fromStringId = function(stringId, isRelationship) {
         var match = STRINGID_RE.exec(stringId);
         var path = match[1].split(',');
         var tableName = match[2];
@@ -106,7 +133,7 @@ define(['underscore', 'schema'], function(_, schema) {
             return _.last(this.joinPath);
         },
         isRelationship: function() {
-            return !this.treeRank && this.getField().isRelationship;
+            return !this.treeRank && !!this.getField() && this.getField().isRelationship;
         },
         isTemporal: function() {
             var field = this.getField();

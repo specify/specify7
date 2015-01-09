@@ -1,6 +1,8 @@
 from collections import namedtuple
 import sqlalchemy
 
+from specifyweb.specify.uiformatters import CatalogNumberNumeric
+
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
     """Instances of this class turn Spqueryfield operation numbers into
@@ -24,6 +26,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         'op_empty',             # 12
         'op_trueornull',        # 13
         'op_falseornull',       # 14
+        'op_startswith',        # 15
         ]
 
     def by_op_num(self, op_num):
@@ -91,3 +94,9 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
     def op_falseornull(self, field, value):
         return (field == False) | (field == None)
 
+    def op_startswith(self, field, value):
+        if isinstance(self.uiformatter, CatalogNumberNumeric):
+            value = value.lstrip('0')
+            return field.op('REGEXP')("^0*" + value)
+        else:
+            return field.like(value + "%")

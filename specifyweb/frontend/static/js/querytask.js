@@ -108,6 +108,7 @@ define([
                 scrollOnWindow: true,
                 countOnly: this.query.get('countonly'),
                 fetchResults: this.fetchResults(),
+                fetchCount: this.fetchCount(),
                 fieldSpecs: _.chain(this.fieldUIs)
                     .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                     .sortBy(function(f) { return f.spqueryfield.get('position'); })
@@ -122,6 +123,11 @@ define([
                 query.offset = offset;
                 return $.post('/stored_query/ephemeral/', JSON.stringify(query));
             };
+        },
+        fetchCount: function() {
+            var query = this.query.toJSON();
+            query.countonly = true;
+            return $.post('/stored_query/ephemeral/', JSON.stringify(query));
         },
         moveField: function(queryField, dir) {
             ({
