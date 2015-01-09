@@ -12,7 +12,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'specifyweb.settings'
 import django.core.handlers.wsgi
 django_app = django.core.handlers.wsgi.WSGIHandler()
 
-
 def application(environ, start_response):
     server_name = environ['SERVER_NAME'].split('.')[0]
     os.environ['SPECIFY_DATABASE_NAME'] = db_map[server_name]
