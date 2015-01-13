@@ -11,7 +11,7 @@ from django.views.decorators.cache import never_cache
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 
 from specifyweb.specify.api import toJson
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 from . import models
 
 from .queryfield import QueryField
@@ -71,7 +71,7 @@ def filter_by_collection(model, query, collection):
     return query
 
 @require_GET
-@login_required
+@login_maybe_required
 @never_cache
 def query(request, id):
     limit = int(request.GET.get('limit', 20))
@@ -98,7 +98,7 @@ class EphemeralField(
 
 @require_POST
 @csrf_exempt
-@login_required
+@login_maybe_required
 @never_cache
 def ephemeral(request):
     try:
@@ -108,6 +108,7 @@ def ephemeral(request):
     logger.info('ephemeral query: %s', spquery)
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
+    recordsetid = spquery.get('recordsetid', None)
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
@@ -118,15 +119,17 @@ def ephemeral(request):
 
         return execute(session, request.specify_collection,
                        tableid, distinct, count_only,
-                       field_specs, limit, offset)
+                       field_specs, limit, offset, recordsetid)
 
-def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset):
-    query, order_by_exprs, deferreds = build_query(session, collection, tableid, field_specs)
+def execute(session, collection, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+    query, order_by_exprs, deferreds = build_query(session, collection, tableid, field_specs, recordsetid)
 
     if distinct:
         query = query.distinct()
     count = query.count()
-    query = query.order_by(*order_by_exprs).limit(limit).offset(offset)
+    query = query.order_by(*order_by_exprs).offset(offset)
+    if limit:
+        query = query.limit(limit)
 
     if not count_only:
         results = [[deferred(value) if deferred else value
@@ -138,11 +141,17 @@ def execute(session, collection, tableid, distinct, count_only, field_specs, lim
     data = {'count': count, 'results': results}
     return HttpResponse(toJson(data), content_type='application/json')
 
-def build_query(session, collection, tableid, field_specs):
+def build_query(session, collection, tableid, field_specs, recordsetid=None):
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
     query = filter_by_collection(model, query, collection)
+
+    if recordsetid is not None:
+        recordset = session.query(models.RecordSet).get(recordsetid)
+        assert recordset.dbTableId == tableid
+        query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \
+                .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
     join_cache = {}

@@ -3,7 +3,7 @@ define([
     'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
 ], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
     "use strict";
-    var emptyTemplate = '<p>nothing here...</p>';
+    var emptyTemplate = '<p>No Data</p>';
 
     var Controls = Backbone.View.extend({
         __name__: "RecordSelectorControls",
@@ -222,6 +222,7 @@ define([
                 this.form = form;
                 this.redraw(index);
                 this.showHide();
+                this.trigger('renderdone', this);
             }).bind(this));
         },
         redraw: function(offset) {

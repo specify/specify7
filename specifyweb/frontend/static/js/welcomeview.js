@@ -1,7 +1,10 @@
 define([
-    'jquery', 'underscore', 'd3', 'backbone', 'templates', 'schema', 'dataobjformatters'
-], function($, _, d3, Backbone, templates, schema, dataobjectformatters) {
+    'require', 'jquery', 'underscore', 'd3', 'backbone', 'templates', 'schema',
+    'remoteprefs', 'dataobjformatters'
+], function(require, $, _, d3, Backbone, templates, schema, prefs, dataobjectformatters) {
     "use strict";
+    var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
+
     var ACTION = ['Added', 'Modified', 'Deleted'];
 
     function format(resource) { return dataobjectformatters.format(resource); }
@@ -57,8 +60,8 @@ define([
     });
 
     function makeTreeMap() {
-        var width = 800;
-        var height = 400;
+        var width = $('#taxon-treemap').width();
+        var height = $('#taxon-treemap').height();
 
         var color = d3.scale.category20c();
 
@@ -102,7 +105,6 @@ define([
                             })(d.parent);
 
                     name === "" && console.error("empty name for", d, "with rankId", d.rankId);
-                        
                     return name + " " + d.count;
                 };
             }
@@ -233,9 +235,8 @@ define([
             'click #about-specify': 'showAboutDialog'
         },
         render: function() {
-            this.$el.append(templates.welcome());
-
-            _.defer(makeTreeMap);
+            this.$el.append(templates.welcome({doTaxonTiles: DO_TAXON_TILES}));
+            DO_TAXON_TILES && _.defer(makeTreeMap);
 
             // showRecentActivity(this);
 
@@ -243,12 +244,11 @@ define([
         },
         showAboutDialog: function(evt) {
             evt.preventDefault();
-            $.get("/api/system_info/").done(function(systemInfo) {
-                $(templates.aboutspecify(systemInfo)).dialog({
-                    title: "About Specify",
-                    width: 480,
-                    close: function() { $(this).remove(); }
-                });
+            var app = require('specifyapp');
+            $(templates.aboutspecify(app.systemInfo)).dialog({
+                title: "About Specify",
+                width: 480,
+                close: function() { $(this).remove(); }
             });
         }
     });

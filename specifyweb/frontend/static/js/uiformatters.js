@@ -127,7 +127,7 @@ define([
                 return '\\d{0,' + this.size + '}';
             },
             canonicalize: function(value) {
-                return Array(this.size - value.length + 1).join('0') + value;
+                return value === "" ? "" : Array(this.size - value.length + 1).join('0') + value;
             }
         }
     )});

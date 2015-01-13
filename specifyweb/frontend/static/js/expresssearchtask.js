@@ -47,7 +47,8 @@ define([
 
             var statusEl = this.$('.primary.status');
             totalCount < 1 ? statusEl.text('No Matches') : statusEl.hide();
-            this.$('.results.primary').accordion('destroy').accordion(accordionOptions);
+            this.$('.results.primary').accordion('destroy')
+                .accordion(_.extend({}, accordionOptions, {active:0}));
         },
         makePrimaryResultView: function(ajaxUrl, results, tableName) {
             if (results.totalCount < 1) return;
@@ -117,7 +118,7 @@ define([
     return function(app) {
         app.router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
-            window.document.title = 'Express Search | Specify WebApp';
+            app.setTitle('Express Search');
         });
     };
 });

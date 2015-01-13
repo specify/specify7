@@ -64,7 +64,7 @@ define([
             // value is now either null or a string
             value = value || '';
 
-            if (value && _.all(items, function(item) { return item.value !== value; })) {
+            if (value && _.all(items, function(item) { return item.value.toString() !== value.toString(); })) {
                 // current value is not in picklist
                 this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
             }
@@ -111,7 +111,8 @@ define([
                         distinct: true
                     }).pipe(function(rows) {
                         return _.map(rows, function(row) {
-                            return {value: row[0], title: row[0]};
+                            var value = row[0] || '';
+                            return {value: value, title: value};
                         });
                     });
                 default:

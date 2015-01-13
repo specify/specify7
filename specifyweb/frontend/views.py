@@ -11,8 +11,10 @@ DIR = os.path.dirname(__file__)
 
 logger = logging.getLogger(__name__)
 
+login_maybe_required = (lambda func: func) if settings.ANONYMOUS_USER else login_required
+
 if settings.DEBUG:
-    @login_required
+    @login_maybe_required
     def specify(request):
         # This seems to cost about 16-30 ms.
         up_to_date = subprocess.call(['make', '-q', '-C', DIR]) == 0
@@ -23,6 +25,6 @@ if settings.DEBUG:
 else:
     resp = loader.get_template('specify.html').render(Context({'use_built': True}))
 
-    @login_required
+    @login_maybe_required
     def specify(request):
         return HttpResponse(resp)

@@ -4,9 +4,10 @@ from os.path import splitext
 import requests, time, hmac, json
 
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.conf import settings
+
+from specifyweb.specify.views import login_maybe_required
 
 server_urls = None
 server_time_delta = None
@@ -19,7 +20,7 @@ def get_collection():
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
-@login_required
+@login_maybe_required
 @require_GET
 def get_settings(request):
     if server_urls is None:
@@ -32,14 +33,14 @@ def get_settings(request):
     data.update(server_urls)
     return HttpResponse(json.dumps(data), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def get_token(request):
     filename = request.GET['filename']
     token = generate_token(get_timestamp(), filename)
     return HttpResponse(token, content_type='text/plain')
 
-@login_required
+@login_maybe_required
 @require_GET
 def get_upload_params(request):
     filename = request.GET['filename']

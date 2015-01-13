@@ -1,5 +1,4 @@
 import mimetypes
-import re
 from functools import wraps
 
 from django.views.decorators.http import require_GET
@@ -9,16 +8,18 @@ from django.conf import settings
 from django import http
 
 from .specify_jar import specify_jar
-from .models import Spversion
 from . import api
 
-def login_required(view):
-    @wraps(view)
-    def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated():
-            return http.HttpResponseForbidden()
-        return view(request, *args, **kwargs)
-    return wrapped
+if settings.ANONYMOUS_USER:
+    login_maybe_required = lambda func: func
+else:
+    def login_maybe_required(view):
+        @wraps(view)
+        def wrapped(request, *args, **kwargs):
+            if not request.user.is_authenticated():
+                return http.HttpResponseForbidden()
+            return view(request, *args, **kwargs)
+        return wrapped
 
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
@@ -26,7 +27,7 @@ class HttpResponseConflict(http.HttpResponse):
 def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising
     in the api logic."""
-    @login_required
+    @login_maybe_required
     @csrf_exempt
     @cache_control(private=True, max_age=0)
     def view(request, *args, **kwargs):
@@ -52,7 +53,7 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
-@login_required
+@login_maybe_required
 @require_GET
 def rows(request, model):
     return api.rows(request, model)
@@ -68,21 +69,9 @@ def images(request, path):
         raise http.Http404(e)
     return http.HttpResponse(image, content_type=mimetype)
 
-@login_required
+@login_maybe_required
 @require_GET
 def properties(request, name):
     """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
-
-@require_GET
-def system_info(request):
-    spversion = Spversion.objects.get()
-
-    info = dict(
-        version=settings.VERSION,
-        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
-        database_version=spversion.appversion,
-        schema_version=spversion.schemaversion,
-        )
-    return http.HttpResponse(api.toJson(info), content_type='application/json')

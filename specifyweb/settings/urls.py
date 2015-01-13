@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic.base import RedirectView
 
 urlpatterns = patterns('',
-    (r'^favicon.ico', RedirectView.as_view(url='/images/specify32.png')),
+    (r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
     (r'^accounts/login/$', 'specifyweb.context.views.login'),
@@ -24,7 +24,6 @@ urlpatterns = patterns('',
     url(r'^api/specify_rows/(?P<model>\w+)/$', 'specifyweb.specify.views.rows'),
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specifyweb.specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specifyweb.specify.views.collection'),
-    url(r'^api/system_info/$', 'specifyweb.specify.views.system_info'),
 
     # this url always triggers a 500 for testing purposes
     url(r'^api/test_error/', 'specifyweb.specify.views.raise_error'),

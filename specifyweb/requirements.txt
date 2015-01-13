@@ -1,3 +1,0 @@
-Django==1.5
-SQLAlchemy==0.8.0b2
-requests==1.2.3

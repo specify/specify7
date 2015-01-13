@@ -30,3 +30,7 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 # Report runner service
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
+
+# To allow anonymous use, set ANONYMOUS_USER to a Specify username
+# to use for anonymous access.
+ANONYMOUS_USER = None

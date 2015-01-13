@@ -9,7 +9,7 @@ from django import forms
 
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.api import toJson
-from specifyweb.specify.views import login_required
+from specifyweb.specify.views import login_maybe_required
 
 from specifyweb.context.app_resource import get_app_resource
 
@@ -93,7 +93,7 @@ class SearchForm(forms.Form):
         return 0 if offset is None else offset
 
 @require_GET
-@login_required
+@login_maybe_required
 def search(request):
     form = SearchForm(request.GET)
     if not form.is_valid():
@@ -119,7 +119,7 @@ class RelatedSearchForm(SearchForm):
     name = forms.CharField(required=True)
 
 @require_GET
-@login_required
+@login_maybe_required
 def related_search(request):
     from . import related_searches
     form = RelatedSearchForm(request.GET)
@@ -141,7 +141,7 @@ def related_search(request):
         return HttpResponse(toJson(result), content_type='application/json')
 
 @require_GET
-@login_required
+@login_maybe_required
 def querycbx_search(request, modelname):
     table = datamodel.get_table(modelname)
     model = getattr(models, table.name)

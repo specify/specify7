@@ -2,12 +2,12 @@ from django.views.decorators.http import require_GET
 from django.http import HttpResponse, Http404
 from django.db import connection
 
-from .views import login_required
+from .views import login_maybe_required
 from .api import get_object_or_404, obj_to_data, toJson
 
 from . import tree_sqls
 
-@login_required
+@login_maybe_required
 @require_GET
 def tree_view(request, tree, parentid):
     try:
@@ -21,7 +21,7 @@ def tree_view(request, tree, parentid):
 
     return HttpResponse(toJson(cursor.fetchall()), content_type='application/json')
 
-@login_required
+@login_maybe_required
 @require_GET
 def path(request, model, id):
     id = int(id)

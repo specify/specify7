@@ -205,9 +205,16 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query, orm_field, subquery = \
                    handle_tree_field(query, orm_model, table, self.tree_rank,
                                      no_filter, sorting, collection)
-
         else:
             orm_field = getattr(orm_model, self.get_field().name)
+
+            if field.type == "java.sql.Timestamp":
+                # Only consider the date portion of timestamp fields.
+                # This is to replicate the behavior of Sp6. It might
+                # make since to condition this on whether there is a
+                # time component in the input value.
+                orm_field = sql.func.DATE(orm_field)
+
             if field.is_temporal() and self.date_part != "Full Date":
                 orm_field = extract(self.date_part, orm_field)
 

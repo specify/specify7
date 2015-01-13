@@ -5,26 +5,12 @@ sys.dont_write_bytecode = True
 
 from django.utils.crypto import get_random_string
 
+from .specify_settings import *
+
 try:
-    from . import local_specify_settings as specify_settings
-    from .local_specify_settings import (
-        WEB_ATTACHMENT_URL,
-        WEB_ATTACHMENT_KEY,
-        WEB_ATTACHMENT_COLLECTION,
-        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
-        REPORT_RUNNER_HOST,
-        REPORT_RUNNER_PORT,
-    )
+    from .local_specify_settings import *
 except ImportError:
-    from . import specify_settings
-    from .specify_settings import (
-        WEB_ATTACHMENT_URL,
-        WEB_ATTACHMENT_KEY,
-        WEB_ATTACHMENT_COLLECTION,
-        WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
-        REPORT_RUNNER_HOST,
-        REPORT_RUNNER_PORT,
-    )
+    pass
 
 try:
     from .debug import DEBUG
@@ -44,11 +30,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
-        'NAME': specify_settings.DATABASE_NAME,
-        'USER': specify_settings.MASTER_NAME,
-        'PASSWORD': specify_settings.MASTER_PASSWORD,
-        'HOST': specify_settings.DATABASE_HOST,
-        'PORT': specify_settings.DATABASE_PORT,
+        'NAME': DATABASE_NAME,
+        'USER': MASTER_NAME,
+        'PASSWORD': MASTER_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
      }
  }
 
@@ -72,16 +58,16 @@ if 'test' in sys.argv:
 else:
     TESTING = False
     SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
-        specify_settings.MASTER_NAME,
-        specify_settings.MASTER_PASSWORD,
-        specify_settings.DATABASE_HOST,
-        specify_settings.DATABASE_PORT or 3306,
-        specify_settings.DATABASE_NAME)
+        MASTER_NAME,
+        MASTER_PASSWORD,
+        DATABASE_HOST,
+        DATABASE_PORT or 3306,
+        DATABASE_NAME)
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600
 
-SPECIFY_THICK_CLIENT = os.path.expanduser(specify_settings.THICK_CLIENT_LOCATION)
+SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
 SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
 
@@ -208,6 +194,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
 LOGIN_REDIRECT_URL = '/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 try:
     from .local_logging_settings import LOGGING
@@ -230,5 +217,11 @@ except:
 if DEBUG:
     VERSION = git_version + "(debug)"
 else:
-    from .build_version import VERSION
+    try:
+        from .build_version import VERSION
+    except ImportError:
+        raise Exception('Javascript and CSS are not optimized.\n'
+                        'Run make in the specifweb directory\n'
+                        'or turn on DEBUG to use unoptimized files.')
+
     assert git_version in ('N/A', VERSION), "build is out of date"

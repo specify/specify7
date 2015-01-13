@@ -5,6 +5,7 @@ define([
     'toolbarwelcome',
     'toolbardataentry',
     'toolbartrees',
+    'toolbarrecordsets',
     'toolbarquery',
     'toolbarreport',
     'toolbarattachments'
@@ -57,7 +58,11 @@ define([
         render: function() {
             var _this = this;
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
-            this.$('#user-tools a.username').text(this.user.name);
+            this.user.isauthenticated && this.$('#user-tools a.username').text(this.user.name);
+            this.$('#user-tools a.login-logout')
+                .text(this.user.isauthenticated ? '✕' : 'Log in')
+                .attr('href', '/accounts/' + (this.user.isauthenticated ? 'logout/' : 'login/'))
+                .attr('title', this.user.isauthenticated ? 'Log out.' : 'Log in.');
 
             var collectionSelector = this.$('#user-tools select');
             var collections = new schema.models.Collection.LazyCollection();

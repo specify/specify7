@@ -1,5 +1,8 @@
 from django.core.exceptions import FieldError
-from .models import Geography, Taxon
+from django.db.models import Q
+
+from .models import Geography, Taxon, Storage, Attachment
+from . import scoping
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
 
@@ -7,11 +10,23 @@ class HierarchyException(Exception):
     pass
 
 def filter_by_collection(queryset, collection, strict=True):
+    if queryset.model is Attachment:
+        return queryset.filter(
+            Q(scopetype=None) |
+            Q(scopetype=scoping.GLOBAL_SCOPE) |
+            Q(scopetype=scoping.COLLECTION_SCOPE, scopeid=collection.id) |
+            Q(scopetype=scoping.DISCIPLINE_SCOPE, scopeid=collection.discipline.id) |
+            Q(scopetype=scoping.DIVISION_SCOPE, scopeid=collection.discipline.division.id) |
+            Q(scopetype=scoping.INSTITUTION_SCOPE, scopeid=collection.discipline.division.institution.id))
+
     if queryset.model is Geography:
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:
         return queryset.filter(definition__discipline=collection.discipline)
+
+    if queryset.model is Storage:
+        return queryset.filter(definition__institutions=collection.discipline.division.institution.id)
 
     try:
         return queryset.filter(collectionmemberid=collection.id)
@@ -40,4 +55,3 @@ def filter_by_collection(queryset, collection, strict=True):
         value = getattr(value, field)
 
     return queryset.filter(**{ lookup: value })
-

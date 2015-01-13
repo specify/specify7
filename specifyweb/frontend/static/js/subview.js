@@ -36,7 +36,7 @@ define([
                 self.$el.append(header);
                 if (!self.model) {
                     $('.specify-delete-related', header).remove();
-                    self.$el.append('<p>none...</p>');
+                    self.$el.append('<p>No Data.</p>');
                     return;
                 } else {
                     $('.specify-add-related', header).remove();

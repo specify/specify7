@@ -22,14 +22,19 @@ define([
         },
         initialize: function() {
             var collections = this.attachmentCollections = {
-                all: new AttachmentModel.LazyCollection(),
-                unused: new AttachmentModel.LazyCollection({
-                    filters: { tableid__isnull: true }
-                })
+                all: new AttachmentModel.LazyCollection({ domainfilter: true })
+                // TODO:
+                // So-called "unused" attachments now might be used in reports.
+
+                // unused: new AttachmentModel.LazyCollection({
+                //     filters: { tableid__isnull: true },
+                //     domainfilter: true
+                // })
             };
             _.each(tablesWithAttachments, function(table) {
                 collections[table.tableId] = new AttachmentModel.LazyCollection({
-                    filters: { tableid: table.tableId }
+                    filters: { tableid: table.tableId },
+                    domainfilter: true
                 });
             });
 
@@ -51,8 +56,11 @@ define([
             var tableId = attachment.get('tableid');
             var title = attachment.get('title');
 
-            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() :
-                    schema.getModelById(tableId).getIcon();
+            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() : (
+                function() {
+                    var model = schema.getModelById(tableId);
+                    return model.system ? "/images/system.png" : model.getIcon();
+                })();
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",
@@ -157,9 +165,9 @@ define([
 
             var model = schema.getModelById(tableId);
             attachment.rget(model.name.toLowerCase() + 'attachments', true).pipe(function(dataObjs) {
-                return dataObjs.at(0).rget(model.name.toLowerCase());
+                return dataObjs && dataObjs.length > 0 ? dataObjs.at(0).rget(model.name.toLowerCase()) : null;
             }).done(function(dataObj) {
-                self.buildDialog(dataObj);
+                dataObj ? self.buildDialog(dataObj) : self.dialog.dialog('close');
             });
         },
         buildDialog: function(resource) {
@@ -199,7 +207,7 @@ define([
     return function(app) {
         app.router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
-            window.document.title = 'Attachments | Specify WebApp';
+            app.setTitle('Attachments');
         });
     };
 });
