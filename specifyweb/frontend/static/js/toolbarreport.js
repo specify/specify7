@@ -62,11 +62,12 @@ define([
         },
         makeEntry: function(icon, appResource) {
             var img = $('<img>', {src: icon});
-            var a = $('<a class="select">').text(appResource.get('name'))
+            var a = $('<a class="select">')
+                    .text(appResource.get('name'))
                     .attr('title', appResource.get('remarks') || "");
-            var entry = $('<tr>').data('resource', appResource)
-                    .append($('<td>').append(img),
-                            $('<td>').append(a));
+            var entry = $('<tr>')
+                    .data('resource', appResource)
+                    .append($('<td>').append(img), $('<td>').append(a));
 
             this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
             return entry;
@@ -84,7 +85,7 @@ define([
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", appResource.id);
                 } else if (data.length < 1) {
-                    console.error("coundn't find report definition for appresource id:", appResource.id);
+                    console.error("couldn't find report definition for appresource id:", appResource.id);
                     return;
                 }
                 if (!reports.isComplete()) {
@@ -105,11 +106,11 @@ define([
                         };
                         if (imageFixResult.isOK) {
                             action(_({}).extend(reportResources, {reportXML: imageFixResult.reportXML}));
-                        } else (new FixImagesDialog({
+                        } else new FixImagesDialog({
                             reportResources: reportResources,
                             imageFixResult: imageFixResult,
                             action: action
-                        })).render();
+                        }).render();
                     });
             });
         }
@@ -169,11 +170,11 @@ define([
         tryAgain: function(imageFixResult) {
             if (imageFixResult.isOK) {
                 this.action(_({}).extend(this.reportResources, {reportXML: imageFixResult.reportXML}));
-            } else (new FixImagesDialog({
+            } else new FixImagesDialog({
                 reportResources: this.reportResources,
                 imageFixResult: imageFixResult,
                 action: this.action
-            })).render();
+            }).render();
         }
     });
 
@@ -209,7 +210,7 @@ define([
         makeDialog($('<div title="Report definition">')
                    .append($('<textarea cols=120 rows=40 readonly>')
                            .text(reportResources.reportXML)),
-                   { width: 'auto'});
+                   {width: 'auto'});
     }
 
     var ChooseRecordSetDialog = Backbone.View.extend({
@@ -266,10 +267,10 @@ define([
         selected: function(evt) {
             evt.preventDefault();
             var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
-            (new QueryParamsDialog({
+            new QueryParamsDialog({
                 reportResources: this.reportResources,
                 recordSetId: recordSet.id
-            })).runReport();
+            }).runReport();
         }
     });
 
@@ -381,7 +382,7 @@ define([
             });
             return {
                 isOK: badImageExpressions.length == 0 && missingAttachments == 0,
-                reportXML: (new XMLSerializer()).serializeToString(reportDOM),
+                reportXML: new XMLSerializer().serializeToString(reportDOM),
                 badImageExpressions: badImageExpressions,
                 missingAttachments: missingAttachments
             };
@@ -398,7 +399,7 @@ define([
             var appRs = new schema.models.SpAppResource.LazyCollection();
             appRs.url = function() { return "/report_runner/get_reports/"; };
             appRs.fetch({ limit: 100 }).done(function() {
-                (new ReportListDialog({ appResources: appRs })).render();
+                new ReportListDialog({ appResources: appRs }).render();
             });
         }
     };

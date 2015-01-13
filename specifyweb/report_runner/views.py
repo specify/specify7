@@ -31,6 +31,8 @@ def run(request):
     if port == '': port = 80
 
     report_data = run_query(request.specify_collection, request.specify_user, request.POST['query'])
+    if len(report_data['rows']) < 1:
+        return HttpResponse("The report query returned no results.", content_type="text/plain")
 
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),
