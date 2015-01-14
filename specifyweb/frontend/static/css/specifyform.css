@@ -616,8 +616,16 @@ a.specify-attachment-original {
     text-decoration: underline;
 }
 
-.tree-view ul {
-    padding: 0px;
+.tree-view table {
+    width: 100%;
+}
+
+.tree-view td:nth-child(even) {
+    background-color: lightblue;
+}
+
+.tree-view td:nth-child(odd) {
+    background-color: lightyellow;
 }
 
 .tree-node .expander {

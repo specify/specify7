@@ -5,7 +5,7 @@ define([
 
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
-        tagName: "li",
+        tagName: "tr",
         className: "tree-node",
         events: {
             'click a.open': 'openNode',
@@ -52,7 +52,7 @@ define([
         },
         initialize: function(options) {
             this.table = options.table;
-            this.positions = options.positions;
+            this.ranks = options.ranks;
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -65,18 +65,20 @@ define([
             this.allCOs              = options.row[i++];
             this.directCOs           = options.row[i++];
 
-            this.position = this.positions[this.rankId];
+            this.path = (options.path || "") + ' nn-' + this.nodeId;
         },
         render: function() {
-            this.$el
-                .css({"margin-left": this.position + 'px'})
+            var cells = _.map(this.ranks, function(rank) {
+                return $('<td>', {'class': (rank == this.rankId) ? 'tree-node-cell' : undefined})[0];
+            }, this);
+            this.$el.addClass(this.path).append(cells);
+            this.$('.tree-node-cell')
                 .append('<a class="ui-icon expander">')
                 .append($('<span>').text(this.name))
                 .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
-                        ' <a class="all-cos">' + this.allCOs + '</a>)')
-                .append("<ul>");
+                        ' <a class="all-cos">' + this.allCOs + '</a>)');
 
-            var expander = this.$('> .expander');
+            var expander = this.$('.expander');
             if (this.children > 0) {
                 expander.addClass('open ui-icon-folder-collapsed')
                     .attr('title', "" + this.children + (this.children > 1 ? " children" : " child"))
@@ -88,43 +90,40 @@ define([
         },
         openNode: function(event) {
             event.stopPropagation();
-            var expander = this.$('> .expander')
+            this.$('.expander')
                 .removeClass('open ui-icon-folder-collapsed')
                 .addClass('wait ui-icon-clock')
                 .text('wait');
-
-            var ul = this.$('> ul');
-            var table = this.table;
-            var positions = _.reduce(this.positions, function(positions, position, rank) {
-                positions[rank] = position - this.position;
-                return positions;
-            }, {}, this);
-
-            $.getJSON('/api/specify_tree/' + table + '/' + this.nodeId + '/').done(function(rows) {
-                expander.removeClass('wait ui-icon-clock')
-                    .addClass('close ui-icon-folder-open')
-                    .text('close');
-                _.each(rows, function(row) {
-                    var childNode = new TreeNodeView({ table: table, row: row, positions: positions});
-                    childNode.render().$el.appendTo(ul);
-                });
-            });
+            $.getJSON('/api/specify_tree/' + this.table + '/' + this.nodeId + '/').done(this.addChildNodes.bind(this));
+        },
+        addChildNodes: function(rows) {
+            this.$('.expander')
+                .removeClass('wait ui-icon-clock')
+                .addClass('close ui-icon-folder-open')
+                .text('close');
+            this.$el.after(
+                _.map(rows, function(row) {
+                    return new TreeNodeView({ table: this.table, row: row, ranks: this.ranks, path: this.path })
+                        .render().$el[0];
+                }, this)
+            );
         },
         closeNode: function(event) {
             event.stopPropagation();
-            this.$('> .expander')
+            this.$('.expander')
                 .removeClass('close ui-icon-folder-open')
                 .addClass('reopen ui-icon-folder-collapsed')
                 .text('reopen');
-            this.$('> ul').hide();
+            $('.nn-' + this.nodeId).hide();
+            this.$el.show();
         },
         reopenNode: function(event) {
             event.stopPropagation();
-            this.$('> .expander')
+            this.$('.expander')
                 .removeClass('reopen ui-icon-folder-collapsed')
                 .addClass('close ui-icon-folder-open')
                 .text('close');
-            this.$('> ul').show();
+            $('.nn-' + this.nodeId).show();
         },
         showDirectCOs: function(event) {
             event.stopPropagation();
@@ -157,18 +156,13 @@ define([
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
         className: "tree-header",
-        tagName: "ul",
+        tagName: "tr",
         initialize: function(options) {
             this.treeDefItems = options.treeDefItems;
-            this.positions = options.positions;
         },
         render: function() {
-            this.$el.css('position', 'relative');
-            var headings = _.map(this.treeDefItems.models, function(tdi) {
-                return $('<li>')
-                    .text(tdi.get('name'))
-                    .css({position: 'absolute',
-                          left: this.positions[tdi.get('rankid')] + 'px'})[0];
+            var headings = _.map(this.treeDefItems, function(tdi) {
+                return $('<th>').text(tdi.get('name'))[0];
             }, this);
             this.$el.append(headings);
             return this;
@@ -181,19 +175,22 @@ define([
         initialize: function(options) {
             this.table = options.table;
             this.treeDef = options.treeDef;
-            this.treeDefItems = options.treeDefItems;
+            this.treeDefItems = options.treeDefItems.models;
+
             this.Collection = schema.getModel(options.table).LazyCollection;
-            this.positions = _.reduce(this.treeDefItems.models, function(positions, tdi, index) {
-                positions[tdi.get('rankid')] = 150 * index;
-                return positions;
-            }, {});
+            this.ranks = _.map(this.treeDefItems, function(tdi) { return tdi.get('rankid'); });
         },
         render: function() {
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             $('<h1>').text(title).appendTo(this.el);
-            new TreeHeader({treeDefItems: this.treeDefItems, positions: this.positions})
-                .render().$el.appendTo(this.el);
-            this.ul = $('<ul>').appendTo(this.el).append('<li>(loading...)</li>');
+            var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
+                return $('<col>', {width: (100/this.ranks.length) + '%'})[0];
+            }, this));
+            $('<table>').appendTo(this.el).append(
+                columnDefs,
+                new TreeHeader({treeDefItems: this.treeDefItems}).render().el,
+                '<tr class="loading"><td>(loading...)</td></tr>'
+            );
             var roots = new this.Collection({filters: {
                 parent__isnull: true,
                 definition: this.treeDef.id
@@ -205,9 +202,10 @@ define([
             return this;
         },
         gotRows: function(rows) {
-            this.ul.empty().append(
+            this.$('tr.loading').remove();
+            this.$('table').append(
                 _.map(rows, function(row) {
-                    return new TreeNodeView({ row: row, table: this.table, positions: this.positions })
+                    return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks })
                         .render().$el[0];
                 }, this)
             );
