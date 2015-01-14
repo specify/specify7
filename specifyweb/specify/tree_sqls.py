@@ -1,5 +1,5 @@
 taxon = """
-    SELECT t1.taxonid, t1.name, t1.fullname, t1.nodenumber, t1.highestchildnodenumber,
+    SELECT t1.taxonid, t1.name, t1.fullname, t1.nodenumber, t1.highestchildnodenumber, t1.rankid,
     (
         SELECT COUNT(t.taxonid) FROM taxon t WHERE t.parentid = t1.taxonid
     ) AS children,
@@ -22,7 +22,7 @@ taxon = """
 """
 
 geography = """
-    SELECT g1.geographyid, g1.name, g1.fullname, g1.nodenumber, g1.highestchildnodenumber,
+    SELECT g1.geographyid, g1.name, g1.fullname, g1.nodenumber, g1.highestchildnodenumber, g1.rankid,
     (
         SELECT COUNT(g.geographyid) FROM geography g WHERE g.parentid = g1.geographyid
     ) AS children,
@@ -49,7 +49,7 @@ geography = """
 """
 
 storage = """
-    SELECT s1.storageid, s1.name, s1.fullname, s1.nodenumber, s1.highestchildnodenumber,
+    SELECT s1.storageid, s1.name, s1.fullname, s1.nodenumber, s1.highestchildnodenumber, s1.rankid,
     (
         SELECT COUNT(s.storageid) FROM storage s WHERE s.parentid = s1.storageid
     ) AS children,
@@ -72,7 +72,7 @@ storage = """
 """
 
 geologictimeperiod = """
-    SELECT g1.geologictimeperiodid, g1.name, g1.fullname, g1.nodenumber, g1.highestchildnodenumber,
+    SELECT g1.geologictimeperiodid, g1.name, g1.fullname, g1.nodenumber, g1.highestchildnodenumber, g1.rankid,
     (
         SELECT COUNT(g.geologictimeperiodid) FROM geologictimeperiod g WHERE g.parentid = g1.geologictimeperiodid
     ) AS children,
@@ -97,7 +97,7 @@ geologictimeperiod = """
 """
 
 lithostrat = """
-    SELECT ls1.lithostratid, ls1.name, ls1.fullname, ls1.nodenumber, ls1.highestchildnodenumber,
+    SELECT ls1.lithostratid, ls1.name, ls1.fullname, ls1.nodenumber, ls1.highestchildnodenumber, ls1.rankid,
     (
         SELECT COUNT(ls.lithostratid) FROM lithostrat ls WHERE ls.parentid = ls1.lithostratid
     ) AS children,

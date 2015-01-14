@@ -52,6 +52,7 @@ define([
         },
         initialize: function(options) {
             this.table = options.table;
+            this.positions = options.positions;
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -59,12 +60,16 @@ define([
             this.fullName            = options.row[i++];
             this.nodeNumber          = options.row[i++];
             this.highestNodeNumber   = options.row[i++];
+            this.rankId              = options.row[i++];
             this.children            = options.row[i++];
             this.allCOs              = options.row[i++];
             this.directCOs           = options.row[i++];
+
+            this.position = this.positions[this.rankId];
         },
         render: function() {
             this.$el
+                .css({"margin-left": this.position + 'px'})
                 .append('<a class="ui-icon expander">')
                 .append($('<span>').text(this.name))
                 .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
@@ -89,14 +94,18 @@ define([
                 .text('wait');
 
             var ul = this.$('> ul');
-
             var table = this.table;
+            var positions = _.reduce(this.positions, function(positions, position, rank) {
+                positions[rank] = position - this.position;
+                return positions;
+            }, {}, this);
+
             $.getJSON('/api/specify_tree/' + table + '/' + this.nodeId + '/').done(function(rows) {
                 expander.removeClass('wait ui-icon-clock')
                     .addClass('close ui-icon-folder-open')
                     .text('close');
                 _.each(rows, function(row) {
-                    var childNode = new TreeNodeView({ table: table, row: row });
+                    var childNode = new TreeNodeView({ table: table, row: row, positions: positions});
                     childNode.render().$el.appendTo(ul);
                 });
             });
@@ -145,6 +154,27 @@ define([
         }
     });
 
+    var TreeHeader = Backbone.View.extend({
+        __name__: "TreeHeader",
+        className: "tree-header",
+        tagName: "ul",
+        initialize: function(options) {
+            this.treeDefItems = options.treeDefItems;
+            this.positions = options.positions;
+        },
+        render: function() {
+            this.$el.css('position', 'relative');
+            var headings = _.map(this.treeDefItems.models, function(tdi) {
+                return $('<li>')
+                    .text(tdi.get('name'))
+                    .css({position: 'absolute',
+                          left: this.positions[tdi.get('rankid')] + 'px'})[0];
+            }, this);
+            this.$el.append(headings);
+            return this;
+        }
+    });
+
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
         className: "tree-view",
@@ -153,25 +183,34 @@ define([
             this.treeDef = options.treeDef;
             this.treeDefItems = options.treeDefItems;
             this.Collection = schema.getModel(options.table).LazyCollection;
+            this.positions = _.reduce(this.treeDefItems.models, function(positions, tdi, index) {
+                positions[tdi.get('rankid')] = 150 * index;
+                return positions;
+            }, {});
         },
         render: function() {
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             $('<h1>').text(title).appendTo(this.el);
-            var ul = $('<ul>').appendTo(this.el).append('<li>(loading...)</li>');
+            new TreeHeader({treeDefItems: this.treeDefItems, positions: this.positions})
+                .render().$el.appendTo(this.el);
+            this.ul = $('<ul>').appendTo(this.el).append('<li>(loading...)</li>');
             var roots = new this.Collection({filters: {
                 parent__isnull: true,
                 definition: this.treeDef.id
             }});
-            var table = this.table;
+            var baseUrl = '/api/specify_tree/' + this.table + '/';
             roots.fetch().pipe(function() {
-                return $.getJSON('/api/specify_tree/' + table + '/' + roots.at(0).id + '/');
-            }).done(function(rows) {
-                ul.empty();
-                _.each(rows, function(row) {
-                    new TreeNodeView({ table: table, row: row }).render().$el.appendTo(ul);
-                });
-            });
+                return $.getJSON(baseUrl + roots.at(0).id + '/');
+            }).done(this.gotRows.bind(this));
             return this;
+        },
+        gotRows: function(rows) {
+            this.ul.empty().append(
+                _.map(rows, function(row) {
+                    return new TreeNodeView({ row: row, table: this.table, positions: this.positions })
+                        .render().$el[0];
+                }, this)
+            );
         }
     });
 
