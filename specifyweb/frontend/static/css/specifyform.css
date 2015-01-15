@@ -620,20 +620,30 @@ a.specify-attachment-original {
     width: 100%;
 }
 
-.tree-view td:nth-child(even) {
+.tree-view thead {
+    border-bottom: 3px solid #555;
+}
+
+.tree-view tfoot th {
+    height: 20px;
+}
+
+.tree-view td:nth-child(even),
+.tree-view th:nth-child(even) {
     background-color: lightblue;
 }
 
-.tree-view td:nth-child(odd) {
+.tree-view td:nth-child(odd),
+.tree-view th:nth-child(odd) {
     background-color: lightyellow;
 }
 
 .tree-view td.tree-vertical-edge {
-    border-left: solid 3px;
+    border-left: 2px solid #555;
 }
 
 .tree-view td.tree-horizontal-edge {
-    border-bottom: solid 3px;
+    border-bottom: 3px solid #555;
 }
 
 .tree-node .expander {

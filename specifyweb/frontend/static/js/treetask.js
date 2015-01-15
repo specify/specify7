@@ -181,7 +181,7 @@ define([
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
         className: "tree-header",
-        tagName: "tr",
+        tagName: "thead",
         initialize: function(options) {
             this.treeDefItems = options.treeDefItems;
         },
@@ -189,7 +189,7 @@ define([
             var headings = _.map(this.treeDefItems, function(tdi) {
                 return $('<th>').text(tdi.get('name'))[0];
             }, this);
-            this.$el.append(headings);
+            $('<tr>').append(headings).appendTo(this.el);
             return this;
         }
     });
@@ -214,6 +214,7 @@ define([
             $('<table>').appendTo(this.el).append(
                 columnDefs,
                 new TreeHeader({treeDefItems: this.treeDefItems}).render().el,
+                $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
                 '<tr class="loading"><td>(loading...)</td></tr>'
             );
             var roots = new this.Collection({filters: {
