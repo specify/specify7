@@ -53,6 +53,7 @@ define([
         initialize: function(options) {
             this.table = options.table;
             this.ranks = options.ranks;
+            this.path = options.path || [];
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -64,14 +65,29 @@ define([
             this.children            = options.row[i++];
             this.allCOs              = options.row[i++];
             this.directCOs           = options.row[i++];
-
-            this.path = (options.path || "") + ' nn-' + this.nodeId;
         },
         render: function() {
+            var foundParentRank = false;
+            var foundThisRank = false;
             var cells = _.map(this.ranks, function(rank) {
-                return $('<td>', {'class': (rank == this.rankId) ? 'tree-node-cell' : undefined})[0];
+                if (this.path.length && rank == _.last(this.path).rankId) foundParentRank = true;
+                if (rank == this.rankId) foundThisRank = true;
+                var td = $('<td>');
+                var ancestor = _.find(this.path, function(node) { return node.rankId == rank; });
+                var ancestorPlus1 = this.path[1 + _.indexOf(this.path, ancestor)];
+                if (ancestor && !(ancestorPlus1 && ancestorPlus1.isLastChild())) {
+                    td.addClass('tree-vertical-edge');
+                }
+                if (rank == this.rankId) {
+                    td.addClass('tree-node-cell');
+                }
+                if (foundParentRank && !foundThisRank) {
+                    td.addClass('tree-horizontal-edge');
+                }
+                return td[0];
             }, this);
-            this.$el.addClass(this.path).append(cells);
+            var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
+            this.$el.addClass(pathClasses).append(cells);
             this.$('.tree-node-cell')
                 .append('<a class="ui-icon expander">')
                 .append($('<span>').text(this.name))
@@ -96,17 +112,26 @@ define([
                 .text('wait');
             $.getJSON('/api/specify_tree/' + this.table + '/' + this.nodeId + '/').done(this.addChildNodes.bind(this));
         },
+        isLastChild: function() {
+            var parent = _.last(this.path);
+            if (parent == null) return true;
+            return this === _.last(parent.childNodes);
+        },
         addChildNodes: function(rows) {
             this.$('.expander')
                 .removeClass('wait ui-icon-clock')
                 .addClass('close ui-icon-folder-open')
                 .text('close');
-            this.$el.after(
-                _.map(rows, function(row) {
-                    return new TreeNodeView({ table: this.table, row: row, ranks: this.ranks, path: this.path })
-                        .render().$el[0];
-                }, this)
-            );
+            this.childNodes = _.map(rows, function(row) {
+                return new TreeNodeView({
+                    table: this.table,
+                    row: row,
+                    ranks: this.ranks,
+                    path: this.path.concat(this)
+                });
+            }, this);
+
+            this.$el.after(_.map(this.childNodes, function(node) { return node.render().el; }));
         },
         closeNode: function(event) {
             event.stopPropagation();

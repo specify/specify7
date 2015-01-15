@@ -628,6 +628,14 @@ a.specify-attachment-original {
     background-color: lightyellow;
 }
 
+.tree-view td.tree-vertical-edge {
+    border-left: solid 3px;
+}
+
+.tree-view td.tree-horizontal-edge {
+    border-bottom: solid 3px;
+}
+
 .tree-node .expander {
     display: inline-block;
     vertical-align: bottom;
