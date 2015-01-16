@@ -93,9 +93,10 @@ define([
                 .append('<a class="ui-icon expander">')
                 .append($('<span>').text(this.name));
             if (this.directCOs != null && this.allCOs != null) {
+                var childCOs = this.allCOs - this.directCOs;
                 this.$('.tree-node-cell')
-                    .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
-                            ' <a class="all-cos">' + this.allCOs + '</a>)');
+                    .append(' (<a class="direct-cos">' + this.directCOs + '</a>' +
+                            (childCOs > 0 ? ', <a class="all-cos">' + childCOs + '</a>' : '') +')');
             }
             var expander = this.$('.expander');
             if (this.children > 0) {
