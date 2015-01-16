@@ -23,7 +23,8 @@ def tree_view(request, treedef, tree, parentid):
 
     colmemid = request.specify_collection.id
     cursor = connection.cursor()
-    cursor.execute(sql, [colmemid, colmemid, treedef, parentid])
+    cursor.execute(sql, {'colmemid': colmemid, 'treedef': treedef, 'parentid': parentid,
+                         'stats': request.GET.get('stats', 'false') == 'true'})
     return HttpResponse(toJson(cursor.fetchall()), content_type='application/json')
 
 @login_maybe_required

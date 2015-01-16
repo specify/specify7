@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'domain', 'notfoundview', 'recordselector'
-], function($, _, Backbone, schema, domain, NotFoundView, RecordSelector) {
+    'jquery', 'underscore', 'backbone', 'schema', 'domain', 'remoteprefs', 'notfoundview', 'recordselector'
+], function($, _, Backbone, schema, domain, remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
 
     var TreeNodeView = Backbone.View.extend({
@@ -91,10 +91,12 @@ define([
             this.$el.addClass(pathClasses).append(cells);
             this.$('.tree-node-cell')
                 .append('<a class="ui-icon expander">')
-                .append($('<span>').text(this.name))
-                .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
-                        ' <a class="all-cos">' + this.allCOs + '</a>)');
-
+                .append($('<span>').text(this.name));
+            if (this.directCOs != null && this.allCOs != null) {
+                this.$('.tree-node-cell')
+                    .append(' (<a class="direct-cos">' + this.directCOs + '</a>,' +
+                            ' <a class="all-cos">' + this.allCOs + '</a>)');
+            }
             var expander = this.$('.expander');
             if (this.children > 0) {
                 expander.addClass('open ui-icon-folder-collapsed')
@@ -111,7 +113,10 @@ define([
                 .removeClass('open ui-icon-folder-collapsed')
                 .addClass('wait ui-icon-clock')
                 .text('wait');
-            $.getJSON(this.baseUrl + this.nodeId + '/').done(this.addChildNodes.bind(this));
+            var tree = this.table.charAt(0).toUpperCase() + this.table.slice(1);
+            var statsThreshold = remoteprefs['TreeEditor.Rank.Threshold.' + tree];
+            var doStats = statsThreshold != null && statsThreshold <= this.rankId;
+            $.getJSON(this.baseUrl + this.nodeId + '/?stats=' + doStats).done(this.addChildNodes.bind(this));
         },
         isLastChild: function() {
             var parent = _.last(this.path);
