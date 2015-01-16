@@ -54,6 +54,7 @@ define([
             this.table = options.table;
             this.ranks = options.ranks;
             this.path = options.path || [];
+            this.baseUrl = options.baseUrl;
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -110,7 +111,7 @@ define([
                 .removeClass('open ui-icon-folder-collapsed')
                 .addClass('wait ui-icon-clock')
                 .text('wait');
-            $.getJSON('/api/specify_tree/' + this.table + '/' + this.nodeId + '/').done(this.addChildNodes.bind(this));
+            $.getJSON(this.baseUrl + this.nodeId + '/').done(this.addChildNodes.bind(this));
         },
         isLastChild: function() {
             var parent = _.last(this.path);
@@ -124,6 +125,7 @@ define([
                 .text('close');
             this.childNodes = _.map(rows, function(row) {
                 return new TreeNodeView({
+                    baseUrl: this.baseUrl,
                     table: this.table,
                     row: row,
                     ranks: this.ranks,
@@ -204,6 +206,7 @@ define([
 
             this.Collection = schema.getModel(options.table).LazyCollection;
             this.ranks = _.map(this.treeDefItems, function(tdi) { return tdi.get('rankid'); });
+            this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
         },
         render: function() {
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
@@ -217,21 +220,15 @@ define([
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
                 '<tr class="loading"><td>(loading...)</td></tr>'
             );
-            var roots = new this.Collection({filters: {
-                parent__isnull: true,
-                definition: this.treeDef.id
-            }});
-            var baseUrl = '/api/specify_tree/' + this.table + '/';
-            roots.fetch().pipe(function() {
-                return $.getJSON(baseUrl + roots.at(0).id + '/');
-            }).done(this.gotRows.bind(this));
+            $.getJSON(this.baseUrl + 'null/')
+                .done(this.gotRows.bind(this));
             return this;
         },
         gotRows: function(rows) {
             this.$('tr.loading').remove();
             this.$('table').append(
                 _.map(rows, function(row) {
-                    return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks })
+                    return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl })
                         .render().$el[0];
                 }, this)
             );

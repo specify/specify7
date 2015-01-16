@@ -17,7 +17,7 @@ taxon = """
         AND det.collectionmemberid = %s AND det.iscurrent
     ) AS directcos
     FROM taxon t1
-    WHERE t1.parentid = %s
+    WHERE t1.taxontreedefid = %s AND t1.parentid EQUAL_OR_IS %s
     ORDER BY t1.name
 """
 
@@ -44,7 +44,7 @@ geography = """
         AND co.collectionmemberid = %s
     ) AS directcos
     FROM geography g1
-    WHERE g1.parentid = %s
+    WHERE g1.geographytreedefid = %s AND g1.parentid EQUAL_OR_IS %s
     ORDER BY g1.name
 """
 
@@ -67,7 +67,7 @@ storage = """
         AND prep.collectionmemberid = %s
     ) AS directcos
     FROM storage s1
-    WHERE s1.parentid = %s
+    WHERE s1.storagetreedefid = %s AND s1.parentid EQUAL_OR_IS %s
     ORDER BY s1.name
 """
 
@@ -92,7 +92,7 @@ geologictimeperiod = """
         AND co.collectionmemberid = %s
     ) AS directcos
     FROM geologictimeperiod g1
-    WHERE g1.parentid = %s
+    WHERE g1.geologictimeperiodtreedefid = %s AND g1.parentid EQUAL_OR_IS %s
     ORDER BY g1.name
 """
 
@@ -117,6 +117,6 @@ lithostrat = """
         AND co.collectionmemberid = %s
     ) AS directcos
     FROM lithostrat ls1
-    WHERE ls1.parentid = %s
+    WHERE ls1.lithostrattreedefid = %s AND ls1.parentid EQUAL_OR_IS %s
     ORDER BY ls1.name
 """

@@ -9,16 +9,21 @@ from . import tree_sqls
 
 @login_maybe_required
 @require_GET
-def tree_view(request, tree, parentid):
+def tree_view(request, treedef, tree, parentid):
     try:
         sql = getattr(tree_sqls, tree)
     except AttributeError as e:
         raise Http404(e)
 
+    if parentid == 'null':
+        sql = sql.replace('parentid EQUAL_OR_IS', 'parentid is')
+        parentid = None
+    else:
+        sql = sql.replace('parentid EQUAL_OR_IS', 'parentid =')
+
     colmemid = request.specify_collection.id
     cursor = connection.cursor()
-    cursor.execute(sql, [colmemid, colmemid, parentid])
-
+    cursor.execute(sql, [colmemid, colmemid, treedef, parentid])
     return HttpResponse(toJson(cursor.fetchall()), content_type='application/json')
 
 @login_maybe_required
