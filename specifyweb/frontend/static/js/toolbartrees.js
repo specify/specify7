@@ -5,22 +5,25 @@ define(['jquery', 'underscore', 'backbone', 'schema'
 
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
-        className: "list-dialog",
+        className: "table-list-dialog",
         render: function() {
-            var ul = $('<ul>').appendTo(this.el);
-            _.each(trees, function(tree) {
-                var model = schema.getModel(tree);
-                $('<a class="intercept-navigation">').attr('href', '/specify/tree/' + tree + '/')
-                    .text(model.getLocalizedName())
-                    .prepend($('<img>').attr('src', model.getIcon()))
-                    .appendTo($('<li>').appendTo(ul));
-            });
+            var entries = _.map(trees, this.dialogEntry, this);
+            var table = $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: 'Trees',
                 modal: true,
-                close: function() { $(this).remove(); }
+                close: function() { $(this).remove(); },
+                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             });
             return this;
+        },
+        dialogEntry: function(tree) {
+            var model = schema.getModel(tree);
+            var img = $('<img>', { src: model.getIcon() });
+            var link = $('<a>', {href: '/specify/tree/' + tree + '/'})
+                    .addClass("intercept-navigation")
+                    .text(model.getLocalizedName());
+            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
         }
     });
 
