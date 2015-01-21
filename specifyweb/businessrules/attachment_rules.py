@@ -15,7 +15,7 @@ tables_with_attachments = {getattr(models, model.__name__.replace('attachment', 
                            for model in attachment_tables}
 
 @orm_signal_handler('pre_save')
-def attachment_save(sender, obj):
+def attachment_jointable_save(sender, obj):
     if sender not in attachment_tables: return
 
     if obj.attachment_id is None: raise AbortSave()
@@ -29,6 +29,13 @@ def attachment_save(sender, obj):
 def attachment_jointable_deletion(sender, obj):
     if sender in attachment_tables:
         obj.attachment.delete()
+
+@orm_signal_handler('pre_save', 'Attachment')
+def attachment_save(attachment):
+    if attachment.id is None and attachment.tableid is None:
+        # since tableid cannot be null, use Attachment table id as placeholder.
+        # the actual table id will be set when the join row is saved. (see above)
+        attachment.tableid = models.Attachment.specify_model.tableId
 
 @orm_signal_handler('post_delete', 'Attachment')
 def attachment_deletion(attachment):
