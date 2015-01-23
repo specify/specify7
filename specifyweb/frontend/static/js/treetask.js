@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'domain', 'remoteprefs', 'notfoundview', 'recordselector'
-], function($, _, Backbone, schema, domain, remoteprefs, NotFoundView, RecordSelector) {
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'domain', 'remoteprefs', 'notfoundview', 'recordselector'
+], function($, _, Backbone, api, schema, domain, remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
 
     var TreeNodeView = Backbone.View.extend({
@@ -11,6 +11,7 @@ define([
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
             'click a.reopen': 'reopenNode',
+            'click a.leaf': function(event) { event.preventDefault(); },
             'click a.direct-cos': 'showDirectCOs',
             'click a.all-cos': 'showAllCOs'
         },
@@ -20,33 +21,33 @@ define([
                     direct: {
                         determinations__taxon: this.nodeId,
                         determinations__iscurrent: true},
-                    all: {
-                        determinations__taxon__nodenumber__gte: this.nodeNumber,
+                    children: {
+                        determinations__taxon__nodenumber__gt: this.nodeNumber,
                         determinations__taxon__nodenumber__lte: this.highestNodeNumber,
                         determinations__iscurrent: true}},
                 geography: {
                     direct: {
                         collectingevent__locality__geography: this.nodeId},
-                    all: {
-                        collectingevent__locality__geography__nodenumber__gte: this.nodeNumber,
+                    children: {
+                        collectingevent__locality__geography__nodenumber__gt: this.nodeNumber,
                         collectingevent__locality__geography__nodenumber__lte: this.highestNodeNumber}},
                 lithostrat: {
                     direct: {
                         paleocontext__lithostrat: this.nodeId},
-                    all: {
-                        paleocontext__lithostrat__nodenumber__gte: this.nodeNumber,
+                    children: {
+                        paleocontext__lithostrat__nodenumber__gt: this.nodeNumber,
                         paleocontext__lithostrat__nodenumber__lte: this.highestNodeNumber}},
                 storage: {
                     direct: {
                         preparations__storage: this.nodeId},
-                    all: {
-                        preparations__storage__nodenumber__gte: this.nodeNumber,
+                    children: {
+                        preparations__storage__nodenumber__gt: this.nodeNumber,
                         preparations__storage__nodenumber__lte: this.highestNodeNumber}},
                 geologictimeperiod: {
                     direct: {
                         paleocontext__chronosstrat: this.nodeId},
-                    all: {
-                        paleocontext__chronosstrat__nodenumber__gte: this.nodeNumber,
+                    children: {
+                        paleocontext__chronosstrat__nodenumber__gt: this.nodeNumber,
                         paleocontext__chronosstrat__nodenumber__lte: this.highestNodeNumber}}
             };
         },
@@ -55,6 +56,7 @@ define([
             this.ranks = options.ranks;
             this.path = options.path || [];
             this.baseUrl = options.baseUrl;
+            this.specifyModel = schema.getModel(this.table);
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -89,14 +91,21 @@ define([
             }, this);
             var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
             this.$el.addClass(pathClasses).append(cells);
+            var link = $('<a>',
+                         {title: "Open form.",
+                          class: "intercept-navigation",
+                          href: api.makeResourceViewUrl(this.specifyModel, this.nodeId)})
+                    .text(this.name);
             this.$('.tree-node-cell')
-                .append('<a class="ui-icon expander">')
-                .append($('<span>').text(this.name));
+                .append('<a class="ui-icon expander" href="#">')
+                .append(link);
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
                 this.$('.tree-node-cell')
-                    .append(' (<a class="direct-cos">' + this.directCOs + '</a>' +
-                            (childCOs > 0 ? ', <a class="all-cos">' + childCOs + '</a>' : '') +')');
+                    .append(' (<a class="direct-cos" title="Collection objects." href="#">' + this.directCOs + '</a>' +
+                            (childCOs > 0 ?
+                             ', <a class="all-cos" title="Collection objects of children." href="#">' + childCOs + '</a>'
+                             : '') +')');
             }
             var expander = this.$('.expander');
             if (this.children > 0) {
@@ -109,7 +118,7 @@ define([
             return this;
         },
         openNode: function(event) {
-            event.stopPropagation();
+            event.preventDefault();
             this.$('.expander')
                 .removeClass('open ui-icon-folder-collapsed')
                 .addClass('wait ui-icon-clock')
@@ -142,7 +151,7 @@ define([
             this.$el.after(_.map(this.childNodes, function(node) { return node.render().el; }));
         },
         closeNode: function(event) {
-            event.stopPropagation();
+            event.preventDefault();
             this.$('.expander')
                 .removeClass('close ui-icon-folder-open')
                 .addClass('reopen ui-icon-folder-collapsed')
@@ -151,7 +160,7 @@ define([
             this.$el.show();
         },
         reopenNode: function(event) {
-            event.stopPropagation();
+            event.preventDefault();
             this.$('.expander')
                 .removeClass('reopen ui-icon-folder-collapsed')
                 .addClass('close ui-icon-folder-open')
@@ -159,14 +168,14 @@ define([
             $('.nn-' + this.nodeId).show();
         },
         showDirectCOs: function(event) {
-            event.stopPropagation();
+            event.preventDefault();
             this.showCollectionObjects(this.filterDefs()[this.table]['direct'],
                                        this.fullName + " (" + this.directCOs + ")");
         },
         showAllCOs: function(event) {
-            event.stopPropagation();
-            this.showCollectionObjects(this.filterDefs()[this.table]['all'],
-                                       this.fullName + " (" + this.allCOs + ")");
+            event.preventDefault();
+            this.showCollectionObjects(this.filterDefs()[this.table]['children'],
+                                       this.fullName + " (" + (this.allCOs - this.directCOs) + ")");
         },
         showCollectionObjects: function(filters, title) {
             filters.domainfilter = true;
