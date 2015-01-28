@@ -133,18 +133,21 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
     if distinct:
         query = query.distinct()
-    query = query.order_by(*order_by_exprs).offset(offset)
-    if limit:
-        query = query.limit(limit)
 
     if count_only:
-        total_count = query.with_entities(count(1)).first()[0]
-        return {'count': total_count}
+        return {'count': query.count()}
     else:
-        results = [[deferred(value) if deferred else value
-                    for value, deferred in zip(row, deferreds)]
-                   for row in query] if any(deferreds) else list(query)
-        return {'results': results}
+        query = query.order_by(*order_by_exprs).offset(offset)
+        if limit:
+            query = query.limit(limit)
+
+        if any(deferreds):
+            return {'results': [
+                [deferred(value) if deferred else value
+                 for value, deferred in zip(row, deferreds)]
+                for row in query]}
+        else:
+             return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
     objectformatter = ObjectFormatter(collection, user)
