@@ -67,6 +67,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         BusinessRuleMgr.prototype.setupEvents = function() {
             var _this = this;
             this.resource.on('change', this.changed, this);
+            this.resource.on('add', this.added, this);
             this.rules && _.each(this.resource.specifyModel.getAllFields(), function(field) {
                 var fieldname = field.name.toLowerCase();
                 if (field.type === 'one-to-many' && _(_this.rules.deleteBlockers).contains(fieldname)) {
@@ -124,6 +125,12 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 _.each(resource.changed, function(__, fieldName) {
                     _this.checkField(fieldName);
                 });
+            }
+        };
+
+        BusinessRuleMgr.prototype.added = function(resource, collection) {
+            if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
+                resource.set('ordinal', collection.indexOf(resource));
             }
         };
 

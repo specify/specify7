@@ -26,12 +26,20 @@ define([
             },
             click: function(evt) {
                 evt.preventDefault();
-                $('<div>').append(templates.gmapplugin(this.model.toJSON())).dialog({
-                    width: 800,
-                    height: 600,
-                    title: this.model.specifyModel.getLocalizedName(),
-                    close: function() { $(this).remove(); }
-                }).css({ overflow: 'hidden' });
+                var lat = this.model.get('latitude1');
+                var long = this.model.get('longitude1');
+                if (lat != null && long != null) {
+                    var query = '' + lat + ',' + long;
+                    $('<div>').append(templates.gmapplugin({query: query})).dialog({
+                        width: 800,
+                        height: 600,
+                        title: this.model.specifyModel.getLocalizedName(),
+                        close: function() { $(this).remove(); }
+                    }).css({ overflow: 'hidden' });
+                } else {
+                    $('<div title="No coordinates"><p>Locality must have coordinates to be mapped.</p></div>')
+                        .dialog({close: function() { $(this).remove(); }});
+                }
             }
         }),
         PluginNotAvailable: UIPlugin.extend({

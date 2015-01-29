@@ -111,7 +111,8 @@ define([
                         distinct: true
                     }).pipe(function(rows) {
                         return _.map(rows, function(row) {
-                            return {value: row[0], title: row[0]};
+                            var value = row[0] || '';
+                            return {value: value, title: value};
                         });
                     });
                 default:

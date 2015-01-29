@@ -67,6 +67,7 @@ define([
         return new ({
             'constant': ConstantField,
             'year': YearField,
+            'alpha': AlphaField,
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
             'separator': SeparatorField
@@ -82,6 +83,13 @@ define([
         __name__: "ConstantField",
         isWild: function() { return false; },
         valueRegexp: Field.prototype.wildRegexp
+    });
+
+    var AlphaField = Field.extend({
+        __name__: "AlphaField",
+        valueRegexp: function() {
+            return '[a-zA-Z]{' + this.size + '}';
+        }
     });
 
     var NumericField = Field.extend({

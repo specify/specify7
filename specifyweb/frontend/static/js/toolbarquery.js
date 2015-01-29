@@ -17,6 +17,20 @@ define([
         close: function() { dialog = null; $(this).remove(); }
     };
 
+    function openQueryListDialog(app, queries) {
+        dialog = new QueryListDialog({ queries: queries, readOnly: app.isReadOnly });
+        $('body').append(dialog.el);
+        dialog.render();
+    }
+
+    function openQueryTypeDialog() {
+        dialog && dialog.$el.dialog('close');
+        var tables = _.map($('database > table', qbDef), $);
+        dialog = new QueryTypeDialog({ tables: tables });
+        $('body').append(dialog.el);
+        dialog.render();
+    }
+
     var QueryListDialog = Backbone.View.extend({
         __name__: "QueryListDialog",
         className: "stored-queries-dialog table-list-dialog",
@@ -67,14 +81,6 @@ define([
             dialog.render();
         }
     });
-
-    function openQueryTypeDialog() {
-        dialog && dialog.$el.dialog('close');
-        var tables = _.map($('database > table', qbDef), $);
-        dialog = new QueryTypeDialog({ tables: tables });
-        $('body').append(dialog.el);
-        dialog.render();
-    }
 
     var QueryTypeDialog = Backbone.View.extend({
         __name__: "QueryTypeDialog",
@@ -206,9 +212,11 @@ define([
                 filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
             });
             queries.fetch({ limit: 5000 }).done(function() {
-                dialog = new QueryListDialog({ queries: queries, readOnly: app.isReadOnly });
-                $('body').append(dialog.el);
-                dialog.render();
+                if (queries._totalCount > 0) {
+                    openQueryListDialog(app, queries);
+                } else {
+                    openQueryTypeDialog();
+                }
             });
         }
     };

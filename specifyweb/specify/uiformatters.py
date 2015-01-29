@@ -108,6 +108,7 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
 
 def new_field(node):
     Field = {
+        'alpha': AlphaField,
         'numeric': NumericField,
         'year': YearField,
         'alphanumeric': AlphaNumField,
@@ -156,6 +157,10 @@ class YearField(Field):
 class AlphaNumField(Field):
     def value_regexp(self):
         return r'[a-zA-Z0-9]{%d}' % self.size
+
+class AlphaField(Field):
+    def value_regexp(self):
+        return r'[a-zA-Z]{%d}' % self.size
 
 class SeparatorField(Field):
     def is_wild(self, value):
