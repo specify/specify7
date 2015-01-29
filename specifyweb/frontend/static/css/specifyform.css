@@ -615,3 +615,41 @@ a.specify-attachment-original {
     font-size: 12px;
     text-decoration: underline;
 }
+
+.tree-view table {
+    width: 100%;
+}
+
+.tree-view thead {
+    border-bottom: 3px solid #555;
+}
+
+.tree-view tfoot th {
+    height: 20px;
+}
+
+.tree-view td:nth-child(even),
+.tree-view th:nth-child(even) {
+    background-color: lightblue;
+    white-space: nowrap;
+}
+
+.tree-view td:nth-child(odd),
+.tree-view th:nth-child(odd) {
+    background-color: lightyellow;
+    white-space: nowrap;
+}
+
+.tree-view td.tree-vertical-edge {
+    border-left: 2px solid #555;
+}
+
+.tree-view td.tree-horizontal-edge {
+    border-bottom: 3px solid #555;
+}
+
+.tree-node .expander {
+    display: inline-block;
+    vertical-align: bottom;
+}
+

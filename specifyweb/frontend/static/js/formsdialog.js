@@ -24,12 +24,8 @@ define([
         },
         _render: function(forms) {
             this.forms = forms;
-            var table = $('<table>');
-            var makeEntry = this.dialogEntry.bind(this);
-            _.each(views, function(view) {
-                table.append(makeEntry(view));
-            });
-            this.$el.append(table);
+            var entries = _.map(views, this.dialogEntry, this);
+            $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: "Forms",
                 maxHeight: 400,
@@ -42,7 +38,7 @@ define([
         dialogEntry: function(view) {
             var img = $('<img>', { src: icons.getIcon(view.attr('iconname')) });
             var link = $('<a>').addClass("intercept-navigation").text(view.attr('title'));
-            return $('<tr>').append($('<td>').append(img), $('<td>').append(link));
+            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
         },
         selected: function(evt) {
             var index = this.$('a').index(evt.currentTarget);
