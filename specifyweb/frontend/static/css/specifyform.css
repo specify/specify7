@@ -631,11 +631,13 @@ a.specify-attachment-original {
 .tree-view td:nth-child(even),
 .tree-view th:nth-child(even) {
     background-color: lightblue;
+    white-space: nowrap;
 }
 
 .tree-view td:nth-child(odd),
 .tree-view th:nth-child(odd) {
     background-color: lightyellow;
+    white-space: nowrap;
 }
 
 .tree-view td.tree-vertical-edge {
