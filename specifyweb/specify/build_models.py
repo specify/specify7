@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, connection
 
 from specifyweb.businessrules import deletion_policies
 from specifyweb.businessrules.exceptions import AbortSave
@@ -102,7 +102,7 @@ def make_relationship(modelname, rel):
             related_name = '+' # magic symbol means don't make reverse field
 
         return Field('.'.join((appname, relatedmodel)),
-                     db_column = rel.column,
+                     db_column = rel.column.lower(),
                      related_name = related_name,
                      null = not rel.required,
                      on_delete = on_delete)
@@ -168,7 +168,17 @@ class make_string_field(make_field):
 
 class make_text_field(make_field):
     """A specialization of make_field for Text fields."""
-    field_class = models.TextField
+    if False: #connection.vendor == 'mysql':
+        # Not sure if this is necessary but leaving it FFR
+        class field_class(models.TextField):
+            """MySQL treats TEXT as BLOB and so the values
+            come back as bytestrings..."""
+            __metaclass__ = models.SubfieldBase
+            def to_python(self, value):
+                blob = models.TextField.to_python(self, value)
+                return blob and blob.decode('utf-8')
+    else:
+        field_class = models.TextField
 
 class make_integer_field(make_field):
     """A specialization of make_field for Integer fields."""
@@ -225,7 +235,7 @@ field_type_map = {
     'java.lang.Long': make_integer_field,
     'java.lang.Byte': make_integer_field,
     'java.lang.Short': make_integer_field,
-    'java.util.Calendar': make_datetime_field,
+    'java.util.Calendar': make_date_field,
     'java.util.Date': make_date_field,
     'java.lang.Float': make_float_field,
     'java.lang.Double': make_float_field,

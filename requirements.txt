@@ -3,3 +3,4 @@ MySQL-python==1.2.3
 SQLAlchemy==0.8.0b2
 requests==2.2.1
 pycrypto==2.4.1
+-e git+git@github.com:specify/django-dumpdb.git#egg=django_dumpdb-master

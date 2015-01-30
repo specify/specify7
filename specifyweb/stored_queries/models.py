@@ -8,7 +8,11 @@ from django.conf import settings
 from specifyweb.specify.models import datamodel
 from . import build_models
 
-engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE)
+engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL,
+                                  **({
+                                      'mysql': {'pool_recycle': settings.SA_POOL_RECYCLE},
+                                      'postgresql': {'client_encoding': 'utf8'}
+                                      }[settings.DATABASE_VENDOR]))
 Session = sessionmaker(bind=engine)
 
 @contextmanager

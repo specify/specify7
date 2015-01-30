@@ -27,9 +27,12 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DATABASE_VENDOR = 'mysql'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': {'postgresql': 'django.db.backends.postgresql_psycopg2',
+                   'mysql': 'hibernateboolsbackend.backends.mysql'}[DATABASE_VENDOR],
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
@@ -42,7 +45,6 @@ DATABASES = {
 TESTING_DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-#        'ENGINE': 'hibernateboolsbackend.backends.mysql',
         'NAME': "specifytest",
         'USER': "Master",
         'PASSWORD': "Master",
@@ -57,12 +59,14 @@ if 'test' in sys.argv:
     SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
     TESTING = False
-    SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
-        MASTER_NAME,
-        MASTER_PASSWORD,
-        DATABASE_HOST,
-        DATABASE_PORT or 3306,
-        DATABASE_NAME)
+    SA_DATABASE_URL = '{vendor}://{user}:{pswd}@{host}:{port}/{db}{extra}'.format(
+        vendor=DATABASE_VENDOR,
+        user=MASTER_NAME,
+        pswd=MASTER_PASSWORD,
+        host=DATABASE_HOST,
+        port=DATABASE_PORT or {'mysql': 3306, 'postgresql': 5432}[DATABASE_VENDOR],
+        db=DATABASE_NAME,
+        extra='?charset=utf8' if DATABASE_VENDOR == 'mysql' else '')
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600
@@ -185,6 +189,7 @@ INSTALLED_APPS = (
     'specifyweb.frontend',
     'specifyweb.barvis',
     'specifyweb.report_runner',
+    'django_dumpdb',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'

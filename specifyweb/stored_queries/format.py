@@ -4,6 +4,8 @@ import re
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
+from django.conf import settings
+
 from sqlalchemy import orm, inspect
 from sqlalchemy.sql.expression import case, func, cast
 from sqlalchemy.sql.functions import concat, coalesce, count
@@ -128,7 +130,7 @@ class ObjectFormatter(object):
 
         if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
            and field_spec.date_part == "Full Date":
-            return func.date_format(field, self.date_format)
+            return date_format(field, self.date_format)
 
         if field_spec.tree_rank is not None:
             return field
@@ -139,7 +141,7 @@ class ObjectFormatter(object):
         return self._fieldformat(field_spec.get_field(), field)
 
     def _fieldformat(self, specify_field, field):
-        if specify_field.type == "java.lang.Boolean":
+        if settings.DATABASE_VENDOR == 'mysql' and specify_field.type == "java.lang.Boolean":
             return field != 0
 
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
@@ -154,6 +156,10 @@ class ObjectFormatter(object):
 
         return field
 
+date_format = {
+    'mysql': lambda field, format: func.date_format(field, format),
+    'postgresql': lambda field, format: func.to_char(field, format),
+    }[settings.DATABASE_VENDOR]
 
 def get_date_format():
     res = Spappresourcedata.objects.filter(
@@ -162,9 +168,13 @@ def get_date_format():
     remote_prefs = '\n'.join(r.data for r in res)
     match = re.search(r'ui\.formatting\.scrdateformat=(.+)', remote_prefs)
     date_format = match.group(1) if match is not None else 'yyyy-MM-dd'
-    mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
-    logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
-    return mysql_date_format
+    logger.debug("dateformat = %s", date_format)
+    if settings.DATABASE_VENDOR == 'mysql':
+        mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
+        logger.debug("mysql dateformat = %s", mysql_date_format)
+        return mysql_date_format
+    else:
+        return date_format
 
 LDLM_TO_MYSQL = {
     "MM dd yy":   "%m %d %y",

@@ -238,7 +238,7 @@ def get_tree_def(query, collection, tree_name):
 
 def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collection):
     logger.info('handling treefield %s rank: %s', table, tree_rank)
-    treedef_column = table.name + 'TreeDefID'
+    treedef_column = (table.name + 'TreeDefID').lower()
     treedefitem = orm.aliased( getattr(models, table.name + 'TreeDefItem') )
 
     rank_p = (treedefitem.name == tree_rank)

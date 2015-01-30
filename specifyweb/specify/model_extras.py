@@ -1,5 +1,6 @@
 from django.db import models
 
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager
 
 
@@ -35,6 +36,9 @@ class Specifyuser(models.Model):
         return decrypted == password
 
     def is_admin(self):
+        if settings.DATABASE_VENDOR == 'postgresql':
+            # TODO: fix this for postgres.
+            return False
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
