@@ -3,6 +3,7 @@
 .vagrant
 .emacs.desktop*
 .directory
+.DS_Store
 testing
 specifypanel/ve
 specifyweb/virtenv

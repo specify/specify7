@@ -43,7 +43,7 @@ define([
     _.extend(schema.Model.prototype, {
         getField: function(name) {
             if (_(name).isString()) {
-                name = name.toLowerCase().split('.');
+                name = name.toLowerCase().split(',');
             }
             var field = _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name[0]; });
             if (_(field).isUndefined()) {
@@ -52,7 +52,7 @@ define([
                 });
                 field = alias && this.getField(alias.aname);
             }
-            return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
+            return (name.length === 1 || !field.isRelationship) ? field : field.getRelatedModel().getField(_(name).tail());
         },
         getAllFields: function () {
             return this.fields;
