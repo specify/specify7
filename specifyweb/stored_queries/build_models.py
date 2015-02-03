@@ -1,5 +1,11 @@
+from django.conf import settings
+
 from sqlalchemy import Table, Column, ForeignKey, types, orm, MetaData
-from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
+
+if settings.DATABASE_VENDOR == 'mysql':
+    from sqlalchemy.dialects.mysql import BIT as boolean_type
+else:
+    boolean_type = types.Boolean
 
 metadata = MetaData()
 
@@ -52,7 +58,7 @@ field_type_map = {'text'                 : types.Text,
                   'java.lang.Double'     : types.Float,
                   'java.sql.Timestamp'   : types.DateTime,
                   'java.math.BigDecimal' : types.Numeric,
-                  'java.lang.Boolean'    : mysql_bit_type}
+                  'java.lang.Boolean'    : boolean_type}
 
 def make_tables(datamodel):
     return {td.table: make_table(datamodel, td) for td in datamodel.tables}
