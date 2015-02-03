@@ -27,7 +27,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_VENDOR = 'mysql'
+DATABASE_VENDOR = 'postgresql'
 
 DATABASES = {
     'default': {
