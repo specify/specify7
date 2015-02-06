@@ -87,7 +87,8 @@ define([
 
             var field = this.model.specifyModel.getField(this.fieldName);
             var relatedModel = this.relatedModel = field.getRelatedModel();
-            var mapper = parseselect.colToFieldMapper(this.typesearch.text());
+            var selectStmt = this.typesearch.text();
+            var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
             var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(','), mapper);
             var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
             var fieldTitles = _.map(searchFields, function(f) {
@@ -99,10 +100,11 @@ define([
                 minLength: 3,
                 source: function (request, response) {
                     var queries = _.map(searchFieldStrs, function(s) {
-                        return $.post('/stored_query/ephemeral/', JSON.stringify(makeQuery(relatedModel, s, request.term)));
+                        var json = JSON.stringify(makeQuery(relatedModel, s, request.term));
+                        return $.post('/stored_query/ephemeral/', json).pipe(function(data) { return data; });
                     });
                     whenAll(queries).done(function(resps) {
-                        var data = _.map(resps, function(r) { return r[0].results; });
+                        var data = _.pluck(resps, 'results');
                         var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
                         var items = _.map(allResults, function(row) {
                             return { label: row[1], value: row[1],
