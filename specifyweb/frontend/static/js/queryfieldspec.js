@@ -30,7 +30,7 @@ define(['underscore', 'schema'], function(_, schema) {
     }
 
     function makeStringId(fs, tableList) {
-        var fieldName = fs.joinPath.length ? (fs.treeRank || _.last(fs.joinPath).name) : '';
+        var fieldName = fs.treeRank || (fs.joinPath.length ? _.last(fs.joinPath).name : '');
         if (fs.datePart && fs.datePart !== "Full Date") {
             fieldName += 'Numeric' + fs.datePart;
         }
