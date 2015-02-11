@@ -1,7 +1,7 @@
 import re, logging
 from collections import namedtuple, deque
 
-from sqlalchemy import orm, sql, not_
+from sqlalchemy import orm, sql, not_, or_
 from sqlalchemy.sql.expression import extract
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -237,49 +237,30 @@ def get_tree_def(query, collection, tree_name):
         return  getattr(collection.discipline, treedef_field)
 
 def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collection):
-    logger.info('handling treefield %s rank: %s', table, tree_rank)
+    assert collection is not None # Not sure it makes sense to query across collections
+    logger.info('handling treefield %s rank: %s, filtering: %s, sorting: %s', table, tree_rank, not no_filter, sorting)
+
+    # Get the tree definition for this collection.
+    treedef = get_tree_def(query, collection, table.name)
     treedef_column = table.name + 'TreeDefID'
-    treedefitem = orm.aliased( getattr(models, table.name + 'TreeDefItem') )
+    treedefitem_column = table.name + 'TreeDefItemID'
 
-    rank_p = (treedefitem.name == tree_rank)
+    # The tree def item table.
+    treedefitem = orm.aliased(getattr(models, table.name + 'TreeDefItem'))
 
+    # Going to join the tree def items from the correct tree at the given rank.
+    treedef_join_cond = sql.and_(getattr(treedefitem, treedef_column) == treedef, treedefitem.name == tree_rank)
+
+    # Alias the tree table for ancestor rows.
     ancestor = orm.aliased(node)
 
-    if collection is not None:
-        treedef = get_tree_def(query, collection, table.name)
-        same_tree_p = getattr(ancestor, treedef_column) == treedef
-        rankId = query.session.query(treedefitem.rankId) \
-                 .filter(rank_p, getattr(treedefitem, treedef_column) == treedef) \
-                 .one()[0]
-        rank_p = ancestor.rankId == rankId
-        join_treedefitem = False
-    else:
-        same_tree_p = getattr(node, treedef_column) == getattr(ancestor, treedef_column)
-        join_treedefitem = True
+    # The join condition for the ancestor is that it has the correct tree def item (rank) and the
+    # target (node) row has a node number encompassed by the ancestor's node number range.
+    ancestor_join_cond = sql.and_(getattr(ancestor, treedefitem_column) == getattr(treedefitem, treedefitem._id),
+                                  node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
-    ancestor_p = sql.and_(
-        same_tree_p,
-        node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
-
-    if no_filter and not sorting:
-        orm_field = getattr(node, node._id)
-
-        def deferred(value):
-            subquery = orm.Query(ancestor.name).with_session(query.session)
-            subquery = subquery.filter(orm_field == value)
-            if join_treedefitem:
-                subquery = subquery.join(treedefitem)
-            result = subquery.filter(ancestor_p, rank_p).first()
-            return result and result[0]
-    else:
-        query = query.join(ancestor, ancestor_p)
-        if join_treedefitem:
-            query = query.join(treedefitem)
-        query = query.filter(rank_p)
-        orm_field = ancestor.name
-        deferred = None
-
-    return query, orm_field, deferred
+    query = query.join(treedefitem, treedef_join_cond).outerjoin(ancestor, ancestor_join_cond)
+    return query, ancestor.name, None
 
 def build_join(query, table, model, join_path, join_cache):
     path = deque(join_path)
