@@ -1,12 +1,20 @@
-define(['jquery', 'underscore', 'backbone', 'schema'
-], function($, _, Backbone, schema) {
+define([
+    'jquery', 'underscore', 'backbone', 'schema', 'domain'
+], function($, _, Backbone, schema, domain) {
     "use strict";
-    var trees = ['geography', 'geologictimeperiod', 'lithostrat', 'storage', 'taxon'];
+    var treesForAll = ['geography', 'storage', 'taxon'];
+    var treesForPaleo = ['geologictimeperiod', 'lithostrat'];
+    var paleoDiscs = 'paleobotany invertpaleo vertpaleo'.split(' ');
+
+
+     var treesPromise = domain.levels.discipline.rget('type').pipe(function(type) {
+         return treesForAll.concat(_.contains(paleoDiscs, type) ? treesForPaleo : []);
+     });
 
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
         className: "table-list-dialog",
-        render: function() {
+        _render: function(trees) {
             var entries = _.map(trees, this.dialogEntry, this);
             var table = $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
@@ -15,6 +23,9 @@ define(['jquery', 'underscore', 'backbone', 'schema'
                 close: function() { $(this).remove(); },
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             });
+        },
+        render: function() {
+            treesPromise.done(this._render.bind(this));
             return this;
         },
         dialogEntry: function(tree) {
