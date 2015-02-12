@@ -87,6 +87,7 @@ define([
                 if (foundParentRank && !foundThisRank) {
                     td.addClass('tree-horizontal-edge');
                 }
+                td.append('<p>');
                 return td[0];
             }, this);
             var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
@@ -96,12 +97,12 @@ define([
                           class: "intercept-navigation",
                           href: api.makeResourceViewUrl(this.specifyModel, this.nodeId)})
                     .text(this.name);
-            this.$('.tree-node-cell')
+            this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander" href="#">')
                 .append(link);
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
-                this.$('.tree-node-cell')
+                this.$('.tree-node-cell p')
                     .append(' (<a class="direct-cos" title="Collection objects." href="#">' + this.directCOs + '</a>' +
                             (childCOs > 0 ?
                              ', <a class="all-cos" title="Collection objects of children." href="#">' + childCOs + '</a>'

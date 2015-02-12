@@ -653,3 +653,6 @@ a.specify-attachment-original {
     vertical-align: bottom;
 }
 
+.tree-node-cell p {
+    margin-bottom: -12px;
+}
