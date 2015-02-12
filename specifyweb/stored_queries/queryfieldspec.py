@@ -1,7 +1,7 @@
 import re, logging
 from collections import namedtuple, deque
 
-from sqlalchemy import orm, sql, not_, or_
+from sqlalchemy import orm, sql
 from sqlalchemy.sql.expression import extract
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -160,10 +160,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return build_join(query, self.root_table, model, join_path, join_cache)
 
     def add_to_query(self, query, objformatter, value=None, op_num=None, negate=False,
-                     sorting=False, collection=None, join_cache=None):
+                     collection=None, join_cache=None):
         no_filter = op_num is None
-
-        subquery = None
 
         if self.tree_rank is None and self.get_field() is None:
             query, orm_field = objformatter.objformat(query, getattr(models, self.root_table.name), None, join_cache)
@@ -180,16 +178,14 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
 
             if self.tree_rank is not None:
-                query, orm_field, subquery = \
-                       handle_tree_field(query, orm_model, table, self.tree_rank,
-                                         no_filter, sorting, collection)
+                query, orm_field = handle_tree_field(query, orm_model, table, self.tree_rank, collection)
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
 
                 if field.type == "java.sql.Timestamp":
                     # Only consider the date portion of timestamp fields.
                     # This is to replicate the behavior of Sp6. It might
-                    # make since to condition this on whether there is a
+                    # make sense to condition this on whether there is a
                     # time component in the input value.
                     orm_field = sql.func.DATE(orm_field)
 
@@ -198,9 +194,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
-                _, other_field, _ = value.add_to_query(query.reset_joinpoint(),
-                                                       objformatter,
-                                                       join_cache=join_cache)
+                _, other_field = value.add_to_query(query.reset_joinpoint(),
+                                                    objformatter,
+                                                    join_cache=join_cache)
                 uiformatter = None
                 value = other_field
             else:
@@ -209,11 +205,11 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
             op = QueryOps(uiformatter).by_op_num(op_num)
             f = op(orm_field, value)
-            query = query.filter(not_(f) if negate else f)
+            query = query.filter(sql.not_(f) if negate else f)
 
         query = query.reset_joinpoint()
 
-        return query, orm_field, subquery
+        return query, orm_field
 
 def get_uiformatter(collection, tablename, fieldname):
     from specifyweb.specify.models import Splocalecontaineritem
@@ -236,9 +232,9 @@ def get_tree_def(query, collection, tree_name):
         treedef_field = "%streedef_id" % tree_name.lower()
         return  getattr(collection.discipline, treedef_field)
 
-def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collection):
+def handle_tree_field(query, node, table, tree_rank, collection):
     assert collection is not None # Not sure it makes sense to query across collections
-    logger.info('handling treefield %s rank: %s, filtering: %s, sorting: %s', table, tree_rank, not no_filter, sorting)
+    logger.info('handling treefield %s rank: %s', table, tree_rank)
 
     # Get the tree definition for this collection.
     treedef = get_tree_def(query, collection, table.name)
@@ -260,7 +256,7 @@ def handle_tree_field(query, node, table, tree_rank, no_filter, sorting, collect
                                   node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
     query = query.join(treedefitem, treedef_join_cond).outerjoin(ancestor, ancestor_join_cond)
-    return query, ancestor.name, None
+    return query, ancestor.name
 
 def build_join(query, table, model, join_path, join_cache):
     path = deque(join_path)

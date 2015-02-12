@@ -129,7 +129,7 @@ def run_ephemeral_query(collection, user, spquery):
                        field_specs, limit, offset, recordsetid)
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
-    query, order_by_exprs, deferreds = build_query(session, collection, user, tableid, field_specs, recordsetid)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)
 
     if distinct:
         query = query.distinct()
@@ -141,13 +141,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         if limit:
             query = query.limit(limit)
 
-        if any(deferreds):
-            return {'results': [
-                [deferred(value) if deferred else value
-                 for value, deferred in zip(row, deferreds)]
-                for row in query]}
-        else:
-             return {'results': list(query)}
+        return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
     objectformatter = ObjectFormatter(collection, user)
@@ -164,21 +158,18 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
 
     order_by_exprs = []
     join_cache = {}
-    deferreds = [None]
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field, deferred = fs.add_to_query(query, objectformatter,
-                                                 sorting=sort_type is not None,
-                                                 join_cache=join_cache,
-                                                 collection=collection)
+        query, field = fs.add_to_query(query, objectformatter,
+                                       join_cache=join_cache,
+                                       collection=collection)
         if fs.display:
-            query = query.add_columns(field if deferred else objectformatter.fieldformat(fs, field))
-            deferreds.append(deferred)
+            query = query.add_columns(objectformatter.fieldformat(fs, field))
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
     logger.debug("query: %s", query)
-    return query, order_by_exprs, deferreds
+    return query, order_by_exprs
 

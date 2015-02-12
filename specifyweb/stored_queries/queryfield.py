@@ -26,7 +26,7 @@ class QueryField(namedtuple('QueryField', [
                    display   = field.isDisplay,
                    sort_type = field.sortType)
 
-    def add_to_query(self, query, objformatter, no_filter=False, sorting=False, collection=None, join_cache=None):
+    def add_to_query(self, query, objformatter, no_filter=False, collection=None, join_cache=None):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             'op_true',              # 6
@@ -44,6 +44,5 @@ class QueryField(namedtuple('QueryField', [
                                            value=self.value,
                                            op_num=None if no_filter else self.op_num,
                                            negate=self.negate,
-                                           sorting=sorting,
                                            collection=collection,
                                            join_cache=join_cache)
