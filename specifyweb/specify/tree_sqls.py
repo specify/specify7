@@ -63,7 +63,7 @@ geography = """
 storage = """
     SELECT s1.storageid, s1.name, s1.fullname, s1.nodenumber, s1.highestchildnodenumber, s1.rankid,
     (
-     SELECT COUNT(s.storageid) FROM storage s WHERE s.parentid = s1.storageid )
+     SELECT COUNT(s.storageid) FROM storage s WHERE s.parentid = s1.storageid
     ) AS children,
     IF ( %(stats)s,
         (
