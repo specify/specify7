@@ -355,6 +355,7 @@ define([
         var filenames = {};
         var toReplace = $('imageExpression', reportDOM).each(function() {
             var imageExpression = $(this).text();
+            if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
             var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
             if (!match) {
                 badImageExpressions.push(imageExpression);
