@@ -170,6 +170,7 @@ define([
         },
         showDirectCOs: function(event) {
             event.preventDefault();
+            if (this.directCOs < 1) return;
             this.showCollectionObjects(this.filterDefs()[this.table]['direct'],
                                        this.fullName + " (" + this.directCOs + ")");
         },
