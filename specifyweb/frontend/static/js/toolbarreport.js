@@ -321,15 +321,6 @@ define([
         }
     });
 
-
-    function runQuery(reportResources, recordSetId, fieldUIs) {
-        var query = reportResources.query.toJSON();
-        query.limit = 0;
-        query.recordsetid = recordSetId;
-        $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, reportResources, fieldUIs));
-        makeDialog($('<div title="Running query">Running query...</div>'));
-    }
-
     function runReport(reportResources, recordSetId, fieldUIs) {
         dialog && dialog.dialog('close');
         var query = reportResources.query.toJSON();
