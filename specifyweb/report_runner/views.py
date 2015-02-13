@@ -37,6 +37,7 @@ def run(request):
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),
                       data={'report': request.POST['report'],
+                            'parameters': request.POST['parameters'],
                             'data': toJson(report_data)})
 
     if r.status_code == 200:

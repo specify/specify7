@@ -80,7 +80,7 @@ define([
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 
-            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getRecordSets;
+            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", appResource.id);
@@ -213,6 +213,47 @@ define([
                    {width: 'auto'});
     }
 
+    function getReportParams(reportResources) {
+        var reportDOM = $.parseXML(reportResources.reportXML);
+        var parameters = $('parameter[isForPrompting="true"]', reportDOM);
+        if (parameters.length < 1) {
+            getRecordSets(reportResources);
+        } else {
+            new ReportParametersDialog({reportResources: reportResources, parameters: parameters}).render();
+        }
+    }
+
+    var ReportParametersDialog = Backbone.View.extend({
+        __name__: "ReportParametersDialog",
+        className: "report-parameters-dialog",
+        initialize: function(options) {
+            this.reportResources = options.reportResources;
+            this.parameters = options.parameters;
+        },
+        render: function() {
+            var rows = _.map(this.parameters, function(param) {
+                return $('<tr>').append(
+                    $('<th>').text($(param).attr('name')),
+                    $('<td><input type="text"></td>'))[0];
+            });
+            $('<table>').append(rows).appendTo(this.el);
+            makeDialog(this.$el, {
+                title: "Report Parameters",
+                buttons: [
+                    {text: 'Ok', click: this.done.bind(this)},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
+            });
+            return this;
+        },
+        done: function() {
+            var paramNames = _.map(this.parameters, function(param) { return $(param).attr('name'); });
+            var paramValues = _.map(this.$('input'), function(input) { return $(input).val(); });
+            this.reportResources.parameters = _.object(paramNames, paramValues);
+            getRecordSets(this.reportResources);
+        }
+    });
+
     var ChooseRecordSetDialog = Backbone.View.extend({
         __name__: "ChooseRecordSetForReport",
         className: "recordset-for-report-dialog table-list-dialog",
@@ -332,10 +373,12 @@ define([
         var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
                      '<textarea name="report"></textarea>' +
                      '<textarea name="query"></textarea>' +
+                     '<textarea name="parameters"></textarea>' +
                      '<input type="submit"/>' +
                      '</form>');
         $('textarea[name="report"]', form).val(reportResources.reportXML);
         $('textarea[name="query"]', form).val(JSON.stringify(query));
+        $('textarea[name="parameters"]', form).val(JSON.stringify(reportResources.parameters));
         form[0].submit();
     }
 
