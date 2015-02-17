@@ -110,18 +110,18 @@ define([
             }
             var expander = this.$('.expander');
             if (this.children > 0) {
-                expander.addClass('open ui-icon-folder-collapsed')
+                expander.addClass('open ui-icon-triangle-1-e')
                     .attr('title', "" + this.children + (this.children > 1 ? " children" : " child"))
                     .text('open');
             } else {
-                expander.addClass('leaf ui-icon-bullet').text('leaf');
+                expander.addClass('leaf ui-icon-radio-off').text('leaf');
             }
             return this;
         },
         openNode: function(event) {
             event.preventDefault();
             this.$('.expander')
-                .removeClass('open ui-icon-folder-collapsed')
+                .removeClass('open ui-icon-triangle-1-e')
                 .addClass('wait ui-icon-clock')
                 .text('wait');
             var tree = this.table.charAt(0).toUpperCase() + this.table.slice(1);
@@ -137,7 +137,7 @@ define([
         addChildNodes: function(rows) {
             this.$('.expander')
                 .removeClass('wait ui-icon-clock')
-                .addClass('close ui-icon-folder-open')
+                .addClass('close ui-icon-triangle-1-s')
                 .text('close');
             this.childNodes = _.map(rows, function(row) {
                 return new TreeNodeView({
@@ -154,8 +154,8 @@ define([
         closeNode: function(event) {
             event.preventDefault();
             this.$('.expander')
-                .removeClass('close ui-icon-folder-open')
-                .addClass('reopen ui-icon-folder-collapsed')
+                .removeClass('close ui-icon-triangle-1-s')
+                .addClass('reopen ui-icon-triangle-1-e')
                 .text('reopen');
             $('.nn-' + this.nodeId).hide();
             this.$el.show();
@@ -163,8 +163,8 @@ define([
         reopenNode: function(event) {
             event.preventDefault();
             this.$('.expander')
-                .removeClass('reopen ui-icon-folder-collapsed')
-                .addClass('close ui-icon-folder-open')
+                .removeClass('reopen ui-icon-triangle-1-e')
+                .addClass('close ui-icon-triangle-1-s')
                 .text('close');
             $('.nn-' + this.nodeId).show();
         },

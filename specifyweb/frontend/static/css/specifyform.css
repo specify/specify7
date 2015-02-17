@@ -620,8 +620,8 @@ a.specify-attachment-original {
     width: 100%;
 }
 
-.tree-view thead {
-    border-bottom: 3px solid #555;
+.tree-view thead th {
+    text-align: center;
 }
 
 .tree-view tfoot th {
@@ -654,5 +654,6 @@ a.specify-attachment-original {
 }
 
 .tree-node-cell p {
-    margin-bottom: -12px;
+    margin-bottom: -18px;
+    margin-left: -5px;
 }
