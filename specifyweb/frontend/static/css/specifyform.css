@@ -658,23 +658,23 @@ a.specify-attachment-original {
     margin-left: -5px;
 }
 
-.tree-node-cell .expander.open,
-.tree-node-cell .expander.reopen {
+.tree-node-cell .ui-icon.open,
+.tree-node-cell .ui-icon.reopen {
     /* .ui-icon-triangle-1-e */
     background-position: -32px -16px;
 }
 
-.tree-node-cell .expander.close {
+.tree-node-cell .ui-icon.close {
     /* .ui-icon-triangle-1-s  */
     background-position: -64px -16px;
 }
 
-.tree-node-cell .expander.wait {
+.tree-node-cell .ui-icon.wait {
     /* .ui-icon-clock  */
     background-position: -80px -112px;
 }
 
-.tree-node-cell .expander.leaf {
+.tree-node-cell .ui-icon.leaf {
     /* .ui-icon-radio-off */
     background-position: -112px -144px;
 }

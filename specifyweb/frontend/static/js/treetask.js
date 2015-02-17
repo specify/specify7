@@ -92,14 +92,9 @@ define([
             }, this);
             var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
             this.$el.addClass(pathClasses).append(cells);
-            var link = $('<a>',
-                         {title: "Open form.",
-                          class: "intercept-navigation",
-                          href: api.makeResourceViewUrl(this.specifyModel, this.nodeId)})
-                    .text(this.name);
             this.$('.tree-node-cell p')
-                .append('<a class="ui-icon expander" href="#">')
-                .append(link);
+                .append('<a class="ui-icon expander">')
+                .append($('<a class="expander">').text(this.name));
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
                 this.$('.tree-node-cell p')
@@ -108,13 +103,10 @@ define([
                              ', <a class="all-cos" title="Collection objects of children." href="#">' + childCOs + '</a>'
                              : '') +')');
             }
-            var expander = this.$('.expander');
             if (this.children > 0) {
-                expander.addClass('open')
-                    .attr('title', "" + this.children + (this.children > 1 ? " children" : " child"))
-                    .text('open');
+                this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
             } else {
-                expander.addClass('leaf');
+                this.$('.expander').addClass('leaf');
             }
             return this;
         },
