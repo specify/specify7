@@ -657,3 +657,24 @@ a.specify-attachment-original {
     margin-bottom: -18px;
     margin-left: -5px;
 }
+
+.tree-node-cell .expander.open,
+.tree-node-cell .expander.reopen {
+    /* .ui-icon-triangle-1-e */
+    background-position: -32px -16px;
+}
+
+.tree-node-cell .expander.close {
+    /* .ui-icon-triangle-1-s  */
+    background-position: -64px -16px;
+}
+
+.tree-node-cell .expander.wait {
+    /* .ui-icon-clock  */
+    background-position: -80px -112px;
+}
+
+.tree-node-cell .expander.leaf {
+    /* .ui-icon-radio-off */
+    background-position: -112px -144px;
+}

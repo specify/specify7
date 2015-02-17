@@ -110,20 +110,17 @@ define([
             }
             var expander = this.$('.expander');
             if (this.children > 0) {
-                expander.addClass('open ui-icon-triangle-1-e')
+                expander.addClass('open')
                     .attr('title', "" + this.children + (this.children > 1 ? " children" : " child"))
                     .text('open');
             } else {
-                expander.addClass('leaf ui-icon-radio-off').text('leaf');
+                expander.addClass('leaf');
             }
             return this;
         },
         openNode: function(event) {
             event.preventDefault();
-            this.$('.expander')
-                .removeClass('open ui-icon-triangle-1-e')
-                .addClass('wait ui-icon-clock')
-                .text('wait');
+            this.$('.expander').removeClass('open').addClass('wait');
             var tree = this.table.charAt(0).toUpperCase() + this.table.slice(1);
             var statsThreshold = remoteprefs['TreeEditor.Rank.Threshold.' + tree];
             var doStats = statsThreshold != null && statsThreshold <= this.rankId;
@@ -135,10 +132,7 @@ define([
             return this === _.last(parent.childNodes);
         },
         addChildNodes: function(rows) {
-            this.$('.expander')
-                .removeClass('wait ui-icon-clock')
-                .addClass('close ui-icon-triangle-1-s')
-                .text('close');
+            this.$('.expander').removeClass('wait').addClass('close');
             this.childNodes = _.map(rows, function(row) {
                 return new TreeNodeView({
                     baseUrl: this.baseUrl,
@@ -153,19 +147,13 @@ define([
         },
         closeNode: function(event) {
             event.preventDefault();
-            this.$('.expander')
-                .removeClass('close ui-icon-triangle-1-s')
-                .addClass('reopen ui-icon-triangle-1-e')
-                .text('reopen');
+            this.$('.expander').removeClass('close').addClass('reopen');
             $('.nn-' + this.nodeId).hide();
             this.$el.show();
         },
         reopenNode: function(event) {
             event.preventDefault();
-            this.$('.expander')
-                .removeClass('reopen ui-icon-triangle-1-e')
-                .addClass('close ui-icon-triangle-1-s')
-                .text('close');
+            this.$('.expander').removeClass('reopen').addClass('close');
             $('.nn-' + this.nodeId).show();
         },
         showDirectCOs: function(event) {
