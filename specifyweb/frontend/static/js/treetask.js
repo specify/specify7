@@ -31,45 +31,7 @@ define([
         events: {
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
-            'click a.reopen': 'reopenNode',
-            'click a.direct-cos': 'showDirectCOs',
-            'click a.all-cos': 'showAllCOs'
-        },
-        filterDefs: function() {
-            return {
-                taxon: {
-                    direct: {
-                        determinations__taxon: this.nodeId,
-                        determinations__iscurrent: true},
-                    children: {
-                        determinations__taxon__nodenumber__gt: this.nodeNumber,
-                        determinations__taxon__nodenumber__lte: this.highestNodeNumber,
-                        determinations__iscurrent: true}},
-                geography: {
-                    direct: {
-                        collectingevent__locality__geography: this.nodeId},
-                    children: {
-                        collectingevent__locality__geography__nodenumber__gt: this.nodeNumber,
-                        collectingevent__locality__geography__nodenumber__lte: this.highestNodeNumber}},
-                lithostrat: {
-                    direct: {
-                        paleocontext__lithostrat: this.nodeId},
-                    children: {
-                        paleocontext__lithostrat__nodenumber__gt: this.nodeNumber,
-                        paleocontext__lithostrat__nodenumber__lte: this.highestNodeNumber}},
-                storage: {
-                    direct: {
-                        preparations__storage: this.nodeId},
-                    children: {
-                        preparations__storage__nodenumber__gt: this.nodeNumber,
-                        preparations__storage__nodenumber__lte: this.highestNodeNumber}},
-                geologictimeperiod: {
-                    direct: {
-                        paleocontext__chronosstrat: this.nodeId},
-                    children: {
-                        paleocontext__chronosstrat__nodenumber__gt: this.nodeNumber,
-                        paleocontext__chronosstrat__nodenumber__lte: this.highestNodeNumber}}
-            };
+            'click a.reopen': 'reopenNode'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -117,11 +79,7 @@ define([
                 .append($('<a class="expander">').text(this.name));
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
-                this.$('.tree-node-cell p')
-                    .append(' (<a class="direct-cos" title="Collection objects." href="#">' + this.directCOs + '</a>' +
-                            (childCOs > 0 ?
-                             ', <a class="all-cos" title="Collection objects of children." href="#">' + childCOs + '</a>'
-                             : '') +')');
+                this.$('.tree-node-cell p').append(' (' + this.directCOs + (childCOs > 0 ? ', ' + childCOs : '') +')');
             }
             if (this.children > 0) {
                 this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
@@ -167,33 +125,6 @@ define([
             event.preventDefault();
             this.$('.expander').removeClass('reopen').addClass('close');
             $('.nn-' + this.nodeId).show();
-        },
-        showDirectCOs: function(event) {
-            event.preventDefault();
-            if (this.directCOs < 1) return;
-            this.showCollectionObjects(this.filterDefs()[this.table]['direct'],
-                                       this.fullName + " (" + this.directCOs + ")");
-        },
-        showAllCOs: function(event) {
-            event.preventDefault();
-            this.showCollectionObjects(this.filterDefs()[this.table]['children'],
-                                       this.fullName + " (" + (this.allCOs - this.directCOs) + ")");
-        },
-        showCollectionObjects: function(filters, title) {
-            filters.domainfilter = true;
-            var collectionObjects = new schema.models.CollectionObject.LazyCollection({ filters: filters });
-            new RecordSelector({
-                collection: collectionObjects,
-                el: $('<div>').data('specify-viewname', schema.models.CollectionObject.view),
-                sliderAtTop: true,
-                noHeader: true,
-                readOnly: true
-            }).render().$el.dialog({
-                title: title,
-                width: 'auto',
-                position: { my: "left top", at: "left+60 top+20", of: this.$el.closest('div') },
-                close: function() { $(this).remove(); }
-            });
         }
     });
 
