@@ -9,16 +9,20 @@ define([
     $.contextMenu({
         selector: ".tree-node .expander",
         items: {
-            'open': {name: "Open form", callback: openForm}
+            'open': {name: "Open form", icon: "form"},
+            'query': {name: "Query", icon: "query"}
+        },
+        callback: function openForm(key, options) {
+            var table = this.closest('.tree-view').data('table');
+            var nodeId = this.closest('.tree-node').data('nodeId');
+            var specifyModel = schema.getModel(table);
+            switch (key) {
+            case 'open':
+                window.open(api.makeResourceViewUrl(specifyModel, nodeId));
+                break;
+            }
         }
     });
-
-    function openForm(key, options) {
-        var table = this.closest('.tree-view').data('table');
-        var nodeId = this.closest('.tree-node').data('nodeId');
-        var specifyModel = schema.getModel(table);
-        window.open(api.makeResourceViewUrl(specifyModel, nodeId));
-    }
 
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
@@ -28,7 +32,6 @@ define([
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
             'click a.reopen': 'reopenNode',
-            'click a.leaf': function(event) { event.preventDefault(); },
             'click a.direct-cos': 'showDirectCOs',
             'click a.all-cos': 'showAllCOs'
         },
