@@ -1,7 +1,24 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'domain', 'remoteprefs', 'notfoundview', 'recordselector'
-], function($, _, Backbone, api, schema, domain, remoteprefs, NotFoundView, RecordSelector) {
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
+    'domain', 'remoteprefs', 'notfoundview', 'recordselector',
+    'jquery-ctxmenu'
+], function($, _, Backbone, api, schema, domain,
+            remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
+
+    $.contextMenu({
+        selector: ".tree-node .expander",
+        items: {
+            'open': {name: "Open form", callback: openForm}
+        }
+    });
+
+    function openForm(key, options) {
+        var table = this.closest('.tree-view').data('table');
+        var nodeId = this.closest('.tree-node').data('nodeId');
+        var specifyModel = schema.getModel(table);
+        window.open(api.makeResourceViewUrl(specifyModel, nodeId));
+    }
 
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
@@ -91,7 +108,7 @@ define([
                 return td[0];
             }, this);
             var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
-            this.$el.addClass(pathClasses).append(cells);
+            this.$el.addClass(pathClasses).append(cells).data('nodeId', this.nodeId);
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
                 .append($('<a class="expander">').text(this.name));
@@ -206,6 +223,7 @@ define([
             this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
         },
         render: function() {
+            this.$el.data('table', this.table);
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             $('<h1>').text(title).appendTo(this.el);
             var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
