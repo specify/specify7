@@ -217,7 +217,7 @@ define([
         var reportDOM = $.parseXML(reportResources.reportXML);
         var parameters = $('parameter[isForPrompting="true"]', reportDOM);
         if (parameters.length < 1) {
-            getRecordSets(reportResources);
+            getRecordSets(_.extend({parameters: {}}, reportResources));
         } else {
             new ReportParametersDialog({reportResources: reportResources, parameters: parameters}).render();
         }
@@ -249,8 +249,7 @@ define([
         done: function() {
             var paramNames = _.map(this.parameters, function(param) { return $(param).attr('name'); });
             var paramValues = _.map(this.$('input'), function(input) { return $(input).val(); });
-            this.reportResources.parameters = _.object(paramNames, paramValues);
-            getRecordSets(this.reportResources);
+            getRecordSets(_.extend({parameters: _.object(paramNames, paramValues)}, this.reportResources));
         }
     });
 
