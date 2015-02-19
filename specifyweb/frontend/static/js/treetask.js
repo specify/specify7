@@ -20,6 +20,9 @@ define([
             case 'open':
                 window.open(api.makeResourceViewUrl(specifyModel, nodeId));
                 break;
+            case 'query':
+                window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
+                break;
             }
         }
     });

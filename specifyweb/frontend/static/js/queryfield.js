@@ -38,7 +38,7 @@ define([
                 inputUI: undefined,
                 forReport: options.forReport || false
             });
-            if (options.spqueryfield.isNew()) {
+            if (attrs.stringid == null) { // the field spec is undefined
                 _(this).extend({
                     fieldSpec       : new QueryFieldSpec(this.model),
                     formattedRecord : false,
@@ -249,7 +249,7 @@ define([
         },
 
         // These methods respond to events which change the state.
-        
+
         fieldSelected: function() {
             var fieldName = this.$('.field-select').val();
             if (fieldName === 'format record') {

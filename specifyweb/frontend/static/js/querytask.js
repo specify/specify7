@@ -1,7 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates, navigation, QueryResultsTable) {
+    'queryfromtree', 'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
+], function($, _, Backbone, schema, QueryFieldUI, templates,
+            queryFromTree, navigation, QueryResultsTable) {
     "use strict";
 
     var setTitle;
@@ -177,6 +178,14 @@ define([
             var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
             view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
             app.setCurrentView(view);
+        });
+
+        app.router.route('query/fromtree/:table/:id/', 'queryFromTree', function(table, nodeId) {
+            queryFromTree(app.user, table, nodeId).done(function(query) {
+                var view = new QueryBuilder({ query: query, readOnly: true });
+                view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
+                app.setCurrentView(view);
+            });
         });
     };
 });
