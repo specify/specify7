@@ -1,11 +1,24 @@
 define([
-    'jquery', 'underscore', 'schema', 'queryfieldspec'
-], function($, _, schema, QueryFieldSpec) {
+    'jquery', 'underscore', 'schema', 'domain', 'queryfieldspec'
+], function($, _, schema, domain, QueryFieldSpec) {
     "use strict";
 
-    function buildQuery(tree, user, name, low, high) {
+    var paleoPathPromise = domain.levels.discipline.rget('paleocontextchildtable').pipe(function(table) {
+        switch (table.toLowerCase()) {
+        case 'collectionobject':
+            return 'paleoContext';
+        case 'collectingevent':
+            return 'collectingevent.paleoContext';
+        case  'locality':
+            return 'collectingevent.locality.paleoContext';
+        default:
+            throw new Error("unknown paleocontext child table: " + table);
+        }
+    });
+
+    function buildQuery(tree, user, paleoPath, name, low, high) {
         var query = new schema.models.SpQuery.Resource();
-        var model = baseTableFor[tree.name];
+        var model = schema.models.CollectionObject;
         query.set({
             'name': model.getLocalizedName() + " in " + name,
             'contextname': model.name,
@@ -20,7 +33,7 @@ define([
         });
 
         return query.rget('fields').pipe(function(queryFields) {
-            queryFields.add( fieldsFor[tree.name](model, low, high) );
+            queryFields.add( fieldsFor[tree.name](model, low, high, paleoPath) );
             return query;
         });
     }
@@ -32,11 +45,6 @@ define([
             .set(fieldSpec.toSpQueryAttrs())
             .set(options);
     }
-
-    var baseTableFor = {
-        Taxon: schema.models.CollectionObject,
-        Geography: schema.models.Locality
-    };
 
     var fieldsFor = {
         Taxon: function(model, low, high) {
@@ -79,7 +87,7 @@ define([
         Geography: function(model, low, high) {
             var position = 0;
             return [
-                makeField(model, 'localityName', {
+                makeField(model, 'catalogNumber', {
                     'sorttype': 1,
                     'isdisplay': true,
                     'isnot': false,
@@ -87,7 +95,7 @@ define([
                     'operstart': 1,
                     'position': position++
                 }),
-                makeField(model, 'geography.fullName', {
+                makeField(model, 'collectingEvent.locality.localityName', {
                     'sorttype': 0,
                     'isdisplay': true,
                     'isnot': false,
@@ -95,7 +103,110 @@ define([
                     'operstart': 1,
                     'position': position++
                 }),
-                makeField(model, 'geography.nodenumber', {
+                makeField(model, 'collectingEvent.locality.geography.fullName', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'collectingEvent.locality.geography.nodenumber', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '' + low + ',' + high,
+                    'operstart': 9,
+                    'position': position++
+                })
+            ];
+        },
+        Storage: function(model, low, high) {
+            var position = 0;
+            return [
+                makeField(model, 'catalogNumber', {
+                    'sorttype': 1,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'preparations.prepType', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'preparations.storage.fullName', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'preparations.storage.nodenumber', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '' + low + ',' + high,
+                    'operstart': 9,
+                    'position': position++
+                })
+            ];
+        },
+        GeologicTimePeriod: function(model, low, high, paleoPath) {
+            var position = 0;
+            return [
+                makeField(model, 'catalogNumber', {
+                    'sorttype': 1,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, paleoPath + '.chronosStrat.fullName', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, paleoPath + '.chronosStrat.nodenumber', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '' + low + ',' + high,
+                    'operstart': 9,
+                    'position': position++
+                })
+            ];
+        },
+        LithoStrat: function(model, low, high, paleoPath) {
+            var position = 0;
+            return [
+                makeField(model, 'catalogNumber', {
+                    'sorttype': 1,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, paleoPath + '.lithoStrat.fullName', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, paleoPath + '.lithoStrat.nodenumber', {
                     'sorttype': 0,
                     'isdisplay': false,
                     'isnot': false,
@@ -111,6 +222,10 @@ define([
         var tree = schema.getModel(table);
         var node = new tree.Resource({id: nodeId});
         var next = buildQuery.bind(null, tree, user);
-        return $.when(node.rget('fullname'), node.rget('nodenumber'), node.rget('highestchildnodenumber')).pipe(next);
+        return $.when(paleoPathPromise,
+                      node.rget('fullname'),
+                      node.rget('nodenumber'),
+                      node.rget('highestchildnodenumber')
+                     ).pipe(next);
     };
 });
