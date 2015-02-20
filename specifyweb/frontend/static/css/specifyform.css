@@ -678,3 +678,11 @@ a.specify-attachment-original {
     /* .ui-icon-radio-off */
     background-position: -112px -144px;
 }
+
+.context-menu-item.icon-form {
+    background-image: url(/images/Form16x16.png);
+}
+
+.context-menu-item.icon-query {
+    background-image: url(/images/Grid16x16.png);
+}

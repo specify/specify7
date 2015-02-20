@@ -1,7 +1,31 @@
 define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'domain', 'remoteprefs', 'notfoundview', 'recordselector'
-], function($, _, Backbone, api, schema, domain, remoteprefs, NotFoundView, RecordSelector) {
+    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
+    'domain', 'remoteprefs', 'notfoundview', 'recordselector',
+    'jquery-ctxmenu'
+], function($, _, Backbone, api, schema, domain,
+            remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
+
+    $.contextMenu({
+        selector: ".tree-node .expander",
+        items: {
+            'open': {name: "Open form", icon: "form"},
+            'query': {name: "Query", icon: "query"}
+        },
+        callback: function openForm(key, options) {
+            var table = this.closest('.tree-view').data('table');
+            var nodeId = this.closest('.tree-node').data('nodeId');
+            var specifyModel = schema.getModel(table);
+            switch (key) {
+            case 'open':
+                window.open(api.makeResourceViewUrl(specifyModel, nodeId));
+                break;
+            case 'query':
+                window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
+                break;
+            }
+        }
+    });
 
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
@@ -10,46 +34,7 @@ define([
         events: {
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
-            'click a.reopen': 'reopenNode',
-            'click a.leaf': function(event) { event.preventDefault(); },
-            'click a.direct-cos': 'showDirectCOs',
-            'click a.all-cos': 'showAllCOs'
-        },
-        filterDefs: function() {
-            return {
-                taxon: {
-                    direct: {
-                        determinations__taxon: this.nodeId,
-                        determinations__iscurrent: true},
-                    children: {
-                        determinations__taxon__nodenumber__gt: this.nodeNumber,
-                        determinations__taxon__nodenumber__lte: this.highestNodeNumber,
-                        determinations__iscurrent: true}},
-                geography: {
-                    direct: {
-                        collectingevent__locality__geography: this.nodeId},
-                    children: {
-                        collectingevent__locality__geography__nodenumber__gt: this.nodeNumber,
-                        collectingevent__locality__geography__nodenumber__lte: this.highestNodeNumber}},
-                lithostrat: {
-                    direct: {
-                        paleocontext__lithostrat: this.nodeId},
-                    children: {
-                        paleocontext__lithostrat__nodenumber__gt: this.nodeNumber,
-                        paleocontext__lithostrat__nodenumber__lte: this.highestNodeNumber}},
-                storage: {
-                    direct: {
-                        preparations__storage: this.nodeId},
-                    children: {
-                        preparations__storage__nodenumber__gt: this.nodeNumber,
-                        preparations__storage__nodenumber__lte: this.highestNodeNumber}},
-                geologictimeperiod: {
-                    direct: {
-                        paleocontext__chronosstrat: this.nodeId},
-                    children: {
-                        paleocontext__chronosstrat__nodenumber__gt: this.nodeNumber,
-                        paleocontext__chronosstrat__nodenumber__lte: this.highestNodeNumber}}
-            };
+            'click a.reopen': 'reopenNode'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -91,17 +76,13 @@ define([
                 return td[0];
             }, this);
             var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
-            this.$el.addClass(pathClasses).append(cells);
+            this.$el.addClass(pathClasses).append(cells).data('nodeId', this.nodeId);
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
                 .append($('<a class="expander">').text(this.name));
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
-                this.$('.tree-node-cell p')
-                    .append(' (<a class="direct-cos" title="Collection objects." href="#">' + this.directCOs + '</a>' +
-                            (childCOs > 0 ?
-                             ', <a class="all-cos" title="Collection objects of children." href="#">' + childCOs + '</a>'
-                             : '') +')');
+                this.$('.tree-node-cell p').append(' (' + this.directCOs + (childCOs > 0 ? ', ' + childCOs : '') +')');
             }
             if (this.children > 0) {
                 this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
@@ -147,33 +128,6 @@ define([
             event.preventDefault();
             this.$('.expander').removeClass('reopen').addClass('close');
             $('.nn-' + this.nodeId).show();
-        },
-        showDirectCOs: function(event) {
-            event.preventDefault();
-            if (this.directCOs < 1) return;
-            this.showCollectionObjects(this.filterDefs()[this.table]['direct'],
-                                       this.fullName + " (" + this.directCOs + ")");
-        },
-        showAllCOs: function(event) {
-            event.preventDefault();
-            this.showCollectionObjects(this.filterDefs()[this.table]['children'],
-                                       this.fullName + " (" + (this.allCOs - this.directCOs) + ")");
-        },
-        showCollectionObjects: function(filters, title) {
-            filters.domainfilter = true;
-            var collectionObjects = new schema.models.CollectionObject.LazyCollection({ filters: filters });
-            new RecordSelector({
-                collection: collectionObjects,
-                el: $('<div>').data('specify-viewname', schema.models.CollectionObject.view),
-                sliderAtTop: true,
-                noHeader: true,
-                readOnly: true
-            }).render().$el.dialog({
-                title: title,
-                width: 'auto',
-                position: { my: "left top", at: "left+60 top+20", of: this.$el.closest('div') },
-                close: function() { $(this).remove(); }
-            });
         }
     });
 
@@ -206,6 +160,7 @@ define([
             this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
         },
         render: function() {
+            this.$el.data('table', this.table);
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             $('<h1>').text(title).appendTo(this.el);
             var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
