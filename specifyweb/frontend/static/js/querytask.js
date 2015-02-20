@@ -99,6 +99,7 @@ define([
             this.updatePositions();
         },
         search: function(evt) {
+            this.$('.query-execute').blur();
             this.deleteIncompleteFields();
             if (this.fieldUIs.length < 1) return;
 
