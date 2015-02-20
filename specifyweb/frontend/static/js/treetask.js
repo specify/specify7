@@ -5,6 +5,7 @@ define([
 ], function($, _, Backbone, api, schema, domain,
             remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
+    var setTitle;
 
     $.contextMenu({
         selector: ".tree-node .expander",
@@ -162,6 +163,7 @@ define([
         render: function() {
             this.$el.data('table', this.table);
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
+            setTitle(title);
             $('<h1>').text(title).appendTo(this.el);
             var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
                 return $('<col>', {width: (100/this.ranks.length) + '%'})[0];
@@ -188,6 +190,8 @@ define([
     });
 
     return function(app) {
+        setTitle = app.setTitle;
+
         app.router.route('tree/:table/', 'tree', function(table) {
             var getTreeDef = domain.getTreeDef(table);
             if (!getTreeDef) {
