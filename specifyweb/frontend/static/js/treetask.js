@@ -45,24 +45,18 @@ define([
             this.childNodes = null;
             this.expanded = false;
 
-            var i = 0;
-            this.nodeId              = options.row[i++];
-            this.name                = options.row[i++];
-            this.fullName            = options.row[i++];
-            this.nodeNumber          = options.row[i++];
-            this.highestNodeNumber   = options.row[i++];
-            this.rankId              = options.row[i++];
-            this.children            = options.row[i++];
-            this.allCOs              = options.row[i++];
-            this.directCOs           = options.row[i++];
+            // unpack the database row into fields on this object
+            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId children allCOs directCOs".split(' ');
+            _(this).extend(_.object(fields, options.row));
         },
         render: function() {
             this.$el.empty();
 
+            var parent = _.last(this.path);
             var foundParentRank = false;
             var foundThisRank = false;
             var cells = _.map(this.ranks, function(rank) {
-                if (this.path.length && rank == _.last(this.path).rankId) foundParentRank = true;
+                if (parent && rank == parent.rankId) foundParentRank = true;
                 if (rank == this.rankId) foundThisRank = true;
                 var td = $('<td>');
                 var ancestor = _.find(this.path, function(node) { return node.rankId == rank; });
@@ -76,11 +70,10 @@ define([
                 if (foundParentRank && !foundThisRank) {
                     td.addClass('tree-horizontal-edge');
                 }
-                td.append('<p>');
-                return td[0];
+                return td.append('<p>')[0];
             }, this);
-            var pathClasses = _.map(this.path.concat(this), function(node) { return 'nn-' + node.nodeId; }).join(' ');
-            this.$el.addClass(pathClasses).append(cells).data('nodeId', this.nodeId);
+            this.$el.append(cells).data('nodeId', this.nodeId);
+
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
                 .append($('<a class="expander">').text(this.name));
@@ -88,12 +81,13 @@ define([
                 var childCOs = this.allCOs - this.directCOs;
                 this.$('.tree-node-cell p').append(' (' + this.directCOs + (childCOs > 0 ? ', ' + childCOs : '') +')');
             }
+
             if (this.children > 0) {
                 this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
             } else {
                 this.$('.expander').addClass('leaf');
             }
-            var parent = _.last(this.path);
+
             if (parent && parent.expanded) {
                 parent.$el.after(this.el);
             }
@@ -131,19 +125,18 @@ define([
         },
         isLastChild: function() {
             var parent = _.last(this.path);
-            if (parent == null) return true;
-            return this === _.last(parent.childNodes);
+            return parent == null || this === _.last(parent.childNodes);
         },
         renderChildren: function(rows) {
             console.log('renderChildren', this.name);
             this.expanded = true;
-            this.$('.expander').removeClass('wait').addClass('close');
+            this.$('.expander').removeClass('open wait').addClass('close');
 
             var nodes = this.childNodes.slice();
             // Have to add the nodes in reverse since they are being
             // inserted after the parent.
             nodes.reverse();
-            _.each(nodes, function(node) { return node.render().el; });
+            _.each(nodes, function(node) { node.render(); });
         },
         closeNode: function(event) {
             event.preventDefault();
@@ -155,7 +148,6 @@ define([
         remove: function() {
             console.log('remove', this.name);
             this.undelegateEvents();
-            this.$el.empty();
             this.$el.remove();
             _.invoke(this.childNodes, 'remove');
         }
