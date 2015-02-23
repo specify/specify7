@@ -34,8 +34,7 @@ define([
         className: "tree-node",
         events: {
             'click a.open': 'openNode',
-            'click a.close': 'closeNode',
-            'click a.reopen': 'reopenNode'
+            'click a.close': 'closeNode'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -43,6 +42,8 @@ define([
             this.path = options.path || [];
             this.baseUrl = options.baseUrl;
             this.specifyModel = schema.getModel(this.table);
+            this.childNodes = null;
+            this.expanded = false;
 
             var i = 0;
             this.nodeId              = options.row[i++];
@@ -56,6 +57,8 @@ define([
             this.directCOs           = options.row[i++];
         },
         render: function() {
+            this.$el.empty();
+
             var foundParentRank = false;
             var foundThisRank = false;
             var cells = _.map(this.ranks, function(rank) {
@@ -90,24 +93,33 @@ define([
             } else {
                 this.$('.expander').addClass('leaf');
             }
+            var parent = _.last(this.path);
+            if (parent && parent.expanded) {
+                parent.$el.after(this.el);
+            }
+            this.expanded && this.openNode();
+            this.delegateEvents();
             return this;
         },
         openNode: function(event) {
-            event.preventDefault();
+            event && event.preventDefault();
+            console.log('openNode', this.name);
+            if (this.childNodes) {
+                this.renderChildren();
+            } else {
+                this.getChildren().done(this.renderChildren.bind(this));
+            }
+        },
+        getChildren: function() {
+            console.log('getChildren', this.name);
             this.$('.expander').removeClass('open').addClass('wait');
             var tree = this.table.charAt(0).toUpperCase() + this.table.slice(1);
             var statsThreshold = remoteprefs['TreeEditor.Rank.Threshold.' + tree];
             var doStats = statsThreshold != null && statsThreshold <= this.rankId;
-            $.getJSON(this.baseUrl + this.nodeId + '/?stats=' + doStats).done(this.addChildNodes.bind(this));
+            return $.getJSON(this.baseUrl + this.nodeId + '/?stats=' + doStats).pipe(this.gotChildren.bind(this));
         },
-        isLastChild: function() {
-            var parent = _.last(this.path);
-            if (parent == null) return true;
-            return this === _.last(parent.childNodes);
-        },
-        addChildNodes: function(rows) {
-            this.$('.expander').removeClass('wait').addClass('close');
-            this.childNodes = _.map(rows, function(row) {
+        gotChildren: function(childRows) {
+            return this.childNodes = _.map(childRows, function(row) {
                 return new TreeNodeView({
                     baseUrl: this.baseUrl,
                     table: this.table,
@@ -116,19 +128,36 @@ define([
                     path: this.path.concat(this)
                 });
             }, this);
+        },
+        isLastChild: function() {
+            var parent = _.last(this.path);
+            if (parent == null) return true;
+            return this === _.last(parent.childNodes);
+        },
+        renderChildren: function(rows) {
+            console.log('renderChildren', this.name);
+            this.expanded = true;
+            this.$('.expander').removeClass('wait').addClass('close');
 
-            this.$el.after(_.map(this.childNodes, function(node) { return node.render().el; }));
+            var nodes = this.childNodes.slice();
+            // Have to add the nodes in reverse since they are being
+            // inserted after the parent.
+            nodes.reverse();
+            _.each(nodes, function(node) { return node.render().el; });
         },
         closeNode: function(event) {
             event.preventDefault();
-            this.$('.expander').removeClass('close').addClass('reopen');
-            $('.nn-' + this.nodeId).hide();
-            this.$el.show();
+            console.log('closeNode', this.name);
+            this.expanded = false;
+            this.$('.expander').removeClass('close').addClass('open');
+            _.invoke(this.childNodes, 'remove');
         },
-        reopenNode: function(event) {
-            event.preventDefault();
-            this.$('.expander').removeClass('reopen').addClass('close');
-            $('.nn-' + this.nodeId).show();
+        remove: function() {
+            console.log('remove', this.name);
+            this.undelegateEvents();
+            this.$el.empty();
+            this.$el.remove();
+            _.invoke(this.childNodes, 'remove');
         }
     });
 
@@ -172,7 +201,7 @@ define([
                 columnDefs,
                 new TreeHeader({treeDefItems: this.treeDefItems}).render().el,
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
-                '<tr class="loading"><td>(loading...)</td></tr>'
+                '<tbody><tr class="loading"><td>(loading...)</td></tr></tbody>'
             );
             $.getJSON(this.baseUrl + 'null/')
                 .done(this.gotRows.bind(this));
@@ -180,12 +209,11 @@ define([
         },
         gotRows: function(rows) {
             this.$('tr.loading').remove();
-            this.$('table').append(
-                _.map(rows, function(row) {
-                    return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl })
-                        .render().$el[0];
-                }, this)
-            );
+            var tbody = this.$('tbody');
+            _.each(rows, function(row) {
+                new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl })
+                    .render().$el.appendTo(tbody);
+            }, this);
         }
     });
 

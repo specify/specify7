@@ -658,8 +658,7 @@ a.specify-attachment-original {
     margin-left: -5px;
 }
 
-.tree-node-cell .ui-icon.open,
-.tree-node-cell .ui-icon.reopen {
+.tree-node-cell .ui-icon.open {
     /* .ui-icon-triangle-1-e */
     background-position: -32px -16px;
 }
