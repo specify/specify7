@@ -41,6 +41,7 @@ define([
             this.ranks = options.ranks;
             this.path = options.path || [];
             this.baseUrl = options.baseUrl;
+            this.treeView = options.treeView;
             this.specifyModel = schema.getModel(this.table);
             this.childNodes = null;
             this.expanded = false;
@@ -88,7 +89,9 @@ define([
                 this.$('.expander').addClass('leaf');
             }
 
-            if (parent && parent.expanded) {
+            if (parent == null) {
+                this.treeView.$('tbody').append(this.el);
+            } else if (parent.expanded) {
                 parent.$el.after(this.el);
             }
             this.expanded && this.openNode();
@@ -115,6 +118,7 @@ define([
         gotChildren: function(childRows) {
             return this.childNodes = _.map(childRows, function(row) {
                 return new TreeNodeView({
+                    treeView: this.treeView,
                     baseUrl: this.baseUrl,
                     table: this.table,
                     row: row,
@@ -200,12 +204,11 @@ define([
             return this;
         },
         gotRows: function(rows) {
-            this.$('tr.loading').remove();
-            var tbody = this.$('tbody');
-            _.each(rows, function(row) {
-                new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl })
-                    .render().$el.appendTo(tbody);
+            this.roots = _.map(rows, function(row) {
+                return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl, treeView: this });
             }, this);
+            this.$('tbody').empty();
+            _.invoke(this.roots, 'render');
         }
     });
 
