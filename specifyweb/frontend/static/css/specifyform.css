@@ -654,8 +654,8 @@ a.specify-attachment-original {
 }
 
 .tree-node-cell p {
-    margin-bottom: -18px;
-    margin-left: -5px;
+    padding-top: 10px;
+    margin: 0 0 -10px -5px;
 }
 
 .tree-node-cell .ui-icon.open {

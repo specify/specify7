@@ -65,12 +65,12 @@ define([
                     td.addClass('tree-vertical-edge');
                 }
                 if (rank == this.rankId) {
-                    td.addClass('tree-node-cell');
+                    td.addClass('tree-node-cell').append('<p>');
                 }
                 if (foundParentRank && !foundThisRank) {
                     td.addClass('tree-horizontal-edge');
                 }
-                return td.append('<p>')[0];
+                return td[0];
             }, this);
             this.$el.append(cells).data('nodeId', this.nodeId);
 
