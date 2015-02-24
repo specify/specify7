@@ -618,6 +618,8 @@ a.specify-attachment-original {
 
 .tree-view table {
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0px;
 }
 
 .tree-view thead th {
@@ -626,6 +628,10 @@ a.specify-attachment-original {
 
 .tree-view tfoot th {
     height: 20px;
+}
+
+.tree-view th, .tree-view td {
+    border: 1px none;
 }
 
 .tree-view td:nth-child(even),
@@ -641,11 +647,11 @@ a.specify-attachment-original {
 }
 
 .tree-view td.tree-vertical-edge {
-    border-left: 2px solid #555;
+    border-left: 1px solid #555;
 }
 
 .tree-view td.tree-horizontal-edge {
-    border-bottom: 3px solid #555;
+    border-bottom: 1px solid #555;
 }
 
 .tree-node .expander {
@@ -655,7 +661,7 @@ a.specify-attachment-original {
 
 .tree-node-cell p {
     padding-top: 10px;
-    margin: 0 0 -10px -5px;
+    margin: 0 0 -12px -5px;
 }
 
 .tree-node-cell .ui-icon.open {
