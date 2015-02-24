@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
     'domain', 'remoteprefs', 'notfoundview', 'recordselector',
-    'jquery-ctxmenu'
+    'jquery-ctxmenu', 'jquery-ui'
 ], function($, _, Backbone, api, schema, domain,
             remoteprefs, NotFoundView, RecordSelector) {
     "use strict";
@@ -45,6 +45,7 @@ define([
             this.specifyModel = schema.getModel(this.table);
             this.childNodes = null;
             this.expanded = false;
+            this.opened = false;
 
             // unpack the database row into fields on this object
             var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId children allCOs directCOs".split(' ');
@@ -77,7 +78,7 @@ define([
 
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
-                .append($('<a class="expander">').text(this.name));
+                .append($('<a class="expander tree-node-name">').text(this.name));
             if (this.directCOs != null && this.allCOs != null) {
                 var childCOs = this.allCOs - this.directCOs;
                 this.$('.tree-node-cell p').append(' (' + this.directCOs + (childCOs > 0 ? ', ' + childCOs : '') +')');
@@ -94,17 +95,32 @@ define([
             } else if (parent.expanded) {
                 parent.$el.after(this.el);
             }
-            this.expanded && this.openNode();
+            this.expanded && this._openNode();
             this.delegateEvents();
             return this;
         },
+        openPath: function(path) {
+            if (_.first(path) !== this.nodeId) return;
+
+            this.$('.tree-node-name')[0].scrollIntoView(false);
+            if (path.length === 1) return;
+
+            var opening = this.opened ? $.when(null) : this._openNode();
+            opening.done(function() {
+                _.invoke(this.childNodes, 'openPath', _.rest(path));
+            }.bind(this));
+        },
         openNode: function(event) {
             event && event.preventDefault();
+            this._openNode();
+        },
+        _openNode: function() {
             console.log('openNode', this.name);
             if (this.childNodes) {
                 this.renderChildren();
+                return $.when(null);
             } else {
-                this.getChildren().done(this.renderChildren.bind(this));
+                return this.getChildren().done(this.renderChildren.bind(this));
             }
         },
         getChildren: function() {
@@ -134,6 +150,7 @@ define([
         renderChildren: function(rows) {
             console.log('renderChildren', this.name);
             this.expanded = true;
+            this.opened = true;
             this.$('.expander').removeClass('open wait').addClass('close');
 
             var nodes = this.childNodes.slice();
@@ -146,11 +163,13 @@ define([
             event.preventDefault();
             console.log('closeNode', this.name);
             this.expanded = false;
+            this.opened = false;
             this.$('.expander').removeClass('close').addClass('open');
             _.invoke(this.childNodes, 'remove');
         },
         remove: function() {
             console.log('remove', this.name);
+            this.opened = false;
             this.undelegateEvents();
             this.$el.remove();
             _.invoke(this.childNodes, 'remove');
@@ -176,12 +195,14 @@ define([
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
         className: "tree-view",
+        events: {
+            'autocompleteselect': 'search'
+        },
         initialize: function(options) {
             this.table = options.table;
             this.treeDef = options.treeDef;
             this.treeDefItems = options.treeDefItems.models;
 
-            this.Collection = schema.getModel(options.table).LazyCollection;
             this.ranks = _.map(this.treeDefItems, function(tdi) { return tdi.get('rankid'); });
             this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
         },
@@ -190,6 +211,7 @@ define([
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             setTitle(title);
             $('<h1>').text(title).appendTo(this.el);
+            this.$el.append(this.makeSearchBox());
             var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
                 return $('<col>', {width: (100/this.ranks.length) + '%'})[0];
             }, this));
@@ -209,6 +231,34 @@ define([
             }, this);
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
+        },
+        search: function(event, ui) {
+            this.$('.tree-search').blur();
+            var roots = this.roots;
+            $.getJSON('/api/specify_tree/' + this.table + '/' + ui.item.nodeId + '/path/').done(function(path) {
+                var nodeIds = _(path).chain().values()
+                        .filter(function(node) { return node.rankid != null; })
+                        .sortBy(function(node) { return node.rankid; })
+                        .pluck('id').value();
+                _.invoke(roots, 'openPath', nodeIds);
+            });
+        },
+        makeSearchBox: function() {
+            var tree = schema.getModel(this.table);
+            return $('<input class="tree-search" type="search" placeholder="Search Tree">').autocomplete({
+                source: function(request, response) {
+                    var collection = new tree.LazyCollection({
+                        filters: { name__istartswith: request.term, orderby: 'name' },
+                        domainfilter: true
+                    });
+                    collection.fetch().pipe(function() {
+                        var items = collection.map(function(node) {
+                            return { label: node.get('fullname'), value: node.get('name'), nodeId: node.id };
+                        });
+                        response(items);
+                    });
+                }
+            });
         }
     });
 

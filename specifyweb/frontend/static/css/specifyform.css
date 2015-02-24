@@ -616,6 +616,14 @@ a.specify-attachment-original {
     text-decoration: underline;
 }
 
+.tree-view h1 {
+    float: left;
+}
+
+.tree-view .tree-search {
+    margin-left: 40px;
+}
+
 .tree-view table {
     width: 100%;
     border-collapse: separate;
