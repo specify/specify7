@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
     'domain', 'remoteprefs', 'notfoundview', 'recordselector',
-    'jquery-ctxmenu', 'jquery-ui'
-], function($, _, Backbone, api, schema, domain,
-            remoteprefs, NotFoundView, RecordSelector) {
+    'navigation', 'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
+], function($, _, Backbone, api, schema, domain, remoteprefs,
+            NotFoundView, RecordSelector, navigation) {
     "use strict";
     var setTitle;
 
@@ -158,6 +158,7 @@ define([
             // inserted after the parent.
             nodes.reverse();
             _.each(nodes, function(node) { node.render(); });
+            this.treeView.updateConformation();
         },
         closeNode: function(event) {
             event.preventDefault();
@@ -166,6 +167,7 @@ define([
             this.opened = false;
             this.$('.expander').removeClass('close').addClass('open');
             _.invoke(this.childNodes, 'remove');
+            this.treeView.updateConformation();
         },
         remove: function() {
             console.log('remove', this.name);
@@ -173,6 +175,19 @@ define([
             this.undelegateEvents();
             this.$el.remove();
             _.invoke(this.childNodes, 'remove');
+        },
+        conformation: function() {
+            return [this.nodeId].concat(conformation(this.childNodes));
+        },
+        applyConformation: function(conformation) {
+            if (_.first(conformation) !== this.nodeId) return;
+
+            var opening = this.opened ? $.when(null) : this._openNode();
+            opening.done(function() {
+                _.each(_.rest(conformation), function(conformation) {
+                    _.invoke(this.childNodes, 'applyConformation', conformation);
+                }, this);
+            }.bind(this));
         }
     });
 
@@ -231,6 +246,8 @@ define([
             }, this);
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
+            var params = $.deparam.querystring();
+            params.conformation && this.applyConformation(params.conformation);
         },
         search: function(event, ui) {
             this.$('.tree-search').blur();
@@ -259,8 +276,33 @@ define([
                     });
                 }
             });
+        },
+        applyConformation: function(encoded) {
+            var serialized = encoded.replace(/([^~])~/g, '$1,~').replace(/~/g, '[').replace(/-/g, ']');
+            try {
+                var conformation = JSON.parse(serialized);
+            } catch (e) {
+                console.error('bad tree conformation:', serialized);
+                return;
+            }
+            _.each(conformation, function(conformation) {
+                _.invoke(this.roots, 'applyConformation', conformation);
+            }, this);
+        },
+        updateConformation: function() {
+            var serialized = JSON.stringify(conformation(this.roots));
+            // Replace reserved url characters to avoid percent
+            // escaping.  Also, commas are superfluous since they
+            // procede every open bracket that is not itself proceded
+            // by an open bracket by nature of the construction.
+            var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
+            navigation.push($.param.querystring(window.location.href, {conformation: encoded}));
         }
     });
+
+    function conformation(nodes) {
+        return _.invoke(_.where(nodes, {expanded: true}), 'conformation');
+    }
 
     return function(app) {
         setTitle = app.setTitle;
