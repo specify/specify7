@@ -88,11 +88,27 @@ define([
             var position = 0;
             return [
                 makeField(model, 'catalogNumber', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.taxon.fullName', {
                     'sorttype': 1,
                     'isdisplay': true,
                     'isnot': false,
                     'startvalue': '',
                     'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.isCurrent', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 6,
                     'position': position++
                 }),
                 makeField(model, 'collectingEvent.locality.localityName', {
@@ -132,12 +148,20 @@ define([
                     'operstart': 1,
                     'position': position++
                 }),
-                makeField(model, 'preparations.prepType', {
+                makeField(model, 'determinations.taxon.fullName', {
                     'sorttype': 0,
                     'isdisplay': true,
                     'isnot': false,
                     'startvalue': '',
                     'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.isCurrent', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 6,
                     'position': position++
                 }),
                 makeField(model, 'preparations.storage.fullName', {
@@ -162,6 +186,14 @@ define([
             var position = 0;
             return [
                 makeField(model, 'catalogNumber', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.taxon.fullName', {
                     'sorttype': 1,
                     'isdisplay': true,
                     'isnot': false,
@@ -169,6 +201,15 @@ define([
                     'operstart': 1,
                     'position': position++
                 }),
+                makeField(model, 'determinations.isCurrent', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 6,
+                    'position': position++
+                }),
+
                 makeField(model, paleoPath + '.chronosStrat.fullName', {
                     'sorttype': 0,
                     'isdisplay': true,
@@ -191,11 +232,27 @@ define([
             var position = 0;
             return [
                 makeField(model, 'catalogNumber', {
+                    'sorttype': 0,
+                    'isdisplay': true,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.taxon.fullName', {
                     'sorttype': 1,
                     'isdisplay': true,
                     'isnot': false,
                     'startvalue': '',
                     'operstart': 1,
+                    'position': position++
+                }),
+                makeField(model, 'determinations.isCurrent', {
+                    'sorttype': 0,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': '',
+                    'operstart': 6,
                     'position': position++
                 }),
                 makeField(model, paleoPath + '.lithoStrat.fullName', {
