@@ -33,6 +33,7 @@ define([
         tagName: "tr",
         className: "tree-node",
         events: {
+            'keydown .tree-node-name': 'keydown',
             'click a.open': 'openNode',
             'click a.close': 'closeNode'
         },
@@ -78,7 +79,7 @@ define([
 
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
-                .append($('<a class="expander tree-node-name">').text(this.name));
+                .append($('<a class="expander tree-node-name" tabindex="2">').text(this.name));
 
             if (this.children > 0) {
                 this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
@@ -95,6 +96,34 @@ define([
             this.delegateEvents();
             return this;
         },
+        keydown: function(event) {
+            if (this.$('.tree-node-name').hasClass('context-menu-active')) return;
+            if (!_([13, 37, 38, 39, 40]).contains(event.keyCode)) return;
+            event.preventDefault();
+
+            var cells = $('.tree-node-name');
+            var index = cells.index(this.$('.tree-node-name'));
+            var next = index;
+
+            switch (event.keyCode) {
+            case 13: // enter
+                this.$('.tree-node-name').contextMenu();
+                break;
+            case 37: // left
+                this.closeNode();
+                break;
+            case 38: // up
+                next = Math.max(0, index - 1);
+                break;
+            case 39: // right
+                this.openNode();
+                break;
+            case 40: // down
+                next = Math.min(cells.length - 1, index + 1);
+                break;
+            }
+            $(cells[next]).focus();
+        },
         shouldDoStats: function() {
             var tree = this.specifyModel.name;
             var statsThreshold = remoteprefs['TreeEditor.Rank.Threshold.' + tree];
@@ -108,8 +137,13 @@ define([
         openPath: function(path) {
             if (_.first(path) !== this.nodeId) return;
 
+
+            if (path.length === 1) {
+                this.$('.tree-node-name').focus();
+                return;
+            }
+
             this.$('.tree-node-name')[0].scrollIntoView(false);
-            if (path.length === 1) return;
 
             var opening = this.opened ? $.when(null) : this._openNode();
             opening.done(function() {
@@ -118,7 +152,7 @@ define([
         },
         openNode: function(event) {
             event && event.preventDefault();
-            this._openNode();
+            this.children == 0 || this.opened || this._openNode();
         },
         _openNode: function() {
             console.log('openNode', this.name);
@@ -173,7 +207,10 @@ define([
             _.invoke(this.childNodes, 'addStats', statsById);
         },
         closeNode: function(event) {
-            event.preventDefault();
+            event && event.preventDefault();
+            this.opened && this._closeNode();
+        },
+        _closeNode: function() {
             console.log('closeNode', this.name);
             this.expanded = false;
             this.opened = false;
@@ -274,7 +311,7 @@ define([
         },
         makeSearchBox: function() {
             var tree = schema.getModel(this.table);
-            return $('<input class="tree-search" type="search" placeholder="Search Tree">').autocomplete({
+            return $('<input class="tree-search" type="search" placeholder="Search Tree" tabindex="1">').autocomplete({
                 source: function(request, response) {
                     var collection = new tree.LazyCollection({
                         filters: { name__istartswith: request.term, orderby: 'name' },
