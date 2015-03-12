@@ -141,7 +141,7 @@ define([
             var fieldLabel = this.$('.field-label').empty();
             _.each(this.fieldSpec.joinPath, function(field) {
                 $('<a class="field-label-field">')
-                    .text(field.getLocalizedName())
+                    .text(field.getLocalizedName() || field.name)
                     .prepend($('<img>', { src: field.model.getIcon() }))
                     .appendTo(fieldLabel);
             });
@@ -184,7 +184,7 @@ define([
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {
                     $('<option>', {value: field.name})
-                        .text((field.isRelationship ? '➔ ' : '') + field.getLocalizedName())
+                        .text((field.isRelationship ? '➔ ' : '') + (field.getLocalizedName() || field.name))
                         .appendTo(fieldSelect);
                 });
 
