@@ -393,7 +393,8 @@ define([
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             default:
-                throw new Error('unhandled relationship type');
+                console.error("unhandled relationship type: " + field.type);
+                return $.Deferred().reject('unhandled relationship type');
             }
         },
         save: function() {
