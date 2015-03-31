@@ -16,11 +16,11 @@ define([
             this.isDatePart = options.isDatePart;
             this.isTreeField = options.isTreeField;
 
-            this.inputFormatter = (this.isDatePart || this.isTreeField) ? null :
+            this.inputFormatter = (this.isDatePart || this.isTreeField || this.opName == 'In') ? null :
                 this.field.getUIFormatter();
             this.outputFormatter = (this.isDatePart || this.isTreeField) ? null :
                 function(value) { return fieldformat(options.field, value); };
-            this.parser = this.isDatePart ? intParser : this.isTreeField ? stringParser :
+            this.parser = this.isDatePart ? intParser : (this.isTreeField || this.opName == 'In') ? stringParser :
                 uiparse.bind(null, this.field);
             this.values = [];
 
