@@ -1,7 +1,7 @@
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from .models import Geography, Taxon, Storage, Attachment
+from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, Attachment
 from . import scoping
 
 HIERARCHY = ['collectionobject', 'collection', 'discipline', 'division', 'institution']
@@ -19,7 +19,7 @@ def filter_by_collection(queryset, collection, strict=True):
             Q(scopetype=scoping.DIVISION_SCOPE, scopeid=collection.discipline.division.id) |
             Q(scopetype=scoping.INSTITUTION_SCOPE, scopeid=collection.discipline.division.institution.id))
 
-    if queryset.model is Geography:
+    if queryset.model in (Geography, Geologictimeperiod, Lithostrat):
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:
