@@ -16,11 +16,11 @@ define([
             this.isDatePart = options.isDatePart;
             this.isTreeField = options.isTreeField;
 
-            this.inputFormatter = (this.isDatePart || this.isTreeField || this.opName == 'In') ? null :
+            this.inputFormatter = (this.isDatePart || this.isTreeField) ? null :
                 this.field.getUIFormatter();
             this.outputFormatter = (this.isDatePart || this.isTreeField) ? null :
                 function(value) { return fieldformat(options.field, value); };
-            this.parser = this.isDatePart ? intParser : (this.isTreeField || this.opName == 'In') ? stringParser :
+            this.parser = this.isDatePart ? intParser : this.isTreeField ? stringParser :
                 uiparse.bind(null, this.field);
             this.values = [];
 
@@ -29,12 +29,17 @@ define([
             this.model.saveBlockers = new saveblockers.SaveBlockers(this.model);
         },
         getValue: function() {
-            return this.opName == 'Between' ? this.values.join(',') : this.values[0];
+            return this.values[0];
         },
         setValue: function(value) {
-            var values = this.opName == 'Between' ? value.split(',') : [value];
-            this.values = values = this.format && this.outputFormatter ? _.map(values, this.outputFormatter) : values;
-            _.each(this.inputUIs, function(ui, i) { ui.fillIn(values[i]); });
+            this.updateValues([value]);
+        },
+        updateValues: function(values) {
+            this.values = this.format && this.outputFormatter ? _.map(values, this.outputFormatter) : values;
+            this.renderValues();
+        },
+        renderValues: function() {
+            _.each(this.inputUIs, function(ui, i) { ui.fillIn(this.values[i]); });
         },
         render: function() {
             this.$el.empty();
@@ -70,6 +75,49 @@ define([
         }
     });
 
+    var Between = {
+        opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers'],
+        input: '<input type="text"> and <input type="text">', format: true,
+        getValue: function() {
+            return this.values.join(',');
+        },
+        setValue: function(value) {
+            this.updateValues(value.split(','));
+        }
+    };
+
+    var ADD_VALUES_HINT = "Add values one by one:";
+
+    var In = {
+        events: {
+            'keydown input': 'keydown'
+        },
+        opName: 'In', negation: 'Not In', types: ['strings', 'numbers'],
+        input: '<span class="in-values">' + ADD_VALUES_HINT + '</span> <input type="text">', format: true,
+        getValue: function() {
+            return this.values.join(',');
+        },
+        setValue: function(value) {
+            this.updateValues(value.split(','));
+        },
+        inputChanged: function(idx, value) {
+            if (value == "") return;
+            this.$('input').val('');
+            this.updateValues(this.values.concat(value));
+            this.trigger('changed', this, this.getValue());
+        },
+        renderValues: function() {
+            var text = this.values.length ? this.values.join(', ') : ADD_VALUES_HINT;
+            this.$('.in-values').text(text);
+        },
+        keydown: function(event) {
+            if (event.keyCode != 8 || this.$('input').val() != "" || this.values.length == 0) return;
+            event.preventDefault();
+            this.inputUIs[0].fillIn(this.values.pop()).validate();
+            this.updateValues(this.values);
+        }
+    };
+
     var opInfo = [
         {opName: 'Like', negation: 'Not Like', types: ['strings']},
         {opName: '=', negation: '≠', types: ['strings', 'numbers', 'dates'], format: true},
@@ -80,12 +128,8 @@ define([
         {opName: 'True', negation: 'Not True', types: ['bools'], input: null},
         {opName: 'False', negation: 'Not False', types: ['bools'], input: null},
         {opName: 'Does not matter', types: ['bools'], input: null},
-
-        {opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers'],
-         input: '<input type="text"> and <input type="text">', format: true
-        },
-
-        {opName: 'In', negation: 'Not In', types: ['strings', 'numbers']},
+        Between,
+        In,
         {opName: 'Contains', negation: "Doesn't Contain", types: ['strings']},
         {opName: 'Empty', negation: 'Not Empty', types: ['strings', 'bools', 'dates', 'numbers'], input: null},
         {opName: 'True or Null', negation: 'False', types: ['bools'], input: null},
