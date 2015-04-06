@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, inspect
-from sqlalchemy.sql.expression import case, func, cast
+from sqlalchemy.sql.expression import case, func, cast, literal
 from sqlalchemy.sql.functions import concat, coalesce, count
 from sqlalchemy import types
 
@@ -101,6 +101,9 @@ class ObjectFormatter(object):
         logger.info('aggregating field %s on %s using %s', field, rel_table, aggregator_name)
         specify_model = datamodel.get_table(field.relatedModelName, strict=True)
         aggregatorNode = self.getAggregatorDef(specify_model, aggregator_name)
+        if aggregatorNode is None:
+            logger.warn("aggregator is not defined")
+            return literal("<Aggregator not defined.>")
         logger.debug("using aggregator: %s", ElementTree.tostring(aggregatorNode))
         formatter_name = aggregatorNode.attrib.get('format', None)
         separator = aggregatorNode.attrib.get('separator', None)
