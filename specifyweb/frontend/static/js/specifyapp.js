@@ -8,7 +8,8 @@ define([
     'treetask',
     'expresssearchtask',
     'datamodeltask',
-    'attachmentstask'
+    'attachmentstask',
+    'masterkeytask'
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
