@@ -46,7 +46,7 @@ define([
             self.$el.empty().append(header);
 
             if (self.collection.length < 1) {
-                self.$el.append('<p>No Data</p>');
+                self.$el.append('<p>No Data.</p>');
                 return this;
             }
 
