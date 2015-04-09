@@ -11,6 +11,7 @@ orderings = {
     'Picklistitem': ('ordinal', ),
     'Recordsetitem': ('recordid', ),
     'Spqueryfield': ('position', ),
+    'Determination': ('-iscurrent',),
 }
 
 def make_model(module, table):
