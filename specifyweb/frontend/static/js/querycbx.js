@@ -53,6 +53,10 @@ define([
         return query;
     }
 
+    function lookupTypesearch(name) {
+        return $('[name="'+name+'"]', typesearches);
+    }
+
     var QueryCbx = Backbone.View.extend({
         __name__: "QueryCbx",
         events: {
@@ -60,6 +64,12 @@ define([
             'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
+        },
+        initialize: function(options) {
+            this.init = options.init || null;
+            this.typesearch = options.typesearch || null;
+            this.relatedModel = options.relatedModel || null;
+            this.forceCollection = options.forceCollection || null;
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
@@ -82,27 +92,20 @@ define([
             }
             this.isRequired = this.$('input').is('.specify-required-field');
 
-            var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
-            var typesearch = this.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
+            var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
             var field = this.model.specifyModel.getField(this.fieldName);
-            var relatedModel = this.relatedModel = field.getRelatedModel();
+
+            this.relatedModel || (this.relatedModel = field.getRelatedModel());
+            this.typesearch || (this.typesearch = lookupTypesearch(init.name));
+
             var searchField = this.relatedModel.getField(this.typesearch.attr('searchfield'));
             control.attr('title', 'Searches: ' + searchField.getLocalizedName());
 
             control.autocomplete({
                 minLength: 3,
-                source: function (request, response) {
-                    var query = typesearch2query(typesearch, request.term);
-                    $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(function(data) {
-                        var items = _.map(data.results, function(row) {
-                            return { label: row[1], value: row[1],
-                                     resource: new relatedModel.Resource({ id: row[0] }) };
-                        });
-                        response(items);
-                    });
-                }
+                source: this.makeQuery.bind(this)
             });
 
             this.model.on('change:' + this.fieldName.toLowerCase(), this.fillIn, this);
@@ -111,6 +114,25 @@ define([
             this.toolTipMgr = new ToolTipMgr(this, control).enable();
             this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
             return this;
+        },
+        makeQuery: function (request, response) {
+            var query = typesearch2query(this.typesearch, request.term);
+            if (this.forceCollection) {
+                console.log('force query collection id to:', this.forceCollection.id);
+                query.set('collectionid', this.forceCollection.id);
+            }
+            $.post('/stored_query/ephemeral/', JSON.stringify(query))
+                .pipe(this.processResponse.bind(this))
+                .done(response);
+        },
+        processResponse: function(data) {
+            return _.map(data.results, function(row) {
+                return {
+                    label: row[1],
+                    value: row[1],
+                    resource: new this.relatedModel.Resource({ id: row[0] })
+                };
+            }, this);
         },
         fillIn: function () {
             var _this = this;
