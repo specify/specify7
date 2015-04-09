@@ -39,7 +39,7 @@ define([
             this.renderValues();
         },
         renderValues: function() {
-            _.each(this.inputUIs, function(ui, i) { ui.fillIn(this.values[i]); });
+            _.each(this.inputUIs, function(ui, i) { ui.fillIn(this.values[i]); }, this);
         },
         render: function() {
             this.$el.empty();
