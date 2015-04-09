@@ -1,21 +1,15 @@
 define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'specifyform', 'populateform',
-    'fieldformat', 'dataobjformatters', 'jquery-ui'
-], function($, _, Backbone, navigation, specifyform, populateform, fieldformat, dataobjformatters) {
+    'jquery', 'underscore', 'backbone', 'fieldformat'
+], function($, _, Backbone, fieldformat) {
     "use strict";
 
-    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
-
-    function renderResult(fieldSpec, rowHref, value) {
+    function renderResult(fieldSpec, rowHref, value, format) {
         var field = fieldSpec.getField();
+        var formatted = format ? formatValue(fieldSpec, value) :
+                value == null ? '' : value;
         var cell = $('<a class="query-result-link">')
-                .prop('href', rowHref);
-
-        if (!fieldSpec.treeRank && field.isRelationship) {
-            (field.type === 'many-to-one' ? setupToOneCell : setupToManyCell)(fieldSpec, cell, value);
-        } else {
-            cell.text(formatValue(fieldSpec, value));
-        }
+                .prop('href', rowHref)
+                .text(formatted);
         return $('<td>').append(cell);
     }
 
@@ -28,31 +22,13 @@ define([
         return value;
     }
 
-    function setupToOneCell(fieldSpec, cell, cellValue) {
-        var field = fieldSpec.getField();
-        if (cellValue == null) return;
-        cell.text('(loading...)');
-        var resource = new (field.getRelatedModel().Resource)({ id: cellValue });
-        objformat(resource).done(function(formatted) { cell.text(formatted); });
-    }
-
-    function setupToManyCell(fieldSpec, cell, cellValue) {
-        var field = fieldSpec.getField();
-        if (cellValue == null) return;
-        cell.text('(loading...)');
-        var parentResource = new field.model.Resource({ id: cellValue });
-        parentResource.rget(field.name, true).pipe(aggregate).done(function(formatted) {
-            cell.text(formatted);
-        });
-    }
-
-
     var QueryResultsView = Backbone.View.extend({
         __name__: "QueryResultsView",
         events: {
             'click .query-result-link': 'openRecord'
         },
         initialize: function(options) {
+            this.format = options.format;
             this.fieldSpecs = options.fieldSpecs;
             this.linkField = options.linkField || 0;
             this.model = options.model;
@@ -68,7 +44,9 @@ define([
                 var resource = new this.model.Resource({ id: result[this.linkField] });
                 var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
                 var href = resource.viewUrl();
-                _.each(this.fieldSpecs, function(f, i) { row.append(renderResult(f, href, result[i + 1])); });
+                _.each(this.fieldSpecs, function(f, i) {
+                    row.append(renderResult(f, href, result[i + 1], this.format));
+                }, this);
             }, this);
             return results.results.length;
         },

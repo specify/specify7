@@ -60,6 +60,7 @@ define([
                 noHeader: true,
                 model: model,
                 fieldSpecs: _.map(results.fieldSpecs, makeFS),
+                format: true,
                 initialData: results,
                 fetchResults: function(offset) {
                     var url = $.param.querystring(ajaxUrl, {name: model.name, offset: offset});

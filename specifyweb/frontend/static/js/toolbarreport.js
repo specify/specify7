@@ -1,16 +1,14 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
-    'whenall', 'dataobjformatters', 'fieldformat', 'domain', 'attachmentplugin', 'attachments',
+    'domain', 'attachmentplugin', 'attachments',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(
     require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
-    whenAll, dataobjformatters, fieldformat, domain, AttachmentPlugin, attachments,
+    domain, AttachmentPlugin, attachments,
     statusJSON
 ) {
     "use strict";
-    var objformat = dataobjformatters.format, aggregate = dataobjformatters.aggregate;
-
     var app;
     var status = $.parseJSON(statusJSON);
     var title =  "Reports";
@@ -64,29 +62,30 @@ define([
         },
         makeEntry: function(icon, appResource) {
             var img = $('<img>', {src: icon});
-            var a = $('<a class="select">').text(appResource.get('name'))
+            var a = $('<a class="select">')
+                    .text(appResource.get('name'))
                     .attr('title', appResource.get('remarks') || "");
-            var entry = $('<tr>').data('resource', appResource)
-                    .append($('<td>').append(img),
-                            $('<td>').append(a));
+            var entry = $('<tr>')
+                    .data('resource', appResource)
+                    .append($('<td>').append(img), $('<td>').append(a));
 
             this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
             return entry;
         },
         getReport: function(evt) {
             evt.preventDefault();
-            var appResource = $(evt.currentTarget).closest('li').data('resource');
+            var appResource = $(evt.currentTarget).closest('tr').data('resource');
             var reports = new schema.models.SpReport.LazyCollection({
                 filters: { appresource: appResource.id }
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 
-            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getRecordSets;
+            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", appResource.id);
                 } else if (data.length < 1) {
-                    console.error("coundn't find report definition for appresource id:", appResource.id);
+                    console.error("couldn't find report definition for appresource id:", appResource.id);
                     return;
                 }
                 if (!reports.isComplete()) {
@@ -107,11 +106,11 @@ define([
                         };
                         if (imageFixResult.isOK) {
                             action(_({}).extend(reportResources, {reportXML: imageFixResult.reportXML}));
-                        } else (new FixImagesDialog({
+                        } else new FixImagesDialog({
                             reportResources: reportResources,
                             imageFixResult: imageFixResult,
                             action: action
-                        })).render();
+                        }).render();
                     });
             });
         }
@@ -171,11 +170,11 @@ define([
         tryAgain: function(imageFixResult) {
             if (imageFixResult.isOK) {
                 this.action(_({}).extend(this.reportResources, {reportXML: imageFixResult.reportXML}));
-            } else (new FixImagesDialog({
+            } else new FixImagesDialog({
                 reportResources: this.reportResources,
                 imageFixResult: imageFixResult,
                 action: this.action
-            })).render();
+            }).render();
         }
     });
 
@@ -196,10 +195,14 @@ define([
             }
         });
         recordSets.fetch({ limit: 100 }).done(function() {
-            (new ChooseRecordSetDialog({
-                recordSets: recordSets,
-                reportResources: reportResources
-            })).render();
+            if (recordSets._totalCount > 0) {
+                new ChooseRecordSetDialog({
+                    recordSets: recordSets,
+                    reportResources: reportResources
+                }).render();
+            } else {
+                new QueryParamsDialog({reportResources: reportResources}).render();
+            }
         });
     }
 
@@ -207,8 +210,48 @@ define([
         makeDialog($('<div title="Report definition">')
                    .append($('<textarea cols=120 rows=40 readonly>')
                            .text(reportResources.reportXML)),
-                   { width: 'auto'});
+                   {width: 'auto'});
     }
+
+    function getReportParams(reportResources) {
+        var reportDOM = $.parseXML(reportResources.reportXML);
+        var parameters = $('parameter[isForPrompting="true"]', reportDOM);
+        if (parameters.length < 1) {
+            getRecordSets(_.extend({parameters: {}}, reportResources));
+        } else {
+            new ReportParametersDialog({reportResources: reportResources, parameters: parameters}).render();
+        }
+    }
+
+    var ReportParametersDialog = Backbone.View.extend({
+        __name__: "ReportParametersDialog",
+        className: "report-parameters-dialog",
+        initialize: function(options) {
+            this.reportResources = options.reportResources;
+            this.parameters = options.parameters;
+        },
+        render: function() {
+            var rows = _.map(this.parameters, function(param) {
+                return $('<tr>').append(
+                    $('<th>').text($(param).attr('name')),
+                    $('<td><input type="text"></td>'))[0];
+            });
+            $('<table>').append(rows).appendTo(this.el);
+            makeDialog(this.$el, {
+                title: "Report Parameters",
+                buttons: [
+                    {text: 'Ok', click: this.done.bind(this)},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
+            });
+            return this;
+        },
+        done: function() {
+            var paramNames = _.map(this.parameters, function(param) { return $(param).attr('name'); });
+            var paramValues = _.map(this.$('input'), function(input) { return $(input).val(); });
+            getRecordSets(_.extend({parameters: _.object(paramNames, paramValues)}, this.reportResources));
+        }
+    });
 
     var ChooseRecordSetDialog = Backbone.View.extend({
         __name__: "ChooseRecordSetForReport",
@@ -222,7 +265,7 @@ define([
         },
         render: function() {
             var table = $('<table>');
-            this.recordSets.each();
+            table.append.apply(table, this.recordSets.map(this.dialogEntry, this));
             this.recordSets.isComplete() ||
                 table.append('<tr><td></td><td>(list truncated)</td></tr>');
             this.$el.append(table);
@@ -236,11 +279,8 @@ define([
         dialogEntry: function(recordSet) {
             var icon = schema.getModelById(recordSet.get('dbtableid')).getIcon();
             var img = $('<img>', {src: icon});
-            var link = $('<a href="#">').text(recordSet.get('name'))
-                .append($('<span class="item-count" style="display:none"> - </span>'))
-                .appendTo(entry);
-
-            var entry = $('<tri>').append(
+            var link = $('<a href="#">').text(recordSet.get('name'));
+            var entry = $('<tr>').append(
                 $('<td>').append(img),
                 $('<td>').append(link),
                 $('<td class="item-count" style="display:none">'));
@@ -258,7 +298,7 @@ define([
                 buttons.unshift({
                     text: 'Query',
                     click: function() {
-                        (new QueryParamsDialog({reportResources: reportResources})).render();
+                        new QueryParamsDialog({reportResources: reportResources}).render();
                     }
                 });
             }
@@ -267,10 +307,10 @@ define([
         selected: function(evt) {
             evt.preventDefault();
             var recordSet = this.recordSets.at(this.$('a').index(evt.currentTarget));
-            (new QueryParamsDialog({
+            new QueryParamsDialog({
                 reportResources: this.reportResources,
                 recordSetId: recordSet.id
-            })).runQuery();
+            }).runReport();
         }
     });
 
@@ -304,7 +344,7 @@ define([
                     width: 800,
                     position: { my: "top", at: "top+20", of: $('body') },
                     buttons: [
-                        {text: "Run", click: this.runQuery.bind(this)},
+                        {text: "Run", click: this.runReport.bind(this)},
                         {text: "Cancel", click: function() { $(this).dialog('close'); }}
                     ]
             });
@@ -315,44 +355,30 @@ define([
             });
             return this;
         },
-        runQuery: function() {
-            var runQueryWithFields = runQuery.bind(null, this.reportResources, this.recordSetId);
-            this.fieldUIsP.done(runQueryWithFields);
+        runReport: function() {
+            var runReportWithFields = runReport.bind(null, this.reportResources, this.recordSetId);
+            this.fieldUIsP.done(runReportWithFields);
         }
     });
 
-
-    function runQuery(reportResources, recordSetId, fieldUIs) {
+    function runReport(reportResources, recordSetId, fieldUIs) {
+        dialog && dialog.dialog('close');
         var query = reportResources.query.toJSON();
         query.limit = 0;
         query.recordsetid = recordSetId;
-        $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(runReport.bind(null, reportResources, fieldUIs));
-        makeDialog($('<div title="Running query">Running query...</div>'));
-    }
 
-    function runReport(reportResources, fieldUIs, queryResults) {
-        dialog && dialog.dialog('close');
-        if (queryResults.count < 1) {
-            makeDialog($('<div title="No results">The query returned no records.</div>'));
-            return;
-        }
-        makeDialog($('<div title="Formatting records">Formatting records...</div>'));
-        var fields = ['id'].concat(_.map(fieldUIs, function(fieldUI) { return fieldUI.spqueryfield.get('stringid'); }));
-        formatResults(fieldUIs, queryResults.results).done(function(formattedData) {
-            dialog && dialog.dialog('close');
-            var reportWindowContext = "ReportWindow" + Math.random();
-            window.open("", reportWindowContext);
-            var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
-                         '<textarea name="report"></textarea>' +
-                         '<textarea name="data"></textarea>' +
-                         '<input type="submit"/>' +
-                         '</form>');
-
-            var reportData = { fields: fields, rows: formattedData };
-            $('textarea[name="report"]', form).val(reportResources.reportXML);
-            $('textarea[name="data"]', form).val(JSON.stringify(reportData));
-            form[0].submit();
-        });
+        var reportWindowContext = "ReportWindow" + Math.random();
+        window.open("", reportWindowContext);
+        var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
+                     '<textarea name="report"></textarea>' +
+                     '<textarea name="query"></textarea>' +
+                     '<textarea name="parameters"></textarea>' +
+                     '<input type="submit"/>' +
+                     '</form>');
+        $('textarea[name="report"]', form).val(reportResources.reportXML);
+        $('textarea[name="query"]', form).val(JSON.stringify(query));
+        $('textarea[name="parameters"]', form).val(JSON.stringify(reportResources.parameters));
+        form[0].submit();
     }
 
     function fixupImages(reportXML) {
@@ -362,6 +388,7 @@ define([
         var filenames = {};
         var toReplace = $('imageExpression', reportDOM).each(function() {
             var imageExpression = $(this).text();
+            if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
             var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
             if (!match) {
                 badImageExpressions.push(imageExpression);
@@ -389,54 +416,11 @@ define([
             });
             return {
                 isOK: badImageExpressions.length == 0 && missingAttachments == 0,
-                reportXML: (new XMLSerializer()).serializeToString(reportDOM),
+                reportXML: new XMLSerializer().serializeToString(reportDOM),
                 badImageExpressions: badImageExpressions,
                 missingAttachments: missingAttachments
             };
         });
-    }
-
-    function formatResults(fieldUIs, rows) {
-        var manyToOneCache = {}, oneToManyCache = {};
-        function formatManyToOne(field, id) {
-            var resource = new (field.getRelatedModel().Resource)({ id: id });
-            var key = resource.url();
-            return _.has(manyToOneCache, key) ? manyToOneCache[key] :
-                (manyToOneCache[key] = objformat(resource));
-        }
-
-        function formatOneToMany(field, id) {
-            var resource = new field.model.Resource({ id: id });
-            var key = resource.url() + " " + field.name;
-            return _.has(oneToManyCache, key) ? oneToManyCache[key] :
-                (oneToManyCache[key] = (resource).rget(field.name, true).pipe(aggregate));
-        }
-
-        function formatRow(row) {
-            return whenAll( _.map(row, function(datum, i) {
-                if (i === 0) return datum; // id field
-                if (datum == null) return null;
-                var fieldSpec = fieldUIs[i-1].fieldSpec;
-                var field = fieldSpec.getField();
-                if (field.type === "java.lang.Boolean") return !!datum;
-                if (field.type === "java.lang.Integer" || field.type === "java.lang.Short") return datum;
-                if (fieldSpec.treeRank || !field.isRelationship) {
-                    if (field && (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date')) {
-                        return fieldformat(field, datum);
-                    } else return datum;
-                }
-                switch (field.type) {
-                case 'many-to-one':
-                    return formatManyToOne(field, datum);
-                case 'one-to-many':
-                    return formatOneToMany(field, datum);
-                default:
-                    console.error('unhandled field type:', field.type);
-                    return datum;
-                }
-            }));
-        }
-        return whenAll( _.map(rows, formatRow) );
     }
 
     return {
@@ -449,7 +433,7 @@ define([
             var appRs = new schema.models.SpAppResource.LazyCollection();
             appRs.url = function() { return "/report_runner/get_reports/"; };
             appRs.fetch({ limit: 100 }).done(function() {
-                (new ReportListDialog({ appResources: appRs })).render();
+                new ReportListDialog({ appResources: appRs }).render();
             });
         }
     };

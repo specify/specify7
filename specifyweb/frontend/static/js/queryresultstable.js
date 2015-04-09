@@ -21,7 +21,7 @@ define([
         __name__: "QueryResultsTable",
         className: "query-results-table",
         initialize: function(options) {
-            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults initialData ajaxUrl scrollOnWindow";
+            var opNames = "countOnly noHeader fieldSpecs linkField fetchResults fetchCount initialData ajaxUrl scrollOnWindow format";
             _.each(opNames.split(' '), function(option) { this[option] = options[option]; }, this);
             this.gotDataBefore = false;
         },
@@ -34,10 +34,14 @@ define([
             var inner = $(templates.queryresults());
             this.$el.append(inner);
             var table = this.$('table.query-results');
-            this.$('.query-results-count').empty();
+            this.$('.query-results-count').text('(loading...)');
             this.countOnly || table.append(this.renderHeader());
             this.noHeader && this.$('h3').remove();
             this.$('.fetching-more').hide();
+
+            this.fetchCount && this.fetchCount.done(this.setCount.bind(this));
+
+            if (this.countOnly) return this;
 
             var results = this.results = new ScrollResults({
                 el: this.el,
@@ -45,6 +49,7 @@ define([
                 view: new QueryResults({model: this.model,
                                         el: inner,
                                         fieldSpecs: this.fieldSpecs,
+                                        format: this.format,
                                         linkField: this.linkField}),
                 fetch: this.fetchResults,
                 ajaxUrl: this.ajaxUrl,
@@ -56,6 +61,9 @@ define([
                 .start();
 
             return this;
+        },
+        setCount: function(data) {
+            this.$('.query-results-count').text(data.count);
         },
         remove: function() {
             this.results && this.results.undelegateEvents();

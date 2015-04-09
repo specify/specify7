@@ -7,9 +7,10 @@ CHUNK_SIZE = 2**16
 
 SPECIFYWEB_DIR = path.abspath(path.join(path.dirname(__file__), '..'))
 DB_MAP_FILE = path.join(SPECIFYWEB_DIR, 'db_map.json')
-APACHE_CONF_FILE = path.join(SPECIFYWEB_DIR, 'specify_panel.conf')
-VIRTHOST_WSGI = path.join(SPECIFYWEB_DIR, 'specify_virtual_host.wsgi')
-PANEL_WSGI = path.join(SPECIFYWEB_DIR, 'specify_panel.wsgi')
+REPORT_CONF_FILE = path.join(path.expanduser("~"), '.specify-report.properties')
+APACHE_CONF_FILE = path.join(SPECIFYWEB_DIR, 'specifypanel_apache.conf')
+VIRTHOST_WSGI = path.join(SPECIFYWEB_DIR, 'specifyweb_vh.wsgi')
+PANEL_WSGI = path.join(SPECIFYWEB_DIR, 'specifypanel.wsgi')
 MANAGE_PY = path.join(SPECIFYWEB_DIR, 'specifyweb', "manage.py")
 
 MYSQL_USER = "-uMasterUser"
@@ -55,6 +56,16 @@ def set_dbs():
         json.dump(db_map, f)
 
     check_call(['/usr/bin/touch', VIRTHOST_WSGI])
+
+    with open(REPORT_CONF_FILE) as f:
+        report_conf_file = f.read()
+
+    dbname = db_map.get(SERVERS[0], None)
+    if dbname is not None:
+        with open(REPORT_CONF_FILE, 'w') as f:
+            report_conf_file = re.sub(r'^dbname=.*$', 'dbname=' + dbname, report_conf_file, flags=re.M)
+            f.write(report_conf_file)
+        check_call(['sudo', 'restart', 'specify-report-service'])
     redirect('/')
 
 @route('/upload/')
@@ -83,8 +94,8 @@ def upload_db():
     mysql.stdin.close()
     mysql.wait()
 
-    yield "syncing db.\n"
-    do_sync(db_name)
+    # yield "syncing db.\n"
+    # do_sync(db_name)
     yield "done.\n"
 
 def do_sync(db_name):
@@ -135,6 +146,7 @@ def github_hook():
                 "--work-tree=" + SPECIFYWEB_DIR,
                 "--git-dir=" + path.join(SPECIFYWEB_DIR, '.git'),
                 "pull"])
+    check_call(['/usr/bin/make', '-C', path.join(SPECIFYWEB_DIR, 'specifyweb')])
     check_call(['/usr/bin/touch', VIRTHOST_WSGI])
     check_call(['/usr/bin/touch', PANEL_WSGI])
 

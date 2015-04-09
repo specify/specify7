@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     # log in and log out pages
     (r'^accounts/login/$', 'specifyweb.context.views.login'),
     (r'^accounts/logout/$', 'specifyweb.context.views.logout'),
+
     (r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
      {'template_name': 'password_change.html',
       'post_change_redirect': '/'}),
@@ -29,7 +30,12 @@ urlpatterns = patterns('',
     url(r'^api/test_error/', 'specifyweb.specify.views.raise_error'),
 
     # special tree apis
-    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/', 'specifyweb.specify.tree_views.path'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/$', 'specifyweb.specify.tree_views.path'),
+    url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/$', 'specifyweb.specify.tree_views.tree_view'),
+    url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', 'specifyweb.specify.tree_views.tree_stats'),
+
+    # generates Sp6 master key
+    url(r'^api/master_key/$', 'specifyweb.specify.master_key.master_key'),
 
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specifyweb.specify.views.images'),

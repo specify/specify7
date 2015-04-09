@@ -38,7 +38,7 @@ define([
                 inputUI: undefined,
                 forReport: options.forReport || false
             });
-            if (options.spqueryfield.isNew()) {
+            if (attrs.stringid == null) { // the field spec is undefined
                 _(this).extend({
                     fieldSpec       : new QueryFieldSpec(this.model),
                     formattedRecord : false,
@@ -141,7 +141,7 @@ define([
             var fieldLabel = this.$('.field-label').empty();
             _.each(this.fieldSpec.joinPath, function(field) {
                 $('<a class="field-label-field">')
-                    .text(field.getLocalizedName())
+                    .text(field.getLocalizedName() || field.name)
                     .prepend($('<img>', { src: field.model.getIcon() }))
                     .appendTo(fieldLabel);
             });
@@ -184,7 +184,7 @@ define([
                 .sortBy(function(field) { return field.getLocalizedName(); })
                 .each(function(field) {
                     $('<option>', {value: field.name})
-                        .text((field.isRelationship ? '➔ ' : '') + field.getLocalizedName())
+                        .text((field.isRelationship ? '➔ ' : '') + (field.getLocalizedName() || field.name))
                         .appendTo(fieldSelect);
                 });
 
@@ -249,7 +249,7 @@ define([
         },
 
         // These methods respond to events which change the state.
-        
+
         fieldSelected: function() {
             var fieldName = this.$('.field-select').val();
             if (fieldName === 'format record') {

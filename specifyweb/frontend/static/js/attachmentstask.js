@@ -56,11 +56,9 @@ define([
             var tableId = attachment.get('tableid');
             var title = attachment.get('title');
 
-            var icon = _.isNull(tableId) ? schema.getModel('attachment').getIcon() : (
-                function() {
-                    var model = schema.getModelById(tableId);
-                    return model.system ? "/images/system.png" : model.getIcon();
-                })();
+            var model = tableId != null && schema.getModelById(tableId);
+            var icon = model ? (model.system ? "/images/system.png" : model.getIcon()) :
+                schema.getModel('attachment').getIcon();
 
             var dataObjIcon = $('<img>', {
                 'class': "specify-attachment-dataobj-icon",

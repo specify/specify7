@@ -1,7 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates, navigation, QueryResultsTable) {
+    'queryfromtree', 'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
+], function($, _, Backbone, schema, QueryFieldUI, templates,
+            queryFromTree, navigation, QueryResultsTable) {
     "use strict";
 
     var setTitle;
@@ -98,6 +99,7 @@ define([
             this.updatePositions();
         },
         search: function(evt) {
+            this.$('.query-execute').blur();
             this.deleteIncompleteFields();
             if (this.fieldUIs.length < 1) return;
 
@@ -108,6 +110,7 @@ define([
                 scrollOnWindow: true,
                 countOnly: this.query.get('countonly'),
                 fetchResults: this.fetchResults(),
+                fetchCount: this.fetchCount(),
                 fieldSpecs: _.chain(this.fieldUIs)
                     .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
                     .sortBy(function(f) { return f.spqueryfield.get('position'); })
@@ -122,6 +125,11 @@ define([
                 query.offset = offset;
                 return $.post('/stored_query/ephemeral/', JSON.stringify(query));
             };
+        },
+        fetchCount: function() {
+            var query = this.query.toJSON();
+            query.countonly = true;
+            return $.post('/stored_query/ephemeral/', JSON.stringify(query));
         },
         moveField: function(queryField, dir) {
             ({
@@ -171,6 +179,14 @@ define([
             var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
             view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
             app.setCurrentView(view);
+        });
+
+        app.router.route('query/fromtree/:table/:id/', 'queryFromTree', function(table, nodeId) {
+            queryFromTree(app.user, table, nodeId).done(function(query) {
+                var view = new QueryBuilder({ query: query, readOnly: true });
+                view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
+                app.setCurrentView(view);
+            });
         });
     };
 });
