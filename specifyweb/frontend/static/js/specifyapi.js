@@ -34,11 +34,6 @@ define([
                 return new specifyModel.Resource({ id: itemData.recordid });
             });
         },
-        queryCbxSearch: function(model, searchfield, searchterm) {
-            var filters = { orderby: searchfield.toLowerCase() };
-            filters[searchfield.toLowerCase() + '__istartswith'] = searchterm;
-            return new model.LazyCollection({ filters: filters, domainfilter: true });
-        },
         queryCbxExtendedSearch: function(templateResource) {
             var url = '/express_search/querycbx/' +
                     templateResource.specifyModel.name.toLowerCase() +
