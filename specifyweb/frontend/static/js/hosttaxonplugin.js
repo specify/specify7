@@ -25,6 +25,7 @@ define([
                 model: this.model,
                 relatedModel: schema.Taxon,
                 forceCollection: rightsideCollection,
+                hideButtons: true,
                 init: {},
                 typesearch: $('typesearch', hostTaxonTypesearch)
             }).render();

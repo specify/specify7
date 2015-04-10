@@ -70,6 +70,8 @@ define([
             this.typesearch = options.typesearch || null;
             this.relatedModel = options.relatedModel || null;
             this.forceCollection = options.forceCollection || null;
+            // Hides buttons other than search for purposes of Host Taxon Plugin
+            this.hideButtons = !!options.hideButtons;
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
@@ -89,6 +91,9 @@ define([
             }
             if (!this.readOnly || this.inFormTable) {
                 this.$('.querycbx-display').hide();
+            }
+            if (this.hideButtons) {
+                this.$('.querycbx-edit, .querycbx-add, .querycbx-clone, .querycbx-display').hide();
             }
             this.isRequired = this.$('input').is('.specify-required-field');
 
