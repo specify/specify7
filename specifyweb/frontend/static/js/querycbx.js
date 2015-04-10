@@ -174,6 +174,7 @@ define([
             });
 
             self.dialog = new QueryCbxSearch({
+                forceCollection: self.forceCollection,
                 model: searchTemplateResource,
                 selected: function(resource) {
                     self.model.set(self.fieldName, resource);

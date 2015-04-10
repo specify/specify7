@@ -11,6 +11,9 @@ define([
         events: {
             'click .querycbx-search-results a': 'select'
         },
+        initialize: function(options) {
+            this.forceCollection = options.forceCollection || null;
+        },
         render: function() {
             var dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
             specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(_.bind(this.makeDialog, this));
@@ -45,7 +48,7 @@ define([
             this.$('.querycbx-search-results').empty();
 
             var _this = this;
-            api.queryCbxExtendedSearch(this.model).pipe(function(results) {
+            api.queryCbxExtendedSearch(this.model, this.forceCollection).pipe(function(results) {
                 _this.results = results;
                 return whenAll(_this.results.map(format));
             }).done(function(formattedResults) {

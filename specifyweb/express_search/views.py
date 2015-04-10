@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET
 from django import forms
 
-from specifyweb.specify.models import datamodel
+from specifyweb.specify.models import datamodel, Collection
 from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_maybe_required
 
@@ -149,12 +149,17 @@ def querycbx_search(request, modelname):
 
     fields = [table.get_field(fieldname, strict=True)
               for fieldname in request.GET
-              if fieldname not in ('limit', 'offset')]
+              if fieldname not in ('limit', 'offset', 'forcecollection')]
+
+    if 'forcecollection' in request.GET:
+        collection = Collection.objects.get(pk=request.GET['forcecollection'])
+    else:
+        collection = request.specify_collection
 
     filters = []
     for field in fields:
         filters_for_field = []
-        terms = parse_search_str(request.specify_collection, request.GET[field.name.lower()])
+        terms = parse_search_str(collection, request.GET[field.name.lower()])
         logger.debug("found terms: %s for %s", terms, field)
         for term in terms:
             filter_for_term = term.create_filter(table, field)
@@ -169,7 +174,7 @@ def querycbx_search(request, modelname):
         with models.session_context() as session:
             combined = reduce(and_, filters)
             query = session.query(getattr(model, table.idFieldName)).filter(combined)
-            query = filter_by_collection(model, query, request.specify_collection).limit(10)
+            query = filter_by_collection(model, query, collection).limit(10)
             ids = [id for (id,) in query]
     else:
         ids = []

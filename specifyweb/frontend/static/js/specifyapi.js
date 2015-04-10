@@ -34,7 +34,7 @@ define([
                 return new specifyModel.Resource({ id: itemData.recordid });
             });
         },
-        queryCbxExtendedSearch: function(templateResource) {
+        queryCbxExtendedSearch: function(templateResource, forceCollection) {
             var url = '/express_search/querycbx/' +
                     templateResource.specifyModel.name.toLowerCase() +
                     '/';
@@ -45,6 +45,8 @@ define([
                     data[key] = value;
                 }
             });
+
+            forceCollection && (data['forcecollection'] = forceCollection.id);
 
             return $.get(url, data).pipe(function(results) {
                 return new templateResource.specifyModel.StaticCollection(results);
