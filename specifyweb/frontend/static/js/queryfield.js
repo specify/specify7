@@ -292,8 +292,12 @@ define([
             }[element];
 
             _.each(toClear, function(field) {
-                var target = _.has(this.fieldSpec, field) ? this.fieldSpec : this;
-                target[field] = undefined;
+                if (field == 'value') {
+                    this.valueChanged(null, "");
+                } else {
+                    var target = _.has(this.fieldSpec, field) ? this.fieldSpec : this;
+                    target[field] = undefined;
+                }
             }, this);
 
             if (element === 'field') {
