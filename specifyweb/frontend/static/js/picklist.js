@@ -11,24 +11,24 @@ define([
             change: 'setValueIntoModel'
         },
         initialize: function(options) {
-            var _this = this;
-            return this.initializing = this.model.getResourceAndField(this.$el.attr('name')).done(function(resource, field) {
-                if (!field) {
-                    console.log("can't setup picklist for unknown field " + _this.model.specifyModel.name + "." + (_this.$el.attr('name')));
-                    return;
-                }
-                _this.isAgentType = resource.specifyModel.name === 'Agent' && field.name === 'agentType';
-                _this.pickListName = _this.$el.data('specify-picklist') || field.getPickList();
+            this.initializing = this.model.getResourceAndField(this.$el.attr('name')).done(this._gotField.bind(this));
+        },
+        _gotField: function(resource, field) {
+            if (!field) {
+                console.log("can't setup picklist for unknown field " + this.model.specifyModel.name + "." + (this.$el.attr('name')));
+                return;
+            }
+            this.isAgentType = resource.specifyModel.name === 'Agent' && field.name === 'agentType';
+            this.pickListName = this.$el.data('specify-picklist') || field.getPickList();
 
-                if (!_this.pickListName && !_this.isAgentType) {
-                    console.log("can't determine picklist for field " + resource.specifyModel.name + "." + field.name);
-                    return;
-                }
-                _this.remote = resource !== _this.model;
-                _this.resource = resource;
-                _this.field = field;
-                _this.initialized = true;
-            });
+            if (!this.pickListName && !this.isAgentType) {
+                console.log("can't determine picklist for field " + resource.specifyModel.name + "." + field.name);
+                return;
+            }
+            this.remote = resource !== this.model;
+            this.resource = resource;
+            this.field = field;
+            this.initialized = true;
         },
         setValueIntoModel: function() {
             var value = this.$el.val() || null;
@@ -36,7 +36,6 @@ define([
             this.model.set(this.field.name, value);
         },
         setupOptions: function(items, value) {
-            var _this = this;
             // value maybe undefined, null, a string, or a Backbone model
             // if the latter, we use the URL of the object to represent it
             if (value != null ? value.url : void 0) value = value.url();
@@ -46,11 +45,11 @@ define([
                 this.$el.append('<option>');
             }
 
-            _(items).each(function(item) {
-                if (item.value) {
-                    _this.$el.append($('<option>', {value: item.value}).text(item.title));
-                }
-            });
+            var options = items
+                    .map(function(item) { return !!item.value && $('<option>', {value: item.value}).text(item.title)[0]; })
+                    .filter(function(option) { return !!option; });
+
+            this.$el.append(options);
 
             // value will be undefined when creating picklist for new resource
             // so we set the model to have whatever the select element is set to
@@ -120,26 +119,27 @@ define([
             });
         },
         render: function() {
-            var _this = this;
-            this.initializing.then(function() {
-                if (!_this.initialized) {
-                    console.error('not initialized');
-                    return;
-                }
-                if (_this.rendered) throw new Exception('already rendered');
-                _this.rendered = true;
-                _this.getPickListItems().done(function(items) {
-                    _this.setupOptions(items, _this.resource.get(_this.field.name));
-                    _this.resource.on('change:' + _this.field.name.toLowerCase(), function() {
-                        _this.$el.val(_this.resource.get(_this.field.name));
-                    });
-                });
-                if (!_this.remote) {
-                    _this.toolTipMgr = new ToolTipMgr(_this).enable();
-                    _this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(_this, _this.field.name);
-                }
-            });
+            this.initializing.then(this._render.bind(this));
             return this;
+        },
+        _render: function() {
+            if (!this.initialized) {
+                console.error('not initialized');
+                return;
+            }
+            if (this.rendered) throw new Exception('already rendered');
+            this.rendered = true;
+            this.getPickListItems().done(this.gotItems.bind(this));
+            if (!this.remote) {
+                this.toolTipMgr = new ToolTipMgr(this).enable();
+                this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.field.name);
+            }
+        },
+        gotItems: function(items) {
+            this.setupOptions(items, this.resource.get(this.field.name));
+            this.resource.on('change:' + this.field.name.toLowerCase(), function() {
+                this.$el.val(this.resource.get(this.field.name));
+            }, this);
         }
     });
 });
