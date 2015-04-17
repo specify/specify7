@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'schema', 'backbone', 'dataobjformatters',
-    'saveblockers', 'agenttypepicklist', 'tooltipmgr', 'whenall'
-], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, agentTypesPL, ToolTipMgr, whenAll) {
+    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall'
+], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, whenAll) {
     "use strict";
 
     var objformat = dataobjformatters.format;
@@ -19,8 +19,6 @@ define([
                 }
                 _this.isAgentType = resource.specifyModel.name === 'Agent' && field.name === 'agentType';
                 _this.pickListName = _this.$el.data('specify-picklist') || field.getPickList();
-
-                // TODO: should check for picklist attribute on element
 
                 if (!_this.pickListName && !_this.isAgentType) {
                     console.log("can't determine picklist for field " + resource.specifyModel.name + "." + field.name);
@@ -80,7 +78,8 @@ define([
             this.model.businessRuleMgr.checkField(this.field.name);
         },
         getPickListItems: function() {
-            if (this.isAgentType) return $.when(agentTypesPL);
+            if (this.isAgentType) return $.when(builtInPL.agentType);
+            if (this.pickListName == 'UserType') return $.when(builtInPL.userType);
 
             return api.getPickListByName(this.pickListName).pipe(function(picklist) {
                 var limit = picklist.get('sizelimit');
