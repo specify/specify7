@@ -17,6 +17,9 @@ class AttachmentError(Exception):
 
 def get_collection():
     "Assumes that all collections are stored together."
+    if settings.WEB_ATTACHMENT_COLLECTION:
+        return settings.WEB_ATTACHMENT_COLLECTION
+
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
