@@ -91,6 +91,9 @@ def update_time_delta(response):
 def init():
     global server_urls
 
+    if settings.WEB_ATTACHMENT_URL in (None, ''):
+        return
+
     r = requests.get(settings.WEB_ATTACHMENT_URL)
     if r.status_code != 200:
         return
