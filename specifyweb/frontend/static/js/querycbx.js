@@ -10,8 +10,7 @@ define([
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
 
-    function typesearch2query(typesearch, q) {
-        var model = schema.getModelById(parseInt(typesearch.attr('tableid'), 10));
+    function makeQuery(model, searchFieldStr, q) {
         var query = new schema.models.SpQuery.Resource();
         query.set({
             'name': "Ephemeral QueryCBX query",
@@ -26,7 +25,7 @@ define([
         });
         var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
 
-        var searchFieldSpec = QueryFieldSpec.fromPath([model.name, typesearch.attr('searchfield')]);
+        var searchFieldSpec = QueryFieldSpec.fromPath([model.name].concat(searchFieldStr.split('.')));
         var searchField = new schema.models.SpQueryField.Resource();
         searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 0,
@@ -88,15 +87,26 @@ define([
 
             var field = this.model.specifyModel.getField(this.fieldName);
             var relatedModel = this.relatedModel = field.getRelatedModel();
-            var searchField = this.relatedModel.getField(this.typesearch.attr('searchfield'));
-            control.attr('title', 'Searches: ' + searchField.getLocalizedName());
+            var selectStmt = this.typesearch.text();
+            var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
+            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(','), mapper);
+            var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
+            var fieldTitles = _.map(searchFields, function(f) {
+                return (f.model === relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName();
+            });
+            control.attr('title', 'Searches: ' + fieldTitles.join(', '));
 
             control.autocomplete({
                 minLength: 3,
                 source: function (request, response) {
-                    var query = typesearch2query(typesearch, request.term);
-                    $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(function(data) {
-                        var items = _.map(data.results, function(row) {
+                    var queries = _.map(searchFieldStrs, function(s) {
+                        var json = JSON.stringify(makeQuery(relatedModel, s, request.term));
+                        return $.post('/stored_query/ephemeral/', json).pipe(function(data) { return data; });
+                    });
+                    whenAll(queries).done(function(resps) {
+                        var data = _.pluck(resps, 'results');
+                        var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
+                        var items = _.map(allResults, function(row) {
                             return { label: row[1], value: row[1],
                                      resource: new relatedModel.Resource({ id: row[0] }) };
                         });
