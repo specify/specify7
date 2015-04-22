@@ -46,7 +46,10 @@ define(['jquery', 'jquery-ui'], function($) {
         }
     }
 
-    return function(app) {
-        app.router.route('master_key/', 'master_key', execute);
+    return {
+        task: 'masterkey',
+        title: 'Generate Master Key',
+        icon: null,
+        execute: execute
     };
 });

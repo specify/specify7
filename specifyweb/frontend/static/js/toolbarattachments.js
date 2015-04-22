@@ -5,7 +5,7 @@ define(['navigation', 'attachments'], function(navigation, attachments) {
         task: 'attachments',
         title: 'Attachments',
         icon: '/images/attach_pref.png',
-        disabled: !attachments,
+        disabled: function() { return !attachments; },
         execute: function() {
             navigation.go('/specify/attachments/');
         }

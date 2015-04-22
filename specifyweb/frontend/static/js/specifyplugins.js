@@ -2,13 +2,15 @@ define([
     'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
     'collectionrelonetomanyplugin', 'collectionrelonetooneplugin',
     'uiplugin', 'geolocateplugin', 'weblinkbutton', 'attachmentplugin',
-    'hosttaxonplugin', 'templates'
+    'hosttaxonplugin', 'passwordplugin', 'useragentsplugin', 'templates'
 ], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
             collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, WebLinkButton,
-            AttachmentPlugin, HostTaxonPlugin, templates) {
+            AttachmentPlugin, HostTaxonPlugin, PasswordPlugin, UserAgentsPlugin, templates) {
     "use strict";
 
     return {
+        PasswordUI: PasswordPlugin,
+        UserAgentsUI: UserAgentsPlugin,
         HostTaxonPlugin: HostTaxonPlugin,
         ColRelTypePlugin: collectionrelonetooneplugin,
         CollectionRelOneToManyPlugin: collectionrelonetomanyplugin,
