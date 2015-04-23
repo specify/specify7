@@ -90,7 +90,6 @@ def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
-    data['isadmin'] = request.specify_user.is_admin()
     data['isauthenticated'] = request.user.is_authenticated()
     if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"

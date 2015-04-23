@@ -81,10 +81,26 @@ def properties(request, name):
 @csrf_exempt
 def set_password(request, userid):
     """Set target specify user's password."""
-    if not request.specify_user.is_admin:
+    if not request.specify_user.is_admin():
         return http.HttpResponseForbidden()
 
     user = models.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
+
+@login_maybe_required
+@require_POST
+@csrf_exempt
+def set_admin_status(request, userid):
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden()
+
+    user = models.Specifyuser.objects.get(pk=userid)
+    if request.POST['admin_status'] == 'true':
+        user.set_admin()
+        return http.HttpResponse('true', content_type='text/plain')
+    else:
+        user.clear_admin()
+        return http.HttpResponse('false', content_type='text/plain')
+

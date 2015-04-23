@@ -539,9 +539,12 @@ def obj_to_data(obj):
                      for ro in obj._meta.get_all_related_objects()))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
-    # Special case for Preparation.isonloan
+    # Special cases
     if isinstance(obj, models.Preparation):
         data['isonloan'] = obj.isonloan()
+    elif isinstance(obj, models.Specifyuser):
+        data['isadmin'] = obj.is_admin()
+
     return data
 
 def to_many_to_data(obj, related_object):

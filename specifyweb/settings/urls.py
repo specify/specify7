@@ -39,6 +39,7 @@ urlpatterns = patterns('',
 
     # set a user's password
     url(r'^api/set_password/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_password'),
+    url(r'^api/set_admin_status/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_admin_status'),
 
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specifyweb.specify.views.images'),

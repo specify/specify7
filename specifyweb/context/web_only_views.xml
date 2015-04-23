@@ -81,12 +81,16 @@
                     <cell type="field" id="2" name="email" uitype="text" cols="40" isrequired="false"/>
                 </row>
                 <row>
-                    <cell type="label" labelfor="6" label="Password"/>
+                    <cell type="label" label=""/>
                     <cell type="field" id="6" uitype="plugin" name="this" initialize="name=PasswordUI"/>
                 </row>
                 <row>
-                    <cell type="label" labelfor="7" label="Agents"/>
+                    <cell type="label" label=""/>
                     <cell type="field" id="7" uitype="plugin" name="this" initialize="name=UserAgentsUI"/>
+                </row>
+                <row>
+                    <cell type="label" label=""/>
+                    <cell type="field" id="8" uitype="plugin" name="this" initialize="name=AdminStatusUI"/>
                 </row>
             </rows>
         </viewdef>
