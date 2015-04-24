@@ -125,6 +125,7 @@ define([
             this.initializing.then(function() {
                 if (!_this.initialized) {
                     console.error('not initialized');
+		    return;
                 }
                 if (_this.rendered) throw new Exception('already rendered');
                 _this.rendered = true;
