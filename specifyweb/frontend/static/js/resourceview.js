@@ -103,7 +103,7 @@ define([
                 if (_(str).isString()) {
                     title += ': ' + str;
                     self.setFormTitle(title);
-                    self.trigger('changetitle', title);
+                    self.trigger('changetitle', self, title);
                 }
             });
         },

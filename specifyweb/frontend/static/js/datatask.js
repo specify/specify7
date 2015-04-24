@@ -183,7 +183,7 @@ define([
                 view.$el.empty();
                 view.$el.append('<p>Item deleted.</p>');
             }
-        }).on('changetitle', function(title) {
+        }).on('changetitle', function(resource, title) {
             app.setTitle(title);
         });
 
