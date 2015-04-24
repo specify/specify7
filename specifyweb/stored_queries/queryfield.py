@@ -19,6 +19,10 @@ class QueryField(namedtuple('QueryField', [
         logger.info('processing field from %r', field)
         fieldspec = QueryFieldSpec.from_stringid(field.stringId, field.isRelFld)
 
+        if field.isRelFld:
+            # force no filtering on formatted / aggregated fields
+            value = ""
+
         return cls(fieldspec = fieldspec,
                    op_num    = field.operStart,
                    value     = field.startValue if value is None else value,

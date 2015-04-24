@@ -17,6 +17,9 @@ class AttachmentError(Exception):
 
 def get_collection():
     "Assumes that all collections are stored together."
+    if settings.WEB_ATTACHMENT_COLLECTION:
+        return settings.WEB_ATTACHMENT_COLLECTION
+
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
@@ -90,6 +93,9 @@ def update_time_delta(response):
 
 def init():
     global server_urls
+
+    if settings.WEB_ATTACHMENT_URL in (None, ''):
+        return
 
     r = requests.get(settings.WEB_ATTACHMENT_URL)
     if r.status_code != 200:

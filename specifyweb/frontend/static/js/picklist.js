@@ -18,7 +18,7 @@ define([
                     return;
                 }
                 _this.isAgentType = resource.specifyModel.name === 'Agent' && field.name === 'agentType';
-                _this.pickListName = field.getPickList();
+                _this.pickListName = _this.$el.data('specify-picklist') || field.getPickList();
 
                 // TODO: should check for picklist attribute on element
 
@@ -125,6 +125,7 @@ define([
             this.initializing.then(function() {
                 if (!_this.initialized) {
                     console.error('not initialized');
+                    return;
                 }
                 if (_this.rendered) throw new Exception('already rendered');
                 _this.rendered = true;

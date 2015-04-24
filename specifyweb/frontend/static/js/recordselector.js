@@ -57,7 +57,7 @@ define([
         __name__: "RecordSelectorAddDeleteButtons",
         className: "recordselector-add-delete-buttons specify-form-buttons",
         render: function () {
-            this.$el.append('<input type="button" value="Add" class="specify-add-related">' +
+            this.$el.append('<input type="button" value="New" class="specify-add-related">' +
                             '<input type="button" value="Delete" class="specify-delete-related">');
             this.showHide();
             return this;
