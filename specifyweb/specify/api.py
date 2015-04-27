@@ -278,7 +278,7 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
-def cleanData(model, data):
+def cleanData(model, data, agent):
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
     cleaned = {}
@@ -292,6 +292,9 @@ def cleanData(model, data):
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             cleaned[field_name] = data[field_name]
+    if model is models.Agent and not agent.specifyuser.is_admin():
+        # only admins can set the user field on agents
+        del cleaned['specifyuser']
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
@@ -299,7 +302,7 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, basestring):
         model = get_model_or_404(model)
-    data = cleanData(model, data)
+    data = cleanData(model, data, agent)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
@@ -467,7 +470,7 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
-    data = cleanData(obj.__class__, data)
+    data = cleanData(obj.__class__, data, agent)
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
 
@@ -539,9 +542,12 @@ def obj_to_data(obj):
                      for ro in obj._meta.get_all_related_objects()))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
-    # Special case for Preparation.isonloan
+    # Special cases
     if isinstance(obj, models.Preparation):
         data['isonloan'] = obj.isonloan()
+    elif isinstance(obj, models.Specifyuser):
+        data['isadmin'] = obj.is_admin()
+
     return data
 
 def to_many_to_data(obj, related_object):

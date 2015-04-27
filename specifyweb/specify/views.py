@@ -1,14 +1,14 @@
 import mimetypes
 from functools import wraps
 
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django import http
 
 from .specify_jar import specify_jar
-from . import api
+from . import api, models
 
 if settings.ANONYMOUS_USER:
     login_maybe_required = lambda func: func
@@ -75,3 +75,32 @@ def properties(request, name):
     """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@csrf_exempt
+def set_password(request, userid):
+    """Set target specify user's password."""
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden()
+
+    user = models.Specifyuser.objects.get(pk=userid)
+    user.set_password(request.POST['password'])
+    user.save()
+    return http.HttpResponse('', status=204)
+
+@login_maybe_required
+@require_POST
+@csrf_exempt
+def set_admin_status(request, userid):
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden()
+
+    user = models.Specifyuser.objects.get(pk=userid)
+    if request.POST['admin_status'] == 'true':
+        user.set_admin()
+        return http.HttpResponse('true', content_type='text/plain')
+    else:
+        user.clear_admin()
+        return http.HttpResponse('false', content_type='text/plain')
+

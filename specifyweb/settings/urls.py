@@ -37,6 +37,10 @@ urlpatterns = patterns('',
     # generates Sp6 master key
     url(r'^api/master_key/$', 'specifyweb.specify.master_key.master_key'),
 
+    # set a user's password
+    url(r'^api/set_password/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_password'),
+    url(r'^api/set_admin_status/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_admin_status'),
+
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specifyweb.specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specifyweb.specify.views.properties'),

@@ -99,9 +99,7 @@ define([
             var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
-            var field = this.model.specifyModel.getField(this.fieldName);
-
-            this.relatedModel || (this.relatedModel = field.getRelatedModel());
+            this.relatedModel || (this.relatedModel = this.model.specifyModel.getField(this.fieldName).getRelatedModel());
             this.typesearch || (this.typesearch = lookupTypesearch(init.name));
 
             var selectStmt = this.typesearch.text();

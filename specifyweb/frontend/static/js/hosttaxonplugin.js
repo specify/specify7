@@ -23,7 +23,7 @@ define([
             new QueryCbx({
                 el: this.el,
                 model: this.model,
-                relatedModel: schema.Taxon,
+                relatedModel: schema.Taxon, // Todo: this shouldn't work.
                 forceCollection: rightsideCollection,
                 hideButtons: true,
                 init: {},
