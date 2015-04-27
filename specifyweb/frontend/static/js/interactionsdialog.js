@@ -17,6 +17,18 @@ define([
 	}
     });
 
+    function getTableForObjToCreate(action) {
+	switch (action.attr('action')) {
+	case 'NEW_LOAN':
+	    return 'loan';
+	    break;
+	case 'NEW_GIFT':
+	    return 'gift';
+	    break;
+	}
+	return 'loan';
+    };
+
     function isActionEntry(entry) {
 	var actionAttr = entry.attr('action');
 	if (actionAttr) {
@@ -30,7 +42,10 @@ define([
 	return !isActionEntry(entry);
     });
 
-    var actions = _.filter(interaction_entries, isActionEntry);
+    var actions =_.map( _.filter(interaction_entries, isActionEntry), function(actionEntry) {
+	actionEntry.table = getTableForObjToCreate(actionEntry);
+	return actionEntry;
+    });
 
     var formsPromise = whenAll(_.map(views, function(view) {
 	return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
@@ -82,7 +97,6 @@ define([
             var index = this.$('a').filter(".interaction-action").index(evt.currentTarget);
             this.$el.dialog('close');
             var action = actions[index];
-	    console.log('Interaction Action:' + action.attr('action'));
 	    if (this.isRsAction(action.attr('action'))) {
 		var app = require('specifyapp');
 		var recordSets = new schema.models.RecordSet.LazyCollection({

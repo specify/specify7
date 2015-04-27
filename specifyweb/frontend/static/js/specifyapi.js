@@ -70,7 +70,11 @@ define([
         makeResourceViewUrl: function(specifyModel, resourceId, recordSetId) {
             var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
             return $.param.querystring(url, {recordsetid: recordSetId});
-        }
+        },
+	getPrepsAvailableForLoan: function(recordSetId) {
+	    return $.get('/api/preparations_available/' + recordSetId + '/');
+	}
+	    
     });
 
     return api;
