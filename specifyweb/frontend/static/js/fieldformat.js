@@ -4,6 +4,7 @@ define([
     "use strict";
 
     function formatDate(value) {
+        if (value == null) return value;
         var m = moment(value);
         return m.isValid() ? m.format(dateFormatStr) : (value || '');
     }
