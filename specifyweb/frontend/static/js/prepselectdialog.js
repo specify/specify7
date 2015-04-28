@@ -1,18 +1,24 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'populateform', 'savebutton', 'deletebutton', 
-    'specifyapi', 'resourceview',
+    'specifyapi', 'resourceview', 'fieldformat',
     'jquery-ui', 'jquery-bbq'
 ], function(require, $, _, Backbone, schema, navigation, populateform,
-            SaveButton, DeleteButton, api, ResourceView) {
+            SaveButton, DeleteButton, api, ResourceView, FieldFormat) {
     "use strict";
 
     return Backbone.View.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
+	colobjModel: schema.getModel("collectionobject"),
+	detModel: schema.getModel("determination"),
+	prepModel: schema.getModel("preparation"),
         render: function() {
             var table = $('<table>');
-	    table.append('<tr><th>Specimen Number</th><th>Preparation</th><th>Available</th><th>Selected</th></tr>');
+	    table.append('<tr><th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
+			 + '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
+			 + '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
+			 + '<th>Selected</th><th>Available</th><th>Unavailable</th></tr>');
             var makeEntry = this.dialogEntry.bind(this);
 	    _.each(this.options.preps, function(recordSet) {
 		table.append(makeEntry(recordSet));
@@ -22,17 +28,20 @@ define([
                 modal: true,
                 close: function() { $(this).remove(); },
                 title: "Preparations",
-                maxHeight: 600,
+                maxHeight: 700,
+		width: 600,
                 buttons: this.buttons()
             });
             return this;
         },
         dialogEntry: function(iprep) {
 	    var entry = $('<tr>').append(
-                $('<td>').append($('<a>').text(iprep.catalognumber)),
+                $('<td>').append($('<a>').text(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber))),
+                $('<td>').append($('<a>').text(iprep.taxon)),
                 $('<td>').append($('<a>').text(iprep.preptype)),
+		$('<td>').append($('<input>').attr('value', iprep.available).addClass('prepselect-amt')),
 	        $('<td>').append($('<a>').text(iprep.available).addClass('prepselect-available')),
-		$('<td>').append($('<input>').attr('value', iprep.available).addClass('prepselect-amt')));
+		$('<td>').append($('<a>').text(iprep.countamt - iprep.available).addClass('prepselect-unavailable')));
             return entry;
         },
         buttons: function() {
