@@ -10,6 +10,7 @@ from django import http
 from .specify_jar import specify_jar
 from . import api
 
+
 if settings.ANONYMOUS_USER:
     login_maybe_required = lambda func: func
 else:
@@ -75,3 +76,28 @@ def properties(request, name):
     """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'
     return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+
+@login_maybe_required
+@require_GET
+def preps_available(request, recordset_id):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("""
+    select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
+           sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
+           p.countAmt - coalesce(sum(lp.quantity-lp.quantityreturned),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
+    from preparation p
+    left join loanpreparation lp on lp.preparationid = p.preparationid
+    left join giftpreparation gp on gp.preparationid = p.preparationid
+    left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
+    inner join preptype pt on pt.preptypeid = p.preptypeid
+    left join determination d on d.CollectionObjectID = co.CollectionObjectID
+    left join taxon t on t.TaxonID = d.TaxonID
+    where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in (
+        select recordid from recordsetitem where recordsetid=%s
+    ) group by 1,2,3,4,5 order by 1;
+       """, [request.specify_collection.id, recordset_id])
+    rows = cursor.fetchall()
+    
+    return http.HttpResponse(api.toJson(rows), content_type='application/json')
