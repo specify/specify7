@@ -62,14 +62,7 @@ define([
             'click a.edit': 'edit'
         },
         render: function() {
-            var table = $('<table>');
-            var makeEntry = this.dialogEntry.bind(this);
-            this.options.recordSets.each(function(recordSet) {
-                table.append(makeEntry(recordSet));
-            });
-            this.options.recordSets.isComplete() ||
-                table.append('<tr><td></td><td>(list truncated)</td></tr>');
-            this.$el.append(table);
+	    this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
@@ -79,6 +72,19 @@ define([
             });
             return this;
         },
+	makeUI: function() {
+	    this.makeTable();
+	},
+	makeTable: function() {
+            var table = $('<table>');
+            var makeEntry = this.dialogEntry.bind(this);
+            this.options.recordSets.each(function(recordSet) {
+                table.append(makeEntry(recordSet));
+            });
+            this.options.recordSets.isComplete() ||
+                table.append('<tr><td></td><td>(list truncated)</td></tr>');
+            this.$el.append(table);
+	},
         dialogEntry: function(recordSet) {
             var img = $('<img>', {src: schema.getModelById(recordSet.get('dbtableid')).getIcon()});
             var link = this.makeEntryLink(recordSet);

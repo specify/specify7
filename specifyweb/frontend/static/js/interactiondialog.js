@@ -15,6 +15,13 @@ define([
 	makeEntryLink: function(recordSet) {
 	    return $('<a>').addClass("interaction-action").text(recordSet.get('name'));
 	},	
+	makeUI: function() {
+	    this.makeTable();
+	    this.makeSpecNumUI();
+	},
+	makeSpecNumUI: function() {
+	    this.$el.append('<div><h4>Enter Specimen Numbers</h4><textarea rows=2></textarea></div>');
+	},
 	interactionAction: function(evt) {
             var index = this.getIndex(evt, 'a.interaction-action');
             this.$el.dialog('close');

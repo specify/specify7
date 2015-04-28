@@ -2,10 +2,11 @@ define([
     'jquery', 'underscore', 'backbone', 'schema',
     'icons', 'specifyform', 'whenall',
     'text!context/app.resource?name=InteractionsTaskInit!noinline',
-    'interactiondialog',
+    'interactiondialog', 'props',
+    'text!properties/resources_en.properties!noinline',
     'jquery-ui'
 ], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, interactionsTaskInit, InteractionDialog) {
+            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop) {
     "use strict";
 
     var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
@@ -76,11 +77,32 @@ define([
             });
             return this;
         },
+	getDialogEntryText: function(entry) {
+	    if (entry.attr('label')) {
+		return props.getProperty(resources_prop, entry.attr('label'));
+	    } else if (entry.attr('table')) {
+		return schema.getModel(entry.attr('table')).getLocalizedName();
+	    } else if (isActionEntry(entry)) {
+		return entry.attr('action');
+	    } else {
+		return entry.attr('table');
+	    }
+	},
+	addDialogEntryToolTip: function(entry, link) {
+	    var ttResourceKey = entry.attr('tooltip');
+	    if (ttResourceKey != '') {
+		var tt = props.getProperty(resources_prop, ttResourceKey);
+		if (tt) {
+		    link.attr('title', tt);
+		}			     
+	    }
+	}, 
         dialogEntry: function(interaction_entry) {
             var img = $('<img>', { src: icons.getIcon(interaction_entry.attr('icon')) });
 	    var link = isActionEntry(interaction_entry) ?
-		    $('<a>').addClass("interaction-action").text(interaction_entry.attr('action')) :
-		    $('<a>').addClass("intercept-navigation").text(interaction_entry.attr('view'));
+		    $('<a>').addClass("interaction-action").text(this.getDialogEntryText(interaction_entry)) :
+		    $('<a>').addClass("intercept-navigation").text(this.getDialogEntryText(interaction_entry));
+	    this.addDialogEntryToolTip(interaction_entry, link);
 	    return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
         },
         selected: function(evt) {
@@ -103,7 +125,7 @@ define([
                     filters: { specifyuser: app.user.id, dbtableid: 1, orderby: '-timestampcreated' }
 		});
 		recordSets.fetch({ limit: 5000 }).done(function() {
-		    new InteractionDialog({ recordSets: recordSets, action: action }).render();
+		    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true }).render();
 		});				   
 	    } else {
 		alert(action.attr('action') + " action is not supported.");
