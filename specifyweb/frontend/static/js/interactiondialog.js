@@ -23,13 +23,14 @@ define([
 	    api.getPrepsAvailableForLoan(recordSet.get('id')).done(function(prepsData) {
 		var ipreps = _.map(prepsData, function(iprepData) {
 		    return {catalognumber: iprepData[0],
-			    preparationid: iprepData[1],
-			    preptype: iprepData[2],
-			    countamt: iprepData[3],
-			    loaned: iprepData[4],
-			    gifted: iprepData[5],
-			    exchanged: iprepData[6],
-			    available: iprepData[7]
+			    taxon: iprepData[1],
+			    preparationid: iprepData[2],
+			    preptype: iprepData[3],
+			    countamt: iprepData[4],
+			    loaned: iprepData[5],
+			    gifted: iprepData[6],
+			    exchanged: iprepData[7],
+			    available: iprepData[8]
 			   };
 		    });
 		new PrepSelectDialog({preps: ipreps, action: action }).render();
