@@ -253,7 +253,7 @@ define([
             this.model.set(this.fieldName, null);
             this.fillIn();
         },
-        changeDialogTitle: function(title) {
+        changeDialogTitle: function(resource, title) {
             this.dialog && this.dialog.dialog('option', 'title', title);
         },
         blur: function() {
