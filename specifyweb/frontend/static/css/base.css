@@ -221,3 +221,9 @@ header a:hover {
 .ui-autocomplete {
     z-index: 110;
 }
+
+.specify-help {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+}

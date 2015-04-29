@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
-    'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
+    'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation', 'help',
     'text!context/user.json!noinline', 'text!context/system_info.json!noinline',
 // Tasks
     'datatask',
@@ -11,7 +11,7 @@ define([
     'attachmentstask'
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
-    WelcomeView, HeaderUI, NotFoundView, navigation,
+    WelcomeView, HeaderUI, NotFoundView, navigation, help,
     userJSON, systemInfoJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
@@ -126,6 +126,8 @@ define([
             var href = $(evt.currentTarget).prop('href');
             href && navigation.go(href);
         }).delegate('form', 'submit', false);
+
+        $('.specify-help').click(function() { help(); });
     }
 
     // the exported interface
