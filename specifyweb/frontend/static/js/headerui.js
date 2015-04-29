@@ -52,7 +52,9 @@ define([
             var app = require('specifyapp');
             this.user = app.user;
 
-            this.toolModules = toolModules.filter(function(mod){ return !(mod.disabled && mod.disabled(app.user)); });
+            this.toolModules = toolModules.filter(function(mod){
+                return !(_.isFunction(mod.disabled) ? mod.disabled(app.user) : mod.disabled);
+            });
 
             this.visibleTools = this.toolModules.filter(function(t) { return t.icon != null; });
             this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
