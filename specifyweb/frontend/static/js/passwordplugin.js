@@ -9,7 +9,7 @@ define([
             'submit form' : 'submit'
         },
         render: function() {
-            this.$el.attr('title', "Reset Password");
+            this.$el.attr('title', "Set Password");
             this.$el.append(templates.passwordchange());
             this.$el.dialog({
                 modal: true,
@@ -46,7 +46,7 @@ define([
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', 'Reset Password');
+            this.$el.attr('value', 'Set Password');
             this.model.isNew() && this.$el.attr('title', 'Save user before setting password.').prop('disabled', true);
             return this;
         },
