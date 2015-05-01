@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
-    'uiinputfield', 'saveblockers', 'tooltipmgr', 'dateformat'
+    'uiinputfield', 'saveblockers', 'tooltipmgr', 'dateformat', 'help'
 ], function(
     $, _, Backbone, dataobjformatters, fieldformat, uiparse,
-    UIFieldInput, saveblockers, ToolTipMgr, dateFormatStr) {
+    UIFieldInput, saveblockers, ToolTipMgr, dateFormatStr, help) {
     "use strict";
     var objformat = dataobjformatters.format;
 
@@ -81,6 +81,16 @@ define([
 
                 inputUI.validate(true); // validate any default value and defer result
             }
+
+            help.makeTarget({
+                template: "uifield.html",
+                target: this.el,
+                data: {
+                    field: field,
+                    formatter: formatter,
+                    readOnly: readOnly
+                }
+            });
         },
         inputChanged: function(value) {
             this.model.set(this.fieldName, value);

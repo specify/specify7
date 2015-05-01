@@ -1,0 +1,19 @@
+<div title="Text Field">
+  <p>
+    Text field for <em><%- field.getLocalizedName() %></em>.
+  </p>
+  <% if(formatter) { %>
+  <p>
+    This field has a formatter that accepts values of the
+    form <code><%- formatter.value() %></code>.
+
+    <% if(formatter.canAutonumber()) { %>
+
+    Autonumbering is available on this field. The autonumbering system
+    will replace the placeholder values, <em>&num;</em>, with the next
+    available value.
+
+    <% } %>
+  </p>
+  <% } %>
+</div>

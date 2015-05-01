@@ -1,7 +1,8 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'schema', 'backbone', 'dataobjformatters',
-    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall'
-], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, whenAll) {
+    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall', 'help'
+], function($, _, api, schema, Backbone, dataobjformatters,
+            saveblockers, builtInPL, ToolTipMgr, whenAll, help) {
     "use strict";
 
     var objformat = dataobjformatters.format;
@@ -134,6 +135,12 @@ define([
                 this.toolTipMgr = new ToolTipMgr(this).enable();
                 this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.field.name);
             }
+            help.makeTarget({
+                template: "picklist.html",
+                target: this.el,
+                data: {
+                }
+            });
         },
         gotItems: function(items) {
             this.setupOptions(items, this.resource.get(this.field.name));
