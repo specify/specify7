@@ -127,7 +127,7 @@ define([
             href && navigation.go(href);
         }).delegate('form', 'submit', false);
 
-        $('.specify-help').click(function() { help(); });
+        $('.specify-help').click(function() { help.open(currentView.el); });
     }
 
     // the exported interface

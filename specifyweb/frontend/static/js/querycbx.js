@@ -1,10 +1,10 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
+    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform', 'help',
     'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
     'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
-], function (require, $, _, Backbone, api, schema, specifyform, templates,
+], function (require, $, _, Backbone, api, schema, specifyform, help, templates,
              dataobjformatters, whenAll, parseselect, localizeForm, navigation, SaveButton,
              DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
@@ -121,6 +121,15 @@ define([
 
             this.toolTipMgr = new ToolTipMgr(this, control).enable();
             this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
+            help.makeTarget({
+                key: "querycbx",
+                target: control,
+                data: {
+                    searchFields: fieldTitles,
+                    relatedModel: this.relatedModel,
+                    thisModel: this.model.specifyModel
+                }
+            });
             return this;
         },
         makeQuery: function (searchFieldStrs, request, response) {
