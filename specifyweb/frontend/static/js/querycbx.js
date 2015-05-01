@@ -122,7 +122,7 @@ define([
             this.toolTipMgr = new ToolTipMgr(this, control).enable();
             this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
             help.makeTarget({
-                key: "querycbx",
+                template: "querycbx.html",
                 target: control,
                 data: {
                     searchFields: fieldTitles,
