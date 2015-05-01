@@ -57,7 +57,7 @@ define([
             this.divInfos = options.divInfos;
         },
         render: function() {
-            this.$el.attr('title', "Setup User Agents");
+            this.$el.attr('title', "Set User Agents");
             var controls = _.map(this.divInfos, function(divInfo) { return new AgentForDiv(divInfo); });
             _.invoke(controls, 'render');
             $('<table>').append(_.pluck(controls, 'el')).appendTo(this.el);
@@ -82,7 +82,7 @@ define([
             'click': 'click'
         },
         render: function() {
-            this.$el.attr('value', 'Setup Agents');
+            this.$el.attr('value', 'Set Agents');
             this.model.isNew() && this.$el.attr('title', 'Save user before adding agents.').prop('disabled', true);
             return this;
         },
@@ -105,5 +105,5 @@ define([
                 new Dialog({user: user, divInfos: divInfos}).render();
             });
         }
-    });
+    }, { pluginsProvided: ['UserAgentsUI'] });
 });

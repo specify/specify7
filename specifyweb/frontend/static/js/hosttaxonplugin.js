@@ -30,5 +30,5 @@ define([
                 typesearch: $('typesearch', hostTaxonTypesearch)
             }).render();
         }
-    });
+    }, { pluginsProvided: ['HostTaxonPlugin'] });
 });

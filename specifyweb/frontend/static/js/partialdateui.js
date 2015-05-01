@@ -108,5 +108,5 @@ define([
         setToday: function() {
             this.updateIfValid(moment());
         }
-    });
+    }, { pluginsProvided: ['PartialDateUI'] });
 });

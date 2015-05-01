@@ -22,5 +22,5 @@ define(['jquery', 'uiplugin'], function($, UIPlugin) {
                 _this.render();
             });
         }
-    });
+    }, { pluginsProvided: ['AdminStatusUI'] });
 });

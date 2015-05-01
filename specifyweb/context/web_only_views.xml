@@ -92,6 +92,11 @@
                     <cell type="label" label=""/>
                     <cell type="field" id="8" uitype="plugin" name="this" initialize="name=AdminStatusUI"/>
                 </row>
+                <row>
+                  <cell type="label"
+                        label="Note: New users must have password and agents set after saving in order to log in."
+                        colspan="4"/>
+                </row>
             </rows>
         </viewdef>
     </viewdefs>
