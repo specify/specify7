@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'uiplugin', 'templates', 'moment', 'dateformat', 'tooltipmgr', 'saveblockers'
-], function($, _, UIPlugin, templates, moment, dateFormatStr, ToolTipMgr, saveblockers) {
+    'jquery', 'underscore', 'uiplugin', 'templates', 'moment', 'dateformat', 'tooltipmgr', 'saveblockers', 'help'
+], function($, _, UIPlugin, templates, moment, dateFormatStr, ToolTipMgr, saveblockers, help) {
     "use strict";
     var precisions = ['full', 'month-year', 'year'];
 
@@ -46,6 +46,12 @@ define([
             this.model.on('change:' + init.tp.toLowerCase(), setPrecision);
 
             this.model.fetchIfNotPopulated().done(setInput).done(setPrecision);
+            help.makeTarget({
+                template: "partialdateui.html",
+                target: this.el,
+                data: {
+                }
+            });
             return this;
         },
         setInput: function() {
