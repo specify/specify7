@@ -81,5 +81,5 @@ define([
 
             return $.when(self.model.rget('geography', true)).pipe(travGeo).pipe(function() { return data; });
         }
-    });
+    }, { pluginsProvided: ['LocalityGeoRef'] });
 });

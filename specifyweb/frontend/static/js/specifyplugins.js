@@ -1,29 +1,24 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
-    'collectionrelonetomanyplugin', 'collectionrelonetooneplugin',
-    'uiplugin', 'geolocateplugin', 'weblinkbutton', 'attachmentplugin',
-    'hosttaxonplugin', 'passwordplugin', 'useragentsplugin', 'adminstatusplugin',
-    'googlemapsplugin',
-    'templates'
-], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
-            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, WebLinkButton,
-            AttachmentPlugin, HostTaxonPlugin, PasswordPlugin, UserAgentsPlugin,
-            AdminStatusPlugin, GoogleMapsPlugin, templates) {
+    'jquery', 'underscore', 'uiplugin',
+    // plugin providers
+    'latlongui',
+    'partialdateui',
+    'collectionrelonetomanyplugin',
+    'collectionrelonetooneplugin',
+    'geolocateplugin',
+    'weblinkbutton',
+    'attachmentplugin',
+    'hosttaxonplugin',
+    'passwordplugin',
+    'useragentsplugin',
+    'adminstatusplugin',
+    'googlemapsplugin'
+], function specifyPlugins($, _, UIPlugin) {
     "use strict";
 
-    return {
-        PasswordUI: PasswordPlugin,
-        UserAgentsUI: UserAgentsPlugin,
-        AdminStatusUI: AdminStatusPlugin,
-        HostTaxonPlugin: HostTaxonPlugin,
-        ColRelTypePlugin: collectionrelonetooneplugin,
-        CollectionRelOneToManyPlugin: collectionrelonetomanyplugin,
-        PartialDateUI: PartialDateUI,
-        LatLonUI: LatLonUI,
-        LocalityGeoRef: GeoLocatePlugin,
-        WebLinkButton: WebLinkButton,
-        AttachmentPlugin: AttachmentPlugin,
-        LocalityGoogleEarth: GoogleMapsPlugin,
+    var providers = _.tail(arguments, specifyPlugins.length);
+
+    var plugins = {
         PluginNotAvailable: UIPlugin.extend({
             __name__: "UnavailablePlugin",
             events: {
@@ -48,4 +43,12 @@ define([
             }
         })
     };
+
+    _.each(providers, function(provider) {
+        _.each(provider.pluginsProvided, function(pluginProvided) {
+            plugins[pluginProvided] = provider;
+        });
+    });
+
+    return plugins;
 });

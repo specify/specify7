@@ -105,5 +105,5 @@ define([
                 new Dialog({user: user, divInfos: divInfos}).render();
             });
         }
-    });
+    }, { pluginsProvided: ['UserAgentsUI'] });
 });

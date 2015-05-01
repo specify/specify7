@@ -53,5 +53,5 @@ define([
         click: function(event) {
             new Dialog({model: this.model}).render();
         }
-    });
+    }, { pluginsProvided: ['PasswordUI'] });
 });

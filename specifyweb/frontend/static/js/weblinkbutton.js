@@ -92,5 +92,5 @@ define([
                 return _.template(template)(args);
             });
         }
-    });
+    }, { pluginsProvided: ['WebLinkButton'] });
 });

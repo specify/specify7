@@ -29,5 +29,5 @@ define([
                     .dialog({close: function() { $(this).remove(); }});
             }
         }
-    });
+    }, { pluginsProvided: ['LocalityGoogleEarth'] });
 });

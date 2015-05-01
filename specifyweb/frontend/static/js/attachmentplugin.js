@@ -81,5 +81,5 @@ define([
                 attachments.openOriginal(attachment);
             });
         }
-    });
+    }, { pluginsProvided: ['AttachmentPlugin'] });
 });

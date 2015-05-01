@@ -67,5 +67,5 @@ define([
             evt.preventDefault();
             navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         }
-    });
+    }, { pluginsProvided: ["CollectionRelOneToManyPlugin"] });
 });

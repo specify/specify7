@@ -76,5 +76,5 @@ define([
             });
             return this;
         }
-    });
+    }, { pluginsProvided: ['LatLonUI'] });
 });

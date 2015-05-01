@@ -24,5 +24,5 @@ define([
                 a.hide();
             }
         }
-    });
+    }, { pluginsProvided: ['CollectionRelTypePlugin'] });
 });
