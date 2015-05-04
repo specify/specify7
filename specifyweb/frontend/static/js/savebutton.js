@@ -13,7 +13,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
 
             if (this.model.isNew()) this.setButtonsDisabled(false);
 
-            this.model.on('saverequired', function(resource) {
+            this.model.on('saverequired changing', function(resource) {
                 this.setButtonsDisabled(false);
             }, this);
 

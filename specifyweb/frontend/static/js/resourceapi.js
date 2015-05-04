@@ -7,13 +7,16 @@ define([
         return function(event) {
             var args = _.toArray(arguments);
 
-            if (event === 'saverequired') {
+            switch (event) {
+            case 'saverequired':
                 this.needsSaved = true;
                 this.trigger.apply(this, args);
                 return;
-            }
-            if (event === 'change:id') {
+            case  'change:id':
                 this.set(field.name, related.url());
+                return;
+            case 'changing':
+                this.trigger.apply(this, args);
                 return;
             }
 
@@ -30,6 +33,9 @@ define([
         return function(event) {
             var args = _.toArray(arguments);
             switch (event) {
+            case 'changing':
+                this.trigger.apply(this, args);
+                break;
             case 'saverequired':
                 this.needsSaved = true;
                 this.trigger.apply(this, args);
