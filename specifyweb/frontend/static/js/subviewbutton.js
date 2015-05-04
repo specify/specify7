@@ -1,6 +1,8 @@
 define([
-    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'deletebutton', 'recordselector', 'jquery-bbq'
-], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
+    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation',
+    'deletebutton', 'recordselector', 'help',
+    'jquery-bbq'
+], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector, help) {
 
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
@@ -58,6 +60,15 @@ define([
         render: function() {
             Base.prototype.render.apply(this, arguments);
             this.collectionChanged();
+            help.makeTarget({
+                template: "to-many-subview-button.html",
+                target: this.$('img'),
+                data: {
+                    relatedModel: this.relatedModel,
+                    thisModel: this.field.model,
+                    field: this.field
+                }
+            });
         },
         collectionChanged: function() {
             this.setCount(this.collection.length);
@@ -92,6 +103,15 @@ define([
         render: function() {
             Base.prototype.render.apply(this, arguments);
             this.resourceChanged();
+            help.makeTarget({
+                template: "to-one-subview-button.html",
+                target: this.$('img'),
+                data: {
+                    relatedModel: this.relatedModel,
+                    thisModel: this.field.model,
+                    field: this.field
+                }
+            });
         },
         resourceChanged: function() {
             this.setCount(this.model.get(this.field.name) ? 1 : 0);

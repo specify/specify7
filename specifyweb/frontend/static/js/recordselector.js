@@ -1,7 +1,8 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
-    'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
-], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
+    'navigation', 'templates', 'collectionapi', 'assert', 'help', 'jquery-ui'
+], function(require, $, _, Backbone, specifyform, QueryCbxSearch,
+            navigation, templates, collectionapi, assert, help) {
     "use strict";
     var emptyTemplate = '<p>No Data.</p>';
 

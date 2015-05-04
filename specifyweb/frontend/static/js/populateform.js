@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'picklist', 'uifield',
     'querycbx', 'specifyplugins', 'recordselector', 'subviewbutton', 'formtable',
-    'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
-], function($, _, Backbone, localizeForm, specifyform, PickList, UIField, QueryCbx, uiplugins,
-            RecordSelector, SubViewButton, FormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
+    'subview', 'checkbox', 'spinnerui', 'treelevelpicklist', 'help'
+], function($, _, Backbone, localizeForm, specifyform, PickList, UIField,
+            QueryCbx, uiplugins, RecordSelector, SubViewButton, FormTable,
+            SubView, CheckBox, SpinnerUI, TreeLevelPickList, help) {
     "use strict";
 
     var MultiView = Backbone.View.extend({
@@ -14,6 +15,17 @@ define([
             specifyform.buildSubView(this.$el).done(function(form) {
                 var View = form.hasClass('specify-form-type-formtable') ? FormTable : RecordSelector;
                 new View(options).render();
+            });
+            help.makeTarget({
+                template: "one-to-many-subview.html",
+                target: this.el,
+                highlight: [this.el, "border"],
+                position: { at: "left top" },
+                data: {
+                    thisModel: options.field.model,
+                    relatedModel: options.collection.model.specifyModel,
+                    field: options.field
+                }
             });
             return this;
         }

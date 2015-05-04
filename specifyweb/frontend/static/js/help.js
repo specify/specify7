@@ -3,9 +3,15 @@ define([
 ], function($, _, Backbone) {
     "use strict";
 
-    function openHelpTarget(dialog, target) {
-        var data = $(target).data();
-        loadHelpText(dialog, data.helpTemplate, data.helpTargetData);
+    function openHelpTarget(dialog, data) {
+        loadHelpText(dialog, data.template, data.data);
+        if(data.highlight) {
+            var el = data.highlight[0], style = data.highlight[1];
+            var oldCss = $(el).css('background-color');
+            $(el).css('background-color', 'red');
+            _.delay(function() { $(el).css('background-color', oldCss); }, 2000);
+        }
+
     }
 
     function loadHelpText(dialog, template, data) {
@@ -19,10 +25,7 @@ define([
 
     return {
         makeTarget: function(options) {
-            $(options.target).addClass('specify-help-target').data({
-                helpTemplate: options.template,
-                helpTargetData: options.data
-            });
+            $(options.target).addClass('specify-help-target').data('help-options', options);
         },
         open: function(root) {
             var dialog = $('<div>').dialog({
@@ -37,10 +40,13 @@ define([
             var overlay = $('.ui-widget-overlay');
 
             var els = _($('.specify-help-target', root)).map(function(target) {
-                return $('<div style="position: absolute;" class="ui-front help-target"><img src="/images/win_help.png"></div>')
+                var data = $(target).data('help-options');
+                var position = _({of: target}).extend(data.position);
+                var marker = $('<div style="position: absolute;" class="ui-front help-target"><img src="/images/win_help.png"></div>')
                     .insertAfter(overlay)
-                    .position({of: target})
-                    .click(openHelpTarget.bind(null, dialog, target));
+                    .position(position)
+                    .click(openHelpTarget.bind(null, dialog, data));
+                return marker;
             });
         }
     };
