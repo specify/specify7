@@ -71,8 +71,11 @@ define([
             var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
             return $.param.querystring(url, {recordsetid: recordSetId});
         },
-	getPrepsAvailableForLoan: function(recordSetId) {
-	    return $.get('/api/preparations_available/' + recordSetId + '/');
+	getPrepsAvailableForLoanRs: function(recordSetId) {
+	    return $.get('/api/preparations_available_rs/' + recordSetId + '/');
+	},
+	getPrepsAvailableForLoanCoIds: function(collectionObjectIds) {
+	    return $.get('/api/preparations_available_ids/' + collectionObjectIds + '/');
 	}
 	    
     });
