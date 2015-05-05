@@ -37,6 +37,10 @@ urlpatterns = patterns('',
     # generates Sp6 master key
     url(r'^api/master_key/$', 'specifyweb.specify.master_key.master_key'),
 
+    # loan api stuff
+    url(r'^api/preparations_available_rs/(?P<recordset_id>\d+)/', 'specifyweb.specify.views.preps_available_rs'),
+    url(r'^api/preparations_available_ids/(?P<co_ids>.+)/', 'specifyweb.specify.views.preps_available_ids'),
+
     # access to various UI and app resources starts here
     url(r'^images/(?P<path>.+)$', 'specifyweb.specify.views.images'),
     url(r'^properties/(?P<name>.+).properties$', 'specifyweb.specify.views.properties'),
