@@ -12,6 +12,7 @@ define([
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
+            'click .query-to-recordset': 'makeRecordSet',
             'click .query-save': 'save',
             'click .field-add': 'addField',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
@@ -50,7 +51,7 @@ define([
             ul.sortable({ update: this.updatePositions.bind(this) });
         },
         addFieldUI: function(spqueryfield) {
-            this.$('.query-execute').prop('disabled', false);
+            this.$('.query-execute, .query-to-recordset').prop('disabled', false);
             return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
@@ -62,7 +63,7 @@ define([
             this.fieldUIs = _(this.fieldUIs).without(ui);
             this.fields.remove(spqueryfield);
             this.updatePositions();
-            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save').prop('disabled', true);
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save, .query-to-recordset').prop('disabled', true);
         },
         updatePositions: function() {
             _.invoke(this.fieldUIs, 'positionChanged');
@@ -97,6 +98,10 @@ define([
             this.fieldUIs.push(ui);
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
             this.updatePositions();
+        },
+        makeRecordSet: function() {
+            $.post('/stored_query/make_recordset/', JSON.stringify(this.query)).done(function(rs) {
+            });
         },
         search: function(evt) {
             this.$('.query-execute').blur();

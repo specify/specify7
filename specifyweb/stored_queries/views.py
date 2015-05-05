@@ -1,6 +1,7 @@
 import operator
 import logging
 import json
+from datetime import datetime
 from collections import namedtuple
 
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -8,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 
-from sqlalchemy.sql.expression import asc, desc, and_, or_
+from sqlalchemy.sql.expression import asc, desc, and_, or_, insert, literal
 from sqlalchemy.sql.functions import count
 
 from specifyweb.specify.models import Collection
@@ -133,6 +134,47 @@ def run_ephemeral_query(collection, user, spquery):
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid)
 
+@require_POST
+@csrf_exempt
+@login_maybe_required
+@never_cache
+def make_recordset(request):
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    tableid = spquery['contexttableid']
+
+    with models.session_context() as session:
+        recordset = models.RecordSet()
+        recordset.timestampCreated = datetime.now()
+        recordset.version = 0
+        recordset.collectionMemberId = request.specify_collection.id
+        recordset.dbTableId = tableid
+        recordset.name = "New Recordset"
+        recordset.type = 0
+        recordset.createdByAgentID = request.specify_user_agent.id
+        recordset.SpecifyUserID = request.specify_user.id
+        session.add(recordset)
+        session.flush()
+        new_rs_id = recordset.recordSetId
+
+        model = models.models_by_tableid[tableid]
+        id_field = getattr(model, model._id)
+
+        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
+                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+
+        query, __ = build_query(session, request.specify_collection, request.specify_user, tableid, field_specs)
+        query = query.with_entities(id_field, literal(new_rs_id)).distinct()
+        RSI = models.RecordSetItem
+        ins = insert(RSI).from_select((RSI.recordId, RSI.RecordSetID), query)
+        session.execute(ins)
+
+    return HttpResponse(new_rs_id, content_type="text/plain")
+
+
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)
 
@@ -177,4 +219,3 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
 
     logger.debug("query: %s", query)
     return query, order_by_exprs
-
