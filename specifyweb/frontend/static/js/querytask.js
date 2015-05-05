@@ -100,7 +100,16 @@ define([
             this.updatePositions();
         },
         makeRecordSet: function() {
-            $.post('/stored_query/make_recordset/', JSON.stringify(this.query)).done(function(rs) {
+            var d = $('<div title="Record Set from Query"><p>Generating record set.</p><div class="progress" /></div>')
+                .dialog({
+                    modal: true,
+                    close: function() { $(this).remove(); }
+                });
+            $('.progress', d).progressbar({ value: false });
+
+            $.post('/stored_query/make_recordset/', JSON.stringify(this.query)).done(function(rsId) {
+                d.dialog('close');
+                navigation.go('/recordset/' + rsId + '/');
             });
         },
         search: function(evt) {
