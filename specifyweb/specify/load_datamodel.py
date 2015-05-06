@@ -215,6 +215,7 @@ dependent_fields = {
     'Latlonpolygon.points',
     'Loan.loanagents',
     'Loan.loanpreparations',
+    'Loan.shipments',
     'Loanpreparation.loanreturnpreparations',
     'Locality.geocoorddetails',
     'Locality.latlonpolygons',

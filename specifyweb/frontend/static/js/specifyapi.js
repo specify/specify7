@@ -74,10 +74,12 @@ define([
 	getPrepsAvailableForLoanRs: function(recordSetId) {
 	    return $.get('/api/preparations_available_rs/' + recordSetId + '/');
 	},
-	getPrepsAvailableForLoanCoIds: function(collectionObjectIds) {
-	    return $.get('/api/preparations_available_ids/' + collectionObjectIds + '/');
+	getPrepsAvailableForLoanCoIds: function(idFld, collectionObjectIds) {
+	    return $.get('/api/preparations_available_ids/'+ idFld + '/' + collectionObjectIds + '/');
+	},
+	returnAllLoanItems: function(loanId, returnedById, returnedDate) {
+	    return $.post('/api/loan_return_all/', {loanId: loanId, returnedById: returnedById, returnedDate: returnedDate});
 	}
-	    
     });
 
     return api;

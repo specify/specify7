@@ -73,7 +73,7 @@ define([
 	    return result;
 	},
 	makeInteraction: function() {
-	    console.info('creating obj for ' + this.options.action.attr('action'));
+	    //console.info('creating obj for ' + this.options.action.attr('action'));
 	    var baseTbl = this.options.action.table;
             var baseModel = schema.getModel(baseTbl);
 	    var interaction = new baseModel.Resource();

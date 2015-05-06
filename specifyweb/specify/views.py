@@ -1,7 +1,7 @@
 import mimetypes
 from functools import wraps
 
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.conf import settings
@@ -118,7 +118,7 @@ def preps_available_rs(request, recordset_id):
 
 @login_maybe_required
 @require_GET
-def preps_available_ids(request, co_ids):
+def preps_available_ids(request, id_fld, co_ids):
     from django.db import connection
     cursor = connection.cursor()
     sql = """
@@ -133,12 +133,9 @@ def preps_available_ids(request, co_ids):
     inner join preptype pt on pt.preptypeid = p.preptypeid
     left join determination d on d.CollectionObjectID = co.CollectionObjectID
     left join taxon t on t.TaxonID = d.TaxonID
-    where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in (
+    where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and
     """
-    sql += co_ids.replace("-",",")
-    sql += """
-    ) group by 1,2,3,4,5 order by 1;
-    """    
+    sql += " co." + id_fld + " in(" + co_ids.replace("~$~",",") +") group by 1,2,3,4,5 order by 1;"
     cursor.execute(sql, [request.specify_collection.id])
     rows = cursor.fetchall()
     
@@ -163,3 +160,40 @@ def preps_available_ids2(request, ids):
     rows = cursor.fetchall()
     
     return http.HttpResponse(api.toJson(rows), content_type='application/json')
+
+from django.db import transaction
+
+@require_POST
+@csrf_exempt
+@login_maybe_required
+@transaction.commit_manually
+def loan_return_all_items(request):
+    from django.db import connection
+
+    cursor = connection.cursor()
+    
+    sql="""
+    insert into loanreturnpreparation(TimestampCreated, Version, QuantityResolved, QuantityReturned, ReturnedDate, DisciplineID, ReceivedByID, LoanPreparationID, CreatedByAgentID)
+    select now(), 0, lp.Quantity - lp.QuantityResolved, lp.Quantity - lp.QuantityResolved, date(%s), %s, %s, lp.LoanPreparationID, %s
+    from loanpreparation lp where lp.LoanID = %s  and not lp.IsResolved and lp.Quantity - lp.QuantityResolved != 0;
+    """
+    cursor.execute(sql, [unicode(request.POST['returnedDate']),
+                         request.specify_collection.discipline.id,
+                         int(request.POST['returnedById']),
+                         request.specify_user.id,
+                         int(request.POST['loanId'])
+                         ])
+
+    sql="update loanpreparation set TimestampModified = now(), Version = Version+1, QuantityReturned=QuantityReturned+Quantity-QuantityResolved, QuantityResolved=Quantity, IsResolved=true where not IsResolved and LoanID = %s;"
+
+    cursor.execute(sql, [request.POST['loanId']])
+    
+    transaction.set_dirty()
+    transaction.commit()
+    
+    return http.HttpResponse(api.toJson(['bug','of course']), content_type='application/json')
+
+
+    
+                   
+    

@@ -61,22 +61,29 @@ define([
         events: {
             'click a.edit': 'edit'
         },
+	getDlgTitle: function() {
+	    return  "Record Sets (" + this.options.recordSets._totalCount + ")";
+	},
         render: function() {
 	    this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
-                title: "Record Sets (" + this.options.recordSets._totalCount + ")",
+                title: this.getDlgTitle(),
                 maxHeight: 400,
                 buttons: this.buttons()
             });
+	    this.touchUpUI();
             return this;
         },
+	touchUpUI: function() {
+	    //all done
+	},
 	makeUI: function() {
 	    this.makeTable();
 	},
 	makeTable: function() {
-            var table = $('<table>');
+            var table = $('<table class="rs-dlg-tbl">');
             var makeEntry = this.dialogEntry.bind(this);
             this.options.recordSets.each(function(recordSet) {
                 table.append(makeEntry(recordSet));

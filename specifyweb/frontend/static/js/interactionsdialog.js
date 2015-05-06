@@ -4,9 +4,10 @@ define([
     'text!context/app.resource?name=InteractionsTaskInit!noinline',
     'interactiondialog', 'props',
     'text!properties/resources_en.properties!noinline',
+    'specifyapi', //eventually probably won't need this
     'jquery-ui'
 ], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop) {
+            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop, api) {
     "use strict";
 
     var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
@@ -33,7 +34,7 @@ define([
     function isActionEntry(entry) {
 	var actionAttr = entry.attr('action');
 	if (actionAttr) {
-	    return actionAttr != 'OpenNewView';
+	    return actionAttr != 'OpenNewView' && actionAttr != 'LN_NO_PRP';
 	} else {
 	    return false;
 	}
@@ -119,13 +120,15 @@ define([
             var index = this.$('a').filter(".interaction-action").index(evt.currentTarget);
             this.$el.dialog('close');
             var action = actions[index];
-	    if (this.isRsAction(action.attr('action'))) {
+	    var isRsAction = this.isRsAction(action.attr('action'));
+	    if (isRsAction || action.attr('action') == 'RET_LOAN') {
 		var app = require('specifyapp');
+		var tblId = isRsAction ? 1 : 52;
 		var recordSets = new schema.models.RecordSet.LazyCollection({
-                    filters: { specifyuser: app.user.id, dbtableid: 1, orderby: '-timestampcreated' }
+                    filters: { specifyuser: app.user.id, dbtableid: tblId, orderby: '-timestampcreated' }
 		});
 		recordSets.fetch({ limit: 5000 }).done(function() {
-		    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true }).render();
+		    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();
 		});				   
 	    } else {
 		alert(action.attr('action') + " action is not supported.");
