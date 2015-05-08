@@ -107,8 +107,9 @@ define([
 	    var srchFld = this.options.srchFld ? this.options.srchFld : 'catalognumber';
 	    var formatter = this.getSrchFld().getUIFormatter();
 	    var ids=_.map(nums, function(item) {
-		return formatter ? formatter.canonicalize([item]) : item;
-	    }).join('~$~'); //commas don't work as separators in the url(?)
+		var id = formatter ? formatter.canonicalize([item]) : item;
+		return "'" + id.replace(/'/g, "''") + "'";
+	    }).join();
 
 	    this.interactionAction(ids, false);
 	},
@@ -130,7 +131,13 @@ define([
 	interactionAction: function(selection, isRs) {
             this.$el.dialog('close');
 	    if (this.options.close) {
-		//api.returnAllLoanItems(22, 2647, '2015-05-05');
+		var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
+			: 'select LoanID from loan where LoanNumber in(' + selection + ')'; 
+		var app = require('specifyapp');
+		var today = new Date();
+		var todayArg = [];
+		todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
+		var closeResult = api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection);
 	    } else {
 		var action = this.options.action;
 		var prepsReady = _.bind(this.availablePrepsReady, this, action);

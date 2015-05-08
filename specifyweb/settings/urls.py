@@ -39,7 +39,7 @@ urlpatterns = patterns('',
 
     # loan api stuff
     url(r'^api/preparations_available_rs/(?P<recordset_id>\d+)/', 'specifyweb.specify.views.preps_available_rs'),
-    url(r'^api/preparations_available_ids/(?P<id_fld>.+)/(?P<co_ids>.+)/', 'specifyweb.specify.views.preps_available_ids'),
+    url(r'^api/preparations_available_ids/', 'specifyweb.specify.views.preps_available_ids'),
     url(r'^api/loan_return_all/', 'specifyweb.specify.views.loan_return_all_items'),
 
     # access to various UI and app resources starts here
