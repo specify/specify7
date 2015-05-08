@@ -1,43 +1,54 @@
 from django.http import HttpResponseBadRequest
+from django.utils.functional import SimpleLazyObject
 from django.conf import settings
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.filter_by_col import filter_by_collection
 
+
+def get_cached(attr, func, request):
+    if not hasattr(request, attr):
+        setattr(request, attr, func(request))
+    return getattr(request, attr)
+
+def get_user(request):
+    if request.user.is_authenticated():
+        return request.user
+    elif settings.ANONYMOUS_USER:
+        return Specifyuser.objects.get(name=settings.ANONYMOUS_USER)
+    else:
+        return None
+
+def get_collection(request):
+    qs = Collection.objects.select_related('discipline',
+                                           'discipline__division',
+                                           'discipline__division__institution')
+
+    try:
+        collection_id = int(request.COOKIES.get('collection', ''))
+    except ValueError:
+        return qs.all()[0]
+    else:
+        return qs.get(id=collection_id)
+
+def get_agent(request):
+    try:
+        return filter_by_collection(Agent.objects, request.collection) \
+            .select_related('specifyuser') \
+            .get(specifyuser=request.specify_user)
+    except Agent.DoesNotExist:
+        return None
+
+
 class ContextMiddleware(object):
     """Adds information about the logged in user and collection to requests."""
     def process_request(self, request):
-        if request.user.is_authenticated():
-            specify_user = request.user
-        elif settings.ANONYMOUS_USER:
-            specify_user = Specifyuser.objects.get(name=settings.ANONYMOUS_USER)
-        else:
-            return
-
-        qs = Collection.objects.select_related('discipline',
-                                               'discipline__division',
-                                               'discipline__division__institution')
-
-        try:
-            collection_id = int(request.session.get('collection', ''))
-        except ValueError:
-            collection = qs.all()[0]
-        else:
-            collection = qs.get(id=collection_id)
-
-        try:
-            agent = filter_by_collection(Agent.objects, collection) \
-                .select_related('specifyuser') \
-                .get(specifyuser=specify_user)
-        except Agent.DoesNotExist:
-            agent = None
-
-        request.specify_collection = collection
-        request.specify_user_agent = agent
-        request.specify_user = specify_user
+        request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
+        request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
+        request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)
-        if collection:
+        if collection is not None:
             response.context_data['collection'] = collection
         return response

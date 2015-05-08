@@ -5,6 +5,7 @@ import requests, time, hmac, json
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+from django.views.decorators.cache import cache_control
 from django.conf import settings
 
 from specifyweb.specify.views import login_maybe_required
@@ -25,6 +26,7 @@ def get_collection():
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')

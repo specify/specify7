@@ -3,6 +3,7 @@ import json
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_control
 from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
@@ -16,6 +17,7 @@ class ReportException(Exception):
     pass
 
 @require_GET
+@cache_control(max_age=86400, private=True)
 def get_status(request):
     resp = {'available': settings.REPORT_RUNNER_HOST != ''}
     return HttpResponse(toJson(resp), content_type="application/json")
