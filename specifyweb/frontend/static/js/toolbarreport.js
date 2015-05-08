@@ -69,7 +69,7 @@ define([
                     .data('resource', appResource)
                     .append($('<td>').append(img), $('<td>').append(a));
 
-            this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
+            //this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
             return entry;
         },
         getReport: function(evt) {
