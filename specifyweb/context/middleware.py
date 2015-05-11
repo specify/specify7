@@ -33,7 +33,7 @@ def get_collection(request):
 
 def get_agent(request):
     try:
-        return filter_by_collection(Agent.objects, request.collection) \
+        return filter_by_collection(Agent.objects, request.specify_collection) \
             .select_related('specifyuser') \
             .get(specifyuser=request.specify_user)
     except Agent.DoesNotExist:
