@@ -129,6 +129,7 @@ define([
             }
             if (this.rendered) throw new Exception('already rendered');
             this.rendered = true;
+            this.field.isRequired && this.$el.addClass('specify-required-field');
             this.getPickListItems().done(this.gotItems.bind(this));
             if (!this.remote) {
                 this.toolTipMgr = new ToolTipMgr(this).enable();
