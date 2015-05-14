@@ -16,17 +16,23 @@ define([
         },
         initialize: function(options) {
             this.forceCollection = options.forceCollection || null;
+            this.dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
         },
         render: function() {
-            var dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
-            specifyform.buildViewByName(dialogDef.attr('view'), 'form', 'search').done(_.bind(this.makeDialog, this));
+            $.when(
+                specifyform.buildViewByName(this.dialogDef.attr('view'), 'form', 'search'),
+                specifyform.buildViewByName(this.dialogDef.attr('view'), 'formtable', 'search')
+            ).done(this.makeDialog.bind(this));
+
             return this;
         },
-        makeDialog: function(form) {
-            require("populateform")(form, this.model);
-            form.find('.specify-form-header, input[value="Delete"], :submit').remove();
-            form.find('.specify-required-field').removeClass('specify-required-field');
-            this.$el.append(form).append('<ul class="querycbx-search-results">');
+        makeDialog: function(searchForm, resultsForm) {
+            this.resultsForm = resultsForm;
+
+            require("populateform")(searchForm, this.model);
+            searchForm.find('.specify-form-header, input[value="Delete"], :submit').remove();
+            searchForm.find('.specify-required-field').removeClass('specify-required-field');
+            this.$el.append(searchForm).append('<div class="querycbx-search-results">');
             this.$el.dialog({
                 title: 'Search',
                 width: 'auto',
@@ -49,7 +55,15 @@ define([
         },
         gotResults: function(results) {
             this.results = results;
-            whenAll(results.map(format)).done(this.displayResults.bind(this));
+            var rows = results.map(function(resource) {
+                var form = this.resultsForm.clone();
+                $('a.specify-edit', form).remove();
+                return require("populateform")(form, resource);
+            }, this);
+            this.$('.querycbx-search-results').append(rows[0]).find('.specify-form-header').remove();
+            _(rows).chain().tail().each(function(row) {
+                this.$('.querycbx-search-results .specify-view-content-container').append($('.specify-view-content:first', row));
+            }, this);
         },
         displayResults: function(formattedResults) {
             var items = _.map(formattedResults, function(formattedResult) {

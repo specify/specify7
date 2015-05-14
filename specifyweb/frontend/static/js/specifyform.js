@@ -65,7 +65,7 @@ define([
 
         if (!altview) {
             console.log("no altview for defaultType:", defaultType);
-            altview = _.first(altviews);
+            altview = altviews[_.first(_.keys(altviews))];
             viewdef = viewdefs[altview.viewdef];
         }
         console.log("using altview:", altview);
@@ -76,7 +76,7 @@ define([
         console.log("using viewdef:", actual_viewdef);
 
         var formNumber = formCounter++;
-        var doingFormTable = viewdef.attr('type') === 'formtable';
+        var doingFormTable = defaultType === 'formtable';
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable,
                                  mode === 'search' ? 'search' : altview.mode);
 
