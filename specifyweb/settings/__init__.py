@@ -189,7 +189,10 @@ INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
+AUTHENTICATION_BACKENDS = (
+    'specifyweb.specify.support_login.SupportLoginBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 LOGIN_REDIRECT_URL = '/'
 

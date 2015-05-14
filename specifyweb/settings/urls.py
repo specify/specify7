@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     (r'^accounts/login/$', 'specifyweb.context.views.login'),
     (r'^accounts/logout/$', 'specifyweb.context.views.logout'),
 
+    (r'^accounts/support_login/$', 'specifyweb.specify.views.support_login'),
+
     (r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
      {'template_name': 'password_change.html',
       'post_change_redirect': '/'}),
