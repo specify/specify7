@@ -87,6 +87,9 @@ class Specifyuser(models.Model):
         except KeyError:
             pass
 
+        if self.id and self.usertype != 'Manager':
+            self.clear_admin()
+
         return super(Specifyuser, self).save(*args, **kwargs)
 
     class Meta:
