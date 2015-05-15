@@ -5,9 +5,10 @@ define([
     'interactiondialog', 'props',
     'text!properties/resources_en.properties!noinline',
     'specifyapi', //eventually probably won't need this
+    'toolbarreport',
     'jquery-ui'
 ], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop, api) {
+            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop, api, reps) {
     "use strict";
 
     var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
@@ -130,6 +131,11 @@ define([
 		recordSets.fetch({ limit: 5000 }).done(function() {
 		    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();
 		});				   
+	    } else if (action.attr('action') == 'PRINT_INVOICE') {
+		//$.get('/report_runner/get_reports_by_tbl/52/').done(function(invoices) { 
+		//    new reps.ReportListDialog({appResources: invoices}).render();
+		//});
+		reps.execute(52, {prop: 'reporttype', val: 'invoice'});
 	    } else {
 		alert(action.attr('action') + " action is not supported.");
 	    }

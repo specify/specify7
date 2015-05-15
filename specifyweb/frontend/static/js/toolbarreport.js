@@ -30,6 +30,20 @@ define([
         },
         initialize: function(options) {
             var appResources = this.options.appResources;
+	    if (this.options.metaDataFilter) {
+		var mdFilter = this.options.metaDataFilter;
+		appResources = appResources.filter(function(r) {
+		    var md = r.get('metadata').toLowerCase().split(';');
+		    for (var i=0; i < md.length; i++) {
+			var mdum = md[i].split('=');
+			if (mdum[0] === mdFilter.prop && mdum[1] === mdFilter.val) {
+			    return true;
+			}
+		    }
+		    return false;
+		});
+	    }
+	    if (this.options.autoSelectSingle && appResources.
             function byType(type) {
                 return appResources.filter(function(r) {
                     return r.get('mimetype').toLowerCase() === type;
@@ -428,12 +442,18 @@ define([
         title: title,
         icon: '/images/Reports32x32.png',
         disabled: !status.available,
-        execute: function() {
+        execute: function(tblId, metaDataFilter,autoSelectSingle) {
             app = require('specifyapp');
             var appRs = new schema.models.SpAppResource.LazyCollection();
-            appRs.url = function() { return "/report_runner/get_reports/"; };
-            appRs.fetch({ limit: 100 }).done(function() {
-                new ReportListDialog({ appResources: appRs }).render();
+	    if (typeof(tblId) != 'undefined') {
+		appRs.url = function() { return "/report_runner/get_reports_by_tbl/" + tblId + "/"; };
+	    } else {
+		appRs.url = function() { return "/report_runner/get_reports/"; };
+	    }            
+	    appRs.fetch({ limit: 100 }).done(function() {
+                new ReportListDialog({ appResources: appRs, 
+				       metaDataFilter: metaDataFilter, 
+				       autoSelectSingle: autoSelectSingle }).render();
             });
         }
     };
