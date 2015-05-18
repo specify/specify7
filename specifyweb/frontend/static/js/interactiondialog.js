@@ -21,7 +21,7 @@ define([
 	toggleView: function(evt, selector) {
 	    var clicked = evt.currentTarget.className;
 	    var ctrl = clicked == 'i-action-rs' ? $('table.rs-dlg-tbl') : $('div[type=action-entry');
-	    ctrl.toggle(400);
+	    ctrl.toggle(250);
 	},
 	zeroPrepLoan: function() {
 	    this.$el.dialog('close');
@@ -57,8 +57,7 @@ define([
 	    var model = this.options.close ? 'loan' : 'collectionobject';
 	    var fld = this.options.srchFld ? this.options.srchFld : (model == 'collectionobject' ? 'catalognumber' : 'loannumber');
 	    return schema.getModel(model).getField(fld);
-	},	    
-	    
+	},	      
 	makeUI: function() {
 	    this.$el.append('<a class="i-action-rs">' + this.getRSCaption() + '</a>');
 	    this.makeTable();
@@ -69,13 +68,12 @@ define([
 		this.$el.append('<br><a class="i-action-noprep">' + noPrepCap + '</a><br>');
 	    }
 	},
-
 	touchUpUI: function() {
-	   // if (this.options.recordSets._totalCount == 0) {
-		$('table.rs-dlg-tbl').hide();
-	   // } else 
-		$('div[type=action-entry').hide();
-	   // }
+	   if (this.options.recordSets._totalCount == 0) {
+		$('table.rs-dlg-tbl').toggle();
+	   } else {
+		$('div[type=action-entry').toggle();
+	   }
 	},	    
 	makeEntryUI: function() {
 	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=3></textarea><button type="action-entry">OK</button></div><br>');

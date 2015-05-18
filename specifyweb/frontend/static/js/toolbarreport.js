@@ -26,7 +26,7 @@ define([
         __name__: "ReportListDialog",
         className: "reports-dialog table-list-dialog",
         events: {
-            'click a': 'getReport'
+            'click a': 'getReportUI'
         },
         initialize: function(options) {
             var appResources = this.options.appResources;
@@ -43,7 +43,9 @@ define([
 		    return false;
 		});
 	    }
-	    if (this.options.autoSelectSingle && appResources.
+	    if (this.options.autoSelectSingle && appResources.length == 1) {
+		this.getReport(appResources[0], getReportParams);
+	    }
             function byType(type) {
                 return appResources.filter(function(r) {
                     return r.get('mimetype').toLowerCase() === type;
@@ -53,25 +55,27 @@ define([
             this.labels = byType('jrxml/label');
         },
         render: function() {
-            var reports = $('<table class="reports">');
-            var labels = $('<table class="labels">');
+	    if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length == 1)) {
+		var reports = $('<table class="reports">');
+		var labels = $('<table class="labels">');
 
-            reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
-            labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
+		reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
+		labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
 
-            this.$el
-                .append("<h2>Reports</h2>").append(reports)
-                .append("<h2>Labels</h2>").append(labels);
+		this.$el
+                    .append("<h2>Reports</h2>").append(reports)
+                    .append("<h2>Labels</h2>").append(labels);
 
-            this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
+		this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
 
-            makeDialog(this.$el, {
-                title: title,
-                maxHeight: 400,
-                buttons: [
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
-            });
+		makeDialog(this.$el, {
+                    title: title,
+                    maxHeight: 400,
+                    buttons: [
+			{text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                    ]
+		});
+	    }
             return this;
         },
         makeEntry: function(icon, appResource) {
@@ -86,15 +90,18 @@ define([
             this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
             return entry;
         },
-        getReport: function(evt) {
-            evt.preventDefault();
+	getReportUI: function(evt) {
+	    evt.preventDefault();
             var appResource = $(evt.currentTarget).closest('tr').data('resource');
+            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
+	    this.getReport(appResource, action);
+	},
+        getReport: function(appResource, action) {
             var reports = new schema.models.SpReport.LazyCollection({
                 filters: { appresource: appResource.id }
             });
             var dataFetch = appResource.rget('spappresourcedatas', true);
 
-            var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
             $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
                 if (data.length > 1) {
                     console.warn("found multiple report definitions for appresource id:", appResource.id);

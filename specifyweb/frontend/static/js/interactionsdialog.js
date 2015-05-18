@@ -132,10 +132,8 @@ define([
 		    new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();
 		});				   
 	    } else if (action.attr('action') == 'PRINT_INVOICE') {
-		//$.get('/report_runner/get_reports_by_tbl/52/').done(function(invoices) { 
-		//    new reps.ReportListDialog({appResources: invoices}).render();
-		//});
-		reps.execute(52, {prop: 'reporttype', val: 'invoice'});
+		//assuming loan invoice for now (52 is loan tableid)
+		reps.execute(52, {prop: 'reporttype', val: 'invoice'}, true);
 	    } else {
 		alert(action.attr('action') + " action is not supported.");
 	    }

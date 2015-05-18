@@ -39,7 +39,8 @@ define([
                 $('<td>').append($('<a>').text(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber))),
                 $('<td>').append($('<a>').text(iprep.taxon)),
                 $('<td>').append($('<a>').text(iprep.preptype)),
-		$('<td>').append($('<input>').attr('value', iprep.available).addClass('prepselect-amt')),
+		//$('<td>').append($('<input>').attr('value', iprep.available).addClass('prepselect-amt')),
+		$('<td>').append($('<input>').attr('value', '0').addClass('prepselect-amt')),
 	        $('<td>').append($('<a>').text(iprep.available).addClass('prepselect-available')),
 		$('<td>').append($('<a>').text(iprep.countamt - iprep.available).addClass('prepselect-unavailable')));
             return entry;
@@ -88,9 +89,6 @@ define([
 		}
 	    }
 
-            //var interactionpreps = interaction.rget(itemModelName + 's');
-	    
-	    interaction.set(baseTbl + 'number', 'NEW INTERACTION');
 	    interaction.set(itemModelName + 's', items);
 	    var SpecifyApp = require('specifyapp');
 	    SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
