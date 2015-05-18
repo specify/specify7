@@ -32,6 +32,11 @@ define([
 		width: 600,
                 buttons: this.buttons()
             });
+	    var spinners = $(".prepselect-amt");
+	    //spinners.spinner({min: 0, max: function() {
+	//	return this.getAttribute('max');
+	  //  }});
+	    spinners.spinner();
             return this;
         },
         dialogEntry: function(iprep) {
@@ -39,8 +44,7 @@ define([
                 $('<td>').append($('<a>').text(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber))),
                 $('<td>').append($('<a>').text(iprep.taxon)),
                 $('<td>').append($('<a>').text(iprep.preptype)),
-		//$('<td>').append($('<input>').attr('value', iprep.available).addClass('prepselect-amt')),
-		$('<td>').append($('<input>').attr('value', '0').addClass('prepselect-amt')),
+		$('<td>').append($('<input>').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
 	        $('<td>').append($('<a>').text(iprep.available).addClass('prepselect-available')),
 		$('<td>').append($('<a>').text(iprep.countamt - iprep.available).addClass('prepselect-unavailable')));
             return entry;
