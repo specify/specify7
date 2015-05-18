@@ -23,7 +23,10 @@ if settings.DEBUG:
 
         return HttpResponse(resp)
 else:
-    resp = loader.get_template('specify.html').render(Context({'use_built': True}))
+    resp = loader.get_template('specify.html').render(Context({
+        'use_built': True,
+        'use_raven': settings.RAVEN_CONFIG is not None,
+    }))
 
     @login_maybe_required
     def specify(request):

@@ -34,3 +34,6 @@ REPORT_RUNNER_PORT = ''
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
+
+# For exception loging.
+RAVEN_CONFIG = None

@@ -186,6 +186,7 @@ INSTALLED_APPS = (
     'specifyweb.barvis',
     'specifyweb.report_runner',
     'specifyweb.interactions',
+    'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
