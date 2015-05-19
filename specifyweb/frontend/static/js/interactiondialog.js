@@ -8,6 +8,15 @@ define([
             whenAll, RecordSetsDialog, PrepSelectDialog, uiformatters, ResourceView, require) {
     "use strict";
 
+    var dialog;
+    function makeDialog(el, options) {
+        dialog && dialog.dialog('close');
+        dialog = el.dialog(_.extend({
+            modal: true,
+            close: function() { dialog = null; $(this).remove(); }
+        }, options));
+    }
+
     return RecordSetsDialog.extend({
         __name__: "InteractionDialog",
         className: "interactiondialog recordsetsdialog",
@@ -135,7 +144,17 @@ define([
 		var today = new Date();
 		var todayArg = [];
 		todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
-		var closeResult = api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection);
+		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection).done(function(result) {
+		    var huh = $("<p>").append($("<a>").text("Loans Closed: " + result[1] + ". Preps returned: " + result[0]));
+		    
+		    makeDialog(huh, {
+			title: "Done",
+			maxHeight: 400,
+			buttons: [
+			    {text: 'Close', click: function() { $(this).dialog('close'); }}
+			]
+		    });
+		});
 	    } else {
 		var action = this.options.action;
 		var prepsReady = _.bind(this.availablePrepsReady, this, action);

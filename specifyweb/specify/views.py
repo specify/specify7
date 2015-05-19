@@ -186,7 +186,7 @@ def loan_return_all_items(request):
     sql="update loanpreparation set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, QuantityReturned=QuantityReturned+Quantity-QuantityResolved, QuantityResolved=Quantity, IsResolved=true where not IsResolved and LoanID in(" + request.POST['loanIds'] + ");"
 
     cursor.execute(sql, [int(request.specify_user.id)])
-    prepsReturned = cursor.fetchone()
+    prepsReturned = cursor.rowcount
 
     if (request.POST['selection'] != ""):
         sql="update loan set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, IsClosed=true, DateClosed=date(%s) where not IsClosed and LoanNumber in(" + request.POST['selection'] + ");"
@@ -195,7 +195,7 @@ def loan_return_all_items(request):
         sql="update loan set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, IsClosed=true, DateClosed=date(%s) where not IsClosed and LoanID in(" + request.POST['loanIds'] + ");"
         cursor.execute(sql, [int(request.specify_user.id), unicode(request.POST['returnedDate'])])
 
-    loansClosed = cursor.fetchone()
+    loansClosed = cursor.rowcount
                     
     transaction.set_dirty()
     transaction.commit()
