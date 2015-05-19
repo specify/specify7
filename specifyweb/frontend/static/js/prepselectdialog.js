@@ -33,20 +33,25 @@ define([
                 buttons: this.buttons()
             });
 	    var spinners = $(".prepselect-amt");
-	    //spinners.spinner({min: 0, max: function() {
-	//	return this.getAttribute('max');
-	  //  }});
 	    spinners.spinner();
             return this;
         },
         dialogEntry: function(iprep) {
+	    var unavailable = $('<td>').attr('align', 'center');
+	    var unavailableCnt = iprep.countamt - iprep.available;
+	    //if unavailable items, link to related interactions
+	    if (unavailableCnt != 0) { 
+		unavailable.append($('<a>').text(unavailableCnt).addClass('prepselect-unavailable'));
+	    } else {
+		unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
+	    }
 	    var entry = $('<tr>').append(
-                $('<td>').append($('<a>').text(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber))),
-                $('<td>').append($('<a>').text(iprep.taxon)),
-                $('<td>').append($('<a>').text(iprep.preptype)),
-		$('<td>').append($('<input>').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
-	        $('<td>').append($('<a>').text(iprep.available).addClass('prepselect-available')),
-		$('<td>').append($('<a>').text(iprep.countamt - iprep.available).addClass('prepselect-unavailable')));
+                $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
+                $('<td>').append(iprep.taxon),
+                $('<td>').attr('align', 'center').append(iprep.preptype),
+		$('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
+	        $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
+		unavailable);
             return entry;
         },
         buttons: function() {
@@ -103,7 +108,7 @@ define([
         },
 	selectAll: function() {
 	    var amounts = $(':input.prepselect-amt');
-	    var availables = $('a.prepselect-available');
+	    var availables = $('td.prepselect-available');
 	    for (var p=0; p < availables.length; p++) {
 		$(amounts[p]).attr('value', $(availables[p]).text());
 	    };	    
