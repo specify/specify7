@@ -204,5 +204,19 @@ def loan_return_all_items(request):
 
 
     
-                   
+@require_POST
+@csrf_exempt
+@login_maybe_required
+def prep_interactions(request):
+    from django.db import connection
+    
+    cursor = connection.cursor()
+
+    sql = """select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)), group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)), group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber)) from preparation p left join loanpreparation lp on lp.preparationid = p.preparationid left join giftpreparation gp on gp.preparationid = p.preparationid left join exchangeoutprep ep on ep.preparationid = p.preparationid left join loan l on l.loanid = lp.loanid left join gift g on g.giftid = gp.giftid left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid where p.preparationid in(%s) group by 1;"""
+
+    cursor.execute(sql, [unicode(request.POST['prepIds'])])
+    rows = cursor.fetchall()
+    
+    return http.HttpResponse(api.toJson(rows), content_type='application/json')
+                  
     

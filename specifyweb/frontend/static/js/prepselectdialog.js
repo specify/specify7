@@ -10,12 +10,17 @@ define([
     return Backbone.View.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
+        events: {
+	    'click a.prepselect-unavailable': 'prepInteractions',
+	    'click :checkbox': 'prepCheck'
+	},
 	colobjModel: schema.getModel("collectionobject"),
 	detModel: schema.getModel("determination"),
 	prepModel: schema.getModel("preparation"),
         render: function() {
             var table = $('<table>');
-	    table.append('<tr><th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
+	    table.append('<tr><th>  </th>'
+			 + '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
 			 + '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
 			 + '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
 			 + '<th>Selected</th><th>Available</th><th>Unavailable</th></tr>');
@@ -33,9 +38,45 @@ define([
                 buttons: this.buttons()
             });
 	    var spinners = $(".prepselect-amt");
-	    spinners.spinner();
+	    spinners.spinner({
+		change: _.bind(function( evt ) {
+		    var idx = $(".prepselect-amt").index(evt.currentTarget);
+		    var max = this.options.preps[idx].available;
+		    var min = 0;
+		    var val = new Number(evt.currentTarget.value);
+		    if (val > new Number(max)) {
+			evt.currentTarget.value = max;
+		    } else if (val < min) {
+			evt.currentTarget.value = min;
+		    }
+		    $(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
+		}, this),
+		//stop: _.bind(function( evt ) {
+		//    var idx = $(".prepselect-amt").index(evt.target);
+		//    $(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
+		//}, this),
+		spin: _.bind(function( evt, ui ) {
+		    var idx = $(".prepselect-amt").index(evt.target);
+		    var max = this.options.preps[idx].available;
+		    var min = 0;
+		    var val = new Number(ui.value);
+		    if (val > new Number(max) || val < min) {
+			evt.cancelled = true;
+		    } else {
+			$(':checkbox')[idx].checked = val > 0;
+		    }
+		}, this)
+	    });
             return this;
         },
+	prepCheck: function( evt ) {
+	    var idx = $(':checkbox').index( evt.target );
+	    if (evt.target.checked) {
+		$('.prepselect-amt')[idx].value = this.options.preps[idx].available;
+	    } else {
+		$('.prepselect-amt')[idx].value = '0';
+	    }
+	},
         dialogEntry: function(iprep) {
 	    var unavailable = $('<td>').attr('align', 'center');
 	    var unavailableCnt = iprep.countamt - iprep.available;
@@ -46,6 +87,7 @@ define([
 		unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
 	    }
 	    var entry = $('<tr>').append(
+		$('<td>').append($('<input>').attr('type', 'checkbox')),
                 $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
@@ -102,8 +144,27 @@ define([
 	    var SpecifyApp = require('specifyapp');
 	    SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
 	},
+	prepInteractions: function(evt) {
+            var idx = $(".prepselect-unavailable").index(evt.currentTarget);
+	    var prepId = this.options.preps[idx].preparationid;
+	    var parsePrepUse = function(p) {
+		if (p) {
+		    return _.map(p.split(','), function(o){
+			var s = o.split('>|<'); 
+			return {key: s[0], visibleKey: s[1]};
+		    });	    
+		} else {
+		    return null;
+		}
+	    };
+	    api.getInteractionsForPrepIds(prepId).done(function(result){
+		var loans = parsePrepUse(result[0][1]);
+		var gifts = parsePrepUse(result[0][2]);
+		var exchs = parsePrepUse(result[0][3]);
+		console.log(loans, gifts, exchs);
+	    });
+	},
         getIndex: function(evt, selector) {
-            evt.preventDefault();
             return this.$(selector).index(evt.currentTarget);
         },
 	selectAll: function() {
@@ -111,12 +172,15 @@ define([
 	    var availables = $('td.prepselect-available');
 	    for (var p=0; p < availables.length; p++) {
 		$(amounts[p]).attr('value', $(availables[p]).text());
-	    };	    
+	    };	  
+	    $(':checkbox').attr('checked', true);
 	},
 	deSelectAll: function() {
-	    _.each($(':input.prepselect-amt'), function(item) {
-		$(item).attr('value', '0');
-	    });
+	    //_.each($(':input.prepselect-amt'), function(item) {
+		//$(item).attr('value', '0');
+	    //});
+	    $(':input.prepselect-amt').attr('value', '0');
+	    $(':checkbox').attr('checked', false);
 	}
     });
 

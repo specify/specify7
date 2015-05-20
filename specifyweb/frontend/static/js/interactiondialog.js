@@ -2,11 +2,13 @@ define([
     'jquery', 'underscore', 'backbone', 'schema', 'specifyapi',
     'icons', 'specifyform', 'whenall', 'recordsetsdialog', 'prepselectdialog', 'uiformatters',
     'resourceview',
-    'require',
+    'require', 'props', 'text!properties/resources_en.properties!noinline',
     'jquery-ui'
 ], function($, _, Backbone, schema, api, icons, specifyform,
-            whenAll, RecordSetsDialog, PrepSelectDialog, uiformatters, ResourceView, require) {
+            whenAll, RecordSetsDialog, PrepSelectDialog, uiformatters, ResourceView, require, props, resources_prop) {
     "use strict";
+
+    var getProp = _.bind(props.getProperty, props, resources_prop);
 
     var dialog;
     function makeDialog(el, options) {
@@ -135,6 +137,19 @@ define([
 	    });
 	    new PrepSelectDialog({preps: ipreps, action: action }).render();
 	},
+	loanReturnDone: function(result) {
+	    var msg = getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
+	    
+	    var huh = $("<p>").append($("<a>").text(msg));
+	    
+	    makeDialog(huh, {
+		title: getProp("InteractionsTask.LN_RET_TITLE"),
+		maxHeight: 400,
+		buttons: [
+		    {text: getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
+		]
+	    });
+	 },   
 	interactionAction: function(selection, isRs) {
             this.$el.dialog('close');
 	    if (this.options.close) {
@@ -144,17 +159,8 @@ define([
 		var today = new Date();
 		var todayArg = [];
 		todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
-		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection).done(function(result) {
-		    var huh = $("<p>").append($("<a>").text("Loans Closed: " + result[1] + ". Preps returned: " + result[0]));
-		    
-		    makeDialog(huh, {
-			title: "Done",
-			maxHeight: 400,
-			buttons: [
-			    {text: 'Close', click: function() { $(this).dialog('close'); }}
-			]
-		    });
-		});
+		var doneFunc = _.bind(this.loanReturnDone, this);
+		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection).done(doneFunc);
 	    } else {
 		var action = this.options.action;
 		var prepsReady = _.bind(this.availablePrepsReady, this, action);

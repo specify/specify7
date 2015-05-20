@@ -79,8 +79,12 @@ define([
 	},
 	returnAllLoanItems: function(loanIds, returnedById, returnedDate, selection) {
 	    return $.post('/api/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
+	},
+	getInteractionsForPrepIds: function(prepIds) {
+	    return $.post('/api/prep_interactions/', {prepIds: prepIds});
 	}
     });
+    
 
     return api;
 });
