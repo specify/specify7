@@ -25,15 +25,43 @@ define([
 	events: {
 	    'click a.rs-select': 'rsSelect',
 	    'click button[type=action-entry]': 'processEntry',
-	    'click a.i-action-rs': 'toggleView',
-	    'click a.i-action-enter': 'toggleView',
-	    'click a.i-action-noprep': 'zeroPrepLoan'
+	    'click a.i-action-rs': 'toggleRs',
+	    'click a.i-action-enter': 'toggleCats',
+	    'keyup textarea.i-action-entry': 'catNumChange',
+	    'click input.i-action-noprep': 'zeroPrepLoan'
 	},
-	toggleView: function(evt, selector) {
-	    var clicked = evt.currentTarget.className;
-	    var ctrl = clicked == 'i-action-rs' ? $('table.rs-dlg-tbl') : $('div[type=action-entry');
+	
+	toggleRs: function(evt) {
+	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]');
+	},
+	toggleCats: function(evt) {
+	    this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl');
+	},
+
+	toggleText: function(ctrl) {
+	    var ctrlA = ctrl.prev();
+	    var ctrlText = ctrlA.text();
+	    if (ctrlText.match(/.* >>$/)) {
+		ctrlText = ctrlText.replace(/ >>$/, '');
+	    } else {
+		ctrlText = ctrlText + ' >>';
+	    }
+ 	    ctrlA.text(ctrlText);
+	},	    
+
+	toggleIt: function(sel, otherSel) {
+	    var ctrl = $(sel);
+	    if (ctrl.is(':hidden')) {
+		var otherCtrl = $(otherSel + ':visible');
+		if (otherCtrl.length > 0) {
+		    this.toggleText(otherCtrl);
+		    otherCtrl.toggle(250);
+		}
+	    }
+	    this.toggleText(ctrl);
 	    ctrl.toggle(250);
 	},
+
 	zeroPrepLoan: function() {
 	    this.$el.dialog('close');
 	    var SpecifyApp = require('specifyapp');
@@ -41,6 +69,7 @@ define([
 	    var loanRes =  new loanModel.Resource();
 	    SpecifyApp.setCurrentView(new ResourceView({model: loanRes}));
 	},
+
 	getDlgTitle: function() {
 	    var tblName = this.options.close ? 'loan' : this.options.action.table;
 	    var tblTitle = schema.getModel(tblName).getLocalizedName();
@@ -50,18 +79,19 @@ define([
 	    return $('<a>').addClass("rs-select").text(recordSet.get('name'));
 	},	
 	getRSCaption: function() {
-	    return "Choose a Recordset (" 
-		+ (this.options.recordSets._totalCount == 0 ? "none" : this.options.recordSets._totalCount)
+	    var rsCount = this.options.recordSets._totalCount;
+	    return "By choosing a recordset (" 
+		+ (rsCount == 0 ? "none" : rsCount)
 		+ " available)";
 	},
 	getEntryCaption: function() {
-	    return "Enter " + this.getSrchFld().getLocalizedName() + "s";
+	    return "By entering " + this.getSrchFld().getLocalizedName() + "s";
 	},
 	getNoPrepCaption: function() {
 	    if (this.options.close || this.options.action.table != 'loan') {
 		return "";
 	    } else {
-		return "Create " + schema.getModel('loan').getLocalizedName() + " without preparations.";
+		return "Without preparations";
 	    }
 	},
 	getSrchFld: function() {
@@ -69,25 +99,36 @@ define([
 	    var fld = this.options.srchFld ? this.options.srchFld : (model == 'collectionobject' ? 'catalognumber' : 'loannumber');
 	    return schema.getModel(model).getField(fld);
 	},	      
+	catNumChange: function(evt) {
+	    console.log("catNumChange");
+	    var entry = evt.currentTarget;
+	    if (entry.value) {
+		$('button[type=action-entry]').removeAttr("disabled");
+	    } else {
+		$('button[type=action-entry]').attr("disabled", "true");
+	    }
+	},
 	makeUI: function() {
-	    this.$el.append('<a class="i-action-rs">' + this.getRSCaption() + '</a>');
-	    this.makeTable();
-	    this.$el.append('<br><br><a class="i-action-enter">' + this.getEntryCaption() + '</a><br>'); 
+	    var breaker = '';
+	    if (this.options.recordSets._totalCount > 0) {
+		this.$el.append('<a class="i-action-rs">' + this.getRSCaption() + '</a>');
+		this.makeTable();
+		breaker = '<br><br>';
+	    } 	
+	    this.$el.append(breaker + '<a class="i-action-enter">' + this.getEntryCaption() + '</a>'); 
 	    this.makeEntryUI();
 	    var noPrepCap = this.getNoPrepCaption();
 	    if (noPrepCap != "") {
-		this.$el.append('<br><a class="i-action-noprep">' + noPrepCap + '</a><br>');
+		this.$el.append('<br><input type="button" class="i-action-noprep" value="' + noPrepCap + '"</><br>');
 	    }
 	},
 	touchUpUI: function() {
-	   if (this.options.recordSets._totalCount == 0) {
-		$('table.rs-dlg-tbl').toggle();
-	   } else {
-		$('div[type=action-entry').toggle();
+	   if (this.options.recordSets._totalCount > 0) {
+		this.toggleCats();
 	   }
 	},	    
 	makeEntryUI: function() {
-	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=3></textarea><button type="action-entry">OK</button></div><br>');
+	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=3></textarea><button disabled="true" type="action-entry">OK</button></div><br>');
 	},
 	rsSelect: function(evt) {
             var index = this.getIndex(evt, 'a.rs-select');
