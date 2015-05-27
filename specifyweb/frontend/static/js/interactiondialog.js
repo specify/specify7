@@ -31,11 +31,11 @@ define([
 	    'click input.i-action-noprep': 'zeroPrepLoan'
 	},
 	
-	toggleRs: function(evt) {
-	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]');
+	toggleRs: function(evt, duration) {
+	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]', duration);
 	},
-	toggleCats: function(evt) {
-	    this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl');
+	toggleCats: function(evt, duration) {
+	    this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl', duration);
 	},
 
 	toggleText: function(ctrl) {
@@ -49,17 +49,17 @@ define([
  	    ctrlA.text(ctrlText);
 	},	    
 
-	toggleIt: function(sel, otherSel) {
+	toggleIt: function(sel, otherSel, duration) {
 	    var ctrl = $(sel);
 	    if (ctrl.is(':hidden')) {
 		var otherCtrl = $(otherSel + ':visible');
 		if (otherCtrl.length > 0) {
 		    this.toggleText(otherCtrl);
-		    otherCtrl.toggle(250);
+		    otherCtrl.toggle(typeof duration != 'undefined' ? duration : 250);
 		}
 	    }
 	    this.toggleText(ctrl);
-	    ctrl.toggle(250);
+	    ctrl.toggle(typeof duration != 'undefined' ? duration : 250);
 	},
 
 	zeroPrepLoan: function() {
@@ -124,46 +124,115 @@ define([
 	},
 	touchUpUI: function() {
 	   if (this.options.recordSets._totalCount > 0) {
-		this.toggleCats();
+		this.toggleCats(0);
 	   }
 	},	    
 	makeEntryUI: function() {
-	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=3></textarea><button disabled="true" type="action-entry">OK</button></div><br>');
+	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=5 spellcheck="false"></textarea><button disabled="true" type="action-entry">OK</button></div><br>');
 	},
 	rsSelect: function(evt) {
             var index = this.getIndex(evt, 'a.rs-select');
 	    var recordSet =  this.options.recordSets.at(index);
 	    this.interactionAction(recordSet, true);
 	},
-	processEntry: function(evt){ 
-	    var numsCtrl = $('textarea.i-action-entry');
-	    var numEntry = numsCtrl.attr('value');
-	    var splitter = ' '; //default separator
-	    if (numEntry.indexOf(',') != -1) {
-		//assume comma-separated
-		splitter = ',';
+	
+	parseEntry: function(entry, formatter) {
+	    var spaces = formatter ? _.pluck(formatter.fields, "value").join('').indexOf(' ') >= 0 : false;
+	    var commas = formatter ? _.pluck(formatter.fields, "value").join('').indexOf(',') >= 0 : false;
+	    var splitters = '\n|,| '; 
+	    if (spaces || commas) {
+		if (spaces && commas) {
+		    splitters = '\n'; 
+		} else if (spaces) {
+		    splitters = '\n|,';
+		}
 	    }
-	    numEntry =  numEntry.replace(/\n/g, splitter);
-
-	    var nums=_.filter(
-		_.map(numEntry.split(splitter), function(item) {
+	    var splittable = entry.replace(new RegExp(splitters, "g"), '\t');
+	    return _.filter(
+		_.map(splittable.split('\t'), function(item) {
 		    return item.trim();
 		}), 
 		function(item) {
 		    return item != '';
 		});
+	},
+	processEntry: function(evt){ 	    
+	    var numsCtrl = $('textarea.i-action-entry');
+	    var numEntry = numsCtrl.attr('value');
+	    var formatter = this.getSrchFld().getUIFormatter();
+	    var nums = this.parseEntry(numEntry, formatter);
 
 	    var model = this.options.close ? 'loan' : 'collectionobject';
 	    var srchFld = this.options.srchFld ? this.options.srchFld : 'catalognumber';
-	    var formatter = this.getSrchFld().getUIFormatter();
-	    var ids=_.map(nums, function(item) {
-		var id = formatter ? formatter.canonicalize([item]) : item;
-		return "'" + id.replace(/'/g, "''") + "'";
-	    }).join();
+	    
+	    var validEntries = _.filter(nums, function(item) {
+		return formatter ? formatter.parse(item) != null : false;
+	    });
 
-	    this.interactionAction(ids, false);
+	    var invalidEntries = [];
+	    if (validEntries.length != nums.length) {
+		invalidEntries = _.filter(nums, function(item) {
+		    return formatter ? formatter.parse(item) == null : false;
+		});
+	    }
+	    
+	    var canonicalizized = _.map(validEntries, function(entry) {
+		var zized = formatter ? formatter.canonicalize([entry]) : entry;
+		return {entry: entry, zized: zized};
+	    });
+	    canonicalizized = _.sortBy(canonicalizized, function(z) { return z.zized; });
+
+	    this.interactionAction(canonicalizized, false, invalidEntries);
 	},
-	availablePrepsReady: function(action, prepsData) {
+	getInvalidEntrySnagTxt: function() {
+	    return "Invalid Entries:";
+	},
+	getMissingEntrySnagTxt: function() {
+	    return "Missing Entries:";
+	},
+	getNoAvailablePrepsSnagTxt: function() {
+	    return "No preparations were found.";
+	},
+	makeSnagList: function(hdr, snags) {
+	    var table = $('<table class="i-action-enter-snag">');
+	    table.append("<tr><th>" + hdr + "</th></tr>");
+	    _.each(snags, function(ie) {
+		table.append("<tr><td>" + ie + "</td></tr>");
+	    });
+	    return table;
+	},
+	availablePrepsReady: function(isRs, action, idFld, entries, invalidEntries, prepsData) {
+	    var missing = [];
+	    if (!isRs) {
+		if (idFld.toLowerCase() == 'catalognumber') {
+		    for (var i = 0, j = 0; i < entries.length && j < prepsData.length; i++) {
+			if (entries[i].zized != prepsData[j][0]) {
+			    missing.push(entries[i].entry);
+			} else {
+			    var val = prepsData[j][0];
+			    while (++j < prepsData.length && prepsData[j][0] == val);
+			}
+		    }
+		    if (i < entries.length) {
+			missing = missing.concat(_.pluck(entries, 'entry').slice(i));
+		    }
+		}
+	    }
+	    if (prepsData.length == 0 || missing.length > 0 || (!isRs && invalidEntries.length > 0)) {
+		var slozzler = $('<div class="i-action-enter-snag">');
+		if (invalidEntries.length > 0) {
+		    slozzler.append(this.makeSnagList(this.getInvalidEntrySnagTxt(), invalidEntries));
+		}
+		if (missing.length > 0) {
+		    slozzler.append(this.makeSnagList(this.getMissingEntrySnagTxt(), missing));
+		}
+		if (prepsData.length == 0) {
+		    slozzler.append('<p>' + this.getNoAvailablePrepsSnagTxt());
+		}
+		this.$el.append(slozzler);
+		return;
+	    }
+	    this.$el.dialog('close');
 	    var ipreps = _.map(prepsData, function(iprepData) {
 		return {catalognumber: iprepData[0],
 			taxon: iprepData[1],
@@ -190,10 +259,11 @@ define([
 		    {text: getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
 		]
 	    });
-	 },   
-	interactionAction: function(selection, isRs) {
-            this.$el.dialog('close');
+	},   
+
+	interactionAction: function(selection, isRs, invalidEntries) {
 	    if (this.options.close) {
+		this.$el.dialog('close');
 		var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
 			: 'select LoanID from loan where LoanNumber in(' + selection + ')'; 
 		var app = require('specifyapp');
@@ -204,11 +274,16 @@ define([
 		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection).done(doneFunc);
 	    } else {
 		var action = this.options.action;
-		var prepsReady = _.bind(this.availablePrepsReady, this, action);
 		if (isRs) {
+		    this.$el.dialog('close');
+		    var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
 		    api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady); 
 		} else {
-		    api.getPrepsAvailableForLoanCoIds('CatalogNumber',selection).done(prepsReady);
+		    var ids =_.map(_.pluck(selection, 'zized'), function(id) {
+			return "'" + id.replace(/'/g, "''") + "'";
+		    }).join();
+		    var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
+		    api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
 		}
 	    }
 	}
