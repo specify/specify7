@@ -369,7 +369,9 @@ define([
 
         var reportWindowContext = "ReportWindow" + Math.random();
         window.open("", reportWindowContext);
-        var form = $('<form action="/report_runner/run/" method="post" target="' + reportWindowContext + '">' +
+        var form = $('<form action="/report_runner/run/" method="post" ' +
+                     'style="display: none;" ' +
+                     'target="' + reportWindowContext + '">' +
                      '<textarea name="report"></textarea>' +
                      '<textarea name="query"></textarea>' +
                      '<textarea name="parameters"></textarea>' +
@@ -378,7 +380,9 @@ define([
         $('textarea[name="report"]', form).val(reportResources.reportXML);
         $('textarea[name="query"]', form).val(JSON.stringify(query));
         $('textarea[name="parameters"]', form).val(JSON.stringify(reportResources.parameters));
+        $('body').append(form);
         form[0].submit();
+        _.defer(function () { form.remove(); });
     }
 
     function fixupImages(reportXML) {
