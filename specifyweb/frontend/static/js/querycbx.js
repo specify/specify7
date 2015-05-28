@@ -94,12 +94,14 @@ define([
             if (this.hideButtons) {
                 this.$('.querycbx-edit, .querycbx-add, .querycbx-clone, .querycbx-display').hide();
             }
+            var field = this.model.specifyModel.getField(this.fieldName);
+            field.isRequired && this.$('input').addClass('specify-required-field');
             this.isRequired = this.$('input').is('.specify-required-field');
 
             var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
-            this.relatedModel || (this.relatedModel = this.model.specifyModel.getField(this.fieldName).getRelatedModel());
+            this.relatedModel || (this.relatedModel = field.getRelatedModel());
             this.typesearch || (this.typesearch = lookupTypesearch(init.name));
 
             var selectStmt = this.typesearch.text();
