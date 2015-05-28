@@ -61,16 +61,19 @@ define([
         events: {
             'click a.edit': 'edit'
         },
-	getDlgTitle: function() {
+	dlgTitle: function() {
 	    return  "Record Sets (" + this.options.recordSets._totalCount + ")";
+	},
+	maxHeight: function() {
+	    return 400;
 	},
         render: function() {
 	    this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
-                title: this.getDlgTitle(),
-                maxHeight: 400,
+                title: this.dlgTitle(),
+                maxHeight: this.maxHeight(),
                 buttons: this.buttons()
             });
 	    this.touchUpUI();

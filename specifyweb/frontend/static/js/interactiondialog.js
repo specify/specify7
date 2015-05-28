@@ -15,6 +15,7 @@ define([
         dialog && dialog.dialog('close');
         dialog = el.dialog(_.extend({
             modal: true,
+	    width: 500,
             close: function() { dialog = null; $(this).remove(); }
         }, options));
     }
@@ -31,6 +32,15 @@ define([
 	    'click input.i-action-noprep': 'zeroPrepLoan'
 	},
 	
+	dDlgTitle: function() {
+	    var tblName = this.options.close ? 'loan' : this.options.action.table;
+	    var tblTitle = schema.getModel(tblName).getLocalizedName();
+	    return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
+	},
+	maxHeight: function() {
+	    return 600;
+	},
+
 	toggleRs: function(evt, duration) {
 	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]', duration);
 	},
@@ -70,11 +80,6 @@ define([
 	    SpecifyApp.setCurrentView(new ResourceView({model: loanRes}));
 	},
 
-	getDlgTitle: function() {
-	    var tblName = this.options.close ? 'loan' : this.options.action.table;
-	    var tblTitle = schema.getModel(tblName).getLocalizedName();
-	    return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
-	},
 	makeEntryLink: function(recordSet) {
 	    return $('<a>').addClass("rs-select").text(recordSet.get('name'));
 	},	
@@ -100,7 +105,7 @@ define([
 	    return schema.getModel(model).getField(fld);
 	},	      
 	catNumChange: function(evt) {
-	    console.log("catNumChange");
+	    $('button[type=i-snag-snub]').remove();
 	    var entry = evt.currentTarget;
 	    if (entry.value) {
 		$('button[type=action-entry]').removeAttr("disabled");
@@ -157,6 +162,8 @@ define([
 		});
 	},
 	processEntry: function(evt){ 	    
+	    $('div.i-action-entry-snag').remove();
+
 	    var numsCtrl = $('textarea.i-action-entry');
 	    var numEntry = numsCtrl.attr('value');
 	    var formatter = this.getSrchFld().getUIFormatter();
@@ -184,24 +191,63 @@ define([
 
 	    this.interactionAction(canonicalizized, false, invalidEntries);
 	},
+
 	getInvalidEntrySnagTxt: function() {
-	    return "Invalid Entries:";
+	    return "Invalid:";
 	},
 	getMissingEntrySnagTxt: function() {
-	    return "Missing Entries:";
+	    return "Missing:";
 	},
 	getNoAvailablePrepsSnagTxt: function() {
 	    return "No preparations were found.";
 	},
-	makeSnagList: function(hdr, snags) {
-	    var table = $('<table class="i-action-enter-snag">');
-	    table.append("<tr><th>" + hdr + "</th></tr>");
-	    _.each(snags, function(ie) {
-		table.append("<tr><td>" + ie + "</td></tr>");
-	    });
-	    return table;
+	getSnagDisplayHdr: function() {
+	    return "There are problems with the entry:";
 	},
+	getSnagSnubTxt: function() {
+	    return "Ignore and continue";
+	},
+	makeSnagList: function(hdr, snags) {
+	    var result = $('<div/>', {
+		"class": "i-snag-list"
+	    });
+	    result.append($('<a/>', { 
+		"class":"i-action-ent-snag",
+		html: hdr
+	    }));
+	    result.append($('<p/>', {
+		html: snags.join()
+	    }));
+	    return result;
+	},
+
+	makeSnagDisplay: function(prepsData, missing, invalidEntries, action) {
+	    var slozzler = $('<div class="i-action-entry-snag">');
+	    slozzler.append('<h4>' + this.getSnagDisplayHdr() + '</h4>');
+	    if (invalidEntries.length > 0) {
+		slozzler.append(this.makeSnagList(this.getInvalidEntrySnagTxt(), invalidEntries));
+	    }
+	    if (missing.length > 0) {
+		slozzler.append(this.makeSnagList(this.getMissingEntrySnagTxt(), missing));
+	    }
+	    if (prepsData.length == 0) {
+		slozzler.append('<h4>' + this.getNoAvailablePrepsSnagTxt() + '</h4>');
+	    } else {
+		var showDlg = _.bind(this.showPrepSelectDlg, this, prepsData, action);
+		var btn = $('<button/>',  {
+		    html: this.getSnagSnubTxt(),
+		    click: showDlg,
+		    "type": "i-snag-snub"
+		});
+		slozzler.append(btn);
+	    }
+	    slozzler.append('<br>');
+	    return slozzler;
+	},
+
 	availablePrepsReady: function(isRs, action, idFld, entries, invalidEntries, prepsData) {
+	    $('button[type=action-entry]').attr("disabled", "true");
+
 	    var missing = [];
 	    if (!isRs) {
 		if (idFld.toLowerCase() == 'catalognumber') {
@@ -219,19 +265,14 @@ define([
 		}
 	    }
 	    if (prepsData.length == 0 || missing.length > 0 || (!isRs && invalidEntries.length > 0)) {
-		var slozzler = $('<div class="i-action-enter-snag">');
-		if (invalidEntries.length > 0) {
-		    slozzler.append(this.makeSnagList(this.getInvalidEntrySnagTxt(), invalidEntries));
-		}
-		if (missing.length > 0) {
-		    slozzler.append(this.makeSnagList(this.getMissingEntrySnagTxt(), missing));
-		}
-		if (prepsData.length == 0) {
-		    slozzler.append('<p>' + this.getNoAvailablePrepsSnagTxt());
-		}
-		this.$el.append(slozzler);
+		$('textarea.i-action-entry').after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
 		return;
+	    } else {
+		this.showPrepSelectDlg(prepsData, action);
 	    }
+	},
+
+	showPrepSelectDlg: function(prepsData, action) {
 	    this.$el.dialog('close');
 	    var ipreps = _.map(prepsData, function(iprepData) {
 		return {catalognumber: iprepData[0],
@@ -247,6 +288,7 @@ define([
 	    });
 	    new PrepSelectDialog({preps: ipreps, action: action }).render();
 	},
+	    
 	loanReturnDone: function(result) {
 	    var msg = getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
 	    
@@ -283,7 +325,11 @@ define([
 			return "'" + id.replace(/'/g, "''") + "'";
 		    }).join();
 		    var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
-		    api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
+		    if (selection.length > 0) {
+			api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
+		    } else {
+			prepsReadeye([]);
+		    }
 		}
 	    }
 	}
