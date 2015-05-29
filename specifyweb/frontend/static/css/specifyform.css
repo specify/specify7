@@ -332,7 +332,7 @@ a.specify-attachment-original {
 .trees-dialog                td:first-of-type + td,
 .recordsets-dialog           td:first-of-type + td
 {
-    width: 100%
+    width: 100%;
 }
 
 .querybuilder-header {
@@ -345,7 +345,7 @@ a.specify-attachment-original {
 }
 
 .querybuilder-expand {
-    width: 100%
+    width: 100%;
 }
 
 .querybuilder-expand .ui-button-text {
