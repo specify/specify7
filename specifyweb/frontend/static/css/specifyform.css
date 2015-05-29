@@ -620,6 +620,7 @@ a.specify-attachment-original {
 
 #specify-system-info th {
     text-align: right;
+    white-space: nowrap;
 }
 
 #specify-system-info h1 {
