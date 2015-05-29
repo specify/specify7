@@ -59,7 +59,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             this.watchers = {};
             this.deleteBlockers = {};
             this.rules && _.each(this.rules.deleteBlockers, function(fieldname) {
-                return _this.deleteBlockers[fieldname] = true;
+                _this.deleteBlockers[fieldname] = true;
             });
             this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
         }
@@ -286,6 +286,9 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             uniqueIn: {
                 role: ['accession', 'repositoryagreement']
             }
+        },
+        Agent: {
+            deleteBlockers: ['catalogerof']
         },
         Appraisal: {
             uniqueIn: {

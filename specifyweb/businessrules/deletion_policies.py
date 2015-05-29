@@ -31,6 +31,7 @@ protect = {
     'Collectingeventattribute.hosttaxon',
     'Collectionobject.accession',
     'Collectionobject.appraisal',
+    'Collectionobject.cataloger',
     'Collectionobject.collectingevent',
     'Collectionobject.collection',
     'Container.storage',
