@@ -45,7 +45,7 @@ define([
 
 	//l10n-able stuff>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-	dDlgTitle: function() {
+	dlgTitle: function() {
 	    var tblName = this.options.close ? 'loan' : this.options.action.table;
 	    var tblTitle = schema.getModel(tblName).getLocalizedName();
 	    return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
@@ -207,8 +207,12 @@ define([
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ui element stuff
 
 	parseEntry: function(entry, formatter) {
-	    var spaces = formatter ? _.pluck(formatter.fields, "value").join('').indexOf(' ') >= 0 : false;
-	    var commas = formatter ? _.pluck(formatter.fields, "value").join('').indexOf(',') >= 0 : false;
+	    var spaces = formatter ? 
+		    _.pluck(formatter.fields, "value").join('').indexOf(' ') >= 0 : 
+		    true; //guess that invoice numbers will have spaces.
+	    var commas = formatter ? 
+		    _.pluck(formatter.fields, "value").join('').indexOf(',') >= 0 : 
+		    false; //hope that invoice numbers will not have commas.
 	    var splitters = '\n|,| '; 
 	    if (spaces || commas) {
 		if (spaces && commas) {
@@ -236,10 +240,9 @@ define([
 	    var nums = this.parseEntry(numEntry, formatter);
 
 	    var model = this.options.close ? 'loan' : 'collectionobject';
-	    var srchFld = this.options.srchFld ? this.options.srchFld : 'catalognumber';
 	    
 	    var validEntries = _.filter(nums, function(item) {
-		return formatter ? formatter.parse(item) != null : false;
+		return formatter ? formatter.parse(item) != null : true;
 	    });
 
 	    var invalidEntries = [];
@@ -326,25 +329,25 @@ define([
 	},
 
 	interactionAction: function(selection, isRs, invalidEntries) {
+	    var ids =_.map(_.pluck(selection, 'zized'), function(id) {
+		return "'" + id.replace(/'/g, "''") + "'";
+	    }).join();
 	    if (this.options.close) {
 		this.$el.dialog('close');
 		var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
-			: 'select LoanID from loan where LoanNumber in(' + selection + ')'; 
+			: 'select LoanID from loan where LoanNumber in(' + ids + ')'; 
 		var app = require('specifyapp');
 		var today = new Date();
 		var todayArg = [];
 		todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
 		var doneFunc = _.bind(this.loanReturnDone, this);
-		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : selection).done(doneFunc);
+		api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : ids).done(doneFunc);
 	    } else {
 		var action = this.options.action;
 		if (isRs) {
 		    var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
 		    api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady); 
 		} else {
-		    var ids =_.map(_.pluck(selection, 'zized'), function(id) {
-			return "'" + id.replace(/'/g, "''") + "'";
-		    }).join();
 		    var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
 		    if (selection.length > 0) {
 			api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
