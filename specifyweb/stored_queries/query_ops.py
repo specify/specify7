@@ -84,7 +84,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
     def op_empty(self, field, value):
         if isinstance(field.type, sqlalchemy.types.String):
             value = self.format(value)
-            return field == ''
+            return (field == '') | (field == None)
         else:
             return field == None
 
