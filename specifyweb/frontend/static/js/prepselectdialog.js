@@ -17,6 +17,12 @@ define([
 	colobjModel: schema.getModel("collectionobject"),
 	detModel: schema.getModel("determination"),
 	prepModel: schema.getModel("preparation"),
+	loanModel: schema.getModel("loan"),
+	giftModel: schema.getModel("gift"),
+	exchModel: schema.getModel("exchangeout"),
+
+	//ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
         render: function() {
             var table = $('<table>');
 	    table.append('<tr><th>  </th>'
@@ -37,10 +43,10 @@ define([
 		width: 600,
                 buttons: this.buttons()
             });
-	    var spinners = $(".prepselect-amt");
+	    var spinners = this.$(".prepselect-amt");
 	    spinners.spinner({
 		change: _.bind(function( evt ) {
-		    var idx = $(".prepselect-amt").index(evt.currentTarget);
+		    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
 		    var max = this.options.preps[idx].available;
 		    var min = 0;
 		    var val = new Number(evt.currentTarget.value);
@@ -49,34 +55,25 @@ define([
 		    } else if (val < min) {
 			evt.currentTarget.value = min;
 		    }
-		    $(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
+		    this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
 		}, this),
-		//stop: _.bind(function( evt ) {
-		//    var idx = $(".prepselect-amt").index(evt.target);
-		//    $(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-		//}, this),
 		spin: _.bind(function( evt, ui ) {
-		    var idx = $(".prepselect-amt").index(evt.target);
+		    var idx = this.$(".prepselect-amt").index(evt.target);
 		    var max = this.options.preps[idx].available;
 		    var min = 0;
 		    var val = new Number(ui.value);
 		    if (val > new Number(max) || val < min) {
 			evt.cancelled = true;
 		    } else {
-			$(':checkbox')[idx].checked = val > 0;
+			this.$(':checkbox')[idx].checked = val > 0;
 		    }
 		}, this)
 	    });
+	    spinners.width(50);
+
             return this;
         },
-	prepCheck: function( evt ) {
-	    var idx = $(':checkbox').index( evt.target );
-	    if (evt.target.checked) {
-		$('.prepselect-amt')[idx].value = this.options.preps[idx].available;
-	    } else {
-		$('.prepselect-amt')[idx].value = '0';
-	    }
-	},
+
         dialogEntry: function(iprep) {
 	    var unavailable = $('<td>').attr('align', 'center');
 	    var unavailableCnt = iprep.countamt - iprep.available;
@@ -112,6 +109,131 @@ define([
 	    //need to be nicer
 	    return this.options.action.attr('action');
 	},
+
+	prepInteractionAnchor: function(model, interaction) {
+	    return $('<a/>', {
+		html: model.getLocalizedName() + ": " + interaction.visibleKey,
+		click: _.bind(this.prepIactionDlg, this, model, interaction.key)
+	    });
+	},
+
+	getPrepInteractions: function(loans, gifts, exchs) {
+	    var result =  $('<div class="prep-i-actions">');
+	    var pAnch = _.bind(this.prepInteractionAnchor, this);
+	    var lm = this.loanModel, gm = this.giftModel, em = this.exchModel;
+	    _.each(loans, function(item) {
+		result.append($('<tr>').append('<td>').append(pAnch(lm, item)));
+	    });
+	    _.each(gifts, function(item) {
+		result.append($('<tr>').append('<td>').append(pAnch(gm, item)));
+	    });
+	    _.each(exchs, function(item) {
+		result.append($('<tr>').append('<td>').append(pAnch(em, item)));
+	    });
+	    return result;
+	},
+
+	//<<<<<<<<<<<<<<<<<<<< ui elements stuff
+
+	//events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	prepCheck: function( evt ) {
+	    var idx = this.$(':checkbox').index( evt.target );
+	    if (evt.target.checked) {
+		this.$('.prepselect-amt')[idx].value = this.options.preps[idx].available;
+	    } else {
+		this.$('.prepselect-amt')[idx].value = '0';
+	    }
+	},
+	prepInteractions: function(evt) {
+	    if (evt.currentTarget.nextSibling != null) {
+		$(evt.currentTarget.nextSibling).remove();
+	    } else {
+		var idx = this.$(".prepselect-unavailable").index(evt.currentTarget);
+		var prepId = this.options.preps[idx].preparationid;
+		var parsePrepUse = function(p) {
+		    if (p) {
+			return _.map(p.split(','), function(o){
+			    var s = o.split('>|<'); 
+			    return {key: s[0], visibleKey: s[1]};
+			});	    
+		    } else {
+			return null;
+		    }
+		};
+		var prepias = _.bind(this.getPrepInteractions, this);
+		var over = _.bind(function(result){
+		    var loans = parsePrepUse(result[0][1]);
+		    var gifts = parsePrepUse(result[0][2]);
+		    var exchs = parsePrepUse(result[0][3]);
+		    console.log(loans, gifts, exchs);
+		    var pias = prepias(loans, gifts, exchs);
+		    $(evt.currentTarget).after(pias);
+		}, this);
+		api.getInteractionsForPrepIds(prepId).done(over);
+	    }
+	},
+        getIndex: function(evt, selector) {
+            return this.$(selector).index(evt.currentTarget);
+        },
+	selectAll: function() {
+	    var amounts = this.$(':input.prepselect-amt');
+	    var availables = this.$('td.prepselect-available');
+	    for (var p=0; p < availables.length; p++) {
+		$(amounts[p]).attr('value', $(availables[p]).text());
+	    };	  
+	    this.$(':checkbox').attr('checked', true);
+	},
+	deSelectAll: function() {
+	    //_.each($(':input.prepselect-amt'), function(item) {
+		//$(item).attr('value', '0');
+	    //});
+	    this.$(':input.prepselect-amt').attr('value', '0');
+	    this.$(':checkbox').attr('checked', false);
+	},
+	
+	//<<<<<<<<<<<<<<<<<<<<<<< events
+
+
+	prepIactionDlg: function(model, key) {
+	    console.log("prepIactionDlg()", model, key);
+	    //window.open(api.makeResourceViewUrl(model, key));
+
+	    var irec = new model.LazyCollection({
+		filters: { id: key }
+	    });
+	    var _self = this;
+	    irec.fetch().done(function(arg) {
+		this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
+		
+		var resourceModel = new model.Resource(arg.objects[0]);
+		
+		new (require('resourceview'))({
+                    el: this.dialog,
+                    model: resourceModel,
+                    mode: 'view',
+                    noHeader: false
+		}).render();
+		
+		var _this = _self;
+		this.dialog.dialog({
+                    position: { my: "left top", at: "left+20 top+20", of: $('#content') },
+                    width: 'auto',
+                    close: function() { $(this).remove(); _this.dialog = null; },
+		    modal: true
+		}).parent().delegate('.ui-dialog-title a', 'click', function(evt) {
+                    evt.preventDefault();
+                    navigation.go(resourceModel.viewUrl());
+                    _this.dialog.dialog('close');
+		});
+		
+		$('<a>', { href: resourceModel.viewUrl() })
+                    .addClass('intercept-navigation')
+                    .append('<span class="ui-icon ui-icon-link">link</span>')
+                    .prependTo(this.dialog.closest('.ui-dialog').find('.ui-dialog-titlebar:first'));
+	    });
+	},
+
 	makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
 	    var result = new itemModel.Resource();
 	    result.set('quantity', amt);
@@ -132,7 +254,7 @@ define([
 	    var itemModelName = baseTbl + 'preparation';
 	    var itemModel = schema.getModel(itemModelName);
 	    var items = [];
-	    var amounts = $(':input.prepselect-amt');
+	    var amounts = this.$(':input.prepselect-amt');
 	    for (var p=0; p < this.options.preps.length; p++) {
 		var amt = $(amounts[p]).attr('value');
 		if ('0' != amt && '' != amt) {
@@ -143,44 +265,6 @@ define([
 	    interaction.set(itemModelName + 's', items);
 	    var SpecifyApp = require('specifyapp');
 	    SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
-	},
-	prepInteractions: function(evt) {
-            var idx = $(".prepselect-unavailable").index(evt.currentTarget);
-	    var prepId = this.options.preps[idx].preparationid;
-	    var parsePrepUse = function(p) {
-		if (p) {
-		    return _.map(p.split(','), function(o){
-			var s = o.split('>|<'); 
-			return {key: s[0], visibleKey: s[1]};
-		    });	    
-		} else {
-		    return null;
-		}
-	    };
-	    api.getInteractionsForPrepIds(prepId).done(function(result){
-		var loans = parsePrepUse(result[0][1]);
-		var gifts = parsePrepUse(result[0][2]);
-		var exchs = parsePrepUse(result[0][3]);
-		console.log(loans, gifts, exchs);
-	    });
-	},
-        getIndex: function(evt, selector) {
-            return this.$(selector).index(evt.currentTarget);
-        },
-	selectAll: function() {
-	    var amounts = $(':input.prepselect-amt');
-	    var availables = $('td.prepselect-available');
-	    for (var p=0; p < availables.length; p++) {
-		$(amounts[p]).attr('value', $(availables[p]).text());
-	    };	  
-	    $(':checkbox').attr('checked', true);
-	},
-	deSelectAll: function() {
-	    //_.each($(':input.prepselect-amt'), function(item) {
-		//$(item).attr('value', '0');
-	    //});
-	    $(':input.prepselect-amt').attr('value', '0');
-	    $(':checkbox').attr('checked', false);
 	}
     });
 
