@@ -294,7 +294,10 @@ def cleanData(model, data, agent):
             cleaned[field_name] = data[field_name]
     if model is models.Agent and not agent.specifyuser.is_admin():
         # only admins can set the user field on agents
-        del cleaned['specifyuser']
+        try:
+            del cleaned['specifyuser']
+        except KeyError:
+            pass
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
