@@ -166,9 +166,17 @@ define([
 		    var loans = parsePrepUse(result[0][1]);
 		    var gifts = parsePrepUse(result[0][2]);
 		    var exchs = parsePrepUse(result[0][3]);
-		    console.log(loans, gifts, exchs);
-		    var pias = prepias(loans, gifts, exchs);
-		    $(evt.currentTarget).after(pias);
+		    var count = ((loans != null) ? loans.length : 0)
+			    + ((gifts != null) ? gifts.length : 0)
+			    + ((exchs != null) ? exchs.length : 0);
+		    if (count > 1) {
+			var pias = prepias(loans, gifts, exchs);
+			$(evt.currentTarget).after(pias);
+		    } else {
+			var single =  loans != null ? loans : gifts != null ? gifts : exchs;
+			var m =  loans != null ? this.loanModel : gifts != null ? this.giftModel : this.exchModel;
+			_.bind(this.prepIactionDlg, this)(m, single[0].key);
+		    }
 		}, this);
 		api.getInteractionsForPrepIds(prepId).done(over);
 	    }

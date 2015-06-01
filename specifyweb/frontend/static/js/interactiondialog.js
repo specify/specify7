@@ -329,7 +329,7 @@ define([
 	},
 
 	interactionAction: function(selection, isRs, invalidEntries) {
-	    var ids =_.map(_.pluck(selection, 'zized'), function(id) {
+	    var ids = isRs ? selection : _.map(_.pluck(selection, 'zized'), function(id) {
 		return "'" + id.replace(/'/g, "''") + "'";
 	    }).join();
 	    if (this.options.close) {
