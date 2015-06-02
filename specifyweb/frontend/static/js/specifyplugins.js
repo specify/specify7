@@ -54,7 +54,7 @@ define([
             click: function(evt) {
                 evt.preventDefault();
                 $('<div title="Plugin Not Available">' +
-                 'This plugin in currently unavailable for <i>Specify&nbsp7</i>. ' +
+                 'This plugin is currently unavailable for <i>Specify&nbsp7</i>. ' +
                  'It was probably included on this form from <i>Specify&nbsp6</i> and ' +
                  'may be supported in the future.</div>')
                 .append('<dt>Plugin name:</dt>')

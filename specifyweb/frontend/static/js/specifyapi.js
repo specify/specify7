@@ -82,6 +82,9 @@ define([
 	},
 	getInteractionsForPrepIds: function(prepIds) {
 	    return $.post('/api/prep_interactions/', {prepIds: prepIds});
+	},
+	getUnresolvedPrepsForLoan: function(loanId) {
+	    return $.get('/api/unresolved_loan_preps/' + loanId + '/');
 	}
     });
     

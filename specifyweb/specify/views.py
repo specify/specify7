@@ -116,6 +116,26 @@ def preps_available_rs(request, recordset_id):
     
     return http.HttpResponse(api.toJson(rows), content_type='application/json')
 
+@login_maybe_required
+@require_GET
+def unresolved_loan_preps(request, loan_id):
+    from django.db import connection
+    cursor = connection.cursor()
+    cursor.execute("""
+    select co.CatalogNumber, t.FullName, lp.LoanPreparationID, pt.Name, lp.Quantity - lp.QuantityResolved
+    from loanpreparation lp
+    inner join preparation p on p.PreparationID = lp.PreparationID
+    inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
+    inner join preptype pt on pt.preptypeid = p.preptypeid
+    left join determination d on d.CollectionObjectID = co.CollectionObjectID
+    left join taxon t on t.TaxonID = d.TaxonID
+    where not lp.IsResolved and (d.IsCurrent or d.DeterminationID is null) and lp.LoanID=%s order by 1, 4
+       """, [loan_id])
+    rows = cursor.fetchall()
+    
+    return http.HttpResponse(api.toJson(rows), content_type='application/json')
+
+
 @require_POST
 @csrf_exempt
 @login_maybe_required

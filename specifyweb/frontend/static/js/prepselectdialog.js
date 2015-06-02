@@ -1,48 +1,33 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'populateform', 'savebutton', 'deletebutton', 
-    'specifyapi', 'resourceview', 'fieldformat',
+    'specifyapi', 'resourceview', 'fieldformat','prepdialog',
     'jquery-ui', 'jquery-bbq'
 ], function(require, $, _, Backbone, schema, navigation, populateform,
-            SaveButton, DeleteButton, api, ResourceView, FieldFormat) {
+            SaveButton, DeleteButton, api, ResourceView, FieldFormat, PrepDialog) {
     "use strict";
 
-    return Backbone.View.extend({
+    return PrepDialog.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
         events: {
 	    'click a.prepselect-unavailable': 'prepInteractions',
 	    'click :checkbox': 'prepCheck'
 	},
-	colobjModel: schema.getModel("collectionobject"),
-	detModel: schema.getModel("determination"),
-	prepModel: schema.getModel("preparation"),
-	loanModel: schema.getModel("loan"),
-	giftModel: schema.getModel("gift"),
-	exchModel: schema.getModel("exchangeout"),
 
 	//ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        render: function() {
-            var table = $('<table>');
-	    table.append('<tr><th>  </th>'
-			 + '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
-			 + '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
-			 + '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
-			 + '<th>Selected</th><th>Available</th><th>Unavailable</th></tr>');
-            var makeEntry = this.dialogEntry.bind(this);
-	    _.each(this.options.preps, function(recordSet) {
-		table.append(makeEntry(recordSet));
-            });
-            this.$el.append(table);
-            this.$el.dialog({
-                modal: true,
-                close: function() { $(this).remove(); },
-                title: "Preparations",
-                maxHeight: 700,
-		width: 600,
-                buttons: this.buttons()
-            });
+	getTblHdr: function() {
+	    return '<tr><th>  </th>'
+		+ '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
+		+ '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
+		+ '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
+		+ '<th>Selected</th><th>Available</th><th>Unavailable</th></tr>';
+	},
+	getDlgTitle: function() {
+	    return "Preparations";
+	},
+	finishRender: function() {
 	    var spinners = this.$(".prepselect-amt");
 	    spinners.spinner({
 		change: _.bind(function( evt ) {
@@ -70,9 +55,7 @@ define([
 		}, this)
 	    });
 	    spinners.width(50);
-
-            return this;
-        },
+	},
 
         dialogEntry: function(iprep) {
 	    var unavailable = $('<td>').attr('align', 'center');
@@ -93,11 +76,12 @@ define([
 		unavailable);
             return entry;
         },
+
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
-                { text: 'Select All', click: this.selectAll,
+                { text: 'Select All', click: _.bind(this.selectAll, this),
                   title: 'Select all available preparations.' },
-		{ text: 'De-select All', click: this.deSelectAll,
+		{ text: 'De-select All', click: _.bind(this.deSelectAll, this),
 		  title: 'Clear all.' },
 		{ text: 'OK', click: _.bind(this.makeInteraction, this),
 		  title: 'Create ' + this.getTextForObjToCreate() }
@@ -105,6 +89,7 @@ define([
             buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
             return buttons;
         },
+
 	getTextForObjToCreate: function() {
 	    //need to be nicer
 	    return this.options.action.attr('action');
@@ -181,9 +166,7 @@ define([
 		api.getInteractionsForPrepIds(prepId).done(over);
 	    }
 	},
-        getIndex: function(evt, selector) {
-            return this.$(selector).index(evt.currentTarget);
-        },
+
 	selectAll: function() {
 	    var amounts = this.$(':input.prepselect-amt');
 	    var availables = this.$('td.prepselect-available');
