@@ -32,25 +32,29 @@ define([
 	    spinners.spinner({
 		change: _.bind(function( evt ) {
 		    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
-		    var max = this.options.preps[idx].available;
-		    var min = 0;
-		    var val = new Number(evt.currentTarget.value);
-		    if (val > new Number(max)) {
-			evt.currentTarget.value = max;
-		    } else if (val < min) {
-			evt.currentTarget.value = min;
+		    if (idx >= 0) {
+			var max = this.options.preps[idx].available;
+			var min = 0;
+			var val = new Number(evt.currentTarget.value);
+			if (val > new Number(max)) {
+			    evt.currentTarget.value = max;
+			} else if (val < min) {
+			    evt.currentTarget.value = min;
+			}
+			this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
 		    }
-		    this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
 		}, this),
 		spin: _.bind(function( evt, ui ) {
 		    var idx = this.$(".prepselect-amt").index(evt.target);
-		    var max = this.options.preps[idx].available;
-		    var min = 0;
-		    var val = new Number(ui.value);
-		    if (val > new Number(max) || val < min) {
-			evt.cancelled = true;
-		    } else {
-			this.$(':checkbox')[idx].checked = val > 0;
+		    if (idx >= 0) {
+			var max = this.options.preps[idx].available;
+			var min = 0;
+			var val = new Number(ui.value);
+			if (val > new Number(max) || val < min) {
+			    evt.cancelled = true;
+			} else {
+			    this.$(':checkbox')[idx].checked = val > 0;
+			}
 		    }
 		}, this)
 	    });
