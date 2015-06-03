@@ -12,7 +12,8 @@ define([
         className: "prepselectdialog table-list-dialog",
         events: {
 	    'click a.prepselect-unavailable': 'prepInteractions',
-	    'click :checkbox': 'prepCheck'
+	    'click :checkbox': 'prepCheck',
+	    'keydown .prepselect-amt': 'prepselectKeyDown'
 	},
 
 	//ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -33,28 +34,22 @@ define([
 		change: _.bind(function( evt ) {
 		    var idx = this.$(".prepselect-amt").index(evt.currentTarget);
 		    if (idx >= 0) {
+			var val = new Number($(evt.currentTarget).attr('value'));
 			var max = this.options.preps[idx].available;
 			var min = 0;
-			var val = new Number(evt.currentTarget.value);
 			if (val > new Number(max)) {
-			    evt.currentTarget.value = max;
-			} else if (val < min) {
-			    evt.currentTarget.value = min;
+			    $(evt.currentTarget).attr('value', max);
+			} else if (isNaN(val) || val < min) {
+			    $(evt.currentTarget).attr('value',  min);
 			}
-			this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
+			this.$(':checkbox')[idx].checked = new Number($(evt.currentTarget).attr('value')) > 0;
 		    }
 		}, this),
 		spin: _.bind(function( evt, ui ) {
 		    var idx = this.$(".prepselect-amt").index(evt.target);
 		    if (idx >= 0) {
-			var max = this.options.preps[idx].available;
-			var min = 0;
-			var val = new Number(ui.value);
-			if (val > new Number(max) || val < min) {
-			    evt.cancelled = true;
-			} else {
-			    this.$(':checkbox')[idx].checked = val > 0;
-			}
+			var val = new Number($(ui).attr('value'));
+			this.$(':checkbox')[idx].checked = val > 0;
 		    }
 		}, this)
 	    });
@@ -126,14 +121,21 @@ define([
 
 	//events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+	prepselectKeyDown: function( evt, a, b) {
+	    if (isNaN(String.fromCharCode(evt.which))) {
+		evt.preventDefault();
+	    }
+	},
+
 	prepCheck: function( evt ) {
 	    var idx = this.$(':checkbox').index( evt.target );
 	    if (evt.target.checked) {
-		this.$('.prepselect-amt')[idx].value = this.options.preps[idx].available;
+		$(this.$('.prepselect-amt')[idx]).attr('value', this.options.preps[idx].available);
 	    } else {
-		this.$('.prepselect-amt')[idx].value = '0';
+		$(this.$('.prepselect-amt')[idx]).attr('value', 0);
 	    }
 	},
+
 	prepInteractions: function(evt) {
 	    if (evt.currentTarget.nextSibling != null) {
 		$(evt.currentTarget.nextSibling).remove();
@@ -179,11 +181,9 @@ define([
 	    };	  
 	    this.$(':checkbox').attr('checked', true);
 	},
+
 	deSelectAll: function() {
-	    //_.each($(':input.prepselect-amt'), function(item) {
-		//$(item).attr('value', '0');
-	    //});
-	    this.$(':input.prepselect-amt').attr('value', '0');
+	    this.$(':input.prepselect-amt').attr('value', 0);
 	    this.$(':checkbox').attr('checked', false);
 	},
 	

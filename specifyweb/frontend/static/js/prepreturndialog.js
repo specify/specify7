@@ -36,13 +36,10 @@ define([
 		    var idx = this.$(".resolve-amt").index(evt.target);
 		    if (idx >= 0) {
 			var returnSp =this.$(".return-amt")[idx];
-			var val = new Number(ui.value);
+			var val = new Number($(ui).attr('value'));
 			var max = this.options.preps[idx].unresolved;
 			this.$(':checkbox')[idx].checked = val > 0;
-			if (val < new Number(returnSp.value)) {
-			    returnSp.value = val;
-			}
-			var returnVal = new Number(returnSp.value);
+			var returnVal = new Number($(returnSp).attr('value'));
 			if (val < returnVal) {
 			    returnVal = val;
 			}
@@ -52,7 +49,7 @@ define([
 			    max: max - (val - returnVal),
 			    spin:  _.bind(this.returnSpin, this)
 			});
-			$(returnSp).spinner('value', returnVal);
+			$(returnSp).attr('value', returnVal);
 		    }
 		}, this)
 	    });
@@ -97,11 +94,11 @@ define([
 	    var idx = this.$(".return-amt").index(evt.target);
 	    if (idx >= 0) {
 		var resolveSp =this.$(".resolve-amt")[idx];
-		var val = new Number(ui.value);
-		var prevVal = new Number(evt.target.value);
+		var val = new Number($(ui).attr('value'));
+		var prevVal = new Number($(evt.target).attr('value'));
 		var delta = val - prevVal; //can this ever NOT be +-1 for a spin?
-		var resolvedVal = new Number(resolveSp.value) + delta;
-		$(resolveSp).spinner('value', resolvedVal);
+		var resolvedVal = new Number($(resolveSp).attr('value')) + delta;
+		$(resolveSp).attr('value', resolvedVal);
 		this.$(':checkbox')[idx].checked = resolvedVal > 0;
 	    }
 	},
@@ -114,7 +111,7 @@ define([
 	    var idx = this.$(':checkbox').index( evt.target );
 	    if (idx >= 0) {
 		var newVal = evt.target.checked ? this.options.preps[idx].unresolved : 0;
-		this.$('.resolve-amt')[idx].value = newVal;
+		$(this.$('.resolve-amt')[idx]).attr('value',  newVal);
 		var returnSp = this.$('.return-amt')[idx];
 		$(returnSp).spinner({
 		    readOnly: true,
@@ -122,7 +119,7 @@ define([
 		    max: this.options.preps[idx].unresolved,
 		    spin:  _.bind(this.returnSpin, this)
 		});
-		$(returnSp).spinner('value', newVal);
+		$(returnSp).attr('value', newVal);
 	    }
 	},
 
@@ -136,8 +133,8 @@ define([
 		    max: this.options.preps[p].unresolved,
 		    spin:  _.bind(this.returnSpin, this)
 		});
-		$(returns[p]).spinner('value', this.options.preps[p].unresolved);
-		$(resolves[p]).spinner('value', this.options.preps[p].unresolved);
+		$(returns[p]).attr('value', this.options.preps[p].unresolved);
+		$(resolves[p]).attr('value', this.options.preps[p].unresolved);
 	    };	  
 	    this.$(':checkbox').attr('checked', true);
 	},
@@ -151,9 +148,9 @@ define([
 		    max: this.options.preps[p].unresolved,
 		    spin:  _.bind(this.returnSpin, this)
 		});
-		$(returns[p]).spinner('value', 0);
+		$(returns[p]).attr('value', 0);
 	    };	  
-	    this.$('.resolve-amt').spinner('value', 0);
+	    this.$('.resolve-amt').attr('value', 0);
 	    this.$(':checkbox').attr('checked', false);
 	}
 	
