@@ -42,13 +42,17 @@ define([
 			if (val < new Number(returnSp.value)) {
 			    returnSp.value = val;
 			}
+			var returnVal = new Number(returnSp.value);
+			if (val < returnVal) {
+			    returnVal = val;
+			}
 			$(returnSp).spinner({
 			    readOnly: true,
-			    value: returnSp.value,
 			    min: 0,
-			    max: max - val,
+			    max: max - (val - returnVal),
 			    spin:  _.bind(this.returnSpin, this)
 			});
+			$(returnSp).spinner('value', returnVal);
 		    }
 		}, this)
 	    });
@@ -97,7 +101,7 @@ define([
 		var prevVal = new Number(evt.target.value);
 		var delta = val - prevVal; //can this ever NOT be +-1 for a spin?
 		var resolvedVal = new Number(resolveSp.value) + delta;
-		resolveSp.value = resolvedVal;
+		$(resolveSp).spinner('value', resolvedVal);
 		this.$(':checkbox')[idx].checked = resolvedVal > 0;
 	    }
 	},
@@ -108,29 +112,48 @@ define([
 
 	prepCheck: function( evt ) {
 	    var idx = this.$(':checkbox').index( evt.target );
-	    if (evt.target.checked) {
-		this.$('.return-amt')[idx].value = this.options.preps[idx].unresolved;
-		this.$('.resolve-amt')[idx].value = this.options.preps[idx].unresolved;
-	    } else {
-		this.$('.return-amt')[idx].value = '0';
-		this.$('.resolve-amt')[idx].value = '0';
+	    if (idx >= 0) {
+		var newVal = evt.target.checked ? this.options.preps[idx].unresolved : 0;
+		this.$('.resolve-amt')[idx].value = newVal;
+		var returnSp = this.$('.return-amt')[idx];
+		$(returnSp).spinner({
+		    readOnly: true,
+		    min: 0,
+		    max: this.options.preps[idx].unresolved,
+		    spin:  _.bind(this.returnSpin, this)
+		});
+		$(returnSp).spinner('value', newVal);
 	    }
 	},
-
 
 	selectAll: function() {
 	    var returns = this.$('.return-amt');
 	    var resolves = this.$('.resolve-amt');
 	    for (var p=0; p < returns.length; p++) {
-		$(returns[p]).attr('value', this.options.preps[p].unresolved);
-		$(resolves[p]).attr('value', this.options.preps[p].unresolved);
+		$(returns[p]).spinner({
+		    readOnly: true,
+		    min: 0,
+		    max: this.options.preps[p].unresolved,
+		    spin:  _.bind(this.returnSpin, this)
+		});
+		$(returns[p]).spinner('value', this.options.preps[p].unresolved);
+		$(resolves[p]).spinner('value', this.options.preps[p].unresolved);
 	    };	  
 	    this.$(':checkbox').attr('checked', true);
 	},
 
 	deSelectAll: function() {
-	    this.$('.return-amt').attr('value', '0');
-	    this.$('.resolve-amt').attr('value', '0');
+	    var returns = this.$('.return-amt');
+	    for (var p=0; p < returns.length; p++) {
+		$(returns[p]).spinner({
+		    readOnly: true,
+		    min: 0,
+		    max: this.options.preps[p].unresolved,
+		    spin:  _.bind(this.returnSpin, this)
+		});
+		$(returns[p]).spinner('value', 0);
+	    };	  
+	    this.$('.resolve-amt').spinner('value', 0);
 	    this.$(':checkbox').attr('checked', false);
 	}
 	
