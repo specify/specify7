@@ -19,7 +19,7 @@ define([
 		+ '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
 		+ '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
 		+ '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
-		+ '<th>Returned</th><th>Resolved</th></tr>';
+		+ '<th>Unresolved</th><th>Return</th><th>Resolve</th></tr>';
 	},
 	getDlgTitle: function() {
 	    return "Loan Preparations";
@@ -27,62 +27,28 @@ define([
 	finishRender: function() {
 	    var returnSpinners = this.$(".return-amt");
 	    returnSpinners.spinner({
-		change: _.bind(function( evt ) {
-		    var idx = this.$(".return-amt").index(evt.currentTarget);
-		    if (idx >= 0) {
-			var max = this.options.preps[idx].unresolved;
-			var min = 0;
-			var val = new Number(evt.currentTarget.value);
-			if (val > new Number(max)) {
-			    evt.currentTarget.value = max;
-			} else if (val < min) {
-			    evt.currentTarget.value = min;
-			}
-			this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-		    }
-		}, this),
-		spin: _.bind(function( evt, ui ) {
-		    var idx = this.$(".return-amt").index(evt.target);
-		    if (idx >= 0) {
-			var max = this.options.preps[idx].unresolved;
-			var min = 0;
-			var val = new Number(ui.value);
-			if (val > new Number(max) || val < min) {
-			    evt.cancelled = true;
-			} else {
-			    this.$(':checkbox')[idx].checked = val > 0;
-			}
-		    }
-		}, this)
+		spin: _.bind(this.returnSpin, this)
 	    });
 	    returnSpinners.width(50);
 	    var resolvedSpinners = this.$(".resolve-amt");
 	    resolvedSpinners.spinner({
-		change: _.bind(function( evt ) {
-		    var idx = this.$(".return-amt").index(evt.currentTarget);
-		    if (idx >= 0) {
-			var max = this.options.preps[idx].unresolved;
-			var min = 0;
-			var val = new Number(evt.currentTarget.value);
-			if (val > new Number(max)) {
-			    evt.currentTarget.value = max;
-			} else if (val < min) {
-			    evt.currentTarget.value = min;
-			}
-			this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
-		    }
-		}, this),
 		spin: _.bind(function( evt, ui ) {
 		    var idx = this.$(".resolve-amt").index(evt.target);
 		    if (idx >= 0) {
-			var max = this.options.preps[idx].unresolved;
-			var min = 0;
+			var returnSp =this.$(".return-amt")[idx];
 			var val = new Number(ui.value);
-			if (val > new Number(max) || val < min) {
-			    evt.cancelled = true;
-			} else {
-			    this.$(':checkbox')[idx].checked = val > 0;
+			var max = this.options.preps[idx].unresolved;
+			this.$(':checkbox')[idx].checked = val > 0;
+			if (val < new Number(returnSp.value)) {
+			    returnSp.value = val;
 			}
+			$(returnSp).spinner({
+			    readOnly: true,
+			    value: returnSp.value,
+			    min: 0,
+			    max: max - val,
+			    spin:  _.bind(this.returnSpin, this)
+			});
 		    }
 		}, this)
 	    });
@@ -95,8 +61,11 @@ define([
                 $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
                 $('<td>').append(iprep.taxon),
                 $('<td>').attr('align', 'center').append(iprep.preptype),
-		$('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('return-amt')),
-		$('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('resolve-amt'))
+		$('<td>').attr('align', 'center').append(iprep.unresolved),
+		//not allowing typing into spinners because tricky returned-resolved interdependancy requires previous value, 
+		//which seems to be unavailable in the 'change' event.
+		$('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('return-amt')),
+		$('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('resolve-amt'))
 	    );
             return entry;
         },
@@ -119,6 +88,19 @@ define([
 	//<<<<<<<<<<<<<<<<<<<< ui elements stuff
 
 	//events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	returnSpin: function(evt, ui) {
+	    var idx = this.$(".return-amt").index(evt.target);
+	    if (idx >= 0) {
+		var resolveSp =this.$(".resolve-amt")[idx];
+		var val = new Number(ui.value);
+		var prevVal = new Number(evt.target.value);
+		var delta = val - prevVal; //can this ever NOT be +-1 for a spin?
+		var resolvedVal = new Number(resolveSp.value) + delta;
+		resolveSp.value = resolvedVal;
+		this.$(':checkbox')[idx].checked = resolvedVal > 0;
+	    }
+	},
 
 	returnSelections: function() {
 	    console.info("returning selections");
