@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import RedirectView
+from django.conf import settings
 
 urlpatterns = patterns('',
     (r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
@@ -49,7 +50,10 @@ urlpatterns = patterns('',
     url(r'^context/', include('specifyweb.context.urls')),
     url(r'^testcontext/', include('specifyweb.context.testurls')),
     url(r'^stored_query/', include('specifyweb.stored_queries.urls')),
-    url(r'^attachment_gw/', include('specifyweb.attachment_gw.urls')),
+    url(r'^attachment_gw/', include(
+        'specifyweb.idigbio_media_gw.urls'
+        if settings.ATTACHMENT_MODULE == 'idigbio'
+        else 'specifyweb.attachment_gw.urls')),
     url(r'^barvis/', include('specifyweb.barvis.urls')),
     url(r'^report_runner/', include('specifyweb.report_runner.urls')),
 )

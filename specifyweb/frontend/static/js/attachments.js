@@ -1,7 +1,8 @@
 define([
     'jquery', 'underscore', 'icons',  'schema', 'assert',
+    'idigbio_attachments',
     'text!context/attachment_settings.json!noinline'
-], function($, _, icons, schema, assert, settingsJson) {
+], function($, _, icons, schema, assert, idigbioAttachments, settingsJson) {
     "use strict";
 
     var settings = $.parseJSON(settingsJson);
@@ -10,6 +11,8 @@ define([
         console.warn("attachments unavailable");
         return null;
     }
+
+    if (settings.module == 'idigbio') return idigbioAttachments;
 
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 

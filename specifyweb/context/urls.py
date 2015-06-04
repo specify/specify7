@@ -1,6 +1,11 @@
 from django.conf.urls import url
+from django.conf import settings
 
-from specifyweb.attachment_gw.views import get_settings as attachment_settings
+if settings.ATTACHMENT_MODULE == 'idigbio':
+    from specifyweb.idigbio_media_gw.views import get_settings as attachment_settings
+else:
+    from specifyweb.attachment_gw.views import get_settings as attachment_settings
+
 from specifyweb.report_runner.views import get_status as report_runner_status
 from . import views
 
