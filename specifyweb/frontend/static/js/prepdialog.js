@@ -20,8 +20,10 @@ define([
             var table = $('<table>');
 	    table.append(this.getTblHdr());
             var makeEntry = this.dialogEntry.bind(this);
-	    _.each(this.options.preps, function(recordSet) {
-		table.append(makeEntry(recordSet));
+	    _.each(this.options.preps, function(prep) {
+		_.each(makeEntry(prep), function(entry) {
+		    table.append(entry);
+		});
             });
             this.$el.append(table);
             this.$el.dialog({

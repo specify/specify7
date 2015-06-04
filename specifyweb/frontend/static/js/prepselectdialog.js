@@ -73,7 +73,7 @@ define([
 		$('<td>').append($('<input>').attr('align', 'right').attr('value', '0').attr('max', iprep.available).attr('min', 0).addClass('prepselect-amt')),
 	        $('<td>').attr('align', 'center').append(iprep.available).addClass('prepselect-available'),
 		unavailable);
-            return entry;
+            return [entry];
         },
 
         buttons: function() {

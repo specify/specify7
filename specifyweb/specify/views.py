@@ -222,6 +222,40 @@ def loan_return_all_items(request):
     
     return http.HttpResponse(api.toJson([prepsReturned, loansClosed]), content_type='application/json')
 
+@require_POST
+@csrf_exempt
+@login_maybe_required
+@transaction.commit_manually
+def loan_return_items(request):
+    from django.db import connection
+    import json
+
+    """0 - loanpreparationid, 1 - returnQuantity, 2 - resolveQuantity, 3 - isResolved, 4 - remarks"""
+
+    returns = json.loads(request.POST['returns'])
+    stumpIn = "INSERT INTO loanreturnpreparation(TimestampCreated, Version, DisciplineID, CreatedByAgentID, ReturnedDate, ReceivedByID, QuantityResolved, QuantityReturned,  Remarks, LoanPreparationID) VALUES(now(), 0, "
+    stumpIn += str(request.specify_collection.discipline.id) + "," + str(request.specify_user.id) + ", date('" + request.POST['returnedDate'] + "')," + str(request.POST['returnedById']) + ","
+    stumpUp = "UPDATE loanpreparation SET Version = Version+1, TimestampModified = now(), ModifiedByAgentID = " + str(request.specify_user.id) + "," 
+    returnInSql = ""
+    loanPrepUpSql = ""
+    for ret in returns:
+        returnInSql += stumpIn + str(ret[2]) + "," + str(ret[1]) + "," + ret[4] + "," + str(ret[0]) + ");"
+        loanPrepUpSql += stumpUp + " IsResolved=" + ret[3] + ", QuantityResolved=QuantityResolved+" + str(ret[2]) + ", QuantityReturned=QuantityReturned+" + str(ret[1]) + " WHERE LoanPreparationID=" + str(ret[0]) + ";"
+        
+    
+    cursor = connection.cursor()
+    
+    cursor.execute(returnInSql)
+    returnedPreps = cursor.rowcount
+
+    cursor.execute(loanPrepUpSql)
+    updatedPreps = cursor.rowcount
+                    
+    #transaction.set_dirty()
+    transaction.commit()
+    
+    #return http.HttpResponse(api.toJson([returnInSql, loanPrepUpSql]), content_type='application/json')
+    return http.HttpResponse(api.toJson([returnedPreps, updatedPreps]), content_type='application/json')
 
     
 @require_POST

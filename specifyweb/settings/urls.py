@@ -41,6 +41,7 @@ urlpatterns = patterns('',
     url(r'^api/preparations_available_rs/(?P<recordset_id>\d+)/', 'specifyweb.specify.views.preps_available_rs'),
     url(r'^api/preparations_available_ids/', 'specifyweb.specify.views.preps_available_ids'),
     url(r'^api/loan_return_all/', 'specifyweb.specify.views.loan_return_all_items'),
+    url(r'^api/loan_return_items/', 'specifyweb.specify.views.loan_return_items'),
     url(r'^api/prep_interactions/', 'specifyweb.specify.views.prep_interactions'),     
     url(r'^api/unresolved_loan_preps/(?P<loan_id>\d+)/', 'specifyweb.specify.views.unresolved_loan_preps'),
               
