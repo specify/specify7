@@ -15,10 +15,11 @@ api_client.authenticate(settings.IDIGBIO_MEDIA_UUID, settings.IDIGBIO_MEDIA_APIK
 
 @require_GET
 def get_settings(request):
-    data = {
+    resp = {
         'module': 'idigbio',
+        'idigbioURL': settings.IDIGBIO_MEDIA_URL
         }
-    return HttpResponse(json.dumps(data), content_type='application/json')
+    return HttpResponse(json.dumps(resp), content_type='application/json')
 
 @require_POST
 @login_maybe_required

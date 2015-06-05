@@ -12,7 +12,10 @@ define([
         return null;
     }
 
-    if (settings.module == 'idigbio') return idigbioAttachments;
+    if (settings.module == 'idigbio') return idigbioAttachments({
+        settings: settings,
+        iconForMimeType: iconForMimeType
+    });
 
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 
