@@ -48,9 +48,8 @@ define([
                         return xhr;
                     }
                 }).pipe(function(response) {
-                    var data = JSON.parse(response);
                     return new schema.models.Attachment.Resource({
-                        attachmentlocation: data.file_md5,
+                        attachmentlocation: response.file_md5,
                         mimetype: file.type,
                         origfilename: file.name
                     });
