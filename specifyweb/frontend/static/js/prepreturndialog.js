@@ -187,6 +187,7 @@ define([
 	selectAll: function() {
 	    var returns = this.$('.return-amt');
 	    var resolves = this.$('.resolve-amt');
+	    var chks = this.$(':checkbox');
 	    for (var p=0; p < returns.length; p++) {
 		$(returns[p]).spinner({
 		    readOnly: true,
@@ -196,8 +197,8 @@ define([
 		});
 		$(returns[p]).attr('value', this.options.preps[p].unresolved);
 		$(resolves[p]).attr('value', this.options.preps[p].unresolved);
+		$(chks[p]).attr('checked', this.options.preps[p].unresolved > 0);
 	    };	  
-	    this.$(':checkbox').attr('checked', true);
 	},
 
 	deSelectAll: function() {

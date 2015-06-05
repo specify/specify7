@@ -129,10 +129,15 @@ define([
 
 	prepCheck: function( evt ) {
 	    var idx = this.$(':checkbox').index( evt.target );
-	    if (evt.target.checked) {
-		$(this.$('.prepselect-amt')[idx]).attr('value', this.options.preps[idx].available);
+	    var available = this.options.preps[idx].available;
+	    if (available <= 0) {
+		evt.preventDefault();
 	    } else {
-		$(this.$('.prepselect-amt')[idx]).attr('value', 0);
+		if (evt.target.checked) {
+		    $(this.$('.prepselect-amt')[idx]).attr('value', this.options.preps[idx].available);
+		} else {
+		    $(this.$('.prepselect-amt')[idx]).attr('value', 0);
+		}
 	    }
 	},
 
@@ -175,11 +180,11 @@ define([
 
 	selectAll: function() {
 	    var amounts = this.$(':input.prepselect-amt');
-	    var availables = this.$('td.prepselect-available');
+	    var chks = this.$(':checkbox');
 	    for (var p=0; p < availables.length; p++) {
-		$(amounts[p]).attr('value', $(availables[p]).text());
+		$(amounts[p]).attr('value', this.options.preps[p].available );
+		$(chks[p]).attr('checked', this.options.preps[p].available  > 0);
 	    };	  
-	    this.$(':checkbox').attr('checked', true);
 	},
 
 	deSelectAll: function() {
