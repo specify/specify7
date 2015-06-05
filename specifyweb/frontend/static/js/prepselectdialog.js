@@ -258,7 +258,9 @@ define([
 	    }
 
 	    interaction.set(itemModelName + 's', items);
+	    interaction.set('isclosed', false);
 	    var SpecifyApp = require('specifyapp');
+	    //do things like discipline need to be initialized??;
 	    SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
 	}
     });
