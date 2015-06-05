@@ -159,11 +159,15 @@ define([
 	},
 	touchUpUI: function() {
 	   if (this.options.recordSets._totalCount > 0) {
-		this.toggleCats(0);
+	       this.toggleText(this.$('div[type=action-entry]'));
 	   }
 	},	    
 	makeEntryUI: function() {
-	    this.$el.append('<div type="action-entry"><textarea class="i-action-entry" style="width:100%" rows=5 spellcheck="false"></textarea><button disabled="true" type="action-entry">OK</button></div><br>');
+	    var html = '<div type="action-entry"' 
+		    + (this.options.recordSets._totalCount > 0 ? ' style="display:none"' : '')
+		    + '><textarea class="i-action-entry" style="width:100%"'
+		    + 'rows=5 spellcheck="false"></textarea><button disabled="true" type="action-entry">OK</button></div><br>';
+	    this.$el.append(html);
 	},
 
 	makeSnagList: function(hdr, snags) {
