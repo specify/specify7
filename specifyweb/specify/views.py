@@ -22,20 +22,6 @@ else:
             return view(request, *args, **kwargs)
         return wrapped
 
-preps_available_sql = """select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
-sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
-p.countAmt - coalesce(sum(lp.quantity-lp.quantityreturned),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
-from preparation p
-left join loanpreparation lp on lp.preparationid = p.preparationid
-left join giftpreparation gp on gp.preparationid = p.preparationid
-left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
-inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
-inner join preptype pt on pt.preptypeid = p.preptypeid
-left join determination d on d.CollectionObjectID = co.CollectionObjectID
-left join taxon t on t.TaxonID = d.TaxonID
-where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in (
-%s) group by 1,2,3,4,5 order by 1;"""
-
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
@@ -159,26 +145,6 @@ def preps_available_ids(request):
     sql += " co." + request.POST['id_fld'] + " in(" + request.POST['co_ids'] + ") group by 1,2,3,4,5 order by 1;"
     
     cursor.execute(sql, [int(request.specify_collection.id)])
-    rows = cursor.fetchall()
-    
-    return http.HttpResponse(api.toJson(rows), content_type='application/json')
-
-@login_maybe_required
-@require_GET
-def preps_available_rs2(request, recordset_id):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute(preps_available_sql, [request.specify_collection.id,  6])
-    rows = cursor.fetchall()
-    
-    return http.HttpResponse(api.toJson(rows), content_type='application/json')
-
-@login_maybe_required
-@require_GET
-def preps_available_ids2(request, ids):
-    from django.db import connection
-    cursor = connection.cursor()
-    cursor.execute(preps_available_sql, [request.specify_collection.id, ids])
     rows = cursor.fetchall()
     
     return http.HttpResponse(api.toJson(rows), content_type='application/json')
