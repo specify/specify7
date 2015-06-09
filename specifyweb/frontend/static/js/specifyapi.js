@@ -71,24 +71,24 @@ define([
             var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
             return $.param.querystring(url, {recordsetid: recordSetId});
         },
-	getPrepsAvailableForLoanRs: function(recordSetId) {
-	    return $.get('/api/preparations_available_rs/' + recordSetId + '/');
-	},
-	getPrepsAvailableForLoanCoIds: function(idFld, collectionObjectIds) {
-	    return $.post('/api/preparations_available_ids/', {id_fld: idFld, co_ids: collectionObjectIds});
-	},
-	returnAllLoanItems: function(loanIds, returnedById, returnedDate, selection) {
-	    return $.post('/api/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
-	},
-	returnLoanItems: function(returnedById, returnedDate, returns) {
-	    return $.post('/api/loan_return_items/', {returnedById: returnedById, returnedDate: returnedDate, returns: returns});
-	},
-	getInteractionsForPrepIds: function(prepIds) {
-	    return $.post('/api/prep_interactions/', {prepIds: prepIds});
-	},
-	getUnresolvedPrepsForLoan: function(loanId) {
-	    return $.get('/api/unresolved_loan_preps/' + loanId + '/');
-	}
+        getPrepsAvailableForLoanRs: function(recordSetId) {
+            return $.get('/api/preparations_available_rs/' + recordSetId + '/');
+        },
+        getPrepsAvailableForLoanCoIds: function(idFld, collectionObjectIds) {
+            return $.post('/api/preparations_available_ids/', {id_fld: idFld, co_ids: collectionObjectIds});
+        },
+        returnAllLoanItems: function(loanIds, returnedById, returnedDate, selection) {
+            return $.post('/api/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
+        },
+        returnLoanItems: function(returnedById, returnedDate, returns) {
+            return $.post('/api/loan_return_items/', {returnedById: returnedById, returnedDate: returnedDate, returns: returns});
+        },
+        getInteractionsForPrepIds: function(prepIds) {
+            return $.post('/api/prep_interactions/', {prepIds: prepIds});
+        },
+        getUnresolvedPrepsForLoan: function(loanId) {
+            return $.get('/api/unresolved_loan_preps/' + loanId + '/');
+        }
     });
     
 

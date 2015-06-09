@@ -10,23 +10,23 @@ define([
     return Backbone.View.extend({
         __name__: "PrepDialog",
         className: "prepdialog table-list-dialog",
-	colobjModel: schema.getModel("collectionobject"),
-	detModel: schema.getModel("determination"),
-	prepModel: schema.getModel("preparation"),
-	loanModel: schema.getModel("loan"),
-	giftModel: schema.getModel("gift"),
-	exchModel: schema.getModel("exchangeout"),
+        colobjModel: schema.getModel("collectionobject"),
+        detModel: schema.getModel("determination"),
+        prepModel: schema.getModel("preparation"),
+        loanModel: schema.getModel("loan"),
+        giftModel: schema.getModel("gift"),
+        exchModel: schema.getModel("exchangeout"),
 
-	//ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         render: function() {
             var table = $('<table>');
-	    table.append(this.getTblHdr());
+            table.append(this.getTblHdr());
             var makeEntry = this.dialogEntry.bind(this);
-	    _.each(this.options.preps, function(prep, index) {
-		_.each(makeEntry(prep, index), function(entry) {
-		    table.append(entry);
-		});
+            _.each(this.options.preps, function(prep, index) {
+                _.each(makeEntry(prep, index), function(entry) {
+                    table.append(entry);
+                });
             });
             this.$el.append(table);
             this.$el.dialog({
@@ -34,31 +34,31 @@ define([
                 close: function() { $(this).remove(); },
                 title: this.getDlgTitle(),
                 maxHeight: 700,
-		width: 600,
+                width: 600,
                 buttons: this.buttons()
             });
-	    this.finishRender();
+            this.finishRender();
 
             return this;
         },
 
-	//<<<<<<<<<<<<<<<<<<<< ui elements stuff
+        //<<<<<<<<<<<<<<<<<<<< ui elements stuff
 
-	//events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getIndex: function(evt, selector) {
             return this.$(selector).index(evt.currentTarget);
         },
-	
-	//<<<<<<<<<<<<<<<<<<<<<<< events
+        
+        //<<<<<<<<<<<<<<<<<<<<<<< events
 
-	getProp: function(key, fallback) {
-	    var result = get_prop(key);
-	    if (typeof result == 'undefined') {
-		result = fallback;
-	    }
-	    return result;
-	}
+        getProp: function(key, fallback) {
+            var result = get_prop(key);
+            if (typeof result == 'undefined') {
+                result = fallback;
+            }
+            return result;
+        }
 
 
     });

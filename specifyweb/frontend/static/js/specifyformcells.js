@@ -74,18 +74,18 @@ define([
                 });
                 return $('<td>').append(table);
             },
-	    command: function() {
-		var button = $('<input type=button>').attr({
-		    value: cell.attr('label'),
-		    name: cell.attr('name'),
-		    "class": "specify-uicommand",
-		    action: cell.attr('action'),
-		    'data-specify-initialize': cell.attr('initialize'),
-		    disabled: doingFormTable || mode === 'view'
-		});
-		//return $('<td>'); // .append(button);  // Not implemented.
-		return $('<td>').append(button);
-	    },
+            command: function() {
+                var button = $('<input type=button>').attr({
+                    value: cell.attr('label'),
+                    name: cell.attr('name'),
+                    "class": "specify-uicommand",
+                    action: cell.attr('action'),
+                    'data-specify-initialize': cell.attr('initialize'),
+                    disabled: doingFormTable || mode === 'view'
+                });
+                //return $('<td>'); // .append(button);  // Not implemented.
+                return $('<td>').append(button);
+            },
             other: function() {
                 return $('<td>').text("unsupported cell type: " + cell.attr('type'));
             }

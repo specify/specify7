@@ -30,22 +30,22 @@ define([
         },
         initialize: function(options) {
             var appResources = this.options.appResources;
-	    if (this.options.metaDataFilter) {
-		var mdFilter = this.options.metaDataFilter;
-		appResources = appResources.filter(function(r) {
-		    var md = r.get('metadata').toLowerCase().split(';');
-		    for (var i=0; i < md.length; i++) {
-			var mdum = md[i].split('=');
-			if (mdum[0] === mdFilter.prop && mdum[1] === mdFilter.val) {
-			    return true;
-			}
-		    }
-		    return false;
-		});
-	    }
-	    if (this.options.autoSelectSingle && appResources.length == 1) {
-		this.getReport(appResources[0], getReportParams);
-	    }
+            if (this.options.metaDataFilter) {
+                var mdFilter = this.options.metaDataFilter;
+                appResources = appResources.filter(function(r) {
+                    var md = r.get('metadata').toLowerCase().split(';');
+                    for (var i=0; i < md.length; i++) {
+                        var mdum = md[i].split('=');
+                        if (mdum[0] === mdFilter.prop && mdum[1] === mdFilter.val) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
+            if (this.options.autoSelectSingle && appResources.length == 1) {
+                this.getReport(appResources[0], getReportParams);
+            }
             function byType(type) {
                 return appResources.filter(function(r) {
                     return r.get('mimetype').toLowerCase() === type;
@@ -55,27 +55,27 @@ define([
             this.labels = byType('jrxml/label');
         },
         render: function() {
-	    if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length == 1)) {
-		var reports = $('<table class="reports">');
-		var labels = $('<table class="labels">');
+            if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length == 1)) {
+                var reports = $('<table class="reports">');
+                var labels = $('<table class="labels">');
 
-		reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
-		labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
+                reports.append.apply(reports, _.map(this.reports, this.makeEntry.bind(this, "/images/Reports16x16.png")));
+                labels.append.apply(labels, _.map(this.labels, this.makeEntry.bind(this, "/images/Label16x16.png")));
 
-		this.$el
+                this.$el
                     .append("<h2>Reports</h2>").append(reports)
                     .append("<h2>Labels</h2>").append(labels);
 
-		this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
+                this.options.appResources.isComplete() || this.$el.append('<p>(list truncated)</p>');
 
-		makeDialog(this.$el, {
+                makeDialog(this.$el, {
                     title: title,
                     maxHeight: 400,
                     buttons: [
-			{text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                        {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                     ]
-		});
-	    }
+                });
+            }
             return this;
         },
         makeEntry: function(icon, appResource) {
@@ -90,12 +90,12 @@ define([
             this.options.readOnly || entry.append('<a class="edit ui-icon ui-icon-pencil">edit</a>');
             return entry;
         },
-	getReportUI: function(evt) {
-	    evt.preventDefault();
+        getReportUI: function(evt) {
+            evt.preventDefault();
             var appResource = $(evt.currentTarget).closest('tr').data('resource');
             var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
-	    this.getReport(appResource, action);
-	},
+            this.getReport(appResource, action);
+        },
         getReport: function(appResource, action) {
             var reports = new schema.models.SpReport.LazyCollection({
                 filters: { appresource: appResource.id }
@@ -452,15 +452,15 @@ define([
         execute: function(tblId, metaDataFilter,autoSelectSingle) {
             app = require('specifyapp');
             var appRs = new schema.models.SpAppResource.LazyCollection();
-	    if (typeof(tblId) != 'undefined') {
-		appRs.url = function() { return "/report_runner/get_reports_by_tbl/" + tblId + "/"; };
-	    } else {
-		appRs.url = function() { return "/report_runner/get_reports/"; };
-	    }            
-	    appRs.fetch({ limit: 100 }).done(function() {
+            if (typeof(tblId) != 'undefined') {
+                appRs.url = function() { return "/report_runner/get_reports_by_tbl/" + tblId + "/"; };
+            } else {
+                appRs.url = function() { return "/report_runner/get_reports/"; };
+            }            
+            appRs.fetch({ limit: 100 }).done(function() {
                 new ReportListDialog({ appResources: appRs, 
-				       metaDataFilter: metaDataFilter, 
-				       autoSelectSingle: autoSelectSingle }).render();
+                                       metaDataFilter: metaDataFilter, 
+                                       autoSelectSingle: autoSelectSingle }).render();
             });
         }
     };

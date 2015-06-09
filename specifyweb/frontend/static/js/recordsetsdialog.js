@@ -61,14 +61,14 @@ define([
         events: {
             'click a.edit': 'edit'
         },
-	dlgTitle: function() {
-	    return  "Record Sets (" + this.options.recordSets._totalCount + ")";
-	},
-	maxHeight: function() {
-	    return 400;
-	},
+        dlgTitle: function() {
+            return  "Record Sets (" + this.options.recordSets._totalCount + ")";
+        },
+        maxHeight: function() {
+            return 400;
+        },
         render: function() {
-	    this.makeUI();
+            this.makeUI();
             this.$el.dialog({
                 modal: true,
                 close: function() { $(this).remove(); },
@@ -76,16 +76,16 @@ define([
                 maxHeight: this.maxHeight(),
                 buttons: this.buttons()
             });
-	    this.touchUpUI();
+            this.touchUpUI();
             return this;
         },
-	touchUpUI: function() {
-	    //all done
-	},
-	makeUI: function() {
-	    this.makeTable();
-	},
-	makeTable: function() {
+        touchUpUI: function() {
+            //all done
+        },
+        makeUI: function() {
+            this.makeTable();
+        },
+        makeTable: function() {
             var table = $('<table class="rs-dlg-tbl">');
             var makeEntry = this.dialogEntry.bind(this);
             this.options.recordSets.each(function(recordSet) {
@@ -94,11 +94,11 @@ define([
             this.options.recordSets.isComplete() ||
                 table.append('<tr><td></td><td>(list truncated)</td></tr>');
             this.$el.append(table);
-	},
+        },
         dialogEntry: function(recordSet) {
             var img = $('<img>', {src: schema.getModelById(recordSet.get('dbtableid')).getIcon()});
             var link = this.makeEntryLink(recordSet);
-	    var entry = $('<tr>').append(
+            var entry = $('<tr>').append(
                 $('<td>').append(img),
                 $('<td>').append(link),
                 $('<td class="item-count" style="display:none">'));
@@ -111,11 +111,11 @@ define([
             });
             return entry;
         },
-	makeEntryLink: function(recordSet) {
-	    return $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
+        makeEntryLink: function(recordSet) {
+            return $('<a>', { href: "/specify/recordset/" + recordSet.id + "/" })
                 .addClass("intercept-navigation")
                 .text(recordSet.get('name'));
-	},
+        },
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
                 { text: 'New', click: this.openFormsDialog.bind(this),

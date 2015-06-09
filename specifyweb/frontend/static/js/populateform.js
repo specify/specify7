@@ -65,7 +65,7 @@ define([
     var populateCommand = function(resource, control) {
         var cmd = uicommands[control.attr('action')] || uicommands.CommandNotAvailable;
         var view = new cmd({ el: control, model: resource });    
-	view.render();
+        view.render();
     };
 
     var populateForm = function(form, resource) {
@@ -76,9 +76,9 @@ define([
         _.each(form.find('.specify-subview'), function(node) {
             populateSubview(resource, $(node));
         });
-	_.each(form.find('.specify-uicommand'), function(node) {
-	    populateCommand(resource, $(node));
-	});
+        _.each(form.find('.specify-uicommand'), function(node) {
+            populateCommand(resource, $(node));
+        });
         return form;
     };
 
