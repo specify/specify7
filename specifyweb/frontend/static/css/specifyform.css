@@ -702,6 +702,6 @@ a.specify-attachment-original {
 
 .interactiondialog .ui-icon {
     display: inline-block;
-    vertical-align: sub;
+    vertical-align: sub; /*this centers (in chrome)*/
     margin-right: 3px;
 }
