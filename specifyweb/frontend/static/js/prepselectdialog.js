@@ -23,7 +23,9 @@ define([
 		+ '<th>' + this.colobjModel.getField('catalognumber').getLocalizedName() + '</th>'
 		+ '<th>' + this.detModel.getField('taxon').getLocalizedName() + '</th>'
 		+ '<th>' + this.prepModel.getField('preptype').getLocalizedName() + '</th>'
-		+ '<th>Selected</th><th>Available</th><th>Unavailable</th></tr>';
+		+ '<th>' + this.getProp('InteractionsTask.Selected', 'Selected') + '</th>'
+		+ '<th>' + this.getProp('InteractionsTask.Available', 'Available') + '</th>'
+		+ '<th>' + this.getProp('InteractionsTask.Unavailable', 'Unavailable') + '</th></tr>';
 	},
 	getDlgTitle: function() {
 	    return "Preparations";
@@ -78,14 +80,14 @@ define([
 
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
-                { text: 'Select All', click: _.bind(this.selectAll, this),
+                { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
                   title: 'Select all available preparations.' },
-		{ text: 'De-select All', click: _.bind(this.deSelectAll, this),
+		{ text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
 		  title: 'Clear all.' },
 		{ text: 'OK', click: _.bind(this.makeInteraction, this),
 		  title: 'Create ' + this.getTextForObjToCreate() }
             ];
-            buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
+            buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
         },
 
@@ -236,6 +238,7 @@ define([
 
 	makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
 	    var result = new itemModel.Resource();
+	    result.initialize();
 	    result.set('quantity', amt);
 	    if (baseTbl == 'loan') {
 		result.set('quantityReturned', 0);
@@ -251,6 +254,7 @@ define([
 	    var baseTbl = this.options.action.table;
             var baseModel = schema.getModel(baseTbl);
 	    var interaction = new baseModel.Resource();
+	    interaction.initialize();
 	    var itemModelName = baseTbl + 'preparation';
 	    var itemModel = schema.getModel(itemModelName);
 	    var items = [];
@@ -265,7 +269,6 @@ define([
 	    interaction.set(itemModelName + 's', items);
 	    interaction.set('isclosed', false);
 	    var SpecifyApp = require('specifyapp');
-	    //do things like discipline need to be initialized??;
 	    SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
 	}
     });

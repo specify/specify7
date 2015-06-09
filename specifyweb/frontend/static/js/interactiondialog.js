@@ -23,6 +23,8 @@ define([
     return RecordSetsDialog.extend({
         __name__: "InteractionDialog",
         className: "interactiondialog recordsetsdialog",
+	openIcon: "ui-icon ui-icon-radio-off",
+	closeIcon: "ui-icon ui-icon-radio-on",
 	events: {
 	    'click a.rs-select': 'rsSelect',
 	    'click button[type=action-entry]': 'processEntry',
@@ -88,34 +90,34 @@ define([
 	//eventhandlers and stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	toggleRs: function(evt, duration) {
-	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]', duration);
+	    this.toggleIt('table.rs-dlg-tbl', 'div[type=action-entry]', '.i-action-rs span', '.i-action-enter span', duration);
 	},
 
 	toggleCats: function(evt, duration) {
-	    this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl', duration);
+	    this.toggleIt('div[type=action-entry]', 'table.rs-dlg-tbl', '.i-action-enter span', '.i-action-rs span', duration);
 	},
 
-	toggleText: function(ctrl) {
-	    var ctrlA = ctrl.prev();
-	    var ctrlText = ctrlA.text();
-	    if (ctrlText.match(/.* >>$/)) {
-		ctrlText = ctrlText.replace(/ >>$/, '');
+	toggleIcon: function(icon_selector) {
+	    var icon = this.$(icon_selector);
+	    var iconname = icon.attr('class');
+	    if (iconname == this.openIcon) {
+		iconname = this.closeIcon;
 	    } else {
-		ctrlText = ctrlText + ' >>';
+		iconname = this.openIcon;
 	    }
- 	    ctrlA.text(ctrlText);
+	    icon.attr('class', iconname);
 	},	    
 
-	toggleIt: function(sel, otherSel, duration) {
+	toggleIt: function(sel, otherSel, iconSel, otherIconSel, duration) {
 	    var ctrl = this.$(sel);
 	    if (ctrl.is(':hidden')) {
 		var otherCtrl = this.$(otherSel + ':visible');
 		if (otherCtrl.length > 0) {
-		    this.toggleText(otherCtrl);
+		    this.toggleIcon(otherIconSel);
 		    otherCtrl.toggle(typeof duration != 'undefined' ? duration : 250);
 		}
 	    }
-	    this.toggleText(ctrl);
+	    this.toggleIcon(iconSel);
 	    ctrl.toggle(typeof duration != 'undefined' ? duration : 250);
 	},
 
@@ -146,11 +148,12 @@ define([
 	makeUI: function() {
 	    var breaker = '';
 	    if (this.options.recordSets._totalCount > 0) {
-		this.$el.append('<a class="i-action-rs">' + this.getRSCaption() + '</a>');
+		this.$el.append($('<a class="i-action-rs"><span class="' + this.openIcon + '"/>' + this.getRSCaption() + '</a>'));
 		this.makeTable();
 		breaker = '<br><br>';
 	    } 	
-	    this.$el.append(breaker + '<a class="i-action-enter">' + this.getEntryCaption() + '</a>'); 
+	    this.$el.append(breaker);
+	    this.$el.append($('<a class="i-action-enter"><span class="' + this.openIcon + '"/>' + this.getEntryCaption() + '</a>')); 
 	    this.makeEntryUI();
 	    var noPrepCap = this.getNoPrepCaption();
 	    if (noPrepCap != "") {
@@ -159,7 +162,7 @@ define([
 	},
 	touchUpUI: function() {
 	   if (this.options.recordSets._totalCount > 0) {
-	       this.toggleText(this.$('div[type=action-entry]'));
+	       this.toggleIcon('.i-action-rs span');
 	   }
 	},	    
 	makeEntryUI: function() {

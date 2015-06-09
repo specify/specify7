@@ -699,3 +699,9 @@ a.specify-attachment-original {
 .context-menu-item.icon-query {
     background-image: url(/images/Grid16x16.png);
 }
+
+.interactiondialog .ui-icon {
+    display: inline-block;
+    vertical-align: sub;
+    margin-right: 3px;
+}

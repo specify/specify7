@@ -1,8 +1,11 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 
+    'require', 'jquery', 'underscore', 'backbone', 'schema',
+    'props', 'text!properties/resources_en.properties!noinline', 
     'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema) {
+], function(require, $, _, Backbone, schema, props, resources_prop) {
     "use strict";
+
+    var get_prop = _.bind(props.getProperty, props, resources_prop);
 
     return Backbone.View.extend({
         __name__: "PrepDialog",
@@ -20,8 +23,8 @@ define([
             var table = $('<table>');
 	    table.append(this.getTblHdr());
             var makeEntry = this.dialogEntry.bind(this);
-	    _.each(this.options.preps, function(prep) {
-		_.each(makeEntry(prep), function(entry) {
+	    _.each(this.options.preps, function(prep, index) {
+		_.each(makeEntry(prep, index), function(entry) {
 		    table.append(entry);
 		});
             });
@@ -45,9 +48,17 @@ define([
 
         getIndex: function(evt, selector) {
             return this.$(selector).index(evt.currentTarget);
-        }
+        },
 	
 	//<<<<<<<<<<<<<<<<<<<<<<< events
+
+	getProp: function(key, fallback) {
+	    var result = get_prop(key);
+	    if (typeof result == 'undefined') {
+		result = fallback;
+	    }
+	    return result;
+	}
 
 
     });

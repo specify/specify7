@@ -1,12 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'navigation', 
     'specifyapi', 'populateform', 'resourceview', 'fieldformat','prepdialog',
-    'props', 'text!properties/resources_en.properties!noinline',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, navigation, api, populateform, ResourceView, FieldFormat, PrepDialog, props, resources_prop) {
+], function($, _, Backbone, schema, navigation, api, populateform, ResourceView, FieldFormat, PrepDialog) {
     "use strict";
-
-    var getProp = _.bind(props.getProperty, props, resources_prop);
 
     var dialog;
     function makeDialog(el, options) {
@@ -25,6 +22,8 @@ define([
 	    'click :checkbox': 'prepCheck',
 	    'click a.return-remark': 'remToggle'
 	},
+	useApi: false,
+	loanreturnprepModel: schema.getModel("loanreturnpreparation"),
 
 	//ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -36,8 +35,9 @@ define([
 		+ '<th>Unresolved</th><th>Return</th><th colspan="2">Resolve</th></tr>';
 	},
 	getDlgTitle: function() {
-	    return "Loan Preparations";
+	    return schema.getModel("loanpreparation").getLocalizedName();
 	},
+
 	finishRender: function() {
 	    //this.$('table').before( '<div>Returned By: <input type="text" class="return-returnedby"> Returned Date: <input type="date" class="return-returdedDate"></div>'); 
 	    
@@ -72,34 +72,70 @@ define([
 	    resolvedSpinners.width(50);
 	},
 
-        dialogEntry: function(iprep) {
+        dialogEntry: function(iprep, idx) {
+	    var catNumCtrl =  $('<td class="return-catnum">');
+	    var taxCtrl = $('<td/>');
+	    var prepTypeCtrl =  $('<td>').attr('align', 'center');
 	    var entry = [
 		$('<tr>').append(
 		    $('<td>').append($('<input>').attr('type', 'checkbox')),
-                    $('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
-                    $('<td>').append(iprep.taxon),
-                    $('<td>').attr('align', 'center').append(iprep.preptype),
+                    //$('<td>').append(FieldFormat(this.colobjModel.getField('catalognumber'), iprep.catalognumber)),
+		    catNumCtrl,
+                    //$('<td>').append(iprep.taxon),
+		    taxCtrl,
+                    //$('<td>').attr('align', 'center').append(iprep.preptype),
+		    prepTypeCtrl,
 		    $('<td>').attr('align', 'center').append(iprep.unresolved),
 		    //not allowing typing into spinners because tricky returned-resolved interdependancy requires previous value, 
 		    //which seems to be unavailable in the 'change' event.
 		    $('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('return-amt')),
 		    $('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('resolve-amt')),
-		$('<td>').append($('<a class="return-remark">').append('<span class="ui-icon ui-icon-pencil">remark</span'))),
+		$('<td>').append($('<a class="return-remark" style="display:none">').append('<span class="ui-icon ui-icon-comment">'))),
 		$('<tr class="return-remark" style="display:none">').append($('<td/>'), $('<td colspan="6"><input type="text" class="return-remark" style="width:100%" placeholder="Remarks"></td>'))
 	    ];
+	    this.fillPrepRow(iprep, _.bind(this.rowDone, this, catNumCtrl, taxCtrl, prepTypeCtrl, idx));
             return entry;
         },
 
+	fillPrepRow: function(loanprep, filled) {
+	    var rowdata = {};
+	    $.when($.get(loanprep.preparation)).then(function(prep) {
+		$.when(
+		    $.get(prep.collectionobject),
+		    $.get(prep.preptype)
+		).done(function(co, pt) {
+		    rowdata.catalognumber = co[0].catalognumber;
+		    rowdata.preptype = pt[0].name;
+		    var current = _.filter(co[0].determinations, function(d) {
+			return d.iscurrent;
+		    });
+		    $.when($.get(current[0].preferredtaxon)).done(function(tx) {
+			rowdata.taxon = tx.fullname;
+			filled(rowdata);
+		    });
+		});
+	    });
+	},   
+
+	rowDone(catNumCtrl, taxCtrl, prepTypeCtrl, idx, rowdata) {
+	    catNumCtrl.append(FieldFormat(this.colobjModel.getField('catalognumber'), rowdata.catalognumber));
+	    taxCtrl.append(rowdata.taxon);
+	    prepTypeCtrl.append(rowdata.preptype);
+	    this.options.preps[idx].catalognumber = rowdata.catalognumber;
+	    this.options.preps[idx].taxon = rowdata.taxon;
+	    this.options.preps[idx].preptype = rowdata.preptype;
+	},
+	
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
-                { text: 'Select All', click: _.bind(this.selectAll, this),
+                { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
                   title: 'Return all preparations.' },
-		{ text: 'De-select All', click: _.bind(this.deSelectAll, this),
+		{ text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
 		  title: 'Clear all.' },
 		{ text: 'OK', click: _.bind(this.returnSelections, this),
 		  title: 'Return selected preparations' }
             ];
-            buttons.push({ text: 'Cancel', click: function() { $(this).dialog('close'); }});
+            buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
         },
 
@@ -113,8 +149,10 @@ define([
 	    var idx = this.$('a.return-remark').index(evt.currentTarget);
 	    if (idx >= 0) {
 		$(this.$('tr.return-remark')[idx]).toggle();
+		$(this.$('input.return-remark')[idx]).attr('value', '');
 	    }
 	},
+
 	returnSpin: function(evt, ui) {
 	    var idx = this.$(".return-amt").index(evt.target);
 	    if (idx >= 0) {
@@ -131,19 +169,48 @@ define([
 	returnDone: function(result) {
 	    this.$el.dialog('close');
 
-	    var msg = getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
+	    var msg = this.useApi ? 
+		    this.getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]) :
+		    this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
 	    
-	    var huh = $("<p>").append($("<a>").text(msg));
+	    var huh = $("<p>").append(msg);
 	    
 	    makeDialog(huh, {
-		title: getProp("InteractionsTask.LN_RET_TITLE"),
+		title: this.getProp("InteractionsTask.LN_RET_TITLE"),
 		maxHeight: 400,
 		buttons: [
-		    {text: getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
+		    {text: this.getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
 		]
 	    });
 	},   
 	
+	updateModelItems: function(returnedById, returnedDate, returns) {
+	    var items = this.options.model.dependentResources.loanpreparations.models;
+	    var itemsIdx = _.groupBy(items, 'id');
+	    var lrm = this.loanreturnprepModel;
+	    _.each(returns, function(ret) {
+		var item = itemsIdx[ret[0]];
+		if (item) {
+		    item = item[0];
+		    item.set('quantityReturned', item.get('quantityReturned') + ret[1]);
+		    item.set('quantityResolved', item.get('quantityResolved') + ret[2]);
+		    item.set('isResolved', ret[3] == 'true');
+		    var lrp = new lrm.Resource();
+		    lrp.initialize();
+		    lrp.set('quantityReturned', ret[1]);
+		    lrp.set('quantityResolved', ret[2]);
+		    lrp.set('returnedDate', returnedDate);
+		    lrp.set('receivedBy', '/api/specify/agent/' + returnedById + '/');
+		    if (ret[4] != 'NULL') {
+			lrp.set('remarks', ret[4].slice(1,ret[4].length-1)); //need to remove enclosing quotes for now.
+		    }
+		    item.dependentResources.loanreturnpreparations.models.push(lrp);
+		    item.dependentResources.loanreturnpreparations.length += 1;
+		    item.dependentResources.loanreturnpreparations.trigger('add');
+		}				
+	    });
+	},
+
 	returnSelections: function() {
 	    var self = this;
 	    var returns = _.filter(_.map(this.options.preps, function(prep, idx) {
@@ -165,7 +232,13 @@ define([
 	    var todayArg = [];
 	    todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
 	    var app = require('specifyapp'); 
-	    api.returnLoanItems(app.user.id, todayArg.join('-'), JSON.stringify(returns)).done(_.bind(this.returnDone, this));
+	    var model = this.options.model;
+	    if (!this.useApi) {
+		this.updateModelItems(app.user.id, todayArg.join('-'), returns);
+		this.returnDone([returns.length]);
+	    } else {
+		api.returnLoanItems(app.user.id, todayArg.join('-'), JSON.stringify(returns)).done(_.bind(this.returnDone, this));
+	    }
 	},
 
 	prepCheck: function( evt ) {
@@ -180,11 +253,21 @@ define([
 		    max: this.options.preps[idx].unresolved,
 		    spin:  _.bind(this.returnSpin, this)
 		});
-		$(returnSp).attr('value', newVal);
+		$(returnSp).attr('value', newVal);       
+                var commentA = this.$('a.return-remark')[idx];
+		var rem = this.$('tr.return-remark')[idx];
+		if (evt.target.checked) {
+		    $(commentA).removeAttr('style');
+		} else {
+		    $(commentA).attr('style', 'display: none;');
+		    $(rem).attr('style', 'display: none;');
+		    $('input', rem).attr('value', '');
+		}
 	    }
 	},
 
-	selectAll: function() {
+	selectAll: function(evt) {
+	    evt.preventDefault();
 	    var returns = this.$('.return-amt');
 	    var resolves = this.$('.resolve-amt');
 	    var chks = this.$(':checkbox');
@@ -198,10 +281,12 @@ define([
 		$(returns[p]).attr('value', this.options.preps[p].unresolved);
 		$(resolves[p]).attr('value', this.options.preps[p].unresolved);
 		$(chks[p]).attr('checked', this.options.preps[p].unresolved > 0);
+		this.$('a.return-remark').removeAttr('style');
 	    };	  
 	},
 
-	deSelectAll: function() {
+	deSelectAll: function(evt) {
+	    evt.preventDefault();
 	    var returns = this.$('.return-amt');
 	    for (var p=0; p < returns.length; p++) {
 		$(returns[p]).spinner({
@@ -214,6 +299,10 @@ define([
 	    };	  
 	    this.$('.resolve-amt').attr('value', 0);
 	    this.$(':checkbox').attr('checked', false);
+	    var remrows =  this.$('tr.return-remark').not('[style^="display"]');
+	    remrows.attr('style', 'display: none;').attr('value', '');
+	    this.$('a.return-remark', remrows).attr('style', 'display: none;');
+	    this.$('input.return-remark', remrows).attr('value', '');
 	}
 	
 	//<<<<<<<<<<<<<<<<<<<<<<< events
