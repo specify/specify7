@@ -1,3 +1,5 @@
+import json
+
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection, transaction
@@ -84,25 +86,69 @@ def preps_available_ids(request):
 def loan_return_all_items(request):
     cursor = connection.cursor()
 
-    sql="""
-    insert into loanreturnpreparation(TimestampCreated, Version, QuantityResolved, QuantityReturned, ReturnedDate, DisciplineID, ReceivedByID, LoanPreparationID, CreatedByAgentID)
-    select now(), 0, lp.Quantity - lp.QuantityResolved, lp.Quantity - lp.QuantityResolved, date(%s), %s, %s, lp.LoanPreparationID, %s
+    sql = """
+    insert into loanreturnpreparation(
+    TimestampCreated,
+    Version,
+    QuantityResolved,
+    QuantityReturned,
+    ReturnedDate,
+    DisciplineID,
+    ReceivedByID,
+    LoanPreparationID,
+    CreatedByAgentID)
+    select now(),
+           0,
+           lp.Quantity - lp.QuantityResolved,
+           lp.Quantity - lp.QuantityResolved,
+           date(%s),
+           %s,
+           %s,
+           lp.LoanPreparationID,
+           %s
     from loanpreparation lp where lp.LoanID in(
     """
     sql += request.POST['loanIds'] + ")  and not lp.IsResolved and lp.Quantity - lp.QuantityResolved != 0;"
-    cursor.execute(sql, [unicode(request.POST['returnedDate']), request.specify_collection.discipline.id, int(request.POST['returnedById']), int(request.specify_user.id)])
+    cursor.execute(sql, [unicode(request.POST['returnedDate']),
+                         request.specify_collection.discipline.id,
+                         int(request.POST['returnedById']),
+                         int(request.specify_user.id)])
 
-    sql="update loanpreparation set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, QuantityReturned=QuantityReturned+Quantity-QuantityResolved, QuantityResolved=Quantity, IsResolved=true where not IsResolved and LoanID in(" + request.POST['loanIds'] + ");"
+    sql = """
+    update loanpreparation set
+    TimestampModified = now(),
+    ModifiedByAgentID = %s,
+    Version = Version + 1,
+    QuantityReturned = QuantityReturned + Quantity - QuantityResolved,
+    QuantityResolved = Quantity,
+    IsResolved = true
+    where not IsResolved and LoanID in (
+    """ + request.POST['loanIds'] + ");"
 
     cursor.execute(sql, [int(request.specify_user.id)])
     prepsReturned = cursor.rowcount
 
     if (request.POST['selection'] != ""):
-        sql="update loan set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, IsClosed=true, DateClosed=date(%s) where not IsClosed and LoanNumber in(" + request.POST['selection'] + ");"
-        cursor.execute(sql, [int(request.specify_user.id), unicode(request.POST['returnedDate'])])
+        sql = """
+        update loan set
+        TimestampModified = now(),
+        ModifiedByAgentID = %s,
+        Version = Version + 1,
+        IsClosed = true,
+        DateClosed = date(%s)
+        where not IsClosed and LoanNumber in(" + request.POST['selection'] + ");"
+        cursor.execute(sql, [int(request.specify_user.id), # should be agent id
+                             unicode(request.POST['returnedDate'])])
     else:
-        sql="update loan set TimestampModified = now(), ModifiedByAgentID = %s, Version = Version+1, IsClosed=true, DateClosed=date(%s) where not IsClosed and LoanID in(" + request.POST['loanIds'] + ");"
-        cursor.execute(sql, [int(request.specify_user.id), unicode(request.POST['returnedDate'])])
+        sql = """
+        update loan set
+        TimestampModified = now(),
+        ModifiedByAgentID = %s,
+        Version = Version + 1,
+        IsClosed = true,
+        DateClosed = date(%s) where not IsClosed and LoanID in(" + request.POST['loanIds'] + ");"
+        cursor.execute(sql, [int(request.specify_user.id), # should be agent id
+                             unicode(request.POST['returnedDate'])])
 
     loansClosed = cursor.rowcount
 
@@ -116,19 +162,47 @@ def loan_return_all_items(request):
 @login_maybe_required
 @transaction.commit_manually
 def loan_return_items(request):
-    import json
 
-    """0 - loanpreparationid, 1 - returnQuantity, 2 - resolveQuantity, 3 - isResolved, 4 - remarks"""
+    # Columns:
+    # 0 - loanpreparationid, 1 - returnQuantity, 2 - resolveQuantity, 3 - isResolved, 4 - remarks
 
     returns = json.loads(request.POST['returns'])
-    stumpIn = "INSERT INTO loanreturnpreparation(TimestampCreated, Version, DisciplineID, CreatedByAgentID, ReturnedDate, ReceivedByID, QuantityResolved, QuantityReturned,  Remarks, LoanPreparationID) VALUES(now(), 0, "
-    stumpIn += str(request.specify_collection.discipline.id) + "," + str(request.specify_user.id) + ", date('" + request.POST['returnedDate'] + "')," + str(request.POST['returnedById']) + ","
-    stumpUp = "UPDATE loanpreparation SET Version = Version+1, TimestampModified = now(), ModifiedByAgentID = " + str(request.specify_user.id) + ","
+    stumpIn = """
+    INSERT INTO loanreturnpreparation(
+        TimestampCreated,
+        Version,
+        DisciplineID,
+        CreatedByAgentID,
+        ReturnedDate,
+        ReceivedByID,
+        QuantityResolved,
+        QuantityReturned,
+        Remarks,
+        LoanPreparationID
+    ) VALUES (
+        now(),
+        0,
+    """
+    stumpIn += str(request.specify_collection.discipline.id) + "," \
+               + str(request.specify_user.id) + \
+               ", date('" + request.POST['returnedDate'] + "')," + \
+               str(request.POST['returnedById']) + ","
+
+    stumpUp = """
+    UPDATE loanpreparation SET
+    Version = Version + 1,
+    TimestampModified = now(),
+    ModifiedByAgentID = """ + str(request.specify_user.id) + ","
+
     returnInSql = ""
     loanPrepUpSql = ""
+
     for ret in returns:
         returnInSql += stumpIn + str(ret[2]) + "," + str(ret[1]) + "," + ret[4] + "," + str(ret[0]) + ");"
-        loanPrepUpSql += stumpUp + " IsResolved=" + ret[3] + ", QuantityResolved=QuantityResolved+" + str(ret[2]) + ", QuantityReturned=QuantityReturned+" + str(ret[1]) + " WHERE LoanPreparationID=" + str(ret[0]) + ";"
+        loanPrepUpSql += stumpUp + " IsResolved=" + ret[3] \
+                         + ", QuantityResolved=QuantityResolved+" + str(ret[2]) \
+                         + ", QuantityReturned=QuantityReturned+" + str(ret[1]) \
+                         + " WHERE LoanPreparationID=" + str(ret[0]) + ";"
 
 
     cursor = connection.cursor()
@@ -139,10 +213,8 @@ def loan_return_items(request):
     cursor.execute(loanPrepUpSql)
     updatedPreps = cursor.rowcount
 
-    #transaction.set_dirty()
     transaction.commit()
 
-    #return http.HttpResponse(toJson([returnInSql, loanPrepUpSql]), content_type='application/json')
     return http.HttpResponse(toJson([returnedPreps, updatedPreps]), content_type='application/json')
 
 
@@ -152,7 +224,20 @@ def loan_return_items(request):
 def prep_interactions(request):
     cursor = connection.cursor()
 
-    sql = """select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)), group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)), group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber)) from preparation p left join loanpreparation lp on lp.preparationid = p.preparationid left join giftpreparation gp on gp.preparationid = p.preparationid left join exchangeoutprep ep on ep.preparationid = p.preparationid left join loan l on l.loanid = lp.loanid left join gift g on g.giftid = gp.giftid left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid where (lp.loanpreparationid is null or not lp.isresolved) and p.preparationid in(%s) group by 1;"""
+    sql = """
+    select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)),
+    group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)),
+    group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber))
+    from preparation p
+    left join loanpreparation lp on lp.preparationid = p.preparationid
+    left join giftpreparation gp on gp.preparationid = p.preparationid
+    left join exchangeoutprep ep on ep.preparationid = p.preparationid
+    left join loan l on l.loanid = lp.loanid
+    left join gift g on g.giftid = gp.giftid
+    left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid
+    where (lp.loanpreparationid is null or not lp.isresolved) and p.preparationid in(%s)
+    group by 1;
+    """
 
     cursor.execute(sql, [unicode(request.POST['prepIds'])])
     rows = cursor.fetchall()
