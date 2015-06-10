@@ -1,8 +1,8 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'populateform', 'savebutton', 'deletebutton', 'formsdialog', 'specifyform',
     'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, navigation, populateform,
+], function($, _, Backbone, schema, navigation, populateform,
             SaveButton, DeleteButton, FormsDialog, specifyform) {
     "use strict";
 
@@ -142,6 +142,4 @@ define([
             new EditRecordSetDialog({ recordset: this.options.recordSets.at(index) }).render();
         }
     });
-
-
 });

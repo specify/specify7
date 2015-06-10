@@ -1,8 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation', 
-    'specifyapi', 'populateform', 'resourceview', 'fieldformat','prepdialog',
-    'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, navigation, api, populateform, ResourceView, FieldFormat, PrepDialog) {
+    'jquery', 'underscore', 'schema', 'specifyapi', 'fieldformat','prepdialog',
+    'jquery-ui'
+], function($, _, schema, api, FieldFormat, PrepDialog) {
     "use strict";
 
     var dialog;
@@ -39,8 +38,8 @@ define([
         },
 
         finishRender: function() {
-            //this.$('table').before( '<div>Returned By: <input type="text" class="return-returnedby"> Returned Date: <input type="date" class="return-returdedDate"></div>'); 
-            
+            //this.$('table').before( '<div>Returned By: <input type="text" class="return-returnedby"> Returned Date: <input type="date" class="return-returdedDate"></div>');
+
             var returnSpinners = this.$(".return-amt");
             returnSpinners.spinner({
                 spin: _.bind(this.returnSpin, this)
@@ -86,7 +85,7 @@ define([
                     //$('<td>').attr('align', 'center').append(iprep.preptype),
                     prepTypeCtrl,
                     $('<td>').attr('align', 'center').append(iprep.unresolved),
-                    //not allowing typing into spinners because tricky returned-resolved interdependancy requires previous value, 
+                    //not allowing typing into spinners because tricky returned-resolved interdependancy requires previous value,
                     //which seems to be unavailable in the 'change' event.
                     $('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('return-amt')),
                     $('<td>').append($('<input readonly>').attr('align', 'right').attr('value', '0').attr('max', iprep.unresolved).attr('min', 0).addClass('resolve-amt')),
@@ -115,7 +114,7 @@ define([
                     });
                 });
             });
-        },   
+        },
 
         rowDone(catNumCtrl, taxCtrl, prepTypeCtrl, idx, rowdata) {
             catNumCtrl.append(FieldFormat(this.colobjModel.getField('catalognumber'), rowdata.catalognumber));
@@ -125,7 +124,7 @@ define([
             this.options.preps[idx].taxon = rowdata.taxon;
             this.options.preps[idx].preptype = rowdata.preptype;
         },
-        
+
         buttons: function() {
             var buttons = this.options.readOnly ? [] : [
                 { text: this.getProp('SELECTALL'), click: _.bind(this.selectAll, this),
@@ -169,12 +168,12 @@ define([
         returnDone: function(result) {
             this.$el.dialog('close');
 
-            var msg = this.useApi ? 
+            var msg = this.useApi ?
                     this.getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]) :
                     this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
-            
+
             var huh = $("<p>").append(msg);
-            
+
             makeDialog(huh, {
                 title: this.getProp("InteractionsTask.LN_RET_TITLE"),
                 maxHeight: 400,
@@ -182,8 +181,8 @@ define([
                     {text: this.getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
                 ]
             });
-        },   
-        
+        },
+
         updateModelItems: function(returnedById, returnedDate, returns) {
             var items = this.options.model.dependentResources.loanpreparations.models;
             var itemsIdx = _.groupBy(items, 'id');
@@ -207,7 +206,7 @@ define([
                     item.dependentResources.loanreturnpreparations.models.push(lrp);
                     item.dependentResources.loanreturnpreparations.length += 1;
                     item.dependentResources.loanreturnpreparations.trigger('add');
-                }                               
+                }
             });
         },
 
@@ -231,7 +230,7 @@ define([
             var today = new Date();
             var todayArg = [];
             todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
-            var app = require('specifyapp'); 
+            var app = require('specifyapp');
             var model = this.options.model;
             if (!this.useApi) {
                 this.updateModelItems(app.user.id, todayArg.join('-'), returns);
@@ -253,7 +252,7 @@ define([
                     max: this.options.preps[idx].unresolved,
                     spin:  _.bind(this.returnSpin, this)
                 });
-                $(returnSp).attr('value', newVal);       
+                $(returnSp).attr('value', newVal);
                 var commentA = this.$('a.return-remark')[idx];
                 var rem = this.$('tr.return-remark')[idx];
                 if (evt.target.checked) {
@@ -282,7 +281,7 @@ define([
                 $(resolves[p]).attr('value', this.options.preps[p].unresolved);
                 $(chks[p]).attr('checked', this.options.preps[p].unresolved > 0);
                 this.$('a.return-remark').removeAttr('style');
-            };    
+            };
         },
 
         deSelectAll: function(evt) {
@@ -296,7 +295,7 @@ define([
                     spin:  _.bind(this.returnSpin, this)
                 });
                 $(returns[p]).attr('value', 0);
-            };    
+            };
             this.$('.resolve-amt').attr('value', 0);
             this.$(':checkbox').attr('checked', false);
             var remrows =  this.$('tr.return-remark').not('[style^="display"]');
@@ -304,11 +303,7 @@ define([
             this.$('a.return-remark', remrows).attr('style', 'display: none;');
             this.$('input.return-remark', remrows).attr('value', '');
         }
-        
+
         //<<<<<<<<<<<<<<<<<<<<<<< events
-
-
     });
-
-
 });

@@ -1,10 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'populateform', 'savebutton', 'deletebutton', 
+    'require', 'jquery', 'underscore', 'schema', 'navigation',
     'specifyapi', 'resourceview', 'fieldformat','prepdialog',
-    'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, navigation, populateform,
-            SaveButton, DeleteButton, api, ResourceView, FieldFormat, PrepDialog) {
+    'jquery-ui'
+], function(require, $, _, schema, navigation,
+            api, ResourceView, FieldFormat, PrepDialog) {
     "use strict";
 
     return PrepDialog.extend({
@@ -62,7 +61,7 @@ define([
             var unavailable = $('<td>').attr('align', 'center');
             var unavailableCnt = iprep.countamt - iprep.available;
             //if unavailable items, link to related interactions
-            if (unavailableCnt != 0) { 
+            if (unavailableCnt != 0) {
                 unavailable.append($('<a>').text(unavailableCnt).addClass('prepselect-unavailable'));
             } else {
                 unavailable.append(unavailableCnt).addClass('prepselect-unavailable');
@@ -152,9 +151,9 @@ define([
                 var parsePrepUse = function(p) {
                     if (p) {
                         return _.map(p.split(','), function(o){
-                            var s = o.split('>|<'); 
+                            var s = o.split('>|<');
                             return {key: s[0], visibleKey: s[1]};
-                        });         
+                        });
                     } else {
                         return null;
                     }
@@ -186,14 +185,14 @@ define([
             for (var p=0; p < availables.length; p++) {
                 $(amounts[p]).attr('value', this.options.preps[p].available );
                 $(chks[p]).attr('checked', this.options.preps[p].available  > 0);
-            };    
+            };
         },
 
         deSelectAll: function() {
             this.$(':input.prepselect-amt').attr('value', 0);
             this.$(':checkbox').attr('checked', false);
         },
-        
+
         //<<<<<<<<<<<<<<<<<<<<<<< events
 
 
@@ -207,16 +206,16 @@ define([
             var _self = this;
             irec.fetch().done(function(arg) {
                 this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
-                
+
                 var resourceModel = new model.Resource(arg.objects[0]);
-                
+
                 new (require('resourceview'))({
                     el: this.dialog,
                     model: resourceModel,
                     mode: 'view',
                     noHeader: false
                 }).render();
-                
+
                 var _this = _self;
                 this.dialog.dialog({
                     position: { my: "left top", at: "left+20 top+20", of: $('#content') },
@@ -228,7 +227,7 @@ define([
                     navigation.go(resourceModel.viewUrl());
                     _this.dialog.dialog('close');
                 });
-                
+
                 $('<a>', { href: resourceModel.viewUrl() })
                     .addClass('intercept-navigation')
                     .append('<span class="ui-icon ui-icon-link">link</span>')

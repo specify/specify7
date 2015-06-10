@@ -1,6 +1,6 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema',
-    'props', 'text!properties/resources_en.properties!noinline', 
+    'props', 'text!properties/resources_en.properties!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(require, $, _, Backbone, schema, props, resources_prop) {
     "use strict";
@@ -49,7 +49,7 @@ define([
         getIndex: function(evt, selector) {
             return this.$(selector).index(evt.currentTarget);
         },
-        
+
         //<<<<<<<<<<<<<<<<<<<<<<< events
 
         getProp: function(key, fallback) {
@@ -59,9 +59,5 @@ define([
             }
             return result;
         }
-
-
     });
-
-
 });

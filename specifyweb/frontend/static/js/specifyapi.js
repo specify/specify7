@@ -1,5 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema'
+    'jquery', 'underscore', 'backbone', 'schema',
+    'jquery-bbq'
 ], function($, _, Backbone, schema) {
     "use strict";
 
@@ -90,7 +91,6 @@ define([
             return $.get('/api/unresolved_loan_preps/' + loanId + '/');
         }
     });
-    
 
     return api;
 });

@@ -1,14 +1,14 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema',
     'icons', 'specifyform', 'whenall',
-    'text!context/app.resource?name=InteractionsTaskInit!noinline',
     'interactiondialog', 'props',
-    'text!properties/resources_en.properties!noinline',
-    'specifyapi', //eventually probably won't need this
     'toolbarreport',
+    'text!context/app.resource?name=InteractionsTaskInit!noinline',
+    'text!properties/resources_en.properties!noinline',
     'jquery-ui'
 ], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, interactionsTaskInit, InteractionDialog, props, resources_prop, api, reps) {
+            whenAll, InteractionDialog, props, reps,
+            interactionsTaskInit, resources_prop) {
     "use strict";
 
     var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
@@ -40,7 +40,7 @@ define([
             return false;
         }
     };
-            
+
     var views = _.filter(interaction_entries, function(entry) {
         return !isActionEntry(entry);
     });
@@ -96,9 +96,9 @@ define([
                 var tt = props.getProperty(resources_prop, ttResourceKey);
                 if (tt) {
                     link.attr('title', tt);
-                }                            
+                }
             }
-        }, 
+        },
         dialogEntry: function(interaction_entry) {
             var img = $('<img>', { src: icons.getIcon(interaction_entry.attr('icon')) });
             var link = isActionEntry(interaction_entry) ?
@@ -130,7 +130,7 @@ define([
                 });
                 recordSets.fetch({ limit: 5000 }).done(function() {
                     new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();
-                });                                
+                });
             } else if (action.attr('action') == 'PRINT_INVOICE') {
                 //assuming loan invoice for now (52 is loan tableid)
                 reps.execute(52, {prop: 'reporttype', val: 'invoice'}, true);

@@ -1,10 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'populateform', 'savebutton', 'deletebutton', 'formsdialog', 'specifyform',
-    'recordsetsdialog',
-    'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, navigation, populateform,
-            SaveButton, DeleteButton, FormsDialog, specifyform, RecordSetsDialog) {
+    'require', 'schema', 'recordsetsdialog'
+], function(require, schema, RecordSetsDialog) {
     "use strict";
 
     return {

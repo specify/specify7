@@ -83,7 +83,6 @@ define([
                     'data-specify-initialize': cell.attr('initialize'),
                     disabled: doingFormTable || mode === 'view'
                 });
-                //return $('<td>'); // .append(button);  // Not implemented.
                 return $('<td>').append(button);
             },
             other: function() {

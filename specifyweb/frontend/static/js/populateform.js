@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'picklist', 'uifield',
-    'querycbx', 'specifyplugins', 'recordselector', 'subviewbutton', 'formtable',
-    'subview', 'checkbox', 'spinnerui', 'treelevelpicklist', 'specifycommands'
-], function($, _, Backbone, localizeForm, specifyform, PickList, UIField, QueryCbx, uiplugins,
-            RecordSelector, SubViewButton, FormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList, uicommands) {
+    'querycbx', 'specifyplugins', 'specifycommands', 'recordselector', 'subviewbutton',
+    'formtable', 'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
+], function($, _, Backbone, localizeForm, specifyform, PickList, UIField, QueryCbx, uiplugins, uicommands,
+            RecordSelector, SubViewButton, FormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
     "use strict";
 
     var MultiView = Backbone.View.extend({
@@ -64,7 +64,7 @@ define([
 
     var populateCommand = function(resource, control) {
         var cmd = uicommands[control.attr('action')] || uicommands.CommandNotAvailable;
-        var view = new cmd({ el: control, model: resource });    
+        var view = new cmd({ el: control, model: resource });
         view.render();
     };
 

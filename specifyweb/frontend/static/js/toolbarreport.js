@@ -456,10 +456,10 @@ define([
                 appRs.url = function() { return "/report_runner/get_reports_by_tbl/" + tblId + "/"; };
             } else {
                 appRs.url = function() { return "/report_runner/get_reports/"; };
-            }            
+            }
             appRs.fetch({ limit: 100 }).done(function() {
-                new ReportListDialog({ appResources: appRs, 
-                                       metaDataFilter: metaDataFilter, 
+                new ReportListDialog({ appResources: appRs,
+                                       metaDataFilter: metaDataFilter,
                                        autoSelectSingle: autoSelectSingle }).render();
             });
         }

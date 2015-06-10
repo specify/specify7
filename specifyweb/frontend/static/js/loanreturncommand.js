@@ -11,7 +11,7 @@ define([
         useAPI: false,
         prepModel: schema.getModel("preparation"),
         coModel: schema.getModel("collectionobject"),
-        
+
         render: function() {
             if (this.model.specifyModel.name !== "Loan") {
                 throw new Error("loanreturncommand can only be used with loan resources");

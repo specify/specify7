@@ -1,11 +1,11 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi',
-    'icons', 'specifyform', 'whenall', 'recordsetsdialog', 'prepselectdialog', 'uiformatters',
-    'resourceview',
-    'require', 'props', 'text!properties/resources_en.properties!noinline',
+    'jquery', 'underscore', 'schema', 'specifyapi',
+    'recordsetsdialog', 'prepselectdialog',
+    'resourceview', 'require', 'props',
+    'text!properties/resources_en.properties!noinline',
     'jquery-ui'
-], function($, _, Backbone, schema, api, icons, specifyform,
-            whenAll, RecordSetsDialog, PrepSelectDialog, uiformatters, ResourceView, require, props, resources_prop) {
+], function($, _, schema, api, RecordSetsDialog, PrepSelectDialog,
+            ResourceView, require, props, resources_prop) {
     "use strict";
 
     var getProp = _.bind(props.getProperty, props, resources_prop);
@@ -33,7 +33,7 @@ define([
             'keyup textarea.i-action-entry': 'catNumChange',
             'click input.i-action-noprep': 'zeroPrepLoan'
         },
-        
+
 
         maxHeight: function() {
             return 600;
@@ -43,7 +43,7 @@ define([
             var model = this.options.close ? 'loan' : 'collectionobject';
             var fld = this.options.srchFld ? this.options.srchFld : (model == 'collectionobject' ? 'catalognumber' : 'loannumber');
             return schema.getModel(model).getField(fld);
-        },            
+        },
 
         //l10n-able stuff>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -69,7 +69,7 @@ define([
         },
         getRSCaption: function() {
             var rsCount = this.options.recordSets._totalCount;
-            return "By choosing a recordset (" 
+            return "By choosing a recordset ("
                 + (rsCount == 0 ? "none" : rsCount)
                 + " available)";
         },
@@ -106,7 +106,7 @@ define([
                 iconname = this.openIcon;
             }
             icon.attr('class', iconname);
-        },          
+        },
 
         toggleIt: function(sel, otherSel, iconSel, otherIconSel, duration) {
             var ctrl = this.$(sel);
@@ -144,16 +144,16 @@ define([
 
         makeEntryLink: function(recordSet) {
             return $('<a>').addClass("rs-select").text(recordSet.get('name'));
-        },      
+        },
         makeUI: function() {
             var breaker = '';
             if (this.options.recordSets._totalCount > 0) {
                 this.$el.append($('<a class="i-action-rs"><span class="' + this.openIcon + '"/>' + this.getRSCaption() + '</a>'));
                 this.makeTable();
                 breaker = '<br><br>';
-            }   
+            }
             this.$el.append(breaker);
-            this.$el.append($('<a class="i-action-enter"><span class="' + this.openIcon + '"/>' + this.getEntryCaption() + '</a>')); 
+            this.$el.append($('<a class="i-action-enter"><span class="' + this.openIcon + '"/>' + this.getEntryCaption() + '</a>'));
             this.makeEntryUI();
             var noPrepCap = this.getNoPrepCaption();
             if (noPrepCap != "") {
@@ -164,9 +164,9 @@ define([
            if (this.options.recordSets._totalCount > 0) {
                this.toggleIcon('.i-action-rs span');
            }
-        },          
+        },
         makeEntryUI: function() {
-            var html = '<div type="action-entry"' 
+            var html = '<div type="action-entry"'
                     + (this.options.recordSets._totalCount > 0 ? ' style="display:none"' : '')
                     + '><textarea class="i-action-entry" style="width:100%"'
                     + 'rows=5 spellcheck="false"></textarea><button disabled="true" type="action-entry">OK</button></div><br>';
@@ -177,7 +177,7 @@ define([
             var result = $('<div/>', {
                 "class": "i-snag-list"
             });
-            result.append($('<a/>', { 
+            result.append($('<a/>', {
                 "class":"i-action-ent-snag",
                 html: hdr
             }));
@@ -214,16 +214,16 @@ define([
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ui element stuff
 
         parseEntry: function(entry, formatter) {
-            var spaces = formatter ? 
-                    _.pluck(formatter.fields, "value").join('').indexOf(' ') >= 0 : 
+            var spaces = formatter ?
+                    _.pluck(formatter.fields, "value").join('').indexOf(' ') >= 0 :
                     true; //guess that invoice numbers will have spaces.
-            var commas = formatter ? 
-                    _.pluck(formatter.fields, "value").join('').indexOf(',') >= 0 : 
+            var commas = formatter ?
+                    _.pluck(formatter.fields, "value").join('').indexOf(',') >= 0 :
                     false; //hope that invoice numbers will not have commas.
-            var splitters = '\n|,| '; 
+            var splitters = '\n|,| ';
             if (spaces || commas) {
                 if (spaces && commas) {
-                    splitters = '\n'; 
+                    splitters = '\n';
                 } else if (spaces) {
                     splitters = '\n|,';
                 }
@@ -232,13 +232,13 @@ define([
             return _.filter(
                 _.map(splittable.split('\t'), function(item) {
                     return item.trim();
-                }), 
+                }),
                 function(item) {
                     return item != '';
                 });
         },
 
-        processEntry: function(evt){        
+        processEntry: function(evt){
             this.$('div.i-action-entry-snag').remove();
 
             var numsCtrl = this.$('textarea.i-action-entry');
@@ -247,7 +247,7 @@ define([
             var nums = this.parseEntry(numEntry, formatter);
 
             var model = this.options.close ? 'loan' : 'collectionobject';
-            
+
             var validEntries = _.filter(nums, function(item) {
                 return formatter ? formatter.parse(item) != null : true;
             });
@@ -258,7 +258,7 @@ define([
                     return formatter ? formatter.parse(item) == null : false;
                 });
             }
-            
+
             var canonicalizized = _.map(validEntries, function(entry) {
                 var zized = formatter ? formatter.canonicalize([entry]) : entry;
                 return {entry: entry, zized: zized};
@@ -312,12 +312,12 @@ define([
             });
             new PrepSelectDialog({preps: ipreps, action: action }).render();
         },
-            
+
         loanReturnDone: function(result) {
             var msg = getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
-            
+
             var huh = $("<p>").append($("<a>").text(msg));
-            
+
             makeDialog(huh, {
                 title: getProp("InteractionsTask.LN_RET_TITLE"),
                 maxHeight: 400,
@@ -325,7 +325,7 @@ define([
                     {text: getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
                 ]
             });
-        },   
+        },
 
         zeroPrepLoan: function() {
             this.$el.dialog('close');
@@ -342,7 +342,7 @@ define([
             if (this.options.close) {
                 this.$el.dialog('close');
                 var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
-                        : 'select LoanID from loan where LoanNumber in(' + ids + ')'; 
+                        : 'select LoanID from loan where LoanNumber in(' + ids + ')';
                 var app = require('specifyapp');
                 var today = new Date();
                 var todayArg = [];
@@ -353,7 +353,7 @@ define([
                 var action = this.options.action;
                 if (isRs) {
                     var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
-                    api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady); 
+                    api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady);
                 } else {
                     var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
                     if (selection.length > 0) {

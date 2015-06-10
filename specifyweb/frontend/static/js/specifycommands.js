@@ -1,4 +1,4 @@
-define(['loanreturncommand', 'uicommand'], function(LoanReturnCmd, UICmd) {
+define(['jquery', 'loanreturncommand', 'uicommand'], function($, LoanReturnCmd, UICmd) {
     "use strict";
 
     return {
@@ -28,4 +28,3 @@ define(['loanreturncommand', 'uicommand'], function(LoanReturnCmd, UICmd) {
         })
     };
 });
-                
