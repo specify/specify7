@@ -336,10 +336,11 @@ define([
         },
 
         interactionAction: function(selection, isRs, invalidEntries) {
-            var ids = isRs ? selection : _.map(_.pluck(selection, 'zized'), function(id) {
-                return "'" + id.replace(/'/g, "''") + "'";
-            }).join();
+            var ids = isRs ? selection : JSON.stringify(_.pluck(selection, 'zized'));
             if (this.options.close) {
+                // This branch of the if is broken for now because I changed the definition of ids.
+                // I'll fix it when I tackle the literal SQL below.
+                // --Ben
                 this.$el.dialog('close');
                 var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
                         : 'select LoanID from loan where LoanNumber in(' + ids + ')';

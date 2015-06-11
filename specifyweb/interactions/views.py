@@ -2,9 +2,11 @@ import json
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models.fields import FieldDoesNotExist
 from django.db import connection, transaction
 from django import http
 
+from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
 
@@ -55,7 +57,14 @@ def unresolved_loan_preps(request, loan_id):
 @csrf_exempt
 @login_maybe_required
 def preps_available_ids(request):
-    cursor = connection.cursor()
+    # make sure the field is actually a field in the collection object table
+    try:
+        id_fld = Collectionobject._meta.get_field(request.POST['id_fld'].lower()).db_column
+    except FieldDoesNotExist as e:
+        raise http.Http404(e)
+
+    co_ids = json.loads(request.POST['co_ids'])
+
     sql = """
     select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
         sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
@@ -68,15 +77,17 @@ def preps_available_ids(request):
     inner join preptype pt on pt.preptypeid = p.preptypeid
     left join determination d on d.CollectionObjectID = co.CollectionObjectID
     left join taxon t on t.TaxonID = d.TaxonID
-    where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and
-    """
-    sql += " co." + request.POST['id_fld'] + " in(" + request.POST['co_ids'] + ") group by 1,2,3,4,5 order by 1;"
+    where pt.isloanable and p.collectionmemberid = %s
+    and (d.IsCurrent or d.DeterminationID is null)
+    and co.{id_fld} in ({params})
+    group by 1,2,3,4,5 order by 1;
+    """.format(id_fld=id_fld, params=",".join("%s" for __ in co_ids))
 
-    cursor.execute(sql, [int(request.specify_collection.id)])
+    cursor = connection.cursor()
+    cursor.execute(sql, [int(request.specify_collection.id)] + co_ids)
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
-
 
 
 @require_POST
