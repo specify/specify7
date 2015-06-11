@@ -3,6 +3,9 @@ define([
     'text!context/app.resource?name=DialogDefs!noinline'
 ], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
     "use strict";
+
+    function format(obj) { return dataobjformatters.format(obj); }
+
     var dialogdefs = $.parseXML(dialogdefxml);
 
     return Backbone.View.extend({
@@ -10,6 +13,9 @@ define([
         className: "querycbx-dialog-search",
         events: {
             'click .querycbx-search-results a': 'select'
+        },
+        initialize: function(options) {
+            this.forceCollection = options.forceCollection || null;
         },
         render: function() {
             var dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
@@ -38,26 +44,21 @@ define([
             });
         },
         search: function() {
-            function format(obj) {
-                return dataobjformatters.format(obj);
-            }
-
             this.$('.querycbx-search-results').empty();
-
-            var _this = this;
-            api.queryCbxExtendedSearch(this.model).pipe(function(results) {
-                _this.results = results;
-                return whenAll(_this.results.map(format));
-            }).done(function(formattedResults) {
-                _.each(formattedResults, function(formattedResult) {
-                    $('<li>')
-                        .append($('<a href=\"#\">').text(formattedResult))
-                        .appendTo(_this.$('.querycbx-search-results'));
-                });
-
-                if (formattedResults.length < 1) _this.$('.querycbx-search-results').append('<li>No hits</li>');
-                if (formattedResults.length > 9) _this.$('.querycbx-search-results').append('<li>...</li>');
+            api.queryCbxExtendedSearch(this.model, this.forceCollection).done(this.gotResults.bind(this));
+        },
+        gotResults: function(results) {
+            this.results = results;
+            whenAll(results.map(format)).done(this.displayResults.bind(this));
+        },
+        displayResults: function(formattedResults) {
+            var items = _.map(formattedResults, function(formattedResult) {
+                return $('<li>').append($('<a>').text(formattedResult))[0];
             });
+            this.$('.querycbx-search-results').append(items);
+
+            if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
+            if (formattedResults.length > 9) this.$('.querycbx-search-results').append('<li>...</li>');
         },
         select: function(evt) {
             evt.preventDefault();

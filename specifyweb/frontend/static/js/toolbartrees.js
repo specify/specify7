@@ -13,7 +13,7 @@ define([
 
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
-        className: "table-list-dialog",
+        className: "trees-dialog table-list-dialog",
         _render: function(trees) {
             var entries = _.map(trees, this.dialogEntry, this);
             var table = $('<table>').append(entries).appendTo(this.el);

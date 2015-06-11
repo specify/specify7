@@ -1,5 +1,5 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'templates', 'schema',
+    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools',
     'jquery-bbq', 'jquery-ui',
 // Tasks included in header:
     'toolbarwelcome',
@@ -9,14 +9,15 @@ define([
     'toolbarrecordsets',
     'toolbarquery',
     'toolbarreport',
-    'toolbarattachments'
+    'toolbarattachments',
+    'toolbarmasterkey',
+    'toolbarusers'
 ], function headerUI(
-    require, $, _, Backbone, navigation, domain, templates, schema,
+    require, $, _, Backbone, navigation, domain, schema, UserTools,
     jquery_bbq, jquery_ui
 ) {
     "use strict";
-
-    var toolModules = _.chain(arguments).tail(headerUI.length).filter(function(mod){ return !mod.disabled; }).value();
+    var toolModules = _(arguments).tail(headerUI.length);
 
     var ExpressSearchInput = Backbone.View.extend({
         __name__: "ExpressSearchInput",
@@ -52,12 +53,18 @@ define([
             var app = require('specifyapp');
             this.user = app.user;
 
-            _.each(toolModules, function(module) {
+            this.toolModules = toolModules.filter(function(mod){
+                return !(_.isFunction(mod.disabled) ? mod.disabled(app.user) : mod.disabled);
+            });
+
+            this.visibleTools = this.toolModules.filter(function(t) { return t.icon != null; });
+            this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
+
+            _.each(this.toolModules, function(module) {
                 app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
             });
         },
         render: function() {
-            var _this = this;
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
             this.user.isauthenticated && this.$('#user-tools a.username').text(this.user.name);
             this.$('#user-tools a.login-logout')
@@ -79,30 +86,25 @@ define([
             });
             this.$('#header-loading').remove();
             this.$el.append('<nav id="site-nav">');
-            var ul = $('<ul>');
-            _(toolModules).each(function(toolDef) {
-                $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
-                    .text(toolDef.title)
-                    .prepend($('<img>', {src: toolDef.icon}))
-                    .appendTo($('<li>').appendTo(ul));
-            });
-            this.$('#site-nav').append(ul);
+            var lis = this.visibleTools.map(this.makeButton);
+            $('<ul>').append(lis).appendTo(this.$('#site-nav'));
             return this;
+        },
+        makeButton: function(toolDef) {
+            var li = $('<li>');
+            $('<a>', { href: '/specify/task/' + toolDef.task + '/' })
+                .text(toolDef.title)
+                .prepend($('<img>', {src: toolDef.icon}))
+                .appendTo(li);
+            return li[0];
         },
         siteNavClick: function(evt) {
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
-            toolModules[index].execute();
+            this.visibleTools[index].execute();
         },
         openUserTools: function(evt) {
-            $(templates.usertools({user: this.user}))
-                .appendTo(this.el)
-                .dialog({
-                    modal: true,
-                    buttons: [
-                        {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                    ]
-                });
+            new UserTools({user: this.user, tools: this.hiddenTools}).render();
         },
         changeCollection: function(evt) {
             navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');

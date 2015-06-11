@@ -1,47 +1,24 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'latlongui', 'partialdateui',
-    'collectionrelonetomanyplugin', 'collectionrelonetooneplugin',
-    'uiplugin', 'geolocateplugin', 'weblinkbutton', 'attachmentplugin', 'templates'
-], function($, _, api, LatLonUI, PartialDateUI, collectionrelonetomanyplugin,
-            collectionrelonetooneplugin, UIPlugin, GeoLocatePlugin, WebLinkButton,
-            AttachmentPlugin, templates) {
+    'jquery', 'underscore', 'uiplugin',
+    // plugin providers
+    'latlongui',
+    'partialdateui',
+    'collectionrelonetomanyplugin',
+    'collectionrelonetooneplugin',
+    'geolocateplugin',
+    'weblinkbutton',
+    'attachmentplugin',
+    'hosttaxonplugin',
+    'passwordplugin',
+    'useragentsplugin',
+    'adminstatusplugin',
+    'googlemapsplugin'
+], function specifyPlugins($, _, UIPlugin) {
     "use strict";
 
-    return {
-        ColRelTypePlugin: collectionrelonetooneplugin,
-        CollectionRelOneToManyPlugin: collectionrelonetomanyplugin,
-        PartialDateUI: PartialDateUI,
-        LatLonUI: LatLonUI,
-        LocalityGeoRef: GeoLocatePlugin,
-        WebLinkButton: WebLinkButton,
-        AttachmentPlugin: AttachmentPlugin,
-        LocalityGoogleEarth: UIPlugin.extend({
-            __name__: "LocalityGoogleEarthPlugin",
-            events: {
-                'click': 'click'
-            },
-            render: function() {
-                this.$el.attr('value', 'Google Map').prop('disabled', false);
-                return this;
-            },
-            click: function(evt) {
-                evt.preventDefault();
-                var lat = this.model.get('latitude1');
-                var long = this.model.get('longitude1');
-                if (lat != null && long != null) {
-                    var query = '' + lat + ',' + long;
-                    $('<div>').append(templates.gmapplugin({query: query})).dialog({
-                        width: 800,
-                        height: 600,
-                        title: this.model.specifyModel.getLocalizedName(),
-                        close: function() { $(this).remove(); }
-                    }).css({ overflow: 'hidden' });
-                } else {
-                    $('<div title="No coordinates"><p>Locality must have coordinates to be mapped.</p></div>')
-                        .dialog({close: function() { $(this).remove(); }});
-                }
-            }
-        }),
+    var providers = _.tail(arguments, specifyPlugins.length);
+
+    var plugins = {
         PluginNotAvailable: UIPlugin.extend({
             __name__: "UnavailablePlugin",
             events: {
@@ -66,4 +43,12 @@ define([
             }
         })
     };
+
+    _.each(providers, function(provider) {
+        _.each(provider.pluginsProvided, function(pluginProvided) {
+            plugins[pluginProvided] = provider;
+        });
+    });
+
+    return plugins;
 });

@@ -25,8 +25,8 @@ define([
             return this;
         },
         addAttachment: function() {
-            var self = this;
-            self.$el.append('<form enctype="multipart/form-data"><input type="file" name="file"></form>');
+            this.$el.append('<form enctype="multipart/form-data"><input type="file" name="file"></form>');
+            this.$('input').click();
         },
         fileSelected: function(evt) {
             var files = this.$(':file').get(0).files;
@@ -81,5 +81,5 @@ define([
                 attachments.openOriginal(attachment);
             });
         }
-    });
+    }, { pluginsProvided: ['AttachmentPlugin'] });
 });

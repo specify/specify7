@@ -4,7 +4,8 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     return Backbone.View.extend({
         __name__: "UIFieldInput",
         events: {
-            'change': 'change'
+            'change': 'change',
+            'input': 'changing'
         },
         initialize: function(options) {
             this.readOnly = options.readOnly;
@@ -29,6 +30,9 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
             if (_.isUndefined(result)) return;
 
             this.trigger("changed", result.parsed);
+        },
+        changing: function() {
+            this.readOnly || this.trigger("changing");
         },
         validate: function(deferred) {
             var value = this.$el.val().trim();

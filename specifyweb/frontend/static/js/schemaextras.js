@@ -2,6 +2,18 @@ define(['underscore', 'schemabase'], function(_, schema) {
     "use strict";
 
     return {
+        Agent: function(model) {
+            var fields = model.getAllFields();
+            var catalogerOf = _(new schema.Field(model)).extend({
+                name: 'catalogerOf',
+                isRelationship: true,
+                isRequired: false,
+                type: 'one-to-many',
+                otherSideName: 'Cataloger',
+                relatedModelName: 'CollectionObject'
+            });
+            fields.push(catalogerOf);
+        },
         Collection: function(model) {
             var fields = model.getAllFields();
             var collectionObjects = _(new schema.Field(model)).extend({

@@ -1,9 +1,10 @@
 define([
-    'jquery', 'underscore', 'agenttypepicklist', 'moment', 'dateformat'
-], function($, _, agenttypes, moment, dateFormatStr) {
+    'jquery', 'underscore', 'builtinpicklists', 'moment', 'dateformat'
+], function($, _, builtInPL, moment, dateFormatStr) {
     "use strict";
 
     function formatDate(value) {
+        if (value == null) return value;
         var m = moment(value);
         return m.isValid() ? m.format(dateFormatStr) : (value || '');
     }
@@ -30,7 +31,7 @@ define([
         }
 
         if (field.name === 'agentType' && field.model.name === 'Agent') {
-            var agentType = _.find(agenttypes, function(type) { return type.value === asInt; });
+            var agentType = _.find(builtInPL.agentType, function(type) { return type.value === asInt; });
             return agentType ? agentType.title : value || '';
         }
 

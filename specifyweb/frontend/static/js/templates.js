@@ -25,7 +25,7 @@ define([
     'text!tmpls/attachmentview.html',
     'text!tmpls/aboutspecify.html',
     'text!tmpls/conflict.html',
-    'text!tmpls/usertools.html'
+    'text!tmpls/passwordchange.html'
 ], function parseTemplates($, _) {
     "use strict";
     var parseTmpl = function(tmpl) { return _.template(tmpl); };
@@ -58,7 +58,7 @@ define([
         'attachmentview',
         'aboutspecify',
         'conflict',
-        'usertools'
+        'passwordchange'
     ]).each(function(name, i) { withNames[name] = templates[i]; });
 
     return withNames;

@@ -5,6 +5,7 @@ import requests, time, hmac, json
 
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+from django.views.decorators.cache import cache_control
 from django.conf import settings
 
 from specifyweb.specify.views import login_maybe_required
@@ -17,11 +18,15 @@ class AttachmentError(Exception):
 
 def get_collection():
     "Assumes that all collections are stored together."
+    if settings.WEB_ATTACHMENT_COLLECTION:
+        return settings.WEB_ATTACHMENT_COLLECTION
+
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
@@ -90,6 +95,9 @@ def update_time_delta(response):
 
 def init():
     global server_urls
+
+    if settings.WEB_ATTACHMENT_URL in (None, ''):
+        return
 
     r = requests.get(settings.WEB_ATTACHMENT_URL)
     if r.status_code != 200:

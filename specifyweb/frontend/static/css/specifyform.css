@@ -324,6 +324,17 @@ a.specify-attachment-original {
     height: 16px;
 }
 
+.forms-dialog                td:first-of-type + td,
+.reports-dialog              td:first-of-type + td,
+.recordset-for-report-dialog td:first-of-type + td,
+.stored-queries-dialog       td:first-of-type + td,
+.query-type-dialog           td:first-of-type + td,
+.trees-dialog                td:first-of-type + td,
+.recordsets-dialog           td:first-of-type + td
+{
+    width: 100%;
+}
+
 .querybuilder-header {
     vertical-align: top;
 }
@@ -334,7 +345,7 @@ a.specify-attachment-original {
 }
 
 .querybuilder-expand {
-    width: 100%
+    width: 100%;
 }
 
 .querybuilder-expand .ui-button-text {
@@ -609,6 +620,7 @@ a.specify-attachment-original {
 
 #specify-system-info th {
     text-align: right;
+    white-space: nowrap;
 }
 
 #specify-system-info h1 {

@@ -8,8 +8,7 @@ define([
     'treetask',
     'expresssearchtask',
     'datamodeltask',
-    'attachmentstask',
-    'masterkeytask'
+    'attachmentstask'
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
@@ -17,7 +16,8 @@ define([
     "use strict";
     var tasks = _(arguments).tail(module.length);
     var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
-    var systemInfo = $.parseJSON(systemInfoJSON);
+    var systemInfo = _.extend({user_agent: window.navigator.userAgent},
+                              $.parseJSON(systemInfoJSON));
 
     var currentView;
     var versionMismatchWarned = false;

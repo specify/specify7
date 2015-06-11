@@ -47,6 +47,7 @@ define([
                 parser: uiparse.bind(null, field)
             }).render()
                     .on('changed', this.inputChanged, this)
+                    .on('changing', this.inputChanging, this)
                     .on('addsaveblocker', this.addSaveBlocker, this)
                     .on('removesaveblocker', this.removeSaveBlocker, this);
 
@@ -84,6 +85,9 @@ define([
         },
         inputChanged: function(value) {
             this.model.set(this.fieldName, value);
+        },
+        inputChanging: function() {
+            this.model.trigger('changing');
         },
         addSaveBlocker: function(key, message, deferred) {
             this.model.saveBlockers.add(key + ':' + this.fieldName, this.fieldName, message, deferred);

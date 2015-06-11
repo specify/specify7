@@ -7,9 +7,6 @@ testing
 specifypanel/ve
 specifyweb/virtenv
 
-/db_map.json
-/htpasswd
-
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
 /specifyweb/settings/local_logging_settings.py

@@ -11,6 +11,7 @@ from django.views.decorators.cache import never_cache
 from sqlalchemy.sql.expression import asc, desc, and_, or_
 from sqlalchemy.sql.functions import count
 
+from specifyweb.specify.models import Collection
 from specifyweb.specify.api import toJson
 from specifyweb.specify.views import login_maybe_required
 from . import models
@@ -117,6 +118,10 @@ def run_ephemeral_query(collection, user, spquery):
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
     recordsetid = spquery.get('recordsetid', None)
+    if 'collectionid' in spquery:
+        collection = Collection.objects.get(pk=spquery['collectionid'])
+        logger.debug('forcing collection to %s', collection.collectionname)
+
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']

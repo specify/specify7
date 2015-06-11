@@ -278,7 +278,7 @@ def set_field_if_exists(obj, field, value):
     else:
         setattr(obj, field, value)
 
-def cleanData(model, data):
+def cleanData(model, data, agent):
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
     cleaned = {}
@@ -292,6 +292,12 @@ def cleanData(model, data):
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             cleaned[field_name] = data[field_name]
+    if model is models.Agent and not agent.specifyuser.is_admin():
+        # only admins can set the user field on agents
+        try:
+            del cleaned['specifyuser']
+        except KeyError:
+            pass
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
@@ -299,7 +305,7 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, basestring):
         model = get_model_or_404(model)
-    data = cleanData(model, data)
+    data = cleanData(model, data, agent)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
@@ -324,6 +330,18 @@ def set_fields_from_data(obj, data):
         if direct and not isinstance(field, ForeignKey):
             setattr(obj, field_name, prepare_value(field, val))
 
+def is_dependent_field(obj, field_name):
+    return obj.specify_model.get_field(field_name).dependent or (
+            obj.__class__ is models.Collectionobject and
+            field_name == 'collectingevent' and
+            obj.collection.isembeddedcollectingevent)
+
+def get_related_or_none(obj, field_name):
+    try:
+        return getattr(obj, field_name)
+    except ObjectDoesNotExist:
+        return None
+
 def handle_fk_fields(collection, agent, obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
@@ -342,25 +360,18 @@ def handle_fk_fields(collection, agent, obj, data):
     else:
         items = data.items()
 
+    dependents_to_delete = []
     for field_name, val in items:
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
         if not isinstance(field, ForeignKey): continue
 
-        try:
-            old_related = getattr(obj, field_name)
-        except ObjectDoesNotExist:
-            old_related = None
-
-        dependent = obj.specify_model.get_field(field_name).dependent or (
-            obj.__class__ is models.Collectionobject and
-            field_name == 'collectingevent' and
-            obj.collection.isembeddedcollectingevent)
+        old_related = get_related_or_none(obj, field_name)
+        dependent = is_dependent_field(obj, field_name)
 
         if val is None:
             setattr(obj, field_name, None)
             if dependent and old_related:
-                auditlog.remove(old_related, agent, obj)
-                old_related.delete()
+                dependents_to_delete.append(old_related)
 
         elif isinstance(val, field.related.parent_model):
             # The related value was patched into the data by a parent object.
@@ -393,11 +404,11 @@ def handle_fk_fields(collection, agent, obj, data):
 
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
-                auditlog.remove(old_related, agent, obj)
-                old_related.delete()
+                dependents_to_delete.append(old_related)
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
+    return dependents_to_delete
 
 def handle_to_many(collection, agent, obj, data):
     """For every key in the dict 'data' which is a *-to-many field in the
@@ -447,16 +458,26 @@ def handle_to_many(collection, agent, obj, data):
 
 @transaction.commit_on_success
 def delete_resource(agent, name, id, version):
-    return delete_obj(agent, name, id, version)
-
-def delete_obj(agent, name, id, version, parent_obj=None):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
+    return delete_obj(agent, obj, version)
+
+def delete_obj(agent, obj, version=None, parent_obj=None):
+    dependents_to_delete = filter(None, (
+        get_related_or_none(obj, field.name)
+        for field in obj._meta.fields
+        if isinstance(field, ForeignKey) and is_dependent_field(obj, field.name)
+    ))
+
     auditlog.remove(obj, agent, parent_obj)
-    bump_version(obj, version)
+    if version is not None:
+        bump_version(obj, version)
     obj.delete()
+
+    for dep in dependents_to_delete:
+      delete_obj(agent, dep, parent_obj=obj)
 
 @transaction.commit_on_success
 def put_resource(collection, agent, name, id, version, data):
@@ -467,8 +488,8 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     'data'.
     """
     obj = get_object_or_404(name, id=int(id))
-    data = cleanData(obj.__class__, data)
-    handle_fk_fields(collection, agent, obj, data)
+    data = cleanData(obj.__class__, data, agent)
+    dependents_to_delete = handle_fk_fields(collection, agent, obj, data)
     set_fields_from_data(obj, data)
 
     try:
@@ -481,6 +502,8 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj)
+    for dep in dependents_to_delete:
+        delete_obj(agent, dep, parent_obj=obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 
@@ -539,9 +562,12 @@ def obj_to_data(obj):
                      for ro in obj._meta.get_all_related_objects()))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
-    # Special case for Preparation.isonloan
+    # Special cases
     if isinstance(obj, models.Preparation):
         data['isonloan'] = obj.isonloan()
+    elif isinstance(obj, models.Specifyuser):
+        data['isadmin'] = obj.is_admin()
+
     return data
 
 def to_many_to_data(obj, related_object):
@@ -562,11 +588,7 @@ def field_to_val(obj, field):
     be either a regular field or a *-to-one field.
     """
     if isinstance(field, ForeignKey):
-        dependent = obj.specify_model.get_field(field.name).dependent or (
-            obj.__class__ is models.Collectionobject and
-            field.name == 'collectingevent' and
-            obj.collection.isembeddedcollectingevent)
-        if dependent:
+        if is_dependent_field(obj, field.name):
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
             return obj_to_data(related_obj)

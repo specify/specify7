@@ -1,18 +1,22 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 
-urlpatterns = patterns(
-    'specifyweb.context.views',
-    (r'^login/$', 'api_login'),
-    (r'^collection/$', 'collection'),
-    (r'^user.json$', 'user'),
-    (r'^system_info.json$', 'system_info'),
-    (r'^domain.json$', 'domain'),
-    (r'^view.json$', 'view'),
-    (r'^datamodel.json$', 'datamodel'),
-    (r'^schema_localization.json$', 'schema_localization'),
-    (r'^app.resource$', 'app_resource'),
-    (r'^available_related_searches.json$', 'available_related_searches'),
-    (r'^attachment_settings.json$', 'attachment_settings'),
-    (r'^report_runner_status.json$', 'report_runner_status'),
-    (r'^remoteprefs.properties$', 'remote_prefs')
-)
+from specifyweb.attachment_gw.views import get_settings as attachment_settings
+from specifyweb.report_runner.views import get_status as report_runner_status
+from . import views
+
+urlpatterns = [
+    url(r'^login/$', views.api_login),
+    url(r'^collection/$', views.collection),
+    url(r'^user.json$', views.user),
+    url(r'^system_info.json$', views.system_info),
+    url(r'^domain.json$', views.domain),
+    url(r'^view.json$', views.view),
+    url(r'^datamodel.json$', views.datamodel),
+    url(r'^schema_localization.json$', views.schema_localization),
+    url(r'^app.resource$', views.app_resource),
+    url(r'^available_related_searches.json$', views.available_related_searches),
+    url(r'^remoteprefs.properties$', views.remote_prefs),
+
+    url(r'^attachment_settings.json$', attachment_settings),
+    url(r'^report_runner_status.json$', report_runner_status),
+]

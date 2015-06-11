@@ -88,6 +88,10 @@ define(['jquery', 'underscore'], function($, _) {
         this.view.model.on("saveblocked:" + this.field, this.indicatorOn, this);
         this.view.model.on("nosaveblockers:" + this.field, this.indicatorOff, this);
         this.view.on('requestfortooltips', this.sendToolTips, this);
+
+        this.view.model.saveBlockers &&
+            _.each(this.view.model.saveBlockers.blockersForField(this.field),
+                   this.indicatorOn, this);
     }
 
     _.extend(FieldViewEnhancer.prototype, {

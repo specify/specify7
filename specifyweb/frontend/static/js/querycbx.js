@@ -10,8 +10,7 @@ define([
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
 
-    function typesearch2query(typesearch, q) {
-        var model = schema.getModelById(parseInt(typesearch.attr('tableid'), 10));
+    function makeQuery(model, searchFieldStr, q) {
         var query = new schema.models.SpQuery.Resource();
         query.set({
             'name': "Ephemeral QueryCBX query",
@@ -26,7 +25,7 @@ define([
         });
         var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
 
-        var searchFieldSpec = QueryFieldSpec.fromPath([model.name, typesearch.attr('searchfield')]);
+        var searchFieldSpec = QueryFieldSpec.fromPath([model.name].concat(searchFieldStr.split('.')));
         var searchField = new schema.models.SpQueryField.Resource();
         searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 0,
@@ -53,6 +52,10 @@ define([
         return query;
     }
 
+    function lookupTypesearch(name) {
+        return $('[name="'+name+'"]', typesearches);
+    }
+
     var QueryCbx = Backbone.View.extend({
         __name__: "QueryCbx",
         events: {
@@ -60,6 +63,14 @@ define([
             'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
+        },
+        initialize: function(options) {
+            this.init = options.init || null;
+            this.typesearch = options.typesearch || null;
+            this.relatedModel = options.relatedModel || null;
+            this.forceCollection = options.forceCollection || null;
+            // Hides buttons other than search for purposes of Host Taxon Plugin
+            this.hideButtons = !!options.hideButtons;
         },
         select: function (event, ui) {
             var resource = ui.item.resource;
@@ -80,29 +91,31 @@ define([
             if (!this.readOnly || this.inFormTable) {
                 this.$('.querycbx-display').hide();
             }
+            if (this.hideButtons) {
+                this.$('.querycbx-edit, .querycbx-add, .querycbx-clone, .querycbx-display').hide();
+            }
+            var field = this.model.specifyModel.getField(this.fieldName);
+            field.isRequired && this.$('input').addClass('specify-required-field');
             this.isRequired = this.$('input').is('.specify-required-field');
 
-            var init = specifyform.parseSpecifyProperties(control.data('specify-initialize'));
-            var typesearch = this.typesearch = $('[name="'+init.name+'"]', typesearches); // defines the querycbx
+            var init = this.init || specifyform.parseSpecifyProperties(control.data('specify-initialize'));
             if (!init.clonebtn || init.clonebtn.toLowerCase() !== "true") this.$('.querycbx-clone').hide();
 
-            var field = this.model.specifyModel.getField(this.fieldName);
-            var relatedModel = this.relatedModel = field.getRelatedModel();
-            var searchField = this.relatedModel.getField(this.typesearch.attr('searchfield'));
-            control.attr('title', 'Searches: ' + searchField.getLocalizedName());
+            this.relatedModel || (this.relatedModel = field.getRelatedModel());
+            this.typesearch || (this.typesearch = lookupTypesearch(init.name));
+
+            var selectStmt = this.typesearch.text();
+            var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
+            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(','), mapper);
+            var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
+            var fieldTitles = _.map(searchFields, function(f) {
+                return (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName();
+            });
+            control.attr('title', 'Searches: ' + fieldTitles.join(', '));
 
             control.autocomplete({
                 minLength: 3,
-                source: function (request, response) {
-                    var query = typesearch2query(typesearch, request.term);
-                    $.post('/stored_query/ephemeral/', JSON.stringify(query)).done(function(data) {
-                        var items = _.map(data.results, function(row) {
-                            return { label: row[1], value: row[1],
-                                     resource: new relatedModel.Resource({ id: row[0] }) };
-                        });
-                        response(items);
-                    });
-                }
+                source: this.makeQuery.bind(this, searchFieldStrs)
             });
 
             this.model.on('change:' + this.fieldName.toLowerCase(), this.fillIn, this);
@@ -111,6 +124,30 @@ define([
             this.toolTipMgr = new ToolTipMgr(this, control).enable();
             this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
             return this;
+        },
+        makeQuery: function (searchFieldStrs, request, response) {
+            var queries = _.map(searchFieldStrs, function(s) {
+                return makeQuery(this.relatedModel, s, request.term);
+            }, this);
+            if (this.forceCollection) {
+                console.log('force query collection id to:', this.forceCollection.id);
+                _.invoke(queries, 'set', 'collectionid', this.forceCollection.id);
+            }
+            var requests = _.map(queries, function(query) {
+                return $.post('/stored_query/ephemeral/', JSON.stringify(query)).pipe(function(data) { return data; });
+            });
+            whenAll(requests).pipe(this.processResponse.bind(this)).done(response);
+        },
+        processResponse: function(resps) {
+            var data = _.pluck(resps, 'results');
+            var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
+            return _.map(allResults, function(row) {
+                return {
+                    label: row[1],
+                    value: row[1],
+                    resource: new this.relatedModel.Resource({ id: row[0] })
+                };
+            }, this);
         },
         fillIn: function () {
             var _this = this;
@@ -152,6 +189,7 @@ define([
             });
 
             self.dialog = new QueryCbxSearch({
+                forceCollection: self.forceCollection,
                 model: searchTemplateResource,
                 selected: function(resource) {
                     self.model.set(self.fieldName, resource);
@@ -217,7 +255,7 @@ define([
             this.model.set(this.fieldName, null);
             this.fillIn();
         },
-        changeDialogTitle: function(title) {
+        changeDialogTitle: function(resource, title) {
             this.dialog && this.dialog.dialog('option', 'title', title);
         },
         blur: function() {
