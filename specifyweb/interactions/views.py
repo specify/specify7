@@ -136,7 +136,8 @@ def loan_return_all_items(request):
         Version = Version + 1,
         IsClosed = true,
         DateClosed = date(%s)
-        where not IsClosed and LoanNumber in(" + request.POST['selection'] + ");"
+        where not IsClosed and LoanNumber in (
+        """ + request.POST['selection'] + ");"
         cursor.execute(sql, [int(request.specify_user_agent.id),
                              unicode(request.POST['returnedDate'])])
     else:
@@ -146,7 +147,8 @@ def loan_return_all_items(request):
         ModifiedByAgentID = %s,
         Version = Version + 1,
         IsClosed = true,
-        DateClosed = date(%s) where not IsClosed and LoanID in(" + request.POST['loanIds'] + ");"
+        DateClosed = date(%s) where not IsClosed and LoanID in (
+        """ + request.POST['loanIds'] + ");"
         cursor.execute(sql, [int(request.specify_user_agent.id),
                              unicode(request.POST['returnedDate'])])
 
