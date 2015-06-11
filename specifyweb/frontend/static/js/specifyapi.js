@@ -78,14 +78,8 @@ define([
         returnAllLoanItems: function(loanIds, returnedById, returnedDate, selection) {
             return $.post('/api/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
         },
-        returnLoanItems: function(returnedById, returnedDate, returns) {
-            return $.post('/api/loan_return_items/', {returnedById: returnedById, returnedDate: returnedDate, returns: returns});
-        },
         getInteractionsForPrepIds: function(prepIds) {
             return $.post('/api/prep_interactions/', {prepIds: prepIds});
-        },
-        getUnresolvedPrepsForLoan: function(loanId) {
-            return $.get('/api/unresolved_loan_preps/' + loanId + '/');
         }
     });
 
