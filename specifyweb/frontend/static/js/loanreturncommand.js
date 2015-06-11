@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'uicommand', 'specifyapi', 'schema'
-], function(require, $, _, UICmd, api, schema) {
+    'require', 'jquery', 'underscore', 'uicommand', 'schema'
+], function(require, $, _, UICmd, schema) {
     "use strict";
 
     return UICmd.extend({
@@ -8,7 +8,6 @@ define([
         events: {
             'click': 'click'
         },
-        useAPI: false,
         prepModel: schema.getModel("preparation"),
         coModel: schema.getModel("collectionobject"),
 
@@ -24,31 +23,18 @@ define([
             if (loanId) {
                 var model = this.model;
                 var lps;
-                if (this.useAPI || !model.populated) {
-                    api.getUnresolvedPrepsForLoan(loanId).done(function(lps) {
-                        lps = _.map(lps, function(lp) {
-                            return  {catalognumber: lp[0],
-                                     taxon: lp[1],
-                                     loanpreparationid: lp[2],
-                                     preptype: lp[3],
-                                     unresolved: lp[4]
-                                    };
-                        });
-                    });
-                } else {
-                    lps = _.filter(_.map(this.model.dependentResources.loanpreparations.models, function(lp) {
-                        return  {
-                            catalognumber: '',
-                            taxon: '',
-                            loanpreparationid: lp.get('id'),
-                            preptype: '',
-                            unresolved: lp.get('quantity') - lp.get('quantityresolved'),
-                            preparation: lp.get('preparation')
-                        };
-                    }), function(lp) {
-                        return lp.unresolved > 0;
-                    });
-                }
+                lps = _.filter(_.map(this.model.dependentResources.loanpreparations.models, function(lp) {
+                    return  {
+                        catalognumber: '',
+                        taxon: '',
+                        loanpreparationid: lp.get('id'),
+                        preptype: '',
+                        unresolved: lp.get('quantity') - lp.get('quantityresolved'),
+                        preparation: lp.get('preparation')
+                    };
+                }), function(lp) {
+                    return lp.unresolved > 0;
+                });
                 if (lps.length > 0) {
                     require(['prepreturndialog'], function (PrepReturnDialog) {
                         new PrepReturnDialog({ preps: lps, model: model }).render();
@@ -62,12 +48,12 @@ define([
                     });
                 }
             } else {
-                    $("<p>").append("Preparations cannot be returned in this context.").dialog({
-                        modal: true,
-                        width: 500,
-                        title: this.$el[0].value,
-                        close: function() { $(this).remove(); }
-                    });
+                $("<p>").append("Preparations cannot be returned in this context.").dialog({
+                    modal: true,
+                    width: 500,
+                    title: this.$el[0].value,
+                    close: function() { $(this).remove(); }
+                });
             }
         }
 

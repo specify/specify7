@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyapi', 'fieldformat','prepdialog',
+    'jquery', 'underscore', 'schema', 'fieldformat','prepdialog',
     'jquery-ui'
-], function($, _, schema, api, FieldFormat, PrepDialog) {
+], function($, _, schema, FieldFormat, PrepDialog) {
     "use strict";
 
     var dialog;
@@ -21,7 +21,6 @@ define([
             'click :checkbox': 'prepCheck',
             'click a.return-remark': 'remToggle'
         },
-        useApi: false,
         loanreturnprepModel: schema.getModel("loanreturnpreparation"),
 
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -168,9 +167,7 @@ define([
         returnDone: function(result) {
             this.$el.dialog('close');
 
-            var msg = this.useApi ?
-                    this.getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]) :
-                    this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
+            var msg = this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
 
             var huh = $("<p>").append(msg);
 
@@ -232,12 +229,8 @@ define([
             todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
             var app = require('specifyapp');
             var model = this.options.model;
-            if (!this.useApi) {
-                this.updateModelItems(app.user.id, todayArg.join('-'), returns);
-                this.returnDone([returns.length]);
-            } else {
-                api.returnLoanItems(app.user.id, todayArg.join('-'), JSON.stringify(returns)).done(_.bind(this.returnDone, this));
-            }
+            this.updateModelItems(app.user.id, todayArg.join('-'), returns);
+            this.returnDone([returns.length]);
         },
 
         prepCheck: function( evt ) {
