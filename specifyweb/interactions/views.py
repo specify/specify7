@@ -27,7 +27,7 @@ def preps_available_rs(request, recordset_id):
     where pt.isloanable and p.collectionmemberid = %s and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in (
         select recordid from recordsetitem where recordsetid=%s
     ) group by 1,2,3,4,5 order by 1;
-       """, [request.specify_collection.id, recordset_id])
+    """, [request.specify_collection.id, recordset_id])
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
@@ -112,7 +112,7 @@ def loan_return_all_items(request):
     cursor.execute(sql, [unicode(request.POST['returnedDate']),
                          request.specify_collection.discipline.id,
                          int(request.POST['returnedById']),
-                         int(request.specify_user.id)])
+                         int(request.specify_user_agent.id)])
 
     sql = """
     update loanpreparation set
@@ -125,7 +125,7 @@ def loan_return_all_items(request):
     where not IsResolved and LoanID in (
     """ + request.POST['loanIds'] + ");"
 
-    cursor.execute(sql, [int(request.specify_user.id)])
+    cursor.execute(sql, [int(request.specify_user_agent.id)])
     prepsReturned = cursor.rowcount
 
     if (request.POST['selection'] != ""):
@@ -137,7 +137,7 @@ def loan_return_all_items(request):
         IsClosed = true,
         DateClosed = date(%s)
         where not IsClosed and LoanNumber in(" + request.POST['selection'] + ");"
-        cursor.execute(sql, [int(request.specify_user.id), # should be agent id
+        cursor.execute(sql, [int(request.specify_user_agent.id),
                              unicode(request.POST['returnedDate'])])
     else:
         sql = """
@@ -147,7 +147,7 @@ def loan_return_all_items(request):
         Version = Version + 1,
         IsClosed = true,
         DateClosed = date(%s) where not IsClosed and LoanID in(" + request.POST['loanIds'] + ");"
-        cursor.execute(sql, [int(request.specify_user.id), # should be agent id
+        cursor.execute(sql, [int(request.specify_user_agent.id),
                              unicode(request.POST['returnedDate'])])
 
     loansClosed = cursor.rowcount
@@ -184,7 +184,7 @@ def loan_return_items(request):
         0,
     """
     stumpIn += str(request.specify_collection.discipline.id) + "," \
-               + str(request.specify_user.id) + \
+               + str(request.specify_user_agent.id) + \
                ", date('" + request.POST['returnedDate'] + "')," + \
                str(request.POST['returnedById']) + ","
 
@@ -192,7 +192,7 @@ def loan_return_items(request):
     UPDATE loanpreparation SET
     Version = Version + 1,
     TimestampModified = now(),
-    ModifiedByAgentID = """ + str(request.specify_user.id) + ","
+    ModifiedByAgentID = """ + str(request.specify_user_agent.id) + ","
 
     returnInSql = ""
     loanPrepUpSql = ""
