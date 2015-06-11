@@ -336,24 +336,21 @@ define([
         },
 
         interactionAction: function(selection, isRs, invalidEntries) {
-            var ids = isRs ? selection : JSON.stringify(_.pluck(selection, 'zized'));
             if (this.options.close) {
-                // This branch of the if is broken for now because I changed the definition of ids.
-                // I'll fix it when I tackle the literal SQL below.
-                // --Ben
                 this.$el.dialog('close');
-                var loanIds = isRs ? 'select RecordID from recordsetitem where recordsetid=' + selection.get('id')
-                        : 'select LoanID from loan where LoanNumber in(' + ids + ')';
-                var app = require('specifyapp');
-                var today = new Date();
-                var todayArg = [];
-                todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
                 var doneFunc = _.bind(this.loanReturnDone, this);
-                api.returnAllLoanItems(loanIds, app.user.id, todayArg.join('-'), isRs ? '' : ids).done(doneFunc);
+                $.post('/api/loan_return_all/', {
+                    // returnedById: "", // get this from a form maybe
+                    // returnedDate: "", // ditto
+                    recordSetId: isRs ? selection.get('id') : undefined,
+                    loanNumbers: isRs ? undefined : JSON.stringify(_.pluck(selection, 'zized'))
+                }).done(doneFunc);
+
             } else {
+                var ids = isRs ? selection : JSON.stringify(_.pluck(selection, 'zized'));
                 var action = this.options.action;
                 if (isRs) {
-                    var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
+
                     api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady);
                 } else {
                     var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
