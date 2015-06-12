@@ -34,3 +34,13 @@ REPORT_RUNNER_PORT = ''
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
+
+# To use iDigBio media server uncomment the line below
+# and set the UUID and APIKEY values provide by iDigBio.
+
+# ATTACHMENT_MODULE = "idigbio"
+IDIGBIO_MEDIA_URL = "http://media.idigbio.org"
+IDIGBIO_MEDIA_UUID = ""
+IDIGBIO_MEDIA_APIKEY = ""
+
+
