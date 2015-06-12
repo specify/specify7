@@ -22,8 +22,7 @@ define([
             var loanId = this.model.get('id');
             if (loanId) {
                 var model = this.model;
-                var lps;
-                lps = _.filter(_.map(this.model.dependentResources.loanpreparations.models, function(lp) {
+                var lps = _.filter(_.map(this.model.dependentResources.loanpreparations.models, function(lp) {
                     return  {
                         catalognumber: '',
                         taxon: '',
@@ -35,7 +34,6 @@ define([
                 }), function(lp) {
                     return lp.unresolved > 0;
                 });
-                }
                 if (lps.length > 0) {
                     require(['prepreturndialog'], function (PrepReturnDialog) {
                         new PrepReturnDialog({ preps: lps, model: model }).render();
