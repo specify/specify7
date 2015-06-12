@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from collections import namedtuple
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
@@ -13,7 +13,7 @@ from sqlalchemy.sql.expression import asc, desc, and_, or_, insert, literal
 from sqlalchemy.sql.functions import count
 
 from specifyweb.specify.models import Collection
-from specifyweb.specify.api import toJson
+from specifyweb.specify.api import toJson, uri_for_model
 from specifyweb.specify.views import login_maybe_required
 from . import models
 
@@ -140,10 +140,11 @@ def run_ephemeral_query(collection, user, spquery):
 @never_cache
 def make_recordset(request):
     try:
-        spquery = json.load(request)
+        recordset_info = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
+    spquery = recordset_info['fromquery']
     tableid = spquery['contexttableid']
 
     with models.session_context() as session:
@@ -152,7 +153,9 @@ def make_recordset(request):
         recordset.version = 0
         recordset.collectionMemberId = request.specify_collection.id
         recordset.dbTableId = tableid
-        recordset.name = "New Recordset"
+        recordset.name = recordset_info['name']
+        if 'remarks' in recordset_info:
+            recordset.remarks = recordset_info['remarks']
         recordset.type = 0
         recordset.createdByAgentID = request.specify_user_agent.id
         recordset.SpecifyUserID = request.specify_user.id
@@ -172,8 +175,7 @@ def make_recordset(request):
         ins = insert(RSI).from_select((RSI.recordId, RSI.RecordSetID), query)
         session.execute(ins)
 
-    return HttpResponse(new_rs_id, content_type="text/plain")
-
+    return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)

@@ -24,8 +24,11 @@ define([
             if (!this.readOnly) {
                 var saveButton = new SaveButton({ model: this.recordset });
                 saveButton.render().$el.appendTo(buttons);
-                saveButton.on('savecomplete', this.recordset.isNew() ?
-                              this.gotoForm : this.close, this);
+                saveButton.on('saving', this.trigger.bind(this, 'saving'));
+                saveButton.on('savecomplete', function() {
+                    this.close();
+                    this.trigger('savecomplete', this, this.recordset);
+                }, this);
             }
             var title = (this.recordset.isNew() ? "New " : "") + this.recordset.specifyModel.getLocalizedName();
 
@@ -43,12 +46,6 @@ define([
                 modal: true,
                 close: function() { $(this).remove(); }
             });
-        },
-        gotoForm: function() {
-            // TODO: got to be a better way to get the url
-            var url = $.param.querystring(new this.model.Resource().viewUrl(),
-                                          {recordsetid: this.recordset.id});
-            navigation.go(url);
         },
         close: function() {
             this.$el.dialog('close');

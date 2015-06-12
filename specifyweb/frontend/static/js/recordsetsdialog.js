@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'formsdialog', 'editrecordset',
-    'jquery-ui'
-], function($, _, Backbone, schema, FormsDialog, EditRecordSetDialog) {
+    'navigation', 'jquery-ui', 'jquery-bbq'
+], function($, _, Backbone, schema, FormsDialog, EditRecordSetDialog, navigation) {
     "use strict";
 
     return Backbone.View.extend({
@@ -74,12 +74,19 @@ define([
             return buttons;
         },
         openFormsDialog: function() {
-             new FormsDialog().render().on('selected', function(model) {
+            new FormsDialog().render().on('selected', function(model) {
                 var recordset = new schema.models.RecordSet.Resource();
                 recordset.set('dbtableid', model.tableId);
                 recordset.set('type', 0);
-                new EditRecordSetDialog({ recordset: recordset }).render();
-            });
+                new EditRecordSetDialog({ recordset: recordset }).render()
+                    .on('savecomplete', this.gotoForm.bind(this, model, recordset));
+            }, this);
+        },
+        gotoForm: function(model, recordset) {
+            // TODO: got to be a better way to get the url
+            var url = $.param.querystring(new model.Resource().viewUrl(),
+                                          {recordsetid: recordset.id});
+            navigation.go(url);
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();

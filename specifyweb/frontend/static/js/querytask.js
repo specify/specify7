@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'queryfromtree', 'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
+    'queryfromtree', 'navigation', 'queryresultstable', 'editrecordset',
+    'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            queryFromTree, navigation, QueryResultsTable) {
+            queryFromTree, navigation, QueryResultsTable, EditRecordSetDialog) {
     "use strict";
 
     var setTitle;
@@ -100,17 +101,24 @@ define([
             this.updatePositions();
         },
         makeRecordSet: function() {
-            var d = $('<div title="Record Set from Query"><p>Generating record set.</p><div class="progress" /></div>')
-                .dialog({
-                    modal: true,
-                    close: function() { $(this).remove(); }
+            var progress;
+            var recordset = new schema.models.RecordSet.Resource();
+            recordset.set('dbtableid', this.model.tableId);
+            recordset.set('fromQuery', this.query.toJSON());
+            recordset.url = '/stored_query/make_recordset/';
+            new EditRecordSetDialog({recordset: recordset}).render()
+                .on('saving', function() {
+                    progress = $('<div title="Record Set from Query">' +
+                                 '<p>Generating record set.</p><div class="progress" />' +
+                                 '</div>').dialog({
+                                     modal: true,
+                                     close: function() { $(this).remove(); }
+                                 });
+                    $('.progress', progress).progressbar({ value: false });
+                })
+                .on('savecomplete', function() {
+                    progress.dialog('close');
                 });
-            $('.progress', d).progressbar({ value: false });
-
-            $.post('/stored_query/make_recordset/', JSON.stringify(this.query)).done(function(rsId) {
-                d.dialog('close');
-                navigation.go('/recordset/' + rsId + '/');
-            });
         },
         search: function(evt) {
             this.$('.query-execute').blur();
