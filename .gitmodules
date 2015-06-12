@@ -1,3 +1,0 @@
-[submodule "idigbio_ingestion_tool"]
-	path = idigbio_ingestion_tool
-	url = git@github.com:idigbio-api-hackathon/idigbio-ingestion-tool.git
