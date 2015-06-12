@@ -42,6 +42,7 @@ define(['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], function(
             }
         },
         collectionsInDomain: function(domainResource) {
+            if (domainResource == null) return null;
             var domainLevel = domainResource.specifyModel.name.toLowerCase();
             if (domainLevel === 'collectionobject') {
                 return domainResource.rget('collection', true).pipe(function(collection) {

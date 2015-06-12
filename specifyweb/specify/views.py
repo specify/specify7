@@ -29,7 +29,7 @@ def api_view(dispatch_func):
     in the api logic."""
     @login_maybe_required
     @csrf_exempt
-    @cache_control(private=True, max_age=0)
+    @cache_control(private=True, max_age=2)
     def view(request, *args, **kwargs):
         if request.method != "GET" and (
             settings.RO_MODE or
@@ -59,6 +59,7 @@ def rows(request, model):
     return api.rows(request, model)
 
 @require_GET
+@cache_control(max_age=365*24*60*60, public=True)
 def images(request, path):
     """A Django view that serves images and icons from the Specify thickclient jar file."""
     mimetype = mimetypes.guess_type(path)[0]
@@ -71,6 +72,7 @@ def images(request, path):
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=24*60*60, public=True)
 def properties(request, name):
     """A Django view that serves .properities files from the thickclient jar file."""
     path = name + '.properties'

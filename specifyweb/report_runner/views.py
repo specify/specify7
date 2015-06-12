@@ -3,6 +3,7 @@ import json
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_control
 from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
@@ -16,6 +17,7 @@ class ReportException(Exception):
     pass
 
 @require_GET
+@cache_control(max_age=86400, private=True)
 def get_status(request):
     resp = {'available': settings.REPORT_RUNNER_HOST != ''}
     return HttpResponse(toJson(resp), content_type="application/json")
@@ -61,6 +63,25 @@ def get_reports(request):
 
     data = objs_to_data(reports)
     return HttpResponse(toJson(data), content_type="application/json")
+
+@require_GET
+@login_maybe_required
+def get_reports_by_tbl(request, tbl_id):
+    reports = Spappresource.objects.filter(
+        mimetype__startswith="jrxml",
+        spappresourcedir__discipline=request.specify_collection.discipline) \
+        .filter(
+            Q(spappresourcedir__collection=None) |
+            Q(spappresourcedir__collection=request.specify_collection)) \
+        .filter(
+            Q(spappresourcedir__specifyuser=request.specify_user) |
+            Q(spappresourcedir__ispersonal=False)) \
+        .filter(
+            Q(spreports__query__contexttableid=tbl_id))
+    
+    data = objs_to_data(reports)
+    return HttpResponse(toJson(data), content_type="application/json")
+
 
 def run_query(collection, user, query_json):
     try:

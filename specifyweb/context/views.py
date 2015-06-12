@@ -3,6 +3,7 @@ import re
 from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.utils import simplejson
 from django.conf import settings
@@ -11,27 +12,31 @@ from specifyweb.specify.models import Collection, Spappresourcedata, Spversion
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
-from specifyweb.attachment_gw.views import get_settings as attachment_settings
-from specifyweb.report_runner.views import get_status as report_runner_status
 
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
 
+def set_collection_cookie(response, collection_id):
+    response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
+
 def login(request):
     """A Django view to log users into the system.
     Supplements the stock Django login with a collection selection.
     """
+    collection = ''
     if request.method == 'POST':
         try:
-            request.session['collection'] = request.POST['collection_id']
+            collection = request.POST['collection_id']
         except:
             return HttpResponseBadRequest('collection id value missing')
 
     kwargs = {
         'template_name': 'login.html',
         'extra_context': { 'collections': Collection.objects.all() } }
-    return auth_views.login(request, **kwargs)
+    response = auth_views.login(request, **kwargs)
+    set_collection_cookie(response, collection)
+    return response
 
 def logout(request):
     """A Django view to log users out."""
@@ -56,9 +61,9 @@ def api_login(request):
             collection = Collection.objects.get(id=data['collection'])
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection %s does not exist' % data['collection'])
-        request.session['collection'] = collection.id
-
-        return HttpResponse('', status=204)
+        response = HttpResponse('', status=204)
+        set_collection_cookie(response, collection.id)
+        return response
 
     return HttpResponse(simplejson.dumps(dict(
         collections={c.collectionname: c.id for c in Collection.objects.all()},
@@ -78,14 +83,16 @@ def collection(request):
             return HttpResponseBadRequest('bad collection id', content_type="text/plain")
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
-        request.session['collection'] = str(collection.id)
-        return HttpResponse('ok')
+        response = HttpResponse('ok')
+        set_collection_cookie(response, collection.id)
+        return response
     else:
-        collection = request.session.get('collection', '')
+        collection = request.COOKIES.get('collection', '')
         return HttpResponse(collection, content_type="text/plain")
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
@@ -97,6 +104,7 @@ def user(request):
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
     collection = request.specify_collection
@@ -112,6 +120,7 @@ def domain(request):
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def app_resource(request):
     """Return a Specify app resource by name taking into account the logged in user and collection."""
     try:
@@ -128,6 +137,7 @@ def app_resource(request):
 
 @login_maybe_required
 @require_GET
+@cache_control(max_age=86400, private=True)
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
     from specifyweb.express_search import related_searches
@@ -146,6 +156,7 @@ datamodel_json = None
 
 @require_GET
 @login_maybe_required
+@cache_control(max_age=86400, public=True)
 def datamodel(request):
     from specifyweb.specify.models import datamodel
     global datamodel_json
@@ -156,6 +167,7 @@ def datamodel(request):
 
 @require_GET
 @login_maybe_required
+@cache_control(max_age=86400, private=True)
 def schema_localization(request):
     """Return the schema localization information for the logged in collection."""
     sl = get_schema_localization(request.specify_collection)
@@ -163,6 +175,7 @@ def schema_localization(request):
 
 @require_GET
 @login_maybe_required
+@cache_control(max_age=86400, private=True)
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
     if 'collectionid' in request.GET:
@@ -181,6 +194,7 @@ def view(request):
 
 @require_GET
 @login_maybe_required
+@cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     res = Spappresourcedata.objects.filter(
         spappresource__name='preferences',
@@ -190,6 +204,7 @@ def remote_prefs(request):
     return HttpResponse(data, content_type='text/x-java-properties')
 
 @require_GET
+@cache_control(max_age=86400, public=True)
 def system_info(request):
     spversion = Spversion.objects.get()
 

@@ -1,0 +1,9 @@
+Note to self: Gifted preparations' countAmts are NOT altered according to giftpreparation.quantity.
+
+#Gets available counts for preparations of cos in a recordset.
+#for entered list can change subselect in where clause to a list of COIDs.
+#Doesn't check deaccession ... should it? ...No. Specify6 doesn't support deaccessions.
+
+
+ select co.CatalogNumber, t.fullname, p.preparationid, p.preptypeid, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned, sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged, p.countAmt - coalesce(sum(lp.quantity-lp.quantityreturned),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available from preparation p left join loanpreparation lp on lp.preparationid = p.preparationid left join giftpreparation gp on gp.preparationid = p.preparationid left join exchangeoutprep ep on ep.PreparationID = p.PreparationID inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID left join determination d on d.CollectionObjectID = co.CollectionObjectID left join taxon t on t.TaxonID = d.TaxonID where p.collectionmemberid != 4 and (d.IsCurrent or d.DeterminationID is null) and p.collectionobjectid in(select recordid from recordsetitem where recordsetid=6) group by 1,2,3,4,5 order by 1,2,3,4,5;
+
