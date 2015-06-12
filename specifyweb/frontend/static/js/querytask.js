@@ -101,23 +101,29 @@ define([
             this.updatePositions();
         },
         makeRecordSet: function() {
-            var progress;
+            var dialog = $('<div title="Record Set from Query">' +
+                           '<p>Generating record set.</p><div class="progress" />' +
+                           '</div>').dialog({
+                               modal: true,
+                               autoOpen: false,
+                               close: function() { $(this).remove(); }
+                           });
+            $('.progress', dialog).progressbar({ value: false });
+
             var recordset = new schema.models.RecordSet.Resource();
             recordset.set('dbtableid', this.model.tableId);
             recordset.set('fromQuery', this.query.toJSON());
             recordset.url = '/stored_query/make_recordset/';
             new EditRecordSetDialog({recordset: recordset}).render()
-                .on('saving', function() {
-                    progress = $('<div title="Record Set from Query">' +
-                                 '<p>Generating record set.</p><div class="progress" />' +
-                                 '</div>').dialog({
-                                     modal: true,
-                                     close: function() { $(this).remove(); }
-                                 });
-                    $('.progress', progress).progressbar({ value: false });
-                })
+                .on('saving', function() { dialog.dialog('open'); })
                 .on('savecomplete', function() {
-                    progress.dialog('close');
+                    dialog.html('<p>Go to newly created record set now?</p>')
+                        .dialog('option', 'buttons', [
+                            {text: "Yes", click: function() {
+                                navigation.go('/specify/recordset/' + recordset.id + '/');
+                            }},
+                            {text: "No", click: function() { $(this).dialog('close'); }}
+                        ]);
                 });
         },
         search: function(evt) {
