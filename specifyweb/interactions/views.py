@@ -35,25 +35,6 @@ def preps_available_rs(request, recordset_id):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-@login_maybe_required
-@require_GET
-def unresolved_loan_preps(request, loan_id):
-    cursor = connection.cursor()
-    cursor.execute("""
-    select co.CatalogNumber, t.FullName, lp.LoanPreparationID, pt.Name, lp.Quantity - lp.QuantityResolved
-    from loanpreparation lp
-    inner join preparation p on p.PreparationID = lp.PreparationID
-    inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
-    inner join preptype pt on pt.preptypeid = p.preptypeid
-    left join determination d on d.CollectionObjectID = co.CollectionObjectID
-    left join taxon t on t.TaxonID = d.TaxonID
-    where not lp.IsResolved and (d.IsCurrent or d.DeterminationID is null) and lp.LoanID=%s order by 1, 4
-    """, [loan_id])
-    rows = cursor.fetchall()
-
-    return http.HttpResponse(toJson(rows), content_type='application/json')
-
-
 @require_POST
 @csrf_exempt
 @login_maybe_required
@@ -222,4 +203,32 @@ def loan_return_all_items(request):
                              record_set_id=record_set_id, loan_nos=loan_nos)
 
     return http.HttpResponse(toJson([prepsReturned, loansClosed]), content_type='application/json')
+
+
+
+@require_POST
+@csrf_exempt
+@login_maybe_required
+def prep_interactions(request):
+    cursor = connection.cursor()
+
+    sql = """
+    select p.preparationid, group_concat(distinct concat(lp.loanid,'>|<', l.loannumber)),
+    group_concat(distinct concat(gp.giftid, '>|<', g.giftnumber)),
+    group_concat(distinct concat(ep.exchangeoutid, '>|<', e.exchangeoutnumber))
+    from preparation p
+    left join loanpreparation lp on lp.preparationid = p.preparationid
+    left join giftpreparation gp on gp.preparationid = p.preparationid
+    left join exchangeoutprep ep on ep.preparationid = p.preparationid
+    left join loan l on l.loanid = lp.loanid
+    left join gift g on g.giftid = gp.giftid
+    left join exchangeout e on  e.exchangeoutid = ep.exchangeoutid
+    where (lp.loanpreparationid is null or not lp.isresolved) and p.preparationid in(%s)
+    group by 1;
+    """
+
+    cursor.execute(sql, [unicode(request.POST['prepIds'])])
+    rows = cursor.fetchall()
+
+    return http.HttpResponse(toJson(rows), content_type='application/json')
 

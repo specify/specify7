@@ -35,6 +35,7 @@ define([
                 }), function(lp) {
                     return lp.unresolved > 0;
                 });
+                }
                 if (lps.length > 0) {
                     require(['prepreturndialog'], function (PrepReturnDialog) {
                         new PrepReturnDialog({ preps: lps, model: model }).render();
@@ -48,12 +49,12 @@ define([
                     });
                 }
             } else {
-                $("<p>").append("Preparations cannot be returned in this context.").dialog({
-                    modal: true,
-                    width: 500,
-                    title: this.$el[0].value,
-                    close: function() { $(this).remove(); }
-                });
+                    $("<p>").append("Preparations cannot be returned in this context.").dialog({
+                        modal: true,
+                        width: 500,
+                        title: this.$el[0].value,
+                        close: function() { $(this).remove(); }
+                    });
             }
         }
 

@@ -349,16 +349,15 @@ define([
             } else {
                 var ids = isRs ? selection : JSON.stringify(_.pluck(selection, 'zized'));
                 var action = this.options.action;
-                var prepsReady;
                 if (isRs) {
-                    prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
+                    var prepsReady = _.bind(this.availablePrepsReady, this, true, action, 'CatalogNumber', selection, invalidEntries);
                     api.getPrepsAvailableForLoanRs(selection.get('id')).done(prepsReady);
                 } else {
-                    prepsReady = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
+                    var prepsReadeye = _.bind(this.availablePrepsReady, this, false, action, 'CatalogNumber', selection, invalidEntries);
                     if (selection.length > 0) {
-                        api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReady);
+                        api.getPrepsAvailableForLoanCoIds('CatalogNumber', ids).done(prepsReadeye);
                     } else {
-                        prepsReady([]);
+                        prepsReadeye([]);
                     }
                 }
             }

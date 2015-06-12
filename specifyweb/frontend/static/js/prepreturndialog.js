@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'schema', 'fieldformat','prepdialog',
+    'jquery', 'underscore', 'schema',  'fieldformat','prepdialog',
     'jquery-ui'
 ], function($, _, schema, FieldFormat, PrepDialog) {
     "use strict";
@@ -167,7 +167,7 @@ define([
         returnDone: function(result) {
             this.$el.dialog('close');
 
-            var msg = this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
+            this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
 
             var huh = $("<p>").append(msg);
 
