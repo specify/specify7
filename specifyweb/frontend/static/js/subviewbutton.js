@@ -77,7 +77,15 @@ define([
                 self.dialog = $('<div>').append(recordSelector.el).dialog({
                     width: 'auto',
                     title: self.field.getLocalizedName(),
-                    close: function() { $(this).remove(); self.dialog = null; }
+                    close: function() { 
+                        $(this).remove(); self.dialog = null; 
+                       var fname = self.field.name.toLowerCase();
+                        var changed = {};
+                        changed[fname] = '';
+                        //instead of hacking the changed field, could use selfcollection.related.set(fname, [Some appropriate value]);
+                        self.collection.related.changed = changed;
+                        self.collection.related.trigger('change', self.collection.related);
+                    }
                 });
             }).render();
         }

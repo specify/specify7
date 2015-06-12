@@ -37,6 +37,28 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         }
     };
 
+    var interactionBusinessRules = {
+        getTotalLoaned: function(loanreturnprep) {
+            if (typeof this.totalLoaned == 'undefined') {
+                    this.totalLoaned = loanreturnprep.collection.related.get('quantity');
+            }
+            return this.totalLoaned;
+        },
+        getTotalResolved: function(loanreturnprep) {
+            //maybe could just check preparation if it's quantities were updated while loanreturnprep subview was open
+            // for now to iterate other returns
+            if (typeof this.totalResolved == 'undefined') {
+                this.totalResolved = _.reduce(loanreturnprep.models, function(sum, m) {
+                    if (m.cid != loanreturnprep.cid)  {
+                        return sum + m.quantityresolved;
+                    } else {
+                        return sum;
+                    }}, 0);
+            }
+            return this.totalResolved;
+        }
+    };
+
     api.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
     });
@@ -132,6 +154,8 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
+            this.rules && this.rules.add && this.rules.add['loanreturnpreparations']
+                && this.rules.add['loanreturnpreparations'](resource);
         };
 
         BusinessRuleMgr.prototype.checkField = function(fieldName) {
@@ -394,6 +418,60 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         Loan: {
             uniqueIn: {
                 loannumber: 'discipline'
+            }
+        },
+        LoanPreparation: {
+            add: {
+                loanreturnpreparations: function(loanprep) {
+                    var lrps = loanprep.get('loanreturnpreparations');
+                }
+            },
+            remove: {
+                loanreturnpreparations: function(loanprep) {
+                    var lrps = loanprep.get('loanreturnpreparations');
+               }
+            },
+            customChecks: {
+                loanreturnpreparations: function(loanprep) {
+                    var lrps = loanprep.dependentResources.loanreturnpreparations.models;
+                    var sums = _.reduce(lrps, function(memo, lrp) {
+                        memo.returned += lrp.get('quantityreturned');
+                        memo.resolved += lrp.get('quantityresolved');
+                        return memo;
+                    }, {returned: 0, resolved: 0});
+                    loanprep.set('quantityreturned', sums.returned);
+                    loanprep.set('quantityresolved', sums.resolved);
+                }
+            }
+        },
+        LoanReturnPreparation: {
+            customInit: function(loanreturnprep) {
+                interactionBusinessRules.totalLoaned = undefined;
+                interactionBusinessRules.totalResolved = undefined;
+                interactionBusinessRules.returned = undefined;
+                interactionBusinessRules.resolved = undefined;
+            },
+            customChecks: {
+                quantityreturned: function(loanreturnprep) {
+                    var returned = loanreturnprep.get('quantityreturned');
+                    var resolved = loanreturnprep.get('quantityresolved');
+                    var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                    var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                    var max = totalLoaned - totalResolved;
+                    if (resolved > max) {
+                        loanreturnprep.set('quantityresolved', max);
+                    }
+                },
+                quantityresolved: function(loanreturnprep) {
+                    var returned = loanreturnprep.get('quantityreturned');
+                    var resolved = loanreturnprep.get('quantityresolved');
+                    var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                    var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                    var max = totalLoaned - totalResolved;
+                    if (resolved > max) {
+                        loanreturnprep.set('quantityresolved', max);
+                    }
+                }
             }
         },
         Locality: {

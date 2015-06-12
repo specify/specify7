@@ -20,7 +20,7 @@ define([
         click: function(evt) {
             evt.preventDefault();
             var loanId = this.model.get('id');
-            if (loanId) {
+            if (!this.model.isNew() && loanId) {
                 var model = this.model;
                 var lps = _.filter(_.map(this.model.dependentResources.loanpreparations.models, function(lp) {
                     return  {
