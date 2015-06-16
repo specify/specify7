@@ -84,7 +84,7 @@ define([
                 { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
                   title: 'Clear all.' },
                 { text: 'OK', click: _.bind(this.makeInteraction, this),
-                  title: 'Create ' + this.getTextForObjToCreate() }
+                  title: this.options.loanresource ? 'Add items' : 'Create ' + this.getTextForObjToCreate() }
             ];
             buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
@@ -182,7 +182,7 @@ define([
         selectAll: function() {
             var amounts = this.$(':input.prepselect-amt');
             var chks = this.$(':checkbox');
-            for (var p=0; p < availables.length; p++) {
+            for (var p=0; p < amounts.length; p++) {
                 $(amounts[p]).attr('value', this.options.preps[p].available );
                 $(chks[p]).attr('checked', this.options.preps[p].available  > 0);
             };
@@ -197,9 +197,6 @@ define([
 
 
         prepIactionDlg: function(model, key) {
-            console.log("prepIactionDlg()", model, key);
-            //window.open(api.makeResourceViewUrl(model, key));
-
             var irec = new model.LazyCollection({
                 filters: { id: key }
             });
@@ -251,13 +248,19 @@ define([
         makeInteraction: function() {
             //console.info('creating obj for ' + this.options.action.attr('action'));
             var baseTbl = this.options.action.table;
-            var baseModel = schema.getModel(baseTbl);
-            var interaction = new baseModel.Resource();
-            interaction.initialize();
+            var interaction; 
+            if (this.options.loanresource) {
+                interaction = this.options.loanresource;
+            } else {
+                var baseModel = schema.getModel(baseTbl);
+                interaction = new baseModel.Resource();
+                interaction.initialize();
+            }
             var itemModelName = baseTbl + 'preparation';
             var itemModel = schema.getModel(itemModelName);
             var items = [];
             var amounts = this.$(':input.prepselect-amt');
+            
             for (var p=0; p < this.options.preps.length; p++) {
                 var amt = $(amounts[p]).attr('value');
                 if ('0' != amt && '' != amt) {
@@ -265,10 +268,20 @@ define([
                 }
             }
 
-            interaction.set(itemModelName + 's', items);
-            interaction.set('isclosed', false);
-            var SpecifyApp = require('specifyapp');
-            SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
+            if (this.options.loanresource) {
+                this.$el.dialog('close');
+                    //this only works if there is only one item in items.
+                interaction.dependentResources.loanpreparations.add(items);
+                /*_.each(items, function(item) {
+                    //this only works if there is only one item in items.
+                    interaction.dependentResources.loanpreparations.add(item);
+                });*/
+            } else {
+                interaction.set(itemModelName + 's', items);
+                interaction.set('isclosed', false);
+                var SpecifyApp = require('specifyapp');
+                SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
+            }
         }
     });
 

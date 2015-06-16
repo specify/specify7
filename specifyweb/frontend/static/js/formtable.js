@@ -1,7 +1,7 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
-    'savebutton', 'deletebutton', 'assert'
-], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
+    'savebutton', 'deletebutton', 'assert', 'schema'
+], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert, schema) {
     "use strict";
 
     return Backbone.View.extend({
@@ -118,16 +118,36 @@ define([
             var self = this;
             evt.preventDefault();
 
-            var newResource = new (self.collection.model)();
-            // Setting the backref here is superfulous because it will be set by parent object
-            // when it is saved. Trying to do so now messes things up if the parent object
-            // is not yet persisted.
-            // if (self.field) {
-            //     newResource.set(self.field.otherSideName, self.collection.related.url());
-            // }
-            self.collection.related && self.collection.add(newResource);
+            if (self.collection.__name__ == 'LoanPreparationDependentCollection') { //rude and crude
+                //run add loan items dlg
+                var app = require('specifyapp');
+                var recordSets = new schema.models.RecordSet.LazyCollection({
+                    filters: { specifyuser: app.user.id, dbtableid: 1, orderby: '-timestampcreated' }
+                });
+                var loanresource = self.collection.related;
+                recordSets.fetch({ limit: 5000 }).done(function() {
+                    console.info(recordSets);
+                    new (require('interactiondialog'))({ 
+                        recordSets: recordSets, 
+                        action: {table: 'loan'},                      
+                        readOnly: true, 
+                        close: false, 
+                        loanresource: loanresource
+                    }).render();
+                });
+                
+            } else {
+                var newResource = new (self.collection.model)();
+                // Setting the backref here is superfulous because it will be set by parent object
+                // when it is saved. Trying to do so now messes things up if the parent object
+                // is not yet persisted.
+                // if (self.field) {
+                //     newResource.set(self.field.otherSideName, self.collection.related.url());
+                // }
+                self.collection.related && self.collection.add(newResource);
 
-            self.buildDialog(newResource);
+                self.buildDialog(newResource);
+            }
         }
     });
 });

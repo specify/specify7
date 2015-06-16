@@ -50,7 +50,11 @@ define([
         dlgTitle: function() {
             var tblName = this.options.close ? 'loan' : this.options.action.table;
             var tblTitle = schema.getModel(tblName).getLocalizedName();
-            return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
+            if (this.options.loanresource) {
+                return "Add Items";
+            } else {
+                return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
+            }
         },
         getInvalidEntrySnagTxt: function() {
             return "Invalid:";
@@ -77,7 +81,7 @@ define([
             return "By entering " + this.getSrchFld().getLocalizedName() + "s";
         },
         getNoPrepCaption: function() {
-            if (this.options.close || this.options.action.table != 'loan') {
+            if (this.options.close || this.options.action.table != 'loan' || this.options.loanresource) {
                 return "";
             } else {
                 return "Without preparations";
@@ -310,7 +314,7 @@ define([
                         available: iprepData[8]
                        };
             });
-            new PrepSelectDialog({preps: ipreps, action: action }).render();
+            new PrepSelectDialog({preps: ipreps, action: action, loanresource: this.options.loanresource }).render();
         },
 
         loanReturnDone: function(result) {
@@ -330,8 +334,8 @@ define([
         zeroPrepLoan: function() {
             this.$el.dialog('close');
             var SpecifyApp = require('specifyapp');
-            var loanModel = schema.getModel('loan');
-            var loanRes =  new loanModel.Resource();
+            var loanmodel = schema.getModel('loan');
+            var loanRes =  new loanmodel.Resource();
             SpecifyApp.setCurrentView(new ResourceView({model: loanRes}));
         },
 
