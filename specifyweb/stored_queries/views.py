@@ -4,10 +4,11 @@ import json
 from datetime import datetime
 from collections import namedtuple
 
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
+from django.conf import settings
 
 from sqlalchemy.sql.expression import asc, desc, and_, or_, insert, literal
 from sqlalchemy.sql.functions import count
@@ -139,6 +140,9 @@ def run_ephemeral_query(collection, user, spquery):
 @login_maybe_required
 @never_cache
 def make_recordset(request):
+    if settings.RO_MODE or request.specify_user.usertype not in ('Manager', 'FullAccess'):
+        return HttpResponseForbidden()
+
     try:
         recordset_info = json.load(request)
     except ValueError as e:

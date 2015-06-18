@@ -30,7 +30,7 @@ define([
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
-            this.readOnly && this.$('.query-save').remove();
+            this.readOnly && this.$('.query-save, .query-to-recordset').remove();
 
             this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
