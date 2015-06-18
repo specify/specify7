@@ -68,6 +68,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             var _this = this;
             this.resource.on('change', this.changed, this);
             this.resource.on('add', this.added, this);
+            this.resource.on('remove', this.removed, this);
             this.rules && _.each(this.resource.specifyModel.getAllFields(), function(field) {
                 var fieldname = field.name.toLowerCase();
                 if (field.type === 'one-to-many' && _(_this.rules.deleteBlockers).contains(fieldname)) {
@@ -132,6 +133,11 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
+            this.rules && this.rules.onAdded && this.rules.onAdded(resource, collection);
+        };
+
+        BusinessRuleMgr.prototype.removed = function(resource, collection) {
+            this.rules && this.rules.onRemoved && this.rules.onRemoved(resource, collection);
         };
 
         BusinessRuleMgr.prototype.checkField = function(fieldName) {
@@ -325,6 +331,20 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             }
         },
         Determination: {
+            onRemoved: function(det, detCollection) {
+                // Example usage:
+                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                //     var collectionobject = detCollection.related;
+                //     console.log("removed determination", det, "from collection object", collectionobject);
+                // }
+            },
+            onAdded: function(det, detCollection) {
+                // Example usage:
+                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                //     var collectionobject = detCollection.related;
+                //     console.log("added determination", det, "to collection object", collectionobject);
+                // }
+            },
             customInit: function(determination) {
                 if (determination.isNew()) {
                     var setCurrentIfNoneIsSet = function() {
