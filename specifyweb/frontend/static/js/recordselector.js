@@ -181,6 +181,7 @@ define([
             return this.current;
         },
         render: function() {
+            if (this.lazy && this.collection.related.isNew()) return this; // not sure this is the best answer.
             var _this = this;
             (this.lazy ? this.collection.fetchIfNotPopulated() : $.when(null)).done(function() {
                 _this._render();
