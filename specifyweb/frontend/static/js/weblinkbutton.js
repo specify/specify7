@@ -14,7 +14,8 @@ define([
     var specialResourcesFields = {
         Taxon: function(resource) {
             return api.getTreePath(resource).pipe(function(path) {
-                return { genus: path && path.Genus.name, species: path && path.Species.name };
+                return { genus: path && path.Genus && path.Genus.name,
+                         species: path && path.Species && path.Species.name };
             });
         }
     };
