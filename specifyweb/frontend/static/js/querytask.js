@@ -1,8 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'queryfromtree', 'navigation', 'queryresultstable', 'jquery-bbq', 'jquery-ui'
+    'queryfromtree', 'navigation', 'queryresultstable', 'editrecordset',
+    'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            queryFromTree, navigation, QueryResultsTable) {
+            queryFromTree, navigation, QueryResultsTable, EditRecordSetDialog) {
     "use strict";
 
     var setTitle;
@@ -12,6 +13,7 @@ define([
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
+            'click .query-to-recordset': 'makeRecordSet',
             'click .query-save': 'save',
             'click .field-add': 'addField',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
@@ -28,7 +30,7 @@ define([
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
-            this.readOnly && this.$('.query-save').remove();
+            this.readOnly && this.$('.query-save, .query-to-recordset').remove();
 
             this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
@@ -50,7 +52,7 @@ define([
             ul.sortable({ update: this.updatePositions.bind(this) });
         },
         addFieldUI: function(spqueryfield) {
-            this.$('.query-execute').prop('disabled', false);
+            this.$('.query-execute, .query-to-recordset').prop('disabled', false);
             return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
@@ -62,7 +64,7 @@ define([
             this.fieldUIs = _(this.fieldUIs).without(ui);
             this.fields.remove(spqueryfield);
             this.updatePositions();
-            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save').prop('disabled', true);
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save, .query-to-recordset').prop('disabled', true);
         },
         updatePositions: function() {
             _.invoke(this.fieldUIs, 'positionChanged');
@@ -97,6 +99,32 @@ define([
             this.fieldUIs.push(ui);
             this.$('.spqueryfields').append(ui.el).sortable('refresh');
             this.updatePositions();
+        },
+        makeRecordSet: function() {
+            var dialog = $('<div title="Record Set from Query">' +
+                           '<p>Generating record set.</p><div class="progress" />' +
+                           '</div>').dialog({
+                               modal: true,
+                               autoOpen: false,
+                               close: function() { $(this).remove(); }
+                           });
+            $('.progress', dialog).progressbar({ value: false });
+
+            var recordset = new schema.models.RecordSet.Resource();
+            recordset.set('dbtableid', this.model.tableId);
+            recordset.set('fromQuery', this.query.toJSON());
+            recordset.url = '/stored_query/make_recordset/';
+            new EditRecordSetDialog({recordset: recordset}).render()
+                .on('saving', function() { dialog.dialog('open'); })
+                .on('savecomplete', function() {
+                    dialog.html('<p>Go to newly created record set now?</p>')
+                        .dialog('option', 'buttons', [
+                            {text: "Yes", click: function() {
+                                navigation.go('/specify/recordset/' + recordset.id + '/');
+                            }},
+                            {text: "No", click: function() { $(this).dialog('close'); }}
+                        ]);
+                });
         },
         search: function(evt) {
             this.$('.query-execute').blur();

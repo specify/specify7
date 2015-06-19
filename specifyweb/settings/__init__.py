@@ -185,6 +185,7 @@ INSTALLED_APPS = (
     'specifyweb.frontend',
     'specifyweb.barvis',
     'specifyweb.report_runner',
+    'specifyweb.interactions',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'

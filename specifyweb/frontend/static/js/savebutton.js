@@ -81,7 +81,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
                 // # Eg. autonumber fields, the id, etc.
                 var newResource = addAnother ? this.model.clone() : undefined;
                 var wasNew = this.model.isNew();
-
+                this.trigger('saving', this, this.model);
                 this.model.save()
                     .done(this.trigger.bind(this, 'savecomplete', {
                         addAnother: addAnother,

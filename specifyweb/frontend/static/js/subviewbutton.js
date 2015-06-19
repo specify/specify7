@@ -77,7 +77,22 @@ define([
                 self.dialog = $('<div>').append(recordSelector.el).dialog({
                     width: 'auto',
                     title: self.field.getLocalizedName(),
-                    close: function() { $(this).remove(); self.dialog = null; }
+                    close: function() { 
+                        $(this).remove(); self.dialog = null; 
+                        var fname = self.field.name.toLowerCase();
+                        /*var changed = {};
+                        changed[fname] = '';
+                        self.collection.related.changed = changed;
+                        self.collection.related.trigger('change', self.collection.related);
+                        */
+                        //instead of hacking the changed field, could use selfcollection.related.set(fname, [Some appropriate value])???;
+                        //self.collection.related.set(fname, self.collection.models);
+                        //but changed object is not updated and still need to force the trigger
+
+                        //This seems to work, for loanreturnpreps anyway
+                        //self.collection.related.changed[fname] = '';
+                        //self.collection.related.trigger('change', self.collection.related);
+                    }
                 });
             }).render();
         }

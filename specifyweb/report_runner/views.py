@@ -64,6 +64,25 @@ def get_reports(request):
     data = objs_to_data(reports)
     return HttpResponse(toJson(data), content_type="application/json")
 
+@require_GET
+@login_maybe_required
+def get_reports_by_tbl(request, tbl_id):
+    reports = Spappresource.objects.filter(
+        mimetype__startswith="jrxml",
+        spappresourcedir__discipline=request.specify_collection.discipline) \
+        .filter(
+            Q(spappresourcedir__collection=None) |
+            Q(spappresourcedir__collection=request.specify_collection)) \
+        .filter(
+            Q(spappresourcedir__specifyuser=request.specify_user) |
+            Q(spappresourcedir__ispersonal=False)) \
+        .filter(
+            Q(spreports__query__contexttableid=tbl_id))
+    
+    data = objs_to_data(reports)
+    return HttpResponse(toJson(data), content_type="application/json")
+
+
 def run_query(collection, user, query_json):
     try:
         spquery = json.loads(query_json)

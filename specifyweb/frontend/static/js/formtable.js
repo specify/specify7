@@ -50,6 +50,7 @@ define([
                 return this;
             }
 
+             
             specifyform.buildSubView(self.$el).done(function(subform) {
                 var rows = self.collection.map(function(resource, index) {
                     var form = subform.clone();
@@ -126,7 +127,7 @@ define([
             //     newResource.set(self.field.otherSideName, self.collection.related.url());
             // }
             self.collection.related && self.collection.add(newResource);
-
+            
             self.buildDialog(newResource);
         }
     });

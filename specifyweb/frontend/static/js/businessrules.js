@@ -37,6 +37,50 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         }
     };
 
+    var interactionBusinessRules = {
+        previousReturned: [],
+        previousResolved: [],
+        getTotalLoaned: function(loanreturnprep) {
+            if (typeof this.totalLoaned == 'undefined') {
+                if (loanreturnprep.collection) {
+                    this.totalLoaned = loanreturnprep.collection.related.get('quantity');
+                }
+            }
+            return this.totalLoaned;
+        },
+        getTotalResolved: function(loanreturnprep) {
+            //probably could just check preparation since its quantities are updated while loanreturnprep subview is open
+            //But for now, iterate other returns
+            if (loanreturnprep.collection) {
+                return  _.reduce(loanreturnprep.collection.models, function(sum, m) {
+                    if (m.cid != loanreturnprep.cid)  {
+                        return sum + m.get('quantityresolved');
+                    } else {
+                        return sum;
+                    }}, 0);
+            } else {
+                return loanreturnprep.get('quantityresolved');
+            }
+        },
+        getPrepAvailability: function(interactionprep) {
+            //actually need to call api to get availability 
+            return interactionprep.get('preparation').get('CountAmt'); 
+        },
+        updateLoanPrep: function(loanreturnprep, collection) {
+            if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
+                var sums = _.reduce(collection.models, function(memo, lrp) {
+                    memo.returned += lrp.get('quantityreturned');
+                    memo.resolved += lrp.get('quantityresolved');
+                    return memo;
+                }, {returned: 0, resolved: 0});
+                var loanprep = collection.related;            
+                loanprep.set('quantityreturned', sums.returned);
+                loanprep.set('quantityresolved', sums.resolved);
+                loanprep.set('isresolved', sums.resolved == loanprep.get('quantity'));
+            }
+        }
+    };
+
     api.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
     });
@@ -405,6 +449,15 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 giftnumber: 'discipline'
             }
         },
+        GiftPreparation: {
+            customChecks: {
+                quantity: function(giftprep) {
+                    if (interactionBusinessRules.getPrepAvailability() < giftprep.get('quantity')) {
+                        giftprep.set('quantity', interactionBusinessRules.getPrepUsage());
+                    }
+                }
+            }
+        },
         Institution: {
             unique: ['name']
         },
@@ -414,6 +467,66 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         Loan: {
             uniqueIn: {
                 loannumber: 'discipline'
+            }
+        },
+        LoanReturnPreparation: {
+            onRemoved: function(loanreturnprep, collection) {
+              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);  
+            },
+            customInit: function(loanreturnprep) {
+                interactionBusinessRules.totalLoaned = undefined;
+                interactionBusinessRules.totalResolved = undefined;
+                interactionBusinessRules.returned = undefined;
+                interactionBusinessRules.resolved = undefined;
+                if (loanreturnprep.isNew()) {
+                    loanreturnprep.set('quantityreturned', 0);
+                    loanreturnprep.set('quantityresolved', 0);
+                }
+            },
+            customChecks: {
+                quantityreturned: function(loanreturnprep) {
+                    var returned = loanreturnprep.get('quantityreturned');
+                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid] 
+                            ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
+                            : 0;
+                    if (returned != previousReturned) {
+                        var delta = returned - previousReturned;
+                        var resolved = loanreturnprep.get('quantityresolved');
+                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                        var max = totalLoaned - totalResolved;
+                        if (delta + resolved > max) {
+                            loanreturnprep.set('quantityreturned', previousReturned);
+                        } else {
+                            resolved = loanreturnprep.get('quantityresolved') + delta; 
+                            interactionBusinessRules.previousResolved[loanreturnprep.cid] = resolved;
+                            loanreturnprep.set('quantityresolved', resolved);
+                        }
+                        interactionBusinessRules.previousReturned[loanreturnprep.cid] = loanreturnprep.get('quantityreturned');
+                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
+                    }
+                },
+                quantityresolved: function(loanreturnprep) {
+                    var resolved = loanreturnprep.get('quantityresolved');
+                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid] 
+                            ? interactionBusinessRules.previousResolved[loanreturnprep.cid] 
+                           : 0;
+                    if (resolved != previousResolved) {
+                        var returned = loanreturnprep.get('quantityreturned');
+                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                        var max = totalLoaned - totalResolved;
+                        if (resolved > max) {
+                            loanreturnprep.set('quantityresolved', previousResolved);
+                        }
+                        if (resolved < returned) {
+                            interactionBusinessRules.previousReturned[loanreturnprep.cid] = resolved;
+                            loanreturnprep.set('quantityreturned', resolved);
+                        }
+                        interactionBusinessRules.previousResolved[loanreturnprep.cid] = loanreturnprep.get('quantityresolved');
+                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
+                    }
+                }
             }
         },
         Locality: {

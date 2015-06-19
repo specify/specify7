@@ -48,7 +48,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
         },
         openBlockedDialog: function() {
             var dialog = $('<div title="Delete Blocked">' +
-	                   '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
+                           '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
                            'The resource cannot be deleted because it is referenced through the following fields:</p>' +
                            '<ul></ul></div>').dialog();
             var model = this.model.specifyModel;
