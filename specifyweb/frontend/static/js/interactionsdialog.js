@@ -126,7 +126,7 @@ define([
                 var app = require('specifyapp');
                 var tblId = isRsAction ? 1 : 52;
                 var recordSets = new schema.models.RecordSet.LazyCollection({
-                    filters: { specifyuser: app.user.id, dbtableid: tblId, orderby: '-timestampcreated' }
+                    filters: { specifyuser: app.user.id, type: 0, dbtableid: tblId, orderby: '-timestampcreated' }
                 });
                 recordSets.fetch({ limit: 5000 }).done(function() {
                     new InteractionDialog({ recordSets: recordSets, action: action, readOnly: true, close: !isRsAction }).render();

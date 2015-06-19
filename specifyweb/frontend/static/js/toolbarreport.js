@@ -211,6 +211,7 @@ define([
         var recordSets = new schema.models.RecordSet.LazyCollection({
             filters: {
                 specifyuser: app.user.id,
+                type: 0,
                 collectionmemberid: domain.levels.collection.id,
                 dbtableid: contextTableId
             }

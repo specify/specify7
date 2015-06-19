@@ -13,7 +13,7 @@ define([
             var table = self.collection.related.specifyModel.name.toLowerCase();
             var app = require('specifyapp');
             var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: app.user.id, dbtableid: 1, orderby: '-timestampcreated' }
+                filters: { specifyuser: app.user.id, type: 0, dbtableid: 1, orderby: '-timestampcreated' }
             });
             var interactionresource = self.collection.related;
             var itemcollection = self.collection;
