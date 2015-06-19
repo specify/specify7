@@ -1,18 +1,22 @@
 define([
     'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'picklist', 'uifield',
     'querycbx', 'specifyplugins', 'specifycommands', 'recordselector', 'subviewbutton',
-    'formtable', 'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
+    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
 ], function($, _, Backbone, localizeForm, specifyform, PickList, UIField, QueryCbx, uiplugins, uicommands,
-            RecordSelector, SubViewButton, FormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
+            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
     "use strict";
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
         render: function() {
             var options = this.options;
+            var collectionName = this.options.collection && this.options.collection.__name__;
+            var iActionCollections =  ["LoanPreparationDependentCollection", "GiftPreparationDependentCollection"];
             // The form has to actually be built to tell if it is a formtable.
             specifyform.buildSubView(this.$el).done(function(form) {
-                var View = form.hasClass('specify-form-type-formtable') ? FormTable : RecordSelector;
+                var View = form.hasClass('specify-form-type-formtable') 
+                    ? (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)
+                    : RecordSelector;
                 new View(options).render();
             });
             return this;

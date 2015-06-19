@@ -90,8 +90,8 @@ define([
                         //but changed object is not updated and still need to force the trigger
 
                         //This seems to work, for loanreturnpreps anyway
-                        self.collection.related.changed[fname] = '';
-                        self.collection.related.trigger('change', self.collection.related);
+                        //self.collection.related.changed[fname] = '';
+                        //self.collection.related.trigger('change', self.collection.related);
                     }
                 });
             }).render();

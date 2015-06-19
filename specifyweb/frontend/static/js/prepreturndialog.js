@@ -52,7 +52,11 @@ define([
                         var returnSp =this.$(".return-amt")[idx];
                         var val = new Number($(ui).attr('value'));
                         var max = this.options.preps[idx].unresolved;
-                        this.$(':checkbox')[idx].checked = val > 0;
+                        var chk = this.$(':checkbox')[idx];
+                        if (chk.checked != val > 0) {
+                            chk.checked = val > 0;
+                            this.updateRemarkUI(idx, val > 0);
+                        }
                         var returnVal = new Number($(returnSp).attr('value'));
                         if (val < returnVal) {
                             returnVal = val;
@@ -160,14 +164,18 @@ define([
                 var delta = val - prevVal; //can this ever NOT be +-1 for a spin?
                 var resolvedVal = new Number($(resolveSp).attr('value')) + delta;
                 $(resolveSp).attr('value', resolvedVal);
-                this.$(':checkbox')[idx].checked = resolvedVal > 0;
+                var chk = this.$(':checkbox')[idx];
+                if (chk.checked != resolvedVal > 0) {
+                    chk.checked = resolvedVal > 0;
+                    this.updateRemarkUI(idx, chk.checked);
+                }
             }
         },
 
         returnDone: function(result) {
             this.$el.dialog('close');
 
-            this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
+            var msg = this.getProp("InteractionsTask.RET_LN", "%d preparations have been returned.").replace('%d', result[0]);
 
             var huh = $("<p>").append(msg);
 
@@ -233,6 +241,18 @@ define([
             this.returnDone([returns.length]);
         },
 
+        updateRemarkUI: function(idx, show) {
+            var remA = this.$('a.return-remark')[idx];
+            var rem = this.$('tr.return-remark')[idx];
+            if (show) {
+                $(remA).removeAttr('style');
+            } else {
+                $(remA).attr('style', 'display: none;');
+                $(rem).attr('style', 'display: none;');
+                $('input', rem).attr('value', '');
+            }
+        },
+
         prepCheck: function( evt ) {
             var idx = this.$(':checkbox').index( evt.target );
             if (idx >= 0) {
@@ -246,15 +266,7 @@ define([
                     spin:  _.bind(this.returnSpin, this)
                 });
                 $(returnSp).attr('value', newVal);
-                var commentA = this.$('a.return-remark')[idx];
-                var rem = this.$('tr.return-remark')[idx];
-                if (evt.target.checked) {
-                    $(commentA).removeAttr('style');
-                } else {
-                    $(commentA).attr('style', 'display: none;');
-                    $(rem).attr('style', 'display: none;');
-                    $('input', rem).attr('value', '');
-                }
+                this.updateRemarkUI(idx, evt.target.checked);
             }
         },
 

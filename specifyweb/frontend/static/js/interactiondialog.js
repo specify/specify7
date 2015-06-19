@@ -50,7 +50,7 @@ define([
         dlgTitle: function() {
             var tblName = this.options.close ? 'loan' : this.options.action.table;
             var tblTitle = schema.getModel(tblName).getLocalizedName();
-            if (this.options.loanresource) {
+            if (this.options.interactionresource) {
                 return "Add Items";
             } else {
                 return this.options.close ? tblTitle + " Return" : "Create " + tblTitle;
@@ -81,7 +81,7 @@ define([
             return "By entering " + this.getSrchFld().getLocalizedName() + "s";
         },
         getNoPrepCaption: function() {
-            if (this.options.close || this.options.action.table != 'loan' || this.options.loanresource) {
+            if (this.options.close || this.options.action.table != 'loan' || this.options.interactionresource) {
                 return "";
             } else {
                 return "Without preparations";
@@ -314,7 +314,11 @@ define([
                         available: iprepData[8]
                        };
             });
-            new PrepSelectDialog({preps: ipreps, action: action, loanresource: this.options.loanresource }).render();
+            new PrepSelectDialog({preps: ipreps, 
+                                  action: action, 
+                                  interactionresource: this.options.interactionresource, 
+                                  itemcollection: this.options.itemcollection 
+                                 }).render();
         },
 
         loanReturnDone: function(result) {

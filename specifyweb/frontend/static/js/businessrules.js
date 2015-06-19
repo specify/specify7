@@ -42,19 +42,42 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         previousResolved: [],
         getTotalLoaned: function(loanreturnprep) {
             if (typeof this.totalLoaned == 'undefined') {
+                if (loanreturnprep.collection) {
                     this.totalLoaned = loanreturnprep.collection.related.get('quantity');
+                }
             }
             return this.totalLoaned;
         },
         getTotalResolved: function(loanreturnprep) {
-            //maybe could just check preparation if it's quantities were updated while loanreturnprep subview was open
-            // for now to iterate other returns
-            return  _.reduce(loanreturnprep.collection.models, function(sum, m) {
-                if (m.cid != loanreturnprep.cid)  {
-                    return sum + m.get('quantityresolved');
-                } else {
-                    return sum;
-                }}, 0);
+            //probably could just check preparation since its quantities are updated while loanreturnprep subview is open
+            //But for now, iterate other returns
+            if (loanreturnprep.collection) {
+                return  _.reduce(loanreturnprep.collection.models, function(sum, m) {
+                    if (m.cid != loanreturnprep.cid)  {
+                        return sum + m.get('quantityresolved');
+                    } else {
+                        return sum;
+                    }}, 0);
+            } else {
+                return loanreturnprep.get('quantityresolved');
+            }
+        },
+        getPrepAvailability: function(interactionprep) {
+            //actually need to call api to get availability 
+            return interactionprep.get('preparation').get('CountAmt'); 
+        },
+        updateLoanPrep: function(loanreturnprep, collection) {
+            if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
+                var sums = _.reduce(collection.models, function(memo, lrp) {
+                    memo.returned += lrp.get('quantityreturned');
+                    memo.resolved += lrp.get('quantityresolved');
+                    return memo;
+                }, {returned: 0, resolved: 0});
+                var loanprep = collection.related;            
+                loanprep.set('quantityreturned', sums.returned);
+                loanprep.set('quantityresolved', sums.resolved);
+                loanprep.set('isresolved', sums.resolved == loanprep.get('quantity'));
+            }
         }
     };
 
@@ -426,6 +449,15 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 giftnumber: 'discipline'
             }
         },
+        GiftPreparation: {
+            customChecks: {
+                quantity: function(giftprep) {
+                    if (interactionBusinessRules.getPrepAvailability() < giftprep.get('quantity')) {
+                        giftprep.set('quantity', interactionBusinessRules.getPrepUsage());
+                    }
+                }
+            }
+        },
         Institution: {
             unique: ['name']
         },
@@ -437,32 +469,10 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 loannumber: 'discipline'
             }
         },
-        LoanPreparation: {
-            add: {
-                loanreturnpreparations: function(loanprep) {
-                    var lrps = loanprep.get('loanreturnpreparations');
-                }
-            },
-            remove: {
-                loanreturnpreparations: function(loanprep) {
-                    var lrps = loanprep.get('loanreturnpreparations');
-               }
-            },
-            customChecks: {
-                loanreturnpreparations: function(loanprep) {
-                    var lrps = loanprep.dependentResources.loanreturnpreparations.models;
-                    var sums = _.reduce(lrps, function(memo, lrp) {
-                        memo.returned += lrp.get('quantityreturned');
-                        memo.resolved += lrp.get('quantityresolved');
-                        return memo;
-                    }, {returned: 0, resolved: 0});
-                    loanprep.set('quantityreturned', sums.returned);
-                    loanprep.set('quantityresolved', sums.resolved);
-                    loanprep.set('isresolved', sums.resolved == loanprep.get('quantity'));
-                }
-            }
-        },
         LoanReturnPreparation: {
+            onRemoved: function(loanreturnprep, collection) {
+              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);  
+            },
             customInit: function(loanreturnprep) {
                 interactionBusinessRules.totalLoaned = undefined;
                 interactionBusinessRules.totalResolved = undefined;
@@ -493,6 +503,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                             loanreturnprep.set('quantityresolved', resolved);
                         }
                         interactionBusinessRules.previousReturned[loanreturnprep.cid] = loanreturnprep.get('quantityreturned');
+                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
                     }
                 },
                 quantityresolved: function(loanreturnprep) {
@@ -513,6 +524,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                             loanreturnprep.set('quantityreturned', resolved);
                         }
                         interactionBusinessRules.previousResolved[loanreturnprep.cid] = loanreturnprep.get('quantityresolved');
+                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
                     }
                 }
             }

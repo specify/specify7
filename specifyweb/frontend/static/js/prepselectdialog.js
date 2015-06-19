@@ -84,7 +84,7 @@ define([
                 { text: this.getProp('DESELECTALL'), click: _.bind(this.deSelectAll, this),
                   title: 'Clear all.' },
                 { text: 'OK', click: _.bind(this.makeInteraction, this),
-                  title: this.options.loanresource ? 'Add items' : 'Create ' + this.getTextForObjToCreate() }
+                  title: this.options.interactionresource ? 'Add items' : 'Create ' + this.getTextForObjToCreate() }
             ];
             buttons.push({ text: this.getProp('CANCEL'), click: function() { $(this).dialog('close'); }});
             return buttons;
@@ -249,8 +249,8 @@ define([
             //console.info('creating obj for ' + this.options.action.attr('action'));
             var baseTbl = this.options.action.table;
             var interaction; 
-            if (this.options.loanresource) {
-                interaction = this.options.loanresource;
+            if (this.options.interactionresource) {
+                interaction = this.options.interactionresource;
             } else {
                 var baseModel = schema.getModel(baseTbl);
                 interaction = new baseModel.Resource();
@@ -268,14 +268,18 @@ define([
                 }
             }
 
-            if (this.options.loanresource) {
+            if (this.options.interactionresource) {
                 this.$el.dialog('close');
                     //this only works if there is only one item in items.
-                interaction.dependentResources.loanpreparations.add(items);
-                /*_.each(items, function(item) {
+                //interaction.dependentResources.loanpreparations.add(items);
+                this.options.itemcollection.add(items);
+                
+                //var self = this;
+                //_.each(items, function(item) {
                     //this only works if there is only one item in items.
-                    interaction.dependentResources.loanpreparations.add(item);
-                });*/
+                    //interaction.dependentResources.loanpreparations.add(item);
+                    //self.options.itemcollection.add(item);
+                //});
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
