@@ -359,6 +359,48 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 role: 'borrow'
             }
         },
+        BorrowMaterial: {
+            customChecks: {
+                quantityreturned: function(borrowmaterial) {
+                    var returned = borrowmaterial.get('quantityreturned');
+                    var newval;
+                    if (returned > borrowmaterial.get('quantity')) {
+                        /*return {
+                            valid: false,
+                            reason: 'value must be < ' + borrowmaterial.get('quantity')
+                        };*/
+                        newval = borrowmaterial.get('quantity');
+                    } 
+                    if (returned > borrowmaterial.get('quantityresolved')) {
+                        /*return {
+                            valid: false,
+                            reason: 'quantity returned must be less than or equal to quantity resolved'
+                         };*/
+                        newval = borrowmaterial.get('quantityresolved');
+                    }    
+                    newval && borrowmaterial.set('quantityreturned', newval);
+                },
+                quantityresolved: function(borrowmaterial) {
+                    var resolved = borrowmaterial.get('quantityresolved');
+                    var newval;
+                    if (resolved > borrowmaterial.get('quantity')) {
+                        /*return {
+                            valid: false,
+                            reason: 'value must be < ' + borrowmaterial.get('quantity')
+                        };*/    
+                        newval = borrowmaterial.get('quantity');
+                    } 
+                    if (resolved < borrowmaterial.get('quantityreturned')) {
+                        /*return {
+                            valid: false,
+                            reason: 'quantity resolved must be greater than or equal to quantity returned'
+                        };*/
+                        newval = borrowmaterial.get('quantityreturned');
+                    }                 
+                    newval && borrowmaterial.set('quantityresolved', newval);
+                }
+            }
+        },   
         Collection: {
             deleteBlockers: ['collectionobjects'],
             uniqueIn: {
