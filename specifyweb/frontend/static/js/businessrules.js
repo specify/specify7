@@ -63,8 +63,12 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             }
         },
         getPrepAvailability: function(interactionprep) {
-            //actually need to call api to get availability 
-            return interactionprep.get('preparation').get('CountAmt'); 
+            //actually need to call api to get availability?
+            if (interactionprep && interactionprep.get('preparation')) {
+                return interactionprep.get('preparation').get('CountAmt'); 
+            } else {
+                return undefined;
+            }
         },
         updateLoanPrep: function(loanreturnprep, collection) {
             if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
@@ -453,7 +457,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             customChecks: {
                 quantity: function(giftprep) {
                     if (interactionBusinessRules.getPrepAvailability() < giftprep.get('quantity')) {
-                        giftprep.set('quantity', interactionBusinessRules.getPrepUsage());
+                        giftprep.set('quantity', interactionBusinessRules.getPrepAvailability());
                     }
                 }
             }
