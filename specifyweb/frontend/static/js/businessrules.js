@@ -238,9 +238,10 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                     });
                 });
             });
-            var result = combineUniquenessResults(results);
-            result.key = 'br-uniqueness-' + fieldName;
-            return result;
+            return combineUniquenessResults(results).pipe(function(result) {
+                result.key = 'br-uniqueness-' + fieldName;
+                return result;
+            });
         };
 
         return BusinessRuleMgr;
