@@ -8,26 +8,28 @@ define([
         events: {
             'click a': 'clicked'
         },
+        initialize: function(options) {
+            this.resource = options.resource;
+            this.collections = options.collections;
+        },
         render: function() {
-            var self = this;
-            var collections = self.options.collections;
-            self.$el.empty();
-            if (collections.length > 1) {
-                self.$el.html(templates.othercollections());
-                var ul = self.$('ul');
+            this.$el.empty();
+            if (this.collections.length > 1) {
+                this.$el.html(templates.othercollections());
+                var ul = this.$('ul');
                 var li = ul.find('li').detach();
-                _.each(collections, function(collection) {
+                _.each(this.collections, function(collection) {
                     li.clone().appendTo(ul).find('a')
                         .text(collection.get('collectionname'))
                         .data('collection-id', collection.id)
                         .button();
-                });
+                }, this);
             } else {
-                self.$el.html(templates.othercollection());
-                self.$('a').data('collection-id', collections[0].id).button();
-                self.$('span.collection-name').text(collections[0].get('collectionname'));
+                this.$el.html(templates.othercollection());
+                this.$('a').data('collection-id', this.collections[0].id).button();
+                this.$('span.collection-name').text(this.collections[0].get('collectionname'));
             }
-            return self;
+            return this;
         },
         clicked: function(evt) {
             evt.preventDefault();

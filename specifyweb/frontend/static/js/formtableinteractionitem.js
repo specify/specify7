@@ -13,23 +13,24 @@ define([
             var table = self.collection.related.specifyModel.name.toLowerCase();
             var app = require('specifyapp');
             var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: app.user.id, type: 0, dbtableid: 1, orderby: '-timestampcreated' }
+                filters: { specifyuser: app.user.id, type: 0, dbtableid: 1,
+                           domainfilter: true, orderby: '-timestampcreated' }
             });
             var interactionresource = self.collection.related;
             var itemcollection = self.collection;
             recordSets.fetch({ limit: 5000 }).done(function() {
                 console.info(recordSets);
-                new (require('interactiondialog'))({ 
-                    recordSets: recordSets, 
-                    action: {table: table},                      
-                    readOnly: true, 
-                    close: false, 
+                new (require('interactiondialog'))({
+                    recordSets: recordSets,
+                    action: {table: table},
+                    readOnly: true,
+                    close: false,
                     interactionresource: interactionresource,
                     itemcollection: itemcollection
                 }).render();
             });
-            
+
         }
-    
+
     });
 });

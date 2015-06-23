@@ -65,7 +65,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         getPrepAvailability: function(interactionprep) {
             //actually need to call api to get availability?
             if (interactionprep && interactionprep.get('preparation')) {
-                return interactionprep.get('preparation').get('CountAmt'); 
+                return interactionprep.get('preparation').get('CountAmt');
             } else {
                 return undefined;
             }
@@ -77,7 +77,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                     memo.resolved += lrp.get('quantityresolved');
                     return memo;
                 }, {returned: 0, resolved: 0});
-                var loanprep = collection.related;            
+                var loanprep = collection.related;
                 loanprep.set('quantityreturned', sums.returned);
                 loanprep.set('quantityresolved', sums.resolved);
                 loanprep.set('isresolved', sums.resolved == loanprep.get('quantity'));
@@ -238,9 +238,10 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                     });
                 });
             });
-            var result = combineUniquenessResults(results);
-            result.key = 'br-uniqueness-' + fieldName;
-            return result;
+            return combineUniquenessResults(results).pipe(function(result) {
+                result.key = 'br-uniqueness-' + fieldName;
+                return result;
+            });
         };
 
         return BusinessRuleMgr;
@@ -370,14 +371,14 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                             reason: 'value must be < ' + borrowmaterial.get('quantity')
                         };*/
                         newval = borrowmaterial.get('quantity');
-                    } 
+                    }
                     if (returned > borrowmaterial.get('quantityresolved')) {
                         /*return {
                             valid: false,
                             reason: 'quantity returned must be less than or equal to quantity resolved'
                          };*/
                         newval = borrowmaterial.get('quantityresolved');
-                    }    
+                    }
                     newval && borrowmaterial.set('quantityreturned', newval);
                 },
                 quantityresolved: function(borrowmaterial) {
@@ -387,20 +388,20 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                         /*return {
                             valid: false,
                             reason: 'value must be < ' + borrowmaterial.get('quantity')
-                        };*/    
+                        };*/
                         newval = borrowmaterial.get('quantity');
-                    } 
+                    }
                     if (resolved < borrowmaterial.get('quantityreturned')) {
                         /*return {
                             valid: false,
                             reason: 'quantity resolved must be greater than or equal to quantity returned'
                         };*/
                         newval = borrowmaterial.get('quantityreturned');
-                    }                 
+                    }
                     newval && borrowmaterial.set('quantityresolved', newval);
                 }
             }
-        },   
+        },
         Collection: {
             deleteBlockers: ['collectionobjects'],
             uniqueIn: {
@@ -517,7 +518,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         },
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
-              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);  
+              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
             },
             customInit: function(loanreturnprep) {
                 interactionBusinessRules.totalLoaned = undefined;
@@ -532,7 +533,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             customChecks: {
                 quantityreturned: function(loanreturnprep) {
                     var returned = loanreturnprep.get('quantityreturned');
-                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid] 
+                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
                             ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
                             : 0;
                     if (returned != previousReturned) {
@@ -544,7 +545,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                         if (delta + resolved > max) {
                             loanreturnprep.set('quantityreturned', previousReturned);
                         } else {
-                            resolved = loanreturnprep.get('quantityresolved') + delta; 
+                            resolved = loanreturnprep.get('quantityresolved') + delta;
                             interactionBusinessRules.previousResolved[loanreturnprep.cid] = resolved;
                             loanreturnprep.set('quantityresolved', resolved);
                         }
@@ -554,8 +555,8 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
                 },
                 quantityresolved: function(loanreturnprep) {
                     var resolved = loanreturnprep.get('quantityresolved');
-                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid] 
-                            ? interactionBusinessRules.previousResolved[loanreturnprep.cid] 
+                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
+                            ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
                            : 0;
                     if (resolved != previousResolved) {
                         var returned = loanreturnprep.get('quantityreturned');
@@ -577,6 +578,9 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         },
         Locality: {
             deleteBlockers: ['collectingevents']
+        },
+        Permit: {
+            unique: ['permitnumber']
         },
         Picklist: {
             uniqueIn: {

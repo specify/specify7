@@ -1,11 +1,11 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'parsespecifyproperties',
-    'domain', 'attachmentplugin', 'attachments',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'queryfield',
+    'parsespecifyproperties', 'attachmentplugin', 'attachments',
     'text!context/report_runner_status.json!noinline',
     'jquery-ui', 'jquery-bbq'
 ], function(
-    require, $, _, Backbone, schema, QueryFieldUI, parsespecifyproperties,
-    domain, AttachmentPlugin, attachments,
+    require, $, _, Backbone, schema, QueryFieldUI,
+    parsespecifyproperties, AttachmentPlugin, attachments,
     statusJSON
 ) {
     "use strict";
@@ -212,7 +212,7 @@ define([
             filters: {
                 specifyuser: app.user.id,
                 type: 0,
-                collectionmemberid: domain.levels.collection.id,
+                domainfilter: true,
                 dbtableid: contextTableId
             }
         });

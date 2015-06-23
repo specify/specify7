@@ -298,7 +298,7 @@ define([
         add: function() {
             if (this.dependent) {
                 var newResource = new this.collection.model();
-                if (this.field) {
+                if (this.field && !this.collection.related.isNew()) {
                     newResource.set(this.field.otherSideName, this.collection.related.url());
                 }
                 this.collection.add(newResource);

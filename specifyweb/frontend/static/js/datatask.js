@@ -38,17 +38,22 @@ define([
         index = index ? parseInt(index, 10) : 0;
         var recordSet = new schema.models.RecordSet.Resource({ id: id });
 
-        api.getRecordSetItem(recordSet, index).done(function(resource) {
-            if (!resource) {
-                app.setCurrentView(new EmptyRecordSetView({ model: recordSet }));
-                return;
-            }
+        function navToItem() {
+            api.getRecordSetItem(recordSet, index).done(function(resource) {
+                if (!resource) {
+                    app.setCurrentView(new EmptyRecordSetView({ model: recordSet }));
+                    return;
+                }
 
-            // go to the actual resource
-            var url = resource.viewUrl();
-            navigation.navigate($.param.querystring(url, { recordsetid: id }),
-                                {replace: true, trigger: true});
-        });
+                // go to the actual resource
+                var url = resource.viewUrl();
+                navigation.navigate($.param.querystring(url, { recordsetid: id }),
+                                    {replace: true, trigger: true});
+            });
+        }
+
+        recordSet.fetch().done(function() { checkLoggedInCollection(recordSet, null, navToItem); });
+        return;
     }
 
     // begins the process of creating a new resource
@@ -150,13 +155,13 @@ define([
     }
 
     // check that it makes sense to view this resource when logged into current collection
-    function checkLoggedInCollection(resource, recordSet) {
+    function checkLoggedInCollection(resource, recordSet, then) {
         domain.collectionsForResource(resource).done(function(collections) {
             if (collections && !resource.isNew() && !_.any(collections, loggedInCollectionP)) {
                 // the resource is not "native" to this collection. ask user to change collections.
                 app.setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
             } else {
-                showResource(resource, recordSet);
+                (then || showResource)(resource, recordSet);
             }
         });
     }

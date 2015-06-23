@@ -101,6 +101,9 @@ define([
             this.updatePositions();
         },
         makeRecordSet: function() {
+            this.deleteIncompleteFields();
+            if (this.fieldUIs.length < 1) return;
+
             var dialog = $('<div title="Record Set from Query">' +
                            '<p>Generating record set.</p><div class="progress" />' +
                            '</div>').dialog({
