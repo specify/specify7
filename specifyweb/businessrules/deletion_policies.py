@@ -10,7 +10,7 @@ cascade = {
     'Agentspecialty.agent',
     'Borrowagent.borrow',
     'Borrowmaterial.borrow',
-    'Borrowreturnmaterial.borrow',
+    'Borrowreturnmaterial.borrowmaterial',
     'Commonnametx.taxon',
     'Determination.collectionobject',
     'Geography.parent',
