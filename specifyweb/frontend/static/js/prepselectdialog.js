@@ -285,7 +285,8 @@ define([
                 interaction.set('isclosed', false);
                 var SpecifyApp = require('specifyapp');
                 navigation.go(interaction.viewUrl());
-                SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
+                //SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
+                _.delay(SpecifyApp.setCurrentView, 300, new ResourceView({model: interaction}));
             }
         }
     });
