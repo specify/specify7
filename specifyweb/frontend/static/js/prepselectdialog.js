@@ -268,8 +268,8 @@ define([
                 }
             }
 
+            this.$el.dialog('close');
             if (this.options.interactionresource) {
-                this.$el.dialog('close');
                     //this only works if there is only one item in items.
                 //interaction.dependentResources.loanpreparations.add(items);
                 this.options.itemcollection.add(items);
@@ -284,6 +284,7 @@ define([
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
                 var SpecifyApp = require('specifyapp');
+                navigation.go(interaction.viewUrl());
                 SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
             }
         }
