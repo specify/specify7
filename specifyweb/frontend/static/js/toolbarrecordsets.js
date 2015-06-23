@@ -1,6 +1,6 @@
 define([
-    'require', 'schema', 'recordsetsdialog'
-], function(require, schema, RecordSetsDialog) {
+    'require', 'schema', 'domain', 'recordsetsdialog'
+], function(require, schema, domain, RecordSetsDialog) {
     "use strict";
 
     return {
@@ -10,7 +10,9 @@ define([
         execute: function() {
             var app = require('specifyapp');
             var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: app.user.id, type: 0, orderby: '-timestampcreated' }
+                filters: { specifyuser: app.user.id, type: 0,
+                           collectionmemberid: domain.levels.collection.id,
+                           orderby: '-timestampcreated' }
             });
             recordSets.fetch({ limit: 5000 }) // That's a lot of record sets
                 .done(function() {
