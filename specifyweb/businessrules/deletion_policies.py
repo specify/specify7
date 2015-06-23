@@ -13,13 +13,13 @@ cascade = {
     'Geography.parent',
     'Geologictimeperiod.parent',
     'Lithostrat.parent',
+    'Loanagent.loan',
+    'Loanpreparation.loan',
+    'Loanreturnpreparation.loanpreparation',
+    'Preparation.collectionobject',
     'Recordsetitem.recordset',
     'Storage.parent',
     'Taxon.parent',
-    'Preparation.collectionobject',
-    'Loanpreparation.loan',
-    'Loanagent.loan',
-    'Loanreturnpreparation.loanpreparation',
 }
 
 # Set of ForeignKey Fields for which deleting the foreign row is
