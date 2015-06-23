@@ -213,7 +213,7 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         };
 
         BusinessRuleMgr.prototype.doCustomCheck = function(fieldName) {
-            this.rules
+            return this.rules
                 && this.rules.customChecks
                 && this.rules.customChecks[fieldName]
                 && this.rules.customChecks[fieldName](this.resource);
@@ -600,6 +600,19 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
             deleteBlockers: ['accessions'],
             uniqueIn: {
                 repositoryagreementnumber: 'division'
+            }
+        },
+        Shipment: {
+            customChecks: {
+                shippedto: function(shipment) {
+                    return shipment.rget('shippedto.addresses').pipe(function(addresses) {
+                        return {
+                            valid: addresses.length > 0,
+                            reason: "Shipped to agent must have an address.",
+                            key: "br-shippedto-address"
+                        };
+                    });
+                }
             }
         }
     };
