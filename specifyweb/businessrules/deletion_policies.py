@@ -20,7 +20,6 @@ cascade = {
     'Loanpreparation.loan',
     'Loanreturnpreparation.loanpreparation',
     'Preparation.collectionobject',
-    'Recordsetitem.recordset',
     'Storage.parent',
     'Taxon.parent',
 }

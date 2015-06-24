@@ -35,7 +35,7 @@ define([
             if (!this.recordset.isNew() && !this.readOnly) {
                 var deleteButton = new DeleteButton({ model: this.recordset });
                 deleteButton.render().$el.appendTo(buttons);
-                deleteButton.on('deleted', this.close, this);
+                deleteButton.on('deleting', this.close, this);
             }
 
             populateform(form, this.recordset);
