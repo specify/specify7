@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone',
+    'require', 'jquery', 'underscore', 'backbone', 'schema',
     'specifyform', 'querycbxsearch', 'templates', 'assert'
-], function(require, $, _, Backbone, specifyform, QueryCbxSearch, templates, assert) {
+], function(require, $, _, Backbone, schema, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
 
     return Backbone.View.extend({
@@ -26,8 +26,15 @@ define([
             }));
             $('.specify-visit-related', header).remove();
 
-            header.on('click', '.specify-delete-related', this.delete.bind(this));
-            header.on('click', '.specify-add-related', this.add.bind(this));
+            var embeddedCE = self.field.isDependent() &&
+                self.field === schema.models.CollectionObject.getField('collectingevent');
+
+            if (embeddedCE){
+                $('.specify-delete-related, .specify-add-related', header).remove();
+            } else {
+                header.on('click', '.specify-delete-related', this.delete.bind(this));
+                header.on('click', '.specify-add-related', this.add.bind(this));
+            }
 
             var mode = self.field.isDependent() && !this.readOnly ? 'edit' : 'view';
             specifyform.buildSubView(self.$el, mode).done(function(form) {
