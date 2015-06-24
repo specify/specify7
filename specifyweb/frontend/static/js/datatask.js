@@ -138,7 +138,7 @@ define([
                 .pipe(function(collectionobject) {
                     if (!collectionobject) return true;
                     // should we update the url state to the row id version?
-                    showResource(collectionobject);
+                    app.showResource(collectionobject);
                     return false;
                 });
         }).done(function(notFound) {
@@ -161,38 +161,9 @@ define([
                 // the resource is not "native" to this collection. ask user to change collections.
                 app.setCurrentView(new OtherCollectionView({ resource: resource, collections: collections }));
             } else {
-                (then || showResource)(resource, recordSet);
+                (then || app.showResource)(resource, recordSet);
             }
         });
-    }
-
-    // build the actual view
-    function showResource(resource, recordSet) {
-        var viewMode = app.isReadOnly ? 'view' : 'edit';
-        var view = new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode });
-
-        view.on('saved', function(resource, options) {
-            if (options.addAnother) {
-                showResource(options.newResource, recordSet);
-            } else if (options.wasNew) {
-                navigation.go(resource.viewUrl());
-            } else {
-                showResource(new resource.constructor({ id: resource.id }), recordSet);
-            }
-        }).on('deleted', function() {
-            if (view.next) {
-                navigation.go(view.next.viewUrl());
-            } else if (view.prev) {
-                navigation.go(view.prev.viewUrl());
-            } else {
-                view.$el.empty();
-                view.$el.append('<p>Item deleted.</p>');
-            }
-        }).on('changetitle', function(resource, title) {
-            app.setTitle(title);
-        });
-
-        app.setCurrentView(view);
     }
 
     return function(appIn) {

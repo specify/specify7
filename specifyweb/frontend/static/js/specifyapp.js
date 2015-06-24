@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'text!context/user.json!noinline', 'text!context/system_info.json!noinline',
+    'text!context/user.json!noinline', 'text!context/system_info.json!noinline', 'resourceview',
 // Tasks
     'datatask',
     'querytask',
@@ -12,7 +12,7 @@ define([
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
-    userJSON, systemInfoJSON) {
+    userJSON, systemInfoJSON, ResourceView) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
     var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
@@ -129,17 +129,52 @@ define([
         }).delegate('form', 'submit', false);
     }
 
+    // build and display view for resource
+    function showResource(resource, recordSet) {
+        var viewMode = app.isReadOnly ? 'view' : 'edit';
+        var view = new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode });
+
+        view.on('saved', function(resource, options) {
+            if (options.addAnother) {
+                showResource(options.newResource, recordSet);
+            } else if (options.wasNew) {
+                navigation.go(resource.viewUrl());
+            } else {
+                showResource(new resource.constructor({ id: resource.id }), recordSet);
+            }
+        }).on('deleted', function() {
+            if (view.next) {
+                navigation.go(view.next.viewUrl());
+            } else if (view.prev) {
+                navigation.go(view.prev.viewUrl());
+            } else {
+                view.$el.empty();
+                view.$el.append('<p>Item deleted.</p>');
+            }
+        }).on('changetitle', function(resource, title) {
+            setTitle(title);
+        });
+
+        setCurrentView(view);
+    }
+
+    //set title of browser tab
+    function setTitle(title) {
+        window.document.title = title + " | Specify 7";
+    }
+
     // the exported interface
     var app = {
         router: new SpecifyRouter(),
         handleError: handleError,
         setCurrentView: setCurrentView,
+        showResource: showResource,
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
         user: user,
         systemInfo: systemInfo,
         isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype),
-        setTitle: function(title) { window.document.title = title + " | Specify 7"; }
+        setTitle: setTitle
     };
 
     return app;

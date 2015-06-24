@@ -270,23 +270,12 @@ define([
 
             this.$el.dialog('close');
             if (this.options.interactionresource) {
-                    //this only works if there is only one item in items.
-                //interaction.dependentResources.loanpreparations.add(items);
                 this.options.itemcollection.add(items);
-                
-                //var self = this;
-                //_.each(items, function(item) {
-                    //this only works if there is only one item in items.
-                    //interaction.dependentResources.loanpreparations.add(item);
-                    //self.options.itemcollection.add(item);
-                //});
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
                 var SpecifyApp = require('specifyapp');
-                navigation.go(interaction.viewUrl());
-                //SpecifyApp.setCurrentView(new ResourceView({model: interaction}));
-                _.delay(SpecifyApp.setCurrentView, 300, new ResourceView({model: interaction}));
+                SpecifyApp.showResource(interaction);
             }
         }
     });
