@@ -11,6 +11,7 @@ cascade = {
     'Borrowagent.borrow',
     'Borrowmaterial.borrow',
     'Borrowreturnmaterial.borrowmaterial',
+    'Collector.collectingevent',
     'Commonnametx.taxon',
     'Determination.collectionobject',
     'Geography.parent',
