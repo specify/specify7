@@ -7,7 +7,10 @@ define([
             whenAll, dataEntryTaskInit) {
     "use strict";
 
-    var views = _.map($('view', dataEntryTaskInit), $);
+    var views = _.map($('view', dataEntryTaskInit), $).filter(function(view) {
+        // I don't think the non-sidebar items are ever used in Sp6.
+        return view.attr('sidebar') === 'true';
+    });
 
     var formsPromise = whenAll(_.map(views, function(view) {
         return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
