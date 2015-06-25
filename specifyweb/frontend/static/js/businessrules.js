@@ -443,11 +443,12 @@ define([
                 accessionnumber: 'division'
             }
         },
-        AccessionAgent: {
+        /*AccessionAgent: {
             uniqueIn: {
-                role: ['accession', 'repositoryagreement']
+                role: {field: 'accession', otherfields: ['agent']},
+                agent: {field: 'accession', otherfields: ['role']}
             }
-        },
+        },*/
         Agent: {
             deleteBlockers: ['catalogerof']
         },
@@ -461,12 +462,12 @@ define([
                 agent: 'referencework'
             }
         },
-        BorrowAgent: {
+        /*BorrowAgent: {
             uniqueIn: {
                 role: {field: 'borrow', otherfields: ['agent']},
                 agent: {field: 'borrow', otherfields: ['role']}
             }
-        },
+        },*/
         BorrowMaterial: {
             customChecks: {
                 quantityreturned: function(borrowmaterial) {
@@ -609,12 +610,12 @@ define([
                 giftnumber: 'discipline'
             }
         },
-        GiftAgent: {
+        /*GiftAgent: {
             uniqueIn: {
                 role: {field: 'gift', otherfields: ['agent']},
                 agent: {field: 'gift', otherfields: ['role']}
             }
-        },
+        },*/
         GiftPreparation: {
             customChecks: {
                 quantity: function(giftprep) {
@@ -635,12 +636,12 @@ define([
                 loannumber: 'discipline'
             }
         },
-        LoanAgent: {
+        /*LoanAgent: {
             uniqueIn: {
                 role: {field: 'loan', otherfields: ['agent']},
                 agent: {field: 'loan', otherfields: ['role']}
             }
-        },
+        },*/
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
               interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
