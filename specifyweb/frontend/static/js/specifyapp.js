@@ -130,7 +130,7 @@ define([
     }
 
     // build and display view for resource
-    function showResource(resource, recordSet) {
+    function showResource(resource, recordSet, pushUrl) {
         var viewMode = app.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode });
 
@@ -155,6 +155,7 @@ define([
             setTitle(title);
         });
 
+        pushUrl && navigation.push(resource.viewUrl());
         setCurrentView(view);
     }
 
