@@ -11,6 +11,10 @@ define([
         },
         render: function() {
             var self = this;
+            if (!attachments) {
+                self.$el.replaceWith('<div>Attachment server unavailable.</div>');
+                return this;
+            }
             var control = $('<div class="specify-attachment-container">');
             self.$el.replaceWith(control);
             self.setElement(control);
