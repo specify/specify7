@@ -145,9 +145,13 @@ define([
 
             this.subformNode = this.options.subformNode || this.$el;
 
-            this.readOnly = this.options.readOnly || specifyform.subViewMode(this.subformNode) === 'view';
-
             this.field = options.field; // TODO: this can be gotten from the dependent collection
+
+            this.readOnly =
+                !this.dependent ||
+                this.options.readOnly ||
+                specifyform.subViewMode(this.subformNode) === 'view';
+
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
             this.noHeader = _.isUndefined(options.noHeader) ? this.$el.hasClass('no-header') : options.noHeader;
             this.sliderAtTop = _.isUndefined(options.sliderAtTop) ? this.$el.hasClass('slider-at-top') : options.sliderAtTop;

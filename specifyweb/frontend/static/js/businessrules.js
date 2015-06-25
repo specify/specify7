@@ -1,4 +1,6 @@
-define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], function($, _, api, whenAll, saveblockers) {
+define([
+    'jquery', 'underscore', 'schema', 'specifyapi', 'whenall', 'saveblockers'
+], function($, _, schema, api, whenAll, saveblockers) {
     "use strict";
     var enabled = true;
 
@@ -519,6 +521,12 @@ define(['jquery', 'underscore', 'specifyapi', 'whenall', 'saveblockers'], functi
         CollectionObject: {
             uniqueIn: {
                 catalognumber: 'collection'
+            },
+            customInit: function(collectionObject) {
+                var ceField = collectionObject.specifyModel.getField('collectingevent');
+                if (ceField.dependent && collectionObject.get('collectingevent') == null) {
+                    collectionObject.set('collectingevent', new schema.models.CollectingEvent.Resource());
+                }
             }
         },
         Collector: {
