@@ -1,6 +1,5 @@
 from django.db import models
 
-from specifyweb.businessrules import deletion_policies
 from specifyweb.businessrules.exceptions import AbortSave
 
 from . import model_extras
@@ -14,7 +13,7 @@ orderings = {
     'Determination': ('-iscurrent',),
 }
 
-def make_model(module, table):
+def make_model(module, table, deletion_policies):
     """Returns a Django model class based on the
     definition of a Specify table.
     """
@@ -36,7 +35,7 @@ def make_model(module, table):
 
     for rel in table.relationships:
         relname = rel.name.lower()
-        relationship = make_relationship(table.django_name, rel)
+        relationship = make_relationship(table.django_name, rel, deletion_policies)
         if relationship is not None:
             attrs[relname] = relationship
 
@@ -65,7 +64,7 @@ def make_model(module, table):
 def make_id_field(column):
     return models.AutoField(primary_key=True, db_column=column.lower())
 
-def make_relationship(modelname, rel):
+def make_relationship(modelname, rel, deletion_policies):
     """Return a Django relationship field for the given relationship definition.
 
     modelname - name of the model this field will be part of
@@ -86,9 +85,9 @@ def make_relationship(modelname, rel):
         return None
 
     fieldname = '.'.join((modelname, rel.name.lower()))
-    if  fieldname in deletion_policies.cascade:
+    if  fieldname in deletion_policies['cascade']:
         on_delete = models.CASCADE
-    elif fieldname in deletion_policies.protect:
+    elif fieldname in deletion_policies['protect']:
         on_delete = models.PROTECT
     else:
         on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
@@ -236,6 +235,19 @@ field_type_map = {
     }
 
 def build_models(module, datamodel):
-    return dict((model.specify_model.tableId, model)
-                for table in datamodel.tables
-                for model in [ make_model(module, table) ])
+    from specifyweb.businessrules import deletion_policies
+
+    # cascade delete across attachment fields
+    dp = {'cascade': deletion_policies.cascade |
+          { att_field.relatedModelName.capitalize() + '.' +
+            att_field.otherSideName.lower()
+            for table in datamodel.tables
+            for att_field in [table.attachments_field]
+            if att_field is not None },
+
+          'protect': deletion_policies.protect
+          }
+
+    return { model.specify_model.tableId: model
+             for table in datamodel.tables
+             for model in [ make_model(module, table, dp) ]}

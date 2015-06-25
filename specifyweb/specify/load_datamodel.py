@@ -56,7 +56,7 @@ class Table(object):
 
 class Field(object):
     is_relationship = False
-    
+
     def __repr__(self):
         return "<SpecifyField: %s>" % self.name
 

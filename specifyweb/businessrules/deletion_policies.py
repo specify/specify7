@@ -3,7 +3,8 @@
 # TODO: A lot of this is implicit in the dependent fields information.
 
 # Set of ForeignKey fields for which the referencing row should be
-# deleted if the pointed to foreign row is deleted.
+# deleted if the pointed to foreign row is deleted. Attachment fields
+# are added automatically.
 cascade = {
     'Address.agent',
     'Agentgeography.agent',
