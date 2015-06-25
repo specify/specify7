@@ -17,6 +17,8 @@ cascade = {
     'Determination.collectionobject',
     'Geography.parent',
     'Geologictimeperiod.parent',
+    'Giftagent.gift',
+    'Giftpreparation.gift',
     'Lithostrat.parent',
     'Loanagent.loan',
     'Loanpreparation.loan',
