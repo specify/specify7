@@ -604,7 +604,7 @@ define([
                 name: 'collection'
             }
         },
-        Repositoryagreement: {
+        RepositoryAgreement: {
             deleteBlockers: ['accessions'],
             uniqueIn: {
                 repositoryagreementnumber: 'division'
