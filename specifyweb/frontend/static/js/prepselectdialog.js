@@ -275,6 +275,7 @@ define([
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
                 var SpecifyApp = require('specifyapp');
+                navigation.go(interaction.viewUrl());
                 SpecifyApp.showResource(interaction);
             }
         }
