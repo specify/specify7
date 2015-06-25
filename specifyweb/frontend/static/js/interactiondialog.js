@@ -337,8 +337,8 @@ define([
 
         zeroPrepLoan: function() {
             this.$el.dialog('close');
-            var loanmodel = new schema.models.Loan.Resource();
-            navigation.go(loanmodel.viewUrl());
+            var model = schema.getModel('loan');
+            navigation.go(new model.Resource().viewUrl());
         },
 
         interactionAction: function(selection, isRs, invalidEntries) {
