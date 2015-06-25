@@ -1,11 +1,11 @@
 define([
     'jquery', 'underscore', 'schema', 'specifyapi',
     'recordsetsdialog', 'prepselectdialog',
-    'resourceview', 'require', 'props',
+    'navigation', 'require', 'props',
     'text!properties/resources_en.properties!noinline',
     'jquery-ui'
 ], function($, _, schema, api, RecordSetsDialog, PrepSelectDialog,
-            ResourceView, require, props, resources_prop) {
+            navigation, require, props, resources_prop) {
     "use strict";
 
     var getProp = _.bind(props.getProperty, props, resources_prop);
@@ -337,10 +337,8 @@ define([
 
         zeroPrepLoan: function() {
             this.$el.dialog('close');
-            var SpecifyApp = require('specifyapp');
-            var loanmodel = schema.getModel('loan');
-            var loanRes =  new loanmodel.Resource();
-            SpecifyApp.setCurrentView(new ResourceView({model: loanRes}));
+            var loanmodel = new schema.models.Loan.Resource();
+            navigation.go(loanmodel.viewUrl());
         },
 
         interactionAction: function(selection, isRs, invalidEntries) {
