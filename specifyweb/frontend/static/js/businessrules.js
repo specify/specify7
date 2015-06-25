@@ -229,14 +229,7 @@ define([
             } else {
                 var toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
                 if (!_.isArray(toOneFields)) toOneFields = [toOneFields];
-                results = _.map(toOneFields, function(def) {
-                    var field = def;
-                    var fieldNames = [fieldName];
-                    if (typeof def != 'string') {
-                        fieldNames = fieldNames.concat(def.otherfields);
-                        field = def.field;
-                    }
-                    return uniqueIn(field, _this.resource, fieldNames); });
+                results = _.map(toOneFields, function(field) { return uniqueIn(field, _this.resource, fieldName); });
             };
             whenAll(results).done(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
@@ -266,104 +259,7 @@ define([
         });
     };
 
-    var uniqueIn = function(toOneField, resource, valueFieldArg) {
-        var valueField = $.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
-        var valid = {
-            valid: true
-        };
-        var invalid = {
-            valid: false,
-            reason: "Value must be unique to " + (toOneField || 'database')
-        };
-        var value = _.map(valueField, function(v) { return resource.get(v);});
-        var valueFieldInfo = _.map(valueField, function(v) { return resource.specifyModel.getField(v); });
-        var valueIsToOne = _.map(valueFieldInfo, function(fi) { return fi.type === 'many-to-one'; });
-        var valueId = _.map(value, function(v, idx) {
-            if (valueIsToOne[idx]) {
-                if (_.isNull(v) || typeof v == 'undefined')  {
-                    return null;
-                } else {
-                    return _.isString(v) ? valueFieldInfo[idx].getRelatedModel().Resource.fromUri(v).id : v.id;
-                }
-            } else {
-                return undefined;
-            }
-        });
-      
-        var allNullOrUndefinedToOnes = _.reduce(valueId, function(result, v, idx) {
-            return result &&  
-                valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
-        }, true);
-        if (allNullOrUndefinedToOnes) {
-            return $.when(valid);
-        }
-                
-        var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
-            if ((other.id != null) && other.id === resource.id) return false;
-            if (other.cid === resource.cid) return false;
-            var otherVal = other.get(valueField);
-            if (valueIsToOne && typeof otherVal != 'undefined' && !(_.isString(otherVal))) {
-                return parseInt(otherVal.id, 10) === parseInt(valueId, 10);
-            } else {
-                return value === otherVal;
-            }
-        };
-
-        var hasSameValues = function(other, values, valueFields, valuesAreToOne, valueIds) {
-            return _.reduce(values, function(result, val, idx) {
-                return result && hasSameVal(other, val, valueFields[idx], valuesAreToOne[idx], valueIds[idx]);
-            }, true);
-        };
-
-        if (toOneField != null) {
-            var fieldInfo = resource.specifyModel.getField(toOneField);
-            var haveLocalColl = (resource.collection && resource.collection.related &&
-                                 fieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
-
-            var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
-            var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
-            if (dupes.length > 0) {
-                invalid.localDupes = dupes;
-                return $.when(invalid);
-            }
-            return resource.rget(toOneField).pipe(function(related) {
-                if (!related) return valid;
-                var filters = {};
-                filters[valueField] = valueId || value;
-                var others = new resource.specifyModel.ToOneCollection({
-                    related: related,
-                    field: fieldInfo,
-                    filters: filters
-                });
-                return others.fetch().pipe(function() {
-                    var inDatabase = others.chain().compact();
-                    inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
-                        return !(resource.collection.get(other.id));
-                    }).value() : inDatabase.value();
-                    if (_.any(inDatabase, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
-                        return invalid;
-                    } else {
-                        return valid;
-                    }
-                });
-            });
-        } else {
-            var filters = {};
-            filters[valueField] = valueId || value;
-            var others = new resource.specifyModel.LazyCollection({
-                filters: filters
-            });
-            return others.fetch().pipe(function() {
-                if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
-                    return invalid;
-                } else {
-                    return valid;
-                }
-            });
-        }
-    };
-
-    var uniqueOld = function(toOneField, resource, valueField) {
+    var uniqueIn = function(toOneField, resource, valueField) {
         var valid = {
             valid: true
         };
@@ -443,12 +339,11 @@ define([
                 accessionnumber: 'division'
             }
         },
-        /*AccessionAgent: {
+        AccessionAgent: {
             uniqueIn: {
-                role: {field: 'accession', otherfields: ['agent']},
-                agent: {field: 'accession', otherfields: ['role']}
+                role: ['accession', 'repositoryagreement']
             }
-        },*/
+        },
         Agent: {
             deleteBlockers: ['catalogerof']
         },
@@ -462,12 +357,11 @@ define([
                 agent: 'referencework'
             }
         },
-        /*BorrowAgent: {
+        BorrowAgent: {
             uniqueIn: {
-                role: {field: 'borrow', otherfields: ['agent']},
-                agent: {field: 'borrow', otherfields: ['role']}
+                role: 'borrow'
             }
-        },*/
+        },
         BorrowMaterial: {
             customChecks: {
                 quantityreturned: function(borrowmaterial) {
@@ -610,12 +504,6 @@ define([
                 giftnumber: 'discipline'
             }
         },
-        /*GiftAgent: {
-            uniqueIn: {
-                role: {field: 'gift', otherfields: ['agent']},
-                agent: {field: 'gift', otherfields: ['role']}
-            }
-        },*/
         GiftPreparation: {
             customChecks: {
                 quantity: function(giftprep) {
@@ -636,12 +524,6 @@ define([
                 loannumber: 'discipline'
             }
         },
-        /*LoanAgent: {
-            uniqueIn: {
-                role: {field: 'loan', otherfields: ['agent']},
-                agent: {field: 'loan', otherfields: ['role']}
-            }
-        },*/
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
               interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
