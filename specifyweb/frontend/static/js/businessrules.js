@@ -609,6 +609,12 @@ define([
                 giftnumber: 'discipline'
             }
         },
+        GiftAgent: {
+            uniqueIn: {
+                role: {field: 'gift', otherfields: ['agent']},
+                agent: {field: 'gift', otherfields: ['role']}
+            }
+        },
         GiftPreparation: {
             customChecks: {
                 quantity: function(giftprep) {
@@ -627,6 +633,12 @@ define([
         Loan: {
             uniqueIn: {
                 loannumber: 'discipline'
+            }
+        },
+        LoanAgent: {
+            uniqueIn: {
+                role: {field: 'loan', otherfields: ['agent']},
+                agent: {field: 'loan', otherfields: ['role']}
             }
         },
         LoanReturnPreparation: {
