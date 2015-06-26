@@ -12,6 +12,8 @@ cascade = {
     'Borrowagent.borrow',
     'Borrowmaterial.borrow',
     'Borrowreturnmaterial.borrowmaterial',
+    'Collectionrelationship.leftside',
+    'Collectionrelationship.rightside',
     'Collector.collectingevent',
     'Commonnametx.taxon',
     'Determination.collectionobject',
