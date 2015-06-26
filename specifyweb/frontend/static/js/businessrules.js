@@ -297,7 +297,7 @@ define([
             }
         });
 
-        var toOneFieldInfo = resource.specifyModel.getField(toOneField);
+        var toOneFieldInfo = toOneField ? resource.specifyModel.getField(toOneField) : undefined;
         var valid = {
             valid: true
         };
