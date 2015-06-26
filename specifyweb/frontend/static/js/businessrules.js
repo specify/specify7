@@ -460,7 +460,8 @@ define([
         },
         BorrowAgent: {
             uniqueIn: {
-                role: 'borrow'
+                role: {field: 'borrow', otherfields: ['agent']},
+                agent: {field: 'borrow', otherfields: ['role']}
             }
         },
         BorrowMaterial: {
@@ -720,7 +721,9 @@ define([
         RepositoryAgreement: {
             deleteBlockers: ['accessions'],
             uniqueIn: {
-                repositoryagreementnumber: 'division'
+                repositoryagreementnumber: 'division',
+                role: {field: 'borrow', otherfields: ['agent']},
+                agent: {field: 'borrow', otherfields: ['role']}
             }
         },
         Shipment: {

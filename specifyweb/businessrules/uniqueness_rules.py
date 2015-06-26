@@ -52,9 +52,6 @@ UNIQUENESS_RULES = {
         'agent': ['referencework'],
         'ordernumber': ['referencework'],
         },
-    'Borrowagent': {
-        'role': ['borrow'],
-        },
     'Collection': {
         'collectionname': ['discipline'],
         'code': ['discipline'],
