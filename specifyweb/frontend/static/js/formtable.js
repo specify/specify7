@@ -24,10 +24,10 @@ define([
 
             // This is a bit overkill. Especially the change event, but it is cheap way
             // to get collector.agent.*name to update in collecting event subforms. Gag.
-            this.collection.on('add remove distroy', this.render, this);
+            this.collection.on('add remove distroy', this._render, this);
             if (this.field.model.name === 'CollectingEvent' && this.field.name === 'collectors') {
                 // TODO: this is really bad. There has to be a better way.
-                this.collection.on('change', this.render, this);
+                this.collection.on('change', this._render, this);
             }
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
@@ -35,36 +35,46 @@ define([
             this.populateForm = require('populateform');
         },
         render: function() {
-            var self = this;
+            specifyform.buildSubView(this.$el).done(function(subform) {
+                this.subform = subform;
+                this._render();
+            }.bind(this));
+            return this;
+        },
+        _render: function() {
+            var currentRender = this.collection.pluck('cid');
+            if (this.lastRender && this.lastRender.length == currentRender.length &&
+                _.all(_.zip(this.lastRender, currentRender), function(pair) {
+                    return pair[0] == pair[1];
+                })) return; // no change
+
+            this.lastRender = currentRender;
+
             var header = $(templates.subviewheader({
-                title: self.title,
-                dependent: self.field.isDependent()
+                title: this.title,
+                dependent: this.field.isDependent()
             }));
 
             header.find('.specify-delete-related, .specify-visit-related').remove();
-            if (self.readOnly) header.find('.specify-add-related').remove();
-            self.$el.empty().append(header);
+            this.readOnly && header.find('.specify-add-related').remove();
+            this.$el.empty().append(header);
 
-            if (self.collection.length < 1) {
-                self.$el.append('<p>No Data.</p>');
-                return this;
+            if (this.collection.length < 1) {
+                this.$el.append('<p>No Data.</p>');
+                return;
             }
 
-             
-            specifyform.buildSubView(self.$el).done(function(subform) {
-                var rows = self.collection.map(function(resource, index) {
-                    var form = subform.clone();
-                    $('a.specify-' + (self.readOnly ? 'edit' : 'display'), form).remove();
-                    $('a.specify-edit, a.specify-display', form).data('index', index);
-                    return self.populateForm(form, resource);
-                });
+            var rows = this.collection.map(function(resource, index) {
+                var form = this.subform.clone();
+                $('a.specify-' + (this.readOnly ? 'edit' : 'display'), form).remove();
+                $('a.specify-edit, a.specify-display', form).data('index', index);
+                return this.populateForm(form, resource);
+            }, this);
 
-                self.$el.append(rows[0]);
-                _(rows).chain().tail().each(function(row) {
-                    self.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
-                });
-            });
-            return this;
+            this.$el.append(rows[0]);
+            _(rows).chain().tail().each(function(row) {
+                this.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
+            }, this);
         },
         edit: function(evt) {
             evt.preventDefault();
@@ -127,7 +137,7 @@ define([
             //     newResource.set(self.field.otherSideName, self.collection.related.url());
             // }
             self.collection.related && self.collection.add(newResource);
-            
+
             self.buildDialog(newResource);
         }
     });
