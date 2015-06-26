@@ -4,6 +4,11 @@ define([
 ], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
     "use strict";
 
+    var RENDER_ON_CHANGE = [
+        'CollectingEvent.collectors',
+        'ReferenceWork.authors'
+    ];
+
     return Backbone.View.extend({
         __name__: "FormTableView",
         events: {
@@ -24,8 +29,8 @@ define([
 
             // This is a bit overkill. Especially the change event, but it is cheap way
             // to get collector.agent.*name to update in collecting event subforms. Gag.
-            this.collection.on('add remove distroy', this._render, this);
-            if (this.field.model.name === 'CollectingEvent' && this.field.name === 'collectors') {
+            this.collection.on('add remove distroy', this.reRender, this);
+            if (_(RENDER_ON_CHANGE).contains([this.field.model.name, this.field.name].join('.'))) {
                 // TODO: this is really bad. There has to be a better way.
                 this.collection.on('change', this._render, this);
             }
@@ -41,14 +46,16 @@ define([
             }.bind(this));
             return this;
         },
-        _render: function() {
+        reRender: function() {
             var currentRender = this.collection.pluck('cid');
             if (this.lastRender && this.lastRender.length == currentRender.length &&
                 _.all(_.zip(this.lastRender, currentRender), function(pair) {
                     return pair[0] == pair[1];
                 })) return; // no change
-
-            this.lastRender = currentRender;
+            this._render();
+        },
+        _render: function() {
+            this.lastRender = this.collection.pluck('cid');
 
             var header = $(templates.subviewheader({
                 title: this.title,

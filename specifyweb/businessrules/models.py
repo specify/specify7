@@ -2,6 +2,7 @@ from . import (
     uniqueness_rules,
     recordset_rules,
     collector_rules,
+    author_rules,
     collectionobject_rules,
     determination_rules,
     locality_rules,
