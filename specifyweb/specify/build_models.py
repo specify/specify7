@@ -11,6 +11,8 @@ orderings = {
     'Recordsetitem': ('recordid', ),
     'Spqueryfield': ('position', ),
     'Determination': ('-iscurrent',),
+    'Author': ('ordernumber',),
+    'Collector': ('ordernumber',),
 }
 
 def make_model(module, table, deletion_policies):
