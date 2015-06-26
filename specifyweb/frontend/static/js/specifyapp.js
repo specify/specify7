@@ -126,7 +126,7 @@ define([
             evt.preventDefault();
             var href = $(evt.currentTarget).prop('href');
             href && navigation.go(href);
-        }).delegate('form', 'submit', false);
+        });
     }
 
     // build and display view for resource
