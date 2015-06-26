@@ -41,10 +41,6 @@ UNIQUENESS_RULES = {
     'Accession': {
         'accessionnumber': ['division'],
         },
-    'Accessionagent': {
-        'agent': ['accession', 'repositoryagreement'],
-        'role': ['accession', 'repositoryagreement'],
-        },
     'Appraisal': {
         'appraisalnumber': ['accession'],
         },

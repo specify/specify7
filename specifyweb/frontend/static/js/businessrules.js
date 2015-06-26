@@ -229,7 +229,14 @@ define([
             } else {
                 var toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
                 if (!_.isArray(toOneFields)) toOneFields = [toOneFields];
-                results = _.map(toOneFields, function(field) { return uniqueIn(field, _this.resource, fieldName); });
+                results = _.map(toOneFields, function(def) {
+                    var field = def;
+                    var fieldNames = [fieldName];
+                    if (typeof def != 'string') {
+                        fieldNames = fieldNames.concat(def.otherfields);
+                        field = def.field;
+                    }
+                    return uniqueIn(field, _this.resource, fieldNames); });
             };
             whenAll(results).done(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
@@ -259,15 +266,22 @@ define([
         });
     };
 
+    var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
+        var result = 'Value must be unique to ';
+        if (fldInfo.length > 1) {
+            var fldNames = _.reduce(fldInfo, function(result, fld, idx) {
+                if (idx > 0) {
+                    result = result +  (idx < fldInfo.length-1 ? ', ' : ' and ');
+                }
+                return result + fld.getLocalizedName();
+            }, '');
+            result = 'Values of ' + fldNames + ' must be unique to ';
+        }
+        return result + (parentFldInfo ? parentFldInfo.getLocalizedName() : 'database');
+    };
+  
     var uniqueIn = function(toOneField, resource, valueFieldArg) {
         var valueField = $.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
-        var valid = {
-            valid: true
-        };
-        var invalid = {
-            valid: false,
-            reason: "Value must be unique to " + (toOneField || 'database')
-        };
         var value = _.map(valueField, function(v) { return resource.get(v);});
         var valueFieldInfo = _.map(valueField, function(v) { return resource.specifyModel.getField(v); });
         var valueIsToOne = _.map(valueFieldInfo, function(fi) { return fi.type === 'many-to-one'; });
@@ -282,6 +296,15 @@ define([
                 return undefined;
             }
         });
+
+        var toOneFieldInfo = resource.specifyModel.getField(toOneField);
+        var valid = {
+            valid: true
+        };
+        var invalid = {
+            valid: false,
+            reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)       
+        };
       
         var allNullOrUndefinedToOnes = _.reduce(valueId, function(result, v, idx) {
             return result &&  
@@ -309,9 +332,8 @@ define([
         };
 
         if (toOneField != null) {
-            var fieldInfo = resource.specifyModel.getField(toOneField);
             var haveLocalColl = (resource.collection && resource.collection.related &&
-                                 fieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
+                                 toOneFieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
 
             var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
@@ -327,7 +349,7 @@ define([
                 }
                 var others = new resource.specifyModel.ToOneCollection({
                     related: related,
-                    field: fieldInfo,
+                    field: toOneFieldInfo,
                     filters: filters
                 });
                 return others.fetch().pipe(function() {
@@ -360,78 +382,6 @@ define([
         }
     };
 
-    var uniqueOld = function(toOneField, resource, valueField) {
-        var valid = {
-            valid: true
-        };
-        var invalid = {
-            valid: false,
-            reason: "Value must be unique to " + (toOneField || 'database')
-        };
-        var value = resource.get(valueField);
-        var valueFieldInfo = resource.specifyModel.getField(valueField);
-        var valueIsToOne = valueFieldInfo.type === 'many-to-one';
-        if (valueIsToOne) {
-            if (_.isNull(value)) return $.when(valid);
-            var valueId = _.isString(value) ? valueFieldInfo.getRelatedModel().Resource.fromUri(value).id : value.id;
-        }
-        var hasSameValue = function(other) {
-            if ((other.id != null) && other.id === resource.id) return false;
-            if (other.cid === resource.cid) return false;
-            var otherVal = other.get(valueField);
-            if (valueIsToOne && !(_.isString(otherVal))) {
-                return parseInt(otherVal.id, 10) === parseInt(valueId, 10);
-            } else {
-                return value === other.get(valueField);
-            }
-        };
-        if (toOneField != null) {
-            var fieldInfo = resource.specifyModel.getField(toOneField);
-            var haveLocalColl = (resource.collection && resource.collection.related &&
-                                 fieldInfo.getRelatedModel() === resource.collection.related.specifyModel);
-
-            var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
-            var dupes = _.filter(localCollection, hasSameValue);
-            if (dupes.length > 0) {
-                invalid.localDupes = dupes;
-                return $.when(invalid);
-            }
-            return resource.rget(toOneField).pipe(function(related) {
-                if (!related) return valid;
-                var filters = {};
-                filters[valueField] = valueId || value;
-                var others = new resource.specifyModel.ToOneCollection({
-                    related: related,
-                    field: fieldInfo,
-                    filters: filters
-                });
-                return others.fetch().pipe(function() {
-                    var inDatabase = others.chain().compact();
-                    inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
-                        return !(resource.collection.get(other.id));
-                    }).value() : inDatabase.value();
-                    if (_.any(inDatabase, hasSameValue)) {
-                        return invalid;
-                    } else {
-                        return valid;
-                    }
-                });
-            });
-        } else {
-            var filters = {};
-            filters[valueField] = valueId || value;
-            var others = new resource.specifyModel.LazyCollection({
-                filters: filters
-            });
-            return others.fetch().pipe(function() {
-                if (_.any(others.models, hasSameValue)) {
-                    return invalid;
-                } else {
-                    return valid;
-                }
-            });
-        }
-    };
 
     var rules = {
         Accession: {
@@ -442,7 +392,8 @@ define([
         },
         AccessionAgent: {
             uniqueIn: {
-                role: ['accession', 'repositoryagreement']
+                role: [{field: 'accession', otherfields: ['agent']}, {field: 'repositoryagreement', otherfields: ['agent']}],
+                agent: [{field: 'accession', otherfields: ['role']}, {field: 'repositoryagreement', otherfields: ['role']}]
             }
         },
         Agent: {
