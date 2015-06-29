@@ -8,6 +8,14 @@ define([
             SaveButton, DeleteButton) {
     "use strict";
 
+    var NO_ADD_ANOTHER = [
+        'Gift',
+        'Borrow',
+        'Loan',
+        'ExchangeIn',
+        'ExchangeOut'
+    ];
+
     return Backbone.View.extend({
         __name__: "ResourceView",
         // triggered events = {
@@ -49,7 +57,7 @@ define([
             if (!self.readOnly) {
                 self.saveBtn = new SaveButton({
                     model: self.model,
-                    addAnother: self.model.isNew()
+                    addAnother: self.model.isNew() && !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name)
                 });
 
                 self.saveBtn.on('savecomplete', self.saved, self);
