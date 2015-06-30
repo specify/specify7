@@ -610,7 +610,7 @@ define([
             }
         },
         /* might be able to use something like this to check when form is loaded after add-items or create-new for invalid amounts due to
-         changes in other sessions 
+         changes in other sessions */
         LoanPreparation: {
             customChecks:  {
                 quantity: function(iprep) {
@@ -618,7 +618,7 @@ define([
                 }
             }
 
-        },*/
+        },
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
               interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
