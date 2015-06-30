@@ -80,6 +80,13 @@ define([
         },
         getInteractionsForPrepIds: function(prepIds) {
             return $.post('/api/prep_interactions/', {prepIds: prepIds});
+        },
+        getPrepAvailability: function(prepId, iPrepId, iPrepName) {
+            var uri = '/api/prep_availability/' + prepId + '/';
+            if (typeof iPrepId != 'undefined') {
+                uri += iPrepId + '/' + iPrepName + '/';
+            }
+            return $.get(uri);
         }
     });
 

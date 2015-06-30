@@ -13,7 +13,7 @@ def get_availability(prep, iprepid, iprepid_fld):
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
     where p.preparationid = %s """
-    if not (iprepid is None):
+    if iprepid is not None:
         sql += "and " + iprepid_fld + " != %s "               
         args.append(iprepid)
         
@@ -38,7 +38,7 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
 def giftprep_quantity_must_be_lte_availability(ipreparation):
     available = get_availability(ipreparation.preparation, ipreparation.id, "giftpreparationid")
     if available < ipreparation.quantity:
-        raise BusinessRuleException("gift preparation quantity exceeds availability")
+        raise BusinessRuleException("gift preparation quantity exceeds availability" + " (" + str(ipreparation.id) + ": " + str(ipreparation.quantity) + " " + str(available) +")")
 
 @orm_signal_handler('pre_save', 'Exchangeoutprep')
 def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):

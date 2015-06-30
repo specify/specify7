@@ -77,21 +77,23 @@ define([
                 return loanreturnprep.get('quantityresolved');
             }
         },
-        getPrepAvailability: function(interactionprep) {
-            //actually need to call api to get availability?
-            /*if (interactionprep) {
-                if (interactionprep.related) {
-                    _.each(interactionprep.related.loanpreparations.models, function(iprep) {
-                        console.info(iprep);
-                    });
-                }
-            } */  
-            if (interactionprep && interactionprep.get('preparation') && typeof interactionprep.get('preparation').get != 'undefined') {
-                return interactionprep.get('preparation').get('CountAmt');
-            } else {
-                return undefined;
-            }
+
+        checkPrepAvailability: function(interactionprep) {
+            if (interactionprep && interactionprep.get('preparation')) {
+                //return interactionprep.get('preparation').get('CountAmt');
+                var prepuri = interactionprep.get('preparation');
+                var pmod = schema.getModel('preparation');
+                var prepId = pmod.Resource.fromUri(prepuri).id;
+                var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
+                var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
+                api.getPrepAvailability(prepId, iprepId, iprepName).done(function(available) {
+                    if (typeof available != 'undefined' && Number(available[0])  < interactionprep.get('quantity')) {
+                        interactionprep.set('quantity', Number(available[0]));
+                    }
+                });
+            }         
         },
+
         updateLoanPrep: function(loanreturnprep, collection) {
             if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
                 var sums = _.reduce(collection.models, function(memo, lrp) {
@@ -586,10 +588,7 @@ define([
         GiftPreparation: {
             customChecks: {
                 quantity: function(iprep) {
-                    var available = interactionBusinessRules.getPrepAvailability(iprep);
-                    if (available  < iprep.get('quantity')) {
-                        iprep.set('quantity', available);
-                    }
+                    interactionBusinessRules.checkPrepAvailability(iprep);
                 }
             }
         },
@@ -610,17 +609,16 @@ define([
                 agent: {field: 'loan', otherfields: ['role']}
             }
         },
+        /* might be able to use something like this to check when form is loaded after add-items or create-new for invalid amounts due to
+         changes in other sessions 
         LoanPreparation: {
             customChecks:  {
                 quantity: function(iprep) {
-                    var available = interactionBusinessRules.getPrepAvailability(iprep);
-                    if (available  < iprep.get('quantity')) {
-                        iprep.set('quantity', available);
-                    }
+                    interactionBusinessRules.checkPrepAvailability(iprep);
                 }
             }
 
-        },
+        },*/
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
               interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);

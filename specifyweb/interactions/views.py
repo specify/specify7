@@ -18,7 +18,7 @@ def preps_available_rs(request, recordset_id):
     cursor.execute("""
     select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
            sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
-           p.countAmt - coalesce(sum(lp.quantity-lp.quantityreturned),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
+           p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
@@ -50,7 +50,7 @@ def preps_available_ids(request):
     sql = """
     select co.CatalogNumber, t.FullName, p.preparationid, pt.name, p.countAmt, sum(lp.quantity-lp.quantityreturned) Loaned,
         sum(gp.quantity) Gifted, sum(ep.quantity) Exchanged,
-        p.countAmt - coalesce(sum(lp.quantity-lp.quantityreturned),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
+        p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
@@ -204,7 +204,34 @@ def loan_return_all_items(request):
 
     return http.HttpResponse(toJson([prepsReturned, loansClosed]), content_type='application/json')
 
+@require_GET
+@csrf_exempt
+@login_maybe_required
+def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
+    args = [prep_id];
+    sql = """select p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) 
+    from preparation p
+    left join loanpreparation lp on lp.preparationid = p.preparationid
+    left join giftpreparation gp on gp.preparationid = p.preparationid
+    left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    where p.preparationid = %s 
+    """
+    if iprep_id is not None:
+        from specifyweb.specify import models
+        keyfld = models.datamodel.get_table(iprep_name).idFieldName
+        sql += " and " + keyfld + " != %s "
+        args.append(iprep_id)
 
+    sql += " group by p.preparationid"
+
+    print(sql)
+
+    cursor = connection.cursor()
+    cursor.execute(sql, args)
+    row = cursor.fetchone()
+
+    return http.HttpResponse(toJson(row), content_type='application/json')
+    
 
 @require_POST
 @csrf_exempt
