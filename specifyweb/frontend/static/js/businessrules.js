@@ -66,7 +66,14 @@ define([
         },
         getPrepAvailability: function(interactionprep) {
             //actually need to call api to get availability?
-            if (interactionprep && interactionprep.get('preparation')) {
+            /*if (interactionprep) {
+                if (interactionprep.related) {
+                    _.each(interactionprep.related.loanpreparations.models, function(iprep) {
+                        console.info(iprep);
+                    });
+                }
+            } */  
+            if (interactionprep && interactionprep.get('preparation') && typeof interactionprep.get('preparation').get != 'undefined') {
                 return interactionprep.get('preparation').get('CountAmt');
             } else {
                 return undefined;
@@ -565,9 +572,10 @@ define([
         },
         GiftPreparation: {
             customChecks: {
-                quantity: function(giftprep) {
-                    if (interactionBusinessRules.getPrepAvailability() < giftprep.get('quantity')) {
-                        giftprep.set('quantity', interactionBusinessRules.getPrepAvailability());
+                quantity: function(iprep) {
+                    var available = interactionBusinessRules.getPrepAvailability(iprep);
+                    if (available  < iprep.get('quantity')) {
+                        iprep.set('quantity', available);
                     }
                 }
             }
@@ -588,6 +596,17 @@ define([
                 role: {field: 'loan', otherfields: ['agent']},
                 agent: {field: 'loan', otherfields: ['role']}
             }
+        },
+        LoanPreparation: {
+            customChecks:  {
+                quantity: function(iprep) {
+                    var available = interactionBusinessRules.getPrepAvailability(iprep);
+                    if (available  < iprep.get('quantity')) {
+                        iprep.set('quantity', available);
+                    }
+                }
+            }
+
         },
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
