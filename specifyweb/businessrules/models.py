@@ -14,4 +14,5 @@ from . import (
     shipment_rules,
     attachment_rules,
     guid_rules,
+    interaction_rules,
 )

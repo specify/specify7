@@ -175,6 +175,8 @@ define([
         },
         fixMissingAttachment: function(evt) {
             evt.preventDefault();
+            if (!attachments) return;
+
             var index = this.$('.missing-attachments a').index(evt.currentTarget);
             var attachmentPlugin = new AttachmentPlugin();
             makeDialog(attachmentPlugin.render().$el, {

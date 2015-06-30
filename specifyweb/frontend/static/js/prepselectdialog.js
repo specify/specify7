@@ -14,7 +14,31 @@ define([
             'click :checkbox': 'prepCheck',
             'keydown .prepselect-amt': 'prepselectKeyDown'
         },
+        availabilityDblChk: false,
 
+        processInteractionsPreps: function() {
+            if (!this.availabilityDblChk) {
+                if (this.options.interactionresource) {
+                    var pmod = schema.getModel('preparation');
+                    var idxpreps = _.groupBy(this.options.preps, function(prep) {
+                        return (new pmod.Resource({id: prep.preparationid})).url();
+                    });
+                    var items = this.options.itemcollection.models;
+                     _.each(items, function(prep) {
+                         if (prep.isNew()) {
+                             var idxprep = idxpreps[prep.get('preparation')];
+                             if (idxprep) {
+                                 var resolved = prep.get('quantityresolved');
+                                 if (_.isNull(resolved) || typeof resolved == 'undefined') resolved = 0;
+                                 idxprep[0].available -= prep.get('quantity') - resolved;
+                             }
+                         }
+                    });
+                }
+                this.availabilityDblChk = true;
+            }
+        },
+        
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getTblHdr: function() {
@@ -58,6 +82,7 @@ define([
         },
 
         dialogEntry: function(iprep) {
+            this.processInteractionsPreps();
             var unavailable = $('<td>').attr('align', 'center');
             var unavailableCnt = iprep.countamt - iprep.available;
             //if unavailable items, link to related interactions
@@ -235,16 +260,31 @@ define([
         makeInteractionPrep: function(baseTbl, itemModel, iprep, amt) {
             var result = new itemModel.Resource();
             result.initialize();
-            result.set('quantity', amt);
+            var pmod = schema.getModel('preparation');
+            var purl = (new pmod.Resource({id: iprep.preparationid})).url();
+            result.set('preparation', purl);
+            result.set('quantity', Number(amt));
             if (baseTbl == 'loan') {
                 result.set('quantityReturned', 0);
                 result.set('quantityResolved', 0);
             }
-            var pmod = schema.getModel('preparation');
-            var purl = (new pmod.Resource({id: iprep.preparationid})).url();
-            result.set('preparation', purl);
             return result;
         },
+
+        processPrep: function(baseTbl, itemModel, iprep, amt) {
+            var prep;
+            //could combine loan preps for the same prep here...
+            /*if (this.options.interactionresource) {
+                prep =  _.filter(this.getPreps(this.options.interactionresource), function(prep) {
+                    return prep.getpreparationId() == iprep.preparationid;
+                });
+            }*/
+            if (!prep) {
+                prep = this.makeInteractionPrep(baseTbl, itemModel, iprep, amt);
+            }
+            return prep;
+        },
+
         makeInteraction: function() {
             //console.info('creating obj for ' + this.options.action.attr('action'));
             var baseTbl = this.options.action.table;
@@ -264,7 +304,7 @@ define([
             for (var p=0; p < this.options.preps.length; p++) {
                 var amt = $(amounts[p]).attr('value');
                 if ('0' != amt && '' != amt) {
-                    items[items.length] = this.makeInteractionPrep(baseTbl, itemModel, this.options.preps[p], amt);
+                    items[items.length] = this.processPrep(baseTbl, itemModel, this.options.preps[p], amt);
                 }
             }
 

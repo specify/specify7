@@ -66,6 +66,8 @@ define([
                 locality: self.model.get('localityname') };
 
             function travGeo(geo) {
+                if (!geo) return null;
+
                 function recur(parent, geodef) {
                     var geoLevel = {
                         'Country': 'country',
