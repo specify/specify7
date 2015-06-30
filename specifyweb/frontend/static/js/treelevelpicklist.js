@@ -1,5 +1,15 @@
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     "use strict";
+
+    function getPossibleRanks(lowestChildRank, parentTreeDefItem) {
+        if (!parentTreeDefItem) return _([]);
+        var filters = {rankid__gt: parentTreeDefItem.get('rankid')};
+        if (lowestChildRank != null) filters['rankid__lt'] = lowestChildRank;
+
+        var children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters});
+        return children.fetch({limit: 0}).pipe(function() {return children;});
+    }
+
     return Backbone.View.extend({
         __name__: "TreeLevelPickListView",
         events: {
@@ -9,37 +19,42 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
             this.model.on('change:parent', this.render, this);
             this.lastFetch = null;
             this.field = this.model.specifyModel.getField(this.$el.attr('name'));
+            this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
+                this.model.rget('children').pipe(function(children) {
+                    return children
+                        .fetch({ limit: 1, filters: { orderby: 'rankid'}})
+                        .pipe(function() {
+                            return children.pluck('rankid')[0];
+                        });
+                });
         },
         render: function() {
             this.$el.empty();
-            var fetch = this.lastFetch = this.model.rget('parent.definitionitem', true).pipe(function(parentTreeDefItem) {
-                if (!parentTreeDefItem) return _([]);
-                var children = new parentTreeDefItem.specifyModel.LazyCollection({
-                    filters: {rankid__gt: parentTreeDefItem.get('rankid')}
-                });
-                return children.fetch({limit: 0}).pipe(function() {return children;});
-            });
+            var fetch = this.lastFetch = $.when(
+                this.lowestChildRankPromise,
+                this.model.rget('parent.definitionitem', true)
+            ).pipe(getPossibleRanks);
 
-            var _this = this;
-            fetch.done(function(children) {
-                if (fetch === _this.lastFetch) {
-                    var fieldName = _this.$el.attr('name');
-                    var value = _this.model.get(fieldName);
-                    children.each(function(child) {
-                        var url = child.url();
-                        _this.$el.append($('<option>', {
-                            value: url,
-                            selected: url === value
-                        }).text(child.get('name')));
-                    });
-
-                    // # make sure value in the resouce is consitent with what is displayed.
-                    if (!value || _this.$el.find('option[value="' + value + '"]').length < 1) {
-                        _this.model.set(fieldName, children.first());
-                    }
-                }
-            });
+            fetch.done(this.fillIn.bind(this, fetch));
             return this;
+        },
+        fillIn: function(fetch, higherRanks) {
+            if (fetch !== this.lastFetch) return;
+
+            var fieldName = this.$el.attr('name');
+            var value = this.model.get(fieldName);
+            var options = higherRanks.map(function(rank) {
+                var url = rank.url();
+                return $('<option>', {
+                    value: url,
+                    selected: url === value
+                }).text(rank.get('name'))[0];
+            });
+            this.$el.append(options);
+            // # make sure value in the resouce is consitent with what is displayed.
+            if (!value || this.$el.find('option[value="' + value + '"]').length < 1) {
+                this.model.set(fieldName, higherRanks.first());
+            }
         },
         changed: function() {
             var selected = this.field.getRelatedModel().Resource.fromUri(this.$el.val());
