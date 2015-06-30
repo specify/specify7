@@ -8,6 +8,7 @@ define([
     schema.Model = function(tableDef) {
         this.longName = tableDef.classname;
         this.name = this.longName.split('.').pop();
+        this.idFieldName = tableDef.idFieldName;
         this.view = tableDef.view;
         this.searchDialog = tableDef.searchDialog;
         this.tableId = tableDef.tableId;
