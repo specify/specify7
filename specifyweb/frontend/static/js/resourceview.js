@@ -13,7 +13,9 @@ define([
         'Borrow',
         'Loan',
         'ExchangeIn',
-        'ExchangeOut'
+        'ExchangeOut',
+        'Permit',
+        'RepositoryAgreement'
     ];
 
     return Backbone.View.extend({
