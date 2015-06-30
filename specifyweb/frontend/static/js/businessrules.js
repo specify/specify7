@@ -719,6 +719,23 @@ define([
                     });
                 }
             }
+        },
+        Geography: {
+            deleteBlockres: ['children', 'acceptedChildren', 'localities']
+        },
+        GeologicTimePeriod: {
+            deleteBlockers: ['children', 'acceptedChildren', 'biostratspaleocontext',
+                             'chronosstratspaleocontext']
+        },
+        LithoStrat: {
+            deleteBlockers: ['children', 'acceptedChildren', 'paleocontexts']
+        },
+        Storage: {
+            deleteBlockers: ['children', 'acceptedChildren', 'containers', 'preparations']
+        },
+        Taxon: {
+            deleteBlockers: ['children', 'determinations', 'preferredTaxonOf',
+                             'acceptedChildren', 'hybridChildren1', 'hybridChildren2']
         }
     };
 

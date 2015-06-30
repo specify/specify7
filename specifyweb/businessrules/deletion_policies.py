@@ -21,19 +21,14 @@ cascade = {
     'Determinationcitation.determination',
     'Determination.collectionobject',
     'Dnasequencingruncitation.dnasequencingrun',
-    'Geography.parent',
-    'Geologictimeperiod.parent',
     'Giftagent.gift',
     'Giftpreparation.gift',
-    'Lithostrat.parent',
     'Loanagent.loan',
     'Loanpreparation.loan',
     'Loanreturnpreparation.loanpreparation',
     'Localitycitation.locality',
     'Preparation.collectionobject',
-    'Storage.parent',
     'Taxoncitation.taxon',
-    'Taxon.parent',
 }
 
 # Set of ForeignKey Fields for which deleting the foreign row is

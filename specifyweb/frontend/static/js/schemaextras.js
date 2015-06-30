@@ -70,6 +70,18 @@ define(['underscore', 'schemabase'], function(_, schema) {
 
             var preptype = model.getField('preptype');
             preptype.otherSideName = 'preparations';
+        },
+        Taxon: function(model) {
+            var fields = model.getAllFields();
+            var preferredTaxonOf = _(new schema.Field(model)).extend({
+                name: 'preferredTaxonOf',
+                isRelationship: true,
+                isRequired: false,
+                type: 'one-to-many',
+                otherSideName: 'preferredTaxon',
+                relatedModelName: 'Determination'
+            });
+            fields.push(preferredTaxonOf);
         }
     };
 });
