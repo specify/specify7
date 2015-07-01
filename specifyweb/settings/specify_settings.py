@@ -35,5 +35,5 @@ REPORT_RUNNER_PORT = ''
 # to use for anonymous access.
 ANONYMOUS_USER = None
 
-# For exception loging.
+# For exception logging using Sentry (https://github.com/getsentry/sentry).
 RAVEN_CONFIG = None
