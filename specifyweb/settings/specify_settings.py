@@ -37,3 +37,8 @@ ANONYMOUS_USER = None
 
 # For exception logging using Sentry (https://github.com/getsentry/sentry).
 RAVEN_CONFIG = None
+
+# Support login mechanism.
+ALLOW_SUPPORT_LOGIN = False
+SUPPORT_LOGIN_TTL = 300
+
