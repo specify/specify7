@@ -106,8 +106,10 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
-@csrf_exempt
 def support_login(request):
+    if not settings.ALLOW_SUPPORT_LOGIN:
+        return http.HttpResponseForbidden()
+
     from django.contrib.auth import login, authenticate
 
     user = authenticate(token=request.REQUEST['token'])
@@ -115,4 +117,4 @@ def support_login(request):
         login(request, user)
         return http.HttpResponseRedirect('/')
     else:
-        return http.HttpRespenseForbidden()
+        return http.HttpResponseForbidden()

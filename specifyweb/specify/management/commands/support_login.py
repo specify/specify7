@@ -1,10 +1,12 @@
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 
 from specifyweb.specify.support_login import make_token
 from specifyweb.specify.models import Specifyuser
 
+TTL = settings.SUPPORT_LOGIN_TTL
 
 class Command(BaseCommand):
     args = '<username>'
@@ -25,6 +27,9 @@ class Command(BaseCommand):
                 self.stdout.write('\t'.join((user.name, user.usertype, admin(user))))
             return
 
+        if not settings.ALLOW_SUPPORT_LOGIN:
+            raise CommandError('support login not enabled')
+
         if username is None:
             raise CommandError('username must be supplied')
 
@@ -33,4 +38,5 @@ class Command(BaseCommand):
         except Specifyuser.DoesNotExist:
             raise CommandError('No user with name "%s"' % username)
 
-        self.stdout.write(make_token(user))
+        self.stdout.write("The following token is good for %d seconds:" % TTL)
+        self.stdout.write("/accounts/support_login/?token=" + make_token(user))

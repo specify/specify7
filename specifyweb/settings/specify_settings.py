@@ -34,3 +34,7 @@ REPORT_RUNNER_PORT = ''
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
+
+# Support login mechanism.
+ALLOW_SUPPORT_LOGIN = False
+SUPPORT_LOGIN_TTL = 300
