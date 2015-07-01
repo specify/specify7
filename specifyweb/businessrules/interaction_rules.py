@@ -2,7 +2,7 @@ from .orm_signal_handler import orm_signal_handler
 from specifyweb.specify import models
 from .exceptions import BusinessRuleException
 from django.db import connection
-from specify.api import parse_uri
+from specifyweb.specify.api import parse_uri
 
 def get_availability(prep, iprepid, iprepid_fld):
     args = [prep.id]
