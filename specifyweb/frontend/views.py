@@ -19,7 +19,10 @@ if settings.DEBUG:
         # This seems to cost about 16-30 ms.
         up_to_date = subprocess.call(['make', '-q', '-C', DIR]) == 0
         logger.debug('js and css optimization is up-to-date: %s', up_to_date)
-        resp = loader.get_template('specify.html').render(Context({'use_built': up_to_date}))
+        resp = loader.get_template('specify.html').render(Context({
+            'use_built': up_to_date,
+            'use_raven': settings.RAVEN_CONFIG is not None,
+        }))
 
         return HttpResponse(resp)
 else:
