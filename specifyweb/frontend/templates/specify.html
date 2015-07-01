@@ -1,7 +1,12 @@
+{% load raven %}
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
+{% if use_raven %}
+  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
+{% endif %}
 {% if use_built %}
   <link rel="stylesheet" href="/static/css/main-built.css" />
   <script src="/static/js/main-built.js"></script>

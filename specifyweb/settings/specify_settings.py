@@ -34,3 +34,6 @@ REPORT_RUNNER_PORT = ''
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
+
+# For exception logging using Sentry (https://github.com/getsentry/sentry).
+RAVEN_CONFIG = None
