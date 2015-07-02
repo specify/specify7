@@ -15,12 +15,12 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
 
             this.model.on('deleteblocked', function() {
                 this.blocked = true;
-                this.button.attr("value", "Delete ⚠");
+                this.button.attr("value", "*Delete");
             }, this);
         },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $('<input type="button" value="Delete ⚠" class="delete-button">').appendTo(this.el);
+            this.button = $('<input type="button" value="*Delete" class="delete-button">').appendTo(this.el);
             this.model.businessRuleMgr.checkCanDelete();
             return this;
         },
