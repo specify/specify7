@@ -16,31 +16,39 @@ define([
             return this;
         },
         click: function(evt) {
-            var self = this;
             evt.preventDefault();
-            self.geoRefData().done(function(data) {
-                var url = $.param.querystring(
-                    "//www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data);
+            this.geoRefData().done(function(data) {
+                data ? this.openGeoLocate(data) : this.geoRequired();
+            }.bind(this));
+        },
+        geoRequired: function() {
+            $('<div title="Geography Required">' +
+              '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
+              'The GeoLocate plugin requires the geography field to be populated.</p></div>'
+             ).dialog({close: function(){ $(this).remove(); }});
+        },
+        openGeoLocate: function(data) {
+            var url = $.param.querystring(
+                "//www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data);
 
-                var listener = function(evt) {
-                    if (evt.origin === "http://www.museum.tulane.edu")
-                        self.gotGeoRef(evt.data);
-                };
+            var listener = function(evt) {
+                if (evt.origin === "http://www.museum.tulane.edu")
+                    this.gotGeoRef(evt.data);
+            }.bind(this);
 
-                window.addEventListener('message', listener, false);
+            window.addEventListener('message', listener, false);
 
-                $('<div id="geolocate-dialog">')
-                    .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
-                    .dialog({
-                        width: 'auto',
-                        resizable: false,
-                        title: 'GEOLocate',
-                        close: function() {
-                            window.removeEventListener('message', listener, false);
-                            $(this).remove();
-                        }
-                    });
-            });
+            $('<div id="geolocate-dialog">')
+                .append($('<iframe>', {src: url, style: "width:908px; height:653px;"}))
+                .dialog({
+                    width: 'auto',
+                    resizable: false,
+                    title: 'GEOLocate',
+                    close: function() {
+                        window.removeEventListener('message', listener, false);
+                        $(this).remove();
+                    }
+                });
         },
         gotGeoRef: function(dataStr) {
             var data = dataStr.split('|');
@@ -57,17 +65,14 @@ define([
             $('#geolocate-dialog').dialog('close');
         },
         geoRefData: function() {
-            var self = this;
             var data = {
                 v: 1,
                 w: 900,
                 h: 400,
                 georef: 'run',
-                locality: self.model.get('localityname') };
+                locality: this.model.get('localityname') };
 
             function travGeo(geo) {
-                if (!geo) return null;
-
                 function recur(parent, geodef) {
                     var geoLevel = {
                         'Country': 'country',
@@ -81,7 +86,9 @@ define([
                 return $.when(geo.rget('parent', true), geo.rget('definitionitem', true)).pipe(recur);
             }
 
-            return $.when(self.model.rget('geography', true)).pipe(travGeo).pipe(function() { return data; });
+            return $.when(this.model.rget('geography', true)).pipe(function(geo) {
+                return geo ? travGeo(geo).pipe(function() { return data; }) : null;
+            });
         }
     }, { pluginsProvided: ['LocalityGeoRef'] });
 });
