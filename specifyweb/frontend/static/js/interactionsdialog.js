@@ -14,7 +14,7 @@ define([
     var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
         var isVisible = entry.attr('isonleft');
         if (isVisible) {
-            return isVisible == 'true';
+            return isVisible == 'true' && entry.attr('action') != 'LN_NO_PRP' ;
         } else {
             return false;
         }
@@ -35,7 +35,7 @@ define([
     function isActionEntry(entry) {
         var actionAttr = entry.attr('action');
         if (actionAttr) {
-            return actionAttr != 'OpenNewView' && actionAttr != 'LN_NO_PRP';
+            return actionAttr != 'OpenNewView';
         } else {
             return false;
         }
