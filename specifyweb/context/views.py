@@ -114,6 +114,8 @@ def domain(request):
         'division': collection.discipline.division.id,
         'institution': collection.discipline.division.institution.id,
         'embeddedCollectingEvent': collection.isembeddedcollectingevent,
+        'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
+        'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         }
 
     return HttpResponse(simplejson.dumps(domain), content_type='application/json')

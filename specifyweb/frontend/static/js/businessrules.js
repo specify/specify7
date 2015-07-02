@@ -91,7 +91,7 @@ define([
                         interactionprep.set('quantity', Number(available[0]));
                     }
                 });
-            }         
+            }
         },
 
         updateLoanPrep: function(loanreturnprep, collection) {
@@ -301,7 +301,7 @@ define([
         }
         return result + (parentFldInfo ? parentFldInfo.getLocalizedName() : 'database');
     };
-  
+
     var uniqueIn = function(toOneField, resource, valueFieldArg) {
         var valueField = $.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
         var value = _.map(valueField, function(v) { return resource.get(v);});
@@ -325,17 +325,17 @@ define([
         };
         var invalid = {
             valid: false,
-            reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)       
+            reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)
         };
-      
+
         var allNullOrUndefinedToOnes = _.reduce(valueId, function(result, v, idx) {
-            return result &&  
+            return result &&
                 valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
         }, true);
         if (allNullOrUndefinedToOnes) {
             return $.when(valid);
         }
-                
+
         var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
             if ((other.id != null) && other.id === resource.id) return false;
             if (other.cid === resource.cid) return false;
@@ -444,15 +444,15 @@ define([
                     var newval;
                     if (returned > borrowmaterial.get('quantity')) {
                         /*return {
-                            valid: false,
-                            reason: 'value must be < ' + borrowmaterial.get('quantity')
-                        };*/
+                         valid: false,
+                         reason: 'value must be < ' + borrowmaterial.get('quantity')
+                         };*/
                         newval = borrowmaterial.get('quantity');
                     }
                     if (returned > borrowmaterial.get('quantityresolved')) {
                         /*return {
-                            valid: false,
-                            reason: 'quantity returned must be less than or equal to quantity resolved'
+                         valid: false,
+                         reason: 'quantity returned must be less than or equal to quantity resolved'
                          };*/
                         newval = borrowmaterial.get('quantityresolved');
                     }
@@ -463,16 +463,16 @@ define([
                     var newval;
                     if (resolved > borrowmaterial.get('quantity')) {
                         /*return {
-                            valid: false,
-                            reason: 'value must be < ' + borrowmaterial.get('quantity')
-                        };*/
+                         valid: false,
+                         reason: 'value must be < ' + borrowmaterial.get('quantity')
+                         };*/
                         newval = borrowmaterial.get('quantity');
                     }
                     if (resolved < borrowmaterial.get('quantityreturned')) {
                         /*return {
-                            valid: false,
-                            reason: 'quantity resolved must be greater than or equal to quantity returned'
-                        };*/
+                         valid: false,
+                         reason: 'quantity resolved must be greater than or equal to quantity returned'
+                         };*/
                         newval = borrowmaterial.get('quantityreturned');
                     }
                     newval && borrowmaterial.set('quantityresolved', newval);
@@ -621,7 +621,7 @@ define([
         },
         LoanReturnPreparation: {
             onRemoved: function(loanreturnprep, collection) {
-              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
+                interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
             },
             customInit: function(loanreturnprep) {
                 interactionBusinessRules.totalLoaned = undefined;
@@ -660,7 +660,7 @@ define([
                     var resolved = loanreturnprep.get('quantityresolved');
                     var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
                             ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
-                           : 0;
+                            : 0;
                     if (resolved != previousResolved) {
                         var returned = loanreturnprep.get('quantityreturned');
                         var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
@@ -681,6 +681,9 @@ define([
         },
         Locality: {
             deleteBlockers: ['collectingevents']
+        },
+        PaleoContext: {
+            deleteBlockers: ['collectionobjects', 'collectingevents', 'localities']
         },
         Permit: {
             unique: ['permitnumber']
