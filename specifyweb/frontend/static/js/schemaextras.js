@@ -82,6 +82,25 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 relatedModelName: 'Determination'
             });
             fields.push(preferredTaxonOf);
+
+            var parentField = model.getField('parent');
+            parentField.isRequired = true;
+        },
+        Geography: function(model) {
+            var parentField = model.getField('parent');
+            parentField.isRequired = true;
+        },
+        LithoStrat: function(model) {
+            var parentField = model.getField('parent');
+            parentField.isRequired = true;
+        },
+        GeologicTimePeriod: function(model) {
+            var parentField = model.getField('parent');
+            parentField.isRequired = true;
+        },
+        Storage: function(model) {
+            var parentField = model.getField('parent');
+            parentField.isRequired = true;
         }
     };
 });
