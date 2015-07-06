@@ -30,6 +30,11 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         },
         render: function() {
             this.$el.empty();
+            if (!this.model.get('parent')) {
+                this.$el.prop('disabled', true);
+                return this;
+            }
+            this.$el.prop('disabled', false);
             var fetch = this.lastFetch = $.when(
                 this.lowestChildRankPromise,
                 this.model.rget('parent.definitionitem', true)
