@@ -106,7 +106,7 @@ define([
 
             var selectStmt = this.typesearch.text();
             var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
-            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(','), mapper);
+            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(',').map($.trim), mapper);
             var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
             var fieldTitles = _.map(searchFields, function(f) {
                 return (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName();
