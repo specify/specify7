@@ -119,7 +119,7 @@ define([
             });
         },
 
-        rowDone(catNumCtrl, taxCtrl, prepTypeCtrl, idx, rowdata) {
+        rowDone: function(catNumCtrl, taxCtrl, prepTypeCtrl, idx, rowdata) {
             catNumCtrl.append(FieldFormat(this.colobjModel.getField('catalognumber'), rowdata.catalognumber));
             taxCtrl.append(rowdata.taxon);
             prepTypeCtrl.append(rowdata.preptype);
