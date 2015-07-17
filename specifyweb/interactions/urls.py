@@ -7,4 +7,6 @@ urlpatterns = patterns('specifyweb.interactions.views',
     url(r'^prep_interactions/', 'prep_interactions'),
     url(r'^prep_availability/(?P<prep_id>\d+)/(?P<iprep_id>\d+)/(?P<iprep_name>\w+)/', 'prep_availability'),   
     url(r'^prep_availability/(?P<prep_id>\d+)/', 'prep_availability'),   
+    url(r'^wb_rows/(?P<wb_id>\d+)/', 'wb_rows'),   
+    url(r'^update_wb/', 'update_wb'),   
 )

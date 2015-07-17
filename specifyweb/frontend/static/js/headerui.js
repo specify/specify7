@@ -10,6 +10,7 @@ define([
     'toolbarquery',
     'toolbarreport',
     'toolbarattachments',
+    'toolbarwbs',
     'toolbarmasterkey',
     'toolbarusers'
 ], function headerUI(

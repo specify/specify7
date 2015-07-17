@@ -259,3 +259,71 @@ def prep_interactions(request):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
+
+@require_GET
+@csrf_exempt
+@login_maybe_required
+def wb_rows(request, wb_id):
+    sql = """select concat('select r.workbenchrowid,',
+    group_concat('col',ViewOrder,'.celldata' ORDER BY ViewOrder), 
+    ' from workbenchrow r ', 
+    group_concat(' left join workbenchdataitem col', ViewOrder, 
+    ' on col', ViewOrder, '.workbenchrowid=r.workbenchrowid and col', 
+    ViewOrder, '.WorkBenchTemplateMappingItemID=', WorkbenchTemplateMappingItemID ORDER BY ViewOrder SEPARATOR ' '),
+    ' where r.workbenchid=',%s, ' order by r.rownumber;') 
+    from workbenchtemplatemappingitem where workbenchtemplateid=%s group by workbenchtemplateid;"""
+    
+    cursor = connection.cursor()
+    cursor.execute(sql, [wb_id, wb_id])
+    generated_sql = cursor.fetchone()
+
+    #print(unicode(generated_sql[0]))
+
+    #group_concat_max_len for db needs to be set to something big, eg: set global group_concat_max_len = 10000
+    #cursor.execute('set session group_concat_max_len = 10000')
+
+    cursor.execute(unicode(generated_sql[0]))
+    rows = cursor.fetchall()
+
+    return http.HttpResponse(toJson(rows), content_type='application/json')
+
+@require_POST
+@csrf_exempt
+@login_maybe_required
+def update_wb(request):
+    from specifyweb.specify import models
+    
+    wb = models.Workbench.objects.get(pk=request.POST['wbId']);
+
+    rowdata = json.loads(unicode(request.POST['rowdata']));
+    #rowdata = request.POST['rowdata'];
+
+    for row in rowdata:
+        if row['workbenchrowid']:
+            wbr = wb.workbenchrows.get(pk=row['workbenchrowid']);
+        else:
+            wbr = models.Workbenchrow()
+ 
+        if row['rownumber']:
+            wbr.rownumber = row['rownumber']
+
+        for cell in row['cells']:
+            if cell['workbenchtemplatemappingitemid']:
+                wdi = wbr.workbenchdataitems.get(workbenchtemplatemappingitem=cell['workbenchtemplatemappingitemid'])
+            else:
+                wdi = models.workbenchdataitem()
+                wdi.workbenchtemplatemappingitem = models.Workbenchtemplatemappingitem.objects.get(pk=cell['workbenchtemplatemappingitemid'])
+                wdi.workbenchrow = wbr
+                
+            wdi.rownumber = wbr.rownumber
+            
+            if cell['celldata']:
+                wdi.celldata = cell['celldata']
+
+            wdi.save()
+
+        wbr.save()
+
+    wb.save()
+
+    return http.HttpResponse(toJson('check it and see'), content_type='application/json')

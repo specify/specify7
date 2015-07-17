@@ -87,6 +87,12 @@ define([
                 uri += iPrepId + '/' + iPrepName + '/';
             }
             return $.get(uri);
+        },
+        getWbRows: function(wbId) {
+            return $.get('/api/wb_rows/' + wbId + '/');
+        },
+        updateWb: function(wbId, rowdata) {
+            return $.post('/api/update_wb/', {wbId: wbId, rowdata: JSON.stringify(rowdata)});
         }
     });
 
