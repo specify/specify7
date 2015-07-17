@@ -308,10 +308,10 @@ def update_wb(request):
             wbr.rownumber = row['rownumber']
 
         for cell in row['cells']:
-            if cell['workbenchtemplatemappingitemid']:
+            try:
                 wdi = wbr.workbenchdataitems.get(workbenchtemplatemappingitem=cell['workbenchtemplatemappingitemid'])
-            else:
-                wdi = models.workbenchdataitem()
+            except:
+                wdi = models.Workbenchdataitem()
                 wdi.workbenchtemplatemappingitem = models.Workbenchtemplatemappingitem.objects.get(pk=cell['workbenchtemplatemappingitemid'])
                 wdi.workbenchrow = wbr
                 
