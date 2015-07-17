@@ -209,13 +209,15 @@ define([
             if (!field) {
                 console.warn("setting unknown field", fieldName, "on",
                              this.specifyModel.name, "value is", value);
+                return [fieldName, value];
             }
 
-            if (!field || !field.isRelationship) return [fieldName, value];
-            // relationship field
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
-            var handler =  _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource';
-            return [fieldName, this[handler](value, fieldName)];
+
+            if (field.isRelationship) {
+                value = this[ _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource' ](value, fieldName);
+            }
+            return [fieldName, value];
         },
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
