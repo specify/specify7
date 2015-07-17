@@ -196,13 +196,14 @@ define([
 
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
-                adjustedAttrs[fieldName] = this._handleField(value, fieldName);
+                var adjusted = this._handleField(value, fieldName);
+                adjustedAttrs[adjusted[0]] = adjusted[1];
             }, this);
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
         _handleField: function(value, fieldName) {
-            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return value; // special fields
+            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return [fieldName, value]; // special fields
 
             var field = this.specifyModel.getField(fieldName);
             if (!field) {
@@ -210,10 +211,10 @@ define([
                              this.specifyModel.name, "value is", value);
             }
 
-            if (!field || !field.isRelationship) return value;
+            if (!field || !field.isRelationship) return [fieldName, value];
             // relationship field
             var handler =  _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource';
-            return this[handler](value, fieldName);
+            return [field.name.toLowerCase(), this[handler](value, field.name)];
         },
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
@@ -311,8 +312,9 @@ define([
         },
         _rget: function(path) {
             var fieldName = path[0].toLowerCase();
-            var value = this.get(fieldName);
             var field = this.specifyModel.getField(fieldName);
+            field && (fieldName = field.name.toLowerCase()); // in case fieldName is an alias
+            var value = this.get(fieldName);
             field || console.warn("accessing unknown field", fieldName, "in",
                                   this.specifyModel.name, "value is",
                                   value);
