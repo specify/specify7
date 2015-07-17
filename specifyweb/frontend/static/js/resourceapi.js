@@ -213,8 +213,9 @@ define([
 
             if (!field || !field.isRelationship) return [fieldName, value];
             // relationship field
+            fieldName = field.name.toLowerCase(); // in case field name is an alias.
             var handler =  _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource';
-            return [field.name.toLowerCase(), this[handler](value, field.name)];
+            return [fieldName, this[handler](value, fieldName)];
         },
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
