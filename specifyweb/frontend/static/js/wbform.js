@@ -1,17 +1,20 @@
 define([
     'jquery', 'underscore', 'backbone',
     'require', 'icons', 'specifyapi', 'schema',
+    'text!resources/specify_workbench_upload_def.xml!noinline',
     'jquery-ui'
-], function($, _, Backbone, require, icons, api, schema) {
+], function($, _, Backbone, require, icons, api, schema, wbupdef) {
     "use strict";
 
+    var wbUpDef = $.parseXML(wbupdef.toLowerCase());
 
     return Backbone.View.extend({
         __name__: "WbForm",
         className: "wbs-form table-list-dialog",
         events: {
-            'click input.sp-wb-cell-input': 'cellEditClk',
-            'keydown input.sp-wb-cell-input': 'cellEditKeyDown',
+            'click select.sp-wb-cell-input': 'unListItem',
+            'click .sp-wb-cell-input': 'cellEditClk',
+            'keydown .sp-wb-cell-input': 'cellEditKeyDown',
             'click td.sp-wb-cell': 'cellClk'
         },
 
@@ -23,9 +26,35 @@ define([
             var done = _.bind(function(){ 
                 this.mappings = maps.models;
                 this.setColHdrs(this);
+                this.getFldInfo();
             }, this);
             maps.fetch({ limit: 5000 }) // That's a lot of mappings
                 .done(done);
+        },
+
+        getFldInfo: function() {
+            _.map(this.mappings, function(mapping) {
+                var tbl = mapping.get('tablename').toLowerCase();
+                var fld = mapping.get('fieldname').toLowerCase();
+                var updef = $('field[table="' + tbl + '"][name="' + fld + '"]', wbUpDef);
+                if (updef.length == 1) {
+                    tbl = updef.attr('actualtable') || tbl;
+                    fld = updef.attr('actualname') || fld;
+                }
+                var model = schema.getModel(tbl);
+                var fldInfo = model.getField(fld);
+                if (fldInfo && fldInfo._localization.picklistname) {
+                    api.getPickListByName(fldInfo._localization.picklistname).pipe(function(pl) {
+                        if (pl.get('type') == 0) {
+                            pl.rget('picklistitems').pipe(function(plItemCollection) {
+                                mapping.picklistitems = plItemCollection.isComplete ? plItemCollection.models :
+                                    plItemCollection.fetch().pipe(function() {return plItemCollection.models;});
+                            });
+                        }
+                    });
+                }
+                mapping.fldInfo = fldInfo;
+            });
         },
 
         setColHdrs: function(self) {
@@ -92,11 +121,35 @@ define([
             cell.remove();
         },
 
+        unListItem: function(evt) {
+            var sel = $(evt.currentTarget);
+            if (sel.attr('value') == '+') {
+                var td = sel.parent();
+                sel.remove();
+                td.append($('<input type="text" class="sp-wb-cell-input">'));
+            }
+        },
+
         cellClk: function(evt) {
             //console.info(evt);
-            var edt = $('<input type="text" class="sp-wb-cell-input">');
             var td = $(evt.currentTarget);
-            edt.attr('value', td.text());
+            var mapping = this.mappings[td.index()];
+            var edt;
+            if (mapping && mapping.picklistitems) {
+                edt = $('<select class="sp-wb-cell-input">');
+                _.each(mapping.picklistitems, function(item) {
+                    //edt.append('<option value="' + item.get('value') + '">' + item.get('title') + '</option>');
+                    edt.append('<option title="' + item.get('title') + '">' + item.get('title') + '</option>');
+                });
+                if ($('option[title="' + td.text() + '"]', edt).length == 0) {
+                    edt.append('<option>' + td.text() + '</option>');
+                }
+                edt.append('<option class="sp-wb-cell-input-pl-add">+</option>');
+                edt.attr('value', td.text());
+            } else { 
+                edt = $('<input type="text" class="sp-wb-cell-input">');
+                edt.attr('value', td.text());
+            }
             td.attr('prev-val', td.text());
             td.text('');
             td.append(edt);
