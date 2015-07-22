@@ -66,6 +66,12 @@ def make_model(module, table, deletion_policies):
 def make_id_field(column):
     return models.AutoField(primary_key=True, db_column=column.lower())
 
+# def protect(collector, field, sub_objs, using):
+#     if hasattr(collector, 'delete_blockers'):
+#         collector.delete_blockers.append((field, sub_objs))
+#     else:
+#         models.PROTECT(collector, field, sub_objs, using)
+
 def make_relationship(modelname, rel, deletion_policies):
     """Return a Django relationship field for the given relationship definition.
 
@@ -89,10 +95,11 @@ def make_relationship(modelname, rel, deletion_policies):
     fieldname = '.'.join((modelname, rel.name.lower()))
     if  fieldname in deletion_policies['cascade']:
         on_delete = models.CASCADE
-    elif fieldname in deletion_policies['protect']:
-        on_delete = models.PROTECT
+    # elif fieldname in deletion_policies['protect']:
     else:
-        on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
+        on_delete = models.PROTECT #protect
+    # else:
+    #     on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
 
     def make_to_one(Field):
         """Setup a field of the given 'Field' type which can be either
@@ -247,7 +254,7 @@ def build_models(module, datamodel):
             for att_field in [table.attachments_field]
             if att_field is not None },
 
-          'protect': deletion_policies.protect
+          # 'protect': deletion_policies.protect
           }
 
     return { model.specify_model.tableId: model
