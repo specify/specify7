@@ -66,11 +66,11 @@ def make_model(module, table, deletion_policies):
 def make_id_field(column):
     return models.AutoField(primary_key=True, db_column=column.lower())
 
-# def protect(collector, field, sub_objs, using):
-#     if hasattr(collector, 'delete_blockers'):
-#         collector.delete_blockers.append((field, sub_objs))
-#     else:
-#         models.PROTECT(collector, field, sub_objs, using)
+def protect(collector, field, sub_objs, using):
+    if hasattr(collector, 'delete_blockers'):
+        collector.delete_blockers.append((field, sub_objs))
+    else:
+        models.PROTECT(collector, field, sub_objs, using)
 
 def make_relationship(modelname, rel, deletion_policies):
     """Return a Django relationship field for the given relationship definition.
@@ -97,7 +97,7 @@ def make_relationship(modelname, rel, deletion_policies):
         on_delete = models.CASCADE
     # elif fieldname in deletion_policies['protect']:
     else:
-        on_delete = models.PROTECT #protect
+        on_delete = protect
     # else:
     #     on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
 
