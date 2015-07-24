@@ -199,7 +199,7 @@ define([
                 });
                 return memo;
             }, []);
-            //console.info(rowdata);
+            console.info(JSON.stringify(rowdata));
             api.updateWb(this.options.wbid, rowdata).done(function(back) {
                 console.info(back);
             });
