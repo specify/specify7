@@ -3,3 +3,4 @@
 @import url("base.css");
 @import url("specifyform.css");
 @import url("specifyform-print.css");
+@import url("vendor/jquery.dataTables.css");

@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone',
-    'require', 'icons', 'specifyapi', 'schema',
+    'require', 'icons', 'specifyapi', 'schema', 
     'text!resources/specify_workbench_upload_def.xml!noinline',
-    'jquery-ui'
+    'jquery-ui', 'datatables'
 ], function($, _, Backbone, require, icons, api, schema, wbupdef) {
     "use strict";
 
@@ -12,10 +12,11 @@ define([
         __name__: "WbForm",
         className: "wbs-form table-list-dialog",
         events: {
-            'click select.sp-wb-cell-input': 'unListItem',
+            'click select.sp-wb-cell-input': 'unListedItem',
             'click .sp-wb-cell-input': 'cellEditClk',
             'keydown .sp-wb-cell-input': 'cellEditKeyDown',
-            'click td.sp-wb-cell': 'cellClk'
+            'click td.sp-wb-cell': 'cellClk',
+            'blur .sp-wb-cell-input': 'cellFocusLost'
         },
 
         getMappings: function() {
@@ -85,13 +86,20 @@ define([
             return trs;
         },
 
-        loadRows: function(tbl, rows, start, blksize, loader) {
+        loadRows: function(tblbody, rows, start, blksize, loader) {
             var trs = loader(rows, start, blksize);
-            tbl.append(trs);
+            tblbody.append(trs);
+            if (start == 0) {
+                tblbody.parent().dataTable( {
+                    "paging": false,
+                    "ordering": false,
+                    "info": false
+                });
+            }
             var next = start + blksize;
             if (next < rows.length) {
                 var rowloader = _.bind(this.loadRows, this);
-                _.delay(rowloader, 200, tbl, rows, next, blksize, loader);
+                _.delay(rowloader, 200, tblbody, rows, next, blksize, loader);
             }
         },
 
@@ -103,30 +111,47 @@ define([
             //special behavior for 
             //enter-13,tab-9, esc-27[, dwn-40, up-38, right-39, left-37]
             if (/^(9|13|27)$/.test("" + evt.keyCode)) {
+                //console.info("key down");
                 evt.stopPropagation();
-                this.cellEditEnd($(evt.currentTarget), evt.keyCode == 27);
+                if (evt.keyCode != 9) {
+                    this.cellEditEnd($(evt.currentTarget), evt.keyCode == 27);
+                }
+            }
+        },
+
+        cellFocusLost: function(evt) {
+            //console.info("focus lost");
+            var cell = $(evt.currentTarget);
+            if (!cell.attr('gone')) {
+                this.cellEditEnd(cell, false);
             }
         },
 
         cellEditEnd: function(cell, cancel) {
+            var cellVal = cell.attr('value');
             var td = cell.parent();
             var tr = cell.parent().parent();
+            cell.attr('gone', true);
+            cell.remove();
             if (cancel) {
                 td.text(td.attr('prev-val'));
             } else {
                 td.attr('dirty', true);
-                td.text(cell.attr('value'));
+                td.text(cellVal);
                 tr.attr('dirty', true);
             }
             cell.remove();
         },
 
-        unListItem: function(evt) {
+        unListedItem: function(evt) {
             var sel = $(evt.currentTarget);
             if (sel.attr('value') == '+') {
                 var td = sel.parent();
+                sel.attr('gone', true);
                 sel.remove();
-                td.append($('<input type="text" class="sp-wb-cell-input">'));
+                var edt = $('<input type="text" class="sp-wb-cell-input">');
+                td.append(edt);
+                edt.focus();
             }
         },
 
@@ -153,20 +178,10 @@ define([
             td.attr('prev-val', td.text());
             td.text('');
             td.append(edt);
+            edt.focus();
         },
 
         saveWb: function() {
-            /*
-            //dirty up a row for testing
-            var r  = $(this.$('tr')[5]);
-            r.attr('dirty', true);
-            //dirty up one of its cells
-            var c = $($('td',r)[4]);
-            c.attr('dirty', true);
-            c.text(c.text() + ' dirty');
-             */
-
-            //save...
             var toSave = this.$('tr[dirty=true]');
             var self = this;
             var rowdata = _.reduce(toSave, function(memo, row){
@@ -184,14 +199,14 @@ define([
                 });
                 return memo;
             }, []);
-            console.info(rowdata);
+            //console.info(rowdata);
             api.updateWb(this.options.wbid, rowdata).done(function(back) {
                 console.info(back);
             });
         },
 
         render: function() {
-            console.info('rendering');
+            //console.info('rendering');
 
             var hdrs = _.reduce(this.options.data[0], function(memo, value, idx) {
                 if (idx > 0) {
@@ -199,11 +214,13 @@ define([
                 } else {
                     return memo;
                 }
-            }, '<tr>') + '</tr>';
+            }, '<thead><tr>') + '</tr></thead>';
             
             var tbl = $('<table border="1">');
             tbl.append(hdrs);
-            this.loadRows(tbl, this.options.data, 0, 100, this.getRows);
+            var body = $('<tbody>');
+            tbl.append(body);
+            this.loadRows(body, this.options.data, 0, 500, this.getRows);
             tbl.appendTo(this.el);
             this.getMappings();
             
@@ -216,18 +233,6 @@ define([
                 close: function() { $(this).remove(); },
                 buttons: [{text: 'Save', click: saver }, { text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             });
-            /*var wbid = 656;
-            var rowdata = [{
-                workbenchrowid: 490399,
-                rownumber: 5327,
-                cells: [{
-                    workbenchtemplatemappingitemid: 10464,
-                    celldata: 'Clearly'
-                }]
-            }];
-            api.updateWb(wbid, rowdata).done(function(back) {
-                console.info(back);
-            });*/
             return this;
         }
     });
