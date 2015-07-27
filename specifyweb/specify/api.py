@@ -298,6 +298,12 @@ def cleanData(model, data, agent):
             del cleaned['specifyuser']
         except KeyError:
             pass
+    # guid and timestampcreated should never be updated.
+    for field in ('guid', 'timestampcreated'):
+        try:
+            del cleaned[field]
+        except KeyError:
+            pass
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
