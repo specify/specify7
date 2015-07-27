@@ -280,6 +280,7 @@ def wb_rows(request, wb_id):
     from workbenchtemplatemappingitem where workbenchtemplateid=%s group by workbenchtemplateid;"""
     
     cursor = connection.cursor()
+    cursor.execute('set group_concat_max_len = 8921'); #see doc string above
     cursor.execute(sql, [wb_id, wb_id])
     generated_sql = cursor.fetchone()
 
