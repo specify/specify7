@@ -22,10 +22,6 @@ define([
         this.rules = rules[this.resource.specifyModel.name];
         this.fieldChangeDeferreds = {};
         this.watchers = {};
-        this.deleteBlockers = {};
-        this.rules && _.each(this.rules.deleteBlockers, function(fieldname) {
-            this.deleteBlockers[fieldname] = true;
-        }, this);
         this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
     }
 
@@ -35,54 +31,10 @@ define([
             this.resource.on('change', this.changed, this);
             this.resource.on('add', this.added, this);
             this.resource.on('remove', this.removed, this);
-            this.rules && _.each(this.resource.specifyModel.getAllFields(), function(field) {
-                var fieldname = field.name.toLowerCase();
-                if (field.type === 'one-to-many' && _(this.rules.deleteBlockers).contains(fieldname)) {
-                    this.resource.on("add:" + fieldname, function() {
-                        this.addDeleteBlocker(fieldname);
-                    }, this);
-                    // # possible race condition if getRelatedObject count goes through before
-                    // # the deletion associated following remove event occurs
-                    // # a work around might be to always do destroy({ wait: true })
-                    this.resource.on("remove:" + fieldname, function() {
-                        this.tryToRemDeleteBlocker(fieldname);
-                    }, this);
-                }
-            }, this);
         },
 
         doCustomInit: function() {
             this.rules && this.rules.customInit && this.rules.customInit(this.resource);
-        },
-
-        checkCanDelete: function() {
-            if (this.canDelete()) {
-                this.resource.trigger('candelete');
-                return $.when(true);
-            } else {
-                return whenAll(_.map(this.deleteBlockers, function(__, fieldname) {
-                    return this.tryToRemDeleteBlocker(fieldname);
-                }, this));
-            }
-        },
-
-        canDelete: function() {
-            return _.isEmpty(this.deleteBlockers);
-        },
-
-        addDeleteBlocker: function(fieldname) {
-            this.deleteBlockers[fieldname] = true;
-            this.resource.trigger('deleteblocked');
-        },
-
-        tryToRemDeleteBlocker: function(fieldname) {
-            var _this = this;
-            return this.resource.getRelatedObjectCount(fieldname).done(function(count) {
-                if (count < 1) {
-                    delete _this.deleteBlockers[fieldname];
-                    if (_this.canDelete()) _this.resource.trigger('candelete');
-                }
-            });
         },
 
         changed: function(resource) {

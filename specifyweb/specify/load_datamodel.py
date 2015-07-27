@@ -19,6 +19,12 @@ class Datamodel(object):
         if strict:
             raise Exception("No table with id: %d" % table_id)
 
+    def reverse_relationship(self, relationship):
+        if hasattr(relationship, 'otherSideName'):
+            return self.get_table(relationship.relatedModelName).get_field(relationship.otherSideName)
+        else:
+            return None
+
 class Table(object):
     system = False
 

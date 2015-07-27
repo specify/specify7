@@ -3,7 +3,6 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
 
     return {
         Accession: {
-            deleteBlockers: ['collectionobjects'],
             uniqueIn: {
                 accessionnumber: 'division'
             }
@@ -13,9 +12,6 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
                 role: [{field: 'accession', otherfields: ['agent']}, {field: 'repositoryagreement', otherfields: ['agent']}],
                 agent: [{field: 'accession', otherfields: ['role']}, {field: 'repositoryagreement', otherfields: ['role']}]
             }
-        },
-        Agent: {
-            deleteBlockers: ['catalogerof']
         },
         Appraisal: {
             uniqueIn: {
@@ -76,13 +72,11 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
             }
         },
         Collection: {
-            deleteBlockers: ['collectionobjects'],
             uniqueIn: {
                 name: 'discipline'
             }
         },
         CollectingEvent: {
-            deleteBlockers: ['collectionobjects']
         },
         CollectionObject: {
             uniqueIn: {
@@ -191,9 +185,6 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
         Institution: {
             unique: ['name']
         },
-        Journal: {
-            deleteBlockers: ['referenceworks']
-        },
         Loan: {
             uniqueIn: {
                 loannumber: 'discipline'
@@ -275,12 +266,6 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
                 }
             }
         },
-        Locality: {
-            deleteBlockers: ['collectingevents']
-        },
-        PaleoContext: {
-            deleteBlockers: ['collectionobjects', 'collectingevents', 'localities']
-        },
         Permit: {
             unique: ['permitnumber']
         },
@@ -289,17 +274,12 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
                 name: 'collection'
             }
         },
-        Preparation: {
-            deleteBlockers: ['preparationattachments']
-        },
         PrepType: {
-            deleteBlockers: ['preparations'],
             uniqueIn: {
                 name: 'collection'
             }
         },
         RepositoryAgreement: {
-            deleteBlockers: ['accessions'],
             uniqueIn: {
                 repositoryagreementnumber: 'division',
                 role: {field: 'borrow', otherfields: ['agent']},
@@ -318,23 +298,6 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
                     });
                 }
             }
-        },
-        Geography: {
-            deleteBlockres: ['children', 'acceptedChildren', 'localities']
-        },
-        GeologicTimePeriod: {
-            deleteBlockers: ['children', 'acceptedChildren', 'biostratspaleocontext',
-                             'chronosstratspaleocontext']
-        },
-        LithoStrat: {
-            deleteBlockers: ['children', 'acceptedChildren', 'paleocontexts']
-        },
-        Storage: {
-            deleteBlockers: ['children', 'acceptedChildren', 'containers', 'preparations']
-        },
-        Taxon: {
-            deleteBlockers: ['children', 'determinations', 'preferredTaxonOf',
-                             'acceptedChildren', 'hybridChildren1', 'hybridChildren2']
         }
     };
 });

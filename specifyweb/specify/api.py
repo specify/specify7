@@ -481,6 +481,9 @@ def delete_resource(agent, name, id, version):
     return delete_obj(agent, obj, version)
 
 def delete_obj(agent, obj, version=None, parent_obj=None):
+    # need to delete dependent -to-one records
+    # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
+    # but have to delete the referring record first
     dependents_to_delete = filter(None, (
         get_related_or_none(obj, field.name)
         for field in obj._meta.fields

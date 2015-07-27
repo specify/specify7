@@ -7,26 +7,44 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             'click .delete-button': 'openDialog'
         },
         initialize: function(options) {
-            this.blocked = true;
-            this.model.on('candelete', function() {
-                this.blocked = false;
-                this.button.attr("value", "Delete");
-            }, this);
-
-            this.model.on('deleteblocked', function() {
-                this.blocked = true;
-                this.button.attr("value", "*Delete");
-            }, this);
+            this.waitDialog = null;
         },
         render: function() {
             this.$el.addClass('deletebutton');
             this.button = $('<input type="button" value="*Delete" class="delete-button">').appendTo(this.el);
-            this.model.businessRuleMgr.checkCanDelete();
+            this.promise = $.get('/api/delete_blockers/' +
+                                 this.model.specifyModel.name.toLowerCase() +
+                                 '/' + this.model.id + '/');
+            this.promise.done(this.gotBlockers.bind(this));
             return this;
         },
+        gotBlockers: function(blockers) {
+            this.blockers = blockers;
+            if(blockers.length < 1) {
+                this.button.attr("value", "Delete");
+            }
+        },
         openDialog: function(evt) {
-            evt.preventDefault();
-            this.blocked ? this.openBlockedDialog() : this.openConfirmDialog();
+            evt && evt.preventDefault();
+
+            if (this.promise.state() == 'pending') {
+                this.waitDialog || this.openWaitDialog();
+                this.promise.done(this.openDialog.bind(this, null));
+            } else {
+                this.waitDialog && this.waitDialog.dialog("close");
+                this.blockers.length > 0 ? this.openBlockedDialog() : this.openConfirmDialog();
+            }
+        },
+        openWaitDialog: function() {
+            var _this = this;
+            this.waitDialog && this.waitDialog.dialog('close');
+            this.waitDialog = $('<div title="Wait">' +
+                                '<p>Checking if resource can be deleted.</p>' +
+                                '<div class="progress"></div></div>').dialog({
+                                    close: function() { $(this).remove(); _this.waitDialog = null;},
+                                    modal: true
+                                });
+            $('.progress', this.waitDialog).progressbar({ value: false });
         },
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
@@ -50,10 +68,13 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             var dialog = $('<div title="Delete Blocked">' +
                            '<p><span class="ui-icon ui-icon-alert" style="display: inline-block;"></span>' +
                            'The resource cannot be deleted because it is referenced through the following fields:</p>' +
-                           '<ul></ul></div>').dialog();
+                           '<ul></ul></div>').dialog({
+                               close: function() { $(this).remove(); },
+                               modal: true
+                           });
             var model = this.model.specifyModel;
-            var lis = _.map(this.model.businessRuleMgr.deleteBlockers, function(__, field) {
-                return $('<li>').text(model.getField(field).getLocalizedName() || field)[0];
+            var lis = _.map(this.blockers, function(field) {
+                return $('<li>').text(field)[0];
             });
             $('ul', dialog).append(lis);
         },
