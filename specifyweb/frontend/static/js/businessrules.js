@@ -5,23 +5,6 @@ define([
     "use strict";
     var enabled = true;
 
-    var protect = _(schema.models).reduce(function(acc, m) {
-        return acc.concat(m.getAllFields().filter(function(f) {
-            var reverse = f.isRelationship && f.getReverse();
-            return f.type == 'many-to-one' && !(reverse && reverse.dependent);
-        }));
-    }, []);
-
-    var deleteBlockers = _.reduce(protect, function(acc, f) {
-        var related = f.getRelatedModel();
-        if (related) {
-            acc[related.name] == null && (acc[related.name] = []);
-            acc[related.name].push(f);
-        }
-        return acc;
-    }, {});
-
-
     api.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
     });
@@ -37,16 +20,8 @@ define([
     function BusinessRuleMgr(resource) {
         this.resource = resource;
         this.rules = rules[this.resource.specifyModel.name];
-        this.protectedRelationships = _.object(
-            (deleteBlockers[this.resource.specifyModel.name] || []).map(function(rel) {
-                return [rel.dottedName, rel];
-            }));
         this.fieldChangeDeferreds = {};
         this.watchers = {};
-        this.deleteBlockers = {};
-        _.each(this.protectedRelationships, function(rel, fieldname) {
-            this.deleteBlockers[fieldname] = true;
-        }, this);
         this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
     }
 
@@ -56,66 +31,10 @@ define([
             this.resource.on('change', this.changed, this);
             this.resource.on('add', this.added, this);
             this.resource.on('remove', this.removed, this);
-            // this.rules && _.each(this.resource.specifyModel.getAllFields(), function(field) {
-            //     var fieldname = field.name.toLowerCase();
-            //     if (field.type === 'one-to-many' && _(this.rules.deleteBlockers).contains(fieldname)) {
-            //         this.resource.on("add:" + fieldname, function() {
-            //             this.addDeleteBlocker(fieldname);
-            //         }, this);
-            //         // # possible race condition if getRelatedObject count goes through before
-            //         // # the deletion associated following remove event occurs
-            //         // # a work around might be to always do destroy({ wait: true })
-            //         this.resource.on("remove:" + fieldname, function() {
-            //             this.tryToRemDeleteBlocker(fieldname);
-            //         }, this);
-            //     }
-            // }, this);
         },
 
         doCustomInit: function() {
             this.rules && this.rules.customInit && this.rules.customInit(this.resource);
-        },
-
-        checkCanDelete: function() {
-            if (this.canDelete()) {
-                this.resource.trigger('candelete');
-                return $.when(true);
-            } else {
-                return whenAll(_.map(this.deleteBlockers, function(__, fieldname) {
-                    return this.tryToRemDeleteBlocker(fieldname);
-                }, this));
-            }
-        },
-
-        canDelete: function() {
-            return _.isEmpty(this.deleteBlockers);
-        },
-
-        addDeleteBlocker: function(fieldname) {
-            this.deleteBlockers[fieldname] = true;
-            this.resource.trigger('deleteblocked');
-        },
-
-        tryToRemDeleteBlocker: function(fieldname) {
-            var _this = this;
-            var rel = this.protectedRelationships[fieldname];
-            var collection = new rel.model.ToOneCollection({
-                related: this.resource,
-                field: rel
-            });
-            return collection.getTotalCount().done(function(count) {
-                if (count < 1) {
-                    _this.resource.trigger('removingdeleteblocker', fieldname);
-                    delete _this.deleteBlockers[fieldname];
-                    if (_this.canDelete()) _this.resource.trigger('candelete');
-                }
-            });
-        },
-
-        getDeleteBlockers: function() {
-            return _(this.deleteBlockers).map(function(__, fieldname) {
-                return this.protectedRelationships[fieldname];
-            }, this);
         },
 
         changed: function(resource) {

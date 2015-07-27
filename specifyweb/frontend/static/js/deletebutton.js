@@ -7,54 +7,32 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             'click .delete-button': 'openDialog'
         },
         initialize: function(options) {
-            this.blocked = true;
-            this.needCheck = false;
             this.waitDialog = null;
-
-            this.model.on('candelete', function() {
-                this.blocked = false;
-                this.needCheck = false;
-                this.button.attr("value", "Delete");
-            }, this);
-
-            this.model.on('deleteblocked', function() {
-                this.blocked = true;
-                this.button.attr("value", "*Delete");
-            }, this);
-
-            this.model.on('removingdeleteblocker', function() {
-                if (!this.waitDialog) return;
-                var pb = this.waitDialog && $('.progress', this.waitDialog);
-                var max = pb.progressbar('option', 'max');
-                pb.progressbar({
-                    value: max - this.model.businessRuleMgr.getDeleteBlockers().length
-                });
-            }, this);
         },
         render: function() {
             this.$el.addClass('deletebutton');
             this.button = $('<input type="button" value="*Delete" class="delete-button">').appendTo(this.el);
-            if (this.model.businessRuleMgr.getDeleteBlockers().length > 5) {
-                this.needCheck = true;
-            } else {
-                this.model.businessRuleMgr.checkCanDelete();
-            }
+            this.promise = $.get('/api/delete_blockers/' +
+                                 this.model.specifyModel.name.toLowerCase() +
+                                 '/' + this.model.id + '/');
+            this.promise.done(this.gotBlockers.bind(this));
             return this;
         },
-        checkCanDelete: function() {
-            this.model.businessRuleMgr.checkCanDelete().done(function() {
-                this.needCheck = false;
-                _.defer(this.openDialog.bind(this));
-            }.bind(this));
+        gotBlockers: function(blockers) {
+            this.blockers = blockers;
+            if(blockers.length < 1) {
+                this.button.attr("value", "Delete");
+            }
         },
         openDialog: function(evt) {
             evt && evt.preventDefault();
-            if (this.needCheck) {
-                this.openWaitDialog();
-                _.defer(this.checkCanDelete.bind(this));
+
+            if (this.promise.state() == 'pending') {
+                this.waitDialog || this.openWaitDialog();
+                this.promise.done(this.openDialog.bind(this, null));
             } else {
-                this.waitDialog && this.waitDialog.dialog('close');
-                this.blocked ? this.openBlockedDialog() : this.openConfirmDialog();
+                this.waitDialog && this.waitDialog.dialog("close");
+                this.blockers.length > 0 ? this.openBlockedDialog() : this.openConfirmDialog();
             }
         },
         openWaitDialog: function() {
@@ -66,7 +44,7 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
                                     close: function() { $(this).remove(); _this.waitDialog = null;},
                                     modal: true
                                 });
-            $('.progress', this.waitDialog).progressbar({ value: 0, max: this.model.businessRuleMgr.getDeleteBlockers().length });
+            $('.progress', this.waitDialog).progressbar({ value: false });
         },
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
@@ -95,8 +73,8 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
                                modal: true
                            });
             var model = this.model.specifyModel;
-            var lis = _.map(this.model.businessRuleMgr.getDeleteBlockers(), function(rel) {
-                return $('<li>').text(rel.model.getLocalizedName() + '.' + rel.getLocalizedName())[0];
+            var lis = _.map(this.blockers, function(field) {
+                return $('<li>').text(field)[0];
             });
             $('ul', dialog).append(lis);
         },

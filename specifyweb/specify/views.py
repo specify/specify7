@@ -63,11 +63,8 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = {
-        "%s.%s" % (sub_objs[0].__class__.__name__, field.name):
-        map(lambda sub_obj: sub_obj.id, sub_objs)
-        for field, sub_objs in collector.delete_blockers
-    }
+    result = ["%s.%s" % (sub_objs[0].__class__.__name__, field.name)
+              for field, sub_objs in collector.delete_blockers]
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
