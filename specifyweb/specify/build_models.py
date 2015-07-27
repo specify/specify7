@@ -15,7 +15,7 @@ orderings = {
     'Collector': ('ordernumber',),
 }
 
-def make_model(module, table, deletion_policies):
+def make_model(module, table, datamodel):
     """Returns a Django model class based on the
     definition of a Specify table.
     """
@@ -37,7 +37,7 @@ def make_model(module, table, deletion_policies):
 
     for rel in table.relationships:
         relname = rel.name.lower()
-        relationship = make_relationship(table.django_name, rel, deletion_policies)
+        relationship = make_relationship(table.django_name, rel, datamodel)
         if relationship is not None:
             attrs[relname] = relationship
 
@@ -72,7 +72,7 @@ def protect(collector, field, sub_objs, using):
     else:
         models.PROTECT(collector, field, sub_objs, using)
 
-def make_relationship(modelname, rel, deletion_policies):
+def make_relationship(modelname, rel, datamodel):
     """Return a Django relationship field for the given relationship definition.
 
     modelname - name of the model this field will be part of
@@ -92,14 +92,11 @@ def make_relationship(modelname, rel, deletion_policies):
         # skip many-to-many fields for now.
         return None
 
-    fieldname = '.'.join((modelname, rel.name.lower()))
-    if  fieldname in deletion_policies['cascade']:
+    reverse = datamodel.reverse_relationship(rel)
+    if reverse and reverse.dependent:
         on_delete = models.CASCADE
-    # elif fieldname in deletion_policies['protect']:
     else:
         on_delete = protect
-    # else:
-    #     on_delete = models.SET_NULL if not rel.required else models.DO_NOTHING
 
     def make_to_one(Field):
         """Setup a field of the given 'Field' type which can be either
@@ -244,19 +241,6 @@ field_type_map = {
     }
 
 def build_models(module, datamodel):
-    from specifyweb.businessrules import deletion_policies
-
-    # cascade delete across attachment fields
-    dp = {'cascade': deletion_policies.cascade |
-          { att_field.relatedModelName.capitalize() + '.' +
-            att_field.otherSideName.lower()
-            for table in datamodel.tables
-            for att_field in [table.attachments_field]
-            if att_field is not None },
-
-          # 'protect': deletion_policies.protect
-          }
-
     return { model.specify_model.tableId: model
              for table in datamodel.tables
-             for model in [ make_model(module, table, dp) ]}
+             for model in [ make_model(module, table, datamodel) ]}
