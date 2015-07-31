@@ -6,7 +6,10 @@ define(['jquery', 'jquery-ui'], function($) {
     function execute() {
         if (dialog) return;
 
-        var callGenerate = function() { generate( $('input', this).val() ); };
+        var callGenerate = function(evt) {
+            evt.preventDefault();
+            generate( $('input', this).val() );
+        };
 
         dialog = $('<div title="Generate Master Key">\n' +
                    '<form>\n' +
