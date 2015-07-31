@@ -385,6 +385,7 @@ define([
                 // is it already cached?
                 if (!_.isUndefined(this.dependentResources[fieldName])) {
                     value = this.dependentResources[fieldName];
+                    if (value == null) return null;
                     // recur if we need to traverse more
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
@@ -401,6 +402,7 @@ define([
                         console.warn("expect dependent resource to be in cache");
                         _this.storeDependent(field, value);
                     }
+                    if (value == null) return null;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             default:
