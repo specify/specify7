@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone',
-    'require', 'icons', 'specifyapi', 'schema', 
+    'require', 'icons', 'specifyapi', 'schema',
     'text!resources/specify_workbench_upload_def.xml!noinline',
     'jquery-ui', 'datatables'
 ], function($, _, Backbone, require, icons, api, schema, wbupdef) {
@@ -16,7 +16,8 @@ define([
             'click .sp-wb-cell-input': 'cellEditClk',
             'keydown .sp-wb-cell-input': 'cellEditKeyDown',
             'click td.sp-wb-cell': 'cellClk',
-            'blur .sp-wb-cell-input': 'cellFocusLost'
+            'blur .sp-wb-cell-input': 'cellFocusLost',
+            'click .wb-save': 'saveWb'
         },
 
         getMappings: function() {
@@ -24,7 +25,7 @@ define([
             var maps = new schema.models.WorkbenchTemplateMappingItem.LazyCollection({
                 filters: { workbenchtemplate: this.options.wbid, orderby: 'vieworder' }
             });
-            var done = _.bind(function(){ 
+            var done = _.bind(function(){
                 this.mappings = maps.models;
                 this.setColHdrs(this);
                 this.getFldInfo();
@@ -67,7 +68,7 @@ define([
 
         getRows: function(rows, start, blksize) {
             var trs = '';
-            var stop = start + blksize; 
+            var stop = start + blksize;
             if (stop > rows.length) {
                 stop = rows.length;
             }
@@ -108,7 +109,7 @@ define([
         },
 
         cellEditKeyDown: function(evt) {
-            //special behavior for 
+            //special behavior for
             //enter-13,tab-9, esc-27[, dwn-40, up-38, right-39, left-37]
             if (/^(9|13|27)$/.test("" + evt.keyCode)) {
                 //console.info("key down");
@@ -171,7 +172,7 @@ define([
                 }
                 edt.append('<option class="sp-wb-cell-input-pl-add">+</option>');
                 edt.attr('value', td.text());
-            } else { 
+            } else {
                 edt = $('<input type="text" class="sp-wb-cell-input">');
                 edt.attr('value', td.text());
             }
@@ -181,7 +182,8 @@ define([
             edt.focus();
         },
 
-        saveWb: function() {
+        saveWb: function(evt) {
+            evt.preventDefault();
             var toSave = this.$('tr[dirty=true]');
             var self = this;
             var rowdata = _.reduce(toSave, function(memo, row){
@@ -215,24 +217,15 @@ define([
                     return memo;
                 }
             }, '<thead><tr>') + '</tr></thead>';
-            
+
             var tbl = $('<table border="1">');
             tbl.append(hdrs);
             var body = $('<tbody>');
             tbl.append(body);
             this.loadRows(body, this.options.data, 0, 500, this.getRows);
             tbl.appendTo(this.el);
+            $('<input type="button" value="Save" class="wb-save">').appendTo(this.el);
             this.getMappings();
-            
-            var saver = _.bind(this.saveWb, this);
-            this.$el.dialog({
-                title: "Workbench",
-                maxHeight: 800,
-                width: 1000,
-                modal: true,
-                close: function() { $(this).remove(); },
-                buttons: [{text: 'Save', click: saver }, { text: 'Cancel', click: function() { $(this).dialog('close'); } }]
-            });
             return this;
         }
     });

@@ -1,17 +1,13 @@
 define([
     'jquery', 'underscore', 'backbone',
-    'icons', 'specifyapi', 'wbform',
+    'icons', 'specifyapi', 'navigation',
     'jquery-ui'
-], function($, _, Backbone, icons, api, WbForm) {
+], function($, _, Backbone, icons, api, navigation) {
     "use strict";
-
 
     return Backbone.View.extend({
         __name__: "WbsDialog",
         className: "wbs-dialog table-list-dialog",
-        events: {
-            'click a.intercept-navigation': 'selected'
-        },
         render: function() {
             var entries = _.map(this.options.wbs.models, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
@@ -45,17 +41,10 @@ define([
             }
         },
         dialogEntry: function(wbs_entry) {
-            var img = $('<img>', { src: icons.getIcon('Workbench32x32.png') });
-            var link = $('<a>').addClass("intercept-navigation").text(wbs_entry.get('name'));
+            var img = $('<img>', { src: '/images/Workbench32x32.png' });
+            var href = '/workbench/' + wbs_entry.id + '/';
+            var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wbs_entry.get('name'));
             return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
-        },
-        selected: function(evt) {
-            var index = this.$('a').index(evt.currentTarget);
-            this.$el.dialog('close');
-            var wbid = this.options.wbs.models[index].get('id');
-            var rows = api.getWbRows(wbid).done(function(wb) {
-                new WbForm({ wbid: wbid, data: wb }).render();
-            });
         }
     });
 });
