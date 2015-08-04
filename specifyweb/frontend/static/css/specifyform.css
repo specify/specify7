@@ -712,6 +712,10 @@ a.specify-attachment-original {
     background-image: url(/images/Grid16x16.png);
 }
 
+.context-menu-item.icon-add-child {
+    background-image: url(/images/add.png);
+}
+
 .interactiondialog .ui-icon {
     display: inline-block;
     vertical-align: sub; /*this centers (in chrome)*/
