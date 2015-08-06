@@ -15,7 +15,9 @@ var remoteprefs  = require('./remoteprefs.js');
             'keydown .tree-node-name': 'keydown',
             'click a.open': 'openNode',
             'click a.close': 'closeNode',
-            'child-added': 'childAdded'
+            'child-added': 'childAdded',
+            'move-node': 'moveNode',
+            'receive-node': 'receiveNode'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -35,7 +37,7 @@ var remoteprefs  = require('./remoteprefs.js');
         render: function() {
             this.$el.empty();
 
-            var parent = _.last(this.path);
+            var parent = this.parent();
             var foundParentRank = false;
             var foundThisRank = false;
             var cells = _.map(this.ranks, function(rank) {
@@ -168,7 +170,7 @@ var remoteprefs  = require('./remoteprefs.js');
             return this.childNodes;
         },
         isLastChild: function() {
-            var parent = _.last(this.path);
+            var parent = this.parent();
             return parent == null || this === _.last(parent.childNodes);
         },
         renderChildren: function(rows) {
@@ -223,13 +225,32 @@ var remoteprefs  = require('./remoteprefs.js');
                 }, this);
             }.bind(this));
         },
+        parent: function() {
+            return _.last(this.path);
+        },
         childAdded: function(evt) {
-            evt.stopPropagation();
+            evt && evt.stopPropagation();
             this.children++;
             this.setupExpander();
             this.closeNode();
             this.childNodes = null;
             this._openNode();
+        },
+        childRemoved: function() {
+            this.children--;
+            this.setupExpander();
+            this.closeNode();
+            this.childNodes = null;
+            this._openNode();
+        },
+        moveNode: function(evt) {
+            evt.stopPropagation();
+            this.treeView.moveNode(this);
+            this.closeNode();
+        },
+        receiveNode: function(evt) {
+            evt.stopPropagation();
+            this.treeView.receiveNode(this);
         }
     });
 

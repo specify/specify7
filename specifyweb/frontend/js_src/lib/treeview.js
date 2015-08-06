@@ -106,6 +106,33 @@ function setupContextMenu() {
         }
     });
 
+    function contextMenuCallback(key, options) {
+        var table = this.closest('.tree-view').data('table');
+        var nodeId = this.closest('.tree-node').data('nodeId');
+        var specifyModel = schema.getModel(table);
+        switch (key) {
+        case 'open':
+            window.open(api.makeResourceViewUrl(specifyModel, nodeId));
+            break;
+        case 'query':
+            window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
+            break;
+        case 'add-child':
+            new AddChildDialog({
+                specifyModel: specifyModel,
+                nodeId: nodeId,
+                nodeEl: this.closest('.tree-node')
+            }).render();
+            break;
+        case 'move':
+            this.closest('.tree-node').trigger({type: "move-node"});
+            break;
+        case 'receive':
+            this.closest('.tree-node').trigger({type: "receive-node"});
+            break;
+        }
+    }
+
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
         className: "tree-view",
@@ -119,10 +146,14 @@ function setupContextMenu() {
 
             this.ranks = _.map(this.treeDefItems, function(tdi) { return tdi.get('rankid'); });
             this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
+            this.currentAction = null;
         },
         render: function() {
             this.$el.data('table', this.table);
-            this.setupContextMenu();
+            this.$el.contextMenu({
+                selector: ".tree-node .expander",
+                build: this.buildContextMenu.bind(this)
+            });
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             setTitle(title);
             $('<h1>').text(title).appendTo(this.el);
@@ -141,35 +172,23 @@ function setupContextMenu() {
                 .done(this.gotRows.bind(this));
             return this;
         },
-        setupContextMenu: function() {
-            this.$el.contextMenu({
-                selector: ".tree-node .expander",
-                items: {
+        buildContextMenu: function() {
+            var items = this.currentAction != null ?
+                    this.currentAction.type == 'moving' ? {
+                        'receive': {name: "Move " + this.currentAction.node.name + " here"},
+                        'cancelAction': {name: "Cancel", icon: "cancel"}
+                    } : null
+                : {
                     'open': {name: "Edit", icon: "form"},
                     'query': {name: "Query", icon: "query"},
-                    'add-child': {name: "Add child", icon:"add-child"}
-                },
-                callback: function openForm(key, options) {
-                    var table = this.closest('.tree-view').data('table');
-                    var nodeId = this.closest('.tree-node').data('nodeId');
-                    var specifyModel = schema.getModel(table);
-                    switch (key) {
-                    case 'open':
-                        window.open(api.makeResourceViewUrl(specifyModel, nodeId));
-                        break;
-                    case 'query':
-                        window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
-                        break;
-                    case 'add-child':
-                        new AddChildDialog({
-                            specifyModel: specifyModel,
-                            nodeId: nodeId,
-                            nodeEl: this.closest('.tree-node')
-                        }).render();
-                        break;
-                    }
-                }
-            });
+                    'add-child': {name: "Add child", icon: "add-child"},
+                    'move': {name: "Move", icon: "move"}
+                };
+
+            return {
+                items: items,
+                callback: contextMenuCallback
+            };
         },
         gotRows: function(rows) {
             this.roots = _.map(rows, function(row) {
@@ -229,6 +248,33 @@ function setupContextMenu() {
             // by an open bracket by nature of the construction.
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
             navigation.push(querystring.param(window.location.href, {conformation: encoded}));
+        },
+        moveNode: function(node) {
+            this.currentAction = {
+                type: 'moving',
+                node: node
+            };
+        },
+        receiveNode: function(node) {
+            this.currentAction.receivingNode = node;
+            var model = schema.getModel(this.table);
+            var receiver = new model.Resource({id: node.nodeId});
+            var target = new model.Resource({id: this.currentAction.node.nodeId });
+            $.when(receiver.fetch(), target.fetch())
+                .pipe(this.executeAction.bind(this, target, receiver));
+        },
+        executeAction: function(target, receiver) {
+            var action = this.currentAction;
+            switch (action.type) {
+            case 'moving':
+                target.set('parent', receiver.url());
+                target.save().done(function() {
+                    action.receivingNode.childAdded();
+                    action.node.parent().childRemoved();
+                });
+                break;
+            }
+            this.currentAction = null;
         }
     });
 
