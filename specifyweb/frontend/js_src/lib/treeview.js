@@ -43,18 +43,22 @@ var setTitle = app.setTitle;
                 switch (treeView.currentAction.type) {
                 case 'moving':
                     if (view.rankId < action.node.rankId)
-                        items.receive = {name: "Move " + action.node.name + " here"};
+                        items.receive = {name: "Move " + action.node.name + " here",
+                                         icon: "receive-move",
+                                         accesskey: 'm'};
+                    // else if (view.rankId == action.node.rankId)
+                    //     items.receive = {name: "Merge " + action.node.name + " here"};
                     break;
                 default:
                     console.error('unknown tree action:', treeView.currentAction.type);
                 }
-                items.cancelAction = {name: "Cancel", icon: "cancel"};
+                items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
             } else {
                 items = {
-                    'open': {name: "Edit", icon: "form"},
-                    'query': {name: "Query", icon: "query"},
-                    'add-child': {name: "Add child", icon: "add-child"},
-                    'move': {name: "Move", icon: "move"}
+                    'open': {name: "Edit", icon: "form", accesskey: "e"},
+                    'query': {name: "Query", icon: "query", accesskey: "q"},
+                    'add-child': {name: "Add child", icon: "add-child", accesskey: "a"},
+                    'move': {name: "Move", icon: "move", accesskey: "m"}
                 };
             }
 
