@@ -6,6 +6,40 @@ var Backbone  = require('./backbone.js');
 
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
+var ResourceView = require('./resourceview.js');
+
+    var AddChildDialog = Backbone.View.extend({
+        __name__: "AddChildDialog",
+        initialize: function(options) {
+            this.treeNodeView = options.treeNodeView;
+        },
+        render: function() {
+            var parentNode = new this.specifyModel.Resource({id: this.treeNodeView.nodeId});
+            var newNode = new this.specifyModel.Resource();
+            newNode.set('parent', parentNode.url());
+            new ResourceView({
+                el: this.el,
+                model: newNode,
+                mode: 'edit',
+                noHeader: true
+            }).render()
+                .on('saved', this.childSaved, this)
+                .on('changetitle', this.changeDialogTitle, this);
+
+            this.$el.dialog({
+                width: 'auto',
+                close: function() { $(this).remove(); }
+            });
+            return this;
+        },
+        childSaved: function() {
+            this.$el.dialog('close');
+            this.treeNodeView.childAdded();
+        },
+        changeDialogTitle: function(resource, title) {
+            this.$el.dialog('option', 'title', title);
+        }
+    });
 
     var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
@@ -14,10 +48,7 @@ var remoteprefs  = require('./remoteprefs.js');
         events: {
             'keydown .tree-node-name': 'keydown',
             'click a.open': 'openNode',
-            'click a.close': 'closeNode',
-            'child-added': 'childAdded',
-            'move-node': 'moveNode',
-            'receive-node': 'receiveNode'
+            'click a.close': 'closeNode'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -57,7 +88,7 @@ var remoteprefs  = require('./remoteprefs.js');
                 }
                 return td[0];
             }, this);
-            this.$el.append(cells).data('nodeId', this.nodeId);
+            this.$el.append(cells).data('view', this);
 
             this.$('.tree-node-cell p')
                 .append('<a class="ui-icon expander">')
@@ -228,8 +259,10 @@ var remoteprefs  = require('./remoteprefs.js');
         parent: function() {
             return _.last(this.path);
         },
-        childAdded: function(evt) {
-            evt && evt.stopPropagation();
+        openAddChildDialog: function() {
+            new AddChildDialog({treeNodeView: this}).render();
+        },
+        childAdded: function() {
             this.children++;
             this.setupExpander();
             this.closeNode();
@@ -243,13 +276,11 @@ var remoteprefs  = require('./remoteprefs.js');
             this.childNodes = null;
             this._openNode();
         },
-        moveNode: function(evt) {
-            evt.stopPropagation();
+        moveNode: function() {
             this.treeView.moveNode(this);
             this.closeNode();
         },
-        receiveNode: function(evt) {
-            evt.stopPropagation();
+        receiveNode: function() {
             this.treeView.receiveNode(this);
         }
     });

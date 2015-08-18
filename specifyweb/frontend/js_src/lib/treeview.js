@@ -17,78 +17,6 @@ var querystring  = require('./querystring.js');
 var TreeNodeView = require('./treenodeview.js');
 
 var setTitle = app.setTitle;
-var contextMenuSetup = false;
-
-function setupContextMenu() {
-    if (contextMenuSetup) return;
-    contextMenuSetup = true;
-
-    $.contextMenu({
-        selector: ".tree-node .expander",
-        items: {
-            'open': {name: "Edit", icon: "form"},
-            'query': {name: "Query", icon: "query"},
-            'add-child': {name: "Add child", icon:"add-child"}
-        },
-        callback: function openForm(key, options) {
-            var table = this.closest('.tree-view').data('table');
-            var nodeId = this.closest('.tree-node').data('nodeId');
-            var specifyModel = schema.getModel(table);
-            switch (key) {
-            case 'open':
-                window.open(api.makeResourceViewUrl(specifyModel, nodeId));
-                break;
-            case 'query':
-                window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
-                break;
-            case 'add-child':
-                new AddChildDialog({
-                    specifyModel: specifyModel,
-                    nodeId: nodeId,
-                    nodeEl: this.closest('.tree-node')
-                }).render();
-                break;
-            }
-        }
-    });
-}
-
-    var AddChildDialog = Backbone.View.extend({
-        __name__: "AddChildDialog",
-        initialize: function(options) {
-            this.nodeEl = options.nodeEl;
-            this.specifyModel = options.specifyModel;
-            this.nodeId = options.nodeId;
-        },
-        render: function() {
-            var parentNode = new this.specifyModel.Resource({id: this.nodeId});
-            var newNode = new this.specifyModel.Resource();
-            newNode.set('parent', parentNode.url());
-            new ResourceView({
-                populateForm: populateForm,
-                el: this.el,
-                model: newNode,
-                mode: 'edit',
-                noHeader: true
-            }).render()
-                .on('saved', this.childSaved, this)
-                .on('changetitle', this.changeDialogTitle, this);
-
-            this.$el.dialog({
-                width: 'auto',
-                close: function() { $(this).remove(); }
-            });
-            return this;
-        },
-        childSaved: function() {
-            this.$el.dialog('close');
-            this.nodeEl.trigger({type: 'child-added'});
-        },
-        changeDialogTitle: function(resource, title) {
-            this.$el.dialog('option', 'title', title);
-        }
-    });
-
 
     var TreeHeader = Backbone.View.extend({
         __name__: "TreeHeader",
@@ -106,32 +34,65 @@ function setupContextMenu() {
         }
     });
 
+    function contextMenuBuilder(treeView) {
+        return function ($target, evt) {
+            var view = $target.closest('.tree-node').data('view');
+            var items = {};
+            if (treeView.currentAction != null) {
+                var action = treeView.currentAction;
+                switch (treeView.currentAction.type) {
+                case 'moving':
+                    if (view.rankId < action.node.rankId)
+                        items.receive = {name: "Move " + action.node.name + " here"};
+                    break;
+                default:
+                    console.error('unknown tree action:', treeView.currentAction.type);
+                }
+                items.cancelAction = {name: "Cancel", icon: "cancel"};
+            } else {
+                items = {
+                    'open': {name: "Edit", icon: "form"},
+                    'query': {name: "Query", icon: "query"},
+                    'add-child': {name: "Add child", icon: "add-child"},
+                    'move': {name: "Move", icon: "move"}
+                };
+            }
+
+            return {
+                items: items,
+                callback: contextMenuCallback
+            };
+        };
+    }
+
     function contextMenuCallback(key, options) {
-        var table = this.closest('.tree-view').data('table');
-        var nodeId = this.closest('.tree-node').data('nodeId');
-        var specifyModel = schema.getModel(table);
+        var treeView = this.closest('.tree-view').data('view');
+        var treeNodeView = this.closest('.tree-node').data('view');
+        var specifyModel = schema.getModel(treeView.table);
         switch (key) {
         case 'open':
-            window.open(api.makeResourceViewUrl(specifyModel, nodeId));
+            window.open(api.makeResourceViewUrl(specifyModel, treeNodeView.nodeId));
             break;
         case 'query':
-            window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
+            window.open('/specify/query/fromtree/' + treeNodeView.table + '/' + treeNodeView.nodeId + '/');
             break;
         case 'add-child':
-            new AddChildDialog({
-                specifyModel: specifyModel,
-                nodeId: nodeId,
-                nodeEl: this.closest('.tree-node')
-            }).render();
+            treeNodeView.openAddChildDialog();
             break;
         case 'move':
-            this.closest('.tree-node').trigger({type: "move-node"});
+            treeNodeView.moveNode();
             break;
         case 'receive':
-            this.closest('.tree-node').trigger({type: "receive-node"});
+            treeNodeView.receiveNode();
             break;
+        case 'cancelAction':
+            treeView.cancelAction();
+            break;
+        default:
+            console.error('unknown tree ctxmenu key:', key);
         }
     }
+
 
     var TreeView = Backbone.View.extend({
         __name__: "TreeView",
@@ -149,10 +110,10 @@ function setupContextMenu() {
             this.currentAction = null;
         },
         render: function() {
-            this.$el.data('table', this.table);
+            this.$el.data('view', this);
             this.$el.contextMenu({
                 selector: ".tree-node .expander",
-                build: this.buildContextMenu.bind(this)
+                build: contextMenuBuilder(this)
             });
             var title = schema.getModel(this.table).getLocalizedName() + " Tree";
             setTitle(title);
@@ -171,24 +132,6 @@ function setupContextMenu() {
             $.getJSON(this.baseUrl + 'null/')
                 .done(this.gotRows.bind(this));
             return this;
-        },
-        buildContextMenu: function() {
-            var items = this.currentAction != null ?
-                    this.currentAction.type == 'moving' ? {
-                        'receive': {name: "Move " + this.currentAction.node.name + " here"},
-                        'cancelAction': {name: "Cancel", icon: "cancel"}
-                    } : null
-                : {
-                    'open': {name: "Edit", icon: "form"},
-                    'query': {name: "Query", icon: "query"},
-                    'add-child': {name: "Add child", icon: "add-child"},
-                    'move': {name: "Move", icon: "move"}
-                };
-
-            return {
-                items: items,
-                callback: contextMenuCallback
-            };
         },
         gotRows: function(rows) {
             this.roots = _.map(rows, function(row) {
@@ -274,6 +217,9 @@ function setupContextMenu() {
                 });
                 break;
             }
+            this.currentAction = null;
+        },
+        cancelAction: function() {
             this.currentAction = null;
         }
     });
