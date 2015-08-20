@@ -59,7 +59,9 @@ define([
     var QueryCbx = Backbone.View.extend({
         __name__: "QueryCbx",
         events: {
-            'click .querycbx-edit, .querycbx-display, .querycbx-add': 'display',
+            'click .querycbx-edit, .querycbx-display': 'displayRelated',
+            'click .querycbx-add': 'addRelated',
+            'click .querycbx-clone': 'cloneRelated',
             'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
@@ -196,25 +198,45 @@ define([
                 }
             }).render().$el.on('remove', function() { self.dialog = null; });
         },
-        display: function(event, ui) {
+        displayRelated: function(event) {
             event.preventDefault();
-            var mode = $(event.currentTarget).is('.querycbx-add')? 'add' : 'display';
+            var mode = 'display';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var uri = this.model.get(this.fieldName);
+            if (!uri) return;
+            var related = this.relatedModel.Resource.fromUri(uri);
+            this.openDialog(mode, related);
+        },
+        addRelated: function(event) {
+            event.preventDefault();
+            var mode = 'add';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var related = new this.relatedModel.Resource();
+            this.openDialog(mode, related);
+        },
+        cloneRelated: function(event) {
+            event.preventDefault();
+            var mode = 'clone';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var uri = this.model.get(this.fieldName);
+            if (!uri) return;
+            var related = this.relatedModel.Resource.fromUri(uri);
+            related.fetch()
+                .pipe(function() { return related.clone(); })
+                .done(this.openDialog.bind(this, mode));
+        },
+        closeDialogIfAlreadyOpen: function(mode) {
             if (this.dialog) {
                 // if the open dialog is for selected mode, just close it and don't open a new one
                 var closeOnly = this.dialog.hasClass('querycbx-dialog-' + mode);
                 this.dialog.dialog('close');
                 if (closeOnly) return;
             }
-
-            var related;
-            if (mode === 'add') {
-                related = new this.relatedModel.Resource();
-            } else {
-                var uri = this.model.get(this.fieldName);
-                if (!uri) return;
-                related = this.relatedModel.Resource.fromUri(uri);
-            }
-
+        },
+        openDialog: function(mode, related) {
             this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
             new (require('resourceview'))({

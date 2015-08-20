@@ -86,6 +86,7 @@ define([
         clone: function() {
             var self = this;
             var newResource = Backbone.Model.prototype.clone.call(self);
+            newResource.id = null;
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
@@ -214,7 +215,7 @@ define([
 
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
 
-            if (field.isRelationship) {
+            if (field.isRelationship && value != null) {
                 value = this[ _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource' ](value, fieldName);
             }
             return [fieldName, value];
