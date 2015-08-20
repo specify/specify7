@@ -85,22 +85,42 @@ define(['underscore', 'schemabase'], function(_, schema) {
 
             var parentField = model.getField('parent');
             parentField.isRequired = true;
+            var isAccepted = model.getField('isaccepted');
+            isAccepted.readOnly = true;
+            var fullName = model.getField('fullname');
+            fullName.readOnly = true;
         },
         Geography: function(model) {
             var parentField = model.getField('parent');
             parentField.isRequired = true;
+            var isAccepted = model.getField('isaccepted');
+            isAccepted.readOnly = true;
+            var fullName = model.getField('fullname');
+            fullName.readOnly = true;
         },
         LithoStrat: function(model) {
             var parentField = model.getField('parent');
             parentField.isRequired = true;
+            var isAccepted = model.getField('isaccepted');
+            isAccepted.readOnly = true;
+            var fullName = model.getField('fullname');
+            fullName.readOnly = true;
         },
         GeologicTimePeriod: function(model) {
             var parentField = model.getField('parent');
             parentField.isRequired = true;
+            var isAccepted = model.getField('isaccepted');
+            isAccepted.readOnly = true;
+            var fullName = model.getField('fullname');
+            fullName.readOnly = true;
         },
         Storage: function(model) {
             var parentField = model.getField('parent');
             parentField.isRequired = true;
+            var isAccepted = model.getField('isaccepted');
+            isAccepted.readOnly = true;
+            var fullName = model.getField('fullname');
+            fullName.readOnly = true;
         }
     };
 });

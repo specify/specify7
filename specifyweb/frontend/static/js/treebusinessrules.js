@@ -10,7 +10,7 @@ define(['jquery', 'underscore'], function($, _) {
             });
         },
         run: function(resource, fieldName) {
-            if (treeBusinessRules.isTreeNode(resource) && _(['parent', 'definitionitem', 'name']).contains(fieldName)) {
+            if (_(['parent', 'definitionitem', 'name']).contains(fieldName)) {
                 return treeBusinessRules.buildFullName(resource, [], true).pipe(
                     function(acc) {
                         return {
@@ -46,6 +46,9 @@ define(['jquery', 'underscore'], function($, _) {
                 }
             };
             return $.when(resource.rget('parent', true), resource.rget('definitionitem', true)).pipe(recur);
+        },
+        init: function(resource) {
+            resource.isNew() && resource.set('isaccepted', true);
         }
     };
 

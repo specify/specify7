@@ -14,6 +14,7 @@ define([
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
         resource.saveBlockers = new saveblockers.SaveBlockers(resource);
+        mgr.isTreeNode && treeBusinessRules.init(resource);
         mgr.doCustomInit();
     };
 

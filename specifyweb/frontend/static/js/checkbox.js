@@ -9,6 +9,7 @@ define([
             'change': 'change'
         },
         render: function() {
+            this.$el.prop('readonly') && this.$el.prop('disabled', true);
             if (!this.$el.hasClass('specify-ignore-field')) {
                 var render = _.bind(this._render, this);
                 this.model.getResourceAndField(this.$el.attr('name')).done(render);
