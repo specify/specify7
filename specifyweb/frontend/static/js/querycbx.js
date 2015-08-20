@@ -1,12 +1,12 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates',
+    'dataobjformatters', 'whenall', 'parseselect', 'navigation', 'saveblockers',
+    'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
-], function (require, $, _, Backbone, api, schema, specifyform, templates,
-             dataobjformatters, whenAll, parseselect, localizeForm, navigation, SaveButton,
-             DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
+], function (require, $, _, Backbone, schema, specifyform, templates,
+             dataobjformatters, whenAll, parseselect, navigation, saveblockers,
+             ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
 

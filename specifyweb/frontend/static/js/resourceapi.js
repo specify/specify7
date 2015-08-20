@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
-], function(require, $, _, Backbone, whenAll, assert) {
+    'require', 'jquery', 'underscore', 'backbone', 'assert', 'jquery-bbq'
+], function(require, $, _, Backbone, assert) {
     "use strict";
 
     function eventHandlerForToOne(related, field) {
