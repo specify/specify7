@@ -34,13 +34,19 @@ def tree_save(sender, obj):
             raise BusinessRuleException('Tree object rank is not greater than some of its children.')
 
     if obj.id is None:
-        adding_node(sender, obj)
+        try:
+            adding_node(sender, obj)
+        except: # node numbering is borked.
+            pass
         return
 
     prev_obj = sender.objects.get(id=obj.id)
 
     if prev_obj.parent != obj.parent:
-        moving_node(sender, obj)
+        try:
+            moving_node(sender, obj)
+        except: # node numbering is borked.
+            pass
         return
 
 @orm_signal_handler('pre_delete')
