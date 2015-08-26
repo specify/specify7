@@ -30,7 +30,7 @@ define([
             }
             var remote = _.isNull(resource) || resource != this.model;
 
-            var readOnly = remote || field.isRelationship || this.$el.prop('readonly');
+            var readOnly = remote || field.isRelationship || field.readOnly || this.$el.prop('readonly');
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 

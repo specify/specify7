@@ -24,11 +24,6 @@ define([
     });
 
     var populateField = function(resource, control) {
-        var fieldName = control.attr('name');
-        if (fieldName) {
-            var field = resource.specifyModel.getField(fieldName);
-            field.readOnly && control.prop('readonly', true);
-        }
         var viewBySelector = {
             ':checkbox': function() {return CheckBox;},
             '.specify-spinner': function() {return SpinnerUI;},
