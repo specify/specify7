@@ -1,9 +1,13 @@
+import logging
+
 from django.db.models import F, Q
 
 from specifyweb.specify.lock_tables import lock_tables
 
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
+
+logger = logging.getLogger(__name__)
 
 def is_tree(obj):
     try:
@@ -37,7 +41,7 @@ def tree_save(sender, obj):
         try:
             adding_node(sender, obj)
         except: # node numbering is borked.
-            pass
+            logger.warn("couldn't update tree node numbers when adding node")
         return
 
     prev_obj = sender.objects.get(id=obj.id)
@@ -46,7 +50,7 @@ def tree_save(sender, obj):
         try:
             moving_node(sender, obj)
         except: # node numbering is borked.
-            pass
+            logger.warn("couldn't update tree node numbers when moving node")
         return
 
 @orm_signal_handler('pre_delete')
