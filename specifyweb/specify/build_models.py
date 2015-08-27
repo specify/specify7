@@ -93,7 +93,9 @@ def make_relationship(modelname, rel, datamodel):
         return None
 
     reverse = datamodel.reverse_relationship(rel)
-    if reverse and reverse.dependent:
+    if modelname == "Agent" and rel.name == "specifyUser":
+        on_delete = models.SET_NULL
+    elif reverse and reverse.dependent:
         on_delete = models.CASCADE
     else:
         on_delete = protect
