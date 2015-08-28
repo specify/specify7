@@ -7,6 +7,8 @@
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
+  <script src="http://handsontable.com/dist/handsontable.full.js"></script>
+  <link rel="stylesheet" media="screen" href="http://handsontable.com/dist/handsontable.full.css">
 {% if use_built %}
   <link rel="stylesheet" href="/static/css/main-built.css" />
   <script src="/static/js/main-built.js"></script>
