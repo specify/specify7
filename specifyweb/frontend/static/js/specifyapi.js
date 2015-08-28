@@ -89,10 +89,10 @@ define([
             return $.get(uri);
         },
         getWbRows: function(wbId) {
-            return $.get('/api/wb_rows/' + wbId + '/');
+            return $.get('/api/workbench/rows/' + wbId + '/');
         },
         updateWb: function(wbId, rowdata) {
-            return $.post('/api/update_wb/', {wbId: wbId, rowdata: JSON.stringify(rowdata)});
+            return $.post('/api/workbench/update/', {wbId: wbId, rowdata: JSON.stringify(rowdata)});
         }
     });
 
