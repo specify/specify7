@@ -49,6 +49,7 @@ define([
         __name__: "WbForm",
         className: "wbs-form",
         events: {
+            'click .wb-save': 'save'
         },
         initialize: function(options) {
             this.wbid = options.wbid;
@@ -67,8 +68,11 @@ define([
             var colHeaders = mappings.pipe(makeHeaders);
             var columns = picklists.pipe(makeColumns);
 
+            $('<button class="wb-save">Save</button>').appendTo(this.el);
+            var spreadsheet = $('<div>').appendTo(this.el);
+
             $.when(colHeaders, columns).done(function (colHeaders, columns) {
-                new Handsontable(this.el, {
+                this.hot = new Handsontable(spreadsheet[0], {
                     data: this.data,
                     colHeaders: colHeaders,
                     columns: columns,
@@ -80,6 +84,9 @@ define([
             }.bind(this));
 
             return this;
+        },
+        save: function() {
+            api.updateWb(this.wbid, this.hot.getData());
         }
     });
 });

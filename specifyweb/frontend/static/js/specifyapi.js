@@ -92,7 +92,7 @@ define([
             return $.get('/api/workbench/rows/' + wbId + '/');
         },
         updateWb: function(wbId, rowdata) {
-            return $.post('/api/workbench/update/', {wbId: wbId, rowdata: JSON.stringify(rowdata)});
+            return $.post('/api/workbench/update/' + wbId + '/', JSON.stringify(rowdata));
         }
     });
 
