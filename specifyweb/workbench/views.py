@@ -12,11 +12,17 @@ from specifyweb.specify import models
 
 logger = logging.getLogger(__name__)
 
-
-@require_GET
 @csrf_exempt
 @login_maybe_required
-def wb_rows(request, wb_id):
+@transaction.commit_on_success
+def rows(request, wb_id):
+    if request.method == "GET":
+        return load(wb_id)
+    elif request.method == "PUT":
+        data = json.load(request)
+        return save(wb_id, data)
+
+def load(wb_id):
     cursor = connection.cursor()
     cursor.execute("""
     select workbenchtemplateid
@@ -40,7 +46,6 @@ def wb_rows(request, wb_id):
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-
 def group_rows(rows):
     i = iter(rows)
     row = next(i)
@@ -54,22 +59,18 @@ def group_rows(rows):
             current_row = list(row)
 
 
-@require_POST
-@csrf_exempt
-@login_maybe_required
-@transaction.commit_on_success
-def update_wb(request, wb_id):
-    data = json.load(request)
+def save(wb_id, data):
+    wb_id = int(wb_id)
     cursor = connection.cursor()
 
+    logger.debug("truncating wb %d", wb_id)
     cursor.execute("""
-    delete from workbenchdataitem
-    where workbenchrowid in (
-       select workbenchrowid from workbenchrow
-       where workbenchid = %s
-    )
+    delete wbdi from workbenchdataitem wbdi, workbenchrow wbr
+    where wbr.workbenchrowid = wbdi.workbenchrowid
+    and wbr.workbenchid = %s
     """, [wb_id])
 
+    logger.debug("getting wb mapping items")
     cursor.execute("""
     select workbenchtemplatemappingitemid
     from workbenchtemplatemappingitem i
@@ -82,6 +83,7 @@ def update_wb(request, wb_id):
     wbtmis = [r[0] for r in cursor.fetchall()]
     assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
 
+    logger.debug("inserting new wb values")
     cursor.executemany("""
     insert workbenchdataitem
     (celldata, workbenchtemplatemappingitemid, workbenchrowid)
@@ -93,7 +95,3 @@ def update_wb(request, wb_id):
         if row[0] is not None
     ])
     return http.HttpResponse('', status=204)
-
-    # """= %s
-    # where workbenchtemplatemappingitemid = %s
-    # and workbenchrowid = %s"""

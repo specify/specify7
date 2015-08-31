@@ -49,7 +49,8 @@ define([
         __name__: "WbForm",
         className: "wbs-form",
         events: {
-            'click .wb-save': 'save'
+            'click .wb-save': 'save',
+            'click .wb-load': 'load'
         },
         initialize: function(options) {
             this.wbid = options.wbid;
@@ -69,6 +70,7 @@ define([
             var columns = picklists.pipe(makeColumns);
 
             $('<button class="wb-save">Save</button>').appendTo(this.el);
+            $('<button class="wb-load">Reload</button>').appendTo(this.el);
             var spreadsheet = $('<div>').appendTo(this.el);
 
             $.when(colHeaders, columns).done(function (colHeaders, columns) {
@@ -85,8 +87,16 @@ define([
 
             return this;
         },
+        load: function() {
+            $.get('/api/workbench/rows/' + this.wbid + '/').done(function(data) {
+                this.hot.loadData(data);
+            }.bind(this));
+        },
         save: function() {
-            api.updateWb(this.wbid, this.hot.getData());
+            $.ajax('/api/workbench/rows/' + this.wbid + '/', {
+                data: JSON.stringify(this.hot.getData()),
+                type: "PUT"
+            });
         }
     });
 });

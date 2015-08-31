@@ -87,12 +87,6 @@ define([
                 uri += iPrepId + '/' + iPrepName + '/';
             }
             return $.get(uri);
-        },
-        getWbRows: function(wbId) {
-            return $.get('/api/workbench/rows/' + wbId + '/');
-        },
-        updateWb: function(wbId, rowdata) {
-            return $.post('/api/workbench/update/' + wbId + '/', JSON.stringify(rowdata));
         }
     });
 

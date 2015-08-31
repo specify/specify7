@@ -1,9 +1,9 @@
-define(['specifyapi', 'wbview'], function(api, WBView) {
+define(['jquery', 'specifyapi', 'wbview'], function($, api, WBView) {
     "use strict";
 
     return function(app) {
         app.router.route('workbench/:id/', 'workbench', function(id) {
-            api.getWbRows(id).done(function(data) {
+            $.get('/api/workbench/rows/' + id + '/').done(function(data) {
                 app.setCurrentView(new WBView({ wbid: id, data: data }));
             });
         });
