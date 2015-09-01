@@ -8,8 +8,11 @@ define([
     return Backbone.View.extend({
         __name__: "WbsDialog",
         className: "wbs-dialog table-list-dialog",
+        initialize: function(options) {
+            this.wbs = options.wbs.models;
+        },
         render: function() {
-            var entries = _.map(this.options.wbs.models, this.dialogEntry, this);
+            var entries = _.map(this.wbs, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
                 title: "Workbenches",
@@ -40,11 +43,20 @@ define([
                 }
             }
         },
-        dialogEntry: function(wbs_entry) {
+        dialogEntry: function(wb) {
             var img = $('<img>', { src: '/images/Workbench32x32.png' });
-            var href = '/workbench/' + wbs_entry.id + '/';
-            var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wbs_entry.get('name'));
-            return $('<tr>').append($('<td>').append(img), $('<td>').append(link))[0];
+            var href = '/workbench/' + wb.id + '/';
+            var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wb.get('name'));
+            var entry = $('<tr>').append(
+                $('<td>').append(img),
+                $('<td>').append(link),
+                $('<td class="item-count" style="display:none">'));
+            _.delay(function() {
+                wb.getRelatedObjectCount('workbenchrows').done(function(count) {
+                    $('.item-count', entry).text('(' + count + ')').show();
+                });
+            }, 100);
+            return entry[0];
         }
     });
 });
