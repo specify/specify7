@@ -294,16 +294,23 @@ define([
             // using dot notation. if the named field represents a resource or collection,
             // then prePop indicates whether to return the named object or the contents of
             // the field that represents it
+            return this.getRelated(fieldName, {prePop: prePop});
+        },
+        getRelated: function(fieldName, options) {
+            options || (options = {
+                prePop: false,
+                noBusinessRules: false
+            });
             var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
 
-            var rget = function(_this) { return _this._rget(path); };
+            var rget = function(_this) { return _this._rget(path, options); };
 
             // first make sure we actually have this object.
             return this.fetchIfNotPopulated().pipe(rget).pipe(function(value) {
                 // if the requested value is fetchable, and prePop is true,
                 // fetch the value, otherwise return the unpopulated resource
                 // or collection
-                if (prePop) {
+                if (options.prePop) {
                     if (!value) return value; // ok if the related resource doesn't exist
                     if (_(value.fetchIfNotPopulated).isFunction()) {
                         return value.fetchIfNotPopulated();
@@ -315,7 +322,7 @@ define([
                 return value;
             });
         },
-        _rget: function(path) {
+        _rget: function(path, options) {
             var fieldName = path[0].toLowerCase();
             var field = this.specifyModel.getField(fieldName);
             field && (fieldName = field.name.toLowerCase()); // in case fieldName is an alias
@@ -346,7 +353,7 @@ define([
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = related.Resource.fromUri(value);
+                    toOne = related.Resource.fromUri(value, {noBusinessRules: options.noBusinessRules});
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
                         this.storeDependent(field, toOne);
@@ -528,11 +535,12 @@ define([
             });
         }
     }, {
-        fromUri: function(uri) {
+        fromUri: function(uri, options) {
+            options || (options = {noBusinessRules: false});
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             assert(!_(match).isNull(), "Bad resource uri: " + uri);
             assert(match[1] === this.specifyModel.name.toLowerCase());
-            return new this({ id: parseInt(match[2], 10) });
+            return new this({ id: parseInt(match[2], 10) }, options);
         }
     });
 

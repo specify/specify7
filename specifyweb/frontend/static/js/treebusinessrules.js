@@ -10,8 +10,8 @@ define(['q', 'underscore'], function(Q, _) {
             return acc;
         } else {
             return Q.all([parent, acc, false,
-                          parent.rget('parent', true),
-                          parent.rget('definitionitem', true)
+                          parent.getRelated('parent', {prePop: true, noBusinessRules: true}),
+                          parent.getRelated('definitionitem', {prePop: true, noBusinessRules: true})
                          ]).spread(buildFullName);
         }
     };
@@ -43,13 +43,15 @@ define(['q', 'underscore'], function(Q, _) {
                     });
                 }
             );
-            promise.then(function(result) { console.debug('tree br finished', resource, fieldName, result); });
+            promise.then(function(result) { console.debug('Tree BR finished',
+                                                          {node: resource, field: fieldName},
+                                                          result); });
             return promise;
         },
         buildFullName: function(resource) {
             return Q.all([resource, [], true,
-                          resource.rget('parent', true),
-                          resource.rget('definitionitem', true)
+                          resource.getRelated('parent', {prePop: true, noBusinessRules: true}),
+                          resource.getRelated('definitionitem', {prePop: true, noBusinessRules: true})
                          ]).spread(buildFullName);
         },
         init: function(resource) {
