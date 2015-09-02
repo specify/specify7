@@ -11,7 +11,7 @@ define([
     var dataobjformat = dataobjformatters.format;
 
     function makeQuery(model, searchFieldStr, q) {
-        var query = new schema.models.SpQuery.Resource();
+        var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
         query.set({
             'name': "Ephemeral QueryCBX query",
             'contextname': model.name,
@@ -26,7 +26,7 @@ define([
         var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
 
         var searchFieldSpec = QueryFieldSpec.fromPath([model.name].concat(searchFieldStr.split('.')));
-        var searchField = new schema.models.SpQueryField.Resource();
+        var searchField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
         searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 0,
             'isdisplay': false,
@@ -38,7 +38,7 @@ define([
         fields.add(searchField);
 
         var dispFieldSpec = QueryFieldSpec.fromPath([model.name]);
-        var dispField = new schema.models.SpQueryField.Resource();
+        var dispField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
         dispField.set(dispFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 1,
             'isdisplay': true,

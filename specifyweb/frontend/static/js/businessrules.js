@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyapi', 'whenall', 'saveblockers',
+    'jquery', 'underscore', 'q', 'specifyapi', 'saveblockers',
     'treebusinessrules', 'businessruledefs'
-], function($, _, schema, api, whenAll, saveblockers, treeBusinessRules, rules) {
+], function($, _, Q, api, saveblockers, treeBusinessRules, rules) {
     "use strict";
     var enabled = true;
 
@@ -21,12 +21,16 @@ define([
     function BusinessRuleMgr(resource) {
         this.resource = resource;
         this.rules = rules[this.resource.specifyModel.name];
-        this.fieldChangeDeferreds = {};
+        this.pending = Q(null);
+        this.fieldChangePromises = {};
         this.watchers = {};
         this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
     }
 
     _(BusinessRuleMgr.prototype).extend({
+        addPromise: function(promise) {
+            this.pending = Q.allSettled([this.pending, promise]).thenResolve(null);
+        },
 
         setupEvents: function() {
             this.resource.on('change', this.changed, this);
@@ -34,8 +38,25 @@ define([
             this.resource.on('remove', this.removed, this);
         },
 
+        invokeRule: function(ruleName, fieldName, args) {
+            var resource = this.resource;
+            var promise = this._invokeRule(ruleName, fieldName, args);
+            var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
+            promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
+        },
+        _invokeRule: function(ruleName, fieldName, args) {
+            var rule = this.rules && this.rules[ruleName];
+            if (!rule) return Q('no rule: ' + ruleName);
+            if (fieldName) {
+                rule = rule[fieldName];
+                if (!rule) return Q('no rule: ' + ruleName + ' for: ' + fieldName);
+            }
+            return Q(rule.apply(this, args));
+        },
+
         doCustomInit: function() {
-            this.rules && this.rules.customInit && this.rules.customInit(this.resource);
+            this.addPromise(
+                this.invokeRule('customInit', null, [this.resource]));
         },
 
         changed: function(resource) {
@@ -50,48 +71,58 @@ define([
             if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
-            this.rules && this.rules.onAdded && this.rules.onAdded(resource, collection);
+            this.addPromise(
+                this.invokeRule('onAdded', null, [resource, collection]));
         },
 
         removed: function(resource, collection) {
-            this.rules && this.rules.onRemoved && this.rules.onRemoved(resource, collection);
+            this.addPromise(
+                this.invokeRule('onRemoved', null, [resource, collection]));
         },
 
         checkField: function(fieldName) {
-            var _this = this;
             fieldName = fieldName.toLowerCase();
 
-            var deferred = this.fieldChangeDeferreds[fieldName] = whenAll([
-                this.doCustomCheck(fieldName),
-                this.checkUnique(fieldName),
-                this.isTreeNode ? treeBusinessRules.run(this.resource, fieldName) : null]);
+            var thisCheck = Q.defer();
+            thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
+                                                                    {field: fieldName, result: result}); });
+            this.addPromise(thisCheck.promise);
 
-            deferred.done(function(results) {
-                if (deferred === _this.fieldChangeDeferreds[fieldName]) {
-                    delete _this.fieldChangeDeferreds[fieldName];
-                    _.each(_.compact(results), function(result) {
-                        if (!result.valid) {
-                            _this.resource.saveBlockers.add(result.key, fieldName, result.reason);
-                        } else {
-                            _this.resource.saveBlockers.remove(result.key);
-                        }
-                        result.action && result.action();
-                    });
+            // If another change happens while the previous check is pending,
+            // that check is superseded by checking the new value.
+            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
+            this.fieldChangePromises[fieldName] = thisCheck;
+
+            var checks = [
+                this.invokeRule('customChecks', fieldName, [this.resource]),
+                this.checkUnique(fieldName)
+            ];
+
+            this.isTreeNode && checks.push(treeBusinessRules.run(this.resource, fieldName));
+
+            Q.all(checks).then(function(results) {
+                // Only process these results if the change has not been superseded.
+                return (thisCheck === this.fieldChangePromises[fieldName]) &&
+                    this.processCheckFieldResults(fieldName, results);
+            }.bind(this)).then(function() { thisCheck.resolve('finished'); });
+        },
+        processCheckFieldResults: function(fieldName, results) {
+            var resource = this.resource;
+            return Q.all(results.map(function(result) {
+                if (!result) return null;
+                if (!result.valid) {
+                    resource.saveBlockers.add(result.key, fieldName, result.reason);
+                } else {
+                    resource.saveBlockers.remove(result.key);
                 }
-            });
+                return result.action && result.action();
+            }));
         },
-
-        doCustomCheck: function(fieldName) {
-            return this.rules
-                && this.rules.customChecks
-                && this.rules.customChecks[fieldName]
-                && this.rules.customChecks[fieldName](this.resource);
-        },
-
         checkUnique: function(fieldName) {
             var _this = this;
             var results;
             if (this.rules && this.rules.unique && _(this.rules.unique).contains(fieldName)) {
+                // field value is required to be globally unique.
                 results = [uniqueIn(null, this.resource, fieldName)];
             } else {
                 var toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
@@ -103,9 +134,10 @@ define([
                         fieldNames = fieldNames.concat(def.otherfields);
                         field = def.field;
                     }
-                    return uniqueIn(field, _this.resource, fieldNames); });
-            };
-            whenAll(results).done(function(results) {
+                    return uniqueIn(field, _this.resource, fieldNames);
+                });
+            }
+            Q.all(results).then(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
                     var event = dup.cid + ':' + fieldName;
                     if (_this.watchers[event]) return;
@@ -114,7 +146,8 @@ define([
                     });
                 });
             });
-            return combineUniquenessResults(results).pipe(function(result) {
+            return combineUniquenessResults(results).then(function(result) {
+                console.debug('BR finished checkUnique for', fieldName, result);
                 result.key = 'br-uniqueness-' + fieldName;
                 return result;
             });
@@ -123,10 +156,8 @@ define([
 
 
     var combineUniquenessResults = function(deferredResults) {
-        return whenAll(deferredResults).pipe(function(results) {
-            var invalids = _.filter(results, function(result) {
-                return !result.valid;
-            });
+        return Q.all(deferredResults).then(function(results) {
+            var invalids = _.filter(results, function(result) { return !result.valid; });
             return (invalids.length < 1) ? {valid: true} : {valid: false, reason: _(invalids).pluck('reason').join(', ')};
         });
     };
@@ -176,7 +207,7 @@ define([
                 valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
         }, true);
         if (allNullOrUndefinedToOnes) {
-            return $.when(valid);
+            return Q(valid);
         }
 
         var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
@@ -204,9 +235,9 @@ define([
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
             if (dupes.length > 0) {
                 invalid.localDupes = dupes;
-                return $.when(invalid);
+                return Q(invalid);
             }
-            return resource.rget(toOneField).pipe(function(related) {
+            return Q(resource.rget(toOneField)).then(function(related) {
                 if (!related) return valid;
                 var filters = {};
                 for (var f = 0; f < valueField.length; f++) {
@@ -217,7 +248,7 @@ define([
                     field: toOneFieldInfo,
                     filters: filters
                 });
-                return others.fetch().pipe(function() {
+                return Q(others.fetch()).then(function() {
                     var inDatabase = others.chain().compact();
                     inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
                         return !(resource.collection.get(other.id));
@@ -237,7 +268,7 @@ define([
             var others = new resource.specifyModel.LazyCollection({
                 filters: filters
             });
-            return others.fetch().pipe(function() {
+            return Q(others.fetch()).then(function() {
                 if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
                     return invalid;
                 } else {
