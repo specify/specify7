@@ -80,23 +80,35 @@ define([
                     columns: columns,
                     minSpareRows: 1,
                     rowHeaders: true,
-                    contextMenu: true,
-                    manualColumnResize: true
+                    manualColumnResize: true,
+                    columnSorting: true,
+                    sortIndicator: true
                 });
             }.bind(this));
 
             return this;
         },
         load: function() {
+            var dialog = $('<div>Loading...</div>').dialog({
+                title: 'Loading',
+                modal: true,
+                close: function() {$(this).remove();}
+            });
             $.get('/api/workbench/rows/' + this.wbid + '/').done(function(data) {
                 this.hot.loadData(data);
+                dialog.dialog('close');
             }.bind(this));
         },
         save: function() {
+            var dialog = $('<div>Saving...</div>').dialog({
+                title: 'Saving',
+                modal: true,
+                close: function() {$(this).remove();}
+            });
             $.ajax('/api/workbench/rows/' + this.wbid + '/', {
                 data: JSON.stringify(this.hot.getData()),
                 type: "PUT"
-            });
+            }).done(function() { dialog.dialog('close'); });
         }
     });
 });
