@@ -23,41 +23,31 @@ def rows(request, wb_id):
         return save(wb_id, data)
 
 def load(wb_id):
+    wb = models.Workbench.objects.get(id=wb_id)
+    wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
+        workbenchtemplate=wb.workbenchtemplate).order_by('vieworder')
+
+    select_fields = ["r.workbenchrowid"]
+    for wbtmi in wbtmis:
+        select_fields.append("cell%d.celldata" % wbtmi.vieworder)
+    from_clause = ["workbenchrow r"]
+    for wbtmi in wbtmis:
+        from_clause.append("left join workbenchdataitem cell%(vieworder)d "
+                           "on cell%(vieworder)d.workbenchrowid = r.workbenchrowid "
+                           "and cell%(vieworder)d.workbenchtemplatemappingitemid = %(wbtmi_id)d"
+                           % {'vieworder': wbtmi.vieworder, 'wbtmi_id': wbtmi.id})
+    sql = '\n'.join([
+        "select",
+        ",\n".join(select_fields),
+        "from",
+        "\n".join(from_clause),
+        "where workbenchid = %s",
+        "order by r.rownumber",
+    ])
     cursor = connection.cursor()
-    cursor.execute("""
-    select workbenchtemplateid
-    from workbench
-    where workbenchid = %s
-    """, [wb_id])
-
-    wbtm = cursor.fetchone()[0]
-
-    sql = """
-    select r.workbenchrowid, celldata
-    from workbenchrow r
-    join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
-    left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
-      and mi.workbenchtemplatemappingitemid = i.workbenchtemplatemappingitemid
-    where workbenchid = %s order by r.rownumber, vieworder
-    """
-    cursor = connection.cursor()
-    cursor.execute(sql, [wbtm, wb_id])
-    rows = list(group_rows(cursor.fetchall()))
-
+    cursor.execute(sql, [wb_id])
+    rows = cursor.fetchall()
     return http.HttpResponse(toJson(rows), content_type='application/json')
-
-def group_rows(rows):
-    i = iter(rows)
-    row = next(i)
-    current_row = list(row)
-    while True:
-        row = next(i)
-        if row[0] == current_row[0]:
-            current_row.append(row[1])
-        else:
-            yield current_row
-            current_row = list(row)
-
 
 def save(wb_id, data):
     wb_id = int(wb_id)
