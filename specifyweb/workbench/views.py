@@ -82,6 +82,6 @@ def save(wb_id, data):
         (celldata, wbtmi, row[0])
         for row in data
         for wbtmi, celldata in zip(wbtmis, row[1:])
-        if row[0] is not None
+        if row[0] is not None and celldata is not None
     ])
     return http.HttpResponse('', status=204)
