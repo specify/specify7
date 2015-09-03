@@ -16,6 +16,7 @@
         'textbase'       : "vendor/text",
         'moment'         : "vendor/moment",
         'd3'             : "vendor/d3",
+        'q'              : "vendor/q-1.4.1",
         'resources'      : '/static/config',
         'tmpls'          : '../html/templates',
         'context'        : '/context',
