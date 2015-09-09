@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'whenall',
     'require', 'icons', 'specifyapi', 'schema',
+    'handsontable',
     'text!resources/specify_workbench_upload_def.xml!noinline',
-    'jquery-ui', 'datatables'
-], function($, _, Backbone, whenAll, require, icons, api, schema, wbupdef) {
+    'jquery-ui'
+], function($, _, Backbone, whenAll, require, icons, api, schema, Handsontable, wbupdef) {
     "use strict";
 
     var wbUploadDef = $.parseXML(wbupdef.toLowerCase());
@@ -69,9 +70,11 @@ define([
             var colHeaders = mappings.pipe(makeHeaders);
             var columns = picklists.pipe(makeColumns);
 
-            $('<button class="wb-save">Save</button>').appendTo(this.el);
-            $('<button class="wb-load">Reload</button>').appendTo(this.el);
             var spreadsheet = $('<div>').appendTo(this.el);
+            $('<button class="wb-save" disabled>Save</button>').appendTo(this.el);
+            $('<button class="wb-load" disabled>Reload</button>').appendTo(this.el);
+
+            var enableButtons = function() { this.$('button').prop('disabled', false); }.bind(this);
 
             $.when(colHeaders, columns).done(function (colHeaders, columns) {
                 this.hot = new Handsontable(spreadsheet[0], {
@@ -83,7 +86,10 @@ define([
                     manualColumnResize: true,
                     columnSorting: true,
                     sortIndicator: true,
-                    contextMenu: true
+                    contextMenu: true,
+                    afterCreateRow: enableButtons,
+                    afterRemoveRow: enableButtons,
+                    afterChange: function(change, source) { source === 'loadData' || enableButtons(); }
                 });
             }.bind(this));
 
@@ -99,6 +105,7 @@ define([
                 this.data = data;
                 this.hot.loadData(data);
                 dialog.dialog('close');
+                this.loaded();
             }.bind(this));
         },
         save: function() {
@@ -114,7 +121,11 @@ define([
                 this.data = data;
                 this.hot.loadData(data);
                 dialog.dialog('close');
+                this.loaded();
             }.bind(this));
+        },
+        loaded: function() {
+            this.$('button').prop('disabled', true);
         }
     });
 });
