@@ -10,7 +10,6 @@ define(['jquery', 'specifyapi', 'wbview'], function($, api, WBView) {
             });
             $.get('/api/workbench/rows/' + id + '/').done(function(data) {
                 app.setCurrentView(new WBView({ wbid: id, data: data }));
-                dialog.dialog('close');
             });
         });
     };

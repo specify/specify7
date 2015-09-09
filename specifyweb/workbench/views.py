@@ -72,6 +72,39 @@ def save(wb_id, data):
 
     wbtmis = [r[0] for r in cursor.fetchall()]
     assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
+    # import ipdb; ipdb.set_trace()
+    logger.debug("clearing row numbers")
+    cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
+                   [wb_id])
+
+    new_rows = [(i, wb_id) for i, row in enumerate(data) if row[0] is None]
+    logger.debug("inserting %d new rows", len(new_rows))
+    cursor.executemany("insert workbenchrow(rownumber, workbenchid) values (%s, %s)",
+                       new_rows)
+
+    logger.debug("get new row ids")
+    cursor.execute("""
+    select rownumber, workbenchrowid from workbenchrow
+    where workbenchid = %s and rownumber is not null
+    """, [wb_id])
+    new_row_id = dict(cursor.fetchall())
+
+    logger.debug("updating row numbers")
+    cursor.executemany("""
+    update workbenchrow set rownumber = %s
+    where workbenchrowid = %s
+    """, [
+        (i, row[0]) for i, row in enumerate(data)
+        if row[0] is not None
+    ])
+
+    logger.debug("removing deleted rows")
+    cursor.execute("""
+    delete from workbenchrow
+    where workbenchid = %s
+    and rownumber is null
+    """, [wb_id])
+    logger.debug("deleted %d rows", cursor.rowcount)
 
     logger.debug("inserting new wb values")
     cursor.executemany("""
@@ -79,9 +112,9 @@ def save(wb_id, data):
     (celldata, workbenchtemplatemappingitemid, workbenchrowid)
     values (%s, %s, %s)
     """, [
-        (celldata, wbtmi, row[0])
-        for row in data
+        (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
+        for i, row in enumerate(data)
         for wbtmi, celldata in zip(wbtmis, row[1:])
-        if row[0] is not None and celldata is not None
+        if celldata is not None
     ])
-    return http.HttpResponse('', status=204)
+    return load(wb_id)

@@ -82,7 +82,8 @@ define([
                     rowHeaders: true,
                     manualColumnResize: true,
                     columnSorting: true,
-                    sortIndicator: true
+                    sortIndicator: true,
+                    contextMenu: true
                 });
             }.bind(this));
 
@@ -95,6 +96,7 @@ define([
                 close: function() {$(this).remove();}
             });
             $.get('/api/workbench/rows/' + this.wbid + '/').done(function(data) {
+                this.data = data;
                 this.hot.loadData(data);
                 dialog.dialog('close');
             }.bind(this));
@@ -108,7 +110,11 @@ define([
             $.ajax('/api/workbench/rows/' + this.wbid + '/', {
                 data: JSON.stringify(this.hot.getData()),
                 type: "PUT"
-            }).done(function() { dialog.dialog('close'); });
+            }).done(function(data) {
+                this.data = data;
+                this.hot.loadData(data);
+                dialog.dialog('close');
+            }.bind(this));
         }
     });
 });
