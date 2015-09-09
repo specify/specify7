@@ -11,7 +11,10 @@ define([
         this.name = fieldDef.name;
         this.dottedName = this.model.name + '.' + this.name;
 
-        this.readOnly = this.name == 'guid' || this.name == 'timestampcreated'; // kludge
+        this.readOnly = (this.name == 'guid' &&
+                         this.model.name != 'Taxon' &&
+                         this.model.name != 'Geography') ||
+                         this.name == 'timestampcreated'; // kludge
 
         this.isRequired = fieldDef.required;
         this.type = fieldDef.type;

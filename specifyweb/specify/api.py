@@ -298,12 +298,19 @@ def cleanData(model, data, agent):
             del cleaned['specifyuser']
         except KeyError:
             pass
-    # guid and timestampcreated should never be updated.
-    for field in ('guid', 'timestampcreated'):
+
+    # guid should only be updatable for taxon and geography
+    if model not in (models.Taxon, models.Geography):
         try:
-            del cleaned[field]
+            del cleaned['guid']
         except KeyError:
             pass
+
+    # timestampcreated should never be updated.
+    try:
+        del cleaned['timestampcreated']
+    except KeyError:
+        pass
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
