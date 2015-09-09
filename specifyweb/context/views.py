@@ -38,11 +38,12 @@ def login(request):
         def clean(self):
             AuthenticationForm.clean(self)
             collection = self.cleaned_data.get('collection')
-            try:
-                Agent.objects.get(division=collection.discipline.division,
-                                  specifyuser=self.user_cache)
-            except Agent.DoesNotExist:
-                raise forms.ValidationError("The user has no agent for the chosen collection.")
+            if self.user_cache is not None:
+                try:
+                    Agent.objects.get(division=collection.discipline.division,
+                                      specifyuser=self.user_cache)
+                except Agent.DoesNotExist:
+                    raise forms.ValidationError("The user has no agent for the chosen collection.")
             collection_cell.append(collection.id)
             return self.cleaned_data
 
