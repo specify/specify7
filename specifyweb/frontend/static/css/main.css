@@ -3,7 +3,7 @@
 @import url("base.css");
 @import url("specifyform.css");
 @import url("specifyform-print.css");
-@import url("vendor/jquery.dataTables.css");
+@import url("vendor/handsontable.full.css");
 
 .wbs-form .ht_clone_top {
     z-index: 97;

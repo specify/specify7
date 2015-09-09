@@ -10,7 +10,7 @@
         'jquery-ui'      : "vendor/jquery-ui-1.10.2.custom",
         'jquery-bbq'     : "vendor/jquery.ba-bbq",
         'jquery-ctxmenu' : "vendor/jquery.contextMenu.v1.6.6",
-        'jquery-datatbls': "vendor/jquery.dataTables.min",
+        'handsontable'   : "vendor/handsontable.full",
         'underscore'     : "vendor/underscore",
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
@@ -26,9 +26,9 @@
         'jquery-ui'      : ['jquery'],
         'jquery-bbq'     : ['jquery'],
         'jquery-ctxmenu' : ['jquery', 'jquery-ui'],
-        'jquery-datatbls': ['jquery'],
         'underscore'     : { exports: '_' },
         'moment'         : { exports: 'moment' },
+        'handsontable'   : { exports: 'Handsontable' },
         'backbone-orig'  : { deps: ['jquery', 'underscore'], exports: 'Backbone' }
     }
 })

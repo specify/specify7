@@ -72,7 +72,7 @@ def save(wb_id, data):
 
     wbtmis = [r[0] for r in cursor.fetchall()]
     assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
-    # import ipdb; ipdb.set_trace()
+
     logger.debug("clearing row numbers")
     cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
                    [wb_id])
