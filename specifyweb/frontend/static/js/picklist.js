@@ -7,11 +7,7 @@ define([
     var objformat = dataobjformatters.format;
 
     function buildPickListInfo(info, resource, field) {
-        if (!field)
-            throw "can't setup picklist for unknown field " + info.model.specifyModel.name + "." + info.fieldName;
-
         _.extend(info, {
-            field: field,
             resource: resource,
             remote: resource !== info.model
         });
@@ -19,7 +15,14 @@ define([
         if (resource.specifyModel.name === 'Agent' && field.name === 'agentType') {
             info.pickListItems = builtInPL.agentType;
             info.builtIn = true;
+        } else if (resource.specifyModel.name === 'PickList' && info.fieldName === 'typesCBX') {
+            field = resource.specifyModel.getField('type');
+            info.pickListItems = builtInPL.typesCBX;
+            info.builtIn = true;
         } else {
+            if (!field)
+                throw "can't setup picklist for unknown field " + info.model.specifyModel.name + "." + info.fieldName;
+
             info.pickListName || (info.pickListName = field.getPickList());
 
             if (info.pickListName === 'UserType') {
@@ -32,6 +35,7 @@ define([
             }
         }
 
+        info.field = field;
         return getPickList(info);
     }
 
@@ -163,7 +167,7 @@ define([
         source: function(request, response) {
             var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i");
             var options = this.info.pickListItems.map(function(item) {
-                return (item.value && matcher.test(item.title)) &&
+                return (item.value != null && matcher.test(item.title)) &&
                     {
                         label: item.title,
                         value: item.title,

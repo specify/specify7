@@ -7,6 +7,9 @@ define(['underscore'], function(_) {
         }),
         userType: _(["Manager", "FullAccess", "LimitedAccess", "Guest"]).map(function(type) {
             return { value: type, title: type };
+        }),
+        typesCBX: _(['User Defined Items', 'Entire Table', 'Field From Table']).map(function(type, i) {
+            return { value: i, title: type };
         })
     };
 });
