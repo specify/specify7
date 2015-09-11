@@ -1,14 +1,14 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'schema', 'backbone', 'dataobjformatters',
-    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall', 'q'
-], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, whenAll, Q) {
+    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'q'
+], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, Q) {
     "use strict";
 
     var objformat = dataobjformatters.format;
 
     function buildPickListInfo(info, resource, field) {
         if (!field)
-            throw "can't setup picklist for unknown field " + this.model.specifyModel.name + "." + (this.$el.attr('name'));
+            throw "can't setup picklist for unknown field " + info.model.specifyModel.name + "." + info.fieldName;
 
         _.extend(info, {
             field: field,
@@ -22,7 +22,7 @@ define([
         } else {
             info.pickListName || (info.pickListName = field.getPickList());
 
-            if (info.pickListName == 'UserType') {
+            if (info.pickListName === 'UserType') {
                 info.pickListItems = builtInPL.userType;
                 info.builtIn = true;
             } else {
@@ -46,7 +46,7 @@ define([
 
         info.limit = picklist.get('sizelimit');
         if (info.limit < 1) info.limit = 0;
-        var plModel;
+
         switch (picklist.get('type')) {
         case 0: // items in picklistitems table
             return getPickListItems(info);
@@ -92,8 +92,8 @@ define([
     }
 
     function getItemsFromField(info) {
-        var plModel = schema.getModel(info.picklist.get('tablename'));
-        var plFieldName = info.picklist.get('fieldname');
+        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plFieldName = info.pickList.get('fieldname');
         return Q(api.getRows(plModel, {
             limit: info.limit,
             fields: [plFieldName],
@@ -112,23 +112,18 @@ define([
     return Backbone.View.extend({
         __name__: "PickListView",
         events: {
-            change: 'setValueIntoModel'
+            autocompleteselect: 'selected',
+            autocompletechange: 'changed'
         },
-        initialize: function(options) {
+        initialize: function() {
             var info = {
                 model: this.model,
+                fieldName: this.$el.attr('name'),
                 pickListName: this.$el.data('specify-picklist')
             };
 
-            this.infoPromise = Q(this.model.getResourceAndField(this.$el.attr('name')))
+            this.infoPromise = Q(this.model.getResourceAndField(info.fieldName))
                 .spread(buildPickListInfo.bind(null, info));
-        },
-        setValueIntoModel: function() {
-            var value = this.$el.val() || null;
-            if (this.info.pickListItems === builtInPL.agentType && value != null) {
-                value = parseInt(value, 10);
-            }
-            this.model.set(this.info.field.name, value);
         },
         render: function() {
             this.infoPromise.done(this._render.bind(this));
@@ -142,57 +137,103 @@ define([
                 this.toolTipMgr = new ToolTipMgr(this).enable();
                 this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, info.field.name);
             }
-            this.setupOptions();
 
-            info.resource.on('change:' + info.field.name.toLowerCase(), function() {
-                this.$el.val(info.resource.get(info.field.name));
-            }, this);
+            info.resource.on('change:' + info.field.name.toLowerCase(), this.resetValue, this);
+
+            var control = this.$el;
+            var input = $('<input type="text">')
+                    .addClass(control.attr('class'))
+                    .attr('disabled', control.attr('disabled'));
+
+            control.replaceWith(input);
+            this.setElement(input);
+            input.autocomplete({
+                    delay: 0,
+                    minLength: 0,
+                    source: this.source.bind(this)
+            });
+
+            this.resetValue();
         },
-        setupOptions: function() {
-            var items = this.info.pickListItems;
+        getCurrentValue: function() {
             var value = this.info.resource.get(this.info.field.name);
+            var item = _.find(this.info.pickListItems, function(item) { return item.value === value; });
+            return item ? item.title : value;
+        },
+        source: function(request, response) {
+            var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i");
+            var options = this.info.pickListItems.map(function(item) {
+                return (item.value && matcher.test(item.title)) &&
+                    {
+                        label: item.title,
+                        value: item.title,
+                        item: item
+                    };
+            }).filter(function(option) { return !!option; });
+            response(options);
+        },
+        selected: function(event, ui) {
+            var value = ui.item.item.value;
+            this.model.set(this.info.field.name, value);
+        },
+        changed: function(event, ui) {
+            if (ui.item) { return; }
 
-            // value maybe undefined, null, a string, or a Backbone model
-            // if the latter, we use the URL of the object to represent it
-            if (value != null ? value.url : void 0) value = value.url();
-
-            this.$el.append('<optgroup><option>Add value</option></optgroup>');
-
-            if (!this.$el.hasClass('specify-required-field')) {
-                // need an option for no selection
-                this.$el.append('<option>');
-            }
-
-            var options = items
-                    .map(function(item) { return !!item.value && $('<option>', {value: item.value}).text(item.title)[0]; })
-                    .filter(function(option) { return !!option; });
-
-            this.$el.append(options);
-
-            // value will be undefined when creating picklist for new resource
-            // so we set the model to have whatever the select element is set to
-            if (_.isUndefined(value)) {
-                this.setValueIntoModel();
+            if (!this.$el.hasClass('specify-required-field') && this.$el.val() === '') {
+                this.model.set(this.info.field.name, null);
                 return;
             }
 
-            // value is now either null or a string
-            value = value || '';
-
-            if (value && _.all(items, function(item) { return item.value.toString() !== value.toString(); })) {
-                // current value is not in picklist
-                this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
+            if (this.info.builtIn || this.info.pickList.get('readonly')) {
+                this.resetValue();
+            } else {
+                this.addValue(this.$el.val());
             }
-
-            if (!value && this.$el.hasClass('specify-required-field')) {
-                // value is required but missing from database
-                this.$el.append('<option>Invalid null selection</option>');
+        },
+        resetValue: function() {
+            this.$el.val(this.getCurrentValue());
+        },
+        addValue: function(value) {
+            if (this.info.pickList.get('type') === 2) {
+                this.model.set(this.info.field.name, value);
+                return;
             }
+            if (this.info.pickList.get('type') !== 0)
+                throw new Error("adding item to wrong type of picklist");
 
-            this.$el.val(value);
+            var resetValue = this.resetValue.bind(this);
+            var doAddValue = this.doAddValue.bind(this, value);
 
-            // run business rules to make sure current value is acceptable
-            this.model.businessRuleMgr.checkField(this.info.field.name);
+            var d = $('<div>Add value, <span class="pl-value"></span>, ' +
+                      'to the pick list named ' + '<span class="pl-name"></span>?' +
+                      '</div>')
+                    .dialog({
+                        title: "Add to pick list",
+                        modal: true,
+                        close: function() { $(this).remove(); },
+                        buttons: [
+                            { text: 'Add', click: function() { $(this).dialog('close'); doAddValue(); } },
+                            { text: 'Cancel', click: function() { $(this).dialog('close'); resetValue(); } }
+                        ]
+                    });
+            d.find('.pl-value').text(value);
+            d.find('.pl-name').text(this.info.pickList.get('name'));
+        },
+        doAddValue: function(value) {
+            var info = this.info;
+            var model = this.model;
+
+            Q(info.pickList.rget('picklistitems'))
+                .then(function(plItems) {
+                    var item = new schema.models.PickListItem.Resource();
+                    item.set({ title: value, value: value });
+                    plItems.add(item);
+                    return Q(info.pickList.save());
+                })
+                .then(function() {
+                    info.pickListItems.push({ title: value, value: value });
+                    model.set(info.field.name, value);
+                });
         }
     });
 });
