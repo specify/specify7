@@ -1,44 +1,162 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'schema', 'backbone', 'dataobjformatters',
-    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall'
-], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, whenAll) {
+    'saveblockers', 'builtinpicklists', 'tooltipmgr', 'whenall', 'q'
+], function($, _, api, schema, Backbone, dataobjformatters, saveblockers, builtInPL, ToolTipMgr, whenAll, Q) {
     "use strict";
 
     var objformat = dataobjformatters.format;
+
+    function buildPickListInfo(info, resource, field) {
+        if (!field)
+            throw "can't setup picklist for unknown field " + this.model.specifyModel.name + "." + (this.$el.attr('name'));
+
+        _.extend(info, {
+            field: field,
+            resource: resource,
+            remote: resource !== info.model
+        });
+
+        if (resource.specifyModel.name === 'Agent' && field.name === 'agentType') {
+            info.pickListItems = builtInPL.agentType;
+            info.builtIn = true;
+        } else {
+            info.pickListName || (info.pickListName = field.getPickList());
+
+            if (info.pickListName == 'UserType') {
+                info.pickListItems = builtInPL.userType;
+                info.builtIn = true;
+            } else {
+                if (!info.pickListName)
+                    throw "can't determine picklist for field " + resource.specifyModel.name + "." + field.name;
+                info.builtIn = false;
+            }
+        }
+
+        return getPickList(info);
+    }
+
+    function getPickList(info) {
+        return info.builtIn ? info :
+            Q(api.getPickListByName(info.pickListName))
+            .then(gotPickList.bind(null, info));
+    }
+
+    function gotPickList(info, picklist) {
+        info.pickList = picklist;
+
+        info.limit = picklist.get('sizelimit');
+        if (info.limit < 1) info.limit = 0;
+        var plModel;
+        switch (picklist.get('type')) {
+        case 0: // items in picklistitems table
+            return getPickListItems(info);
+
+        case 1: // items are objects from a table
+            return getItemsFromTable(info);
+
+        case 2: // items are fields from a table
+            return getItemsFromField(info);
+
+        default:
+            throw new Error('unknown picklist type');
+        }
+    }
+
+    function getPickListItems(info) {
+        // picklistitems is a dependent field
+        return Q(info.pickList.rget('picklistitems'))
+            .then(function(plItemCollection) {
+                info.pickListItems = plItemCollection.toJSON();
+                return info;
+            });
+    }
+
+    function getItemsFromTable(info) {
+        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plItemCollection = new plModel.LazyCollection();
+        return Q(plItemCollection.fetch({ limit: info.limit }))
+            .then(function() { return formatItems(info, plItemCollection); });
+    }
+
+    function formatItems(info, plItemCollection) {
+        var formatPromises = plItemCollection.map(formatItem.bind(null, info));
+        return Q.all(formatPromises).then(function (items) {
+            info.pickListItems = items;
+            return info;
+        });
+    }
+
+    function formatItem(info, item) {
+        return Q(objformat(item, info.pickList.get('formatter')))
+            .then(function(title) { return {value: item.url(), title: title}; });
+    }
+
+    function getItemsFromField(info) {
+        var plModel = schema.getModel(info.picklist.get('tablename'));
+        var plFieldName = info.picklist.get('fieldname');
+        return Q(api.getRows(plModel, {
+            limit: info.limit,
+            fields: [plFieldName],
+            distinct: true
+        })).then(formatRows.bind(null, info));
+    }
+
+    function formatRows(info, rows) {
+        info.pickListItems = rows.map(function(row) {
+            var value = row[0] || '';
+            return {value: value, title: value};
+        });
+        return info;
+    }
+
     return Backbone.View.extend({
         __name__: "PickListView",
         events: {
             change: 'setValueIntoModel'
         },
         initialize: function(options) {
-            this.initializing = this.model.getResourceAndField(this.$el.attr('name')).done(this._gotField.bind(this));
-        },
-        _gotField: function(resource, field) {
-            if (!field) {
-                console.log("can't setup picklist for unknown field " + this.model.specifyModel.name + "." + (this.$el.attr('name')));
-                return;
-            }
-            this.isAgentType = resource.specifyModel.name === 'Agent' && field.name === 'agentType';
-            this.pickListName = this.$el.data('specify-picklist') || field.getPickList();
+            var info = {
+                model: this.model,
+                pickListName: this.$el.data('specify-picklist')
+            };
 
-            if (!this.pickListName && !this.isAgentType) {
-                console.log("can't determine picklist for field " + resource.specifyModel.name + "." + field.name);
-                return;
-            }
-            this.remote = resource !== this.model;
-            this.resource = resource;
-            this.field = field;
-            this.initialized = true;
+            this.infoPromise = Q(this.model.getResourceAndField(this.$el.attr('name')))
+                .spread(buildPickListInfo.bind(null, info));
         },
         setValueIntoModel: function() {
             var value = this.$el.val() || null;
-            if (this.isAgentType && (value != null)) value = parseInt(value, 10);
-            this.model.set(this.field.name, value);
+            if (this.info.pickListItems === builtInPL.agentType && value != null) {
+                value = parseInt(value, 10);
+            }
+            this.model.set(this.info.field.name, value);
         },
-        setupOptions: function(items, value) {
+        render: function() {
+            this.infoPromise.done(this._render.bind(this));
+            return this;
+        },
+        _render: function(info) {
+            this.info = info;
+            info.field.isRequired && this.$el.addClass('specify-required-field');
+
+            if (!info.remote) {
+                this.toolTipMgr = new ToolTipMgr(this).enable();
+                this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, info.field.name);
+            }
+            this.setupOptions();
+
+            info.resource.on('change:' + info.field.name.toLowerCase(), function() {
+                this.$el.val(info.resource.get(info.field.name));
+            }, this);
+        },
+        setupOptions: function() {
+            var items = this.info.pickListItems;
+            var value = this.info.resource.get(this.info.field.name);
+
             // value maybe undefined, null, a string, or a Backbone model
             // if the latter, we use the URL of the object to represent it
             if (value != null ? value.url : void 0) value = value.url();
+
+            this.$el.append('<optgroup><option>Add value</option></optgroup>');
 
             if (!this.$el.hasClass('specify-required-field')) {
                 // need an option for no selection
@@ -74,73 +192,7 @@ define([
             this.$el.val(value);
 
             // run business rules to make sure current value is acceptable
-            this.model.businessRuleMgr.checkField(this.field.name);
-        },
-        getPickListItems: function() {
-            if (this.isAgentType) return $.when(builtInPL.agentType);
-            if (this.pickListName == 'UserType') return $.when(builtInPL.userType);
-
-            return api.getPickListByName(this.pickListName).pipe(function(picklist) {
-                var limit = picklist.get('sizelimit');
-                if (limit < 1) limit = 0;
-                var plModel;
-                switch (picklist.get('type')) {
-                case 0: // items in picklistitems table
-                    return picklist.rget('picklistitems').pipe(function(plItemCollection) {
-                        return plItemCollection.isComplete ? plItemCollection.toJSON() :
-                            plItemCollection.fetch({limit: limit}).pipe(function() {return plItemCollection.toJSON();});
-                    });
-                case 1: // items are objects from a table
-                    plModel = schema.getModel(picklist.get('tablename'));
-                    var plItemCollection = new plModel.LazyCollection();
-                    return plItemCollection.fetch({ limit: limit }).pipe(function() {
-                        return whenAll(plItemCollection.map(function(item) {
-                            return objformat(item, picklist.get('formatter')).pipe(function(title) {
-                                return {value: item.url(), title: title};
-                            });
-                        }));
-                    });
-                case 2: // items are fields from a table
-                    plModel = schema.getModel(picklist.get('tablename'));
-                    var plFieldName = picklist.get('fieldname');
-                    return api.getRows(plModel, {
-                        limit: limit,
-                        fields: [plFieldName],
-                        distinct: true
-                    }).pipe(function(rows) {
-                        return _.map(rows, function(row) {
-                            var value = row[0] || '';
-                            return {value: value, title: value};
-                        });
-                    });
-                default:
-                    throw new Error('unknown picklist type');
-                }
-            });
-        },
-        render: function() {
-            this.initializing.then(this._render.bind(this));
-            return this;
-        },
-        _render: function() {
-            if (!this.initialized) {
-                console.error('not initialized');
-                return;
-            }
-            if (this.rendered) throw new Exception('already rendered');
-            this.rendered = true;
-            this.field.isRequired && this.$el.addClass('specify-required-field');
-            this.getPickListItems().done(this.gotItems.bind(this));
-            if (!this.remote) {
-                this.toolTipMgr = new ToolTipMgr(this).enable();
-                this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.field.name);
-            }
-        },
-        gotItems: function(items) {
-            this.setupOptions(items, this.resource.get(this.field.name));
-            this.resource.on('change:' + this.field.name.toLowerCase(), function() {
-                this.$el.val(this.resource.get(this.field.name));
-            }, this);
+            this.model.businessRuleMgr.checkField(this.info.field.name);
         }
     });
 });
