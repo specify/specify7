@@ -32,6 +32,19 @@ define(['underscore'], function (_) {
         },
         asFloat: function() {
             return this.toDegs()._components[0];
+        },
+        soCalledUnit: function() {
+            // this is the "originalLatLongUnit" value for Specify 6
+            switch (this._components.length) {
+            case 1:             // Degrees only.
+                return 0;
+            case 2:             // Degrees and minutes.
+                return 2;
+            case 3:             // Degrees, minutes and seconds.
+                return 1;
+            default:
+                return null;
+            }
         }
     });
     _(['toDegs', 'toDegsMins', 'toDegsMinsSecs']).each(function(f, i) {
@@ -135,7 +148,7 @@ define(['underscore'], function (_) {
     }];
 
     function parse(str) {
-        var parser, match, comps, result;
+        var parser, match, comps, dir, result;
 
         for(var i = 0; i < parsers.length; i++) {
             parser = parsers[i];
@@ -151,7 +164,7 @@ define(['underscore'], function (_) {
             }
         }
         return null; // No parser succeeded.
-    };
+    }
 
     return { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
 });
