@@ -95,6 +95,8 @@ def make_relationship(modelname, rel, datamodel):
     reverse = datamodel.reverse_relationship(rel)
     if modelname == "Agent" and rel.name == "specifyUser":
         on_delete = models.SET_NULL
+    elif modelname.capitalize() == "Recordsetitem" and relatedmodel == "Recordset":
+        on_delete = models.CASCADE
     elif reverse and reverse.dependent:
         on_delete = models.CASCADE
     else:

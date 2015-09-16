@@ -240,7 +240,6 @@ dependent_fields = {
     'Preparation.preparationattribute',
     'Preparation.preparationattrs',
     'Preptype.attributedefs',
-    'Recordset.recordsetitems',
     'Referencework.authors',
     'Repositoryagreement.addressofrecord',
     'Repositoryagreement.repositoryagreementagents',
