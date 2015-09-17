@@ -1,0 +1,82 @@
+define([
+    'underscore', 'schema', 'q', 'dataobjformatters', 'specifyapi'
+], function(_, schema, Q, dataobjformatters, api) {
+    "use strict";
+
+    var objformat = dataobjformatters.format;
+
+    // User defined picklist.
+    //
+    function userDefined(info) {
+        return Q(info.pickList.rget('picklistitems'))
+            .then(function(plItemCollection) {
+                // picklistitems is a dependent field
+                info.pickListItems = plItemCollection.toJSON();
+                return info;
+            });
+    }
+
+    // From table picklist;
+    //
+    function fromTable(info) {
+        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plItemCollection = new plModel.LazyCollection();
+        return Q(plItemCollection.fetch({ limit: info.limit }))
+            .then(function() { return formatItems(info, plItemCollection); });
+    }
+
+
+    function formatItems(info, plItemCollection) {
+        var formatPromises = plItemCollection.map(formatItem.bind(null, info));
+        return Q.all(formatPromises).then(function (items) {
+            info.pickListItems = items;
+            return info;
+        });
+    }
+
+    function formatItem(info, item) {
+        return Q(objformat(item, info.pickList.get('formatter')))
+            .then(function(title) { return {value: item.url(), title: title}; });
+    }
+
+    // From field picklist.
+    //
+    function fromField(info) {
+        var plModel = schema.getModel(info.pickList.get('tablename'));
+        var plFieldName = info.pickList.get('fieldname');
+        return Q(api.getRows(plModel, {
+            limit: info.limit,
+            fields: [plFieldName],
+            distinct: true
+        })).then(formatRows.bind(null, info));
+    }
+
+    function formatRows(info, rows) {
+        info.pickListItems = rows.map(function(row) {
+            var value = row[0] || '';
+            return {value: value, title: value};
+        });
+        return info;
+    }
+
+    // Return a combobox class mixin to get the items.
+    function makeMixin(source) {
+        return {getItems: source};
+    }
+
+    function fixedList(values, byIndex) {
+        var items = values.map(function(value, index) {
+            return { value: byIndex ? index : value, title: value };
+        });
+        return function getItems(info) { info.pickListItems = items; return Q(info); };
+    }
+
+    return {
+        userDefined   : makeMixin(userDefined),
+        fromTable     : makeMixin(fromTable),
+        fromField     : makeMixin(fromField),
+        agentTypes    : makeMixin(fixedList(['Organization', 'Person', 'Other', 'Group'], true)),
+        pickListTypes : makeMixin(fixedList(['User Defined Items', 'Entire Table', 'Field From Table'], true)),
+        userTypes     : makeMixin(fixedList(["Manager", "FullAccess", "LimitedAccess", "Guest"]))
+    };
+});
