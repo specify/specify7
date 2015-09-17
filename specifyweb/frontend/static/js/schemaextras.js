@@ -1,6 +1,8 @@
 define(['underscore', 'schemabase'], function(_, schema) {
     "use strict";
 
+    function alwaysTrue() { return true; }
+
     return {
         Agent: function(model) {
             var fields = model.getAllFields();
@@ -8,6 +10,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'catalogerOf',
                 isRelationship: true,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'one-to-many',
                 otherSideName: 'Cataloger',
                 relatedModelName: 'CollectionObject'
@@ -20,6 +23,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'collectionObjects',
                 isRelationship: true,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'one-to-many',
                 otherSideName: 'Collection',
                 relatedModelName: 'CollectionObject'
@@ -36,6 +40,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'accessions',
                 isRelationship: true,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'one-to-many',
                 otherSideName: 'Division',
                 relatedModelName: 'Accession'
@@ -52,6 +57,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'preparations',
                 isRelationship: true,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'one-to-many',
                 otherSideName: 'PrepType',
                 relatedModelName: 'Preparation'
@@ -64,6 +70,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'isOnLoan',
                 isRelationship: false,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'java.lang.Boolean'
             });
             fields.push(isOnLoan);
@@ -77,6 +84,7 @@ define(['underscore', 'schemabase'], function(_, schema) {
                 name: 'preferredTaxonOf',
                 isRelationship: true,
                 isRequired: false,
+                isHidden: alwaysTrue,
                 type: 'one-to-many',
                 otherSideName: 'preferredTaxon',
                 relatedModelName: 'Determination'
