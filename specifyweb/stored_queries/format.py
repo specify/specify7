@@ -57,7 +57,10 @@ class ObjectFormatter(object):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
         formatterNode = self.getFormatterDef(specify_model, formatter_name)
-        logger.debug("using dataobjformater: %s", ElementTree.tostring(formatterNode))
+        if formatterNode is None:
+            logger.warn("no dataobjformatter for %s", specify_model)
+            return query, literal("<Formatter not defined.>")
+        logger.debug("using dataobjformatter: %s", ElementTree.tostring(formatterNode))
 
         switchNode = formatterNode.find('switch')
 
