@@ -5,21 +5,37 @@ define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q
         __name__: "PickListCBXView",
         events: {
             autocompleteselect: 'selected',
-            autocompletechange: 'changed'
+            autocompletechange: 'changed',
+            'click .combobox-toggle': 'showAll',
+            'mousedown .combobox-toggle': 'checkOpen'
         },
         render: function() {
             var control = this.$el;
-            var input = $('<input type="text">')
-                    .addClass(control.attr('class'))
-                    .attr('disabled', control.attr('disabled'));
+            var wrapper = $('<span class="combobox-wrapper">');
+            this.input = $('<input type="text">')
+                .appendTo(wrapper)
+                .addClass(control.attr('class'))
+                .attr('disabled', control.attr('disabled'));
 
-            control.replaceWith(input);
-            this.setElement(input);
+            $('<a class="combobox-toggle ui-corner-right">')
+                .attr( "tabIndex", -1 )
+                .attr( "title", "Show All Items" )
+                .appendTo( wrapper )
+                .button({
+                    icons: {
+                        primary: "ui-icon-triangle-1-s"
+                    },
+                    text: false
+                })
+                .removeClass( "ui-corner-all" );
+
+            control.replaceWith(wrapper);
+            this.setElement(wrapper);
             Base.prototype.render.apply(this, arguments);
             return this;
         },
         _render: function(info) {
-            this.$el.autocomplete({
+            this.input.autocomplete({
                     delay: 0,
                     minLength: 0,
                     source: this.source.bind(this)
@@ -44,6 +60,13 @@ define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q
             }).filter(function(option) { return !!option; });
             response(options);
         },
+        showAll: function() {
+            this.input.focus();
+            this.wasOpen || this.input.autocomplete("search", "");
+        },
+        checkOpen: function() {
+            this.wasOpen = this.input.autocomplete('widget').is(':visible');
+        },
         selected: function(event, ui) {
             var value = ui.item.item.value;
             this.model.set(this.info.field.name, value);
@@ -51,15 +74,15 @@ define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q
         changed: function(event, ui) {
             if (ui.item) { return; }
 
-            if (!this.$el.hasClass('specify-required-field') && this.$el.val() === '') {
+            if (!this.input.hasClass('specify-required-field') && this.input.val() === '') {
                 this.model.set(this.info.field.name, null);
                 return;
             }
 
-            this.addValue(this.$el.val());
+            this.addValue(this.input.val());
         },
         resetValue: function() {
-            this.$el.val(this.getCurrentValue());
+            this.input.val(this.getCurrentValue());
         },
         addValue: function(value) {
             if (this.info.pickList.get('type') === 2) {
