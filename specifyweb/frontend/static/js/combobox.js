@@ -15,7 +15,18 @@ define([
         }
 
         if (resource.specifyModel.name === 'PickList' && options.fieldName === 'typesCBX') {
+            options.field = resource.specifyModel.getField('type');
             return new (ReadOnlyPickListCBX.extend(mixins.pickListTypes))(options);
+        }
+
+        if (resource.specifyModel.name === 'PickList' && options.fieldName === 'tablesCBX') {
+            options.field = resource.specifyModel.getField('tablename');
+            return new (ReadOnlyPickListCBX.extend(mixins.pickListTables))(options);
+        }
+
+        if (resource.specifyModel.name === 'PickList' && options.fieldName === 'fieldsCBX') {
+            options.field = resource.specifyModel.getField('fieldname');
+            return new (ReadOnlyPickListCBX.extend(mixins.pickListFields))(options);
         }
 
         if (!field) {

@@ -77,12 +77,30 @@ define([
         };
     }
 
+    // Tables for picklists
+    function pickListTables(info) {
+        info.pickListItems = _.map(schema.models, function(model) {
+            return { value: model.name, title: model.getLocalizedName() };
+        });
+        return Q(info);
+    }
+
+    function pickListFields(info) {
+        var table = schema.getModel(info.resource.get('tablename'));
+        info.pickListItems = _.map(table.getAllFields(), function(field) {
+            return { value: field.name, title: field.getLocalizedName() };
+        });
+        return Q(info);
+    }
+
     return {
         userDefined   : makeMixin(userDefined),
         fromTable     : makeMixin(fromTable),
         fromField     : makeMixin(fromField),
         agentTypes    : fixedList(['Organization', 'Person', 'Other', 'Group'], true),
         pickListTypes : fixedList(['User Defined Items', 'Entire Table', 'Field From Table'], true),
+        pickListTables: makeMixin(pickListTables),
+        pickListFields: makeMixin(pickListFields),
         userTypes     : fixedList(["Manager", "FullAccess", "LimitedAccess", "Guest"])
     };
 });
