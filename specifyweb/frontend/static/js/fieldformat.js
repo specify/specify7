@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'moment', 'dateformat', 'picklistmixins'
-], function($, _, moment, dateFormatStr, pickListMixins) {
+    'jquery', 'underscore', 'moment', 'dateformat', 'agenttypecbx'
+], function($, _, moment, dateFormatStr, AgentTypeCBX) {
     "use strict";
 
     function formatDate(value) {
@@ -31,7 +31,7 @@ define([
         }
 
         if (field.name === 'agentType' && field.model.name === 'Agent') {
-            var agentType = pickListMixins.agentTypes.titleFromValue(asInt);
+            var agentType = AgentTypeCBX.prototype.getAgentTypes()[asInt];
             return agentType == null ? '' : agentType;
         }
 
