@@ -18,9 +18,9 @@ define(['jquery', 'underscore', 'basepicklist'], function($, _, Base) {
             var items = info.pickListItems;
             var value = info.resource.get(info.field.name);
 
-            // value maybe undefined, null, a string, or a Backbone model
+            // value maybe undefined, null, a string, a number, or a Backbone model
             // if the latter, we use the URL of the object to represent it
-            if (value != null ? value.url : void 0) value = value.url();
+            if (value != null && value.url) value = value.url();
 
             if (!this.$el.hasClass('specify-required-field')) {
                 // need an option for no selection
@@ -28,7 +28,7 @@ define(['jquery', 'underscore', 'basepicklist'], function($, _, Base) {
             }
 
             var options = items
-                    .map(function(item) { return !!item.value && $('<option>', {value: item.value}).text(item.title)[0]; })
+                    .map(function(item) { return item.value != null && $('<option>', {value: item.value}).text(item.title)[0]; })
                     .filter(function(option) { return !!option; });
 
             this.$el.append(options);
@@ -40,15 +40,16 @@ define(['jquery', 'underscore', 'basepicklist'], function($, _, Base) {
                 return;
             }
 
-            // value is now either null or a string
-            value = value || '';
+            // value is now either null or a string, or a number
+            // make it a string
+            value = (value == null ? '' : value.toString());
 
-            if (value && _.all(items, function(item) { return item.value.toString() !== value.toString(); })) {
+            if (value && _.all(items, function(item) { return item.value.toString() !== value; })) {
                 // current value is not in picklist
                 this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
             }
 
-            if (!value && this.$el.hasClass('specify-required-field')) {
+            if (value === '' && this.$el.hasClass('specify-required-field')) {
                 // value is required but missing from database
                 this.$el.append('<option>Invalid null selection</option>');
             }
