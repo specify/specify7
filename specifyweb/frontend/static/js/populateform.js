@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'combobox', 'uifield',
     'querycbx', 'specifyplugins', 'specifycommands', 'recordselector', 'subviewbutton',
-    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
+    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui'
 ], function($, _, Backbone, localizeForm, specifyform, ComboBox, UIField, QueryCbx, uiplugins, uicommands,
-            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
+            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI) {
     "use strict";
 
     var MultiView = Backbone.View.extend({
@@ -33,7 +33,7 @@ define([
                 return uiplugins[init.name] || uiplugins.PluginNotAvailable;
             },
             '.specify-combobox': function() {
-                return (control.attr('name') === 'definitionItem') ? TreeLevelPickList : ComboBox;
+                return ComboBox;
             }
         };
 

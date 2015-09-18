@@ -1,6 +1,9 @@
 define([
-    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'specifyapi', 'picklistmixins'
-], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, api, mixins) {
+    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'specifyapi', 'picklistmixins',
+    'agenttypecbx', 'usertypecbx', 'picklisttypecbx', 'picklisttablecbx', 'picklistfieldcbx', 'treelevelcbx'
+], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, api, mixins,
+            AgentTypeCBX, UserTypeCBX, PickListTypeCBX, PickListTableCBX,
+            PickListFieldCBX, TreeLevelCBX) {
     "use strict";
 
     function getCBX(options, resource, field) {
@@ -11,22 +14,23 @@ define([
         });
 
         if (resource.specifyModel.name === 'Agent' && field.name === 'agentType') {
-            return new (ReadOnlyPickListCBX.extend(mixins.agentTypes))(options);
+            return new AgentTypeCBX(options);
         }
 
         if (resource.specifyModel.name === 'PickList' && options.fieldName === 'typesCBX') {
-            options.field = resource.specifyModel.getField('type');
-            return new (ReadOnlyPickListCBX.extend(mixins.pickListTypes))(options);
+            return new PickListTypeCBX(options);
         }
 
         if (resource.specifyModel.name === 'PickList' && options.fieldName === 'tablesCBX') {
-            options.field = resource.specifyModel.getField('tablename');
-            return new (ReadOnlyPickListCBX.extend(mixins.pickListTables))(options);
+            return new PickListTableCBX(options);
         }
 
         if (resource.specifyModel.name === 'PickList' && options.fieldName === 'fieldsCBX') {
-            options.field = resource.specifyModel.getField('fieldname');
-            return new (ReadOnlyPickListCBX.extend(mixins.pickListFields))(options);
+            return new PickListFieldCBX(options);
+        }
+
+        if (options.fieldName === 'definitionItem') {
+            return new  TreeLevelCBX(options);
         }
 
         if (!field) {
@@ -36,7 +40,7 @@ define([
         options.pickListName || (options.pickListName = field.getPickList());
 
         if (options.pickListName === 'UserType') {
-            return new (ReadOnlyPickListCBX.extend(mixins.userTypes))(options);
+            return new UserTypeCBX(options);
         }
         if (!options.pickListName)
             throw "can't determine picklist for field " + resource.specifyModel.name + "." + field.name;
@@ -80,7 +84,7 @@ define([
                 .spread(getCBX.bind(null, options));
         },
         render: function() {
-            this.cbxPromise.invoke('render');
+            this.cbxPromise.invoke('render').done();
             return this;
         }
     });

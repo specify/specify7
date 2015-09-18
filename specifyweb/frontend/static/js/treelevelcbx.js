@@ -11,7 +11,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     }
 
     return Backbone.View.extend({
-        __name__: "TreeLevelPickListView",
+        __name__: "TreeLevelCBX",
         events: {
             change: 'changed'
         },
