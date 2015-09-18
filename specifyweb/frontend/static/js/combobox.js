@@ -1,6 +1,6 @@
 define([
-    'underscore', 'backbone', 'q', 'basicpicklistcbx', 'readonlypicklistcbx', 'specifyapi', 'picklistmixins'
-], function(_, Backbone, Q, BasicPickListCBX, ReadOnlyPickListCBX, api, mixins) {
+    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'specifyapi', 'picklistmixins'
+], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, api, mixins) {
     "use strict";
 
     function getCBX(options, resource, field) {
@@ -36,7 +36,7 @@ define([
 
                 options.limit = picklist.get('sizelimit');
                 if (options.limit < 1) options.limit = 0;
-                var Control = picklist.get('readonly') ? ReadOnlyPickListCBX : BasicPickListCBX;
+                var Control = picklist.get('readonly') ? ReadOnlyPickListCBX : PickListCBX;
 
                 switch (picklist.get('type')) {
                 case 0: // items in picklistitems table

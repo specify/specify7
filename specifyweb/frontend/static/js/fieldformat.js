@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'builtinpicklists', 'moment', 'dateformat'
-], function($, _, builtInPL, moment, dateFormatStr) {
+    'jquery', 'underscore', 'moment', 'dateformat', 'picklistmixins'
+], function($, _, moment, dateFormatStr, pickListMixins) {
     "use strict";
 
     function formatDate(value) {
@@ -31,8 +31,8 @@ define([
         }
 
         if (field.name === 'agentType' && field.model.name === 'Agent') {
-            var agentType = _.find(builtInPL.agentType, function(type) { return type.value === asInt; });
-            return agentType ? agentType.title : value || '';
+            var agentType = pickListMixins.agentTypes.titleFromValue(asInt);
+            return agentType == null ? '' : agentType;
         }
 
         var bt = byType[field.type];

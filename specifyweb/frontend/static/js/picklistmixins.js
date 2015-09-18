@@ -1,9 +1,7 @@
 define([
-    'underscore', 'schema', 'q', 'dataobjformatters', 'specifyapi'
-], function(_, schema, Q, dataobjformatters, api) {
+    'underscore', 'schema', 'q', 'require', 'specifyapi'
+], function(_, schema, Q, require, api) {
     "use strict";
-
-    var objformat = dataobjformatters.format;
 
     // User defined picklist.
     //
@@ -35,6 +33,8 @@ define([
     }
 
     function formatItem(info, item) {
+        var objformat = require('dataobjformatters').format;
+
         return Q(objformat(item, info.pickList.get('formatter')))
             .then(function(title) { return {value: item.url(), title: title}; });
     }
@@ -68,15 +68,21 @@ define([
         var items = values.map(function(value, index) {
             return { value: byIndex ? index : value, title: value };
         });
-        return function getItems(info) { info.pickListItems = items; return Q(info); };
+        return {
+            getItems: function(info) { info.pickListItems = items; return Q(info); },
+            titleFromValue: function(value) {
+                var item = _(items).find(function(item) { return item.value === value; });
+                return item ? item.title : null;
+            }
+        };
     }
 
     return {
         userDefined   : makeMixin(userDefined),
         fromTable     : makeMixin(fromTable),
         fromField     : makeMixin(fromField),
-        agentTypes    : makeMixin(fixedList(['Organization', 'Person', 'Other', 'Group'], true)),
-        pickListTypes : makeMixin(fixedList(['User Defined Items', 'Entire Table', 'Field From Table'], true)),
-        userTypes     : makeMixin(fixedList(["Manager", "FullAccess", "LimitedAccess", "Guest"]))
+        agentTypes    : fixedList(['Organization', 'Person', 'Other', 'Group'], true),
+        pickListTypes : fixedList(['User Defined Items', 'Entire Table', 'Field From Table'], true),
+        userTypes     : fixedList(["Manager", "FullAccess", "LimitedAccess", "Guest"])
     };
 });
