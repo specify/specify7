@@ -54,12 +54,12 @@ define([
             'click .wb-load': 'load'
         },
         initialize: function(options) {
-            this.wbid = options.wbid;
+            this.wb = options.wb;
             this.data = options.data;
         },
         getMappings: function() {
             var maps = new schema.models.WorkbenchTemplateMappingItem.LazyCollection({
-                filters: { workbenchtemplate: this.wbid, orderby: 'vieworder' }
+                filters: { workbenchtemplate: this.wb.id, orderby: 'vieworder' }
             });
             return maps.fetch({ limit: 0 }).pipe(function() { return maps.models; });
         },
@@ -70,10 +70,14 @@ define([
             var colHeaders = mappings.pipe(makeHeaders);
             var columns = picklists.pipe(makeColumns);
 
-            var spreadsheet = $('<div>').appendTo(this.el);
-            $('<button class="wb-save" disabled>Save</button>').appendTo(this.el);
-            $('<button class="wb-load" disabled>Reload</button>').appendTo(this.el);
+            $('<h2>').text("Workbench: " + this.wb.get('name'))
+                .appendTo(this.el)
+                .append(
+                    $('<button class="wb-save" disabled>Save</button>'),
+                    $('<button class="wb-load" disabled>Reload</button>')
+                );
 
+            var spreadsheet = $('<div class="wb-spreadsheet">').appendTo(this.el);
             var enableButtons = function() { this.$('button').prop('disabled', false); }.bind(this);
 
             $.when(colHeaders, columns).done(function (colHeaders, columns) {
@@ -111,7 +115,7 @@ define([
                 modal: true,
                 close: function() {$(this).remove();}
             });
-            $.get('/api/workbench/rows/' + this.wbid + '/').done(function(data) {
+            $.get('/api/workbench/rows/' + this.wb.id + '/').done(function(data) {
                 this.data = data;
                 this.hot.loadData(data);
                 dialog.dialog('close');
@@ -124,7 +128,7 @@ define([
                 modal: true,
                 close: function() {$(this).remove();}
             });
-            $.ajax('/api/workbench/rows/' + this.wbid + '/', {
+            $.ajax('/api/workbench/rows/' + this.wb.id + '/', {
                 data: JSON.stringify(this.hot.getData()),
                 type: "PUT"
             }).done(function(data) {

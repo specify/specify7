@@ -1,5 +1,14 @@
 @import url("vendor/handsontable.full.css");
 
+.wbs-form .wb-spreadsheet {
+    margin-top: 10px;
+}
+
+.wbs-form h2 button {
+    float: right;
+    margin: 0 10px;
+}
+
 .wbs-form .ht_clone_top {
     z-index: 97;
 }
