@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone'
-], function($, _, Backbone) {
+    'jquery', 'underscore', 'backbone', 'q'
+], function($, _, Backbone, Q) {
     "use strict";
 
     return Backbone.View.extend({
@@ -10,8 +10,9 @@ define([
         },
         render: function() {
             if (!this.$el.hasClass('specify-ignore-field')) {
-                var render = _.bind(this._render, this);
-                this.model.getResourceAndField(this.$el.attr('name')).done(render);
+                Q(this.model.getResourceAndField(this.$el.attr('name')))
+                    .spread(this._render.bind(this))
+                    .done();
             }
             return this;
         },

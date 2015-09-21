@@ -520,7 +520,7 @@ define([
             );
 
             return getResource.pipe(function(resource) {
-                return $.when(resource, field);
+                return [resource, field];
             });
         },
         placeInSameHierarchy: function(other) {
