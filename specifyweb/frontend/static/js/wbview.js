@@ -78,6 +78,7 @@ define([
 
             $.when(colHeaders, columns).done(function (colHeaders, columns) {
                 this.hot = new Handsontable(spreadsheet[0], {
+                    height: this.calcHeight(),
                     data: this.data,
                     colHeaders: colHeaders,
                     columns: columns,
@@ -87,13 +88,22 @@ define([
                     columnSorting: true,
                     sortIndicator: true,
                     contextMenu: true,
+                    stretchH: 'all',
                     afterCreateRow: enableButtons,
                     afterRemoveRow: enableButtons,
                     afterChange: function(change, source) { source === 'loadData' || enableButtons(); }
                 });
+                $(window).resize(this.resize.bind(this));
             }.bind(this));
 
             return this;
+        },
+        resize: function() {
+            this.hot && this.hot.updateSettings({height: this.calcHeight()});
+            return true;
+        },
+        calcHeight: function() {
+            return $(window).height() - this.$el.offset().top - 50;
         },
         load: function() {
             var dialog = $('<div>Loading...</div>').dialog({
