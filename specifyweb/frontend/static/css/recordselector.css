@@ -1,0 +1,33 @@
+.recordselector-slider {
+    width: 90%;
+    margin: auto;
+    height: 11px;
+    background-color: #fff;
+    border: 1px inset #ddd;
+    border-radius: 4px;
+ }
+
+.recordselector-slider .ui-slider {
+    height: 100%;
+    background: #fff;
+    margin: auto;
+    border: none;
+}
+
+
+.recordselector-slider .ui-slider-handle {
+    margin: 4px;
+    min-width: 3px;
+    height: 8px;
+}
+
+.recordselector-slider .ui-slider-handle .ui-icon {
+    margin: -8px auto 0;
+    position: relative;
+    top: 50%;
+}
+
+.recordselector-add-delete-buttons {
+    margin-top: 5px;
+}
+

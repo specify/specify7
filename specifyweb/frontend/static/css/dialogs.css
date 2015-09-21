@@ -1,0 +1,39 @@
+.ui-dialog-titlebar a {
+    float: left;
+}
+
+.table-list-dialog table {
+    width: 100%;
+}
+
+.table-list-dialog td {
+    padding: 5px 5px 2px 2px;
+}
+
+.table-list-dialog a {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.table-list-dialog img {
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+}
+
+.forms-dialog                td:first-of-type + td,
+.reports-dialog              td:first-of-type + td,
+.recordset-for-report-dialog td:first-of-type + td,
+.stored-queries-dialog       td:first-of-type + td,
+.query-type-dialog           td:first-of-type + td,
+.trees-dialog                td:first-of-type + td,
+.recordsets-dialog           td:first-of-type + td
+{
+    width: 100%;
+}
+
+.interactiondialog .ui-icon {
+    display: inline-block;
+    vertical-align: sub; /*this centers (in chrome)*/
+    margin-right: 3px;
+}

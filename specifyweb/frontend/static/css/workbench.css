@@ -1,0 +1,13 @@
+@import url("vendor/handsontable.full.css");
+
+.wbs-form .ht_clone_top {
+    z-index: 97;
+}
+
+.wbs-form .ht_clone_left {
+    z-index: 98;
+}
+
+.wbs-form .ht_clone_corner {
+    z-index: 99;
+}

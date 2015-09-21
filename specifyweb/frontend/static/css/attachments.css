@@ -1,0 +1,64 @@
+.specify-attachment-container {
+    width: 266px;
+    height: 266px;
+    position: relative;
+    margin: 5px;
+}
+
+.specify-attachment-display {
+    width: 266px;
+    height: 266px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #aaa;
+    background-color: #000;
+}
+
+a.specify-attachment-original {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: #eee;
+}
+
+.specify-attachment-browser {
+    text-align: center;
+    background-color: white;
+    border: inset 2px;
+    padding-top: 20px;
+    overflow-y: scroll;
+}
+
+.specify-attachment-cell {
+    display: inline-block;
+    vertical-align: top;
+    width: 145px;
+    height: 145px;
+    margin: 3px;
+}
+
+.specify-attachment-cell > div {
+    display: inline;
+    position: relative;
+}
+
+.specify-attachment-dataobj-icon {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+}
+
+.specify-attachment-thumbnail {
+    margin-top: 10px;
+    margin-left: 8px;
+    margin-right: auto;
+    border: solid 3px;
+    border-radius: 3px;
+    box-shadow: -2px 5px 12px;
+    max-width: 125px;
+    max-height: 125px;
+}
+
