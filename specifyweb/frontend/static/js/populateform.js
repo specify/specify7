@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'picklist', 'uifield',
+    'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'combobox', 'uifield',
     'querycbx', 'specifyplugins', 'specifycommands', 'recordselector', 'subviewbutton',
-    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui', 'treelevelpicklist'
-], function($, _, Backbone, localizeForm, specifyform, PickList, UIField, QueryCbx, uiplugins, uicommands,
-            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI, TreeLevelPickList) {
+    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui'
+], function($, _, Backbone, localizeForm, specifyform, ComboBox, UIField, QueryCbx, uiplugins, uicommands,
+            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI) {
     "use strict";
 
     var MultiView = Backbone.View.extend({
@@ -14,7 +14,7 @@ define([
             var iActionCollections =  ["LoanPreparationDependentCollection", "GiftPreparationDependentCollection"];
             // The form has to actually be built to tell if it is a formtable.
             specifyform.buildSubView(this.$el).done(function(form) {
-                var View = form.hasClass('specify-form-type-formtable') 
+                var View = form.hasClass('specify-form-type-formtable')
                     ? (iActionCollections.indexOf(collectionName) >= 0 ? IActionItemFormTable : FormTable)
                     : RecordSelector;
                 new View(options).render();
@@ -33,7 +33,7 @@ define([
                 return uiplugins[init.name] || uiplugins.PluginNotAvailable;
             },
             '.specify-combobox': function() {
-                return (control.attr('name') === 'definitionItem') ? TreeLevelPickList : PickList;
+                return ComboBox;
             }
         };
 

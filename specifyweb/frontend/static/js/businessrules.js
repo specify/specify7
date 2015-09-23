@@ -1,113 +1,9 @@
 define([
-    'jquery', 'underscore', 'schema', 'specifyapi', 'whenall', 'saveblockers'
-], function($, _, schema, api, whenAll, saveblockers) {
+    'jquery', 'underscore', 'q', 'specifyapi', 'saveblockers',
+    'treebusinessrules', 'businessruledefs'
+], function($, _, Q, api, saveblockers, treeBusinessRules, rules) {
     "use strict";
     var enabled = true;
-
-    var treeBusinessRules = {
-        isTreeNode: function(resource) {
-            var model;
-            model = resource.specifyModel;
-            return _.all(['parent', 'definition', 'definitionitem'], function(field) {
-                return model.getField(field) != null;
-            });
-        },
-        run: function(resource, fieldName) {
-            if (treeBusinessRules.isTreeNode(resource) && _(['parent', 'definitionitem', 'name']).contains(fieldName)) {
-                return treeBusinessRules.buildFullName(resource, [], true).pipe(
-                    function(acc) {
-                        return {
-                            key: 'tree-structure',
-                            valid: true,
-                            action: function() {
-                                return resource.set('fullname', acc.reverse().join(' '));
-                            }
-                        };
-                    },
-                    function(reason) {
-                        return (fieldName == 'parent') && $.when({
-                            key: 'tree-structure',
-                            valid: false,
-                            reason: reason
-                        });
-                    }
-                );
-            }
-            return undefined;
-        },
-        buildFullName: function(resource, acc, start) {
-            var recur;
-            recur = function(parent, defitem) {
-                if (parent && (parent.get('rankid') >= resource.get('rankid'))) {
-                    return $.Deferred().reject('Bad tree structure');
-                }
-                if (start || defitem.get('isinfullname')) acc.push(resource.get('name'));
-                if (!(parent != null)) {
-                    return acc;
-                } else {
-                    return treeBusinessRules.buildFullName(parent, acc);
-                }
-            };
-            return $.when(resource.rget('parent', true), resource.rget('definitionitem', true)).pipe(recur);
-        }
-    };
-
-    var interactionBusinessRules = {
-        previousReturned: [],
-        previousResolved: [],
-        getTotalLoaned: function(loanreturnprep) {
-            if (typeof this.totalLoaned == 'undefined') {
-                if (loanreturnprep.collection) {
-                    this.totalLoaned = loanreturnprep.collection.related.get('quantity');
-                }
-            }
-            return this.totalLoaned;
-        },
-        getTotalResolved: function(loanreturnprep) {
-            //probably could just check preparation since its quantities are updated while loanreturnprep subview is open
-            //But for now, iterate other returns
-            if (loanreturnprep.collection) {
-                return  _.reduce(loanreturnprep.collection.models, function(sum, m) {
-                    if (m.cid != loanreturnprep.cid)  {
-                        return sum + m.get('quantityresolved');
-                    } else {
-                        return sum;
-                    }}, 0);
-            } else {
-                return loanreturnprep.get('quantityresolved');
-            }
-        },
-
-        checkPrepAvailability: function(interactionprep) {
-            if (interactionprep && interactionprep.get('preparation')) {
-                //return interactionprep.get('preparation').get('CountAmt');
-                var prepuri = interactionprep.get('preparation');
-                var pmod = schema.getModel('preparation');
-                var prepId = pmod.Resource.fromUri(prepuri).id;
-                var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
-                var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
-                api.getPrepAvailability(prepId, iprepId, iprepName).done(function(available) {
-                    if (typeof available != 'undefined' && Number(available[0])  < interactionprep.get('quantity')) {
-                        interactionprep.set('quantity', Number(available[0]));
-                    }
-                });
-            }         
-        },
-
-        updateLoanPrep: function(loanreturnprep, collection) {
-            if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
-                var sums = _.reduce(collection.models, function(memo, lrp) {
-                    memo.returned += lrp.get('quantityreturned');
-                    memo.resolved += lrp.get('quantityresolved');
-                    return memo;
-                }, {returned: 0, resolved: 0});
-                var loanprep = collection.related;
-                loanprep.set('quantityreturned', sums.returned);
-                loanprep.set('quantityresolved', sums.resolved);
-                loanprep.set('isresolved', sums.resolved == loanprep.get('quantity'));
-            }
-        }
-    };
 
     api.on('initresource', function(resource) {
         if (enabled && !resource.noBusinessRules) attachTo(resource);
@@ -118,135 +14,115 @@ define([
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
         resource.saveBlockers = new saveblockers.SaveBlockers(resource);
+        mgr.isTreeNode && treeBusinessRules.init(resource);
         mgr.doCustomInit();
     };
 
-    var BusinessRuleMgr = (function() {
+    function BusinessRuleMgr(resource) {
+        this.resource = resource;
+        this.rules = rules[this.resource.specifyModel.name];
+        this.pending = Q(null);
+        this.fieldChangePromises = {};
+        this.watchers = {};
+        this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
+    }
 
-        function BusinessRuleMgr(resource) {
-            var _this = this;
-            this.resource = resource;
-            this.rules = rules[this.resource.specifyModel.name];
-            this.fieldChangeDeferreds = {};
-            this.watchers = {};
-            this.deleteBlockers = {};
-            this.rules && _.each(this.rules.deleteBlockers, function(fieldname) {
-                _this.deleteBlockers[fieldname] = true;
-            });
-            this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
-        }
+    _(BusinessRuleMgr.prototype).extend({
+        addPromise: function(promise) {
+            this.pending = Q.allSettled([this.pending, promise]).thenResolve(null);
+        },
 
-        BusinessRuleMgr.prototype.setupEvents = function() {
-            var _this = this;
+        setupEvents: function() {
             this.resource.on('change', this.changed, this);
             this.resource.on('add', this.added, this);
             this.resource.on('remove', this.removed, this);
-            this.rules && _.each(this.resource.specifyModel.getAllFields(), function(field) {
-                var fieldname = field.name.toLowerCase();
-                if (field.type === 'one-to-many' && _(_this.rules.deleteBlockers).contains(fieldname)) {
-                    _this.resource.on("add:" + fieldname, function() {
-                        _this.addDeleteBlocker(fieldname);
-                    });
-                    // # possible race condition if getRelatedObject count goes through before
-                    // # the deletion associated following remove event occurs
-                    // # a work around might be to always do destroy({ wait: true })
-                    _this.resource.on("remove:" + fieldname, function() {
-                        _this.tryToRemDeleteBlocker(fieldname);
-                    });
-                }
-            });
-        };
+        },
 
-        BusinessRuleMgr.prototype.doCustomInit = function() {
-            this.rules && this.rules.customInit && this.rules.customInit(this.resource);
-        };
-
-        BusinessRuleMgr.prototype.checkCanDelete = function() {
-            var _this = this;
-            if (this.canDelete()) {
-                this.resource.trigger('candelete');
-                return $.when(true);
-            } else {
-                return whenAll(_.map(this.deleteBlockers, function(__, fieldname) {
-                    return _this.tryToRemDeleteBlocker(fieldname);
-                }));
+        invokeRule: function(ruleName, fieldName, args) {
+            var resource = this.resource;
+            var promise = this._invokeRule(ruleName, fieldName, args);
+            var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
+            promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
+        },
+        _invokeRule: function(ruleName, fieldName, args) {
+            var rule = this.rules && this.rules[ruleName];
+            if (!rule) return Q('no rule: ' + ruleName);
+            if (fieldName) {
+                rule = rule[fieldName];
+                if (!rule) return Q('no rule: ' + ruleName + ' for: ' + fieldName);
             }
-        };
+            return Q(rule.apply(this, args));
+        },
 
-        BusinessRuleMgr.prototype.canDelete = function() {
-            return _.isEmpty(this.deleteBlockers);
-        };
+        doCustomInit: function() {
+            this.addPromise(
+                this.invokeRule('customInit', null, [this.resource]));
+        },
 
-        BusinessRuleMgr.prototype.addDeleteBlocker = function(fieldname) {
-            this.deleteBlockers[fieldname] = true;
-            this.resource.trigger('deleteblocked');
-        };
-
-        BusinessRuleMgr.prototype.tryToRemDeleteBlocker = function(fieldname) {
-            var _this = this;
-            return this.resource.getRelatedObjectCount(fieldname).done(function(count) {
-                if (count < 1) {
-                    delete _this.deleteBlockers[fieldname];
-                    if (_this.canDelete()) _this.resource.trigger('candelete');
-                }
-            });
-        };
-
-        BusinessRuleMgr.prototype.changed = function(resource) {
-            var _this = this;
+        changed: function(resource) {
             if (!resource._fetch && !resource._save) {
                 _.each(resource.changed, function(__, fieldName) {
-                    _this.checkField(fieldName);
-                });
+                    this.checkField(fieldName);
+                }, this);
             }
-        };
+        },
 
-        BusinessRuleMgr.prototype.added = function(resource, collection) {
+        added: function(resource, collection) {
             if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
-            this.rules && this.rules.onAdded && this.rules.onAdded(resource, collection);
-        };
+            this.addPromise(
+                this.invokeRule('onAdded', null, [resource, collection]));
+        },
 
-        BusinessRuleMgr.prototype.removed = function(resource, collection) {
-            this.rules && this.rules.onRemoved && this.rules.onRemoved(resource, collection);
-        };
+        removed: function(resource, collection) {
+            this.addPromise(
+                this.invokeRule('onRemoved', null, [resource, collection]));
+        },
 
-        BusinessRuleMgr.prototype.checkField = function(fieldName) {
-            var _this = this;
+        checkField: function(fieldName) {
             fieldName = fieldName.toLowerCase();
 
-            var deferred = this.fieldChangeDeferreds[fieldName] = whenAll([
-                this.doCustomCheck(fieldName),
-                this.checkUnique(fieldName),
-                this.isTreeNode ? treeBusinessRules.run(this.resource, fieldName) : null]);
+            var thisCheck = Q.defer();
+            thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
+                                                                    {field: fieldName, result: result}); });
+            this.addPromise(thisCheck.promise);
 
-            deferred.done(function(results) {
-                if (deferred === _this.fieldChangeDeferreds[fieldName]) {
-                    delete _this.fieldChangeDeferreds[fieldName];
-                    _.each(_.compact(results), function(result) {
-                        if (!result.valid) {
-                            _this.resource.saveBlockers.add(result.key, fieldName, result.reason);
-                        } else {
-                            _this.resource.saveBlockers.remove(result.key);
-                        }
-                        result.action && result.action();
-                    });
+            // If another change happens while the previous check is pending,
+            // that check is superseded by checking the new value.
+            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
+            this.fieldChangePromises[fieldName] = thisCheck;
+
+            var checks = [
+                this.invokeRule('customChecks', fieldName, [this.resource]),
+                this.checkUnique(fieldName)
+            ];
+
+            this.isTreeNode && checks.push(treeBusinessRules.run(this.resource, fieldName));
+
+            Q.all(checks).then(function(results) {
+                // Only process these results if the change has not been superseded.
+                return (thisCheck === this.fieldChangePromises[fieldName]) &&
+                    this.processCheckFieldResults(fieldName, results);
+            }.bind(this)).then(function() { thisCheck.resolve('finished'); });
+        },
+        processCheckFieldResults: function(fieldName, results) {
+            var resource = this.resource;
+            return Q.all(results.map(function(result) {
+                if (!result) return null;
+                if (!result.valid) {
+                    resource.saveBlockers.add(result.key, fieldName, result.reason);
+                } else {
+                    resource.saveBlockers.remove(result.key);
                 }
-            });
-        };
-
-        BusinessRuleMgr.prototype.doCustomCheck = function(fieldName) {
-            return this.rules
-                && this.rules.customChecks
-                && this.rules.customChecks[fieldName]
-                && this.rules.customChecks[fieldName](this.resource);
-        };
-
-        BusinessRuleMgr.prototype.checkUnique = function(fieldName) {
+                return result.action && result.action();
+            }));
+        },
+        checkUnique: function(fieldName) {
             var _this = this;
             var results;
             if (this.rules && this.rules.unique && _(this.rules.unique).contains(fieldName)) {
+                // field value is required to be globally unique.
                 results = [uniqueIn(null, this.resource, fieldName)];
             } else {
                 var toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
@@ -258,9 +134,10 @@ define([
                         fieldNames = fieldNames.concat(def.otherfields);
                         field = def.field;
                     }
-                    return uniqueIn(field, _this.resource, fieldNames); });
-            };
-            whenAll(results).done(function(results) {
+                    return uniqueIn(field, _this.resource, fieldNames);
+                });
+            }
+            Q.all(results).then(function(results) {
                 _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
                     var event = dup.cid + ':' + fieldName;
                     if (_this.watchers[event]) return;
@@ -269,21 +146,18 @@ define([
                     });
                 });
             });
-            return combineUniquenessResults(results).pipe(function(result) {
+            return combineUniquenessResults(results).then(function(result) {
+                console.debug('BR finished checkUnique for', fieldName, result);
                 result.key = 'br-uniqueness-' + fieldName;
                 return result;
             });
-        };
+        }
+    });
 
-        return BusinessRuleMgr;
-
-    })();
 
     var combineUniquenessResults = function(deferredResults) {
-        return whenAll(deferredResults).pipe(function(results) {
-            var invalids = _.filter(results, function(result) {
-                return !result.valid;
-            });
+        return Q.all(deferredResults).then(function(results) {
+            var invalids = _.filter(results, function(result) { return !result.valid; });
             return (invalids.length < 1) ? {valid: true} : {valid: false, reason: _(invalids).pluck('reason').join(', ')};
         });
     };
@@ -301,7 +175,7 @@ define([
         }
         return result + (parentFldInfo ? parentFldInfo.getLocalizedName() : 'database');
     };
-  
+
     var uniqueIn = function(toOneField, resource, valueFieldArg) {
         var valueField = $.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
         var value = _.map(valueField, function(v) { return resource.get(v);});
@@ -325,17 +199,17 @@ define([
         };
         var invalid = {
             valid: false,
-            reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)       
+            reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)
         };
-      
+
         var allNullOrUndefinedToOnes = _.reduce(valueId, function(result, v, idx) {
-            return result &&  
+            return result &&
                 valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
         }, true);
         if (allNullOrUndefinedToOnes) {
-            return $.when(valid);
+            return Q(valid);
         }
-                
+
         var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
             if ((other.id != null) && other.id === resource.id) return false;
             if (other.cid === resource.cid) return false;
@@ -361,9 +235,9 @@ define([
             var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
             if (dupes.length > 0) {
                 invalid.localDupes = dupes;
-                return $.when(invalid);
+                return Q(invalid);
             }
-            return resource.rget(toOneField).pipe(function(related) {
+            return Q(resource.rget(toOneField)).then(function(related) {
                 if (!related) return valid;
                 var filters = {};
                 for (var f = 0; f < valueField.length; f++) {
@@ -374,7 +248,7 @@ define([
                     field: toOneFieldInfo,
                     filters: filters
                 });
-                return others.fetch().pipe(function() {
+                return Q(others.fetch()).then(function() {
                     var inDatabase = others.chain().compact();
                     inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
                         return !(resource.collection.get(other.id));
@@ -394,7 +268,7 @@ define([
             var others = new resource.specifyModel.LazyCollection({
                 filters: filters
             });
-            return others.fetch().pipe(function() {
+            return Q(others.fetch()).then(function() {
                 if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
                     return invalid;
                 } else {
@@ -405,341 +279,7 @@ define([
     };
 
 
-    var rules = {
-        Accession: {
-            deleteBlockers: ['collectionobjects'],
-            uniqueIn: {
-                accessionnumber: 'division'
-            }
-        },
-        AccessionAgent: {
-            uniqueIn: {
-                role: [{field: 'accession', otherfields: ['agent']}, {field: 'repositoryagreement', otherfields: ['agent']}],
-                agent: [{field: 'accession', otherfields: ['role']}, {field: 'repositoryagreement', otherfields: ['role']}]
-            }
-        },
-        Agent: {
-            deleteBlockers: ['catalogerof']
-        },
-        Appraisal: {
-            uniqueIn: {
-                appraisalnumber: 'accession'
-            }
-        },
-        Author: {
-            uniqueIn: {
-                agent: 'referencework'
-            }
-        },
-        BorrowAgent: {
-            uniqueIn: {
-                role: {field: 'borrow', otherfields: ['agent']},
-                agent: {field: 'borrow', otherfields: ['role']}
-            }
-        },
-        BorrowMaterial: {
-            customChecks: {
-                quantityreturned: function(borrowmaterial) {
-                    var returned = borrowmaterial.get('quantityreturned');
-                    var newval;
-                    if (returned > borrowmaterial.get('quantity')) {
-                        /*return {
-                            valid: false,
-                            reason: 'value must be < ' + borrowmaterial.get('quantity')
-                        };*/
-                        newval = borrowmaterial.get('quantity');
-                    }
-                    if (returned > borrowmaterial.get('quantityresolved')) {
-                        /*return {
-                            valid: false,
-                            reason: 'quantity returned must be less than or equal to quantity resolved'
-                         };*/
-                        newval = borrowmaterial.get('quantityresolved');
-                    }
-                    newval && borrowmaterial.set('quantityreturned', newval);
-                },
-                quantityresolved: function(borrowmaterial) {
-                    var resolved = borrowmaterial.get('quantityresolved');
-                    var newval;
-                    if (resolved > borrowmaterial.get('quantity')) {
-                        /*return {
-                            valid: false,
-                            reason: 'value must be < ' + borrowmaterial.get('quantity')
-                        };*/
-                        newval = borrowmaterial.get('quantity');
-                    }
-                    if (resolved < borrowmaterial.get('quantityreturned')) {
-                        /*return {
-                            valid: false,
-                            reason: 'quantity resolved must be greater than or equal to quantity returned'
-                        };*/
-                        newval = borrowmaterial.get('quantityreturned');
-                    }
-                    newval && borrowmaterial.set('quantityresolved', newval);
-                }
-            }
-        },
-        Collection: {
-            deleteBlockers: ['collectionobjects'],
-            uniqueIn: {
-                name: 'discipline'
-            }
-        },
-        CollectingEvent: {
-            deleteBlockers: ['collectionobjects']
-        },
-        CollectionObject: {
-            uniqueIn: {
-                catalognumber: 'collection'
-            },
-            customInit: function(collectionObject) {
-                var ceField = collectionObject.specifyModel.getField('collectingevent');
-                if (ceField.dependent && collectionObject.get('collectingevent') == null) {
-                    collectionObject.set('collectingevent', new schema.models.CollectingEvent.Resource());
-                }
-            }
-        },
-        Collector: {
-            uniqueIn: {
-                agent: 'collectingevent'
-            }
-        },
-        Determination: {
-            onRemoved: function(det, detCollection) {
-                // Example usage:
-                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
-                //     var collectionobject = detCollection.related;
-                //     console.log("removed determination", det, "from collection object", collectionobject);
-                // }
-            },
-            onAdded: function(det, detCollection) {
-                // Example usage:
-                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
-                //     var collectionobject = detCollection.related;
-                //     console.log("added determination", det, "to collection object", collectionobject);
-                // }
-            },
-            customInit: function(determination) {
-                if (determination.isNew()) {
-                    var setCurrentIfNoneIsSet = function() {
-                        if (!(determination.collection.any(function(other) {
-                            return other.get('iscurrent');
-                        }))) {
-                            determination.set('iscurrent', true);
-                        }
-                    };
-                    if (determination.collection != null) setCurrentIfNoneIsSet();
-                    determination.on('add', setCurrentIfNoneIsSet);
-                }
-            },
-            customChecks: {
-                taxon: function(determination) {
-                    return determination.rget('taxon', true).pipe(function(taxon) {
-                        if (!(taxon != null)) {
-                            determination.set('preferredtaxon', null);
-                            return {
-                                valid: true
-                            };
-                        }
-                        var recur = function(taxon) {
-                            if (!taxon.get('isaccepted') && taxon.get('acceptedtaxon')) {
-                                return taxon.rget('acceptedtaxon', true).pipe(recur);
-                            } else {
-                                determination.set('preferredtaxon', taxon);
-                                return {valid: true};
-                            }
-                        };
-                        return recur(taxon);
-                    });
-                },
-                iscurrent: function(determination) {
-                    if (determination.get('iscurrent') && (determination.collection != null)) {
-                        determination.collection.each(function(other) {
-                            if (other.cid !== determination.cid) {
-                                other.set('iscurrent', false);
-                            }
-                        });
-                    }
-                    return {valid: true};
-                }
-            }
-        },
-        Discipline: {
-            uniqueIn: {
-                name: 'division'
-            }
-        },
-        Division: {
-            uniqueIn: {
-                name: 'institution'
-            }
-        },
-        Gift: {
-            uniqueIn: {
-                giftnumber: 'discipline'
-            }
-        },
-        GiftAgent: {
-            uniqueIn: {
-                role: {field: 'gift', otherfields: ['agent']},
-                agent: {field: 'gift', otherfields: ['role']}
-            }
-        },
-        GiftPreparation: {
-            customChecks: {
-                quantity: function(iprep) {
-                    interactionBusinessRules.checkPrepAvailability(iprep);
-                }
-            }
-        },
-        Institution: {
-            unique: ['name']
-        },
-        Journal: {
-            deleteBlockers: ['referenceworks']
-        },
-        Loan: {
-            uniqueIn: {
-                loannumber: 'discipline'
-            }
-        },
-        LoanAgent: {
-            uniqueIn: {
-                role: {field: 'loan', otherfields: ['agent']},
-                agent: {field: 'loan', otherfields: ['role']}
-            }
-        },
-        /* might be able to use something like this to check when form is loaded after add-items or create-new for invalid amounts due to
-         changes in other sessions */
-        LoanPreparation: {
-            customChecks:  {
-                quantity: function(iprep) {
-                    interactionBusinessRules.checkPrepAvailability(iprep);
-                }
-            }
-
-        },
-        LoanReturnPreparation: {
-            onRemoved: function(loanreturnprep, collection) {
-              interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
-            },
-            customInit: function(loanreturnprep) {
-                interactionBusinessRules.totalLoaned = undefined;
-                interactionBusinessRules.totalResolved = undefined;
-                interactionBusinessRules.returned = undefined;
-                interactionBusinessRules.resolved = undefined;
-                if (loanreturnprep.isNew()) {
-                    loanreturnprep.set('quantityreturned', 0);
-                    loanreturnprep.set('quantityresolved', 0);
-                }
-            },
-            customChecks: {
-                quantityreturned: function(loanreturnprep) {
-                    var returned = loanreturnprep.get('quantityreturned');
-                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
-                            ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
-                            : 0;
-                    if (returned != previousReturned) {
-                        var delta = returned - previousReturned;
-                        var resolved = loanreturnprep.get('quantityresolved');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
-                        if (delta + resolved > max) {
-                            loanreturnprep.set('quantityreturned', previousReturned);
-                        } else {
-                            resolved = loanreturnprep.get('quantityresolved') + delta;
-                            interactionBusinessRules.previousResolved[loanreturnprep.cid] = resolved;
-                            loanreturnprep.set('quantityresolved', resolved);
-                        }
-                        interactionBusinessRules.previousReturned[loanreturnprep.cid] = loanreturnprep.get('quantityreturned');
-                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
-                    }
-                },
-                quantityresolved: function(loanreturnprep) {
-                    var resolved = loanreturnprep.get('quantityresolved');
-                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
-                            ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
-                           : 0;
-                    if (resolved != previousResolved) {
-                        var returned = loanreturnprep.get('quantityreturned');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
-                        if (resolved > max) {
-                            loanreturnprep.set('quantityresolved', previousResolved);
-                        }
-                        if (resolved < returned) {
-                            interactionBusinessRules.previousReturned[loanreturnprep.cid] = resolved;
-                            loanreturnprep.set('quantityreturned', resolved);
-                        }
-                        interactionBusinessRules.previousResolved[loanreturnprep.cid] = loanreturnprep.get('quantityresolved');
-                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
-                    }
-                }
-            }
-        },
-        Locality: {
-            deleteBlockers: ['collectingevents']
-        },
-        Permit: {
-            unique: ['permitnumber']
-        },
-        Picklist: {
-            uniqueIn: {
-                name: 'collection'
-            }
-        },
-        Preparation: {
-            deleteBlockers: ['preparationattachments']
-        },
-        PrepType: {
-            deleteBlockers: ['preparations'],
-            uniqueIn: {
-                name: 'collection'
-            }
-        },
-        RepositoryAgreement: {
-            deleteBlockers: ['accessions'],
-            uniqueIn: {
-                repositoryagreementnumber: 'division',
-                role: {field: 'borrow', otherfields: ['agent']},
-                agent: {field: 'borrow', otherfields: ['role']}
-            }
-        },
-        Shipment: {
-            customChecks: {
-                shippedto: function(shipment) {
-                    return shipment.rget('shippedto.addresses').pipe(function(addresses) {
-                        return {
-                            valid: addresses == null || addresses.length > 0,
-                            reason: "Shipped to agent must have an address.",
-                            key: "br-shippedto-address"
-                        };
-                    });
-                }
-            }
-        },
-        Geography: {
-            deleteBlockres: ['children', 'acceptedChildren', 'localities']
-        },
-        GeologicTimePeriod: {
-            deleteBlockers: ['children', 'acceptedChildren', 'biostratspaleocontext',
-                             'chronosstratspaleocontext']
-        },
-        LithoStrat: {
-            deleteBlockers: ['children', 'acceptedChildren', 'paleocontexts']
-        },
-        Storage: {
-            deleteBlockers: ['children', 'acceptedChildren', 'containers', 'preparations']
-        },
-        Taxon: {
-            deleteBlockers: ['children', 'determinations', 'preferredTaxonOf',
-                             'acceptedChildren', 'hybridChildren1', 'hybridChildren2']
-        }
-    };
-
-    var businessRules = {
+    return {
         enable: function(e) {
             return enabled = e;
         },
@@ -747,6 +287,4 @@ define([
             return enabled;
         }
     };
-
-    return businessRules;
 });

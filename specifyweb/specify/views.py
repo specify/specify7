@@ -6,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django import http
+from django.db.models.deletion import Collector
+from django.db import router
 
 from .specify_jar import specify_jar
 from . import api, models
@@ -52,6 +54,18 @@ collection = api_view(api.collection_dispatch)
 def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
+
+@login_maybe_required
+@require_GET
+def delete_blockers(request, model, id):
+    obj = api.get_object_or_404(model, id=int(id))
+    using = router.db_for_write(obj.__class__, instance=obj)
+    collector = Collector(using=using)
+    collector.delete_blockers = []
+    collector.collect([obj])
+    result = ["%s.%s" % (sub_objs[0].__class__.__name__, field.name)
+              for field, sub_objs in collector.delete_blockers]
+    return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
 @require_GET

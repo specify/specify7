@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
+    'q', 'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
     'uiinputfield', 'saveblockers', 'tooltipmgr', 'dateformat'
 ], function(
-    $, _, Backbone, dataobjformatters, fieldformat, uiparse,
+    Q, $, _, Backbone, dataobjformatters, fieldformat, uiparse,
     UIFieldInput, saveblockers, ToolTipMgr, dateFormatStr) {
     "use strict";
     var objformat = dataobjformatters.format;
@@ -10,13 +10,14 @@ define([
     return Backbone.View.extend({
         __name__: "UIField",
         render: function() {
-            var render = _.bind(this._render, this);
             var fieldName = this.$el.attr('name');
             if (!fieldName) {
                 console.error("missing field name", this.el);
                 return this;
             }
-            this.model.getResourceAndField(fieldName).done(render);
+            Q(this.model.getResourceAndField(fieldName))
+                .spread(this._render.bind(this))
+                .done();
             return this;
         },
         _render: function(resource, field) {
@@ -30,7 +31,7 @@ define([
             }
             var remote = _.isNull(resource) || resource != this.model;
 
-            var readOnly = remote || field.isRelationship || this.$el.prop('readonly');
+            var readOnly = remote || field.isRelationship || field.readOnly || this.$el.prop('readonly');
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 

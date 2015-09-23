@@ -1,17 +1,17 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyapi', 'schema', 'specifyform',
-    'templates', 'dataobjformatters', 'whenall', 'parseselect', 'localizeform', 'navigation',
-    'savebutton', 'deletebutton', 'saveblockers', 'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates',
+    'dataobjformatters', 'whenall', 'parseselect', 'navigation', 'saveblockers',
+    'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
     'text!context/app.resource?name=TypeSearches!noinline',
     'jquery-ui'
-], function (require, $, _, Backbone, api, schema, specifyform, templates,
-             dataobjformatters, whenAll, parseselect, localizeForm, navigation, SaveButton,
-             DeleteButton, saveblockers, ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
+], function (require, $, _, Backbone, schema, specifyform, templates,
+             dataobjformatters, whenAll, parseselect, navigation, saveblockers,
+             ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
     var typesearches = $.parseXML(typesearchxml);
     var dataobjformat = dataobjformatters.format;
 
     function makeQuery(model, searchFieldStr, q) {
-        var query = new schema.models.SpQuery.Resource();
+        var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
         query.set({
             'name': "Ephemeral QueryCBX query",
             'contextname': model.name,
@@ -26,7 +26,7 @@ define([
         var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
 
         var searchFieldSpec = QueryFieldSpec.fromPath([model.name].concat(searchFieldStr.split('.')));
-        var searchField = new schema.models.SpQueryField.Resource();
+        var searchField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
         searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 0,
             'isdisplay': false,
@@ -38,7 +38,7 @@ define([
         fields.add(searchField);
 
         var dispFieldSpec = QueryFieldSpec.fromPath([model.name]);
-        var dispField = new schema.models.SpQueryField.Resource();
+        var dispField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
         dispField.set(dispFieldSpec.toSpQueryAttrs()).set({
             'sorttype': 1,
             'isdisplay': true,
@@ -59,7 +59,9 @@ define([
     var QueryCbx = Backbone.View.extend({
         __name__: "QueryCbx",
         events: {
-            'click .querycbx-edit, .querycbx-display, .querycbx-add': 'display',
+            'click .querycbx-edit, .querycbx-display': 'displayRelated',
+            'click .querycbx-add': 'addRelated',
+            'click .querycbx-clone': 'cloneRelated',
             'click .querycbx-search': 'openSearch',
             'autocompleteselect': 'select',
             'blur input': 'blur'
@@ -106,7 +108,7 @@ define([
 
             var selectStmt = this.typesearch.text();
             var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
-            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(','), mapper);
+            var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(',').map($.trim), mapper);
             var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
             var fieldTitles = _.map(searchFields, function(f) {
                 return (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName();
@@ -196,25 +198,45 @@ define([
                 }
             }).render().$el.on('remove', function() { self.dialog = null; });
         },
-        display: function(event, ui) {
+        displayRelated: function(event) {
             event.preventDefault();
-            var mode = $(event.currentTarget).is('.querycbx-add')? 'add' : 'display';
+            var mode = 'display';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var uri = this.model.get(this.fieldName);
+            if (!uri) return;
+            var related = this.relatedModel.Resource.fromUri(uri);
+            this.openDialog(mode, related);
+        },
+        addRelated: function(event) {
+            event.preventDefault();
+            var mode = 'add';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var related = new this.relatedModel.Resource();
+            this.openDialog(mode, related);
+        },
+        cloneRelated: function(event) {
+            event.preventDefault();
+            var mode = 'clone';
+            this.closeDialogIfAlreadyOpen(mode);
+
+            var uri = this.model.get(this.fieldName);
+            if (!uri) return;
+            var related = this.relatedModel.Resource.fromUri(uri);
+            related.fetch()
+                .pipe(function() { return related.clone(); })
+                .done(this.openDialog.bind(this, mode));
+        },
+        closeDialogIfAlreadyOpen: function(mode) {
             if (this.dialog) {
                 // if the open dialog is for selected mode, just close it and don't open a new one
                 var closeOnly = this.dialog.hasClass('querycbx-dialog-' + mode);
                 this.dialog.dialog('close');
                 if (closeOnly) return;
             }
-
-            var related;
-            if (mode === 'add') {
-                related = new this.relatedModel.Resource();
-            } else {
-                var uri = this.model.get(this.fieldName);
-                if (!uri) return;
-                related = this.relatedModel.Resource.fromUri(uri);
-            }
-
+        },
+        openDialog: function(mode, related) {
             this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
             new (require('resourceview'))({

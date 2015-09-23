@@ -5,10 +5,12 @@ from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
 from django.utils import simplejson
 from django.conf import settings
+from django import forms
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -17,6 +19,11 @@ from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
 
+class CollectionChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.collectionname
+
+
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
@@ -24,18 +31,27 @@ def login(request):
     """A Django view to log users into the system.
     Supplements the stock Django login with a collection selection.
     """
-    collection = ''
-    if request.method == 'POST':
-        try:
-            collection = request.POST['collection_id']
-        except:
-            return HttpResponseBadRequest('collection id value missing')
+    collection_cell = [] # use a closure to tunnel the collection field out of the auth mechanism
+    class LoginForm(AuthenticationForm):
+        collection = CollectionChoiceField(queryset=Collection.objects.all(), empty_label=None)
 
-    kwargs = {
-        'template_name': 'login.html',
-        'extra_context': { 'collections': Collection.objects.all() } }
-    response = auth_views.login(request, **kwargs)
-    set_collection_cookie(response, collection)
+        def clean(self):
+            AuthenticationForm.clean(self)
+            collection = self.cleaned_data.get('collection')
+            if self.user_cache is not None:
+                try:
+                    Agent.objects.get(division=collection.discipline.division,
+                                      specifyuser=self.user_cache)
+                except Agent.DoesNotExist:
+                    raise forms.ValidationError("The user has no agent for the chosen collection.")
+            collection_cell.append(collection.id)
+            return self.cleaned_data
+
+    response = auth_views.login(request,
+                                template_name='login.html',
+                                authentication_form=LoginForm)
+    if len(collection_cell) > 0:
+        set_collection_cookie(response, collection_cell[0])
     return response
 
 def logout(request):
@@ -114,6 +130,8 @@ def domain(request):
         'division': collection.discipline.division.id,
         'institution': collection.discipline.division.institution.id,
         'embeddedCollectingEvent': collection.isembeddedcollectingevent,
+        'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
+        'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         }
 
     return HttpResponse(simplejson.dumps(domain), content_type='application/json')

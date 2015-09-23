@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
-], function(require, $, _, Backbone, whenAll, assert) {
+    'require', 'jquery', 'underscore', 'backbone', 'assert', 'jquery-bbq'
+], function(require, $, _, Backbone, assert) {
     "use strict";
 
     function eventHandlerForToOne(related, field) {
@@ -199,24 +199,27 @@ define([
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
                 var adjusted = this._handleField(value, fieldName);
-                _.isUndefined(adjusted) || (adjustedAttrs[fieldName] = adjusted);
+                _.isUndefined(adjusted[1]) || (adjustedAttrs[adjusted[0]] = adjusted[1]);
             }, this);
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
         _handleField: function(value, fieldName) {
-            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return value; // special fields
+            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return [fieldName, value]; // special fields
 
             var field = this.specifyModel.getField(fieldName);
             if (!field) {
                 console.warn("setting unknown field", fieldName, "on",
                              this.specifyModel.name, "value is", value);
+                return [fieldName, value];
             }
 
-            if (!field || !field.isRelationship) return value;
-            // relationship field
-            var handler =  _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource';
-            return this[handler](value, fieldName);
+            fieldName = field.name.toLowerCase(); // in case field name is an alias.
+
+            if (field.isRelationship && value != null) {
+                value = this[ _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource' ](value, fieldName);
+            }
+            return [fieldName, value];
         },
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
@@ -291,16 +294,23 @@ define([
             // using dot notation. if the named field represents a resource or collection,
             // then prePop indicates whether to return the named object or the contents of
             // the field that represents it
+            return this.getRelated(fieldName, {prePop: prePop});
+        },
+        getRelated: function(fieldName, options) {
+            options || (options = {
+                prePop: false,
+                noBusinessRules: false
+            });
             var path = _(fieldName).isArray()? fieldName : fieldName.split('.');
 
-            var rget = function(_this) { return _this._rget(path); };
+            var rget = function(_this) { return _this._rget(path, options); };
 
             // first make sure we actually have this object.
             return this.fetchIfNotPopulated().pipe(rget).pipe(function(value) {
                 // if the requested value is fetchable, and prePop is true,
                 // fetch the value, otherwise return the unpopulated resource
                 // or collection
-                if (prePop) {
+                if (options.prePop) {
                     if (!value) return value; // ok if the related resource doesn't exist
                     if (_(value.fetchIfNotPopulated).isFunction()) {
                         return value.fetchIfNotPopulated();
@@ -312,10 +322,11 @@ define([
                 return value;
             });
         },
-        _rget: function(path) {
+        _rget: function(path, options) {
             var fieldName = path[0].toLowerCase();
-            var value = this.get(fieldName);
             var field = this.specifyModel.getField(fieldName);
+            field && (fieldName = field.name.toLowerCase()); // in case fieldName is an alias
+            var value = this.get(fieldName);
             field || console.warn("accessing unknown field", fieldName, "in",
                                   this.specifyModel.name, "value is",
                                   value);
@@ -342,7 +353,7 @@ define([
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = related.Resource.fromUri(value);
+                    toOne = related.Resource.fromUri(value, {noBusinessRules: options.noBusinessRules});
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
                         this.storeDependent(field, toOne);
@@ -383,6 +394,7 @@ define([
                 // is it already cached?
                 if (!_.isUndefined(this.dependentResources[fieldName])) {
                     value = this.dependentResources[fieldName];
+                    if (value == null) return null;
                     // recur if we need to traverse more
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 }
@@ -399,6 +411,7 @@ define([
                         console.warn("expect dependent resource to be in cache");
                         _this.storeDependent(field, value);
                     }
+                    if (value == null) return null;
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             default:
@@ -507,7 +520,7 @@ define([
             );
 
             return getResource.pipe(function(resource) {
-                return $.when(resource, field);
+                return [resource, field];
             });
         },
         placeInSameHierarchy: function(other) {
@@ -522,11 +535,12 @@ define([
             });
         }
     }, {
-        fromUri: function(uri) {
+        fromUri: function(uri, options) {
+            options || (options = {noBusinessRules: false});
             var match = /api\/specify\/(\w+)\/(\d+)\//.exec(uri);
             assert(!_(match).isNull(), "Bad resource uri: " + uri);
             assert(match[1] === this.specifyModel.name.toLowerCase());
-            return new this({ id: parseInt(match[2], 10) });
+            return new this({ id: parseInt(match[2], 10) }, options);
         }
     });
 

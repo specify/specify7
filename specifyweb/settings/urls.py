@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     url(r'^api/specify/(?P<model>\w+)/(?P<id>\d+)/$', 'specifyweb.specify.views.resource'),
     url(r'^api/specify/(?P<model>\w+)/$', 'specifyweb.specify.views.collection'),
 
+    url(r'^api/delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', 'specifyweb.specify.views.delete_blockers'),
+
     # this url always triggers a 500 for testing purposes
     url(r'^api/test_error/', 'specifyweb.specify.views.raise_error'),
 

@@ -298,6 +298,19 @@ def cleanData(model, data, agent):
             del cleaned['specifyuser']
         except KeyError:
             pass
+
+    # guid should only be updatable for taxon and geography
+    if model not in (models.Taxon, models.Geography):
+        try:
+            del cleaned['guid']
+        except KeyError:
+            pass
+
+    # timestampcreated should never be updated.
+    try:
+        del cleaned['timestampcreated']
+    except KeyError:
+        pass
     return cleaned
 
 def create_obj(collection, agent, model, data, parent_obj=None):
@@ -331,10 +344,26 @@ def set_fields_from_data(obj, data):
             setattr(obj, field_name, prepare_value(field, val))
 
 def is_dependent_field(obj, field_name):
-    return obj.specify_model.get_field(field_name).dependent or (
-            obj.__class__ is models.Collectionobject and
+    return (
+        obj.specify_model.get_field(field_name).dependent
+
+        or (obj.__class__ is models.Collectionobject and
             field_name == 'collectingevent' and
             obj.collection.isembeddedcollectingevent)
+
+        or (field_name == 'paleocontext' and (
+
+            (obj.__class__ is models.Collectionobject and
+             obj.collection.discipline.paleocontextchildtable == "collectionobject" and
+             obj.collection.discipline.ispaleocontextembedded)
+
+            or (obj.__class__ is models.Collectingevent and
+                obj.discipline.paleocontextchildtable == "collectingevent" and
+                obj.discipline.ispaleocontextembedded)
+
+            or (obj.__class__ is models.Locality and
+                obj.discipline.paleocontextchildtable == "locality" and
+                obj.discipline.ispaleocontextembedded))))
 
 def get_related_or_none(obj, field_name):
     try:
@@ -469,6 +498,9 @@ def delete_resource(agent, name, id, version):
     return delete_obj(agent, obj, version)
 
 def delete_obj(agent, obj, version=None, parent_obj=None):
+    # need to delete dependent -to-one records
+    # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
+    # but have to delete the referring record first
     dependents_to_delete = filter(None, (
         get_related_or_none(obj, field.name)
         for field in obj._meta.fields

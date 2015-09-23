@@ -38,6 +38,9 @@ define([
             if (model.name == 'CollectionObject' && rel.name == 'collectingEvent') {
                 rel.dependent = domainData.embeddedCollectingEvent;
             }
+            if (rel.name == 'paleoContext' && model.name.toLowerCase() == domainData.paleoContextChildTable) {
+                rel.dependent = domainData.embeddedPaleoContext;
+            }
             return rel;
         }));
     };

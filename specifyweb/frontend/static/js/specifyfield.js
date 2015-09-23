@@ -9,6 +9,12 @@ define([
 
         if (!fieldDef) return;
         this.name = fieldDef.name;
+        this.dottedName = this.model.name + '.' + this.name;
+
+        this.readOnly = (this.name == 'guid' &&
+                         this.model.name != 'Taxon' &&
+                         this.model.name != 'Geography') ||
+                         this.name == 'timestampcreated'; // kludge
 
         this.isRequired = fieldDef.required;
         this.type = fieldDef.type;
@@ -24,7 +30,8 @@ define([
             return schema.getModel(this.relatedModelName);
         },
         getReverse: function() {
-            return this.otherSideName && this.getRelatedModel().getField(this.otherSideName);
+            var relModel = this.getRelatedModel();
+            return this.otherSideName && relModel && relModel.getField(this.otherSideName);
         },
         getLocalizedName: function() {
             return this._localization && schema.unescape(this._localization.name);

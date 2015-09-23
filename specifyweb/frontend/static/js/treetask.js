@@ -1,17 +1,18 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
-    'domain', 'remoteprefs', 'notfoundview', 'recordselector',
+    'domain', 'remoteprefs', 'notfoundview', 'resourceview',
     'navigation', 'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, api, schema, domain, remoteprefs,
-            NotFoundView, RecordSelector, navigation) {
+            NotFoundView, ResourceView, navigation) {
     "use strict";
     var setTitle;
 
     $.contextMenu({
         selector: ".tree-node .expander",
         items: {
-            'open': {name: "Open form", icon: "form"},
-            'query': {name: "Query", icon: "query"}
+            'open': {name: "Edit", icon: "form"},
+            'query': {name: "Query", icon: "query"},
+            'add-child': {name: "Add child", icon:"add-child"}
         },
         callback: function openForm(key, options) {
             var table = this.closest('.tree-view').data('table');
@@ -24,7 +25,49 @@ define([
             case 'query':
                 window.open('/specify/query/fromtree/' + table + '/' + nodeId + '/');
                 break;
+            case 'add-child':
+                new AddChildDialog({
+                    specifyModel: specifyModel,
+                    nodeId: nodeId,
+                    nodeEl: this.closest('.tree-node')
+                }).render();
+                break;
             }
+        }
+    });
+
+    var AddChildDialog = Backbone.View.extend({
+        __name__: "AddChildDialog",
+        initialize: function(options) {
+            this.nodeEl = options.nodeEl;
+            this.specifyModel = options.specifyModel;
+            this.nodeId = options.nodeId;
+        },
+        render: function() {
+            var parentNode = new this.specifyModel.Resource({id: this.nodeId});
+            var newNode = new this.specifyModel.Resource();
+            newNode.set('parent', parentNode.url());
+            new ResourceView({
+                el: this.el,
+                model: newNode,
+                mode: 'edit',
+                noHeader: true
+            }).render()
+                .on('saved', this.childSaved, this)
+                .on('changetitle', this.changeDialogTitle, this);
+
+            this.$el.dialog({
+                width: 'auto',
+                close: function() { $(this).remove(); }
+            });
+            return this;
+        },
+        childSaved: function() {
+            this.$el.dialog('close');
+            this.nodeEl.trigger({type: 'child-added'});
+        },
+        changeDialogTitle: function(resource, title) {
+            this.$el.dialog('option', 'title', title);
         }
     });
 
@@ -35,7 +78,8 @@ define([
         events: {
             'keydown .tree-node-name': 'keydown',
             'click a.open': 'openNode',
-            'click a.close': 'closeNode'
+            'click a.close': 'closeNode',
+            'child-added': 'childAdded'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -81,11 +125,7 @@ define([
                 .append('<a class="ui-icon expander">')
                 .append($('<a class="expander tree-node-name" tabindex="2">').text(this.name));
 
-            if (this.children > 0) {
-                this.$('.expander').addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
-            } else {
-                this.$('.expander').addClass('leaf');
-            }
+            this.setupExpander();
 
             if (parent == null) {
                 this.treeView.$('tbody').append(this.el);
@@ -95,6 +135,14 @@ define([
             this.expanded && this._openNode();
             this.delegateEvents();
             return this;
+        },
+        setupExpander: function() {
+            var expander = this.$('.expander').removeClass('open close leaf');
+            if (this.children > 0) {
+                expander.addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
+            } else {
+                expander.addClass('leaf').attr('title', "");
+            }
         },
         keydown: function(event) {
             if (this.$('.tree-node-name').hasClass('context-menu-active')) return;
@@ -237,6 +285,14 @@ define([
                     _.invoke(this.childNodes, 'applyConformation', conformation);
                 }, this);
             }.bind(this));
+        },
+        childAdded: function(evt) {
+            evt.stopPropagation();
+            this.children++;
+            this.setupExpander();
+            this.closeNode();
+            this.childNodes = null;
+            this._openNode();
         }
     });
 

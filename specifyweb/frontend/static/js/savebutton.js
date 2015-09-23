@@ -68,14 +68,16 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
         },
         submit: function(evt) {
             evt.preventDefault();
-
+            var addAnother = $(evt.currentTarget).is('.save-and-add-button');
+            this.model.businessRuleMgr.pending.then(this.doSave.bind(this, addAnother));
+        },
+        doSave: function(addAnother) {
             _.each(this.blockingResources, function(resource) {
                 return resource.saveBlockers.fireDeferredBlockers();
             });
 
             if (_.isEmpty(this.blockingResources)) {
                 this.setButtonsDisabled(true);
-                var addAnother = $(evt.currentTarget).is('.save-and-add-button');
 
                 // # This has to be done before saving so that the data we get back isn't copied.
                 // # Eg. autonumber fields, the id, etc.

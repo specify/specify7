@@ -31,6 +31,7 @@ class Specifyuser(models.Model):
 
     def check_password(self, password):
         from .encryption import decrypt
+        if password == '': return False
         decrypted = decrypt(self.password, password)
         return decrypted == password
 

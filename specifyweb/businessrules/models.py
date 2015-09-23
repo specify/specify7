@@ -16,4 +16,5 @@ from . import (
     guid_rules,
     interaction_rules,
     workbench_rules,
+    user_rules,
 )

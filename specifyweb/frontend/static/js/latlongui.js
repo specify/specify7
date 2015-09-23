@@ -19,7 +19,6 @@ define([
             var resource = this.model;
 
             resource.fetchIfNotPopulated().done(function() {
-                var init = self.init;
                 var plugin = $(templates.latlonui());
                 var tbody = plugin.find('tbody');
                 tbody.append(tbody.find('tr').clone().hide());
@@ -42,7 +41,10 @@ define([
                     input.change(function() {
                         var parsed = input.data('parsed');
                         resource.set(fieldName, input.val());
-                        parsed && resource.set(inferredField, parsed.asFloat());
+                        if (parsed) {
+                            resource.set(inferredField, parsed.asFloat());
+                            resource.set('originallatlongunit', parsed.soCalledUnit());
+                        }
                     });
                     input.prop('disabled', self.disabled);
                 });
