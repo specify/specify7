@@ -7,14 +7,14 @@ define([
     "use strict";
 
     return Backbone.View.extend({
-        __name__: "EditRecordSetDialog",
-        className: "recordset-edit-dialog",
+        __name__: "EditResourceDialog",
+        className: "resource-edit-dialog",
         initialize: function(options) {
-            this.recordset = options.recordset;
-            this.model = schema.getModelById(this.recordset.get('dbtableid'));
+            this.resource = options.resource;
         },
         render: function() {
-            specifyform.buildViewByName('RecordSet').done(this._render.bind(this));
+            var viewName = this.resource.specifyModel.view || this.resource.specifyModel.name;
+            specifyform.buildViewByName(viewName).done(this._render.bind(this));
             return this;
         },
         _render: function(form) {
@@ -22,23 +22,23 @@ define([
             var buttons = $('<div class="specify-form-buttons">').appendTo(form);
 
             if (!this.readOnly) {
-                var saveButton = new SaveButton({ model: this.recordset });
+                var saveButton = new SaveButton({ model: this.resource });
                 saveButton.render().$el.appendTo(buttons);
                 saveButton.on('saving', this.trigger.bind(this, 'saving'));
                 saveButton.on('savecomplete', function() {
                     this.close();
-                    this.trigger('savecomplete', this, this.recordset);
+                    this.trigger('savecomplete', this, this.resource);
                 }, this);
             }
-            var title = (this.recordset.isNew() ? "New " : "") + this.recordset.specifyModel.getLocalizedName();
+            var title = (this.resource.isNew() ? "New " : "") + this.resource.specifyModel.getLocalizedName();
 
-            if (!this.recordset.isNew() && !this.readOnly) {
-                var deleteButton = new DeleteButton({ model: this.recordset });
+            if (!this.resource.isNew() && !this.readOnly) {
+                var deleteButton = new DeleteButton({ model: this.resource });
                 deleteButton.render().$el.appendTo(buttons);
                 deleteButton.on('deleting', this.close, this);
             }
 
-            populateform(form, this.recordset);
+            populateform(form, this.resource);
 
             this.$el.append(form).dialog({
                 width: 'auto',

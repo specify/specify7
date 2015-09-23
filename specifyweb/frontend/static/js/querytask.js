@@ -1,9 +1,9 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'queryfromtree', 'navigation', 'queryresultstable', 'editrecordset',
+    'queryfromtree', 'navigation', 'queryresultstable', 'editresourcedialog',
     'jquery-bbq', 'jquery-ui'
 ], function($, _, Backbone, schema, QueryFieldUI, templates,
-            queryFromTree, navigation, QueryResultsTable, EditRecordSetDialog) {
+            queryFromTree, navigation, QueryResultsTable, EditResourceDialog) {
     "use strict";
 
     var setTitle;
@@ -117,7 +117,7 @@ define([
             recordset.set('dbtableid', this.model.tableId);
             recordset.set('fromQuery', this.query.toJSON());
             recordset.url = '/stored_query/make_recordset/';
-            new EditRecordSetDialog({recordset: recordset}).render()
+            new EditResourceDialog({resource: recordset}).render()
                 .on('saving', function() { dialog.dialog('open'); })
                 .on('savecomplete', function() {
                     dialog.html('<p>Go to newly created record set now?</p>')

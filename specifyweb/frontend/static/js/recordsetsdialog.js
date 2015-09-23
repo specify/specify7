@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'formsdialog', 'editrecordset',
+    'jquery', 'underscore', 'backbone', 'schema', 'formsdialog', 'editresourcedialog',
     'navigation', 'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, FormsDialog, EditRecordSetDialog, navigation) {
+], function($, _, Backbone, schema, FormsDialog, EditResourceDialog, navigation) {
     "use strict";
 
     return Backbone.View.extend({
@@ -78,7 +78,7 @@ define([
                 var recordset = new schema.models.RecordSet.Resource();
                 recordset.set('dbtableid', model.tableId);
                 recordset.set('type', 0);
-                new EditRecordSetDialog({ recordset: recordset }).render()
+                new EditResourceDialog({ resource: recordset }).render()
                     .on('savecomplete', this.gotoForm.bind(this, model, recordset));
             }, this);
         },
@@ -95,7 +95,7 @@ define([
         edit: function(evt) {
             var index = this.getIndex(evt, 'a.edit');
             this.$el.dialog('close');
-            new EditRecordSetDialog({ recordset: this.options.recordSets.at(index) }).render();
+            new EditResourceDialog({ resource: this.options.recordSets.at(index) }).render();
         }
     });
 });
