@@ -58,10 +58,9 @@ define([
             this.data = options.data;
         },
         getMappings: function() {
-            var maps = new schema.models.WorkbenchTemplateMappingItem.LazyCollection({
-                filters: { workbenchtemplate: this.wb.id, orderby: 'vieworder' }
+            return this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems').pipe(function(mappings) {
+                return mappings.models;
             });
-            return maps.fetch({ limit: 0 }).pipe(function() { return maps.models; });
         },
         render: function() {
             var mappings = this.getMappings();

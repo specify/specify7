@@ -342,24 +342,28 @@ def get_related_or_none(obj, field_name):
     except ObjectDoesNotExist:
         return None
 
+def reorder_fields_for_embedding(cls, data):
+    """For objects which can have embedded collectingevent or
+    paleocontext, we have to make sure the domain field gets set
+    first so that is_dependent_field will work.
+    """
+    put_first = {
+        models.Collectionobject: 'collection',
+        models.Collectingevent: 'discipline',
+        models.Locality: 'discipline',
+    }.get(cls, None)
+
+    if put_first in data:
+        yield (put_first, data[put_first])
+    for key in data.viewkeys() - {put_first}:
+        yield (key, data[key])
+
+
 def handle_fk_fields(collection, agent, obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
-    if obj.__class__ is models.Collectionobject and 'collection' in data:
-        # This is ugly. For collection objects, we need to make sure the
-        # collection attribute gets set before collecting event so that
-        # we can see if the collecting event is supposed to be embedded.
-        # We could just look at the logged in collection, but that would
-        # implicitly assume the object being saved is in same collection,
-        # which seems like a bad idea. The fact that this sets up a
-        # dependence on the order we go through the for-loop below is
-        # kinda funky, but it works.
-        items = [('collection', data['collection'])] # put the collection attribute first
-        items.extend(item for item in data.items() if item[0] != 'collection')
-    else:
-        items = data.items()
-
+    items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
     for field_name, val in items:
         field, model, direct, m2m = obj._meta.get_field_by_name(field_name)

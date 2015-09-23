@@ -1,9 +1,60 @@
 define([
-    'jquery', 'underscore', 'backbone',
-    'icons', 'specifyapi', 'navigation',
-    'jquery-ui'
-], function($, _, Backbone, icons, api, navigation) {
+    'jquery', 'underscore', 'backbone', 'schema',
+    'icons', 'specifyapi', 'navigation', 'editresourcedialog'
+], function($, _, Backbone, schema, icons, api, navigation, EditResourceDialog) {
     "use strict";
+
+    var NewWorkbenchDialog = Backbone.View.extend({
+        __name__: "NewWorkbenchDialog",
+        className: "table-list-dialog",
+        events: {
+            'click a': 'select'
+        },
+        render: function() {
+            this.templates = new schema.models.WorkbenchTemplate.LazyCollection();
+            this.templates.fetch({ limit: 500 }).done(this.gotTemplates.bind(this));
+            return this;
+        },
+        gotTemplates: function() {
+            var entries = this.templates.map(this.dialogEntry, this);
+            $('<table>').append(entries).appendTo(this.el);
+            this.$el.dialog({
+                title: "Choose Workbench Template",
+                maxHeight: 400,
+                modal: true,
+                close: function() { $(this).remove(); },
+                buttons: [
+                    { text: 'New', click: this.newTemplate.bind(this) },
+                    { text: 'Cancel', click: function() { $(this).dialog('close'); } }
+                ]
+            });
+        },
+        dialogEntry: function(template) {
+            var link = $('<a href="#">').text(template.get('name'));
+            return $('<tr>').append(
+                $('<td>').append(link)
+            )[0];
+        },
+        newTemplate: function() {
+        },
+        select: function(event) {
+            event.preventDefault();
+            var i = this.$('a').index(event.currentTarget);
+            var template = this.templates.at(i).clone();
+            var workbench = new schema.models.Workbench.Resource();
+            workbench.set({
+                workbenchtemplate: template,
+                specifyuser: template.get('specifyuser')
+            });
+            new EditResourceDialog({ resource: workbench })
+                .render()
+                .on('savecomplete', this.created, this);
+        },
+        created: function(__, workbench) {
+            navigation.go('/workbench/' + workbench.id + '/');
+        }
+    });
+
 
     return Backbone.View.extend({
         __name__: "WbsDialog",
@@ -19,7 +70,10 @@ define([
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },
-                buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
+                buttons: [
+                    { text: 'New', click: this.newWB.bind(this) },
+                    { text: 'Cancel', click: function() { $(this).dialog('close'); } }
+                ]
             });
             return this;
         },
@@ -36,7 +90,7 @@ define([
         },
         addDialogEntryToolTip: function(entry, link) {
             var ttResourceKey = entry.attr('tooltip');
-            if (ttResourceKey != '') {
+            if (ttResourceKey !== '') {
                 var tt = props.getProperty(resources_prop, ttResourceKey);
                 if (tt) {
                     link.attr('title', tt);
@@ -57,6 +111,9 @@ define([
                 });
             }, 100);
             return entry[0];
+        },
+        newWB: function() {
+            new NewWorkbenchDialog().render();
         }
     });
 });

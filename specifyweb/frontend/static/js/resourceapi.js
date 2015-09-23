@@ -86,6 +86,8 @@ define([
         clone: function() {
             var self = this;
             var newResource = Backbone.Model.prototype.clone.call(self);
+            delete newResource.id;
+            delete newResource.attributes.id;
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
@@ -96,15 +98,15 @@ define([
                     // many-to-one wouldn't ordinarily be dependent, but
                     // this is the case for paleocontext. really more like
                     // a one-to-one.
-                    newResource.set(fieldName, related);
+                    newResource.set(fieldName, related.clone());
                     break;
                 case 'one-to-many':
                     newResource.rget(fieldName).done(function(newCollection) {
-                        related.each(function(resource) { newCollection.add(resource); });
+                        related.each(function(resource) { newCollection.add(resource.clone()); });
                     });
                     break;
                 case 'zero-to-one':
-                    newResource.set(fieldName, related);
+                    newResource.set(fieldName, related.clone());
                     break;
                 default:
                     throw new Error('unhandled relationship type');
@@ -196,7 +198,8 @@ define([
 
             var adjustedAttrs = {};
             _.each(attrs, function(value, fieldName) {
-                adjustedAttrs[fieldName] = this._handleField(value, fieldName);
+                var adjusted = this._handleField(value, fieldName);
+                _.isUndefined(adjusted) || (adjustedAttrs[fieldName] = adjusted);
             }, this);
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
