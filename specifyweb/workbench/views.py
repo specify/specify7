@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection, transaction
 
-from specifyweb.specify.api import toJson
+from specifyweb.specify.api import toJson, get_object_or_404
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify import models
 
@@ -23,7 +23,7 @@ def rows(request, wb_id):
         return save(wb_id, data)
 
 def load(wb_id):
-    wb = models.Workbench.objects.get(id=wb_id)
+    wb = get_object_or_404(models.Workbench, id=wb_id)
     wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
         workbenchtemplate=wb.workbenchtemplate).order_by('vieworder')
 

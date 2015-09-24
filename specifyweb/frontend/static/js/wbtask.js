@@ -1,4 +1,4 @@
-define(['jquery', 'schema', 'specifyapi', 'wbview'], function($, schema, api, WBView) {
+define(['jquery', 'q', 'schema', 'specifyapi', 'wbview'], function($, Q, schema, api, WBView) {
     "use strict";
 
     return function(app) {
@@ -9,13 +9,13 @@ define(['jquery', 'schema', 'specifyapi', 'wbview'], function($, schema, api, WB
                 close: function() {$(this).remove();}
             });
             var wb = new schema.models.Workbench.Resource({id: id});
-            $.when(
-                wb.fetch(),
-                $.get('/api/workbench/rows/' + id + '/')
-            ).done(function(__, data) {
+            Q.all([
+                Q(wb.fetch()),
+                Q($.get('/api/workbench/rows/' + id + '/'))
+            ]).spread(function(__, data) {
                 app.setTitle("Workbench: " + wb.get('name'));
-                app.setCurrentView(new WBView({ wb: wb, data: data[0] }));
-            });
+                app.setCurrentView(new WBView({ wb: wb, data: data }));
+            }).catch(app.handleError);
         });
     };
 });
