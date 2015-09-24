@@ -59,7 +59,7 @@ define([
         },
         getMappings: function() {
             return this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems').pipe(function(mappings) {
-                return mappings.models;
+                return _.sortBy(mappings.models, function(model) { return model.get('viewOrder'); });
             });
         },
         render: function() {
