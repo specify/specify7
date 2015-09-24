@@ -40,6 +40,9 @@ define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q
                     minLength: 0,
                     source: this.source.bind(this)
             });
+            if (this.info.field.length != null) {
+                this.input.attr('maxlength', this.info.field.length);
+            }
 
             this.resetValue();
         },
