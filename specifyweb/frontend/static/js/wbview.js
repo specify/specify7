@@ -1,10 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'whenall',
+    'jquery', 'underscore', 'backbone', 'q',
     'require', 'icons', 'specifyapi', 'schema',
     'handsontable',
     'text!resources/specify_workbench_upload_def.xml!noinline',
     'jquery-ui'
-], function($, _, Backbone, whenAll, require, icons, api, schema, Handsontable, wbupdef) {
+], function($, _, Backbone, Q, require, icons, api, schema, Handsontable, wbupdef) {
     "use strict";
 
     var wbUploadDef = $.parseXML(wbupdef.toLowerCase());
@@ -58,16 +58,17 @@ define([
             this.data = options.data;
         },
         getMappings: function() {
-            return this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems').pipe(function(mappings) {
-                return _.sortBy(mappings.models, function(model) { return model.get('viewOrder'); });
-            });
+            return Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
+                .then(function(mappings) {
+                    return _.sortBy(mappings.models, function(mapping) { return mapping.get('viewOrder'); });
+                });
         },
         render: function() {
             var mappings = this.getMappings();
-            var fields = mappings.pipe(function(mappings) { return whenAll(_.map(mappings, getField)); });
-            var picklists = fields.pipe(function(fields) { return whenAll(_.map(fields, getPickListItems)); });
-            var colHeaders = mappings.pipe(makeHeaders);
-            var columns = picklists.pipe(makeColumns);
+            var fields = mappings.then(function(mappings) { return Q.all(_.map(mappings, getField)); });
+            var picklists = fields.then(function(fields) { return Q.all(_.map(fields, getPickListItems)); });
+            var colHeaders = mappings.then(makeHeaders);
+            var columns = picklists.then(makeColumns);
 
             $('<h2>').text("Workbench: " + this.wb.get('name'))
                 .appendTo(this.el)
@@ -79,7 +80,7 @@ define([
             var spreadsheet = $('<div class="wb-spreadsheet">').appendTo(this.el);
             var enableButtons = function() { this.$('button').prop('disabled', false); }.bind(this);
 
-            $.when(colHeaders, columns).done(function (colHeaders, columns) {
+            Q.all([colHeaders, columns]).spread(function (colHeaders, columns) {
                 this.hot = new Handsontable(spreadsheet[0], {
                     height: this.calcHeight(),
                     data: this.data,
@@ -97,7 +98,7 @@ define([
                     afterChange: function(change, source) { source === 'loadData' || enableButtons(); }
                 });
                 $(window).resize(this.resize.bind(this));
-            }.bind(this));
+            }.bind(this)).done();
 
             return this;
         },
