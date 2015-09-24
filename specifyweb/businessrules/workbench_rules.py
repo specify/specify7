@@ -4,3 +4,7 @@ from .orm_signal_handler import orm_signal_handler
 def fix_workbenchtemplate_name(workbench):
     workbench.workbenchtemplate.name = workbench.name
     workbench.workbenchtemplate.save(update_fields=['name'])
+
+# @orm_signal_handler('pre_delete', 'Workbench')
+# def delete_template(workbench):
+#     workbench.workbenchtemplate.delete()
