@@ -1,6 +1,10 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation', 'editresourcedialog'
-], function($, _, Backbone, schema, navigation, EditResourceDialog) {
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
+    'editresourcedialog', 'wbtemplateeditor'
+], function(
+    $, _, Backbone, schema, navigation,
+    EditResourceDialog, WBTemplateEditor
+) {
     "use strict";
 
     var NewWorkbenchDialog = Backbone.View.extend({
@@ -35,6 +39,12 @@ define([
             )[0];
         },
         newTemplate: function() {
+            new WBTemplateEditor().render().$el.dialog({
+                title: 'Workbench Template Mappings',
+                width: 'auto',
+                modal: true,
+                close: function() { $(this).remove(); }
+            });
         },
         select: function(event) {
             event.preventDefault();

@@ -20,3 +20,41 @@
 .wbs-form .ht_clone_corner {
     z-index: 99;
 }
+
+/* .workbench-template-editor table { */
+/*     width: 100%; */
+/* } */
+
+.workbench-template-editor ul {
+    height: 420px;
+    overflow-y: auto;
+    padding: 0px;
+    min-width: 200px;
+    background-color: white;
+    border: 1px inset;
+}
+
+.workbench-template-editor li {
+    padding: 2px;
+    cursor: pointer;
+}
+
+.workbench-template-editor li.selected {
+    border: 1px solid;
+}
+
+.workbench-template-editor button {
+    padding: 10px;
+    margin: 2px 0;
+}
+
+.workbench-template-editor .wb-editor-mappings li {
+    background-image: url(/images/linked_right.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.workbench-template-editor .wb-editor-mappings span:last-child {
+    float: right;
+    margin-left: 40px;
+}

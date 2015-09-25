@@ -20,8 +20,8 @@ a:link, a:visited {
 
 a:hover {
     color: #036;
-	cursor: pointer;
-	cursor: hand;
+    cursor: pointer;
+    cursor: hand;
 }
 
 a img {
