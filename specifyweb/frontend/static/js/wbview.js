@@ -1,10 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'q',
-    'require', 'icons', 'specifyapi', 'schema',
-    'handsontable',
-    'text!resources/specify_workbench_upload_def.xml!noinline',
-    'jquery-ui'
-], function($, _, Backbone, Q, require, icons, api, schema, Handsontable, wbupdef) {
+    'specifyapi', 'schema', 'handsontable',
+    'text!resources/specify_workbench_upload_def.xml!noinline'
+], function($, _, Backbone, Q, api, schema, Handsontable, wbupdef) {
     "use strict";
 
     var wbUploadDef = $.parseXML(wbupdef.toLowerCase());

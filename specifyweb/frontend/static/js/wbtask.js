@@ -1,9 +1,9 @@
-define(['jquery', 'q', 'schema', 'specifyapi', 'wbview'], function($, Q, schema, api, WBView) {
+define(['jquery', 'q', 'schema', 'wbview'], function($, Q, schema, WBView) {
     "use strict";
 
     return function(app) {
         app.router.route('workbench/:id/', 'workbench', function(id) {
-            var dialog = $('<div>Loading...</div>').dialog({
+            $('<div>Loading...</div>').dialog({
                 title: 'Loading',
                 modal: true,
                 close: function() {$(this).remove();}

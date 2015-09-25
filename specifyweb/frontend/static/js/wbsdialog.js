@@ -1,7 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema',
-    'icons', 'specifyapi', 'navigation', 'editresourcedialog'
-], function($, _, Backbone, schema, icons, api, navigation, EditResourceDialog) {
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation', 'editresourcedialog'
+], function($, _, Backbone, schema, navigation, EditResourceDialog) {
     "use strict";
 
     var NewWorkbenchDialog = Backbone.View.extend({
@@ -79,26 +78,6 @@ define([
                 ]
             });
             return this;
-        },
-        getDialogEntryText: function(entry) {
-            if (entry.attr('label')) {
-                return props.getProperty(resources_prop, entry.attr('label'));
-            } else if (entry.attr('table')) {
-                return schema.getModel(entry.attr('table')).getLocalizedName();
-            } else if (isActionEntry(entry)) {
-                return entry.attr('action');
-            } else {
-                return entry.attr('table');
-            }
-        },
-        addDialogEntryToolTip: function(entry, link) {
-            var ttResourceKey = entry.attr('tooltip');
-            if (ttResourceKey !== '') {
-                var tt = props.getProperty(resources_prop, ttResourceKey);
-                if (tt) {
-                    link.attr('title', tt);
-                }
-            }
         },
         dialogEntry: function(wb) {
             var img = $('<img>', { src: '/images/Workbench32x32.png' });
