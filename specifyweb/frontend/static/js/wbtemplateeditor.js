@@ -92,6 +92,7 @@ define([
                 field: field
             });
             this.trigger('selected', table, field);
+            this.checkCanMove();
         },
         clearSelection: function() {
             this.$('li').removeClass('selected');
@@ -100,12 +101,26 @@ define([
             this.$('.selected').remove();
         },
         selected: function(event) {
+            this.clearSelection();
             var selected = $(event.currentTarget);
-            var i = this.$('li')
-                    .removeClass('selected')
-                    .index(selected);
             selected.addClass('selected');
             this.trigger('selected', selected.data('table'), selected.data('field'));
+            this.checkCanMove();
+        },
+        moveFieldUp: function() {
+            var selected = this.$('li.selected');
+            selected.insertBefore(selected.prev());
+            this.checkCanMove();
+        },
+        moveFieldDown: function() {
+            var selected = this.$('li.selected');
+            selected.insertAfter(selected.next());
+            this.checkCanMove();
+        },
+        checkCanMove: function() {
+            var lis = this.$('li');
+            var i = lis.index(this.$('li.selected'));
+            this.trigger('canmove', {up: i > 0, down: i < lis.length - 1});
         }
     });
 
@@ -114,7 +129,9 @@ define([
         className: 'workbench-template-editor',
         events: {
             'click .wb-editor-map': 'mapField',
-            'click .wb-editor-unmap': 'unMapField'
+            'click .wb-editor-unmap': 'unMapField',
+            'click .wb-editor-moveup': 'moveFieldUp',
+            'click .wb-editor-movedown': 'moveFieldDown'
         },
         render: function() {
             var editor = $(templates.wbtemplateeditor());
@@ -128,7 +145,8 @@ define([
 
             this.mappingTray = new MappingTray({el: $('.wb-editor-mappings', editor)})
                 .render()
-                .on('selected', this.mappingSelected, this);
+                .on('selected', this.mappingSelected, this)
+                .on('canmove', this.setupMoveBtns, this);
 
             this.$el.empty().append(editor);
 
@@ -143,6 +161,19 @@ define([
                 disabled: true,
                 icons: { primary: 'ui-icon-arrowthick-1-w'}
             });
+
+            this.$('.wb-editor-moveup').button({
+                text: false,
+                disabled: true,
+                icons: { primary: 'ui-icon-arrowthick-1-n'}
+            });
+
+            this.$('.wb-editor-movedown').button({
+                text: false,
+                disabled: true,
+                icons: { primary: 'ui-icon-arrowthick-1-s'}
+            });
+
             return this;
         },
         tableSelected: function(table) {
@@ -174,7 +205,13 @@ define([
             this.mappingTray.removeSelection();
             this.$('.wb-editor-unmap').button('disable');
             this.$('.wb-editor-map').button('enable');
-        }
+        },
+        setupMoveBtns: function(canMove) {
+            this.$('.wb-editor-moveup').button(canMove.up ? 'enable' : 'disable');
+            this.$('.wb-editor-movedown').button(canMove.down ? 'enable' : 'disable');
+        },
+        moveFieldUp: function() { this.mappingTray.moveFieldUp(); },
+        moveFieldDown: function() { this.mappingTray.moveFieldDown(); }
     });
 
 });
