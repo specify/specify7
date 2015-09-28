@@ -21,9 +21,13 @@
     z-index: 99;
 }
 
-/* .workbench-template-editor table { */
-/*     width: 100%; */
-/* } */
+.workbench-template-editor th {
+    text-align: center;
+}
+
+.workbench-template-editor th span {
+    text-align: left;
+}
 
 .workbench-template-editor ul {
     height: 420px;
@@ -67,7 +71,13 @@
     margin-left: -13px;
 }
 
-.workbench-template-editor .wb-editor-mappings span:last-child {
+.workbench-template-editor .wb-editor-mappings span:last-child,
+.workbench-template-editor th span:last-child {
     float: right;
     margin-left: 40px;
+}
+
+.workbench-template-editor .wb-editor-mappings span:first-child,
+.workbench-template-editor th span:first-child {
+    float: left;
 }
