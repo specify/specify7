@@ -23,6 +23,7 @@ define(['jquery', 'underscore', 'backbone', 'schema'], function($, _, Backbone, 
             });
             this.$el.empty().append(options).prop('disabled', options.length < 1);
             this.$el.val(this.resource.get('tablename'));
+            this.set();
             return this;
         },
         set: function(event) {

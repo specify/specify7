@@ -20,6 +20,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
             });
             this.$el.empty().append(options);
             this.$el.val(this.resource.get('type'));
+            this.set();
             return this;
         },
         set: function(event) {
