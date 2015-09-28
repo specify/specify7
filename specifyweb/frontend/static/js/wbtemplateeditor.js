@@ -28,7 +28,9 @@ define([
         },
         render: function() {
             this.$el.append(tables.map(function(table) {
-                return $('<li>').text(table.getLocalizedName())[0];
+                return $('<li>')
+                    .text(table.getLocalizedName())
+                    .prepend($('<img>', {src: table.getIcon()}))[0];
             }));
             return this;
         },
@@ -82,6 +84,7 @@ define([
         },
         addField: function(table, field) {
             $('<li class="selected">').append(
+                $('<img>', {src: table.getIcon()}),
                 $('<span>').text(field.column),
                 $('<span>').text(field.column)
             ).appendTo(this.el).data({
