@@ -39,17 +39,25 @@ define([
             )[0];
         },
         newTemplate: function() {
-            new WBTemplateEditor().render().$el.dialog({
+            var editor = new WBTemplateEditor();
+            editor.render().$el.dialog({
                 title: 'Workbench Template Mappings',
                 width: 'auto',
                 modal: true,
-                close: function() { $(this).remove(); }
+                close: function() { $(this).remove(); },
+                buttons: [
+                    {text: 'Done', click: function() { this.makeWorkbench(editor.makeTemplate()); }.bind(this) },
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
             });
         },
         select: function(event) {
             event.preventDefault();
             var i = this.$('a').index(event.currentTarget);
             var template = this.templates.at(i).clone();
+            this.makeWorkbench(template);
+        },
+        makeWorkbench: function(template) {
             var workbench = new schema.models.Workbench.Resource();
             workbench.set({
                 workbenchtemplate: template,

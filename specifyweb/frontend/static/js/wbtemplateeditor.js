@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'templates',
+    'require', 'jquery', 'underscore', 'backbone', 'schema', 'templates',
     'text!resources/specify_workbench_datamodel.xml!noinline'
-], function($, _, Backbone, schema, templates, wbDataModelXML) {
+], function(require, $, _, Backbone, schema, templates, wbDataModelXML) {
     "use strict";
 
     var wbDataModel = $.parseXML(wbDataModelXML);
@@ -121,6 +121,19 @@ define([
             var lis = this.$('li');
             var i = lis.index(this.$('li.selected'));
             this.trigger('canmove', {up: i > 0, down: i < lis.length - 1});
+        },
+        makeMappingItems: function() {
+            var fieldAndTables = _.map(this.$('li'), function(li) { return $(li).data(); });
+            return _.map(fieldAndTables, function(ft, i) {
+                return new schema.models.WorkbenchTemplateMappingItem.Resource({
+                    caption: ft.field.column,
+                    datafieldlength: ft.field.length && parseInt(ft.field.length, 10),
+                    fieldname: ft.field.name,
+                    tableid: ft.table.tableid,
+                    tablename: ft.table.name.toLowerCase(),
+                    vieworder: i
+                });
+            });
         }
     });
 
@@ -211,7 +224,14 @@ define([
             this.$('.wb-editor-movedown').button(canMove.down ? 'enable' : 'disable');
         },
         moveFieldUp: function() { this.mappingTray.moveFieldUp(); },
-        moveFieldDown: function() { this.mappingTray.moveFieldDown(); }
+        moveFieldDown: function() { this.mappingTray.moveFieldDown(); },
+        makeTemplate: function() {
+            var app = require('specifyapp');
+            return new schema.models.WorkbenchTemplate.Resource({
+                specifyuser: app.user.resource_uri,
+                workbenchtemplatemappingitems: this.mappingTray.makeMappingItems()
+            });
+        }
     });
 
 });
