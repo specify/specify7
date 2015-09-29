@@ -51,7 +51,17 @@
 }
 
 .workbench-template-editor li.selected {
-    border: 1px solid;
+    border: 1px solid black;
+}
+
+.workbench-template-editor .wb-editor-fields li {
+    padding-left: 16px;
+}
+
+.workbench-template-editor .wb-editor-fields li.already-mapped {
+    background-image: url(/images/Checkmark32x32.png);
+    background-size: 15px;
+    background-repeat: no-repeat;
 }
 
 .workbench-template-editor button {

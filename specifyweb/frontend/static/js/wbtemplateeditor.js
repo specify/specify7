@@ -53,11 +53,14 @@ define([
         events: {
             'click li': 'selected'
         },
-        setTable: function(table) {
+        setTable: function(table, mappings) {
+            var alreadyMapped = _.map(mappings, function(map) { return map.field; });
             this.table = table;
             this.fields = fieldsByTableId[table.tableId];
             this.$el.empty().append(this.fields.map(function(field) {
-                return $('<li>').text(field.column)[0];
+                var li = $('<li>').text(field.column);
+                _(alreadyMapped).contains(field) && li.addClass('already-mapped');
+                return li[0];
             }));
             return this;
         },
@@ -66,6 +69,7 @@ define([
             $(this.$('li').removeClass('selected')[i]).addClass('selected');
         },
         selected: function(event) {
+            if ($(event.currentTarget).is('.already-mapped')) return;
             var i = this.$('li')
                     .removeClass('selected')
                     .index(event.currentTarget);
@@ -98,7 +102,10 @@ define([
             this.$('li').removeClass('selected');
         },
         removeSelection: function() {
-            this.$('.selected').remove();
+            var selected = this.$('.selected');
+            var mapping = selected.data();
+            selected.remove();
+            return mapping;
         },
         selected: function(event) {
             this.clearSelection();
@@ -122,8 +129,11 @@ define([
             var i = lis.index(this.$('li.selected'));
             this.trigger('canmove', {up: i > 0, down: i < lis.length - 1});
         },
+        getMappings: function() {
+            return  _.map(this.$('li'), function(li) { return $(li).data(); });
+        },
         makeMappingItems: function() {
-            var fieldAndTables = _.map(this.$('li'), function(li) { return $(li).data(); });
+            var fieldAndTables = this.getMappings;
             return _.map(fieldAndTables, function(ft, i) {
                 return new schema.models.WorkbenchTemplateMappingItem.Resource({
                     caption: ft.field.column,
@@ -190,8 +200,9 @@ define([
             return this;
         },
         tableSelected: function(table) {
+            var mappings = this.mappingTray.getMappings();
             this.tablesTray.setTable(table);
-            this.fieldsTray.setTable(table);
+            this.fieldsTray.setTable(table, mappings);
             this.mappingTray.clearSelection();
             this.$('button').button('disable');
         },
@@ -201,10 +212,11 @@ define([
             this.mappingTray.clearSelection();
         },
         mappingSelected: function(table, field) {
+            var mappings = this.mappingTray.getMappings();
             this.$('.wb-editor-map').button('disable');
             this.$('.wb-editor-unmap').button('enable');
             this.tablesTray.setTable(table);
-            this.fieldsTray.setTable(table);
+            this.fieldsTray.setTable(table, mappings);
             this.fieldsTray.setField(field);
         },
         mapField: function() {
@@ -215,9 +227,13 @@ define([
             );
         },
         unMapField: function() {
-            this.mappingTray.removeSelection();
+            var removed = this.mappingTray.removeSelection();
+            var mappings = this.mappingTray.getMappings();
             this.$('.wb-editor-unmap').button('disable');
             this.$('.wb-editor-map').button('enable');
+            this.tablesTray.setTable(removed.table);
+            this.fieldsTray.setTable(removed.table, mappings);
+            this.fieldsTray.setField(removed.field);
         },
         setupMoveBtns: function(canMove) {
             this.$('.wb-editor-moveup').button(canMove.up ? 'enable' : 'disable');
