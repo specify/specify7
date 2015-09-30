@@ -5,21 +5,40 @@ define([
     "use strict";
 
     var wbDataModel = $.parseXML(wbDataModelXML);
-    var tables = _.map($('table', wbDataModel), function(table) {
-        return schema.getModel(table.getAttribute('table'));
-    }).filter(function(table) { return table != null; });
+
+    function getAttrs(node) {
+        return _.object(_.map(node.attributes, function(attr) {
+            return [attr.name, attr.value];
+        }));
+    }
+
+    var tables = _.map($('table', wbDataModel), function(tableNode) {
+        tableNode = $(tableNode);
+        var tableInfo = {
+            tableId: parseInt(tableNode.attr('tableid'), 10),
+            name: tableNode.attr('table')
+        };
+
+        tableInfo.specifyModel = tableInfo.name === 'taxononly' ?
+            schema.models.Taxon :
+            schema.getModelById(tableInfo.tableId);
+
+        tableInfo.title = tableInfo.name === 'taxononly' ?
+            'Taxon Import Only' :
+            tableInfo.specifyModel.getLocalizedName();
+
+        return tableInfo;
+    });
+
+    function getFieldsForTable(table) {
+        var fields = $('table[tableid="' + table.tableId + '"] field', wbDataModel);
+        return _.map(fields , getAttrs);
+    }
 
     var fieldsByTableId = _.object(_.map(tables, function(table) {
         return [table.tableId, getFieldsForTable(table)];
     }));
 
-    function getFieldsForTable(table) {
-        return _.map( $('table[tableid="' + table.tableId + '"] field', wbDataModel), function(field) {
-            return _.object(_.map(field.attributes, function(attr) {
-                return [attr.name, attr.value];
-            }));
-        });
-    }
 
     var TablesTray = Backbone.View.extend({
         __name__: "WorkbenchTemplateEditorTablesTray",
@@ -28,19 +47,30 @@ define([
         },
         render: function() {
             this.$el.append(tables.map(function(table) {
-                return $('<li>')
-                    .text(table.getLocalizedName())
-                    .prepend($('<img>', {src: table.getIcon()}))[0];
+                return $('<li>', {'data-tablename': table.name})
+                    .text(table.title)
+                    .prepend($('<img>', {src: table.specifyModel.getIcon()}))[0];
             }));
             return this;
         },
         selected: function(event) {
+            if ($(event.currentTarget).is('.disabled-table')) return;
             var i = this.$('li').index(event.currentTarget);
             this.trigger('selected', tables[i]);
         },
-        setTable: function(table) {
+        setTable: function(table, mappings) {
             var i = tables.indexOf(table);
-            $(this.$('li').removeClass('selected')[i]).addClass('selected');
+            $(this.$('li').removeClass('selected disabled-table')[i]).addClass('selected');
+            if (mappings.length > 0) this.updateDisabledTables(table);
+        },
+        updateDisabledTables: function(table) {
+            if (table.name === 'agent') {
+                this.$('li[data-tablename!="agent"]').addClass('disabled-table');
+            } else if (table.name === 'taxononly') {
+                this.$('li[data-tablename!="taxononly"]').addClass('disabled-table');
+            } else {
+                this.$('li[data-tablename="agent"], li[data-tablename="taxononly"]').addClass('disabled-table');
+            }
         },
         getSelected: function() {
             var i = this.$('li.selected').index();
@@ -88,7 +118,7 @@ define([
         },
         addField: function(table, field) {
             $('<li class="selected">').append(
-                $('<img>', {src: table.getIcon()}),
+                $('<img>', {src: table.specifyModel.getIcon()}),
                 $('<span>').text(field.column),
                 $('<span>').text(field.column)
             ).appendTo(this.el).data({
@@ -139,8 +169,8 @@ define([
                     caption: ft.field.column,
                     datafieldlength: ft.field.length && parseInt(ft.field.length, 10),
                     fieldname: ft.field.name,
-                    tableid: ft.table.tableid,
-                    tablename: ft.table.name.toLowerCase(),
+                    tableid: ft.table.tableId,
+                    tablename: ft.table.name,
                     vieworder: i
                 });
             });
@@ -201,7 +231,7 @@ define([
         },
         tableSelected: function(table) {
             var mappings = this.mappingTray.getMappings();
-            this.tablesTray.setTable(table);
+            this.tablesTray.setTable(table, mappings);
             this.fieldsTray.setTable(table, mappings);
             this.mappingTray.clearSelection();
             this.$('button').button('disable');
@@ -215,7 +245,7 @@ define([
             var mappings = this.mappingTray.getMappings();
             this.$('.wb-editor-map').button('disable');
             this.$('.wb-editor-unmap').button('enable');
-            this.tablesTray.setTable(table);
+            this.tablesTray.setTable(table, mappings);
             this.fieldsTray.setTable(table, mappings);
             this.fieldsTray.setField(field);
         },
@@ -231,7 +261,7 @@ define([
             var mappings = this.mappingTray.getMappings();
             this.$('.wb-editor-unmap').button('disable');
             this.$('.wb-editor-map').button('enable');
-            this.tablesTray.setTable(removed.table);
+            this.tablesTray.setTable(removed.table, mappings);
             this.fieldsTray.setTable(removed.table, mappings);
             this.fieldsTray.setField(removed.field);
         },

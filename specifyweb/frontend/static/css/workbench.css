@@ -54,6 +54,10 @@
     border: 1px solid black;
 }
 
+.workbench-template-editor li.disabled-table {
+    background: lightgray;
+}
+
 .workbench-template-editor .wb-editor-fields li {
     padding-left: 16px;
 }
