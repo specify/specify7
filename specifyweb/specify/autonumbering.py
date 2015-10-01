@@ -22,13 +22,6 @@ def autonumber_and_save(collection, user, obj):
                          for vals in [formatter.parse(value)]
                          if formatter.needs_autonumber(vals)]
 
-    # for formatter in uiformatters:
-    #     value = getattr(obj, formatter.field_name.lower())
-    #     if value is None: continue
-    #     vals = formatter.parse(value)
-    #     if formatter.needs_autonumber(vals):
-    #         autonumber_fields.append((formatter, vals))
-
     if len(autonumber_fields) > 0:
         do_autonumbering(collection, obj, autonumber_fields)
     else:
@@ -37,15 +30,6 @@ def autonumber_and_save(collection, user, obj):
 
 def do_autonumbering(collection, obj, fields):
     logger.debug("autonumbering %s fields: %s", obj, fields)
-
-    for formatter, vals in fields:
-        # Set all the fields to be autonumbered to NULL to
-        # avoid saving the placeholder value into db.
-        setattr(obj, formatter.field_name.lower(), None)
-    # Have to save the object before autonumbering b/c
-    # autonumber acquires a write lock on the model,
-    # but save touches other tables.
-    obj.save()
 
     with lock_tables(obj._meta.db_table):
         for formatter, vals in fields:
