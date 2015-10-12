@@ -19,7 +19,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
                 return $('<option>').attr('value', i).text(type)[0];
             });
             this.$el.empty().append(options);
-            this.$el.val(this.resource.get(this.field));
+            var initialVal = this.resource.get(this.field);
+            this.$el.val(initialVal == null ? 1 : initialVal);
             this.set();
             return this;
         },
