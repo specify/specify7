@@ -181,6 +181,14 @@ def status_from_log(fname):
         'success': ending_match and ending_match.group(2) == 'successfully.',
     }
 
+
+@login_maybe_required
+@require_GET
+def upload_log(request, upload_id):
+    assert upload_id.startswith(settings.DATABASE_NAME)
+    fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
+    return http.HttpResponse(open(fname, "r"), content_type='text/plain')
+
 @login_maybe_required
 @require_GET
 def upload_status(request, upload_id):
