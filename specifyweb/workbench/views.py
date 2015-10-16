@@ -1,14 +1,22 @@
+import re
+import os
 import json
 import logging
+import subprocess
+from glob import glob
+from uuid import uuid4
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection, transaction
+from django.conf import settings
 
 from specifyweb.specify.api import toJson, get_object_or_404
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify import models
+
+from uploader_classpath import CLASSPATH
 
 logger = logging.getLogger(__name__)
 
@@ -118,3 +126,72 @@ def save(wb_id, data):
         if celldata is not None
     ])
     return load(wb_id)
+
+@csrf_exempt
+@login_maybe_required
+@require_POST
+def upload(request, wb_id):
+    args = [
+        "/usr/lib/jvm/java-8-oracle/bin/java", #settings.JAVA,
+        "-Dfile.encoding=UTF-8",
+        "-classpath",
+        ":".join((os.path.join(settings.SPECIFY_THICK_CLIENT, jar) for jar in CLASSPATH)),
+        "edu.ku.brc.specify.tasks.subpane.wb.wbuploader.UploadCmdLine",
+        "-u", request.specify_user.name,
+        "-U", settings.MASTER_NAME,
+        "-P", settings.MASTER_PASSWORD,
+        "-d", settings.DATABASE_NAME,
+        "-b", wb_id,
+        "-c", request.specify_collection.collectionname,
+        "-w", settings.SPECIFY_THICK_CLIENT,
+    ]
+
+    if settings.DATABASE_HOST != '':
+        args.extend(["-h", settings.DATABASE_HOST])
+
+    output_file = "%s_%s_%s" % (settings.DATABASE_NAME, wb_id, uuid4())
+    with open(os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file), "w") as f:
+        subprocess.Popen(args, stdout=f, bufsize=1024)
+
+    return http.HttpResponse(output_file, content_type="text_plain")
+
+TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
+STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE)
+ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE)
+ROW_RE = re.compile(r'row (\d*)[^\d]')
+
+def status_from_log(fname):
+    with open(fname, 'r') as f:
+        first_line = f.readline()
+        try:
+            f.seek(-512, os.SEEK_END)
+        except IOError:
+            # the file size is less than 512
+            pass
+        tail = f.read(512)
+
+    start_match = STARTING_RE.match(first_line)
+    ending_match = ENDING_RE.search(tail)
+    row_match = ROW_RE.findall(tail)
+    return {
+        'log_name': os.path.basename(fname),
+        'start_time': start_match and start_match.group(1),
+        'last_row': row_match[-1] if len(row_match) > 0 else None,
+        'end_time': ending_match and ending_match.group(1),
+        'success': ending_match and ending_match.group(2) == 'successfully.',
+    }
+
+@login_maybe_required
+@require_GET
+def upload_status(request, upload_id):
+    assert upload_id.startswith(settings.DATABASE_NAME)
+    fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
+    status = status_from_log(fname)
+    return http.HttpResponse(toJson(status), content_type='application/json')
+
+@login_maybe_required
+@require_GET
+def upload_status_list(request, wb_id):
+    log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
+    statuses = [status_from_log(log) for log in log_fnames]
+    return http.HttpResponse(toJson(statuses), content_type='application/json')

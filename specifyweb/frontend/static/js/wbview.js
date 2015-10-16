@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'q',
-    'specifyapi', 'schema', 'handsontable',
+    'specifyapi', 'schema', 'handsontable', 'wbupload',
     'text!resources/specify_workbench_upload_def.xml!noinline'
-], function($, _, Backbone, Q, api, schema, Handsontable, wbupdef) {
+], function($, _, Backbone, Q, api, schema, Handsontable, WBUpload, wbupdef) {
     "use strict";
 
     var wbUploadDef = $.parseXML(wbupdef.toLowerCase());
@@ -48,6 +48,7 @@ define([
         __name__: "WbForm",
         className: "wbs-form",
         events: {
+            'click .wb-upload': 'upload',
             'click .wb-save': 'save',
             'click .wb-load': 'load'
         },
@@ -71,6 +72,7 @@ define([
             $('<h2>').text("Workbench: " + this.wb.get('name'))
                 .appendTo(this.el)
                 .append(
+                    $('<button class="wb-upload">Upload</button>'),
                     $('<button class="wb-save" disabled>Save</button>'),
                     $('<button class="wb-load" disabled>Reload</button>')
                 );
@@ -137,7 +139,10 @@ define([
             }.bind(this));
         },
         loaded: function() {
-            this.$('button').prop('disabled', true);
+            this.$('.wb-save, .wb-load').prop('disabled', true);
+        },
+        upload: function() {
+            new WBUpload({wb: this.wb}).render();
         }
     });
 });
