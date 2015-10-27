@@ -14,12 +14,13 @@ define([
             this.logName = options.logName;
         },
         render: function() {
+            var refreshTimer = setInterval(this.refreshLog.bind(this), 5000);
             this.$el.append('<pre>').dialog({
                 title: "Upload Log",
                 modal: true,
                 width: 800,
                 height: 600,
-                close: function() {$(this).remove(); },
+                close: function() {$(this).remove(); clearInterval(refreshTimer);},
                 buttons: [
                     {text: "Refresh", click: this.refreshLog.bind(this)},
                     {text: "Close", click: function() { $(this).dialog('close'); }}
@@ -48,12 +49,12 @@ define([
         },
         render: function() {
             var refreshTimer = setInterval(this.refreshList.bind(this), 5000);
-            $('<table style="width: 600px">').append(
+            $('<table style="width: 600px" class="wb-logs">').append(
                 '<thead><tr><th>Started</th><th>Finshed</th><th>Rows Processed</th><th>Success</th></tr></thead>',
                 '<tbody>'
             ).appendTo(this.el);
             this.$el.dialog({
-                title: "Upload Log",
+                title: "Upload Logs for " + this.wb.get('name'),
                 modal: true,
                 width: 'auto',
                 height: 600,
@@ -87,7 +88,6 @@ define([
         rowSelected: function(evt) {
             var index = this.$('tbody tr').index(evt.currentTarget);
             new WBUploadLog({logName: this.statusList[index].log_name, wb: this.wb}).render();
-            this.$el.dialog('close');
         }
     });
 });

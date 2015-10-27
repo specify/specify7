@@ -95,3 +95,7 @@
 .workbench-template-editor th span:first-child {
     float: left;
 }
+
+.wb-logs tbody tr {
+    cursor: pointer;
+}
