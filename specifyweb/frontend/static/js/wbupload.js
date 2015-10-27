@@ -78,7 +78,6 @@ define([
                 height: 600,
                 close: function() {$(this).remove(); clearInterval(refreshTimer); },
                 buttons: [
-                    {text: "Refresh", click: this.refreshList.bind(this)},
                     {text: "Start Upload", click: this.startUpload.bind(this)},
                     {text: "Close", click: function() { $(this).dialog('close'); }}
                 ]
@@ -101,10 +100,21 @@ define([
             this.$('tbody').empty().append(rows);
         },
         startUpload: function() {
-            this.$el.dialog('close');
-            var wb = this.wb;
-            $.post('/api/workbench/upload/' + this.wb.id + '/').done(function(logName) {
-                new WBUploadLog({logName: logName, wb: wb}).render();
+            var begin = function() {
+                this.$el.dialog('close');
+                var wb = this.wb;
+                $.post('/api/workbench/upload/' + this.wb.id + '/').done(function(logName) {
+                    new WBUploadLog({logName: logName, wb: wb}).render();
+                });
+            }.bind(this);
+
+            $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
+                title: "Proceed with upload?",
+                modal: true,
+                buttons: [
+                    {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
             });
         },
         rowSelected: function(evt) {
