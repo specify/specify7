@@ -77,30 +77,35 @@ define([
                     $('<button class="wb-load" disabled>Reload</button>')
                 );
 
-            var spreadsheet = $('<div class="wb-spreadsheet">').appendTo(this.el);
-            var enableButtons = function() { this.$('button').prop('disabled', false); }.bind(this);
+            $('<div class="wb-spreadsheet">').appendTo(this.el);
 
-            Q.all([colHeaders, columns]).spread(function (colHeaders, columns) {
-                this.hot = new Handsontable(spreadsheet[0], {
-                    height: this.calcHeight(),
-                    data: this.data,
-                    colHeaders: colHeaders,
-                    columns: columns,
-                    minSpareRows: 1,
-                    rowHeaders: true,
-                    manualColumnResize: true,
-                    columnSorting: true,
-                    sortIndicator: true,
-                    contextMenu: true,
-                    stretchH: 'all',
-                    afterCreateRow: enableButtons,
-                    afterRemoveRow: enableButtons,
-                    afterChange: function(change, source) { source === 'loadData' || enableButtons(); }
-                });
-                $(window).resize(this.resize.bind(this));
-            }.bind(this)).done();
+            Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
 
             return this;
+        },
+        setupHOT: function (colHeaders, columns) {
+            var onChanged = this.spreadSheetChanged.bind(this);
+            this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+                height: this.calcHeight(),
+                data: this.data,
+                colHeaders: colHeaders,
+                columns: columns,
+                minSpareRows: 1,
+                rowHeaders: true,
+                manualColumnResize: true,
+                columnSorting: true,
+                sortIndicator: true,
+                contextMenu: true,
+                stretchH: 'all',
+                afterCreateRow: onChanged,
+                afterRemoveRow: onChanged,
+                afterChange: function(change, source) { source === 'loadData' || onChanged(); }
+            });
+            $(window).resize(this.resize.bind(this));
+        },
+        spreadSheetChanged: function() {
+            this.$('.wb-upload').prop('disabled', true);
+            this.$('.wb-load, .wb-save').prop('disabled', false);
         },
         resize: function() {
             this.hot && this.hot.updateSettings({height: this.calcHeight()});
