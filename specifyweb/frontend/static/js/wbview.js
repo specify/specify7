@@ -49,8 +49,7 @@ define([
         className: "wbs-form",
         events: {
             'click .wb-upload': 'upload',
-            'click .wb-save': 'save',
-            'click .wb-load': 'load'
+            'click .wb-save': 'save'
         },
         initialize: function(options) {
             this.wb = options.wb;
@@ -73,8 +72,7 @@ define([
                 .appendTo(this.el)
                 .append(
                     $('<button class="wb-upload">Upload</button>'),
-                    $('<button class="wb-save" disabled>Save</button>'),
-                    $('<button class="wb-load" disabled>Reload</button>')
+                    $('<button class="wb-save" disabled>Save</button>')
                 );
 
             $('<div class="wb-spreadsheet">').appendTo(this.el);
@@ -105,7 +103,7 @@ define([
         },
         spreadSheetChanged: function() {
             this.$('.wb-upload').prop('disabled', true);
-            this.$('.wb-load, .wb-save').prop('disabled', false);
+            this.$('.wb-save').prop('disabled', false);
         },
         resize: function() {
             this.hot && this.hot.updateSettings({height: this.calcHeight()});
@@ -113,19 +111,6 @@ define([
         },
         calcHeight: function() {
             return $(window).height() - this.$el.offset().top - 50;
-        },
-        load: function() {
-            var dialog = $('<div>Loading...</div>').dialog({
-                title: 'Loading',
-                modal: true,
-                close: function() {$(this).remove();}
-            });
-            $.get('/api/workbench/rows/' + this.wb.id + '/').done(function(data) {
-                this.data = data;
-                this.hot.loadData(data);
-                dialog.dialog('close');
-                this.loaded();
-            }.bind(this));
         },
         save: function() {
             var dialog = $('<div>Saving...</div>').dialog({
@@ -140,11 +125,12 @@ define([
                 this.data = data;
                 this.hot.loadData(data);
                 dialog.dialog('close');
-                this.loaded();
+                this.spreadSheetUpToDate();
             }.bind(this));
         },
-        loaded: function() {
-            this.$('.wb-save, .wb-load').prop('disabled', true);
+        spreadSheetUpToDate: function() {
+            this.$('.wb-upload').prop('disabled', false);
+            this.$('.wb-save').prop('disabled', true);
         },
         upload: function() {
             new WBUpload({wb: this.wb}).render();
