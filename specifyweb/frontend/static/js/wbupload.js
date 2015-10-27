@@ -4,7 +4,7 @@ define([
     "use strict";
 
     function showTime(timeStr) {
-        return timeStr ? moment(timeStr).calendar() : '...';
+        return timeStr ? moment(timeStr).fromNow() : '...';
     }
 
     var WBUploadLog = Backbone.View.extend({
@@ -66,7 +66,7 @@ define([
             this.wb = options.wb;
         },
         render: function() {
-            var refreshTimer = setInterval(this.refreshList.bind(this), 5000);
+            var refreshTimer = setInterval(this.refreshList.bind(this), 30000);
             $('<table style="width: 600px" class="wb-logs">').append(
                 '<thead><tr><th>Started</th><th>Finshed</th><th>Rows Processed</th><th>Success</th></tr></thead>',
                 '<tbody>'
@@ -101,7 +101,11 @@ define([
             this.$('tbody').empty().append(rows);
         },
         startUpload: function() {
-            $.post('/api/workbench/upload/' + this.wb.id + '/').done(this.refreshList.bind(this));
+            this.$el.dialog('close');
+            var wb = this.wb;
+            $.post('/api/workbench/upload/' + this.wb.id + '/').done(function(logName) {
+                new WBUploadLog({logName: logName, wb: wb}).render();
+            });
         },
         rowSelected: function(evt) {
             var index = this.$('tbody tr').index(evt.currentTarget);
