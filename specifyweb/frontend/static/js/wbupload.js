@@ -4,7 +4,7 @@ define([
     "use strict";
 
     function showTime(timeStr) {
-        return timeStr ? moment(timeStr).fromNow() : '...';
+        return timeStr ? moment(timeStr).calendar() : '...';
     }
 
     var WBUploadLog = Backbone.View.extend({
@@ -71,15 +71,14 @@ define([
             $.get('/api/workbench/upload_status_list/' + this.wb.id + '/').done(this.gotStatusList.bind(this));
         },
         gotStatusList: function(statusList) {
-            this.statusList = statusList;
-            var rows = _(statusList).chain().sortBy(function(status) { return status.start_time || 'end of list';  })
-                .map(function(status) {
-                    return $('<tr>').append(
-                        $('<td>').text(showTime(status.start_time)),
-                        $('<td>').text(showTime(status.end_time)),
-                        $('<td>').text(status.last_row || '...'),
-                        $('<td>').text(status.end_time == null ? '...' : status.success ? "Succeeded" : "Failed"))[0];
-                }).value();
+            this.statusList = _(statusList).sortBy(function(status) { return status.start_time || 'end of list';  });
+            var rows = _(this.statusList).map(function(status) {
+                return $('<tr>').append(
+                    $('<td>').text(showTime(status.start_time)),
+                    $('<td>').text(showTime(status.end_time)),
+                    $('<td>').text(status.last_row || '...'),
+                    $('<td>').text(status.end_time == null ? '...' : status.success ? "Succeeded" : "Failed"))[0];
+            });
             this.$('tbody').empty().append(rows);
         },
         startUpload: function() {
