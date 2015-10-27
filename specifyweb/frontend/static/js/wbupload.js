@@ -15,11 +15,17 @@ define([
         },
         render: function() {
             var refreshTimer = setInterval(this.refreshLog.bind(this), 5000);
-            this.$el.append('<pre>').dialog({
+            this.$el.append('<div class="upload-log" style="width: 800px;height: 600px;overflow: auto;background: white"><pre></pre></div>');
+            this.$el.append(
+                $('<a>download</a>')
+                    .attr('href', '/api/workbench/upload_log/' + this.logName + '/')
+                    .attr('download', 'workbench-upload-log.txt')
+            );
+            this.$el.dialog({
                 title: "Upload Log",
                 modal: true,
-                width: 800,
-                height: 600,
+                width: 'auto',
+                height: 'auto',
                 close: function() {$(this).remove(); clearInterval(refreshTimer);},
                 buttons: [
                     {text: "Refresh", click: this.refreshLog.bind(this)},
@@ -31,7 +37,7 @@ define([
         },
         gotLog: function(log) {
             this.$('pre').text(log);
-            this.$el.scrollTop(this.$('pre').height());
+            this.$('.upload-log').scrollTop(this.$('pre').height());
         },
         refreshLog: function() {
             $.get('/api/workbench/upload_log/' + this.logName + '/').done(this.gotLog.bind(this));
