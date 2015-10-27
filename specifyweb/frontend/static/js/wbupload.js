@@ -9,15 +9,18 @@ define([
 
     var WBUploadLog = Backbone.View.extend({
         __name__: "WBUploadLog",
+        className: "wb-upload-log",
         initialize: function(options) {
             this.wb = options.wb;
             this.logName = options.logName;
+            this.tick = 0;
         },
         render: function() {
-            var refreshTimer = setInterval(this.refreshLog.bind(this), 5000);
-            this.$el.append('<div class="upload-log" style="width: 800px;height: 600px;overflow: auto;background: white"><pre></pre></div>');
+            var refreshTimer = setInterval(this.refreshTick.bind(this), 100);
+            this.$el.append('<div class="upload-log-text"><pre></pre></div>');
             this.$el.append(
-                $('<a>download</a>')
+                $('<p class="auto-refresh"><label><input type="checkbox" checked /> Auto-refresh</label> (<span>disabled</span>)</p>'),
+                $('<a class="download">Save locally</a>')
                     .attr('href', '/api/workbench/upload_log/' + this.logName + '/')
                     .attr('download', 'workbench-upload-log.txt')
             );
@@ -37,10 +40,19 @@ define([
         },
         gotLog: function(log) {
             this.$('pre').text(log);
-            this.$('.upload-log').scrollTop(this.$('pre').height());
+            this.$('.upload-log-text').scrollTop(this.$('pre').height());
+            this.tick = 50;
         },
         refreshLog: function() {
             $.get('/api/workbench/upload_log/' + this.logName + '/').done(this.gotLog.bind(this));
+        },
+        refreshTick: function() {
+            if (this.$('.auto-refresh input').prop('checked')) {
+                if (this.tick-- === 0) this.refreshLog();
+                this.$('.auto-refresh span').text(this.tick / 10);
+            } else  {
+                this.$('.auto-refresh span').text('disabled');
+            }
         }
     });
 

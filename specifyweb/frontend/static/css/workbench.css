@@ -99,3 +99,20 @@
 .wb-logs tbody tr {
     cursor: pointer;
 }
+
+.wb-upload-log .upload-log-text {
+    width: 800px;
+    height: 600px;
+    overflow: auto;
+    background: white;
+    margin: 5px;
+    border: inset 1px;
+}
+
+.wb-upload-log .download {
+    float: right;
+}
+
+.wb-upload-log .auto-refresh {
+    float: left;
+}
