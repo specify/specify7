@@ -113,11 +113,12 @@ define([
             return $(window).height() - this.$el.offset().top - 50;
         },
         save: function() {
-            var dialog = $('<div>Saving...</div>').dialog({
+            var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
                 title: 'Saving',
                 modal: true,
                 close: function() {$(this).remove();}
             });
+            $('.progress-bar', dialog).progressbar({value: false});
             $.ajax('/api/workbench/rows/' + this.wb.id + '/', {
                 data: JSON.stringify(this.hot.getData()),
                 type: "PUT"

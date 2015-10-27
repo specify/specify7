@@ -3,11 +3,12 @@ define(['jquery', 'q', 'schema', 'wbview'], function($, Q, schema, WBView) {
 
     return function(app) {
         app.router.route('workbench/:id/', 'workbench', function(id) {
-            $('<div>Loading...</div>').dialog({
+            var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
                 title: 'Loading',
                 modal: true,
                 close: function() {$(this).remove();}
             });
+            $('.progress-bar', dialog).progressbar({value: false});
             var wb = new schema.models.Workbench.Resource({id: id});
             Q.all([
                 Q(wb.fetch()),
