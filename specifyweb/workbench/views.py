@@ -14,7 +14,7 @@ from django.db import connection, transaction
 from django.conf import settings
 
 from specifyweb.specify.api import toJson, get_object_or_404
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
 from uploader_classpath import CLASSPATH
@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 @csrf_exempt
 @login_maybe_required
+@apply_access_control
+@require_http_methods(["GET", "PUT"])
 @transaction.commit_on_success
 def rows(request, wb_id):
     if request.method == "GET":
@@ -130,6 +132,7 @@ def save(wb_id, data):
 
 @csrf_exempt
 @login_maybe_required
+@apply_access_control
 @require_POST
 def upload(request, wb_id):
     args = [
@@ -185,6 +188,7 @@ def status_from_log(fname):
 
 @csrf_exempt
 @login_maybe_required
+@apply_access_control
 @require_http_methods(["GET", "DELETE"])
 def upload_log(request, upload_id):
     assert upload_id.startswith(settings.DATABASE_NAME)

@@ -23,6 +23,14 @@ else:
             return view(request, *args, **kwargs)
         return wrapped
 
+def apply_access_control(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if request.method != "GET" and request.specify_readonly:
+            return http.HttpResponseForbidden()
+        return view(request, *args, **kwargs)
+    return wrapped
+
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 
@@ -32,12 +40,8 @@ def api_view(dispatch_func):
     @login_maybe_required
     @csrf_exempt
     @cache_control(private=True, max_age=2)
+    @apply_access_control
     def view(request, *args, **kwargs):
-        if request.method != "GET" and (
-            settings.RO_MODE or
-            request.specify_user.usertype not in ('Manager', 'FullAccess')
-        ):
-            return http.HttpResponseForbidden()
         try:
             return dispatch_func(request, *args, **kwargs)
         except api.StaleObjectException as e:
