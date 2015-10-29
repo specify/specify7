@@ -202,6 +202,8 @@ LOGIN_REDIRECT_URL = '/'
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+JAVA_PATH = '/usr/bin/java'
+
 try:
     from .local_logging_settings import LOGGING
 except ImportError:

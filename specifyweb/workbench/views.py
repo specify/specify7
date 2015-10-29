@@ -132,7 +132,7 @@ def save(wb_id, data):
 @require_POST
 def upload(request, wb_id):
     args = [
-        "/usr/lib/jvm/java-8-oracle/bin/java", #settings.JAVA,
+        settings.JAVA_PATH,
         "-Dfile.encoding=UTF-8",
         "-classpath",
         ":".join((os.path.join(settings.SPECIFY_THICK_CLIENT, jar) for jar in CLASSPATH)),
