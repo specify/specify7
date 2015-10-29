@@ -32,6 +32,7 @@ define([
                 close: function() {$(this).remove(); clearInterval(refreshTimer);},
                 buttons: [
                     {text: "Refresh", click: this.refreshLog.bind(this)},
+                    {text: "Delete", click: this.deleteLog.bind(this)},
                     {text: "Close", click: function() { $(this).dialog('close'); }}
                 ]
             });
@@ -44,7 +45,33 @@ define([
             this.tick = 50;
         },
         refreshLog: function() {
-            $.get('/api/workbench/upload_log/' + this.logName + '/').done(this.gotLog.bind(this));
+            $.get('/api/workbench/upload_log/' + this.logName + '/')
+                .done(this.gotLog.bind(this))
+                .fail(this.failed.bind(this));
+        },
+        failed: function(jqXHR) {
+            if (jqXHR.status === 404) {
+                this.$('pre').text("LOG NOT AVAILABLE");
+                jqXHR.errorHandled = true;
+            }
+        },
+        deleteLog: function() {
+            var doDelete = function() {
+                $.ajax({
+                    url: '/api/workbench/upload_log/' + this.logName + '/',
+                    type: 'DELETE'
+                });
+                this.$el.dialog('close');
+            }.bind(this);
+
+             $('<div>Delete this workbench upload log?</div>').dialog({
+                title: "Delete?",
+                modal: true,
+                buttons: [
+                    {text: 'Proceed', click: function() { $(this).dialog('close'); doDelete(); }},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
+            });
         },
         refreshTick: function() {
             if (this.$('.auto-refresh input').prop('checked')) {

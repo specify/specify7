@@ -1,5 +1,6 @@
 import re
 import os
+import errno
 import json
 import logging
 import subprocess
@@ -7,7 +8,7 @@ from glob import glob
 from uuid import uuid4
 
 from django import http
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection, transaction
 from django.conf import settings
@@ -182,12 +183,22 @@ def status_from_log(fname):
     }
 
 
+@csrf_exempt
 @login_maybe_required
-@require_GET
+@require_http_methods(["GET", "DELETE"])
 def upload_log(request, upload_id):
     assert upload_id.startswith(settings.DATABASE_NAME)
     fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
-    return http.HttpResponse(open(fname, "r"), content_type='text/plain')
+    if request.method == "DELETE":
+        os.remove(fname)
+        return http.HttpResponse('', status=204)
+    try:
+        return http.HttpResponse(open(fname, "r"), content_type='text/plain')
+    except IOError as e:
+        if e.errno == errno.ENOENT:
+            raise http.Http404()
+        else:
+            raise
 
 @login_maybe_required
 @require_GET
