@@ -7,11 +7,47 @@ define([
 ) {
     "use strict";
 
+    var ImportWorkbenchDialog = Backbone.View.extend({
+        __name__: "ImportWorkbenchDialog",
+        events: {
+            'change :file': 'fileSelected'
+        },
+        initialize: function(options) {
+            this.template = options.template;
+        },
+        render: function() {
+            this.$el.append('<form enctype="multipart/form-data"><input type="file" name="file"></form>')
+                .dialog({
+                    modal: true,
+                    title: 'Import Workbench'
+                });
+            return this;
+        },
+        fileSelected: function() {
+            var files = this.$(':file').get(0).files;
+            if (files.length === 0) return;
+            this.$el.text('Uploading...');
+            var formData = new FormData();
+            formData.append('file', files[0]);
+            formData.append('template', JSON.stringify(this.template.toJSON()));
+            $.ajax({
+                url: '/api/workbench/import/',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+        }
+    });
+
     var NewWorkbenchDialog = Backbone.View.extend({
         __name__: "NewWorkbenchDialog",
         className: "table-list-dialog",
         events: {
             'click a': 'select'
+        },
+        initialize: function(options) {
+            this.importing = options.importing;
         },
         render: function() {
             this.templates = new schema.models.WorkbenchTemplate.LazyCollection();
@@ -55,7 +91,11 @@ define([
             event.preventDefault();
             var i = this.$('a').index(event.currentTarget);
             var template = this.templates.at(i).clone();
-            this.makeWorkbench(template);
+            if (this.importing) {
+                new ImportWorkbenchDialog({template: template}).render();
+            } else {
+                this.makeWorkbench(template);
+            }
         },
         makeWorkbench: function(template) {
             var workbench = new schema.models.Workbench.Resource();
@@ -92,6 +132,7 @@ define([
                 close: function() { $(this).remove(); },
                 buttons: [
                     { text: 'New', click: this.newWB.bind(this) },
+                    { text: 'Import', click: this.newWB.bind(this, true) },
                     { text: 'Cancel', click: function() { $(this).dialog('close'); } }
                 ]
             });
@@ -115,8 +156,8 @@ define([
             }, 100);
             return entry[0];
         },
-        newWB: function() {
-            new NewWorkbenchDialog().render();
+        newWB: function(importing) {
+            new NewWorkbenchDialog({importing: importing}).render();
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();

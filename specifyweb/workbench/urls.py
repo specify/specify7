@@ -6,4 +6,5 @@ urlpatterns = patterns('specifyweb.workbench.views',
     url(r'^upload_status/(?P<upload_id>.+)/', 'upload_status'),
     url(r'^upload_log/(?P<upload_id>.+)/', 'upload_log'),
     url(r'^upload_status_list/(?P<wb_id>\d+)/', 'upload_status_list'),
+    url(r'^import/', 'import_workbench'),
 )
