@@ -233,24 +233,31 @@ def upload_status_list(request, wb_id):
 @transaction.commit_on_success
 def import_workbench(request):
     upload_file = request.FILES['file']
+    workbench_name = request.POST.get('workbenchName', '')
+    has_header = request.POST.get('hasHeader', 'false').lower() == 'true'
+
+    if workbench_name == '': workbench_name = upload_file.name
 
     template = create_obj(request.specify_collection,
                           request.specify_user_agent,
                           'workbenchtemplate',
                           json.loads(request.POST['template']))
 
-    template.name = upload_file.name
+    template.name = workbench_name
     template.srcfilepath = upload_file.name
     template.save()
 
     workbench = models.Workbench.objects.create(
         workbenchtemplate=template,
         specifyuser=template.specifyuser,
-        name=template.name,
+        name=workbench_name,
         srcfilepath=template.name,
     )
 
-    data = list(csv.reader(upload_file))[1:]
+    data = list(csv.reader(upload_file))
+    if has_header:
+        data = data[1:]
+
     save(workbench.id, data, new=True)
     return http.HttpResponse(toJson(obj_to_data(workbench)), status=201, content_type='application/json')
 
