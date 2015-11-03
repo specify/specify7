@@ -7,6 +7,22 @@ define([
 
     var wbUploadDef = $.parseXML(wbupdef.toLowerCase());
 
+    var highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
+    function atoi(str) { return parseInt(str, 10); }
+
+    function parseLog(log) {
+        return log.split('\n')
+            .map(function(line) { return highlightRE.exec(line); })
+            .filter(function(match) { return match != null; })
+            .reduce(function(rows, match) {
+                rows[ atoi(match[1]) ] = {
+                    cols: match.slice(2, match.length - 1).map(atoi),
+                    message: match[match.length - 1]
+                };
+                return rows;
+            }, []);
+    }
+
     function getField(mapping) {
         var tableName = mapping.get('tablename').toLowerCase();
         var fieldName = mapping.get('fieldname').toLowerCase();
@@ -83,9 +99,11 @@ define([
         },
         setupHOT: function (colHeaders, columns) {
             var onChanged = this.spreadSheetChanged.bind(this);
+            var renderer = this.renderCell.bind(this);
             this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
                 height: this.calcHeight(),
                 data: this.data,
+                cells: function() { return {renderer: renderer}; },
                 colHeaders: colHeaders,
                 columns: columns,
                 minSpareRows: 1,
@@ -100,6 +118,14 @@ define([
                 afterChange: function(change, source) { source === 'loadData' || onChanged(); }
             });
             $(window).resize(this.resize.bind(this));
+        },
+        renderCell: function(instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(null, arguments);
+            var highlightInfo = this.highlights && this.highlights[row];
+            if (highlightInfo && _.contains(highlightInfo.cols, col)) {
+                td.style.background = '#FEE';
+                td.title = highlightInfo.message;
+            }
         },
         spreadSheetChanged: function() {
             this.$('.wb-upload').prop('disabled', true);
@@ -134,7 +160,13 @@ define([
             this.$('.wb-save').prop('disabled', true);
         },
         upload: function() {
-            new WBUpload({wb: this.wb}).render();
+            new WBUpload({wb: this.wb}).render().on('highlight', this.highlight, this);
+        },
+        highlight: function(logName) {
+            $.get('/api/workbench/upload_log/' + logName + '/').done(function(log) {
+                this.highlights = parseLog(log);
+                this.hot.render();
+            }.bind(this));
         }
     });
 });

@@ -7,95 +7,15 @@ define([
         return timeStr ? moment(timeStr).fromNow() : '...';
     }
 
-    var WBUploadLog = Backbone.View.extend({
-        __name__: "WBUploadLog",
-        className: "wb-upload-log",
-        initialize: function(options) {
-            this.wb = options.wb;
-            this.logName = options.logName;
-            this.tick = 0;
-        },
-        render: function() {
-            var refreshTimer = setInterval(this.refreshTick.bind(this), 100);
-            this.$el.append('<div class="upload-log-text"><pre></pre></div>');
-            this.$el.append(
-                $('<p class="auto-refresh"><label><input type="checkbox" checked /> Auto-refresh</label> (<span>disabled</span>)</p>'),
-                $('<a class="download">Save locally</a>')
-                    .attr('href', '/api/workbench/upload_log/' + this.logName + '/')
-                    .attr('download', 'workbench-upload-log.txt')
-            );
-            this.$el.dialog({
-                title: "Upload Log",
-                modal: true,
-                width: 'auto',
-                height: 'auto',
-                close: function() {$(this).remove(); clearInterval(refreshTimer);},
-                buttons: [
-                    {text: "Refresh", click: this.refreshLog.bind(this)},
-                    {text: "Delete", click: this.deleteLog.bind(this)},
-                    {text: "Close", click: function() { $(this).dialog('close'); }}
-                ]
-            });
-            this.refreshLog();
-            return this;
-        },
-        gotLog: function(log) {
-            this.$('pre').text(log);
-            this.$('.upload-log-text').scrollTop(this.$('pre').height());
-            this.tick = 50;
-        },
-        refreshLog: function() {
-            $.get('/api/workbench/upload_log/' + this.logName + '/')
-                .done(this.gotLog.bind(this))
-                .fail(this.failed.bind(this));
-        },
-        failed: function(jqXHR) {
-            if (jqXHR.status === 404) {
-                this.$('pre').text("LOG NOT AVAILABLE");
-                jqXHR.errorHandled = true;
-            }
-        },
-        deleteLog: function() {
-            var doDelete = function() {
-                $.ajax({
-                    url: '/api/workbench/upload_log/' + this.logName + '/',
-                    type: 'DELETE'
-                });
-                this.$el.dialog('close');
-            }.bind(this);
-
-             $('<div>Delete this workbench upload log?</div>').dialog({
-                title: "Delete?",
-                modal: true,
-                buttons: [
-                    {text: 'Proceed', click: function() { $(this).dialog('close'); doDelete(); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
-            });
-        },
-        refreshTick: function() {
-            if (this.$('.auto-refresh input').prop('checked')) {
-                if (this.tick-- === 0) this.refreshLog();
-                this.$('.auto-refresh span').text(this.tick / 10);
-            } else  {
-                this.$('.auto-refresh span').text('disabled');
-            }
-        }
-    });
-
-
     return Backbone.View.extend({
         __name__: "WBUploadView",
-        events: {
-            'click tbody tr': 'rowSelected'
-        },
         initialize: function(options) {
             this.wb = options.wb;
         },
         render: function() {
-            var refreshTimer = setInterval(this.refreshList.bind(this), 30000);
+            var refreshTimer = setInterval(this.refreshList.bind(this), 5000);
             $('<table style="width: 600px" class="wb-logs">').append(
-                '<thead><tr><th>Started</th><th>Finshed</th><th>Rows Processed</th><th>Success</th></tr></thead>',
+                '<thead><tr><th></th><th>Started</th><th>Finshed</th><th>Rows Processed</th><th>Success</th></tr></thead>',
                 '<tbody>'
             ).appendTo(this.el);
             this.$el.dialog({
@@ -106,6 +26,9 @@ define([
                 close: function() {$(this).remove(); clearInterval(refreshTimer); },
                 buttons: [
                     {text: "Start Upload", click: this.startUpload.bind(this)},
+                    {text: "Highlight Cells", click: this.highlight.bind(this)},
+                    {text: "Save Log", click: this.saveLog.bind(this)},
+                    {text: "Delete Log", click: this.deleteLog.bind(this)},
                     {text: "Close", click: function() { $(this).dialog('close'); }}
                 ]
             });
@@ -119,20 +42,18 @@ define([
             this.statusList = _(statusList).sortBy(function(status) { return status.start_time || 'end of list';  });
             var rows = _(this.statusList).map(function(status) {
                 return $('<tr>').append(
+                    $('<td><input type="radio" name="select"></td>'),
                     $('<td>').text(showTime(status.start_time)),
                     $('<td>').text(showTime(status.end_time)),
                     $('<td>').text(status.last_row || '...'),
                     $('<td>').text(status.end_time == null ? '...' : status.success ? "Succeeded" : "Failed"))[0];
             });
             this.$('tbody').empty().append(rows);
+            this.$(':radio:last').prop('checked', true);
         },
         startUpload: function() {
             var begin = function() {
-                this.$el.dialog('close');
-                var wb = this.wb;
-                $.post('/api/workbench/upload/' + this.wb.id + '/').done(function(logName) {
-                    new WBUploadLog({logName: logName, wb: wb}).render();
-                });
+                $.post('/api/workbench/upload/' + this.wb.id + '/').done(this.refreshList.bind(this));
             }.bind(this);
 
             $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
@@ -144,9 +65,36 @@ define([
                 ]
             });
         },
-        rowSelected: function(evt) {
-            var index = this.$('tbody tr').index(evt.currentTarget);
-            new WBUploadLog({logName: this.statusList[index].log_name, wb: this.wb}).render();
+        getSelected: function() {
+            var i = this.$(':radio').index(this.$(':radio:checked'));
+            return this.statusList[i].log_name;
+        },
+        highlight: function() {
+            var logName = this.getSelected();
+            this.trigger('highlight', logName);
+            this.$el.dialog('close');
+        },
+        saveLog: function() {
+            var logName = this.getSelected();
+            window.open('/api/workbench/upload_log/' + logName + '/');
+        },
+        deleteLog: function() {
+            var logName = this.getSelected();
+            var doDelete = function() {
+                $.ajax({
+                    url: '/api/workbench/upload_log/' + logName + '/',
+                    type: 'DELETE'
+                }).done(this.refreshList.bind(this));
+            }.bind(this);
+
+             $('<div>Delete this workbench upload log?</div>').dialog({
+                title: "Delete?",
+                modal: true,
+                buttons: [
+                    {text: 'Proceed', click: function() { $(this).dialog('close'); doDelete(); }},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
+            });
         }
     });
 });
