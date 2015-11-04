@@ -10,7 +10,7 @@ define([
     var highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
     function atoi(str) { return parseInt(str, 10); }
 
-    function parseLog(log) {
+    function parseLog(log, nCols) {
         var highlights = log.split('\n')
                 .map(function(line) { return highlightRE.exec(line); })
                 .filter(function(match) { return match != null; })
@@ -22,12 +22,14 @@ define([
                     };
                 });
 
-        var byRow = highlights.reduce(function(rows, highlight) {
-            rows[highlight.row] = highlight;
-            return rows;
+        var byPos = highlights.reduce(function(rows, highlight) {
+            return highlight.cols.reduce(function(rows, col) {
+                rows[highlight.row * nCols + col] = highlight;
+                return rows;
+            }, rows);
         }, []);
 
-        return {highlights: highlights, byRow: byRow};
+        return {highlights: highlights, byPos: byPos};
     }
 
     function getField(mapping) {
@@ -79,7 +81,6 @@ define([
         initialize: function(options) {
             this.wb = options.wb;
             this.data = options.data;
-            this.currentErrorRow = 0;
         },
         getMappings: function() {
             return Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -129,14 +130,16 @@ define([
                 stretchH: 'all',
                 afterCreateRow: onChanged,
                 afterRemoveRow: onChanged,
+                afterSelection: function(r, c) { this.currentPos = [r,c]; }.bind(this),
                 afterChange: function(change, source) { source === 'loadData' || onChanged(); }
             });
             $(window).resize(this.resize.bind(this));
         },
         renderCell: function(instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(null, arguments);
-            var highlightInfo = this.highlights && this.highlights.byRow[row];
-            if (highlightInfo && _.contains(highlightInfo.cols, col)) {
+            var pos = instance.countCols() * row + col;
+            var highlightInfo = this.highlights && this.highlights.byPos[pos];
+            if (highlightInfo) {
                 td.style.background = '#FEE';
                 td.title = highlightInfo.message;
             }
@@ -178,7 +181,7 @@ define([
         },
         highlight: function(logName) {
             $.get('/api/workbench/upload_log/' + logName + '/').done(function(log) {
-                this.highlights = parseLog(log);
+                this.highlights = parseLog(log, this.hot.countCols());
                 this.hot.render();
                 this.$('.wb-remove-highlights, .wb-prev-error, .wb-next-error, .wb-error-count').show();
                 this.$('.wb-error-count').text("Highlighting " + this.highlights.highlights.length + " errors:");
@@ -186,11 +189,14 @@ define([
         },
         gotoError: function(evt) {
             var dir = $(evt.currentTarget).hasClass('wb-prev-error') ? -1 : 1;
-            for(var i = this.currentErrorRow; i >= 0 && i < this.data.length; i += dir) {
-                if (i != this.currentErrorRow && this.highlights.byRow[i] != null) {
-                    this.hot.selectCell(i, this.highlights.byRow[i].cols[0]);
-                    this.currentErrorRow = i;
-                    return;
+            var nCols = this.hot.countCols();
+            var currentPos = this.currentPos ? this.currentPos[0] * nCols + this.currentPos[1] : -1;
+            var maxPos = nCols * this.hot.countRows();
+            for(var i = currentPos + dir; i >= 0 && i < maxPos; i += dir) {
+                if (this.highlights.byPos[i] != null) {
+                    this.currentPos = [Math.floor(i / nCols), i % nCols];
+                    this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
+                    break;
                 }
             }
         },
