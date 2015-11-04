@@ -11,16 +11,23 @@ define([
     function atoi(str) { return parseInt(str, 10); }
 
     function parseLog(log) {
-        return log.split('\n')
-            .map(function(line) { return highlightRE.exec(line); })
-            .filter(function(match) { return match != null; })
-            .reduce(function(rows, match) {
-                rows[ atoi(match[1]) ] = {
-                    cols: match.slice(2, match.length - 1).map(atoi),
-                    message: match[match.length - 1]
-                };
-                return rows;
-            }, []);
+        var highlights = log.split('\n')
+                .map(function(line) { return highlightRE.exec(line); })
+                .filter(function(match) { return match != null; })
+                .map(function(match) {
+                    return {
+                        row: atoi(match[1]),
+                        cols: match.slice(2, match.length - 1).map(atoi),
+                        message: match[match.length - 1]
+                    };
+                });
+
+        var byRow = highlights.reduce(function(rows, highlight) {
+            rows[highlight.row] = highlight;
+            return rows;
+        }, []);
+
+        return {highlights: highlights, byRow: byRow};
     }
 
     function getField(mapping) {
@@ -65,11 +72,14 @@ define([
         className: "wbs-form",
         events: {
             'click .wb-upload': 'upload',
-            'click .wb-save': 'save'
+            'click .wb-save': 'save',
+            'click .wb-next-error, .wb-prev-error': 'gotoError',
+            'click .wb-remove-highlights': 'removeHighlight'
         },
         initialize: function(options) {
             this.wb = options.wb;
             this.data = options.data;
+            this.currentErrorRow = 0;
         },
         getMappings: function() {
             return Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -87,6 +97,10 @@ define([
             $('<h2>').text("Workbench: " + this.wb.get('name'))
                 .appendTo(this.el)
                 .append(
+                    $('<button class="wb-remove-highlights" style="display:none">Clear</button>'),
+                    $('<button class="wb-prev-error" style="display:none">Prev</button>'),
+                    $('<button class="wb-next-error" style="display:none">Next</button>'),
+                    $('<span class="wb-error-count" style="display:none">'),
                     $('<button class="wb-upload">Upload</button>'),
                     $('<button class="wb-save" disabled>Save</button>')
                 );
@@ -121,7 +135,7 @@ define([
         },
         renderCell: function(instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(null, arguments);
-            var highlightInfo = this.highlights && this.highlights[row];
+            var highlightInfo = this.highlights && this.highlights.byRow[row];
             if (highlightInfo && _.contains(highlightInfo.cols, col)) {
                 td.style.background = '#FEE';
                 td.title = highlightInfo.message;
@@ -166,7 +180,24 @@ define([
             $.get('/api/workbench/upload_log/' + logName + '/').done(function(log) {
                 this.highlights = parseLog(log);
                 this.hot.render();
+                this.$('.wb-remove-highlights, .wb-prev-error, .wb-next-error, .wb-error-count').show();
+                this.$('.wb-error-count').text("Highlighting " + this.highlights.highlights.length + " errors:");
             }.bind(this));
+        },
+        gotoError: function(evt) {
+            var dir = $(evt.currentTarget).hasClass('wb-prev-error') ? -1 : 1;
+            for(var i = this.currentErrorRow; i >= 0 && i < this.data.length; i += dir) {
+                if (i != this.currentErrorRow && this.highlights.byRow[i] != null) {
+                    this.hot.selectCell(i, this.highlights.byRow[i].cols[0]);
+                    this.currentErrorRow = i;
+                    return;
+                }
+            }
+        },
+        removeHighlight: function() {
+            this.highlights = null;
+            this.hot.render();
+            this.$('.wb-remove-highlights, .wb-prev-error, .wb-next-error, .wb-error-count').hide();
         }
     });
 });

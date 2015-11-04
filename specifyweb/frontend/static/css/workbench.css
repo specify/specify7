@@ -4,7 +4,7 @@
     margin-top: 10px;
 }
 
-.wbs-form h2 button {
+.wbs-form h2 button, .wbs-form h2 span {
     float: right;
     margin: 0 10px;
 }
@@ -100,19 +100,3 @@
     cursor: pointer;
 }
 
-.wb-upload-log .upload-log-text {
-    width: 800px;
-    height: 600px;
-    overflow: auto;
-    background: white;
-    margin: 5px;
-    border: inset 1px;
-}
-
-.wb-upload-log .download {
-    float: right;
-}
-
-.wb-upload-log .auto-refresh {
-    float: left;
-}
