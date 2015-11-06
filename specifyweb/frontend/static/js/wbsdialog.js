@@ -93,16 +93,7 @@ define([
         },
         newTemplate: function() {
             var editor = new WBTemplateEditor();
-            editor.render().$el.dialog({
-                title: 'Workbench Template Mappings',
-                width: 'auto',
-                modal: true,
-                close: function() { $(this).remove(); },
-                buttons: [
-                    {text: 'Done', click: function() { this.makeWorkbench(editor.makeTemplate()); }.bind(this) },
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
-            });
+            editor.render().on('created', this.makeWorkbench, this);
         },
         select: function(event) {
             event.preventDefault();

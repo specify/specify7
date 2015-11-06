@@ -163,7 +163,7 @@ define([
             return  _.map(this.$('li'), function(li) { return $(li).data(); });
         },
         makeMappingItems: function() {
-            var fieldAndTables = this.getMappings;
+            var fieldAndTables = this.getMappings();
             return _.map(fieldAndTables, function(ft, i) {
                 return new schema.models.WorkbenchTemplateMappingItem.Resource({
                     caption: ft.field.column,
@@ -225,6 +225,17 @@ define([
                 text: false,
                 disabled: true,
                 icons: { primary: 'ui-icon-arrowthick-1-s'}
+            });
+
+            this.$el.dialog({
+                title: 'Workbench Template Mappings',
+                width: 'auto',
+                modal: true,
+                close: function() { $(this).remove(); },
+                buttons: [
+                    {text: 'Done', click: function() { this.trigger('created', this.makeTemplate()); }.bind(this) },
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
             });
 
             return this;
