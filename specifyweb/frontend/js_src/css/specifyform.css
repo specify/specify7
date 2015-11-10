@@ -132,6 +132,20 @@ ul.ui-autocomplete li.ui-menu-item {
     text-align: center;
 }
 
+.specify-formtable .expanded-form {
+    padding: 12px;
+}
+
+.specify-formtable > tbody > tr > td {
+    border: 1px solid #9A9A9A;
+}
+
+.specify-formtable > tbody > tr > td.expand,
+.specify-formtable > tbody > tr > td.contract,
+.specify-formtable > tbody > tr > td.remove {
+    border: none;
+}
+
 .specifyplugin-latlonui table {
     width: 100%;
     border: 1px solid;
