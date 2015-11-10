@@ -23,13 +23,17 @@ define([
     return  UIPlugin.extend({
         __name__: "WebLinkButton",
         render: function() {
-            this.def = webLinksDefs[this.init.weblink];
             this.inFormTable = this.$el.hasClass('specify-field-in-table');
             var placeHolder = this.$el;
             var newEl;
 
             placeHolder.val() === 'plugin' && placeHolder.val('');
             this.fieldName = placeHolder.attr('name');
+            var fieldInfo = this.model.specifyModel.getField(this.fieldName);
+            var webLinkName = this.init.weblink == null ? fieldInfo.getWebLinkName() : this.init.weblink;
+            if (webLinkName == null) console.error("couldn't determine weblink for", this.fieldName);
+            this.def = webLinksDefs[webLinkName];
+
             if (this.inFormTable) {
                 newEl = $('<div class="specify-plugin-weblink-in-table">').append('<a>');
                 placeHolder.replaceWith(newEl);

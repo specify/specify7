@@ -49,6 +49,9 @@ define([
         getPickList: function() {
             return this._localization && this._localization.picklistname;
         },
+        getWebLinkName: function() {
+            return this._localization && this._localization.weblinkname;
+        },
         isRequiredBySchemaLocalization: function() {
             return this._localization && this._localization.isrequired;
         },
