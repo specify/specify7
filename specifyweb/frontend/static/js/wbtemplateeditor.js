@@ -186,6 +186,9 @@ define([
             'click .wb-editor-moveup': 'moveFieldUp',
             'click .wb-editor-movedown': 'moveFieldDown'
         },
+        initialize: function(options) {
+            this.columns = options.columns;
+        },
         render: function() {
             var editor = $(templates.wbtemplateeditor());
             this.tablesTray = new TablesTray({el: $('.wb-editor-tables', editor)})

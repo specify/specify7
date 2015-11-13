@@ -9,7 +9,8 @@ define([
     'expresssearchtask',
     'datamodeltask',
     'attachmentstask',
-    'wbtask'
+    'wbtask',
+    'wbimporttask'
 ], function module(
     $, _, Backbone, schema, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,

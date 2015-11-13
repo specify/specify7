@@ -1,5 +1,6 @@
 define([
     'jquery', 'underscore',
+    'text!tmpls/wbimport.html',
     'text!tmpls/wbtemplateeditor.html',
     'text!tmpls/othercollectiontemplate.html',
     'text!tmpls/othercollectionstemplate.html',
@@ -34,6 +35,7 @@ define([
     var withNames = {};
 
     _([
+        'wbimport',
         'wbtemplateeditor',
         'othercollection',
         'othercollections',

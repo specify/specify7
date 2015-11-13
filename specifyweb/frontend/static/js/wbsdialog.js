@@ -7,56 +7,6 @@ define([
 ) {
     "use strict";
 
-    var ImportWorkbenchDialog = Backbone.View.extend({
-        __name__: "ImportWorkbenchDialog",
-        events: {
-            'change :file': 'fileSelected'
-        },
-        initialize: function(options) {
-            this.template = options.template;
-        },
-        render: function() {
-            this.$el.append(
-                '<p><input type="file" name="file"></p>',
-                '<p><label>Workbench name: <input type="text" name="workbenchName"></label></p>',
-                '<p><label>First row is header: <input type="checkbox" name="header"></label></p>'
-            ).dialog({
-                modal: true,
-                title: 'Import Workbench'
-            });
-            return this;
-        },
-        fileSelected: function() {
-            var files = this.$(':file').get(0).files;
-            if (this.$(':text').val() === '' && files.length > 0) {
-                this.$(':text').val(files[0].name);
-            }
-            this.$el.dialog('option', 'buttons', (files.length === 0) ? [] : [
-                {text: 'Import', click: this.doImport.bind(this)},
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-            ]);
-        },
-        doImport: function(file) {
-            var formData = new FormData();
-            formData.append('file', this.$(':file').get(0).files[0]);
-            formData.append('workbenchName', this.$(':text').val());
-            formData.append('hasHeader', this.$(':checkbox').prop('checked'));
-            formData.append('template', JSON.stringify(this.template.toJSON()));
-            $.ajax({
-                url: '/api/workbench/import/',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false
-            }).done(function(wb) {
-                navigation.go('/workbench/' + wb.id + '/');
-            });
-
-            $('<div>').progressbar({ value: false }).appendTo(this.$el.empty());
-            this.$el.dialog('option', 'buttons', []);
-        }
-    });
-
     var NewWorkbenchDialog = Backbone.View.extend({
         __name__: "NewWorkbenchDialog",
         className: "table-list-dialog",
@@ -140,7 +90,7 @@ define([
                 close: function() { $(this).remove(); },
                 buttons: [
                     { text: 'New', click: this.newWB.bind(this) },
-                    { text: 'Import', click: this.newWB.bind(this, true) },
+                    { text: 'Import', click: function() { navigation.go('/workbench-import/'); } },
                     { text: 'Cancel', click: function() { $(this).dialog('close'); } }
                 ]
             });
