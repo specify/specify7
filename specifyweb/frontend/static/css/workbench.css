@@ -89,11 +89,7 @@
 .workbench-template-editor th span:last-child {
     float: right;
     margin-left: 40px;
-}
-
-.workbench-template-editor .wb-editor-mappings span:first-child,
-.workbench-template-editor th span:first-child {
-    float: left;
+    text-align: right;
 }
 
 .wb-logs tbody tr {

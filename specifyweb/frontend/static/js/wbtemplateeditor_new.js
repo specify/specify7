@@ -140,13 +140,22 @@ define([
         render: function() {
             this.$el.empty();
             var fieldInfo = this.model.get('fieldInfo');
-            var img = fieldInfo ? fieldInfo.tableInfo.specifyModel.getIcon() : null;
+
+            var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
+            imgSrc && this.$el.append($('<img>', {src: imgSrc}));
+
             var specifyColumn = fieldInfo ? fieldInfo.column : "Discard";
             this.$el.append(
-                $('<img>', {src: img}),
                 $('<span>').text(specifyColumn),
                 $('<span>').text(this.model.get('column'))
             );
+
+            _.defer(function() {
+                // Force both spans to have the same width so that the
+                // arrow is in the middle.
+                var widths = _.map(this.$('span'), function(span) { return $(span).width(); });
+                this.$('span').width(Math.max.apply(null, widths));
+            }.bind(this));
             return this;
         },
         selected: function(event) {
@@ -314,51 +323,3 @@ define([
         }
     });
 });
-
-
-    // var MappingTray = Backbone.View.extend({
-    //     __name__: "MappingTray",
-    //     events: {
-    //         'click li': 'selected'
-    //     },
-    //     initialize: function(options) {
-    //         this.collection = new Backbone.Collection(
-    //             options.columns.map(function(column, i ) {
-    //                 return new MappingItemModel({column: column, viewOrder: i});
-    //             }));
-    //         this.collection.on('add remove change', this.render, this);
-    //         this.selectedMapping = null;
-    //     },
-    //     render: function() {
-    //         var items = this.collection.map(function(mapping) {
-    //             var fieldInfo = mapping.getFieldInfo();
-    //             var img = fieldInfo ? fieldInfo.tableInfo.specifyModel.getIcon() : null;
-    //             var specifyColumn = fieldInfo ? fieldInfo.column : "Discard";
-    //             return $('<li>').data('mapping', mapping).append(
-    //                 $('<img>', {src: img}),
-    //                 $('<span>').text(specifyColumn),
-    //                 $('<span>').text(mapping.get('column'))
-    //             )[0];
-    //         });
-    //         this.$el.empty().append(items);
-    //         return this;
-    //     },
-    //     selected: function(event) {
-    //         this.clearSelection();
-    //         var selected = $(event.currentTarget);
-    //         selected.addClass('selected');
-    //         this.selectedMapping = selected.data('mapping');
-    //         this.trigger('selected', this.selectedMapping);
-    //         // this.checkCanMove();
-    //     },
-    //     clearSelection: function() {
-    //         this.selected = null;
-    //         this.$('li').removeClass('selected');
-    //     },
-    //     getSelected: function() {
-    //         return this.selectedMapping;
-    //     },
-    //     mapField: function(fieldInfo) {
-    //         this.selectedMapping.set('fieldInfo', fieldInfo);
-    //     }
-    // });
