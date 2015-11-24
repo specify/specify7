@@ -8,6 +8,7 @@ require({
         'jquery-bbq'     : "vendor/jquery.ba-bbq",
         'jquery-ctxmenu' : "vendor/jquery.contextMenu.v1.6.6",
         'handsontable'   : "vendor/handsontable.full",
+        'bacon'          : "//cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.82/Bacon",
         'underscore'     : "vendor/underscore",
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",

@@ -1,7 +1,8 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'templates',
+    'require', 'jquery', 'underscore', 'backbone', 'bacon',
+    'schema', 'templates',
     'text!resources/specify_workbench_datamodel.xml!noinline'
-], function(require, $, _, Backbone, schema, templates, wbDataModelXML) {
+], function(require, $, _, Backbone, Bacon, schema, templates, wbDataModelXML) {
     "use strict";
 
     var wbDataModel = $.parseXML(wbDataModelXML);
@@ -38,213 +39,132 @@ define([
         });
     }
 
-    var TablesTray = Backbone.View.extend({
-        __name__: "WorkbenchTemplateEditorTablesTray",
-        events: {
-            'click li': 'selected'
-        },
-        render: function() {
-            this.$el.append(tableInfos.map(function(table) {
-                return $('<li>', {'data-tablename': table.name})
-                    .text(table.title)
-                    .prepend($('<img>', {src: table.specifyModel.getIcon()}))[0];
-            }));
-            return this;
-        },
-        selected: function(event) {
-            if ($(event.currentTarget).is('.disabled-table')) return;
-            var i = this.$('li').index(event.currentTarget);
-            this.trigger('selected', tableInfos[i]);
-        },
-        setTable: function(tableInfo, mappings) {
-            this.$('li').removeClass('selected');
-            if (tableInfo != null) {
-                var i = tableInfos.indexOf(tableInfo);
-                this.$('li').slice(i, i+1).addClass('selected');
+    function TablesTray($tables) {
+        var selected = $tables
+                .asEventStream('click', 'li')
+                .map(event => {
+                    var i = $('li', $tables).index(event.currentTarget);
+                    return tableInfos[i];
+                })
+                .toProperty(null);
+
+        var lis = selected.map(
+            selected => tableInfos.map(
+                tableInfo => $('<li>')
+                    .text(tableInfo.title)
+                    .prepend($('<img>', {src: tableInfo.specifyModel.getIcon()}))
+                    .addClass(selected === tableInfo ? 'selected' : '')[0]));
+
+        lis.onValue(lis => $tables.empty().append(lis));
+
+        return {
+            selected: selected
+        };
+    }
+
+    function FieldsTray($fields, selectedTable) {
+        var selected = selectedTable
+                .sampledBy($fields.asEventStream('click', 'li'), (tableInfo, event) => {
+                    var i = $('li', $fields).index(event.currentTarget);
+                    return tableInfo.fields[i];
+                })
+                .merge(selectedTable.changes().map(null))
+                .toProperty(null);
+
+
+        var lis = selectedTable
+                .combine(selected, (tableInfo, selectedFieldInfo) =>
+                         (tableInfo ? tableInfo.fields : []).map(
+                             fieldInfo => $('<li>')
+                                 .text(fieldInfo.column)
+                                 .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]));
+
+        lis.onValue(lis => $fields.empty().append(lis));
+
+        return {
+            selected: selected
+        };
+    }
+
+    function MappingsTray($colMappings, initCols, selectedField, doMap, doUnMap) {
+        var selectedInd = $colMappings.asEventStream('click', 'li')
+                .map(event => $('li', $colMappings).index(event.currentTarget))
+                .toProperty()
+                .log();
+
+        var colMappings = Bacon.update(
+            initCols.map(colname => ({column: colname, fieldInfo: null})),
+
+            [selectedInd, selectedField, doMap], (prev, i, fieldInfo) => {
+                prev[i].fieldInfo = fieldInfo;
+                return prev;
+            },
+
+            [selectedInd, doUnMap], (prev, i) => {
+                prev[i].fieldInfo = null;
+                return prev;
             }
-            //if (mappings.length > 0) this.updateDisabledTables(tableInfo);
-        },
-        updateDisabledTables: function(table) {
-            if (table.name === 'agent') {
-                this.$('li[data-tablename!="agent"]').addClass('disabled-table');
-            } else if (table.name === 'taxononly') {
-                this.$('li[data-tablename!="taxononly"]').addClass('disabled-table');
-            } else {
-                this.$('li[data-tablename="agent"], li[data-tablename="taxononly"]').addClass('disabled-table');
-            }
-        },
-        getSelected: function() {
-            var i = this.$('li.selected').index();
-            return tableInfos[i];
-        }
-    });
+        );
 
-    var FieldsTray = Backbone.View.extend({
-        __name__: "WorkbenchTemplateEditorFieldsTray",
-        events: {
-            'click li': 'selected'
-        },
-        setTable: function(tableInfo, mappings) {
-            if (tableInfo == null) return this;
-            var alreadyMapped = _.map(mappings, function(map) { return map.field; });
-            this.tableInfo = tableInfo;
-            this.fields = tableInfo.fields;
-            this.$el.empty().append(this.fields.map(function(field) {
-                var li = $('<li>').text(field.column);
-                _(alreadyMapped).contains(field) && li.addClass('already-mapped');
-                return li[0];
-            }));
-            return this;
-        },
-        setField: function(fieldInfo) {
-            this.$('li').removeClass('selected');
-            if (fieldInfo != null) {
-                var i = this.fields.indexOf(fieldInfo);
-                this.$('li').slice(i, i+1).addClass('selected');
-            }
-        },
-        selected: function(event) {
-            if ($(event.currentTarget).is('.already-mapped')) return;
-            var i = this.$('li')
-                    .removeClass('selected')
-                    .index(event.currentTarget);
-            this.trigger('selected', this.fields[i]);
-        },
-        getSelected: function() {
-            var i = this.$('li.selected').index();
-            return this.fields[i];
-        }
-    });
+        var selected = colMappings
+                .sampledBy(selectedInd.changes(), (colMappings, i) => colMappings[i])
+                .merge(colMappings.changes().map(null))
+                .toProperty(null);
 
-    var MappingItemModel = Backbone.Model.extend({
-        // fieldInfo
-        // dataset column
-        getFieldInfo: function() {
-            return this.get('fieldInfo');
-        },
-        getTableInfo: function() {
-            var fieldInfo = this.getFieldInfo();
-            return fieldInfo && fieldInfo.tableInfo;
-        }
-    });
+        var colMappingLIs = colMappings
+                .combine(selected, (colMappings, selectedColMapping) =>
+                         colMappings.map(colMapping => {
+                             var fieldInfo = colMapping.fieldInfo;
+                             var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
+                             return $('<li>')
+                                 .addClass(colMapping === selectedColMapping ? 'selected' : '')
+                                 .append(
+                                     $('<img>', {src: imgSrc}),
+                                     $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
+                                     $('<span>').text(colMapping.column))[0];
+                         }));
 
-    var MappingItemView = Backbone.View.extend({
-        __name__: "MappingItemView",
-        tagName: 'li',
-        events: {
-            'click': 'selected'
-        },
-        initialize: function() {
-            this.model.on('change', this.render, this);
-        },
-        render: function() {
-            this.$el.empty();
-            var fieldInfo = this.model.get('fieldInfo');
-
-            var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
-            imgSrc && this.$el.append($('<img>', {src: imgSrc}));
-
-            var specifyColumn = fieldInfo ? fieldInfo.column : "Discard";
-            this.$el.append(
-                $('<span>').text(specifyColumn),
-                $('<span>').text(this.model.get('column'))
-            );
-
-            _.defer(function() {
+        colMappingLIs.onValue(lis => $colMappings.empty().append(lis));
+        colMappingLIs.onValue(() => {
+            _.defer(() => _.each($('li', $colMappings), li => {
                 // Force both spans to have the same width so that the
                 // arrow is in the middle.
-                var widths = _.map(this.$('span'), function(span) { return $(span).width(); });
-                this.$('span').width(Math.max.apply(null, widths));
-            }.bind(this));
-            return this;
-        },
-        selected: function(event) {
-            this.trigger('selected', this, this.model);
-        },
-        mapField: function(fieldInfo) {
-            this.model.set('fieldInfo', fieldInfo);
-        }
-    });
+                var widths = _.map($('span', li), span => $(span).width());
+                $('span', li).width(Math.max.apply(null, widths));
+            }));
+        });
 
+        return {
+            selected: selected
+        };
+    }
 
-    var MappingTray = Backbone.View.extend({
-        __name__: "MappingTray",
-        initialize: function(options) {
-            this.mappingItems = options.columns.map(function(column) {
-                return new MappingItemModel({column: column});
-            });
-            // this.collection.on('add remove', this.render, this);
-            this.selectedView = null;
-        },
-        render: function() {
-            var mappingItemViews = this.mappingItems.map(function(itemModel) {
-                return new MappingItemView({model: itemModel});
-            });
+    function MapButton($el) {
+        $el.button({
+            text: false,
+            disabled: true,
+            icons: { primary: 'ui-icon-arrowthick-1-e'}
+        });
 
-            mappingItemViews.forEach(function(view) {
-                view.render().on('selected', this.selected, this);
-            }, this);
-
-            this.$el.append(_.pluck(mappingItemViews, 'el'));
-            return this;
-        },
-        selected: function(mappingView, mapping) {
-            this.clearSelection();
-            mappingView.$el.addClass('selected');
-            this.selectedView = mappingView;
-            this.trigger('selected', mapping);
-            //this.checkCanMove();
-        },
-        clearSelection: function() {
-            this.selected = null;
-            this.$('li').removeClass('selected');
-        },
-        getSelected: function() {
-            return this.selectedView;
-        },
-        mapField: function(fieldInfo) {
-            this.getSelected().mapField(fieldInfo);
-        }
-    });
+        return {
+            clicks: $el.asEventStream('click'),
+            enable: canMap => $el.button(canMap ? 'enable' : 'disable')
+        };
+    }
 
     return Backbone.View.extend({
         __name__: "WorkbenchTemplateEditor",
         className: 'workbench-template-editor',
-        events: {
-            'click .wb-editor-map': 'mapField',
-            'click .wb-editor-unmap': 'unMapField',
-            'click .wb-editor-moveup': 'moveFieldUp',
-            'click .wb-editor-movedown': 'moveFieldDown'
-        },
         initialize: function(options) {
             this.columns = options.columns;
         },
         render: function() {
             var editor = $(templates.wbtemplateeditor());
-            this.tablesTray = new TablesTray({el: $('.wb-editor-tables', editor)})
-                .render()
-                .on('selected', this.tableSelected, this);
-
-            this.fieldsTray = new FieldsTray({el: $('.wb-editor-fields', editor)})
-                .render()
-                .on('selected', this.fieldSelected, this);
-
-            this.mappingTray = new MappingTray({
-                el: $('.wb-editor-mappings', editor),
-                columns: this.columns})
-                .render()
-                .on('selected', this.mappingSelected, this)
-                .on('canmove', this.setupMoveBtns, this);
-
             this.$el.empty().append(editor);
 
-            this.$('.wb-editor-map').button({
-                text: false,
-                disabled: true,
-                icons: { primary: 'ui-icon-arrowthick-1-e'}
-            });
+            var mapButton = MapButton(this.$('.wb-editor-map'));
 
-            this.$('.wb-editor-unmap').button({
+            var $unMapButton = this.$('.wb-editor-unmap').button({
                 text: false,
                 disabled: true,
                 icons: { primary: 'ui-icon-arrowthick-1-w'}
@@ -273,53 +193,29 @@ define([
                 ]
             });
 
+            var tablesTray = TablesTray(this.$('.wb-editor-tables'));
+            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), tablesTray.selected);
+
+            var doUnMap = $unMapButton.asEventStream('click');
+
+            var mappingsTray = MappingsTray(this.$('.wb-editor-mappings'),
+                                            this.columns,
+                                            fieldsTray.selected,
+                                            mapButton.clicks,
+                                            doUnMap);
+
+
+            var canMap = Bacon.combineWith(fieldsTray.selected, mappingsTray.selected, (fieldInfo, colMapping) =>
+                                           colMapping && colMapping.fieldInfo !== fieldInfo);
+
+            canMap.onValue(mapButton.enable);
+
+            var canUnMap = mappingsTray.selected
+                    .map(colMapping => colMapping && colMapping.fieldInfo != null);
+
+            canUnMap.onValue(canUnMap => $unMapButton.button(canUnMap ? 'enable' : 'disable'));
+
             return this;
-        },
-        tableSelected: function(tableInfo) {
-            var mappings = this.mappingTray.mappingItems;
-            this.tablesTray.setTable(tableInfo, mappings);
-            this.fieldsTray.setTable(tableInfo, mappings);
-            this.$('button').button('disable');
-        },
-        fieldSelected: function(fieldInfo) {
-            if (this.mappingTray.getSelected() != null) {
-                this.$('.wb-editor-map').button('enable');
-            }
-            this.fieldsTray.setField(fieldInfo);
-        },
-        mappingSelected: function(mapping) {
-            var mappings = this.mappingTray.mappingItems;
-            this.$('.wb-editor-map').button('disable');
-            this.$('.wb-editor-unmap').button('enable');
-            this.tablesTray.setTable(mapping.getTableInfo(), mappings);
-            this.fieldsTray.setTable(mapping.getTableInfo(), mappings);
-            this.fieldsTray.setField(mapping.getFieldInfo());
-        },
-        mapField: function() {
-            this.$('button').button('disable');
-            this.mappingTray.mapField(this.fieldsTray.getSelected());
-        },
-        unMapField: function() {
-            var removed = this.mappingTray.removeSelection();
-            var mappings = this.mappingTray.getMappings();
-            this.$('.wb-editor-unmap').button('disable');
-            this.$('.wb-editor-map').button('enable');
-            this.tablesTray.setTable(removed.table, mappings);
-            this.fieldsTray.setTable(removed.table, mappings);
-            this.fieldsTray.setField(removed.field);
-        },
-        setupMoveBtns: function(canMove) {
-            this.$('.wb-editor-moveup').button(canMove.up ? 'enable' : 'disable');
-            this.$('.wb-editor-movedown').button(canMove.down ? 'enable' : 'disable');
-        },
-        moveFieldUp: function() { this.mappingTray.moveFieldUp(); },
-        moveFieldDown: function() { this.mappingTray.moveFieldDown(); },
-        makeTemplate: function() {
-            var app = require('specifyapp');
-            return new schema.models.WorkbenchTemplate.Resource({
-                specifyuser: app.user.resource_uri,
-                workbenchtemplatemappingitems: this.mappingTray.makeMappingItems()
-            });
         }
     });
 });
