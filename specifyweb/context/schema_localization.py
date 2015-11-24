@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.utils import simplejson
+from django.conf import settings
 
 from specifyweb.specify.models import (
     Splocalecontainer as Container,
@@ -16,7 +17,7 @@ def get_schema_localization(collection):
 
     strings = dict(
         ((i.containername_id, i.containerdesc_id, i.itemname_id, i.itemdesc_id), i.text) \
-            for i in SpString.objects.filter(language='en')
+            for i in SpString.objects.filter(language=settings.SCHEMA_LANGUAGE)
         )
 
     ifields = ('format', 'ishidden', 'isuiformatter', 'picklistname',

@@ -1,7 +1,8 @@
-define(['jquery', 'props', 'schema',
+define([
+    'jquery', 'underscore', 'props', 'schema',
     'text!properties/views_en.properties!noinline',
     'text!properties/global_views_en.properties!noinline'
-], function($, props, schema, viewsprops, globalviewsprops) {
+], function($, _, props, schema, viewsprops, globalviewsprops) {
     "use strict";
 
     var getProp = _.bind(props.getProperty, props,
