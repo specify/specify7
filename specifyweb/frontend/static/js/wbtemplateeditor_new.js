@@ -80,24 +80,24 @@ define([
             .toProperty(null);
     }
 
+    function makeFieldLI(tableInfo, selectedFieldInfo, alreadyMappedFields) {
+        var fieldInfos = tableInfo ? tableInfo.fields : [];
+        return fieldInfos.map(
+            fieldInfo => $('<li>')
+                .text(fieldInfo.column)
+                .addClass(_(alreadyMappedFields).contains(fieldInfo) ? 'already-mapped' : '')
+                .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]
+        );
+    }
+
     function FieldsTray($fields, selectedField, selectedTable, colMappings) {
-        var mapped = colMappings
-                .map(
-                    colMappings => colMappings
-                        .map(mapping => mapping.fieldInfo)
-                        .filter(fieldInfo => fieldInfo != null)
-                )
-                .log();
+        var alreadyMapped = colMappings.map(
+            colMappings => colMappings
+                .map(mapping => mapping.fieldInfo)
+                .filter(fieldInfo => fieldInfo != null)
+        );
 
-        var lis = Bacon.combineWith(
-            selectedTable, selectedField, mapped,
-            (tableInfo, selectedFieldInfo, mapped) =>
-                (tableInfo ? tableInfo.fields : []).map(
-                    fieldInfo => $('<li>')
-                        .text(fieldInfo.column)
-                        .addClass(_(mapped).contains(fieldInfo) ? 'already-mapped' : '')
-                        .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]));
-
+        var lis = Bacon.combineWith(selectedTable, selectedField, alreadyMapped, makeFieldLI);
         lis.onValue(lis => $fields.empty().append(lis));
     }
 
@@ -107,20 +107,23 @@ define([
             .toProperty(null);
     }
 
+    function makeMappingLI(selectedMapping, colMapping) {
+        var fieldInfo = colMapping.fieldInfo;
+        var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
+        return $('<li>')
+            .data('colMapping', colMapping)
+            .addClass(colMapping === selectedMapping ? 'selected' : '')
+            .append(
+                $('<img>', {src: imgSrc}),
+                $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
+                $('<span>').text(colMapping.column))[0];
+    }
+
     function MappingsTray($colMappings, colMappings, selectedMapping) {
-        var colMappingLIs = colMappings
-                .combine(selectedMapping, (colMappings, selectedMapping) =>
-                         colMappings.map((colMapping, i) => {
-                             var fieldInfo = colMapping.fieldInfo;
-                             var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
-                             return $('<li>')
-                                 .data('colMapping', colMapping)
-                                 .addClass(colMapping === selectedMapping ? 'selected' : '')
-                                 .append(
-                                     $('<img>', {src: imgSrc}),
-                                     $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
-                                     $('<span>').text(colMapping.column))[0];
-                         }));
+        var colMappingLIs = Bacon.combineWith(
+            colMappings, selectedMapping,
+            (colMappings, selectedMapping) =>
+                colMappings.map(mapping => makeMappingLI(selectedMapping, mapping)));
 
         colMappingLIs.onValue(lis => $colMappings.empty().append(lis));
         colMappingLIs.onValue(() => {
