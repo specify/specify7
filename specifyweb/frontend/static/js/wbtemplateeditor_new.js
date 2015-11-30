@@ -39,21 +39,23 @@ define([
         });
     }
 
-    function TablesTray($tables, selectedMapping) {
-        var selected = $tables
-                .asEventStream('click', 'li')
-                .map(event => {
-                    var i = $('li', $tables).index(event.currentTarget);
-                    return tableInfos[i];
-                })
-                .merge(
-                    selectedMapping.changes()
-                        .map(mapping => mapping && mapping.fieldInfo && mapping.fieldInfo.tableInfo)
-                        .filter(tableInfo => tableInfo != null)
-                )
-                .toProperty(null);
+    function SelectedTable($tables, selectedMapping) {
+        return $tables
+            .asEventStream('click', 'li')
+            .map(event => {
+                var i = $('li', $tables).index(event.currentTarget);
+                return tableInfos[i];
+            })
+            .merge(
+                selectedMapping.changes()
+                    .map(mapping => mapping && mapping.fieldInfo && mapping.fieldInfo.tableInfo)
+                    .filter(tableInfo => tableInfo != null)
+            )
+            .toProperty(null);
+    }
 
-        var lis = selected.map(
+    function TablesTray($tables, selectedTable) {
+        var lis = selectedTable.map(
             selected => tableInfos.map(
                 tableInfo => $('<li>')
                     .text(tableInfo.title)
@@ -61,39 +63,32 @@ define([
                     .addClass(selected === tableInfo ? 'selected' : '')[0]));
 
         lis.onValue(lis => $tables.empty().append(lis));
-
-        return {
-            selected: selected
-        };
     }
 
-    function FieldsTray($fields, selectedTable, selectedMapping) {
-        var selected = selectedTable
-                .sampledBy($fields.asEventStream('click', 'li'), (tableInfo, event) => {
-                    var i = $('li', $fields).index(event.currentTarget);
-                    return tableInfo.fields[i];
-                })
-                .merge(
-                    selectedMapping.changes()
-                        .map(mapping => mapping && mapping.fieldInfo)
-                        .filter(fieldInfo => fieldInfo != null)
-                )
-                .merge(selectedTable.changes().map(null))
-                .toProperty(null);
+    function SelectedField($fields, selectedTable, selectedMapping) {
+        return selectedTable
+            .sampledBy($fields.asEventStream('click', 'li'), (tableInfo, event) => {
+                var i = $('li', $fields).index(event.currentTarget);
+                return tableInfo.fields[i];
+            })
+            .merge(
+                selectedMapping.changes()
+                    .map(mapping => mapping && mapping.fieldInfo)
+                    .filter(fieldInfo => fieldInfo != null)
+            )
+            .merge(selectedTable.changes().map(null))
+            .toProperty(null);
+    }
 
-
+    function FieldsTray($fields, selectedField, selectedTable) {
         var lis = selectedTable
-                .combine(selected, (tableInfo, selectedFieldInfo) =>
+                .combine(selectedField, (tableInfo, selectedFieldInfo) =>
                          (tableInfo ? tableInfo.fields : []).map(
                              fieldInfo => $('<li>')
                                  .text(fieldInfo.column)
                                  .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]));
 
         lis.onValue(lis => $fields.empty().append(lis));
-
-        return {
-            selected: selected
-        };
     }
 
     function SelectedMapping($colMappings) {
@@ -103,34 +98,15 @@ define([
                 .log();
     }
 
-    function MappingsTray($colMappings, initCols, selectedField, doMap, doUnMap) {
-        var selectedInd = $colMappings.asEventStream('click', 'li')
-                .map(event => $('li', $colMappings).index(event.currentTarget))
-                .toProperty(null)
-                .log();
-
-        var colMappings = Bacon.update(
-            initCols.map(colname => ({column: colname, fieldInfo: null})),
-
-            [selectedInd, selectedField, doMap], (prev, i, fieldInfo) => {
-                prev[i].fieldInfo = fieldInfo;
-                return prev;
-            },
-
-            [selectedInd, doUnMap], (prev, i) => {
-                prev[i].fieldInfo = null;
-                return prev;
-            }
-        );
-
+    function MappingsTray($colMappings, colMappings, selectedMapping) {
         var colMappingLIs = colMappings
-                .combine(selectedInd, (colMappings, selectedInd) =>
+                .combine(selectedMapping, (colMappings, selectedMapping) =>
                          colMappings.map((colMapping, i) => {
                              var fieldInfo = colMapping.fieldInfo;
                              var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
                              return $('<li>')
                                  .data('colMapping', colMapping)
-                                 .addClass(i === selectedInd ? 'selected' : '')
+                                 .addClass(colMapping === selectedMapping ? 'selected' : '')
                                  .append(
                                      $('<img>', {src: imgSrc}),
                                      $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
@@ -146,6 +122,22 @@ define([
                 $('span', li).width(Math.max.apply(null, widths));
             }));
         });
+    }
+
+    function ColumnMappings(initCols, selectedMapping, selectedField, doMap, doUnMap) {
+        return Bacon.update(
+            initCols.map(colname => ({column: colname, fieldInfo: null})),
+
+            [selectedMapping, selectedField, doMap], (prev, mapping, fieldInfo) => {
+                mapping.fieldInfo = fieldInfo;
+                return prev;
+            },
+
+            [selectedMapping, doUnMap], (prev, mapping) => {
+                mapping.fieldInfo = null;
+                return prev;
+            }
+        );
     }
 
     function SimpleButton($el, icon) {
@@ -188,18 +180,17 @@ define([
             });
 
             var selectedMapping = SelectedMapping(this.$('.wb-editor-mappings'));
+            var selectedTable = SelectedTable(this.$('.wb-editor-tables'), selectedMapping);
+            var selectedField = SelectedField(this.$('.wb-editor-fields'), selectedTable, selectedMapping);
 
-            var tablesTray = TablesTray(this.$('.wb-editor-tables'), selectedMapping);
-            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), tablesTray.selected, selectedMapping);
+            var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
 
+            var tablesTray = TablesTray(this.$('.wb-editor-tables'), selectedTable);
+            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable);
 
-            var mappingsTray = MappingsTray(this.$('.wb-editor-mappings'),
-                                            this.columns,
-                                            fieldsTray.selected,
-                                            mapButton.clicks,
-                                            unMapButton.clicks);
+            var mappingsTray = MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
 
-            var canMap = Bacon.combineWith(fieldsTray.selected, selectedMapping, (fieldInfo, colMapping) =>
+            var canMap = Bacon.combineWith(selectedField, selectedMapping, (fieldInfo, colMapping) =>
                                            colMapping && colMapping.fieldInfo !== fieldInfo);
 
             canMap.onValue(mapButton.enable);
