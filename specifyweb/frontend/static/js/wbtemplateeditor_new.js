@@ -80,22 +80,31 @@ define([
             .toProperty(null);
     }
 
-    function FieldsTray($fields, selectedField, selectedTable) {
-        var lis = selectedTable
-                .combine(selectedField, (tableInfo, selectedFieldInfo) =>
-                         (tableInfo ? tableInfo.fields : []).map(
-                             fieldInfo => $('<li>')
-                                 .text(fieldInfo.column)
-                                 .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]));
+    function FieldsTray($fields, selectedField, selectedTable, colMappings) {
+        var mapped = colMappings
+                .map(
+                    colMappings => colMappings
+                        .map(mapping => mapping.fieldInfo)
+                        .filter(fieldInfo => fieldInfo != null)
+                )
+                .log();
+
+        var lis = Bacon.combineWith(
+            selectedTable, selectedField, mapped,
+            (tableInfo, selectedFieldInfo, mapped) =>
+                (tableInfo ? tableInfo.fields : []).map(
+                    fieldInfo => $('<li>')
+                        .text(fieldInfo.column)
+                        .addClass(_(mapped).contains(fieldInfo) ? 'already-mapped' : '')
+                        .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]));
 
         lis.onValue(lis => $fields.empty().append(lis));
     }
 
     function SelectedMapping($colMappings) {
         return $colMappings.asEventStream('click', 'li')
-                .map(event => $(event.currentTarget).data('colMapping'))
-                .toProperty(null)
-                .log();
+            .map(event => $(event.currentTarget).data('colMapping'))
+            .toProperty(null);
     }
 
     function MappingsTray($colMappings, colMappings, selectedMapping) {
@@ -186,7 +195,7 @@ define([
             var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
 
             var tablesTray = TablesTray(this.$('.wb-editor-tables'), selectedTable);
-            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable);
+            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, columnMappings);
 
             var mappingsTray = MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
 
