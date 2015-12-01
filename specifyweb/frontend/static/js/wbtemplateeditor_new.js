@@ -23,19 +23,19 @@ define([
             tableInfo.specifyModel.getLocalizedName();
 
         tableInfo.fields = getFieldsForTable(tableNode, tableInfo);
-        return tableInfo;
+        return Object.freeze(tableInfo);
     });
 
     function getFieldsForTable(tableNode, tableInfo) {
         return _.map(tableNode.find('field'), function(fieldDef) {
             var $fieldDef = $(fieldDef);
-            return {
+            return Object.freeze({
                 tableInfo: tableInfo,
                 column: $fieldDef.attr('column'), // Default caption
                 name: $fieldDef.attr('name'),     // Specify field name
                 type: $fieldDef.attr('type'),     // Specify field type
                 length: $fieldDef.attr('length')
-            };
+            });
         });
     }
 
@@ -136,7 +136,9 @@ define([
         var colMappingLIs = Bacon.combineWith(
             colMappings, selectedMapping,
             (colMappings, selectedMapping) =>
-                colMappings.map(mapping => makeMappingLI(selectedMapping, mapping)));
+                colMappings
+                .sortBy(mapping => mapping.get('curIndex'))
+                .map(mapping => makeMappingLI(selectedMapping, mapping)));
 
         colMappingLIs.onValue(lis => $colMappings.empty().append(lis.toArray()));
         colMappingLIs.onValue(() => {
@@ -149,19 +151,34 @@ define([
         });
     }
 
-    function ColumnMappings(initCols, selectedMapping, selectedField, doMap, doUnMap) {
+    function ColumnMappings(initCols, selectedMapping, selectedField, doMap, doUnMap, moveUp, moveDown) {
         return Bacon.update(
-            Immutable.fromJS(
-                initCols.map((colname, index) => ({column: colname, fieldInfo: null, origIndex: index}))),
+            Immutable.fromJS(initCols.map(
+                (colname, index) =>
+                    ({column: colname, fieldInfo: null, origIndex: index, curIndex: index}))),
 
             [selectedMapping, selectedField, doMap], (prev, mapping, fieldInfo) => {
-                var i = prev.findIndex(m => m.get('origIndex') === mapping.get('origIndex'));
-                return prev.setIn([i, 'fieldInfo'], fieldInfo);
+                return prev.setIn([mapping.get('origIndex'), 'fieldInfo'], fieldInfo);
             },
 
             [selectedMapping, doUnMap], (prev, mapping) => {
-                var i = prev.findIndex(m => m.get('origIndex') === mapping.get('origIndex'));
-                return prev.setIn([i, 'fieldInfo'], null);
+                return prev.setIn([mapping.get('origIndex'), 'fieldInfo'], null);
+            },
+
+            [selectedMapping, moveUp], (prev, selected) => {
+                var current = prev.get(selected.get('origIndex'));
+                var above = prev.find(m => m.get('curIndex') === current.get('curIndex') - 1);
+                return prev
+                    .updateIn([selected.get('origIndex'), 'curIndex'], i => i - 1)
+                    .updateIn([above.get('origIndex'), 'curIndex'], i => i + 1);
+            },
+
+            [selectedMapping, moveDown], (prev, selected) => {
+                var current = prev.get(selected.get('origIndex'));
+                var below = prev.find(m => m.get('curIndex') === current.get('curIndex') + 1);
+                return prev
+                    .updateIn([current.get('origIndex'), 'curIndex'], i => i + 1)
+                    .updateIn([below.get('origIndex'), 'curIndex'], i => i - 1);
             }
         );
     }
@@ -209,7 +226,9 @@ define([
             var selectedTable = SelectedTable(this.$('.wb-editor-tables'), selectedMapping);
             var selectedField = SelectedField(this.$('.wb-editor-fields'), selectedTable, selectedMapping);
 
-            var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
+            var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField,
+                                                mapButton.clicks, unMapButton.clicks,
+                                                moveUpButton.clicks, moveDownButton.clicks);
 
             var mappedTables = columnMappings.map(
                 colMappings => colMappings
@@ -235,7 +254,7 @@ define([
 
             var canMap = Bacon.combineWith(
                 selectedField, selectedMapping, mappedFields,
-                (field, mapping, alreadyMapped) => !alreadyMapped.includes(field) && mapping != null);
+                (field, mapping, alreadyMapped) => field != null && mapping != null && !alreadyMapped.includes(field));
 
             canMap.onValue(mapButton.enable);
 
@@ -244,6 +263,20 @@ define([
                 (mapping, currentlyMapped) =>  mapping != null && currentlyMapped.includes(mapping.get('column')));
 
             canUnMap.onValue(unMapButton.enable);
+
+            var canMoveUp = Bacon.combineWith(
+                selectedMapping, columnMappings,
+                (mapping, mappings) => mapping != null
+                    && mappings.getIn([mapping.get('origIndex'), 'curIndex']) > 0);
+
+            canMoveUp.onValue(moveUpButton.enable);
+
+            var canMoveDown = Bacon.combineWith(
+                selectedMapping, columnMappings,
+                (mapping, mappings) => mapping != null
+                    && mappings.getIn([mapping.get('origIndex'), 'curIndex']) < mappings.count() - 1);
+
+            canMoveDown.onValue(moveDownButton.enable);
 
             return this;
         }
