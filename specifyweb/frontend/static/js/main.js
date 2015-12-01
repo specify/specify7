@@ -9,6 +9,7 @@ require({
         'jquery-ctxmenu' : "vendor/jquery.contextMenu.v1.6.6",
         'handsontable'   : "vendor/handsontable.full",
         'bacon'          : "//cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.82/Bacon",
+        'immutable'      : "//cdnjs.cloudflare.com/ajax/libs/immutable/3.7.5/immutable",
         'underscore'     : "vendor/underscore",
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",

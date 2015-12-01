@@ -1,8 +1,8 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'bacon',
-    'schema', 'templates',
+    'immutable', 'schema', 'templates',
     'text!resources/specify_workbench_datamodel.xml!noinline'
-], function(require, $, _, Backbone, Bacon, schema, templates, wbDataModelXML) {
+], function(require, $, _, Backbone, Bacon, Immutable, schema, templates, wbDataModelXML) {
     "use strict";
 
     var wbDataModel = $.parseXML(wbDataModelXML);
@@ -49,19 +49,19 @@ define([
             })
             .merge(
                 selectedMapping.changes()
-                    .map(mapping => mapping && mapping.fieldInfo && mapping.fieldInfo.tableInfo)
+                    .map(mapping => mapping && mapping.get('fieldInfo') && mapping.get('fieldInfo').tableInfo)
                     .filter(tableInfo => tableInfo != null)
             )
             .toProperty(null);
     }
 
     function isDisabledTable(mappedTables, tableName) {
-        if (_(mappedTables).contains('agent')) {
+        if (mappedTables.includes('agent')) {
             return tableName !== 'agent';
-        } else if (_(mappedTables).contains('taxononly')) {
+        } else if (mappedTables.includes('taxononly')) {
             return tableName !== 'taxononly';
-        } else if (mappedTables.length > 0) {
-            return _(['agent', 'taxononly']).contains(tableName);
+        } else if (mappedTables.count() > 0) {
+            return 'agent' === tableName || 'taxononly' === tableName;
         } else {
             return false;
         }
@@ -91,7 +91,7 @@ define([
             .sampledBy(selectedInd, (tableInfo, i) => tableInfo.fields[i])
             .merge(
                 selectedMapping.changes()
-                    .map(mapping => mapping && mapping.fieldInfo)
+                    .map(mapping => mapping && mapping.get('fieldInfo'))
                     .filter(fieldInfo => fieldInfo != null)
             )
             .merge(selectedTable.changes().map(null))
@@ -103,7 +103,7 @@ define([
         return fieldInfos.map(
             fieldInfo => $('<li>')
                 .text(fieldInfo.column)
-                .addClass(_(alreadyMappedFields).contains(fieldInfo) ? 'already-mapped' : '')
+                .addClass(alreadyMappedFields.includes(fieldInfo) ? 'already-mapped' : '')
                 .addClass(selectedFieldInfo === fieldInfo ? 'selected' : '')[0]
         );
     }
@@ -120,15 +120,16 @@ define([
     }
 
     function makeMappingLI(selectedMapping, colMapping) {
-        var fieldInfo = colMapping.fieldInfo;
+        var fieldInfo = colMapping.get('fieldInfo');
+        var isSelected = selectedMapping && colMapping.get('origIndex') === selectedMapping.get('origIndex');
         var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
         return $('<li>')
             .data('colMapping', colMapping)
-            .addClass(colMapping === selectedMapping ? 'selected' : '')
+            .addClass(isSelected ? 'selected' : '')
             .append(
                 $('<img>', {src: imgSrc}),
                 $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
-                $('<span>').text(colMapping.column))[0];
+                $('<span>').text(colMapping.get('column')))[0];
     }
 
     function MappingsTray($colMappings, colMappings, selectedMapping) {
@@ -137,7 +138,7 @@ define([
             (colMappings, selectedMapping) =>
                 colMappings.map(mapping => makeMappingLI(selectedMapping, mapping)));
 
-        colMappingLIs.onValue(lis => $colMappings.empty().append(lis));
+        colMappingLIs.onValue(lis => $colMappings.empty().append(lis.toArray()));
         colMappingLIs.onValue(() => {
             _.defer(() => _.each($('li', $colMappings), li => {
                 // Force both spans to have the same width so that the
@@ -150,16 +151,17 @@ define([
 
     function ColumnMappings(initCols, selectedMapping, selectedField, doMap, doUnMap) {
         return Bacon.update(
-            initCols.map(colname => ({column: colname, fieldInfo: null})),
+            Immutable.fromJS(
+                initCols.map((colname, index) => ({column: colname, fieldInfo: null, origIndex: index}))),
 
             [selectedMapping, selectedField, doMap], (prev, mapping, fieldInfo) => {
-                mapping.fieldInfo = fieldInfo;
-                return prev;
+                var i = prev.findIndex(m => m.get('origIndex') === mapping.get('origIndex'));
+                return prev.setIn([i, 'fieldInfo'], fieldInfo);
             },
 
             [selectedMapping, doUnMap], (prev, mapping) => {
-                mapping.fieldInfo = null;
-                return prev;
+                var i = prev.findIndex(m => m.get('origIndex') === mapping.get('origIndex'));
+                return prev.setIn([i, 'fieldInfo'], null);
             }
         );
     }
@@ -211,20 +213,20 @@ define([
 
             var mappedTables = columnMappings.map(
                 colMappings => colMappings
-                    .map(mapping => mapping.fieldInfo && mapping.fieldInfo.tableInfo.name)
+                    .map(mapping => mapping.get('fieldInfo') && mapping.get('fieldInfo').tableInfo.name)
                     .filter(tableName => tableName != null)
             );
 
             var mappedFields = columnMappings.map(
                 colMappings => colMappings
-                    .map(mapping => mapping.fieldInfo)
+                    .map(mapping => mapping.get('fieldInfo'))
                     .filter(fieldInfo => fieldInfo != null)
             );
 
             var mappedColumns = columnMappings.map(
                 colMappings => colMappings
-                    .filter(mapping => mapping.fieldInfo != null)
-                    .map(mapping => mapping.column)
+                    .filter(mapping => mapping.get('fieldInfo') != null)
+                    .map(mapping => mapping.get('column'))
             );
 
             TablesTray(this.$('.wb-editor-tables'), selectedTable, mappedTables);
@@ -233,13 +235,13 @@ define([
 
             var canMap = Bacon.combineWith(
                 selectedField, selectedMapping, mappedFields,
-                (field, mapping, alreadyMapped) => !_(alreadyMapped).contains(field) && mapping != null);
+                (field, mapping, alreadyMapped) => !alreadyMapped.includes(field) && mapping != null);
 
             canMap.onValue(mapButton.enable);
 
             var canUnMap = Bacon.combineWith(
                 selectedMapping, mappedColumns,
-                (mapping, currentlyMapped) =>  mapping != null && _(currentlyMapped).contains(mapping.column));
+                (mapping, currentlyMapped) =>  mapping != null && currentlyMapped.includes(mapping.get('column')));
 
             canUnMap.onValue(unMapButton.enable);
 
