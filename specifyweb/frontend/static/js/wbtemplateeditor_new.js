@@ -67,11 +67,7 @@ define([
         }
     }
 
-    function makeTableLIs(selectedTable, colMappings) {
-        var mappedTables = colMappings
-                .map(mapping => mapping.fieldInfo && mapping.fieldInfo.tableInfo.name)
-                .filter(tableName => tableName != null);
-
+    function makeTableLIs(selectedTable, mappedTables) {
         return tableInfos.map(
             tableInfo => $('<li>')
                 .text(tableInfo.title)
@@ -80,8 +76,8 @@ define([
                 .addClass(selectedTable === tableInfo ? 'selected' : '')[0]);
     }
 
-    function TablesTray($tables, selectedTable, colMappings) {
-        var lis = Bacon.combineWith(selectedTable, colMappings, makeTableLIs);
+    function TablesTray($tables, selectedTable, mappedTables) {
+        var lis = Bacon.combineWith(selectedTable, mappedTables, makeTableLIs);
         lis.onValue(lis => $tables.empty().append(lis));
     }
 
@@ -213,6 +209,12 @@ define([
 
             var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
 
+            var mappedTables = columnMappings.map(
+                colMappings => colMappings
+                    .map(mapping => mapping.fieldInfo && mapping.fieldInfo.tableInfo.name)
+                    .filter(tableName => tableName != null)
+            );
+
             var mappedFields = columnMappings.map(
                 colMappings => colMappings
                     .map(mapping => mapping.fieldInfo)
@@ -225,7 +227,7 @@ define([
                     .map(mapping => mapping.column)
             );
 
-            TablesTray(this.$('.wb-editor-tables'), selectedTable, columnMappings);
+            TablesTray(this.$('.wb-editor-tables'), selectedTable, mappedTables);
             FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, mappedFields);
             MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
 
