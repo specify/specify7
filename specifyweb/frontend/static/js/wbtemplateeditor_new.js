@@ -42,6 +42,7 @@ define([
     function SelectedTable($tables, selectedMapping) {
         return $tables
             .asEventStream('click', 'li')
+            .filter(event => !$(event.currentTarget).is('.disabled-table'))
             .map(event => {
                 var i = $('li', $tables).index(event.currentTarget);
                 return tableInfos[i];
@@ -54,14 +55,33 @@ define([
             .toProperty(null);
     }
 
-    function TablesTray($tables, selectedTable) {
-        var lis = selectedTable.map(
-            selected => tableInfos.map(
-                tableInfo => $('<li>')
-                    .text(tableInfo.title)
-                    .prepend($('<img>', {src: tableInfo.specifyModel.getIcon()}))
-                    .addClass(selected === tableInfo ? 'selected' : '')[0]));
+    function isDisabledTable(mappedTables, tableName) {
+        if (_(mappedTables).contains('agent')) {
+            return tableName !== 'agent';
+        } else if (_(mappedTables).contains('taxononly')) {
+            return tableName !== 'taxononly';
+        } else if (mappedTables.length > 0) {
+            return _(['agent', 'taxononly']).contains(tableName);
+        } else {
+            return false;
+        }
+    }
 
+    function makeTableLIs(selectedTable, colMappings) {
+        var mappedTables = colMappings
+                .map(mapping => mapping.fieldInfo && mapping.fieldInfo.tableInfo.name)
+                .filter(tableName => tableName != null);
+
+        return tableInfos.map(
+            tableInfo => $('<li>')
+                .text(tableInfo.title)
+                .prepend($('<img>', {src: tableInfo.specifyModel.getIcon()}))
+                .addClass(isDisabledTable(mappedTables, tableInfo.name) ? 'disabled-table' : '')
+                .addClass(selectedTable === tableInfo ? 'selected' : '')[0]);
+    }
+
+    function TablesTray($tables, selectedTable, colMappings) {
+        var lis = Bacon.combineWith(selectedTable, colMappings, makeTableLIs);
         lis.onValue(lis => $tables.empty().append(lis));
     }
 
@@ -197,18 +217,19 @@ define([
 
             var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
 
-            var tablesTray = TablesTray(this.$('.wb-editor-tables'), selectedTable);
-            var fieldsTray = FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, columnMappings);
+            TablesTray(this.$('.wb-editor-tables'), selectedTable, columnMappings);
+            FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, columnMappings);
+            MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
 
-            var mappingsTray = MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
-
-            var canMap = Bacon.combineWith(selectedField, selectedMapping, (fieldInfo, colMapping) =>
-                                           colMapping && colMapping.fieldInfo !== fieldInfo);
+            var canMap = Bacon.combineWith(
+                selectedField, selectedMapping,
+                (fieldInfo, colMapping) =>
+                    colMapping && colMapping.fieldInfo !== fieldInfo);
 
             canMap.onValue(mapButton.enable);
 
-            var canUnMap = selectedMapping
-                    .map(colMapping => colMapping && colMapping.fieldInfo != null);
+            var canUnMap = selectedMapping.map(
+                colMapping => colMapping && colMapping.fieldInfo != null);
 
             canUnMap.onValue(unMapButton.enable);
 
