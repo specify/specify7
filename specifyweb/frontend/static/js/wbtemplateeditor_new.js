@@ -86,11 +86,13 @@ define([
     }
 
     function SelectedField($fields, selectedTable, selectedMapping) {
+        var selectedInd = $fields
+                .asEventStream('click', 'li')
+                .filter(event => !$(event.currentTarget).is('.already-mapped'))
+                .map(event => $('li', $fields).index(event.currentTarget));
+
         return selectedTable
-            .sampledBy($fields.asEventStream('click', 'li'), (tableInfo, event) => {
-                var i = $('li', $fields).index(event.currentTarget);
-                return tableInfo.fields[i];
-            })
+            .sampledBy(selectedInd, (tableInfo, i) => tableInfo.fields[i])
             .merge(
                 selectedMapping.changes()
                     .map(mapping => mapping && mapping.fieldInfo)
@@ -110,13 +112,7 @@ define([
         );
     }
 
-    function FieldsTray($fields, selectedField, selectedTable, colMappings) {
-        var alreadyMapped = colMappings.map(
-            colMappings => colMappings
-                .map(mapping => mapping.fieldInfo)
-                .filter(fieldInfo => fieldInfo != null)
-        );
-
+    function FieldsTray($fields, selectedField, selectedTable, alreadyMapped) {
         var lis = Bacon.combineWith(selectedTable, selectedField, alreadyMapped, makeFieldLI);
         lis.onValue(lis => $fields.empty().append(lis));
     }
@@ -217,19 +213,31 @@ define([
 
             var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField, mapButton.clicks, unMapButton.clicks);
 
+            var mappedFields = columnMappings.map(
+                colMappings => colMappings
+                    .map(mapping => mapping.fieldInfo)
+                    .filter(fieldInfo => fieldInfo != null)
+            );
+
+            var mappedColumns = columnMappings.map(
+                colMappings => colMappings
+                    .filter(mapping => mapping.fieldInfo != null)
+                    .map(mapping => mapping.column)
+            );
+
             TablesTray(this.$('.wb-editor-tables'), selectedTable, columnMappings);
-            FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, columnMappings);
+            FieldsTray(this.$('.wb-editor-fields'), selectedField, selectedTable, mappedFields);
             MappingsTray(this.$('.wb-editor-mappings'), columnMappings, selectedMapping);
 
             var canMap = Bacon.combineWith(
-                selectedField, selectedMapping,
-                (fieldInfo, colMapping) =>
-                    colMapping && colMapping.fieldInfo !== fieldInfo);
+                selectedField, selectedMapping, mappedFields,
+                (field, mapping, alreadyMapped) => !_(alreadyMapped).contains(field) && mapping != null);
 
             canMap.onValue(mapButton.enable);
 
-            var canUnMap = selectedMapping.map(
-                colMapping => colMapping && colMapping.fieldInfo != null);
+            var canUnMap = Bacon.combineWith(
+                selectedMapping, mappedColumns,
+                (mapping, currentlyMapped) =>  mapping != null && _(currentlyMapped).contains(mapping.column));
 
             canUnMap.onValue(unMapButton.enable);
 
