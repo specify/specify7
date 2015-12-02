@@ -196,6 +196,31 @@ define([
         };
     }
 
+    function makeTemplate(mappings) {
+        var app = require('specifyapp');
+        return new schema.models.WorkbenchTemplate.Resource({
+            specifyuser: app.user.resource_uri,
+            workbenchtemplatemappingitems: makeMappingItems(mappings)
+        });
+    }
+
+    function makeMappingItems(mappings) {
+        return mappings
+            .filter(m => m.get('fieldInfo') != null)
+            .map(m => {
+                var fieldInfo = m.get('fieldInfo');
+                return new schema.models.WorkbenchTemplateMappingItem.Resource({
+                    caption: m.get('column'),
+                    datafieldlength: fieldInfo.length && parseInt(fieldInfo.length, 10),
+                    fieldname: fieldInfo.name,
+                    srctableid: fieldInfo.tableInfo.tableId,
+                    tablename: fieldInfo.tableInfo.name,
+                    vieworder: m.get('curIndex'),
+                    origimportcolumnindex: m.get('origIndex')
+                });
+            }).toArray();
+    }
+
     return Backbone.View.extend({
         __name__: "WorkbenchTemplateEditor",
         className: 'workbench-template-editor',
@@ -211,16 +236,19 @@ define([
             var moveUpButton = SimpleButton(this.$('.wb-editor-moveup'), 'ui-icon-arrowthick-1-n');
             var moveDownButton = SimpleButton(this.$('.wb-editor-movedown'), 'ui-icon-arrowthick-1-s');
 
+            var doneButton = new Bacon.Bus();
+
             this.$el.dialog({
                 title: 'Workbench Template Mappings',
                 width: 'auto',
                 modal: true,
                 close: function() { $(this).remove(); },
                 buttons: [
-                    {text: 'Done', click: function() { this.trigger('created', this.makeTemplate()); }.bind(this) },
+                    {text: 'Done', click: event => doneButton.push(event) },
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                 ]
             });
+
 
             var selectedMapping = SelectedMapping(this.$('.wb-editor-mappings'));
             var selectedTable = SelectedTable(this.$('.wb-editor-tables'), selectedMapping);
@@ -229,6 +257,9 @@ define([
             var columnMappings = ColumnMappings(this.columns, selectedMapping, selectedField,
                                                 mapButton.clicks, unMapButton.clicks,
                                                 moveUpButton.clicks, moveDownButton.clicks);
+
+            columnMappings.sampledBy(doneButton).log().onValue(
+                mappings => console.log('created', makeTemplate(mappings)));
 
             var mappedTables = columnMappings.map(
                 colMappings => colMappings
