@@ -42,7 +42,7 @@ define([
             )[0];
         },
         newTemplate: function() {
-            var editor = new WBTemplateEditor();
+            var editor = new WBTemplateEditor({ columns: [] });
             editor.render().on('created', this.makeWorkbench, this);
         },
         select: function(event) {

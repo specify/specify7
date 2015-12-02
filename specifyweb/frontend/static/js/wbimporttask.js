@@ -1,5 +1,5 @@
 define([
-    'jquery', 'backbone', 'q', 'schema', 'templates', 'wbtemplateeditor_new', 'navigation'
+    'jquery', 'backbone', 'q', 'schema', 'templates', 'wbtemplateeditor', 'navigation'
 ], function($, Backbone, Q, schema, templates, WBTemplateEditor, navigation) {
     "use strict";
 
