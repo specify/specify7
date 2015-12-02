@@ -68,7 +68,10 @@ define([
             if (this.template != null) {
                 this.doImport();
             } else {
-                new WBTemplateEditor({ columns: this.hasHeader() ? this.preview[0] : null }).render();
+                var columns = this.hasHeader() ? this.preview[0] :
+                        this.preview[0].map(function(__, i) { return "Column " + (i + 1); });
+
+                new WBTemplateEditor({ columns: columns }).render();
             }
         },
         doImport: function() {
