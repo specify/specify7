@@ -13,9 +13,6 @@ define([
         events: {
             'click a': 'select'
         },
-        initialize: function(options) {
-            this.importing = options.importing;
-        },
         render: function() {
             this.templates = new schema.models.WorkbenchTemplate.LazyCollection();
             this.templates.fetch({ limit: 500 }).done(this.gotTemplates.bind(this));
@@ -42,18 +39,15 @@ define([
             )[0];
         },
         newTemplate: function() {
-            var editor = new WBTemplateEditor({ columns: [] });
-            editor.render().on('created', this.makeWorkbench, this);
+            new WBTemplateEditor({ columns: [] })
+                .render()
+                .on('created', this.makeWorkbench, this);
         },
         select: function(event) {
             event.preventDefault();
             var i = this.$('a').index(event.currentTarget);
             var template = this.templates.at(i).clone();
-            if (this.importing) {
-                new ImportWorkbenchDialog({template: template}).render();
-            } else {
-                this.makeWorkbench(template);
-            }
+            this.makeWorkbench(template);
         },
         makeWorkbench: function(template) {
             var workbench = new schema.models.Workbench.Resource();
@@ -114,8 +108,8 @@ define([
             }, 100);
             return entry[0];
         },
-        newWB: function(importing) {
-            new NewWorkbenchDialog({importing: importing}).render();
+        newWB: function() {
+            new NewWorkbenchDialog().render();
         },
         getIndex: function(evt, selector) {
             evt.preventDefault();
