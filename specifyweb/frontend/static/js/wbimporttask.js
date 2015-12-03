@@ -71,7 +71,12 @@ define([
                 var columns = this.hasHeader() ? this.preview[0] :
                         this.preview[0].map(function(__, i) { return "Column " + (i + 1); });
 
-                new WBTemplateEditor({ columns: columns }).render();
+                new WBTemplateEditor({ columns: columns })
+                    .render()
+                    .on('created', function(template) {
+                        this.template = template;
+                        this.doImport();
+                    }.bind(this));
             }
         },
         doImport: function() {

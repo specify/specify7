@@ -262,7 +262,7 @@ define([
             });
 
 
-            var selectedMapping = SelectedMapping(this.$('.wb-editor-mappings')).log();
+            var selectedMapping = SelectedMapping(this.$('.wb-editor-mappings'));
             var selectedTable = SelectedTable(this.$('.wb-editor-tables'), selectedMapping);
             var selectedField = SelectedField(this.$('.wb-editor-fields'), selectedTable, selectedMapping);
 
@@ -271,8 +271,8 @@ define([
                                                 mapButton.clicks, unMapButton.clicks,
                                                 moveUpButton.clicks, moveDownButton.clicks);
 
-            columnMappings.sampledBy(doneButton).log().onValue(
-                mappings => console.log('created', makeTemplate(mappings)));
+            columnMappings.sampledBy(doneButton).onValue(
+                mappings => this.trigger('created', makeTemplate(mappings)));
 
             var mappedTables = columnMappings.map(
                 colMappings => colMappings
@@ -303,7 +303,7 @@ define([
                     (mapping != null || !this.givenColumns) &&
                     !alreadyMapped.includes(field));
 
-            canMap.log().onValue(mapButton.enable);
+            canMap.onValue(mapButton.enable);
 
             var canUnMap = Bacon.combineWith(
                 selectedMapping, mappedColumns,
