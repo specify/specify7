@@ -66,7 +66,14 @@ define([
         },
         nextStep: function() {
             if (this.template != null) {
-                this.doImport();
+                this.template.rget('workbenchtemplatemappingitems').done(function(wbtmis) {
+                    // Sp6 doesn't record the original column number so we can't
+                    // reuse column permutations.
+                    wbtmis.each(function(wbtmi) {
+                        wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder'));
+                    });
+                    this.doImport();
+                }.bind(this));
             } else {
                 var columns = this.hasHeader() ? this.preview[0] :
                         this.preview[0].map(function(__, i) { return "Column " + (i + 1); });
