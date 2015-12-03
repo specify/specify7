@@ -123,13 +123,14 @@ define([
         var fieldInfo = colMapping.get('fieldInfo');
         var isSelected = selectedMapping && colMapping.get('origIndex') === selectedMapping.get('origIndex');
         var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
-        return $('<li>')
-            .data('colMapping', colMapping)
-            .addClass(isSelected ? 'selected' : '')
-            .append(
-                $('<img>', {src: imgSrc}),
-                $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
-                $('<span>').text(colMapping.get('column')))[0];
+        var li = $('<li>')
+                .data('colMapping', colMapping)
+                .addClass(isSelected ? 'selected' : '');
+        imgSrc && li.append($('<img>', {src: imgSrc}));
+        li.append(
+            $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
+            $('<span>').text(colMapping.get('column')));
+        return li[0];
     }
 
     function MappingsTray($colMappings, colMappings, selectedMapping) {
