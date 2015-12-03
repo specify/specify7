@@ -254,7 +254,19 @@ def import_workbench(request):
         srcfilepath=template.name,
     )
 
-    data = list(csv.reader(upload_file))
+    index_map = [
+        wbtmi.origimportcolumnindex for wbtmi in
+        template.workbenchtemplatemappingitems.order_by('vieworder')
+        ]
+    logger.debug('index_map: %s', index_map)
+
+    def permute_columns(row):
+        return [row[i] for i in index_map]
+
+    data = [permute_columns(row)
+            for row in
+            csv.reader(upload_file)]
+
     if has_header:
         data = data[1:]
 
