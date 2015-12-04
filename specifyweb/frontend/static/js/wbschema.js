@@ -69,16 +69,19 @@ define([
             });
         });
 
+
+    var fieldInfosSortedForSimpleMatch = _(tableInfos).chain()
+            .sortBy(ti => ti.name === 'taxononly' ? schema.models.Taxon.tableId : ti.tableId)
+            .map(ti => ti.fields)
+            .flatten()
+            .value();
+
     function simpleMatch(mappedTables, column) {
         var lcColumn = column.toLowerCase();
         var noWSColumn = lcColumn.replace(/\s+/g, '');
 
-        var sortedTableInfos = _.sortBy(
-            tableInfos, ti => ti.name === 'taxononly' ? schema.models.Taxon.tableId : ti.tableId);
-        var fieldInfos = _.flatten(sortedTableInfos.map(ti => ti.fields));
-
         return _.find(
-            fieldInfos, fi => {
+            fieldInfosSortedForSimpleMatch, fi => {
                 var fName = fi.name.toLowerCase();
                 var fCName = fi.column.toLowerCase();
                 return !isDisallowedTable(mappedTables, fi.tableInfo.name) &&
