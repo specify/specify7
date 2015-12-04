@@ -40,6 +40,18 @@ define([
         });
     }
 
+    function isDisallowedTable(mappedTables, tableName) {
+        if (mappedTables.includes('agent')) {
+            return tableName !== 'agent';
+        } else if (mappedTables.includes('taxononly')) {
+            return tableName !== 'taxononly';
+        } else if (mappedTables.count() > 0) {
+            return 'agent' === tableName || 'taxononly' === tableName;
+        } else {
+            return false;
+        }
+    }
+
     var autoMapping = $.parseXML(autoMappingXML);
 
     var autoMappings = _.map(
@@ -57,18 +69,51 @@ define([
             });
         });
 
-    function autoMap(column, index) {
-        var matched = _.find(autoMappings, am => _.any(am.regexes, re => re.test(column)));
-        var fieldInfo = matched ? matched.fieldInfo : null;
+    function simpleMatch(mappedTables, column) {
+        var lcColumn = column.toLowerCase();
+        var noWSColumn = lcColumn.replace(/\s+/g, '');
+
+        var sortedTableInfos = _.sortBy(
+            tableInfos, ti => ti.name === 'taxononly' ? schema.models.Taxon.tableId : ti.tableId);
+        var fieldInfos = _.flatten(sortedTableInfos.map(ti => ti.fields));
+
+        return _.find(
+            fieldInfos, fi => {
+                var fName = fi.name.toLowerCase();
+                var fCName = fi.column.toLowerCase();
+                return !isDisallowedTable(mappedTables, fi.tableInfo.name) &&
+                    (fName === noWSColumn ||
+                     fCName === noWSColumn ||
+                     fName.indexOf(lcColumn) === 0 ||
+                     fCName.indexOf(lcColumn) === 0);
+            });
+    }
+
+    function autoMap(mappedTables, column, index) {
+        var matched = _.find(
+            autoMappings, am =>
+                !isDisallowedTable(mappedTables, am.fieldInfo.tableInfo.name) &&
+                _.any(am.regexes, re => re.test(column)));
+
+        var fieldInfo = simpleMatch(mappedTables, column) || (matched ? matched.fieldInfo : null);
         return Immutable.Map({column: column, fieldInfo: fieldInfo, origIndex: index, curIndex: index});
     }
 
     function autoMapColumns(columns) {
-        return Immutable.List(columns).map(autoMap);
+        var mappings = Immutable.List();
+        columns.forEach((column, index) => {
+            var mappedTables = mappings
+                    .map(m => m.get('fieldInfo'))
+                    .filter(fi => fi != null)
+                    .map(fi => fi.tableInfo.name);
+            mappings = mappings.push(autoMap(mappedTables, column, index));
+        });
+        return mappings;
     }
 
     return {
         tableInfos: tableInfos,
-        autoMap: autoMapColumns
+        autoMap: autoMapColumns,
+        isDisallowedTable: isDisallowedTable
     };
 });

@@ -23,24 +23,12 @@ define([
             .toProperty(null);
     }
 
-    function isDisabledTable(mappedTables, tableName) {
-        if (mappedTables.includes('agent')) {
-            return tableName !== 'agent';
-        } else if (mappedTables.includes('taxononly')) {
-            return tableName !== 'taxononly';
-        } else if (mappedTables.count() > 0) {
-            return 'agent' === tableName || 'taxononly' === tableName;
-        } else {
-            return false;
-        }
-    }
-
     function makeTableLIs(selectedTable, mappedTables) {
         return wbschema.tableInfos.map(
             tableInfo => $('<li>')
                 .text(tableInfo.title)
                 .prepend($('<img>', {src: tableInfo.specifyModel.getIcon()}))
-                .addClass(isDisabledTable(mappedTables, tableInfo.name) ? 'disabled-table' : '')
+                .addClass(wbschema.isDisallowedTable(mappedTables, tableInfo.name) ? 'disabled-table' : '')
                 .addClass(selectedTable === tableInfo ? 'selected' : '')[0]);
     }
 
