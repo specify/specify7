@@ -91,14 +91,15 @@ define([
         var fieldInfo = colMapping.get('fieldInfo');
         var isSelected = selectedMapping && colMapping.get('origIndex') === selectedMapping.get('origIndex');
         var imgSrc = fieldInfo && fieldInfo.tableInfo.specifyModel.getIcon();
-        var li = $('<li>')
-                .data('colMapping', colMapping)
-                .addClass(isSelected ? 'selected' : '');
-        imgSrc && li.append($('<img>', {src: imgSrc}));
-        li.append(
-            $('<span>').text(fieldInfo ? fieldInfo.column : 'Discard'),
-            $('<span>').text(colMapping.get('column')));
-        return li[0];
+        return $('<li>')
+            .data('colMapping', colMapping)
+            .addClass(isSelected ? 'selected' : '')
+            .append(
+                $('<span>')
+                    .text(fieldInfo ? fieldInfo.column : 'Discard')
+                    .prepend(imgSrc ? $('<img>', {src: imgSrc}) : ''),
+                $('<span class="spacer">'),
+                $('<span>').text(colMapping.get('column')))[0];
     }
 
     function MappingsTray($colMappings, colMappings, selectedMapping) {
@@ -110,14 +111,6 @@ define([
                 .map(mapping => makeMappingLI(selectedMapping, mapping)));
 
         colMappingLIs.onValue(lis => $colMappings.empty().append(lis.toArray()));
-        colMappingLIs.onValue(() => {
-            _.defer(() => _.each($('li', $colMappings), li => {
-                // Force both spans to have the same width so that the
-                // arrow is in the middle.
-                var widths = _.map($('span', li), span => $(span).width());
-                $('span', li).width(Math.max.apply(null, widths));
-            }));
-        });
     }
 
     function ColumnMappings(initMapping, columnsGiven, selectedMapping, selectedField, doMap, doUnMap, moveUp, moveDown) {

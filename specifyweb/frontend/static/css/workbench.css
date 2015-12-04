@@ -46,6 +46,7 @@
 
 .workbench-template-editor li img {
     width: 15px;
+    height: 15px;
     margin-right: 2px;
     vertical-align: middle;
 }
@@ -73,23 +74,31 @@
     margin: 2px 0;
 }
 
-.workbench-template-editor .wb-editor-mappings li {
-    background-image: url(/images/linked_right.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-origin: content-box;
-    padding-left: 15px;
+.workbench-template-editor th span:first-child {
+    float: left;
 }
 
-.workbench-template-editor .wb-editor-mappings li img{
-    margin-left: -13px;
-}
-
-.workbench-template-editor .wb-editor-mappings span:last-child,
 .workbench-template-editor th span:last-child {
     float: right;
-    margin-left: 40px;
-    text-align: right;
+}
+
+.wb-editor-mappings li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.wb-editor-mappings li span {
+    white-space: nowrap;
+    margin: 0 5px;
+}
+
+.wb-editor-mappings li .spacer {
+    width: 45px;
+    flex-grow: 1;
+    background-color: #aaa;
+    height: 1px;
+    margin: auto;
 }
 
 .wb-logs tbody tr {
