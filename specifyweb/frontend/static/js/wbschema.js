@@ -89,26 +89,29 @@ define([
             });
     }
 
-    function autoMap(mappedTables, column, index) {
+    function autoMap(mappedTables, column) {
         var matched = _.find(
             autoMappings, am =>
                 !isDisallowedTable(mappedTables, am.fieldInfo.tableInfo.name) &&
                 _.any(am.regexes, re => re.test(column)));
 
-        var fieldInfo = simpleMatch(mappedTables, column) || (matched ? matched.fieldInfo : null);
-        return Immutable.Map({column: column, fieldInfo: fieldInfo, origIndex: index, curIndex: index});
+        return matched ? matched.fieldInfo : null;
     }
 
     function autoMapColumns(columns) {
-        var mappings = Immutable.List();
-        columns.forEach((column, index) => {
+        return columns.reduce((mappings, column, index) => {
             var mappedTables = mappings
                     .map(m => m.get('fieldInfo'))
                     .filter(fi => fi != null)
                     .map(fi => fi.tableInfo.name);
-            mappings = mappings.push(autoMap(mappedTables, column, index));
-        });
-        return mappings;
+
+            return mappings.push(Immutable.Map({
+                column: column,
+                fieldInfo: simpleMatch(mappedTables, column) || autoMap(mappedTables, column),
+                origIndex: index,
+                curIndex: index
+            }));
+        }, Immutable.List());
     }
 
     return {
