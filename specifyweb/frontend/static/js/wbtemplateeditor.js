@@ -1,43 +1,11 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'bacon',
-    'immutable', 'schema', 'templates',
-    'text!resources/specify_workbench_datamodel.xml!noinline'
-], function(require, $, _, Backbone, Bacon, Immutable, schema, templates, wbDataModelXML) {
+    'immutable', 'schema', 'templates', 'wbschema'
+], function(
+    require, $, _, Backbone, Bacon, Immutable,
+    schema, templates, wbschema
+) {
     "use strict";
-
-    var wbDataModel = $.parseXML(wbDataModelXML);
-
-    var tableInfos = _.map($('table', wbDataModel), function(tableNode) {
-        tableNode = $(tableNode);
-        var tableInfo = {
-            tableId: parseInt(tableNode.attr('tableid'), 10),
-            name: tableNode.attr('table')
-        };
-
-        tableInfo.specifyModel = tableInfo.name === 'taxononly' ?
-            schema.models.Taxon :
-            schema.getModelById(tableInfo.tableId);
-
-        tableInfo.title = tableInfo.name === 'taxononly' ?
-            'Taxon Import Only' :
-            tableInfo.specifyModel.getLocalizedName();
-
-        tableInfo.fields = getFieldsForTable(tableNode, tableInfo);
-        return Object.freeze(tableInfo);
-    });
-
-    function getFieldsForTable(tableNode, tableInfo) {
-        return _.map(tableNode.find('field'), function(fieldDef) {
-            var $fieldDef = $(fieldDef);
-            return Object.freeze({
-                tableInfo: tableInfo,
-                column: $fieldDef.attr('column'), // Default caption
-                name: $fieldDef.attr('name'),     // Specify field name
-                type: $fieldDef.attr('type'),     // Specify field type
-                length: $fieldDef.attr('length')
-            });
-        });
-    }
 
     function SelectedTable($tables, selectedMapping) {
         return $tables
@@ -45,7 +13,7 @@ define([
             .filter(event => !$(event.currentTarget).is('.disabled-table'))
             .map(event => {
                 var i = $('li', $tables).index(event.currentTarget);
-                return tableInfos[i];
+                return wbschema.tableInfos[i];
             })
             .merge(
                 selectedMapping.changes()
@@ -68,7 +36,7 @@ define([
     }
 
     function makeTableLIs(selectedTable, mappedTables) {
-        return tableInfos.map(
+        return wbschema.tableInfos.map(
             tableInfo => $('<li>')
                 .text(tableInfo.title)
                 .prepend($('<img>', {src: tableInfo.specifyModel.getIcon()}))
@@ -152,11 +120,9 @@ define([
         });
     }
 
-    function ColumnMappings(initCols, columnsGiven, selectedMapping, selectedField, doMap, doUnMap, moveUp, moveDown) {
+    function ColumnMappings(initMapping, columnsGiven, selectedMapping, selectedField, doMap, doUnMap, moveUp, moveDown) {
         return Bacon.update(
-            Immutable.fromJS(initCols.map(
-                (colname, index) =>
-                    ({column: colname, fieldInfo: null, origIndex: index, curIndex: index}))),
+            initMapping,
 
             [selectedMapping, selectedField, doMap], (prev, mapping, fieldInfo) => {
                 if (columnsGiven) {
@@ -237,8 +203,8 @@ define([
         __name__: "WorkbenchTemplateEditor",
         className: 'workbench-template-editor',
         initialize: function(options) {
-            this.columns = options.columns;
-            this.columnsGiven = this.columns.length > 0;
+            this.columns = wbschema.autoMap(options.columns);
+            this.columnsGiven = this.columns.count() > 0;
         },
         render: function() {
             var editor = $(templates.wbtemplateeditor());
