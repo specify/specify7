@@ -31,12 +31,11 @@ define([
         var cloned = template.clone();
         // Sp6 doesn't record the original column number so we can't
         // reuse column permutations.
-        return Bacon.fromCallback(
-            callback => cloned.rget('workbenchtemplatemappingitems').done(function(wbtmis) {
-                wbtmis.each(
-                    wbtmi => wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder')));
-                callback(cloned);
-            }));
+        var fixColumns = cloned.rget('workbenchtemplatemappingitems').pipe(function(wbtmis) {
+            wbtmis.each(wbtmi => wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder')));
+            return cloned;
+        });
+        return Bacon.fromPromise(fixColumns);
     }
 
     function makeFormData(template, file, workbenchName, header) {
@@ -73,9 +72,9 @@ define([
                     .attr('value', i)[0];
             }));
 
-            var templateSelected = ValueProperty(this.$('select')).log('templateSelected');
+            var templateSelected = ValueProperty(this.$('select'));
 
-            var buttonClicks = this.$('button').button().asEventStream('click').log('buttonClicks');
+            var buttonClicks = this.$('button').button().asEventStream('click');
 
             templateSelected.onValue(
                 t => this.$('button').button('option', 'label', t === 'new' ? 'Create Mapping' : 'Import'));
@@ -112,8 +111,7 @@ define([
             var cloneOrMakeTemplate = templateSelected
                     .sampledBy(buttonClicks)
                     .flatMap(val => val === 'new' ? Bacon.once('make') :
-                             cloneTemplate(this.templates.at(parseInt(val, 10))))
-                    .log('cloneOrMakeTemplate');
+                             cloneTemplate(this.templates.at(parseInt(val, 10))));
 
             var createdTemplate = columns
                     .sampledBy(cloneOrMakeTemplate.filter(t => t === 'make'))
