@@ -1,17 +1,67 @@
 define([
-    'jquery', 'backbone', 'q', 'schema', 'templates', 'wbtemplateeditor', 'navigation'
-], function($, Backbone, Q, schema, templates, WBTemplateEditor, navigation) {
+    'jquery', 'backbone', 'q', 'bacon', 'schema', 'templates', 'wbtemplateeditor', 'navigation'
+], function($, Backbone, Q, Bacon, schema, templates, WBTemplateEditor, navigation) {
     "use strict";
+
+    function Preview($table, previews, hasHeader) {
+        Bacon.combineWith(
+            previews, hasHeader,
+            (preview, header) =>
+                preview.map(
+                    (row, i) => $('<tr>')
+                        .addClass(header && i===0 ? 'header' : '')
+                        .append(row.map(cell => $('<td>').text(cell)[0]))[0]
+                ))
+            .onValue(trs => $table.empty().append(trs));
+    }
+
+    function ValueProperty($el) {
+        return $el.asEventStream('change')
+            .map(event => $el.val())
+            .toProperty($el.val());
+    }
+
+    function CheckedProperty($el) {
+        return $el.asEventStream('change')
+            .map(event => $el.prop('checked'))
+            .toProperty($el.prop('checked'));
+    }
+
+    function cloneTemplate(template) {
+        var cloned = template.clone();
+        // Sp6 doesn't record the original column number so we can't
+        // reuse column permutations.
+        return Bacon.fromCallback(
+            callback => cloned.rget('workbenchtemplatemappingitems').done(function(wbtmis) {
+                wbtmis.each(
+                    wbtmi => wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder')));
+                callback(cloned);
+            }));
+    }
+
+    function makeFormData(template, file, workbenchName, header) {
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('workbenchName', workbenchName);
+        formData.append('hasHeader', header);
+        formData.append('template', JSON.stringify(template.toJSON()));
+        return formData;
+    }
+
+    function doImport(formData) {
+        return Bacon.fromPromise(
+            $.ajax({
+                url: '/api/workbench/import/',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false
+            }));
+    }
 
     var WBImportView = Backbone.View.extend({
         __name__: "WBImportView",
         className: 'workbench-import-view',
-        events: {
-            'change :file': 'fileSelected',
-            'click button': 'nextStep',
-            'change select': 'templateSelected',
-            'change :checkbox': 'hasHeaderChanged'
-        },
         initialize: function(options) {
             this.templates = options.templates;
         },
@@ -22,85 +72,68 @@ define([
                     .text(template.get('name'))
                     .attr('value', i)[0];
             }));
-            this.$('button').button();
+
+            var templateSelected = ValueProperty(this.$('select')).log('templateSelected');
+
+            var buttonClicks = this.$('button').button().asEventStream('click').log('buttonClicks');
+
+            templateSelected.onValue(
+                t => this.$('button').button('option', 'label', t === 'new' ? 'Create Mapping' : 'Import'));
+
+            var fileSelected = this.$(':file').asEventStream('change')
+                    .map(event => event.currentTarget.files[0])
+                    .filter(file => file != null);
+
+            fileSelected.onValue(__ => this.$(':hidden').show());
+
+            var workbenchName = Bacon.combineWith(
+                ValueProperty(this.$(':text')), fileSelected,
+                (enteredValue, file) => enteredValue === '' ? file.name : enteredValue);
+
+            workbenchName.onValue(wbName => this.$(':text').val(wbName));
+
+            var hasHeader = CheckedProperty(this.$(':checkbox'));
+
+            var previews = fileSelected.flatMap(
+                file => Bacon.fromCallback(
+                    callback => Papa.parse(file, {
+                        preview: 10,
+                        complete: callback
+                    })))
+                    .map(parse => parse.data);
+
+            Preview(this.$('table'), previews, hasHeader);
+
+            var columns = Bacon.combineWith(
+                previews, hasHeader,
+                (preview, header) =>
+                    header ? preview[0] : preview[0].map((__, i) => "Column " + (i + 1)));
+
+            var cloneOrMakeTemplate = templateSelected
+                    .sampledBy(buttonClicks)
+                    .flatMap(val => val === 'new' ? Bacon.once('make') :
+                             cloneTemplate(this.templates.at(parseInt(val, 10))))
+                    .log('cloneOrMakeTemplate');
+
+            var createdTemplate = columns
+                    .sampledBy(cloneOrMakeTemplate.filter(t => t === 'make'))
+                    .flatMap(
+                        columns => Bacon.fromCallback(
+                            callback => new WBTemplateEditor({ columns: columns })
+                                .render()
+                                .on('created', callback)));
+
+            var clonedTemplate = cloneOrMakeTemplate.filter(t => t !== 'make');
+
+            Bacon.combineWith(
+                Bacon.mergeAll(createdTemplate, clonedTemplate),
+                fileSelected, workbenchName, hasHeader,
+                makeFormData
+            )
+                .flatMap(doImport)
+                .onValue(wb => navigation.go('/workbench/' + wb.id + '/'));
+
             return this;
-        },
-        fileSelected: function() {
-            var files = this.$(':file').get(0).files;
-            if (files.length < 1) return;
-
-            this.$(':text').val() === '' && this.$(':text').val(files[0].name);
-
-            Papa.parse(files[0], {
-                preview: 10,
-                complete: this.gotPreview.bind(this)
-            });
-        },
-        gotPreview: function(parse) {
-            this.preview = parse.data;
-            this.$(':hidden').show();
-            this.$('table').append(
-                this.preview.map(function(row) {
-                    return $('<tr>').append(row.map(function(cell) {
-                        return $('<td>').text(cell)[0];
-                    }))[0];
-                })
-            );
-        },
-        hasHeader: function() {
-            return this.$(':checkbox').prop('checked');
-        },
-        hasHeaderChanged: function() {
-            var action = this.hasHeader() ? 'addClass' : 'removeClass';
-            this.$('table tr:first-child')[action]('header');
-        },
-        templateSelected: function() {
-            var selected = this.$('select').val();
-            if (selected === 'new') {
-                this.template = null;
-                this.$('button').button('option', 'label', 'Create Mapping');
-            } else {
-                this.template = this.templates.at(parseInt(selected, 10)).clone();
-                this.$('button').button('option', 'label', 'Import');
-            }
-        },
-        nextStep: function() {
-            if (this.template != null) {
-                this.template.rget('workbenchtemplatemappingitems').done(function(wbtmis) {
-                    // Sp6 doesn't record the original column number so we can't
-                    // reuse column permutations.
-                    wbtmis.each(function(wbtmi) {
-                        wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder'));
-                    });
-                    this.doImport();
-                }.bind(this));
-            } else {
-                var columns = this.hasHeader() ? this.preview[0] :
-                        this.preview[0].map(function(__, i) { return "Column " + (i + 1); });
-
-                new WBTemplateEditor({ columns: columns })
-                    .render()
-                    .on('created', function(template) {
-                        this.template = template;
-                        this.doImport();
-                    }.bind(this));
-            }
-        },
-        doImport: function() {
-            var formData = new FormData();
-            formData.append('file', this.$(':file').get(0).files[0]);
-            formData.append('workbenchName', this.$(':text').val());
-            formData.append('hasHeader', this.hasHeader());
-            formData.append('template', JSON.stringify(this.template.toJSON()));
-            $.ajax({
-                url: '/api/workbench/import/',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false
-            }).done(function(wb) {
-                navigation.go('/workbench/' + wb.id + '/');
-            });
         }
     });
 

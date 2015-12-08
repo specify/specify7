@@ -42,7 +42,7 @@ define([
             var resource = this.resource;
             var promise = this._invokeRule(ruleName, fieldName, args);
             var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
-            promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
+            // promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
         },
         _invokeRule: function(ruleName, fieldName, args) {
             var rule = this.rules && this.rules[ruleName];
@@ -84,8 +84,8 @@ define([
             fieldName = fieldName.toLowerCase();
 
             var thisCheck = Q.defer();
-            thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
-                                                                    {field: fieldName, result: result}); });
+            // thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
+            //                                                         {field: fieldName, result: result}); });
             this.addPromise(thisCheck.promise);
 
             // If another change happens while the previous check is pending,
@@ -147,7 +147,7 @@ define([
                 });
             });
             return combineUniquenessResults(results).then(function(result) {
-                console.debug('BR finished checkUnique for', fieldName, result);
+                // console.debug('BR finished checkUnique for', fieldName, result);
                 result.key = 'br-uniqueness-' + fieldName;
                 return result;
             });
