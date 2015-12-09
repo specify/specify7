@@ -198,11 +198,16 @@ define([
 
             var doneButton = new Bacon.Bus();
 
+            var triggerClosed = this.trigger.bind(this, 'closed');
+
             this.$el.dialog({
                 title: 'Workbench Template Mappings',
                 width: 'auto',
                 modal: true,
-                close: function() { $(this).remove(); },
+                close: function() {
+                    $(this).remove();
+                    triggerClosed();
+                },
                 buttons: [
                     {text: 'Done', click: event => doneButton.push(event) },
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}

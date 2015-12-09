@@ -119,12 +119,13 @@ define([
                         columns => Bacon.fromCallback(
                             callback => new WBTemplateEditor({ columns: columns })
                                 .render()
-                                .on('created', callback)));
+                                .on('closed created', callback)))
+                    .filter(template => template != null);
 
             var clonedTemplate = cloneOrMakeTemplate.filter(t => t !== 'make');
 
             Bacon.combineWith(
-                Bacon.mergeAll(createdTemplate, clonedTemplate),
+                Bacon.mergeAll(createdTemplate, clonedTemplate).first(),
                 fileSelected, workbenchName, hasHeader,
                 makeFormData
             )
