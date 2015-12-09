@@ -1,14 +1,11 @@
-define([
-    'require', 'schema', 'recordsetsdialog'
-], function(require, schema, RecordSetsDialog) {
+define(['schema', 'recordsetsdialog'], function(schema, RecordSetsDialog) {
     "use strict";
 
     return {
         task: 'recordsets',
         title: 'Record Sets',
         icon: '/images/RecordSet32x32.png',
-        execute: function() {
-            var app = require('specifyapp');
+        execute: function(app) {
             var recordSets = new schema.models.RecordSet.LazyCollection({
                 filters: { specifyuser: app.user.id, type: 0, domainfilter: true,
                            orderby: '-timestampcreated' }

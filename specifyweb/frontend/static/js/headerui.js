@@ -62,7 +62,7 @@ define([
             this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
 
             _.each(this.toolModules, function(module) {
-                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
+                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module, app));
             });
         },
         render: function() {

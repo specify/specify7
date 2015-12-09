@@ -1,12 +1,14 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'navigation',
+    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'specifyform', 'populateform', 'savebutton', 'deletebutton',
     'text!resources/querybuilder.xml!noinline',
     'jquery-ui'
-], function(require, $, _, Backbone, schema, navigation,
+], function($, _, Backbone, schema, navigation,
             specifyform, populateform, SaveButton, DeleteButton,
             querybuilderXML) {
     "use strict";
+    var app;
+
     var qbDef = $.parseXML(querybuilderXML);
 
     var title = "Query";
@@ -110,7 +112,6 @@ define([
             return entry;
         },
         selected: function(evt) {
-            var app = require('specifyapp');
             var index = this.$('a').index(evt.currentTarget);
             this.$el.dialog('close');
             var table = this.options.tables[index];
@@ -205,9 +206,9 @@ define([
         task: 'query',
         title: title,
         icon: '/images/Query32x32.png',
-        execute: function() {
+        execute: function(specifyApp) {
+            app = specifyApp;
             if (dialog) return;
-            var app = require('specifyapp');
             var queries = new schema.models.SpQuery.LazyCollection({
                 filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
             });

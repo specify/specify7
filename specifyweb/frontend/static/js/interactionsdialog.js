@@ -1,13 +1,12 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema',
+    'require', 'jquery', 'underscore', 'backbone', 'schema',
     'icons', 'specifyform', 'whenall',
-    'interactiondialog', 'props',
-    'toolbarreport',
+    'interactiondialog', 'props', 'reports',
     'text!context/app.resource?name=InteractionsTaskInit!noinline',
     'text!properties/resources_en.properties!noinline',
     'jquery-ui'
-], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, InteractionDialog, props, reps,
+], function(require, $, _, Backbone, schema, icons, specifyform,
+            whenAll, InteractionDialog, props, reports,
             interactionsTaskInit, resources_prop) {
     "use strict";
 
@@ -118,12 +117,12 @@ define([
             return actionName == 'NEW_GIFT' || actionName == 'NEW_LOAN';
         },
         interactionActionClick: function(evt) {
+            var app = require('specifyapp');
             var index = this.$('a').filter(".interaction-action").index(evt.currentTarget);
             this.$el.dialog('close');
             var action = actions[index];
             var isRsAction = this.isRsAction(action.attr('action'));
             if (isRsAction || action.attr('action') == 'RET_LOAN') {
-                var app = require('specifyapp');
                 var tblId = isRsAction ? 1 : 52;
                 var recordSets = new schema.models.RecordSet.LazyCollection({
                     filters: { specifyuser: app.user.id, type: 0, dbtableid: tblId,
@@ -134,7 +133,11 @@ define([
                 });
             } else if (action.attr('action') == 'PRINT_INVOICE') {
                 //assuming loan invoice for now (52 is loan tableid)
-                reps.execute(52, {prop: 'reporttype', val: 'invoice'}, true);
+                reports(app, {
+                    tblId: 52,
+                    metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
+                    autoSelectSingle: true
+                });
             } else {
                 alert(action.attr('action') + " action is not supported.");
             }

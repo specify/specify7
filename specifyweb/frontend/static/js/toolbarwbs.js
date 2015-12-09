@@ -1,14 +1,13 @@
 define([
-    'require', 'schema', 'wbsdialog'
-], function(require, schema, WbsDialog) {
+    'schema', 'wbsdialog'
+], function(schema, WbsDialog) {
     "use strict";
 
     return {
         task: 'workbenches',
         title: 'Workbenches',
         icon: '/images/Workbench32x32.png',
-        execute: function() {
-            var app = require('specifyapp');
+        execute: function(app) {
             var wbs = new schema.models.Workbench.LazyCollection({
                 filters: { specifyuser: app.user.id, orderby: 'name' }
             });
