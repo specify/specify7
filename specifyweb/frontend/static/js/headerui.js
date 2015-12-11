@@ -1,5 +1,5 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools',
+    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools',
     'jquery-bbq', 'jquery-ui',
 // Tasks included in header:
     'toolbarwelcome',
@@ -14,7 +14,7 @@ define([
     'toolbarmasterkey',
     'toolbarusers'
 ], function headerUI(
-    require, $, _, Backbone, navigation, domain, schema, UserTools,
+    $, _, Backbone, navigation, domain, schema, UserTools,
     jquery_bbq, jquery_ui
 ) {
     "use strict";
@@ -50,8 +50,8 @@ define([
             'change #user-tools select': 'changeCollection'
         },
         el: $('#site-header'),
-        initialize: function() {
-            var app = this.app = require('specifyapp');
+        initialize: function(options) {
+            var app = this.app = options.app;
             this.user = app.user;
 
             this.toolModules = toolModules.filter(function(mod){

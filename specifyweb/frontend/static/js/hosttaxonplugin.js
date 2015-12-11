@@ -21,6 +21,7 @@ define([
         },
         setupQCbx: function(rightsideCollection) {
             new QueryCbx({
+                populateForm: this.populateForm,
                 el: this.el,
                 model: this.model,
                 relatedModel: schema.Taxon, // Todo: this shouldn't work.

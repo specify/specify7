@@ -8,6 +8,7 @@ define([
         __name__: "AgentForDivisionSelector",
         tagName: 'tr',
         initialize: function(options) {
+            this.populateForm = options.populateForm;
             this.collection = options.collection;
             this.division = options.division;
             this.agent = options.agent;
@@ -22,6 +23,7 @@ define([
             var control = $('<td><input type="text" name="agent"></td>').appendTo(this.el);
 
             new QueryCbx({
+                populateForm: this.populateForm,
                 el: $('input', control),
                 model: this.model,
                 relatedModel: schema.models.Agent,
@@ -102,7 +104,7 @@ define([
                 _.each(divInfos, function(divInfo) {
                     divInfo['agent'] = agents.find(function(agent) { return agent.get('division') == divInfo.division.get('resource_uri'); });
                 });
-                new Dialog({user: user, divInfos: divInfos}).render();
+                new Dialog({user: user, divInfos: divInfos, populateForm: this.populateForm}).render();
             });
         }
     }, { pluginsProvided: ['UserAgentsUI'] });

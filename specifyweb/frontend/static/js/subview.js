@@ -1,17 +1,19 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema',
+    'jquery', 'underscore', 'backbone', 'schema',
     'specifyform', 'querycbxsearch', 'templates', 'assert'
-], function(require, $, _, Backbone, schema, specifyform, QueryCbxSearch, templates, assert) {
+], function($, _, Backbone, schema, specifyform, QueryCbxSearch, templates, assert) {
     "use strict";
 
     return Backbone.View.extend({
         __name__: "Subview",
         initialize: function(options) {
             // options = {
+            //   populateForm: ref to populateForm function
             //   field: specify field object that this subview is showing a record for,
             //   model: schema.Model.Resource? the resource this subview is showing,
             //   parentResource: schema.Model.Resource
             // }
+            this.populateForm = options.populateForm;
             this.field = options.field;
             this.parentResource = options.parentResource;
             this.title = this.field.getLocalizedName();
@@ -49,7 +51,7 @@ define([
                     $('.specify-add-related', header).remove();
                 }
 
-                require("populateform")(form, self.model);
+                self.populateForm(form, self.model);
                 self.$el.append(form);
             });
             return self;

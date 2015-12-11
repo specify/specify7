@@ -69,6 +69,7 @@ define([
             'blur input': 'blur'
         },
         initialize: function(options) {
+            this.populateForm = options.populateForm;
             this.init = options.init || null;
             this.typesearch = options.typesearch || null;
             this.relatedModel = options.relatedModel || null;
@@ -192,6 +193,7 @@ define([
             });
 
             self.dialog = new QueryCbxSearch({
+                populateForm: self.populateForm,
                 forceCollection: self.forceCollection,
                 model: searchTemplateResource,
                 selected: function(resource) {

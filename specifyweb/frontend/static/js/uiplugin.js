@@ -5,6 +5,7 @@ define(['backbone', 'specifyform'], function(Backbone, specifyform) {
         __name__: "UIPlugin",
         initialize: function(options) {
             this.init = specifyform.parseSpecifyProperties(this.$el.data('specify-initialize'));
+            this.populateForm = options.populateForm;
         }
     });
 });

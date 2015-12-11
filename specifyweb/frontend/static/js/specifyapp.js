@@ -117,7 +117,7 @@ define([
         console.info('specify app starting');
         $(document).ajaxError(handleUnexpectedError);
         businessRules.enable(true);
-        (new HeaderUI()).render();
+        new HeaderUI({app: app}).render();
         _.each(tasks, function(task) { task(app); });
 
         // start processing the urls to draw the corresponding views

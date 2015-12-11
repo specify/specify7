@@ -38,14 +38,14 @@ define([
         };
 
         var getView = _.find(viewBySelector, function(__, selector) { return control.is(selector); });
-        var view = new (getView && getView() || UIField)({ el: control, model: resource });
+        var view = new (getView && getView() || UIField)({ el: control, model: resource, populateForm: populateForm });
         view.render();
     };
 
     var populateSubview = function(resource, node) {
         var fieldName = node.data('specify-field-name');
         var field = resource.specifyModel.getField(fieldName);
-        var viewOptions = { el: node, field: field };
+        var viewOptions = { el: node, field: field, populateForm: populateForm };
         return resource.rget(fieldName).done(function(related) {
             var View;
             switch (field.type) {

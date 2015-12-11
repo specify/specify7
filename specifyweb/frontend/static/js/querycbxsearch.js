@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
+    'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
     'initialcontext',
-], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, initialContext) {
+], function ($, _, Backbone, specifyform, api, dataobjformatters, whenAll, initialContext) {
     "use strict";
 
     var dialogdefs;
@@ -16,6 +16,7 @@ define([
             'click .querycbx-search-results a': 'select'
         },
         initialize: function(options) {
+            this.populateForm = options.populateForm;
             this.forceCollection = options.forceCollection || null;
         },
         render: function() {
@@ -24,7 +25,7 @@ define([
             return this;
         },
         makeDialog: function(form) {
-            require("populateform")(form, this.model);
+            this.populateForm(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             form.find('.specify-required-field').removeClass('specify-required-field');
             this.$el.append(form).append('<ul class="querycbx-search-results">');

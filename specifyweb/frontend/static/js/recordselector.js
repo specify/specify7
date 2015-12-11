@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
+    'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
     'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
-], function(require, $, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
+], function($, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
     "use strict";
     var emptyTemplate = '<p>No Data.</p>';
 
@@ -132,6 +132,7 @@ define([
         },
         initialize: function(options) {
             // options = {
+            //   populateForm: ref to populateForm function
             //   readOnly: bool,
             //   field: field object? if collection represents related objects,
             //   collection: schema.Model.Collection instance,
@@ -140,6 +141,7 @@ define([
             //   urlParam: string? url parameter name for storing the current index,
             //   subformNode: $(subformNode)? used if the record selector element is not the subview node
             // }
+            this.populateForm = options.populateForm;
             this.lazy = this.collection instanceof collectionapi.Lazy; // TODO: meh, instanceof
             this.dependent = this.collection instanceof collectionapi.Dependent;
 
@@ -159,7 +161,6 @@ define([
 
             this.collection.on('add', this.onAdd, this);
             this.collection.on('remove destroy', this.onRemove, this);
-            this.populateForm = require('populateform');
         },
         onAdd: function() {
             var end = this.collection.length - 1;

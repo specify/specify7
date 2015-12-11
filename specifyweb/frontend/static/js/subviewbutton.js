@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'deletebutton', 'recordselector', 'jquery-bbq'
-], function(require, $, Backbone, icons, specifyform, navigation, DeleteButton, RecordSelector) {
+    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'recordselector', 'jquery-bbq'
+], function($, Backbone, icons, specifyform, navigation, RecordSelector) {
 
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
@@ -9,6 +9,7 @@ define([
         },
         initialize: function(options) {
             var self = this;
+            self.populateForm = options.populateForm;
             self.field = options.field;
             self.relatedModel = self.field.getRelatedModel();
 
@@ -68,6 +69,7 @@ define([
             if (self.readOnly && self.collection.length < 1) return;
 
             new RecordSelector({
+                populateForm: this.populateForm,
                 field: self.field,
                 collection: self.collection,
                 subformNode: self.$el,
@@ -77,8 +79,8 @@ define([
                 self.dialog = $('<div>').append(recordSelector.el).dialog({
                     width: 'auto',
                     title: self.field.getLocalizedName(),
-                    close: function() { 
-                        $(this).remove(); self.dialog = null; 
+                    close: function() {
+                        $(this).remove(); self.dialog = null;
                         var fname = self.field.name.toLowerCase();
                         /*var changed = {};
                         changed[fname] = '';
@@ -150,7 +152,7 @@ define([
                 });
             }
 
-            require("populateform")(dialogForm, self.related);
+            this.populateForm(dialogForm, self.related);
             var link = '<a href="' + self.related.viewUrl() + '"><span class="ui-icon ui-icon-link">link</span></a>';
             self.dialog = $('<div>').append(dialogForm).dialog({
                 width: 'auto',

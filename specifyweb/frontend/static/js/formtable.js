@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
+    'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
     'savebutton', 'deletebutton', 'assert'
-], function(require, $, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
+], function($, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
     "use strict";
 
     var RENDER_ON_CHANGE = [
@@ -17,10 +17,11 @@ define([
         },
         initialize: function(options) {
             // options = {
+            //   populateForm: ref to populateForm function
             //   field: specifyfield object?
             //   collection: schema.Model.Collection instance for table
             //   subformNode: subform stub from parent form
-
+            this.populateForm = options.populateForm;
             this.field = this.options.field; // TODO: field can be gotten from collection
             assert(this.field.isDependent(), "formtable is only for dependent fields");
             assert(this.collection.field === this.field.getReverse(), "collection doesn't represent field");
@@ -36,8 +37,6 @@ define([
             }
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
-
-            this.populateForm = require('populateform');
         },
         render: function() {
             specifyform.buildSubView(this.$el).done(function(subform) {
