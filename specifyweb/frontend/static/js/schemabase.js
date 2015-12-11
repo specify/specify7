@@ -1,7 +1,11 @@
-define(['underscore'], function(_) {
+define(['underscore', 'initialcontext'], function(_, initialContext) {
     "use strict";
 
-    return {
+    var schemaBase = {
+        domainLevelIds: undefined,
+        embeddedCollectingEvent: undefined,
+        embeddedPaleoContext: undefined,
+
         getModel: function(name) {
             name = name.toLowerCase();
             return _(this.models).find(function(model) { return model.name.toLowerCase() === name; });
@@ -14,4 +18,15 @@ define(['underscore'], function(_) {
         },
         orgHierarchy: ['collectionobject', 'collection', 'discipline', 'division', 'institution']
     };
+
+    initialContext.load('domain.json', function(data) {
+        schemaBase.domainLevelIds =  _.object(['collection', 'discipline', 'division', 'institution'].map(
+            level => [level, data[level]]
+        ));
+        schemaBase.embeddedCollectingEvent = data.embeddedCollectingEvent;
+        schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
+        schemaBase.paleoContextChildTable = data.paleoContextChildTable;
+    });
+
+    return schemaBase;
 });

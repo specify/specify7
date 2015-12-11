@@ -1,57 +1,42 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema',
-    'icons', 'specifyform', 'whenall',
-    'interactiondialog', 'props', 'reports',
-    'text!context/app.resource?name=InteractionsTaskInit!noinline',
-    'text!properties/resources_en.properties!noinline',
-    'jquery-ui'
+    'icons', 'specifyform', 'q', 'initialcontext',
+    'interactiondialog', 'stringlocalization', 'reports'
 ], function(require, $, _, Backbone, schema, icons, specifyform,
-            whenAll, InteractionDialog, props, reports,
-            interactionsTaskInit, resources_prop) {
+            Q, initialContext, InteractionDialog, s, reports) {
     "use strict";
 
-    var interaction_entries = _.filter(_.map($('entry', interactionsTaskInit), $), function(entry) {
-        var isVisible = entry.attr('isonleft');
-        if (isVisible) {
-            return isVisible == 'true' && entry.attr('action') != 'LN_NO_PRP' ;
-        } else {
-            return false;
-        }
+    var interaction_entries, views, actions;
+
+    initialContext.load('app.resource?name=InteractionsTaskInit', function (data) {
+        interaction_entries = _.map($('entry', data), $)
+            .filter(entry => entry.attr('isonleft') === 'true'  && entry.attr('action') != 'LN_NO_PRP');
+
+        views = interaction_entries.filter(entry => !isActionEntry(entry));
+        actions = interaction_entries.filter(isActionEntry);
+
+        actions.forEach(actionEntry => actionEntry.table = getTableForObjToCreate(actionEntry));
     });
 
     function getTableForObjToCreate(action) {
         switch (action.attr('action')) {
         case 'NEW_LOAN':
             return 'loan';
-            break;
         case 'NEW_GIFT':
             return 'gift';
-            break;
+        default:
+            return 'loan';
         }
-        return 'loan';
-    };
+    }
 
     function isActionEntry(entry) {
         var actionAttr = entry.attr('action');
-        if (actionAttr) {
-            return actionAttr != 'OpenNewView';
-        } else {
-            return false;
-        }
-    };
+        return actionAttr && actionAttr != 'OpenNewView';
+    }
 
-    var views = _.filter(interaction_entries, function(entry) {
-        return !isActionEntry(entry);
-    });
-
-    var actions =_.map( _.filter(interaction_entries, isActionEntry), function(actionEntry) {
-        actionEntry.table = getTableForObjToCreate(actionEntry);
-        return actionEntry;
-    });
-
-    var formsPromise = whenAll(_.map(views, function(view) {
-        return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
-    }));
+    function getFormsPromise() {
+        return Q.all(views.map(view => Q(specifyform.getView(view.attr('view'))).then(form => form)));
+    }
 
     return Backbone.View.extend({
         __name__: "InteractionsDialog",
@@ -62,7 +47,7 @@ define([
         },
         render: function() {
             var render = this._render.bind(this);
-            formsPromise.done(render);
+            getFormsPromise().done(render);
             return this;
         },
         _render: function(forms) {
@@ -80,7 +65,7 @@ define([
         },
         getDialogEntryText: function(entry) {
             if (entry.attr('label')) {
-                return props.getProperty(resources_prop, entry.attr('label'));
+                return s.localizeFrom('resources', entry.attr('label'));
             } else if (entry.attr('table')) {
                 return schema.getModel(entry.attr('table')).getLocalizedName();
             } else if (isActionEntry(entry)) {
@@ -91,8 +76,8 @@ define([
         },
         addDialogEntryToolTip: function(entry, link) {
             var ttResourceKey = entry.attr('tooltip');
-            if (ttResourceKey != '') {
-                var tt = props.getProperty(resources_prop, ttResourceKey);
+            if (ttResourceKey !== '') {
+                var tt = s.localizeFrom('resources', ttResourceKey);
                 if (tt) {
                     link.attr('title', tt);
                 }

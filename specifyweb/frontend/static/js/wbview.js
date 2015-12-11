@@ -1,11 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'q',
     'specifyapi', 'schema', 'handsontable', 'wbupload',
-    'text!resources/specify_workbench_upload_def.xml!noinline'
-], function($, _, Backbone, Q, api, schema, Handsontable, WBUpload, wbupdef) {
+    'initialcontext'
+], function($, _, Backbone, Q, api, schema, Handsontable, WBUpload, initialContext) {
     "use strict";
 
-    var wbUploadDef = $.parseXML(wbupdef.toLowerCase());
+    var wbUploadDef;
+    initialContext.loadResource('specify_workbench_upload_def.xml', data => wbUploadDef = data);
 
     var highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
     function atoi(str) { return parseInt(str, 10); }
@@ -45,7 +46,7 @@ define([
     }
 
     function getPickListItems(field) {
-        var picklistName = field && field._localization.picklistname;
+        var picklistName = field && field.getPickList();
         return picklistName &&
             api.getPickListByName(picklistName).pipe(function(pl) {
                 return (pl.get('type') == 0) && pl.rget('picklistitems').pipe(function(plItems) {

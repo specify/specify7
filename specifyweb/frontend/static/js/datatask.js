@@ -151,7 +151,7 @@ define([
 
     // is user logged into collection?
     function loggedInCollectionP(collection) {
-        return collection.id == domain.levels.collection.id;
+        return collection.id == schema.domainLevelIds.collection;
     }
 
     // check that it makes sense to view this resource when logged into current collection

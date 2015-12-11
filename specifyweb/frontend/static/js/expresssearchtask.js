@@ -1,16 +1,13 @@
 define([
-'jquery', 'underscore', 'backbone', 'appresource', 'schema', 'queryresultstable',
-'queryfieldspec', 'props', 'scrollresults', 'whenall',
-'text!context/available_related_searches.json!noinline',
-'text!properties/expresssearch_en.properties!noinline',
-'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, getAppResource, schema, QueryResultsTable,
-            QueryFieldSpec, props, ScrollResults, whenAll,
-            availableRelatedJson, propstext) {
+    'jquery', 'underscore', 'backbone', 'schema', 'queryresultstable',
+    'queryfieldspec', 'whenall', 'stringlocalization', 'initialcontext'
+], function($, _, Backbone, schema, QueryResultsTable,
+            QueryFieldSpec, whenAll, s, initialContext) {
     "use strict";
 
-    var relatedSearches = $.parseJSON(availableRelatedJson);
-    var getProp = _.bind(props.getProperty, props, propstext);
+    var relatedSearches;
+    initialContext.load('available_related_searches.json', data => relatedSearches = data);
+
     var accordionOptions = {
         autoHeight: false,
         collapsible: true,
@@ -103,8 +100,8 @@ define([
             });
             var rsName = data.definition.name;
             var heading = $('<h4>')
-                    .append($('<a>').text((getProp(rsName) || rsName) + ' - ' + data.totalCount))
-                    .attr('title', getProp(rsName + "_desc") || '');
+                    .append($('<a>').text(s.localizeFrom('expresssearch', rsName) + ' - ' + data.totalCount))
+                    .attr('title', s.localizeFrom('expresssearch', rsName + "_desc"));
             this.$('.related.results').append(heading);
             results.render().$el.appendTo(this.$('.related.results'));
             this.$('.results.related').accordion('destroy').accordion(accordionOptions);

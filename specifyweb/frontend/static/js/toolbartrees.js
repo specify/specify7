@@ -6,11 +6,6 @@ define([
     var treesForPaleo = ['geologictimeperiod', 'lithostrat'];
     var paleoDiscs = 'paleobotany invertpaleo vertpaleo'.split(' ');
 
-
-     var treesPromise = domain.levels.discipline.rget('type').pipe(function(type) {
-         return treesForAll.concat(_.contains(paleoDiscs, type) ? treesForPaleo : []);
-     });
-
     var TreeListDialog = Backbone.View.extend({
         __name__: "TreeListDialog",
         className: "trees-dialog table-list-dialog",
@@ -25,7 +20,9 @@ define([
             });
         },
         render: function() {
-            treesPromise.done(this._render.bind(this));
+            domain.getDomainResource('discipline').rget('type').pipe(function(type) {
+                return treesForAll.concat(_.contains(paleoDiscs, type) ? treesForPaleo : []);
+            }).done(this._render.bind(this));
             return this;
         },
         dialogEntry: function(tree) {

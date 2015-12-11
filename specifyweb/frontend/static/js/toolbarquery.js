@@ -1,15 +1,15 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'specifyform', 'populateform', 'savebutton', 'deletebutton',
-    'text!resources/querybuilder.xml!noinline',
-    'jquery-ui'
+    'initialcontext'
 ], function($, _, Backbone, schema, navigation,
             specifyform, populateform, SaveButton, DeleteButton,
-            querybuilderXML) {
+            initialContext) {
     "use strict";
     var app;
 
-    var qbDef = $.parseXML(querybuilderXML);
+    var qbDef;
+    initialContext.loadResource('querybuilder.xml', data => qbDef);
 
     var title = "Query";
 

@@ -1,15 +1,15 @@
 define([
-    'underscore', 'text!context/remoteprefs.properties!noinline'
-], function(_, text) {
+    'underscore', 'initialcontext'
+], function(_, initialContext) {
     "use strict";
-
-    var lines = text.split('\n');
     var prefs = {};
 
-    _.each(lines, function(line) {
-        if (/^#/.test(line)) return;
-        var match = /([^=]+)=(.+)/.exec(line);
-        match && (prefs[match[1]] = match[2]);
+    initialContext.load('remoteprefs.properties', function(text) {
+        text.split('\n').forEach(function(line) {
+            if (/^#/.test(line)) return;
+            var match = /([^=]+)=(.+)/.exec(line);
+            match && (prefs[match[1]] = match[2]);
+        });
     });
 
     return prefs;

@@ -1,31 +1,9 @@
 define([
-    'jquery', 'underscore', 'immutable', 'schema',
-    'text!resources/specify_workbench_datamodel.xml!noinline',
-    'text!resources/datamodel_automappings.xml!noinline'
-], function($, _, Immutable, schema, wbDataModelXML, autoMappingXML) {
+    'jquery', 'underscore', 'immutable', 'schema', 'initialcontext',
+], function($, _, Immutable, schema, initialContext) {
     "use strict";
 
-    var wbDataModel = $.parseXML(wbDataModelXML);
-
-    var tableInfos = _.map($('table', wbDataModel), function(tableNode) {
-        tableNode = $(tableNode);
-        var tableInfo = {
-            tableId: parseInt(tableNode.attr('tableid'), 10),
-            className: tableNode.attr('classname'),
-            name: tableNode.attr('table')
-        };
-
-        tableInfo.specifyModel = tableInfo.name === 'taxononly' ?
-            schema.models.Taxon :
-            schema.getModelById(tableInfo.tableId);
-
-        tableInfo.title = tableInfo.name === 'taxononly' ?
-            'Taxon Import Only' :
-            tableInfo.specifyModel.getLocalizedName();
-
-        tableInfo.fields = getFieldsForTable(tableNode, tableInfo);
-        return Object.freeze(tableInfo);
-    });
+    var wbDataModelXML, autoMappingXML, tableInfos, autoMappings, fieldInfosSortedForSimpleMatch;
 
     function getFieldsForTable(tableNode, tableInfo) {
         return _.map(tableNode.find('field'), function(fieldDef) {
@@ -52,29 +30,54 @@ define([
         }
     }
 
-    var autoMapping = $.parseXML(autoMappingXML);
+    initialContext
+        .loadResource('specify_workbench_datamodel.xml', data => wbDataModelXML = data)
+        .loadResource('datamodel_automappings.xml', data => autoMappingXML = data)
+        .promise().then(function() {
+            console.log('parsing wb schema');
 
-    var autoMappings = _.map(
-        $('mapping', autoMapping), mappingNode => {
-            var className = $('class', mappingNode).text();
-            var fieldName = $('field', mappingNode).text();
-            var regexes = _.map($('regex', mappingNode), reNode => RegExp($(reNode).text()));
+            tableInfos = wbSchema.tableInfos = _.map($('table', wbDataModelXML), function(tableNode) {
+                tableNode = $(tableNode);
+                var tableInfo = {
+                    tableId: parseInt(tableNode.attr('tableid'), 10),
+                    className: tableNode.attr('classname'),
+                    name: tableNode.attr('table')
+                };
 
-            var tableInfo = _.find(tableInfos, ti => ti.className === className);
-            var fieldInfo = _.find(tableInfo.fields, fi => fi.name === fieldName);
+                tableInfo.specifyModel = tableInfo.name === 'taxononly' ?
+                    schema.models.Taxon :
+                    schema.getModelById(tableInfo.tableId);
 
-            return Object.freeze({
-                regexes: regexes,
-                fieldInfo: fieldInfo
+                tableInfo.title = tableInfo.name === 'taxononly' ?
+                    'Taxon Import Only' :
+                    tableInfo.specifyModel.getLocalizedName();
+
+                tableInfo.fields = getFieldsForTable(tableNode, tableInfo);
+                return Object.freeze(tableInfo);
             });
+
+            autoMappings = _.map(
+                $('mapping', autoMappingXML), mappingNode => {
+                    var className = $('class', mappingNode).text();
+                    var fieldName = $('field', mappingNode).text();
+                    var regexes = _.map($('regex', mappingNode), reNode => new RegExp($(reNode).text()));
+
+                    var tableInfo = _.find(tableInfos, ti => ti.className === className);
+                    var fieldInfo = _.find(tableInfo.fields, fi => fi.name === fieldName);
+
+                    return Object.freeze({
+                        regexes: regexes,
+                        fieldInfo: fieldInfo
+                    });
+                });
+
+
+            fieldInfosSortedForSimpleMatch = _(tableInfos).chain()
+                    .sortBy(ti => ti.name === 'taxononly' ? schema.models.Taxon.tableId : ti.tableId)
+                    .map(ti => ti.fields)
+                    .flatten()
+                    .value();
         });
-
-
-    var fieldInfosSortedForSimpleMatch = _(tableInfos).chain()
-            .sortBy(ti => ti.name === 'taxononly' ? schema.models.Taxon.tableId : ti.tableId)
-            .map(ti => ti.fields)
-            .flatten()
-            .value();
 
     function simpleMatch(mappedTables, column) {
         var lcColumn = column.toLowerCase();
@@ -117,9 +120,11 @@ define([
         }, Immutable.List());
     }
 
-    return {
-        tableInfos: tableInfos,
+    var wbSchema = {
+        tableInfos: undefined,
         autoMap: autoMapColumns,
         isDisallowedTable: isDisallowedTable
     };
+
+    return wbSchema;
 });

@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'whenall', 'fieldformat', 'assert',
-    'text!context/app.resource?name=DataObjFormatters!noinline'
-], function($, _, whenAll, fieldformat, assert, xml) {
+    'initialcontext'
+], function($, _, whenAll, fieldformat, assert, initialContext) {
     "use strict";
-    var formatters = $.parseXML(xml);
+    var formatters;
+    initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);
 
     function dataobjformat(resource, formatter) {
         if (!resource) return $.when(null);

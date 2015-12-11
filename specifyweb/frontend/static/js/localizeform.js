@@ -1,12 +1,10 @@
-define(['jquery', 'props', 'schema',
-    'text!properties/views_en.properties!noinline',
-    'text!properties/global_views_en.properties!noinline'
-], function($, props, schema, viewsprops, globalviewsprops) {
+define(['jquery', 'props', 'schema', 'stringlocalization'
+], function($, props, schema, stringLocalization) {
     "use strict";
 
-    var getProp = _.bind(props.getProperty, props,
-                         viewsprops + '\n' + globalviewsprops);
-
+    function localize(s) {
+        return stringLocalization.localizeFrom(['views', 'global_views'], s);
+    }
 
     function getControlFieldName(control) {
         return control.attr('name') ||
@@ -26,7 +24,7 @@ define(['jquery', 'props', 'schema',
             var label = $('label', this);
             if (label.text()) {
                 // the label was hard coded in the form
-                label.text(getProp(label.text()));
+                label.text(localize(label.text()));
                 return;
             }
             var forId = label.prop('for');
@@ -34,7 +32,7 @@ define(['jquery', 'props', 'schema',
             var control = $('#' + forId, form);
             var override = control.data('specify-field-label-override');
             if (override !== undefined) {
-                label.text(getProp(override) || override);
+                label.text(localize(override));
                 return;
             }
             var fieldname = getControlFieldName(control);

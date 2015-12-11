@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], function($, _, schema, api, data) {
+define(['jquery', 'underscore', 'schema', 'specifyapi'], function($, _, schema, api) {
     "use strict";
 
     function takeBetween(items, startElem, endElem) {
@@ -7,15 +7,11 @@ define(['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], function(
         return _.rest(_.first(items, end), start);
     }
 
-    var levels = {};
-    _.each(['collection', 'discipline', 'division', 'institution'], function(level) {
-        levels[level] = new (schema.getModel(level).Resource)({ id: data[level] });
-    });
 
     api.on('newresource', function(resource) {
         var domainField = resource.specifyModel.orgRelationship();
         if (domainField && !resource.get(domainField.name)) {
-            var parentResource = levels[domainField.name];
+            var parentResource = domain.getDomainResource(domainField.name);
             if (parentResource != null) {
                 resource.set(domainField.name, parentResource.url());
             }
@@ -31,12 +27,14 @@ define(['jquery', 'underscore', 'schema', 'specifyapi', 'domaindata'], function(
     };
 
     var domain = {
-        levels: levels,
+        getDomainResource: function(level) {
+            return new (schema.getModel(level).Resource)({ id: schema.domainLevelIds[level] });
+        },
         getTreeDef: function(treeName) {
             treeName = treeName.toLowerCase();
             var level = treeDefLevels[treeName];
             if (level != null) {
-                return levels[level].rget(treeName + 'treedef');
+                return domain.getDomainResource(level).rget(treeName + 'treedef');
             } else {
                 return null;
             }

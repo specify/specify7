@@ -1,15 +1,10 @@
 define([
-    'jquery', 'underscore', 'icons',  'schema', 'assert',
-    'text!context/attachment_settings.json!noinline'
-], function($, _, icons, schema, assert, settingsJson) {
+    'jquery', 'underscore', 'icons',  'schema', 'assert', 'initialcontext'
+], function($, _, icons, schema, assert, initialContext) {
     "use strict";
 
-    var settings = $.parseJSON(settingsJson);
-
-    if (_.isEmpty(settings)) {
-        console.warn("attachments unavailable");
-        return null;
-    }
+    var settings;
+    initialContext.load('attachment_settings.json', data => settings = data);
 
     var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 
@@ -47,6 +42,8 @@ define([
     }
 
     var attachments = {
+        systemAvailable: function() { return !_.isEmpty(settings); },
+
         getThumbnail: function(attachment, scale) {
             scale || (scale = 256);
             var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";

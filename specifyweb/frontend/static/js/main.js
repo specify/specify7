@@ -13,7 +13,7 @@ require({
         'underscore'     : "vendor/underscore",
         'backbone-orig'  : "vendor/backbone",
         'qunit'          : "vendor/qunit",
-        'textbase'       : "vendor/text",
+        'text'           : "vendor/text",
         'moment'         : "vendor/moment",
         'd3'             : "vendor/d3",
         'q'              : "vendor/q-1.4.1",
@@ -33,4 +33,8 @@ require({
     }
 });
 
-require(['jquery', 'specifyapp'], function($, app) { $(app.start()); });
+require([
+    'initialcontext', 'specifyapp'
+], function(initialContext, app) {
+    initialContext.lock().promise().done(app.start);
+});

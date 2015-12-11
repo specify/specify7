@@ -1,14 +1,15 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'uiplugin', 'icons', 'uifield',
-    'text!context/app.resource?name=WebLinks!noinline'
-], function($, _, api, UIPlugin, icons, UIField, webLinksXML) {
+    'initialcontext'
+], function($, _, api, UIPlugin, icons, UIField, initialContext) {
     "use strict";
 
     var webLinksDefs = {};
-
-    _.each($('vector > weblinkdef', $.parseXML(webLinksXML)), function(def) {
-        def = $(def);
-        webLinksDefs[def.find('> name').text()] = def;
+    initialContext.load('app.resource?name=WebLinks', function(xml) {
+        _.each($('vector > weblinkdef', xml), function(def) {
+            def = $(def);
+            webLinksDefs[def.find('> name').text()] = def;
+        });
     });
 
     var specialResourcesFields = {

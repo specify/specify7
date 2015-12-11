@@ -1,16 +1,17 @@
 define([
-    'jquery', 'reports',
-    'text!context/report_runner_status.json!noinline'
-], function($, reports, statusJSON) {
+    'reports', 'initialcontext',
+], function(reports, initialContext) {
     "use strict";
-    var status = $.parseJSON(statusJSON);
-    var title =  "Reports";
 
-    return {
+    initialContext.load('report_runner_status.json', status => reports.disable = !status.available);
+
+    var reportsToolbarItem = {
         task: 'report',
-        title: title,
+        title: "Reports",
         icon: '/images/Reports32x32.png',
-        disabled: !status.available,
+        disabled: undefined, //!status.available,
         execute: reports
     };
+
+    return reportsToolbarItem;
 });

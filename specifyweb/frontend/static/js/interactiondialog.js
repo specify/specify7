@@ -1,14 +1,11 @@
 define([
     'jquery', 'underscore', 'schema', 'specifyapi',
     'recordsetsdialog', 'prepselectdialog',
-    'navigation', 'require', 'props',
-    'text!properties/resources_en.properties!noinline',
-    'jquery-ui'
-], function($, _, schema, api, RecordSetsDialog, PrepSelectDialog,
-            navigation, require, props, resources_prop) {
+    'navigation', 'stringlocalization'
+], function($, _, schema, api,
+            RecordSetsDialog, PrepSelectDialog,
+            navigation, s) {
     "use strict";
-
-    var getProp = _.bind(props.getProperty, props, resources_prop);
 
     var dialog;
     function makeDialog(el, options) {
@@ -322,15 +319,15 @@ define([
         },
 
         loanReturnDone: function(result) {
-            var msg = getProp("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
+            var msg = s.localize("InteractionsTask.RET_LN_SV").replace('%d', result[0]);
 
             var huh = $("<p>").append($("<a>").text(msg));
 
             makeDialog(huh, {
-                title: getProp("InteractionsTask.LN_RET_TITLE"),
+                title: s.localize("InteractionsTask.LN_RET_TITLE"),
                 maxHeight: 400,
                 buttons: [
-                    {text: getProp('CLOSE'), click: function() { $(this).dialog('close'); }}
+                    {text: s.localize('CLOSE'), click: function() { $(this).dialog('close'); }}
                 ]
             });
         },

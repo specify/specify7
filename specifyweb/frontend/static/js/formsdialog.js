@@ -1,20 +1,20 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema',
-    'icons', 'specifyform', 'whenall',
-    'text!context/app.resource?name=DataEntryTaskInit!noinline',
-    'jquery-ui'
+    'icons', 'specifyform', 'q', 'initialcontext'
 ], function($, _, Backbone, schema, icons, specifyform,
-            whenAll, dataEntryTaskInit) {
+            Q, initialContext) {
     "use strict";
 
-    var views = _.map($('view', dataEntryTaskInit), $).filter(function(view) {
-        // I don't think the non-sidebar items are ever used in Sp6.
-        return view.attr('sidebar') === 'true';
-    });
+    // I don't think the non-sidebar items are ever used in Sp6.
+    var views;
+    initialContext.load(
+        'app.resource?name=DataEntryTaskInit',
+        data => views = _.map($('view', data), $).filter(view => view.attr('sidebar') === 'true'));
 
-    var formsPromise = whenAll(_.map(views, function(view) {
-        return specifyform.getView(view.attr('view')).pipe(function(form) { return form; });
-    }));
+    function getFormsPromise() {
+        return Q.all(views.map(
+            view => specifyform.getView(view.attr('view')).pipe(form => form)));
+    }
 
     return Backbone.View.extend({
         __name__: "FormsDialog",
@@ -22,7 +22,7 @@ define([
         events: {'click a': 'selected'},
         render: function() {
             var render = this._render.bind(this);
-            formsPromise.done(render);
+            getFormsPromise().done(render);
             return this;
         },
         _render: function(forms) {

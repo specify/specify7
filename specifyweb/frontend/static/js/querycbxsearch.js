@@ -1,12 +1,13 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
-    'text!context/app.resource?name=DialogDefs!noinline'
-], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, dialogdefxml) {
+    'initialcontext',
+], function (require, $, _, Backbone, specifyform, api, dataobjformatters, whenAll, initialContext) {
     "use strict";
 
-    function format(obj) { return dataobjformatters.format(obj); }
+    var dialogdefs;
+    initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
 
-    var dialogdefs = $.parseXML(dialogdefxml);
+    function format(obj) { return dataobjformatters.format(obj); }
 
     return Backbone.View.extend({
         __name__: "QueryCbxSearch",

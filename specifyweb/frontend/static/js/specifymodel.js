@@ -1,9 +1,10 @@
 define([
-    'jquery', 'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi', 'domaindata',
-    'text!context/schema_localization.json!noinline'
-], function($, _, icons, schema, ResourceBase, collectionapi, domainData, slJSON) {
+    'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi',
+    'initialcontext', 'immutable'
+], function(_, icons, schema, ResourceBase, collectionapi, initialContext, Immutable) {
     "use strict";
-    var localization = $.parseJSON(slJSON);
+    var localization;
+    initialContext.load('schema_localization.json', data => localization = Immutable.fromJS(data));
 
     schema.Model = function(tableDef) {
         this.longName = tableDef.classname;
@@ -14,7 +15,6 @@ define([
         this.tableId = tableDef.tableId;
         this.system = tableDef.system;
         this._fieldAliases = tableDef.fieldAliases;
-        this._localization = localization[this.name.toLowerCase()];
 
         this.Resource = ResourceBase.extend({ __name__: this.name + 'Resource' },
                                             { specifyModel: this });
@@ -36,15 +36,18 @@ define([
         }).concat(_.map(tableDef.relationships, function(relDef) {
             var rel = new schema.Relationship(model, relDef);
             if (model.name == 'CollectionObject' && rel.name == 'collectingEvent') {
-                rel.dependent = domainData.embeddedCollectingEvent;
+                rel.dependent = schema.embeddedCollectingEvent;
             }
-            if (rel.name == 'paleoContext' && model.name.toLowerCase() == domainData.paleoContextChildTable) {
-                rel.dependent = domainData.embeddedPaleoContext;
+            if (rel.name == 'paleoContext' && model.name.toLowerCase() == schema.paleoContextChildTable) {
+                rel.dependent = schema.embeddedPaleoContext;
             }
             return rel;
         }));
     };
     _.extend(schema.Model.prototype, {
+        _getLocalization: function() {
+            return localization.get(this.name.toLowerCase());
+        },
         getField: function(name) {
             if (_(name).isString()) {
                 name = name.toLowerCase().split('.');
@@ -62,13 +65,16 @@ define([
             return this.fields;
         },
         getLocalizedName: function() {
-            return this._localization ? schema.unescape(this._localization.name) : this.name;
+            var l = this._getLocalization();
+            return l ? schema.unescape(l.get('name')) : this.name;
         },
         getFormat: function() {
-            return this._localization && this._localization.format;
+            var l = this._getLocalization();
+            return l && l.get('format');
         },
         getAggregator: function() {
-            return this._localization && this._localization.aggregator;
+            var l = this._getLocalization();
+            return l && l.get('aggregator');
         },
         getIcon: function() {
             return icons.getIcon(this.name.toLowerCase());

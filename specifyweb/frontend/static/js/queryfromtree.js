@@ -3,18 +3,20 @@ define([
 ], function($, _, schema, domain, QueryFieldSpec) {
     "use strict";
 
-    var paleoPathPromise = domain.levels.discipline.rget('paleocontextchildtable').pipe(function(table) {
-        switch (table.toLowerCase()) {
-        case 'collectionobject':
-            return 'paleoContext';
-        case 'collectingevent':
-            return 'collectingevent.paleoContext';
-        case  'locality':
-            return 'collectingevent.locality.paleoContext';
-        default:
-            throw new Error("unknown paleocontext child table: " + table);
-        }
-    });
+    function paleoPathP() {
+        return domain.getDomainResource('discipline').rget('paleocontextchildtable').pipe(function(table) {
+            switch (table.toLowerCase()) {
+            case 'collectionobject':
+                return 'paleoContext';
+            case 'collectingevent':
+                return 'collectingevent.paleoContext';
+            case  'locality':
+                return 'collectingevent.locality.paleoContext';
+            default:
+                throw new Error("unknown paleocontext child table: " + table);
+            }
+        });
+    }
 
     function buildQuery(tree, user, paleoPath, name, low, high) {
         var query = new schema.models.SpQuery.Resource();
@@ -279,7 +281,7 @@ define([
         var tree = schema.getModel(table);
         var node = new tree.Resource({id: nodeId});
         var next = buildQuery.bind(null, tree, user);
-        return $.when(paleoPathPromise,
+        return $.when(paleoPathP(),
                       node.rget('fullname'),
                       node.rget('nodenumber'),
                       node.rget('highestchildnodenumber')

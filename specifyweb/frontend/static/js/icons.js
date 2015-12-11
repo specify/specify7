@@ -1,24 +1,16 @@
 define([
-    'jquery', 'underscore',
-    'text!resources/icons_datamodel.xml!noinline',
-    'text!resources/icons_disciplines.xml!noinline',
-    'text!resources/icons_imgproc.xml!noinline',
-    'text!resources/icons_plugins.xml!noinline',
-    'text!resources/icons.xml!noinline'
-], function ($, _,
-             datamodelIcons,
-             disciplineIcons,
-             imgprocIcons,
-             pluginIcons,
-             defaultIcons) {
+    'jquery', 'underscore', 'initialcontext'
+], function ($, _, initialContext) {
     "use strict";
-    var iconGroups = {
-        datamodel: $.parseXML(datamodelIcons),
-        discipline: $.parseXML(disciplineIcons),
-        imgproc: $.parseXML(imgprocIcons),
-        plugin: $.parseXML(pluginIcons),
-        default: $.parseXML(defaultIcons)
-    };
+
+    var iconGroups = {};
+    initialContext
+        .loadResource('icons_datamodel.xml'      , data => iconGroups.datamodel    = data)
+        .loadResource('icons_disciplines.xml'    , data => iconGroups.discipline   = data)
+        .loadResource('icons_imgproc.xml'        , data => iconGroups.imgproc      = data)
+        .loadResource('icons_plugins.xml'        , data => iconGroups.plugin       = data)
+        .loadResource('icons.xml'                , data => iconGroups.default      = data)
+    ;
 
     var iconDirs = {
         datamodel: '/images/datamodel/',

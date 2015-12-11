@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'uiformatters', 'schemabase', 'assert'
-], function($, _, uiformatters, schema, assert) {
+    'underscore', 'uiformatters', 'schemabase', 'assert'
+], function(_, uiformatters, schema, assert) {
     "use strict";
 
     schema.Field = function(model, fieldDef) {
@@ -19,12 +19,13 @@ define([
         this.isRequired = fieldDef.required;
         this.type = fieldDef.type;
         this.length = fieldDef.length;
-
-        this._localization = this.model._localization &&
-            this.model._localization.items[this.name.toLowerCase()];
     };
 
     _.extend(schema.Field.prototype, {
+        _getLocalization: function() {
+            var ml = this.model._getLocalization();
+            return ml && ml.getIn(['items', this.name.toLowerCase()]);
+        },
         getRelatedModel: function() {
             assert(this.isRelationship, this.model.name + '.' + this.name + " is not a relationship field");
             return schema.getModel(this.relatedModelName);
@@ -34,26 +35,32 @@ define([
             return this.otherSideName && relModel && relModel.getField(this.otherSideName);
         },
         getLocalizedName: function() {
-            return this._localization && schema.unescape(this._localization.name);
+            var l = this._getLocalization();
+            return l && schema.unescape(l.get('name'));
         },
         getLocalizedDesc: function() {
-            return this._localization && schema.unescape(this._localization.desc);
+            var l = this._getLocalization();
+            return l && schema.unescape(l.get('desc'));
         },
         getFormat: function() {
-            return this._localization && this._localization.format;
+            var l = this._getLocalization();
+            return l && l.get('format');
         },
         getUIFormatter: function() {
             var format = this.getFormat();
             return format && uiformatters.getByName(format);
         },
         getPickList: function() {
-            return this._localization && this._localization.picklistname;
+            var l = this._getLocalization();
+            return l && l.get('picklistname');
         },
         isRequiredBySchemaLocalization: function() {
-            return this._localization && this._localization.isrequired;
+            var l = this._getLocalization();
+            return l && l.get('isrequired');
         },
         isHidden: function() {
-            return this._localization && this._localization.ishidden;
+            var l = this._getLocalization();
+            return l && l.get('ishidden');
         },
         isDependent: function() {
             return this.dependent;

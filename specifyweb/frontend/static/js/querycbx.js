@@ -1,14 +1,16 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates',
     'dataobjformatters', 'whenall', 'parseselect', 'navigation', 'saveblockers',
-    'tooltipmgr', 'querycbxsearch', 'queryfieldspec',
-    'text!context/app.resource?name=TypeSearches!noinline',
-    'jquery-ui'
+    'tooltipmgr', 'querycbxsearch', 'queryfieldspec', 'initialcontext'
 ], function (require, $, _, Backbone, schema, specifyform, templates,
              dataobjformatters, whenAll, parseselect, navigation, saveblockers,
-             ToolTipMgr, QueryCbxSearch, QueryFieldSpec, typesearchxml) {
-    var typesearches = $.parseXML(typesearchxml);
+             ToolTipMgr, QueryCbxSearch, QueryFieldSpec, initialContext) {
+    "use strict";
+
     var dataobjformat = dataobjformatters.format;
+
+    var typesearches;
+    initialContext.load('app.resource?name=TypeSearches', data => typesearches = data);
 
     function makeQuery(model, searchFieldStr, q) {
         var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
@@ -110,9 +112,8 @@ define([
             var mapper = selectStmt ? parseselect.colToFieldMapper(this.typesearch.text()) : _.identity;
             var searchFieldStrs = _.map(this.typesearch.attr('searchfield').split(',').map($.trim), mapper);
             var searchFields = _.map(searchFieldStrs, this.relatedModel.getField, this.relatedModel);
-            var fieldTitles = _.map(searchFields, function(f) {
-                return (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName();
-            });
+            var fieldTitles = searchFields.map(
+                f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
             control.attr('title', 'Searches: ' + fieldTitles.join(', '));
 
             control.autocomplete({

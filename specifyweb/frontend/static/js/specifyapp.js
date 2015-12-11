@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'businessrules',
+    'jquery', 'underscore', 'backbone', 'businessrules',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'text!context/user.json!noinline', 'text!context/system_info.json!noinline', 'resourceview',
+    'resourceview', 'initialcontext',
 // Tasks
     'datatask',
     'querytask',
@@ -12,14 +12,12 @@ define([
     'wbtask',
     'wbimporttask'
 ], function module(
-    $, _, Backbone, schema, businessRules, errorview,
+    $, _, Backbone, businessRules, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
-    userJSON, systemInfoJSON, ResourceView) {
+    ResourceView, initialContext) {
+    // userJSON, systemInfoJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
-    var user = $.parseJSON(userJSON);  // the currently logged in SpecifyUser
-    var systemInfo = _.extend({user_agent: window.navigator.userAgent},
-                              $.parseJSON(systemInfoJSON));
 
     var currentView;
     var versionMismatchWarned = false;
@@ -51,11 +49,11 @@ define([
         currentView.render();
         rootContainer.append(currentView.el);
 
-        if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
+        if (app.systemInfo.specify6_version !== app.systemInfo.database_version && !versionMismatchWarned) {
             $('<div title="Version Mismatch">' +
               '<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>' +
-              'The Specify version (' + systemInfo.specify6_version + ') ' +
-              'does not match the database version (' + systemInfo.database_version + ').</p>' +
+              'The Specify version (' + app.systemInfo.specify6_version + ') ' +
+              'does not match the database version (' + app.systemInfo.database_version + ').</p>' +
               '<p>Some features of Specify 7 may therefore fail to operate correctly.</p>' +
               '</div>').dialog({ modal: true });
             versionMismatchWarned = true;
@@ -116,6 +114,7 @@ define([
     });
 
     function appStart() {
+        console.info('specify app starting');
         $(document).ajaxError(handleUnexpectedError);
         businessRules.enable(true);
         (new HeaderUI()).render();
@@ -172,13 +171,23 @@ define([
         handleError: handleError,
         setCurrentView: setCurrentView,
         showResource: showResource,
+        setTitle: setTitle,
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
-        user: user,
-        systemInfo: systemInfo,
-        isReadOnly: !_(['Manager', 'FullAccess']).contains(user.usertype),
-        setTitle: setTitle
+        // The following are set when the intial context is loaded.
+        user: undefined,
+        systemInfo: undefined,
+        isReadOnly: undefined
     };
+
+    initialContext
+        .load('user.json', function(data) {
+            app.user = data;
+            app.isReadOnly = !_(['Manager', 'FullAccess']).contains(app.user.usertype);
+        })
+        .load('system_info.json', function(data) {
+            app.systemInfo = data;
+        });
 
     return app;
 });

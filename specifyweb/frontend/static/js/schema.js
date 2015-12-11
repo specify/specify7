@@ -1,17 +1,18 @@
 define([
-    'jquery', 'underscore', 'schemabase', 'schemaextras', 'load_datamodel',
+    'schemabase', 'schemaextras', 'initialcontext',
     'specifymodel', 'specifyfield'
-], function($, _, schema, extras, tables) {
+], function(schema, extras, initialContext) {
     "use strict";
 
     schema.models = {};
-
-    _.each(tables, function(tableDef) {
-        var model = new schema.Model(tableDef);
-        var extra = extras[model.name];
-        extra && extra(model);
-        schema.models[model.name] = model;
-    });
+    initialContext.load('datamodel.json', tables => tables.forEach(
+        function(tableDef) {
+            var model = new schema.Model(tableDef);
+            var extra = extras[model.name];
+            extra && extra(model);
+            schema.models[model.name] = model;
+        })
+    );
 
     return schema;
 });

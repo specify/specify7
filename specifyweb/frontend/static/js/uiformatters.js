@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone',
-    'text!context/app.resource?name=UIFormatters!noinline'
-], function($, _, Backbone, xml) {
+    'jquery', 'underscore', 'backbone', 'initialcontext'
+], function($, _, Backbone, initialContext) {
     "use strict";
-    var uiformatters =  $($.parseXML(xml));
+    var uiformatters;
+    initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
 
     function UIFormatter(fields) {
         this.fields = fields;

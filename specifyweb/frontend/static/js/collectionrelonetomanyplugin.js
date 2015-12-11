@@ -1,7 +1,7 @@
 define([
     'jquery', 'underscore', 'specifyapi', 'dataobjformatters',
-    'navigation', 'uiplugin', 'whenall', 'domain'
-], function($, _, api, dataobjformatters, navigation, UIPlugin, whenAll, domain) {
+    'navigation', 'uiplugin', 'whenall', 'schema'
+], function($, _, api, dataobjformatters, navigation, UIPlugin, whenAll, schema) {
     "use strict";
     var format = dataobjformatters.format;
 
@@ -25,7 +25,7 @@ define([
         },
         gotRelType: function(relType, leftSideCollection, rightSideCollection) {
             this.relType = relType;
-            switch (domain.levels.collection.id) {
+            switch (schema.domainLevelIds.collection) {
             case leftSideCollection.id:
                 this.side = 'left';
                 this.otherSide = 'right';

@@ -1,11 +1,8 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema',
-    'props', 'text!properties/resources_en.properties!noinline',
-    'jquery-ui', 'jquery-bbq'
-], function(require, $, _, Backbone, schema, props, resources_prop) {
+    'jquery', 'underscore', 'backbone', 'schema',
+    'stringlocalization'
+], function($, _, Backbone, schema, s) {
     "use strict";
-
-    var get_prop = _.bind(props.getProperty, props, resources_prop);
 
     return Backbone.View.extend({
         __name__: "PrepDialog",
@@ -53,11 +50,7 @@ define([
         //<<<<<<<<<<<<<<<<<<<<<<< events
 
         getProp: function(key, fallback) {
-            var result = get_prop(key);
-            if (typeof result == 'undefined') {
-                result = fallback;
-            }
-            return result;
+            return s.localizeFrom('resources', key, fallback);
         }
     });
 });

@@ -51,7 +51,7 @@ define([
         },
         el: $('#site-header'),
         initialize: function() {
-            var app = require('specifyapp');
+            var app = this.app = require('specifyapp');
             this.user = app.user;
 
             this.toolModules = toolModules.filter(function(mod){
@@ -76,7 +76,7 @@ define([
             var collectionSelector = this.$('#user-tools select');
             var collections = new schema.models.Collection.LazyCollection();
             $.when(
-                domain.levels.collection.fetchIfNotPopulated(),
+                domain.getDomainResource('collection').fetchIfNotPopulated(),
                 collections.fetch({limit: 0})
             ).done(function (currentCollection) {
                collections.each(function(collection) {
@@ -102,7 +102,7 @@ define([
         siteNavClick: function(evt) {
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
-            this.visibleTools[index].execute();
+            this.visibleTools[index].execute(this.app);
         },
         openUserTools: function(evt) {
             new UserTools({user: this.user, tools: this.hiddenTools}).render();
