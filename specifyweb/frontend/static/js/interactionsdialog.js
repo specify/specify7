@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema',
-    'icons', 'specifyform', 'q', 'initialcontext',
+    'jquery', 'underscore', 'backbone', 'schema',
+    'icons', 'specifyform', 'q', 'initialcontext', 'userinfo',
     'interactiondialog', 'stringlocalization', 'reports'
-], function(require, $, _, Backbone, schema, icons, specifyform,
-            Q, initialContext, InteractionDialog, s, reports) {
+], function($, _, Backbone, schema, icons, specifyform, Q, initialContext,
+            userInfo, InteractionDialog, s, reports) {
     "use strict";
 
     var interaction_entries, views, actions;
@@ -102,7 +102,6 @@ define([
             return actionName == 'NEW_GIFT' || actionName == 'NEW_LOAN';
         },
         interactionActionClick: function(evt) {
-            var app = require('specifyapp');
             var index = this.$('a').filter(".interaction-action").index(evt.currentTarget);
             this.$el.dialog('close');
             var action = actions[index];
@@ -110,7 +109,7 @@ define([
             if (isRsAction || action.attr('action') == 'RET_LOAN') {
                 var tblId = isRsAction ? 1 : 52;
                 var recordSets = new schema.models.RecordSet.LazyCollection({
-                    filters: { specifyuser: app.user.id, type: 0, dbtableid: tblId,
+                    filters: { specifyuser: userInfo.id, type: 0, dbtableid: tblId,
                                domainfilter: true, orderby: '-timestampcreated' }
                 });
                 recordSets.fetch({ limit: 5000 }).done(function() {
@@ -118,7 +117,7 @@ define([
                 });
             } else if (action.attr('action') == 'PRINT_INVOICE') {
                 //assuming loan invoice for now (52 is loan tableid)
-                reports(app, {
+                reports({
                     tblId: 52,
                     metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
                     autoSelectSingle: true

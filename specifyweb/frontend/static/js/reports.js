@@ -1,13 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryfield',
     'parsespecifyproperties', 'attachmentplugin', 'attachments',
-    'jquery-ui', 'jquery-bbq'
+    'userinfo', 'jquery-ui', 'jquery-bbq'
 ], function(
     $, _, Backbone, schema, QueryFieldUI,
-    parsespecifyproperties, AttachmentPlugin, attachments
+    parsespecifyproperties, AttachmentPlugin, attachments, userInfo
 ) {
     "use strict";
-    var app;
     var title =  "Reports";
 
     var dialog;
@@ -209,7 +208,7 @@ define([
 
         var recordSets = new schema.models.RecordSet.LazyCollection({
             filters: {
-                specifyuser: app.user.id,
+                specifyuser: userInfo.id,
                 type: 0,
                 domainfilter: true,
                 dbtableid: contextTableId
@@ -448,9 +447,8 @@ define([
         });
     }
 
-    return function(specifyApp, options) {
+    return function(options) {
         options || (options = {});
-        app = specifyApp;
         var appRs = new schema.models.SpAppResource.LazyCollection();
         appRs.url = () => "/report_runner/get_reports" +
             (_(options).has('tblId') ? "_by_tbl/" + options.tblId : "") + "/";

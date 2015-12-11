@@ -1,15 +1,13 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'navigation',
     'specifyform', 'populateform', 'savebutton', 'deletebutton',
-    'initialcontext'
+    'initialcontext', 'userinfo'
 ], function($, _, Backbone, schema, navigation,
             specifyform, populateform, SaveButton, DeleteButton,
-            initialContext) {
+            initialContext, userInfo) {
     "use strict";
-    var app;
-
     var qbDef;
-    initialContext.loadResource('querybuilder.xml', data => qbDef);
+    initialContext.loadResource('querybuilder.xml', data => qbDef = data);
 
     var title = "Query";
 
@@ -19,8 +17,8 @@ define([
         close: function() { dialog = null; $(this).remove(); }
     };
 
-    function openQueryListDialog(app, queries) {
-        dialog = new QueryListDialog({ queries: queries, readOnly: app.isReadOnly });
+    function openQueryListDialog(queries) {
+        dialog = new QueryListDialog({ queries: queries, readOnly: userInfo.isReadOnly });
         $('body').append(dialog.el);
         dialog.render();
     }
@@ -206,15 +204,14 @@ define([
         task: 'query',
         title: title,
         icon: '/images/Query32x32.png',
-        execute: function(specifyApp) {
-            app = specifyApp;
+        execute: function() {
             if (dialog) return;
             var queries = new schema.models.SpQuery.LazyCollection({
-                filters: { specifyuser: app.user.id, orderby: '-timestampcreated' }
+                filters: { specifyuser: userInfo.id, orderby: '-timestampcreated' }
             });
             queries.fetch({ limit: 5000 }).done(function() {
                 if (queries._totalCount > 0) {
-                    openQueryListDialog(app, queries);
+                    openQueryListDialog(queries);
                 } else {
                     openQueryTypeDialog();
                 }

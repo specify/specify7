@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools',
+    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools', 'userinfo',
     'jquery-bbq', 'jquery-ui',
 // Tasks included in header:
     'toolbarwelcome',
@@ -14,7 +14,7 @@ define([
     'toolbarmasterkey',
     'toolbarusers'
 ], function headerUI(
-    $, _, Backbone, navigation, domain, schema, UserTools,
+    $, _, Backbone, navigation, domain, schema, UserTools, userInfo,
     jquery_bbq, jquery_ui
 ) {
     "use strict";
@@ -51,8 +51,7 @@ define([
         },
         el: $('#site-header'),
         initialize: function(options) {
-            var app = this.app = options.app;
-            this.user = app.user;
+            var app = options.app;
 
             this.toolModules = toolModules.filter(function(mod){
                 return !(_.isFunction(mod.disabled) ? mod.disabled(app.user) : mod.disabled);
@@ -62,16 +61,16 @@ define([
             this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
 
             _.each(this.toolModules, function(module) {
-                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module, app));
+                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
             });
         },
         render: function() {
             (new ExpressSearchInput()).render().$el.appendTo(this.el);
-            this.user.isauthenticated && this.$('#user-tools a.username').text(this.user.name);
+            userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
             this.$('#user-tools a.login-logout')
-                .text(this.user.isauthenticated ? '✕' : 'Log in')
-                .attr('href', '/accounts/' + (this.user.isauthenticated ? 'logout/' : 'login/'))
-                .attr('title', this.user.isauthenticated ? 'Log out.' : 'Log in.');
+                .text(userInfo.isauthenticated ? '✕' : 'Log in')
+                .attr('href', '/accounts/' + (userInfo.isauthenticated ? 'logout/' : 'login/'))
+                .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
 
             var collectionSelector = this.$('#user-tools select');
             var collections = new schema.models.Collection.LazyCollection();
@@ -102,10 +101,10 @@ define([
         siteNavClick: function(evt) {
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
-            this.visibleTools[index].execute(this.app);
+            this.visibleTools[index].execute();
         },
         openUserTools: function(evt) {
-            new UserTools({user: this.user, tools: this.hiddenTools}).render();
+            new UserTools({user: userInfo, tools: this.hiddenTools}).render();
         },
         changeCollection: function(evt) {
             navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');

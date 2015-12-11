@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'businessrules',
+    'jquery', 'underscore', 'backbone', 'businessrules', 'userinfo',
     'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
     'resourceview', 'initialcontext',
 // Tasks
@@ -12,10 +12,9 @@ define([
     'wbtask',
     'wbimporttask'
 ], function module(
-    $, _, Backbone, businessRules, errorview,
+    $, _, Backbone, businessRules, userInfo, errorview,
     WelcomeView, HeaderUI, NotFoundView, navigation,
     ResourceView, initialContext) {
-    // userJSON, systemInfoJSON) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
 
@@ -175,19 +174,14 @@ define([
         getCurrentView: function() { return currentView; },  // a reference to the current view
         start: appStart,    // called by main.js to launch the webapp frontend
         // The following are set when the intial context is loaded.
-        user: undefined,
+        user: userInfo,
         systemInfo: undefined,
         isReadOnly: undefined
     };
 
-    initialContext
-        .load('user.json', function(data) {
-            app.user = data;
-            app.isReadOnly = !_(['Manager', 'FullAccess']).contains(app.user.usertype);
-        })
-        .load('system_info.json', function(data) {
-            app.systemInfo = data;
-        });
+    initialContext.load('system_info.json', function(data) {
+        app.systemInfo = data;
+    });
 
     return app;
 });

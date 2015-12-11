@@ -9,7 +9,7 @@ define([
         task: 'report',
         title: "Reports",
         icon: '/images/Reports32x32.png',
-        disabled: undefined, //!status.available,
+        disabled: undefined,
         execute: reports
     };
 

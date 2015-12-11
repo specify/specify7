@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'formtable', 'schema'
-], function(require, $, _, Backbone, FormTable, schema) {
+    'require', 'formtable', 'schema', 'userinfo'
+], function(require, FormTable, schema, userInfo) {
     "use strict";
 
     return FormTable.extend({
@@ -11,9 +11,8 @@ define([
             evt.preventDefault();
 
             var table = self.collection.related.specifyModel.name.toLowerCase();
-            var app = require('specifyapp');
             var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: app.user.id, type: 0, dbtableid: 1,
+                filters: { specifyuser: userInfo.id, type: 0, dbtableid: 1,
                            domainfilter: true, orderby: '-timestampcreated' }
             });
             var interactionresource = self.collection.related;
