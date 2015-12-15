@@ -1,7 +1,7 @@
 define([
-    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'specifyapi', 'picklistmixins',
+    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'getpicklistbyname', 'picklistmixins',
     'agenttypecbx', 'usertypecbx', 'picklisttypecbx', 'picklisttablecbx', 'picklistfieldcbx', 'treelevelcbx'
-], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, api, mixins,
+], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, getPickListByName, mixins,
             AgentTypeCBX, UserTypeCBX, PickListTypeCBX, PickListTableCBX,
             PickListFieldCBX, TreeLevelCBX) {
     "use strict";
@@ -45,7 +45,7 @@ define([
         if (!options.pickListName)
             throw "can't determine picklist for field " + resource.specifyModel.name + "." + field.name;
 
-        return Q(api.getPickListByName(options.pickListName))
+        return Q(getPickListByName(options.pickListName))
             .then(function(picklist) {
                 options.pickList = picklist;
 

@@ -1,6 +1,6 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'assert', 'jquery-bbq'
-], function(require, $, _, Backbone, assert) {
+    'jquery', 'underscore', 'backbone', 'assert', 'specifyapi', 'jquery-bbq'
+], function($, _, Backbone, assert, api) {
     "use strict";
 
     function eventHandlerForToOne(related, field) {
@@ -79,7 +79,6 @@ define([
                 }
             });
 
-            var api = require('specifyapi');
             api.trigger('initresource', this);
             this.isNew() && api.trigger('newresource', this);
         },
@@ -123,7 +122,6 @@ define([
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
-            var api = require('specifyapi');
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
             return api.makeResourceViewUrl(this.specifyModel, this.id, this.recordsetid);
         },

@@ -8,6 +8,20 @@ define([
     "use strict";
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
+    function getRecordSetItem(recordSet, index) {
+        return $.when(recordSet.fetchIfNotPopulated(), $.get('/api/specify/recordsetitem/', {
+            recordset: recordSet.id,
+            offset: index,
+            limit: 1
+        })).pipe(function(__, data) {
+            var itemData = data[0].objects[0];
+            if (!itemData) return null;
+
+            var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
+            return new specifyModel.Resource({ id: itemData.recordid });
+        });
+    }
+
     var EmptyRecordSetView = Backbone.View.extend({
         __name__: "EmptyRecordSetView",
         events: {
@@ -37,7 +51,7 @@ define([
         var recordSet = new schema.models.RecordSet.Resource({ id: id });
 
         function navToItem() {
-            api.getRecordSetItem(recordSet, index).done(function(resource) {
+            getRecordSetItem(recordSet, index).done(function(resource) {
                 if (!resource) {
                     app.setCurrentView(new EmptyRecordSetView({ model: recordSet }));
                     return;

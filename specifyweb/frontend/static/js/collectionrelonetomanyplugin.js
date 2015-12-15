@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'specifyapi', 'dataobjformatters',
+    'jquery', 'underscore', 'dataobjformatters',
     'navigation', 'uiplugin', 'whenall', 'schema'
-], function($, _, api, dataobjformatters, navigation, UIPlugin, whenAll, schema) {
+], function($, _, dataobjformatters, navigation, UIPlugin, whenAll, schema) {
     "use strict";
     var format = dataobjformatters.format;
 
@@ -19,9 +19,14 @@ define([
             return this;
         },
         fillIn: function() {
-            api.getCollectionObjectRelTypeByName(this.init.relname).pipe(function(relType) {
-                return $.when(relType, relType.rget('leftsidecollection'), relType.rget('rightsidecollection'));
-            }).done(this.gotRelType.bind(this));
+            var collection = new schema.models.CollectionRelType.LazyCollection({
+                filters: { name: this.init.relname }
+            });
+            collection.fetch({limit: 1})
+                .pipe(function() { return collection.first(); })
+                .pipe(function(relType) {
+                    return $.when(relType, relType.rget('leftsidecollection'), relType.rget('rightsidecollection'));
+                }).done(this.gotRelType.bind(this));
         },
         gotRelType: function(relType, leftSideCollection, rightSideCollection) {
             this.relType = relType;

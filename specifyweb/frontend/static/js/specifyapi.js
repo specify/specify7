@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema',
+    'jquery', 'underscore', 'backbone',
     'jquery-bbq'
-], function($, _, Backbone, schema) {
+], function($, _, Backbone) {
     "use strict";
 
     var api =  _.extend({}, Backbone.Events, {
@@ -14,26 +14,6 @@ define([
                 distinct: options.distinct ? 'true' : 'false'
             };
             return $.get(url, data).promise();
-        },
-        getPickListByName: function(pickListName) {
-            var collection = new schema.models.PickList.LazyCollection({
-                filters: { name: pickListName },
-                domainfilter: true
-            });
-            return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
-        },
-        getRecordSetItem: function(recordSet, index) {
-            return $.when(recordSet.fetchIfNotPopulated(), $.get('/api/specify/recordsetitem/', {
-                recordset: recordSet.id,
-                offset: index,
-                limit: 1
-            })).pipe(function(__, data) {
-                var itemData = data[0].objects[0];
-                if (!itemData) return null;
-
-                var specifyModel = schema.getModelById(recordSet.get('dbtableid'));
-                return new specifyModel.Resource({ id: itemData.recordid });
-            });
         },
         queryCbxExtendedSearch: function(templateResource, forceCollection) {
             var url = '/express_search/querycbx/' +
@@ -52,12 +32,6 @@ define([
             return $.get(url, data).pipe(function(results) {
                 return new templateResource.specifyModel.StaticCollection(results);
             });
-        },
-        getCollectionObjectRelTypeByName: function(name) {
-            var collection = new schema.models.CollectionRelType.LazyCollection({
-                filters: { name: name }
-            });
-            return collection.fetch({limit: 1}).pipe(function() { return collection.first(); });
         },
         getTreePath: function(treeResource) {
             if (treeResource.id == null) return $.when(null);

@@ -1,8 +1,7 @@
 define([
-    'jquery', 'underscore', 'backbone', 'q',
-    'specifyapi', 'schema', 'handsontable', 'wbupload',
-    'initialcontext'
-], function($, _, Backbone, Q, api, schema, Handsontable, WBUpload, initialContext) {
+    'jquery', 'underscore', 'backbone', 'q', 'getpicklistbyname',
+    'schema', 'handsontable', 'wbupload', 'initialcontext'
+], function($, _, Backbone, Q, getPickListByName, schema, Handsontable, WBUpload, initialContext) {
     "use strict";
 
     var wbUploadDef;
@@ -48,7 +47,7 @@ define([
     function getPickListItems(field) {
         var picklistName = field && field.getPickList();
         return picklistName &&
-            api.getPickListByName(picklistName).pipe(function(pl) {
+            getPickListByName(picklistName).pipe(function(pl) {
                 return (pl.get('type') == 0) && pl.rget('picklistitems').pipe(function(plItems) {
                     return plItems.fetch({ limit: 0 }).pipe(function() { return plItems.models; });
                 });

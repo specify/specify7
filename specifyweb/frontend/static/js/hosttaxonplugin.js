@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'uiplugin', 'specifyapi', 'schema', 'querycbx'
-], function($, _, UIPlugin, api, schema, QueryCbx) {
+    'jquery', 'underscore', 'uiplugin', 'schema', 'querycbx'
+], function($, _, UIPlugin, schema, QueryCbx) {
     "use strict";
 
     var hostTaxonTypesearch = $.parseXML(
@@ -14,9 +14,14 @@ define([
             this.$el.replaceWith(input);
             this.setElement(input);
 
-            api.getCollectionObjectRelTypeByName(this.init.relname).pipe(function(relType) {
-                return relType.rget('rightsidecollection');
-            }).done(this.setupQCbx.bind(this));
+            var collection = new schema.models.CollectionRelType.LazyCollection({
+                filters: { name: this.init.relname }
+            });
+            collection.fetch({limit: 1})
+                .pipe(function() { return collection.first(); })
+                .pipe(function(relType) {
+                    return relType.rget('rightsidecollection');
+                }).done(this.setupQCbx.bind(this));
             return this;
         },
         setupQCbx: function(rightsideCollection) {
