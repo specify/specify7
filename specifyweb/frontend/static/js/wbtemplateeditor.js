@@ -1,9 +1,9 @@
 define([
     'require', 'jquery', 'underscore', 'backbone', 'bacon',
-    'immutable', 'schema', 'templates', 'wbschema'
+    'immutable', 'schema', 'templates', 'wbschema', 'userinfo'
 ], function(
     require, $, _, Backbone, Bacon, Immutable,
-    schema, templates, wbschema
+    schema, templates, wbschema, userInfo
 ) {
     "use strict";
 
@@ -156,9 +156,8 @@ define([
     }
 
     function makeTemplate(mappings) {
-        var app = require('specifyapp');
         return new schema.models.WorkbenchTemplate.Resource({
-            specifyuser: app.user.resource_uri,
+            specifyuser: userInfo.resource_uri,
             workbenchtemplatemappingitems: makeMappingItems(mappings)
         });
     }

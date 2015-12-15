@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema'
-], function($, _, Backbone, schema) {
+    'jquery', 'underscore', 'backbone', 'schema', 'router'
+], function($, _, Backbone, schema, router) {
     "use strict";
     var datamodelview = {};
 
@@ -55,7 +55,7 @@ define([
             app.setCurrentView(new View({ model: model }));
         }
 
-        app.router.route('datamodel/:model/', 'datamodel', view);
-        app.router.route('datamodel/', 'datamodel', view);
+        router.route('datamodel/:model/', 'datamodel', view);
+        router.route('datamodel/', 'datamodel', view);
     };
 });

@@ -1,8 +1,8 @@
 define([
-    'jquery', 'underscore', 'backbone', 'attachments',
+    'jquery', 'underscore', 'backbone', 'attachments', 'router',
     'schema', 'populateform', 'specifyform', 'navigation', 'whenall',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, attachments, schema, populateform, specifyform, navigation, whenAll) {
+], function($, _, Backbone, attachments, router, schema, populateform, specifyform, navigation, whenAll) {
     "use strict";
 
     var tablesWithAttachments = _( // TODO: get these from server or something
@@ -203,7 +203,7 @@ define([
     });
 
     return function(app) {
-        app.router.route('attachments/', 'attachments', function () {
+        router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
             app.setTitle('Attachments');
         });

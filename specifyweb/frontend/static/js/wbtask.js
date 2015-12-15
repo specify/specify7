@@ -1,8 +1,8 @@
-define(['jquery', 'q', 'schema', 'wbview'], function($, Q, schema, WBView) {
+define(['jquery', 'q', 'schema', 'wbview', 'router'], function($, Q, schema, WBView, router) {
     "use strict";
 
     return function(app) {
-        app.router.route('workbench/:id/', 'workbench', function(id) {
+        router.route('workbench/:id/', 'workbench', function(id) {
             var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
                 title: 'Loading',
                 modal: true,

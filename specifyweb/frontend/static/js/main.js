@@ -34,7 +34,7 @@ require({
 });
 
 require([
-    'initialcontext', 'specifyapp'
-], function(initialContext, app) {
-    initialContext.lock().promise().done(app.start);
+    'initialcontext', 'startapp'
+], function(initialContext, startApp) {
+    initialContext.lock().promise().done(startApp);
 });

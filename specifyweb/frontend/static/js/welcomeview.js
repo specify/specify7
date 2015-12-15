@@ -1,7 +1,7 @@
 define([
-    'require', 'jquery', 'underscore', 'd3', 'backbone', 'templates', 'schema',
-    'remoteprefs', 'dataobjformatters'
-], function(require, $, _, d3, Backbone, templates, schema, prefs, dataobjectformatters) {
+    'jquery', 'underscore', 'd3', 'backbone', 'templates', 'schema',
+    'remoteprefs', 'dataobjformatters', 'systeminfo'
+], function($, _, d3, Backbone, templates, schema, prefs, dataobjectformatters, systemInfo) {
     "use strict";
     var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
 
@@ -244,8 +244,7 @@ define([
         },
         showAboutDialog: function(evt) {
             evt.preventDefault();
-            var app = require('specifyapp');
-            $(templates.aboutspecify(app.systemInfo)).dialog({
+            $(templates.aboutspecify(systemInfo)).dialog({
                 title: "About Specify",
                 width: 480,
                 close: function() { $(this).remove(); }

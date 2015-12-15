@@ -1,7 +1,7 @@
 define([
-    'jquery', 'underscore', 'schema',  'fieldformat','prepdialog',
+    'jquery', 'underscore', 'schema', 'fieldformat', 'prepdialog', 'userinfo',
     'jquery-ui'
-], function($, _, schema, FieldFormat, PrepDialog) {
+], function($, _, schema, FieldFormat, PrepDialog, userInfo) {
     "use strict";
 
     var dialog;
@@ -235,9 +235,8 @@ define([
             var today = new Date();
             var todayArg = [];
             todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
-            var app = require('specifyapp');
             var model = this.options.model;
-            this.updateModelItems(app.user.id, todayArg.join('-'), returns);
+            this.updateModelItems(userInfo.id, todayArg.join('-'), returns);
             this.returnDone([returns.length]);
         },
 

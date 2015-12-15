@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'domain',
-    'resourceview', 'othercollectionview', 'notfoundview',
+    'othercollectionview', 'notfoundview', 'userinfo', 'router',
     'jquery-bbq'
 ], function(
     $, _, Backbone, schema, api, navigation, domain,
-    ResourceView, OtherCollectionView, NotFoundView) {
+    OtherCollectionView, NotFoundView, userInfo, router) {
     "use strict";
     var app;
 
@@ -58,7 +58,7 @@ define([
 
     // begins the process of creating a new resource
     function newResourceView(model) {
-        if (app.isReadOnly) {
+        if (userInfo.isReadOnly) {
             app.setCurrentView(new NotFoundView());
             app.setTitle('Page Not Found');
         } else {
@@ -168,11 +168,11 @@ define([
 
     return function(appIn) {
         app = appIn;
-        app.router.route('recordset/:id/', 'recordSetView', recordSetView);
-        app.router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
-        app.router.route('view/:model/:id/', 'resourceView', resourceView);
-        app.router.route('view/:model/new/', 'newResourceView', newResourceView);
-        app.router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
+        router.route('recordset/:id/', 'recordSetView', recordSetView);
+        router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
+        router.route('view/:model/:id/', 'resourceView', resourceView);
+        router.route('view/:model/new/', 'newResourceView', newResourceView);
+        router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
     };
 });
 

@@ -1,5 +1,5 @@
 define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools', 'userinfo',
+    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools', 'userinfo', 'router',
     'jquery-bbq', 'jquery-ui',
 // Tasks included in header:
     'toolbarwelcome',
@@ -14,7 +14,7 @@ define([
     'toolbarmasterkey',
     'toolbarusers'
 ], function headerUI(
-    $, _, Backbone, navigation, domain, schema, UserTools, userInfo,
+    $, _, Backbone, navigation, domain, schema, UserTools, userInfo, router,
     jquery_bbq, jquery_ui
 ) {
     "use strict";
@@ -51,17 +51,15 @@ define([
         },
         el: $('#site-header'),
         initialize: function(options) {
-            var app = options.app;
-
             this.toolModules = toolModules.filter(function(mod){
-                return !(_.isFunction(mod.disabled) ? mod.disabled(app.user) : mod.disabled);
+                return !(_.isFunction(mod.disabled) ? mod.disabled(userInfo) : mod.disabled);
             });
 
             this.visibleTools = this.toolModules.filter(function(t) { return t.icon != null; });
             this.hiddenTools = this.toolModules.filter(function(t) { return t.icon == null; });
 
             _.each(this.toolModules, function(module) {
-                app.router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
+                router.route('task/' + module.task + '/', 'startTask', module.execute.bind(module));
             });
         },
         render: function() {

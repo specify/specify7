@@ -1,6 +1,6 @@
 define([
-    'jquery', 'backbone', 'q', 'bacon', 'schema', 'templates', 'wbtemplateeditor', 'navigation'
-], function($, Backbone, Q, Bacon, schema, templates, WBTemplateEditor, navigation) {
+    'jquery', 'backbone', 'q', 'bacon', 'schema', 'templates', 'wbtemplateeditor', 'navigation', 'router'
+], function($, Backbone, Q, Bacon, schema, templates, WBTemplateEditor, navigation, router) {
     "use strict";
 
     function Preview($table, previews, hasHeader) {
@@ -138,7 +138,7 @@ define([
 
 
     return function(app) {
-        app.router.route('workbench-import/', 'workbench-import', function() {
+        router.route('workbench-import/', 'workbench-import', function() {
             app.setTitle("Import Workbench");
             var templates = new schema.models.WorkbenchTemplate.LazyCollection();
             templates.fetch({ limit: 500 }).done(function() {

@@ -1,9 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
     'domain', 'remoteprefs', 'notfoundview', 'resourceview',
-    'navigation', 'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
+    'navigation', 'router',
+    'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, api, schema, domain, remoteprefs,
-            NotFoundView, ResourceView, navigation) {
+            NotFoundView, ResourceView, navigation, router) {
     "use strict";
     var setTitle;
 
@@ -412,7 +413,7 @@ define([
     return function(app) {
         setTitle = app.setTitle;
 
-        app.router.route('tree/:table/', 'tree', function(table) {
+        router.route('tree/:table/', 'tree', function(table) {
             var getTreeDef = domain.getTreeDef(table);
             if (!getTreeDef) {
                 app.setCurrentView(new NotFoundView());

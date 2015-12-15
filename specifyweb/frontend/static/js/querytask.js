@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates',
-    'queryfromtree', 'navigation', 'queryresultstable', 'editresourcedialog',
+    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates', 'userinfo',
+    'queryfromtree', 'navigation', 'queryresultstable', 'editresourcedialog', 'router',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates,
-            queryFromTree, navigation, QueryResultsTable, EditResourceDialog) {
+], function($, _, Backbone, schema, QueryFieldUI, templates, userInfo,
+            queryFromTree, navigation, QueryResultsTable, EditResourceDialog, router) {
     "use strict";
 
     var setTitle;
@@ -180,18 +180,18 @@ define([
     return function(app) {
         setTitle = app.setTitle;
 
-        app.router.route('query/:id/', 'storedQuery', function(id) {
+        router.route('query/:id/', 'storedQuery', function(id) {
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
                 query.fetch().fail(app.handleError).done(function() {
-                    var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
+                    var view = new QueryBuilder({ query: query, readOnly: userInfo.isReadOnly });
                     view.on('redisplay', showView);
                     app.setCurrentView(view);
                 });
             })();
         });
 
-        app.router.route('query/new/:table/', 'ephemeralQuery', function(table) {
+        router.route('query/new/:table/', 'ephemeralQuery', function(table) {
             var query = new schema.models.SpQuery.Resource();
             var model = schema.getModel(table);
             query.set({
@@ -200,20 +200,20 @@ define([
                 'contexttableid': model.tableId,
                 'selectdistinct': false,
                 'countonly': false,
-                'specifyuser': app.user.resource_uri,
+                'specifyuser': userInfo.resource_uri,
                 'isfavorite': true,
                 // ordinal seems to always get set to 32767 by Specify 6
                 // needs to be set for the query to be visible in Specify 6
                 'ordinal': 32767
             });
 
-            var view = new QueryBuilder({ query: query, readOnly: app.isReadOnly });
+            var view = new QueryBuilder({ query: query, readOnly: userInfo.isReadOnly });
             view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
             app.setCurrentView(view);
         });
 
-        app.router.route('query/fromtree/:table/:id/', 'queryFromTree', function(table, nodeId) {
-            queryFromTree(app.user, table, nodeId).done(function(query) {
+        router.route('query/fromtree/:table/:id/', 'queryFromTree', function(table, nodeId) {
+            queryFromTree(userInfo, table, nodeId).done(function(query) {
                 var view = new QueryBuilder({ query: query, readOnly: true });
                 view.on('redisplay', function() { navigation.go('/query/' + query.id + '/'); });
                 app.setCurrentView(view);
