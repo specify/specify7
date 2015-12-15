@@ -1,9 +1,10 @@
 define([
     'require', 'jquery', 'underscore', 'schema', 'navigation',
-    'specifyapi', 'resourceview', 'fieldformat','prepdialog',
+    'specifyapi', 'resourceview', 'fieldformat', 'prepdialog',
+    'specifyapp',
     'jquery-ui'
 ], function(require, $, _, schema, navigation,
-            api, ResourceView, FieldFormat, PrepDialog) {
+            api, ResourceView, FieldFormat, PrepDialog, app) {
     "use strict";
 
     return PrepDialog.extend({
@@ -314,8 +315,7 @@ define([
             } else {
                 interaction.set(itemModelName + 's', items);
                 interaction.set('isclosed', false);
-                var SpecifyApp = require('specifyapp');
-                SpecifyApp.showResource(interaction, null, true);
+                app.showResource(interaction, null, true);
             }
         }
     });

@@ -1,11 +1,11 @@
 define([
-    'jquery', 'underscore', 'backbone', 'businessrules', 'userinfo',
-    'errorview', 'welcomeview', 'headerui', 'notfoundview', 'navigation',
-    'resourceview', 'initialcontext', 'router', 'systeminfo'
+    'jquery', 'userinfo',
+    'errorview', 'welcomeview', 'notfoundview', 'navigation',
+    'resourceview', 'router', 'systeminfo'
 ], function (
-    $, _, Backbone, businessRules, userInfo, errorview,
-    WelcomeView, HeaderUI, NotFoundView, navigation,
-    ResourceView, initialContext, router, systemInfo) {
+    $, userInfo, errorview,
+    WelcomeView, NotFoundView, navigation,
+    ResourceView, router, systemInfo) {
     "use strict";
 
     var currentView;
@@ -97,13 +97,11 @@ define([
 
     // the exported interface
     var app = {
-        router: router, //new SpecifyRouter(),
         handleError: handleError,
         setCurrentView: setCurrentView,
         showResource: showResource,
         setTitle: setTitle,
         getCurrentView: function() { return currentView; }  // a reference to the current view
-
     };
 
     return app;

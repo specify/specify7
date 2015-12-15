@@ -1,6 +1,6 @@
 define([
     'jquery', 'underscore', 'backbone', 'businessrules',
-    'errorview', 'headerui', 'navigation', 'specifyapp',
+    'errorview', 'headerui', 'navigation',
 // Tasks
     'datatask',
     'querytask',
@@ -12,7 +12,7 @@ define([
     'wbimporttask'
 ], function module(
     $, _, Backbone, businessRules, errorview,
-    HeaderUI, navigation, app) {
+    HeaderUI, navigation) {
     "use strict";
     var tasks = _(arguments).tail(module.length);
 
@@ -45,7 +45,7 @@ define([
         $(document).ajaxError(handleUnexpectedError);
         businessRules.enable(true);
         new HeaderUI().render();
-        _.each(tasks, function(task) { task(app); });
+        _.each(tasks, function(task) { task(); });
 
         // start processing the urls to draw the corresponding views
         Backbone.history.start({pushState: true, root: '/specify/'});
