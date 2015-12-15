@@ -1,8 +1,8 @@
 define([
-    'require', 'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates',
+    'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates', 'resourceview',
     'dataobjformatters', 'whenall', 'parseselect', 'navigation', 'saveblockers',
     'tooltipmgr', 'querycbxsearch', 'queryfieldspec', 'initialcontext'
-], function (require, $, _, Backbone, schema, specifyform, templates,
+], function ($, _, Backbone, schema, specifyform, templates, ResourceView,
              dataobjformatters, whenAll, parseselect, navigation, saveblockers,
              ToolTipMgr, QueryCbxSearch, QueryFieldSpec, initialContext) {
     "use strict";
@@ -242,7 +242,8 @@ define([
         openDialog: function(mode, related) {
             this.dialog = $('<div>', {'class': 'querycbx-dialog-' + mode});
 
-            new (require('resourceview'))({
+            new ResourceView({
+                populateForm: this.populateForm,
                 el: this.dialog,
                 model: related,
                 mode: this.readOnly ? 'view' : 'edit',

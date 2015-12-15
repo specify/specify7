@@ -1,9 +1,9 @@
 define([
-    'jquery', 'userinfo',
+    'jquery', 'userinfo', 'populateform',
     'errorview', 'welcomeview', 'notfoundview', 'navigation',
     'resourceview', 'router', 'systeminfo'
 ], function (
-    $, userInfo, errorview,
+    $, userInfo, populateForm, errorview,
     WelcomeView, NotFoundView, navigation,
     ResourceView, router, systemInfo) {
     "use strict";
@@ -63,7 +63,7 @@ define([
     // build and display view for resource
     function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
-        var view = new ResourceView({ model: resource, recordSet: recordSet, mode: viewMode });
+        var view = new ResourceView({ populateForm: populateForm, model: resource, recordSet: recordSet, mode: viewMode });
 
         view.on('saved', function(resource, options) {
             if (options.addAnother) {

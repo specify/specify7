@@ -1,10 +1,10 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
     'domain', 'remoteprefs', 'notfoundview', 'resourceview',
-    'navigation', 'router', 'specifyapp',
+    'navigation', 'router', 'specifyapp', 'populateform',
     'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, api, schema, domain, remoteprefs,
-            NotFoundView, ResourceView, navigation, router, app) {
+            NotFoundView, ResourceView, navigation, router, app, populateForm) {
     "use strict";
     var setTitle = app.setTitle;
 
@@ -49,6 +49,7 @@ define([
             var newNode = new this.specifyModel.Resource();
             newNode.set('parent', parentNode.url());
             new ResourceView({
+                populateForm: populateForm,
                 el: this.el,
                 model: newNode,
                 mode: 'edit',

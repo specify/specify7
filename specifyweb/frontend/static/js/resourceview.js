@@ -1,9 +1,9 @@
 define([
-    'jquery', 'underscore', 'backbone', 'populateform',
+    'jquery', 'underscore', 'backbone',
     'specifyform', 'dataobjformatters', 'navigation', 'templates',
     'savebutton', 'deletebutton',
     'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, populateForm,
+], function($, _, Backbone,
             specifyform, dataobjformatters, navigation, templates,
             SaveButton, DeleteButton) {
     "use strict";
@@ -36,6 +36,8 @@ define([
             //   noHeader: boolean?
             // }
             var self = this;
+            //   populateForm: ref to populateForm function
+            self.populateForm = options.populateForm;
             self.model.on('change', self.setTitle, self);
             self.recordSet = options.recordSet;
             self.mode = options.mode;
@@ -83,7 +85,7 @@ define([
             }));
             var view = self.model.specifyModel.view || self.model.specifyModel.name;
             specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
-                populateForm(form, self.model);
+                self.populateForm(form, self.model);
                 self.header ? form.find('.specify-form-header').replaceWith(self.header) :
                     form.find('.specify-form-header').remove();
 

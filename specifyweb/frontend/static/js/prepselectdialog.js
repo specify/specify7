@@ -1,9 +1,9 @@
 define([
-    'require', 'jquery', 'underscore', 'schema', 'navigation',
+    'jquery', 'underscore', 'schema', 'navigation', 'populateform',
     'specifyapi', 'resourceview', 'fieldformat', 'prepdialog',
     'specifyapp',
     'jquery-ui'
-], function(require, $, _, schema, navigation,
+], function($, _, schema, navigation, populateForm,
             api, ResourceView, FieldFormat, PrepDialog, app) {
     "use strict";
 
@@ -232,7 +232,8 @@ define([
 
                 var resourceModel = new model.Resource(arg.objects[0]);
 
-                new (require('resourceview'))({
+                new ResourceView({
+                    populateForm: populateForm,
                     el: this.dialog,
                     model: resourceModel,
                     mode: 'view',
