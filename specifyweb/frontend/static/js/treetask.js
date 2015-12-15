@@ -1,12 +1,12 @@
 define([
     'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
     'domain', 'remoteprefs', 'notfoundview', 'resourceview',
-    'navigation', 'router',
+    'navigation', 'router', 'specifyapp',
     'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
 ], function($, _, Backbone, api, schema, domain, remoteprefs,
-            NotFoundView, ResourceView, navigation, router) {
+            NotFoundView, ResourceView, navigation, router, app) {
     "use strict";
-    var setTitle;
+    var setTitle = app.setTitle;
 
     $.contextMenu({
         selector: ".tree-node .expander",
@@ -410,9 +410,7 @@ define([
         return _.invoke(_.where(nodes, {expanded: true}), 'conformation');
     }
 
-    return function(app) {
-        setTitle = app.setTitle;
-
+    return function() {
         router.route('tree/:table/', 'tree', function(table) {
             var getTreeDef = domain.getTreeDef(table);
             if (!getTreeDef) {

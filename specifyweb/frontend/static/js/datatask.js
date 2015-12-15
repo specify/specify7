@@ -1,13 +1,11 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'domain',
-    'othercollectionview', 'notfoundview', 'userinfo', 'router',
+    'othercollectionview', 'notfoundview', 'userinfo', 'router', 'specifyapp',
     'jquery-bbq'
 ], function(
     $, _, Backbone, schema, api, navigation, domain,
-    OtherCollectionView, NotFoundView, userInfo, router) {
+    OtherCollectionView, NotFoundView, userInfo, router, app) {
     "use strict";
-    var app;
-
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
     var EmptyRecordSetView = Backbone.View.extend({
@@ -166,8 +164,7 @@ define([
         });
     }
 
-    return function(appIn) {
-        app = appIn;
+    return function() {
         router.route('recordset/:id/', 'recordSetView', recordSetView);
         router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
         router.route('view/:model/:id/', 'resourceView', resourceView);

@@ -1,8 +1,8 @@
 define([
     'jquery', 'underscore', 'backbone', 'schema', 'queryresultstable', 'router',
-    'queryfieldspec', 'whenall', 'stringlocalization', 'initialcontext'
+    'queryfieldspec', 'whenall', 'stringlocalization', 'initialcontext', 'specifyapp'
 ], function($, _, Backbone, schema, QueryResultsTable, router,
-            QueryFieldSpec, whenAll, s, initialContext) {
+            QueryFieldSpec, whenAll, s, initialContext, app) {
     "use strict";
 
     var relatedSearches;
@@ -113,7 +113,7 @@ define([
         }
     });
 
-    return function(app) {
+    return function() {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
             app.setTitle('Express Search');

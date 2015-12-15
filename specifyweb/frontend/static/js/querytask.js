@@ -1,12 +1,11 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates', 'userinfo',
+    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates', 'userinfo', 'specifyapp',
     'queryfromtree', 'navigation', 'queryresultstable', 'editresourcedialog', 'router',
     'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates, userInfo,
+], function($, _, Backbone, schema, QueryFieldUI, templates, userInfo, app,
             queryFromTree, navigation, QueryResultsTable, EditResourceDialog, router) {
     "use strict";
-
-    var setTitle;
+    var setTitle = app.setTitle;
 
     var QueryBuilder = Backbone.View.extend({
         __name__: "QueryBuilder",
@@ -177,9 +176,7 @@ define([
         }
     });
 
-    return function(app) {
-        setTitle = app.setTitle;
-
+    return function() {
         router.route('query/:id/', 'storedQuery', function(id) {
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });

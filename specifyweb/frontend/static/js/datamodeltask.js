@@ -1,6 +1,6 @@
 define([
-    'jquery', 'underscore', 'backbone', 'schema', 'router'
-], function($, _, Backbone, schema, router) {
+    'jquery', 'underscore', 'backbone', 'schema', 'router', 'specifyapp'
+], function($, _, Backbone, schema, router, app) {
     "use strict";
     var datamodelview = {};
 
@@ -49,7 +49,7 @@ define([
     });
 
 
-    return function(app) {
+    return function() {
         function view(model) {
             var View = model ? datamodelview.DataModelView : datamodelview.SchemaView;
             app.setCurrentView(new View({ model: model }));
