@@ -1,6 +1,6 @@
 define([
-    'underscore', 'schema', 'q', 'require', 'specifyapi'
-], function(_, schema, Q, require, api) {
+    'underscore', 'schema', 'q', 'specifyapi', 'dataobjformatters'
+], function(_, schema, Q, api, dataobjformatters) {
     "use strict";
 
     // User defined picklist.
@@ -33,7 +33,7 @@ define([
     }
 
     function formatItem(info, item) {
-        var objformat = require('dataobjformatters').format;
+        var objformat = dataobjformatters.format;
 
         return Q(objformat(item, info.pickList.get('formatter')))
             .then(function(title) { return {value: item.url(), title: title}; });
