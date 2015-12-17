@@ -1,5 +1,9 @@
-define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
-    "use strict";
+"use strict";
+
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
 
     function getPossibleRanks(lowestChildRank, parentTreeDefItem) {
         if (!parentTreeDefItem) return _([]);
@@ -10,7 +14,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         return children.fetch({limit: 0}).pipe(function() {return children;});
     }
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "TreeLevelCBX",
         events: {
             change: 'changed'
@@ -66,4 +70,4 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
             this.model.set(this.$el.attr('name'), selected);
         }
     });
-});
+

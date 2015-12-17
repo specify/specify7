@@ -1,7 +1,6 @@
-define(['navigation'], function(navigation) {
-    "use strict";
+var navigation       = require('./navigation');
 
-    return {
+module.exports = {
         task: 'welcome',
         title: 'Welcome',
         icon: '/static/img/specify_7_webapp.png',
@@ -9,4 +8,3 @@ define(['navigation'], function(navigation) {
             navigation.go('/specify/');
         }
     };
-});

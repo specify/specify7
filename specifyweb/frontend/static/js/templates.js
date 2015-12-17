@@ -1,69 +1,61 @@
-define([
-    'jquery', 'underscore',
-    'text!tmpls/wbimport.html',
-    'text!tmpls/wbtemplateeditor.html',
-    'text!tmpls/othercollectiontemplate.html',
-    'text!tmpls/othercollectionstemplate.html',
-    'text!tmpls/recordsetheader.html',
-    'text!tmpls/recordsetform.html',
-    'text!tmpls/formtemplate.html',
-    'text!tmpls/formtabletemplate.html',
-    'text!tmpls/formdeftemplate.html',
-    'text!tmpls/viewwrappertemplate.html',
-    'text!tmpls/confirmdelete.html',
-    'text!tmpls/gmapplugin.html',
-    'text!tmpls/latlonui.html',
-    'text!tmpls/partialdateui.html',
-    'text!tmpls/querycbx.html',
-    'text!tmpls/subviewheader.html',
-    'text!tmpls/404.html',
-    'text!tmpls/saveblocked.html',
-    'text!tmpls/welcome.html',
-    'text!tmpls/viewheader.html',
-    'text!tmpls/recordsetchooser.html',
-    'text!tmpls/querybuilder.html',
-    'text!tmpls/queryresults.html',
-    'text!tmpls/queryfield.html',
-    'text!tmpls/attachmentview.html',
-    'text!tmpls/aboutspecify.html',
-    'text!tmpls/conflict.html',
-    'text!tmpls/passwordchange.html'
-], function parseTemplates($, _) {
-    "use strict";
-    var parseTmpl = function(tmpl) { return _.template(tmpl); };
-    var templates = _.chain(arguments).tail(parseTemplates.length).map(parseTmpl).value();
-    var withNames = {};
+"use strict";
 
-    _([
-        'wbimport',
-        'wbtemplateeditor',
-        'othercollection',
-        'othercollections',
-        'recordsetheader',
-        'recordsetform',
-        'form',
-        'formtable',
-        'formdef',
-        'viewwrapper',
-        'confirmdelete',
-        'gmapplugin',
-        'latlonui',
-        'partialdateui',
-        'querycbx',
-        'subviewheader',
-        'fourohfour',
-        'saveblocked',
-        'welcome',
-        'viewheader',
-        'recordsetchooser',
-        'querybuilder',
-        'queryresults',
-        'queryfield',
-        'attachmentview',
-        'aboutspecify',
-        'conflict',
-        'passwordchange'
-    ]).each(function(name, i) { withNames[name] = templates[i]; });
+var wbimport         = require('./templates/wbimport.html');
+var wbtemplateeditor = require('./templates/wbtemplateeditor.html');
+var othercollection  = require('./templates/othercollectiontemplate.html');
+var othercollections = require('./templates/othercollectionstemplate.html');
+var recordsetheader  = require('./templates/recordsetheader.html');
+var recordsetform    = require('./templates/recordsetform.html');
+var form             = require('./templates/formtemplate.html');
+var formtable        = require('./templates/formtabletemplate.html');
+var formdef          = require('./templates/formdeftemplate.html');
+var viewwrapper      = require('./templates/viewwrappertemplate.html');
+var confirmdelete    = require('./templates/confirmdelete.html');
+var gmapplugin       = require('./templates/gmapplugin.html');
+var latlonui         = require('./templates/latlonui.html');
+var partialdateui    = require('./templates/partialdateui.html');
+var querycbx         = require('./templates/querycbx.html');
+var subviewheader    = require('./templates/subviewheader.html');
+var fourohfour       = require('./templates/404.html');
+var saveblocked      = require('./templates/saveblocked.html');
+var welcome          = require('./templates/welcome.html');
+var viewheader       = require('./templates/viewheader.html');
+var recordsetchooser = require('./templates/recordsetchooser.html');
+var querybuilder     = require('./templates/querybuilder.html');
+var queryresults     = require('./templates/queryresults.html');
+var queryfield       = require('./templates/queryfield.html');
+var attachmentview   = require('./templates/attachmentview.html');
+var aboutspecify     = require('./templates/aboutspecify.html');
+var conflict         = require('./templates/conflict.html');
+var passwordchange   = require('./templates/passwordchange.html');
 
-    return withNames;
-});
+module.exports = {
+    wbimport: wbimport,
+    wbtemplateeditor: wbtemplateeditor,
+    othercollection: othercollection,
+    othercollections: othercollections,
+    recordsetheader: recordsetheader,
+    recordsetform: recordsetform,
+    form: form,
+    formtable: formtable,
+    formdef: formdef,
+    viewwrapper: viewwrapper,
+    confirmdelete: confirmdelete,
+    gmapplugin: gmapplugin,
+    latlonui: latlonui,
+    partialdateui: partialdateui,
+    querycbx: querycbx,
+    subviewheader: subviewheader,
+    fourohfour: fourohfour,
+    saveblocked: saveblocked,
+    welcome: welcome,
+    viewheader: viewheader,
+    recordsetchooser: recordsetchooser,
+    querybuilder: querybuilder,
+    queryresults: queryresults,
+    queryfield: queryfield,
+    attachmentview: attachmentview,
+    aboutspecify: aboutspecify,
+    conflict: conflict,
+    passwordchange: passwordchange
+};

@@ -1,6 +1,8 @@
-define(['jquery'], function($) {
-    "use strict";
-    return function(props) {
+"use strict";
+
+var $ = require('jquery');
+
+module.exports = function(props) {
         props = props || '';
         var result = {};
         $(props.split(';')).each(function () {
@@ -11,4 +13,4 @@ define(['jquery'], function($) {
         });
         return result;
     };
-});
+

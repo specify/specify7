@@ -1,7 +1,8 @@
-define(['schema', 'interactionbusinessrules'], function(schema, interactionBusinessRules) {
-    "use strict";
+"use strict";
+var schema = require('./schema.js');
+var interactionBusinessRules = require('./interactionbusinessrules.js');
 
-    return {
+module.exports = {
         Accession: {
             uniqueIn: {
                 accessionnumber: 'division'
@@ -300,4 +301,3 @@ define(['schema', 'interactionbusinessrules'], function(schema, interactionBusin
             }
         }
     };
-});

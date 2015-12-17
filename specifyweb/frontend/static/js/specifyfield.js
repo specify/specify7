@@ -1,7 +1,10 @@
-define([
-    'underscore', 'uiformatters', 'schemabase', 'assert'
-], function(_, uiformatters, schema, assert) {
-    "use strict";
+"use strict";
+
+var _                = require('underscore');
+
+var uiformatters = require('./uiformatters.js');
+var schema = require('./schemabase.js');
+var assert = require('./assert.js');
 
     schema.Field = function(model, fieldDef) {
         this.model = model;
@@ -81,5 +84,5 @@ define([
 
     _.extend(schema.Relationship.prototype, schema.Field.prototype);
 
-    return schema;
-});
+module.exports = schema;
+

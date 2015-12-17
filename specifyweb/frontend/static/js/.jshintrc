@@ -4,5 +4,6 @@
     "unused": "strict",
     "predef": [ "define", "console", "window" ],
     "eqnull": true,
-    "expr": true
+    "expr": true,
+    "browserify": true
 }

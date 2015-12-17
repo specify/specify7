@@ -1,9 +1,11 @@
-define([
-    'jquery', 'underscore', 'backbone', 'jquery-ui'
-], function($, _, Backbone) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+
+module.exports = Backbone.View.extend({
         __name__: "UserTools",
         className: "table-list-dialog",
         events: {
@@ -44,4 +46,4 @@ define([
             this.tools[index].execute();
         }
     });
-});
+

@@ -1,5 +1,10 @@
-define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
-    return {
+"use strict";
+
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+module.exports = {
         navigate: function(url, options) {
             var origin = window.location.origin || (
                 window.location.protocol + '//' + window.location.host);
@@ -28,4 +33,3 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
             });
         }
     };
-});

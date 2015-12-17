@@ -1,8 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'q', 'getpicklistbyname',
-    'schema', 'handsontable', 'wbupload', 'initialcontext'
-], function($, _, Backbone, Q, getPickListByName, schema, Handsontable, WBUpload, initialContext) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var Bacon    = require('bacon');
+var Q        = require('./vendor/q-1.4.1.js');
+
+var getPickListByName = require('./getpicklistbyname.js');
+var schema            = require('./schema.js');
+var WBUpload          = require('./wbupload.js');
+var initialContext    = require('./initialcontext.js');
+
 
     var wbUploadDef;
     initialContext.loadResource('specify_workbench_upload_def.xml', data => wbUploadDef = data);
@@ -69,7 +77,7 @@ define([
         });
     }
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "WbForm",
         className: "wbs-form",
         events: {
@@ -206,4 +214,4 @@ define([
             this.$('.wb-remove-highlights, .wb-prev-error, .wb-next-error, .wb-error-count').hide();
         }
     });
-});
+

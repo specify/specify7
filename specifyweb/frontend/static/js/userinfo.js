@@ -1,5 +1,7 @@
-define(['underscore', 'initialcontext'], function (_, initialContext) {
-    "use strict";
+"use strict";
+
+var _              = require('underscore');
+var initialContext = require('./initialcontext.js');
 
     var userInfo = {};
     initialContext.load('user.json', function(data) {
@@ -8,5 +10,4 @@ define(['underscore', 'initialcontext'], function (_, initialContext) {
         });
     });
 
-    return userInfo;
-});
+module.exports = userInfo;

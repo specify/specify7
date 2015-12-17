@@ -1,11 +1,14 @@
-define([
-    'jquery', 'underscore', 'schema', 'specifyapi',
-    'recordsetsdialog', 'prepselectdialog',
-    'navigation', 'stringlocalization'
-], function($, _, schema, api,
-            RecordSetsDialog, PrepSelectDialog,
-            navigation, s) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+
+var schema           = require('./schema.js');
+var api              = require('./specifyapi.js');
+var RecordSetsDialog = require('./recordsetsdialog.js');
+var PrepSelectDialog = require('./prepselectdialog.js');
+var navigation       = require('./navigation.js');
+var s                = require('./stringlocalization.js');
 
     var dialog;
     function makeDialog(el, options) {
@@ -17,7 +20,7 @@ define([
         }, options));
     }
 
-    return RecordSetsDialog.extend({
+module.exports = RecordSetsDialog.extend({
         __name__: "InteractionDialog",
         className: "interactiondialog recordsetsdialog",
         openIcon: "ui-icon ui-icon-radio-off",
@@ -311,10 +314,10 @@ define([
                         available: iprepData[8]
                        };
             });
-            new PrepSelectDialog({preps: ipreps, 
-                                  action: action, 
-                                  interactionresource: this.options.interactionresource, 
-                                  itemcollection: this.options.itemcollection 
+            new PrepSelectDialog({preps: ipreps,
+                                  action: action,
+                                  interactionresource: this.options.interactionresource,
+                                  itemcollection: this.options.itemcollection
                                  }).render();
         },
 
@@ -366,4 +369,3 @@ define([
             }
         }
     });
-});

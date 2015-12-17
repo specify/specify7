@@ -1,11 +1,23 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'specifyform', 'templates', 'resourceview',
-    'dataobjformatters', 'whenall', 'parseselect', 'navigation', 'saveblockers',
-    'tooltipmgr', 'querycbxsearch', 'queryfieldspec', 'initialcontext'
-], function ($, _, Backbone, schema, specifyform, templates, ResourceView,
-             dataobjformatters, whenAll, parseselect, navigation, saveblockers,
-             ToolTipMgr, QueryCbxSearch, QueryFieldSpec, initialContext) {
-    "use strict";
+"use strict";
+
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+
+var schema            = require('./schema.js');
+var specifyform       = require('./specifyform.js');
+var templates         = require('./templates.js');
+var ResourceView      = require('./resourceview.js');
+var dataobjformatters = require('./dataobjformatters.js');
+var whenAll           = require('./whenall.js');
+var parseselect       = require('./parseselect.js');
+var navigation        = require('./navigation.js');
+var saveblockers      = require('./saveblockers.js');
+var ToolTipMgr        = require('./tooltipmgr.js');
+var QueryCbxSearch    = require('./querycbxsearch.js');
+var QueryFieldSpec    = require('./queryfieldspec.js');
+var initialContext    = require('./initialcontext.js');
 
     var dataobjformat = dataobjformatters.format;
 
@@ -294,5 +306,5 @@ define([
         }
     });
 
-    return QueryCbx;
-});
+module.exports =  QueryCbx;
+

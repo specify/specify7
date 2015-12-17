@@ -1,8 +1,13 @@
-define([
-    'jquery', 'underscore', 'whenall', 'fieldformat', 'assert',
-    'initialcontext'
-], function($, _, whenAll, fieldformat, assert, initialContext) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var whenAll        = require('./whenall.js');
+var fieldformat    = require('./fieldformat.js');
+var assert         = require('./assert.js');
+var initialContext = require('./initialcontext.js');
+
     var formatters;
     initialContext.load('app.resource?name=DataObjFormatters', data => formatters = data);
 
@@ -67,5 +72,5 @@ define([
         });
     }
 
-    return { format: dataobjformat, aggregate: aggregate };
-});
+module.exports = { format: dataobjformat, aggregate: aggregate };
+

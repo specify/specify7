@@ -1,5 +1,7 @@
-define(['jquery', 'q'], function($, Q) {
-    "use strict";
+"use strict";
+var $ = require('jquery');
+var Q = require('./vendor/q-1.4.1.js');
+
     var core = Q(null);
     var final = Q.defer();
     var locked = false;
@@ -44,5 +46,5 @@ define(['jquery', 'q'], function($, Q) {
         loadResource: load.bind(null, 'static/config')
     };
 
-    return initialContext;
-});
+    module.exports = initialContext;
+

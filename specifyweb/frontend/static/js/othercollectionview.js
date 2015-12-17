@@ -1,9 +1,15 @@
-define([
-    'jquery', 'underscore', 'backbone', 'templates', 'navigation', 'jquery-ui'
-], function($, _, Backbone, templates, navigation) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+
+var templates  =  require('./templates.js');
+var navigation =  require('./navigation.js');
+
+
+module.exports =  Backbone.View.extend({
         __name__: "OtherCollectionView",
         events: {
             'click a': 'clicked'
@@ -36,4 +42,4 @@ define([
             navigation.switchCollection($(evt.currentTarget).data('collection-id'));
         }
     });
-});
+

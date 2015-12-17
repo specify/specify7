@@ -1,7 +1,13 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'domain'
-], function($, _, Backbone, schema, domain) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema = require('./schema.js');
+var domain = require('./domain.js');
+
+
     var treesForAll = ['geography', 'storage', 'taxon'];
     var treesForPaleo = ['geologictimeperiod', 'lithostrat'];
     var paleoDiscs = 'paleobotany invertpaleo vertpaleo'.split(' ');
@@ -35,7 +41,7 @@ define([
         }
     });
 
-    return {
+module.exports =  {
         task: 'tree',
         title: 'Trees',
         icon: '/images/Tree32x32.png',
@@ -43,4 +49,4 @@ define([
             new TreeListDialog().render();
         }
     };
-});
+

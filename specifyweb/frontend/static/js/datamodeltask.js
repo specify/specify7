@@ -1,7 +1,14 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'router', 'specifyapp'
-], function($, _, Backbone, schema, router, app) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+
+var schema = require('./schema.js');
+var router = require('./router.js');
+var app    = require('./specifyapp.js');
+
     var datamodelview = {};
 
     function attrsToDl(node) {
@@ -49,7 +56,7 @@ define([
     });
 
 
-    return function() {
+module.exports = function() {
         function view(model) {
             var View = model ? datamodelview.DataModelView : datamodelview.SchemaView;
             app.setCurrentView(new View({ model: model }));
@@ -58,4 +65,4 @@ define([
         router.route('datamodel/:model/', 'datamodel', view);
         router.route('datamodel/', 'datamodel', view);
     };
-});
+

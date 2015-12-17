@@ -1,7 +1,7 @@
-define(['navigation', 'formsdialog'], function(navigation, FormsDialog) {
-    "use strict";
+var navigation  = require('./navigation');
+var FormsDialog = require('./formsdialog.js');
 
-    return {
+module.exports = {
         task: 'data',
         title: 'Data Entry',
         icon: '/images/Data_Entry.png',
@@ -11,4 +11,4 @@ define(['navigation', 'formsdialog'], function(navigation, FormsDialog) {
             });
         }
     };
-});
+

@@ -1,11 +1,13 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'editresourcedialog', 'wbtemplateeditor'
-], function(
-    $, _, Backbone, schema, navigation,
-    EditResourceDialog, WBTemplateEditor
-) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema              = require('./schema.js');
+var navigation          = require('./navigation.js');
+var EditResourceDialog  = require('./editresourcedialog.js');
+var WBTemplateEditor    = require('./wbtemplateeditor.js');
 
     var NewWorkbenchDialog = Backbone.View.extend({
         __name__: "NewWorkbenchDialog",
@@ -65,7 +67,7 @@ define([
     });
 
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "WbsDialog",
         className: "wbs-dialog table-list-dialog",
         events: {
@@ -121,4 +123,4 @@ define([
             new EditResourceDialog({ resource: this.wbs[index] }).render();
         }
     });
-});
+

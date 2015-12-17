@@ -1,7 +1,11 @@
-define([
-    'jquery', 'underscore', 'initialcontext', 'props'
-], function($, _, initialContext, props) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var initialContext = require('./initialcontext.js');
+var props          = require('./props.js');
+
 
     var locale = 'en';
     var bundles = {};
@@ -9,7 +13,7 @@ define([
         initialContext.loadProperties(bundle + '_' + locale + '.properties', data => bundles[bundle] = data);
     });
 
-    return {
+module.exports =  {
         localize: function(s, fallback) {
             for(var bundle in bundles) {
                 var localized = props.getProperty(bundles[bundle], s);
@@ -26,4 +30,4 @@ define([
             return fallback || s;
         }
     };
-});
+

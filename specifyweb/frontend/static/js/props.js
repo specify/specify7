@@ -1,5 +1,7 @@
-define(['jquery', 'underscore'], function($, _) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
 
     function reForKey(key) {
         return RegExp('^' + key + '\\s*[\\s=:]\\s*(.*)$', 'm');
@@ -9,7 +11,7 @@ define(['jquery', 'underscore'], function($, _) {
         return $.parseJSON('"' + value.replace(/\"/g, '\\"') + '"');
     }
 
-    return {
+module.exports = {
         getProperty: function(properties, key) {
             var match = reForKey(key).exec(properties);
             if (match) {
@@ -21,4 +23,4 @@ define(['jquery', 'underscore'], function($, _) {
             }
         }
     };
-});
+

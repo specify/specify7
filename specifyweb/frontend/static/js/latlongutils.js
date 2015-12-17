@@ -1,4 +1,8 @@
-define(['underscore'], function (_) {
+"use strict";
+
+
+var _ = require('underscore');
+
     function Coord(flt) {
         flt = flt || 0.0;
         this._components = [flt];
@@ -166,5 +170,5 @@ define(['underscore'], function (_) {
         return null; // No parser succeeded.
     }
 
-    return { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
-});
+module.exports =  { Coord: Coord, Lat: Lat, Long: Long, parse: Coord.parse };
+

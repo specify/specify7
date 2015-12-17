@@ -1,8 +1,13 @@
-define([
-    'jquery', 'underscore', 'specifyapi', 'uiplugin', 'icons', 'uifield',
-    'initialcontext'
-], function($, _, api, UIPlugin, icons, UIField, initialContext) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var api            = require('./specifyapi.js');
+var UIPlugin       = require('./uiplugin.js');
+var icons          = require('./icons.js');
+var UIField        = require('./uifield.js');
+var initialContext = require('./initialcontext.js');
 
     var webLinksDefs = {};
     initialContext.load('app.resource?name=WebLinks', function(xml) {
@@ -21,7 +26,7 @@ define([
         }
     };
 
-    return  UIPlugin.extend({
+module.exports =   UIPlugin.extend({
         __name__: "WebLinkButton",
         render: function() {
             this.def = webLinksDefs[this.init.weblink];
@@ -95,4 +100,4 @@ define([
             });
         }
     }, { pluginsProvided: ['WebLinkButton'] });
-});
+

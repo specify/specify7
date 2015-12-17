@@ -1,8 +1,13 @@
-define([
-    'jquery', 'underscore', 'backbone', 'uiplugin', 'schema', 'querycbx', 'whenall'
-], function($, _, Backbone, UIPlugin, schema, QueryCbx, whenall) {
-    "use strict";
+"use strict";
 
+var $ = require('jquery');
+var _ = require('underscore');
+var Backbone = require('./backbone.js');
+
+var UIPlugin = require('./uiplugin.js');
+var schema   = require('./schema.js');
+var QueryCbx = require('./querycbx.js');
+var whenall  = require('./whenall.js');
 
     var AgentForDiv = Backbone.View.extend({
         __name__: "AgentForDivisionSelector",
@@ -78,7 +83,7 @@ define([
         }
     });
 
-    return UIPlugin.extend({
+module.exports = UIPlugin.extend({
         __name__: "UserAgentsUIPlugin",
         events: {
             'click': 'click'
@@ -108,4 +113,4 @@ define([
             });
         }
     }, { pluginsProvided: ['UserAgentsUI'] });
-});
+

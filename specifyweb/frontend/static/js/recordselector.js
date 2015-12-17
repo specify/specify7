@@ -1,8 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'querycbxsearch',
-    'navigation', 'templates', 'collectionapi', 'assert', 'jquery-ui'
-], function($, _, Backbone, specifyform, QueryCbxSearch, navigation, templates, collectionapi, assert) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var specifyform    = require('./specifyform.js');
+var QueryCbxSearch = require('./querycbxsearch.js');
+var navigation     = require('./navigation.js');
+var templates      = require('./templates.js');
+var collectionapi  = require('./collectionapi.js');
+var assert         = require('./assert.js');
+
     var emptyTemplate = '<p>No Data.</p>';
 
     var Controls = Backbone.View.extend({
@@ -122,7 +130,7 @@ define([
         }
     });
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "RecordSelector",
         className: "recordselector",
         events: {
@@ -329,4 +337,4 @@ define([
             navigation.go(this.currentResource().viewUrl());
         }
     });
-});
+

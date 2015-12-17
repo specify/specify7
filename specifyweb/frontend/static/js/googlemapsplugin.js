@@ -1,9 +1,11 @@
-define([
-    'jquery', 'underscore', 'uiplugin', 'templates'
-], function($, _, UIPlugin, templates) {
-    "use strict";
+"use strict";
 
-    return UIPlugin.extend({
+var $ = require('jquery');
+
+var UIPlugin  = require('./uiplugin.js');
+var templates = require('./templates.js');
+
+module.exports =  UIPlugin.extend({
         __name__: "GoogleMapsPlugin",
         events: {
             'click': 'click'
@@ -30,4 +32,4 @@ define([
             }
         }
     }, { pluginsProvided: ['LocalityGoogleEarth'] });
-});
+

@@ -1,5 +1,8 @@
-define(['underscore', 'schema', 'specifyapi'], function(_, schema, api) {
-    "use strict";
+"use strict";
+
+var _      = require('underscore');
+var schema = require('./schema.js');
+var api    = require('./specifyapi.js');
 
     var interactionBusinessRules = {
         previousReturned: [],
@@ -51,5 +54,5 @@ define(['underscore', 'schema', 'specifyapi'], function(_, schema, api) {
         }
     };
 
-    return interactionBusinessRules;
-});
+module.exports = interactionBusinessRules;
+

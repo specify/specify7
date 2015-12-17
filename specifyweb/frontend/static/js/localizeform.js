@@ -1,6 +1,11 @@
-define(['jquery', 'props', 'schema', 'stringlocalization'
-], function($, props, schema, stringLocalization) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+
+var props              = require('./props.js');
+var schema             = require('./schema.js');
+var stringLocalization = require('./stringlocalization.js');
+
 
     function localize(s) {
         return stringLocalization.localizeFrom(['views', 'global_views'], s);
@@ -11,7 +16,7 @@ define(['jquery', 'props', 'schema', 'stringlocalization'
             control.closest('[data-specify-field-name]').data('specify-field-name');
     }
 
-    return function(formNode) {
+module.exports = function(formNode) {
         var form = $(formNode);
         var model = schema.getModel(form.data('specify-model'));
         if (!model) return;
@@ -71,4 +76,3 @@ define(['jquery', 'props', 'schema', 'stringlocalization'
             $('.specify-subview-title', this).text(label);
         });
     };
-});

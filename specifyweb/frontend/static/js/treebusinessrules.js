@@ -1,5 +1,6 @@
-define(['q', 'underscore'], function(Q, _) {
-    "use strict";
+"use strict";
+var Q = require('./vendor/q-1.4.1.js');
+var _ = require('underscore');
 
     function buildFullName(resource, options) {
         return Q.all([resource, [], true,
@@ -76,5 +77,5 @@ define(['q', 'underscore'], function(Q, _) {
         }
     };
 
-    return treeBusinessRules;
-});
+module.exports = treeBusinessRules;
+

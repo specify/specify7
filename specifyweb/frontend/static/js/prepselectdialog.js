@@ -1,13 +1,18 @@
-define([
-    'jquery', 'underscore', 'schema', 'navigation', 'populateform',
-    'specifyapi', 'resourceview', 'fieldformat', 'prepdialog',
-    'specifyapp',
-    'jquery-ui'
-], function($, _, schema, navigation, populateForm,
-            api, ResourceView, FieldFormat, PrepDialog, app) {
-    "use strict";
+"use strict";
 
-    return PrepDialog.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+
+var schema       = require('./schema.js');
+var navigation   = require('./navigation.js');
+var populateForm = require('./populateform.js');
+var api          = require('./specifyapi.js');
+var ResourceView = require('./resourceview.js');
+var FieldFormat  = require('./fieldformat.js');
+var PrepDialog   = require('./prepdialog.js');
+var app          = require('./specifyapp.js');
+
+module.exports =  PrepDialog.extend({
         __name__: "PrepSelectDialog",
         className: "prepselectdialog table-list-dialog",
         events: {
@@ -39,7 +44,7 @@ define([
                 this.availabilityDblChk = true;
             }
         },
-        
+
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         getTblHdr: function() {
@@ -290,7 +295,7 @@ define([
         makeInteraction: function() {
             //console.info('creating obj for ' + this.options.action.attr('action'));
             var baseTbl = this.options.action.table;
-            var interaction; 
+            var interaction;
             if (this.options.interactionresource) {
                 interaction = this.options.interactionresource;
             } else {
@@ -302,7 +307,7 @@ define([
             var itemModel = schema.getModel(itemModelName);
             var items = [];
             var amounts = this.$(':input.prepselect-amt');
-            
+
             for (var p=0; p < this.options.preps.length; p++) {
                 var amt = $(amounts[p]).attr('value');
                 if ('0' != amt && '' != amt) {
@@ -320,6 +325,3 @@ define([
             }
         }
     });
-
-
-});

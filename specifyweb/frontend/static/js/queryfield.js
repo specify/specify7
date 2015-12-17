@@ -1,9 +1,14 @@
-define([
-    'jquery', 'underscore', 'backbone', 'templates', 'schema', 'domain',
-    'queryfieldspec', 'queryfieldinput'
-], function($, _, Backbone, templates, schema, domain,
-            QueryFieldSpec, QueryFieldInputUI) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var templates         = require('./templates.js');
+var schema            = require('./schema.js');
+var domain            = require('./domain.js');
+var QueryFieldSpec    = require('./queryfieldspec.js');
+var QueryFieldInputUI = require('./queryfieldinput.js');
 
     var SORT_ICONS = ["ui-icon-bullet", "ui-icon-carat-1-n", "ui-icon-carat-1-s"];
 
@@ -15,7 +20,7 @@ define([
         bools: ['java.lang.Boolean']
     };
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "QueryField",
         events: {
             'click .field-expand': 'expandToggle',
@@ -353,4 +358,4 @@ define([
             return null;
         }
     });
-});
+

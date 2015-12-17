@@ -1,5 +1,6 @@
-define(['jquery', 'jquery-ui'], function($) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
 
     var dialog = null;
 
@@ -56,10 +57,10 @@ define(['jquery', 'jquery-ui'], function($) {
         }
     }
 
-    return {
+module.exports =  {
         task: 'masterkey',
         title: 'Generate Master Key',
         icon: null,
         execute: execute
     };
-});
+

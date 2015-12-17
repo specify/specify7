@@ -1,11 +1,20 @@
-define([
-    'jquery', 'underscore', 'backbone', 'specifyapi', 'schema',
-    'domain', 'remoteprefs', 'notfoundview', 'resourceview',
-    'navigation', 'router', 'specifyapp', 'populateform',
-    'jquery-ctxmenu', 'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, api, schema, domain, remoteprefs,
-            NotFoundView, ResourceView, navigation, router, app, populateForm) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var api          = require('./specifyapi.js');
+var schema       = require('./schema.js');
+var domain       = require('./domain.js');
+var remoteprefs  = require('./remoteprefs.js');
+var NotFoundView = require('./notfoundview.js');
+var ResourceView = require('./resourceview.js');
+var navigation   = require('./navigation.js');
+var router       = require('./router.js');
+var app          = require('./specifyapp.js');
+var populateForm = require('./populateform.js');
+
     var setTitle = app.setTitle;
 
     $.contextMenu({
@@ -411,7 +420,7 @@ define([
         return _.invoke(_.where(nodes, {expanded: true}), 'conformation');
     }
 
-    return function() {
+module.exports =  function() {
         router.route('tree/:table/', 'tree', function(table) {
             var getTreeDef = domain.getTreeDef(table);
             if (!getTreeDef) {
@@ -432,4 +441,4 @@ define([
             });
         });
     };
-});
+

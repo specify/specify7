@@ -1,7 +1,10 @@
-define([
-    'jquery', 'underscore', 'backbone', 'uiplugin', 'templates'
-], function($, _, Backbone, UIPlugin, templates) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var Backbone = require('./backbone.js');
+
+var UIPlugin  = require('./uiplugin.js');
+var templates = require('./templates.js');
 
     var Dialog = Backbone.View.extend({
         __name__: "PasswordResetDialog",
@@ -40,7 +43,7 @@ define([
         }
     });
 
-    return UIPlugin.extend({
+module.exports =  UIPlugin.extend({
         __name__: "PasswordUIPlugin",
         events: {
             'click': 'click'
@@ -54,4 +57,4 @@ define([
             new Dialog({model: this.model}).render();
         }
     }, { pluginsProvided: ['PasswordUI'] });
-});
+

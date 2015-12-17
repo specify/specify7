@@ -1,10 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'formsdialog', 'editresourcedialog',
-    'navigation', 'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, FormsDialog, EditResourceDialog, navigation) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema             = require('./schema.js');
+var FormsDialog        = require('./formsdialog.js');
+var EditResourceDialog = require('./editresourcedialog.js');
+var navigation         = require('./navigation.js');
+
+
+module.exports = Backbone.View.extend({
         __name__: "RecordSetsDialog",
         className: "recordsets-dialog table-list-dialog",
         events: {
@@ -98,4 +104,4 @@ define([
             new EditResourceDialog({ resource: this.options.recordSets.at(index) }).render();
         }
     });
-});
+

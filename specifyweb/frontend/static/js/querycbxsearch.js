@@ -1,15 +1,21 @@
-define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'specifyapi', 'dataobjformatters', 'whenall',
-    'initialcontext',
-], function ($, _, Backbone, specifyform, api, dataobjformatters, whenAll, initialContext) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var specifyform       = require('./specifyform.js');
+var api               = require('./specifyapi.js');
+var dataobjformatters = require('./dataobjformatters.js');
+var whenAll           = require('./whenall.js');
+var initialContext    = require('./initialcontext.js');
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
 
     function format(obj) { return dataobjformatters.format(obj); }
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
@@ -69,4 +75,4 @@ define([
             this.$el.dialog('close');
         }
     });
-});
+

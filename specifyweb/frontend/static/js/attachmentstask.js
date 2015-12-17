@@ -1,9 +1,18 @@
-define([
-    'jquery', 'underscore', 'backbone', 'attachments', 'router', 'specifyapp',
-    'schema', 'populateform', 'specifyform', 'navigation', 'whenall',
-    'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, attachments, router, app, schema, populateform, specifyform, navigation, whenAll) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var attachments  = require('./attachments.js');
+var router       = require('./router.js');
+var app          = require('./specifyapp.js');
+var schema       = require('./schema.js');
+var populateform = require('./populateform.js');
+var specifyform  = require('./specifyform.js');
+var navigation   = require('./navigation.js');
+var whenAll      = require('./whenall.js');
+
 
     var tablesWithAttachments = _( // TODO: get these from server or something
         ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
@@ -202,10 +211,10 @@ define([
         }
     });
 
-    return function() {
+module.exports =  function() {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
             app.setTitle('Attachments');
         });
     };
-});
+

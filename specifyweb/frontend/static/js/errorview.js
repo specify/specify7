@@ -1,9 +1,10 @@
-define([
-    'jquery', 'underscore', 'backbone'
-], function($, _, Backbone) {
-    "use strict";
+"use strict";
 
-    return {
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+module.exports = {
 
         ErrorView: Backbone.View.extend({
             __name__: "ErrorView",
@@ -34,4 +35,3 @@ define([
             }
         })
     };
-});

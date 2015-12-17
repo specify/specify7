@@ -1,9 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema',
-    'icons', 'specifyform', 'q', 'initialcontext'
-], function($, _, Backbone, schema, icons, specifyform,
-            Q, initialContext) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var Q        = require('./vendor/q-1.4.1.js');
+
+
+var schema         = require('./schema.js');
+var icons          = require('./icons.js');
+var specifyform    = require('./specifyform.js');
+var initialContext = require('./initialcontext.js');
+
 
     // I don't think the non-sidebar items are ever used in Sp6.
     var views;
@@ -16,7 +23,7 @@ define([
             view => specifyform.getView(view.attr('view')).pipe(form => form)));
     }
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "FormsDialog",
         className: "forms-dialog table-list-dialog",
         events: {'click a': 'selected'},
@@ -51,4 +58,4 @@ define([
             this.trigger('selected', model);
         }
     });
-});
+

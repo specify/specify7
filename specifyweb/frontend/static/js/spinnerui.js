@@ -1,10 +1,12 @@
-define([
-    'jquery', 'underscore', 'backbone', 'specifyform',
-    'jquery-ui'
-], function($, _, Backbone, specifyform) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var specifyform = require('./specifyform.js');
+
+module.exports =  Backbone.View.extend({
         __name__: 'SpinnerFieldUI',
         events: {
             'spinstop': 'change',
@@ -43,4 +45,4 @@ define([
             this.model.set(this.$el.attr('name'), val);
         }
     });
-});
+

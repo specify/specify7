@@ -1,22 +1,25 @@
-define([
-    'jquery', 'underscore', 'uiplugin',
-    // plugin providers
-    'latlongui',
-    'partialdateui',
-    'collectionrelonetomanyplugin',
-    'collectionrelonetooneplugin',
-    'geolocateplugin',
-    'weblinkbutton',
-    'attachmentplugin',
-    'hosttaxonplugin',
-    'passwordplugin',
-    'useragentsplugin',
-    'adminstatusplugin',
-    'googlemapsplugin'
-], function specifyPlugins($, _, UIPlugin) {
-    "use strict";
+"use strict";
 
-    var providers = _.tail(arguments, specifyPlugins.length);
+var $ = require('jquery');
+var _ = require('underscore');
+
+var UIPlugin = require('./uiplugin.js');
+
+var providers = [
+    require('./latlongui.js'),
+    require('./partialdateui.js'),
+    require('./collectionrelonetomanyplugin.js'),
+    require('./collectionrelonetooneplugin.js'),
+    require('./geolocateplugin.js'),
+    require('./weblinkbutton.js'),
+    require('./attachmentplugin.js'),
+    require('./hosttaxonplugin.js'),
+    require('./passwordplugin.js'),
+    require('./useragentsplugin.js'),
+    require('./adminstatusplugin.js'),
+    require('./googlemapsplugin.js'),
+];
+
 
     var plugins = {
         PluginNotAvailable: UIPlugin.extend({
@@ -50,5 +53,4 @@ define([
         });
     });
 
-    return plugins;
-});
+module.exports =  plugins;

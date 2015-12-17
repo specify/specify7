@@ -1,12 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'queryfield',
-    'parsespecifyproperties', 'attachmentplugin', 'attachments',
-    'userinfo', 'jquery-ui', 'jquery-bbq'
-], function(
-    $, _, Backbone, schema, QueryFieldUI,
-    parsespecifyproperties, AttachmentPlugin, attachments, userInfo
-) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema                 = require('./schema.js');
+var QueryFieldUI           = require('./queryfield.js');
+var parsespecifyproperties = require('./parsespecifyproperties.js');
+var AttachmentPlugin       = require('./attachmentplugin.js');
+var attachments            = require('./attachments.js');
+var userInfo               = require('./userinfo.js');
+
     var title =  "Reports";
 
     var dialog;
@@ -447,7 +451,7 @@ define([
         });
     }
 
-    return function(options) {
+module.exports =  function(options) {
         options || (options = {});
         var appRs = new schema.models.SpAppResource.LazyCollection();
         appRs.url = () => "/report_runner/get_reports" +
@@ -456,4 +460,4 @@ define([
             new ReportListDialog(_.extend(options, { appResources: appRs})).render();
         });
     };
-});
+

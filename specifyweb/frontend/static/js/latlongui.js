@@ -1,9 +1,16 @@
-define([
-    'jquery', 'underscore', 'specifyapi', 'latlongutils', 'uiplugin', 'templates'
-], function($, _, api, latlongutils, UIPlugin, templates) {
-    "use strict";
+"use strict";
 
-    return UIPlugin.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+
+
+var api = require('./specifyapi.js');
+var latlongutils = require('./latlongutils.js');
+var UIPlugin = require('./uiplugin.js');
+var templates = require('./templates.js');
+
+
+module.exports =  UIPlugin.extend({
         __name__: "LatLongUI",
         initialize: function() {
             UIPlugin.prototype.initialize.apply(this, arguments);
@@ -79,4 +86,4 @@ define([
             return this;
         }
     }, { pluginsProvided: ['LatLonUI'] });
-});
+

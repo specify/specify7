@@ -1,5 +1,7 @@
-define(['underscore', 'initialcontext'], function (_, initialContext) {
-    "use strict";
+"use strict";
+
+var _ = require('underscore');
+var initialContext = require('./initialcontext.js');
 
     var systemInfo = {user_agent: window.navigator.userAgent};
 
@@ -7,5 +9,5 @@ define(['underscore', 'initialcontext'], function (_, initialContext) {
         _.extend(systemInfo, data);
     });
 
-    return systemInfo;
-});
+module.exports =  systemInfo;
+

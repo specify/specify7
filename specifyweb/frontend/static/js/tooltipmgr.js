@@ -1,5 +1,7 @@
-define(['jquery', 'underscore', 'jquery-ui'], function($, _) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
 
     function ToolTipMgr(view, control) {
         this.view = view;
@@ -35,5 +37,4 @@ define(['jquery', 'underscore', 'jquery-ui'], function($, _) {
         }
     });
 
-    return ToolTipMgr;
-});
+module.exports =  ToolTipMgr;

@@ -1,5 +1,8 @@
-define(['underscore', 'schema'], function(_, schema) {
-    "use strict";
+"use strict";
+
+var _ = require('underscore');
+
+var schema = require('./schema.js');
 
     var STRINGID_RE = /^([^\.]*)\.([^\.]*)\.(.*)$/;
 
@@ -141,5 +144,5 @@ define(['underscore', 'schema'], function(_, schema) {
         }
     });
 
-    return QueryFieldSpec;
-});
+module.exports =  QueryFieldSpec;
+

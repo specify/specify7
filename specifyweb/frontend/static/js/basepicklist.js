@@ -1,7 +1,12 @@
-define(['backbone', 'saveblockers', 'tooltipmgr'], function(Backbone, saveblockers, ToolTipMgr) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var Backbone = require('./backbone.js');
+
+var saveblockers = require('./saveblockers.js');
+var ToolTipMgr = require('./tooltipmgr.js');
+
+
+module.exports =  Backbone.View.extend({
         initialize: function(options) {
             this.infoPromise = this.getItems(options);
         },
@@ -20,4 +25,4 @@ define(['backbone', 'saveblockers', 'tooltipmgr'], function(Backbone, saveblocke
             this._render(info);
         }
     });
-});
+

@@ -1,13 +1,18 @@
-define([
-    'jquery', 'underscore', 'uiplugin', 'schema', 'querycbx'
-], function($, _, UIPlugin, schema, QueryCbx) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var UIPlugin = require('./uiplugin.js');
+var schema   = require('./schema.js');
+var QueryCbx = require('./querycbx.js');
+
 
     var hostTaxonTypesearch = $.parseXML(
         '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>'
     );
 
-    return UIPlugin.extend({
+module.exports =  UIPlugin.extend({
         __name__: "HostTaxonPlugin",
         render: function() {
             var input = $('<input type="text" name="hosttaxon">');
@@ -37,4 +42,4 @@ define([
             }).render();
         }
     }, { pluginsProvided: ['HostTaxonPlugin'] });
-});
+

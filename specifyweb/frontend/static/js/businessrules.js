@@ -1,8 +1,13 @@
-define([
-    'jquery', 'underscore', 'q', 'specifyapi', 'saveblockers',
-    'treebusinessrules', 'businessruledefs'
-], function($, _, Q, api, saveblockers, treeBusinessRules, rules) {
-    "use strict";
+"use strict";
+
+var $                 = require('jquery');
+var _                 = require('underscore');
+var Q                 = require('./vendor/q-1.4.1.js');
+var api               = require('./specifyapi.js');
+var saveblockers      = require('./saveblockers.js');
+var treeBusinessRules = require('./treebusinessrules.js');
+var rules             = require('./businessruledefs.js');
+
     var enabled = true;
 
     api.on('initresource', function(resource) {
@@ -279,7 +284,7 @@ define([
     };
 
 
-    return {
+module.exports = {
         enable: function(e) {
             return enabled = e;
         },
@@ -287,4 +292,4 @@ define([
             return enabled;
         }
     };
-});
+

@@ -1,7 +1,6 @@
-define([], function() {
-    return function(value, message) {
+module.exports = function(value, message) {
         if (!value) {
             throw new Error(message);
         }
     };
-});
+

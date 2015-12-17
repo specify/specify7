@@ -1,5 +1,7 @@
-define(['jquery', 'underscore'], function($, _) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
 
     //TODO: only propagate for dependent resources
 
@@ -111,8 +113,7 @@ define(['jquery', 'underscore'], function($, _) {
         }
     });
 
-    return {
+module.exports = {
         SaveBlockers: SaveBlockers,
         FieldViewEnhancer: FieldViewEnhancer
     };
-});

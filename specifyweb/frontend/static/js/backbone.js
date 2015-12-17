@@ -1,5 +1,8 @@
-define(['underscore', 'backbone-orig'], function(_, Backbone) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('backbone');
 
     // http://stackoverflow.com/questions/14866014/debugging-javascript-backbone-and-marionette
 
@@ -30,5 +33,6 @@ define(['underscore', 'backbone-orig'], function(_, Backbone) {
     };
 
     Backbone.Model.extend = Backbone.Collection.extend = Backbone.Router.extend = Backbone.View.extend = newExtend;
-    return Backbone;
-});
+
+Backbone.$ = $;
+module.exports = Backbone;

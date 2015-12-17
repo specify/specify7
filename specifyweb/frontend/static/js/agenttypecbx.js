@@ -1,7 +1,10 @@
-define(['jquery', 'backbone'], function($, Backbone) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var Backbone = require('./backbone.js');
+
+
+module.exports =  Backbone.View.extend({
         __name__: "AgentTypeCBX",
         events: {
             change: 'set'
@@ -27,4 +30,4 @@ define(['jquery', 'backbone'], function($, Backbone) {
             this.resource.set(this.field, val);
         }
     });
-});
+

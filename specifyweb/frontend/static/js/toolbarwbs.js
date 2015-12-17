@@ -1,9 +1,10 @@
-define([
-    'schema', 'wbsdialog', 'userinfo'
-], function(schema, WbsDialog, userInfo) {
-    "use strict";
+"use strict";
 
-    return {
+var schema      = require('./schema.js');
+var WbsDialog   = require('./wbsdialog.js');
+var userInfo    = require('./userinfo.js');
+
+module.exports =  {
         task: 'workbenches',
         title: 'Workbenches',
         icon: '/images/Workbench32x32.png',
@@ -17,4 +18,4 @@ define([
                 });
         }
     };
-});
+

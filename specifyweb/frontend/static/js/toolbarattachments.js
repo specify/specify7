@@ -1,7 +1,9 @@
-define(['navigation', 'attachments'], function(navigation, attachments) {
-    "use strict";
+"use strict";
 
-    return {
+var navigation = require('./navigation.js');
+var attachments = require('./attachments.js');
+
+module.exports =  {
         task: 'attachments',
         title: 'Attachments',
         icon: '/images/attach_pref.png',
@@ -10,4 +12,4 @@ define(['navigation', 'attachments'], function(navigation, attachments) {
             navigation.go('/specify/attachments/');
         }
     };
-});
+

@@ -1,7 +1,14 @@
-define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q, Base, schema) {
-    "use strict";
+"use strict";
 
-    return Base.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+var Q = require('./vendor/q-1.4.1.js');
+
+var Base   = require('./basepicklist.js');
+var schema = require('./schema.js');
+
+
+module.exports = Base.extend({
         __name__: "PickListCBXView",
         events: {
             autocompleteselect: 'selected',
@@ -127,4 +134,3 @@ define(['jquery', 'underscore', 'q', 'basepicklist', 'schema'], function($, _, Q
                 });
         }
     });
-});

@@ -1,12 +1,18 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'populateform', 'savebutton', 'deletebutton', 'specifyform',
-    'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone, schema, navigation, populateform,
-            SaveButton, DeleteButton, specifyform) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema       = require('./schema.js');
+var navigation   = require('./navigation.js');
+var populateform = require('./populateform.js');
+var SaveButton   = require('./savebutton.js');
+var DeleteButton = require('./deletebutton.js');
+var specifyform  = require('./specifyform.js');
+
+
+module.exports = Backbone.View.extend({
         __name__: "EditResourceDialog",
         className: "resource-edit-dialog",
         initialize: function(options) {
@@ -51,4 +57,4 @@ define([
             this.$el.dialog('close');
         }
     });
-});
+

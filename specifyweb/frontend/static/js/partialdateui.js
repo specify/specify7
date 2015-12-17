@@ -1,10 +1,18 @@
-define([
-    'jquery', 'underscore', 'uiplugin', 'templates', 'moment', 'dateformat', 'tooltipmgr', 'saveblockers'
-], function($, _, UIPlugin, templates, moment, dateFormatStr, ToolTipMgr, saveblockers) {
-    "use strict";
+"use strict";
+
+var $      = require('jquery');
+var _      = require('underscore');
+var moment = require('moment');
+
+var UIPlugin      = require('./uiplugin.js');
+var templates     = require('./templates.js');
+var dateFormatStr = require('./dateformat.js');
+var ToolTipMgr    = require('./tooltipmgr.js');
+var saveblockers  = require('./saveblockers.js');
+
     var precisions = ['full', 'month-year', 'year'];
 
-    return UIPlugin.extend({
+module.exports =  UIPlugin.extend({
         __name__: "PartialDateUI",
         events: {
             'change select': 'updatePrecision',
@@ -109,4 +117,4 @@ define([
             this.updateIfValid(moment());
         }
     }, { pluginsProvided: ['PartialDateUI'] });
-});
+

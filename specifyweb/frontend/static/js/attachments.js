@@ -1,7 +1,12 @@
-define([
-    'jquery', 'underscore', 'icons',  'schema', 'assert', 'initialcontext'
-], function($, _, icons, schema, assert, initialContext) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var icons          = require('./icons.js');
+var schema         = require('./schema.js');
+var assert         = require('./assert.js');
+var initialContext = require('./initialcontext.js');
 
     var settings;
     initialContext.load('attachment_settings.json', data => settings = data);
@@ -123,5 +128,5 @@ define([
         }
     };
 
-    return attachments;
-});
+module.exports = attachments;
+

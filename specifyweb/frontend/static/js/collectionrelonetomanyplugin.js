@@ -1,11 +1,17 @@
-define([
-    'jquery', 'underscore', 'dataobjformatters',
-    'navigation', 'uiplugin', 'whenall', 'schema'
-], function($, _, dataobjformatters, navigation, UIPlugin, whenAll, schema) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var dataobjformatters = require('./dataobjformatters.js');
+var navigation        = require('./navigation.js');
+var UIPlugin          = require('./uiplugin.js');
+var whenAll           = require('./whenall.js');
+var schema            = require('./schema.js');
+
     var format = dataobjformatters.format;
 
-    return UIPlugin.extend({
+module.exports =  UIPlugin.extend({
         __name__: "CollectionRelOneToManyPlugin",
         events: {
             'click a': 'go'
@@ -73,4 +79,4 @@ define([
             navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
         }
     }, { pluginsProvided: ["CollectionRelOneToManyPlugin"] });
-});
+

@@ -1,7 +1,8 @@
-define([
-    'jquery', 'underscore', 'initialcontext'
-], function ($, _, initialContext) {
-    "use strict";
+"use strict";
+
+var $              = require('jquery');
+var _              = require('underscore');
+var initialContext = require('./initialcontext.js');
 
     var iconGroups = {};
     initialContext
@@ -31,7 +32,7 @@ define([
         return iconNode;
     }
 
-    return {
+module.exports = {
         getIcon: function (icon) {
             var group, iconFile;
             _.find(iconGroups, function(xml, name) {
@@ -52,4 +53,4 @@ define([
             }
         }
     };
-});
+

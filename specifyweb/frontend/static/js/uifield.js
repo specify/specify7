@@ -1,13 +1,22 @@
-define([
-    'q', 'jquery', 'underscore', 'backbone', 'dataobjformatters', 'fieldformat', 'uiparse',
-    'uiinputfield', 'saveblockers', 'tooltipmgr', 'dateformat'
-], function(
-    Q, $, _, Backbone, dataobjformatters, fieldformat, uiparse,
-    UIFieldInput, saveblockers, ToolTipMgr, dateFormatStr) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Q        = require('./vendor/q-1.4.1.js');
+var Backbone = require('./backbone.js');
+
+
+var dataobjformatters = require('./dataobjformatters.js');
+var fieldformat       = require('./fieldformat.js');
+var uiparse           = require('./uiparse.js');
+var UIFieldInput      = require('./uiinputfield.js');
+var saveblockers      = require('./saveblockers.js');
+var ToolTipMgr        = require('./tooltipmgr.js');
+var dateFormatStr     = require('./dateformat.js');
+
     var objformat = dataobjformatters.format;
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "UIField",
         render: function() {
             var fieldName = this.$el.attr('name');
@@ -97,4 +106,4 @@ define([
             this.model.saveBlockers.remove(key + ':' + this.fieldName);
         }
     });
-});
+

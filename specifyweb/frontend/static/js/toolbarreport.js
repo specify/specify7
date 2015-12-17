@@ -1,7 +1,7 @@
-define([
-    'reports', 'initialcontext',
-], function(reports, initialContext) {
-    "use strict";
+"use strict";
+
+var reports        = require('./reports.js');
+var initialContext = require('./initialcontext.js');
 
     initialContext.load('report_runner_status.json', status => reports.disable = !status.available);
 
@@ -13,5 +13,5 @@ define([
         execute: reports
     };
 
-    return reportsToolbarItem;
-});
+module.exports =  reportsToolbarItem;
+

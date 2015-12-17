@@ -1,5 +1,8 @@
-define(['underscore', 'initialcontext'], function(_, initialContext) {
-    "use strict";
+"use strict";
+
+var _ = require('underscore');
+var Q = require('./vendor/q-1.4.1.js');
+var initialContext = require('./initialcontext.js');
 
     var schemaBase = {
         domainLevelIds: undefined,
@@ -28,5 +31,5 @@ define(['underscore', 'initialcontext'], function(_, initialContext) {
         schemaBase.paleoContextChildTable = data.paleoContextChildTable;
     });
 
-    return schemaBase;
-});
+    module.exports = schemaBase;
+

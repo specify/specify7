@@ -1,6 +1,9 @@
-define(['jquery', 'underscore'], function($, _) {
-    "use strict";
-    return function(doingFormTable, mode, cell, id) {
+"use strict";
+
+var $                = require('jquery');
+var _                = require('underscore');
+
+module.exports = function(doingFormTable, mode, cell, id) {
         var uitype = cell.attr('uitype');
         if (!uitype) {
             console.error('field is missing uitype', cell);
@@ -77,4 +80,3 @@ define(['jquery', 'underscore'], function($, _) {
 
         return maker();
     };
-});

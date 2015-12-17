@@ -1,7 +1,9 @@
-define([
-    'jquery', 'underscore', 'backbone', 'assert', 'specifyapi', 'jquery-bbq'
-], function($, _, Backbone, assert, api) {
-    "use strict";
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+var assert = require('./assert.js');
+var api = require('./specifyapi.js');
 
     function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -542,5 +544,4 @@ define([
         }
     });
 
-    return ResourceBase;
-});
+module.exports = ResourceBase;

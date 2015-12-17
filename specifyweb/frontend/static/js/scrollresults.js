@@ -1,10 +1,14 @@
-define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbone) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
 
     var win = $(window);
     var doc = $(document);
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "ScrollResults",
         events: {
             'scroll': 'scroll',
@@ -92,4 +96,4 @@ define(['jquery', 'underscore', 'backbone', 'jquery-bbq'], function($, _, Backbo
             Backbone.View.prototype.undelegateEvents.apply(this, arguments);
         }
     });
-});
+

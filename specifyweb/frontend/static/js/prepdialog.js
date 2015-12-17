@@ -1,10 +1,14 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema',
-    'stringlocalization'
-], function($, _, Backbone, schema, s) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema = require('./schema.js');
+var s      = require('./stringlocalization.js');
+
+
+module.exports =  Backbone.View.extend({
         __name__: "PrepDialog",
         className: "prepdialog table-list-dialog",
         colobjModel: schema.getModel("collectionobject"),
@@ -53,4 +57,4 @@ define([
             return s.localizeFrom('resources', key, fallback);
         }
     });
-});
+

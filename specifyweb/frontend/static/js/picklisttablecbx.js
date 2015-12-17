@@ -1,7 +1,12 @@
-define(['jquery', 'underscore', 'backbone', 'schema'], function($, _, Backbone, schema) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema = require('./schema.js');
+
+module.exports =  Backbone.View.extend({
         __name__: "PickListTableCBX",
         events: {
             change: 'set'
@@ -29,4 +34,4 @@ define(['jquery', 'underscore', 'backbone', 'schema'], function($, _, Backbone, 
             this.resource.set('tablename', this.$el.val());
         }
     });
-});
+

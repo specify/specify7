@@ -1,10 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema',
-    'specifyform', 'querycbxsearch', 'templates', 'assert'
-], function($, _, Backbone, schema, specifyform, QueryCbxSearch, templates, assert) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema         = require('./schema.js');
+var specifyform    = require('./specifyform.js');
+var QueryCbxSearch = require('./querycbxsearch.js');
+var templates      = require('./templates.js');
+var assert         = require('./assert.js');
+
+module.exports =  Backbone.View.extend({
         __name__: "Subview",
         initialize: function(options) {
             // options = {
@@ -86,4 +92,4 @@ define([
             this.render();
         }
     });
-});
+

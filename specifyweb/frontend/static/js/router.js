@@ -1,5 +1,6 @@
-define(['backbone'], function(Backbone) {
-    "use strict";
+"use strict";
+
+var Backbone = require('./backbone.js');
 
     // make the Backbone routing mechanisms ignore queryparams in urls
     // this gets rid of all that *splat cruft in the routes
@@ -14,5 +15,4 @@ define(['backbone'], function(Backbone) {
         __name__: "SpecifyRouter"
     });
 
-    return new Router();
-});
+module.exports = new Router();

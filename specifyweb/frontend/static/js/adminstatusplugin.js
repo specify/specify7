@@ -1,7 +1,10 @@
-define(['jquery', 'uiplugin'], function($, UIPlugin) {
-    "use strict";
+"use strict";
 
-    return UIPlugin.extend({
+var $ = require('jquery');
+var UIPlugin = require('./uiplugin.js');
+
+
+module.exports =  UIPlugin.extend({
         __name__: "AdminStatusPlugin",
         events: {
             'click': 'clicked'
@@ -29,4 +32,4 @@ define(['jquery', 'uiplugin'], function($, UIPlugin) {
             });
         }
     }, { pluginsProvided: ['AdminStatusUI'] });
-});
+

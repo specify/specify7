@@ -1,9 +1,13 @@
-define([
-    'jquery', 'underscore', 'backbone', 'templates',
-    'scrollresults', 'queryresults',
-    'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, templates, ScrollResults, QueryResults) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+
+var templates     = require('./templates.js');
+var ScrollResults = require('./scrollresults.js');
+var QueryResults  = require('./queryresults.js');
 
     function renderHeader(fieldSpec) {
         var field = _.last(fieldSpec.joinPath);
@@ -80,5 +84,5 @@ define([
         }
     });
 
-    return QueryResultsTable;
-});
+module.exports =  QueryResultsTable;
+

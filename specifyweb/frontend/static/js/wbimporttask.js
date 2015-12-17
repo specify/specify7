@@ -1,7 +1,16 @@
-define([
-    'jquery', 'backbone', 'q', 'bacon', 'schema', 'templates', 'wbtemplateeditor', 'navigation', 'router', 'specifyapp'
-], function($, Backbone, Q, Bacon, schema, templates, WBTemplateEditor, navigation, router, app) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var Backbone = require('./backbone.js');
+var Q        = require('./vendor/q-1.4.1.js');
+var Bacon    = require('bacon');
+
+var schema           = require('./schema.js');
+var templates        = require('./templates.js');
+var WBTemplateEditor = require('./wbtemplateeditor.js');
+var navigation       = require('./navigation.js');
+var router           = require('./router.js');
+var app              = require('./specifyapp.js');
 
     function Preview($table, previews, hasHeader) {
         Bacon.combineWith(
@@ -137,7 +146,7 @@ define([
     });
 
 
-    return function() {
+module.exports = function() {
         router.route('workbench-import/', 'workbench-import', function() {
             app.setTitle("Import Workbench");
             var templates = new schema.models.WorkbenchTemplate.LazyCollection();
@@ -146,4 +155,4 @@ define([
             });
         });
     };
-});
+

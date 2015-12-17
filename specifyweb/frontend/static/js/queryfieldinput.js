@@ -1,7 +1,15 @@
-define([
-    'jquery', 'underscore', 'backbone', 'fieldformat', 'uiparse', 'uiinputfield', 'saveblockers', 'tooltipmgr'
-], function($, _, Backbone, fieldformat, uiparse, UIFieldInput, saveblockers, ToolTipMgr) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+
+var fieldformat  = require('./fieldformat.js');
+var uiparse      = require('./uiparse.js');
+var UIFieldInput = require('./uiinputfield.js');
+var saveblockers = require('./saveblockers.js');
+var ToolTipMgr   = require('./tooltipmgr.js');
 
     var intParser = uiparse.bind(null, {type: 'java.lang.Integer'});
     var stringParser = uiparse.bind(null, {type: 'java.lang.String'});
@@ -136,8 +144,8 @@ define([
         {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];
 
-    return _.map(opInfo, function(extras, i) {
+module.exports =  _.map(opInfo, function(extras, i) {
         var options = _.extend({ __name__: "OpFieldInputUI", index: i }, extras);
         return FieldInputUI.extend(options);
     });
-});
+

@@ -1,9 +1,11 @@
-define([
-    'jquery', 'underscore', 'backbone', 'q'
-], function($, _, Backbone, Q) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var Q        = require('./vendor/q-1.4.1.js');
+
+module.exports =  Backbone.View.extend({
         __name__: "CheckBox",
         events: {
             'change': 'change'
@@ -40,4 +42,4 @@ define([
             }
         }
     });
-});
+

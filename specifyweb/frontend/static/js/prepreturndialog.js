@@ -1,8 +1,12 @@
-define([
-    'jquery', 'underscore', 'schema', 'fieldformat', 'prepdialog', 'userinfo',
-    'jquery-ui'
-], function($, _, schema, FieldFormat, PrepDialog, userInfo) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var schema      = require('./schema.js');
+var FieldFormat = require('./fieldformat.js');
+var PrepDialog  = require('./prepdialog.js');
+var userInfo    = require('./userinfo.js');
 
     var dialog;
     function makeDialog(el, options) {
@@ -14,7 +18,7 @@ define([
         }, options));
     }
 
-    return PrepDialog.extend({
+module.exports =  PrepDialog.extend({
         __name__: "PrepReturnDialog",
         className: "prepreturndialog table-list-dialog",
         events: {
@@ -310,4 +314,4 @@ define([
 
         //<<<<<<<<<<<<<<<<<<<<<<< events
     });
-});
+

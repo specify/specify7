@@ -1,10 +1,23 @@
-define([
-    'jquery', 'underscore', 'backbone', 'localizeform', 'specifyform', 'combobox', 'uifield',
-    'querycbx', 'specifyplugins', 'specifycommands', 'recordselector', 'subviewbutton',
-    'formtable', 'formtableinteractionitem', 'subview', 'checkbox', 'spinnerui'
-], function($, _, Backbone, localizeForm, specifyform, ComboBox, UIField, QueryCbx, uiplugins, uicommands,
-            RecordSelector, SubViewButton, FormTable, IActionItemFormTable, SubView, CheckBox, SpinnerUI) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var localizeForm         = require('./localizeform.js');
+var specifyform          = require('./specifyform.js');
+var ComboBox             = require('./combobox.js');
+var UIField              = require('./uifield.js');
+var QueryCbx             = require('./querycbx.js');
+var uiplugins            = require('./specifyplugins.js');
+var uicommands           = require('./specifycommands.js');
+var RecordSelector       = require('./recordselector.js');
+var SubViewButton        = require('./subviewbutton.js');
+var FormTable            = require('./formtable.js');
+var IActionItemFormTable = require('./formtableinteractionitem.js');
+var SubView              = require('./subview.js');
+var CheckBox             = require('./checkbox.js');
+var SpinnerUI            = require('./spinnerui.js');
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -86,5 +99,5 @@ define([
         return form;
     };
 
-    return populateForm;
-});
+module.exports = populateForm;
+

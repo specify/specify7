@@ -1,11 +1,16 @@
-define([
-    'require', 'jquery', 'underscore', 'backbone', 'bacon',
-    'immutable', 'schema', 'templates', 'wbschema', 'userinfo'
-], function(
-    require, $, _, Backbone, Bacon, Immutable,
-    schema, templates, wbschema, userInfo
-) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+var Bacon     = require('bacon');
+var Immutable = require('immutable');
+
+
+var schema     = require('./schema.js');
+var templates  = require('./templates.js');
+var wbschema   = require('./wbschema.js');
+var userInfo   = require('./userinfo.js');
 
     function SelectedTable($tables, selectedMapping) {
         return $tables
@@ -179,7 +184,7 @@ define([
             }).toArray();
     }
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "WorkbenchTemplateEditor",
         className: 'workbench-template-editor',
         initialize: function(options) {
@@ -280,4 +285,4 @@ define([
             return this;
         }
     });
-});
+

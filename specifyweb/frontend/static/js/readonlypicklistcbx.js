@@ -1,7 +1,11 @@
-define(['jquery', 'underscore', 'basepicklist'], function($, _, Base) {
-    "use strict";
+"use strict";
 
-    return Base.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+
+var Base = require('./basepicklist.js');
+
+module.exports =  Base.extend({
         __name__: "ReadOnlyPickListView",
         events: {
             change: 'setValueIntoModel'
@@ -64,4 +68,4 @@ define(['jquery', 'underscore', 'basepicklist'], function($, _, Base) {
             this.$el.val(info.resource.get(info.field.name));
         }
     });
-});
+

@@ -1,7 +1,10 @@
-define(['schema', 'recordsetsdialog', 'userinfo'], function(schema, RecordSetsDialog, userInfo) {
-    "use strict";
+"use strict";
 
-    return {
+var schema              = require('./schema.js');
+var RecordSetsDialog    = require('./recordsetsdialog.js');
+var userInfo            = require('./userinfo.js');
+
+module.exports =  {
         task: 'recordsets',
         title: 'Record Sets',
         icon: '/images/RecordSet32x32.png',
@@ -16,4 +19,4 @@ define(['schema', 'recordsetsdialog', 'userinfo'], function(schema, RecordSetsDi
                 });
         }
     };
-});
+

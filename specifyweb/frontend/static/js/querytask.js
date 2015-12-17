@@ -1,10 +1,20 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'queryfield', 'templates', 'userinfo', 'specifyapp',
-    'queryfromtree', 'navigation', 'queryresultstable', 'editresourcedialog', 'router',
-    'jquery-bbq', 'jquery-ui'
-], function($, _, Backbone, schema, QueryFieldUI, templates, userInfo, app,
-            queryFromTree, navigation, QueryResultsTable, EditResourceDialog, router) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var schema             = require('./schema.js');
+var QueryFieldUI       = require('./queryfield.js');
+var templates          = require('./templates.js');
+var userInfo           = require('./userinfo.js');
+var app                = require('./specifyapp.js');
+var queryFromTree      = require('./queryfromtree.js');
+var navigation         = require('./navigation.js');
+var QueryResultsTable  = require('./queryresultstable.js');
+var EditResourceDialog = require('./editresourcedialog.js');
+var router             = require('./router.js');
+
     var setTitle = app.setTitle;
 
     var QueryBuilder = Backbone.View.extend({
@@ -176,7 +186,7 @@ define([
         }
     });
 
-    return function() {
+module.exports =  function() {
         router.route('query/:id/', 'storedQuery', function(id) {
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });
@@ -217,4 +227,4 @@ define([
             });
         });
     };
-});
+

@@ -1,9 +1,11 @@
-define([
-    'jquery', 'underscore', 'uiplugin', 'jquery-bbq'
-], function($, _, UIPlugin) {
-    "use strict";
+"use strict";
 
-    return UIPlugin.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+
+var UIPlugin = require('./uiplugin.js');
+
+module.exports =  UIPlugin.extend({
         __name__: "GeoLocatePlugin",
         events: {
             'click': 'click'
@@ -91,4 +93,4 @@ define([
             });
         }
     }, { pluginsProvided: ['LocalityGeoRef'] });
-});
+

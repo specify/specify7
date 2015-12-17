@@ -1,7 +1,13 @@
-define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbone, templates) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var templates = require('./templates.js');
+
+
+module.exports =  Backbone.View.extend({
         __name__: "DeleteButton",
         events: {
             'click .delete-button': 'openDialog'
@@ -83,4 +89,4 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             this.model.destroy().done(this.trigger.bind(this, 'deleted'));
         }
     });
-});
+

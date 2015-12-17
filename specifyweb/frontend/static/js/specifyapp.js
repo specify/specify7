@@ -1,19 +1,24 @@
-define([
-    'jquery', 'userinfo', 'populateform',
-    'errorview', 'welcomeview', 'notfoundview', 'navigation',
-    'resourceview', 'router', 'systeminfo'
-], function (
-    $, userInfo, populateForm, errorview,
-    WelcomeView, NotFoundView, navigation,
-    ResourceView, router, systemInfo) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+
+global.jQuery = $;
+require('./vendor/jquery.contextMenu.v1.6.6.js');
+require('jquery-ui');
+require('jquery-bbq');
+
+var userInfo     = require('./userinfo.js');
+var populateForm = require('./populateform.js');
+var errorview    = require('./errorview.js');
+var WelcomeView  = require('./welcomeview.js');
+var NotFoundView = require('./notfoundview.js');
+var navigation   = require('./navigation.js');
+var ResourceView = require('./resourceview.js');
+var router       = require('./router.js');
+var systemInfo   = require('./systeminfo.js');
 
     var currentView;
     var versionMismatchWarned = false;
-
-    // get a reference to the content div
-    // where we will draw the rest of the app
-    var rootContainer = $('#content');
 
     // setup basic routes.
     router
@@ -37,12 +42,12 @@ define([
     // also manages other niceties involved in changing views
     function setCurrentView(view) {
         currentView && currentView.remove(); // remove old view
-        rootContainer.empty();
+        $('#content').empty();
         $('.ui-autocomplete').remove(); // these are getting left behind sometimes
         $('.ui-dialog-content').dialog('close'); // close any open dialogs
         currentView = view;
         currentView.render();
-        rootContainer.append(currentView.el);
+        $('#content').append(currentView.el);
 
         if (systemInfo.specify6_version !== systemInfo.database_version && !versionMismatchWarned) {
             $('<div title="Version Mismatch">' +
@@ -104,5 +109,5 @@ define([
         getCurrentView: function() { return currentView; }  // a reference to the current view
     };
 
-    return app;
-});
+module.exports =  app;
+

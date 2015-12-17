@@ -1,5 +1,10 @@
-define(['jquery', 'underscore', 'moment', 'dateformat'], function($, _, moment, dateFormatStr) {
-    "use strict";
+"use strict";
+
+var $      = require('jquery');
+var _      = require('underscore');
+var moment = require('moment');
+
+var dateFormatStr = require('./dateformat.js');
 
     var parsers = {
         "java.lang.Boolean": function(field, value) {
@@ -130,7 +135,7 @@ define(['jquery', 'underscore', 'moment', 'dateformat'], function($, _, moment, 
 
     var stringLike = _.bind(_.contains, _, ['java.lang.String', 'text']);
 
-    return function(field, value) {
+module.exports = function(field, value) {
         if (value.trim() === '' && !stringLike(field.type))
             return field.isRequired ? {
                 value: value,
@@ -149,5 +154,5 @@ define(['jquery', 'underscore', 'moment', 'dateformat'], function($, _, moment, 
             reason: "No parser for type " + field.type
         };
     };
-});
+
 

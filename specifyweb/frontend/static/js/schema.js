@@ -1,8 +1,10 @@
-define([
-    'schemabase', 'schemaextras', 'initialcontext',
-    'specifymodel', 'specifyfield'
-], function(schema, extras, initialContext) {
-    "use strict";
+"use strict";
+var schema         = require('./schemabase.js');
+var extras         = require('./schemaextras.js');
+var initialContext = require('./initialcontext.js');
+
+require('./specifymodel.js');
+require('./specifyfield.js');
 
     schema.models = {};
     initialContext.load('datamodel.json', tables => tables.forEach(
@@ -14,5 +16,4 @@ define([
         })
     );
 
-    return schema;
-});
+    module.exports = schema;

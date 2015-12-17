@@ -1,9 +1,18 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'queryresultstable', 'router',
-    'queryfieldspec', 'whenall', 'stringlocalization', 'initialcontext', 'specifyapp'
-], function($, _, Backbone, schema, QueryResultsTable, router,
-            QueryFieldSpec, whenAll, s, initialContext, app) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var schema            = require('./schema.js');
+var QueryResultsTable = require('./queryresultstable.js');
+var router            = require('./router.js');
+var QueryFieldSpec    = require('./queryfieldspec.js');
+var whenAll           = require('./whenall.js');
+var s                 = require('./stringlocalization.js');
+var initialContext    = require('./initialcontext.js');
+var app               = require('./specifyapp.js');
+
 
     var relatedSearches;
     initialContext.load('available_related_searches.json', data => relatedSearches = data);
@@ -113,11 +122,10 @@ define([
         }
     });
 
-    return function() {
+module.exports =  function() {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
             app.setTitle('Express Search');
         });
     };
-});
 

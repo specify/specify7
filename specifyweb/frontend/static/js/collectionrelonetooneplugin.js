@@ -1,10 +1,14 @@
-define([
-    'jquery', 'underscore', 'dataobjformatters', 'collectionrelonetomanyplugin'
-], function($, _, dataobjformatters, OneToMany) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var dataobjformatters = require('./dataobjformatters.js');
+var OneToMany         = require('./collectionrelonetomanyplugin.js');
+
     var format = dataobjformatters.format;
 
-    return OneToMany.extend({
+module.exports =  OneToMany.extend({
         __name__: "CollectionRelOneToOnePlugin",
         render: function() {
             var control = $('<div><a /><button>Set</button></div>');
@@ -25,4 +29,4 @@ define([
             }
         }
     }, { pluginsProvided: ['CollectionRelTypePlugin'] });
-});
+

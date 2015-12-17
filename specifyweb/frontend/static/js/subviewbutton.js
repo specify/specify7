@@ -1,6 +1,12 @@
-define([
-    'jquery', 'backbone', 'icons', 'specifyform', 'navigation', 'recordselector', 'jquery-bbq'
-], function($, Backbone, icons, specifyform, navigation, RecordSelector) {
+"use strict";
+
+var $        = require('jquery');
+var Backbone = require('./backbone.js');
+
+var icons          = require('./icons.js');
+var specifyform    = require('./specifyform.js');
+var navigation     = require('./navigation.js');
+var RecordSelector = require('./recordselector.js');
 
     var Base =  Backbone.View.extend({
         __name__: "SubviewButtonBaseView",
@@ -174,9 +180,9 @@ define([
         }
     });
 
-    return {
+module.exports =  {
         ToMany: ToMany,
         ToOne: ToOne,
         Attachments: ToMany
     };
-});
+

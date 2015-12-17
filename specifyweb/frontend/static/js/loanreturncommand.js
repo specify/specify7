@@ -1,9 +1,13 @@
-define([
-    'require', 'jquery', 'underscore', 'uicommand', 'schema'
-], function(require, $, _, UICmd, schema) {
-    "use strict";
+"use strict";
 
-    return UICmd.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+
+var UICmd            = require('./uicommand.js');
+var schema           = require('./schema.js');
+var PrepReturnDialog = require('./prepreturndialog.js');
+
+module.exports =  UICmd.extend({
         __name__: "LoanReturnCommand",
         events: {
             'click': 'click'
@@ -35,9 +39,7 @@ define([
                     return lp.unresolved > 0;
                 });
                 if (lps.length > 0) {
-                    require(['prepreturndialog'], function (PrepReturnDialog) {
-                        new PrepReturnDialog({ preps: lps, model: model }).render();
-                    });
+                    new PrepReturnDialog({ preps: lps, model: model }).render();
                 } else {
                     $("<p>").append("There no unresolved preparations for this loan.").dialog({
                         modal: true,
@@ -57,4 +59,4 @@ define([
         }
 
     });
-});
+

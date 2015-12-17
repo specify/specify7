@@ -1,8 +1,16 @@
-define([
-    'jquery', 'underscore', 'd3', 'backbone', 'templates', 'schema',
-    'remoteprefs', 'dataobjformatters', 'systeminfo'
-], function($, _, d3, Backbone, templates, schema, prefs, dataobjectformatters, systemInfo) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var d3       = require('./vendor/d3.js');
+var Backbone = require('./backbone.js');
+
+var templates            = require('./templates.js');
+var schema               = require('./schema.js');
+var prefs                = require('./remoteprefs.js');
+var dataobjectformatters = require('./dataobjformatters.js');
+var systemInfo           = require('./systeminfo.js');
+
     var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
 
     var ACTION = ['Added', 'Modified', 'Deleted'];
@@ -228,7 +236,7 @@ define([
         });
     }
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "WelcomeView",
         className: "specify-welcome",
         events: {
@@ -251,4 +259,4 @@ define([
             });
         }
     });
-});
+

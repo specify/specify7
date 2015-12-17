@@ -1,8 +1,15 @@
-define([
-    'underscore', 'icons', 'schemabase', 'resourceapi', 'collectionapi',
-    'initialcontext', 'immutable'
-], function(_, icons, schema, ResourceBase, collectionapi, initialContext, Immutable) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Immutable = require('immutable');
+
+var icons          = require('./icons.js');
+var schema         = require('./schemabase.js');
+var ResourceBase   = require('./resourceapi.js');
+var collectionapi  = require('./collectionapi.js');
+var initialContext = require('./initialcontext.js');
+
     var localization;
     initialContext.load('schema_localization.json', data => localization = Immutable.fromJS(data));
 
@@ -96,5 +103,5 @@ define([
         }
     });
 
-    return schema;
-});
+module.exports = schema;
+

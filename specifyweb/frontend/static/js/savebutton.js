@@ -1,7 +1,12 @@
-define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbone, templates) {
-    "use strict";
+"use strict";
 
-    return Backbone.View.extend({
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var templates = require('./templates.js');
+
+module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
         events: {
             'click :submit': 'submit'
@@ -125,4 +130,4 @@ define(['jquery', 'underscore', 'backbone', 'templates'], function($, _, Backbon
             }
         }
     });
-});
+

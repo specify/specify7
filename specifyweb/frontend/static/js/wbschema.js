@@ -1,7 +1,12 @@
-define([
-    'jquery', 'underscore', 'immutable', 'schema', 'initialcontext',
-], function($, _, Immutable, schema, initialContext) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Immutable = require('immutable');
+
+var schema         = require('./schema.js');
+var initialContext = require('./initialcontext.js');
+
 
     var wbDataModelXML, autoMappingXML, tableInfos, autoMappings, fieldInfosSortedForSimpleMatch;
 
@@ -126,5 +131,5 @@ define([
         isDisallowedTable: isDisallowedTable
     };
 
-    return wbSchema;
-});
+module.exports =  wbSchema;
+

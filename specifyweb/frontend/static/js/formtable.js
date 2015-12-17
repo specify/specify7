@@ -1,15 +1,22 @@
-define([
-    'jquery', 'underscore', 'backbone', 'specifyform', 'templates',
-    'savebutton', 'deletebutton', 'assert'
-], function($, _, Backbone, specifyform, templates, SaveButton, DeleteButton, assert) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+
+var specifyform  = require('./specifyform.js');
+var templates    = require('./templates.js');
+var SaveButton   = require('./savebutton.js');
+var DeleteButton = require('./deletebutton.js');
+var assert       = require('./assert.js');
 
     var RENDER_ON_CHANGE = [
         'CollectingEvent.collectors',
         'ReferenceWork.authors'
     ];
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "FormTableView",
         events: {
             'click a.specify-edit, a.specify-display': 'edit',
@@ -147,4 +154,4 @@ define([
             self.buildDialog(newResource);
         }
     });
-});
+

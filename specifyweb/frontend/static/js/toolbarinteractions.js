@@ -1,7 +1,10 @@
-define(['navigation', 'interactionsdialog'], function(navigation, InteractionsDialog) {
-    "use strict";
+"use strict";
 
-    return {
+var navigation         = require('./navigation.js');
+var InteractionsDialog = require('./interactionsdialog.js');
+
+
+module.exports = {
         task: 'interactions',
         title: 'Interactions',
         icon: '/images/interactions.png',
@@ -11,4 +14,4 @@ define(['navigation', 'interactionsdialog'], function(navigation, InteractionsDi
             });
         }
     };
-});
+

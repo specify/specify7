@@ -1,7 +1,11 @@
-define([
-    'underscore', 'schema', 'q', 'specifyapi', 'dataobjformatters'
-], function(_, schema, Q, api, dataobjformatters) {
-    "use strict";
+"use strict";
+
+var _ = require('underscore');
+var Q = require('./vendor/q-1.4.1.js');
+
+var schema            = require('./schema.js');
+var api               = require('./specifyapi.js');
+var dataobjformatters = require('./dataobjformatters.js');
 
     // User defined picklist.
     //
@@ -64,9 +68,9 @@ define([
         return {getItems: source};
     }
 
-    return {
+module.exports = {
         userDefined   : makeMixin(userDefined),
         fromTable     : makeMixin(fromTable),
         fromField     : makeMixin(fromField)
     };
-});
+

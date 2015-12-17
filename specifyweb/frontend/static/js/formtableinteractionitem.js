@@ -1,9 +1,11 @@
-define([
-    'require', 'formtable', 'schema', 'userinfo'
-], function(require, FormTable, schema, userInfo) {
-    "use strict";
+"use strict";
 
-    return FormTable.extend({
+var FormTable = require('./formtable.js');
+var schema    = require('./schema.js');
+var userInfo  = require('./userinfo.js');
+
+
+module.exports =  FormTable.extend({
         __name__: "FormTableInteractionItemView",
 
         add: function(evt) {
@@ -19,7 +21,7 @@ define([
             var itemcollection = self.collection;
             recordSets.fetch({ limit: 5000 }).done(function() {
                 console.info(recordSets);
-                new (require('interactiondialog'))({
+                new (require('./interactiondialog.js'))({
                     recordSets: recordSets,
                     action: {table: table},
                     readOnly: true,
@@ -32,4 +34,4 @@ define([
         }
 
     });
-});
+

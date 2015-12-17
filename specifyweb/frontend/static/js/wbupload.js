@@ -1,13 +1,16 @@
-define([
-    'jquery', 'underscore', 'backbone', 'q', 'moment'
-], function($, _, Backbone, Q, moment) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var Q        = require('./vendor/q-1.4.1.js');
+var moment   = require('moment');
 
     function showTime(timeStr) {
         return timeStr ? moment(timeStr).fromNow() : '...';
     }
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "WBUploadView",
         initialize: function(options) {
             this.wb = options.wb;
@@ -97,5 +100,4 @@ define([
             });
         }
     });
-});
 

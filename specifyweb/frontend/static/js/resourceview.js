@@ -1,12 +1,15 @@
-define([
-    'jquery', 'underscore', 'backbone',
-    'specifyform', 'dataobjformatters', 'navigation', 'templates',
-    'savebutton', 'deletebutton',
-    'jquery-ui', 'jquery-bbq'
-], function($, _, Backbone,
-            specifyform, dataobjformatters, navigation, templates,
-            SaveButton, DeleteButton) {
-    "use strict";
+"use strict";
+
+var $                = require('jquery');
+var _                = require('underscore');
+var Backbone         = require('./backbone.js');
+
+var specifyform       = require('./specifyform.js');
+var dataobjformatters = require('./dataobjformatters.js');
+var navigation        = require('./navigation.js');
+var templates         = require('./templates.js');
+var SaveButton        = require('./savebutton.js');
+var DeleteButton      = require('./deletebutton.js');
 
     var NO_ADD_ANOTHER = [
         'Gift',
@@ -18,7 +21,7 @@ define([
         'RepositoryAgreement'
     ];
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "ResourceView",
         // triggered events = {
         //   saved(this.model, options),
@@ -129,4 +132,4 @@ define([
             this.trigger('deleted');
         }
     });
-});
+

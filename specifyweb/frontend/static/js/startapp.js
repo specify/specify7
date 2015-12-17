@@ -1,20 +1,33 @@
-define([
-    'jquery', 'underscore', 'backbone', 'businessrules',
-    'errorview', 'headerui', 'navigation',
-// Tasks
-    'datatask',
-    'querytask',
-    'treetask',
-    'expresssearchtask',
-    'datamodeltask',
-    'attachmentstask',
-    'wbtask',
-    'wbimporttask'
-], function module(
-    $, _, Backbone, businessRules, errorview,
-    HeaderUI, navigation) {
-    "use strict";
-    var tasks = _(arguments).tail(module.length);
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var businessRules    = require('./businessrules.js');
+var errorview        = require('./errorview.js');
+var HeaderUI         = require('./headerui.js');
+var navigation       = require('./navigation.js');
+
+var datatask          = require('./datatask.js');
+var querytask         = require('./querytask.js');
+var treetask          = require('./treetask.js');
+var expresssearchtask = require('./expresssearchtask.js');
+var datamodeltask     = require('./datamodeltask.js');
+var attachmentstask   = require('./attachmentstask.js');
+var wbtask            = require('./wbtask.js');
+var wbimporttask      = require('./wbimporttask.js');
+
+var tasks = [
+    datatask,
+    querytask,
+    treetask,
+    expresssearchtask,
+    datamodeltask,
+    attachmentstask,
+    wbtask,
+    wbimporttask
+];
 
 
     function handleUnexpectedError(event, jqxhr, settings, exception) {
@@ -39,7 +52,7 @@ define([
         console.log(arguments);
     }
 
-    return function appStart() {
+    module.exports = function appStart() {
         console.info('specify app starting');
         // addBasicRoutes(router);
         $(document).ajaxError(handleUnexpectedError);
@@ -56,5 +69,3 @@ define([
             href && navigation.go(href);
         });
     };
-
-});

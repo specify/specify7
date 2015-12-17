@@ -1,9 +1,14 @@
-define([
-    'jquery', 'underscore', 'specifyapi', 'uiplugin', 'attachments', 'jquery-ui'
-], function($, _, api, UIPlugin, attachments) {
-    "use strict";
+"use strict";
 
-    return UIPlugin.extend({
+var $ = require('jquery');
+var _ = require('underscore');
+
+
+var api         = require('./specifyapi.js');
+var UIPlugin    = require('./uiplugin.js');
+var attachments = require('./attachments.js');
+
+module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
         events: {
             'change :file': 'fileSelected',
@@ -86,4 +91,4 @@ define([
             });
         }
     }, { pluginsProvided: ['AttachmentPlugin'] });
-});
+

@@ -1,11 +1,19 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'specifyapi', 'navigation', 'domain',
-    'othercollectionview', 'notfoundview', 'userinfo', 'router', 'specifyapp',
-    'jquery-bbq'
-], function(
-    $, _, Backbone, schema, api, navigation, domain,
-    OtherCollectionView, NotFoundView, userInfo, router, app) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var schema              = require('./schema.js');
+var api                 = require('./specifyapi.js');
+var navigation          = require('./navigation.js');
+var domain              = require('./domain.js');
+var OtherCollectionView = require('./othercollectionview.js');
+var NotFoundView        = require('./notfoundview.js');
+var userInfo            = require('./userinfo.js');
+var router              = require('./router.js');
+var app                 = require('./specifyapp.js');
+
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
     function getRecordSetItem(recordSet, index) {
@@ -178,12 +186,11 @@ define([
         });
     }
 
-    return function() {
+module.exports =  function() {
         router.route('recordset/:id/', 'recordSetView', recordSetView);
         router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
         router.route('view/:model/:id/', 'resourceView', resourceView);
         router.route('view/:model/new/', 'newResourceView', newResourceView);
         router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
     };
-});
 

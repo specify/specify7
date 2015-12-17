@@ -1,5 +1,10 @@
-define(['jquery', 'underscore', 'schema', 'specifyapi'], function($, _, schema, api) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var api = require('./specifyapi.js');
+var schema = require('./schema.js');
 
     function takeBetween(items, startElem, endElem) {
         var start = 1 + _.indexOf(items, startElem);
@@ -73,5 +78,4 @@ define(['jquery', 'underscore', 'schema', 'specifyapi'], function($, _, schema, 
         }
     };
 
-    return domain;
-});
+module.exports = domain;

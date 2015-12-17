@@ -1,11 +1,14 @@
-define([
-    'jquery', 'underscore', 'schema', 'specifyformcells', 'parsespecifyproperties',
-    'processcolumndef', 'templates'
-], function specifyform(
-    $, _, schema, specifyformcells, parseSpecifyProperties,
-    processColumnDef, templates
-) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var schema                 = require('./schema.js');
+var specifyformcells       = require('./specifyformcells.js');
+var parseSpecifyProperties = require('./parsespecifyproperties.js');
+var processColumnDef       = require('./processcolumndef.js');
+var templates              = require('./templates.js');
+
     var formCounter = 0;
 
     function getModelFromViewdef(viewdef) {
@@ -135,5 +138,5 @@ define([
         }
     };
 
-    return specifyform;
-});
+module.exports = specifyform;
+

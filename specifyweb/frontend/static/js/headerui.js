@@ -1,24 +1,42 @@
-define([
-    'jquery', 'underscore', 'backbone', 'navigation', 'domain', 'schema', 'usertools', 'userinfo', 'router',
-    'jquery-bbq', 'jquery-ui',
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var navigation = require('./navigation.js');
+var domain     = require('./domain.js');
+var schema     = require('./schema.js');
+var UserTools  = require('./usertools.js');
+var userInfo   = require('./userinfo.js');
+var router     = require('./router.js');
+
 // Tasks included in header:
-    'toolbarwelcome',
-    'toolbardataentry',
-    'toolbarinteractions',
-    'toolbartrees',
-    'toolbarrecordsets',
-    'toolbarquery',
-    'toolbarreport',
-    'toolbarattachments',
-    'toolbarwbs',
-    'toolbarmasterkey',
-    'toolbarusers'
-], function headerUI(
-    $, _, Backbone, navigation, domain, schema, UserTools, userInfo, router,
-    jquery_bbq, jquery_ui
-) {
-    "use strict";
-    var toolModules = _(arguments).tail(headerUI.length);
+var toolbarwelcome      = require('./toolbarwelcome.js');
+var toolbardataentry    = require('./toolbardataentry.js');
+var toolbarinteractions = require('./toolbarinteractions.js');
+var toolbartrees        = require('./toolbartrees.js');
+var toolbarrecordsets   = require('./toolbarrecordsets.js');
+var toolbarquery        = require('./toolbarquery.js');
+var toolbarreport       = require('./toolbarreport.js');
+var toolbarattachments  = require('./toolbarattachments.js');
+var toolbarwbs          = require('./toolbarwbs.js');
+var toolbarmasterkey    = require('./toolbarmasterkey.js');
+var toolbarusers        = require('./toolbarusers.js');
+
+var toolModules = [
+    toolbarwelcome,
+    toolbardataentry,
+    toolbarinteractions,
+    toolbartrees,
+    toolbarrecordsets,
+    toolbarquery,
+    toolbarreport,
+    toolbarattachments,
+    toolbarwbs,
+    toolbarmasterkey,
+    toolbarusers,
+];
 
     var ExpressSearchInput = Backbone.View.extend({
         __name__: "ExpressSearchInput",
@@ -42,14 +60,14 @@ define([
     });
 
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
         __name__: "HeaderUI",
         events: {
             'click #site-nav > ul > li > a': 'siteNavClick',
             'click .username': 'openUserTools',
             'change #user-tools select': 'changeCollection'
         },
-        el: $('#site-header'),
+        el: '#site-header',
         initialize: function(options) {
             this.toolModules = toolModules.filter(function(mod){
                 return !(_.isFunction(mod.disabled) ? mod.disabled(userInfo) : mod.disabled);
@@ -108,4 +126,4 @@ define([
             navigation.switchCollection(parseInt(this.$('#user-tools select').val()), '/');
         }
     });
-});
+

@@ -1,9 +1,12 @@
-define(['underscore', 'schemabase'], function(_, schema) {
-    "use strict";
+"use strict";
+
+var $      = require('jquery');
+var _      = require('underscore');
+var schema = require('./schemabase.js');
 
     function alwaysTrue() { return true; }
 
-    return {
+module.exports = {
         Agent: function(model) {
             var fields = model.getAllFields();
             var catalogerOf = _(new schema.Field(model)).extend({
@@ -131,4 +134,4 @@ define(['underscore', 'schemabase'], function(_, schema) {
             fullName.readOnly = true;
         }
     };
-});
+

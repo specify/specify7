@@ -1,10 +1,19 @@
-define([
-    'underscore', 'backbone', 'q', 'picklistcbx', 'readonlypicklistcbx', 'getpicklistbyname', 'picklistmixins',
-    'agenttypecbx', 'usertypecbx', 'picklisttypecbx', 'picklisttablecbx', 'picklistfieldcbx', 'treelevelcbx'
-], function(_, Backbone, Q, PickListCBX, ReadOnlyPickListCBX, getPickListByName, mixins,
-            AgentTypeCBX, UserTypeCBX, PickListTypeCBX, PickListTableCBX,
-            PickListFieldCBX, TreeLevelCBX) {
-    "use strict";
+"use strict";
+
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var Q        = require('./vendor/q-1.4.1.js');
+
+var PickListCBX         = require('./picklistcbx.js');
+var ReadOnlyPickListCBX = require('./readonlypicklistcbx.js');
+var getPickListByName   = require('./getpicklistbyname.js');
+var mixins              = require('./picklistmixins.js');
+var AgentTypeCBX        = require('./agenttypecbx.js');
+var UserTypeCBX         = require('./usertypecbx.js');
+var PickListTypeCBX     = require('./picklisttypecbx.js');
+var PickListTableCBX    = require('./picklisttablecbx.js');
+var PickListFieldCBX    = require('./picklistfieldcbx.js');
+var TreeLevelCBX        = require('./treelevelcbx.js');
 
     function getCBX(options, resource, field) {
         _.extend(options, {
@@ -70,7 +79,7 @@ define([
             });
     }
 
-    return Backbone.View.extend({
+module.exports =  Backbone.View.extend({
         __name__: "ComboBoxView",
         initialize: function() {
             var options = {
@@ -88,4 +97,4 @@ define([
             return this;
         }
     });
-});
+

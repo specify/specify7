@@ -1,7 +1,12 @@
-define([
-    'jquery', 'underscore', 'specifyformfields', 'parsespecifyproperties', 'processcolumndef'
-], function($, _, processField, parseSpecifyProperties, processColumnDef) {
-    "use strict";
+"use strict";
+
+var $ = require('jquery');
+var _ = require('underscore');
+
+var processField           = require('./specifyformfields.js');
+var parseSpecifyProperties = require('./parsespecifyproperties.js');
+var processColumnDef       = require('./processcolumndef.js');
+
     function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
         var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;
@@ -98,5 +103,5 @@ define([
         return td;
     };
 
-    return processCell;
-});
+module.exports = processCell;
+

@@ -1,7 +1,12 @@
-define([
-    'jquery', 'underscore', 'schema', 'domain', 'queryfieldspec'
-], function($, _, schema, domain, QueryFieldSpec) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+
+var schema         = require('./schema.js');
+var domain         = require('./domain.js');
+var QueryFieldSpec = require('./queryfieldspec.js');
+
 
     function paleoPathP() {
         return domain.getDomainResource('discipline').rget('paleocontextchildtable').pipe(function(table) {
@@ -277,7 +282,7 @@ define([
         }
     };
 
-    return function(user, table, nodeId) {
+module.exports =  function(user, table, nodeId) {
         var tree = schema.getModel(table);
         var node = new tree.Resource({id: nodeId});
         var next = buildQuery.bind(null, tree, user);
@@ -287,4 +292,4 @@ define([
                       node.rget('highestchildnodenumber')
                      ).pipe(next);
     };
-});
+

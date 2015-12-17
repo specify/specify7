@@ -1,7 +1,8 @@
-define([
-    'underscore', 'initialcontext'
-], function(_, initialContext) {
-    "use strict";
+"use strict";
+
+var _ = require('underscore');
+var initialContext = require('./initialcontext.js');
+
     var prefs = {};
 
     initialContext.load('remoteprefs.properties', function(text) {
@@ -12,5 +13,5 @@ define([
         });
     });
 
-    return prefs;
-});
+module.exports = prefs;
+

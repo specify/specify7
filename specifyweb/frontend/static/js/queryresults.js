@@ -1,7 +1,10 @@
-define([
-    'jquery', 'underscore', 'backbone', 'fieldformat'
-], function($, _, Backbone, fieldformat) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var fieldformat = require('./fieldformat.js');
 
     function renderResult(fieldSpec, rowHref, value, format) {
         var field = fieldSpec.getField();
@@ -56,5 +59,5 @@ define([
         }
     });
 
-    return QueryResultsView;
-});
+module.exports = QueryResultsView;
+

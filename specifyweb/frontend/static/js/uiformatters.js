@@ -1,7 +1,11 @@
-define([
-    'jquery', 'underscore', 'backbone', 'initialcontext'
-], function($, _, Backbone, initialContext) {
-    "use strict";
+"use strict";
+
+var $              = require('jquery');
+var _              = require('underscore');
+var Backbone       = require('./backbone.js');
+var initialContext = require('./initialcontext.js');
+
+
     var uiformatters;
     initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
 
@@ -162,9 +166,9 @@ define([
         }
     }
 
-    return {
+module.exports = {
         getByName: getUIFormatter,
         UIFormatter: UIFormatter,
         Field: Field
     };
-});
+

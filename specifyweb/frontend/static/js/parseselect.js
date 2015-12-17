@@ -1,5 +1,8 @@
-define(['underscore'], function(_) {
-    "use strict";
+"use strict";
+
+
+var _ = require('underscore');
+
     var fromRe = /FROM\s+(\w+)\s+(AS\s+)?(\w+)/i;
     var joinRe = /JOIN\s+(\w+\.\w+)\s+(AS\s+)?(\w+)/ig;
     var self = {
@@ -29,5 +32,6 @@ define(['underscore'], function(_) {
             return _.bind(self.colToField, self, self.parse(select));
         }
     };
-    return self;
-});
+
+module.exports = self;
+

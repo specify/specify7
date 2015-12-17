@@ -1,7 +1,11 @@
-define([
-    'jquery', 'underscore', 'backbone', 'whenall', 'assert', 'jquery-bbq'
-], function($, _, Backbone, whenAll, assert) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+var assert   = require('./assert.js');
+var whenAll  = require('./whenall.js');
+
 
     var Base =  Backbone.Collection.extend({
         __name__: "CollectionBase",
@@ -165,5 +169,4 @@ define([
     });
 
 
-    return collectionapi;
-});
+module.exports = collectionapi;

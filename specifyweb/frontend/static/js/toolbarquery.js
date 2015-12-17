@@ -1,11 +1,18 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation',
-    'specifyform', 'populateform', 'savebutton', 'deletebutton',
-    'initialcontext', 'userinfo'
-], function($, _, Backbone, schema, navigation,
-            specifyform, populateform, SaveButton, DeleteButton,
-            initialContext, userInfo) {
-    "use strict";
+"use strict";
+
+var $        = require('jquery');
+var _        = require('underscore');
+var Backbone = require('./backbone.js');
+
+var schema         = require('./schema.js');
+var navigation     = require('./navigation.js');
+var specifyform    = require('./specifyform.js');
+var populateform   = require('./populateform.js');
+var SaveButton     = require('./savebutton.js');
+var DeleteButton   = require('./deletebutton.js');
+var initialContext = require('./initialcontext.js');
+var userInfo       = require('./userinfo.js');
+
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);
 
@@ -200,7 +207,7 @@ define([
         }
     });
 
-    return {
+module.exports =  {
         task: 'query',
         title: title,
         icon: '/images/Query32x32.png',
@@ -218,4 +225,4 @@ define([
             });
         }
     };
-});
+

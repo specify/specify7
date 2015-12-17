@@ -1,7 +1,12 @@
-define([
-    'jquery', 'underscore', 'backbone', 'schema', 'navigation', 'jquery-ui'
-], function($, _, Backbone, schema, navigation) {
-    "use strict";
+"use strict";
+
+var $         = require('jquery');
+var _         = require('underscore');
+var Backbone  = require('./backbone.js');
+
+var schema     = require('./schema.js');
+var navigation = require('./navigation.js');
+
     var title = 'Manage Users';
 
     var UsersView = Backbone.View.extend({
@@ -41,11 +46,11 @@ define([
         });
     };
 
-    return {
+module.exports =  {
         task: 'users',
         title: title,
         icon: null,
         execute: execute,
         disabled: function(user) { return !user.isadmin; }
     };
-});
+

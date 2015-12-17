@@ -1,7 +1,11 @@
-define(['jquery', 'loanreturncommand', 'uicommand'], function($, LoanReturnCmd, UICmd) {
-    "use strict";
+"use strict";
 
-    return {
+var $ = require('jquery');
+
+var LoanReturnCmd = require('./loanreturncommand.js');
+var UICmd         = require('./uicommand.js');
+
+module.exports =  {
         ReturnLoan: LoanReturnCmd,
         CommandNotAvailable: UICmd.extend({
             __name__: "UnavailableCommand",
@@ -27,4 +31,4 @@ define(['jquery', 'loanreturncommand', 'uicommand'], function($, LoanReturnCmd, 
             }
         })
     };
-});
+
