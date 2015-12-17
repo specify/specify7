@@ -9,24 +9,16 @@ var errorview        = require('./errorview.js');
 var HeaderUI         = require('./headerui.js');
 var navigation       = require('./navigation.js');
 
-var datatask          = require('./datatask.js');
-var querytask         = require('./querytask.js');
-var treetask          = require('./treetask.js');
-var expresssearchtask = require('./expresssearchtask.js');
-var datamodeltask     = require('./datamodeltask.js');
-var attachmentstask   = require('./attachmentstask.js');
-var wbtask            = require('./wbtask.js');
-var wbimporttask      = require('./wbimporttask.js');
 
 var tasks = [
-    datatask,
-    querytask,
-    treetask,
-    expresssearchtask,
-    datamodeltask,
-    attachmentstask,
-    wbtask,
-    wbimporttask
+    require('./datatask.js'),
+    require('./querytask.js'),
+    require('./treetask.js'),
+    require('./expresssearchtask.js'),
+    require('./datamodeltask.js'),
+    require('./attachmentstask.js'),
+    require('./wbtask.js'),
+    require('./wbimporttask.js'),
 ];
 
 

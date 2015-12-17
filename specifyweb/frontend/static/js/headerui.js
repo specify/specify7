@@ -11,31 +11,19 @@ var UserTools  = require('./usertools.js');
 var userInfo   = require('./userinfo.js');
 var router     = require('./router.js');
 
-// Tasks included in header:
-var toolbarwelcome      = require('./toolbarwelcome.js');
-var toolbardataentry    = require('./toolbardataentry.js');
-var toolbarinteractions = require('./toolbarinteractions.js');
-var toolbartrees        = require('./toolbartrees.js');
-var toolbarrecordsets   = require('./toolbarrecordsets.js');
-var toolbarquery        = require('./toolbarquery.js');
-var toolbarreport       = require('./toolbarreport.js');
-var toolbarattachments  = require('./toolbarattachments.js');
-var toolbarwbs          = require('./toolbarwbs.js');
-var toolbarmasterkey    = require('./toolbarmasterkey.js');
-var toolbarusers        = require('./toolbarusers.js');
 
 var toolModules = [
-    toolbarwelcome,
-    toolbardataentry,
-    toolbarinteractions,
-    toolbartrees,
-    toolbarrecordsets,
-    toolbarquery,
-    toolbarreport,
-    toolbarattachments,
-    toolbarwbs,
-    toolbarmasterkey,
-    toolbarusers,
+    require('./toolbarwelcome.js'),
+    require('./toolbardataentry.js'),
+    require('./toolbarinteractions.js'),
+    require('./toolbartrees.js'),
+    require('./toolbarrecordsets.js'),
+    require('./toolbarquery.js'),
+    require('./toolbarreport.js'),
+    require('./toolbarattachments.js'),
+    require('./toolbarwbs.js'),
+    require('./toolbarmasterkey.js'),
+    require('./toolbarusers.js'),
 ];
 
     var ExpressSearchInput = Backbone.View.extend({
