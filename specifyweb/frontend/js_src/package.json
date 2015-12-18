@@ -17,11 +17,15 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
     "browserify": "^12.0.1",
     "jstify": "^0.13.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify -v -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js",
+    "build": "browserify  -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js"
   },
   "author": "",
   "license": "ISC"
