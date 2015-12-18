@@ -3,7 +3,7 @@
 var $ = require('jquery');
 
 global.jQuery = $;
-require('./vendor/jquery.contextMenu.v1.6.6.js');
+require('jquery-contextmenu');
 require('jquery-ui');
 require('jquery-bbq');
 

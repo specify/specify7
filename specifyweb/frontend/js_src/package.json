@@ -1,34 +1,35 @@
 {
-  "name": "specify7-frontend",
-  "version": "7.0.4",
-  "description": "",
-  "main": "main.js",
-  "directories": {
-    "test": "tests"
-  },
-  "dependencies": {
-    "backbone": "^0.9.10",
-    "bacon": "0.0.1",
-    "d3": "^3.5.12",
-    "immutable": "^3.7.5",
-    "jquery": "^1.7.2",
-    "jquery-bbq": "0.0.2",
-    "jquery-ui": "^1.10.5",
-    "moment": "^2.10.6",
-    "q": "^1.4.1",
-    "underscore": "^1.8.3"
-  },
-  "devDependencies": {
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "browserify": "^12.0.1",
-    "jstify": "^0.13.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "watchify -v -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js",
-    "build": "browserify  -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "specify7-frontend",
+    "version": "7.0.4",
+    "description": "",
+    "main": "main.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "backbone": "^0.9.10",
+        "bacon": "0.0.1",
+        "d3": "^3.5.12",
+        "immutable": "^3.7.5",
+        "jquery": "^1.7.2",
+        "jquery-bbq": "0.0.2",
+        "jquery-contextmenu": "^1.10.3",
+        "jquery-ui": "^1.10.5",
+        "moment": "^2.10.6",
+        "q": "^1.4.1",
+        "underscore": "^1.8.3"
+    },
+    "devDependencies": {
+        "babel-preset-es2015": "^6.3.13",
+        "babelify": "^7.2.0",
+        "browserify": "^12.0.1",
+        "jstify": "^0.13.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "watch": "watchify -v -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js",
+        "build": "browserify  -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js"
+    },
+    "author": "",
+    "license": "ISC"
 }

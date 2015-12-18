@@ -17,6 +17,7 @@ var populateForm = require('./populateform.js');
 
     var setTitle = app.setTitle;
 
+function setupContextMenu() {
     $.contextMenu({
         selector: ".tree-node .expander",
         items: {
@@ -45,6 +46,7 @@ var populateForm = require('./populateform.js');
             }
         }
     });
+}
 
     var AddChildDialog = Backbone.View.extend({
         __name__: "AddChildDialog",
@@ -421,6 +423,8 @@ var populateForm = require('./populateform.js');
     }
 
 module.exports =  function() {
+        setupContextMenu();
+
         router.route('tree/:table/', 'tree', function(table) {
             var getTreeDef = domain.getTreeDef(table);
             if (!getTreeDef) {
