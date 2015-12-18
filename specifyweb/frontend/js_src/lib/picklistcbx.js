@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
-var Q = require('./vendor/q-1.4.1.js');
+var Q = require('q');
 
 var Base   = require('./basepicklist.js');
 var schema = require('./schema.js');

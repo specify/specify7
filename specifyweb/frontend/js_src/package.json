@@ -9,11 +9,13 @@
   "dependencies": {
     "backbone": "^0.9.10",
     "bacon": "0.0.1",
+    "d3": "^3.5.12",
     "immutable": "^3.7.5",
     "jquery": "^1.7.2",
     "jquery-bbq": "0.0.2",
     "jquery-ui": "^1.10.5",
     "moment": "^2.10.6",
+    "q": "^1.4.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

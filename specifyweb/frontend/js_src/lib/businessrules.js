@@ -2,7 +2,7 @@
 
 var $                 = require('jquery');
 var _                 = require('underscore');
-var Q                 = require('./vendor/q-1.4.1.js');
+var Q                 = require('q');
 var api               = require('./specifyapi.js');
 var saveblockers      = require('./saveblockers.js');
 var treeBusinessRules = require('./treebusinessrules.js');

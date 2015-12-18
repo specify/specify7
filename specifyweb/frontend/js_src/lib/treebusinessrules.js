@@ -1,5 +1,5 @@
 "use strict";
-var Q = require('./vendor/q-1.4.1.js');
+var Q = require('q');
 var _ = require('underscore');
 
     function buildFullName(resource, options) {

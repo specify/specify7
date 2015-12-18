@@ -2,7 +2,7 @@
 
 var $        = require('jquery');
 var _        = require('underscore');
-var d3       = require('./vendor/d3.js');
+var d3       = require('d3');
 var Backbone = require('./backbone.js');
 
 var templates            = require('./templates.js');

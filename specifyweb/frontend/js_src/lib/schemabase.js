@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('underscore');
-var Q = require('./vendor/q-1.4.1.js');
+var Q = require('q');
 var initialContext = require('./initialcontext.js');
 
     var schemaBase = {

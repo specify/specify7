@@ -2,7 +2,7 @@
 
 var $        = require('jquery');
 var Backbone = require('./backbone.js');
-var Q        = require('./vendor/q-1.4.1.js');
+var Q        = require('q');
 var Bacon    = require('bacon');
 
 var schema           = require('./schema.js');

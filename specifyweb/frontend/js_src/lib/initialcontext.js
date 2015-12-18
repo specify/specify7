@@ -1,25 +1,25 @@
 "use strict";
 var $ = require('jquery');
-var Q = require('./vendor/q-1.4.1.js');
+var Q = require('q');
 
-    var core = Q(null);
+
+    var promises = [];
     var final = Q.defer();
     var locked = false;
 
 
     function register(name, promise) {
         if (locked) throw new Error('initial context is locked');
-        core = Q.all([
-            core,
+        promises.push(
             promise.tap(() => console.log('initial context:', name))
-        ]);
+        );
         return initialContext;
     }
 
     function lock() {
         if (locked) throw new Error('initial context already locked');
         locked = true;
-        core.done(function() {
+        Q.all(promises).done(function() {
             console.log('initial context finished');
             final.resolve();
         });

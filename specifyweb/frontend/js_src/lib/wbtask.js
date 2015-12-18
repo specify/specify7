@@ -1,7 +1,7 @@
 "use strict";
 
 var $ = require('jquery');
-var Q = require('./vendor/q-1.4.1.js');
+var Q = require('q');
 
 
 var schema = require('./schema.js');

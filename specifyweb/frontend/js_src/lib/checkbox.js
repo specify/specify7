@@ -3,7 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-var Q        = require('./vendor/q-1.4.1.js');
+var Q        = require('q');
 
 module.exports =  Backbone.View.extend({
         __name__: "CheckBox",
