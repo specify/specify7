@@ -11,6 +11,7 @@ var navigation       = require('./navigation.js');
 
 
 var tasks = [
+    require('./welcometask.js'),
     require('./datatask.js'),
     require('./querytask.js'),
     require('./treetask.js'),

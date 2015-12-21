@@ -9,7 +9,6 @@ require('jquery-ui');
 var userInfo     = require('./userinfo.js');
 var populateForm = require('./populateform.js');
 var errorview    = require('./errorview.js');
-var WelcomeView  = require('./welcomeview.js');
 var NotFoundView = require('./notfoundview.js');
 var navigation   = require('./navigation.js');
 var ResourceView = require('./resourceview.js');
@@ -24,10 +23,6 @@ var systemInfo   = require('./systeminfo.js');
         .route('*whatever', 'notFound', function() {
             app.setCurrentView(new NotFoundView());
             app.setTitle('Page Not Found');
-        })
-        .route('', 'welcome', function() {
-            app.setCurrentView(new WelcomeView());
-            app.setTitle('Welcome');
         })
         .route('test_error/', 'testError', function() {
             $.get('/api/test_error/');

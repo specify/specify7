@@ -5,6 +5,8 @@ var _        = require('underscore');
 var d3       = require('d3');
 var Backbone = require('./backbone.js');
 
+var router = require('./router.js');
+var app    = require('./specifyapp.js');
 var schema               = require('./schema.js');
 var prefs                = require('./remoteprefs.js');
 var dataobjectformatters = require('./dataobjformatters.js');
@@ -237,7 +239,7 @@ var aboutspecify         = require('./templates/aboutspecify.html');
         });
     }
 
-module.exports =  Backbone.View.extend({
+    var WelcomeView = Backbone.View.extend({
         __name__: "WelcomeView",
         className: "specify-welcome",
         events: {
@@ -261,3 +263,10 @@ module.exports =  Backbone.View.extend({
         }
     });
 
+
+module.exports = function() {
+    router.route('', 'welcome', function() {
+        app.setCurrentView(new WelcomeView());
+        app.setTitle('Welcome');
+    });
+};
