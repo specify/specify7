@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "backbone": "^0.9.10",
-    "bacon": "0.0.1",
+    "baconjs": "^0.7.83",
     "d3": "^3.5.12",
     "immutable": "^3.7.5",
     "jquery": "^1.7.2",

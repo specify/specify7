@@ -3,7 +3,7 @@
 var $        = require('jquery');
 var Backbone = require('./backbone.js');
 var Q        = require('q');
-var Bacon    = require('bacon');
+var Bacon    = require('baconjs');
 
 var schema           = require('./schema.js');
 var templates        = require('./templates.js');

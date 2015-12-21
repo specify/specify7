@@ -3,7 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-var Bacon    = require('bacon');
+var Bacon    = require('baconjs');
 var Q        = require('q');
 
 var getPickListByName = require('./getpicklistbyname.js');
