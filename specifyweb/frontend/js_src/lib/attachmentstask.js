@@ -14,14 +14,6 @@ var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
 
 
-    var tablesWithAttachments = _( // TODO: get these from server or something
-        ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
-         "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
-         "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
-    ).map(function(table) { return schema.getModel(table); });
-
-    var AttachmentModel = schema.models.Attachment;
-
     var AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",
         events: {
@@ -31,7 +23,7 @@ var whenAll      = require('./whenall.js');
         },
         initialize: function() {
             var collections = this.attachmentCollections = {
-                all: new AttachmentModel.LazyCollection({ domainfilter: true })
+                all: new schema.models.Attachment.LazyCollection({ domainfilter: true })
                 // TODO:
                 // So-called "unused" attachments now might be used in reports.
 
@@ -40,8 +32,15 @@ var whenAll      = require('./whenall.js');
                 //     domainfilter: true
                 // })
             };
+
+            var tablesWithAttachments = _( // TODO: get these from server or something
+                ("accession agent borrow collectingevent collectionobject conservdescription conservevent " +
+                 "dnasequence dnasequencingrun fieldnotebook fieldnotebookpageset fieldnotebookpage " +
+                 "gift loan locality permit preparation referencework repositoryagreement taxon").split(" ")
+            ).map(function(table) { return schema.getModel(table); });
+
             _.each(tablesWithAttachments, function(table) {
-                collections[table.tableId] = new AttachmentModel.LazyCollection({
+                collections[table.tableId] = new schema.models.Attachment.LazyCollection({
                     filters: { tableid: table.tableId },
                     domainfilter: true
                 });
