@@ -12,6 +12,7 @@ var whenAll           = require('./whenall.js');
 var s                 = require('./stringlocalization.js');
 var initialContext    = require('./initialcontext.js');
 var app               = require('./specifyapp.js');
+var querystring       = require('./querystring.js');
 
 
     var relatedSearches;
@@ -34,7 +35,7 @@ var app               = require('./specifyapp.js');
             this.$el.append('<h3>Primary Search</h3><p class="status primary">Running...</p><div class="results primary"></div>');
             this.$el.append('<h3>Secondary Search</h3><p class="status related">Running...</p><div class="results related"></div>');
             this.$('.results').accordion(accordionOptions);
-            var query = $.deparam.querystring().q;
+            var query = querystring.deparam().q;
             $('.express-search-query').val(query);
 
             this.doPrimarySearch(query);
@@ -42,7 +43,7 @@ var app               = require('./specifyapp.js');
             return this;
         },
         doPrimarySearch: function(query) {
-            var ajaxUrl = $.param.querystring('/express_search/', {q: query});
+            var ajaxUrl = querystring.param('/express_search/', {q: query});
             $.get(ajaxUrl, _.bind(this.showPrimaryResults, this, ajaxUrl));
         },
         showPrimaryResults: function(ajaxUrl, allTablesResults) {
@@ -69,7 +70,7 @@ var app               = require('./specifyapp.js');
                 format: true,
                 initialData: results,
                 fetchResults: function(offset) {
-                    var url = $.param.querystring(ajaxUrl, {name: model.name, offset: offset});
+                    var url = querystring.param(ajaxUrl, {name: model.name, offset: offset});
                     return $.get(url).pipe(function(data) { return data[model.name]; });
                 }
             }).render().$el.appendTo(this.$('.primary.results'));
@@ -78,7 +79,7 @@ var app               = require('./specifyapp.js');
             var statusEl = this.$('.related.status');
 
             var deferreds = _.map(relatedSearches, function(rs) {
-                var ajaxUrl = $.param.querystring('/express_search/related/', {q: query, name: rs});
+                var ajaxUrl = querystring.param('/express_search/related/', {q: query, name: rs});
                 var showResults = _.bind(this.showRelatedResults, this, ajaxUrl);
                 return $.get(ajaxUrl).pipe(showResults);
             }, this);

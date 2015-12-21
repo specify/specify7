@@ -10,6 +10,7 @@ var schema     = require('./schema.js');
 var UserTools  = require('./usertools.js');
 var userInfo   = require('./userinfo.js');
 var router     = require('./router.js');
+var querystring = require('./querystring.js');
 
 
 var toolModules = [
@@ -41,7 +42,7 @@ var toolModules = [
             evt.preventDefault();
             query = this.$('.express-search-query').val().trim();
             if (query) {
-                url = $.param.querystring('/specify/express_search/', {q: query});
+                url = querystring.param('/specify/express_search/', {q: query});
                 navigation.go(url);
             }
         }

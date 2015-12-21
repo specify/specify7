@@ -4,6 +4,7 @@ var Backbone         = require('./backbone.js');
 
 var assert = require('./assert.js');
 var api = require('./specifyapi.js');
+var querystring = require('./querystring.js');
 
     function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -120,7 +121,8 @@ var api = require('./specifyapi.js');
             // (no id), return the uri for the collection it belongs to
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
-            return $.param.querystring(url, {recordsetid: this.recordsetid});
+            return this.recordsetid == null ? url :
+                querystring.param(url, {recordsetid: this.recordsetid});
         },
         viewUrl: function() {
             // returns the url for viewing this resource in the UI
@@ -503,7 +505,7 @@ var api = require('./specifyapi.js');
             case 'create':
                 // use the special recordSetId field to add the resource to a record set
                 if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = $.param.querystring(
+                    options.url = querystring.param(
                         options.url || resource.url(),
                         {recordsetid: resource.recordSetId});
                 }

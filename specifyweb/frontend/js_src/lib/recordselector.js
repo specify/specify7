@@ -10,6 +10,7 @@ var navigation     = require('./navigation.js');
 var templates      = require('./templates.js');
 var collectionapi  = require('./collectionapi.js');
 var assert         = require('./assert.js');
+var querystring    = require('./querystring.js');
 
     var emptyTemplate = '<p>No Data.</p>';
 
@@ -227,7 +228,7 @@ module.exports =  Backbone.View.extend({
                 new AddDeleteBtns({ recordSelector: this }).render().$el.appendTo(this.el);
             }
 
-            var params = $.deparam.querystring(true);
+            var params = querystring.deparam();
             var index = params[this.urlParam] || 0;
             index === 'end' && (index = this.collection.length - 1);
 
@@ -265,7 +266,7 @@ module.exports =  Backbone.View.extend({
             if (this.urlParam) {
                 var params = {};
                 params[this.urlParam] = offset;
-                navigation.push($.param.querystring(window.location.pathname, params));
+                navigation.push(querystring.param(window.location.pathname, params));
             }
         },
         showHide: function() {

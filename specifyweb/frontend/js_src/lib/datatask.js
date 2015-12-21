@@ -13,6 +13,7 @@ var NotFoundView        = require('./notfoundview.js');
 var userInfo            = require('./userinfo.js');
 var router              = require('./router.js');
 var app                 = require('./specifyapp.js');
+var querystring         = require('./querystring.js');
 
     var GUID_RE = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
@@ -67,7 +68,7 @@ var app                 = require('./specifyapp.js');
 
                 // go to the actual resource
                 var url = resource.viewUrl();
-                navigation.navigate($.param.querystring(url, { recordsetid: id }),
+                navigation.navigate(querystring.param(url, { recordsetid: id }),
                                     {replace: true, trigger: true});
             });
         }
@@ -95,7 +96,7 @@ var app                 = require('./specifyapp.js');
             return;
         }
         // look to see if we are in the context of a recordset
-        var params = $.deparam.querystring();
+        var params = querystring.deparam();
         var recordSet = params.recordsetid &&
                 new schema.models.RecordSet.Resource({ id: params.recordsetid });
 

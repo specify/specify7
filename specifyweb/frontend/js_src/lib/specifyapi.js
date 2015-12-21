@@ -3,6 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
+var querystring = require('./querystring.js');
 
 
     var api =  _.extend({}, Backbone.Events, {
@@ -42,7 +43,7 @@ var Backbone = require('./backbone.js');
         },
         makeResourceViewUrl: function(specifyModel, resourceId, recordSetId) {
             var url = '/specify/view/' + specifyModel.name.toLowerCase() + '/' + (resourceId || 'new') + '/';
-            return $.param.querystring(url, {recordsetid: recordSetId});
+            return recordSetId == null ? url : querystring.param(url, {recordsetid: recordSetId});
         },
         getPrepsAvailableForLoanRs: function(recordSetId) {
             return $.get('/api/preparations_available_rs/' + recordSetId + '/');

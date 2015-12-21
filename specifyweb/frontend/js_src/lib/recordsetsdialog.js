@@ -8,6 +8,7 @@ var schema             = require('./schema.js');
 var FormsDialog        = require('./formsdialog.js');
 var EditResourceDialog = require('./editresourcedialog.js');
 var navigation         = require('./navigation.js');
+var querystring        = require('./querystring.js');
 
 
 module.exports = Backbone.View.extend({
@@ -90,8 +91,8 @@ module.exports = Backbone.View.extend({
         },
         gotoForm: function(model, recordset) {
             // TODO: got to be a better way to get the url
-            var url = $.param.querystring(new model.Resource().viewUrl(),
-                                          {recordsetid: recordset.id});
+            var url = querystring.param(new model.Resource().viewUrl(),
+                                        {recordsetid: recordset.id});
             navigation.go(url);
         },
         getIndex: function(evt, selector) {

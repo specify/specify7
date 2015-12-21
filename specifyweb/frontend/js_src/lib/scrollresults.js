@@ -3,6 +3,7 @@
 var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
+var querystring = require('./querystring.js');
 
 
     var win = $(window);
@@ -51,7 +52,7 @@ module.exports = Backbone.View.extend({
             return this.fetch = this.doFetch(this.offset).done(this.gotData.bind(this));
         },
         doFetchSimple: function(offset) {
-            var url = $.param.querystring(this.ajaxUrl, {offset: offset});
+            var url = querystring.param(this.ajaxUrl, {offset: offset});
             return $.get(url);
         },
         gotData: function(data) {

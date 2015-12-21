@@ -14,6 +14,7 @@ var navigation   = require('./navigation.js');
 var router       = require('./router.js');
 var app          = require('./specifyapp.js');
 var populateForm = require('./populateform.js');
+var querystring  = require('./querystring.js');
 
     var setTitle = app.setTitle;
 
@@ -364,7 +365,7 @@ function setupContextMenu() {
             }, this);
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
-            var params = $.deparam.querystring();
+            var params = querystring.deparam();
             params.conformation && this.applyConformation(params.conformation);
         },
         search: function(event, ui) {
@@ -414,7 +415,7 @@ function setupContextMenu() {
             // procede every open bracket that is not itself proceded
             // by an open bracket by nature of the construction.
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
-            navigation.push($.param.querystring(window.location.href, {conformation: encoded}));
+            navigation.push(querystring.param(window.location.href, {conformation: encoded}));
         }
     });
 

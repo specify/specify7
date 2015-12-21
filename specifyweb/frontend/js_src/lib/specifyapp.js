@@ -5,7 +5,6 @@ var $ = require('jquery');
 global.jQuery = $;
 require('jquery-contextmenu');
 require('jquery-ui');
-require('jquery-bbq');
 
 var userInfo     = require('./userinfo.js');
 var populateForm = require('./populateform.js');

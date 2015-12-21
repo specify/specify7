@@ -4,6 +4,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var UIPlugin = require('./uiplugin.js');
+var querystring = require('./querystring.js');
 
 module.exports =  UIPlugin.extend({
         __name__: "GeoLocatePlugin",
@@ -30,7 +31,7 @@ module.exports =  UIPlugin.extend({
              ).dialog({close: function(){ $(this).remove(); }});
         },
         openGeoLocate: function(data) {
-            var url = $.param.querystring(
+            var url = querystring.param(
                 "//www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data);
 
             var listener = function(evt) {
