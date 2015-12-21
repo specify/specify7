@@ -1,10 +1,10 @@
 <h2 class="specify-form-header">
-  <span class="view-title"><%= viewTitle %></span>
+  <span class="view-title"><%- viewTitle %></span>
   <span class="recordset-info">
     <% if (recordsetInfo) { %>
     (<%= recordsetInfo.index + 1 %> / <%= recordsetInfo.total_count %>)
     <% } %>
-    <% if (recordsetName) { %>in &quot;<%= recordsetName %>&quot;<% } %>
+    <% if (recordsetName) { %>in &quot;<%- recordsetName %>&quot;<% } %>
   </span>
   <% if (recordsetInfo) { %>
     <% if (prevUrl) { %>
