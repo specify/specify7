@@ -5,11 +5,12 @@ var _        = require('underscore');
 var d3       = require('d3');
 var Backbone = require('./backbone.js');
 
-var templates            = require('./templates.js');
 var schema               = require('./schema.js');
 var prefs                = require('./remoteprefs.js');
 var dataobjectformatters = require('./dataobjformatters.js');
 var systemInfo           = require('./systeminfo.js');
+var template             = require('./templates/welcome.html');
+var aboutspecify         = require('./templates/aboutspecify.html');
 
     var DO_TAXON_TILES = prefs['sp7.doTaxonTiles'] == "true";
 
@@ -243,7 +244,7 @@ module.exports =  Backbone.View.extend({
             'click #about-specify': 'showAboutDialog'
         },
         render: function() {
-            this.$el.append(templates.welcome({doTaxonTiles: DO_TAXON_TILES}));
+            this.$el.append(template({doTaxonTiles: DO_TAXON_TILES}));
             DO_TAXON_TILES && _.defer(makeTreeMap);
 
             // showRecentActivity(this);
@@ -252,7 +253,7 @@ module.exports =  Backbone.View.extend({
         },
         showAboutDialog: function(evt) {
             evt.preventDefault();
-            $(templates.aboutspecify(systemInfo)).dialog({
+            $(aboutspecify(systemInfo)).dialog({
                 title: "About Specify",
                 width: 480,
                 close: function() { $(this).remove(); }

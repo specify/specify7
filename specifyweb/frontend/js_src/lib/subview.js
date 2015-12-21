@@ -7,8 +7,7 @@ var Backbone = require('./backbone.js');
 var schema         = require('./schema.js');
 var specifyform    = require('./specifyform.js');
 var QueryCbxSearch = require('./querycbxsearch.js');
-var templates      = require('./templates.js');
-var assert         = require('./assert.js');
+var subviewheader = require('./templates/subviewheader.html');
 
 module.exports =  Backbone.View.extend({
         __name__: "Subview",
@@ -28,7 +27,7 @@ module.exports =  Backbone.View.extend({
         render: function() {
             var self = this;
             self.$el.empty();
-            var header = $(templates.subviewheader({
+            var header = $(subviewheader({
                 title: self.title,
                 dependent: self.field.isDependent()
             }));

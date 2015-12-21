@@ -6,7 +6,7 @@ var Backbone  = require('./backbone.js');
 
 var schema             = require('./schema.js');
 var QueryFieldUI       = require('./queryfield.js');
-var templates          = require('./templates.js');
+var template           = require('./templates/querybuilder.html');
 var userInfo           = require('./userinfo.js');
 var app                = require('./specifyapp.js');
 var queryFromTree      = require('./queryfromtree.js');
@@ -35,7 +35,7 @@ var router             = require('./router.js');
         render: function() {
             var title = 'Query: ' + this.query.get('name');
             setTitle(title);
-            this.$el.append(templates.querybuilder({ cid: this.cid }));
+            this.$el.append(template({ cid: this.cid }));
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();

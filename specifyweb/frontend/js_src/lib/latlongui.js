@@ -1,13 +1,13 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
+var $ = require('jquery');
+var _ = require('underscore');
 
 
 var api = require('./specifyapi.js');
 var latlongutils = require('./latlongutils.js');
 var UIPlugin = require('./uiplugin.js');
-var templates = require('./templates.js');
+var template = require('./templates/latlonui.html');
 
 
 module.exports =  UIPlugin.extend({
@@ -26,7 +26,7 @@ module.exports =  UIPlugin.extend({
             var resource = this.model;
 
             resource.fetchIfNotPopulated().done(function() {
-                var plugin = $(templates.latlonui());
+                var plugin = $(template());
                 var tbody = plugin.find('tbody');
                 tbody.append(tbody.find('tr').clone().hide());
                 tbody.find('input').each(function(i) {

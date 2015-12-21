@@ -3,11 +3,15 @@
 var $ = require('jquery');
 var _ = require('underscore');
 
-var schema                 = require('./schema.js');
 var specifyformcells       = require('./specifyformcells.js');
 var parseSpecifyProperties = require('./parsespecifyproperties.js');
 var processColumnDef       = require('./processcolumndef.js');
-var templates              = require('./templates.js');
+
+var formtable = require('./templates/formtabletemplate.html');
+var formtemplate = require('./templates/formtemplate.html');
+var viewwrapper = require('./templates/viewwrappertemplate.html');
+var attachmentview = require('./templates/attachmentview.html');
+
 
     var formCounter = 0;
 
@@ -21,7 +25,7 @@ var templates              = require('./templates.js');
 
     function buildFormTable(formNumber, formViewdef, processCell) {
         var formTableCells = formViewdef.find('cell[type="field"], cell[type="subview"]');
-        var table = $(templates.formtable({ formNumber: formNumber }));
+        var table = $(formtable({ formNumber: formNumber }));
         var headerRow = table.find('thead tr');
         var bodyRow = table.find('tbody tr');
 
@@ -45,7 +49,7 @@ var templates              = require('./templates.js');
             _(cellsIn(row)).chain().map(processCell).each(appendToTr);
         });
 
-        return $(templates.form({ formNumber: formNumber })).find('form').append(table).end();
+        return $(formtemplate({ formNumber: formNumber })).find('form').append(table).end();
     }
 
     function buildView(view, defaultType, mode) {
@@ -83,7 +87,7 @@ var templates              = require('./templates.js');
         var processCell = _.bind(specifyformcells, null, formNumber, doingFormTable,
                                  mode === 'search' ? 'search' : altview.mode);
 
-        var wrapper = $(templates.viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
+        var wrapper = $(viewwrapper({ viewModel: getModelFromViewdef(actual_viewdef) }));
 
         (doingFormTable ? buildFormTable : buildForm)(formNumber, actual_viewdef, processCell).appendTo(wrapper);
         wrapper.addClass('specify-form-type-' + viewdef.attr('type'));
@@ -102,7 +106,7 @@ var templates              = require('./templates.js');
 
         buildViewByName: function (viewName, defaultType, mode) {
             if (viewName === "ObjectAttachment") {
-                return $.when($(templates.attachmentview()));
+                return $.when($(attachmentview()));
             }
             return getView(viewName).pipe(function(view) { return buildView(view, defaultType, mode); });
         },

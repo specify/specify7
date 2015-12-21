@@ -4,7 +4,8 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
-var templates = require('./templates.js');
+var saveblocked = require('./templates/saveblocked.html');
+var conflict = require('./templates/conflict.html');
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
@@ -98,7 +99,7 @@ module.exports =  Backbone.View.extend({
                     .fail(function(jqXHR) {
                         if (jqXHR.status === 409) {
                             jqXHR.errorHandled = true;
-                            $(templates.conflict()).dialog({
+                            $(conflict()).dialog({
                                 resizable: false,
                                 modal: true,
                                 open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
@@ -109,7 +110,7 @@ module.exports =  Backbone.View.extend({
                         }
                     });
             } else {
-                var dialog = $(templates.saveblocked()).appendTo(this.el).dialog({
+                var dialog = $(saveblocked()).appendTo(this.el).dialog({
                     resizable: false,
                     modal: true,
                     close: function() { return dialog.remove(); }

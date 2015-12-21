@@ -2,8 +2,8 @@
 
 var $ = require('jquery');
 
-var UIPlugin  = require('./uiplugin.js');
-var templates = require('./templates.js');
+var UIPlugin = require('./uiplugin.js');
+var template = require('./templates/gmapplugin.html');
 
 module.exports =  UIPlugin.extend({
         __name__: "GoogleMapsPlugin",
@@ -20,7 +20,7 @@ module.exports =  UIPlugin.extend({
             var long = this.model.get('longitude1');
             if (lat != null && long != null) {
                 var query = '' + lat + ',' + long;
-                $('<div>').append(templates.gmapplugin({query: query})).dialog({
+                $('<div>').append(template({query: query})).dialog({
                     width: 800,
                     height: 600,
                     title: this.model.specifyModel.getLocalizedName(),

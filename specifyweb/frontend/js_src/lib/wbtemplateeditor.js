@@ -8,9 +8,10 @@ var Immutable = require('immutable');
 
 
 var schema     = require('./schema.js');
-var templates  = require('./templates.js');
 var wbschema   = require('./wbschema.js');
 var userInfo   = require('./userinfo.js');
+
+var wbtemplateeditor = require('./templates/wbtemplateeditor.html');
 
     function SelectedTable($tables, selectedMapping) {
         return $tables
@@ -192,7 +193,7 @@ module.exports =  Backbone.View.extend({
             this.columnsGiven = this.columns.count() > 0;
         },
         render: function() {
-            var editor = $(templates.wbtemplateeditor());
+            var editor = $(wbtemplateeditor());
             this.$el.empty().append(editor);
 
             var mapButton = SimpleButton(this.$('.wb-editor-map'), 'ui-icon-arrowthick-1-e');

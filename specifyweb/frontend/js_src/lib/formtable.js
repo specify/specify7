@@ -6,10 +6,10 @@ var Backbone = require('./backbone.js');
 
 
 var specifyform  = require('./specifyform.js');
-var templates    = require('./templates.js');
 var SaveButton   = require('./savebutton.js');
 var DeleteButton = require('./deletebutton.js');
 var assert       = require('./assert.js');
+var subviewheader = require('./templates/subviewheader.html');
 
     var RENDER_ON_CHANGE = [
         'CollectingEvent.collectors',
@@ -63,7 +63,7 @@ module.exports =  Backbone.View.extend({
         _render: function() {
             this.lastRender = this.collection.pluck('cid');
 
-            var header = $(templates.subviewheader({
+            var header = $(subviewheader({
                 title: this.title,
                 dependent: this.field.isDependent()
             }));

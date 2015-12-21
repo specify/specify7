@@ -3,9 +3,7 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-
-var templates = require('./templates.js');
-
+var template = require('./templates/confirmdelete.html');
 
 module.exports =  Backbone.View.extend({
         __name__: "DeleteButton",
@@ -55,7 +53,7 @@ module.exports =  Backbone.View.extend({
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(templates.confirmdelete()).dialog({
+            $(template()).dialog({
                 resizable: false,
                 close: function() { $(this).remove(); },
                 modal: true,

@@ -4,8 +4,7 @@ var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
 
-
-var templates  =  require('./templates.js');
+var template =  require('./templates/othercollectionstemplate.html');
 var navigation =  require('./navigation.js');
 
 
@@ -21,7 +20,7 @@ module.exports =  Backbone.View.extend({
         render: function() {
             this.$el.empty();
             if (this.collections.length > 1) {
-                this.$el.html(templates.othercollections());
+                this.$el.html(template());
                 var ul = this.$('ul');
                 var li = ul.find('li').detach();
                 _.each(this.collections, function(collection) {

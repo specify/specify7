@@ -2,11 +2,10 @@
 
 var $        = require('jquery');
 var Backbone = require('./backbone.js');
-var Q        = require('q');
 var Bacon    = require('baconjs');
 
 var schema           = require('./schema.js');
-var templates        = require('./templates.js');
+var wbimport         = require('./templates/wbimport.html');
 var WBTemplateEditor = require('./wbtemplateeditor.js');
 var navigation       = require('./navigation.js');
 var router           = require('./router.js');
@@ -74,7 +73,7 @@ var app              = require('./specifyapp.js');
             this.templates = options.templates;
         },
         render: function() {
-            this.$el.append(templates.wbimport());
+            this.$el.append(wbimport());
             this.$('select optgroup').append(this.templates.map(function(template, i) {
                 return $('<option>')
                     .text(template.get('name'))

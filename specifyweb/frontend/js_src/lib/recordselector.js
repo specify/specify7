@@ -7,7 +7,7 @@ var Backbone = require('./backbone.js');
 var specifyform    = require('./specifyform.js');
 var QueryCbxSearch = require('./querycbxsearch.js');
 var navigation     = require('./navigation.js');
-var templates      = require('./templates.js');
+var subviewheader = require('./templates/subviewheader.html');
 var collectionapi  = require('./collectionapi.js');
 var assert         = require('./assert.js');
 var querystring    = require('./querystring.js');
@@ -208,7 +208,7 @@ module.exports =  Backbone.View.extend({
             this.slider.setMax(this.collection.length - 1);
 
             this.noHeader || new Header({
-                el: templates.subviewheader({
+                el: subviewheader({
                     title: this.title,
                     dependent: this.dependent
                 }),

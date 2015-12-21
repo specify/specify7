@@ -4,7 +4,7 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 
-var templates         = require('./templates.js');
+var template          = require('./templates/queryfield.html');
 var schema            = require('./schema.js');
 var domain            = require('./domain.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
@@ -65,7 +65,7 @@ module.exports =  Backbone.View.extend({
             (this.operation === 1 && this.value === "") && (this.operation = 'anything');
         },
         render: function() {
-            this.$el.append(templates.queryfield({cid: this.cid}));
+            this.$el.append(template({cid: this.cid}));
             this.$('#' + this.cid + '-show').prop('checked', this.spqueryfield.get('isdisplay')).button();
             this.$('#' + this.cid + '-negate').prop('checked', this.spqueryfield.get('isnot')).button();
 

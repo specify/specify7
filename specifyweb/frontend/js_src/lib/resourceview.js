@@ -6,8 +6,7 @@ var Backbone         = require('./backbone.js');
 
 var specifyform       = require('./specifyform.js');
 var dataobjformatters = require('./dataobjformatters.js');
-var navigation        = require('./navigation.js');
-var templates         = require('./templates.js');
+var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
 
@@ -78,7 +77,7 @@ module.exports =  Backbone.View.extend({
         render: function() {
             var self = this;
             self.$el.empty();
-            self.header = self.options.noHeader ? null : $(templates.viewheader({
+            self.header = self.options.noHeader ? null : $(viewheader({
                 viewTitle: self.model.specifyModel.getLocalizedName(),
                 recordsetInfo: self.recordsetInfo,
                 recordsetName: self.recordSet && self.recordSet.get('name'),

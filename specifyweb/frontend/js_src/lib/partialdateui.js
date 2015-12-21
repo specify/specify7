@@ -5,7 +5,7 @@ var _      = require('underscore');
 var moment = require('moment');
 
 var UIPlugin      = require('./uiplugin.js');
-var templates     = require('./templates.js');
+var template = require('./templates/partialdateui.html');
 var dateFormatStr = require('./dateformat.js');
 var ToolTipMgr    = require('./tooltipmgr.js');
 var saveblockers  = require('./saveblockers.js');
@@ -24,7 +24,7 @@ module.exports =  UIPlugin.extend({
         render: function() {
             var init = this.init;
             var disabled = this.$el.prop('disabled');
-            var ui = $(templates.partialdateui());
+            var ui = $(template());
             var select = ui.find('select');
             select.prop('id', this.$el.prop('id'));
 

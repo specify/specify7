@@ -5,7 +5,7 @@ var _         = require('underscore');
 var Backbone  = require('./backbone.js');
 
 
-var templates     = require('./templates.js');
+var template      = require('./templates/queryresults.html');
 var ScrollResults = require('./scrollresults.js');
 var QueryResults  = require('./queryresults.js');
 
@@ -35,7 +35,7 @@ var QueryResults  = require('./queryresults.js');
             return $('<thead>').append(header);
         },
         render: function() {
-            var inner = $(templates.queryresults());
+            var inner = $(template());
             this.$el.append(inner);
             var table = this.$('table.query-results');
             this.$('.query-results-count').text('(loading...)');

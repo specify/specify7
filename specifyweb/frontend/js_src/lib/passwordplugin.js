@@ -3,8 +3,8 @@
 var $ = require('jquery');
 var Backbone = require('./backbone.js');
 
-var UIPlugin  = require('./uiplugin.js');
-var templates = require('./templates.js');
+var UIPlugin = require('./uiplugin.js');
+var template = require('./templates/passwordchange.html');
 
     var Dialog = Backbone.View.extend({
         __name__: "PasswordResetDialog",
@@ -13,7 +13,7 @@ var templates = require('./templates.js');
         },
         render: function() {
             this.$el.attr('title', "Set Password");
-            this.$el.append(templates.passwordchange());
+            this.$el.append(template());
             this.$el.dialog({
                 modal: true,
                 width: 'auto',

@@ -7,7 +7,7 @@ var Backbone         = require('./backbone.js');
 
 var schema            = require('./schema.js');
 var specifyform       = require('./specifyform.js');
-var templates         = require('./templates.js');
+var template          = require('./templates/querycbx.html');
 var ResourceView      = require('./resourceview.js');
 var dataobjformatters = require('./dataobjformatters.js');
 var whenAll           = require('./whenall.js');
@@ -95,7 +95,7 @@ var initialContext    = require('./initialcontext.js');
         },
         render: function () {
             var control = this.$el;
-            var querycbx = $(templates.querycbx());
+            var querycbx = $(template());
             control.replaceWith(querycbx);
             this.setElement(querycbx);
             this.$('input').replaceWith(control);
