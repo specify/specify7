@@ -26,9 +26,7 @@
     "jstify": "^0.13.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "watchify -v -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js",
-    "build": "browserify  -t jstify -t [ babelify --presets [ es2015 ] ] -d lib/main.js -o ../static/js/bundle.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC"
