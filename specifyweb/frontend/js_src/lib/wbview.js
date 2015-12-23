@@ -3,17 +3,14 @@
 var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
-var Bacon    = require('baconjs');
 var Q        = require('q');
+var Handsontable = require('handsontable');
 
 var getPickListByName = require('./getpicklistbyname.js');
 var schema            = require('./schema.js');
 var WBUpload          = require('./wbupload.js');
-var initialContext    = require('./initialcontext.js');
+var app    = require('./specifyapp.js');
 
-
-    var wbUploadDef;
-    initialContext.loadResource('specify_workbench_upload_def.xml', data => wbUploadDef = data);
 
     var highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
     function atoi(str) { return parseInt(str, 10); }
@@ -40,7 +37,7 @@ var initialContext    = require('./initialcontext.js');
         return {highlights: highlights, byPos: byPos};
     }
 
-    function getField(mapping) {
+function getField(wbUploadDef, mapping) {
         var tableName = mapping.get('tablename').toLowerCase();
         var fieldName = mapping.get('fieldname').toLowerCase();
         var updef = $('field[table="' + tableName + '"][name="' + fieldName + '"]', wbUploadDef);
@@ -77,7 +74,8 @@ var initialContext    = require('./initialcontext.js');
         });
     }
 
-module.exports = Backbone.View.extend({
+
+var WBView = Backbone.View.extend({
         __name__: "WbForm",
         className: "wbs-form",
         events: {
@@ -89,6 +87,7 @@ module.exports = Backbone.View.extend({
         initialize: function(options) {
             this.wb = options.wb;
             this.data = options.data;
+            this.wbUploadDef = options.wbUploadDef;
         },
         getMappings: function() {
             return Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -98,7 +97,7 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             var mappings = this.getMappings();
-            var fields = mappings.then(function(mappings) { return Q.all(_.map(mappings, getField)); });
+            var fields = mappings.then(mappings => Q.all(_.map(mappings, getField.bind(null, this.wbUploadDef))));
             var picklists = fields.then(function(fields) { return Q.all(_.map(fields, getPickListItems)); });
             var colHeaders = mappings.then(makeHeaders);
             var columns = picklists.then(makeColumns);
@@ -215,3 +214,20 @@ module.exports = Backbone.View.extend({
         }
     });
 
+module.exports = function loadWorkbench(id) {
+    var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+        title: 'Loading',
+        modal: true,
+        close: function() {$(this).remove();}
+    });
+    $('.progress-bar', dialog).progressbar({value: false});
+    var wb = new schema.models.Workbench.Resource({id: id});
+    Q.all([
+        Q(wb.fetch()),
+        Q($.get('/api/workbench/rows/' + id + '/')),
+        Q($.get('/static/config/specify_workbench_upload_def.xml'))
+    ]).spread(function(__, data, wbUploadDef) {
+        app.setTitle("Workbench: " + wb.get('name'));
+        app.setCurrentView(new WBView({ wb: wb, data: data, wbUploadDef: wbUploadDef }));
+    }).catch(app.handleError);
+};

@@ -1,14 +1,12 @@
-BROWSERIFY_OPTIONS= -d -t jstify -t [ babelify --presets [ es2015 ] ]
-
 .PHONY: clean watch
 
-all: ../static/js/bundle.js
+all: ../static/js/*.js
 
-../static/js/bundle.js: lib/*.js
-	browserify ${BROWSERIFY_OPTIONS} lib/main.js -o $@
+../static/js/*.js: lib/*.js
+	webpack
 
 watch:
-	watchify -v ${BROWSERIFY_OPTIONS} lib/main.js -o ../static/js/bundle.js
+	webpack -w
 
 clean:
-	rm ../static/js/bundle.js
+	rm ../static/js/*.js
