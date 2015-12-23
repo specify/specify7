@@ -3,6 +3,8 @@ var webpack = require("webpack");
 module.exports = {
     module: {
         loaders: [
+            { test: /\.(png)|(gif)|(jpg)$/, loader: "url-loader?limit=100000" },
+            { test: /\.css$/, loader: "style-loader!css-loader" },
             { test: /\.html$/, loader: "./underscore-template-loader.js" },
             {
                 test: /\.js$/,

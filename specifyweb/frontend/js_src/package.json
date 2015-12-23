@@ -23,7 +23,11 @@
     "babel-core": "^6.3.21",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
     "loader-utils": "^0.2.12",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
     "webpack": "^1.12.9"
   },
   "scripts": {

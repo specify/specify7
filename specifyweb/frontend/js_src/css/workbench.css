@@ -1,4 +1,4 @@
-@import url("vendor/handsontable.full.css");
+@import url("../bower_components/handsontable/dist/handsontable.full.css");
 
 .wbs-form .wb-spreadsheet {
     margin-top: 10px;
