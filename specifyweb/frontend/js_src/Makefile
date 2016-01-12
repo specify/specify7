@@ -1,12 +1,12 @@
-.PHONY: clean watch
+.PHONY: build clean
 
-all: ../static/js/*.js
-
-../static/js/*.js: lib/*.js
-	webpack
-
-watch:
-	webpack -w
-
+build:
+	npm install
+	node_modules/.bin/bower install
+	node_modules/.bin/webpack
+	rm -rf ../static/css
+	cp -r css ../static/
 clean:
-	rm ../static/js/*.js
+	rm -rf bower_components node_modules
+	rm -f ../static/js/*.js
+	rm -rf ../static/css

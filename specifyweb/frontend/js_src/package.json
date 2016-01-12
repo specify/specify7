@@ -28,7 +28,8 @@
     "loader-utils": "^0.2.12",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.9"
+    "webpack": "^1.12.9",
+    "bower": "~1.7.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

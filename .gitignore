@@ -19,6 +19,7 @@ specifyweb/virtenv
 /specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js
+/specifyweb/frontend/static/css
 /specifyweb/frontend/js_src/bower_components
 /specifyweb/frontend/js_src/node_modules
 /specifyweb/frontend/templates/specify-built.html
