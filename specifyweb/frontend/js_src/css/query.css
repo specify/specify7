@@ -1,0 +1,133 @@
+.querybuilder-header {
+    vertical-align: top;
+}
+
+.querybuilder-header img {
+    height: 1.2em;
+    margin-right: 0.8em;
+}
+
+.querybuilder-expand {
+    width: 100%;
+}
+
+.querybuilder-expand .ui-button-text {
+    padding: 0;
+}
+
+.querybuilder input[type="checkbox"],
+.querybuilder input[type="button"] {
+   margin-left: 5px;
+}
+
+.spqueryfields {
+    padding: 0;
+    margin-bottom: 4px;
+}
+
+.spqueryfield  {
+    background-color: #f0f0f0;
+    margin-top: 7px;
+    padding: 5px 0px 4px 12px;
+    border: 1px inset;
+    border-radius: 8px;
+}
+
+.spqueryfield.field-incomplete .field-expand,
+.spqueryfield.field-incomplete .field-controls {
+    display: none;
+}
+
+.spqueryfield-delete {
+    height: 24px;
+    border: 1px inset;
+    background-color: #fff;
+}
+
+.spqueryfield-delete span {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spqueryfield span {
+    margin: 0;  /* 10px 0 10px; */
+}
+
+.spqueryfield .field-label {
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.spqueryfield .field-operation,
+.spqueryfield .field-label-field,
+.spqueryfield .field-label-datepart,
+.spqueryfield .field-label-treerank,
+.spqueryfield button {
+    margin-right: 10px;
+}
+
+.spqueryfield .field-label-field img,
+.spqueryfield .field-select-grp img {
+    height: 1.2em;
+    margin-right: 0.2em;
+}
+
+.spqueryfield .field-select-grp img {
+    vertical-align: middle;
+}
+
+.spqueryfield .field-controls {
+    position: absolute;
+    right: 25px;
+}
+
+.spqueryfield .field-controls.hidden {
+    display: none;
+}
+
+.spqueryfield label.ui-state-active {
+    background-color: #afa;
+}
+
+.spqueryfield label.ui-button {
+    margin-right: 4px;
+}
+
+.spqueryfield label.op-negate {
+    margin-right: 5px;
+}
+
+.spqueryfield label.op-negate.ui-state-active {
+    background-color: #f55;
+}
+
+.spqueryfield button {
+    vertical-align: middle;
+    padding-bottom: 8px;
+}
+
+.spqueryfield button.ui-button {
+    margin-right: 4px;
+    padding: 0;
+    width: 32px;
+}
+
+.spqueryfield button.ui-button span {
+    padding: 0;
+}
+
+.query-params-list {
+    padding: 0px;
+}
+
+.spqueryfield.for-report {
+    background-color: rgb(200, 200, 200);
+    margin-top: 7px;
+    padding: 5px 0px 4px 12px;
+}
+
+.spqueryfield .ui-icon-cancel {
+    /* work around for bug in jquery UI themes */
+    /* that seems to effect ui icons in dialogs */
+    background-position: 0 -128px;
+}

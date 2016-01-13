@@ -1,0 +1,206 @@
+#express-search {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px 5px;
+}
+
+div.specify-view-content,
+div.specify-view-content-container,
+.specify-form-type-form {
+    display: inline-block;
+}
+
+.specify-form-header, .specify-subview-header {
+    border-bottom: solid 1px;
+}
+
+.specify-form-header > .recordset-prev,
+.specify-form-header > .recordset-next,
+.specify-form-header > a,
+.specify-subview-header > a {
+    margin-left: 1em;
+    font-size: 0.8em;
+}
+
+.specify-form-header > span.recordset-prev,
+.specify-form-header > span.recordset-next {
+    color: lightgrey;
+}
+
+.specify-form-header img {
+    vertical-align: bottom;
+    margin: 0 2px 2px 0;
+    height: 24px;
+}
+
+.specify-form-buttons {
+    text-align: right;
+}
+
+.specify-form-buttons input {
+    margin-right: 10px;
+}
+
+textarea.specify-field {
+    width: 100%;
+}
+
+input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatted {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+select.specify-field {
+    width: 100%;
+}
+
+.specify-required-field {
+    background-color: #C8E6FF;
+}
+
+h1.separator,
+h2.separator,
+h3.separator,
+h4.separator,
+h5.separator {
+    border-bottom: solid 1px;
+}
+
+hr.separator {
+    border: none;
+    margin: 0;
+    padding-bottom: 3px;
+    border-bottom: solid 1px;
+}
+
+.specify-form-label {
+    text-align: right;
+}
+
+.specify-checkbox-label {
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+table.partialdateui-strct td:first-child,
+table.partialdateui-strct td:last-child {
+    padding: 0px;
+}
+
+.partialdateui-month-year {
+    white-space: nowrap;
+}
+
+ul.ui-autocomplete li.ui-menu-item {
+    list-style-type: none;
+}
+
+.specify-subview-header .ui-icon {
+    display: inline-block;
+}
+
+.specify-subview-button-count {
+    padding: 3px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: white;
+    border: 1px solid #777;
+    color: #444;
+}
+
+.specify-subviewbutton-icon {
+    padding-right: 5px;
+}
+
+.specify-subview-button .ui-button-text div {
+    display: table-row;
+}
+
+.specify-subview-button a {
+    vertical-align: middle;
+}
+
+.specify-subviewbutton-icon, .specify-subview-button-count {
+    display: table-cell;
+    max-width: 40px;
+    max-height: 20px;
+}
+
+.specify-formtable td, .specify-formtable th {
+    text-align: center;
+}
+
+.specifyplugin-latlonui table {
+    width: 100%;
+    border: 1px solid;
+}
+
+.specifyplugin-latlonui th, .specifyplugin-latlonui td {
+    text-align: center;
+}
+
+input[type="submit"].saveblocked {
+    background: red;
+}
+
+.saveblocked {
+    background-color: red;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    text-align: center;
+    color: grey;
+}
+
+.tooltip-content {
+    background-color: grey;
+    color: white;
+    padding: 8px;
+    border-width: 1px;
+    border-color: black;
+    margin-top: -3px;
+}
+
+.tooltip li {
+    list-style-type: none;
+}
+
+.savebutton, .deletebutton {
+    display: inline;
+}
+
+.collectionrelonetomanyplugin {
+    background-color: #fff;
+    border: 1px inset;
+}
+
+.specify-plugin-weblink {
+    position: relative;
+    height: 35px;
+}
+
+.specify-plugin-weblink input {
+    position: absolute;
+    top: 5px;
+    left: 45px;
+}
+
+.specify-plugin-weblink a {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 40px;
+}
+
+.specify-plugin-weblink a img {
+    max-width: 20px;
+    max-height: 20px;
+}
+
+.specify-plugin-weblink a .ui-button-text {
+    padding: 5px;
+}

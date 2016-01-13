@@ -1,0 +1,17 @@
+
+.combobox-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.combobox-wrapper input {
+    margin: 0;
+}
+
+.combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+}

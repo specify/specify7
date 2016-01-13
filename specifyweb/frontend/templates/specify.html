@@ -7,13 +7,7 @@
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
-{% if use_built %}
-  <link rel="stylesheet" href="/static/css/main-built.css" />
-  <script src="/static/js/main-built.js"></script>
-{% else %}
-  <link rel="stylesheet" href="/static/css/main.css" />
-  <script data-main="/static/js/main.js" src="/static/js/vendor/require.js"></script>
-{% endif %}
+  <script src="/static/js/bundle.js"></script>
 </head>
 
 <body>

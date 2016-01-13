@@ -1,0 +1,83 @@
+.tree-view h1 {
+    float: left;
+}
+
+.tree-view .tree-search {
+    margin-left: 40px;
+}
+
+.tree-view table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0px;
+}
+
+.tree-view thead th {
+    text-align: center;
+}
+
+.tree-view tfoot th {
+    height: 20px;
+}
+
+.tree-view th, .tree-view td {
+    border: 1px none;
+}
+
+.tree-view td:nth-child(even),
+.tree-view th:nth-child(even) {
+    background-color: lightblue;
+    white-space: nowrap;
+}
+
+.tree-view td:nth-child(odd),
+.tree-view th:nth-child(odd) {
+    background-color: lightyellow;
+    white-space: nowrap;
+}
+
+.tree-view td.tree-vertical-edge {
+    border-left: 1px solid #555;
+}
+
+.tree-view td.tree-horizontal-edge {
+    border-bottom: 1px solid #555;
+}
+
+.tree-node .expander {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.tree-node-cell p {
+    padding-top: 10px;
+    margin: 0 0 -12px -5px;
+}
+
+.tree-node-cell .ui-icon.open {
+    /* .ui-icon-triangle-1-e */
+    background-position: -32px -16px;
+}
+
+.tree-node-cell .ui-icon.close {
+    /* .ui-icon-triangle-1-s  */
+    background-position: -64px -16px;
+}
+
+.tree-node-cell .ui-icon.wait {
+    /* .ui-icon-clock  */
+    background-position: -80px -112px;
+}
+
+.tree-node-cell .ui-icon.leaf {
+    /* .ui-icon-radio-off */
+    background-position: -112px -144px;
+}
+
+.context-menu-item.icon-form {
+    background-image: url(/images/Form16x16.png);
+}
+
+.context-menu-item.icon-query {
+    background-image: url(/images/Grid16x16.png);
+}

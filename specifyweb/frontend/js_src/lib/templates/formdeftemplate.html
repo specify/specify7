@@ -1,0 +1,11 @@
+<table>
+  <colgroup>
+    <% widths.forEach(function(width) { %>
+    <% if (width != null) { %>
+    <col  width="<%= width %>px" />
+    <% } else { %>
+    <col />
+    <% } %>
+    <% }); %>
+  </colgroup>
+</table>

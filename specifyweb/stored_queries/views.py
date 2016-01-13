@@ -15,7 +15,7 @@ from sqlalchemy.sql.functions import count
 
 from specifyweb.specify.models import Collection
 from specifyweb.specify.api import toJson, uri_for_model
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, apply_access_control
 from . import models
 
 from .queryfield import QueryField
@@ -138,11 +138,9 @@ def run_ephemeral_query(collection, user, spquery):
 @require_POST
 @csrf_exempt
 @login_maybe_required
+@apply_access_control
 @never_cache
 def make_recordset(request):
-    if settings.RO_MODE or request.specify_user.usertype not in ('Manager', 'FullAccess'):
-        return HttpResponseForbidden()
-
     try:
         recordset_info = json.load(request)
     except ValueError as e:

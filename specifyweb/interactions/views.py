@@ -258,4 +258,3 @@ def prep_interactions(request):
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')
-

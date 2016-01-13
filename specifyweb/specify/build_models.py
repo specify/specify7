@@ -72,6 +72,17 @@ def protect(collector, field, sub_objs, using):
     else:
         models.PROTECT(collector, field, sub_objs, using)
 
+SPECIAL_DELETION_RULES = {
+    'Agent.specifyuser': models.SET_NULL,
+    'Recordsetitem.recordset': models.CASCADE,
+
+    # Handle workbench deletion using raw sql in business rules.
+    'Workbenchrow.workbench': models.DO_NOTHING,
+    'Workbenchdataitem.workbenchrow': models.DO_NOTHING,
+    'Workbenchrowimage.workbenchrow': models.DO_NOTHING,
+    'Workbenchrowexportedrelationship.workbenchrow': models.DO_NOTHING,
+}
+
 def make_relationship(modelname, rel, datamodel):
     """Return a Django relationship field for the given relationship definition.
 
@@ -92,15 +103,14 @@ def make_relationship(modelname, rel, datamodel):
         # skip many-to-many fields for now.
         return None
 
-    reverse = datamodel.reverse_relationship(rel)
-    if modelname == "Agent" and rel.name == "specifyUser":
-        on_delete = models.SET_NULL
-    elif modelname.capitalize() == "Recordsetitem" and relatedmodel == "Recordset":
-        on_delete = models.CASCADE
-    elif reverse and reverse.dependent:
-        on_delete = models.CASCADE
-    else:
-        on_delete = protect
+    try:
+        on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
+    except KeyError:
+        reverse = datamodel.reverse_relationship(rel)
+        if reverse and reverse.dependent:
+            on_delete = models.CASCADE
+        else:
+            on_delete = protect
 
     def make_to_one(Field):
         """Setup a field of the given 'Field' type which can be either

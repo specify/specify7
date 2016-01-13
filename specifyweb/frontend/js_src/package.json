@@ -1,0 +1,39 @@
+{
+  "name": "specify7-frontend",
+  "version": "7.1.0",
+  "description": "",
+  "main": "lib/main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "backbone": "^0.9.10",
+    "baconjs": "^0.7.83",
+    "d3": "^3.5.12",
+    "immutable": "^3.7.5",
+    "jquery": "^1.7.2",
+    "jquery-contextmenu": "^1.10.3",
+    "jquery-deparam": "^0.4.2",
+    "jquery-ui": "^1.10.5",
+    "moment": "^2.10.6",
+    "q": "^1.4.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.21",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "loader-utils": "^0.2.12",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.9",
+    "bower": "~1.7.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "KU Biodiversity Institute",
+  "license": "GPL-2.0"
+}

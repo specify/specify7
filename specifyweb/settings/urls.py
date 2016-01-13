@@ -44,6 +44,9 @@ urlpatterns = patterns('',
     # interaction api stuff
     url(r'^api/', include('specifyweb.interactions.urls')),
 
+    # workbench api
+    url(r'^api/workbench/', include('specifyweb.workbench.urls')),
+
     # set a user's password
     url(r'^api/set_password/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_password'),
     url(r'^api/set_admin_status/(?P<userid>\d+)/$', 'specifyweb.specify.views.set_admin_status'),

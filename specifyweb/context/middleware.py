@@ -39,6 +39,10 @@ def get_agent(request):
     except Agent.DoesNotExist:
         return None
 
+def get_readonly(request):
+    return (
+        settings.RO_MODE or
+        request.specify_user.usertype not in ('Manager', 'FullAccess'))
 
 class ContextMiddleware(object):
     """Adds information about the logged in user and collection to requests."""
@@ -46,6 +50,7 @@ class ContextMiddleware(object):
         request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
         request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
         request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
+        request.specify_readonly   = SimpleLazyObject(lambda: get_cached('_cached_specify_readonly', get_readonly, request))
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)

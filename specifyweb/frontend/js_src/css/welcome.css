@@ -1,0 +1,90 @@
+img.specify-splash {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.welcome div {
+    vertical-align: top;
+}
+
+.welcome h2 {
+    border-bottom: solid 1px;
+}
+
+.welcome ul {
+    padding: 0;
+}
+
+.welcome li img {
+    vertical-align: middle;
+    margin-right: 10px;
+    height: 24px;
+}
+
+.welcome li {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.welcome .forms, .welcome .recordsets {
+    display: inline-block;
+    margin: 0 20px 0px 20px;
+}
+
+.welcome .recordset-edit .ui-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.specify-welcome > p,
+.specify-welcome > h2 {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#specify-system-info th {
+    text-align: right;
+    white-space: nowrap;
+}
+
+#specify-system-info h1 {
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+.treemap .node {
+    border: solid 1px black;
+    font: 10px sans-serif;
+    line-height: 12px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 2px;
+    opacity: 0.85;
+}
+
+.treemap p {
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    background-color: white;
+    padding: 0px 5px;
+    opacity: 0.9;
+    border: solid 1px black;
+}
+
+.specify-auditlog-entry {
+    margin-bottom: 16px;
+}
+
+.specify-auditlog-entry h3 img {
+    height: 1.5em;
+    margin-right: 0.8em;
+    float: left;
+}
+
+.specify-auditlog-entry p {
+    clear: both;
+}
+

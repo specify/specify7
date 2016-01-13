@@ -1,0 +1,21 @@
+.querycbx-strct {
+    display: table;
+    width: 100%;
+}
+
+.querycbx-strct input {
+    display: table-cell;
+}
+
+.querycbx-strct a {
+    display: table-cell;
+    width: 16px;
+}
+
+.querycbx-search-results {
+    background-color: #fff;
+    height: 15em;
+    width: 40em;
+    overflow: auto;
+    padding: 0.5em 1em;
+}

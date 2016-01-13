@@ -15,5 +15,6 @@ from . import (
     attachment_rules,
     guid_rules,
     interaction_rules,
+    workbench_rules,
     user_rules,
 )

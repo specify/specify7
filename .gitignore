@@ -13,12 +13,15 @@ specifyweb/virtenv
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
 
-/specifyweb/frontend/static/js/node_modules
+
 
 # Build artifacts:
 /specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
-/specifyweb/frontend/static/js/main-built.js
+/specifyweb/frontend/static/js
+/specifyweb/frontend/static/css
+/specifyweb/frontend/js_src/bower_components
+/specifyweb/frontend/js_src/node_modules
 /specifyweb/frontend/templates/specify-built.html
 /local_specifyweb_apache.conf
 
