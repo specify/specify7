@@ -1,8 +1,8 @@
 {
   "name": "specify7-frontend",
-  "version": "7.0.4",
+  "version": "7.1.0",
   "description": "",
-  "main": "main.js",
+  "main": "lib/main.js",
   "directories": {
     "test": "tests"
   },
@@ -34,6 +34,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "KU Biodiversity Institute",
+  "license": "GPL-2.0"
 }
