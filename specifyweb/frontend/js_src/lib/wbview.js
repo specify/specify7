@@ -102,7 +102,7 @@ var WBView = Backbone.View.extend({
             var colHeaders = mappings.then(makeHeaders);
             var columns = picklists.then(makeColumns);
 
-            $('<h2>').text("Workbench: " + this.wb.get('name'))
+            $('<h2>').text("Dataset: " + this.wb.get('name'))
                 .appendTo(this.el)
                 .append(
                     $('<button class="wb-remove-highlights" style="display:none">Clear</button>'),

@@ -24,7 +24,7 @@ var WBTemplateEditor    = require('./wbtemplateeditor.js');
             var entries = this.templates.map(this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: "Choose Workbench Template",
+                title: "Choose Dataset Template",
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },
@@ -80,7 +80,7 @@ module.exports =  Backbone.View.extend({
             var entries = _.map(this.wbs, this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
-                title: "Workbenches",
+                title: "Datasets",
                 maxHeight: 400,
                 modal: true,
                 close: function() { $(this).remove(); },

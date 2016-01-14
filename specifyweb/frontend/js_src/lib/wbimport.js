@@ -96,7 +96,7 @@ var app              = require('./specifyapp.js');
 
             var workbenchName = Bacon.combineWith(
                 ValueProperty(this.$(':text')), fileSelected,
-                (enteredValue, file) => enteredValue === '' ? file.name : enteredValue);
+                (enteredValue, file) => enteredValue === '' ? file.name.replace(/\.[^\.]*$/, '') : enteredValue);
 
             workbenchName.onValue(wbName => this.$(':text').val(wbName));
 
