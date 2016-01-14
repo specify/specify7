@@ -128,7 +128,7 @@ var WBView = Backbone.View.extend({
                 cells: function() { return {renderer: renderer}; },
                 colHeaders: colHeaders,
                 columns: columns,
-                minSpareRows: 1,
+                minSpareRows: 0,
                 rowHeaders: true,
                 manualColumnResize: true,
                 columnSorting: true,
