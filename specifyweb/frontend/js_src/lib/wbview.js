@@ -170,7 +170,7 @@ var WBView = Backbone.View.extend({
             });
             $('.progress-bar', dialog).progressbar({value: false});
             $.ajax('/api/workbench/rows/' + this.wb.id + '/', {
-                data: JSON.stringify(this.hot.getData()),
+                data: JSON.stringify(this.data),
                 type: "PUT"
             }).done(function(data) {
                 this.data = data;
