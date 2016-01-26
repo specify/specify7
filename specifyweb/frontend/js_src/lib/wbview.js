@@ -298,10 +298,10 @@ var WBView = Backbone.View.extend({
         for(let i = currentPos + dir; i >= 0 && i < maxPos; i += dir) {
             if (this.infoFromLog.byPos[i] != null) {
                 this.currentPos = [Math.floor(i / nCols), i % nCols];
-                this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
                 break;
             }
         }
+        this.currentPos && this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
     },
     removeHighlights: function() {
         if (!this.highlightsOn) return;
