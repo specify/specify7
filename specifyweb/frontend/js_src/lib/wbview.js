@@ -228,8 +228,19 @@ var WBView = Backbone.View.extend({
         this.$('.wb-save').prop('disabled', true);
     },
     upload: function() {
-        $.post('/api/workbench/upload/' + this.wb.id + '/');
-        this.openUploadProgress();
+        const begin = () => {
+            $.post('/api/workbench/upload/' + this.wb.id + '/');
+            this.openUploadProgress();
+        };
+
+        $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
+            title: "Proceed with upload?",
+            modal: true,
+            buttons: [
+                {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
+                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+            ]
+        });
     },
     openUploadProgress: function() {
         let stopRefresh = false;
