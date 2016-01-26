@@ -1,5 +1,6 @@
 import re
 import os
+import sys
 import errno
 import json
 import logging
@@ -137,6 +138,10 @@ def save(wb_id, data, new=False):
     ])
     return load(wb_id)
 
+def shellquote(s):
+    # this can be replaced with shlex.quote in Python 3.3
+    return "'" + s.replace("'", "'\\''") + "'"
+
 @csrf_exempt
 @login_maybe_required
 @apply_access_control
@@ -145,35 +150,48 @@ def upload(request, wb_id):
     args = [
         settings.JAVA_PATH,
         "-Dfile.encoding=UTF-8",
-        "-classpath",
-        ":".join((os.path.join(settings.SPECIFY_THICK_CLIENT, jar) for jar in CLASSPATH)),
+        "-classpath", shellquote(
+            ":".join((os.path.join(settings.SPECIFY_THICK_CLIENT, jar) for jar in CLASSPATH))
+        ),
         "edu.ku.brc.specify.tasks.subpane.wb.wbuploader.UploadCmdLine",
-        "-u", request.specify_user.name,
-        "-U", settings.MASTER_NAME,
-        "-P", settings.MASTER_PASSWORD,
-        "-d", settings.DATABASE_NAME,
+        "-u", shellquote(request.specify_user.name),
+        "-U", shellquote(settings.MASTER_NAME),
+        "-P", shellquote(settings.MASTER_PASSWORD),
+        "-d", shellquote(settings.DATABASE_NAME),
         "-b", wb_id,
-        "-c", request.specify_collection.collectionname,
-        "-w", settings.SPECIFY_THICK_CLIENT,
+        "-c", shellquote(request.specify_collection.collectionname),
+        "-w", shellquote(settings.SPECIFY_THICK_CLIENT),
     ]
 
     if settings.DATABASE_HOST != '':
-        args.extend(["-h", settings.DATABASE_HOST])
+        args.extend(["-h", shellquote(settings.DATABASE_HOST)])
 
     output_file = "%s_%s_%s" % (settings.DATABASE_NAME, wb_id, uuid4())
     with open(os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file), "w") as f:
-        subprocess.Popen(args, stdout=f, bufsize=1024)
+        # we use the shell to start the uploader process to achieve a double
+        # fork so that we don't have to wait() on the child process
+        subprocess.call(['/bin/sh', '-c', ' '.join(args) + ' &'], stdout=f)
 
+    log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
+    for fname in log_fnames:
+        if os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file) != fname:
+            try:
+                os.remove(fname)
+            except:
+                pass
     return http.HttpResponse(output_file, content_type="text_plain")
+
 
 TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
 STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE)
 ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE)
 ROW_RE = re.compile(r'row (\d*)[^\d]')
+PID_RE = re.compile(r'pid = (\d*)')
 
 def status_from_log(fname):
     with open(fname, 'r') as f:
         first_line = f.readline()
+        second_line = f.readline()
         try:
             f.seek(-512, os.SEEK_END)
         except IOError:
@@ -181,28 +199,32 @@ def status_from_log(fname):
             pass
         tail = f.read(512)
 
-    start_match = STARTING_RE.match(first_line)
+    pid_match = PID_RE.match(first_line)
+    start_match = STARTING_RE.match(second_line)
     ending_match = ENDING_RE.search(tail)
     row_match = ROW_RE.findall(tail)
     return {
         'log_name': os.path.basename(fname),
+        'pid': pid_match and pid_match.group(1),
         'start_time': start_match and start_match.group(1),
         'last_row': row_match[-1] if len(row_match) > 0 else None,
         'end_time': ending_match and ending_match.group(1),
         'success': ending_match and ending_match.group(2) == 'successfully.',
+        'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
     }
 
+def is_uploader_running(log_fname, uploader_pid):
+    try:
+        return log_fname == os.readlink(os.path.join('/proc', uploader_pid, 'fd/1'))
+    except OSError as e:
+        if e.errno == errno.ENOENT: return False
+        raise e
 
-@csrf_exempt
 @login_maybe_required
-@apply_access_control
-@require_http_methods(["GET", "DELETE"])
+@require_GET
 def upload_log(request, upload_id):
     assert upload_id.startswith(settings.DATABASE_NAME)
     fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
-    if request.method == "DELETE":
-        os.remove(fname)
-        return http.HttpResponse('', status=204)
     try:
         return http.HttpResponse(open(fname, "r"), content_type='text/plain')
     except IOError as e:
@@ -213,18 +235,10 @@ def upload_log(request, upload_id):
 
 @login_maybe_required
 @require_GET
-def upload_status(request, upload_id):
-    assert upload_id.startswith(settings.DATABASE_NAME)
-    fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
-    status = status_from_log(fname)
-    return http.HttpResponse(toJson(status), content_type='application/json')
-
-@login_maybe_required
-@require_GET
-def upload_status_list(request, wb_id):
+def upload_status(request, wb_id):
     log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
-    statuses = [status_from_log(log) for log in log_fnames]
-    return http.HttpResponse(toJson(statuses), content_type='application/json')
+    status = status_from_log(log_fnames[0]) if len(log_fnames) > 0 else None
+    return http.HttpResponse(toJson(status), content_type='application/json')
 
 @csrf_exempt
 @login_maybe_required

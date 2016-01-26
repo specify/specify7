@@ -1,0 +1,12 @@
+<div title="Details" class="wb-upload-details">
+  <% if (info.errors.length > 0) { %>
+  <h2>Errors</h2>
+  <ul>
+    <% for(var i in info.errors) { %>
+    <li><%- info.errors[i] %></li>
+    <% } %>
+  </ul>
+  <% } %>
+  <h2>Task output</h2>
+  <textarea readonly><%- log %></textarea>
+</div>

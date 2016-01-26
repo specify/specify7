@@ -10,6 +10,7 @@
     "backbone": "^0.9.10",
     "baconjs": "^0.7.83",
     "d3": "^3.5.12",
+    "humanize-duration": "^3.5.0",
     "immutable": "^3.7.5",
     "jquery": "^1.7.2",
     "jquery-contextmenu": "^1.10.3",

@@ -4,11 +4,6 @@
     margin-top: 10px;
 }
 
-.wbs-form h2 button, .wbs-form h2 span {
-    float: right;
-    margin: 0 10px;
-}
-
 .wbs-form .ht_clone_top {
     z-index: 97;
 }
@@ -17,8 +12,29 @@
     z-index: 98;
 }
 
-.wbs-form .ht_clone_corner {
+.wbs-form .ht_clone_top_left_corner,
+.wbs-form .ht_clone_bottom_left_corner {
     z-index: 99;
+}
+
+.wbs-form .wb-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wbs-form .wb-header .wb-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.wbs-form .wb-invalid-cells {
+    border: solid 1px;
+    padding: 8px 5px;
+}
+
+.wb-upload-details textarea {
+    height: 400px;
+    width: 600px;
 }
 
 .workbench-template-editor th {
@@ -99,10 +115,6 @@
     background-color: #aaa;
     height: 1px;
     margin: auto;
-}
-
-.wb-logs tbody tr {
-    cursor: pointer;
 }
 
 .workbench-import-view table {
