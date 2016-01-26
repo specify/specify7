@@ -146,7 +146,7 @@ def shellquote(s):
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload(request, wb_id):
+def upload(request, wb_id, no_commit):
     args = [
         settings.JAVA_PATH,
         "-Dfile.encoding=UTF-8",
@@ -161,6 +161,7 @@ def upload(request, wb_id):
         "-b", wb_id,
         "-c", shellquote(request.specify_collection.collectionname),
         "-w", shellquote(settings.SPECIFY_THICK_CLIENT),
+        "-x", "true" if no_commit else "false",
     ]
 
     if settings.DATABASE_HOST != '':
@@ -183,15 +184,15 @@ def upload(request, wb_id):
 
 
 TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
-STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE)
+STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE, re.MULTILINE)
 ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE)
 ROW_RE = re.compile(r'row (\d*)[^\d]')
 PID_RE = re.compile(r'pid = (\d*)')
+NO_COMMIT_RE = re.compile(r'Validating only. Will not commit.')
 
 def status_from_log(fname):
     with open(fname, 'r') as f:
-        first_line = f.readline()
-        second_line = f.readline()
+        head = f.read(1024)
         try:
             f.seek(-512, os.SEEK_END)
         except IOError:
@@ -199,8 +200,8 @@ def status_from_log(fname):
             pass
         tail = f.read(512)
 
-    pid_match = PID_RE.match(first_line)
-    start_match = STARTING_RE.match(second_line)
+    pid_match = PID_RE.search(head)
+    start_match = STARTING_RE.search(head)
     ending_match = ENDING_RE.search(tail)
     row_match = ROW_RE.findall(tail)
     return {
@@ -211,6 +212,7 @@ def status_from_log(fname):
         'end_time': ending_match and ending_match.group(1),
         'success': ending_match and ending_match.group(2) == 'successfully.',
         'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
+        'no_commit': NO_COMMIT_RE.search(head) is not None,
     }
 
 def is_uploader_running(log_fname, uploader_pid):

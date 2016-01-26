@@ -97,6 +97,7 @@ var WBView = Backbone.View.extend({
     className: "wbs-form",
     events: {
         'click .wb-upload': 'upload',
+        'click .wb-validate': 'validate',
         'click .wb-save': 'save',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
@@ -129,9 +130,11 @@ var WBView = Backbone.View.extend({
             this.openUploadProgress();
         } else {
             this.$('.wb-upload-info').text(
-                (this.uploadStatus.success ? 'Uploaded (' :
-                 'Last upload encountered errors (') +
-                    fromNow(this.uploadStatus.end_time) + ')'
+                (this.uploadStatus.no_commit ?
+                 (this.uploadStatus.success ? 'Validation passed' : 'Validation failed')
+                 :
+                 (this.uploadStatus.success ? 'Uploaded' : 'Last upload encountered errors')) +
+                ' (' + fromNow(this.uploadStatus.end_time) + ')'
             );
             this.loadUploadLog();
             this.$('.wb-upload-controls').show();
@@ -196,7 +199,7 @@ var WBView = Backbone.View.extend({
         }
     },
     spreadSheetChanged: function() {
-        this.$('.wb-upload').prop('disabled', true);
+        this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
     },
     resize: function() {
@@ -224,7 +227,7 @@ var WBView = Backbone.View.extend({
         }.bind(this));
     },
     spreadSheetUpToDate: function() {
-        this.$('.wb-upload').prop('disabled', false);
+        this.$('.wb-upload, .wb-validate').prop('disabled', false);
         this.$('.wb-save').prop('disabled', true);
     },
     upload: function() {
@@ -242,12 +245,15 @@ var WBView = Backbone.View.extend({
             ]
         });
     },
+    validate: function() {
+        $.post('/api/workbench/validate/' + this.wb.id + '/');
+        this.openUploadProgress();
+    },
     openUploadProgress: function() {
         let stopRefresh = false;
         const refreshTime = 2000;
 
         const dialog = $(statusTemplate()).dialog({
-            title: "Upload status",
             modal: true,
             open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close: function() { $(this).remove(); stopRefresh = true; }
@@ -256,10 +262,14 @@ var WBView = Backbone.View.extend({
 
         const refresh = () => $.get('/api/workbench/upload_status/' + this.wb.id + '/').done(
             (status) => {
+                const statusText = status.is_running ?
+                          (status.no_commit ? 'Validating...' : 'Uploading...')
+                      : status.success ?
+                          (status.no_commit ? 'Validation passed.' : 'Upload succeeded.')
+                      : (status.no_commit ? 'Validation failed.' : 'Upload failed.');
+
                 if (stopRefresh) return;
-                $('.status', dialog).text(status.is_running ? 'Running...' :
-                                          status.success ? 'Succeeded.'  :
-                                          'Failed.');
+                $('.status', dialog).text(statusText);
                 $('.startTime', dialog).text(fromNow(status.start_time));
                 $('.rows', dialog).text(status.last_row == null ? 'None' : status.last_row);
 
