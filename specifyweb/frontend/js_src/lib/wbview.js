@@ -168,6 +168,7 @@ var WBView = Backbone.View.extend({
     setupHOT: function (colHeaders, columns) {
         var onChanged = this.spreadSheetChanged.bind(this);
         var renderer = this.renderCell.bind(this);
+        if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
@@ -181,12 +182,20 @@ var WBView = Backbone.View.extend({
             sortIndicator: true,
             contextMenu: true,
             stretchH: 'all',
-            afterCreateRow: onChanged,
+            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: onChanged,
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: (change, source) => source === 'loadData' || onChanged()
         });
         $(window).resize(this.resize.bind(this));
+    },
+    fixCreatedRows: function(index, amount) {
+        // Handsontable doesn't insert the correct number of elements in newly
+        // inserted rows. It inserts as many as there are columns, but there
+        // should be an extra one at the begining representing the wb row id.
+        for (let i = 0; i < amount; i++) {
+            this.data[i + index] = Array(this.hot.countCols() + 1).fill(null);
+        }
     },
     renderCell: function(instance, td, row, col, prop, value, cellProperties) {
         Handsontable.renderers.TextRenderer.apply(null, arguments);
