@@ -32,6 +32,10 @@
     padding: 8px 5px;
 }
 
+.wbs-form .wb-invalid-cell {
+    background-color: #faa;
+}
+
 .wb-upload-details textarea {
     height: 400px;
     width: 600px;

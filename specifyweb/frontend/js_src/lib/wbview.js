@@ -125,9 +125,11 @@ var WBView = Backbone.View.extend({
             });
     },
     setupHOT: function (colHeaders, columns) {
-        var onChanged = this.spreadSheetChanged.bind(this);
-        var renderer = this.renderCell.bind(this);
         if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
+
+        const onChanged = this.spreadSheetChanged.bind(this);
+        const renderer = this.renderCell.bind(this);
+
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
@@ -139,13 +141,26 @@ var WBView = Backbone.View.extend({
             manualColumnResize: true,
             columnSorting: true,
             sortIndicator: true,
-            contextMenu: true,
+            // contextMenu: true,
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: onChanged,
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: (change, source) => source === 'loadData' || onChanged()
         });
+
+        const makeTooltip = td => {
+            const coords = this.hot.getCoords(td);
+            const pos = this.hot.countCols() * coords.row + coords.col;
+            const info = this.infoFromLog.byPos[pos];
+            return $('<span>').text(info.message);
+        };
+
+        this.$('.wb-spreadsheet').tooltip({
+            items: ".wb-invalid-cell",
+            content: function() { return makeTooltip(this); }
+        });
+
         $(window).resize(this.resize.bind(this));
     },
     fixCreatedRows: function(index, amount) {
@@ -161,9 +176,11 @@ var WBView = Backbone.View.extend({
         if (!this.highlightsOn) return;
         const pos = instance.countCols() * row + col;
         const highlightInfo = this.infoFromLog.byPos[pos];
+        const $td = $(td);
         if (highlightInfo) {
-            td.style.background = '#FEE';
-            td.title = highlightInfo.message;
+            $td.addClass('wb-invalid-cell');
+        } else {
+            $td.removeClass('wb-invalid-cell');
         }
     },
     spreadSheetChanged: function() {
