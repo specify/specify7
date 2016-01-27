@@ -141,7 +141,7 @@ var WBView = Backbone.View.extend({
             manualColumnResize: true,
             columnSorting: true,
             sortIndicator: true,
-            // contextMenu: true,
+            contextMenu: true,
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: onChanged,
@@ -256,7 +256,10 @@ var WBView = Backbone.View.extend({
                 if (stopRefresh) return;
                 $('.status', dialog).text(statusText);
                 $('.startTime', dialog).text(fromNow(status.start_time));
-                $('.rows', dialog).text(status.last_row == null ? 'None' : status.last_row);
+                $('.rows', dialog).text(
+                    status.last_row == null ? 'None' :
+                        ('' + (1 + status.last_row) + ' / ' + this.hot.countRows())
+                );
 
                 if (status.is_running) {
                     window.setTimeout(refresh, refreshTime);

@@ -208,7 +208,7 @@ def status_from_log(fname):
         'log_name': os.path.basename(fname),
         'pid': pid_match and pid_match.group(1),
         'start_time': start_match and start_match.group(1),
-        'last_row': row_match[-1] if len(row_match) > 0 else None,
+        'last_row': int(row_match[-1]) if len(row_match) > 0 else None,
         'end_time': ending_match and ending_match.group(1),
         'success': ending_match and ending_match.group(2) == 'successfully.',
         'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
