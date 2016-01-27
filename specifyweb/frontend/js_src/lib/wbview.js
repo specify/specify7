@@ -50,47 +50,6 @@ function parseLog(log, nCols) {
     return {highlights: highlights, byPos: byPos, errors: errors};
 }
 
-function getField(wbUploadDef, mapping) {
-    var tableName = mapping.get('tablename').toLowerCase();
-    var fieldName = mapping.get('fieldname').toLowerCase();
-    var updef = $('field[table="' + tableName + '"][name="' + fieldName + '"]', wbUploadDef);
-    if (updef.length == 1) {
-        tableName = updef.attr('actualtable') || tableName;
-        fieldName = updef.attr('actualname') || fieldName;
-    }
-    var model = schema.getModel(tableName);
-    return model.getField(fieldName);
-}
-
-function getPickListItems(field) {
-    var picklistName = field && field.getPickList();
-    return picklistName &&
-        getPickListByName(picklistName).pipe(function(pl) {
-            return (pl.get('type') == 0) && pl.rget('picklistitems').pipe(function(plItems) {
-                return plItems.fetch({ limit: 0 }).pipe(function() { return plItems.models; });
-            });
-        });
-}
-
-function makeHeaders(mappings) {
-    return _.invoke(mappings, 'get', 'caption');
-}
-
-function makeColumns(picklists) {
-    return _.map(picklists, function(picklist, i) {
-        var col = {data: i + 1};
-        picklist && _(col).extend({
-            type: 'autocomplete',
-            source: _.invoke(picklist, 'get', 'title')
-        });
-        return col;
-    });
-}
-
-var getMappings = wb =>
-        Q(wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
-        .then(mappings =>
-              _.sortBy(mappings.models, function(mapping) { return mapping.get('viewOrder'); }));
 
 var WBView = Backbone.View.extend({
     __name__: "WbForm",
@@ -103,19 +62,19 @@ var WBView = Backbone.View.extend({
         'click .wb-toggle-highlights': 'toggleHighlights',
         'click .wb-upload-details': 'showUploadLog'
     },
-    initialize: function({wb, data, uploadStatus, wbUploadDef}) {
+    initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
         this.data = data;
         this.uploadStatus = uploadStatus;
-        this.wbUploadDef = wbUploadDef;
         this.highlightsOn = false;
     },
     render: function() {
-        const mappings = getMappings(this.wb);
-        const fields = mappings.then(mappings => Q.all(mappings.map(mapping => getField(this.wbUploadDef, mapping))));
-        const picklists = fields.then(fields => Q.all(fields.map(getPickListItems)));
-        const colHeaders = mappings.then(makeHeaders);
-        const columns = picklists.then(makeColumns);
+        const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
+                  .then(mappings => _.sortBy(mappings.models, mapping => mapping.get('viewOrder')));
+
+        const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
+        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
+
         this.$el.append(template({ dataSetName: this.wb.get('name') }));
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
@@ -339,15 +298,13 @@ module.exports = function loadWorkbench(id) {
     Q.all([
         Q(wb.fetch()),
         Q($.get('/api/workbench/rows/' + id + '/')),
-        Q($.get('/api/workbench/upload_status/' + id + '/')),
-        Q($.get('/static/config/specify_workbench_upload_def.xml'))
-    ]).spread(function(__, data, uploadStatus, wbUploadDef) {
+        Q($.get('/api/workbench/upload_status/' + id + '/'))
+    ]).spread(function(__, data, uploadStatus) {
         app.setTitle("Workbench: " + wb.get('name'));
         app.setCurrentView(new WBView({
             wb: wb,
             data: data,
-            uploadStatus: uploadStatus,
-            wbUploadDef: wbUploadDef
+            uploadStatus: uploadStatus
         }));
     }).catch(app.handleError);
 };
