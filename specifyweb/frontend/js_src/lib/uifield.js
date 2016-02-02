@@ -35,6 +35,9 @@ module.exports =  Backbone.View.extend({
                 return;
             }
             if (!resource) {
+                // actually this probably shouldn't be an error. it can
+                // happen, for instance, in the collectors list if
+                // the collector has not been defined yet.
                 console.error("resource doesn't exist");
                 return;
             }
