@@ -11,6 +11,7 @@ var wbimport         = require('./templates/wbimport.html');
 var WBTemplateEditor = require('./wbtemplateeditor.js');
 var navigation       = require('./navigation.js');
 var app              = require('./specifyapp.js');
+var userInfo    = require('./userinfo.js');
 
 
     function Preview($table, previews, hasHeader) {
@@ -73,6 +74,36 @@ function mappingItems(template) {
         wbtmi => wbtmi.get('vieworder'));
 }
 
+function addSuffix(name, usedNames, callback) {
+    let i = 1, newName;
+    do {
+        newName = name + ' (' + (i++) + ')';
+    } while (_(usedNames).contains(newName));
+    callback(newName);
+}
+
+function uniquifyWorkbenchName(name) {
+    return Bacon.fromCallback(callback => {
+        const wbs = new schema.models.Workbench.LazyCollection({
+            filters: { specifyuser: userInfo.id, name__startswith: name }
+        });
+        wbs.fetch({ limit: 0 })
+            .pipe(() => wbs.map(wb => wb.get('name')))
+            .done(usedNames =>
+                  _(usedNames).contains(name) ?
+                  addSuffix(name, usedNames, callback) : callback(name));
+    });
+}
+
+function makeWorkbenchName(input, fileSelected) {
+    const selectedFileName = fileSelected.map(
+        file => file.name.replace(/\.[^\.]*$/, ''));  // remove extentsion
+    return Bacon.combineWith(
+        input, selectedFileName,
+        (entered, selected) => entered === '' ? selected : entered)
+        .flatMap(uniquifyWorkbenchName);
+}
+
     var WBImportView = Backbone.View.extend({
         __name__: "WBImportView",
         className: 'workbench-import-view',
@@ -88,9 +119,7 @@ function mappingItems(template) {
 
             fileSelected.onValue(__ => this.$(':hidden').show());
 
-            var workbenchName = Bacon.combineWith(
-                ValueProperty(this.$(':text')), fileSelected,
-                (enteredValue, file) => enteredValue === '' ? file.name.replace(/\.[^\.]*$/, '') : enteredValue);
+            var workbenchName = makeWorkbenchName(ValueProperty(this.$(':text')), fileSelected);
 
             workbenchName.onValue(wbName => this.$(':text').val(wbName));
 
