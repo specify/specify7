@@ -1,6 +1,7 @@
 "use strict";
 
 var $        = require('jquery');
+var _ = require('underscore');
 var Backbone = require('./backbone.js');
 var Bacon    = require('baconjs');
 var Papa = require('papaparse');
@@ -67,6 +68,11 @@ var app              = require('./specifyapp.js');
             }));
     }
 
+function mappingItems(template) {
+    return template.dependentResources['workbenchtemplatemappingitems'].sortBy(
+        wbtmi => wbtmi.get('vieworder'));
+}
+
     var WBImportView = Backbone.View.extend({
         __name__: "WBImportView",
         className: 'workbench-import-view',
@@ -75,18 +81,6 @@ var app              = require('./specifyapp.js');
         },
         render: function() {
             this.$el.append(wbimport());
-            this.$('select optgroup').append(this.templates.map(function(template, i) {
-                return $('<option>')
-                    .text(template.get('name'))
-                    .attr('value', i)[0];
-            }));
-
-            var templateSelected = ValueProperty(this.$('select'));
-
-            var buttonClicks = this.$('button').button().asEventStream('click');
-
-            templateSelected.onValue(
-                t => this.$('button').button('option', 'label', t === 'new' ? 'Create Mapping' : 'Import'));
 
             var fileSelected = this.$(':file').asEventStream('change')
                     .map(event => event.currentTarget.files[0])
@@ -117,10 +111,30 @@ var app              = require('./specifyapp.js');
                 (preview, header) =>
                     header ? preview[0] : preview[0].map((__, i) => "Column " + (i + 1)));
 
+            var matchingTemplates = columns.map(
+                cols => this.templates.filter(
+                    template => _.all(
+                        mappingItems(template),
+                        (wbtmi, i) => wbtmi.get('caption') === cols[i])));
+
+            matchingTemplates.onValue(templates => this.$('select optgroup').empty().append(
+                templates.map((template, i) => $('<option>').text(template.get('name')).attr('value', i)[0])));
+
+            var templateSelected = Bacon.combineWith(
+                matchingTemplates, this.$('select').asEventStream('change').startWith(null),
+                (templates, __) => {
+                    const val = this.$('select').val();
+                    return val === 'new' ? 'new' : templates[parseInt(val, 10)];
+                });
+
+            templateSelected.onValue(
+                t => this.$('button').button('option', 'label', t === 'new' ? 'Create Mapping' : 'Import'));
+
+            var buttonClicks = this.$('button').button().asEventStream('click');
+
             var cloneOrMakeTemplate = templateSelected
                     .sampledBy(buttonClicks)
-                    .flatMap(val => val === 'new' ? Bacon.once('make') :
-                             cloneTemplate(this.templates.at(parseInt(val, 10))));
+                    .flatMap(val => val === 'new' ? Bacon.once('make') : cloneTemplate(val));
 
             var createdTemplate = columns
                     .sampledBy(cloneOrMakeTemplate.filter(t => t === 'make'))
