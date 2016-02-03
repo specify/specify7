@@ -57,6 +57,7 @@ var WBView = Backbone.View.extend({
     events: {
         'click .wb-upload': 'upload',
         'click .wb-validate': 'validate',
+        'click .wb-delete': 'delete',
         'click .wb-save': 'save',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
@@ -304,6 +305,32 @@ var WBView = Backbone.View.extend({
             this.showHighlights();
             this.$('.wb-toggle-highlights').text('Hide');
         }
+    },
+    delete: function(e) {
+        let dialog;
+        const doDelete = () => {
+            dialog.dialog('close');
+            dialog = $('<div>Deleting...</div>').dialog({
+                modal: true,
+                title: "Deleting",
+                close: function() { $(this).remove(); },
+                open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); }
+            });
+            this.wb.destroy().done(() => {
+                this.$el.empty().append('<p>Dataset deleted.</p>');
+                dialog.dialog('close');
+            });
+        };
+
+        dialog = $('<div>Really delete?</div>').dialog({
+            modal: true,
+            title: "Confirm delete",
+            close: function() { $(this).remove(); },
+            buttons: {
+                'Delete': doDelete,
+                'Cancel': function() { $(this).dialog('close'); }
+            }
+        });
     }
 });
 
