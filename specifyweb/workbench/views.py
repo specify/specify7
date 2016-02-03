@@ -261,6 +261,7 @@ def import_workbench(request):
                           'workbenchtemplate',
                           json.loads(request.POST['template']))
 
+    template.specifyuser = request.specify_user
     template.name = workbench_name
     template.srcfilepath = upload_file.name
     template.save()

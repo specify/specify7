@@ -12,6 +12,7 @@ var WBTemplateEditor = require('./wbtemplateeditor.js');
 var navigation       = require('./navigation.js');
 var app              = require('./specifyapp.js');
 var uniquifyWorkbenchName = require('./wbuniquifyname.js');
+const userInfo = require('./userinfo.js');
 
     function Preview($table, previews, hasHeader) {
         Bacon.combineWith(
@@ -169,7 +170,9 @@ function makeWorkbenchName(input, fileSelected) {
 
 module.exports = function() {
     app.setTitle("Import Workbench");
-    var templates = new schema.models.WorkbenchTemplate.LazyCollection();
+    var templates = new schema.models.WorkbenchTemplate.LazyCollection({
+        filters: { specifyuser: userInfo.id }
+    });
     templates.fetch({ limit: 500 }).done(function() {
         app.setCurrentView(new WBImportView({ templates: templates }));
     });
