@@ -11,6 +11,7 @@ const humanizeDuration = require('humanize-duration');
 var getPickListByName = require('./getpicklistbyname.js');
 var schema            = require('./schema.js');
 var app    = require('./specifyapp.js');
+const WBName = require('./wbname.js');
 
 const template = require('./templates/wbview.html');
 const statusTemplate = require('./templates/wbuploadstatus.html');
@@ -76,7 +77,8 @@ var WBView = Backbone.View.extend({
         const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
         const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
 
-        this.$el.append(template({ dataSetName: this.wb.get('name') }));
+        this.$el.append(template());
+        new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
 

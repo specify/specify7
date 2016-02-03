@@ -11,8 +11,7 @@ var wbimport         = require('./templates/wbimport.html');
 var WBTemplateEditor = require('./wbtemplateeditor.js');
 var navigation       = require('./navigation.js');
 var app              = require('./specifyapp.js');
-var userInfo    = require('./userinfo.js');
-
+var uniquifyWorkbenchName = require('./wbuniquifyname.js');
 
     function Preview($table, previews, hasHeader) {
         Bacon.combineWith(
@@ -74,34 +73,13 @@ function mappingItems(template) {
         wbtmi => wbtmi.get('vieworder'));
 }
 
-function addSuffix(name, usedNames, callback) {
-    let i = 1, newName;
-    do {
-        newName = name + ' (' + (i++) + ')';
-    } while (_(usedNames).contains(newName));
-    callback(newName);
-}
-
-function uniquifyWorkbenchName(name) {
-    return Bacon.fromCallback(callback => {
-        const wbs = new schema.models.Workbench.LazyCollection({
-            filters: { specifyuser: userInfo.id, name__startswith: name }
-        });
-        wbs.fetch({ limit: 0 })
-            .pipe(() => wbs.map(wb => wb.get('name')))
-            .done(usedNames =>
-                  _(usedNames).contains(name) ?
-                  addSuffix(name, usedNames, callback) : callback(name));
-    });
-}
-
 function makeWorkbenchName(input, fileSelected) {
     const selectedFileName = fileSelected.map(
         file => file.name.replace(/\.[^\.]*$/, ''));  // remove extentsion
     return Bacon.combineWith(
         input, selectedFileName,
         (entered, selected) => entered === '' ? selected : entered)
-        .flatMap(uniquifyWorkbenchName);
+        .flatMap(name => Bacon.fromPromise(uniquifyWorkbenchName(name)));
 }
 
     var WBImportView = Backbone.View.extend({

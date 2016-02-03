@@ -70,9 +70,6 @@ var WBTemplateEditor    = require('./wbtemplateeditor.js');
 module.exports =  Backbone.View.extend({
         __name__: "WbsDialog",
         className: "wbs-dialog table-list-dialog",
-        events: {
-            'click a.edit': 'edit'
-        },
         initialize: function(options) {
             this.wbs = options.wbs.models;
         },
@@ -101,8 +98,6 @@ module.exports =  Backbone.View.extend({
                 $('<td>').append(link),
                 $('<td class="item-count" style="display:none">'));
 
-            this.options.readOnly || entry.append('<td><a class="edit ui-icon ui-icon-pencil"></a></td>');
-
             _.delay(function() {
                 wb.getRelatedObjectCount('workbenchrows').done(function(count) {
                     $('.item-count', entry).text('(' + count + ')').show();
@@ -112,15 +107,6 @@ module.exports =  Backbone.View.extend({
         },
         newWB: function() {
             new NewWorkbenchDialog().render();
-        },
-        getIndex: function(evt, selector) {
-            evt.preventDefault();
-            return this.$(selector).index(evt.currentTarget);
-        },
-        edit: function(evt) {
-            var index = this.getIndex(evt, 'a.edit');
-            this.$el.dialog('close');
-            new EditResourceDialog({ resource: this.wbs[index] }).render();
         }
     });
 
