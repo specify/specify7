@@ -29,6 +29,9 @@ logger = logging.getLogger(__name__)
 @require_http_methods(["GET", "PUT"])
 @transaction.commit_on_success
 def rows(request, wb_id):
+    wb = get_object_or_404(models.Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
     if request.method == "GET":
         return load(wb_id)
     elif request.method == "PUT":
@@ -147,6 +150,9 @@ def shellquote(s):
 @apply_access_control
 @require_POST
 def upload(request, wb_id, no_commit):
+    wb = get_object_or_404(models.Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
     args = [
         settings.JAVA_PATH,
         "-Dfile.encoding=UTF-8",
