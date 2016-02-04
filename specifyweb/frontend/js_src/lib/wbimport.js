@@ -58,16 +58,27 @@ const userInfo = require('./userinfo.js');
         return formData;
     }
 
-    function doImport(formData) {
-        return Bacon.fromPromise(
-            $.ajax({
-                url: '/api/workbench/import/',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false
-            }));
-    }
+function doImport(formData) {
+    const p = $.ajax({
+        url: '/api/workbench/import/',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false
+    });
+
+    const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+        title: 'Importing',
+        modal: true,
+        open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+        close: function() {$(this).remove();}
+    });
+
+    $('.progress-bar', dialog).progressbar({value: false});
+    p.then(() => dialog.dialog('close'));
+
+    return Bacon.fromPromise(p);
+}
 
 function mappingItems(template) {
     return template.dependentResources['workbenchtemplatemappingitems'].sortBy(
