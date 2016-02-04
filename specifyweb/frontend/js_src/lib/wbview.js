@@ -7,6 +7,7 @@ var Q        = require('q');
 var Handsontable = require('handsontable');
 const moment = require('moment');
 const humanizeDuration = require('humanize-duration');
+const Papa = require('papaparse');
 
 var getPickListByName = require('./getpicklistbyname.js');
 var schema            = require('./schema.js');
@@ -60,6 +61,7 @@ var WBView = Backbone.View.extend({
         'click .wb-validate': 'validate',
         'click .wb-delete': 'delete',
         'click .wb-save': 'save',
+        'click .wb-export': 'export',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
         'click .wb-upload-details': 'showUploadLog'
@@ -341,6 +343,19 @@ var WBView = Backbone.View.extend({
                 'Cancel': function() { $(this).dialog('close'); }
             }
         });
+    },
+    export: function(e) {
+        const data = Papa.unparse({
+            fields: this.hot.getColHeader(),
+            data: this.data.map(row => row.slice(1))
+        });
+        const wbname = this.wb.get('name');
+        const filename = wbname.match(/\.csv$/) ? wbname : wbname + '.csv';
+        const blob = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.setAttribute('download', filename);
+        a.click();
     }
 });
 
