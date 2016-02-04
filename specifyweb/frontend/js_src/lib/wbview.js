@@ -363,6 +363,7 @@ module.exports = function loadWorkbench(id) {
     var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
         title: 'Loading',
         modal: true,
+        open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
         close: function() {$(this).remove();}
     });
     $('.progress-bar', dialog).progressbar({value: false});
