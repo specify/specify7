@@ -41,6 +41,12 @@
     background-color: #faa;
 }
 
+.wb-upload-details ul li {
+    list-style-type: disc;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 .wb-upload-details textarea {
     height: 400px;
     width: 600px;

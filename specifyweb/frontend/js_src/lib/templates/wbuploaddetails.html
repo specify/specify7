@@ -7,6 +7,6 @@
     <% } %>
   </ul>
   <% } %>
-  <h2>Task output</h2>
+  <h2><%= status.no_commit ? 'Validation' : 'Upload' %> Log</h2>
   <textarea readonly><%- log %></textarea>
 </div>

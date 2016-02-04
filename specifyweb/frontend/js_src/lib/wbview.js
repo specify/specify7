@@ -120,12 +120,15 @@ var WBView = Backbone.View.extend({
     },
     showUploadLog: function(event) {
         event.preventDefault();
-         $(detailsTemplate({info: this.infoFromLog, log: this.uploadLog}))
-            .dialog({
-                modal: true,
-                width: 'auto',
-                close: function() { $(this).remove(); }
-            });
+        $(detailsTemplate({
+            info: this.infoFromLog,
+            log: this.uploadLog,
+            status: this.uploadStatus
+        })).dialog({
+            modal: true,
+            width: 'auto',
+            close: function() { $(this).remove(); }
+        });
     },
     setupHOT: function (colHeaders, columns) {
         if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
@@ -250,8 +253,12 @@ var WBView = Backbone.View.extend({
 
         const refresh = () => $.get('/api/workbench/upload_status/' + this.wb.id + '/').done(
             (status) => {
-                const statusText = status.is_running ?
-                          (status.no_commit ? 'Validating...' : 'Uploading...')
+                if (status.no_commit != null) {
+                    dialog.dialog('option', 'title',
+                                  (status.no_commit ? 'Validation' : 'Upload') +
+                                  ' status');
+                }
+                const statusText = status.is_running ? 'Running...'
                       : status.success ?
                           (status.no_commit ? 'Validation passed.' : 'Upload succeeded.')
                       : (status.no_commit ? 'Validation failed.' : 'Upload failed.');
