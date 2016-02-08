@@ -1,11 +1,9 @@
 import re
 import os
-import sys
 import errno
 import json
 import logging
 import subprocess
-import csv
 from glob import glob
 from uuid import uuid4
 
