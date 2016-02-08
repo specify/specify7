@@ -15,16 +15,16 @@ var props          = require('./props.js');
 
 module.exports =  {
         localize: function(s, fallback) {
-            for(var bundle in bundles) {
-                var localized = props.getProperty(bundles[bundle], s);
+            for(let bundle of bundles) {
+                let localized = props.getProperty(bundle, s);
                 if (localized) return localized;
             }
             return fallback || s;
         },
         localizeFrom: function(from, s, fallback) {
-            from = _.isString(from) ? [from] : from;
-            for(var i in from) {
-                var localized = props.getProperty(from[i], s);
+            const fromList = _.isString(from) ? [from] : from;
+            for(let from of fromList) {
+                let localized = props.getProperty(bundles[from], s);
                 if (localized) return localized;
             }
             return fallback || s;
