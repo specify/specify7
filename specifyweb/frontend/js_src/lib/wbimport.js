@@ -5,6 +5,7 @@ var _ = require('underscore');
 var Backbone = require('./backbone.js');
 var Bacon    = require('baconjs');
 var Papa = require('papaparse');
+const Q = require('q');
 
 var schema           = require('./schema.js');
 var wbimport         = require('./templates/wbimport.html');
@@ -13,6 +14,7 @@ var navigation       = require('./navigation.js');
 var app              = require('./specifyapp.js');
 var uniquifyWorkbenchName = require('./wbuniquifyname.js');
 const userInfo = require('./userinfo.js');
+const encodings = require('./encodings.js');
 
     function Preview($table, previews, hasHeader) {
         Bacon.combineWith(
@@ -38,46 +40,58 @@ const userInfo = require('./userinfo.js');
             .toProperty($el.prop('checked'));
     }
 
-    function cloneTemplate(template) {
-        var cloned = template.clone();
-        // Sp6 doesn't record the original column number so we can't
-        // reuse column permutations.
-        var fixColumns = cloned.rget('workbenchtemplatemappingitems').pipe(function(wbtmis) {
-            wbtmis.each(wbtmi => wbtmi.set('origimportcolumnindex', wbtmi.get('vieworder')));
-            return cloned;
-        });
-        return Bacon.fromPromise(fixColumns);
-    }
+function QfromCallback(func) {
+    const defer = Q.defer();
+    func(result => defer.resolve(result));
+    return defer.promise;
+}
 
-    function makeFormData(template, file, workbenchName, header) {
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('workbenchName', workbenchName);
-        formData.append('hasHeader', header);
-        formData.append('template', JSON.stringify(template.toJSON()));
-        return formData;
-    }
-
-function doImport(formData) {
-    const p = $.ajax({
-        url: '/api/workbench/import/',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false
-    });
-
+function doImport(template, file, workbenchName, header, encoding) {
     const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
         title: 'Importing',
         modal: true,
         open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
         close: function() {$(this).remove();}
     });
-
     $('.progress-bar', dialog).progressbar({value: false});
-    p.then(() => dialog.dialog('close'));
 
-    return Bacon.fromPromise(p);
+    template.set('name', workbenchName);
+    const workbench = new schema.models.Workbench.Resource({
+        name: workbenchName,
+        workbenchtemplate: template,
+        specifyuser: userInfo.resource_uri,
+        srcfilepath: file.name
+    });
+
+    const permuteRowQ = Q(template.rget('workbenchtemplatemappingitems'))
+              .then(wbtmis => wbtmis.sortBy(wbtmi => wbtmi.get('vieworder')))
+              .then(wbtmis => wbtmis.map(wbtmiColumn))
+              .then(permutation => row => permutation.map(i => row[i]));
+
+    const parseQ = QfromCallback(
+        callback => Papa.parse(file, {
+            encoding: encoding,
+            complete: parse => callback(parse.data)})
+    );
+
+    return Q.all([permuteRowQ, parseQ]).spread(
+        (permuteRow, rows) => rows.map(permuteRow)
+    ).then(
+        rows => header ? rows.slice(1) : rows
+    ).then(
+        rows => rows.map(row => [null].concat(row))
+    ).then(
+        rows => Q(workbench.save()).then(() => rows)
+    ).then(
+        data => Q($.ajax('/api/workbench/rows/' + workbench.id + '/', {
+            data: JSON.stringify(data),
+            type: "PUT"
+        }))
+    ).tap(
+        () => dialog.dialog('close')
+    ).then(
+        () => workbench
+    );
 }
 
 function mappingItems(template) {
@@ -94,6 +108,21 @@ function makeWorkbenchName(input, fileSelected) {
         .flatMap(name => Bacon.fromPromise(uniquifyWorkbenchName(name)));
 }
 
+function wbtmiColumn(wbtmi) {
+    const origcol = wbtmi.get('origimportcolumnindex');
+    return origcol === -1 ? wbtmi.get('vieworder') : origcol;
+}
+
+function wbtmiMatches(header) {
+    return wbtmi => wbtmi.get('caption') === header[wbtmiColumn(wbtmi)];
+}
+
+function MatchTemplates(templates, columns) {
+    return columns.map(
+        cols => templates.filter(
+            template => _.all(mappingItems(template), wbtmiMatches(cols))));
+}
+
     var WBImportView = Backbone.View.extend({
         __name__: "WBImportView",
         className: 'workbench-import-view',
@@ -101,26 +130,30 @@ function makeWorkbenchName(input, fileSelected) {
             this.templates = options.templates;
         },
         render: function() {
-            this.$el.append(wbimport());
+            this.$el.append(wbimport({encodings: encodings.allLabels}));
 
             var fileSelected = this.$(':file').asEventStream('change')
                     .map(event => event.currentTarget.files[0])
                     .filter(file => file != null);
 
-            fileSelected.onValue(__ => this.$(':hidden').show());
+            fileSelected.onValue(() => this.$(':hidden').show());
 
             var workbenchName = makeWorkbenchName(ValueProperty(this.$(':text')), fileSelected);
 
             workbenchName.onValue(wbName => this.$(':text').val(wbName));
 
+            var encodingSelected = ValueProperty(this.$('select.encoding'));
+
             var hasHeader = CheckedProperty(this.$(':checkbox'));
 
-            var previews = fileSelected.flatMap(
-                file => Bacon.fromCallback(
-                    callback => Papa.parse(file, {
-                        preview: 10,
-                        complete: callback
-                    })))
+            var previews = Bacon.combineAsArray(fileSelected, encodingSelected)
+                    .flatMap(
+                        ([file, encoding]) => Bacon.fromCallback(
+                            callback => Papa.parse(file, {
+                                encoding: encoding,
+                                preview: 10,
+                                complete: callback
+                            })))
                     .map(parse => parse.data);
 
             Preview(this.$('table'), previews, hasHeader);
@@ -130,19 +163,15 @@ function makeWorkbenchName(input, fileSelected) {
                 (preview, header) =>
                     header ? preview[0] : preview[0].map((__, i) => "Column " + (i + 1)));
 
-            var matchingTemplates = columns.map(
-                cols => this.templates.filter(
-                    template => _.all(
-                        mappingItems(template),
-                        (wbtmi, i) => wbtmi.get('caption') === cols[i])));
+            var matchingTemplates = MatchTemplates(this.templates, columns);
 
-            matchingTemplates.onValue(templates => this.$('select optgroup').empty().append(
+            matchingTemplates.onValue(templates => this.$('select.template optgroup').empty().append(
                 templates.map((template, i) => $('<option>').text(template.get('name')).attr('value', i)[0])));
 
             var templateSelected = Bacon.combineWith(
-                matchingTemplates, this.$('select').asEventStream('change').startWith(null),
+                matchingTemplates, this.$('select.template').asEventStream('change').startWith(null),
                 (templates, __) => {
-                    const val = this.$('select').val();
+                    const val = this.$('select.template').val();
                     return val === 'new' ? 'new' : templates[parseInt(val, 10)];
                 });
 
@@ -153,7 +182,7 @@ function makeWorkbenchName(input, fileSelected) {
 
             var cloneOrMakeTemplate = templateSelected
                     .sampledBy(buttonClicks)
-                    .flatMap(val => val === 'new' ? Bacon.once('make') : cloneTemplate(val));
+                    .map(val => val === 'new' ? 'make' : val.clone());
 
             var createdTemplate = columns
                     .sampledBy(cloneOrMakeTemplate.filter(t => t === 'make'))
@@ -168,10 +197,10 @@ function makeWorkbenchName(input, fileSelected) {
 
             Bacon.combineWith(
                 Bacon.mergeAll(createdTemplate, clonedTemplate).first(),
-                fileSelected, workbenchName, hasHeader,
-                makeFormData
+                fileSelected, workbenchName, hasHeader, encodingSelected,
+                doImport
             )
-                .flatMap(doImport)
+                .flatMap(q => Bacon.fromPromise(q))
                 .onValue(wb => navigation.go('/workbench/' + wb.id + '/'));
 
             return this;

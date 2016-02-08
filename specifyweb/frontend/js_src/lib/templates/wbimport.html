@@ -3,13 +3,22 @@
 <p><input type="file" name="file" accept=".csv"></p>
 <p><label>Name for new dataset: <input type="text" name="workbenchName"></label></p>
 
+<p class="encoding-option" style="display: none">
+  <label>File encoding:
+    <select class="encoding">
+      <% encodings.forEach(function(encoding) { %>
+      <option <% if (encoding==='utf-8') { %>selected<% } %>><%= encoding %></option>
+      <% }) %>
+    </select>
+  </label>
+</p>
 <p class="header-option" style="display: none">
   <label>First row is header: <input type="checkbox" name="header" checked></label>
 </p>
 
 <p class="template-choice">
   <label style="display: none">Column mapping:
-    <select name="template">
+    <select class="template">
       <option value="new">New Mapping</option>
       <optgroup label="Existing Mappings"></optgroup>
     </select>
