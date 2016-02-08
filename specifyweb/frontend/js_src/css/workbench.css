@@ -32,6 +32,14 @@
     font-weight: bold;
 }
 
+.wbs-form .wb-header .wb-upload-controls {
+    white-space: nowrap;
+    margin: 3px 5px;
+}
+
+.wbs-form .wb-controls button {
+    margin: 3px;
+}
 .wbs-form .wb-invalid-cells {
     border: solid 1px;
     padding: 8px 5px;
