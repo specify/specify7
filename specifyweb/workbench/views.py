@@ -65,17 +65,16 @@ def load(wb_id):
     rows = cursor.fetchall()
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-def save(wb_id, data, new=False):
+def save(wb_id, data):
     wb_id = int(wb_id)
     cursor = connection.cursor()
 
-    if not new:
-        logger.debug("truncating wb %d", wb_id)
-        cursor.execute("""
-        delete wbdi from workbenchdataitem wbdi, workbenchrow wbr
-        where wbr.workbenchrowid = wbdi.workbenchrowid
-        and wbr.workbenchid = %s
-        """, [wb_id])
+    logger.debug("truncating wb %d", wb_id)
+    cursor.execute("""
+    delete wbdi from workbenchdataitem wbdi, workbenchrow wbr
+    where wbr.workbenchrowid = wbdi.workbenchrowid
+    and wbr.workbenchid = %s
+    """, [wb_id])
 
     logger.debug("getting wb mapping items")
     cursor.execute("""
@@ -88,16 +87,13 @@ def save(wb_id, data, new=False):
     """, [wb_id])
 
     wbtmis = [r[0] for r in cursor.fetchall()]
-    assert len(wbtmis) + (0 if new else 1) == len(data[0]), (wbtmis, data[0])
+    assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
 
-    if new:
-        new_rows = [(i, wb_id) for i in range(len(data))]
-    else:
-        logger.debug("clearing row numbers")
-        cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
-                       [wb_id])
+    logger.debug("clearing row numbers")
+    cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
+                   [wb_id])
 
-        new_rows = [(i, wb_id) for i, row in enumerate(data) if row[0] is None]
+    new_rows = [(i, wb_id) for i, row in enumerate(data) if row[0] is None]
 
     logger.debug("inserting %d new rows", len(new_rows))
     cursor.executemany("insert workbenchrow(rownumber, workbenchid) values (%s, %s)",
@@ -119,14 +115,13 @@ def save(wb_id, data, new=False):
         if row[0] is not None
     ])
 
-    if not new:
-        logger.debug("removing deleted rows")
-        cursor.execute("""
-        delete from workbenchrow
-        where workbenchid = %s
-        and rownumber is null
-        """, [wb_id])
-        logger.debug("deleted %d rows", cursor.rowcount)
+    logger.debug("removing deleted rows")
+    cursor.execute("""
+    delete from workbenchrow
+    where workbenchid = %s
+    and rownumber is null
+    """, [wb_id])
+    logger.debug("deleted %d rows", cursor.rowcount)
 
     logger.debug("inserting new wb values")
     cursor.executemany("""
@@ -134,9 +129,9 @@ def save(wb_id, data, new=False):
     (celldata, workbenchtemplatemappingitemid, workbenchrowid)
     values (%s, %s, %s)
     """, [
-        (celldata, wbtmi, new_row_id[i] if new or (row[0] is None) else row[0])
+        (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
         for i, row in enumerate(data)
-        for wbtmi, celldata in zip(wbtmis, row if new else row[1:])
+        for wbtmi, celldata in zip(wbtmis, row[1:])
         if celldata is not None
     ])
     return load(wb_id)
@@ -249,52 +244,4 @@ def upload_status(request, wb_id):
     log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
     status = status_from_log(log_fnames[0]) if len(log_fnames) > 0 else None
     return http.HttpResponse(toJson(status), content_type='application/json')
-
-@csrf_exempt
-@login_maybe_required
-@apply_access_control
-@require_POST
-@transaction.commit_on_success
-def import_workbench(request):
-    upload_file = request.FILES['file']
-    workbench_name = request.POST.get('workbenchName', '')
-    has_header = request.POST.get('hasHeader', 'false').lower() == 'true'
-
-    if workbench_name == '': workbench_name = upload_file.name
-
-    template = create_obj(request.specify_collection,
-                          request.specify_user_agent,
-                          'workbenchtemplate',
-                          json.loads(request.POST['template']))
-
-    template.specifyuser = request.specify_user
-    template.name = workbench_name
-    template.srcfilepath = upload_file.name
-    template.save()
-
-    workbench = models.Workbench.objects.create(
-        workbenchtemplate=template,
-        specifyuser=template.specifyuser,
-        name=workbench_name,
-        srcfilepath=template.name,
-    )
-
-    index_map = [
-        wbtmi.origimportcolumnindex for wbtmi in
-        template.workbenchtemplatemappingitems.order_by('vieworder')
-        ]
-    logger.debug('index_map: %s', index_map)
-
-    def permute_columns(row):
-        return [row[i] for i in index_map]
-
-    data = [permute_columns(row)
-            for row in
-            csv.reader(upload_file)]
-
-    if has_header:
-        data = data[1:]
-
-    save(workbench.id, data, new=True)
-    return http.HttpResponse(toJson(obj_to_data(workbench)), status=201, content_type='application/json')
 
