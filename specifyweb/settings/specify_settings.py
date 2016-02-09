@@ -34,6 +34,10 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
 
+# Workbench uploader log directory.
+# Must exist and be writeable by the web server process.
+WB_UPLOAD_LOG_DIR = "/var/cache/specify_wb_upload/"
+
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
