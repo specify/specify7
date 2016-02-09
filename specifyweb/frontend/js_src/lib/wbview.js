@@ -322,12 +322,13 @@ var WBView = Backbone.View.extend({
         let dialog;
         const doDelete = () => {
             dialog.dialog('close');
-            dialog = $('<div>Deleting...</div>').dialog({
+            dialog = $('<div><div class="progress-bar"></div></div>').dialog({
                 modal: true,
                 title: "Deleting",
                 close: function() { $(this).remove(); },
                 open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); }
             });
+            $('.progress-bar', dialog).progressbar({value: false});
             this.wb.destroy().done(() => {
                 this.$el.empty().append('<p>Dataset deleted.</p>');
                 dialog.dialog('close');
