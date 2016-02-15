@@ -175,7 +175,9 @@ var wbtemplateeditor = require('./templates/wbtemplateeditor.html');
                 var fieldInfo = m.get('fieldInfo');
                 return new schema.models.WorkbenchTemplateMappingItem.Resource({
                     caption: m.get('column'),
-                    datafieldlength: fieldInfo.length && parseInt(fieldInfo.length, 10),
+                    xcoord: -1,
+                    ycoord: -1,
+                    datafieldlength: fieldInfo.length ? parseInt(fieldInfo.length, 10) : 32767,
                     fieldname: fieldInfo.name,
                     srctableid: fieldInfo.tableInfo.tableId,
                     tablename: fieldInfo.tableInfo.name,
