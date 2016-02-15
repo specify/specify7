@@ -171,7 +171,8 @@ var wbtemplateeditor = require('./templates/wbtemplateeditor.html');
     function makeMappingItems(mappings) {
         return mappings
             .filter(m => m.get('fieldInfo') != null)
-            .map(m => {
+            .sortBy(m => m.get('curIndex'))
+            .map((m, vieworder) => {
                 var fieldInfo = m.get('fieldInfo');
                 return new schema.models.WorkbenchTemplateMappingItem.Resource({
                     caption: m.get('column'),
@@ -181,7 +182,7 @@ var wbtemplateeditor = require('./templates/wbtemplateeditor.html');
                     fieldname: fieldInfo.name,
                     srctableid: fieldInfo.tableInfo.tableId,
                     tablename: fieldInfo.tableInfo.name,
-                    vieworder: m.get('curIndex'),
+                    vieworder: vieworder,
                     origimportcolumnindex: m.get('origIndex')
                 });
             }).toArray();
