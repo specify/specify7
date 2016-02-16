@@ -156,7 +156,7 @@ module.exports =  Backbone.View.extend({
                 this.$('label.op-negate').hide();
             } else {
                 this.fieldSpec.treeRank && $('<a class="field-label-treerank">').text(this.fieldSpec.treeRank).appendTo(fieldLabel);
-                if (_(['Month', 'Year']).contains(this.fieldSpec.datePart)) {
+                if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) {
                     $('<a class="field-label-datepart">').text('(' + this.fieldSpec.datePart + ')').appendTo(fieldLabel);
                 }
                 if (this.operation == 'anything') {
@@ -346,7 +346,7 @@ module.exports =  Backbone.View.extend({
             return this.fieldSpec.getField();
         },
         getTypeForOp: function() {
-            if (_(['Month', 'Year']).contains(this.fieldSpec.datePart)) return 'numbers';
+            if (_(['Month', 'Year', 'Day']).contains(this.fieldSpec.datePart)) return 'numbers';
             if (this.fieldSpec.treeRank) return 'strings';
             var field = this.getField();
             if (field.model.name === 'CollectionObject' &&
