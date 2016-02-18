@@ -213,12 +213,21 @@ var WBView = Backbone.View.extend({
         $.ajax('/api/workbench/rows/' + this.wb.id + '/', {
             data: JSON.stringify(this.data),
             type: "PUT"
-        }).done(function(data) {
+        }).done(data => {
             this.data = data;
             this.hot.loadData(data);
             dialog.dialog('close');
             this.spreadSheetUpToDate();
-        }.bind(this));
+        }).fail(jqxhr => {
+            dialog.dialog('close');
+            this.checkDeletedFail(jqxhr);
+        });
+    },
+    checkDeletedFail(jqxhr) {
+        if (jqxhr.status === 404) {
+            this.$el.empty().append('Dataset was deleted by another session.');
+            jqxhr.errorHandled = true;
+        }
     },
     spreadSheetUpToDate: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', false);
@@ -226,7 +235,10 @@ var WBView = Backbone.View.extend({
     },
     upload: function() {
         const begin = () => {
-            $.post('/api/workbench/upload/' + this.wb.id + '/');
+            $.post('/api/workbench/upload/' + this.wb.id + '/').fail(jqxhr => {
+                this.checkDeletedFail(jqxhr);
+                this.closeUploadProgress();
+            });
             this.openUploadProgress();
         };
 
@@ -240,22 +252,36 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
-        $.post('/api/workbench/validate/' + this.wb.id + '/');
+        $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
+            this.checkDeletedFail(jqxhr);
+            this.closeUploadProgress();
+        });
         this.openUploadProgress();
     },
-    openUploadProgress: function() {
-        let stopRefresh = false;
+    closeUploadProgress() {
+        this.uploadProgressDialog.dialog('close');
+    },
+    openUploadProgress() {
+        this.stopUploadProgressRefresh = false;
+        const stopRefresh = () => this.stopUploadProgressRefresh = true;
         const refreshTime = 2000;
 
-        const dialog = $(statusTemplate()).dialog({
+        const dialog = this.uploadProgressDialog = $(statusTemplate()).dialog({
             modal: true,
             open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-            close: function() { $(this).remove(); stopRefresh = true; }
+            close: function() { $(this).remove(); stopRefresh(); }
         });
         $('.status', dialog).text('...');
 
         const refresh = () => $.get('/api/workbench/upload_status/' + this.wb.id + '/').done(
             (status) => {
+                if (this.stopUploadProgressRefresh) {
+                    return;
+                } else {
+                    window.setTimeout(refresh, refreshTime);
+                }
+
+                if (status == null) return;
                 if (status.no_commit != null) {
                     dialog.dialog('option', 'title',
                                   (status.no_commit ? 'Validation' : 'Upload') +
@@ -266,7 +292,6 @@ var WBView = Backbone.View.extend({
                           (status.no_commit ? 'Validation passed.' : 'Upload succeeded.')
                       : (status.no_commit ? 'Validation failed.' : 'Upload failed.');
 
-                if (stopRefresh) return;
                 $('.status', dialog).text(statusText);
                 $('.startTime', dialog).text(fromNow(status.start_time));
                 $('.rows', dialog).text(
@@ -274,9 +299,8 @@ var WBView = Backbone.View.extend({
                         ('' + (1 + status.last_row) + ' / ' + this.hot.countRows())
                 );
 
-                if (status.is_running) {
-                    window.setTimeout(refresh, refreshTime);
-                } else {
+                if (!status.is_running) {
+                    stopRefresh();
                     dialog.dialog('option', 'buttons',
                                   [{text: 'Close', click: function() { $(this).dialog('close'); }}]);
                     this.uploadStatus = status;
@@ -331,6 +355,9 @@ var WBView = Backbone.View.extend({
             $('.progress-bar', dialog).progressbar({value: false});
             this.wb.destroy().done(() => {
                 this.$el.empty().append('<p>Dataset deleted.</p>');
+                dialog.dialog('close');
+            }).fail(jqxhr => {
+                this.checkDeletedFail(jqxhr);
                 dialog.dialog('close');
             });
         };
