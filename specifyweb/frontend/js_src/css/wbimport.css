@@ -1,0 +1,12 @@
+.workbench-import-view table {
+    background-color: #fff;
+}
+
+.workbench-import-view table tr.header {
+    background-color: #aaa;
+    text-align: center;
+}
+
+.workbench-import-view table td {
+    border: 1px solid #888;
+}

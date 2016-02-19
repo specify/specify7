@@ -1,4 +1,5 @@
 "use strict";
+require('../css/workbenchtemplateeditor.css');
 
 var $         = require('jquery');
 var _         = require('underscore');

@@ -1,4 +1,5 @@
 "use strict";
+require('../css/welcome.css');
 
 var $        = require('jquery');
 var _        = require('underscore');
