@@ -10,13 +10,15 @@ def autonumber_and_save(collection, user, obj):
                    container__name=obj.__class__.__name__.lower(),
                    format__isnull=False)
 
-    uiformatters = [get_uiformatter(collection, user, f)
-                    for f in Item.objects.filter(**filters).values_list('format', flat=True)]
+    formatter_names = Item.objects.filter(**filters).values_list('format', flat=True)
+    logger.debug("formtters for %s: %s", obj, formatter_names)
 
+    uiformatters = [get_uiformatter(collection, user, f) for f in formatter_names]
     logger.debug("uiformatters for %s: %s", obj, uiformatters)
 
     autonumber_fields = [(formatter, vals)
                          for formatter in uiformatters
+                         if formatter is not None
                          for value in [getattr(obj, formatter.field_name.lower())]
                          if value is not None
                          for vals in [formatter.parse(value)]
