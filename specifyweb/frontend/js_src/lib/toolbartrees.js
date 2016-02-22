@@ -44,7 +44,7 @@ var domain = require('./domain.js');
 module.exports =  {
         task: 'tree',
         title: 'Trees',
-        icon: '/images/Tree32x32.png',
+        icon: '/static/img/trees.png',
         execute: function() {
             new TreeListDialog().render();
         }

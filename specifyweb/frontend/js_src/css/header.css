@@ -1,0 +1,111 @@
+
+header {
+    background: #fff;
+    position: relative;
+    border-top: 8px solid #f4763d;
+    margin: 0px 15px;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+#site-logo img {
+    margin: 29px 0;
+    height: 54px;
+}
+
+#header-loading {
+    margin-top: 18px;
+    margin-left: 48px;
+}
+
+header nav {
+    background: #f79244;
+    padding: 6px 0;
+}
+
+nav ul {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+nav li {
+    border-right: 2px solid #f4763d;
+    min-width: 110px;
+    text-align: center;
+}
+
+nav li:last-child {
+    border: none;
+}
+
+nav a {
+    display: inline-block;
+    margin: 4px 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+nav a:link,
+nav a:visited {
+    color: #fff
+}
+
+nav li img {
+    display: inline;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+#user-tools {
+    position: absolute;
+    top: 29px;
+    right: 0;
+    text-align: right;
+}
+
+#user-tools a:link,
+#user-tools a:visited,
+#user-tools a {
+    font-weight: bold;
+    color: #f4763d;
+}
+
+#user-tools select {
+    background: #fff;
+    border: none;
+    border-left: 2px solid;
+    color: #f4763d;
+    font-weight: bold;
+    padding: 4px 0px;
+    margin-left: 2px;
+    font-size: 12px;
+    vertical-align: baseline;
+}
+
+#user-tools form {
+    margin-top: 10px;
+}
+
+#express-search .express-search-query {
+    width: 180px;
+    background: #f1f2f2;
+    border: 1px solid #aaa;
+    font-size: 14px;
+}
+
+#express-search .express-search-submit {
+    width: 16px;
+    height: 16px;
+}
+
+.ui-autocomplete {
+    z-index: 110;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

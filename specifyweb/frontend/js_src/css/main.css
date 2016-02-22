@@ -1,7 +1,6 @@
 @import url("./custom-theme/jquery-ui-1.10.2.custom.css");
 @import url("~jquery-contextmenu/dist/jquery.contextMenu.css");
 
-@import url("./base.css");
 @import url("./specifyform.css");
 @import url("./specifyform-print.css");
 @import url("./query.css");

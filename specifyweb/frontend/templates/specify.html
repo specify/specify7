@@ -3,6 +3,8 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/header.css" />
 {% if use_raven %}
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
@@ -12,15 +14,22 @@
 
 <body>
   <header id="site-header">
+    <a id="site-logo" href="/specify/" class="intercept-navigation">
+      <img src="/static/img/seven_logo.png">
+    </a>
+    <h1 id="header-loading">Specify is loading...</h1>
     <div id="user-tools">
       <a class="username"></a>
       <a class="login-logout"></a>
       <select></select>
+      <form id="express-search" action="/specify/express_search/">
+        <input type="search" class="express-search-query" name="q" placeholder="Search">
+        <input type="image" class="express-search-submit" src="/images/Search32x32.png">
+      </form>
     </div>
-    <h1 id="header-loading">Specify is loading...</h1>
+    <nav id="site-nav"><ul></ul></nav>
   </header>
   <div id="content">
-    <!-- <img src="/images/SpecifyBigSplash.png" class="specify-splash" /> -->
   </div>
 </body>
 </html>

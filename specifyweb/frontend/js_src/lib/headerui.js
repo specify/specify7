@@ -14,7 +14,6 @@ var querystring = require('./querystring.js');
 
 
 var toolModules = [
-    require('./toolbarwelcome.js'),
     require('./toolbardataentry.js'),
     require('./toolbarinteractions.js'),
     require('./toolbartrees.js'),
@@ -31,11 +30,6 @@ var toolModules = [
         __name__: "ExpressSearchInput",
         events: {
             'submit': 'search'
-        },
-        el: $('<form id="express-search" action="/specify/express_search/">'),
-        render: function() {
-            this.$el.append('<input type="search" class="express-search-query" name="q" placeholder="Search">');
-            return this;
         },
         search: function(evt) {
             var query, url;
@@ -70,7 +64,7 @@ module.exports = Backbone.View.extend({
             });
         },
         render: function() {
-            (new ExpressSearchInput()).render().$el.appendTo(this.el);
+            new ExpressSearchInput({el: this.$('#express-search')});
             userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
             this.$('#user-tools a.login-logout')
                 .text(userInfo.isauthenticated ? '✕' : 'Log in')
@@ -90,9 +84,8 @@ module.exports = Backbone.View.extend({
                });
             });
             this.$('#header-loading').remove();
-            this.$el.append('<nav id="site-nav">');
             var lis = this.visibleTools.map(this.makeButton);
-            $('<ul>').append(lis).appendTo(this.$('#site-nav'));
+            this.$('#site-nav ul').empty().append(lis);
             return this;
         },
         makeButton: function(toolDef) {
