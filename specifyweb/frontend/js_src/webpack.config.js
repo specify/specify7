@@ -16,8 +16,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            handsontable: '../bower_components/handsontable/dist/handsontable.full.js',
-            papaparse: '../bower_components/papaparse/papaparse.js'
+            handsontable: '../bower_components/handsontable/dist/handsontable.full.js'
         }
     },
     plugins: [

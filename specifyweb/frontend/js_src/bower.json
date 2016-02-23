@@ -17,7 +17,6 @@
     "tests"
   ],
   "dependencies": {
-    "handsontable": "~0.20.2",
-    "papaparse": "~4.1.2"
+    "handsontable": "~0.20.2"
   }
 }
