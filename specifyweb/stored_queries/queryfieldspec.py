@@ -24,6 +24,9 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 # to request a filter on that subportion of the date.
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
+# Pull out any field other than name from taxon query fields.
+TAXON_FIELD_RE = re.compile(r'(.*) (Author)|(GroupNumber)$')
+
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
     if match:
@@ -55,7 +58,7 @@ def make_stringid(fs, table_list):
     return table_list, fs.table.name.lower(), field_name
 
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table date_part tree_rank")):
+class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -80,7 +83,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                    join_path=join_path,
                    table=node,
                    date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
-                   tree_rank=None)
+                   tree_rank=None,
+                   tree_field=None)
 
 
     @classmethod
@@ -106,9 +110,15 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
-        tree_rank = None
+        tree_rank = tree_field = None
         if field is None:
-            tree_rank = extracted_fieldname if extracted_fieldname else None
+            tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
+                               if node is datamodel.get_table('Taxon') else None
+            if tree_field_match:
+                tree_rank = tree_field_match.group(1)
+                tree_field = tree_field_match.group(2)
+            else:
+                tree_rank = extracted_fieldname if extracted_fieldname else None
         else:
             join_path.append(field)
             if field.is_temporal() and date_part is None:
@@ -118,7 +128,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                      join_path=join_path,
                      table=node,
                      date_part=date_part,
-                     tree_rank=tree_rank)
+                     tree_rank=tree_rank,
+                     tree_field=tree_field)
 
         logger.debug('parsed %s related %s to %s', stringid, is_relation, result)
         return result
@@ -178,7 +189,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
 
             if self.tree_rank is not None:
-                query, orm_field = handle_tree_field(query, orm_model, table, self.tree_rank, collection)
+                query, orm_field = handle_tree_field(query, orm_model, table, self.tree_rank,
+                                                     self.tree_field, collection, join_cache)
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
 
@@ -232,31 +244,41 @@ def get_tree_def(query, collection, tree_name):
         treedef_field = "%streedef_id" % tree_name.lower()
         return  getattr(collection.discipline, treedef_field)
 
-def handle_tree_field(query, node, table, tree_rank, collection):
+def handle_tree_field(query, node, table, tree_rank, tree_field, collection, join_cache):
     assert collection is not None # Not sure it makes sense to query across collections
-    logger.info('handling treefield %s rank: %s', table, tree_rank)
+    logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
 
-    # Get the tree definition for this collection.
-    treedef = get_tree_def(query, collection, table.name)
-    treedef_column = table.name + 'TreeDefID'
-    treedefitem_column = table.name + 'TreeDefItemID'
+    if join_cache is not None and (table, 'TreeRank-' + tree_rank) in join_cache:
+        ancestor = join_cache[(table, 'TreeRank-' + tree_rank)]
+        logger.debug("using join cache for %r.%s", table, tree_rank)
+    else:
+        # Get the tree definition for this collection.
+        treedef = get_tree_def(query, collection, table.name)
+        treedef_column = table.name + 'TreeDefID'
+        treedefitem_column = table.name + 'TreeDefItemID'
 
-    # The tree def item table.
-    treedefitem = orm.aliased(getattr(models, table.name + 'TreeDefItem'))
+        # The tree def item table.
+        treedefitem = orm.aliased(getattr(models, table.name + 'TreeDefItem'))
 
-    # Going to join the tree def items from the correct tree at the given rank.
-    treedef_join_cond = sql.and_(getattr(treedefitem, treedef_column) == treedef, treedefitem.name == tree_rank)
+        # Going to join the tree def items from the correct tree at the given rank.
+        treedef_join_cond = sql.and_(getattr(treedefitem, treedef_column) == treedef, treedefitem.name == tree_rank)
 
-    # Alias the tree table for ancestor rows.
-    ancestor = orm.aliased(node)
+        # Alias the tree table for ancestor rows.
+        ancestor = orm.aliased(node)
+        if join_cache is not None:
+            join_cache[(table, 'TreeRank-' + tree_rank)] = ancestor
+            logger.debug("adding to join cache %r, %r", (table, tree_rank), ancestor)
 
-    # The join condition for the ancestor is that it has the correct tree def item (rank) and the
-    # target (node) row has a node number encompassed by the ancestor's node number range.
-    ancestor_join_cond = sql.and_(getattr(ancestor, treedefitem_column) == getattr(treedefitem, treedefitem._id),
-                                  node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
+        # The join condition for the ancestor is that it has the correct tree def item (rank) and the
+        # target (node) row has a node number encompassed by the ancestor's node number range.
+        ancestor_join_cond = sql.and_(getattr(ancestor, treedefitem_column) == getattr(treedefitem, treedefitem._id),
+                                      node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
 
-    query = query.join(treedefitem, treedef_join_cond).outerjoin(ancestor, ancestor_join_cond)
-    return query, ancestor.name
+        query = query.join(treedefitem, treedef_join_cond).outerjoin(ancestor, ancestor_join_cond)
+
+    # The actual column to return.
+    column = getattr(ancestor, 'name' if tree_field is None else tree_field.lower())
+    return query, column
 
 def build_join(query, table, model, join_path, join_cache):
     path = deque(join_path)
