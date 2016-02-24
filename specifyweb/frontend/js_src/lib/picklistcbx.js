@@ -24,17 +24,19 @@ module.exports = Base.extend({
                 .addClass(control.attr('class'))
                 .attr('disabled', control.attr('disabled'));
 
-            $('<a class="combobox-toggle ui-corner-right">')
-                .attr( "tabIndex", -1 )
-                .attr( "title", "Show All Items" )
-                .appendTo( wrapper )
-                .button({
-                    icons: {
-                        primary: "ui-icon-triangle-1-s"
-                    },
-                    text: false
-                })
-                .removeClass( "ui-corner-all" );
+            if (!control.attr('disabled')) {
+                $('<a class="combobox-toggle ui-corner-right">')
+                    .attr( "tabIndex", -1 )
+                    .attr( "title", "Show All Items" )
+                    .appendTo( wrapper )
+                    .button({
+                        icons: {
+                            primary: "ui-icon-triangle-1-s"
+                        },
+                        text: false
+                    })
+                    .removeClass( "ui-corner-all" );
+            }
 
             control.replaceWith(wrapper);
             this.setElement(wrapper);
