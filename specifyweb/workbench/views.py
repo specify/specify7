@@ -203,8 +203,8 @@ def status_from_log(fname):
 
     pid_match = PID_RE.search(head)
     start_match = STARTING_RE.search(head)
-    ending_match = ENDING_RE.search(tail)
-    row_match = ROW_RE.findall(tail)
+    ending_match = ENDING_RE.search(head + '\n' + tail)
+    row_match = ROW_RE.findall(head + '\n' + tail)
     return {
         'log_name': os.path.basename(fname),
         'pid': pid_match and pid_match.group(1),
