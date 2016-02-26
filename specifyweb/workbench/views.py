@@ -94,7 +94,7 @@ def save(wb_id, data):
     new_rows = [(i, wb_id) for i, row in enumerate(data) if row[0] is None]
 
     logger.debug("inserting %d new rows", len(new_rows))
-    cursor.executemany("insert workbenchrow(rownumber, workbenchid) values (%s, %s)",
+    cursor.executemany("insert workbenchrow(rownumber, workbenchid, uploadstatus) values (%s, %s, 0)",
                        new_rows)
 
     logger.debug("get new row ids")
