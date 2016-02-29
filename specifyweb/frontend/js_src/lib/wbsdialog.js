@@ -8,6 +8,7 @@ var schema              = require('./schema.js');
 var navigation          = require('./navigation.js');
 var EditResourceDialog  = require('./editresourcedialog.js');
 var WBTemplateEditor    = require('./wbtemplateeditor.js');
+var userInfo    = require('./userinfo.js');
 
     var NewWorkbenchDialog = Backbone.View.extend({
         __name__: "NewWorkbenchDialog",
@@ -16,11 +17,17 @@ var WBTemplateEditor    = require('./wbtemplateeditor.js');
             'click a': 'select'
         },
         render: function() {
-            this.templates = new schema.models.WorkbenchTemplate.LazyCollection();
+            this.templates = new schema.models.WorkbenchTemplate.LazyCollection({
+                filters: { specifyuser: userInfo.id, orderby: 'name' }
+            });
             this.templates.fetch({ limit: 500 }).done(this.gotTemplates.bind(this));
             return this;
         },
         gotTemplates: function() {
+            if (this.templates.length < 1) {
+                this.newTemplate();
+                return;
+            }
             var entries = this.templates.map(this.dialogEntry, this);
             $('<table>').append(entries).appendTo(this.el);
             this.$el.dialog({
