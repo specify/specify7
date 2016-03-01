@@ -312,7 +312,6 @@ var WBView = Backbone.View.extend({
         window.setTimeout(refresh, refreshTime);
     },
     showHighlights: function() {
-        if (this.highlightsOn) return;
         this.highlightsOn = true;
         this.hot.render();
     },
@@ -330,7 +329,6 @@ var WBView = Backbone.View.extend({
         this.currentPos && this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
     },
     removeHighlights: function() {
-        if (!this.highlightsOn) return;
         this.highlightsOn = false;
         this.hot.render();
     },
