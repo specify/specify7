@@ -150,7 +150,7 @@ var WBView = Backbone.View.extend({
             manualColumnResize: true,
             columnSorting: true,
             sortIndicator: true,
-            contextMenu: true,
+            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: onChanged,
