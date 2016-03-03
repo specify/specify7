@@ -23,8 +23,9 @@ function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-var highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
-var errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
+const highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
+const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
+const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
 
 function atoi(str) { return parseInt(str, 10); }
 
@@ -50,7 +51,23 @@ function parseLog(log, nCols) {
               .filter(match => match != null)
               .map(match => match[3] || match[5]);
 
-    return {highlights: highlights, byPos: byPos, errors: errors};
+    const duplicateEntry = lines
+              .map(line => duplicateEntryRE.exec(line))
+              .filter(match => match != null)
+              .map(match => match[1])[0];
+
+    const rows = lines
+              .map(line => /uploading row (\d+)/.exec(line))
+              .filter(match => match != null)
+              .map(match => parseInt(match[1], 10));
+
+    return {
+        highlights: highlights,
+        byPos: byPos,
+        errors: errors,
+        duplicateEntry: duplicateEntry,
+        lastRow: rows[rows.length - 1]
+    };
 }
 
 
@@ -162,7 +179,9 @@ var WBView = Backbone.View.extend({
             const coords = this.hot.getCoords(td);
             const pos = this.hot.countCols() * coords.row + coords.col;
             const info = this.infoFromLog.byPos[pos];
-            return $('<span>').text(info.message);
+            const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
+            const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
+            return $('<span>').text(message);
         };
 
         this.$('.wb-spreadsheet').tooltip({
@@ -186,7 +205,9 @@ var WBView = Backbone.View.extend({
         const pos = instance.countCols() * row + col;
         const highlightInfo = this.infoFromLog.byPos[pos];
         const $td = $(td);
-        if (highlightInfo) {
+        if (highlightInfo || (
+            row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
+        )) {
             $td.addClass('wb-invalid-cell');
         } else {
             $td.removeClass('wb-invalid-cell');
