@@ -170,9 +170,9 @@ def upload(request, wb_id, no_commit):
     with open(os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file), "w") as f:
         # we use the shell to start the uploader process to achieve a double
         # fork so that we don't have to wait() on the child process
-        cmdline = ' '.join(args) + ' &'
+        cmdline = ' '.join(args) + ' 2> >(grep ERROR >&1) &'
         logger.debug('starting upload w/ cmdline: %s', cmdline)
-        subprocess.call(['/bin/sh', '-c', cmdline], stdout=f)
+        subprocess.call(['/bin/bash', '-c', cmdline], stdout=f)
 
     log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
     for fname in log_fnames:
