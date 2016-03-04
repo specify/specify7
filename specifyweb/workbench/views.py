@@ -187,33 +187,39 @@ def upload(request, wb_id, no_commit):
 TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
 STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE, re.MULTILINE)
 ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE)
-ROW_RE = re.compile(r'row (\d*)[^\d]')
+ROW_RE = re.compile(r'uploading row (\d*)[^\d]')
 PID_RE = re.compile(r'pid = (\d*)')
 NO_COMMIT_RE = re.compile(r'Validating only. Will not commit.')
 
 def status_from_log(fname):
-    with open(fname, 'r') as f:
-        head = f.read(1024)
-        try:
-            f.seek(-512, os.SEEK_END)
-        except IOError:
-            # the file size is less than 512
-            pass
-        tail = f.read(512)
+    pid_match    = None
+    start_match  = None
+    ending_match = None
+    no_commit = False
+    last_row = None
 
-    pid_match = PID_RE.search(head)
-    start_match = STARTING_RE.search(head)
-    ending_match = ENDING_RE.search(head + '\n' + tail)
-    row_match = ROW_RE.findall(head + '\n' + tail)
+    with open(fname, 'r') as f:
+        for line in f:
+            if not no_commit and NO_COMMIT_RE.search(line):
+                no_commit = True
+            if pid_match is None:
+                pid_match = PID_RE.match(line)
+            if start_match is None:
+                start_match = STARTING_RE.match(line)
+            if ending_match is None:
+                ending_match = ENDING_RE.match(line)
+
+            row_match = ROW_RE.match(line)
+            if row_match: last_row = int(row_match.group(1))
     return {
         'log_name': os.path.basename(fname),
         'pid': pid_match and pid_match.group(1),
         'start_time': start_match and start_match.group(1),
-        'last_row': int(row_match[-1]) if len(row_match) > 0 else None,
+        'last_row': last_row,
         'end_time': ending_match and ending_match.group(1),
         'success': ending_match and ending_match.group(2) == 'successfully.',
         'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
-        'no_commit': NO_COMMIT_RE.search(head) is not None,
+        'no_commit': no_commit,
     }
 
 def is_uploader_running(log_fname, uploader_pid):
