@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^view.json$', views.view),
     url(r'^datamodel.json$', views.datamodel),
     url(r'^schema_localization.json$', views.schema_localization),
+    url(r'^wb_schema_localization.json$', views.wb_schema_localization),
     url(r'^app.resource$', views.app_resource),
     url(r'^available_related_searches.json$', views.available_related_searches),
     url(r'^remoteprefs.properties$', views.remote_prefs),

@@ -20,6 +20,7 @@
     padding: 2px;
     cursor: pointer;
     border: 1px solid white;
+    white-space: nowrap;
 }
 
 .workbench-template-editor li img {

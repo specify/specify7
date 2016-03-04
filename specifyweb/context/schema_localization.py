@@ -10,10 +10,10 @@ from specifyweb.specify.models import (
 
 schema_localization_cache = {}
 
-def get_schema_localization(collection):
+def get_schema_localization(collection, schematype):
     disc = collection.discipline
-    if disc in schema_localization_cache:
-        return schema_localization_cache[disc]
+    if (disc, schematype) in schema_localization_cache:
+        return schema_localization_cache[(disc, schematype)]
 
     strings = dict(
         ((i.containername_id, i.containerdesc_id, i.itemname_id, i.itemdesc_id), i.text) \
@@ -33,13 +33,13 @@ def get_schema_localization(collection):
     cfields = ('format', 'ishidden', 'isuiformatter', 'picklistname', 'type', 'aggregator', 'defaultui')
 
     containers = {}
-    for c in Container.objects.filter(discipline=disc, schematype=0):
+    for c in Container.objects.filter(discipline=disc, schematype=schematype):
         containers[c.name] = container = dict((field, getattr(c, field)) for field in cfields)
         container.update({
                 'name': strings.get((c.id, None, None, None), None),
                 'desc': strings.get((None, c.id, None, None), None),
                 'items': items[c.id] })
 
-    sl = schema_localization_cache[disc] =  simplejson.dumps(containers)
+    sl = schema_localization_cache[(disc, schematype)] =  simplejson.dumps(containers)
     return sl
 
