@@ -1,13 +1,18 @@
+{% load raven %}
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
-  <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
-  <title>Log In | Specify WebApp</title>
+{% if use_raven %}
+  <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
+{% endif %}
+  <script src="/static/js/login.bundle.js"></script>
+  <title>Log In | Specify 7</title>
 </head>
 
 <body>
+  <header></header>
   <div id="content">
     {% if form.non_field_errors %}
     {% for error in form.non_field_errors %}
@@ -20,21 +25,24 @@
     <form action="{{ app_path }}" method="post" id="login-form">
       {% csrf_token %}
       <div class="form-row">
-        {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
-        <label for="id_username" class="required">Username</label> {{ form.username }}
+        <label for="id_username" class="required">Username</label>
+        {{ form.username.errors }}
+        {{ form.username }}
       </div>
       <div class="form-row">
-        {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
-        <label for="id_password" class="required">Password</label> {{ form.password }}
+        <label for="id_password" class="required">Password</label>
+        {{ form.password.errors }}
+        {{ form.password }}
         <input type="hidden" name="this_is_the_login_form" value="1" />
         <input type="hidden" name="next" value="{{ next }}" />
       </div>
       <div class="form-row">
-        {% if not form.this_is_the_login_form.errors %}{{ form.collection.errors }}{% endif %}
-        <label>Collection</label> {{ form.collection }}
+        {{ form.collection.errors }}
+        <label>Collection</label>
+        {{ form.collection }}
       </div>
       <div class="submit-row">
-        <input type="submit" value="Log in" />
+        <input type="submit" value="Login" />
       </div>
     </form>
   </div>

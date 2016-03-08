@@ -56,7 +56,7 @@ def login(request):
 
 def logout(request):
     """A Django view to log users out."""
-    return auth_views.logout(request, template_name='logged_out.html')
+    return auth_views.logout(request, next_page='/accounts/login/')
 
 @require_http_methods(['GET', 'PUT'])
 @csrf_exempt
