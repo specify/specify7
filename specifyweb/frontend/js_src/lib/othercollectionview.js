@@ -4,7 +4,8 @@ var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
 
-var template =  require('./templates/othercollectionstemplate.html');
+var singularTemplate = require('./templates/othercollectiontemplate.html');
+var pluralTemplate = require('./templates/othercollectionstemplate.html');
 var navigation =  require('./navigation.js');
 
 
@@ -20,7 +21,7 @@ module.exports =  Backbone.View.extend({
         render: function() {
             this.$el.empty();
             if (this.collections.length > 1) {
-                this.$el.html(template());
+                this.$el.html(pluralTemplate());
                 var ul = this.$('ul');
                 var li = ul.find('li').detach();
                 _.each(this.collections, function(collection) {
@@ -30,7 +31,7 @@ module.exports =  Backbone.View.extend({
                         .button();
                 }, this);
             } else {
-                this.$el.html(templates.othercollection());
+                this.$el.html(singularTemplate());
                 this.$('a').data('collection-id', this.collections[0].id).button();
                 this.$('span.collection-name').text(this.collections[0].get('collectionname'));
             }
