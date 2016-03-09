@@ -26,7 +26,8 @@ module.exports = {
     devtool: 'source-map',
     entry: {
         main: "./lib/main.js",
-        login: "./lib/login.js"
+        login: "./lib/login.js",
+        choosecollection: "./lib/choosecollection.js"
     },
     output: {
         path: "../static/js/",

@@ -5,10 +5,13 @@ urlpatterns = patterns('',
     (r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
-    (r'^accounts/login/$', 'specifyweb.context.views.login'),
-    (r'^accounts/logout/$', 'specifyweb.context.views.logout'),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout',
+     {'template_name': 'logout.html', 'next_page': '/accounts/login/'}),
 
     (r'^accounts/support_login/$', 'specifyweb.specify.views.support_login'),
+
+    (r'^accounts/choose_collection/$', 'specifyweb.context.views.choose_collection'),
 
     (r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
      {'template_name': 'password_change.html',

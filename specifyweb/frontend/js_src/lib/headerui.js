@@ -72,17 +72,10 @@ module.exports = Backbone.View.extend({
                 .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
 
             var collectionSelector = this.$('#user-tools select');
-            var collections = new schema.models.Collection.LazyCollection();
-            $.when(
-                domain.getDomainResource('collection').fetchIfNotPopulated(),
-                collections.fetch({limit: 0})
-            ).done(function (currentCollection) {
-               collections.each(function(collection) {
-                   $("<option>", {selected: collection.id === currentCollection.id, value: collection.id})
-                       .text(collection.get('collectionname'))
-                       .appendTo(collectionSelector);
-               });
-            });
+            $.get('/context/collection/').done(({current, available}) => collectionSelector.append(
+                _.map(available,
+                      ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
+
             this.$('#header-loading').remove();
             var lis = this.visibleTools.map(this.makeButton);
             this.$('#site-nav ul').empty().append(lis);
