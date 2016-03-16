@@ -27,6 +27,7 @@ module.exports = {
     entry: {
         main: "./lib/main.js",
         login: "./lib/login.js",
+        passwordchange: "./lib/passwordchange.js",
         choosecollection: "./lib/choosecollection.js"
     },
     output: {
