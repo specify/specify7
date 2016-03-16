@@ -13,9 +13,12 @@ var specifyform  = require('./specifyform.js');
 var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
 
+const template = require('./templates/attachmentbrowser.html');
+
 
     var AttachmentsView = Backbone.View.extend({
         __name__: "AttachmentsView",
+        className: "specify-attachments-view",
         events: {
             'click .specify-attachment-thumbnail': 'openOriginal',
             'click .specify-attachment-dataobj-icon': 'openDataObj',
@@ -109,9 +112,7 @@ var whenAll      = require('./whenall.js');
         },
         render: function() {
             var self = this;
-            self.$el.append('<h2>Attachments</h2>' +
-                            '<select class="specify-attachment-type"></select>' +
-                            '<div class="specify-attachment-browser"><div class="specify-attachment-cells"></div>');
+            self.$el.html(template());
 
             var resize = function() {
                 self.setSize();

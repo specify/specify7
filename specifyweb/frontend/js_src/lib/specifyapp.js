@@ -63,7 +63,7 @@ var systemInfo   = require('./systeminfo.js');
     function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
-            el: $('<div class="specify-root-form">'),
+            className: "specify-root-form",
             populateForm: populateForm,
             model: resource,
             recordSet: recordSet,
