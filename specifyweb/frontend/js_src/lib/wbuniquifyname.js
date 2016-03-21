@@ -7,15 +7,16 @@ const userInfo = require('./userinfo.js');
 function addSuffix(name, usedNames) {
     let i = 1, newName;
     do {
-        newName = name + ' (' + (i++) + ')';
+        const suffix = ` (${i++})`;
+        newName = name.substr(0, 64 - suffix.length) + suffix;
     } while (_(usedNames).contains(newName));
     return newName;
 }
 
 module.exports = function uniquifyWorkbenchName(name) {
-    name = name.trim();
+    name = name.trim().substr(0, 64);
     const wbs = new schema.models.Workbench.LazyCollection({
-        filters: { specifyuser: userInfo.id, name__startswith: name }
+        filters: { specifyuser: userInfo.id }
     });
     return Q(wbs.fetch({ limit: 0 }))
         .then(() => wbs.map(wb => wb.get('name')))

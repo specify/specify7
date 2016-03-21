@@ -131,7 +131,10 @@ function MatchTemplates(templates, columns) {
             this.templates = options.templates;
         },
         render: function() {
-            this.$el.append(wbimport({encodings: encodings.allLabels}));
+            this.$el.append(wbimport({
+                encodings: encodings.allLabels,
+                nameChars: schema.models.Workbench.getField('name').length
+            }));
 
             var fileSelected = this.$(':file').asEventStream('change')
                     .map(event => event.currentTarget.files[0])

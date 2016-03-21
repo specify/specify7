@@ -1,6 +1,7 @@
 "use strict";
 const Backbone = require('./backbone.js');
 const uniquifyName = require('./wbuniquifyname.js');
+const schema = require('./schema.js');
 
 module.exports = Backbone.View.extend({
     __name__: "WBNameView",
@@ -18,9 +19,10 @@ module.exports = Backbone.View.extend({
         return this;
     },
     startEditing: function(e) {
+        const maxLength = schema.models.Workbench.getField('name').length;
         this.$el
             .text('Dataset: ')
-            .append('<input type="text">');
+            .append(`<input type="text" maxlength="${maxLength}">`);
         this.$('input').val(this.wb.get('name')).focus();
     },
     keyUp: function(e) {
