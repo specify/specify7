@@ -52,7 +52,7 @@ function isDisallowedTable(mappedTables, tableName) {
     }
 }
 
-function simpleMatch(fieldInfosSortedForSimpleMatch, mappedTables, column) {
+function simpleMatch(fieldInfosSortedForSimpleMatch, mappedFields, mappedTables, column) {
     var lcColumn = column.toLowerCase();
     var noWSColumn = lcColumn.replace(/\s+/g, '');
 
@@ -60,7 +60,8 @@ function simpleMatch(fieldInfosSortedForSimpleMatch, mappedTables, column) {
         fieldInfosSortedForSimpleMatch, fi => {
             var fName = fi.name.toLowerCase();
             var fCName = fi.column.toLowerCase();
-            return !isDisallowedTable(mappedTables, fi.tableInfo.name) &&
+            return !mappedFields.contains(fi) &&
+                !isDisallowedTable(mappedTables, fi.tableInfo.name) &&
                 (fName === noWSColumn ||
                  fCName === noWSColumn ||
                  fName.indexOf(lcColumn) === 0 ||
@@ -68,9 +69,10 @@ function simpleMatch(fieldInfosSortedForSimpleMatch, mappedTables, column) {
         });
 }
 
-function autoMap(autoMappings, mappedTables, column) {
+function autoMap(autoMappings, mappedFields, mappedTables, column) {
     var matched = _.find(
         autoMappings, am =>
+            !mappedFields.contains(am.fieldInfo) &&
             !isDisallowedTable(mappedTables, am.fieldInfo.tableInfo.name) &&
             _.any(am.regexes, re => re.test(column)));
 
@@ -79,15 +81,17 @@ function autoMap(autoMappings, mappedTables, column) {
 
 function autoMapColumns(autoMappings, fisfsm, columns) {
     return columns.reduce((mappings, column, index) => {
-        var mappedTables = mappings
-                .map(m => m.get('fieldInfo'))
-                .filter(fi => fi != null)
-                .map(fi => fi.tableInfo.name);
+        const mappedFields = mappings
+                  .map(m => m.get('fieldInfo'))
+                  .filter(fi => fi != null);
+
+        const mappedTables = mappedFields.map(fi => fi.tableInfo.name);
+
 
         return mappings.push(Immutable.Map({
             column: column,
-            fieldInfo: (simpleMatch(fisfsm, mappedTables, column) ||
-                        autoMap(autoMappings, mappedTables, column)),
+            fieldInfo: (simpleMatch(fisfsm, mappedFields, mappedTables, column) ||
+                        autoMap(autoMappings, mappedFields, mappedTables, column)),
             origIndex: index,
             curIndex: index
         }));
