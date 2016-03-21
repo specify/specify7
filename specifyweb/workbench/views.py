@@ -41,6 +41,11 @@ def load(wb_id):
     wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
         workbenchtemplate=wb.workbenchtemplate).order_by('vieworder')
 
+    if wbtmis.count() > 60:
+        # mysql won't join more than 61 tables.
+        # but the following is slower so only use in that case.
+        return load_gt_61_cols(wb_id)
+
     select_fields = ["r.workbenchrowid"]
     for wbtmi in wbtmis:
         select_fields.append("cell%d.celldata" % wbtmi.vieworder)
@@ -62,6 +67,42 @@ def load(wb_id):
     cursor.execute(sql, [wb_id])
     rows = cursor.fetchall()
     return http.HttpResponse(toJson(rows), content_type='application/json')
+
+def load_gt_61_cols(wb_id):
+    cursor = connection.cursor()
+    cursor.execute("""
+    select workbenchtemplateid
+    from workbench
+    where workbenchid = %s
+    """, [wb_id])
+
+    wbtm = cursor.fetchone()[0]
+
+    sql = """
+    select r.workbenchrowid, celldata
+    from workbenchrow r
+    join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
+    left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
+      and mi.workbenchtemplatemappingitemid = i.workbenchtemplatemappingitemid
+    where workbenchid = %s order by r.rownumber, vieworder
+    """
+    cursor = connection.cursor()
+    cursor.execute(sql, [wbtm, wb_id])
+    rows = list(group_rows(cursor.fetchall()))
+
+    return http.HttpResponse(toJson(rows), content_type='application/json')
+
+def group_rows(rows):
+    i = iter(rows)
+    row = next(i)
+    current_row = list(row)
+    while True:
+        row = next(i)
+        if row[0] == current_row[0]:
+            current_row.append(row[1])
+        else:
+            yield current_row
+            current_row = list(row)
 
 def save(wb_id, data):
     wb_id = int(wb_id)
