@@ -1,7 +1,13 @@
 {
   "name": "specify7-frontend",
   "version": "7.1.0",
-  "description": "",
+  "private": true,
+  "description": "Specify software manages species and specimen data for biological research collections. As a database platform, it tracks specimen transactions, links images to specimen records and publishes data to the Internet.",
+  "homepage": "http://specifysoftware.org",
+  "repository": {
+    "type": "git",
+    "url" : "https://github.com/specify/specify7.git"
+  },
   "main": "lib/main.js",
   "directories": {
     "test": "tests"
