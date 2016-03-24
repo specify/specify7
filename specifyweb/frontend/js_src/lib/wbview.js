@@ -255,6 +255,27 @@ var WBView = Backbone.View.extend({
         this.$('.wb-upload, .wb-validate').prop('disabled', false);
         this.$('.wb-save').prop('disabled', true);
     },
+    checkUploaderLock(title, next) {
+        const query = new schema.models.SpTaskSemaphore.LazyCollection({
+            filters: { taskname: "WORKBENCHUPLOAD", islocked: true }
+        });
+        query.fetch().done(() => {
+            if (query.length > 0) {
+                query.at(0).rget('owner', true).done(user => {
+                    const dialog = $(
+                        `<div>The ${title.toLowerCase()} is currently in use by <span></span>.</div>`
+                    );
+                    $('span', dialog).text(user.get('name'));
+                    dialog.dialog({
+                        title: `${title} busy.`,
+                        modal: true,
+                        buttons: [{text: 'Close', click() { $(this).dialog('close'); }}]
+                    });
+                });
+            } else next();
+        });
+
+    },
     upload: function() {
         const begin = () => {
             $.post('/api/workbench/upload/' + this.wb.id + '/').fail(jqxhr => {
@@ -263,22 +284,25 @@ var WBView = Backbone.View.extend({
             });
             this.openUploadProgress();
         };
-
-        $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
-            title: "Proceed with upload?",
-            modal: true,
-            buttons: [
-                {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-            ]
+        this.checkUploaderLock('Uploader', () => {
+            $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
+                title: "Proceed with upload?",
+                modal: true,
+                buttons: [
+                    {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
+                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+                ]
+            });
         });
     },
     validate: function() {
-        $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
-            this.checkDeletedFail(jqxhr);
-            this.closeUploadProgress();
+        this.checkUploaderLock('Validator', () => {
+            $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
+                this.checkDeletedFail(jqxhr);
+                this.closeUploadProgress();
+            });
+            this.openUploadProgress();
         });
-        this.openUploadProgress();
     },
     closeUploadProgress() {
         this.uploadProgressDialog.dialog('close');
