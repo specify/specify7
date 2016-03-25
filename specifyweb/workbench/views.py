@@ -165,8 +165,8 @@ def save(wb_id, data):
     logger.debug("inserting new wb values")
     cursor.executemany("""
     insert workbenchdataitem
-    (celldata, workbenchtemplatemappingitemid, workbenchrowid)
-    values (%s, %s, %s)
+    (validationstatus, celldata, workbenchtemplatemappingitemid, workbenchrowid)
+    values (0, %s, %s, %s)
     """, [
         (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
         for i, row in enumerate(data)
