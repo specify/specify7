@@ -58,7 +58,8 @@ var assert = require('./assert.js');
             return l && l.get('picklistname');
         },
         getWebLinkName: function() {
-            return this._localization && this._localization.weblinkname;
+            var l = this._getLocalization();
+            return l && l.get('weblinkname');
         },
         isRequiredBySchemaLocalization: function() {
             var l = this._getLocalization();
