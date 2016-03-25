@@ -115,8 +115,12 @@ var WBView = Backbone.View.extend({
                 (this.uploadStatus.no_commit ?
                  (this.uploadStatus.success ? 'Validation passed' : 'Validation failed')
                  :
-                 (this.uploadStatus.success ? 'Uploaded' : 'Last upload encountered errors')) +
-                ' (' + fromNow(this.uploadStatus.end_time) + ')'
+                 (this.uploadStatus.success ? 'Uploaded' + (
+                     this.uploadStatus.skipped_rows < 1 ? ''
+                         : this.uploadStatus.skipped_rows < 2 ? ' (1 row skipped)'
+                         : ` (${this.uploadStatus.skipped_rows} rows skipped)`
+                 ) : 'Last upload encountered errors')) +
+                    ' (' + fromNow(this.uploadStatus.end_time) + ')'
             );
             this.loadUploadLog();
             this.$('.wb-upload-controls').show();

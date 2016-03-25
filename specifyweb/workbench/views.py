@@ -211,7 +211,7 @@ def upload(request, wb_id, no_commit):
     with open(os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file), "w") as f:
         # we use the shell to start the uploader process to achieve a double
         # fork so that we don't have to wait() on the child process
-        cmdline = ' '.join(args) + ' 2> >(grep ERROR >&1) &'
+        cmdline = ' '.join(args) + ' 2> >(egrep "(ERROR)|(UploaderException)|(UploaderMatchSkipException)" >&1) &'
         logger.debug('starting upload w/ cmdline: %s', cmdline)
         subprocess.call(['/bin/bash', '-c', cmdline], stdout=f)
 
@@ -231,6 +231,7 @@ ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE
 ROW_RE = re.compile(r'uploading row (\d*)[^\d]')
 PID_RE = re.compile(r'pid = (\d*)')
 NO_COMMIT_RE = re.compile(r'Validating only. Will not commit.')
+SKIPPED_RE = re.compile('^edu.ku.brc.specify.tasks.subpane.wb.wbuploader.UploaderMatchSkipException')
 
 def status_from_log(fname):
     pid_match    = None
@@ -238,6 +239,7 @@ def status_from_log(fname):
     ending_match = None
     no_commit = False
     last_row = None
+    skipped_count = 0
 
     with open(fname, 'r') as f:
         for line in f:
@@ -252,6 +254,9 @@ def status_from_log(fname):
 
             row_match = ROW_RE.match(line)
             if row_match: last_row = int(row_match.group(1))
+
+            if SKIPPED_RE.match(line): skipped_count += 1
+
     return {
         'log_name': os.path.basename(fname),
         'pid': pid_match and pid_match.group(1),
@@ -261,6 +266,7 @@ def status_from_log(fname):
         'success': ending_match and ending_match.group(2) == 'successfully.',
         'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
         'no_commit': no_commit,
+        'skipped_rows': skipped_count
     }
 
 def is_uploader_running(log_fname, uploader_pid):
