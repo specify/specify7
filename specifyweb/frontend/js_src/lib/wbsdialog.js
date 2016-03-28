@@ -6,9 +6,10 @@ var Backbone = require('./backbone.js');
 
 var schema              = require('./schema.js');
 var navigation          = require('./navigation.js');
-var EditResourceDialog  = require('./editresourcedialog.js');
 var WBTemplateEditor    = require('./wbtemplateeditor.js');
 var userInfo    = require('./userinfo.js');
+var EditResourceDialog  = require('./editresourcedialog.js');
+const uniquifyName = require('./wbuniquifyname.js');
 
     var NewWorkbenchDialog = Backbone.View.extend({
         __name__: "NewWorkbenchDialog",
@@ -64,12 +65,12 @@ var userInfo    = require('./userinfo.js');
                 workbenchtemplate: template,
                 specifyuser: template.get('specifyuser')
             });
+
             new EditResourceDialog({ resource: workbench })
                 .render()
-                .on('savecomplete', this.created, this);
-        },
-        created: function(__, workbench) {
-            navigation.go('/workbench/' + workbench.id + '/');
+                .on('savecomplete',
+                    () => uniquifyName(workbench.get('name')).done(
+                        name => workbench.set('name', name).save().done(() => navigation.go('/workbench/' + workbench.id + '/'))));
         }
     });
 
