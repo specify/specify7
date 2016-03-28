@@ -180,6 +180,7 @@ function makeMappingItems(mappings) {
                 caption: m.get('column'),
                 xcoord: -1,
                 ycoord: -1,
+                carryforward: false,
                 datafieldlength: fieldInfo.length ? parseInt(fieldInfo.length, 10) : 32767,
                 fieldname: fieldInfo.name,
                 srctableid: fieldInfo.tableInfo.tableId,
