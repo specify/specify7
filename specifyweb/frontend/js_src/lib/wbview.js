@@ -345,8 +345,7 @@ var WBView = Backbone.View.extend({
                 $('.status', dialog).text(statusText);
                 $('.startTime', dialog).text(fromNow(status.start_time));
                 $('.rows', dialog).text(
-                    status.last_row == null ? 'None' :
-                        ('' + (1 + status.last_row) + ' / ' + this.hot.countRows())
+                    status.last_row == null ? 'None' : `${1 + status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`
                 );
 
                 if (!status.is_running) {
