@@ -174,7 +174,7 @@ var WBView = Backbone.View.extend({
             contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
-            afterRemoveRow: onChanged,
+            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
             afterSelection: (r, c) => this.currentPos = [r,c],
             afterChange: (change, source) => source === 'loadData' || onChanged()
         });
