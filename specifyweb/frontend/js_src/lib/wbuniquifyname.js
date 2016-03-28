@@ -13,13 +13,14 @@ function addSuffix(name, usedNames) {
     return newName;
 }
 
-module.exports = function uniquifyWorkbenchName(name) {
+module.exports = function uniquifyWorkbenchName(name, existingId) {
     name = name.trim().substr(0, 64);
     const wbs = new schema.models.Workbench.LazyCollection({
         filters: { specifyuser: userInfo.id }
     });
     return Q(wbs.fetch({ limit: 0 }))
-        .then(() => wbs.map(wb => wb.get('name')))
+        .then(() => wbs.filter(wb => wb.id !== existingId))
+        .then(wbs => wbs.map(wb => wb.get('name')))
         .then(usedNames =>
               _(usedNames).contains(name) ? addSuffix(name, usedNames) : name);
 };

@@ -69,7 +69,7 @@ const uniquifyName = require('./wbuniquifyname.js');
             new EditResourceDialog({ resource: workbench })
                 .render()
                 .on('savecomplete',
-                    () => uniquifyName(workbench.get('name')).done(
+                    () => uniquifyName(workbench.get('name'), workbench.id).done(
                         name => workbench.set('name', name).save().done(() => navigation.go('/workbench/' + workbench.id + '/'))));
         }
     });
