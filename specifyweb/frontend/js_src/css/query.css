@@ -1,10 +1,19 @@
+/* query.css */
+
 .querybuilder-header {
-    vertical-align: top;
+    display: flex;
+}
+
+.querybuilder {
+    padding: 10px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
 }
 
 .querybuilder-header img {
-    height: 1.2em;
-    margin-right: 0.8em;
+    height: 24px;
+    margin-right: 8px;
 }
 
 .querybuilder-expand {
@@ -22,15 +31,14 @@
 
 .spqueryfields {
     padding: 0;
-    margin-bottom: 4px;
+    margin: 10px 0;
 }
 
 .spqueryfield  {
-    background-color: #f0f0f0;
-    margin-top: 7px;
-    padding: 5px 0px 4px 12px;
-    border: 1px inset;
-    border-radius: 8px;
+    padding: 8px 0px 8px 12px;
+    background: #fff;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
 }
 
 .spqueryfield.field-incomplete .field-expand,
@@ -78,7 +86,7 @@
 
 .spqueryfield .field-controls {
     position: absolute;
-    right: 25px;
+    right: 36px;
 }
 
 .spqueryfield .field-controls.hidden {
