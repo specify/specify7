@@ -76,7 +76,6 @@ module.exports = Backbone.View.extend({
                 _.map(available,
                       ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
 
-            this.$('#header-loading').remove();
             var lis = this.visibleTools.map(this.makeButton);
             this.$('#site-nav ul').empty().append(lis);
             return this;
@@ -93,6 +92,7 @@ module.exports = Backbone.View.extend({
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
             this.visibleTools[index].execute();
+            $(evt.currentTarget).blur();
         },
         openUserTools: function(evt) {
             new UserTools({user: userInfo, tools: this.hiddenTools}).render();

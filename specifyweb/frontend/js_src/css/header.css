@@ -16,8 +16,12 @@ header a:hover {
 }
 
 #header-loading {
-    margin-top: 18px;
     margin-left: 48px;
+    flex-grow: 1;
+    text-align: left;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 header nav {
