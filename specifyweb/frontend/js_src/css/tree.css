@@ -1,19 +1,33 @@
+/* tree.css */
+
 .tree-view h1 {
     float: left;
 }
 
 .tree-view .tree-search {
-    margin-left: 40px;
+    margin-left: 20px;
+    width: 180px;
+    background: #f1f2f2;
+    border: 1px solid #aaa;
+    font-size: 14px;
 }
 
 .tree-view table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0px;
+    margin-top: 6px;
+    padding: 0 20px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
+
 }
 
 .tree-view thead th {
+    padding-top: 15px;
     text-align: center;
+    font-size: 13px;
 }
 
 .tree-view tfoot th {
@@ -22,17 +36,7 @@
 
 .tree-view th, .tree-view td {
     border: 1px none;
-}
-
-.tree-view td:nth-child(even),
-.tree-view th:nth-child(even) {
-    background-color: lightblue;
-    white-space: nowrap;
-}
-
-.tree-view td:nth-child(odd),
-.tree-view th:nth-child(odd) {
-    background-color: lightyellow;
+    background: linear-gradient(to right, rgba(247, 146, 68, 0) 18%, rgba(247, 146, 68, 0.17) 87%, rgba(247, 146, 68, 0) 100%);
     white-space: nowrap;
 }
 
