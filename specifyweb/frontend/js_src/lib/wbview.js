@@ -75,10 +75,10 @@ var WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
     events: {
-        'click .wb-upload': 'upload',
+        'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
         'click .wb-delete': 'delete',
-        'click .wb-save': 'save',
+        'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
@@ -228,6 +228,9 @@ var WBView = Backbone.View.extend({
     calcHeight: function() {
         return $(window).height() - this.$el.offset().top - 50;
     },
+    saveClicked: function() {
+        this.save().done();
+    },
     save: function() {
         var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
             title: 'Saving',
@@ -236,18 +239,16 @@ var WBView = Backbone.View.extend({
             close: function() {$(this).remove();}
         });
         $('.progress-bar', dialog).progressbar({value: false});
-        $.ajax('/api/workbench/rows/' + this.wb.id + '/', {
+
+        return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
             data: JSON.stringify(this.data),
+            error: this.checkDeletedFail.bind(this),
             type: "PUT"
-        }).done(data => {
+        })).then(data => {
             this.data = data;
             this.hot.loadData(data);
-            dialog.dialog('close');
             this.spreadSheetUpToDate();
-        }).fail(jqxhr => {
-            dialog.dialog('close');
-            this.checkDeletedFail(jqxhr);
-        });
+        }).finally(() => dialog.dialog('close'));
     },
     checkDeletedFail(jqxhr) {
         if (jqxhr.status === 404) {
@@ -279,6 +280,31 @@ var WBView = Backbone.View.extend({
             } else next();
         });
 
+    },
+    uploadClicked() {
+        const emptyRows = this.data.map(
+            row => _.all(row.slice(1), cell => cell == null || cell.trim() === "")
+        ).reduce((rows, isEmpty, index) => isEmpty ? rows.concat(index) : rows, []);
+
+        if (emptyRows.length > 0) {
+            const removeRows = () => {
+                emptyRows.reverse(); // remove rows from the end so the indices don't change.
+                emptyRows.forEach(row => this.hot.alter('remove_row', row));
+                this.save().done(() => this.upload());
+            };
+
+            $('<div>The dataset contains empty rows which should be removed before uploading.</div>')
+                .dialog({
+                    title: `Remove ${emptyRows.length} empty row${emptyRows.length > 1 ? 's' : ''}?`,
+                    modal: true,
+                    buttons: {
+                        Remove() { $(this).dialog('close'); removeRows(); },
+                        Cancel() { $(this).dialog('close'); }
+                    }
+                });
+        } else {
+            this.upload();
+        }
     },
     upload: function() {
         const begin = () => {
@@ -443,16 +469,16 @@ module.exports = function loadWorkbench(id) {
     });
     $('.progress-bar', dialog).progressbar({value: false});
     var wb = new schema.models.Workbench.Resource({id: id});
-    Q.all([
-        Q(wb.fetch()),
-        Q($.get('/api/workbench/rows/' + id + '/')),
-        Q($.get('/api/workbench/upload_status/' + id + '/'))
-    ]).spread(function(__, data, uploadStatus) {
-        app.setTitle("Workbench: " + wb.get('name'));
-        app.setCurrentView(new WBView({
-            wb: wb,
-            data: data,
-            uploadStatus: uploadStatus
-        }));
-    }).catch(app.handleError);
+    Q(wb.fetch().fail(app.handleError)).then(
+        () => Q.all([
+            Q($.get('/api/workbench/rows/' + id + '/')),
+            Q($.get('/api/workbench/upload_status/' + id + '/'))
+        ])).spread(function(data, uploadStatus) {
+            app.setTitle("Workbench: " + wb.get('name'));
+            app.setCurrentView(new WBView({
+                wb: wb,
+                data: data,
+                uploadStatus: uploadStatus
+            }));
+        }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };
