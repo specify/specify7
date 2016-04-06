@@ -103,8 +103,10 @@ nav li img {
 }
 
 #express-search .express-search-submit {
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 18.5px;
+    margin: 0;
+    padding: 0;
 }
 
 .ui-autocomplete {

@@ -7,7 +7,7 @@ var userInfo    = require('./userinfo.js');
 module.exports =  {
         task: 'workbenches',
         title: 'Workbench',
-        icon: '/images/Workbench32x32.png',
+        icon: '/static/img/workbench.png',
         execute: function() {
             var wbs = new schema.models.Workbench.LazyCollection({
                 filters: { specifyuser: userInfo.id, orderby: 'name' }
