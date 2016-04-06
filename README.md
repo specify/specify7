@@ -1,11 +1,3 @@
-Notice
-======
-The release branch should be used in production environments.
-
-```
-git checkout release
-```
-
 Developer Instructions
 ========================
 
