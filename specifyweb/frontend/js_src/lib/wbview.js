@@ -133,13 +133,9 @@ var WBView = Backbone.View.extend({
                 this.infoFromLog = parseLog(log, this.hot.countCols());
                 this.$('.wb-invalid-cell-count').text(this.infoFromLog.highlights.length);
 
-                if (this.uploadStatus.success) {
-                    this.removeHighlights();
-                    this.$('.wb-invalid-cells').hide();
-                } else {
-                    this.showHighlights();
-                    this.$('.wb-invalid-cells').show();
-                }
+                this.$('.wb-invalid-cells')[this.infoFromLog.highlights.length > 0 ? 'show' : 'hide']();
+                (this.infoFromLog.highlights.length > 0 || this.infoFromLog.duplicateEntry) ?
+                    this.showHighlights() : this.removeHighlights();
             });
     },
     showUploadLog: function(event) {
@@ -347,7 +343,7 @@ var WBView = Backbone.View.extend({
             open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close: function() { $(this).remove(); stopRefresh(); }
         });
-        $('.status', dialog).text('...');
+        $('.status td', dialog).text('...');
 
         const refresh = () => $.get('/api/workbench/upload_status/' + this.wb.id + '/').done(
             (status) => {
@@ -368,11 +364,16 @@ var WBView = Backbone.View.extend({
                           (status.no_commit ? 'Validation passed.' : 'Upload succeeded.')
                       : (status.no_commit ? 'Validation failed.' : 'Upload failed.');
 
-                $('.status', dialog).text(statusText);
-                $('.startTime', dialog).text(fromNow(status.start_time));
-                $('.rows', dialog).text(
-                    status.last_row == null ? 'None' : `${1 + status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`
-                );
+
+                $('.status td', dialog).text(statusText);
+                $('.startTime td', dialog).text(fromNow(status.start_time));
+
+                if (status.last_row == null) {
+                    $('.rows', dialog).hide();
+                } else {
+                    $('.rows', dialog).show();
+                    $('.rows td', dialog).text(`${1 + status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
+                }
 
                 if (!status.is_running) {
                     stopRefresh();
