@@ -38,7 +38,9 @@ class Tree(models.Model):
             or prev_self.definitionitem != self.definitionitem
             or prev_self.parent != self.parent
         ):
-            set_fullnames_recursive(self.__class__.__name__.lower(), self.nodenumber, self.definition.fullnamedirection == -1)
+            set_fullnames(self.__class__.__name__.lower(),
+                          self.definition.treedefitems.count(),
+                          self.definition.fullnamedirection == -1)
 
 
 def open_interval(model, parent_node_number, size):
@@ -176,23 +178,23 @@ def fullname_expr(depth, reverse):
 
 def fullname_joins(table, depth):
     return '\n'.join([
-        "join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
+        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
         for j in range(1, depth)
     ] + [
-        "join {table}treedefitem d{0} on t{0}.{table}treedefitemid = d{0}.{table}treedefitemid".format(j, table=table)
+        "left join {table}treedefitem d{0} on t{0}.{table}treedefitemid = d{0}.{table}treedefitemid".format(j, table=table)
         for j in range(depth)
     ])
 
-def set_fullnames(table, depth, node_number_range, reverse):
+def set_fullnames(table, depth, reverse=False, node_number_range=None):
     from django.db import connection
     cursor = connection.cursor()
-    sql = """
-update {table} t0
-{joins}
-set {set_expr}
-where t{root}.parentid is null
-and t0.acceptedid is null
-""".format(
+    sql = (
+        "update {table} t0\n"
+        "{joins}\n"
+        "set {set_expr}\n"
+        "where t{root}.parentid is null\n"
+        "and t0.acceptedid is null\n"
+    ).format(
         root=depth-1,
         table=table,
         set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
@@ -200,32 +202,6 @@ and t0.acceptedid is null
     )
     if node_number_range is not None:
         sql += "and t0.nodenumber between %s and %s\n"
-    logger.debug('fullname update sql: %s', sql)
+    logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql, node_number_range)
 
-def set_fullnames_recursive(table, node_number=None, reverse=False):
-    logger.info('setting fullnames with root node_number %s', node_number)
-    from django.db import connection
-    cursor = connection.cursor()
-
-    if node_number is not None:
-        cursor.execute("""
-        select highestchildnodenumber from {table}
-        where nodenumber = %s
-        """.format(table=table), [node_number])
-        highest_node_number = cursor.fetchone()[0]
-        node_number_range = (node_number, highest_node_number)
-
-        cursor.execute("""
-        select count(*) from {table}
-        where %s between nodenumber and highestchildnodenumber
-        """.format(table=table), [node_number])
-        depth = cursor.fetchone()[0]
-    else:
-        node_number_range = None
-        depth = 1
-
-    while True:
-        rows_updated = set_fullnames(table, depth, node_number_range, reverse)
-        if rows_updated < 1: break
-        depth += 1
