@@ -38,7 +38,7 @@ class Tree(models.Model):
             or prev_self.definitionitem != self.definitionitem
             or prev_self.parent != self.parent
         ):
-            set_fullnames_recursive(self.__class__.__name__.lower(), self.nodenumber)
+            set_fullnames_recursive(self.__class__.__name__.lower(), self.nodenumber, self.definition.fullnamedirection == -1)
 
 
 def open_interval(model, parent_node_number, size):
@@ -102,13 +102,77 @@ def moving_node(sender, to_save):
         to_save.highestchildnodenumber = current.highestchildnodenumber
 
 
-def fullname_expr(depth):
-    return "if(!d0.isinfullname, t0.name,\n\tconcat(\n\t\t{concat}\n\t))".format(
-        concat=',\n\t\t'.join([
-            "if(d{0}.isinfullname, concat(t{0}.name, d{0}.fullnameseparator), '')".format(j)
-            for j in reversed(range(1, depth))
-        ] + ["if(d0.isinfullname, t0.name, '')"])
-    )
+def fullname_expr(depth, reverse):
+    EMPTY = "''"
+    TRUE = "true"
+    FALSE = "false"
+
+    def OR(exprs):
+        if len(exprs) == 0:
+            return FALSE
+        elif len(exprs) == 1:
+            return exprs[0]
+        else:
+            return '({})'.format(' or '.join(exprs))
+
+    def IF(if_expr, then_expr, else_expr=EMPTY):
+        if if_expr == TRUE:
+            return then_expr
+        elif if_expr == FALSE:
+            return else_expr
+        else:
+            return 'if({}, {}, {})'.format(if_expr, then_expr, else_expr)
+
+    def CONCAT(exprs):
+        exprs = filter(lambda e: e != EMPTY, exprs)
+
+        if len(exprs) == 0:
+            return EMPTY
+        elif len(exprs) == 1:
+            return exprs[0]
+        else:
+            # use concat_ws because it skips nulls.
+            return "concat_ws('', {})".format(', '.join(exprs))
+
+    def NAME(index):
+        return 't{}.name'.format(index)
+
+    def IN_NAME(index):
+        return 'd{}.isinfullname'.format(index)
+
+    def SEPARATOR(index):
+        return 'd{}.fullnameseparator'.format(index)
+
+    def BEFORE(index):
+        return 'd{}.textbefore'.format(index)
+
+    def AFTER(index):
+        return 'd{}.textafter'.format(index)
+
+    fullname = CONCAT([
+        IF(IN_NAME(i),
+           CONCAT([
+               BEFORE(i),
+               NAME(i),
+               AFTER(i),
+               IF( # include separator if anything comes after
+                OR([
+                    IN_NAME(j)
+                    # if going from leaf to root, "after" means farther down, j = i+1 -> depth-1.
+                    # if going from root to leaf, "after" means farther up, j = i-1 -> 0.
+                    for j in (range(i+1, depth) if reverse else reversed(range(i)))
+                ]),
+                SEPARATOR(i)
+               )
+           ]))
+        # forward is root to leaf
+        # reverse is leaf to root
+        # leaf is i = 0, root is i = depth-1
+        for i in (range(depth) if reverse else reversed(range(depth)))
+    ])
+
+    # if node is not in fullname, its fullname is just its name
+    return IF(IN_NAME(0), fullname, NAME(0))
 
 def fullname_joins(table, depth):
     return '\n'.join([
@@ -119,7 +183,7 @@ def fullname_joins(table, depth):
         for j in range(depth)
     ])
 
-def set_fullnames(table, depth, node_number_range):
+def set_fullnames(table, depth, node_number_range, reverse):
     from django.db import connection
     cursor = connection.cursor()
     sql = """
@@ -131,15 +195,15 @@ and t0.acceptedid is null
 """.format(
         root=depth-1,
         table=table,
-        set_expr="t0.fullname = {}".format(fullname_expr(depth)),
+        set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
         joins=fullname_joins(table, depth),
     )
     if node_number_range is not None:
         sql += "and t0.nodenumber between %s and %s\n"
-
+    logger.debug('fullname update sql: %s', sql)
     return cursor.execute(sql, node_number_range)
 
-def set_fullnames_recursive(table, node_number=None):
+def set_fullnames_recursive(table, node_number=None, reverse=False):
     logger.info('setting fullnames with root node_number %s', node_number)
     from django.db import connection
     cursor = connection.cursor()
@@ -162,6 +226,6 @@ def set_fullnames_recursive(table, node_number=None):
         depth = 1
 
     while True:
-        rows_updated = set_fullnames(table, depth, node_number_range)
+        rows_updated = set_fullnames(table, depth, node_number_range, reverse)
         if rows_updated < 1: break
         depth += 1
