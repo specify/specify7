@@ -40,34 +40,3 @@ def cannot_delete_root_treedefitem(sender, obj):
         if sender.objects.get(id=obj.id).parent is None:
             raise BusinessRuleException("cannot delete root level tree definition item")
 
-
-
-def validate_tree(model):
-    from django.db import connection
-    cursor = connection.cursor()
-    result = cursor.execute("""
-    select
-        t1.taxonid, t1.name, t1.nodenumber, t1.highestchildnodenumber, t1.parentid,
-        t2.taxonid, t2.name, t2.nodenumber, t2.highestchildnodenumber, t2.parentid
-    from taxon t1 join taxon t2 on t1.taxonid < t2.taxonid
-    where not (
-        t1.nodenumber <= t1.highestchildnodenumber
-        and
-        t2.nodenumber <= t2.highestchildnodenumber
-        and
-        t1.nodenumber != t2.nodenumber
-        and case
-          when t1.parentid = t2.taxonid then
-             (t1.nodenumber > t2.nodenumber) and (t1.highestchildnodenumber <= t2.highestchildnodenumber)
-          when t2.parentid = t1.taxonid then
-             (t2.nodenumber > t1.nodenumber) and (t2.highestchildnodenumber <= t1.highestchildnodenumber)
-          when t1.parentid = t2.parentid then
-             (t1.nodenumber < t2.nodenumber and t1.highestchildnodenumber < t2.nodenumber)
-           or
-             (t2.nodenumber < t1.nodenumber and t2.highestchildnodenumber < t1.nodenumber)
-          else true
-        end
-    )
-    """)
-    return result
-
