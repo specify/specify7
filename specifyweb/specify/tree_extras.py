@@ -1,44 +1,56 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from django.db import models
+from django.db import models, connection
 from django.db.models import F, Q
+from django.conf import settings
 
-from specifyweb.specify.lock_tables import lock_tables
+from specifyweb.businessrules.exceptions import BusinessRuleException
 
 class Tree(models.Model):
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
+        model = type(self)
         self.rankid = self.definitionitem.rankid
         self.definition = self.definitionitem.treedef
 
-        prev_self = None if self.id is None else self.__class__.objects.select_for_update().get(id=self.id)
+        prev_self = None if self.id is None \
+                    else model.objects.select_for_update().get(id=self.id)
 
         if prev_self is None:
-            try:
-                adding_node(self.__class__, self)
-            except: # node numbering is borked.
-                logger.warn("couldn't update tree node numbers when adding node")
-                self.nodenumber = self.highestchildnodenumber = None
-
+            self.nodenumber = None
+            self.highestchildnodenumber = None
         else:
-            if prev_self.parent != self.parent:
-                try:
-                    moving_node(self.__class__, self)
-                except: # node numbering is borked.
-                    logger.warn("couldn't update tree node numbers when moving node")
-                    self.nodenumber = self.highestchildnodenumber = None
+            self.nodenumber = prev_self.nodenumber
+            self.highestchildnodenumber = prev_self.highestchildnodenumber
+
+        if prev_self is None:
+            adding_node(self)
+        elif prev_self.parent_id != self.parent_id:
+            moving_node(self)
 
         super(Tree, self).save(*args, **kwargs)
 
+        try:
+            model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
+        except model.DoesNotExist:
+            raise BusinessRuleException("Tree node's parent has rank greater than itself.")
+
+        if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
+            raise BusinessRuleException("Tree node's rank is greater than some of its children.")
+
+        if settings.DEBUG:
+            logger.info('validating tree')
+            validate_tree_numbering(self._meta.db_table)
+
         if (prev_self is None
             or prev_self.name != self.name
-            or prev_self.definitionitem != self.definitionitem
-            or prev_self.parent != self.parent
+            or prev_self.definitionitem_id != self.definitionitem_id
+            or prev_self.parent_id != self.parent_id
         ):
-            set_fullnames(self.__class__.__name__.lower(),
+            set_fullnames(self._meta.db_table,
                           self.definition.treedefitems.count(),
                           self.definition.fullnamedirection == -1)
 
@@ -79,30 +91,31 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def adding_node(sender, obj):
-    with lock_tables(obj._meta.db_table):
-        parent = sender.objects.get(id=obj.parent.id)
-        insertion_point = open_interval(sender, parent.nodenumber, 1)
-        obj.highestchildnodenumber = obj.nodenumber = insertion_point
+def adding_node(node):
+    logger.info('adding node %s', node)
+    model = type(node)
+    parent = model.objects.select_for_update().get(id=node.parent.id)
+    insertion_point = open_interval(model, parent.nodenumber, 1)
+    node.highestchildnodenumber = node.nodenumber = insertion_point
 
-def moving_node(sender, to_save):
-    with lock_tables(sender._meta.db_table):
-        current = sender.objects.get(id=to_save.id)
-        size = current.highestchildnodenumber - current.nodenumber + 1
-        new_parent = sender.objects.get(id=to_save.parent.id)
+def moving_node(to_save):
+    logger.info('moving node %s', to_save)
+    model = type(to_save)
+    current = model.objects.get(id=to_save.id)
+    size = current.highestchildnodenumber - current.nodenumber + 1
+    new_parent = model.objects.get(id=to_save.parent.id)
 
-        insertion_point = open_interval(sender, new_parent.nodenumber, size)
-        # node interval will have moved if it is to the right of the insertion point
-        # so fetch again
-        current = sender.objects.get(id=current.id)
-        move_interval(sender, current.nodenumber, current.highestchildnodenumber, insertion_point)
-        close_interval(sender, current.nodenumber, size)
+    insertion_point = open_interval(model, new_parent.nodenumber, size)
+    # node interval will have moved if it is to the right of the insertion point
+    # so fetch again
+    current = model.objects.get(id=current.id)
+    move_interval(model, current.nodenumber, current.highestchildnodenumber, insertion_point)
+    close_interval(model, current.nodenumber, size)
 
-        # update the nodenumbers in to_save so the new values are not overwritten.
-        current = sender.objects.get(id=current.id)
-        to_save.nodenumber = current.nodenumber
-        to_save.highestchildnodenumber = current.highestchildnodenumber
-
+    # update the nodenumbers in to_save so the new values are not overwritten.
+    current = model.objects.get(id=current.id)
+    to_save.nodenumber = current.nodenumber
+    to_save.highestchildnodenumber = current.highestchildnodenumber
 
 
 EMPTY = "''"
@@ -196,7 +209,6 @@ def definition_joins(table, depth):
     ])
 
 def set_fullnames(table, depth, reverse=False, node_number_range=None):
-    from django.db import connection
     cursor = connection.cursor()
     sql = (
         "update {table} t0\n"
@@ -218,7 +230,6 @@ def set_fullnames(table, depth, reverse=False, node_number_range=None):
     return cursor.execute(sql, node_number_range)
 
 def validate_tree_numbering(table):
-    from django.db import connection
     cursor = connection.cursor()
     cursor.execute(
         "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
@@ -241,7 +252,6 @@ def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(range(depth))], ',')
 
 def print_paths(table, depth):
-    from django.db import connection
     cursor = connection.cursor()
     sql = "select t0.nodenumber as nn, {path} as path from {table} t0 {parent_joins} order by nn".format(
         table=table,
@@ -254,15 +264,16 @@ def print_paths(table, depth):
     print sql
 
 def renumber_tree(table):
-    from django.db import connection
     cursor = connection.cursor()
 
+    # make sure rankids are set correctly
     cursor.execute((
         "update {table} t\n"
         "join {table}treedefitem d on t.{table}treedefitemid = d.{table}treedefitemid\n"
         "set t.rankid = d.rankid\n"
     ).format(table=table))
 
+    # make sure there are no cycles
     cursor.execute((
         "select count(*) from {table} t\n"
         "join {table} p on t.parentid = p.{table}id\n"
@@ -270,10 +281,15 @@ def renumber_tree(table):
     ).format(table=table))
     assert (0, ) == cursor.fetchone(), "bad tree structure"
 
+    # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
     ranks = [rank for (rank,) in cursor.fetchall()]
     depth = len(ranks)
 
+    # Construct a path enumeration for each node and set the
+    # nodenumbers according to the lexical ordering of the paths. This
+    # ensures ancestor node numbers come before descendents and
+    # sibling nodes get consecutive ranges.
     cursor.execute((
         "update {table} t\n"
         "join (select @rn := @rn + 1 as nn, p.id as id from \n"
@@ -283,6 +299,9 @@ def renumber_tree(table):
         "          order by path) p\n"
         ") r on t.{table}id = r.id\n"
         "join (select @rn := 0) rn\n"
+        # Set the highestchildnodenumber to be the same as the
+        # nodenumber.  This is correct for leaves, and interior nodes
+        # will be adjusted in the next step.
         "set t.nodenumber = r.nn, t.highestchildnodenumber = r.nn\n"
     ).format(
         table=table,
@@ -290,6 +309,13 @@ def renumber_tree(table):
         parent_joins=parent_joins(table, depth),
     ))
 
+    # Adjust the highestchildnodenumbers working from the penultimate
+    # rank downward towards the roots. The highest rank cannot have
+    # any children, so all nodes there correctly have
+    # highestchildnodenumber = nodenumber as set in the previous step.
+    # Interior nodes are updated by inner joining against their
+    # children so that nodes with no children are not updated leaving
+    # highestchildnodenumber = nodenumber.
     for rank in ranks[1:]:
         cursor.execute((
             "update {table} t join (\n"
