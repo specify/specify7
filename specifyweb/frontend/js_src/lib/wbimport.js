@@ -210,7 +210,7 @@ function MatchTemplates(templates, columns) {
 
 
 module.exports = function() {
-    app.setTitle("Import Workbench");
+    app.setTitle("Import Dataset");
     var templates = new schema.models.WorkbenchTemplate.LazyCollection({
         filters: { specifyuser: userInfo.id }
     });

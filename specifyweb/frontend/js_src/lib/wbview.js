@@ -402,7 +402,7 @@ module.exports = function loadWorkbench(id) {
         Q($.get('/api/workbench/rows/' + id + '/')),
         Q($.get('/api/workbench/upload_status/' + id + '/'))
     ]).spread(function(__, data, uploadStatus) {
-        app.setTitle("Workbench: " + wb.get('name'));
+        app.setTitle("WorkBench: " + wb.get('name'));
         app.setCurrentView(new WBView({
             wb: wb,
             data: data,

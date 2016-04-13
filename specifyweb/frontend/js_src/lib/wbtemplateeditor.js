@@ -210,7 +210,7 @@ module.exports =  Backbone.View.extend({
             var triggerClosed = this.trigger.bind(this, 'closed');
 
             this.$el.dialog({
-                title: 'Workbench Template Mappings',
+                title: 'WorkBench Template Mappings',
                 width: 'auto',
                 modal: true,
                 close: function() {
