@@ -6,4 +6,4 @@ build:
 	node_modules/.bin/webpack
 clean:
 	rm -rf bower_components node_modules
-	rm -f ../static/js/*.js
+	rm -rf ../static/js
