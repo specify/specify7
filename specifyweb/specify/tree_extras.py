@@ -229,6 +229,28 @@ def set_fullnames(table, depth, reverse=False, node_number_range=None):
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql, node_number_range)
 
+def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
+    cursor = connection.cursor()
+    sql = (
+        "select {fullname}\n"
+        "from (select %(name)s as name,\n"
+        "      %(parentid)s as parentid,\n"
+        "      %(defitemid)s as {table}treedefitemid) t0\n"
+        "{parent_joins}\n"
+        "{definition_joins}\n"
+        "where t{root}.parentid is null\n"
+    ).format(
+        root=depth-1,
+        table=table,
+        fullname=fullname_expr(depth, reverse),
+        parent_joins=parent_joins(table, depth),
+        definition_joins=definition_joins(table, depth),
+    )
+    cursor.execute(sql, {'name': name, 'parentid': parentid, 'defitemid': defitemid})
+    fullname, = cursor.fetchone()
+    return fullname
+
+
 def validate_tree_numbering(table):
     cursor = connection.cursor()
     cursor.execute(

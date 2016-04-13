@@ -5,6 +5,7 @@ from django.db import connection
 from .views import login_maybe_required
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
+from . import tree_extras
 
 from sqlalchemy.orm import aliased
 from sqlalchemy import sql, types
@@ -180,3 +181,16 @@ def get_tree_path(tree_node):
     while tree_node is not None:
         yield tree_node
         tree_node = tree_node.parent
+
+@login_maybe_required
+@require_GET
+def predict_fullname(request, model, parentid):
+    parent = get_object_or_404(model, id=parentid)
+    depth = parent.definition.treedefitems.count()
+    reverse = parent.definition.fullnamedirection == -1
+    defitemid = int(request.GET['treedefitemid'])
+    name = request.GET['name']
+    fullname = tree_extras.predict_fullname(
+        parent._meta.db_table, depth, parent.id, defitemid, name, reverse
+    )
+    return HttpResponse(fullname, content_type='text/plain')
