@@ -39,11 +39,11 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
         }
 
         if (options.fieldName === 'definitionItem') {
-            return new  TreeLevelCBX(options);
+            return new TreeLevelCBX(options);
         }
 
         if (!field) {
-            throw "can't setup picklist for unknown field " + options.model.specifyModel.name + "." + options.fieldName;
+            throw new Error(`can't setup picklist for unknown field ${options.model.specifyModel.name}.${options.fieldName}`);
         }
 
         options.pickListName || (options.pickListName = field.getPickList());
@@ -52,7 +52,7 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
             return new UserTypeCBX(options);
         }
         if (!options.pickListName)
-            throw "can't determine picklist for field " + resource.specifyModel.name + "." + field.name;
+            throw new Error(`can't determine picklist for field ${resource.specifyModel.name}.${field.name}`);
 
         return Q(getPickListByName(options.pickListName))
             .then(function(picklist) {
