@@ -36,7 +36,12 @@
 
 .tree-view th, .tree-view td {
     border: 1px none;
-    background: linear-gradient(to right, rgba(247, 146, 68, 0) 18%, rgba(247, 146, 68, 0.17) 87%, rgba(247, 146, 68, 0) 100%);
+    background: linear-gradient(
+                        to right,
+                        rgba(247, 146, 68, 0) 10px,
+                        rgba(247, 146, 68, 0.1) 90%,
+                        rgba(247, 146, 68, 0) 100%
+                    );
     white-space: nowrap;
 }
 
