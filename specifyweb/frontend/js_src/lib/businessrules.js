@@ -46,8 +46,9 @@ var rules             = require('./businessruledefs.js');
         invokeRule: function(ruleName, fieldName, args) {
             var resource = this.resource;
             var promise = this._invokeRule(ruleName, fieldName, args);
-            var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
+            // var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
             // promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
+            return promise;
         },
         _invokeRule: function(ruleName, fieldName, args) {
             var rule = this.rules && this.rules[ruleName];
@@ -115,9 +116,9 @@ var rules             = require('./businessruledefs.js');
             var resource = this.resource;
             return Q.all(results.map(function(result) {
                 if (!result) return null;
-                if (!result.valid) {
+                if (result.valid === false) {
                     resource.saveBlockers.add(result.key, fieldName, result.reason);
-                } else {
+                } else if (result.valid === true) {
                     resource.saveBlockers.remove(result.key);
                 }
                 return result.action && result.action();
