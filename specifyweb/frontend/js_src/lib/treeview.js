@@ -229,7 +229,6 @@ var setTitle = app.setTitle;
     });
 
 module.exports = function(table) {
-    setupContextMenu();
     var getTreeDef = domain.getTreeDef(table);
     if (!getTreeDef) {
         app.setCurrentView(new NotFoundView());
