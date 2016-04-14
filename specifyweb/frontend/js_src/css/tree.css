@@ -85,3 +85,38 @@
 .context-menu-item.icon-query {
     background-image: url(/images/Grid16x16.png);
 }
+
+.context-menu-item.icon-add-child {
+    background-image: url(/images/add.png);
+}
+
+.context-menu-item.icon-move:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    margin-left: -20px;
+    float: left;
+    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
+    background-position: -112px -96px;
+}
+
+.context-menu-item.icon-receive-move:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    margin-left: -20px;
+    float: left;
+    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
+    background-position: -48px -64px;
+}
+
+.context-menu-item.icon-cancel:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    margin-left: -20px;
+    float: left;
+    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
+    background-position: 0 -128px;
+}
+
