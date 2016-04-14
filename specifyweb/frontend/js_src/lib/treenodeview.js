@@ -127,7 +127,11 @@ var ResourceView = require('./resourceview.js');
                 this.$('.tree-node-name').contextMenu();
                 break;
             case 37: // left
-                this.closeNode();
+                if (this.opened) {
+                    this.closeNode();
+                } else {
+                    next = cells.index(this.parent().$('.tree-node-name'));
+                }
                 break;
             case 38: // up
                 next = Math.max(0, index - 1);
