@@ -58,6 +58,10 @@
     margin: 0 0 -12px -5px;
 }
 
+.tree-node .tree-synonym-node {
+    color: #f00;
+}
+
 .tree-node-cell .ui-icon.open {
     /* .ui-icon-triangle-1-e */
     background-position: -32px -16px;

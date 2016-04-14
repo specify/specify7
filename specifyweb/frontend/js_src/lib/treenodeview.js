@@ -62,7 +62,7 @@ var ResourceView = require('./resourceview.js');
             this.opened = false;
 
             // unpack the database row into fields on this object
-            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId children allCOs directCOs".split(' ');
+            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId acceptedId children allCOs directCOs".split(' ');
             _(this).extend(_.object(fields, options.row));
         },
         render: function() {
@@ -90,9 +90,12 @@ var ResourceView = require('./resourceview.js');
             }, this);
             this.$el.append(cells).data('view', this);
 
-            this.$('.tree-node-cell p')
-                .append('<a class="ui-icon expander">')
-                .append($('<a class="expander tree-node-name" tabindex="2">').text(this.name));
+            this.$('.tree-node-cell p').append(
+                '<a class="ui-icon expander">',
+                '<a class="expander tree-node-name" tabindex="2">'
+            );
+            this.$('.tree-node-name').text(this.name).addClass(
+                this.acceptedId != null ? 'tree-synonym-node' : '');
 
             this.setupExpander();
 

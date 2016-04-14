@@ -32,6 +32,7 @@ def tree_view(request, treedef, tree, parentid):
                               node.nodeNumber,
                               node.highestChildNodeNumber,
                               node.rankId,
+                              node.AcceptedID,
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
                         .group_by(id_col) \
