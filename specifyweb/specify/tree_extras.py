@@ -1,8 +1,9 @@
+import re
 import logging
 logger = logging.getLogger(__name__)
 
 from django.db import models, connection
-from django.db.models import F, Q
+from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
@@ -116,6 +117,32 @@ def moving_node(to_save):
     current = model.objects.get(id=current.id)
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
+
+def merge(node, into):
+    from . import models
+    logger.info('merging %s into %s', node, into)
+    model = type(node)
+    assert model == type(into)
+    target = model.objects.select_for_update().get(id=into.id)
+    assert node.definition_id == target.definition_id
+    target_children = target.children.select_for_update()
+    for child in node.children.select_for_update():
+        matched = [target_child for target_child in target_children
+                   if child.name == target_child.name and child.rankid == target_child.rankid]
+        if len(matched) > 0:
+            merge(child, matched[0])
+        else:
+            child.parent = target
+            child.save()
+
+    while True:
+        try:
+            node.delete()
+        except ProtectedError as e:
+            related_model, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
+            getattr(models, related_model).objects.filter(**{field_name: node}).update(**{field_name: target})
+        else:
+            break
 
 
 EMPTY = "''"
@@ -261,6 +288,15 @@ def validate_tree_numbering(table):
     assert node_count == nn_count == hcnn_count, \
         "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
         .format(node_count, nn_count, hcnn_count)
+
+    cursor.execute((
+        "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
+        "where t.rankid <= p.rankid\n"
+    ).format(table=table))
+    bad_ranks_count, = cursor.fetchone()
+    assert bad_ranks_count == 0, \
+        "found {} cases where node rank is not greater than it's parent." \
+        .format(bad_ranks_count)
 
     cursor.execute((
         "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"

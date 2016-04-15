@@ -43,11 +43,17 @@ var setTitle = app.setTitle;
                 switch (treeView.currentAction.type) {
                 case 'moving':
                     if (view.rankId < action.node.rankId)
-                        items.receive = {name: "Move " + action.node.name + " here",
-                                         icon: "receive-move",
-                                         accesskey: 'm'};
-                    // else if (view.rankId == action.node.rankId)
-                    //     items.receive = {name: "Merge " + action.node.name + " here"};
+                        items.receive = {
+                            name: "Move " + action.node.name + " here",
+                            icon: "receive-move",
+                            accesskey: 'm'
+                        };
+                    break;
+                case 'merging':
+                    if (view.rankId <= action.node.rankId)
+                        items.receive = {name: "Merge " + action.node.name + " here",
+                                         icon: "receive-merge",
+                                         accesskey: 'g'};
                     break;
                 default:
                     console.error('unknown tree action:', treeView.currentAction.type);
@@ -58,7 +64,8 @@ var setTitle = app.setTitle;
                     'open': {name: "Edit", icon: "form", accesskey: "e"},
                     'query': {name: "Query", icon: "query", accesskey: "q"},
                     'add-child': {name: "Add child", icon: "add-child", accesskey: "a"},
-                    'move': {name: "Move", icon: "move", accesskey: "m"}
+                    'move': {name: "Move", icon: "move", accesskey: "m"},
+                    'merge': {name: "Merge", icon: "merge", accesskey: "g"}
                 };
             }
 
@@ -85,6 +92,9 @@ var setTitle = app.setTitle;
             break;
         case 'move':
             treeNodeView.moveNode();
+            break;
+        case 'merge':
+            treeNodeView.mergeNode();
             break;
         case 'receive':
             treeNodeView.receiveNode();
@@ -202,6 +212,12 @@ var setTitle = app.setTitle;
                 node: node
             };
         },
+        mergeNode: function(node) {
+            this.currentAction = {
+                type: 'merging',
+                node: node
+            };
+        },
         receiveNode: function(node) {
             this.currentAction.receivingNode = node;
             var model = schema.getModel(this.table);
@@ -219,6 +235,13 @@ var setTitle = app.setTitle;
                     action.receivingNode.childAdded();
                     action.node.parent().childRemoved();
                 });
+                break;
+            case 'merging':
+                $.post(`/api/specify_tree/${this.table}/${action.node.nodeId}/merge/`,
+                       {target: receiver.id}).done(() => {
+                           action.receivingNode.childAdded();
+                           action.node.parent().childRemoved();
+                       });
                 break;
             }
             this.currentAction = null;

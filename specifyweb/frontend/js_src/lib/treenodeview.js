@@ -289,6 +289,10 @@ var populateForm = require('./populateform.js');
             this.treeView.moveNode(this);
             this.closeNode();
         },
+        mergeNode: function() {
+            this.treeView.mergeNode(this);
+            this.closeNode();
+        },
         receiveNode: function() {
             this.treeView.receiveNode(this);
         }

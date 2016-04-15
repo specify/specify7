@@ -1,8 +1,9 @@
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
-from django.db import connection
+from django.db import connection, transaction
 
-from .views import login_maybe_required
+from .views import login_maybe_required, apply_access_control
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
 from . import tree_extras
@@ -195,3 +196,14 @@ def predict_fullname(request, model, parentid):
         parent._meta.db_table, depth, parent.id, defitemid, name, reverse
     )
     return HttpResponse(fullname, content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def merge(request, model, id):
+    node = get_object_or_404(model, id=id)
+    target = get_object_or_404(model, id=request.POST['target'])
+    tree_extras.merge(node, target)
+    return HttpResponse('OK', content_type='text/plain')
