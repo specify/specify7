@@ -7,6 +7,7 @@ var Backbone  = require('./backbone.js');
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
 var ResourceView = require('./resourceview.js');
+var populateForm = require('./populateform.js');
 
     var AddChildDialog = Backbone.View.extend({
         __name__: "AddChildDialog",
@@ -14,10 +15,11 @@ var ResourceView = require('./resourceview.js');
             this.treeNodeView = options.treeNodeView;
         },
         render: function() {
-            var parentNode = new this.specifyModel.Resource({id: this.treeNodeView.nodeId});
-            var newNode = new this.specifyModel.Resource();
+            var parentNode = new this.treeNodeView.specifyModel.Resource({id: this.treeNodeView.nodeId});
+            var newNode = new this.treeNodeView.specifyModel.Resource();
             newNode.set('parent', parentNode.url());
             new ResourceView({
+                populateForm: populateForm,
                 el: this.el,
                 model: newNode,
                 mode: 'edit',
