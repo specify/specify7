@@ -70,7 +70,7 @@ var setTitle = app.setTitle;
                 items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
             } else {
                 items = {
-                    'open': {name: "Edit", icon: "form", accesskey: "e"},
+                    'open': {name: "Edit", icon: "open", accesskey: "e"},
                     'query': {name: "Query", icon: "query", accesskey: "q"},
                     'add-child': {name: "Add child", icon: "add-child", accesskey: "a"},
                     'move': {name: "Move", icon: "move", accesskey: "m"},
