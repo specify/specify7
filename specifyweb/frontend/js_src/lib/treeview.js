@@ -81,7 +81,10 @@ var setTitle = app.setTitle;
 
             return {
                 items: items,
-                callback: contextMenuCallback
+                callback: contextMenuCallback,
+                position: function(opt) {
+                    opt.$menu.position({my: 'center top', at: 'center bottom', of: this, offset: "0 5"});
+                }
             };
         };
     }
