@@ -51,9 +51,18 @@ var setTitle = app.setTitle;
                     break;
                 case 'merging':
                     if (view.rankId <= action.node.rankId)
-                        items.receive = {name: "Merge " + action.node.name + " here",
-                                         icon: "receive-merge",
-                                         accesskey: 'g'};
+                        items.receive = {
+                            name: "Merge " + action.node.name + " here",
+                            icon: "receive-merge",
+                            accesskey: 'g'
+                        };
+                    break;
+                case 'synonymizing':
+                    items.receive = {
+                        name: `Make ${action.node.name} a synonym of ${view.name}`,
+                        icon: "receive-synonym",
+                        accesskey: 's'
+                    };
                     break;
                 default:
                     console.error('unknown tree action:', treeView.currentAction.type);
@@ -65,7 +74,8 @@ var setTitle = app.setTitle;
                     'query': {name: "Query", icon: "query", accesskey: "q"},
                     'add-child': {name: "Add child", icon: "add-child", accesskey: "a"},
                     'move': {name: "Move", icon: "move", accesskey: "m"},
-                    'merge': {name: "Merge", icon: "merge", accesskey: "g"}
+                    'merge': {name: "Merge", icon: "merge", accesskey: "g"},
+                    'synonymize': {name: "Synonymize", icon: "synonymize", accesskey: "s"}
                 };
             }
 
@@ -95,6 +105,9 @@ var setTitle = app.setTitle;
             break;
         case 'merge':
             treeNodeView.mergeNode();
+            break;
+        case 'synonymize':
+            treeNodeView.synonymizeNode();
             break;
         case 'receive':
             treeNodeView.receiveNode();
@@ -218,6 +231,12 @@ var setTitle = app.setTitle;
                 node: node
             };
         },
+        synonymizeNode: function(node) {
+            this.currentAction = {
+                type: 'synonymizing',
+                node: node
+            };
+        },
         receiveNode: function(node) {
             this.currentAction.receivingNode = node;
             var model = schema.getModel(this.table);
@@ -242,6 +261,10 @@ var setTitle = app.setTitle;
                            action.receivingNode.childAdded();
                            action.node.parent().childRemoved();
                        });
+                break;
+            case 'synonymizing':
+                $.post(`/api/specify_tree/${this.table}/${action.node.nodeId}/synonymize/`,
+                       {target: receiver.id}).done(() => action.receivingNode.childAdded());
                 break;
             }
             this.currentAction = null;

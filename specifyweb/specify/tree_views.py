@@ -207,3 +207,14 @@ def merge(request, model, id):
     target = get_object_or_404(model, id=request.POST['target'])
     tree_extras.merge(node, target)
     return HttpResponse('OK', content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def synonymize(request, model, id):
+    node = get_object_or_404(model, id=id)
+    target = get_object_or_404(model, id=request.POST['target'])
+    tree_extras.synonymize(node, target)
+    return HttpResponse('OK', content_type='text/plain')

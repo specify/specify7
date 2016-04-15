@@ -114,7 +114,18 @@
     background-position: -208px -48px;
 }
 
+.context-menu-item.icon-synonymize:before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    margin-left: -20px;
+    float: left;
+    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
+    background-position: -112px -80px;
+}
+
 .context-menu-item.icon-receive-move:before,
+.context-menu-item.icon-receive-synonym:before,
 .context-menu-item.icon-receive-merge:before {
     content: "";
     width: 16px;

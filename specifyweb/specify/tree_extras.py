@@ -55,6 +55,18 @@ class Tree(models.Model):
                           self.definition.treedefitems.count(),
                           self.definition.fullnamedirection == -1)
 
+    def accepted_id_attr(self):
+        return 'accepted{}_id'.format(self._meta.db_table)
+
+    @property
+    def accepted_id(self):
+        return getattr(self, self.accepted_id_attr())
+
+    @accepted_id.setter
+    def accepted_id(self, value):
+        setattr(self, self.accepted_id_attr(), value)
+
+
 
 def open_interval(model, parent_node_number, size):
     """Open a space of given size in a tree model under the given parent.
@@ -96,6 +108,8 @@ def adding_node(node):
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
+    if parent.accepted_id is not None:
+        raise BusinessRuleException("adding node to synonymized parent")
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
@@ -104,7 +118,9 @@ def moving_node(to_save):
     model = type(to_save)
     current = model.objects.get(id=to_save.id)
     size = current.highestchildnodenumber - current.nodenumber + 1
-    new_parent = model.objects.get(id=to_save.parent.id)
+    new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
+    if new_parent.accepted_id is not None:
+        raise BusinessRuleException("moving node to synonymized parent")
 
     insertion_point = open_interval(model, new_parent.nodenumber, size)
     # node interval will have moved if it is to the right of the insertion point
@@ -122,9 +138,9 @@ def merge(node, into):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
-    assert model == type(into)
+    assert type(into) is model
     target = model.objects.select_for_update().get(id=into.id)
-    assert node.definition_id == target.definition_id
+    assert node.definition_id == target.definition_id, "merging across trees"
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
@@ -135,15 +151,35 @@ def merge(node, into):
             child.parent = target
             child.save()
 
-    while True:
+    for retry in range(100):
         try:
             node.delete()
+            return
         except ProtectedError as e:
-            related_model, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
-            getattr(models, related_model).objects.filter(**{field_name: node}).update(**{field_name: target})
-        else:
-            break
+            related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
+            related_model = getattr(models, related_model_name)
+            assert related_model != model or field_name != 'parent', 'children were added during merge'
+            related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
+    assert False, "failed to move all referrences to merged tree node"
+
+def synonymize(node, into):
+    logger.info('synonymizing %s to %s', node, into)
+    model = type(node)
+    assert type(into) is model
+    target = model.objects.select_for_update().get(id=into.id)
+    assert node.definition_id == target.definition_id, "synonymizing across trees"
+    if target.accepted_id is not None:
+        raise BusinessRuleException("synonymizing to synonymized node")
+    node.accepted_id = target.id
+    node.isaccepted = False
+    node.save()
+    if node.children.count() > 0:
+        raise BusinessRuleException("synonymizing tree node with children")
+    node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
+
+    if model._meta.db_table == 'taxon':
+        node.determinations.update(preferredtaxon=target)
 
 EMPTY = "''"
 TRUE = "true"
