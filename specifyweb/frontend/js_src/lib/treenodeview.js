@@ -156,9 +156,11 @@ var populateForm = require('./populateform.js');
             return statsThreshold != null && statsThreshold <= this.rankId;
         },
         addStats: function(statsById) {
-            var stats = statsById[this.nodeId];
-            var childCOs = stats.all - stats.direct;
-            this.$('.tree-node-cell p').append(' (' + stats.direct + (childCOs > 0 ? ', ' + childCOs : '') +')');
+            if (this.acceptedId == null) {
+                const stats = statsById[this.nodeId];
+                const childCOs = stats.all - stats.direct;
+                this.$('.tree-node-cell p').append(` (${stats.direct + (childCOs > 0 ? ', ' + childCOs : '')})`);
+            }
         },
         openPath: function(path) {
             if (_.first(path) !== this.nodeId) return;
