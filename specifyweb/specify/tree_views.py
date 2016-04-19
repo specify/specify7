@@ -90,7 +90,7 @@ class StatsQuerySpecialization:
             return query.outerjoin(det, sql.and_(
                 det.isCurrent,
                 det.collectionMemberId == collection.id,
-                det.TaxonID == descendant_id))
+                det.PreferredTaxonID == descendant_id))
 
         return det, make_joins
 
