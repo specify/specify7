@@ -42,26 +42,27 @@ var setTitle = app.setTitle;
                 var action = treeView.currentAction;
                 switch (treeView.currentAction.type) {
                 case 'moving':
-                    if (view.rankId < action.node.rankId)
-                        items.receive = {
-                            name: "Move " + action.node.name + " here",
-                            icon: "receive-move",
-                            accesskey: 'm'
-                        };
+                    items.receive = {
+                        name: "Move " + action.node.name + " here",
+                        icon: "receive-move",
+                        accesskey: 'm',
+                        disabled: view.rankId >= action.node.rankId
+                    };
                     break;
                 case 'merging':
-                    if (view.rankId <= action.node.rankId)
-                        items.receive = {
-                            name: "Merge " + action.node.name + " here",
-                            icon: "receive-merge",
-                            accesskey: 'g'
-                        };
+                    items.receive = {
+                        name: "Merge " + action.node.name + " here",
+                        icon: "receive-merge",
+                        accesskey: 'g',
+                        disabled: view.nodeId === action.node.nodeId || view.rankId > action.node.rankId
+                    };
                     break;
                 case 'synonymizing':
                     items.receive = {
                         name: `Make ${action.node.name} a synonym of ${view.name}`,
                         icon: "receive-synonym",
-                        accesskey: 's'
+                        accesskey: 's',
+                        disabled: view.nodeId === action.node.nodeId
                     };
                     break;
                 default:
@@ -72,10 +73,20 @@ var setTitle = app.setTitle;
                 items = {
                     'open': {name: "Edit", icon: "open", accesskey: "e"},
                     'query': {name: "Query", icon: "query", accesskey: "q"},
-                    'add-child': {name: "Add child", icon: "add-child", accesskey: "a"},
+                    'add-child': {
+                        name: "Add child",
+                        icon: "add-child",
+                        accesskey: "a",
+                        disabled: view.acceptedId != null
+                    },
                     'move': {name: "Move", icon: "move", accesskey: "m"},
                     'merge': {name: "Merge", icon: "merge", accesskey: "g"},
-                    'synonymize': {name: "Synonymize", icon: "synonymize", accesskey: "s"}
+                    'synonymize': {
+                        name: "Synonymize",
+                        icon: "synonymize",
+                        accesskey: "s",
+                        disabled: view.acceptedId != null || view.children > 0
+                    }
                 };
             }
 
