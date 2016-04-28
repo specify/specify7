@@ -85,7 +85,10 @@ var router             = require('./router.js');
         },
         deleteIncompleteFields: function(continuation) {
             const incomplete = this.fieldUIs.filter(f => f.isIncomplete());
-            if (incomplete.length < 1) return;
+            if (incomplete.length < 1) {
+                continuation();
+                return;
+            }
 
             const dialog = $(
                 `<div>There are uncompleted fields in the query definition. Do you want to remove them?</div>`
