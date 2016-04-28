@@ -331,11 +331,14 @@ module.exports =  Backbone.View.extend({
             });
         },
         deleteIfIncomplete: function() {
-            this.$el.hasClass('field-incomplete') && this.deleteClicked();
+            this.isIncomplete() && this.deleteClicked();
         },
 
         // Utility methods.
 
+    isIncomplete() {
+        return this.$el.hasClass('field-incomplete');
+    },
         updateSpQueryField: function() {
             var attrs = this.fieldSpec.toSpQueryAttrs();
             attrs.operstart = (this.operation == 'anything') ? 1 : parseInt(this.operation);

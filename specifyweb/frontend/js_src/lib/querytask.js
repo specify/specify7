@@ -24,6 +24,7 @@ var router             = require('./router.js');
             'click .query-execute': 'search',
             'click .query-to-recordset': 'makeRecordSet',
             'click .query-save': 'save',
+            'click .query-save-as': 'saveAs',
             'click .field-add': 'addField',
             'click .abandon-changes': function() { this.trigger('redisplay'); }
         },
@@ -39,7 +40,8 @@ var router             = require('./router.js');
             this.$('.querybuilder-header span').text(title);
             this.$('.querybuilder-header img').attr('src', this.model.getIcon());
             this.query.isNew() && this.$('.abandon-changes').remove();
-            this.readOnly && this.$('.query-save, .query-to-recordset').remove();
+            this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
+            this.query.id == null && this.$('.query-save-as').remove();
 
             this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
@@ -81,17 +83,79 @@ var router             = require('./router.js');
         contractFields: function() {
             _.each(this.fieldUIs, function(field) { field.expandToggle('hide'); });
         },
-        deleteIncompleteFields: function() {
-            _.invoke(this.fieldUIs, 'deleteIfIncomplete');
+        deleteIncompleteFields: function(continuation) {
+            const incomplete = this.fieldUIs.filter(f => f.isIncomplete());
+            if (incomplete.length < 1) return;
+
+            const dialog = $(
+                `<div>There are uncompleted fields in the query definition. Do you want to remove them?</div>`
+            ).dialog({
+                title: 'Incomplete fields',
+                modal: true,
+                close(){ $(this).remove(); },
+                buttons: {
+                    Remove() { doIt(); },
+                    Cancel() { $(this).dialog('close'); }
+                }
+            });
+
+            const doIt = () => {
+                dialog.dialog('close');
+                _.invoke(this.fieldUIs, 'deleteIfIncomplete');
+                continuation();
+            };
         },
         saveRequired: function() {
             this.$('.abandon-changes, .query-save').prop('disabled', false);
         },
         save: function() {
             if (this.readOnly) return;
-            this.deleteIncompleteFields();
+            this.deleteIncompleteFields(() => this.save_());
+        },
+        save_: function() {
             if (this.fieldUIs.length < 1) return;
             this.query.save().done(this.trigger.bind(this, 'redisplay'));
+        },
+        saveAs: function() {
+            if (this.readOnly) return;
+            this.deleteIncompleteFields(() => this.saveAs_());
+        },
+        saveAs_: function() {
+            if (this.fieldUIs.length < 1) return;
+            const dialog = $(
+`<div>
+   <p>The query will be saved with a new name leaving the
+   current query unchanged.</p>
+   <form><label>New name: <input type="text"/></label></form>
+ </div>`
+            ).dialog({
+                title: 'Save query as...',
+                modal: true,
+                close() { $(this).remove(); },
+                open() {
+                    $(':input', this).focus();
+                    $('form', this).submit(evt => {
+                        evt.preventDefault();
+                        doSave();
+                    });
+                },
+                buttons: {
+                    Save() { doSave(); },
+                    Cancel() { $(this).dialog('close'); }
+                }
+            });
+
+            const doSave = () => {
+                const newName = $(':input', dialog).val().trim();
+                if (newName === '') return;
+                const newQuery = this.query.clone();
+                newQuery.set('name', newName);
+                newQuery.save().done(() => navigation.go(`/specify/query/${newQuery.id}/`));
+                dialog
+                    .dialog('option', 'title', 'Saving...')
+                    .dialog('option', 'buttons', []);
+                $(':input', dialog).prop('readonly', true);
+            };
         },
         addField: function() {
             var newField = new schema.models.SpQueryField.Resource();
@@ -110,7 +174,9 @@ var router             = require('./router.js');
             this.updatePositions();
         },
         makeRecordSet: function() {
-            this.deleteIncompleteFields();
+            this.deleteIncompleteFields(() => this.makeRecordSet_());
+        },
+        makeRecordSet_: function() {
             if (this.fieldUIs.length < 1) return;
 
             var dialog = $('<div title="Record Set from Query">' +
@@ -140,7 +206,9 @@ var router             = require('./router.js');
         },
         search: function(evt) {
             this.$('.query-execute').blur();
-            this.deleteIncompleteFields();
+            this.deleteIncompleteFields(() => this.search_());
+        },
+        search_: function() {
             if (this.fieldUIs.length < 1) return;
 
             this.results && this.results.remove();
