@@ -62,7 +62,13 @@ var systemInfo   = require('./systeminfo.js');
     // build and display view for resource
     function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
-        var view = new ResourceView({ populateForm: populateForm, model: resource, recordSet: recordSet, mode: viewMode });
+        var view = new ResourceView({
+            className: "specify-root-form",
+            populateForm: populateForm,
+            model: resource,
+            recordSet: recordSet,
+            mode: viewMode
+        });
 
         view.on('saved', function(resource, options) {
             if (options.addAnother) {

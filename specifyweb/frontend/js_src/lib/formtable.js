@@ -2,6 +2,7 @@
 
 var $        = require('jquery');
 var _        = require('underscore');
+var Q        = require('q');
 var Backbone = require('./backbone.js');
 
 
@@ -11,15 +12,61 @@ var DeleteButton = require('./deletebutton.js');
 var assert       = require('./assert.js');
 var subviewheader = require('./templates/subviewheader.html');
 
-    var RENDER_ON_CHANGE = [
-        'CollectingEvent.collectors',
-        'ReferenceWork.authors'
-    ];
+    var CONTRACT = '<td class="contract"><a title="Contract."><span class="ui-icon ui-icon-triangle-1-s">contract</span></a></td>';
+    var EXPAND = '<td class="expand"><a title="Expand."><span class="ui-icon ui-icon-triangle-1-e">expand</span></a></td>';
+    var REMOVE = '<td class="remove"><a title="Remove."><span class="ui-icon ui-icon-trash">remove</span></a></td>';
+
+    function prepForm(formIn, readOnly) {
+        let form = formIn.clone();
+        $('thead tr', form).prepend('<th>');
+        $('tbody tr', form).prepend(EXPAND);
+        if (!readOnly) {
+            $('tbody tr', form).append(REMOVE);
+            $('thead tr', form).append('<th>');
+        }
+        return form;
+    }
+
+    var FormTableRow = Backbone.View.extend({
+        __name__: "FormTableRow",
+        events: {
+            'click .expand a': 'expand',
+            'click .contract a': 'contract',
+            'click .remove a': 'remove'
+        },
+        initialize: function({populateForm, form, expandedForm, readOnly}) {
+            this.populateForm = populateForm;
+            this.form = form;
+            this.expandedForm = expandedForm;
+            this.readOnly = readOnly;
+        },
+        expand: function() {
+            var colspan = this.$el.children().length - 1 - (this.readOnly ? 0 : 1);
+            this.$el.empty().append(
+                $(CONTRACT),
+                $('<td class="expanded-form" colspan="' + colspan + '">'));
+
+            this.readOnly || $(REMOVE).appendTo(this.el);
+
+            var expandedForm = this.expandedForm.clone();
+
+            expandedForm.find('.specify-form-header:first').remove();
+            this.populateForm(expandedForm, this.model);
+            this.$('.expanded-form').append(expandedForm);
+        },
+        contract: function() {
+            let form = this.populateForm(prepForm(this.form, this.readOnly), this.model);
+            this.$el.empty().append(form.find('.specify-view-content:first').children());
+            return this;
+        },
+        remove: function() {
+            this.model.collection.remove(this.model);
+        }
+    });
 
 module.exports =  Backbone.View.extend({
         __name__: "FormTableView",
         events: {
-            'click a.specify-edit, a.specify-display': 'edit',
             'click .specify-subview-header a.specify-add-related': 'add'
         },
         initialize: function(options) {
@@ -35,19 +82,18 @@ module.exports =  Backbone.View.extend({
 
             this.title = this.field ? this.field.getLocalizedName() : this.collection.model.specifyModel.getLocalizedName();
 
-            // This is a bit overkill. Especially the change event, but it is cheap way
-            // to get collector.agent.*name to update in collecting event subforms. Gag.
             this.collection.on('add remove distroy', this.reRender, this);
-            if (_(RENDER_ON_CHANGE).contains([this.field.model.name, this.field.name].join('.'))) {
-                // TODO: this is really bad. There has to be a better way.
-                this.collection.on('change', this._render, this);
-            }
 
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
         },
         render: function() {
-            specifyform.buildSubView(this.$el).done(function(subform) {
+            var mode = this.readOnly ? 'view' : 'edit';
+            Q([
+                specifyform.buildSubView(this.$el),
+                specifyform.buildViewByName(this.collection.model.specifyModel.view, null, mode)
+            ]).spread(function(subform, expandedForm) {
                 this.subform = subform;
+                this.expandedForm = expandedForm;
                 this._render();
             }.bind(this));
             return this;
@@ -77,81 +123,42 @@ module.exports =  Backbone.View.extend({
                 return;
             }
 
-            var rows = this.collection.map(function(resource, index) {
-                var form = this.subform.clone();
-                $('a.specify-' + (this.readOnly ? 'edit' : 'display'), form).remove();
-                $('a.specify-edit, a.specify-display', form).data('index', index);
-                return this.populateForm(form, resource);
-            }, this);
+            this.collection.each(function(resource, index) {
+                let form = this.populateForm(prepForm(this.subform, this.readOnly), resource);
 
-            this.$el.append(rows[0]);
-            _(rows).chain().tail().each(function(row) {
-                this.$('.specify-view-content-container:first').append($('.specify-view-content:first', row));
-            }, this);
-        },
-        edit: function(evt) {
-            evt.preventDefault();
-            var index = $(evt.currentTarget).data('index'); // TODO: get the index from the DOM ordering?
-            this.buildDialog(this.collection.at(index));
-        },
-        buildDialog: function(resource) {
-            var self = this;
-            var mode = self.readOnly ? 'view' : 'edit';
-            specifyform.buildViewByName(resource.specifyModel.view, null, mode).done(function(dialogForm) {
-                var readOnly = specifyform.getFormMode(dialogForm) === 'view';
+                var el = $('.specify-view-content:first', form);
+                if (index === 0)
+                    this.$el.append(form);
+                else
+                    this.$('.specify-view-content-container:first').append(el);
 
-                dialogForm.find('.specify-form-header:first').remove();
-                var buttons = $('<div class="specify-form-buttons">').appendTo(dialogForm);
-
-                if (readOnly) {
-                    // don't add anything.
-                } else if (self.field.isDependent()) {
-                    $('<input type="button" value="Done">').appendTo(buttons).click(function() {
-                        dialog.dialog('close');
-                    });
-                    $('<input type="button" value="Remove">').appendTo(buttons).click(function() {
-                        self.collection.remove(resource);
-                        dialog.dialog('close');
-                    });
-                } else {
-                    // TODO: dead code
-                    var saveButton = new SaveButton({ model: resource });
-                    saveButton.render().$el.appendTo(buttons);
-                    saveButton.on('savecomplete', function() {
-                        dialog.dialog('close');
-                        self.collection.add(resource);
-                    });
-
-                    if (!resource.isNew()) {
-                        var deleteButton = new DeleteButton({ model: resource });
-                        deleteButton.render().$el.appendTo(buttons);
-                        deleteButton.on('deleted', function() { dialog.dialog('close'); });
-                    }
-                }
-
-                self.populateForm(dialogForm, resource);
-
-                var dialog = $('<div>').append(dialogForm).dialog({
-                    width: 'auto',
-                    title: (resource.isNew() ? "New " : "") + resource.specifyModel.getLocalizedName(),
-                    close: function() { $(this).remove(); }
+                var row = new FormTableRow({
+                    populateForm: this.populateForm,
+                    el: el,
+                    model: resource,
+                    form: this.subform,
+                    expandedForm: this.expandedForm,
+                    readOnly: this.readOnly
                 });
-            });
+
+                if (this.added === resource) {
+                    row.expand();
+                    this.added = null;
+                }
+            }, this);
         },
         add: function(evt) {
-            var self = this;
             evt.preventDefault();
 
-            var newResource = new (self.collection.model)();
+            var newResource = new (this.collection.model)();
             // Setting the backref here is superfulous because it will be set by parent object
             // when it is saved. Trying to do so now messes things up if the parent object
             // is not yet persisted.
             // if (self.field) {
             //     newResource.set(self.field.otherSideName, self.collection.related.url());
             // }
-            self.collection.related && self.collection.add(newResource);
-
-            self.buildDialog(newResource);
+            this.added = newResource;
+            this.collection.related && this.collection.add(newResource);
         }
     });
 

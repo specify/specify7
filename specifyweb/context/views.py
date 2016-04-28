@@ -1,14 +1,16 @@
 import re
 
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
+from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils import simplejson
 from django.conf import settings
 from django import forms
+from django.db import connection
 
 from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
@@ -19,44 +21,53 @@ from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
 
-class CollectionChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.collectionname
-
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def login(request):
-    """A Django view to log users into the system.
-    Supplements the stock Django login with a collection selection.
-    """
-    collection_cell = [] # use a closure to tunnel the collection field out of the auth mechanism
-    class LoginForm(AuthenticationForm):
-        collection = CollectionChoiceField(queryset=Collection.objects.all(), empty_label=None)
+def users_collections(cursor, user_id):
+    cursor.execute("""
+    select c.usergroupscopeid, c.collectionname from collection c
+    """)
+    # inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
+    # inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
+    # inner join specifyuser u on u.specifyuserid = up.specifyuserid and u.usertype = p.grouptype
+    # where up.specifyuserid = %s
+    # """, [user_id])
 
-        def clean(self):
-            AuthenticationForm.clean(self)
-            collection = self.cleaned_data.get('collection')
-            if self.user_cache is not None:
-                try:
-                    Agent.objects.get(division=collection.discipline.division,
-                                      specifyuser=self.user_cache)
-                except Agent.DoesNotExist:
-                    raise forms.ValidationError("The user has no agent for the chosen collection.")
-            collection_cell.append(collection.id)
-            return self.cleaned_data
+    return list(cursor.fetchall())
 
-    response = auth_views.login(request,
-                                template_name='login.html',
-                                authentication_form=LoginForm)
-    if len(collection_cell) > 0:
-        set_collection_cookie(response, collection_cell[0])
-    return response
+class CollectionChoiceField(forms.ChoiceField):
+    widget = forms.RadioSelect
+    def label_from_instance(self, obj):
+        return obj.collectionname
 
-def logout(request):
-    """A Django view to log users out."""
-    return auth_views.logout(request, template_name='logged_out.html')
+@login_maybe_required
+@require_http_methods(['GET', 'POST'])
+def choose_collection(request):
+    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+
+    if len(available_collections) == 1:
+        response = HttpResponseRedirect('/')
+        set_collection_cookie(response, available_collections[0][0])
+        return response
+
+    class Form(forms.Form):
+        collection = CollectionChoiceField(
+            choices=available_collections,
+            initial=request.COOKIES.get('collection', None))
+
+    if request.method == 'POST':
+        form = Form(data=request.POST)
+        if form.is_valid():
+            response = HttpResponseRedirect('/')
+            set_collection_cookie(response, form.cleaned_data['collection'])
+            return response
+    else:
+        form = Form()
+
+    context = {'form': form}
+    return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_http_methods(['GET', 'PUT'])
 @csrf_exempt
@@ -92,6 +103,8 @@ def api_login(request):
 @require_http_methods(['GET', 'POST'])
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
+    current = request.COOKIES.get('collection', None)
+    available_collections = users_collections(connection.cursor(), request.specify_user.id)
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.raw_post_data))
@@ -99,12 +112,14 @@ def collection(request):
             return HttpResponseBadRequest('bad collection id', content_type="text/plain")
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
+        if collection.id not in [c[0] for c in available_collections]:
+            return HttpResponseBadRequest('access denied')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
         return response
     else:
-        collection = request.COOKIES.get('collection', '')
-        return HttpResponse(collection, content_type="text/plain")
+        response = dict(available=available_collections, current=(current and int(current)))
+        return HttpResponse(simplejson.dumps(response), content_type="application/json")
 
 @login_maybe_required
 @require_GET

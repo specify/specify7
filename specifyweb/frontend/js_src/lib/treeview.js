@@ -359,6 +359,7 @@ function setupContextMenu() {
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
                 '<tbody><tr class="loading"><td>(loading...)</td></tr></tbody>'
             );
+            this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
             $.getJSON(this.baseUrl + 'null/')
                 .done(this.gotRows.bind(this));
             return this;

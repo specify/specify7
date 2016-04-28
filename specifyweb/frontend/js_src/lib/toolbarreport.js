@@ -8,7 +8,7 @@ var initialContext = require('./initialcontext.js');
     var reportsToolbarItem = {
         task: 'report',
         title: "Reports",
-        icon: '/images/Reports32x32.png',
+        icon: '/static/img/report_icon.png',
         disabled: undefined,
         execute: reports
     };

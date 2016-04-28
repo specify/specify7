@@ -7,20 +7,26 @@
   <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
-  <script src="/static/js/bundle.js"></script>
+  <script src="/static/js/main.bundle.js"></script>
 </head>
 
 <body>
   <header id="site-header">
+    <a id="site-logo" href="/specify/" class="intercept-navigation">
+      <img src="/static/img/seven_logo.png">
+    </a>
     <div id="user-tools">
       <a class="username"></a>
       <a class="login-logout"></a>
       <select></select>
+      <form id="express-search" action="/specify/express_search/">
+        <input type="search" class="express-search-query" name="q" placeholder="Search">
+        <input type="image" class="express-search-submit" src="/static/img/search.png">
+      </form>
     </div>
-    <h1 id="header-loading">Specify is loading...</h1>
+    <nav id="site-nav"><ul><li id="header-loading">Specify is loading...</li></ul></nav>
   </header>
   <div id="content">
-    <!-- <img src="/images/SpecifyBigSplash.png" class="specify-splash" /> -->
   </div>
 </body>
 </html>

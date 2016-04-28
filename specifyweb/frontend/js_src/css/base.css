@@ -1,14 +1,11 @@
+/* base.css */
 
 body {
     margin: 0;
     padding: 0;
     font-size: 12px;
     font-family: Verdana,Arial,sans-serif;
-    background: rgb(245, 250, 255);
-}
-
-#content {
-    margin: 10px;
+    background: #fff;
 }
 
 /* LINKS */
@@ -153,74 +150,7 @@ input, textarea, select, .form-row p {
 }
 
 input[type=text], input[type=password], textarea {
-    border: 1px inset;
-}
-
-/* HEADER */
-
-header {
-    background: #f0f0f0;
-    box-shadow: 3px 3px 10px #333;
-    border: solid 1px #fff;
-    border-radius: 10px;
-    margin: 15px;
-    position: relative;
-    min-height: 64px;
-}
-
-#header-loading {
-    margin-top: 18px;
-    margin-left: 48px;
-}
-
-header nav {
-    display: inline;
-}
-
-nav ul {
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
-
-nav li {
-    display: inline;
-    text-align: center;
-}
-
-nav li a {
-    display: inline-block;
-    margin: 8px;
-}
-
-nav li img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    height: 32px;
-}
-
-header a:link, header a:visited {
-    color: #000;
-}
-
-header a:hover {
-    text-decoration: underline;
+    border: 1px solid #aaa;
 }
 
 
-#user-tools {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    font-size: 11px;
-    text-align: right;
-}
-
-.ui-autocomplete {
-    z-index: 110;
-    max-height: 200px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}

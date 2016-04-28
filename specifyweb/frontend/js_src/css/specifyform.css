@@ -1,8 +1,15 @@
-#express-search {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 0 10px 5px;
+/* specifyform.css */
+
+#content {
+    margin: 5px 20px 15px 20px;
+}
+
+.specify-root-form {
+    display: inline-block;
+    padding: 0px 20px 10px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
 }
 
 div.specify-view-content,
@@ -130,6 +137,20 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-formtable td, .specify-formtable th {
     text-align: center;
+}
+
+.specify-formtable .expanded-form {
+    padding: 12px;
+}
+
+.specify-formtable > tbody > tr > td {
+    border: 1px solid #9A9A9A;
+}
+
+.specify-formtable > tbody > tr > td.expand,
+.specify-formtable > tbody > tr > td.contract,
+.specify-formtable > tbody > tr > td.remove {
+    border: none;
 }
 
 .specifyplugin-latlonui table {

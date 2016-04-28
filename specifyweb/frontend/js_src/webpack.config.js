@@ -23,10 +23,15 @@ module.exports = {
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
     ],
     devtool: 'source-map',
-    entry: "./lib/main.js",
+    entry: {
+        main: "./lib/main.js",
+        login: "./lib/login.js",
+        passwordchange: "./lib/passwordchange.js",
+        choosecollection: "./lib/choosecollection.js"
+    },
     output: {
         path: "../static/js/",
         publicPath: "/static/js/",
-        filename: "bundle.js"
+        filename: "[name].bundle.js"
     }
 };
