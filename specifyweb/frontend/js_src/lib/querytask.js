@@ -152,7 +152,7 @@ var router             = require('./router.js');
                 const newName = $(':input', dialog).val().trim();
                 if (newName === '') return;
                 const newQuery = this.query.clone();
-                newQuery.set('name', newName);
+                newQuery.set({name: newName, specifyuser: userInfo.resource_uri});
                 newQuery.save().done(() => navigation.go(`/specify/query/${newQuery.id}/`));
                 dialog
                     .dialog('option', 'title', 'Saving...')
