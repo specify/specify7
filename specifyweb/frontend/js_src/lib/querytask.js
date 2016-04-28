@@ -42,6 +42,7 @@ var router             = require('./router.js');
             this.query.isNew() && this.$('.abandon-changes').remove();
             this.readOnly && this.$('.query-save, .query-to-recordset, .query-save-as').remove();
             this.query.id == null && this.$('.query-save-as').remove();
+            this.query.get('specifyuser') === userInfo.resource_uri || this.$('.query-save').remove();
 
             this.$('button.field-add').button({
                 icons: { primary: 'ui-icon-plus' }, text: false
