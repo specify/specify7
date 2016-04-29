@@ -259,6 +259,7 @@ var initialContext    = require('./initialcontext.js');
                 el: this.dialog,
                 model: related,
                 mode: this.readOnly ? 'view' : 'edit',
+                noAddAnother: true,
                 noHeader: true
             }).render()
                 .on('saved', this.resourceSaved, this)
