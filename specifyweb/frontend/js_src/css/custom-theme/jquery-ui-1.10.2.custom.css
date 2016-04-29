@@ -480,7 +480,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-dialog.ui-widget-content {
     border: 1px solid #fff;
-    box-shadow: 5px 5px 6px;
+    box-shadow: 5px 5px 6px, 0 0 12px;
 }
 .ui-dialog .ui-dialog-titlebar {
 	padding: .4em 1em;
