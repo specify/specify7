@@ -43,7 +43,8 @@ module.exports =  Backbone.View.extend({
             }
             var remote = _.isNull(resource) || resource != this.model;
 
-            var readOnly = remote || field.isRelationship || field.readOnly || this.$el.prop('readonly');
+            var readOnly = !this.$el.hasClass('for-search-form') &&
+                    (remote || field.isRelationship || field.readOnly || this.$el.prop('readonly'));
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 

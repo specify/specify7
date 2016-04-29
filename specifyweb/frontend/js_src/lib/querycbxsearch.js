@@ -31,6 +31,7 @@ module.exports = Backbone.View.extend({
             return this;
         },
         makeDialog: function(form) {
+            $('.specify-field', form).addClass('for-search-form');
             this.populateForm(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             form.find('.specify-required-field').removeClass('specify-required-field');
