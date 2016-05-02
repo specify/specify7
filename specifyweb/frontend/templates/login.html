@@ -34,7 +34,7 @@
         {{ form.password.errors }}
         {{ form.password }}
         <input type="hidden" name="this_is_the_login_form" value="1" />
-        <input type="hidden" name="next" value="/accounts/choose_collection/" />
+        <input type="hidden" name="next" value="/accounts/choose_collection/?next={{ next|urlencode }}" />
       </div>
       <div class="submit-row">
         <input type="submit" value="Login" />

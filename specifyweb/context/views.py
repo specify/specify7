@@ -1,6 +1,7 @@
 import re
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
@@ -45,12 +46,17 @@ class CollectionChoiceField(forms.ChoiceField):
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
 def choose_collection(request):
+    redirect_to = request.REQUEST.get('next', '')
+    redirect_resp = HttpResponseRedirect(
+        redirect_to if is_safe_url(url=redirect_to, host=request.get_host())
+        else settings.LOGIN_REDIRECT_URL
+    )
+
     available_collections = users_collections(connection.cursor(), request.specify_user.id)
 
     if len(available_collections) == 1:
-        response = HttpResponseRedirect('/')
-        set_collection_cookie(response, available_collections[0][0])
-        return response
+        set_collection_cookie(redirect_resp, available_collections[0][0])
+        return redirect_resp
 
     class Form(forms.Form):
         collection = CollectionChoiceField(
@@ -60,13 +66,12 @@ def choose_collection(request):
     if request.method == 'POST':
         form = Form(data=request.POST)
         if form.is_valid():
-            response = HttpResponseRedirect('/')
-            set_collection_cookie(response, form.cleaned_data['collection'])
-            return response
+            set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
+            return redirect_resp
     else:
         form = Form()
 
-    context = {'form': form}
+    context = {'form': form, 'next': redirect_to}
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_http_methods(['GET', 'PUT'])
