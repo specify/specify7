@@ -252,7 +252,7 @@ var setTitle = app.setTitle;
                     node: node
                 };
             } else {
-                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`);
+                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`).done(() => node.parent().reOpenNode());
             }
         },
         receiveNode: function(node) {
@@ -282,7 +282,7 @@ var setTitle = app.setTitle;
                 break;
             case 'synonymizing':
                 $.post(`/api/specify_tree/${this.table}/${action.node.nodeId}/synonymize/`,
-                       {target: receiver.id}).done(() => action.receivingNode.childAdded());
+                       {target: receiver.id}).done(() => action.node.parent().reOpenNode());
                 break;
             }
             this.currentAction = null;

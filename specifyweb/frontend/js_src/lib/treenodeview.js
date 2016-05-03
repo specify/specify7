@@ -191,14 +191,18 @@ var populateForm = require('./populateform.js');
                 return this.getChildren().done(this.renderChildren.bind(this));
             }
         },
+        reOpenNode: function() {
+            this.closeNode();
+            this.childNodes = null;
+            this._openNode();
+        },
         getChildren: function() {
             console.log('getChildren', this.name);
             this.$('.expander').removeClass('open').addClass('wait');
             return $.getJSON(this.baseUrl + this.nodeId + '/').pipe(this.gotChildren.bind(this));
         },
         gotChildren: function(childRows) {
-            this.statsPromise = this.shouldDoStats() ? $.getJSON(this.baseUrl + this.nodeId + '/stats/') : $.when(null);
-
+            this.loadStats();
             this.childNodes = _.map(childRows, function(row) {
                 return new TreeNodeView({
                     treeView: this.treeView,
@@ -210,6 +214,9 @@ var populateForm = require('./populateform.js');
                 });
             }, this);
             return this.childNodes;
+        },
+        loadStats: function() {
+            this.statsPromise = this.shouldDoStats() ? $.getJSON(this.baseUrl + this.nodeId + '/stats/') : $.when(null);
         },
         isLastChild: function() {
             var parent = this.parent();
@@ -276,16 +283,12 @@ var populateForm = require('./populateform.js');
         childAdded: function() {
             this.children++;
             this.setupExpander();
-            this.closeNode();
-            this.childNodes = null;
-            this._openNode();
+            this.reOpenNode();
         },
         childRemoved: function() {
             this.children--;
             this.setupExpander();
-            this.closeNode();
-            this.childNodes = null;
-            this._openNode();
+            this.reOpenNode();
         },
         moveNode: function() {
             this.treeView.moveNode(this);
