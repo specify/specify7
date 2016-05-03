@@ -183,6 +183,14 @@ def synonymize(node, into):
         from .models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
 
+def unsynonymize(node):
+    logger.info('unsynonmizing %s', node)
+    model = type(node)
+    node.accepted_id = None
+    node.isaccepted = True
+    node.save()
+    if model._meta.db_table == 'taxon':
+        node.determinations.update(preferredtaxon=F('taxon'))
 
 EMPTY = "''"
 TRUE = "true"

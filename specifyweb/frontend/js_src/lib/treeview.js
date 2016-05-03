@@ -82,10 +82,10 @@ var setTitle = app.setTitle;
                     'move': {name: "Move", icon: "move", accesskey: "m"},
                     'merge': {name: "Merge", icon: "merge", accesskey: "g"},
                     'synonymize': {
-                        name: "Synonymize",
+                        name: view.acceptedId != null ? "Un-Synonymize" : "Synonymize",
                         icon: "synonymize",
                         accesskey: "s",
-                        disabled: view.acceptedId != null || view.children > 0
+                        disabled: view.acceptedId == null && view.children > 0
                     }
                 };
             }
@@ -228,7 +228,7 @@ var setTitle = app.setTitle;
             var serialized = JSON.stringify(TreeNodeView.conformation(this.roots));
             // Replace reserved url characters to avoid percent
             // escaping.  Also, commas are superfluous since they
-            // procede every open bracket that is not itself proceded
+            // precede every open bracket that is not itself preceded
             // by an open bracket by nature of the construction.
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
             navigation.push(querystring.param(window.location.href, {conformation: encoded}));
@@ -246,10 +246,14 @@ var setTitle = app.setTitle;
             };
         },
         synonymizeNode: function(node) {
-            this.currentAction = {
-                type: 'synonymizing',
-                node: node
-            };
+            if (node.acceptedId == null) {
+                this.currentAction = {
+                    type: 'synonymizing',
+                    node: node
+                };
+            } else {
+                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`);
+            }
         },
         receiveNode: function(node) {
             this.currentAction.receivingNode = node;
