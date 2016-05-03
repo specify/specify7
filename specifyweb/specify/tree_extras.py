@@ -180,6 +180,9 @@ def synonymize(node, into):
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
+        from .models import Determination
+        Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
+
 
 EMPTY = "''"
 TRUE = "true"
