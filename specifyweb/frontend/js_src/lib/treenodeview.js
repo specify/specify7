@@ -7,43 +7,8 @@ const Q = require('q');
 
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
-var ResourceView = require('./resourceview.js');
-var populateForm = require('./populateform.js');
 
-    var AddChildDialog = Backbone.View.extend({
-        __name__: "AddChildDialog",
-        initialize: function(options) {
-            this.treeNodeView = options.treeNodeView;
-        },
-        render: function() {
-            var parentNode = new this.treeNodeView.specifyModel.Resource({id: this.treeNodeView.nodeId});
-            var newNode = new this.treeNodeView.specifyModel.Resource();
-            newNode.set('parent', parentNode.url());
-            new ResourceView({
-                populateForm: populateForm,
-                el: this.el,
-                model: newNode,
-                mode: 'edit',
-                noHeader: true
-            }).render()
-                .on('saved', this.childSaved, this)
-                .on('changetitle', this.changeDialogTitle, this);
-
-            this.$el.dialog({
-                width: 'auto',
-                close: function() { $(this).remove(); }
-            });
-            return this;
-        },
-        childSaved: function() {
-            this.$el.dialog('close');
-        },
-        changeDialogTitle: function(resource, title) {
-            this.$el.dialog('option', 'title', title);
-        }
-    });
-
-    var TreeNodeView = Backbone.View.extend({
+var TreeNodeView = Backbone.View.extend({
         __name__: "TreeNodeView",
         tagName: "tr",
         className: "tree-node",
@@ -272,9 +237,6 @@ var populateForm = require('./populateform.js');
         },
         parent: function() {
             return _.last(this.path);
-        },
-        openAddChildDialog: function() {
-            new AddChildDialog({treeNodeView: this}).render();
         }
     });
 
