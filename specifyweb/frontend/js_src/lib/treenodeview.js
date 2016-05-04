@@ -37,7 +37,6 @@ var populateForm = require('./populateform.js');
         },
         childSaved: function() {
             this.$el.dialog('close');
-            this.treeNodeView.childAdded();
         },
         changeDialogTitle: function(resource, title) {
             this.$el.dialog('option', 'title', title);
@@ -276,21 +275,6 @@ var populateForm = require('./populateform.js');
         },
         openAddChildDialog: function() {
             new AddChildDialog({treeNodeView: this}).render();
-        },
-        moveNode: function() {
-            this.treeView.moveNode(this);
-            this.closeNode();
-        },
-        mergeNode: function() {
-            this.treeView.mergeNode(this);
-            this.closeNode();
-        },
-        synonymizeNode: function() {
-            this.treeView.synonymizeNode(this);
-            this.closeNode();
-        },
-        receiveNode: function() {
-            this.treeView.receiveNode(this);
         }
     });
 

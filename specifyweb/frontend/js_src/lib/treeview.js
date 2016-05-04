@@ -116,16 +116,19 @@ var setTitle = app.setTitle;
             treeNodeView.openAddChildDialog();
             break;
         case 'move':
-            treeNodeView.moveNode();
+            treeNodeView.closeNode();
+            treeView.moveNode(treeNodeView);
             break;
         case 'merge':
-            treeNodeView.mergeNode();
+            treeNodeView.closeNode();
+            treeView.mergeNode(treeNodeView);
             break;
         case 'synonymize':
-            treeNodeView.synonymizeNode();
+            treeNodeView.closeNode();
+            treeView.synonymizeNode(treeNodeView);
             break;
         case 'receive':
-            treeNodeView.receiveNode();
+            treeView.receiveNode(treeNodeView);
             break;
         case 'cancelAction':
             treeView.cancelAction();
