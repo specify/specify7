@@ -4,6 +4,7 @@ require('../css/tree.css');
 var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
+const Q = require('q');
 
 var api          = require('./specifyapi.js');
 var schema       = require('./schema.js');
@@ -170,9 +171,11 @@ var setTitle = app.setTitle;
                 '<tbody><tr class="loading"><td>(loading...)</td></tr></tbody>'
             );
             this.$('tr.loading').append(new Array(this.ranks.length-1).fill('<td>'));
-            $.getJSON(this.baseUrl + 'null/')
-                .done(this.gotRows.bind(this));
+            this.getRows();
             return this;
+        },
+        getRows: function() {
+            $.getJSON(this.baseUrl + 'null/').done(this.gotRows.bind(this));
         },
         gotRows: function(rows) {
             this.roots = _.map(rows, function(row) {
@@ -252,43 +255,38 @@ var setTitle = app.setTitle;
                     node: node
                 };
             } else {
-                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`).done(() => node.parent().reOpenNode());
+                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`).done(() => this.reOpenTree());
             }
         },
         receiveNode: function(node) {
-            this.currentAction.receivingNode = node;
             var model = schema.getModel(this.table);
-            var receiver = new model.Resource({id: node.nodeId});
-            var target = new model.Resource({id: this.currentAction.node.nodeId });
-            $.when(receiver.fetch(), target.fetch())
-                .pipe(this.executeAction.bind(this, target, receiver));
-        },
-        executeAction: function(target, receiver) {
-            var action = this.currentAction;
-            switch (action.type) {
-            case 'moving':
-                target.set('parent', receiver.url());
-                target.save().done(function() {
-                    action.receivingNode.childAdded();
-                    action.node.parent().childRemoved();
-                });
-                break;
-            case 'merging':
-                $.post(`/api/specify_tree/${this.table}/${action.node.nodeId}/merge/`,
-                       {target: receiver.id}).done(() => {
-                           action.receivingNode.childAdded();
-                           action.node.parent().childRemoved();
-                       });
-                break;
-            case 'synonymizing':
-                $.post(`/api/specify_tree/${this.table}/${action.node.nodeId}/synonymize/`,
-                       {target: receiver.id}).done(() => action.node.parent().reOpenNode());
-                break;
-            }
-            this.currentAction = null;
+            var receiverNode = new model.Resource({id: node.nodeId});
+            var objectNode = new model.Resource({id: this.currentAction.node.nodeId });
+            Q([objectNode.fetch(), receiverNode.fetch()]).done(() => {
+                const action = this.currentAction;
+                this.currentAction = null;
+                switch (action.type) {
+                case 'moving':
+                    objectNode.set('parent', receiverNode.url());
+                    objectNode.save().done(() => this.reOpenTree());
+                    break;
+                case 'merging':
+                    $.post(`/api/specify_tree/${this.table}/${objectNode.id}/merge/`,
+                           {target: receiverNode.id}).done(() => this.reOpenTree());
+                    break;
+                case 'synonymizing':
+                    $.post(`/api/specify_tree/${this.table}/${objectNode.id}/synonymize/`,
+                           {target: receiverNode.id}).done(() => this.reOpenTree());
+                    break;
+                }
+            });
         },
         cancelAction: function() {
             this.currentAction = null;
+        },
+        reOpenTree: function() {
+            this.roots.forEach(root => root.remove());
+            this.getRows();
         }
     });
 

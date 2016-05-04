@@ -3,6 +3,7 @@
 var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
+const Q = require('q');
 
 var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
@@ -94,7 +95,8 @@ var populateForm = require('./populateform.js');
 
             this.$('.tree-node-cell p').append(
                 '<a class="ui-icon expander">',
-                '<a class="expander tree-node-name" tabindex="2">'
+                '<a class="expander tree-node-name" tabindex="2">',
+                '<span class="stats">'
             );
             this.$('.tree-node-name').text(this.name).addClass(
                 this.acceptedId != null ? 'tree-synonym-node' : '');
@@ -155,11 +157,10 @@ var populateForm = require('./populateform.js');
             var statsThreshold = remoteprefs['TreeEditor.Rank.Threshold.' + tree];
             return statsThreshold != null && statsThreshold <= this.rankId;
         },
-        addStats: function(statsById) {
-            if (this.acceptedId == null) {
-                const stats = statsById[this.nodeId];
-                const childCOs = stats.all - stats.direct;
-                this.$('.tree-node-cell p').append(` (${stats.direct + (childCOs > 0 ? ', ' + childCOs : '')})`);
+        renderStats: function() {
+            if (this.stats != null && this.acceptedId == null) {
+                const childCOs = this.stats.all - this.stats.direct;
+                this.$('.tree-node-cell .stats').text(` (${this.stats.direct + (childCOs > 0 ? ', ' + childCOs : '')})`);
             }
         },
         openPath: function(path) {
@@ -191,11 +192,6 @@ var populateForm = require('./populateform.js');
                 return this.getChildren().done(this.renderChildren.bind(this));
             }
         },
-        reOpenNode: function() {
-            this.closeNode();
-            this.childNodes = null;
-            this._openNode();
-        },
         getChildren: function() {
             console.log('getChildren', this.name);
             this.$('.expander').removeClass('open').addClass('wait');
@@ -203,20 +199,21 @@ var populateForm = require('./populateform.js');
         },
         gotChildren: function(childRows) {
             this.loadStats();
-            this.childNodes = _.map(childRows, function(row) {
-                return new TreeNodeView({
-                    treeView: this.treeView,
-                    baseUrl: this.baseUrl,
-                    table: this.table,
-                    row: row,
-                    ranks: this.ranks,
-                    path: this.path.concat(this)
-                });
-            }, this);
-            return this.childNodes;
+            return this.childNodes = childRows.map(row => new TreeNodeView({
+                treeView: this.treeView,
+                baseUrl: this.baseUrl,
+                table: this.table,
+                row: row,
+                ranks: this.ranks,
+                path: this.path.concat(this)
+            }));
         },
         loadStats: function() {
-            this.statsPromise = this.shouldDoStats() ? $.getJSON(this.baseUrl + this.nodeId + '/stats/') : $.when(null);
+            this.statsPromise =
+                Q(this.shouldDoStats() ? $.getJSON(this.baseUrl + this.nodeId + '/stats/') : [])
+                .then(stats =>
+                      _.object(stats.map(
+                          ([nodeId, directCount, allCount]) => [nodeId, {direct: directCount, all: allCount}])));
         },
         isLastChild: function() {
             var parent = this.parent();
@@ -234,13 +231,13 @@ var populateForm = require('./populateform.js');
             nodes.reverse();
             _.each(nodes, function(node) { node.render(); });
             this.treeView.updateConformation();
-            this.statsPromise.done(this.renderStats.bind(this));
-        },
-        renderStats: function(stats) {
-            if (stats == null) return;
-            var statsById = _.object(_.map(stats, function(stat) { return stat[0]; }), // node id
-                                     _.map(stats, function(stat) { return {direct: stat[1], all: stat[2]}; }));
-            _.invoke(this.childNodes, 'addStats', statsById);
+
+            this.statsPromise.done(
+                statsById => this.childNodes.forEach(
+                    node => {
+                        node.stats = statsById[node.nodeId];
+                        node.renderStats();
+                    }));
         },
         closeNode: function(event) {
             event && event.preventDefault();
@@ -279,16 +276,6 @@ var populateForm = require('./populateform.js');
         },
         openAddChildDialog: function() {
             new AddChildDialog({treeNodeView: this}).render();
-        },
-        childAdded: function() {
-            this.children++;
-            this.setupExpander();
-            this.reOpenNode();
-        },
-        childRemoved: function() {
-            this.children--;
-            this.setupExpander();
-            this.reOpenNode();
         },
         moveNode: function() {
             this.treeView.moveNode(this);
