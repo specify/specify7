@@ -215,7 +215,8 @@ class UnSynonymizeNodeAction extends Action {
     message() {
         const tree = this.model.getLocalizedName().toLowerCase();
         const object = this.node.fullName;
-        return `The ${tree} node <em>${object}</em> will no longer be a synonym.`;
+        const accepted = this.node.acceptedName;
+        return `The ${tree} node <em>${object}</em> will no longer be a synonym of <em>${accepted}</em>.`;
     }
 
     title() { return "Unsynonymize node"; }

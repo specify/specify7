@@ -29,7 +29,7 @@ var TreeNodeView = Backbone.View.extend({
             this.opened = false;
 
             // unpack the database row into fields on this object
-            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId acceptedId children allCOs directCOs".split(' ');
+            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId acceptedId acceptedName children allCOs directCOs".split(' ');
             _(this).extend(_.object(fields, options.row));
         },
         render: function() {
@@ -62,8 +62,9 @@ var TreeNodeView = Backbone.View.extend({
                 '<a class="expander tree-node-name" tabindex="2">',
                 '<span class="stats">'
             );
-            this.$('.tree-node-name').text(this.name).addClass(
-                this.acceptedId != null ? 'tree-synonym-node' : '');
+            this.$('.tree-node-name').text(this.name)
+                .addClass(this.acceptedId != null ? 'tree-synonym-node' : '')
+                .attr('title', this.acceptedId != null ? `Preferred: ${this.acceptedName}` : '');
 
             this.setupExpander();
 
@@ -77,12 +78,9 @@ var TreeNodeView = Backbone.View.extend({
             return this;
         },
         setupExpander: function() {
-            var expander = this.$('.expander').removeClass('open close leaf');
-            if (this.children > 0) {
-                expander.addClass('open').attr('title', "" + this.children + (this.children > 1 ? " children" : " child"));
-            } else {
-                expander.addClass('leaf').attr('title', "");
-            }
+            this.$('.expander')
+                .removeClass('open close leaf')
+                .addClass(this.children > 0 ? 'open' : 'leaf');
         },
         keydown: function(event) {
             if (this.$('.tree-node-name').hasClass('context-menu-active')) return;

@@ -22,6 +22,7 @@ def tree_view(request, treedef, tree, parentid):
 
     node = getattr(models, tree_table.name)
     child = aliased(node)
+    accepted = aliased(node)
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
@@ -34,8 +35,10 @@ def tree_view(request, treedef, tree, parentid):
                               node.highestChildNodeNumber,
                               node.rankId,
                               node.AcceptedID,
+                              accepted.fullName,
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
+                        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
                         .group_by(id_col) \
                         .filter(treedef_col == int(treedef)) \
                         .filter(node.ParentID == parentid) \
