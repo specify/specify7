@@ -132,8 +132,8 @@ class MoveNodeAction extends Action {
 
     message() {
         const tree = this.model.getLocalizedName().toLowerCase();
-        const object = this.node.name;
-        const receiver = this.receivingNode.name;
+        const object = this.node.fullName;
+        const receiver = this.receivingNode.fullName;
         return `The ${tree} node <em>${object}</em> will be placed, along with all of
 its descendants, under the new parent <em>${receiver}</em>.`;
     }
@@ -159,8 +159,8 @@ class MergeNodeAction extends Action {
 
     message() {
         const tree = this.model.getLocalizedName().toLowerCase();
-        const object = this.node.name;
-        const receiver = this.receivingNode.name;
+        const object = this.node.fullName;
+        const receiver = this.receivingNode.fullName;
         return `All references to ${tree} node <em>${object}</em> will be replaced
 with <em>${receiver}</em>, and all descendants of <em>${object}</em>  will be
 moved to <em>${receiver}</em> with any descendants matching in name
@@ -189,8 +189,8 @@ class SynonymizeNodeAction extends Action {
 
     message() {
         const tree = this.model.getLocalizedName().toLowerCase();
-        const object = this.node.name;
-        const receiver = this.receivingNode.name;
+        const object = this.node.fullName;
+        const receiver = this.receivingNode.fullName;
         return `The ${tree} node <em>${object}</em> will be made a synonym of <em>${receiver}</em>.`;
     }
 
@@ -214,7 +214,7 @@ class UnSynonymizeNodeAction extends Action {
 
     message() {
         const tree = this.model.getLocalizedName().toLowerCase();
-        const object = this.node.name;
+        const object = this.node.fullName;
         return `The ${tree} node <em>${object}</em> will no longer be a synonym.`;
     }
 
