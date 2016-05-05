@@ -4,7 +4,6 @@ require('../css/tree.css');
 var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
-const Q = require('q');
 
 var schema       = require('./schema.js');
 var domain       = require('./domain.js');
@@ -133,54 +132,6 @@ var setTitle = app.setTitle;
             // by an open bracket by nature of the construction.
             var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
             navigation.push(querystring.param(window.location.href, {conformation: encoded}));
-        },
-        moveNode: function(node) {
-            this.currentAction = {
-                type: 'moving',
-                node: node
-            };
-        },
-        mergeNode: function(node) {
-            this.currentAction = {
-                type: 'merging',
-                node: node
-            };
-        },
-        synonymizeNode: function(node) {
-            if (node.acceptedId == null) {
-                this.currentAction = {
-                    type: 'synonymizing',
-                    node: node
-                };
-            } else {
-                $.post(`/api/specify_tree/${this.table}/${node.nodeId}/unsynonymize/`).done(() => this.reOpenTree());
-            }
-        },
-        receiveNode: function(node) {
-            var model = schema.getModel(this.table);
-            var receiverNode = new model.Resource({id: node.nodeId});
-            var objectNode = new model.Resource({id: this.currentAction.node.nodeId });
-            Q([objectNode.fetch(), receiverNode.fetch()]).done(() => {
-                const action = this.currentAction;
-                this.currentAction = null;
-                switch (action.type) {
-                case 'moving':
-                    objectNode.set('parent', receiverNode.url());
-                    objectNode.save().done(() => this.reOpenTree());
-                    break;
-                case 'merging':
-                    $.post(`/api/specify_tree/${this.table}/${objectNode.id}/merge/`,
-                           {target: receiverNode.id}).done(() => this.reOpenTree());
-                    break;
-                case 'synonymizing':
-                    $.post(`/api/specify_tree/${this.table}/${objectNode.id}/synonymize/`,
-                           {target: receiverNode.id}).done(() => this.reOpenTree());
-                    break;
-                }
-            });
-        },
-        cancelAction: function() {
-            this.currentAction = null;
         },
         reOpenTree: function() {
             this.roots.forEach(root => root.remove());

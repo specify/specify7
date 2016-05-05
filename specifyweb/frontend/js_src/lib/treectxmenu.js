@@ -2,6 +2,7 @@
 
 const $ = require('jquery');
 const Backbone = require('./backbone.js');
+const Q = require('q');
 
 const ResourceView = require('./resourceview.js');
 const populateForm = require('./populateform.js');
@@ -13,35 +14,7 @@ function contextMenuBuilder(treeView) {
         var view = $target.closest('.tree-node').data('view');
         var items = {};
         if (treeView.currentAction != null) {
-            var action = treeView.currentAction;
-            switch (treeView.currentAction.type) {
-            case 'moving':
-                items.receive = {
-                    name: "Move " + action.node.name + " here",
-                    icon: "receive-move",
-                    accesskey: 'm',
-                    disabled: view.rankId >= action.node.rankId
-                };
-                break;
-            case 'merging':
-                items.receive = {
-                    name: "Merge " + action.node.name + " here",
-                    icon: "receive-merge",
-                    accesskey: 'g',
-                    disabled: view.nodeId === action.node.nodeId || view.rankId > action.node.rankId
-                };
-                break;
-            case 'synonymizing':
-                items.receive = {
-                    name: `Make ${action.node.name} a synonym of ${view.name}`,
-                    icon: "receive-synonym",
-                    accesskey: 's',
-                    disabled: view.nodeId === action.node.nodeId
-                };
-                break;
-            default:
-                console.error('unknown tree action:', treeView.currentAction.type);
-            }
+            items.receive = treeView.currentAction.receiveMenuItem(view);
             items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
         } else {
             items = {
@@ -90,27 +63,165 @@ function contextMenuCallback(key, options) {
         break;
     case 'move':
         treeNodeView.closeNode();
-        treeView.moveNode(treeNodeView);
+        treeView.currentAction = new MoveNodeAction(specifyModel, treeNodeView);
         break;
     case 'merge':
         treeNodeView.closeNode();
-        treeView.mergeNode(treeNodeView);
+        treeView.currentAction = new MergeNodeAction(specifyModel, treeNodeView);
         break;
     case 'synonymize':
-        treeNodeView.closeNode();
-        treeView.synonymizeNode(treeNodeView);
+        if (treeNodeView.acceptedId == null) {
+            treeView.currentAction = new SynonymizeNodeAction(specifyModel, treeNodeView);
+        } else {
+            new UnSynonymizeNodeAction(specifyModel, treeNodeView).begin();
+        }
         break;
     case 'receive':
-        treeView.receiveNode(treeNodeView);
+        if (treeView.currentAction) {
+            treeView.currentAction.receivingNode = treeNodeView;
+            treeView.currentAction.begin();
+        }
         break;
     case 'cancelAction':
-        treeView.cancelAction();
+        treeView.currentAction = null;
         break;
     default:
         console.error('unknown tree ctxmenu key:', key);
     }
 }
 
+class Action {
+    constructor(model, node) {
+        this.model = model;
+        this.node = node;
+        this.table = this.model.name.toLowerCase();
+    }
+
+    begin() {
+        this.node.treeView.currentAction = null;
+
+        const continuation = () => this.execute();
+        const reOpenTree = () => this.node.treeView.reOpenTree();
+
+        $('<div>').append(this.message()).dialog({
+            title: this.title(),
+            modal: true,
+            open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+            close() { $(this).remove(); },
+            buttons: {
+                Procede() {
+                    $(this).dialog('option', 'buttons', []);
+                    continuation().done(() => {
+                        $(this).dialog('close');
+                        reOpenTree();
+                    });
+                },
+                Cancel() { $(this).dialog('close'); }
+            }
+        });
+    }
+}
+
+class MoveNodeAction extends Action {
+    execute() {
+        const objectNode = new this.model.Resource({id: this.node.nodeId });
+        const receiverNode = new this.model.Resource({id: this.receivingNode.nodeId});
+        return Q(objectNode.fetch()).then(
+            () => objectNode.set('parent', receiverNode.url()).save());
+    }
+
+    message() {
+        const tree = this.model.getLocalizedName().toLowerCase();
+        const object = this.node.name;
+        const receiver = this.receivingNode.name;
+        return `The ${tree} node <em>${object}</em> will be placed, along with all of
+its descendants, under the new parent <em>${receiver}</em>.`;
+    }
+
+    title() { return "Move node"; }
+
+    receiveMenuItem(node) {
+        return {
+            name: "Move " + this.node.name + " here",
+            icon: "receive-move",
+            accesskey: 'm',
+            disabled: node.rankId >= this.node.rankId ||
+                node.acceptedId != null
+        };
+    }
+}
+
+class MergeNodeAction extends Action {
+    execute() {
+        return Q($.post(`/api/specify_tree/${this.table}/${this.node.nodeId}/merge/`,
+                        {target: this.receivingNode.nodeId}));
+    }
+
+    message() {
+        const tree = this.model.getLocalizedName().toLowerCase();
+        const object = this.node.name;
+        const receiver = this.receivingNode.name;
+        return `All references to ${tree} node <em>${object}</em> will be replaced
+with <em>${receiver}</em>, and all descendants of <em>${object}</em>  will be
+moved to <em>${receiver}</em> with any descendants matching in name
+and rank being themselves merged recursively.`;
+    }
+
+    title() { return "Merge node"; }
+
+    receiveMenuItem(node) {
+        return {
+            name: "Merge " + this.node.name + " here",
+            icon: "receive-merge",
+            accesskey: 'g',
+            disabled: node.nodeId === this.node.nodeId ||
+                node.rankId > this.node.rankId ||
+                node.acceptedId != null
+        };
+    }
+}
+
+class SynonymizeNodeAction extends Action {
+    execute() {
+        return Q($.post(`/api/specify_tree/${this.table}/${this.node.nodeId}/synonymize/`,
+                        {target: this.receivingNode.nodeId}));
+    }
+
+    message() {
+        const tree = this.model.getLocalizedName().toLowerCase();
+        const object = this.node.name;
+        const receiver = this.receivingNode.name;
+        return `The ${tree} node <em>${object}</em> will be made a synonym of <em>${receiver}</em>.`;
+    }
+
+    title() { return "Synonymize node"; }
+
+    receiveMenuItem(node) {
+        return {
+            name: `Make ${this.node.name} a synonym of ${node.name}`,
+            icon: "receive-synonym",
+            accesskey: 's',
+            disabled: node.nodeId === this.node.nodeId ||
+                node.acceptedId != null
+        };
+    }
+}
+
+class UnSynonymizeNodeAction extends Action {
+    execute() {
+        return Q($.post(`/api/specify_tree/${this.table}/${this.node.nodeId}/unsynonymize/`));
+    }
+
+    message() {
+        const tree = this.model.getLocalizedName().toLowerCase();
+        const object = this.node.name;
+        return `The ${tree} node <em>${object}</em> will no longer be a synonym.`;
+    }
+
+    title() { return "Unsynonymize node"; }
+
+    receiveMenuItem(node) { return {}; }
+}
 
 const AddChildDialog = Backbone.View.extend({
     __name__: "AddChildDialog",
