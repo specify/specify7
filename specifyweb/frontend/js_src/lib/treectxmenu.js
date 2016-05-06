@@ -8,6 +8,9 @@ const ResourceView = require('./resourceview.js');
 const populateForm = require('./populateform.js');
 const schema = require('./schema.js');
 const api = require('./specifyapi.js');
+const userInfo = require('./userinfo.js');
+
+const ro = userInfo.isReadOnly;
 
 function contextMenuBuilder(treeView) {
     return function ($target, evt) {
@@ -18,8 +21,10 @@ function contextMenuBuilder(treeView) {
             items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
         } else {
             items = {
-                'open': {name: "Edit", icon: "open", accesskey: "e"},
-                'query': {name: "Query", icon: "query", accesskey: "q"},
+                'open': {name: ro ? "View" : "Edit", icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"},
+                'query': {name: "Query", icon: "query", accesskey: "q"}
+            };
+            if (!ro) Object.assign(items, {
                 'add-child': {
                     name: "Add child",
                     icon: "add-child",
@@ -34,7 +39,7 @@ function contextMenuBuilder(treeView) {
                     accesskey: "s",
                     disabled: view.acceptedId == null && view.children > 0
                 }
-            };
+            });
         }
 
         return {

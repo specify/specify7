@@ -96,6 +96,10 @@
     background-position: -64px -112px;
 }
 
+.context-menu-item.icon-view:before {
+    background-position: -160px -112px;
+}
+
 .context-menu-item.icon-query:before {
     background-position: -48px -144px;
 }
