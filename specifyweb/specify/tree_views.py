@@ -1,10 +1,12 @@
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
-from django.db import connection
+from django.db import connection, transaction
 
-from .views import login_maybe_required
+from .views import login_maybe_required, apply_access_control
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
+from . import tree_extras
 
 from sqlalchemy.orm import aliased
 from sqlalchemy import sql, types
@@ -20,6 +22,7 @@ def tree_view(request, treedef, tree, parentid):
 
     node = getattr(models, tree_table.name)
     child = aliased(node)
+    accepted = aliased(node)
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
@@ -31,8 +34,11 @@ def tree_view(request, treedef, tree, parentid):
                               node.nodeNumber,
                               node.highestChildNodeNumber,
                               node.rankId,
+                              node.AcceptedID,
+                              accepted.fullName,
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
+                        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
                         .group_by(id_col) \
                         .filter(treedef_col == int(treedef)) \
                         .filter(node.ParentID == parentid) \
@@ -87,7 +93,7 @@ class StatsQuerySpecialization:
             return query.outerjoin(det, sql.and_(
                 det.isCurrent,
                 det.collectionMemberId == collection.id,
-                det.TaxonID == descendant_id))
+                det.PreferredTaxonID == descendant_id))
 
         return det, make_joins
 
@@ -180,3 +186,48 @@ def get_tree_path(tree_node):
     while tree_node is not None:
         yield tree_node
         tree_node = tree_node.parent
+
+@login_maybe_required
+@require_GET
+def predict_fullname(request, model, parentid):
+    parent = get_object_or_404(model, id=parentid)
+    depth = parent.definition.treedefitems.count()
+    reverse = parent.definition.fullnamedirection == -1
+    defitemid = int(request.GET['treedefitemid'])
+    name = request.GET['name']
+    fullname = tree_extras.predict_fullname(
+        parent._meta.db_table, depth, parent.id, defitemid, name, reverse
+    )
+    return HttpResponse(fullname, content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def merge(request, model, id):
+    node = get_object_or_404(model, id=id)
+    target = get_object_or_404(model, id=request.POST['target'])
+    tree_extras.merge(node, target)
+    return HttpResponse('OK', content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def synonymize(request, model, id):
+    node = get_object_or_404(model, id=id)
+    target = get_object_or_404(model, id=request.POST['target'])
+    tree_extras.synonymize(node, target)
+    return HttpResponse('OK', content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def unsynonymize(request, model, id):
+    node = get_object_or_404(model, id=id)
+    tree_extras.unsynonymize(node)
+    return HttpResponse('OK', content_type='text/plain')

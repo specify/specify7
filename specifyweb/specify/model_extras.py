@@ -1,7 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.models import BaseUserManager
 
+from .tree_extras import Tree
 
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):
@@ -115,5 +115,27 @@ class Preparation(models.Model):
         result = cursor.fetchone()
         return result[0] > 0
 
+    class Meta:
+        abstract = True
+
+
+
+class Taxon(Tree):
+    class Meta:
+        abstract = True
+
+class Storage(Tree):
+    class Meta:
+        abstract = True
+
+class Geography(Tree):
+    class Meta:
+        abstract = True
+
+class Geologictimeperiod(Tree):
+    class Meta:
+        abstract = True
+
+class Lithostrat(Tree):
     class Meta:
         abstract = True

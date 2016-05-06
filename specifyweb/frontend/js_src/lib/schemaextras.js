@@ -98,6 +98,8 @@ module.exports = {
             parentField.isRequired = true;
             var isAccepted = model.getField('isaccepted');
             isAccepted.readOnly = true;
+            var acceptedTaxon = model.getField('acceptedtaxon');
+            acceptedTaxon.readOnly = true;
             var fullName = model.getField('fullname');
             fullName.readOnly = true;
         },
@@ -106,6 +108,8 @@ module.exports = {
             parentField.isRequired = true;
             var isAccepted = model.getField('isaccepted');
             isAccepted.readOnly = true;
+            var acceptedGeography = model.getField('acceptedgeography');
+            acceptedGeography.readOnly = true;
             var fullName = model.getField('fullname');
             fullName.readOnly = true;
         },
@@ -114,6 +118,8 @@ module.exports = {
             parentField.isRequired = true;
             var isAccepted = model.getField('isaccepted');
             isAccepted.readOnly = true;
+            var acceptedLithostrat = model.getField('acceptedlithostrat');
+            acceptedLithostrat.readOnly = true;
             var fullName = model.getField('fullname');
             fullName.readOnly = true;
         },
@@ -122,6 +128,8 @@ module.exports = {
             parentField.isRequired = true;
             var isAccepted = model.getField('isaccepted');
             isAccepted.readOnly = true;
+            var acceptedGeologictimeperiod = model.getField('acceptedgeologictimeperiod');
+            acceptedGeologictimeperiod.readOnly = true;
             var fullName = model.getField('fullname');
             fullName.readOnly = true;
         },
@@ -130,6 +138,8 @@ module.exports = {
             parentField.isRequired = true;
             var isAccepted = model.getField('isaccepted');
             isAccepted.readOnly = true;
+            var acceptedStorage = model.getField('acceptedstorage');
+            acceptedStorage.readOnly = true;
             var fullName = model.getField('fullname');
             fullName.readOnly = true;
         }
