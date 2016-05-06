@@ -141,6 +141,8 @@ def merge(node, into):
     assert type(into) is model
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "merging across trees"
+    if into.accepted_id is not None:
+        raise BusinessRuleException("merging node with a synonymized node")
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
