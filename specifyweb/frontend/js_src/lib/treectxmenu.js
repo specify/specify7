@@ -145,15 +145,24 @@ const TreeActionHint = Backbone.View.extend({
     __name__: 'TreeActionHint',
     className: 'tree-action-hint',
     events: {
-        'click .ui-icon-cancel': 'cancel'
+        'click button': 'cancel'
     },
     initialize({action}) {
         this.action = action;
     },
     render() {
-        this.$el.append(
-            `<div>${this.action.hintMessage()} <span class="ui-icon ui-icon-cancel" title="Cancel"></span></div>`
-        ).appendTo('body');
+        this.$el.append(`
+<div class="ui-dialog-titlebar ui-widget-header ui-corner-all">
+    <span class="ui-dialog-title">${this.action.hintMessage()}</span>
+    <button>Cancel</button>
+</div>
+`).appendTo('body');
+
+        this.$('button').button({
+            icons: {primary: 'ui-icon-closethick'},
+            text: false
+        });
+
         return this;
     },
     cancel() {
