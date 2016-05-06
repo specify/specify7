@@ -120,7 +120,7 @@ class Action {
             open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close() { $(this).remove(); },
             buttons: {
-                Procede() {
+                Proceed() {
                     $(this).dialog('option', 'buttons', []);
                     cancelAction();
                     continuation().done(() => {
