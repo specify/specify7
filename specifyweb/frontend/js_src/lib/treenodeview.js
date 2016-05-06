@@ -17,20 +17,30 @@ var TreeNodeView = Backbone.View.extend({
             'click a.open': 'openNode',
             'click a.close': 'closeNode'
         },
-        initialize: function(options) {
-            this.table = options.table;
-            this.ranks = options.ranks;
-            this.path = options.path || [];
-            this.baseUrl = options.baseUrl;
-            this.treeView = options.treeView;
+    initialize: function({table, ranks, path, baseUrl, treeView, row}) {
+            this.table = table;
+            this.ranks = ranks;
+            this.path = path || [];
+            this.baseUrl = baseUrl;
+            this.treeView = treeView;
             this.specifyModel = schema.getModel(this.table);
             this.childNodes = null;
             this.expanded = false;
             this.opened = false;
 
             // unpack the database row into fields on this object
-            var fields = "nodeId name fullName nodeNumber highestNodeNumber rankId acceptedId acceptedName children allCOs directCOs".split(' ');
-            _(this).extend(_.object(fields, options.row));
+            [this.nodeId,
+             this.name,
+             this.fullName,
+             this.nodeNumber,
+             this.highestNodeNumber,
+             this.rankId,
+             this.acceptedId,
+             this.acceptedName,
+             this.children,
+             this.allCOs,
+             this.directCOs
+            ] = row;
         },
         render: function() {
             this.$el.empty();
