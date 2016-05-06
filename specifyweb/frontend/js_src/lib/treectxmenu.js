@@ -83,11 +83,13 @@ function contextMenuCallback(key, options) {
         }
         break;
     case 'cancelAction':
-        treeView.currentAction = null;
+        treeView.currentAction && treeView.currentAction.cancel();
         break;
     default:
         console.error('unknown tree ctxmenu key:', key);
     }
+
+    treeView.currentAction && treeView.currentAction.renderHint();
 }
 
 class Action {
@@ -97,11 +99,15 @@ class Action {
         this.table = this.model.name.toLowerCase();
     }
 
-    begin() {
+    cancel() {
+        this.hint && this.hint.remove();
         this.node.treeView.currentAction = null;
+    }
 
+    begin() {
         const continuation = () => this.execute();
         const reOpenTree = () => this.node.treeView.reOpenTree();
+        const cancelAction = () => this.cancel();
 
         $('<div>').append(this.message()).dialog({
             title: this.title(),
@@ -111,6 +117,7 @@ class Action {
             buttons: {
                 Procede() {
                     $(this).dialog('option', 'buttons', []);
+                    cancelAction();
                     continuation().done(() => {
                         $(this).dialog('close');
                         reOpenTree();
@@ -120,7 +127,39 @@ class Action {
             }
         });
     }
+
+    receiveMenuItem(node) { return {}; }
+
+    renderHint() {
+        if (this.hint) return;
+        const msg = this.hintMessage();
+        if (msg) {
+            this.hint = new TreeActionHint({action: this}).render();
+        }
+    }
+
+    hintMessage() { }
 }
+
+const TreeActionHint = Backbone.View.extend({
+    __name__: 'TreeActionHint',
+    className: 'tree-action-hint',
+    events: {
+        'click .ui-icon-cancel': 'cancel'
+    },
+    initialize({action}) {
+        this.action = action;
+    },
+    render() {
+        this.$el.append(
+            `<div>${this.action.hintMessage()} <span class="ui-icon ui-icon-cancel" title="Cancel"></span></div>`
+        ).appendTo('body');
+        return this;
+    },
+    cancel() {
+        this.action.cancel();
+    }
+});
 
 class MoveNodeAction extends Action {
     execute() {
@@ -148,6 +187,10 @@ its descendants, under the new parent <em>${receiver}</em>.`;
             disabled: node.rankId >= this.node.rankId ||
                 node.acceptedId != null
         };
+    }
+
+    hintMessage() {
+        return `Select a new parent for the node, <em>${this.node.name}</em>.`;
     }
 }
 
@@ -179,6 +222,10 @@ and rank being themselves merged recursively.`;
                 node.acceptedId != null
         };
     }
+
+    hintMessage() {
+        return `Select a target for <em>${this.node.name}</em> to be merged into.`;
+    }
 }
 
 class SynonymizeNodeAction extends Action {
@@ -205,6 +252,10 @@ class SynonymizeNodeAction extends Action {
                 node.acceptedId != null
         };
     }
+
+    hintMessage() {
+        return `Select a target for <em>${this.node.name}</em> to be synonymized to.`;
+    }
 }
 
 class UnSynonymizeNodeAction extends Action {
@@ -220,8 +271,6 @@ class UnSynonymizeNodeAction extends Action {
     }
 
     title() { return "Unsynonymize node"; }
-
-    receiveMenuItem(node) { return {}; }
 }
 
 const AddChildDialog = Backbone.View.extend({
