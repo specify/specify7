@@ -28,6 +28,13 @@
     padding-top: 15px;
     text-align: center;
     font-size: 13px;
+    cursor: pointer;
+}
+
+.tree-view thead .tree-header-collapsed {
+    writing-mode: vertical-rl;
+    height: 1em;
+    width: 15px;
 }
 
 .tree-view tfoot th {

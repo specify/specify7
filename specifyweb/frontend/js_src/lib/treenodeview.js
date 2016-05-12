@@ -17,9 +17,10 @@ var TreeNodeView = Backbone.View.extend({
             'click a.open': 'openNode',
             'click a.close': 'closeNode'
         },
-    initialize: function({table, ranks, path, baseUrl, treeView, row}) {
+    initialize: function({table, ranks, collapsedRanks, path, baseUrl, treeView, row}) {
             this.table = table;
-            this.ranks = ranks;
+        this.ranks = ranks;
+        this.collapsedRanks = collapsedRanks;
             this.path = path || [];
             this.baseUrl = baseUrl;
             this.treeView = treeView;
@@ -77,6 +78,7 @@ var TreeNodeView = Backbone.View.extend({
                 .attr('title', this.acceptedId != null ? `Preferred: ${this.acceptedName}` : '');
 
             this.setupExpander();
+            this.adjustCollapsed();
 
             if (parent == null) {
                 this.treeView.$('tbody').append(this.el);
@@ -92,6 +94,15 @@ var TreeNodeView = Backbone.View.extend({
                 .removeClass('open close leaf')
                 .addClass(this.children > 0 ? 'open' : 'leaf');
         },
+    adjustCollapsed: function() {
+        const collapsed = this.collapsedRanks[this.ranks.indexOf(this.rankId)];
+        this.$('.tree-node-name, .stats')[collapsed ? 'hide' : 'show']();
+    },
+    updateCollapsed: function(collapsedRanks) {
+        this.collapsedRanks = collapsedRanks;
+        this.adjustCollapsed();
+        this.childNodes && this.childNodes.forEach(n => n.updateCollapsed(collapsedRanks));
+    },
         keydown: function(event) {
             if (this.$('.tree-node-name').hasClass('context-menu-active')) return;
             if (!_([13, 37, 38, 39, 40]).contains(event.keyCode)) return;
@@ -177,6 +188,7 @@ var TreeNodeView = Backbone.View.extend({
                 table: this.table,
                 row: row,
                 ranks: this.ranks,
+                collapsedRanks: this.collapsedRanks,
                 path: this.path.concat(this)
             }));
         },

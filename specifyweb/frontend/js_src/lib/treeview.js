@@ -14,6 +14,7 @@ var querystring  = require('./querystring.js');
 var TreeNodeView = require('./treenodeview.js');
 
 const contextMenuBuilder = require('./treectxmenu.js');
+const userInfo = require('./userinfo.js');
 
 var setTitle = app.setTitle;
 
@@ -21,15 +22,32 @@ var setTitle = app.setTitle;
         __name__: "TreeHeader",
         className: "tree-header",
         tagName: "thead",
+        events: {
+            'click th': 'collapseExpand'
+        },
         initialize: function(options) {
             this.treeDefItems = options.treeDefItems;
+            this.collapsedRanks = options.collapsedRanks;
+
         },
         render: function() {
-            var headings = _.map(this.treeDefItems, function(tdi) {
-                return $('<th>').text(tdi.get('name'))[0];
-            }, this);
-            $('<tr>').append(headings).appendTo(this.el);
+            var headings = this.treeDefItems.map(
+                (tdi, i) => $('<th>').append(
+                    $('<div>')
+                        .addClass(this.collapsedRanks[i] ? 'tree-header-collapsed' : '')
+                        .text(tdi.get('name'))
+                )[0]
+            );
+
+            $('<tr>').append(headings).appendTo(this.$el.empty());
             return this;
+        },
+        collapseExpand: function(evt) {
+            evt.preventDefault();
+            const i = this.$('th').index(evt.currentTarget);
+            this.collapsedRanks[i] = !this.collapsedRanks[i];
+            this.render();
+            this.trigger('updateCollapsed', this.collapsedRanks);
         }
     });
 
@@ -44,9 +62,16 @@ var setTitle = app.setTitle;
             this.treeDef = options.treeDef;
             this.treeDefItems = options.treeDefItems.models;
 
+            const storedCollapsedRanks = window.localStorage.getItem(
+                `TreeView.ranksCollapsed.${this.table}.${this.treeDef.id}.${userInfo.id}`);
+            this.collapsedRanks = storedCollapsedRanks ? JSON.parse(storedCollapsedRanks) : this.treeDefItems.map(() => false);
+
             this.ranks = _.map(this.treeDefItems, function(tdi) { return tdi.get('rankid'); });
             this.baseUrl = '/api/specify_tree/' + this.table + '/' + this.treeDef.id + '/';
             this.currentAction = null;
+            this.header = new TreeHeader({treeDefItems: this.treeDefItems, collapsedRanks: this.collapsedRanks});
+
+            this.header.on('updateCollapsed', this.updateCollapsed, this);
         },
         render: function() {
             this.$el.data('view', this);
@@ -58,12 +83,8 @@ var setTitle = app.setTitle;
             setTitle(title);
             $('<h1>').text(title).appendTo(this.el);
             this.$el.append(this.makeSearchBox());
-            var columnDefs = $('<colgroup>').append(_.map(this.ranks, function() {
-                return $('<col>', {width: (100/this.ranks.length) + '%'})[0];
-            }, this));
             $('<table>').appendTo(this.el).append(
-                columnDefs,
-                new TreeHeader({treeDefItems: this.treeDefItems}).render().el,
+                this.header.render().el,
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
                 '<tbody><tr class="loading"><td>(loading...)</td></tr></tbody>'
             );
@@ -75,9 +96,14 @@ var setTitle = app.setTitle;
             $.getJSON(this.baseUrl + 'null/').done(this.gotRows.bind(this));
         },
         gotRows: function(rows) {
-            this.roots = _.map(rows, function(row) {
-                return new TreeNodeView({ row: row, table: this.table, ranks: this.ranks, baseUrl: this.baseUrl, treeView: this });
-            }, this);
+            this.roots = rows.map(row => new TreeNodeView({
+                row: row,
+                table: this.table,
+                ranks: this.ranks,
+                collapsedRanks: this.collapsedRanks,
+                baseUrl: this.baseUrl,
+                treeView: this
+            }));
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
             var params = querystring.deparam();
@@ -136,6 +162,13 @@ var setTitle = app.setTitle;
         reOpenTree: function() {
             this.roots.forEach(root => root.remove());
             this.getRows();
+        },
+        updateCollapsed: function(collapsedRanks) {
+            this.collapsedRanks = collapsedRanks;
+            window.localStorage.setItem(`TreeView.ranksCollapsed.${this.table}.${this.treeDef.id}.${userInfo.id}`,
+                                        JSON.stringify(collapsedRanks));
+
+            this.roots.forEach(r => r.updateCollapsed(this.collapsedRanks));
         }
     });
 
