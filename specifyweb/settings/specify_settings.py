@@ -49,3 +49,4 @@ RAVEN_CONFIG = None
 ALLOW_SUPPORT_LOGIN = False
 SUPPORT_LOGIN_TTL = 300
 
+STATS_URL = "https://stats.specifycloud.org/"

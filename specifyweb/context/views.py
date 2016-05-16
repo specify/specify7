@@ -13,7 +13,7 @@ from django.conf import settings
 from django import forms
 from django.db import connection
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent, Institution
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -253,11 +253,20 @@ def remote_prefs(request):
 @cache_control(max_age=86400, public=True)
 def system_info(request):
     spversion = Spversion.objects.get()
+    collection = request.specify_collection
+    discipline = collection.discipline if collection is not None else None
+    institution = Institution.objects.get()
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
+        stats_url=settings.STATS_URL,
+        database=settings.DATABASE_NAME,
+        institution=institution.name,
+        discipline=discipline and discipline.name,
+        collection=collection and collection.collectionname,
+        isa_number=collection and collection.isanumber,
         )
     return HttpResponse(simplejson.dumps(info), content_type='application/json')
