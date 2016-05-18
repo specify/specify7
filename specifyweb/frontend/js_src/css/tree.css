@@ -21,7 +21,6 @@
     background: #f1f2f2;
     box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
     border: 1px solid #ddd;
-
 }
 
 .tree-view thead th {
@@ -29,12 +28,15 @@
     text-align: center;
     font-size: 13px;
     cursor: pointer;
+    vertical-align: top;
 }
 
 .tree-view thead .tree-header-collapsed {
     writing-mode: vertical-rl;
-    height: 1em;
-    width: 15px;
+    width: 1.2em;
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tree-view tfoot th {
