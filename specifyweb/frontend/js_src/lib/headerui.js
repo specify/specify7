@@ -24,6 +24,7 @@ var toolModules = [
     require('./toolbarwbs.js'),
     require('./toolbarmasterkey.js'),
     require('./toolbarusers.js'),
+    require('./toolbartreerepair.js'),
 ];
 
     var ExpressSearchInput = Backbone.View.extend({

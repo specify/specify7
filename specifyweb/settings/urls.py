@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<parentid>\d+)/predict_fullname/$', 'specifyweb.specify.tree_views.predict_fullname'),
     url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/$', 'specifyweb.specify.tree_views.tree_view'),
     url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', 'specifyweb.specify.tree_views.tree_stats'),
+    url(r'^api/specify_tree/(?P<tree>\w+)/repair/$', 'specifyweb.specify.tree_views.repair_tree'),
 
     # generates Sp6 master key
     url(r'^api/master_key/$', 'specifyweb.specify.master_key.master_key'),

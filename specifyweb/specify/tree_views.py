@@ -231,3 +231,15 @@ def unsynonymize(request, model, id):
     node = get_object_or_404(model, id=id)
     tree_extras.unsynonymize(node)
     return HttpResponse('OK', content_type='text/plain')
+
+@login_maybe_required
+@require_POST
+@apply_access_control
+@csrf_exempt
+@transaction.commit_on_success
+def repair_tree(request, tree):
+    tree_model = datamodel.get_table(tree)
+    table = tree_model.name.lower()
+    tree_extras.renumber_tree(table)
+    tree_extras.validate_tree_numbering(table)
+    return HttpResponse('OK', content_type='text/plain')
