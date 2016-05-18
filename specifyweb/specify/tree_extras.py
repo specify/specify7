@@ -397,6 +397,7 @@ def renumber_tree(table):
     # nodenumbers according to the lexical ordering of the paths. This
     # ensures ancestor node numbers come before descendents and
     # sibling nodes get consecutive ranges.
+    cursor.execute("set @rn := 0")
     cursor.execute((
         "update {table} t\n"
         "join (select @rn := @rn + 1 as nn, p.id as id from \n"
@@ -405,7 +406,6 @@ def renumber_tree(table):
         "          {parent_joins}\n"
         "          order by path) p\n"
         ") r on t.{table}id = r.id\n"
-        "join (select @rn := 0) rn\n"
         # Set the highestchildnodenumber to be the same as the
         # nodenumber.  This is correct for leaves, and interior nodes
         # will be adjusted in the next step.
