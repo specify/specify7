@@ -34,7 +34,7 @@ function contextMenuBuilder(treeView) {
                 'move': {name: "Move", icon: "move", accesskey: "m"},
                 'merge': {name: "Merge", icon: "merge", accesskey: "g"},
                 'synonymize': {
-                    name: view.acceptedId != null ? "Un-Synonymize" : "Synonymize",
+                    name: view.acceptedId != null ? "Undo Synonymy" : "Synonymize",
                     icon: "synonymize",
                     accesskey: "s",
                     disabled: view.acceptedId == null && view.children > 0
