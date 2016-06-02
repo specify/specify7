@@ -14,6 +14,7 @@ var getPickListByName = require('./getpicklistbyname.js');
 var schema            = require('./schema.js');
 var app    = require('./specifyapp.js');
 const WBName = require('./wbname.js');
+var navigation = require('./navigation.js');
 
 const template = require('./templates/wbview.html');
 const statusTemplate = require('./templates/wbuploadstatus.html');
@@ -216,6 +217,7 @@ var WBView = Backbone.View.extend({
     spreadSheetChanged: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
+        navigation.setUnloadProtect("Workbench has unsaved changes.");
     },
     resize: function() {
         this.hot && this.hot.updateSettings({height: this.calcHeight()});
@@ -255,6 +257,7 @@ var WBView = Backbone.View.extend({
     spreadSheetUpToDate: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', false);
         this.$('.wb-save').prop('disabled', true);
+        navigation.setUnloadProtect(null);
     },
     checkUploaderLock(title, next) {
         const query = new schema.models.SpTaskSemaphore.LazyCollection({

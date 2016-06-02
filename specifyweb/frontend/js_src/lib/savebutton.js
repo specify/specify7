@@ -6,6 +6,7 @@ var Backbone = require('./backbone.js');
 
 var saveblocked = require('./templates/saveblocked.html');
 var conflict = require('./templates/conflict.html');
+const navigation = require('./navigation.js');
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
@@ -38,6 +39,7 @@ module.exports =  Backbone.View.extend({
         setButtonsDisabled: function(state) {
             this.buttonsDisabled = state;
             this.buttons && this.buttons.prop('disabled', state);
+            navigation.setUnloadProtect(state ? null : "The form contains unsaved changes.");
         },
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;

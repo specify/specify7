@@ -2,7 +2,6 @@
 
 var $        = require('jquery');
 var _        = require('underscore');
-var Backbone = require('./backbone.js');
 
 var businessRules    = require('./businessrules.js');
 var errorview        = require('./errorview.js');
@@ -54,7 +53,7 @@ var tasks = [
         _.each(tasks, function(task) { task(); });
 
         // start processing the urls to draw the corresponding views
-        Backbone.history.start({pushState: true, root: '/specify/'});
+        navigation.start({pushState: true, root: '/specify/'});
 
         $('body').delegate('a.intercept-navigation', 'click', function(evt) {
             evt.preventDefault();
