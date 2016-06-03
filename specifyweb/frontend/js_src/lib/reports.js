@@ -443,7 +443,7 @@ var userInfo               = require('./userinfo.js');
                 _.each(imageExprs, function(e) { e.text(imageUrl); });
             });
             return {
-                isOK: badImageExpressions.length === 0 && missingAttachments === 0,
+                isOK: badImageExpressions.length === 0 && missingAttachments.length === 0,
                 reportXML: new XMLSerializer().serializeToString(reportDOM),
                 badImageExpressions: badImageExpressions,
                 missingAttachments: missingAttachments
