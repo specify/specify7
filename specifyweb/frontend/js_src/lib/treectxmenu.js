@@ -121,7 +121,11 @@ class Action {
             close() { $(this).remove(); },
             buttons: {
                 Proceed() {
-                    $(this).dialog('option', 'buttons', []);
+                    $(this)
+                        .dialog('option', 'buttons', [])
+                        .empty()
+                        .append($('<div>').progressbar({value: false}));
+
                     cancelAction();
                     continuation().done(() => {
                         $(this).dialog('close');

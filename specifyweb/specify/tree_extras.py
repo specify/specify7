@@ -1,4 +1,5 @@
 import re
+from contextlib import contextmanager
 import logging
 logger = logging.getLogger(__name__)
 
@@ -7,6 +8,15 @@ from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
+
+@contextmanager
+def validate_node_numbers(table):
+    try:
+        validate_tree_numbering(table)
+    except AssertionError:
+        renumber_tree(table)
+    yield
+    validate_tree_numbering(table)
 
 class Tree(models.Model):
     class Meta:
@@ -27,12 +37,19 @@ class Tree(models.Model):
             self.nodenumber = prev_self.nodenumber
             self.highestchildnodenumber = prev_self.highestchildnodenumber
 
-        if prev_self is None:
-            adding_node(self)
-        elif prev_self.parent_id != self.parent_id:
-            moving_node(self)
+        def save():
+            super(Tree, self).save(*args, **kwargs)
 
-        super(Tree, self).save(*args, **kwargs)
+        if prev_self is None:
+            with validate_node_numbers(self._meta.db_table):
+                adding_node(self)
+                save()
+        elif prev_self.parent_id != self.parent_id:
+            with validate_node_numbers(self._meta.db_table):
+                moving_node(self)
+                save()
+        else:
+            save()
 
         try:
             model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
@@ -41,10 +58,6 @@ class Tree(models.Model):
 
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
             raise BusinessRuleException("Tree node's rank is greater than some of its children.")
-
-        if settings.DEBUG:
-            logger.info('validating tree')
-            validate_tree_numbering(self._meta.db_table)
 
         if (prev_self is None
             or prev_self.name != self.name
@@ -328,6 +341,7 @@ def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
 
 
 def validate_tree_numbering(table):
+    logger.info('validating tree')
     cursor = connection.cursor()
     cursor.execute(
         "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
@@ -371,6 +385,7 @@ def print_paths(table, depth):
     print sql
 
 def renumber_tree(table):
+    logger.info('renumbering tree')
     cursor = connection.cursor()
 
     # make sure rankids are set correctly
