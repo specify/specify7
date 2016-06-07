@@ -417,6 +417,7 @@ var userInfo               = require('./userinfo.js');
         $('imageExpression', reportDOM).each(function() {
             var imageExpression = $(this).text();
             if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
+            if (imageExpression.match(/^new\s*java\.net\.URL\s*\(\s*"http:\/\//)) return;
             var match = imageExpression.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/);
             if (!match) {
                 badImageExpressions.push(imageExpression);
