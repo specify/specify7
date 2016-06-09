@@ -49,8 +49,10 @@ module.exports =  UIPlugin.extend({
                         var parsed = input.data('parsed');
                         resource.set(fieldName, input.val());
                         if (parsed) {
-                            resource.set(inferredField, parsed.asFloat());
-                            resource.set('originallatlongunit', parsed.soCalledUnit());
+                            resource
+                                .set(inferredField, parsed.asFloat())
+                                .set('srclatlongunit', parsed.soCalledUnit())
+                                .set('originallatlongunit', parsed.soCalledUnit());
                         }
                     });
                     input.prop('disabled', self.disabled);
