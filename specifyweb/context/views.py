@@ -11,9 +11,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils import simplejson
 from django.conf import settings
 from django import forms
-from django.db import connection
+from django.db import connection, transaction
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent, Institution
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -29,14 +29,44 @@ def set_collection_cookie(response, collection_id):
 def users_collections(cursor, user_id):
     cursor.execute("""
     select c.usergroupscopeid, c.collectionname from collection c
-    """)
-    # inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
-    # inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
-    # inner join specifyuser u on u.specifyuserid = up.specifyuserid and u.usertype = p.grouptype
-    # where up.specifyuserid = %s
-    # """, [user_id])
+    inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
+    inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
+    inner join specifyuser u on u.specifyuserid = up.specifyuserid and p.grouptype is null
+    where up.specifyuserid = %s
+    """, [user_id])
 
     return list(cursor.fetchall())
+
+@login_maybe_required
+@require_http_methods(['GET', 'PUT'])
+@csrf_exempt
+def user_collection_access(request, userid):
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+    cursor = connection.cursor()
+
+    if request.method == 'PUT':
+        collections = simplejson.loads(request.raw_post_data)
+        user = Specifyuser.objects.get(id=userid)
+        with transaction.commit_on_success():
+            cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
+            cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
+                           'select spprincipalid from specifyuser_spprincipal)')
+            for collectionid in collections:
+                principal = Spprincipal.objects.create(
+                    groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
+                    grouptype=None,
+                    name=user.name,
+                    priority=80,
+                )
+                cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
+                               [collectionid, principal.id])
+                cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
+                               'values (%s, %s)', [userid, principal.id])
+
+    collections = users_collections(cursor, userid)
+    return HttpResponse(simplejson.dumps([row[0] for row in collections]),
+                        content_type="application/json")
 
 class CollectionChoiceField(forms.ChoiceField):
     widget = forms.RadioSelect
@@ -134,6 +164,7 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated()
+    data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
     if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')

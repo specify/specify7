@@ -7,6 +7,8 @@ from . import views
 urlpatterns = [
     url(r'^login/$', views.api_login),
     url(r'^collection/$', views.collection),
+    url(r'^user_collection_access/(?P<userid>\d+)/$', views.user_collection_access),
+
     url(r'^user.json$', views.user),
     url(r'^system_info.json$', views.system_info),
     url(r'^domain.json$', views.domain),

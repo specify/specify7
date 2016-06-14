@@ -1,15 +1,16 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+const $ = require('jquery');
+const _ = require('underscore');
 
-var dataobjformatters = require('./dataobjformatters.js');
-var navigation        = require('./navigation.js');
-var UIPlugin          = require('./uiplugin.js');
-var whenAll           = require('./whenall.js');
-var schema            = require('./schema.js');
+const dataobjformatters = require('./dataobjformatters.js');
+const navigation        = require('./navigation.js');
+const UIPlugin          = require('./uiplugin.js');
+const whenAll           = require('./whenall.js');
+const schema            = require('./schema.js');
+const userInfo          = require('./userinfo.js');
 
-    var format = dataobjformatters.format;
+const format = dataobjformatters.format;
 
 module.exports =  UIPlugin.extend({
         __name__: "CollectionRelOneToManyPlugin",
@@ -76,7 +77,21 @@ module.exports =  UIPlugin.extend({
         },
         go: function(evt) {
             evt.preventDefault();
-            navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
+            const collections = userInfo.available_collections.map(c => c[0]);
+            if (collections.includes(this.otherCollection.id)) {
+                navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
+            } else {
+                $('<div>').text(
+                    `You do not have access to the collection ${this.otherCollection.get('collectionname')}
+ through the currently logged in account.`
+                ).dialog({
+                    title: "Access denied.",
+                    close() { $(this).remove(); },
+                    buttons: {
+                        Ok() { $(this).dialog('close'); }
+                    }
+                });
+            }
         }
     }, { pluginsProvided: ["CollectionRelOneToManyPlugin"] });
 
