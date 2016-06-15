@@ -84,6 +84,10 @@ def choose_collection(request):
 
     available_collections = users_collections(connection.cursor(), request.specify_user.id)
 
+    if len(available_collections) < 1:
+        auth_logout(request)
+        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
+
     if len(available_collections) == 1:
         set_collection_cookie(redirect_resp, available_collections[0][0])
         return redirect_resp

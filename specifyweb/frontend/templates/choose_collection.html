@@ -22,6 +22,7 @@
     {% endfor %}
     {% endif %}
 
+    {% if form %}
     <form action="." method="post" id="choose-collection-form">
       {% csrf_token %}
       {{ form.collection.errors }}
@@ -32,6 +33,13 @@
         <input type="submit" value="Select" />
       </div>
     </form>
+    {% else %}
+    <p>
+      The logged in user has not been given access to any collections
+      in this database. You must
+      <a href="/accounts/login/?next={{ next|urlencode }}">login</a> as another user.
+    </p>
+    {% endif %}
   </div>
 </body>
 </html>

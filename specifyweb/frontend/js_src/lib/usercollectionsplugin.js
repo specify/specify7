@@ -25,7 +25,7 @@ const SetCollectionsView = Backbone.View.extend({
             .appendTo(this.el);
 
         const save = () => {
-            this.collections = this.$('select').val().map(v => parseInt(v, 10));
+            this.collections = (this.$('select').val() || []).map(v => parseInt(v, 10));
             return Q($.ajax(`/context/user_collection_access/${this.user.id}/`, {
                 method: 'PUT',
                 data: JSON.stringify(this.collections),
