@@ -8,6 +8,7 @@ const UIPlugin = require('./uiplugin.js');
 const schema = require('./schema.js');
 
 const SetCollectionsView = Backbone.View.extend({
+    __name__: "UserCollectionsUI",
     initialize({user, collections, allCollections}) {
         this.user = user;
         this.collections = collections;

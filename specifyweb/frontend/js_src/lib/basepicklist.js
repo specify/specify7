@@ -7,6 +7,7 @@ var ToolTipMgr = require('./tooltipmgr.js');
 
 
 module.exports =  Backbone.View.extend({
+    __name__: "BasePickListView",
         initialize: function(options) {
             this.infoPromise = this.getItems(options);
         },
