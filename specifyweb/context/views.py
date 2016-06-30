@@ -21,7 +21,7 @@ from specifyweb.specify.specify_jar import specify_jar
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
-
+from .permissions import user_tasks
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
@@ -169,6 +169,7 @@ def user(request):
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated()
     data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
+    data['available_tasks'] = user_tasks(request.specify_collection.id, request.specify_user.id)
     if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')

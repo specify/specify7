@@ -13,6 +13,7 @@ var s                 = require('./stringlocalization.js');
 var initialContext    = require('./initialcontext.js');
 var app               = require('./specifyapp.js');
 var querystring       = require('./querystring.js');
+const userInfo = require('./userinfo.js');
 
 
     var relatedSearches;
@@ -124,9 +125,11 @@ var querystring       = require('./querystring.js');
     });
 
 module.exports =  function() {
+    if (userInfo.available_tasks.includes('Express_Search')) {
         router.route('express_search/', 'esearch', function() {
             app.setCurrentView(new ResultsView());
             app.setTitle('Express Search');
         });
-    };
+    }
+};
 

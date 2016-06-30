@@ -188,10 +188,12 @@ var querystring         = require('./querystring.js');
     }
 
 module.exports =  function() {
+    if (userInfo.available_tasks.includes('Data_Entry')) {
         router.route('recordset/:id/', 'recordSetView', recordSetView);
         router.route('recordset/:id/:index/', 'recordSetView', recordSetView);
         router.route('view/:model/:id/', 'resourceView', resourceView);
         router.route('view/:model/new/', 'newResourceView', newResourceView);
         router.route('bycatalog/:collection/:catno/', 'byCatNo', byCatNo);
-    };
+    }
+};
 

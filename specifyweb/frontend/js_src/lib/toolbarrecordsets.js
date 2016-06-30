@@ -5,18 +5,21 @@ var RecordSetsDialog    = require('./recordsetsdialog.js');
 var userInfo            = require('./userinfo.js');
 
 module.exports =  {
-        task: 'recordsets',
-        title: 'Record Sets',
-        icon: '/static/img/record sets.png',
-        execute: function() {
-            var recordSets = new schema.models.RecordSet.LazyCollection({
-                filters: { specifyuser: userInfo.id, type: 0, domainfilter: true,
-                           orderby: '-timestampcreated' }
+    task: 'recordsets',
+    title: 'Record Sets',
+    disabled(userInfo) {
+        return !userInfo.available_tasks.includes('Record_Set');
+    },
+    icon: '/static/img/record sets.png',
+    execute: function() {
+        var recordSets = new schema.models.RecordSet.LazyCollection({
+            filters: { specifyuser: userInfo.id, type: 0, domainfilter: true,
+                       orderby: '-timestampcreated' }
+        });
+        recordSets.fetch({ limit: 5000 }) // That's a lot of record sets
+            .done(function() {
+                new RecordSetsDialog({ recordSets: recordSets, readOnly: userInfo.isReadOnly }).render();
             });
-            recordSets.fetch({ limit: 5000 }) // That's a lot of record sets
-                .done(function() {
-                    new RecordSetsDialog({ recordSets: recordSets, readOnly: userInfo.isReadOnly }).render();
-                });
-        }
-    };
+    }
+};
 

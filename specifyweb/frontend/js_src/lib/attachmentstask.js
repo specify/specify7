@@ -12,6 +12,7 @@ var populateform = require('./populateform.js');
 var specifyform  = require('./specifyform.js');
 var navigation   = require('./navigation.js');
 var whenAll      = require('./whenall.js');
+const userInfo = require('./userinfo.js');
 
 const template = require('./templates/attachmentbrowser.html');
 
@@ -212,9 +213,11 @@ const template = require('./templates/attachmentbrowser.html');
     });
 
 module.exports =  function() {
+    if (userInfo.available_tasks.includes('ATTACHMENTS')) {
         router.route('attachments/', 'attachments', function () {
             app.setCurrentView(new AttachmentsView());
             app.setTitle('Attachments');
         });
-    };
+    }
+};
 

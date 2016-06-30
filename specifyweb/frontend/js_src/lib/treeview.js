@@ -173,8 +173,9 @@ var setTitle = app.setTitle;
     });
 
 module.exports = function(table) {
-    var getTreeDef = domain.getTreeDef(table);
-    if (!getTreeDef) {
+    const tasks = userInfo.available_tasks.map(t => t.toLowerCase());
+    const getTreeDef = domain.getTreeDef(table);
+    if (!getTreeDef || !tasks.includes(table + 'tree')) {
         app.setCurrentView(new NotFoundView());
         return;
     }

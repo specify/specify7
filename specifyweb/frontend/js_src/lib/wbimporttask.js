@@ -1,13 +1,16 @@
 "use strict";
 
-var router           = require('./router.js');
+const router = require('./router.js');
+const userInfo = require('./userinfo.js');
 
 module.exports = function() {
-    router.route('workbench-import/', 'workbench-import', function() {
-        require.ensure(['./wbimport.js'], function(require) {
-            var wbimport = require('./wbimport.js');
-            wbimport();
-        }, 'wbimport');
-    });
+    if (userInfo.available_tasks.includes('Workbench')) {
+        router.route('workbench-import/', 'workbench-import', function() {
+            require.ensure(['./wbimport.js'], function(require) {
+                var wbimport = require('./wbimport.js');
+                wbimport();
+            }, 'wbimport');
+        });
+    }
 };
 

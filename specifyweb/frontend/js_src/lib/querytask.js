@@ -270,6 +270,8 @@ var router             = require('./router.js');
     });
 
 module.exports =  function() {
+    if (!userInfo.available_tasks.includes('Query')) return;
+
         router.route('query/:id/', 'storedQuery', function(id) {
             (function showView() {
                 var query = new schema.models.SpQuery.Resource({ id: id });

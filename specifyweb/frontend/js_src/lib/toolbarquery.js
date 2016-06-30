@@ -208,21 +208,24 @@ var userInfo       = require('./userinfo.js');
     });
 
 module.exports =  {
-        task: 'query',
-        title: title,
-        icon: '/static/img/query.png',
-        execute: function() {
-            if (dialog) return;
-            var queries = new schema.models.SpQuery.LazyCollection({
-                filters: { specifyuser: userInfo.id, orderby: '-timestampcreated' }
-            });
-            queries.fetch({ limit: 5000 }).done(function() {
-                if (queries._totalCount > 0) {
-                    openQueryListDialog(queries);
-                } else {
-                    openQueryTypeDialog();
-                }
-            });
-        }
-    };
+    task: 'query',
+    title: title,
+    disabled(userInfo) {
+        return !userInfo.available_tasks.includes('Query');
+    },
+    icon: '/static/img/query.png',
+    execute: function() {
+        if (dialog) return;
+        var queries = new schema.models.SpQuery.LazyCollection({
+            filters: { specifyuser: userInfo.id, orderby: '-timestampcreated' }
+        });
+        queries.fetch({ limit: 5000 }).done(function() {
+            if (queries._totalCount > 0) {
+                openQueryListDialog(queries);
+            } else {
+                openQueryTypeDialog();
+            }
+        });
+    }
+};
 
