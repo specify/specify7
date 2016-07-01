@@ -1,10 +1,11 @@
 "use strict";
 
-var $ = require('jquery');
-var _ = require('underscore');
+const $ = require('jquery');
+const _ = require('underscore');
 
-var UIPlugin = require('./uiplugin.js');
-var querystring = require('./querystring.js');
+const UIPlugin = require('./uiplugin.js');
+const querystring = require('./querystring.js');
+const schema = require('./schema.js');
 
 module.exports =  UIPlugin.extend({
         __name__: "GeoLocatePlugin",
@@ -54,16 +55,29 @@ module.exports =  UIPlugin.extend({
                 });
         },
         gotGeoRef: function(dataStr) {
-            var data = dataStr.split('|');
+            const [lat, long, uncertainty, poly] = dataStr.split('|');
 
             this.model.set({
-                lat1text: data[0],
-                latitude1: data[0],
-                long1text: data[1],
-                longitude1: data[1],
+                lat1text: lat,
+                latitude1: parseFloat(lat),
+                long1text: long,
+                longitude1: parseFloat(long),
                 latlongtype: "Point",
                 latlongmethod: "GEOLocate" // Presumably available in picklist.
             });
+
+            const uncertaintyParsed = uncertainty === 'Unavailable' ? null : parseFloat(uncertainty);
+            const polyParsed = poly === 'Unavailable' ? null : poly;
+
+            if (uncertaintyParsed != null || polyParsed != null) {
+                this.model.rget('geocoorddetails').done(gcd => {
+                    gcd && gcd.set({
+                        maxuncertaintyest: uncertaintyParsed,
+                        maxuncertaintyestunit: uncertaintyParsed && "m",
+                        errorpolygon: polyParsed
+                    });
+                });
+            }
 
             $('#geolocate-dialog').dialog('close');
         },
@@ -73,7 +87,9 @@ module.exports =  UIPlugin.extend({
                 w: 900,
                 h: 400,
                 georef: 'run',
-                locality: this.model.get('localityname') };
+                locality: this.model.get('localityname'),
+                tab: 'results'
+            };
 
             function travGeo(geo) {
                 function recur(parent, geodef) {
