@@ -100,7 +100,7 @@ var querystring = require('./querystring.js');
                     // many-to-one wouldn't ordinarily be dependent, but
                     // this is the case for paleocontext. really more like
                     // a one-to-one.
-                    newResource.set(fieldName, related.clone());
+                    newResource.set(fieldName, related && related.clone());
                     break;
                 case 'one-to-many':
                     newResource.rget(fieldName).done(function(newCollection) {
@@ -108,7 +108,7 @@ var querystring = require('./querystring.js');
                     });
                     break;
                 case 'zero-to-one':
-                    newResource.set(fieldName, related.clone());
+                    newResource.set(fieldName, related && related.clone());
                     break;
                 default:
                     throw new Error('unhandled relationship type');
@@ -218,7 +218,7 @@ var querystring = require('./querystring.js');
 
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
 
-            if (field.isRelationship && value != null) {
+            if (field.isRelationship) {
                 value = this[ _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource' ](value, fieldName);
             }
             return [fieldName, value];
