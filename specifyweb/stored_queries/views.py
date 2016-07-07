@@ -20,6 +20,7 @@ from . import models
 
 from .queryfield import QueryField
 from .format import ObjectFormatter
+from .select_into_outfile import SelectIntoOutfile
 
 logger = logging.getLogger(__name__)
 
@@ -91,10 +92,12 @@ def query(request, id):
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        data = execute(session, request.specify_collection, request.specify_user,
-                       tableid, distinct, count_only, field_specs, limit, offset)
+        query = execute(session, request.specify_collection, request.specify_user,
+                        tableid, distinct, count_only, field_specs, limit, offset, json=False)
 
-    return HttpResponse(toJson(data), content_type='application/json')
+        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test.csv')
+        session.execute(stmt)
+    return HttpResponse(stmt, content_type='application/json')
 
 
 class EphemeralField(
@@ -179,7 +182,7 @@ def make_recordset(request):
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, json=True):
     session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)
 
@@ -187,13 +190,13 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         query = query.distinct()
 
     if count_only:
-        return {'count': query.count()}
+        return {'count': query.count()} if json else query.count()
     else:
         query = query.order_by(*order_by_exprs).offset(offset)
         if limit:
             query = query.limit(limit)
 
-        return {'results': list(query)}
+        return {'results': list(query)} if json else query
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
     objectformatter = ObjectFormatter(collection, user)
