@@ -71,7 +71,12 @@ module.exports =  UIPlugin.extend({
 
             if (uncertaintyParsed != null || polyParsed != null) {
                 this.model.rget('geocoorddetails').done(gcd => {
-                    gcd && gcd.set({
+                    if (gcd == null) {
+                        gcd = new schema.models.GeoCoordDetail.Resource();
+                        gcd.placeInSameHierarchy(this.model);
+                        this.model.set('geocoorddetails', gcd);
+                    }
+                    gcd.set({
                         maxuncertaintyest: uncertaintyParsed,
                         maxuncertaintyestunit: uncertaintyParsed && "m",
                         errorpolygon: polyParsed

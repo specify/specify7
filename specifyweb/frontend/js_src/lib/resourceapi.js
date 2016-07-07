@@ -198,11 +198,10 @@ var querystring = require('./querystring.js');
                 this.id = attrs.id;
             }
 
-            var adjustedAttrs = {};
-            _.each(attrs, function(value, fieldName) {
-                var adjusted = this._handleField(value, fieldName);
-                _.isUndefined(adjusted[1]) || (adjustedAttrs[adjusted[0]] = adjusted[1]);
-            }, this);
+            const adjustedAttrs = _.reduce(attrs, (acc, value, fieldName) => {
+                const [newFieldName, newValue] = this._handleField(value, fieldName);
+                return _.isUndefined(newValue) ? acc : Object.assign(acc, {[newFieldName]: newValue});
+            }, {});
 
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
@@ -219,29 +218,33 @@ var querystring = require('./querystring.js');
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
 
             if (field.isRelationship) {
-                value = this[ _.isString(value) ? '_handleUri' : '_handleInlineDataOrResource' ](value, fieldName);
+                value = _.isString(value) ?
+                    this._handleUri(value, fieldName) :
+                    this._handleInlineDataOrResource(value, fieldName);
             }
             return [fieldName, value];
         },
         _handleInlineDataOrResource: function(value, fieldName) {
             // TODO: check type of value
-            var field = this.specifyModel.getField(fieldName);
-            var relatedModel = field.getRelatedModel();
+            const field = this.specifyModel.getField(fieldName);
+            const relatedModel = field.getRelatedModel();
 
-            var related;
             switch (field.type) {
             case 'one-to-many':
                 // should we handle passing in an schema.Model.Collection instance here??
                 var collectionOptions = { related: this, field: field.getReverse() };
 
                 if (field.isDependent()) {
-                    related = new relatedModel.DependentCollection(value, collectionOptions);
-                    this.storeDependent(field, related);
+                    const collection = new relatedModel.DependentCollection(value, collectionOptions);
+                    this.storeDependent(field, collection);
                 } else {
                     console.warn("got unexpected inline data for independent collection field");
                 }
 
-                return undefined;  // because the foreign key is on the other side
+                // because the foreign key is on the other side
+                this.trigger('change:' + fieldName, this);
+                this.trigger('change', this);
+                return undefined;
             case 'many-to-one':
                 if (!value) { // TODO: tighten up this check.
                     // the FK is null, or not a URI or inlined resource at any rate
@@ -249,23 +252,26 @@ var querystring = require('./querystring.js');
                     return value;
                 }
 
-                related = (value instanceof ResourceBase) ? value :
+                const toOne = (value instanceof ResourceBase) ? value :
                     new relatedModel.Resource(value, {parse: true});
 
-                field.isDependent() && this.storeDependent(field, related);
-                return related.url();  // the FK as a URI
+                field.isDependent() && this.storeDependent(field, toOne);
+                return toOne.url();  // the FK as a URI
             case 'zero-to-one':
                 // this actually a one-to-many where the related collection is only a single resource
                 // basically a one-to-one from the 'to' side
-                if (_.isArray(value)) {
-                    related = (value.length < 1) ? null :
-                        new relatedModel.Resource(_.first(value), {parse: true});
-                } else {
-                    assert(value == null || value instanceof ResourceBase);
-                    related = value || null; // in case it was undefined
-                }
-                field.isDependent() && this.storeDependent(field, related);
-                return undefined; // because the FK is on the other side
+                const oneTo = _.isArray(value) ?
+                    (value.length < 1 ? null :
+                     new relatedModel.Resource(_.first(value), {parse: true}))
+                : (value || null);  // in case it was undefined
+
+                assert(oneTo == null || oneTo instanceof ResourceBase);
+
+                field.isDependent() && this.storeDependent(field, oneTo);
+                // because the FK is on the other side
+                this.trigger('change:' + fieldName, this);
+                this.trigger('change', this);
+                return undefined;
             }
             console.error("unhandled setting of relationship field", fieldName,
                           "on", this, "value is", value);

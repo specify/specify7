@@ -23,6 +23,9 @@ module.exports =  Backbone.View.extend({
             this.parentResource = options.parentResource;
             this.title = this.field.getLocalizedName();
             this.readOnly = specifyform.subViewMode(this.$el) === 'view';
+
+            this.parentResource.on('change:' + this.field.name.toLowerCase(),
+                                   this.resourceChanged, this);
         },
         render: function() {
             var self = this;
@@ -68,7 +71,6 @@ module.exports =  Backbone.View.extend({
                 this.model = new relatedModel.Resource();
                 this.model.placeInSameHierarchy(this.parentResource);
                 this.parentResource.set(this.field.name, this.model);
-                this.render();
             } else {
                 // TODO: this should be factored out from common code in querycbx
                 var searchTemplateResource = new relatedModel.Resource({}, {
@@ -87,8 +89,12 @@ module.exports =  Backbone.View.extend({
         },
         delete: function() {
             this.parentResource.set(this.field.name, null);
-            this.model = null;
+        },
+    resourceChanged: function() {
+        this.parentResource.rget(this.field.name).done(resource => {
+            this.model = resource;
             this.render();
-        }
-    });
+        });
+    }
+});
 
