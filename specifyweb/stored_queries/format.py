@@ -6,7 +6,7 @@ from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, inspect
 from sqlalchemy.sql.expression import case, func, cast, literal
-from sqlalchemy.sql.functions import concat, coalesce, count
+from sqlalchemy.sql.functions import concat, count
 from sqlalchemy import types
 
 from specifyweb.context.app_resource import get_app_resource
@@ -15,6 +15,7 @@ from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecont
 from . import models
 from .queryfieldspec import build_join
 from .group_concat import group_concat
+from .blank_nulls import blank_nulls
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +118,7 @@ class ObjectFormatter(object):
             if 'sep' in fieldNode.attrib:
                 expr = concat(fieldNode.attrib['sep'], expr)
 
-            return query, coalesce(expr, '')
+            return query, blank_nulls(expr)
 
         def make_case(query, caseNode):
             field_exprs = []
@@ -139,7 +140,7 @@ class ObjectFormatter(object):
             control_field = getattr(orm_table, switchNode.attrib['field'])
             expr = case(cases, control_field)
 
-        return query, coalesce(expr, '')
+        return query, blank_nulls(expr)
 
     def aggregate(self, query, field, rel_table, aggregator_name):
         logger.info('aggregating field %s on %s using %s', field, rel_table, aggregator_name)
@@ -161,29 +162,28 @@ class ObjectFormatter(object):
                              .filter(join_column == getattr(rel_table, rel_table._id)) \
                              .correlate(rel_table)
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, {})
-
-        aggregated = coalesce(group_concat(formatted, separator, *order_by), '')
+        aggregated = blank_nulls(group_concat(formatted, separator, *order_by))
         return subquery.add_column(aggregated).as_scalar()
 
     def fieldformat(self, query_field, field):
         field_spec = query_field.fieldspec
-        if field_spec.get_field() is None:
-            return field
+        if field_spec.get_field() is not None:
+            field_type = field_spec.get_field().type
 
-        field_type = field_spec.get_field().type
+            if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
+               and field_spec.date_part == "Full Date":
+                field = func.date_format(field, self.date_format)
 
+            elif field_spec.tree_rank is not None:
+                pass
 
-        if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
-           and field_spec.date_part == "Full Date":
-            return func.date_format(field, self.date_format)
+            elif field_spec.is_relationship():
+                pass
 
-        if field_spec.tree_rank is not None:
-            return field
+            else:
+                field = self._fieldformat(field_spec.get_field(), field)
 
-        if field_spec.is_relationship():
-            return field
-
-        return self._fieldformat(field_spec.get_field(), field)
+        return blank_nulls(field)
 
     def _fieldformat(self, specify_field, field):
         if specify_field.type == "java.lang.Boolean":

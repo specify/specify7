@@ -95,7 +95,7 @@ def query(request, id):
         query = execute(session, request.specify_collection, request.specify_user,
                         tableid, distinct, count_only, field_specs, limit, offset, json=False)
 
-        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test.csv')
+        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test%s.csv' % datetime.now().isoformat())
         session.execute(stmt)
     return HttpResponse(stmt, content_type='application/json')
 
