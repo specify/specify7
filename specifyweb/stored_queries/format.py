@@ -63,6 +63,13 @@ class ObjectFormatter(object):
         logger.debug("using dataobjformatter: %s", ElementTree.tostring(formatterNode))
 
         switchNode = formatterNode.find('switch')
+        single = switchNode.attrib.get('single', 'true') == 'true'
+        if not single:
+            sp_control_field = specify_model.get_field(switchNode.attrib['field'])
+            if sp_control_field.type == 'java.lang.Boolean':
+                def case_value_convert(value): return value == 'true'
+        else:
+            def case_value_convert(value): return value
 
         def make_expr(query, fieldNode):
             path = fieldNode.text.split('.')
@@ -85,14 +92,14 @@ class ObjectFormatter(object):
                 field_exprs.append(expr)
 
             expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
-            return query, caseNode.attrib.get('value', None), expr
+            return query, case_value_convert(caseNode.attrib.get('value', None)), expr
 
         cases = []
         for caseNode in switchNode.findall('fields'):
             query, value, expr = make_case(query, caseNode)
             cases.append((value, expr))
 
-        if switchNode.attrib.get('single', 'true') == 'true':
+        if single:
             value, expr = cases[0]
         else:
             control_field = getattr(orm_table, switchNode.attrib['field'])
