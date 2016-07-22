@@ -53,6 +53,23 @@ class ObjectFormatter(object):
 
         return formatter == 'CatalogNumberNumeric'
 
+    def pseudo_sprintf(self, format, expr):
+        """Handle format attribute of fields in data object formatter definitions.
+
+        expr - the expression giving the field to be formatted.
+
+        format - an sprintf style format string. In Specify 6 this is
+        given to the java.util.Formatter.format method with the value
+        of expr as the sole argument. So, it seems the format sting
+        should have only one substitution directive. Only going to
+        handle '%s' for now.
+        """
+        if '%s' in format:
+            before, after = format.split('%s')
+            return concat(before, expr, after)
+        else:
+            return format
+
     def objformat(self, query, orm_table, formatter_name, join_cache=None):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
@@ -79,6 +96,9 @@ class ObjectFormatter(object):
                 query, expr = self.objformat(query, table, formatter_name, join_cache)
             else:
                 expr = self._fieldformat(specify_field, getattr(table, specify_field.name))
+
+            if 'format' in fieldNode.attrib:
+                expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
 
             if 'sep' in fieldNode.attrib:
                 expr = concat(fieldNode.attrib['sep'], expr)
