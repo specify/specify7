@@ -79,14 +79,14 @@ class ObjectFormatter(object):
             return query, literal("<Formatter not defined.>")
         logger.debug("using dataobjformatter: %s", ElementTree.tostring(formatterNode))
 
+        def case_value_convert(value): return value
+
         switchNode = formatterNode.find('switch')
         single = switchNode.attrib.get('single', 'true') == 'true'
         if not single:
             sp_control_field = specify_model.get_field(switchNode.attrib['field'])
             if sp_control_field.type == 'java.lang.Boolean':
                 def case_value_convert(value): return value == 'true'
-        else:
-            def case_value_convert(value): return value
 
         def make_expr(query, fieldNode):
             path = fieldNode.text.split('.')
