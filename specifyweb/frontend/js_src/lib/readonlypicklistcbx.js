@@ -24,16 +24,21 @@ module.exports =  Base.extend({
 
             // value maybe undefined, null, a string, a number, or a Backbone model
             // if the latter, we use the URL of the object to represent it
-            if (value != null && value.url) value = value.url();
+            if (value != null && value.url) {
+                value = value.url();
+            }
 
-            if (!this.$el.hasClass('specify-required-field')) {
+            const nullValueInPL = items.some(item => item.value == null);
+
+            if (!this.$el.hasClass('specify-required-field') && !nullValueInPL) {
                 // need an option for no selection
                 this.$el.append('<option>');
             }
 
-            var options = items
-                    .map(function(item) { return item.value != null && $('<option>', {value: item.value}).text(item.title)[0]; })
-                    .filter(function(option) { return !!option; });
+            var options = items.map(
+                item => $('<option>', {value: item.value == null ? '' : item.value.toString()})
+                    .text(item.title)
+            );
 
             this.$el.append(options);
 
@@ -48,7 +53,7 @@ module.exports =  Base.extend({
             // make it a string
             value = (value == null ? '' : value.toString());
 
-            if (value && _.all(items, function(item) { return item.value.toString() !== value; })) {
+            if (value && options.every(option => option.attr('value') !== value)) {
                 // current value is not in picklist
                 this.$el.append($('<option>', { value: value }).text("" + value + " (current, invalid value)"));
             }
