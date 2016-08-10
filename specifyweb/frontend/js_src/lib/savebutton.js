@@ -36,10 +36,14 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
         },
-        setButtonsDisabled: function(state) {
-            this.buttonsDisabled = state;
-            this.buttons && this.buttons.prop('disabled', state);
-            navigation.setUnloadProtect(state ? null : "The form contains unsaved changes.");
+        setButtonsDisabled: function(disabled) {
+            this.buttonsDisabled = disabled;
+            this.buttons && this.buttons.prop('disabled', disabled);
+            if(!disabled) {
+                navigation.addUnloadProtect(this, "The form contains unsaved changes.");
+            } else {
+                navigation.removeUnloadProtect(this);
+            }
         },
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;

@@ -111,10 +111,10 @@ var router             = require('./router.js');
         },
         saveRequired: function() {
             this.$('.abandon-changes, .query-save').prop('disabled', false);
-            navigation.setUnloadProtect("The query definition has unsaved changes.");
+            navigation.addUnloadProtect(this, "The query definition has unsaved changes.");
         },
         abandonChanges: function() {
-            navigation.setUnloadProtect(null);
+            navigation.removeUnloadProtect(this);
             this.trigger('redisplay');
         },
         save: function() {
@@ -124,7 +124,7 @@ var router             = require('./router.js');
         save_: function() {
             if (this.fieldUIs.length < 1) return;
             this.query.save().done(() => {
-                navigation.setUnloadProtect(null);
+                navigation.removeUnloadProtect(this);
                 this.trigger('redisplay');
             });
         },
@@ -163,7 +163,7 @@ var router             = require('./router.js');
                 const newQuery = this.query.clone();
                 newQuery.set({name: newName, specifyuser: userInfo.resource_uri});
                 newQuery.save().done(() => {
-                    navigation.setUnloadProtect(null);
+                    navigation.removeUnloadProtect(this);
                     navigation.go(`/specify/query/${newQuery.id}/`);
                 });
                 dialog

@@ -217,7 +217,7 @@ var WBView = Backbone.View.extend({
     spreadSheetChanged: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
-        navigation.setUnloadProtect("Workbench has unsaved changes.");
+        navigation.addUnloadProtect(this, "Workbench has unsaved changes.");
     },
     resize: function() {
         this.hot && this.hot.updateSettings({height: this.calcHeight()});
@@ -257,7 +257,7 @@ var WBView = Backbone.View.extend({
     spreadSheetUpToDate: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', false);
         this.$('.wb-save').prop('disabled', true);
-        navigation.setUnloadProtect(null);
+        navigation.removeUnloadProtect(this);
     },
     checkUploaderLock(title, next) {
         const query = new schema.models.SpTaskSemaphore.LazyCollection({

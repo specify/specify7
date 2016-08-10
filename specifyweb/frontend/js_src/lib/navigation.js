@@ -21,13 +21,25 @@ function sequenceFromState(state) {
 // stored state.
 var sequence = sequenceFromState(window.history.state);
 
-// If set to a string, the user will be prompted with that string
-// before leaving the page.
-var unloadProtect = null;
+var unloadBlockers = [];
 
-function setUnloadProtect(p) {
-    unloadProtect = p;
-    window.onbeforeunload = p ? () => p : null;
+function addUnloadProtect(key, message) {
+    unloadBlockers = [...unloadBlockers, [key, message]];
+    window.onbeforeunload = () => message;
+}
+
+function removeUnloadProtect(remKey) {
+    unloadBlockers = unloadBlockers.filter(([key]) => key !== remKey);
+    window.onbeforeunload = unloadBlockers.length === 0 ? null :
+        () => {
+            const [key, message] = unloadBlockers[unloadBlockers.length - 1];
+            return message;
+        };
+}
+
+function clearUnloadProtect() {
+    unloadBlockers = [];
+    window.onbeforeunload = null;
 }
 
 // We are going to extend the window.history object to automatically
@@ -86,7 +98,7 @@ Backbone.history.checkUrl = function(e) {
     // ignored above.
     const cancel = () => window.history.go(sequence - poppedSequence);
 
-    unloadProtect ? confirmNavigation(proceed, cancel) : proceed();
+    unloadBlockers.length > 0 ? confirmNavigation(proceed, cancel) : proceed();
 };
 
 // Open a dialog allowing the user to proceed with the navigation, or
@@ -94,7 +106,9 @@ Backbone.history.checkUrl = function(e) {
 // invoked accordingly. The unloadProtect variable will be cleared if
 // proceding.
 function confirmNavigation(proceed, cancel) {
-    $('<div>').text(unloadProtect).dialog({
+    const [key, message] = unloadBlockers[unloadBlockers.length - 1];
+
+    $('<div>').text(message).dialog({
         title: 'Leave page?',
         modal: true,
         open(evt, ui) {
@@ -106,7 +120,7 @@ function confirmNavigation(proceed, cancel) {
         buttons: {
             Leave() {
                 $(this).dialog('close');
-                setUnloadProtect(null);
+                clearUnloadProtect();
                 proceed();
             },
             Cancel() {
@@ -126,7 +140,7 @@ function navigate(url, options) {
         Backbone.history.navigate(url.replace(/^\/specify/, ''), options);
     };
 
-    unloadProtect ? confirmNavigation(cont, () => {}) : cont();
+    unloadBlockers.length > 0 ? confirmNavigation(cont, () => {}) : cont();
 }
 
 module.exports = {
@@ -134,7 +148,8 @@ module.exports = {
         Backbone.history.start({pushState: true, root: '/specify/'});
     },
     navigate: navigate,
-    setUnloadProtect: setUnloadProtect,
+    addUnloadProtect: addUnloadProtect,
+    removeUnloadProtect: removeUnloadProtect,
     go: function(url) {
         navigate(url, true);
     },
