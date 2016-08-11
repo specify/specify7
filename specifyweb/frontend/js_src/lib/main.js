@@ -1,5 +1,6 @@
 "use strict";
-require ('../css/main.css');
+require('babel-polyfill');
+require('../css/main.css');
 
 const $ = require('jquery');
 
