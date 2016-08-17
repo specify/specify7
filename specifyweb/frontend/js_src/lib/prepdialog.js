@@ -9,14 +9,18 @@ var s      = require('./stringlocalization.js');
 
 
 module.exports =  Backbone.View.extend({
-        __name__: "PrepDialog",
-        className: "prepdialog table-list-dialog",
-        colobjModel: schema.getModel("collectionobject"),
-        detModel: schema.getModel("determination"),
-        prepModel: schema.getModel("preparation"),
-        loanModel: schema.getModel("loan"),
-        giftModel: schema.getModel("gift"),
-        exchModel: schema.getModel("exchangeout"),
+    __name__: "PrepDialog",
+    className: "prepdialog table-list-dialog",
+    initialize() {
+        Object.assign(this, {
+            colobjModel: schema.getModel("collectionobject"),
+            detModel: schema.getModel("determination"),
+            prepModel: schema.getModel("preparation"),
+            loanModel: schema.getModel("loan"),
+            giftModel: schema.getModel("gift"),
+            exchModel: schema.getModel("exchangeout")
+        });
+    },
 
         //ui elements stuff >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
