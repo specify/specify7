@@ -211,51 +211,51 @@ module.exports = {
                     loanreturnprep.set('quantityresolved', 0);
                 }
             },
-            customChecks: {
-                quantityreturned: function(loanreturnprep) {
-                    var returned = loanreturnprep.get('quantityreturned');
-                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
-                            ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
-                            : 0;
-                    if (returned != previousReturned) {
-                        var delta = returned - previousReturned;
-                        var resolved = loanreturnprep.get('quantityresolved');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
-                        if (delta + resolved > max) {
-                            loanreturnprep.set('quantityreturned', previousReturned);
-                        } else {
-                            resolved = loanreturnprep.get('quantityresolved') + delta;
-                            interactionBusinessRules.previousResolved[loanreturnprep.cid] = resolved;
-                            loanreturnprep.set('quantityresolved', resolved);
-                        }
-                        interactionBusinessRules.previousReturned[loanreturnprep.cid] = loanreturnprep.get('quantityreturned');
-                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
-                    }
-                },
-                quantityresolved: function(loanreturnprep) {
-                    var resolved = loanreturnprep.get('quantityresolved');
-                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
-                            ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
-                            : 0;
-                    if (resolved != previousResolved) {
-                        var returned = loanreturnprep.get('quantityreturned');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
-                        if (resolved > max) {
-                            loanreturnprep.set('quantityresolved', previousResolved);
-                        }
-                        if (resolved < returned) {
-                            interactionBusinessRules.previousReturned[loanreturnprep.cid] = resolved;
-                            loanreturnprep.set('quantityreturned', resolved);
-                        }
-                        interactionBusinessRules.previousResolved[loanreturnprep.cid] = loanreturnprep.get('quantityresolved');
-                        interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
-                    }
-                }
-            }
+            // customChecks: {
+            //     quantityreturned: function(loanreturnprep) {
+            //         var returned = loanreturnprep.get('quantityreturned');
+            //         var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
+            //                 ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
+            //                 : 0;
+            //         if (returned != previousReturned) {
+            //             var delta = returned - previousReturned;
+            //             var resolved = loanreturnprep.get('quantityresolved');
+            //             var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+            //             var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+            //             var max = totalLoaned - totalResolved;
+            //             if (delta + resolved > max) {
+            //                 loanreturnprep.set('quantityreturned', previousReturned);
+            //             } else {
+            //                 resolved = loanreturnprep.get('quantityresolved') + delta;
+            //                 interactionBusinessRules.previousResolved[loanreturnprep.cid] = resolved;
+            //                 loanreturnprep.set('quantityresolved', resolved);
+            //             }
+            //             interactionBusinessRules.previousReturned[loanreturnprep.cid] = loanreturnprep.get('quantityreturned');
+            //             interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
+            //         }
+            //     },
+            //     quantityresolved: function(loanreturnprep) {
+            //         var resolved = loanreturnprep.get('quantityresolved');
+            //         var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
+            //                 ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
+            //                 : 0;
+            //         if (resolved != previousResolved) {
+            //             var returned = loanreturnprep.get('quantityreturned');
+            //             var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+            //             var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+            //             var max = totalLoaned - totalResolved;
+            //             if (resolved > max) {
+            //                 loanreturnprep.set('quantityresolved', previousResolved);
+            //             }
+            //             if (resolved < returned) {
+            //                 interactionBusinessRules.previousReturned[loanreturnprep.cid] = resolved;
+            //                 loanreturnprep.set('quantityreturned', resolved);
+            //             }
+            //             interactionBusinessRules.previousResolved[loanreturnprep.cid] = loanreturnprep.get('quantityresolved');
+            //             interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
+            //         }
+            //     }
+            // }
         },
         Permit: {
             unique: ['permitnumber']
