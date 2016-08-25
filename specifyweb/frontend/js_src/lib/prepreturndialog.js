@@ -55,13 +55,9 @@ const PrepReturnRow = Backbone.View.extend({
                 const det = dets.filter(d => d.get('iscurrent'))[0];
                 return det == null ? null : det.rget('preferredtaxon', true);
             }).then(taxon => {
-                const catalognumber = co.get('catalognumber');
-                const preptype = pt.get('name');
-                const taxonName = taxon == null ? "" : taxon.get('fullname');
-
-                this.$('.return-catnum').text(formatCatNo(catalognumber));
-                this.$('.return-taxon').text(taxonName);
-                this.$('.return-prep-type').text(preptype);
+                this.$('.return-catnum').text(formatCatNo(co.get('catalognumber')));
+                this.$('.return-taxon').text(taxon == null ? "" : taxon.get('fullname'));
+                this.$('.return-prep-type').text(pt.get('name'));
             })
         );
 
@@ -123,9 +119,9 @@ const PrepReturnRow = Backbone.View.extend({
         lp.set('isresolved', lp.get('quantityresolved') >= lp.get('quantity'));
 
         const lrp = new schema.models.LoanReturnPreparation.Resource({
+            loanpreparation: lp.url(),
             returneddate: moment().format('YYYY-MM-DD'),
             remarks: remarks,
-            loanpreparation: lp.url(),
             quantityresolved: resolved,
             quantityreturned: returned
         });
@@ -188,7 +184,7 @@ module.exports =  Backbone.View.extend({
         this.$el.dialog({
             modal: true,
             close: function() { $(this).remove(); },
-            title: schema.getModel("loanpreparation").getLocalizedName(),
+            title: schema.models.LoanPreparation.getLocalizedName(),
             maxHeight: 700,
             width: 600,
             buttons: buttons
