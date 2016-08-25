@@ -211,32 +211,6 @@ module.exports =  Backbone.View.extend({
             ]
         });
     },
-    updateModelItems: function(returnedById, returnedDate, returns) {
-        var items = this.loan.dependentResources.loanpreparations.models;
-        var itemsIdx = _.groupBy(items, 'id');
-        var lrm = schema.getModel("loanreturnpreparation");
-        _.each(returns, function(ret) {
-            var item = itemsIdx[ret[0]];
-            if (item) {
-                item = item[0];
-                item.set('quantityReturned', item.get('quantityReturned') + ret[1]);
-                item.set('quantityResolved', item.get('quantityResolved') + ret[2]);
-                item.set('isResolved', ret[3] == 'true');
-                var lrp = new lrm.Resource();
-                lrp.initialize();
-                lrp.set('quantityReturned', ret[1]);
-                lrp.set('quantityResolved', ret[2]);
-                lrp.set('returnedDate', returnedDate);
-                lrp.set('receivedBy', '/api/specify/agent/' + returnedById + '/');
-                if (ret[4] != 'NULL') {
-                    lrp.set('remarks', ret[4].slice(1,ret[4].length-1)); //need to remove enclosing quotes for now.
-                }
-                item.dependentResources.loanreturnpreparations.models.push(lrp);
-                item.dependentResources.loanreturnpreparations.length += 1;
-                item.dependentResources.loanreturnpreparations.trigger('add');
-            }
-        });
-    },
 
     returnSelections: function() {
         this.prepInfos.forEach((prepInfo, i) => {
@@ -266,32 +240,6 @@ module.exports =  Backbone.View.extend({
             lp.dependentResources.loanreturnpreparations.length += 1;
             lp.dependentResources.loanreturnpreparations.trigger('add');
         });
-    },
-
-    returnSelectionsold: function() {
-        const returns = this.prepInfos.map((prep, idx) => {
-            const resolved = parseInt(this.$(".resolve-amt")[idx].value, 10);
-            var rem =  this.$("input.return-remark")[idx].value.trim();
-            if (rem.length == 0) {
-                rem = 'NULL';
-            } else {
-                rem = "'" + rem.replace(/'/g, "''") + "'";
-            }
-            return {
-                loanpreparationid: prep.loanpreparationid,
-                returnAmnt: parseInt(this.$(".return-amt")[idx].value, 10),
-                resolvedAmnt: resolved,
-                isResolved: resolved == prep.unresolved ? 'true' : 'false',
-                remark: rem
-            };
-        }).filter(({returnAmnt}) => returnAmnt > 0);
-
-        var today = new Date();
-        var todayArg = [];
-        todayArg[0] = today.getFullYear(); todayArg[1] = today.getMonth() + 1; todayArg[2] = today.getDate();
-        console.log(returns);
-        // this.updateModelItems(userInfo.id, todayArg.join('-'), returns);
-        // this.returnDone([returns.length]);
     },
 
     updateRemarkUI: function(idx, show) {
