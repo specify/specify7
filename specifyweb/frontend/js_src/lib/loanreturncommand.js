@@ -34,7 +34,7 @@ module.exports =  UICmd.extend({
             .pipe(lps => lps.filter(lp => lp.get('quantity') - lp.get('quantityresolved') > 0))
             .done(lps => {
                 if (lps.length > 0) {
-                    new PrepReturnDialog({ loan: this.model, loanpreparations: lps }).render();
+                    new PrepReturnDialog({ loanpreparations: lps }).render();
                 } else {
                     $("<p>").append("There no unresolved preparations for this loan.").dialog({
                         modal: true,
