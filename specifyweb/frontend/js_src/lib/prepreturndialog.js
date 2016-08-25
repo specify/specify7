@@ -99,7 +99,9 @@ const PrepReturnRow = Backbone.View.extend({
         action == 'hide' && this.$el.closest('tr').next().hide();
     },
     toggleRemarks() {
-        this.$el.closest('tr').next().toggle();
+        const remarks = this.$el.closest('tr').next();
+        remarks.toggle();
+        $('input', remarks).focus(); // no effect if not visible, right?
     },
     doResolve(dummyLRP) {
         const lp = this.loanpreparation;
