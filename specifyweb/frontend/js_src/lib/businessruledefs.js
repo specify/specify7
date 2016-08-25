@@ -206,10 +206,8 @@ module.exports = {
                 interactionBusinessRules.totalResolved = undefined;
                 interactionBusinessRules.returned = undefined;
                 interactionBusinessRules.resolved = undefined;
-                if (loanreturnprep.isNew()) {
-                    loanreturnprep.set('quantityreturned', 0);
-                    loanreturnprep.set('quantityresolved', 0);
-                }
+                loanreturnprep.get('quantityreturned') == null && loanreturnprep.set('quantityreturned', 0);
+                loanreturnprep.get('quantityresolved') == null && loanreturnprep.set('quantityresolved', 0);
             },
             // customChecks: {
             //     quantityreturned: function(loanreturnprep) {

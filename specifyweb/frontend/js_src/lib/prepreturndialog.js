@@ -125,8 +125,10 @@ const PrepReturnRow = Backbone.View.extend({
         const lrp = new schema.models.LoanReturnPreparation.Resource({
             returneddate: moment().format('YYYY-MM-DD'),
             remarks: remarks,
-            loanpreparation: lp.url()
-        }).set('quantityreturned', returned).set('quantityresolved', resolved);
+            loanpreparation: lp.url(),
+            quantityresolved: resolved,
+            quantityreturned: returned
+        });
 
         lp.dependentResources.loanreturnpreparations.models.push(lrp);
         lp.dependentResources.loanreturnpreparations.length += 1;
