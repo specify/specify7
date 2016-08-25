@@ -12,6 +12,9 @@ module.exports =  UICmd.extend({
     events: {
         'click': 'click'
     },
+    initialize({populateForm}) {
+        this.populateForm = populateForm;
+    },
     render: function() {
         if (this.model.specifyModel.name !== "Loan") {
             throw new Error("loanreturncommand can only be used with loan resources");
@@ -34,7 +37,7 @@ module.exports =  UICmd.extend({
             .pipe(lps => lps.filter(lp => lp.get('quantity') - lp.get('quantityresolved') > 0))
             .done(lps => {
                 if (lps.length > 0) {
-                    new PrepReturnDialog({ loanpreparations: lps }).render();
+                    new PrepReturnDialog({ populateForm: this.populateForm, loanpreparations: lps }).render();
                 } else {
                     $("<p>").append("There no unresolved preparations for this loan.").dialog({
                         modal: true,

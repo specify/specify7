@@ -81,7 +81,7 @@ var SpinnerUI            = require('./spinnerui.js');
 
     var populateCommand = function(resource, control) {
         var cmd = uicommands[control.attr('action')] || uicommands.CommandNotAvailable;
-        var view = new cmd({ el: control, model: resource });
+        var view = new cmd({ el: control, model: resource, populateForm: populateForm });
         view.render();
     };
 

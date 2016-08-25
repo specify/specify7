@@ -9,6 +9,7 @@ const schema      = require('./schema.js');
 const fieldFormat = require('./fieldformat.js');
 const userInfo    = require('./userinfo.js');
 const s = require('./stringlocalization.js');
+const QueryCbx = require('./querycbx.js');
 
 function formatCatNo(catNo) {
     const field = schema.models.CollectionObject.getField('catalognumber');
@@ -100,7 +101,7 @@ const PrepReturnRow = Backbone.View.extend({
     toggleRemarks() {
         this.$el.closest('tr').next().toggle();
     },
-    doResolve() {
+    doResolve(dummyLRP) {
         const lp = this.loanpreparation;
 
         const resolved = parseInt(this.$(".resolve-amt").val(), 10);
@@ -120,10 +121,11 @@ const PrepReturnRow = Backbone.View.extend({
 
         const lrp = new schema.models.LoanReturnPreparation.Resource({
             loanpreparation: lp.url(),
-            returneddate: moment().format('YYYY-MM-DD'),
             remarks: remarks,
             quantityresolved: resolved,
-            quantityreturned: returned
+            quantityreturned: returned,
+            receivedby: dummyLRP.get('receivedby'),
+            returneddate: dummyLRP.get('returneddate')
         });
 
         lp.dependentResources.loanreturnpreparations.models.push(lrp);
@@ -132,7 +134,21 @@ const PrepReturnRow = Backbone.View.extend({
     }
 });
 
-const remarksRow = `<tr class="return-remark" style="display:none">
+
+const METADATAFORM = `
+<table data-specify-model="LoanReturnPreparation">
+  <tr>
+    <td class="specify-form-label"><label for="lrp-receivedby"></label></td>
+    <td>
+      <input type="text" class="specify-querycbx specify-field" name="receivedBy" id="lrp-receivedby" data-specify-initialize="name=Agent">
+    </td>
+    <td class="specify-form-label"><label for="lrp-date"></label></td>
+    <td><input type="text" class="specify-formattedtext specify-field" name="returnedDate" id="lrp-date"></td>
+  </tr>
+</table>
+`;
+
+const REMARKSROW = `<tr class="return-remark" style="display:none">
 <td></td>
 <td colspan="6"><input type="text" class="return-remark" style="width:100%" placeholder="Remarks"></td>
 </tr>`;
@@ -140,10 +156,24 @@ const remarksRow = `<tr class="return-remark" style="display:none">
 module.exports =  Backbone.View.extend({
     __name__: "PrepReturnDialog",
     className: "prepreturndialog table-list-dialog",
-    initialize({loanpreparations}) {
+    initialize({populateForm, loanpreparations}) {
+        this.populateForm = populateForm;
         this.loanpreparations = loanpreparations;
+
+        this.dummyLRP = null;
+        this.prepReturnRows = null;
     },
     render: function() {
+        const form = $(METADATAFORM);
+        this.$el.append(form, '<hr>');
+
+        // this is used to capture the receiving agent and date
+        this.dummyLRP = new schema.models.LoanReturnPreparation.Resource({
+            returneddate: moment().format('YYYY-MM-DD'),
+            receivedby: userInfo.agent.resource_uri
+        });
+        this.populateForm(form, this.dummyLRP);
+
         this.prepReturnRows = this.loanpreparations.map(lp => new PrepReturnRow({ loanpreparation: lp }));
 
         $('<table>').append(
@@ -157,7 +187,7 @@ module.exports =  Backbone.View.extend({
                 '<th colspan="2">Resolve</th>'
             )
         ).append(
-            [].concat(...this.prepReturnRows.map(row => [row.render().$el, remarksRow]))
+            [].concat(...this.prepReturnRows.map(row => [row.render().$el, REMARKSROW]))
         ).appendTo(this.el);
 
         const buttons = (this.options.readOnly ? [] : [
@@ -192,7 +222,7 @@ module.exports =  Backbone.View.extend({
         return this;
     },
     returnSelections: function() {
-        this.prepReturnRows.forEach(row => row.doResolve());
+        this.prepReturnRows.forEach(row => row.doResolve(this.dummyLRP));
         this.$el.dialog('close');
     },
     selectAll: function() {
