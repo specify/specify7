@@ -169,6 +169,7 @@ def user(request):
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated()
     data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
+    data['agent'] = obj_to_data(request.specify_user_agent)
     if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
