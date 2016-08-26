@@ -1,5 +1,7 @@
 "use strict";
 
+require('../css/prepreturndialog.css');
+
 const $ = require('jquery');
 const _ = require('underscore');
 const Backbone = require('./backbone.js');
@@ -41,8 +43,8 @@ const PrepReturnRow = Backbone.View.extend({
             '<td><input type="checkbox"></td>',
             '<td class="return-catnum">',
             '<td class="return-taxon">',
-            '<td class="return-prep-type" style="text-align:center">',
-            `<td style="text-align:center">${unresolved}</td>`,
+            '<td class="return-prep-type">',
+            `<td class="unresolved-count">${unresolved}</td>`,
             `<td><input type="number" value="0" min="0" max="${unresolved}" class="return-amt"></td>`,
             `<td><input type="number" value="0" min="0" max="${unresolved}" class="resolve-amt"></td>`,
             '<td><a class="return-remark" style="display:none"><span class="ui-icon ui-icon-comment">remarks</span></a></td>'
@@ -152,7 +154,7 @@ const METADATAFORM = `
 
 const REMARKSROW = `<tr class="return-remark" style="display:none">
 <td></td>
-<td colspan="6"><input type="text" class="return-remark" style="width:100%" placeholder="Remarks"></td>
+<td colspan="6"><input type="text" class="return-remark" placeholder="Remarks"></td>
 </tr>`;
 
 module.exports =  Backbone.View.extend({
