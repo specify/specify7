@@ -1,5 +1,9 @@
 @import url("../bower_components/handsontable/dist/handsontable.full.css");
 
+.wbs-form {
+    width: 100%;
+}
+
 .wbs-form .wb-spreadsheet {
     margin-top: 10px;
 }

@@ -1,5 +1,9 @@
 /* tree.css */
 
+div.tree-view {
+    width: 100%;
+}
+
 .tree-view h1 {
     float: left;
 }
@@ -70,6 +74,10 @@
 .tree-node-cell p {
     padding-top: 10px;
     margin: 0 0 -12px -5px;
+}
+
+.tree-node-cell a {
+    color: #000;
 }
 
 .tree-node .tree-synonym-node {

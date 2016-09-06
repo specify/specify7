@@ -1,5 +1,9 @@
 /* query.css */
 
+.query-view {
+    width: 100%;
+}
+
 .querybuilder-header {
     display: flex;
 }

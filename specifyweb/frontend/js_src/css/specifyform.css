@@ -1,15 +1,17 @@
 /* specifyform.css */
 
 #content {
-    margin: 5px 20px 15px 20px;
+    margin: 15px;
+    display: flex;
 }
 
 .specify-root-form {
-    display: inline-block;
     padding: 0px 20px 10px;
     background: #f1f2f2;
     box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
     border: 1px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 div.specify-view-content,
@@ -18,8 +20,12 @@ div.specify-view-content-container,
     display: inline-block;
 }
 
-.specify-form-header, .specify-subview-header {
-    border-bottom: solid 1px;
+.specify-form-header {
+    border-bottom: solid 2px #f4763d;
+}
+
+.specify-subview-header {
+    border-bottom: solid 1px #555;
 }
 
 .specify-form-header > .recordset-prev,
@@ -151,6 +157,7 @@ ul.ui-autocomplete li.ui-menu-item {
 .specify-formtable > tbody > tr > td.contract,
 .specify-formtable > tbody > tr > td.remove {
     border: none;
+    vertical-align: top;
 }
 
 .specifyplugin-latlonui table {

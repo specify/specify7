@@ -2,31 +2,28 @@
 header {
     background: #fff;
     position: relative;
-    border-top: 8px solid #f4763d;
     margin: 0px 15px;
 }
 
-header a:hover {
-    text-decoration: underline;
-}
-
 #site-logo img {
-    margin: 29px 0;
-    height: 54px;
+    margin: 20px 0 0 20px;
+    height: 65px;
 }
 
 #header-loading {
     margin-left: 48px;
     flex-grow: 1;
     text-align: left;
-    color: #fff;
+    color: #555;
     font-size: 14px;
     font-weight: bold;
 }
 
 header nav {
-    background: #f79244;
-    padding: 6px 0;
+    border-top: solid 6px #f4763d;
+    background: #f1f2f2;
+    margin-top: 5px;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
 }
 
 nav ul {
@@ -37,58 +34,62 @@ nav ul {
 }
 
 nav li {
-    border-right: 2px solid #f4763d;
-    min-width: 110px;
-    text-align: center;
+    margin-right: 30px;
+    padding: 12px 0 6px 0;
+    border-bottom: solid 4px #f1f2f2;
 }
 
-nav li:last-child {
-    border: none;
+nav li:hover {
+    border-bottom: solid 4px #f4763d;
 }
 
 nav a {
     display: inline-block;
-    margin: 4px 8px;
     font-size: 14px;
     font-weight: bold;
 }
 
 nav a:link,
 nav a:visited {
-    color: #fff
+    color: #555
+}
+
+nav a:hover {
+    color: #000;
 }
 
 nav li img {
     display: inline;
     height: 16px;
     vertical-align: middle;
-    margin-right: 8px;
+    margin-right: 5px;
 }
 
 #user-tools {
     position: absolute;
-    top: 29px;
-    right: 0;
+    top: 20px;
+    right: 20px;
     text-align: right;
 }
 
-#user-tools a:link,
-#user-tools a:visited,
 #user-tools a {
     font-weight: bold;
-    color: #f4763d;
 }
 
 #user-tools select {
     background: #fff;
     border: none;
     border-left: 2px solid;
-    color: #f4763d;
+    color: #555;
     font-weight: bold;
     padding: 4px 0px;
     margin-left: 2px;
     font-size: 12px;
     vertical-align: baseline;
+}
+
+#user-tools select:hover {
+    color: #000;
 }
 
 #user-tools form {

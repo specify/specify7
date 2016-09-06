@@ -10,13 +10,13 @@ body {
 
 /* LINKS */
 
-a:link, a:visited {
-    color: #5b80b2;
+a, a:link, a:visited {
+    color: #555;
     text-decoration: none;
 }
 
 a:hover {
-    color: #036;
+    color: #000;
     cursor: pointer;
     cursor: hand;
 }
@@ -49,6 +49,7 @@ h1 {
 h2 {
     font-size: 16px;
     margin: 1em 0 .5em 0;
+    color: #555;
 }
 
 h3 {
