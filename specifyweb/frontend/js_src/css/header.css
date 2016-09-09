@@ -76,10 +76,13 @@ nav li img {
     font-weight: bold;
 }
 
+#user-tools .login-logout {
+    margin-right: 2px;
+}
+
 #user-tools select {
     background: #fff;
     border: none;
-    border-left: 2px solid;
     color: #555;
     font-weight: bold;
     padding: 4px 0px;
@@ -97,7 +100,7 @@ nav li img {
 }
 
 #express-search .express-search-query {
-    width: 180px;
+    width: 100%;
     background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;

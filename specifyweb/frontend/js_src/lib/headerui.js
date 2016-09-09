@@ -68,7 +68,7 @@ module.exports = Backbone.View.extend({
             new ExpressSearchInput({el: this.$('#express-search')});
             userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
             this.$('#user-tools a.login-logout')
-                .text(userInfo.isauthenticated ? '✕' : 'Log in')
+                .text(userInfo.isauthenticated ? '' : 'Log in')
                 .attr('href', '/accounts/' + (userInfo.isauthenticated ? 'logout/' : 'login/'))
                 .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
 
