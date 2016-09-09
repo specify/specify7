@@ -1,7 +1,7 @@
+/* combobox.css */
 
 .combobox-wrapper {
-    position: relative;
-    display: inline-block;
+    display: flex;
 }
 
 .combobox-wrapper input {
@@ -9,9 +9,5 @@
 }
 
 .combobox-toggle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
     margin-left: -1px;
-    padding: 0;
 }
