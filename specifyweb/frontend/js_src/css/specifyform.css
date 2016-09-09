@@ -38,7 +38,7 @@ div.specify-view-content-container,
 
 .specify-form-header span.recordset-prev,
 .specify-form-header span.recordset-next {
-    color: lightgrey;
+    color: #d3d3d3;
 }
 
 .specify-form-header .recordset-info {
@@ -61,6 +61,27 @@ div.specify-view-content-container,
 
 .specify-form-buttons input {
     margin-right: 10px;
+    border-radius: 0;
+    border: 2px solid #f4763d;
+    background: #f79244;
+    color: #fff;
+    padding: 4px;
+}
+
+.specify-form-buttons input:hover,
+.specify-form-buttons input:focus {
+    outline: none;
+    border: 2px solid #f79244;
+    background: #f4763d;
+}
+
+.specify-form-buttons input:active {
+    color: #000;
+}
+
+.specify-form-buttons input:disabled {
+    background: #d3d3d3;
+    border: none;
 }
 
 textarea.specify-field {
