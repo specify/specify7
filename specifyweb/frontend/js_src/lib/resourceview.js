@@ -118,9 +118,8 @@ module.exports =  Backbone.View.extend({
 
             dataobjformatters.format(self.model).done(function(str) {
                 if (_(str).isString()) {
-                    title += ': ' + str;
-                    self.setFormTitle(title);
-                    self.trigger('changetitle', self, title);
+                    $('.view-title', self.header).attr('title', str);
+                    self.trigger('changetitle', self, title + ': ' + str);
                 }
             });
         },

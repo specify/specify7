@@ -22,29 +22,37 @@ div.specify-view-content-container,
 
 .specify-form-header {
     border-bottom: solid 2px #f4763d;
+    margin-left: -8px;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
 }
 
-.specify-subview-header {
-    border-bottom: solid 1px #555;
-}
-
-.specify-form-header > .recordset-prev,
-.specify-form-header > .recordset-next,
-.specify-form-header > a,
-.specify-subview-header > a {
+.specify-form-header .recordset-prev,
+.specify-form-header .recordset-next,
+.specify-form-header a,
+.specify-subview-header a {
     margin-left: 1em;
     font-size: 0.8em;
 }
 
-.specify-form-header > span.recordset-prev,
-.specify-form-header > span.recordset-next {
+.specify-form-header span.recordset-prev,
+.specify-form-header span.recordset-next {
     color: lightgrey;
+}
+
+.specify-form-header .recordset-info {
+    font-size: 0.8em;
 }
 
 .specify-form-header img {
     vertical-align: bottom;
     margin: 0 2px 2px 0;
     height: 24px;
+}
+
+.specify-subview-header {
+    border-bottom: solid 1px #555;
 }
 
 .specify-form-buttons {
