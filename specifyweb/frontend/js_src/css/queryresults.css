@@ -1,5 +1,9 @@
 /* queryresults.css */
 
+.express-search-view {
+    width: 100%;
+}
+
 .query-results-table.ui-accordion-content {
     max-height: 20em;
     padding: 1em 1.2em;

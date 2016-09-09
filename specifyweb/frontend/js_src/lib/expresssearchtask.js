@@ -28,6 +28,7 @@ var querystring       = require('./querystring.js');
 
     var ResultsView = Backbone.View.extend({
         __name__: "ResultsView",
+        className: "express-search-view",
         events: {
             'accordionchange': 'panelOpened'
         },
