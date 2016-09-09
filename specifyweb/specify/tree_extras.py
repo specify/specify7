@@ -122,7 +122,8 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        raise BusinessRuleException("adding node to synonymized parent")
+        raise BusinessRuleException('Adding node "{node.fullname}" to synonymized parent "{parent.fullname}".'
+                                    .format(node=node, parent=parent))
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
@@ -133,7 +134,8 @@ def moving_node(to_save):
     size = current.highestchildnodenumber - current.nodenumber + 1
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
     if new_parent.accepted_id is not None:
-        raise BusinessRuleException("moving node to synonymized parent")
+        raise BusinessRuleException('Moving node "{node.fullname}" to synonymized parent "parent.fullname".'
+                                    .format(node=to_save, parent=new_parent))
 
     insertion_point = open_interval(model, new_parent.nodenumber, size)
     # node interval will have moved if it is to the right of the insertion point
@@ -155,7 +157,8 @@ def merge(node, into):
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "merging across trees"
     if into.accepted_id is not None:
-        raise BusinessRuleException("merging node with a synonymized node")
+        raise BusinessRuleException('Merging node "{node.fullname}" with synonymized node "{into.fullname}".'
+                                    .format(node=node, into=into))
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
@@ -185,12 +188,14 @@ def synonymize(node, into):
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "synonymizing across trees"
     if target.accepted_id is not None:
-        raise BusinessRuleException("synonymizing to synonymized node")
+        raise BusinessRuleException('Synonymizing "{node.fullname}" to synonymized node "{into.fullname}".'
+                                    .format(node=node, into=into))
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
     if node.children.count() > 0:
-        raise BusinessRuleException("synonymizing tree node with children")
+        raise BusinessRuleException('Synonymizing node "{node.fullname}" which has children.'
+                                    .format(node=node))
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
 
     if model._meta.db_table == 'taxon':

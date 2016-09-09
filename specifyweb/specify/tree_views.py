@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
@@ -12,7 +14,23 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import sql, types
 
 from specifyweb.stored_queries import models
+from specifyweb.businessrules.exceptions import BusinessRuleException
 
+def tree_mutation(mutation):
+    @login_maybe_required
+    @require_POST
+    @apply_access_control
+    @csrf_exempt
+    @transaction.commit_on_success
+    @wraps(mutation)
+    def wrapper(*args, **kwargs):
+        try:
+            mutation(*args, **kwargs)
+            result = {'success': True}
+        except BusinessRuleException as e:
+            result = {'success': False, 'error': str(e)}
+        return HttpResponse(toJson(result), content_type="application/json")
+    return wrapper
 
 @login_maybe_required
 @require_GET
@@ -200,46 +218,26 @@ def predict_fullname(request, model, parentid):
     )
     return HttpResponse(fullname, content_type='text/plain')
 
-@login_maybe_required
-@require_POST
-@apply_access_control
-@csrf_exempt
-@transaction.commit_on_success
+@tree_mutation
 def merge(request, model, id):
     node = get_object_or_404(model, id=id)
     target = get_object_or_404(model, id=request.POST['target'])
     tree_extras.merge(node, target)
-    return HttpResponse('OK', content_type='text/plain')
 
-@login_maybe_required
-@require_POST
-@apply_access_control
-@csrf_exempt
-@transaction.commit_on_success
+@tree_mutation
 def synonymize(request, model, id):
     node = get_object_or_404(model, id=id)
     target = get_object_or_404(model, id=request.POST['target'])
     tree_extras.synonymize(node, target)
-    return HttpResponse('OK', content_type='text/plain')
 
-@login_maybe_required
-@require_POST
-@apply_access_control
-@csrf_exempt
-@transaction.commit_on_success
+@tree_mutation
 def unsynonymize(request, model, id):
     node = get_object_or_404(model, id=id)
     tree_extras.unsynonymize(node)
-    return HttpResponse('OK', content_type='text/plain')
 
-@login_maybe_required
-@require_POST
-@apply_access_control
-@csrf_exempt
-@transaction.commit_on_success
+@tree_mutation
 def repair_tree(request, tree):
     tree_model = datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
-    return HttpResponse('OK', content_type='text/plain')

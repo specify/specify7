@@ -110,28 +110,36 @@ class Action {
     }
 
     begin() {
-        const continuation = () => this.execute();
-        const reOpenTree = () => this.node.treeView.reOpenTree();
-        const cancelAction = () => this.cancel();
+        const proceedAction = () => {
+            $dialog.dialog('option', 'buttons', [])
+                .empty()
+                .append($('<div>').progressbar({value: false}));
 
-        $('<div>').append(this.message()).dialog({
+            this.cancel();
+
+            this.execute().done(result => {
+                if (result.success) {
+                    $dialog.dialog('close');
+                    this.node.treeView.reOpenTree();
+                } else {
+                    $dialog.dialog('option', 'buttons', {Close() { $(this).dialog('close'); }})
+                        .dialog('option', 'title', "Failed")
+                        .empty()
+                        .append(
+                            "<p>The operation could not be completed due to the following:</p>",
+                            $('<em>').text(result.error)
+                        );
+                }
+            });
+        };
+
+        const $dialog = $('<div>').append(this.message()).dialog({
             title: this.title(),
             modal: true,
             open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close() { $(this).remove(); },
             buttons: {
-                Proceed() {
-                    $(this)
-                        .dialog('option', 'buttons', [])
-                        .empty()
-                        .append($('<div>').progressbar({value: false}));
-
-                    cancelAction();
-                    continuation().done(() => {
-                        $(this).dialog('close');
-                        reOpenTree();
-                    });
-                },
+                Proceed: proceedAction,
                 Cancel() { $(this).dialog('close'); }
             }
         });
