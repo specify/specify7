@@ -16,7 +16,7 @@ a, a:link, a:visited {
 }
 
 a:hover {
-    color: #000;
+    color: #f4763d;
     cursor: pointer;
     cursor: hand;
 }

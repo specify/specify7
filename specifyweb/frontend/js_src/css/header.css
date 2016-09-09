@@ -1,3 +1,4 @@
+/* header.css */
 
 header {
     background: #fff;
@@ -92,7 +93,7 @@ nav li img {
 }
 
 #user-tools select:hover {
-    color: #000;
+    color: #f4763d;
 }
 
 #user-tools form {
