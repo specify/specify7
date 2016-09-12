@@ -99,6 +99,10 @@ select.specify-field {
     background-color: #C8E6FF;
 }
 
+input.specify-numeric-field {
+    text-align: right;
+}
+
 h1.separator,
 h2.separator,
 h3.separator,

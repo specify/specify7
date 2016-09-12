@@ -14,7 +14,19 @@ var saveblockers      = require('./saveblockers.js');
 var ToolTipMgr        = require('./tooltipmgr.js');
 var dateFormatStr     = require('./dateformat.js');
 
-    var objformat = dataobjformatters.format;
+var objformat = dataobjformatters.format;
+
+function isNumeric(field) {
+    return [
+        'java.lang.Byte',
+        'java.lang.Double',
+        'java.lang.Float',
+        'java.lang.Integer',
+        'java.lang.Long',
+        'java.lang.Short',
+        'java.math.BigDecimal',
+    ].includes(field.type);
+}
 
 module.exports =  Backbone.View.extend({
         __name__: "UIField",
@@ -52,6 +64,7 @@ module.exports =  Backbone.View.extend({
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
             field.isRequired && this.$el.addClass('specify-required-field');
+            isNumeric(field) && this.$el.addClass('specify-numeric-field');
 
             var inputUI = new UIFieldInput({
                 el: this.el,
