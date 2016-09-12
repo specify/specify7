@@ -9,7 +9,8 @@ module.exports =  Backbone.View.extend({
         __name__: "UIFieldInput",
         events: {
             'change': 'change',
-            'input': 'changing'
+            'input': 'changing',
+            'focus': 'selectAll'
         },
         initialize: function(options) {
             this.readOnly = options.readOnly;
@@ -23,6 +24,9 @@ module.exports =  Backbone.View.extend({
             this.readOnly && this.$el.prop('readonly', true);
             return this;
         },
+    selectAll() {
+        this.$el.select();
+    },
         fillIn: function(value) {
             this.$el.val(value);
             return this;
