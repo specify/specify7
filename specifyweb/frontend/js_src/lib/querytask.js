@@ -13,6 +13,7 @@ var queryFromTree      = require('./queryfromtree.js');
 var navigation         = require('./navigation.js');
 var QueryResultsTable  = require('./queryresultstable.js');
 var EditResourceDialog = require('./editresourcedialog.js');
+var QuerySaveDialog    = require('./querysavedialog.js');
 var router             = require('./router.js');
 
     var setTitle = app.setTitle;
@@ -118,60 +119,21 @@ var router             = require('./router.js');
             navigation.removeUnloadProtect(this);
             this.trigger('redisplay');
         },
-        save: function() {
+        save() {
+            this.save_({clone: false});
+        },
+        saveAs() {
+            this.save_({clone: true});
+        },
+        save_: function({clone}) {
             if (this.readOnly) return;
-            this.deleteIncompleteFields(() => this.save_());
-        },
-        save_: function() {
-            if (this.fieldUIs.length < 1) return;
-            this.query.save().done(() => {
-                navigation.removeUnloadProtect(this);
-                this.trigger('redisplay');
+            this.deleteIncompleteFields(() => {
+                if (this.fieldUIs.length < 1) return;
+                new QuerySaveDialog({
+                    queryBuilder: this,
+                    clone: clone
+                }).render();
             });
-        },
-        saveAs: function() {
-            if (this.readOnly) return;
-            this.deleteIncompleteFields(() => this.saveAs_());
-        },
-        saveAs_: function() {
-            if (this.fieldUIs.length < 1) return;
-            const dialog = $(
-`<div>
-   <p>The query will be saved with a new name leaving the
-   current query unchanged.</p>
-   <form><label>New name: <input type="text"/></label></form>
- </div>`
-            ).dialog({
-                title: 'Save query as...',
-                modal: true,
-                close() { $(this).remove(); },
-                open() {
-                    $(':input', this).focus();
-                    $('form', this).submit(evt => {
-                        evt.preventDefault();
-                        doSave();
-                    });
-                },
-                buttons: {
-                    Save() { doSave(); },
-                    Cancel() { $(this).dialog('close'); }
-                }
-            });
-
-            const doSave = () => {
-                const newName = $(':input', dialog).val().trim();
-                if (newName === '') return;
-                const newQuery = this.query.clone();
-                newQuery.set({name: newName, specifyuser: userInfo.resource_uri});
-                newQuery.save().done(() => {
-                    navigation.removeUnloadProtect(this);
-                    navigation.go(`/specify/query/${newQuery.id}/`);
-                });
-                dialog
-                    .dialog('option', 'title', 'Saving...')
-                    .dialog('option', 'buttons', []);
-                $(':input', dialog).prop('readonly', true);
-            };
         },
         addField: function() {
             var newField = new schema.models.SpQueryField.Resource();
