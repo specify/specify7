@@ -56,7 +56,7 @@ var dateFormatStr = require('./dateformat.js');
             return (parsers["java.lang.Double"])(field, value);
         },
 
-        "java.lang.Integer": function(field, value) {
+        "java.lang.Long": function(field, value) {
             var result = {
                 isValid: true,
                 value: value,
@@ -66,12 +66,21 @@ var dateFormatStr = require('./dateformat.js');
             if(_(result.parsed).isNaN()) {
                 result.isValid = false;
                 result.reason = "Not a valid integer.";
+            } else if (!Number.isSafeInteger(result.parsed)) {
+                result.isValid = false;
+                result.reason = `Value must be between ${Number.MIN_SAFE_INTEGER} and ${Number.MAX_SAFE_INTEGER}.`;
             }
             return result;
         },
 
-        "java.lang.Long": function(field, value) {
-            return (parsers["java.lang.Integer"])(field, value);
+        "java.lang.Integer": function(field, value) {
+            const result = (parsers["java.lang.Long"])(field, value);
+
+            if (result.isValid && result.parsed < -Math.pow(2,31) || result.parsed >= Math.pow(2,31)) {
+                result.isValid = false;
+                result.reason = `Value must be between ${-Math.pow(2,31)} and ${Math.pow(2,31)}.`;
+            }
+            return result;
         },
 
         "java.lang.Short": function(field, value) {
