@@ -217,7 +217,7 @@ var WBView = Backbone.View.extend({
     spreadSheetChanged: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
-        navigation.addUnloadProtect(this, "Workbench has unsaved changes.");
+        navigation.addUnloadProtect(this, "The workbench has not been saved.");
     },
     resize: function() {
         this.hot && this.hot.updateSettings({height: this.calcHeight()});

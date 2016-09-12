@@ -112,7 +112,7 @@ var router             = require('./router.js');
         },
         saveRequired: function() {
             this.$('.abandon-changes, .query-save').prop('disabled', false);
-            navigation.addUnloadProtect(this, "The query definition has unsaved changes.");
+            navigation.addUnloadProtect(this, "This query definition has not been saved.");
         },
         abandonChanges: function() {
             navigation.removeUnloadProtect(this);

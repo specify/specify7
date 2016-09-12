@@ -40,7 +40,7 @@ module.exports =  Backbone.View.extend({
             this.buttonsDisabled = disabled;
             this.buttons && this.buttons.prop('disabled', disabled);
             if(!disabled) {
-                navigation.addUnloadProtect(this, "The form contains unsaved changes.");
+                navigation.addUnloadProtect(this, "This form has not been saved.");
             } else {
                 navigation.removeUnloadProtect(this);
             }
