@@ -76,7 +76,9 @@ var systemInfo   = require('./systeminfo.js');
             } else if (options.wasNew) {
                 navigation.go(resource.viewUrl());
             } else {
-                showResource(new resource.constructor({ id: resource.id }), recordSet);
+                const reloadResource = new resource.constructor({ id: resource.id });
+                reloadResource.recordsetid = resource.recordsetid;
+                reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
             }
         }).on('deleted', function() {
             if (view.next) {
