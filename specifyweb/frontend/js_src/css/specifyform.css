@@ -31,7 +31,8 @@ div.specify-view-content-container,
 .specify-form-header .recordset-prev,
 .specify-form-header .recordset-next,
 .specify-form-header a,
-.specify-subview-header a {
+.specify-subview-header a,
+.specify-form-header .recordset-info {
     margin-left: 1em;
     font-size: 0.8em;
 }
@@ -39,10 +40,6 @@ div.specify-view-content-container,
 .specify-form-header span.recordset-prev,
 .specify-form-header span.recordset-next {
     color: #d3d3d3;
-}
-
-.specify-form-header .recordset-info {
-    font-size: 0.8em;
 }
 
 .specify-form-header img {
