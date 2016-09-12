@@ -74,6 +74,7 @@ module.exports = {
                 isRelationship: false,
                 isRequired: false,
                 isHidden: alwaysTrue,
+                readOnly: true,
                 type: 'java.lang.Boolean'
             });
             fields.push(isOnLoan);
