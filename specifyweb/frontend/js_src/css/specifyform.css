@@ -99,7 +99,8 @@ select.specify-field {
     background-color: #C8E6FF;
 }
 
-input.specify-numeric-field {
+input.specify-numeric-field,
+input.specify-spinner.specify-field-in-table {
     text-align: right;
 }
 
