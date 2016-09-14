@@ -10,7 +10,7 @@ from sqlalchemy.sql.functions import concat, coalesce, count
 from sqlalchemy import types
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontaineritem
+from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 
 from . import models
 from .queryfieldspec import build_join
@@ -31,7 +31,21 @@ class ObjectFormatter(object):
     def getFormatterDef(self, specify_model, formatter_name):
         def lookup(attr, val):
             return self.formattersDom.find('format[@%s=%s]' % (attr, quoteattr(val)))
+
+        def getFormatterFromSchema():
+            try:
+                formatter_name = Splocalecontainer.objects.get(
+                    name=specify_model.name.lower,
+                    schematype=0,
+                    discipline=self.collection.discipline
+                ).format
+            except Splocalecontainer.DoesNotExist:
+                return None
+
+            return lookup('name', formatter_name)
+
         return (formatter_name and lookup('name', formatter_name)) \
+            or getFormatterFromSchema() \
             or lookup('class', specify_model.classname)
 
     def getAggregatorDef(self, specify_model, aggregator_name):
