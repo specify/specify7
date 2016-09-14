@@ -23,10 +23,10 @@
     {% endif %}
 
     {% if form %}
+    <h2>Collection</h2>
     <form action="." method="post" id="choose-collection-form">
       {% csrf_token %}
       {{ form.collection.errors }}
-      <label>Collection</label>
       {{ form.collection }}
       <input type="hidden" name="next" value="{{ next }}" />
       <div class="submit-row">

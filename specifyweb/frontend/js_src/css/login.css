@@ -25,6 +25,15 @@ header {
     font-size: 14px;
 }
 
+#content h2 {
+    border: 1px solid #f4763d;
+    background: #f79244;
+    color: #fff;
+    margin: -5px;
+    padding: 6px 14px;
+    font-size: 1em;
+}
+
 #content .errornote {
     background: #fff;
     color: #f4763d;
