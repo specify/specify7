@@ -6,6 +6,15 @@ header {
     margin: 0px 15px;
 }
 
+#site-logo {
+    display: inline-block;
+    background-image: url(/static/img/seven_logo.png);
+    background-size: 185px 55px;
+    width: 185px;
+    height: 55px;
+    margin: 10px 0 0 20px;
+}
+
 #site-logo img {
     margin: 10px 0 0 20px;
     height: 55px;
