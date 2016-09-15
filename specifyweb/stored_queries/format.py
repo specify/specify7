@@ -42,7 +42,7 @@ class ObjectFormatter(object):
             except Splocalecontainer.DoesNotExist:
                 return None
 
-            return lookup('name', formatter_name)
+            return formatter_name and lookup('name', formatter_name)
 
         return (formatter_name and lookup('name', formatter_name)) \
             or getFormatterFromSchema() \
