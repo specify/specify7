@@ -246,7 +246,7 @@ module.exports = RecordSetsDialog.extend({
             this.$('div.i-action-entry-snag').remove();
 
             var numsCtrl = this.$('textarea.i-action-entry');
-            var numEntry = numsCtrl.attr('value');
+            var numEntry = numsCtrl.val();
             var formatter = this.getSrchFld().getUIFormatter();
             var nums = this.parseEntry(numEntry, formatter);
 
