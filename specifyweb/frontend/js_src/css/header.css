@@ -15,11 +15,6 @@ header {
     margin: 10px 0 0 20px;
 }
 
-#site-logo img {
-    margin: 10px 0 0 20px;
-    height: 55px;
-}
-
 #header-loading {
     margin-left: 48px;
     flex-grow: 1;
