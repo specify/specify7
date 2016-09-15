@@ -113,6 +113,7 @@ function confirmNavigation(proceed, cancel) {
         modal: true,
         open(evt, ui) {
             $('.ui-dialog-titlebar-close', ui.dialog).hide();
+            $('.ui-dialog-buttonset button:first-child', ui.dialog).focus();
         },
         close() {
             $(this).remove();
