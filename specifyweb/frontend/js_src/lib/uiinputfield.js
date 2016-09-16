@@ -17,10 +17,11 @@ module.exports =  Backbone.View.extend({
             this.noValidation = options.noValidation;
             this.formatter = options.formatter;
             this.parser = options.parser;
+            this.formatStr = options.formatStr;
         },
         render: function() {
             this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
-            this.$el.attr('placeholder', this.parser.formatStr);
+            this.formatStr && this.$el.attr('placeholder', this.formatStr);
             this.readOnly && this.$el.prop('readonly', true);
             return this;
         },

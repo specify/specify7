@@ -112,13 +112,13 @@ var dateFormatStr = require('./dateformat.js');
         },
 
         "java.sql.Timestamp": function(field, value) {
-            var parsed = moment(value, dateFormatStr, true);
+            var parsed = moment(value, dateFormatStr(), true);
             if (!parsed.isValid()) {
                 return {
                     isValid: false,
                     value: value,
                     parsed: null,
-                    reason: "Required Format: " + dateFormatStr
+                    reason: "Required Format: " + dateFormatStr()
                 };
             } else {
                 return {

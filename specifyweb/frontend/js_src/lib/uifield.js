@@ -28,6 +28,14 @@ function isNumeric(field) {
     ].includes(field.type);
 }
 
+function isDate(field) {
+    return [
+        "java.sql.Timestamp",
+        "java.util.Calendar",
+        "java.util.Date",
+    ].includes(field.type);
+}
+
 module.exports =  Backbone.View.extend({
         __name__: "UIField",
         render: function() {
@@ -71,6 +79,7 @@ module.exports =  Backbone.View.extend({
                 readOnly: readOnly,
                 noValidation: this.model.noValidation,
                 formatter: formatter,
+                formatStr: isDate(field) ? dateFormatStr() : null, // should be part of uiparse, really.
                 parser: uiparse.bind(null, field)
             }).render()
                     .on('changed', this.inputChanged, this)
