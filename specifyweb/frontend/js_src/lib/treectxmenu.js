@@ -21,8 +21,8 @@ function contextMenuBuilder(treeView) {
             items.cancelAction = {name: "Cancel action", icon: "cancel", accesskey: 'c'};
         } else {
             items = {
-                'open': {name: ro ? "View" : "Edit", icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"},
-                'query': {name: "Query", icon: "query", accesskey: "q"}
+                'query': {name: "Query", icon: "query", accesskey: "q"},
+                'open': {name: ro ? "View" : "Edit", icon: ro ? "view" : "open", accesskey: ro ? "v" : "e"}
             };
             if (!ro) Object.assign(items, {
                 'add-child': {
