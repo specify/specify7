@@ -216,7 +216,7 @@ its descendants, under the new parent <em>${receiver}</em>.`;
     }
 
     hintMessage() {
-        return `Select a new parent for the node, <em>${this.node.name}</em>.`;
+        return `Right-click to select a new parent for <em>${this.node.name}</em>.`;
     }
 }
 
@@ -250,7 +250,7 @@ and rank being themselves merged recursively.`;
     }
 
     hintMessage() {
-        return `Select a target for <em>${this.node.name}</em> to be merged into.`;
+        return `Right-click to select a target for <em>${this.node.name}</em> to be merged into.`;
     }
 }
 
@@ -280,7 +280,7 @@ class SynonymizeNodeAction extends Action {
     }
 
     hintMessage() {
-        return `Select a target for <em>${this.node.name}</em> to be synonymized to.`;
+        return `Right-click to select a target for <em>${this.node.name}</em> to be synonymized to.`;
     }
 }
 
