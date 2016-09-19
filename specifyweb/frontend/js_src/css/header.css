@@ -1,0 +1,122 @@
+/* header.css */
+
+header {
+    background: #fff;
+    position: relative;
+    margin: 0px 15px;
+}
+
+#site-logo {
+    display: inline-block;
+    background-image: url(/static/img/seven_logo.png);
+    background-size: 185px 55px;
+    width: 185px;
+    height: 55px;
+    margin: 10px 0 0 20px;
+}
+
+#header-loading {
+    margin-left: 48px;
+    flex-grow: 1;
+    text-align: left;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+header nav {
+    border-top: solid 6px #f4763d;
+    background: #f1f2f2;
+    margin-top: 5px;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+}
+
+nav ul {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+nav li {
+    margin-right: 30px;
+    padding: 12px 0 6px 0;
+    border-bottom: solid 4px #f1f2f2;
+}
+
+nav li:hover {
+    border-bottom: solid 4px #f4763d;
+}
+
+nav a {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+nav a:link,
+nav a:visited {
+    color: #555
+}
+
+nav a:hover {
+    color: #000;
+}
+
+nav li img {
+    display: inline;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+#user-tools {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    text-align: right;
+}
+
+#user-tools a {
+    font-weight: bold;
+}
+
+#user-tools .login-logout {
+    margin-right: 2px;
+}
+
+#user-tools select {
+    background: #fff;
+    border: none;
+    color: #555;
+    font-weight: bold;
+    padding: 4px 0px;
+    margin-left: 2px;
+    font-size: 12px;
+    vertical-align: baseline;
+}
+
+#user-tools select:hover {
+    color: #f4763d;
+}
+
+#express-search .express-search-query {
+    width: 100%;
+    background: #f1f2f2;
+    border: 1px solid #aaa;
+    font-size: 14px;
+}
+
+#express-search .express-search-submit {
+    width: 22px;
+    height: 18.5px;
+    margin: 0;
+    padding: 0;
+}
+
+.ui-autocomplete {
+    z-index: 110;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

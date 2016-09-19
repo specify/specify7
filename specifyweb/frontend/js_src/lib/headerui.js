@@ -14,7 +14,6 @@ var querystring = require('./querystring.js');
 
 
 var toolModules = [
-    require('./toolbarwelcome.js'),
     require('./toolbardataentry.js'),
     require('./toolbarinteractions.js'),
     require('./toolbartrees.js'),
@@ -25,17 +24,13 @@ var toolModules = [
     require('./toolbarwbs.js'),
     require('./toolbarmasterkey.js'),
     require('./toolbarusers.js'),
+    require('./toolbartreerepair.js'),
 ];
 
     var ExpressSearchInput = Backbone.View.extend({
         __name__: "ExpressSearchInput",
         events: {
             'submit': 'search'
-        },
-        el: $('<form id="express-search" action="/specify/express_search/">'),
-        render: function() {
-            this.$el.append('<input type="search" class="express-search-query" name="q" placeholder="Search">');
-            return this;
         },
         search: function(evt) {
             var query, url;
@@ -70,29 +65,20 @@ module.exports = Backbone.View.extend({
             });
         },
         render: function() {
-            (new ExpressSearchInput()).render().$el.appendTo(this.el);
+            new ExpressSearchInput({el: this.$('#express-search')});
             userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
             this.$('#user-tools a.login-logout')
-                .text(userInfo.isauthenticated ? '✕' : 'Log in')
+                .text(userInfo.isauthenticated ? '' : 'Log in')
                 .attr('href', '/accounts/' + (userInfo.isauthenticated ? 'logout/' : 'login/'))
                 .attr('title', userInfo.isauthenticated ? 'Log out.' : 'Log in.');
 
             var collectionSelector = this.$('#user-tools select');
-            var collections = new schema.models.Collection.LazyCollection();
-            $.when(
-                domain.getDomainResource('collection').fetchIfNotPopulated(),
-                collections.fetch({limit: 0})
-            ).done(function (currentCollection) {
-               collections.each(function(collection) {
-                   $("<option>", {selected: collection.id === currentCollection.id, value: collection.id})
-                       .text(collection.get('collectionname'))
-                       .appendTo(collectionSelector);
-               });
-            });
-            this.$('#header-loading').remove();
-            this.$el.append('<nav id="site-nav">');
+            $.get('/context/collection/').done(({current, available}) => collectionSelector.append(
+                _.map(available,
+                      ([id, name]) => $('<option>', {selected: id === current, value: id, text: name})[0])));
+
             var lis = this.visibleTools.map(this.makeButton);
-            $('<ul>').append(lis).appendTo(this.$('#site-nav'));
+            this.$('#site-nav ul').empty().append(lis);
             return this;
         },
         makeButton: function(toolDef) {
@@ -107,6 +93,7 @@ module.exports = Backbone.View.extend({
             evt.preventDefault();
             var index = this.$('#site-nav > ul > li > a').index(evt.currentTarget);
             this.visibleTools[index].execute();
+            $(evt.currentTarget).blur();
         },
         openUserTools: function(evt) {
             new UserTools({user: userInfo, tools: this.hiddenTools}).render();

@@ -1,24 +1,29 @@
 "use strict";
+var $ = require('jquery');
 var Q = require('q');
 var _ = require('underscore');
 
-    function buildFullName(resource, options) {
-        return Q.all([resource, [], true,
+    function predictFullName(resource, options) {
+        return Q.all([resource,
                       resource.getRelated('parent', {prePop: true, noBusinessRules: true}),
                       resource.getRelated('definitionitem', {prePop: true, noBusinessRules: true})
                      ])
-            .spread(_buildFullName)
+            .spread((resource, parent, defitem) => {
+                if (parent == null || defitem == null) return null;
+                if (parent.id === resource.id || parent.get('rankid') >= defitem.get('rankid')) {
+                    throw 'bad-tree-structure';
+                }
+                if (resource.get('name') == null) return null;
+                return $.get(`/api/specify_tree/taxon/${parent.id}/predict_fullname/`, {
+                    name: resource.get('name'), treedefitemid: defitem.id });
+            })
             .then(
-                function(acc) {
-                    return {
+                fullname => ({
                         key: 'tree-structure',
                         valid: true,
-                        action: function() {
-                            return resource.set('fullname', acc.reverse().join(' '));
-                        }
-                    };
-                },
-                function(error) {
+                        action() { return resource.set('fullname', fullname); }
+                }),
+                error => {
                     if (error === 'bad-tree-structure' && options.reportBadStructure)
                         return {
                             key: 'tree-structure',
@@ -29,21 +34,6 @@ var _ = require('underscore');
                 }
             );
     }
-
-    function _buildFullName(resource, acc, start, parent, defitem) {
-        if (parent && (parent.get('rankid') >= resource.get('rankid'))) {
-            throw 'bad-tree-structure';
-        }
-        if (start || defitem.get('isinfullname')) acc.push(resource.get('name'));
-        if (parent == null) {
-            return acc;
-        } else {
-            return Q.all([parent, acc, false,
-                          parent.getRelated('parent', {prePop: true, noBusinessRules: true}),
-                          parent.getRelated('definitionitem', {prePop: true, noBusinessRules: true})
-                         ]).spread(_buildFullName);
-        }
-    };
 
     var treeBusinessRules = {
         isTreeNode: function(resource) {
@@ -58,10 +48,11 @@ var _ = require('underscore');
             switch (fieldName) {
             case 'parent':
                 // only report bad tree structure as a problem with the parent field.
-                promise = buildFullName(resource, {reportBadStructure: true});
+                promise = predictFullName(resource, {reportBadStructure: true});
                 break;
             case 'name':
-                promise = buildFullName(resource, {reportBadStructure: false});
+            case 'definitionitem':
+                promise = predictFullName(resource, {reportBadStructure: false});
                 break;
             default:
                 promise = Q(null);

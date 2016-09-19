@@ -1,8 +1,17 @@
-#express-search {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 0 10px 5px;
+/* specifyform.css */
+
+#content {
+    margin: 15px;
+    display: flex;
+}
+
+.specify-root-form {
+    padding: 0px 20px 10px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 div.specify-view-content,
@@ -11,21 +20,26 @@ div.specify-view-content-container,
     display: inline-block;
 }
 
-.specify-form-header, .specify-subview-header {
-    border-bottom: solid 1px;
+.specify-form-header {
+    border-bottom: solid 2px #f4763d;
+    margin-left: -8px;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
 }
 
-.specify-form-header > .recordset-prev,
-.specify-form-header > .recordset-next,
-.specify-form-header > a,
-.specify-subview-header > a {
+.specify-form-header .recordset-prev,
+.specify-form-header .recordset-next,
+.specify-form-header a,
+.specify-subview-header a,
+.specify-form-header .recordset-info {
     margin-left: 1em;
     font-size: 0.8em;
 }
 
-.specify-form-header > span.recordset-prev,
-.specify-form-header > span.recordset-next {
-    color: lightgrey;
+.specify-form-header span.recordset-prev,
+.specify-form-header span.recordset-next {
+    color: #d3d3d3;
 }
 
 .specify-form-header img {
@@ -34,12 +48,37 @@ div.specify-view-content-container,
     height: 24px;
 }
 
+.specify-subview-header {
+    border-bottom: solid 1px #555;
+}
+
 .specify-form-buttons {
     text-align: right;
 }
 
 .specify-form-buttons input {
     margin-right: 10px;
+    border-radius: 0;
+    border: 2px solid #f4763d;
+    background: #f79244;
+    color: #fff;
+    padding: 4px;
+}
+
+.specify-form-buttons input:hover,
+.specify-form-buttons input:focus {
+    outline: none;
+    border: 2px solid #f79244;
+    background: #f4763d;
+}
+
+.specify-form-buttons input:active {
+    color: #000;
+}
+
+.specify-form-buttons input:disabled {
+    background: #d3d3d3;
+    border: none;
 }
 
 textarea.specify-field {
@@ -58,6 +97,11 @@ select.specify-field {
 
 .specify-required-field {
     background-color: #C8E6FF;
+}
+
+input.specify-numeric-field,
+input.specify-spinner.specify-field-in-table {
+    text-align: right;
 }
 
 h1.separator,
@@ -130,6 +174,21 @@ ul.ui-autocomplete li.ui-menu-item {
 
 .specify-formtable td, .specify-formtable th {
     text-align: center;
+}
+
+.specify-formtable .expanded-form {
+    padding: 12px;
+}
+
+.specify-formtable > tbody > tr > td {
+    border: 1px solid #9A9A9A;
+}
+
+.specify-formtable > tbody > tr > td.expand,
+.specify-formtable > tbody > tr > td.contract,
+.specify-formtable > tbody > tr > td.remove {
+    border: none;
+    vertical-align: top;
 }
 
 .specifyplugin-latlonui table {

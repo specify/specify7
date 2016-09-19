@@ -1,16 +1,19 @@
 import re
 
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
+from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
+from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils import simplejson
 from django.conf import settings
 from django import forms
+from django.db import connection, transaction
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion, Agent
+from specifyweb.specify.models import Collection, Spappresourcedata, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -19,44 +22,91 @@ from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
 
-class CollectionChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.collectionname
-
 
 def set_collection_cookie(response, collection_id):
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def login(request):
-    """A Django view to log users into the system.
-    Supplements the stock Django login with a collection selection.
-    """
-    collection_cell = [] # use a closure to tunnel the collection field out of the auth mechanism
-    class LoginForm(AuthenticationForm):
-        collection = CollectionChoiceField(queryset=Collection.objects.all(), empty_label=None)
+def users_collections(cursor, user_id):
+    cursor.execute("""
+    select c.usergroupscopeid, c.collectionname from collection c
+    inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
+    inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
+    inner join specifyuser u on u.specifyuserid = up.specifyuserid and p.grouptype is null
+    where up.specifyuserid = %s
+    """, [user_id])
 
-        def clean(self):
-            AuthenticationForm.clean(self)
-            collection = self.cleaned_data.get('collection')
-            if self.user_cache is not None:
-                try:
-                    Agent.objects.get(division=collection.discipline.division,
-                                      specifyuser=self.user_cache)
-                except Agent.DoesNotExist:
-                    raise forms.ValidationError("The user has no agent for the chosen collection.")
-            collection_cell.append(collection.id)
-            return self.cleaned_data
+    return list(cursor.fetchall())
 
-    response = auth_views.login(request,
-                                template_name='login.html',
-                                authentication_form=LoginForm)
-    if len(collection_cell) > 0:
-        set_collection_cookie(response, collection_cell[0])
-    return response
+@login_maybe_required
+@require_http_methods(['GET', 'PUT'])
+@csrf_exempt
+def user_collection_access(request, userid):
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+    cursor = connection.cursor()
 
-def logout(request):
-    """A Django view to log users out."""
-    return auth_views.logout(request, template_name='logged_out.html')
+    if request.method == 'PUT':
+        collections = simplejson.loads(request.raw_post_data)
+        user = Specifyuser.objects.get(id=userid)
+        with transaction.commit_on_success():
+            cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
+            cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
+                           'select spprincipalid from specifyuser_spprincipal)')
+            for collectionid in collections:
+                principal = Spprincipal.objects.create(
+                    groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
+                    grouptype=None,
+                    name=user.name,
+                    priority=80,
+                )
+                cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
+                               [collectionid, principal.id])
+                cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
+                               'values (%s, %s)', [userid, principal.id])
+
+    collections = users_collections(cursor, userid)
+    return HttpResponse(simplejson.dumps([row[0] for row in collections]),
+                        content_type="application/json")
+
+class CollectionChoiceField(forms.ChoiceField):
+    widget = forms.RadioSelect
+    def label_from_instance(self, obj):
+        return obj.collectionname
+
+@login_maybe_required
+@require_http_methods(['GET', 'POST'])
+def choose_collection(request):
+    redirect_to = request.REQUEST.get('next', '')
+    redirect_resp = HttpResponseRedirect(
+        redirect_to if is_safe_url(url=redirect_to, host=request.get_host())
+        else settings.LOGIN_REDIRECT_URL
+    )
+
+    available_collections = users_collections(connection.cursor(), request.specify_user.id)
+
+    if len(available_collections) < 1:
+        auth_logout(request)
+        return TemplateResponse(request, 'choose_collection.html', context={'next': redirect_to})
+
+    if len(available_collections) == 1:
+        set_collection_cookie(redirect_resp, available_collections[0][0])
+        return redirect_resp
+
+    class Form(forms.Form):
+        collection = CollectionChoiceField(
+            choices=available_collections,
+            initial=request.COOKIES.get('collection', None))
+
+    if request.method == 'POST':
+        form = Form(data=request.POST)
+        if form.is_valid():
+            set_collection_cookie(redirect_resp, form.cleaned_data['collection'])
+            return redirect_resp
+    else:
+        form = Form()
+
+    context = {'form': form, 'next': redirect_to}
+    return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_http_methods(['GET', 'PUT'])
 @csrf_exempt
@@ -92,6 +142,8 @@ def api_login(request):
 @require_http_methods(['GET', 'POST'])
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
+    current = request.COOKIES.get('collection', None)
+    available_collections = users_collections(connection.cursor(), request.specify_user.id)
     if request.method == 'POST':
         try:
             collection = Collection.objects.get(id=int(request.raw_post_data))
@@ -99,12 +151,14 @@ def collection(request):
             return HttpResponseBadRequest('bad collection id', content_type="text/plain")
         except Collection.DoesNotExist:
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
+        if collection.id not in [c[0] for c in available_collections]:
+            return HttpResponseBadRequest('access denied')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
         return response
     else:
-        collection = request.COOKIES.get('collection', '')
-        return HttpResponse(collection, content_type="text/plain")
+        response = dict(available=available_collections, current=(current and int(current)))
+        return HttpResponse(simplejson.dumps(response), content_type="application/json")
 
 @login_maybe_required
 @require_GET
@@ -114,6 +168,8 @@ def user(request):
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated()
+    data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
+    data['agent'] = obj_to_data(request.specify_user_agent)
     if settings.RO_MODE or not request.user.is_authenticated():
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
@@ -233,11 +289,20 @@ def remote_prefs(request):
 @cache_control(max_age=86400, public=True)
 def system_info(request):
     spversion = Spversion.objects.get()
+    collection = request.specify_collection
+    discipline = collection.discipline if collection is not None else None
+    institution = Institution.objects.get()
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
+        stats_url=settings.STATS_URL,
+        database=settings.DATABASE_NAME,
+        institution=institution.name,
+        discipline=discipline and discipline.name,
+        collection=collection and collection.collectionname,
+        isa_number=collection and collection.isanumber,
         )
     return HttpResponse(simplejson.dumps(info), content_type='application/json')

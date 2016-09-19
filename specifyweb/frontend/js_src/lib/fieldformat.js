@@ -10,7 +10,7 @@ var AgentTypeCBX  = require('./agenttypecbx.js');
     function formatDate(value) {
         if (value == null) return value;
         var m = moment(value);
-        return m.isValid() ? m.format(dateFormatStr) : (value || '');
+        return m.isValid() ? m.format(dateFormatStr()) : (value || '');
     }
 
     function formatInt(value) {

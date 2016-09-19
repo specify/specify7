@@ -180,6 +180,7 @@ def make_recordset(request):
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)
 
     if distinct:

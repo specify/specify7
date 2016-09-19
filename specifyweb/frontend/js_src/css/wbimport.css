@@ -1,3 +1,9 @@
+/* wbimport.css */
+
+.workbench-import-view {
+    width: 100%
+}
+
 .workbench-import-view table {
     background-color: #fff;
 }

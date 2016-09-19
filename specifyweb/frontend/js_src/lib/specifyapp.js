@@ -62,7 +62,13 @@ var systemInfo   = require('./systeminfo.js');
     // build and display view for resource
     function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
-        var view = new ResourceView({ populateForm: populateForm, model: resource, recordSet: recordSet, mode: viewMode });
+        var view = new ResourceView({
+            className: "specify-root-form",
+            populateForm: populateForm,
+            model: resource,
+            recordSet: recordSet,
+            mode: viewMode
+        });
 
         view.on('saved', function(resource, options) {
             if (options.addAnother) {
@@ -70,7 +76,9 @@ var systemInfo   = require('./systeminfo.js');
             } else if (options.wasNew) {
                 navigation.go(resource.viewUrl());
             } else {
-                showResource(new resource.constructor({ id: resource.id }), recordSet);
+                const reloadResource = new resource.constructor({ id: resource.id });
+                reloadResource.recordsetid = resource.recordsetid;
+                reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
             }
         }).on('deleted', function() {
             if (view.next) {

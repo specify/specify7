@@ -100,7 +100,10 @@ var initialContext    = require('./initialcontext.js');
             this.setElement(querycbx);
             this.$('input').replaceWith(control);
             this.fieldName = control.attr('name');
-            this.readOnly = control.prop('readonly');
+            var field = this.model.specifyModel.getField(this.fieldName);
+            this.fieldName = field.name; // the name from the form might be an alias.
+
+            this.readOnly = control.prop('readonly') || field.readOnly;
             this.inFormTable = control.hasClass('specify-field-in-table');
             if (this.readOnly || this.inFormTable) {
                 this.$('.querycbx-edit, .querycbx-add, .querycbx-search, .querycbx-clone').hide();
@@ -111,7 +114,7 @@ var initialContext    = require('./initialcontext.js');
             if (this.hideButtons) {
                 this.$('.querycbx-edit, .querycbx-add, .querycbx-clone, .querycbx-display').hide();
             }
-            var field = this.model.specifyModel.getField(this.fieldName);
+            this.readOnly && control.prop('readonly', true);
             field.isRequired && this.$('input').addClass('specify-required-field');
             this.isRequired = this.$('input').is('.specify-required-field');
 
@@ -129,7 +132,7 @@ var initialContext    = require('./initialcontext.js');
                 f => (f.model === this.relatedModel ? '' : f.model.getLocalizedName() + " / ") + f.getLocalizedName());
             control.attr('title', 'Searches: ' + fieldTitles.join(', '));
 
-            control.autocomplete({
+            this.readOnly || control.autocomplete({
                 minLength: 3,
                 source: this.makeQuery.bind(this, searchFieldStrs)
             });
@@ -259,6 +262,7 @@ var initialContext    = require('./initialcontext.js');
                 el: this.dialog,
                 model: related,
                 mode: this.readOnly ? 'view' : 'edit',
+                noAddAnother: true,
                 noHeader: true
             }).render()
                 .on('saved', this.resourceSaved, this)

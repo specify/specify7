@@ -15,9 +15,10 @@ var specifyform  = require('./specifyform.js');
 module.exports = Backbone.View.extend({
         __name__: "EditResourceDialog",
         className: "resource-edit-dialog",
-        initialize: function(options) {
-            this.resource = options.resource;
-        },
+    initialize: function({resource, deleteWarning}) {
+        this.resource = resource;
+        this.deleteWarning = deleteWarning;
+    },
         render: function() {
             var viewName = this.resource.specifyModel.view || this.resource.specifyModel.name;
             specifyform.buildViewByName(viewName).done(this._render.bind(this));
@@ -39,7 +40,7 @@ module.exports = Backbone.View.extend({
             var title = (this.resource.isNew() ? "New " : "") + this.resource.specifyModel.getLocalizedName();
 
             if (!this.resource.isNew() && !this.readOnly) {
-                var deleteButton = new DeleteButton({ model: this.resource });
+                var deleteButton = new DeleteButton({ model: this.resource, warning: this.deleteWarning });
                 deleteButton.render().$el.appendTo(buttons);
                 deleteButton.on('deleting', this.close, this);
             }

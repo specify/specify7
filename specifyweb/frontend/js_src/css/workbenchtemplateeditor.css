@@ -1,3 +1,4 @@
+/* workbenchtemplateeditor.css */
 
 .workbench-template-editor th {
     text-align: center;
@@ -59,6 +60,7 @@
 
 .workbench-template-editor th span:last-child {
     float: right;
+    margin-left: 20px;
 }
 
 .wb-editor-mappings li {

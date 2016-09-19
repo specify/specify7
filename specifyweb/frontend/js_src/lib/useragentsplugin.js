@@ -73,6 +73,7 @@ var whenall  = require('./whenall.js');
             this.$el.dialog({
                 modal: true,
                 width: 'auto',
+                minHeight: 175,
                 close: function() { $(this).remove(); },
                 buttons: [
                     {text: 'Update', click: function() { _.invoke(controls, 'save', user); $(this).dialog('close'); }},

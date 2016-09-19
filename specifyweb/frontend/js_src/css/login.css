@@ -1,79 +1,95 @@
 /* LOGIN FORM */
 
 body {
-    background-image: url(/images/SpecifyBigSplash.png);
+    background: #f79244;
+}
+
+header {
+    background: #f1f2f2;
+    height: 450px;
+    width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+    background-image: url(/static/img/seven_logo.png);
     background-repeat: no-repeat;
-    background-position: center 130px;
+    background-position: center 255px;
 }
 
 #content {
-    background: rgb(240,240,240);
-    width: 28em;
-    min-width: 300px;
+    background: #fff;
+    border: solid 1px #aaa;
+    width: 300px;
+    margin-top: 40px;
     margin-left: auto;
     margin-right: auto;
-    /* margin-top: 200px; */
+    padding: 10px;
+    font-size: 14px;
+}
 
-    box-shadow: 5px 5px 15px #000;
-    border: solid 1px #000;
-    border-radius: 10px;
+#content h2 {
+    border: 1px solid #f4763d;
+    background: #f79244;
+    color: #fff;
+    margin: -5px;
+    padding: 6px 14px;
+    font-size: 1em;
+}
+
+#content .errornote {
+    background: #fff;
+    color: #f4763d;
+    font-size: 14px;
+}
+
+#content .errorlist {
+    margin: 0;
+    padding: 0;
+}
+
+#content .errorlist li {
+    background: #fff;
+    color: #f4763d;
+    font-size: 14px;
+    margin-left: 14px;
+}
+
+label {
+    display: block;
+    color: #888;
 }
 
 #content-main {
     width: 100%;
 }
 
-form {
-    margin-top: 1em;
-}
-
 .form-row {
-    padding: 4px 0;
-    float: left;
+    margin-bottom: 10px;
+}
+
+.form-row input {
+    font-size: 15px;
     width: 100%;
-}
-
-.form-row label {
-    float: left;
-    width: 9em;
-    padding-right: 0.5em;
-    line-height: 2em;
-    text-align: right;
-    font-size: 1em;
-    color: #333;
-}
-
-.form-row #id_username, .form-row #id_password {
-    width: 14em;
+    box-sizing: border-box;
 }
 
 .form-row select {
-    width: 16em;
+    width: 100%;
+    font-size: 15px;
+    background: #fff;
 }
 
-span.help {
-    font-size: 10px;
-    display: block;
-}
-
-.submit-row {
-    clear: both;
-    padding: 1em 0 1em 9.4em;
+input[type="submit"] {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.66);
+    color: #f4763d;
+    margin-top: 14px;
+    cursor: pointer;
 }
 
 .password-reset-link {
     text-align: center;
-}
-
-.errornote {
-    margin: 10px;
-    padding: 3px;
-    background-color: red;
-}
-
-.errorlist li {
-    width: auto;
-    padding-left: 3px;
-    margin-right: 20px;
-    background-color: red;
 }

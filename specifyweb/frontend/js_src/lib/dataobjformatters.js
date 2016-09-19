@@ -15,10 +15,10 @@ var initialContext = require('./initialcontext.js');
         if (!resource) return $.when(null);
         return resource.fetchIfNotPopulated().pipe(function() {
             formatter = formatter || resource.specifyModel.getFormat();
-            var formatterDef = formatter ? $('format[name="' + formatter + '"]', formatters) :
-                    $('format[class="' + resource.specifyModel.longName + '"]', formatters);
+            var formatterDef = formatter ? $(`format[name="${formatter}"]`, formatters) :
+                    $(`format[class="${resource.specifyModel.longName}"][default="true"]`, formatters);
 
-            var sw = formatterDef.find('switch');
+            var sw = formatterDef.find('switch').first();
             // external dataobjFormatters not supported
             if (!sw.length || sw.find('external').length) return null;
 

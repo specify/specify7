@@ -6,6 +6,7 @@ var Backbone = require('./backbone.js');
 
 var saveblocked = require('./templates/saveblocked.html');
 var conflict = require('./templates/conflict.html');
+const navigation = require('./navigation.js');
 
 module.exports =  Backbone.View.extend({
         __name__: "SaveButton",
@@ -35,9 +36,14 @@ module.exports =  Backbone.View.extend({
                 if (!blocker.deferred) this.setSaveBlocked(true);
             }, this);
         },
-        setButtonsDisabled: function(state) {
-            this.buttonsDisabled = state;
-            this.buttons && this.buttons.prop('disabled', state);
+        setButtonsDisabled: function(disabled) {
+            this.buttonsDisabled = disabled;
+            this.buttons && this.buttons.prop('disabled', disabled);
+            if(!disabled) {
+                navigation.addUnloadProtect(this, "This form has not been saved.");
+            } else {
+                navigation.removeUnloadProtect(this);
+            }
         },
         setSaveBlocked: function(saveBlocked) {
             this.saveBlocked = saveBlocked;

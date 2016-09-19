@@ -124,25 +124,15 @@ module.exports = {
                 }
             },
             customChecks: {
-                taxon: function(determination) {
-                    return determination.rget('taxon', true).pipe(function(taxon) {
-                        if (!(taxon != null)) {
-                            determination.set('preferredtaxon', null);
-                            return {
-                                valid: true
-                            };
-                        }
-                        var recur = function(taxon) {
-                            if (!taxon.get('isaccepted') && taxon.get('acceptedtaxon')) {
-                                return taxon.rget('acceptedtaxon', true).pipe(recur);
-                            } else {
-                                determination.set('preferredtaxon', taxon);
-                                return {valid: true};
-                            }
-                        };
-                        return recur(taxon);
-                    });
-                },
+                taxon: determination => determination.rget('taxon', true).pipe(
+                    taxon => taxon == null ?
+                        { valid: true, action() { determination.set('preferredtaxon', null); }}
+                    : (function recur(taxon) {
+                        return taxon.get('acceptedtaxon') != null ?
+                            taxon.rget('acceptedtaxon', true).pipe(recur)
+                            : { valid: true, action() { determination.set('preferredtaxon', taxon); }};
+                    })(taxon)),
+
                 iscurrent: function(determination) {
                     if (determination.get('iscurrent') && (determination.collection != null)) {
                         determination.collection.each(function(other) {
@@ -216,10 +206,8 @@ module.exports = {
                 interactionBusinessRules.totalResolved = undefined;
                 interactionBusinessRules.returned = undefined;
                 interactionBusinessRules.resolved = undefined;
-                if (loanreturnprep.isNew()) {
-                    loanreturnprep.set('quantityreturned', 0);
-                    loanreturnprep.set('quantityresolved', 0);
-                }
+                loanreturnprep.get('quantityreturned') == null && loanreturnprep.set('quantityreturned', 0);
+                loanreturnprep.get('quantityresolved') == null && loanreturnprep.set('quantityresolved', 0);
             },
             customChecks: {
                 quantityreturned: function(loanreturnprep) {

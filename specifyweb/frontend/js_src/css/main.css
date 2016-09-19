@@ -2,6 +2,7 @@
 @import url("~jquery-contextmenu/dist/jquery.contextMenu.css");
 
 @import url("./base.css");
+@import url("./header.css");
 @import url("./specifyform.css");
 @import url("./specifyform-print.css");
 @import url("./query.css");

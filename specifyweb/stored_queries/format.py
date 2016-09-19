@@ -10,7 +10,7 @@ from sqlalchemy.sql.functions import concat, coalesce, count
 from sqlalchemy import types
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontaineritem
+from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 
 from . import models
 from .queryfieldspec import build_join
@@ -31,7 +31,21 @@ class ObjectFormatter(object):
     def getFormatterDef(self, specify_model, formatter_name):
         def lookup(attr, val):
             return self.formattersDom.find('format[@%s=%s]' % (attr, quoteattr(val)))
+
+        def getFormatterFromSchema():
+            try:
+                formatter_name = Splocalecontainer.objects.get(
+                    name=specify_model.name.lower,
+                    schematype=0,
+                    discipline=self.collection.discipline
+                ).format
+            except Splocalecontainer.DoesNotExist:
+                return None
+
+            return formatter_name and lookup('name', formatter_name)
+
         return (formatter_name and lookup('name', formatter_name)) \
+            or getFormatterFromSchema() \
             or lookup('class', specify_model.classname)
 
     def getAggregatorDef(self, specify_model, aggregator_name):
@@ -53,6 +67,23 @@ class ObjectFormatter(object):
 
         return formatter == 'CatalogNumberNumeric'
 
+    def pseudo_sprintf(self, format, expr):
+        """Handle format attribute of fields in data object formatter definitions.
+
+        expr - the expression giving the field to be formatted.
+
+        format - an sprintf style format string. In Specify 6 this is
+        given to the java.util.Formatter.format method with the value
+        of expr as the sole argument. So, it seems the format sting
+        should have only one substitution directive. Only going to
+        handle '%s' for now.
+        """
+        if '%s' in format:
+            before, after = format.split('%s')
+            return concat(before, expr, after)
+        else:
+            return format
+
     def objformat(self, query, orm_table, formatter_name, join_cache=None):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
@@ -62,7 +93,14 @@ class ObjectFormatter(object):
             return query, literal("<Formatter not defined.>")
         logger.debug("using dataobjformatter: %s", ElementTree.tostring(formatterNode))
 
+        def case_value_convert(value): return value
+
         switchNode = formatterNode.find('switch')
+        single = switchNode.attrib.get('single', 'true') == 'true'
+        if not single:
+            sp_control_field = specify_model.get_field(switchNode.attrib['field'])
+            if sp_control_field.type == 'java.lang.Boolean':
+                def case_value_convert(value): return value == 'true'
 
         def make_expr(query, fieldNode):
             path = fieldNode.text.split('.')
@@ -72,6 +110,9 @@ class ObjectFormatter(object):
                 query, expr = self.objformat(query, table, formatter_name, join_cache)
             else:
                 expr = self._fieldformat(specify_field, getattr(table, specify_field.name))
+
+            if 'format' in fieldNode.attrib:
+                expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
 
             if 'sep' in fieldNode.attrib:
                 expr = concat(fieldNode.attrib['sep'], expr)
@@ -85,14 +126,14 @@ class ObjectFormatter(object):
                 field_exprs.append(expr)
 
             expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
-            return query, caseNode.attrib.get('value', None), expr
+            return query, case_value_convert(caseNode.attrib.get('value', None)), expr
 
         cases = []
         for caseNode in switchNode.findall('fields'):
             query, value, expr = make_case(query, caseNode)
             cases.append((value, expr))
 
-        if switchNode.attrib.get('single', 'true') == 'true':
+        if single:
             value, expr = cases[0]
         else:
             control_field = getattr(orm_table, switchNode.attrib['field'])
@@ -109,19 +150,19 @@ class ObjectFormatter(object):
             return literal("<Aggregator not defined.>")
         logger.debug("using aggregator: %s", ElementTree.tostring(aggregatorNode))
         formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', None)
-        order_by = aggregatorNode.attrib.get('orderfieldname', None)
+        separator = aggregatorNode.attrib.get('separator', ',')
+        order_by = aggregatorNode.attrib.get('orderfieldname', '')
 
         orm_table = getattr(models, field.relatedModelName)
-        if order_by is not None and order_by != '':
-            order_by = getattr(orm_table, order_by)
+        order_by = [getattr(orm_table, order_by)] if order_by != '' else []
 
         join_column = list(inspect(getattr(orm_table, field.otherSideName)).property.local_columns)[0]
         subquery = orm.Query([]).select_from(orm_table) \
                              .filter(join_column == getattr(rel_table, rel_table._id)) \
                              .correlate(rel_table)
         subquery, formatted = self.objformat(subquery, orm_table, formatter_name, {})
-        aggregated = coalesce(group_concat(formatted, separator, order_by), '')
+
+        aggregated = coalesce(group_concat(formatted, separator, *order_by), '')
         return subquery.add_column(aggregated).as_scalar()
 
     def fieldformat(self, query_field, field):

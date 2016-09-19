@@ -16,7 +16,7 @@ var userInfo       = require('./userinfo.js');
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);
 
-    var title = "Query";
+    var title = "Queries";
 
     var dialog;
     var commonDialogOpts = {
@@ -210,7 +210,7 @@ var userInfo       = require('./userinfo.js');
 module.exports =  {
         task: 'query',
         title: title,
-        icon: '/images/Query32x32.png',
+        icon: '/static/img/query.png',
         execute: function() {
             if (dialog) return;
             var queries = new schema.models.SpQuery.LazyCollection({

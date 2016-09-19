@@ -41,8 +41,8 @@ module.exports =  UIPlugin.extend({
             label.text() || label.text(this.model.specifyModel.getField(init.df).getLocalizedName());
 
             this.$('input.partialdateui-full').attr({
-                'size': dateFormatStr.length + 1,
-                'placeholder': dateFormatStr
+                'size': dateFormatStr().length + 1,
+                'placeholder': dateFormatStr()
             });
 
             this.toolTipMgr = new ToolTipMgr(this).enable();
@@ -59,7 +59,7 @@ module.exports =  UIPlugin.extend({
         setInput: function() {
             var value = this.model.get(this.init.df);
             var m = moment(value);
-            this.$('.partialdateui-full').val(value ? m.format(dateFormatStr) : '');
+            this.$('.partialdateui-full').val(value ? m.format(dateFormatStr()) : '');
             this.$('.partialdateui-month').val(value ? m.format('M') : '');
             this.$('.partialdateui-year').val(value ? m.format('YYYY') : '');
         },
@@ -98,8 +98,8 @@ module.exports =  UIPlugin.extend({
         },
         updateFullDate: function() {
             var val = this.$('input.partialdateui-full').val().trim() || null;
-            var m = val && moment(val, dateFormatStr, true);
-            this.updateIfValid(m, "Required Format: " + dateFormatStr);
+            var m = val && moment(val, dateFormatStr(), true);
+            this.updateIfValid(m, "Required Format: " + dateFormatStr());
         },
         updateMonth: function() {
             var orig = this.model.get(this.init.df);

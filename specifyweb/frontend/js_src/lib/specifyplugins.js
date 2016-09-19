@@ -6,6 +6,7 @@ var _ = require('underscore');
 var UIPlugin = require('./uiplugin.js');
 
 var providers = [
+    require('./usercollectionsplugin.js'),
     require('./latlongui.js'),
     require('./partialdateui.js'),
     require('./collectionrelonetomanyplugin.js'),

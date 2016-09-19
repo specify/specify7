@@ -28,3 +28,6 @@ def deleting_user(sender, instance, **kwargs):
     user = instance
     cursor = connection.cursor()
     cursor.execute('delete from specifyuser_spprincipal where SpecifyUserID = %s', [user.id])
+    # Clean up unused user principal rows.
+    cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
+                   'select spprincipalid from specifyuser_spprincipal)')

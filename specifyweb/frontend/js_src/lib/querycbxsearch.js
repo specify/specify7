@@ -19,7 +19,8 @@ module.exports = Backbone.View.extend({
         __name__: "QueryCbxSearch",
         className: "querycbx-dialog-search",
         events: {
-            'click .querycbx-search-results a': 'select'
+            'click .querycbx-search-results a': 'select',
+            'keyup input:text': 'keyUp'
         },
         initialize: function(options) {
             this.populateForm = options.populateForm;
@@ -31,6 +32,7 @@ module.exports = Backbone.View.extend({
             return this;
         },
         makeDialog: function(form) {
+            $('.specify-field', form).addClass('for-search-form');
             this.populateForm(form, this.model);
             form.find('.specify-form-header, input[value="Delete"], :submit').remove();
             form.find('.specify-required-field').removeClass('specify-required-field');
@@ -48,9 +50,17 @@ module.exports = Backbone.View.extend({
                         click: function() { $(this).dialog("close"); }
                     }
                 ],
+                open() {
+                    $('input:text', this).first().focus();
+                },
                 close: function() { $(this).remove(); }
             });
         },
+    keyUp(evt) {
+        if (evt.keyCode === 13) {
+            this.search();
+        }
+    },
         search: function() {
             this.$('.querycbx-search-results').empty();
             api.queryCbxExtendedSearch(this.model, this.forceCollection).done(this.gotResults.bind(this));

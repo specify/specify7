@@ -100,9 +100,14 @@ module.exports = Backbone.View.extend({
             return this.$(selector).index(evt.currentTarget);
         },
         edit: function(evt) {
-            var index = this.getIndex(evt, 'a.edit');
+            const index = this.getIndex(evt, 'a.edit');
+            const recordset = this.options.recordSets.at(index);
             this.$el.dialog('close');
-            new EditResourceDialog({ resource: this.options.recordSets.at(index) }).render();
+            new EditResourceDialog({
+                resource: recordset,
+                deleteWarning: `The record set "${recordset.get('name')}" will be deleted. The
+                                referenced records will NOT be deleted.`
+            }).render();
         }
     });
 

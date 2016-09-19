@@ -9,20 +9,25 @@ module.exports =  Backbone.View.extend({
         __name__: "UIFieldInput",
         events: {
             'change': 'change',
-            'input': 'changing'
+            'input': 'changing',
+            'focus': 'selectAll'
         },
         initialize: function(options) {
             this.readOnly = options.readOnly;
             this.noValidation = options.noValidation;
             this.formatter = options.formatter;
             this.parser = options.parser;
+            this.formatStr = options.formatStr;
         },
         render: function() {
             this.formatter && this.$el.attr('title', 'Format: ' + this.formatter.value());
-            this.$el.attr('placeholder', this.parser.formatStr);
+            this.formatStr && this.$el.attr('placeholder', this.formatStr);
             this.readOnly && this.$el.prop('readonly', true);
             return this;
         },
+    selectAll() {
+        this.$el.select();
+    },
         fillIn: function(value) {
             this.$el.val(value);
             return this;

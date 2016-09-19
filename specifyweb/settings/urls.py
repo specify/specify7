@@ -5,10 +5,13 @@ urlpatterns = patterns('',
     (r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
-    (r'^accounts/login/$', 'specifyweb.context.views.login'),
-    (r'^accounts/logout/$', 'specifyweb.context.views.logout'),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout',
+     {'template_name': 'logout.html', 'next_page': '/accounts/login/'}),
 
     (r'^accounts/support_login/$', 'specifyweb.specify.views.support_login'),
+
+    (r'^accounts/choose_collection/$', 'specifyweb.context.views.choose_collection'),
 
     (r'^accounts/password_change/$', 'django.contrib.auth.views.password_change',
      {'template_name': 'password_change.html',
@@ -35,8 +38,13 @@ urlpatterns = patterns('',
 
     # special tree apis
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/$', 'specifyweb.specify.tree_views.path'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/merge/$', 'specifyweb.specify.tree_views.merge'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/synonymize/$', 'specifyweb.specify.tree_views.synonymize'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/unsynonymize/$', 'specifyweb.specify.tree_views.unsynonymize'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<parentid>\d+)/predict_fullname/$', 'specifyweb.specify.tree_views.predict_fullname'),
     url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/$', 'specifyweb.specify.tree_views.tree_view'),
     url(r'^api/specify_tree/(?P<tree>\w+)/(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', 'specifyweb.specify.tree_views.tree_stats'),
+    url(r'^api/specify_tree/(?P<tree>\w+)/repair/$', 'specifyweb.specify.tree_views.repair_tree'),
 
     # generates Sp6 master key
     url(r'^api/master_key/$', 'specifyweb.specify.master_key.master_key'),

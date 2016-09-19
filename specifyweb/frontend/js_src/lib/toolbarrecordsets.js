@@ -7,7 +7,7 @@ var userInfo            = require('./userinfo.js');
 module.exports =  {
         task: 'recordsets',
         title: 'Record Sets',
-        icon: '/images/RecordSet32x32.png',
+        icon: '/static/img/record sets.png',
         execute: function() {
             var recordSets = new schema.models.RecordSet.LazyCollection({
                 filters: { specifyuser: userInfo.id, type: 0, domainfilter: true,

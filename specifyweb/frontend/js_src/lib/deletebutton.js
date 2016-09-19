@@ -10,9 +10,12 @@ module.exports =  Backbone.View.extend({
         events: {
             'click .delete-button': 'openDialog'
         },
-        initialize: function(options) {
-            this.waitDialog = null;
-        },
+    initialize: function({model, warning}) {
+        this.model = model;
+        this.warning = warning;
+
+        this.waitDialog = null;
+    },
         render: function() {
             this.$el.addClass('deletebutton');
             this.button = $('<input type="button" value="*Delete" class="delete-button">').appendTo(this.el);
@@ -53,7 +56,7 @@ module.exports =  Backbone.View.extend({
         openConfirmDialog: function() {
             var doDelete = this.doDelete.bind(this);
 
-            $(template()).dialog({
+            $(template({warning: this.warning})).dialog({
                 resizable: false,
                 close: function() { $(this).remove(); },
                 modal: true,

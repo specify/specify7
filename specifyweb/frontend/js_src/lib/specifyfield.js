@@ -22,6 +22,7 @@ var assert = require('./assert.js');
         this.isRequired = fieldDef.required;
         this.type = fieldDef.type;
         this.length = fieldDef.length;
+        this.dbColumn = fieldDef.column;
     };
 
     _.extend(schema.Field.prototype, {

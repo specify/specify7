@@ -14,7 +14,27 @@ var saveblockers      = require('./saveblockers.js');
 var ToolTipMgr        = require('./tooltipmgr.js');
 var dateFormatStr     = require('./dateformat.js');
 
-    var objformat = dataobjformatters.format;
+var objformat = dataobjformatters.format;
+
+function isNumeric(field) {
+    return [
+        'java.lang.Byte',
+        'java.lang.Double',
+        'java.lang.Float',
+        'java.lang.Integer',
+        'java.lang.Long',
+        'java.lang.Short',
+        'java.math.BigDecimal',
+    ].includes(field.type);
+}
+
+function isDate(field) {
+    return [
+        "java.sql.Timestamp",
+        "java.util.Calendar",
+        "java.util.Date",
+    ].includes(field.type);
+}
 
 module.exports =  Backbone.View.extend({
         __name__: "UIField",
@@ -43,7 +63,8 @@ module.exports =  Backbone.View.extend({
             }
             var remote = _.isNull(resource) || resource != this.model;
 
-            var readOnly = remote || field.isRelationship || field.readOnly || this.$el.prop('readonly');
+            var readOnly = !this.$el.hasClass('for-search-form') &&
+                    (remote || field.isRelationship || field.readOnly || this.$el.prop('readonly'));
 
             var fieldName = this.fieldName = field.name.toLowerCase();
 
@@ -51,12 +72,14 @@ module.exports =  Backbone.View.extend({
 
             field.isRelationship && this.$el.removeClass('specify-field').addClass('specify-object-formatted');
             field.isRequired && this.$el.addClass('specify-required-field');
+            isNumeric(field) && this.$el.addClass('specify-numeric-field');
 
             var inputUI = new UIFieldInput({
                 el: this.el,
                 readOnly: readOnly,
                 noValidation: this.model.noValidation,
                 formatter: formatter,
+                formatStr: isDate(field) ? dateFormatStr() : null, // should be part of uiparse, really.
                 parser: uiparse.bind(null, field)
             }).render()
                     .on('changed', this.inputChanged, this)

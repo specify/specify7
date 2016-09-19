@@ -120,6 +120,11 @@ var attachmentview = require('./templates/attachmentview.html');
             return buildView.pipe(function(form) {
                 form.find('.specify-form-header:first, :submit, :button[value="Delete"]').remove();
                 return form;
+            }).fail(jqxhr => {
+                if (jqxhr.status === 404) {
+                    jqxhr.errorHandled = true;
+                    console.error('form not found for subview:', viewName, defaultType, mode);
+                }
             });
         },
 

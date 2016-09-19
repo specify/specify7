@@ -35,6 +35,7 @@ module.exports =  Backbone.View.extend({
             //   el: $element to render in,
             //   recordSet: schema.models.RecordSet.Resource? resource is included in,
             //   mode: 'view' | 'edit',
+            //   noAddAnother: boolean?,
             //   noHeader: boolean?
             // }
             var self = this;
@@ -63,7 +64,9 @@ module.exports =  Backbone.View.extend({
             if (!self.readOnly) {
                 self.saveBtn = new SaveButton({
                     model: self.model,
-                    addAnother: self.model.isNew() && !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name)
+                    addAnother: self.model.isNew() &&
+                        !self.options.noAddAnother &&
+                        !_(NO_ADD_ANOTHER).contains(self.model.specifyModel.name)
                 });
 
                 self.saveBtn.on('savecomplete', self.saved, self);
@@ -115,9 +118,8 @@ module.exports =  Backbone.View.extend({
 
             dataobjformatters.format(self.model).done(function(str) {
                 if (_(str).isString()) {
-                    title += ': ' + str;
-                    self.setFormTitle(title);
-                    self.trigger('changetitle', self, title);
+                    $('.view-title', self.header).attr('title', str);
+                    self.trigger('changetitle', self, title + ': ' + str);
                 }
             });
         },

@@ -69,12 +69,12 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return None
 
     def op_between(self, field, value):
-        values = [self.format(v) for v in value.split(',')[:2]]
+        values = [self.format(v.strip()) for v in value.split(',')[:2]]
         return field.between(*values)
 
     def op_in(self, field, values):
         if hasattr(values, 'split'):
-            values = [self.format(v) for v in values.split(',')]
+            values = [self.format(v.strip()) for v in values.split(',')]
         return field.in_(values)
 
     def op_contains(self, field, value):

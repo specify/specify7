@@ -64,13 +64,13 @@ var dataobjformatters = require('./dataobjformatters.js');
     }
 
     // Return a combobox class mixin to get the items.
-    function makeMixin(source) {
-        return {getItems: source};
-    }
+function makeMixin(source, name) {
+    return {getItems: source, __name__: name};
+}
 
 module.exports = {
-        userDefined   : makeMixin(userDefined),
-        fromTable     : makeMixin(fromTable),
-        fromField     : makeMixin(fromField)
-    };
+    userDefined   : makeMixin(userDefined, 'UserDefinedPL'),
+    fromTable     : makeMixin(fromTable, 'FromTablePL'),
+    fromField     : makeMixin(fromField, 'FromFieldPL')
+};
 

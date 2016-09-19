@@ -1,12 +1,13 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Backbone  = require('./backbone.js');
+const $         = require('jquery');
+const _         = require('underscore');
+const Backbone  = require('./backbone.js');
 
-var singularTemplate = require('./templates/othercollectiontemplate.html');
-var pluralTemplate = require('./templates/othercollectionstemplate.html');
-var navigation =  require('./navigation.js');
+const singularTemplate = require('./templates/othercollectiontemplate.html');
+const pluralTemplate = require('./templates/othercollectionstemplate.html');
+const navigation =  require('./navigation.js');
+const userInfo = require('./userinfo.js');
 
 
 module.exports =  Backbone.View.extend({
@@ -14,10 +15,12 @@ module.exports =  Backbone.View.extend({
         events: {
             'click a': 'clicked'
         },
-        initialize: function(options) {
-            this.resource = options.resource;
-            this.collections = options.collections;
-        },
+    initialize: function({resource, collections}) {
+        const availableCollections = userInfo.available_collections.map(c => c[0]);
+
+        this.resource = resource;
+        this.collections = collections.filter(c => availableCollections.includes(c.id));
+    },
         render: function() {
             this.$el.empty();
             if (this.collections.length > 1) {
@@ -30,10 +33,13 @@ module.exports =  Backbone.View.extend({
                         .data('collection-id', collection.id)
                         .button();
                 }, this);
-            } else {
+            } else if (this.collections.length == 1) {
                 this.$el.html(singularTemplate());
                 this.$('a').data('collection-id', this.collections[0].id).button();
                 this.$('span.collection-name').text(this.collections[0].get('collectionname'));
+            } else {
+                this.$el.text("You do not have access to any collection containing this resource " +
+                              "through the currently logged in account.");
             }
             return this;
         },
