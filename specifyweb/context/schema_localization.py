@@ -1,6 +1,6 @@
 from collections import defaultdict
+import json
 
-from django.utils import simplejson
 from django.conf import settings
 from django.db import connection
 
@@ -50,6 +50,6 @@ def get_schema_localization(collection, schematype):
     for row in cursor.fetchall():
         containers[row[0]]['items'][row[1].lower()] = {field: row[i+2] for i, field in enumerate(ifields)}
 
-    sl = schema_localization_cache[(disc, schematype)] =  simplejson.dumps(containers)
+    sl = schema_localization_cache[(disc, schematype)] = json.dumps(containers)
     return sl
 

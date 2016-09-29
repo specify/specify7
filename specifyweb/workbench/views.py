@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT"])
-@transaction.commit_on_success
+@transaction.atomic
 def rows(request, wb_id):
     wb = get_object_or_404(models.Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):

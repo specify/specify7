@@ -239,7 +239,7 @@ def get_recordset_info(obj, recordsetid):
         'next': next
         }
 
-@transaction.commit_on_success
+@transaction.atomic
 def post_resource(collection, agent, name, data, recordsetid=None):
     """Create a new resource in the database.
 
@@ -272,10 +272,11 @@ def set_field_if_exists(obj, field, value):
     if a field named 'field' exists and set it to 'value' if so. Do nothing otherwise.
     """
     try:
-        obj._meta.get_field(field)
+        f = obj._meta.get_field(field)
     except FieldDoesNotExist:
-        pass
-    else:
+        return
+
+    if f.concrete:
         setattr(obj, field, value)
 
 def cleanData(model, data, agent):
@@ -287,7 +288,7 @@ def cleanData(model, data, agent):
             # These fields are meta data, not part of the resource.
             continue
         try:
-            model._meta.get_field_by_name(field_name)
+            model._meta.get_field(field_name)
         except FieldDoesNotExist:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
@@ -339,8 +340,8 @@ def set_fields_from_data(obj, data):
     set all fields provided by data that are not related object fields.
     """
     for field_name, val in data.items():
-        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
-        if direct and not isinstance(field, ForeignKey):
+        field = obj._meta.get_field(field_name)
+        if not field.is_relation:
             setattr(obj, field_name, prepare_value(field, val))
 
 def is_dependent_field(obj, field_name):
@@ -395,8 +396,8 @@ def handle_fk_fields(collection, agent, obj, data):
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
     for field_name, val in items:
-        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
-        if not isinstance(field, ForeignKey): continue
+        field = obj._meta.get_field(field_name)
+        if not field.many_to_one: continue
 
         old_related = get_related_or_none(obj, field_name)
         dependent = is_dependent_field(obj, field_name)
@@ -406,7 +407,7 @@ def handle_fk_fields(collection, agent, obj, data):
             if dependent and old_related:
                 dependents_to_delete.append(old_related)
 
-        elif isinstance(val, field.related.parent_model):
+        elif isinstance(val, field.related_model):
             # The related value was patched into the data by a parent object.
             setattr(obj, field_name, val)
 
@@ -414,14 +415,14 @@ def handle_fk_fields(collection, agent, obj, data):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = parse_uri(val)
-            assert fk_model == field.related.parent_model.__name__.lower()
+            assert fk_model == field.related_model.__name__.lower()
             assert fk_id is not None
             setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
             assert dependent, "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
-            rel_model = field.related.parent_model
+            rel_model = field.related_model
             if 'id' in val:
                 # The related object is an existing resource with an id.
                 # This should never happen.
@@ -454,8 +455,8 @@ def handle_to_many(collection, agent, obj, data):
     created as new resources.
     """
     for field_name, val in data.items():
-        field, model, direct, m2m = obj._meta.get_field_by_name(field_name)
-        if direct: continue # Skip *-to-one fields.
+        field = obj._meta.get_field(field_name)
+        if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
 
         if isinstance(val, list):
             assert obj.specify_model.get_field(field_name).dependent, \
@@ -464,10 +465,10 @@ def handle_to_many(collection, agent, obj, data):
             # The field contains something other than nested data.
             # Probably the URI of the collection of objects.
             assert not obj.specify_model.get_field(field_name).dependent, \
-                   "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
+                "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             continue
 
-        rel_model = field.model
+        rel_model = field.related_model
         ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:
             rel_data[field.field.name] = obj
@@ -489,7 +490,7 @@ def handle_to_many(collection, agent, obj, data):
             auditlog.remove(rel_obj, agent, obj)
         to_delete.delete()
 
-@transaction.commit_on_success
+@transaction.atomic
 def delete_resource(agent, name, id, version):
     """Delete the resource with 'id' and model named 'name' with optimistic
     locking 'version'.
@@ -503,8 +504,8 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
     # but have to delete the referring record first
     dependents_to_delete = filter(None, (
         get_related_or_none(obj, field.name)
-        for field in obj._meta.fields
-        if isinstance(field, ForeignKey) and is_dependent_field(obj, field.name)
+        for field in obj._meta.get_fields()
+        if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ))
 
     auditlog.remove(obj, agent, parent_obj)
@@ -515,7 +516,7 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
     for dep in dependents_to_delete:
       delete_obj(agent, dep, parent_obj=obj)
 
-@transaction.commit_on_success
+@transaction.atomic
 def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
 
@@ -564,6 +565,7 @@ def bump_version(obj, version):
 
     # Try to update a row with the PK and the version number we have.
     # If our version is stale, the rows updated will be 0.
+    logger.info("Incrementing version of %s object %d from %d.", obj.__class__.__name__, obj.id, version)
     manager = obj.__class__._base_manager
     updated = manager.filter(pk=obj.pk, version=version).update(version=version+1)
     if not updated:
@@ -587,15 +589,18 @@ def obj_to_data(obj):
     Django model instance 'obj'.
     """
     # Get regular and *-to-one fields.
-    fields = obj._meta.fields
+    fields = obj._meta.get_fields()
     if isinstance(obj, models.Specifyuser):
         # block out password field from users table
         fields = filter(lambda f: f.name != 'password', fields)
 
-    data = dict((field.name, field_to_val(obj, field)) for field in fields)
+    data = dict((field.name, field_to_val(obj, field))
+                for field in fields
+                if not (field.auto_created or field.one_to_many or field.many_to_many))
     # Get *-to-many fields.
     data.update(dict((ro.get_accessor_name(), to_many_to_data(obj, ro))
-                     for ro in obj._meta.get_all_related_objects()))
+                     for ro in obj._meta.get_fields()
+                     if ro.one_to_many))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
     # Special cases
@@ -610,7 +615,7 @@ def to_many_to_data(obj, related_object):
     """Return the URI or nested data of the 'related_object' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
-    parent_model = related_object.parent_model.specify_model
+    parent_model = related_object.model.specify_model
     field_name = related_object.get_accessor_name()
     if parent_model.get_field(field_name).dependent:
         objs = getattr(obj, field_name)
@@ -623,14 +628,14 @@ def field_to_val(obj, field):
     """Return the value or nested data or URI for the given field which should
     be either a regular field or a *-to-one field.
     """
-    if isinstance(field, ForeignKey):
+    if field.many_to_one or (field.one_to_one and not field.auto_created):
         if is_dependent_field(obj, field.name):
             related_obj = getattr(obj, field.name)
             if related_obj is None: return None
             return obj_to_data(related_obj)
         related_id = getattr(obj, field.name + '_id')
         if related_id is None: return None
-        related_model = field.related.parent_model
+        related_model = field.related.model
         return uri_for_model(related_model, related_id)
     else:
         return getattr(obj, field.name)

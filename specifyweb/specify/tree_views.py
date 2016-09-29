@@ -21,7 +21,7 @@ def tree_mutation(mutation):
     @require_POST
     @apply_access_control
     @csrf_exempt
-    @transaction.commit_on_success
+    @transaction.atomic
     @wraps(mutation)
     def wrapper(*args, **kwargs):
         try:

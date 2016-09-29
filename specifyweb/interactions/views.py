@@ -169,7 +169,7 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 @require_POST
 @csrf_exempt
 @login_maybe_required
-@transaction.commit_on_success
+@transaction.atomic
 def loan_return_all_items(request):
     if 'returnedDate' in request.POST:
         returned_date = unicode(request.POST['returnedDate'])
