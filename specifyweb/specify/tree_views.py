@@ -225,6 +225,13 @@ def merge(request, model, id):
     tree_extras.merge(node, target)
 
 @tree_mutation
+def move(request, model, id):
+    node = get_object_or_404(model, id=id)
+    target = get_object_or_404(model, id=request.POST['target'])
+    node.parent = target
+    node.save()
+
+@tree_mutation
 def synonymize(request, model, id):
     node = get_object_or_404(model, id=id)
     target = get_object_or_404(model, id=request.POST['target'])

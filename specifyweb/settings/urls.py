@@ -39,6 +39,7 @@ urlpatterns = patterns('',
     # special tree apis
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/path/$', 'specifyweb.specify.tree_views.path'),
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/merge/$', 'specifyweb.specify.tree_views.merge'),
+    url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/move/$', 'specifyweb.specify.tree_views.move'),
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/synonymize/$', 'specifyweb.specify.tree_views.synonymize'),
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<id>\d+)/unsynonymize/$', 'specifyweb.specify.tree_views.unsynonymize'),
     url(r'^api/specify_tree/(?P<model>\w+)/(?P<parentid>\d+)/predict_fullname/$', 'specifyweb.specify.tree_views.predict_fullname'),
