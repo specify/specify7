@@ -160,7 +160,7 @@ MIDDLEWARE_CLASSES = (
     'specifyweb.context.middleware.ContextMiddleware'
 )
 
-ROOT_URLCONF = 'specifyweb.settings.urls'
+ROOT_URLCONF = 'specifyweb.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

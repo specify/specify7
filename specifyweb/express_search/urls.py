@@ -1,10 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 
-urlpatterns = patterns(
-    'specifyweb.express_search.views',
-    url(r'^$', 'search'),
-    url(r'^related/$', 'related_search'),
-    url(r'^querycbx/(?P<modelname>\w*)/$', 'querycbx_search'),
-)
-
-
+from . import views
+urlpatterns = [
+    url(r'^$', views.search),
+    url(r'^related/$', views.related_search),
+    url(r'^querycbx/(?P<modelname>\w*)/$', views.querycbx_search),
+]

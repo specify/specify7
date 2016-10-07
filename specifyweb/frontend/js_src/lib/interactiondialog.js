@@ -345,7 +345,7 @@ module.exports = RecordSetsDialog.extend({
             if (this.options.close) {
                 this.$el.dialog('close');
                 var doneFunc = _.bind(this.loanReturnDone, this);
-                $.post('/api/loan_return_all/', {
+                $.post('/interactions/loan_return_all/', {
                     // returnedById: "", // get this from a form maybe
                     // returnedDate: "", // ditto
                     recordSetId: isRs ? selection.get('id') : undefined,

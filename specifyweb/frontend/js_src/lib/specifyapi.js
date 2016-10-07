@@ -46,19 +46,19 @@ var querystring = require('./querystring.js');
             return recordSetId == null ? url : querystring.param(url, {recordsetid: recordSetId});
         },
         getPrepsAvailableForLoanRs: function(recordSetId) {
-            return $.get('/api/preparations_available_rs/' + recordSetId + '/');
+            return $.get('/interactions/preparations_available_rs/' + recordSetId + '/');
         },
         getPrepsAvailableForLoanCoIds: function(idFld, collectionObjectIds) {
-            return $.post('/api/preparations_available_ids/', {id_fld: idFld, co_ids: collectionObjectIds});
+            return $.post('/interactions/preparations_available_ids/', {id_fld: idFld, co_ids: collectionObjectIds});
         },
         returnAllLoanItems: function(loanIds, returnedById, returnedDate, selection) {
-            return $.post('/api/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
+            return $.post('/interactions/loan_return_all/', {loanIds: loanIds, returnedById: returnedById, returnedDate: returnedDate, selection: selection});
         },
         getInteractionsForPrepIds: function(prepIds) {
-            return $.post('/api/prep_interactions/', {prepIds: prepIds});
+            return $.post('/interactions/prep_interactions/', {prepIds: prepIds});
         },
         getPrepAvailability: function(prepId, iPrepId, iPrepName) {
-            var uri = '/api/prep_availability/' + prepId + '/';
+            var uri = '/interactions/prep_availability/' + prepId + '/';
             if (typeof iPrepId != 'undefined') {
                 uri += iPrepId + '/' + iPrepName + '/';
             }

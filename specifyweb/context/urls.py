@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from specifyweb.attachment_gw.views import get_settings as attachment_settings
-from specifyweb.report_runner.views import get_status as report_runner_status
+from ..attachment_gw.views import get_settings as attachment_settings
+from ..report_runner.views import get_status as report_runner_status
 from . import views
 
 urlpatterns = [
