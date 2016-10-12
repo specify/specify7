@@ -76,10 +76,13 @@ class ObjectFormatter(object):
         given to the java.util.Formatter.format method with the value
         of expr as the sole argument. So, it seems the format sting
         should have only one substitution directive. Only going to
-        handle '%s' for now.
+        handle '%s' and '%d' for now.
         """
         if '%s' in format:
             before, after = format.split('%s')
+            return concat(before, expr, after)
+        elif '%d' in format:
+            before, after = format.split('%d')
             return concat(before, expr, after)
         else:
             return format
