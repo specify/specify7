@@ -635,8 +635,7 @@ def field_to_val(obj, field):
             return obj_to_data(related_obj)
         related_id = getattr(obj, field.name + '_id')
         if related_id is None: return None
-        related_model = field.related.model
-        return uri_for_model(related_model, related_id)
+        return uri_for_model(field.related_model, related_id)
     else:
         return getattr(obj, field.name)
 
