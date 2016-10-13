@@ -236,6 +236,14 @@ class make_boolean_field(make_field):
         """
         return models.BooleanField if fld.required else models.NullBooleanField
 
+    @classmethod
+    def make_args(cls, fld):
+        """Make False the default as it was in Django 1.5"""
+        args = super(make_boolean_field, cls).make_args(fld)
+        if fld.required:
+            args['default'] = False
+        return args
+
 # Map the field types used in specify_datamodel.xml to the
 # appropriate field constructor functions.
 field_type_map = {
