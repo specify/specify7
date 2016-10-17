@@ -193,6 +193,7 @@ INSTALLED_APPS = (
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',
+    'specifyweb.notifications',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
 )
 

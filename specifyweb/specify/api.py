@@ -617,7 +617,8 @@ def to_many_to_data(obj, related_object):
     """
     parent_model = related_object.model.specify_model
     field_name = related_object.get_accessor_name()
-    if parent_model.get_field(field_name).dependent:
+    field = parent_model.get_field(field_name)
+    if field is not None and field.dependent:
         objs = getattr(obj, field_name)
         return [obj_to_data(o) for o in objs.all()]
 
