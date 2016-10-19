@@ -92,12 +92,10 @@ def query(request, id):
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        query = execute(session, request.specify_collection, request.specify_user,
-                        tableid, distinct, count_only, field_specs, limit, offset, json=False)
+        data = execute(session, request.specify_collection, request.specify_user,
+                       tableid, distinct, count_only, field_specs, limit, offset)
 
-        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test%s.csv' % datetime.now().isoformat())
-        session.execute(stmt)
-    return HttpResponse(stmt, content_type='application/json')
+    return HttpResponse(toJson(data), content_type='application/json')
 
 
 class EphemeralField(
