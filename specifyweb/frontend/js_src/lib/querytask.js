@@ -24,6 +24,7 @@ var router             = require('./router.js');
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
+            'click .query-csv': 'searchCSV',
             'click .query-to-recordset': 'makeRecordSet',
             'click .query-save': 'save',
             'click .query-save-as': 'saveAs',
@@ -66,7 +67,7 @@ var router             = require('./router.js');
             ul.sortable({ update: this.updatePositions.bind(this) });
         },
         addFieldUI: function(spqueryfield) {
-            this.$('.query-execute, .query-to-recordset').prop('disabled', false);
+            this.$('.query-execute, .query-csv, .query-to-recordset').prop('disabled', false);
             return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
@@ -78,7 +79,7 @@ var router             = require('./router.js');
             this.fieldUIs = _(this.fieldUIs).without(ui);
             this.fields.remove(spqueryfield);
             this.updatePositions();
-            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-save, .query-to-recordset').prop('disabled', true);
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-csv, .query-save, .query-to-recordset').prop('disabled', true);
         },
         updatePositions: function() {
             _.invoke(this.fieldUIs, 'positionChanged');
@@ -183,8 +184,15 @@ var router             = require('./router.js');
                 });
         },
         search: function(evt) {
-            this.$('.query-execute').blur();
+            this.$('.query-execute, .query-csv').blur();
             this.deleteIncompleteFields(() => this.search_());
+        },
+        searchCSV: function(evt) {
+            this.$('.query-execute, .query-csv').blur();
+            this.deleteIncompleteFields(() => {
+                if (this.fieldUIs.length < 1) return;
+                $.post('/stored_query/export/', JSON.stringify(this.query));
+            });
         },
         search_: function() {
             if (this.fieldUIs.length < 1) return;
