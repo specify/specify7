@@ -13,6 +13,7 @@ from django.conf import settings
 from sqlalchemy.sql.expression import asc, desc, and_, or_, insert, literal
 from sqlalchemy.sql.functions import count
 
+from specifyweb.specify.celery import app
 from specifyweb.specify.models import Collection
 from specifyweb.specify.api import toJson, uri_for_model
 from specifyweb.specify.views import login_maybe_required, apply_access_control
@@ -147,28 +148,36 @@ def export(request):
         return HttpResponseBadRequest(e)
 
     logger.info('export query: %s', spquery)
-    recordsetid = spquery.get('recordsetid', None)
+
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
         logger.debug('forcing collection to %s', collection.collectionname)
     else:
         collection = request.specify_collection
 
+    do_export.delay(spquery, collection, request.specify_user)
+    return HttpResponse('OK', content_type='text/plain')
+
+@app.task
+def do_export(spquery, collection, user):
+    recordsetid = spquery.get('recordsetid', None)
+
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = False
+
     with models.session_context() as session:
         field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
                        for data in sorted(spquery['fields'], key=lambda field: field['position'])]
 
-        query = execute(session, collection, request.specify_user,
+        query = execute(session, collection, user,
                         tableid, distinct, count_only, field_specs,
                         limit=0, offset=0, recordsetid=recordsetid,
                         json=False, replace_nulls=True)
 
         stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test%s.csv' % datetime.now().isoformat())
         session.execute(stmt)
-    return HttpResponse(stmt, content_type='text/plain')
+
 
 @require_POST
 @csrf_exempt
