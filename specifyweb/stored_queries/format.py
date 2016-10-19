@@ -23,11 +23,12 @@ CollectionObject_model = datamodel.get_table('CollectionObject')
 Agent_model = datamodel.get_table('Agent')
 
 class ObjectFormatter(object):
-    def __init__(self, collection, user):
+    def __init__(self, collection, user, replace_nulls):
         formattersXML, _ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.collection = collection
+        self.replace_nulls = replace_nulls
 
     def getFormatterDef(self, specify_model, formatter_name):
         def lookup(attr, val):
@@ -183,7 +184,7 @@ class ObjectFormatter(object):
             else:
                 field = self._fieldformat(field_spec.get_field(), field)
 
-        return blank_nulls(field)
+        return blank_nulls(field) if self.replace_nulls else field
 
     def _fieldformat(self, specify_field, field):
         if specify_field.type == "java.lang.Boolean":

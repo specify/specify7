@@ -141,6 +141,40 @@ def run_ephemeral_query(collection, user, spquery):
 @require_POST
 @csrf_exempt
 @login_maybe_required
+@never_cache
+def export(request):
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    logger.info('export query: %s', spquery)
+    recordsetid = spquery.get('recordsetid', None)
+    if 'collectionid' in spquery:
+        collection = Collection.objects.get(pk=spquery['collectionid'])
+        logger.debug('forcing collection to %s', collection.collectionname)
+    else:
+        collection = request.specify_collection
+
+    distinct = spquery['selectdistinct']
+    tableid = spquery['contexttableid']
+    count_only = False
+    with models.session_context() as session:
+        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
+                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+
+        query = execute(session, collection, request.specify_user,
+                        tableid, distinct, count_only, field_specs,
+                        limit=0, offset=0, recordsetid=recordsetid,
+                        json=False, replace_nulls=True)
+
+        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test%s.csv' % datetime.now().isoformat())
+        session.execute(stmt)
+    return HttpResponse(stmt, content_type='text/plain')
+
+@require_POST
+@csrf_exempt
+@login_maybe_required
 @apply_access_control
 @never_cache
 def make_recordset(request):
@@ -182,9 +216,12 @@ def make_recordset(request):
 
     return HttpResponseRedirect(uri_for_model('recordset', new_rs_id))
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, json=True):
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset,
+            recordsetid=None, json=True, replace_nulls=False):
+
     session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs,
+                                        recordsetid=recordsetid, replace_nulls=replace_nulls)
 
     if distinct:
         query = query.distinct()
@@ -198,8 +235,8 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)} if json else query
 
-def build_query(session, collection, user, tableid, field_specs, recordsetid=None):
-    objectformatter = ObjectFormatter(collection, user)
+def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False):
+    objectformatter = ObjectFormatter(collection, user, replace_nulls)
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
     query = session.query(id_field)
