@@ -58,11 +58,15 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
-class EphemeralField(
-    namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
-    @classmethod
-    def from_json(cls, json):
-        return cls(**{field: json[field.lower()] for field in cls._fields})
+def field_specs_from_json(json_fields):
+    class EphemeralField(
+        namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
+        @classmethod
+        def from_json(cls, json):
+            return cls(**{field: json[field.lower()] for field in cls._fields})
+
+    return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
+            for data in sorted(json_fields, key=lambda field: field['position'])]
 
 @app.task
 def do_export(spquery, collection, user):
@@ -73,8 +77,7 @@ def do_export(spquery, collection, user):
     count_only = False
 
     with models.session_context() as session:
-        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
-                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+        field_specs = field_specs_from_json(spquery['fields'])
 
         query = execute(session, collection, user,
                         tableid, distinct, count_only, field_specs,
@@ -98,8 +101,7 @@ def run_ephemeral_query(collection, user, spquery):
     count_only = spquery['countonly']
 
     with models.session_context() as session:
-        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
-                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+        field_specs = field_specs_from_json(spquery['fields'])
 
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid)
@@ -127,8 +129,7 @@ def recordset(collection, user, user_agent, recordset_info):
         model = models.models_by_tableid[tableid]
         id_field = getattr(model, model._id)
 
-        field_specs = [QueryField.from_spqueryfield(EphemeralField.from_json(data))
-                       for data in sorted(spquery['fields'], key=lambda field: field['position'])]
+        field_specs = field_specs_from_json(spquery['fields'])
 
         query, __ = build_query(session, collection, user, tableid, field_specs)
         query = query.with_entities(id_field, literal(new_rs_id)).distinct()
