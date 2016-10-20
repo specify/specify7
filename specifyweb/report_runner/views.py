@@ -8,10 +8,10 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
 
-from specifyweb.specify.views import login_maybe_required
-from specifyweb.specify.api import objs_to_data, toJson
-from specifyweb.specify.models import Spappresource
-from specifyweb.stored_queries.views import run_ephemeral_query
+from ..specify.views import login_maybe_required
+from ..specify.api import objs_to_data, toJson
+from ..specify.models import Spappresource
+from ..stored_queries.execution import run_ephemeral_query
 
 class ReportException(Exception):
     pass
