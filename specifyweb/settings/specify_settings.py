@@ -50,3 +50,7 @@ ALLOW_SUPPORT_LOGIN = False
 SUPPORT_LOGIN_TTL = 300
 
 STATS_URL = "https://stats.specifycloud.org/capture"
+
+# Exported files are placed in the depository.
+# Add to AppArmor in Ubuntu.
+DEPOSITORY_DIR = '/var/cache/specify_depository'

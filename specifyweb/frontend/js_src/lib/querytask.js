@@ -192,6 +192,13 @@ var router             = require('./router.js');
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
                 $.post('/stored_query/export/', JSON.stringify(this.query));
+                $('<div title="Query Started">The query has begun executing. ' +
+                  'You will receive a notification when the results CSV file ' +
+                  'is ready for download.' +
+                  '</div>').dialog({
+                      modal: true,
+                      close: function() { $(this).remove(); }
+                  });
             });
         },
         search_: function() {

@@ -1,11 +1,16 @@
+import os
 import logging
+import json
 from collections import namedtuple
 from datetime import datetime
+
+from django.conf import settings
 
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from ..specify.models import Collection
 from ..specify.celery import app
+from ..notifications.models import Message
 
 from . import models
 from .queryfield import QueryField
@@ -70,6 +75,7 @@ def field_specs_from_json(json_fields):
 
 @app.task
 def do_export(spquery, collection, user):
+    filename = 'export_test%s.csv' % datetime.now().isoformat()
     recordsetid = spquery.get('recordsetid', None)
 
     distinct = spquery['selectdistinct']
@@ -84,8 +90,14 @@ def do_export(spquery, collection, user):
                         limit=0, offset=0, recordsetid=recordsetid,
                         json=False, replace_nulls=True)
 
-        stmt = SelectIntoOutfile(query.with_labels().statement, '/tmp/export_test%s.csv' % datetime.now().isoformat())
+        path = os.path.join(settings.DEPOSITORY_DIR, filename)
+        stmt = SelectIntoOutfile(query.with_labels().statement, path)
         session.execute(stmt)
+
+    Message.objects.create(user=user, content=json.dumps({
+        'type': 'query-export-complete',
+        'file': filename,
+    }))
 
 def run_ephemeral_query(collection, user, spquery):
     logger.info('ephemeral query: %s', spquery)

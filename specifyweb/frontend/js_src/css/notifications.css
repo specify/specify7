@@ -1,0 +1,19 @@
+/* notifications.css */
+
+#site-notifications {
+    display: inline-block;
+    padding: 5px;
+}
+
+#site-notifications.unread-notifications {
+    color: #fff;
+    background: #f4763d;
+}
+
+.notification-message {
+    margin-bottom: 1.5em;
+}
+
+.unread-notification {
+    font-weight: bold;
+}
