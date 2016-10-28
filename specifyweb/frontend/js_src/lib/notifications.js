@@ -35,8 +35,8 @@ const MessageView = Backbone.View.extend({
         const href = '/static/depository/' + this.message.get('file');
         const time = moment(this.message.get('timestamp')).format('lll');
         this.$el.append(
-            `<span>${time}</span> Query export to CSV completed. `,
-            `<a href="${href}" target="_blank">Download.</a>`
+            `<span>${time}</span><p>Query export to CSV completed. `,
+            `<a href="${href}" target="_blank">Download.</a></p>`
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');
         return this;
@@ -88,6 +88,7 @@ module.exports = Backbone.View.extend({
         this.dialog.$el.dialog({
             title: 'Notifications',
             maxHeight: 400,
+            position: {my: 'center top', at: 'center bottom', of: this.$el},
             close: () => {
                 this.dialog.remove();
                 this.dialog = null;
