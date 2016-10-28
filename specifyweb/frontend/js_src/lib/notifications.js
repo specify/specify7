@@ -6,21 +6,60 @@ const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const moment = require('moment');
 
-var interval;
+const INTERVAL = 5000;
+
+const Message = Backbone.Model.extend({
+    __name__: "NotificationMessage"
+});
+
+const MessageCollection = Backbone.Collection.extend({
+    __name__: "NotificationMessageCollection",
+    model: Message,
+    fetch() {
+        const params = this.length > 0 ? {since: this.last().get('timestamp')} : {};
+        $.get('/notifications/messages/', params).done(newMessages => {
+            this.add(newMessages);
+            window.setTimeout(() => this.fetch(), INTERVAL);
+        }).fail(jqxhr => jqxhr.errorHandled = true);
+        return this;
+    }
+});
 
 const MessageView = Backbone.View.extend({
+    __name__: "NotificationMessage",
     className: 'notification-message',
     initialize({message}) {
         this.message = message;
     },
     render() {
-        const href = '/static/depository/' + this.message.file;
+        const href = '/static/depository/' + this.message.get('file');
+        const time = moment(this.message.get('timestamp')).format('lll');
         this.$el.append(
-            `<span>${moment(this.message.timestamp).format('lll')}</span> Query export to CSV completed. `,
+            `<span>${time}</span> Query export to CSV completed. `,
             `<a href="${href}" target="_blank">Download.</a>`
         );
-        if (!this.message.read) this.$el.addClass('unread-notification');
+        if (!this.message.get('read')) this.$el.addClass('unread-notification');
         return this;
+    }
+});
+
+const MessageList = Backbone.View.extend({
+    __name__: "NotificationMessageList",
+    initialize() {
+        this.collection.on('add', this.render, this);
+    },
+    render() {
+        this.$el.empty().append(
+            this.collection.map(m => new MessageView({message: m}).render().el).reverse()
+        );
+        return this;
+    },
+    remove() {
+        Backbone.View.prototype.remove.call(this);
+        this.collection.off(null, null, this);
+        this.collection.each(m => m.set('read', true));
+        $.post('/notifications/mark_read/', {last_seen: this.collection.last().get('timestamp')})
+            .fail(jqxhr => jqxhr.errorHandled = true);
     }
 });
 
@@ -30,44 +69,30 @@ module.exports = Backbone.View.extend({
         'click': 'openMessages'
     },
     initialize() {
-        this.messages = [];
-        this.fetchInitial();
+        this.collection = new MessageCollection();
+        this.collection.on('add change', this.render, this).fetch();
+        this.dialog = null;
     },
     render() {
-        this.$el.empty().append(`Notifications: ${this.messages.length}`);
-        if (this.messages.filter(m => !m.read).length > 0) {
+        this.$el.empty().append(`Notifications: ${this.collection.length}`);
+        if (this.collection.filter(m => !m.get('read')).length > 0) {
             this.$el.addClass('unread-notifications');
         } else {
             this.$el.removeClass('unread-notifications');
         }
         return this;
     },
-    fetchInitial() {
-        $.get('/notifications/messages/').done(messages => {
-            this.messages.push(...messages);
-            this.render();
-            interval = 5000;
-            window.setTimeout(() => this.fetchMore(), interval);
-        });
-    },
-    fetchMore() {
-        const params = this.messages.length > 0 ? {since: _.last(this.messages).timestamp} : {};
-        $.get('/notifications/messages/', params).done(newMessages => {
-            this.messages.push(...newMessages);
-            this.render();
-            window.setTimeout(() => this.fetchMore(), interval);
-        }).fail(jqxhr => jqxhr.errorHandled = true);
-    },
     openMessages() {
-        $('<div>').append(
-            this.messages.map(m => new MessageView({message: m}).render().el).reverse()
-        ).dialog({
+        if (this.dialog != null) return;
+        const dialog = this.dialog = new MessageList({collection: this.collection});
+        this.dialog.$el.dialog({
             title: 'Notifications',
-            maxHeight: 400
+            maxHeight: 400,
+            close: () => {
+                this.dialog.remove();
+                this.dialog = null;
+            }
         });
-        this.messages.forEach(m => m.read = true);
-        this.render();
-        $.post('/notifications/mark_read/', {last_seen: _.last(this.messages).timestamp})
-            .fail(jqxhr => jqxhr.errorHandled = true);
+        this.dialog.render();
     }
 });
