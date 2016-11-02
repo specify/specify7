@@ -1,5 +1,6 @@
 import logging
 import json
+from threading import Thread
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.http import require_GET, require_POST
@@ -75,7 +76,9 @@ def export(request):
     else:
         collection = request.specify_collection
 
-    do_export.delay(spquery, collection, request.specify_user)
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user))
+    thread.daemon = True
+    thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
 

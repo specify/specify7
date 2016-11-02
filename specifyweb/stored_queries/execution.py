@@ -1,6 +1,7 @@
 import os
 import logging
 import json
+import subprocess
 from collections import namedtuple
 from datetime import datetime
 
@@ -9,7 +10,6 @@ from django.conf import settings
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from ..specify.models import Collection
-from ..specify.celery import app
 from ..notifications.models import Message
 
 from . import models
@@ -73,7 +73,6 @@ def field_specs_from_json(json_fields):
     return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
-@app.task
 def do_export(spquery, collection, user):
     filename = 'export_test%s.csv' % datetime.now().isoformat()
     recordsetid = spquery.get('recordsetid', None)
@@ -82,6 +81,7 @@ def do_export(spquery, collection, user):
     tableid = spquery['contexttableid']
     count_only = False
 
+    logger.debug('export starting')
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
 
@@ -90,9 +90,17 @@ def do_export(spquery, collection, user):
                         limit=0, offset=0, recordsetid=recordsetid,
                         json=False, replace_nulls=True)
 
-        path = os.path.join(settings.DEPOSITORY_DIR, filename)
+        path = os.path.join(settings.MYSQL_SERVER_TMP_DIR, filename)
         stmt = SelectIntoOutfile(query.with_labels().statement, path)
         session.execute(stmt)
+    logger.debug('export finished')
+
+    copy_cmd = settings.COPY_COMMAND.format(
+        temp_file=path,
+        depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
+    )
+    logger.debug('copying output: %s', copy_cmd)
+    subprocess.check_call(copy_cmd, shell=True)
 
     Message.objects.create(user=user, content=json.dumps({
         'type': 'query-export-complete',

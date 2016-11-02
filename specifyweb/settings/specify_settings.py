@@ -51,6 +51,10 @@ SUPPORT_LOGIN_TTL = 300
 
 STATS_URL = "https://stats.specifycloud.org/capture"
 
-# Exported files are placed in the depository.
-# Add to AppArmor in Ubuntu.
-DEPOSITORY_DIR = '/var/cache/specify_depository'
+# Export settings.
+MYSQL_SERVER_TMP_DIR = '/tmp'
+
+DEPOSITORY_DIR = '/home/specify/specify_depository'
+
+COPY_COMMAND = 'cp {temp_file} {depository_file}'
+
