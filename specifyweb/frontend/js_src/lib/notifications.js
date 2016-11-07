@@ -53,35 +53,50 @@ const MessageView = Backbone.View.extend({
     initialize({message}) {
         this.message = message;
     },
+    events: {
+        'click .ui-icon-trash': 'delete'
+    },
     render() {
         const href = '/static/depository/' + this.message.get('file');
         const time = moment(this.message.get('timestamp')).format('lll');
         this.$el.append(
-            `<span>${time}</span><p>Query export to CSV completed. `,
+            `<span>${time}</span>`,
+            '<a class="ui-icon ui-icon-trash" style="float: right;">delete</a>',
+            '<p>Query export to CSV completed. ',
             `<a href="${href}" target="_blank">Download.</a></p>`
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');
         return this;
+    },
+    delete() {
+        $.post('/notifications/delete/', {message_id: this.message.get('message_id')}).then(
+            () => this.message.collection.remove(this.message)
+        );
     }
 });
 
 const MessageList = Backbone.View.extend({
     __name__: "NotificationMessageList",
     initialize() {
-        this.collection.on('add', this.render, this);
+        this.collection.on('add remove', this.render, this);
     },
     render() {
         this.$el.empty().append(
             this.collection.map(m => new MessageView({message: m}).render().el).reverse()
         );
+        if (this.collection.length < 1) {
+            this.$el.dialog('close');
+        }
         return this;
     },
     remove() {
         Backbone.View.prototype.remove.call(this);
         this.collection.off(null, null, this);
         this.collection.each(m => m.set('read', true));
-        $.post('/notifications/mark_read/', {last_seen: this.collection.last().get('timestamp')})
-            .fail(jqxhr => jqxhr.errorHandled = true);
+        if (this.collection.length > 0) {
+            $.post('/notifications/mark_read/', {last_seen: this.collection.last().get('timestamp')})
+                .fail(jqxhr => jqxhr.errorHandled = true);
+        }
     }
 });
 
@@ -92,7 +107,7 @@ module.exports = Backbone.View.extend({
     },
     initialize() {
         this.collection = messageCollection;
-        this.collection.on('add change', this.render, this);
+        this.collection.on('add remove change', this.render, this);
         this.dialog = null;
         this.render();
     },

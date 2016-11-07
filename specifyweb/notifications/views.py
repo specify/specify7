@@ -33,3 +33,12 @@ def mark_read(request):
     delete_before = datetime.now() - timedelta(days=settings.NOTIFICATION_TTL_DAYS)
     Message.objects.filter(user=request.specify_user, timestampcreated__lt=delete_before).delete()
     return HttpResponse('OK', content_type='text/plain')
+
+@require_POST
+@login_maybe_required
+@csrf_exempt
+def delete(request):
+    if 'message_id' not in request.POST:
+        return HttpResponseBadRequest()
+    Message.objects.filter(user=request.specify_user, id=request.POST['message_id']).delete()
+    return HttpResponse('OK', content_type='text/plain')
