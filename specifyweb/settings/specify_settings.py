@@ -58,3 +58,4 @@ DEPOSITORY_DIR = '/home/specify/specify_depository'
 
 COPY_COMMAND = 'cp {temp_file} {depository_file}'
 
+NOTIFICATION_TTL_DAYS = 7

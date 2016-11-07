@@ -1,8 +1,10 @@
 import json
+from datetime import datetime, timedelta
 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from ..specify.views import login_maybe_required
 from ..specify.api import toJson
@@ -27,4 +29,7 @@ def mark_read(request):
     if 'last_seen' not in request.POST:
         return HttpResponseBadRequest()
     Message.objects.filter(user=request.specify_user, timestampcreated__lte=request.POST['last_seen']).update(read=True)
+
+    delete_before = datetime.now() - timedelta(days=settings.NOTIFICATION_TTL_DAYS)
+    Message.objects.filter(user=request.specify_user, timestampcreated__lt=delete_before).delete()
     return HttpResponse('OK', content_type='text/plain')
