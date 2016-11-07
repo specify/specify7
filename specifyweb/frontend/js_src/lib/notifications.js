@@ -6,24 +6,46 @@ const _        = require('underscore');
 const Backbone = require('./backbone.js');
 const moment = require('moment');
 
-const INTERVAL = 5000;
-
 const Message = Backbone.Model.extend({
     __name__: "NotificationMessage"
 });
 
+const INITIAL_INTERVAL = 5000;
+const INTERVAL_MULTIPLIER = 1.10;
+
 const MessageCollection = Backbone.Collection.extend({
     __name__: "NotificationMessageCollection",
     model: Message,
-    fetch() {
-        const params = this.length > 0 ? {since: this.last().get('timestamp')} : {};
-        $.get('/notifications/messages/', params).done(newMessages => {
-            this.add(newMessages);
-            window.setTimeout(() => this.fetch(), INTERVAL);
-        }).fail(jqxhr => jqxhr.errorHandled = true);
+    initialize() {
+        this.interval = INITIAL_INTERVAL;
+        this.timeout = null;
+    },
+    startFetching() {
+        window.clearTimeout(this.timeout);
+        this.interval = INITIAL_INTERVAL;
+        this.doFetch();
         return this;
+    },
+    doFetch() {
+        // Poll interval is scaled exponentially to
+        // reduce requests if the tab is left open.
+        this.interval *= INTERVAL_MULTIPLIER;
+
+        const params = this.length > 0 ? {since: this.last().get('timestamp')} : {};
+        $.get('/notifications/messages/', params)
+            .done(newMessages => {
+                this.add(newMessages);
+                this.timeout = document.hidden ? null : // stop updating if tab is hidden
+                    window.setTimeout(() => this.doFetch(), this.interval);
+            })
+            .fail(jqxhr => jqxhr.errorHandled = true);
     }
 });
+
+const messageCollection = new MessageCollection();
+messageCollection.startFetching();
+// Immediately update if tab is revealed after being hidden.
+$(document).on('visibilitychange', () => messageCollection.startFetching());
 
 const MessageView = Backbone.View.extend({
     __name__: "NotificationMessage",
@@ -69,9 +91,10 @@ module.exports = Backbone.View.extend({
         'click': 'openMessages'
     },
     initialize() {
-        this.collection = new MessageCollection();
-        this.collection.on('add change', this.render, this).fetch();
+        this.collection = messageCollection;
+        this.collection.on('add change', this.render, this);
         this.dialog = null;
+        this.render();
     },
     render() {
         this.$el.empty().append(`Notifications: ${this.collection.length}`);
@@ -84,6 +107,8 @@ module.exports = Backbone.View.extend({
     },
     openMessages() {
         if (this.dialog != null) return;
+        this.collection.startFetching();
+
         const dialog = this.dialog = new MessageList({collection: this.collection});
         this.dialog.$el.dialog({
             title: 'Notifications',
