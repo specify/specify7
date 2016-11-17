@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 SORT_TYPES = [None, asc, desc]
 
+def set_group_concat_max_len(session):
+    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
+
 def filter_by_collection(model, query, collection):
     if (model is models.Accession and
         collection.discipline.division.institution.isaccessionsglobal):
@@ -73,39 +76,49 @@ def field_specs_from_json(json_fields):
     return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
-def do_export(spquery, collection, user):
-    filename = 'export_test%s.csv' % datetime.now().isoformat()
+def do_export(spquery, collection, user, filename):
     recordsetid = spquery.get('recordsetid', None)
 
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
-    count_only = False
 
-    logger.debug('export starting')
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-
-        query = execute(session, collection, user,
-                        tableid, distinct, count_only, field_specs,
-                        limit=0, offset=0, recordsetid=recordsetid,
-                        json=False, replace_nulls=True)
-
-        path = os.path.join(settings.MYSQL_SERVER_TMP_DIR, filename)
-        stmt = SelectIntoOutfile(query.with_labels().statement, path)
-        session.execute(stmt)
-    logger.debug('export finished')
-
-    copy_cmd = settings.COPY_COMMAND.format(
-        temp_file=path,
-        depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
-    )
-    logger.debug('copying output: %s', copy_cmd)
-    subprocess.check_call(copy_cmd, shell=True)
+        query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid)
 
     Message.objects.create(user=user, content=json.dumps({
         'type': 'query-export-complete',
         'file': filename,
     }))
+
+def stored_query_to_csv(query_id, collection, user, filename):
+    with models.session_context() as session:
+        sp_query = session.query(models.SpQuery).get(query_id)
+        tableid = sp_query.contextTableId
+
+        field_specs = [QueryField.from_spqueryfield(field)
+                       for field in sorted(sp_query.fields, key=lambda field: field.position)]
+
+        query_to_csv(session, collection, user, tableid, field_specs, filename)
+
+def query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid=None):
+    set_group_concat_max_len(session)
+    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+
+    path = os.path.join(settings.MYSQL_SERVER_TMP_DIR, filename)
+    stmt = SelectIntoOutfile(query.with_labels().statement, path)
+
+    logger.debug('query_to_csv starting')
+    session.execute(stmt)
+    logger.debug('query_to_csv finished')
+
+    copy_cmd = settings.COPY_COMMAND.format(
+        temp_file=path,
+        depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
+    )
+
+    logger.debug('copying output: %s', copy_cmd)
+    subprocess.check_call(copy_cmd, shell=True)
 
 def run_ephemeral_query(collection, user, spquery):
     logger.info('ephemeral query: %s', spquery)
@@ -159,25 +172,22 @@ def recordset(collection, user, user_agent, recordset_info):
 
     return new_rs_id
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset,
-            recordsetid=None, json=True, replace_nulls=False):
-
-    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs,
-                                        recordsetid=recordsetid, replace_nulls=replace_nulls)
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+    set_group_concat_max_len(session)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid)
 
     if distinct:
         query = query.distinct()
 
     if count_only:
-        return {'count': query.count()} if json else query.count()
+        return {'count': query.count()}
     else:
         logger.debug("order by: %s", order_by_exprs)
         query = query.order_by(*order_by_exprs).offset(offset)
         if limit:
             query = query.limit(limit)
 
-        return {'results': list(query)} if json else query
+        return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False):
     objectformatter = ObjectFormatter(collection, user, replace_nulls)

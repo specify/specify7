@@ -1,6 +1,7 @@
 import logging
 import json
 from threading import Thread
+from datetime import datetime
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.http import require_GET, require_POST
@@ -76,7 +77,9 @@ def export(request):
     else:
         collection = request.specify_collection
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user))
+    filename = 'export_test%s.csv' % datetime.now().isoformat()
+
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename))
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
