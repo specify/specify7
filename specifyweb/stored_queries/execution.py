@@ -23,9 +23,20 @@ logger = logging.getLogger(__name__)
 SORT_TYPES = [None, asc, desc]
 
 def set_group_concat_max_len(session):
+    """The default limit on MySQL group concat function is quite
+    small. This function increases it for the database connection for
+    the given session.
+    """
     session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
 
 def filter_by_collection(model, query, collection):
+    """Add predicates to the given query to filter result to items scoped
+    to the given collection. The model argument indicates the "base"
+    table of the query. E.g. If model was CollectingEvent, this
+    function would limit the results to collecting events in the same
+    discipline as the given collection since collecting events are
+    scoped to the discipline level.
+    """
     if (model is models.Accession and
         collection.discipline.division.institution.isaccessionsglobal):
         logger.info("not filtering query b/c accessions are global in this database")
@@ -67,6 +78,10 @@ def filter_by_collection(model, query, collection):
     return query
 
 def field_specs_from_json(json_fields):
+    """Given deserialized json data representing an array of SpQueryField
+    records, return an array of QueryField objects that can build the
+    corresponding sqlalchemy query.
+    """
     class EphemeralField(
         namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
         @classmethod
@@ -77,6 +92,11 @@ def field_specs_from_json(json_fields):
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
 def do_export(spquery, collection, user, filename):
+    """Executes the given deserialized query definition using "select into
+    outfile" and creates "export completed" message when finished.
+
+    See query_to_csv for details of the other accepted arguments.
+    """
     recordsetid = spquery.get('recordsetid', None)
 
     distinct = spquery['selectdistinct']
@@ -92,6 +112,11 @@ def do_export(spquery, collection, user, filename):
     }))
 
 def stored_query_to_csv(query_id, collection, user, filename):
+    """Executes a query from the Spquery table with the given id using
+    "select into outfile".
+
+    See query_to_csv for details of the other accepted arguments.
+    """
     with models.session_context() as session:
         sp_query = session.query(models.SpQuery).get(query_id)
         tableid = sp_query.contextTableId
@@ -102,6 +127,16 @@ def stored_query_to_csv(query_id, collection, user, filename):
         query_to_csv(session, collection, user, tableid, field_specs, filename)
 
 def query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid=None):
+    """Build a sqlalchemy query using the QueryField objects given by
+    field_specs and execute it using "select into outfile".
+
+    The filename should be generated internally with shell-safe
+    characters as it is passed directly to the system shell. The
+    resulting file is moved from MYSQL_SERVER_TMP_DIR on the mysql
+    server to DEPOSITORY_DIR on this system.
+
+    See build_query for details of the other accepted arguments.
+    """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
@@ -121,6 +156,9 @@ def query_to_csv(session, collection, user, tableid, field_specs, filename, reco
     subprocess.check_call(copy_cmd, shell=True)
 
 def run_ephemeral_query(collection, user, spquery):
+    """Execute a Specify query from deserialized json and return the results
+    as an array for json serialization to the web app.
+    """
     logger.info('ephemeral query: %s', spquery)
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
@@ -140,6 +178,7 @@ def run_ephemeral_query(collection, user, spquery):
                        field_specs, limit, offset, recordsetid)
 
 def recordset(collection, user, user_agent, recordset_info):
+    "Create a record set from the records matched by a query."
     spquery = recordset_info['fromquery']
     tableid = spquery['contexttableid']
 
@@ -173,6 +212,8 @@ def recordset(collection, user, user_agent, recordset_info):
     return new_rs_id
 
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+    "Build and execute a query, returning the results as a data structure for json serialization"
+
     set_group_concat_max_len(session)
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid)
 
@@ -190,6 +231,29 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False):
+    """Build a sqlalchemy query using the QueryField objects given by
+    field_specs.
+
+    session = an sqlalchemy Session instance.
+
+    collection = an instance of specifyweb.specify.models.Collection.
+    Returned records will be filtered to the scope of the collection.
+
+    user = an instance of specifyweb.specify.models.Specifyuser.  The
+    user will be used in the lookup process for any formatters that
+    are used.
+
+    tableid = an integer that indicates the "base table" of the query.
+    See specify_datamodel.xml.
+
+    field_specs = [QueryField instances] defining the fields of
+    the Specify query.
+
+    recordsetid = integer id of a row from the RecordSet table. Results
+    will be filtered to items from the given record set unless None.
+
+    replace_nulls = if True, replace null values with ""
+    """
     objectformatter = ObjectFormatter(collection, user, replace_nulls)
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
