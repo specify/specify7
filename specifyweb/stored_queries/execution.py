@@ -101,18 +101,20 @@ def do_export(spquery, collection, user, filename):
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
 
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-        query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid)
+        query_to_csv(session, collection, user, tableid, field_specs, path, recordsetid)
 
     Message.objects.create(user=user, content=json.dumps({
         'type': 'query-export-complete',
         'file': filename,
     }))
 
-def stored_query_to_csv(query_id, collection, user, filename):
+def stored_query_to_csv(query_id, collection, user, path):
     """Executes a query from the Spquery table with the given id and send
-    the results to a CSV file in DEPOSITORY_DIR.
+    the results to a CSV file at path.
 
     See query_to_csv for details of the other accepted arguments.
     """
@@ -123,23 +125,21 @@ def stored_query_to_csv(query_id, collection, user, filename):
         field_specs = [QueryField.from_spqueryfield(field)
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        query_to_csv(session, collection, user, tableid, field_specs, filename)
+        query_to_csv(session, collection, user, tableid, field_specs, path)
 
-def query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid=None):
+def query_to_csv(session, collection, user, tableid, field_specs, path, recordsetid=None):
     """Build a sqlalchemy query using the QueryField objects given by
-    field_specs and send the results to a CSV file with the given
-    filename in settings.DEPOSITORY_DIR.
+    field_specs and send the results to a CSV file at the given
+    file path.
 
     See build_query for details of the other accepted arguments.
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
-    depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
-
     logger.debug('query_to_csv starting')
 
-    with open(depository_file, 'wb') as f:
+    with open(path, 'wb') as f:
         csv_writer = csv.writer(f)
         for row in query.yield_per(1):
             csv_writer.writerow(row)
