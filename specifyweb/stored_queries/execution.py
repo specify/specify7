@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-import subprocess
+import csv
 from collections import namedtuple
 from datetime import datetime
 
@@ -14,7 +14,6 @@ from ..notifications.models import Message
 
 from . import models
 from .queryfield import QueryField
-from .select_into_outfile import SelectIntoOutfile
 from .format import ObjectFormatter
 
 
@@ -92,8 +91,8 @@ def field_specs_from_json(json_fields):
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
 def do_export(spquery, collection, user, filename):
-    """Executes the given deserialized query definition using "select into
-    outfile" and creates "export completed" message when finished.
+    """Executes the given deserialized query definition, sending the
+    to a CSV file, and creates "export completed" message when finished.
 
     See query_to_csv for details of the other accepted arguments.
     """
@@ -112,8 +111,8 @@ def do_export(spquery, collection, user, filename):
     }))
 
 def stored_query_to_csv(query_id, collection, user, filename):
-    """Executes a query from the Spquery table with the given id using
-    "select into outfile".
+    """Executes a query from the Spquery table with the given id and send
+    the results to a CSV file in DEPOSITORY_DIR.
 
     See query_to_csv for details of the other accepted arguments.
     """
@@ -128,32 +127,24 @@ def stored_query_to_csv(query_id, collection, user, filename):
 
 def query_to_csv(session, collection, user, tableid, field_specs, filename, recordsetid=None):
     """Build a sqlalchemy query using the QueryField objects given by
-    field_specs and execute it using "select into outfile".
-
-    The filename should be generated internally with shell-safe
-    characters as it is passed directly to the system shell. The
-    resulting file is moved from MYSQL_SERVER_TMP_DIR on the mysql
-    server to DEPOSITORY_DIR on this system.
+    field_specs and send the results to a CSV file with the given
+    filename in settings.DEPOSITORY_DIR.
 
     See build_query for details of the other accepted arguments.
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
-    path = os.path.join(settings.MYSQL_SERVER_TMP_DIR, filename)
-    stmt = SelectIntoOutfile(query.with_labels().statement, path)
+    depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
 
     logger.debug('query_to_csv starting')
-    session.execute(stmt)
+
+    with open(depository_file, 'wb') as f:
+        csv_writer = csv.writer(f)
+        for row in query.yield_per(1):
+            csv_writer.writerow(row)
+
     logger.debug('query_to_csv finished')
-
-    copy_cmd = settings.COPY_COMMAND.format(
-        temp_file=path,
-        depository_file=os.path.join(settings.DEPOSITORY_DIR, filename)
-    )
-
-    logger.debug('copying output: %s', copy_cmd)
-    subprocess.check_call(copy_cmd, shell=True)
 
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results

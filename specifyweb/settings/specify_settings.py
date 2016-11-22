@@ -52,10 +52,6 @@ SUPPORT_LOGIN_TTL = 300
 STATS_URL = "https://stats.specifycloud.org/capture"
 
 # Export settings.
-MYSQL_SERVER_TMP_DIR = '/tmp'
-
 DEPOSITORY_DIR = '/home/specify/specify_depository'
-
-COPY_COMMAND = 'cp {temp_file} {depository_file}'
 
 NOTIFICATION_TTL_DAYS = 7

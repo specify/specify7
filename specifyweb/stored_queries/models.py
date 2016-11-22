@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 
+from MySQLdb.cursors import SSCursor
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 
@@ -8,7 +9,8 @@ from django.conf import settings
 from specifyweb.specify.models import datamodel
 from . import build_models
 
-engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE)
+engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,
+                                  connect_args={'cursorclass': SSCursor})
 Session = sessionmaker(bind=engine)
 
 @contextmanager
