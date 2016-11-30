@@ -77,7 +77,7 @@ def export(request):
     else:
         collection = request.specify_collection
 
-    filename = 'export_test%s.csv' % datetime.now().isoformat()
+    filename = 'query_results_%s.csv' % datetime.now().isoformat()
 
     thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename))
     thread.daemon = True

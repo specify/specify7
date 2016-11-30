@@ -63,7 +63,7 @@ const MessageView = Backbone.View.extend({
             `<span>${time}</span>`,
             '<a class="ui-icon ui-icon-trash" style="float: right;">delete</a>',
             '<p>Query export to CSV completed. ',
-            `<a href="${href}" target="_blank">Download.</a></p>`
+            `<a href="${href}" download>Download.</a></p>`
         );
         if (!this.message.get('read')) this.$el.addClass('unread-notification');
         return this;
