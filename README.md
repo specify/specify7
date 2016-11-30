@@ -65,6 +65,15 @@ packaged.
 
 When the Specify7 repository is updated, this step should be repeated.
 
+All of the front end code is packaged through *webpack*. When actively
+developing the front end, it can be useful to run webpack in watch mode
+to automatically rebuild when any files are edited.
+
+```
+cd specify7/specifyweb/frontend/js_src
+./node_modules/.bin/webpack -w --devtool eval --display-chunks --display-modules
+```
+
 Adjust settings files.
 -------------------------
 In the directory `specify7/specifyweb/settings` you will find the
