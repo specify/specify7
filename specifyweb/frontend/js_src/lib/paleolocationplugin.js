@@ -61,11 +61,11 @@ module.exports = UIPlugin.extend({
             // retrieve the geographic coordinates relative to the locality table
             lat = this.model.specifyModel.get('latitude1');
             lng = this.model.specifyModel.get('longitude1');
-        } else if (this.model.specifyModel.name == 'CollectingCvent') {
+        } else if (this.model.specifyModel.name == 'CollectingEvent') {
             // ...relative to the collectingevent table
             lat = Q(this.model.specifyModel.rget('locality.latitude1', true));
             lng = Q(this.model.specifyModel.rget('locality.longitude1', true));
-        } else if (this.model.specifyModel.name == 'CollectionCbject') {
+        } else if (this.model.specifyModel.name == 'CollectionObject') {
             // ...relative to the collectionobject table
             lat = Q(this.model.specifyModel.rget('collectingevent.locality.latitude1', true));
             lng = Q(this.model.specifyModel.rget('collectingevent.locality.longitude1', true));
