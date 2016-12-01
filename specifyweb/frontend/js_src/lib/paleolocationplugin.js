@@ -59,16 +59,16 @@ module.exports = UIPlugin.extend({
 
         if (this.model.name == 'locality') {
             // retrieve the geographic coordinates relative to the locality table
-            lat = this.specifyModel.get('latitude1');
-            lng = this.specifyModel.get('longitude1');
-        } else if (this.specifyModel.name == 'collectingevent') {
+            lat = this.model.specifyModel.get('latitude1');
+            lng = this.model.specifyModel.get('longitude1');
+        } else if (this.model.specifyModel.name == 'collectingevent') {
             // ...relative to the collectingevent table
-            lat = Q(this.specifyModel.rget('locality.latitude1', true));
-            lng = Q(this.specifyModel.rget('locality.longitude1', true));
-        } else if (this.specifyModel.name == 'collectionobject') {
+            lat = Q(this.model.specifyModel.rget('locality.latitude1', true));
+            lng = Q(this.model.specifyModel.rget('locality.longitude1', true));
+        } else if (this.model.specifyModel.name == 'collectionobject') {
             // ...relative to the collectionobject table
-            lat = Q(this.specifyModel.rget('collectingevent.locality.latitude1', true));
-            lng = Q(this.specifyModel.rget('collectingevent.locality.longitude1', true));
+            lat = Q(this.model.specifyModel.rget('collectingevent.locality.latitude1', true));
+            lng = Q(this.model.specifyModel.rget('collectingevent.locality.longitude1', true));
         } else {
             $('<div title="Incorrect Form"><p>This plugin cannot be used on this form. Try moving it to the locality, ' +
                 'collecting event or collection object forms.</p></div>')
