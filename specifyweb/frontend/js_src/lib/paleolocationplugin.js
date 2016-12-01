@@ -57,15 +57,15 @@ module.exports = UIPlugin.extend({
 
         let lat, lng, start_ma, end_ma;
 
-        if (this.model.name == 'locality') {
+        if (this.model.name == 'Locality') {
             // retrieve the geographic coordinates relative to the locality table
             lat = this.model.specifyModel.get('latitude1');
             lng = this.model.specifyModel.get('longitude1');
-        } else if (this.model.specifyModel.name == 'collectingevent') {
+        } else if (this.model.specifyModel.name == 'CollectingCvent') {
             // ...relative to the collectingevent table
             lat = Q(this.model.specifyModel.rget('locality.latitude1', true));
             lng = Q(this.model.specifyModel.rget('locality.longitude1', true));
-        } else if (this.model.specifyModel.name == 'collectionobject') {
+        } else if (this.model.specifyModel.name == 'CollectionCbject') {
             // ...relative to the collectionobject table
             lat = Q(this.model.specifyModel.rget('collectingevent.locality.latitude1', true));
             lng = Q(this.model.specifyModel.rget('collectingevent.locality.longitude1', true));
