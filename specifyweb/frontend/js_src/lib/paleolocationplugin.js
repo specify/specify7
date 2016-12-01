@@ -34,8 +34,8 @@ module.exports = UIPlugin.extend({
         });
     },
     openPaleoMap: function (data) {
+        const form = this.model.specifyModel.getLocalizedName();
         if (data == null) {
-            const form = this.model.specifyModel.getLocalizedName();
             $('<div title="No coordinates"><p>' + form + ' must have coordinates and paleo context to be mapped.</p></div>')
                 .dialog({
                     close: function () {
@@ -57,18 +57,18 @@ module.exports = UIPlugin.extend({
 
         let lat, lng, start_ma, end_ma;
 
-        if (this.model.name == 'Locality') {
+        if (this.model.specifyModel.name == 'Locality') {
             // retrieve the geographic coordinates relative to the locality table
-            lat = this.model.specifyModel.get('latitude1');
-            lng = this.model.specifyModel.get('longitude1');
+            lat = this.model.get('latitude1');
+            lng = this.model.get('longitude1');
         } else if (this.model.specifyModel.name == 'CollectingEvent') {
             // ...relative to the collectingevent table
-            lat = Q(this.model.specifyModel.rget('locality.latitude1', true));
-            lng = Q(this.model.specifyModel.rget('locality.longitude1', true));
+            lat = Q(this.model.rget('locality.latitude1', true));
+            lng = Q(this.model.rget('locality.longitude1', true));
         } else if (this.model.specifyModel.name == 'CollectionObject') {
             // ...relative to the collectionobject table
-            lat = Q(this.model.specifyModel.rget('collectingevent.locality.latitude1', true));
-            lng = Q(this.model.specifyModel.rget('collectingevent.locality.longitude1', true));
+            lat = Q(this.model.rget('collectingevent.locality.latitude1', true));
+            lng = Q(this.model.rget('collectingevent.locality.longitude1', true));
         } else {
             $('<div title="Incorrect Form"><p>This plugin cannot be used on this form. Try moving it to the locality, ' +
                 'collecting event or collection object forms.</p></div>')
@@ -81,8 +81,8 @@ module.exports = UIPlugin.extend({
 
         // Because the paleo context is related directly to each of the possible forms in the same way
         // we can treat the retrieval of the age in the same all for all forms.
-        start_ma = Q(this.model.rget('paleocontext.geologictimeperiod.startperiod', true));
-        end_ma = Q(this.model.rget('paleocontext.geologictimeperiod.endperiod', true));
+        start_ma = Q(this.model.rget('paleocontext.chronosstrat.startperiod', true));
+        end_ma = Q(this.model.rget('paleocontext.chronosstrat.endperiod', true));
         let ma;
 
         return Q.all([lat, lng, start_ma, end_ma]).spread((lat, lng, start_ma, end_ma) => {

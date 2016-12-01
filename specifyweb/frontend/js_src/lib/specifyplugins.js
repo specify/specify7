@@ -19,6 +19,7 @@ var providers = [
     require('./useragentsplugin.js'),
     require('./adminstatusplugin.js'),
     require('./googlemapsplugin.js'),
+    require('./paleolocationplugin.js'),
 ];
 
 
