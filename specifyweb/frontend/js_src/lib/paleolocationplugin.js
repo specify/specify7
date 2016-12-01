@@ -35,7 +35,7 @@ module.exports = UIPlugin.extend({
     },
     openPaleoMap: function (data) {
         if (data == null) {
-            const form = this.model.specifyModel.getLocalizedName();  // TODO: is this the model/form/table name?
+            const form = this.model.specifyModel.getLocalizedName();
             $('<div title="No coordinates"><p>' + form + ' must have coordinates and paleo context to be mapped.</p></div>')
                 .dialog({
                     close: function () {
@@ -43,7 +43,7 @@ module.exports = UIPlugin.extend({
                     }
                 });
         } else {
-            $('<div>').append(template({lat: data.lat, lng: data.lng, ma: data.ma})).dialog({ // TODO
+            $('<div>').append(template(data)).dialog({
                 width: 800,
                 height: 600,
                 title: form,
@@ -85,7 +85,7 @@ module.exports = UIPlugin.extend({
         end_ma = Q(this.model.rget('paleocontext.geologictimeperiod.endperiod', true));
         let ma;
 
-        return Q.all([lat, lng, start_ma, end_ma]).spread((lat, lng, start_ma, end_ma) => { // TODO
+        return Q.all([lat, lng, start_ma, end_ma]).spread((lat, lng, start_ma, end_ma) => {
             if (lat == null) return null;
             if (lng == null) return null;
             // calculate the mid-point of the age if possible
@@ -99,7 +99,7 @@ module.exports = UIPlugin.extend({
                 ma = ((start_ma + end_ma) / 2);
             }
 
-            return Object.assign(lat, lng, ma); // TODO
+            return {lat: lat, lng: lng, ma: ma};
         });
     }
 }, {pluginsProvided: ['PaleoMap']});
