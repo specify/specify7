@@ -13,5 +13,5 @@ datetime.strptime('01/14/2014', '%m/%d/%Y')
 sys.path.append(os.path.dirname(__file__))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'specifyweb.settings'
 
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
