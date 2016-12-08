@@ -1,7 +1,22 @@
-.PHONY: all clean runserver
+ifndef VIRTUAL_ENV
+VIRTUAL_ENV = /usr
+endif
 
-all: specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+PYTHON = $(VIRTUAL_ENV)/bin/python
+PIP = $(VIRTUAL_ENV)/bin/pip
+
+.PHONY: all clean runserver pip_requirements django_migrations frontend
+
+all: django_migrations frontend
+
+frontend:
 	$(MAKE) -C specifyweb/frontend/js_src
+
+pip_requirements:
+	$(PIP) install --upgrade -r requirements.txt
+
+django_migrations: pip_requirements specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+	$(PYTHON) manage.py migrate notifications
 
 specifyweb/settings/build_version.py: .FORCE
 	echo "VERSION = '`git describe`'" > $@
@@ -16,6 +31,6 @@ clean:
 	$(MAKE) -C specifyweb/frontend/js_src clean
 
 runserver:
-	python specifyweb/manage.py runserver
+	$(PYTHON) specifyweb/manage.py runserver
 
 .FORCE:
