@@ -5,17 +5,21 @@ endif
 PYTHON = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
 
-.PHONY: all clean runserver pip_requirements django_migrations frontend
+.PHONY: all clean runserver pip_requirements django_migrations frontend python_prep build
 
-all: django_migrations frontend
+all: build django_migrations
+
+build: python_prep frontend
 
 frontend:
 	$(MAKE) -C specifyweb/frontend/js_src
 
+python_prep: pip_requirements specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+
 pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt
 
-django_migrations: pip_requirements specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+django_migrations: python_prep
 	$(PYTHON) manage.py migrate notifications
 
 specifyweb/settings/build_version.py: .FORCE
