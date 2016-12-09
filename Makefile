@@ -1,6 +1,4 @@
-ifndef VIRTUAL_ENV
-VIRTUAL_ENV = /usr
-endif
+VIRTUAL_ENV ?= /usr
 
 PYTHON = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
