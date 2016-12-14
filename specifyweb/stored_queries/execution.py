@@ -105,7 +105,8 @@ def do_export(spquery, collection, user, filename):
 
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-        query_to_csv(session, collection, user, tableid, field_specs, path, recordsetid)
+        query_to_csv(session, collection, user, tableid, field_specs, path,
+                     recordsetid=recordsetid, add_header=True, strip_id=True)
 
     Message.objects.create(user=user, content=json.dumps({
         'type': 'query-export-complete',
@@ -127,7 +128,8 @@ def stored_query_to_csv(query_id, collection, user, path):
 
         query_to_csv(session, collection, user, tableid, field_specs, path)
 
-def query_to_csv(session, collection, user, tableid, field_specs, path, recordsetid=None):
+def query_to_csv(session, collection, user, tableid, field_specs, path,
+                 recordsetid=None, add_header=False, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -141,8 +143,13 @@ def query_to_csv(session, collection, user, tableid, field_specs, path, recordse
 
     with open(path, 'wb') as f:
         csv_writer = csv.writer(f)
+        if add_header:
+            header = [fs.fieldspec.to_stringid() for fs in field_specs]
+            if not strip_id:
+                header = ['id'] + header
+            csv_writer.writerow(header)
         for row in query.yield_per(1):
-            csv_writer.writerow(row)
+            csv_writer.writerow(row[1:] if strip_id else row)
 
     logger.debug('query_to_csv finished')
 
