@@ -1,8 +1,9 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 
-urlpatterns = patterns(
-    'specifyweb.attachment_gw.views',
-    (r'^get_settings/$', 'get_settings'),
-    (r'^get_upload_params/$', 'get_upload_params'),
-    (r'^get_token/$', 'get_token')
-)
+from . import views
+
+urlpatterns = [
+    url(r'^get_settings/$', views.get_settings),
+    url(r'^get_upload_params/$', views.get_upload_params),
+    url(r'^get_token/$', views.get_token),
+]

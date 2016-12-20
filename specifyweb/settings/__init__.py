@@ -24,7 +24,6 @@ if DEBUG:
 
 from .secret_key import SECRET_KEY
 
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
 
@@ -143,12 +142,28 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
 #    'middleware.profilemiddleware.ProfileMiddleware',
@@ -160,17 +175,13 @@ MIDDLEWARE_CLASSES = (
     'specifyweb.context.middleware.ContextMiddleware'
 )
 
-ROOT_URLCONF = 'specifyweb.settings.urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+ROOT_URLCONF = 'specifyweb.urls'
 
 INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
     'specifyweb.specify',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
@@ -182,6 +193,8 @@ INSTALLED_APPS = (
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',
+    'specifyweb.notifications',
+    'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
 )
 

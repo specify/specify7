@@ -50,3 +50,8 @@ ALLOW_SUPPORT_LOGIN = False
 SUPPORT_LOGIN_TTL = 300
 
 STATS_URL = "https://stats.specifycloud.org/capture"
+
+# Export settings.
+DEPOSITORY_DIR = '/home/specify/specify_depository'
+
+NOTIFICATION_TTL_DAYS = 7

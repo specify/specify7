@@ -1,4 +1,5 @@
 import re
+import json
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.utils.http import is_safe_url
@@ -8,7 +9,6 @@ from django.views.decorators.cache import cache_control
 from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
-from django.utils import simplejson
 from django.conf import settings
 from django import forms
 from django.db import connection, transaction
@@ -46,7 +46,7 @@ def user_collection_access(request, userid):
     cursor = connection.cursor()
 
     if request.method == 'PUT':
-        collections = simplejson.loads(request.raw_post_data)
+        collections = json.loads(request.raw_post_data)
         user = Specifyuser.objects.get(id=userid)
         with transaction.commit_on_success():
             cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
@@ -65,7 +65,7 @@ def user_collection_access(request, userid):
                                'values (%s, %s)', [userid, principal.id])
 
     collections = users_collections(cursor, userid)
-    return HttpResponse(simplejson.dumps([row[0] for row in collections]),
+    return HttpResponse(json.dumps([row[0] for row in collections]),
                         content_type="application/json")
 
 class CollectionChoiceField(forms.ChoiceField):
@@ -76,7 +76,7 @@ class CollectionChoiceField(forms.ChoiceField):
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
 def choose_collection(request):
-    redirect_to = request.REQUEST.get('next', '')
+    redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
         redirect_to if is_safe_url(url=redirect_to, host=request.get_host())
         else settings.LOGIN_REDIRECT_URL
@@ -112,7 +112,7 @@ def choose_collection(request):
 @csrf_exempt
 def api_login(request):
     if request.method == 'PUT':
-        data = simplejson.load(request)
+        data = json.load(request)
         if any(data[key] is None for key in 'username password collection'.split()):
             auth_logout(request)
             return HttpResponse('', status=204)
@@ -131,7 +131,7 @@ def api_login(request):
         set_collection_cookie(response, collection.id)
         return response
 
-    return HttpResponse(simplejson.dumps(dict(
+    return HttpResponse(json.dumps(dict(
         collections={c.collectionname: c.id for c in Collection.objects.all()},
         username=None,
         password=None,
@@ -158,7 +158,7 @@ def collection(request):
         return response
     else:
         response = dict(available=available_collections, current=(current and int(current)))
-        return HttpResponse(simplejson.dumps(response), content_type="application/json")
+        return HttpResponse(json.dumps(response), content_type="application/json")
 
 @login_maybe_required
 @require_GET
@@ -167,10 +167,10 @@ def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
     from specifyweb.specify.api import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
-    data['isauthenticated'] = request.user.is_authenticated()
+    data['isauthenticated'] = request.user.is_authenticated
     data['available_collections'] = users_collections(connection.cursor(), request.specify_user.id)
     data['agent'] = obj_to_data(request.specify_user_agent)
-    if settings.RO_MODE or not request.user.is_authenticated():
+    if settings.RO_MODE or not request.user.is_authenticated:
         data['usertype'] = "readonly"
     return HttpResponse(toJson(data), content_type='application/json')
 
@@ -190,7 +190,7 @@ def domain(request):
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
         }
 
-    return HttpResponse(simplejson.dumps(domain), content_type='application/json')
+    return HttpResponse(json.dumps(domain), content_type='application/json')
 
 @login_maybe_required
 @require_GET
@@ -224,7 +224,7 @@ def available_related_searches(request):
     result = [name for name in related_searches.__all__
               if getattr(related_searches, name).id in active]
 
-    return HttpResponse(simplejson.dumps(result), content_type='application/json')
+    return HttpResponse(json.dumps(result), content_type='application/json')
 
 datamodel_json = None
 
@@ -272,7 +272,7 @@ def view(request):
         raise Http404()
     data = get_view(collection, request.specify_user, view_name)
 
-    return HttpResponse(simplejson.dumps(data), content_type="application/json")
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 @require_GET
 @login_maybe_required
@@ -305,4 +305,4 @@ def system_info(request):
         collection=collection and collection.collectionname,
         isa_number=collection and collection.isanumber,
         )
-    return HttpResponse(simplejson.dumps(info), content_type='application/json')
+    return HttpResponse(json.dumps(info), content_type='application/json')

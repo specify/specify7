@@ -11,6 +11,7 @@ var UserTools  = require('./usertools.js');
 var userInfo   = require('./userinfo.js');
 var router     = require('./router.js');
 var querystring = require('./querystring.js');
+const NotificationsUI = require('./notifications.js');
 
 
 var toolModules = [
@@ -66,6 +67,7 @@ module.exports = Backbone.View.extend({
         },
         render: function() {
             new ExpressSearchInput({el: this.$('#express-search')});
+            new NotificationsUI({el: this.$('#site-notifications')});
             userInfo.isauthenticated && this.$('#user-tools a.username').text(userInfo.name);
             this.$('#user-tools a.login-logout')
                 .text(userInfo.isauthenticated ? '' : 'Log in')
