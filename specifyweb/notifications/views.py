@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 from ..specify.views import login_maybe_required
@@ -24,7 +23,6 @@ def get_messages(request):
 
 @require_POST
 @login_maybe_required
-@csrf_exempt
 def mark_read(request):
     if 'last_seen' not in request.POST:
         return HttpResponseBadRequest()
@@ -36,7 +34,6 @@ def mark_read(request):
 
 @require_POST
 @login_maybe_required
-@csrf_exempt
 def delete(request):
     if 'message_id' not in request.POST:
         return HttpResponseBadRequest()

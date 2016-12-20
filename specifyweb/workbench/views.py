@@ -9,7 +9,6 @@ from uuid import uuid4
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 from django.db import connection, transaction
 from django.conf import settings
 
@@ -21,7 +20,6 @@ from uploader_classpath import CLASSPATH
 
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
 @login_maybe_required
 @apply_access_control
 @require_http_methods(["GET", "PUT"])
@@ -179,7 +177,6 @@ def shellquote(s):
     # this can be replaced with shlex.quote in Python 3.3
     return "'" + s.replace("'", "'\\''") + "'"
 
-@csrf_exempt
 @login_maybe_required
 @apply_access_control
 @require_POST

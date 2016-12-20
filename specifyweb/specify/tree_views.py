@@ -1,7 +1,6 @@
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
 from django.db import connection, transaction
 
@@ -20,7 +19,6 @@ def tree_mutation(mutation):
     @login_maybe_required
     @require_POST
     @apply_access_control
-    @csrf_exempt
     @transaction.atomic
     @wraps(mutation)
     def wrapper(*args, **kwargs):

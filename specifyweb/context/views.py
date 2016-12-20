@@ -4,7 +4,6 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
@@ -39,7 +38,6 @@ def users_collections(cursor, user_id):
 
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
-@csrf_exempt
 def user_collection_access(request, userid):
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
@@ -109,7 +107,6 @@ def choose_collection(request):
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_http_methods(['GET', 'PUT'])
-@csrf_exempt
 def api_login(request):
     if request.method == 'PUT':
         data = json.load(request)
@@ -138,7 +135,6 @@ def api_login(request):
         collection=None)), content_type='application/json')
 
 @login_maybe_required
-@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""

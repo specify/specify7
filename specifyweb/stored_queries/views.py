@@ -5,7 +5,6 @@ from datetime import datetime
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseForbidden
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
 
 from ..specify.models import Collection
@@ -47,7 +46,6 @@ def query(request, id):
 
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
 @never_cache
 def ephemeral(request):
@@ -60,7 +58,6 @@ def ephemeral(request):
 
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
 @never_cache
 def export(request):
@@ -86,7 +83,6 @@ def export(request):
 
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
 @apply_access_control
 @never_cache

@@ -2,7 +2,6 @@ import mimetypes
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django import http
@@ -38,7 +37,6 @@ def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising
     in the api logic."""
     @login_maybe_required
-    @csrf_exempt
     @cache_control(private=True, max_age=2)
     @apply_access_control
     def view(request, *args, **kwargs):
@@ -98,7 +96,6 @@ def properties(request, name):
 
 @login_maybe_required
 @require_POST
-@csrf_exempt
 def set_password(request, userid):
     """Set target specify user's password."""
     if not request.specify_user.is_admin():
@@ -111,7 +108,6 @@ def set_password(request, userid):
 
 @login_maybe_required
 @require_POST
-@csrf_exempt
 def set_admin_status(request, userid):
     if not request.specify_user.is_admin():
         return http.HttpResponseForbidden()
