@@ -174,7 +174,7 @@ def querycbx_search(request, modelname):
         with models.session_context() as session:
             combined = reduce(and_, filters)
             query = session.query(getattr(model, table.idFieldName)).filter(combined)
-            query = filter_by_collection(model, query, collection).limit(10)
+            query = filter_by_collection(model, query, collection).limit(100)
             ids = [id for (id,) in query]
     else:
         ids = []

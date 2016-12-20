@@ -76,7 +76,6 @@ module.exports = Backbone.View.extend({
             this.$('.querycbx-search-results').append(items);
 
             if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
-            if (formattedResults.length > 9) this.$('.querycbx-search-results').append('<li>...</li>');
         },
         select: function(evt) {
             evt.preventDefault();
