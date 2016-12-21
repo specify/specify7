@@ -11,9 +11,3 @@ def collector_pre_save(collector):
             others = Collector.objects.filter(collectingevent=collector.collectingevent)
             top = others.aggregate(Max('ordernumber'))['ordernumber__max'] or 0
             collector.ordernumber = top + 1
-
-@orm_signal_handler('pre_save', 'Collector')
-def division_cannot_be_null(collector):
-    if collector.division is None:
-        raise BusinessRuleException("collector.division cannot be null")
-
