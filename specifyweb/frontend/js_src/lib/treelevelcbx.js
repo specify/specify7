@@ -1,18 +1,21 @@
 "use strict";
 
-var $                = require('jquery');
-var _                = require('underscore');
-var Backbone         = require('./backbone.js');
+const $ = require('jquery');
+const _ = require('underscore');
+const Backbone = require('./backbone.js');
 
 
-    function getPossibleRanks(lowestChildRank, parentTreeDefItem) {
-        if (!parentTreeDefItem) return _([]);
-        var filters = {rankid__gt: parentTreeDefItem.get('rankid')};
-        if (lowestChildRank != null) filters['rankid__lt'] = lowestChildRank;
+function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
+    if (!parentTreeDefItem) return _([]);
+    const filters = {
+        rankid__gt: parentTreeDefItem.get('rankid'),
+        treedef: treeDef.id
+    };
+    if (lowestChildRank != null) filters['rankid__lt'] = lowestChildRank;
 
-        var children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters});
-        return children.fetch({limit: 0}).pipe(function() {return children;});
-    }
+    const children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters});
+    return children.fetch({limit: 0}).pipe(() => children);
+}
 
 module.exports = Backbone.View.extend({
         __name__: "TreeLevelCBX",
@@ -41,7 +44,8 @@ module.exports = Backbone.View.extend({
             this.$el.prop('disabled', false);
             var fetch = this.lastFetch = $.when(
                 this.lowestChildRankPromise,
-                this.model.rget('parent.definitionitem', true)
+                this.model.rget('parent.definitionitem', true),
+                this.model.rget('parent.definitionitem.treedef', true)
             ).pipe(getPossibleRanks);
 
             fetch.done(this.fillIn.bind(this, fetch));
