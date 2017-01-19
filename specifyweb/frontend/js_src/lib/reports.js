@@ -12,6 +12,7 @@ var attachments            = require('./attachments.js');
 var userInfo               = require('./userinfo.js');
 
 const editReport = require('./editreport.js');
+const csrftoken = require('./csrftoken.js');
 
 var title =  "Reports";
 
@@ -393,6 +394,7 @@ function runReport(reportResources, recordSetId, fieldUIs) {
     var form = $('<form action="/report_runner/run/" method="post" ' +
                  'style="display: none;" ' +
                  'target="' + reportWindowContext + '">' +
+                 `<input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}"/>` +
                  '<textarea name="report"></textarea>' +
                  '<textarea name="query"></textarea>' +
                  '<textarea name="parameters"></textarea>' +
