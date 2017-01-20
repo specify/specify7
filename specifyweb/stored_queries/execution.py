@@ -61,12 +61,25 @@ def filter_by_collection(model, query, collection):
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
         return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
 
+    if model in (
+            models.Agent,
+            models.Accession,
+            models.RepositoryAgreement,
+            models.ExchangeIn,
+            models.ExchangeOut,
+            models.ConservDescription,
+    ):
+        return query.filter(model.DivisionID == collection.discipline.division_id)
+
     for filter_col, scope, scope_name in (
-        ('CollectionID'       , lambda collection: collection, lambda o: o.collectionname),
-        ('collectionMemberId' , lambda collection: collection, lambda o: o.collectionname),
-        ('DisciplineID'       , lambda collection: collection.discipline, lambda o: o.name),
-        ('DivisionID'         , lambda collection: collection.discipline.division, lambda o: o.name),
-        ('InstitutionID'      , lambda collection: collection.discipline.division.institution, lambda o: o.name)):
+            ('CollectionID'       , lambda collection: collection, lambda o: o.collectionname),
+            ('collectionMemberId' , lambda collection: collection, lambda o: o.collectionname),
+            ('DisciplineID'       , lambda collection: collection.discipline, lambda o: o.name),
+
+        # The below are disabled to match Specify 6 behavior.
+            # ('DivisionID'         , lambda collection: collection.discipline.division, lambda o: o.name),
+            # ('InstitutionID'      , lambda collection: collection.discipline.division.institution, lambda o: o.name),
+    ):
 
         if hasattr(model, filter_col):
             o = scope(collection)
