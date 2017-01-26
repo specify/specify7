@@ -12,6 +12,13 @@ const SaveButton = require('./savebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
 
+function makeUrl(resource) {
+    return {
+        SpAppResource: `/specify/appresources/${resource.id}/`,
+        SpViewSetObj:  `/specify/viewsets/${resource.id}/`
+    }[resource.specifyModel.name];
+}
+
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     id: "appresource-page",
@@ -66,7 +73,7 @@ const ResourceView = Backbone.View.extend({
     render() {
         this.$el.append(
             $('<a>', {
-                href: `/specify/appresources/${this.model.id}/`,
+                href: makeUrl(this.model),
                 text: this.model.get('name'),
                 'class': 'intercept-navigation'
             })
@@ -81,11 +88,12 @@ const ResourceList = Backbone.View.extend({
     events: {
         'click .new-resource': 'openNameDialog'
     },
-    initialize({resources, getDirectory, selectedResource, canAddResource = true}) {
+    initialize({resources, getDirectory, selectedResource, canAddResource = true, ResourceModel}) {
         this.resources = resources;
         this.getDirectory = getDirectory;
         this.selectedResource = selectedResource;
         this.canAddResource = canAddResource;
+        this.ResourceModel = ResourceModel;
         this.views = _(resources).sortBy(r => r.get('name').toLowerCase())
             .map(r => new ResourceView({model: r, selectedResource: this.selectedResource}));
         this.containsSelected = this.views.some(v => v.isSelected);
@@ -101,7 +109,7 @@ const ResourceList = Backbone.View.extend({
     },
     createResource(name) {
         this.getDirectory().then(directory => {
-            const resource = new schema.models.SpAppResource.Resource({
+            const resource = new this.ResourceModel.Resource({
                 level: 0, // wtf is this for?
                 name: name,
                 specifyuser: userInfo.resource_uri,
@@ -115,7 +123,7 @@ const ResourceList = Backbone.View.extend({
             });
             return Q(resourceData.save()).then(() => resource);
         }).done(resource => {
-            navigation.go(`/specify/appresources/${resource.id}/`);
+            navigation.go(makeUrl(resource));
         });
     },
     openNameDialog() {
@@ -169,7 +177,7 @@ const AppResourcesView = Backbone.View.extend({
 
 const GlobalResourcesView = Backbone.View.extend({
     __name__: "GlobalResourcesView",
-    initialize({directories, resources, selectedResource}) {
+    initialize({directories, resources, selectedResource, ResourceModel}) {
         // there are multiple "global" directories
         // distinguished by the usertype field
         // i'm not going to bother separating them out for now
@@ -180,7 +188,8 @@ const GlobalResourcesView = Backbone.View.extend({
         this.resourceList = new ResourceList({
             resources: resources.filter(r => globalDirs.includes(r.get('spappresourcedir'))),
             selectedResource: selectedResource,
-            canAddResource: false // because there are multiple dirs it could go into
+            canAddResource: false, // because there are multiple dirs it could go into
+            ResourceModel: ResourceModel
         });
     },
     render() {
@@ -194,7 +203,7 @@ const GlobalResourcesView = Backbone.View.extend({
 
 const DisciplinesView = Backbone.View.extend({
     __name__: "DisciplineView",
-    initialize({users, disciplines, directories, collections, resources, selectedResource}) {
+    initialize({users, disciplines, directories, collections, resources, selectedResource, ResourceModel}) {
         this.views = disciplines.map(
             disc => new DisciplineResourcesView({
                 discipline: disc,
@@ -202,7 +211,8 @@ const DisciplinesView = Backbone.View.extend({
                 directories: directories,
                 collections: collections,
                 resources: resources,
-                selectedResource: selectedResource
+                selectedResource: selectedResource,
+                ResourceModel: ResourceModel
             })
         );
 
@@ -218,7 +228,7 @@ const DisciplinesView = Backbone.View.extend({
 
 const DisciplineResourcesView = Backbone.View.extend({
     __name__: "DisciplineResourcesView",
-    initialize({discipline, users, directories, collections, resources, selectedResource}) {
+    initialize({discipline, users, directories, collections, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collections = collections.filter(col => col.get('discipline') === discipline.get('resource_uri'));
 
@@ -231,7 +241,8 @@ const DisciplineResourcesView = Backbone.View.extend({
         this.resourceList = new ResourceList({
             resources: this.resources,
             getDirectory: () => this.getDirectory(),
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.collectionViews = this.collections.map(
@@ -241,7 +252,8 @@ const DisciplineResourcesView = Backbone.View.extend({
                 users: users,
                 directories: directories,
                 resources: resources,
-                selectedResource: selectedResource
+                selectedResource: selectedResource,
+                ResourceModel: ResourceModel
             })
         );
 
@@ -271,7 +283,7 @@ const DisciplineResourcesView = Backbone.View.extend({
 
 const CollectionResourcesView = Backbone.View.extend({
     __name__: "CollectionResourcesView",
-    initialize({users, discipline, collection, directories, resources, selectedResource}) {
+    initialize({users, discipline, collection, directories, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
 
@@ -284,7 +296,8 @@ const CollectionResourcesView = Backbone.View.extend({
         this.resourceList = new ResourceList({
             resources: this.resources,
             getDirectory: () => this.getDirectory(),
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.userTypeView = new UserTypeView({
@@ -292,7 +305,8 @@ const CollectionResourcesView = Backbone.View.extend({
             collection: collection,
             directories: directories,
             resources: resources,
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.userView = new UserView({
@@ -301,7 +315,8 @@ const CollectionResourcesView = Backbone.View.extend({
             collection: collection,
             directories: directories,
             resources: resources,
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.containsSelected = this.resourceList.containsSelected ||
@@ -335,7 +350,7 @@ const CollectionResourcesView = Backbone.View.extend({
 
 const UserTypeView = Backbone.View.extend({
     __name__: "UserTypeView",
-    initialize({discipline, collection, directories, resources, selectedResource}) {
+    initialize({discipline, collection, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = ["Manager", "FullAccess", "LimitedAccess", "Guest"].map(
             t => new UserTypeResourcesView({
@@ -344,7 +359,8 @@ const UserTypeView = Backbone.View.extend({
                 collection: collection,
                 directories: directories,
                 resources: resources,
-                selectedResource: selectedResource
+                selectedResource: selectedResource,
+                ResourceModel: ResourceModel
             })
         );
 
@@ -358,7 +374,7 @@ const UserTypeView = Backbone.View.extend({
 
 const UserTypeResourcesView = Backbone.View.extend({
     __name__: "UserTypeResourcesView",
-    initialize({discipline, collection, directories, type, resources, selectedResource}) {
+    initialize({discipline, collection, directories, type, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
         this.usertype = type;
@@ -375,7 +391,8 @@ const UserTypeResourcesView = Backbone.View.extend({
         this.resourceList = new ResourceList({
             resources: this.resources,
             getDirectory: () => this.getDirectory(),
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.containsSelected = this.resourceList.containsSelected;
@@ -402,7 +419,7 @@ const UserTypeResourcesView = Backbone.View.extend({
 
 const UserView = Backbone.View.extend({
     __name__: "UserView",
-    initialize({discipline, collection, users, directories, resources, selectedResource}) {
+    initialize({discipline, collection, users, directories, resources, selectedResource, ResourceModel}) {
 
         this.views = users.map(
             user => new UserResourcesView({
@@ -411,7 +428,8 @@ const UserView = Backbone.View.extend({
                 collection: collection,
                 directories: directories,
                 resources: resources,
-                selectedResource: selectedResource
+                selectedResource: selectedResource,
+                ResourceModel: ResourceModel
             })
         );
 
@@ -426,7 +444,7 @@ const UserView = Backbone.View.extend({
 
 const UserResourcesView = Backbone.View.extend({
     __name__: "UserResourcesView",
-    initialize({discipline, collection, directories, user, resources, selectedResource}) {
+    initialize({discipline, collection, directories, user, resources, selectedResource, ResourceModel}) {
         this.discipline = discipline;
         this.collection = collection;
         this.user = user;
@@ -443,7 +461,8 @@ const UserResourcesView = Backbone.View.extend({
         this.resourceList = new ResourceList({
             resources: this.resources,
             getDirectory: () => this.getDirectory(),
-            selectedResource: selectedResource
+            selectedResource: selectedResource,
+            ResourceModel: ResourceModel
         });
 
         this.containsSelected = this.resourceList.containsSelected;
@@ -469,12 +488,13 @@ const UserResourcesView = Backbone.View.extend({
     }
 });
 
-module.exports = function(id) {
-    app.setTitle("Application Resources");
+function appResourcesTask(ResourceModel, id) {
+    app.setTitle(ResourceModel.getLocalizedName());
+
     const resourceDirs = new schema.models.SpAppResourceDir.LazyCollection();
     const disciplines = new schema.models.Discipline.LazyCollection();
     const collections = new schema.models.Collection.LazyCollection();
-    const resources = new schema.models.SpAppResource.LazyCollection();
+    const resources = new ResourceModel.LazyCollection();
     const users = new schema.models.SpecifyUser.LazyCollection();
 
     Q.all([
@@ -490,7 +510,13 @@ module.exports = function(id) {
             disciplines: disciplines,
             collections: collections,
             resources: resources,
-            users: users
+            users: users,
+            ResourceModel: ResourceModel
         }));
     });
+ }
+
+module.exports = {
+    appResources: id => appResourcesTask(schema.models.SpAppResource, id),
+    viewSets: id => appResourcesTask(schema.models.SpViewSetObj, id)
 };
