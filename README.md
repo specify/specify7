@@ -46,25 +46,6 @@ Clone this repository.
 You will now have a specify7 directory containing the source
 tree.
 
-Install the Python dependencies.
-----------------------------------
-Pip is used to install the required Python libraries. For development
-purposes you may wish to use a Python virtual environment. On a
-dedicated server for deployment, it is simpler to install the
-requirements global which requires running pip as superuser.
-
-    pip install -r specify7/requirements.txt
-
-
-Generate the front end.
------------------------
-The Javascript dependencies and sources for the browser need to be
-packaged.
-
-    make -C specify7
-
-When the Specify7 repository is updated, this step should be repeated.
-
 Adjust settings files.
 -------------------------
 In the directory `specify7/specifyweb/settings` you will find the
@@ -72,6 +53,79 @@ In the directory `specify7/specifyweb/settings` you will find the
 `local_specify_settings.py` and edit it. The file contains comments
 explaining the various settings.
     
+
+Python Virtual Environment.
+---------------------------
+Using a Python
+[virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+will avoid version conflicts with other Python libraries on your
+system. Also it avoids having to use a superuser account to install
+the Python dependencies.
+
+### Installing *virtualenv*
+First make sure a reasonably up-to-date *virtualenv* tool is installed
+on your system.
+
+    virtualenv --version
+
+If *virtualenv* is not installed, I recommend installing it using
+*pip*.
+
+    sudo pip install virtualenv
+
+### Creating and activating the virtualenv
+I generally create a virtualenv inside the the `specify7` directory
+named simply `ve`.
+
+    virtualenv specify7/ve
+    source specify7/ve/bin/activate
+
+The shell prompt will be modified to indicate the virtualenv is
+active. It can be deactivated by invoking `deactivate` from the shell
+prompt.
+
+Building.
+---------
+The *Makefile* contains several targets for building and preparinge
+Specify 7. If a virtualenv is active when *make* is invoked, it will
+be detected and used installing Python dependencies or invoking Python
+scripts.
+
+### make all
+The default make target *all* will invoke the steps necessary to run
+Specfy 7.
+
+### make build
+Installs or updates dependencies and executes all build steps.
+
+### make frontend
+Installs or updates Javascript dependencies and builds the Javascript
+modules only.
+
+### make python_prep
+Installs or updates Python dependencies and generates
+`build_version.py` and `secret_key.py` files.
+
+### make pip_requirements
+Install or updates Python dependencies.
+
+### make django_migrations
+Applies Specify schema changes to the database named in the
+settings. This step may fail if the master user configured in the
+settings does not have DDL privileges. Changing the `MASTER_NAME` and
+`MASTER_PASSWORD` settings to the MySQL root user will allow the
+changes to be applied. Afterwards the master user settings can be
+restored.
+
+### make clean
+Removes all generated files.
+
+### make runserver
+A shortcut for running the Django development server.
+
+### make webpack_watch
+Run webpack in watch mode so that changes to the frontend source code
+will be automatically compiled. Useful during the development process.
 
 Turn on debugging.
 ------------------
@@ -93,6 +147,11 @@ it first.
 
 This will start a development server for testing purposes on
 `localhost:8000`.
+
+The *Makefile* contains a shortcut target to start the development
+server.
+
+    make runserver
 
 
 Deployment to production.
