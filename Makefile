@@ -33,7 +33,7 @@ clean:
 	$(MAKE) -C specifyweb/frontend/js_src clean
 
 runserver:
-	$(PYTHON) specifyweb/manage.py runserver
+	$(PYTHON) manage.py runserver
 
 webpack_watch:
 	cd specifyweb/frontend/js_src && node_modules/.bin/webpack -w --devtool eval --display-chunks --display-modules
