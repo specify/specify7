@@ -91,6 +91,25 @@ Specify 7. If a virtualenv is active when *make* is invoked, it will
 be detected and used installing Python dependencies or invoking Python
 scripts.
 
+When building the frontend, *Webpack* will issue the following
+warnings that can be safely ignored:
+
+```
+WARNING in ./bower_components/handsontable/dist/handsontable.full.js
+Critical dependencies:
+41:48-74 This seems to be a pre-built javascript file. Though this is
+possible, it's not recommended. Try to require the original source to
+get better results.
+ @ ./bower_components/handsontable/dist/handsontable.full.js 41:48-74
+
+WARNING in ./bower_components/handsontable/dist/handsontable.full.js
+Critical dependencies:
+47:38-65 This seems to be a pre-built javascript file. Though this is
+possible, it's not recommended. Try to require the original source to
+get better results.
+ @ ./bower_components/handsontable/dist/handsontable.full.js 47:38-65
+```
+
 ### make all
 The default make target *all* will invoke the steps necessary to run
 Specfy 7.
@@ -152,6 +171,20 @@ The *Makefile* contains a shortcut target to start the development
 server.
 
     make runserver
+
+When the server starts up, it will issue a warning that some
+migrations have not been applied:
+
+```
+You have 11 unapplied migration(s). Your project may not work
+properly until you apply the migrations for app(s): auth,
+contenttypes, sessions.  Run 'python manage.py migrate' to apply them.
+```
+
+Specify 7 makes use of functions from the listed Django apps (auth,
+contenttypes, and sessions) but does not need the corresponding tables
+to be added to the database. Running `make django_migrations` will
+apply only those migrations needed for Specify 7 to operate.
 
 
 Deployment to production.
