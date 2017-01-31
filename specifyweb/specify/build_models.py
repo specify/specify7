@@ -3,6 +3,7 @@ from django.db import models
 from specifyweb.businessrules.exceptions import AbortSave
 
 from . import model_extras
+from .case_insensitive_bool import BooleanField, NullBooleanField
 
 appname = __name__.split('.')[-2]
 
@@ -234,7 +235,7 @@ class make_boolean_field(make_field):
         can contain nulls and those that cannot with different
         types.
         """
-        return models.BooleanField if fld.required else models.NullBooleanField
+        return BooleanField if fld.required else NullBooleanField
 
     @classmethod
     def make_args(cls, fld):
