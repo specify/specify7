@@ -36,6 +36,6 @@ runserver:
 	$(PYTHON) manage.py runserver
 
 webpack_watch:
-	cd specifyweb/frontend/js_src && node_modules/.bin/webpack -w --devtool eval --display-chunks --display-modules
+	$(MAKE) -C specifyweb/frontend/js_src watch
 
 .FORCE:
