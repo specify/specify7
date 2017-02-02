@@ -180,7 +180,7 @@ def shellquote(s):
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload(request, wb_id, no_commit):
+def upload(request, wb_id, no_commit, match):
     wb = get_object_or_404(models.Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
@@ -198,7 +198,8 @@ def upload(request, wb_id, no_commit):
         "-b", wb_id,
         "-c", shellquote(request.specify_collection.collectionname),
         "-w", shellquote(settings.SPECIFY_THICK_CLIENT),
-        "-x", "true" if no_commit else "false",
+        "-x", "false" if no_commit else "true",
+        "-k", "true" if match else "false",
     ]
 
     if settings.DATABASE_HOST != '':
@@ -210,6 +211,7 @@ def upload(request, wb_id, no_commit):
         # fork so that we don't have to wait() on the child process
         cmdline = ' '.join(args) + ' 2> >(egrep "(ERROR)|(UploaderException)|(UploaderMatchSkipException)" >&1) &'
         logger.debug('starting upload w/ cmdline: %s', cmdline)
+        print cmdline
         subprocess.call(['/bin/bash', '-c', cmdline], stdout=f)
 
     log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))

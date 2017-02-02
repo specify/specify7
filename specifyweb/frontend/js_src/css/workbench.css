@@ -53,6 +53,14 @@
     background-color: #faa;
 }
 
+.wbs-form .wb-no-match-cell {
+    background-color: #aaf;
+}
+
+.wbs-form .wb-multi-match-cell {
+    background-color: #afa;
+}
+
 .wb-upload-details ul li {
     list-style-type: disc;
     font-size: 14px;
