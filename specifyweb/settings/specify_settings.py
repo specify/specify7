@@ -19,7 +19,7 @@ MASTER_PASSWORD = 'MasterPassword'
 SCHEMA_LANGUAGE = 'en'
 
 # The Specify web attachement server URL.
-WEB_ATTACHMENT_URL = "http://example.com/web_asset_store.xml"
+WEB_ATTACHMENT_URL = None
 
 # The Specify web attachment server key.
 WEB_ATTACHMENT_KEY = None
