@@ -44,7 +44,7 @@ def user_collection_access(request, userid):
     cursor = connection.cursor()
 
     if request.method == 'PUT':
-        collections = json.loads(request.raw_post_data)
+        collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
         with transaction.commit_on_success():
             cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
