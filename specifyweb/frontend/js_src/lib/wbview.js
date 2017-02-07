@@ -24,8 +24,8 @@ function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-const highlightInvalidRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
-const highlightMatchInfoRE = /^mi\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
+const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
 const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
 
@@ -62,6 +62,13 @@ function parseLog(log, nCols) {
             , rows)
         , []);
 
+    //var byPos = highlights.reduce(function (rows, highlight) {
+    //    return highlight.cols.reduce(function (rows, col) {
+    //        var cols = col.
+    //        return rows[highlight.row * nCols + col] = highlight, rows;
+    //    }, rows);
+    //}, []);
+    
     const errors = lines
               .map(line => errorRE.exec(line))
               .filter(match => match != null)
@@ -93,7 +100,7 @@ var WBView = Backbone.View.extend({
     events: {
         'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
-        'click .wb-match': 'match',
+        //'click .wb-match': 'match',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
@@ -344,6 +351,13 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
+        if (this.$('.wb-match')[0].checked) {
+            this.validateWithMatch();
+        } else {
+            this.validateNoMatch();
+        }
+    },
+    validateNoMatch: function() {
         this.checkUploaderLock('Validator', () => {
             $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
@@ -352,7 +366,7 @@ var WBView = Backbone.View.extend({
             this.openUploadProgress();
         });
     },
-    match: function() {
+    validateWithMatch: function() {
         this.checkUploaderLock('Validator', () => {
             $.post('/api/workbench/match/' + this.wb.id + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
