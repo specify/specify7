@@ -92,18 +92,17 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
+EphemeralField = namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")
+
 def field_specs_from_json(json_fields):
     """Given deserialized json data representing an array of SpQueryField
     records, return an array of QueryField objects that can build the
     corresponding sqlalchemy query.
     """
-    class EphemeralField(
-        namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
-        @classmethod
-        def from_json(cls, json):
-            return cls(**{field: json[field.lower()] for field in cls._fields})
+    def ephemeral_field_from_json(json):
+        return EphemeralField(**{field: json[field.lower()] for field in EphemeralField._fields})
 
-    return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
+    return [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
 def do_export(spquery, collection, user, filename, exporttype, host):
