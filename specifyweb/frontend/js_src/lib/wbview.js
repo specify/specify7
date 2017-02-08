@@ -19,13 +19,15 @@ var navigation = require('./navigation.js');
 const template = require('./templates/wbview.html');
 const statusTemplate = require('./templates/wbuploadstatus.html');
 const detailsTemplate = require('./templates/wbuploaddetails.html');
+const settingsTemplate = require('./templates/wbsettings.html');
 
 function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
-const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+//const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+//const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+const highlightRE = /^(mi|)\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
 const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
 
@@ -34,7 +36,7 @@ function atoi(str) { return parseInt(str, 10); }
 function parseLog(log, nCols) {
     const lines = log.split('\n');
 
-    const highlightsInvalid = lines
+    /*const highlightsInvalid = lines
               .map(line => highlightInvalidRE.exec(line))
               .filter(match => match != null)
               .map(match => ({
@@ -54,7 +56,19 @@ function parseLog(log, nCols) {
                   highlight: match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match'
               }));
 
-    const highlights = highlightsInvalid.concat(highlightsMatchInfo);
+    const highlights = highlightsInvalid.concat(highlightsMatchInfo);*/
+
+    
+   const highlights = lines
+              .map(line => highlightRE.exec(line))
+              .filter(match => match != null)
+              .map(match => ({
+                  row: atoi(match[2]),
+                  cols: match.slice(3, match.length - 1).map(atoi),
+                  message: match[match.length - 1],
+                  highlight: match[1] == 'mi'
+                      ? (match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match') : 'invalid'
+              }));
     
     const byPos = highlights.reduce(
         (rows, highlight) => highlight.cols.reduce(
@@ -97,6 +111,8 @@ function parseLog(log, nCols) {
 var WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
+    matchWithValidate: false,
+    multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
@@ -106,7 +122,8 @@ var WBView = Backbone.View.extend({
         'click .wb-export': 'export',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
-        'click .wb-upload-details': 'showUploadLog'
+        'click .wb-upload-details': 'showUploadLog',
+        'click .wb-setting': 'showSettingsDlg'
     },
     initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -172,6 +189,22 @@ var WBView = Backbone.View.extend({
             modal: true,
             width: 'auto',
             close: function() { $(this).remove(); }
+        });
+    },
+    showSettingsDlg: function(event) {
+        event.preventDefault();
+        var thisthis = this;
+        $(settingsTemplate({
+            match: this.matchWithValidate,
+            multi: this.multiMatchSetting
+        })).dialog({
+            modal: true,
+            width: 'auto',
+            close: function() {
+                thisthis.matchWithValidate = $('.wb-match-chkbox')[0].checked;
+                thisthis.multiMatchSetting = $('.wb-upload-multiple-match-set')[0].value;
+                $(this).remove();
+            }
         });
     },
     setupHOT: function (colHeaders, columns) {
@@ -351,7 +384,7 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
-        if (this.$('.wb-match')[0].checked) {
+        if (this.matchWithValidate) {
             this.validateWithMatch();
         } else {
             this.validateNoMatch();
