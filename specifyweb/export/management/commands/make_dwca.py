@@ -1,4 +1,5 @@
 import os
+import errno
 import logging
 import subprocess
 import shutil
@@ -34,8 +35,8 @@ def parse_fields(query_node):
             field_spec = EphemeralField(
                 stringId   = node.attrib['stringId'],
                 isRelFld   = node.attrib['isRelFld'] == 'true',
-                operStart  = int(node.attrib['operStart']),
-                startValue = node.attrib['startValue'],
+                operStart  = int(node.attrib['oper']),
+                startValue = node.attrib['value'],
                 isNot      = node.attrib['isNot'] == 'true',
                 isDisplay  = 'term' in node.attrib or node.tag == 'id',
                 sortType   = 0,
@@ -131,6 +132,12 @@ class Command(BaseCommand):
         parser.add_argument('output_file')
 
     def handle(self, *args, **kwargs):
+        try:
+            os.remove(kwargs['output_file'])
+        except OSError as e:
+            if e.errno != errno.ENOENT:
+                raise
+
         collection = Collection.objects.get(id=kwargs['collection_id'])
         user = Specifyuser.objects.get(id=kwargs['specifyuser_id'])
         definition, _ = get_app_resource(collection, user, kwargs['definition'])
