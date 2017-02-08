@@ -162,7 +162,8 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
                 header = ['id'] + header
             csv_writer.writerow(header)
         for row in query.yield_per(1):
-            csv_writer.writerow(row[1:] if strip_id else row)
+            encoded = [unicode(f).encode('utf-8') for f in (row[1:] if strip_id else row)]
+            csv_writer.writerow(encoded)
 
     logger.debug('query_to_csv finished')
 
