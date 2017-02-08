@@ -126,7 +126,9 @@ def process_stanza(node):
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        parser.add_argument('definition')
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument('--resource', help='DwCA definition resource name')
+        group.add_argument('--definition', help='DwCA definition file')
         parser.add_argument('collection_id', type=int)
         parser.add_argument('specifyuser_id', type=int)
         parser.add_argument('output_file')
@@ -140,7 +142,12 @@ class Command(BaseCommand):
 
         collection = Collection.objects.get(id=kwargs['collection_id'])
         user = Specifyuser.objects.get(id=kwargs['specifyuser_id'])
-        definition, _ = get_app_resource(collection, user, kwargs['definition'])
+        if kwargs['definition'] != None:
+            with open(kwargs['definition'], 'r') as f:
+                definition = f.read()
+        else:
+            definition, _ = get_app_resource(collection, user, kwargs['resource'])
+
         element_tree = ElementTree.fromstring(definition)
 
         core_stanza = process_stanza(element_tree.find('core'))
