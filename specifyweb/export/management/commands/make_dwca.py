@@ -104,13 +104,15 @@ def process_stanza(node):
 
     output_node = ElementTree.Element(node.tag)
     output_node.set('rowType', node.attrib['rowType'])
+    output_node.set('fieldsTerminatedBy', ',')
+    output_node.set('linesTerminatedBy', '\\n')
 
     files = ElementTree.SubElement(output_node, 'files')
     for name, fs in field_sets.items():
         location = ElementTree.SubElement(files, 'location')
         location.text = name
 
-    ElementTree.SubElement(output_node, 'id' if node.tag == 'core' else 'coreId') \
+    ElementTree.SubElement(output_node, 'id' if node.tag == 'core' else 'coreid') \
                .set('index', str(validated_fields.id_field_idx))
 
     for i, field in enumerate([f for f in validated_fields.field_set if f.field_spec.isDisplay]):
