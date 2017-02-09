@@ -23,5 +23,7 @@ class Command(BaseCommand):
             field_node.set('value', field.startvalue)
             field_node.set('isNot', 'true' if field.isnot else 'false')
             field_node.set('isRelFld', 'true' if field.isrelfld else 'false')
+            if field.formatname is not None:
+                field_node.set('formatName', field.formatname)
 
         self.stdout.write(prettify(query_node))
