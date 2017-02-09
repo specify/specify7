@@ -92,7 +92,7 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
-EphemeralField = namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
 
 def field_specs_from_json(json_fields):
     """Given deserialized json data representing an array of SpQueryField

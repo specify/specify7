@@ -39,6 +39,7 @@ def parse_fields(query_node):
                 startValue = node.attrib['value'],
                 isNot      = node.attrib['isNot'] == 'true',
                 isDisplay  = 'term' in node.attrib or node.tag == 'id',
+                formatName = node.attrib.get('formatName', None),
                 sortType   = 0,
             ),
 
