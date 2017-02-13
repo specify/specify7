@@ -27,7 +27,7 @@ def set_collection_cookie(response, collection_id):
 
 def users_collections(cursor, user_id):
     cursor.execute("""
-    select c.usergroupscopeid, c.collectionname from collection c
+    select distinct c.usergroupscopeid, c.collectionname from collection c
     inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
     inner join specifyuser_spprincipal up on up.spprincipalid = p.spprincipalid
     inner join specifyuser u on u.specifyuserid = up.specifyuserid and p.grouptype is null
