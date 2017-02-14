@@ -129,9 +129,14 @@ def process_stanza(node):
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        group = parser.add_mutually_exclusive_group(required=True)
-        group.add_argument('--resource', help='DwCA definition resource name')
-        group.add_argument('--definition', help='DwCA definition file')
+        definition = parser.add_mutually_exclusive_group(required=True)
+        definition.add_argument('--resource', help='DwCA definition resource name')
+        definition.add_argument('--definition', help='DwCA definition file')
+
+        metadata = parser.add_mutually_exclusive_group()
+        metadata.add_argument('--metadata', help='Metadata resource name')
+        metadata.add_argument('--eml', help='Metadata eml file')
+
         parser.add_argument('collection_id', type=int)
         parser.add_argument('specifyuser_id', type=int)
         parser.add_argument('output_file')
@@ -156,18 +161,28 @@ class Command(BaseCommand):
         core_stanza = process_stanza(element_tree.find('core'))
         extension_stanzas = [process_stanza(node) for node in element_tree.findall('extension')]
 
+        output_dir = '/tmp/dwca_%s' % uuid4()
+        os.makedirs(output_dir)
+
         output_node = ElementTree.Element('archive')
         output_node.set('xmlns', "http://rs.tdwg.org/dwc/text/")
         output_node.set('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance")
         output_node.set('xmlns:xs', "http://www.w3.org/2001/XMLSchema")
         output_node.set('xsi:schemaLocation', "http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd")
 
+        if kwargs['eml'] != None:
+            shutil.copyfile(kwargs['eml'], os.path.join(output_dir, 'eml.xml'))
+            output_node.set('metadata', 'eml.xml')
+        elif kwargs['metadata'] != None:
+            metadata, _ = get_app_resource(collection, user, kwargs['metadata'])
+            with open(os.path.join(output_dir, 'eml.xml'), 'wb') as f:
+                f.write(metadata.encode('utf-8'))
+            output_node.set('metadata', 'eml.xml')
+
         output_node.append(core_stanza.output_node)
         for stanza in extension_stanzas:
             output_node.append(stanza.output_node)
 
-        output_dir = '/tmp/dwca_%s' % uuid4()
-        os.makedirs(output_dir)
         with open(os.path.join(output_dir, 'meta.xml'), 'w') as meta_xml:
             meta_xml.write(prettify(output_node))
 
