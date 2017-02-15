@@ -50,8 +50,11 @@ const ResourceDataView = Backbone.View.extend({
 
         this.model.rget('spappresourcedatas', true).done(sards => {
             this.appresourceData = sards.first();
-            this.$('textarea').text(this.appresourceData.get('data'));
-            this.$el.append(
+            this.$('textarea')
+                .text(this.appresourceData.get('data'))
+                .attr('readonly', !userInfo.isadmin);
+
+            userInfo.isadmin && this.$el.append(
                 new SaveButton({model: this.appresourceData}).render().el
             );
         });
@@ -102,7 +105,7 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (this.canAddResource) {
+        if (this.canAddResource && userInfo.isadmin) {
             this.$el.append('<li class="new-resource">New Resource</li>');
         }
         return this;
