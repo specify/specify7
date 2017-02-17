@@ -180,7 +180,7 @@ def shellquote(s):
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload(request, wb_id, no_commit, match):
+def upload(request, wb_id, no_commit, match, multi_match_action):
     wb = get_object_or_404(models.Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
@@ -200,6 +200,7 @@ def upload(request, wb_id, no_commit, match):
         "-w", shellquote(settings.SPECIFY_THICK_CLIENT),
         "-x", "false" if no_commit else "true",
         "-k", "true" if match else "false",
+        "-n", multi_match_action,
     ]
 
     if settings.DATABASE_HOST != '':

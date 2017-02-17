@@ -111,7 +111,7 @@ function parseLog(log, nCols) {
 var WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
-    matchWithValidate: false,
+    matchWithValidate: true,
     multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'uploadClicked',
@@ -121,7 +121,8 @@ var WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
-        'click .wb-toggle-highlights': 'toggleHighlights',
+        'click .wb-toggle-highlights': 'toggleHighlightsError',
+        'click .wb-toggle-highlights-match': 'toggleHighlightsMatch',
         'click .wb-upload-details': 'showUploadLog',
         'click .wb-setting': 'showSettingsDlg'
     },
@@ -129,7 +130,8 @@ var WBView = Backbone.View.extend({
         this.wb = wb;
         this.data = data;
         this.uploadStatus = uploadStatus;
-        this.highlightsOn = false;
+        this.highlightsOn = true;
+        this.highlightsMatchOn = true;
     },
     render: function() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -175,8 +177,12 @@ var WBView = Backbone.View.extend({
                 this.$('.wb-invalid-cell-count').text(this.infoFromLog.highlights.length);
 
                 this.$('.wb-invalid-cells')[this.infoFromLog.highlights.length > 0 ? 'show' : 'hide']();
-                (this.infoFromLog.highlights.length > 0 || this.infoFromLog.duplicateEntry) ?
-                    this.showHighlights() : this.removeHighlights();
+                var turnOn = (this.infoFromLog.highlights.length > 0 || this.infoFromLog.duplicateEntry) ? true : false;
+                this.$('.wb-toggle-highlights').prop('checked',turnOn);
+                this.$('.wb-toggle-highlights-match').prop('checked',turnOn);
+                this.highlightsOn = turnOn;
+                this.highlightsMatchOn = turnOn;
+                this.hot.render();
             });
     },
     showUploadLog: function(event) {
@@ -198,13 +204,18 @@ var WBView = Backbone.View.extend({
             match: this.matchWithValidate,
             multi: this.multiMatchSetting
         })).dialog({
-            modal: true,
+            modal: false,
             width: 'auto',
             close: function() {
-                thisthis.matchWithValidate = $('.wb-match-chkbox')[0].checked;
-                thisthis.multiMatchSetting = $('.wb-upload-multiple-match-set')[0].value;
                 $(this).remove();
-            }
+            },
+            buttons: [
+                {text: 'Save', click() {
+                    thisthis.matchWithValidate = $('.wb-match-chkbox').prop('checked');
+                    thisthis.multiMatchSetting = $('.wb-upload-multiple-match-set').prop('value');
+                    $(this).dialog('close');
+                }}
+            ]
         });
     },
     setupHOT: function (colHeaders, columns) {
@@ -258,11 +269,14 @@ var WBView = Backbone.View.extend({
     },
     renderCell: function(instance, td, row, col, prop, value, cellProperties) {
         Handsontable.renderers.TextRenderer.apply(null, arguments);
-        if (!this.highlightsOn) return;
+        if (!this.infoFromLog || !(this.highlightsOn || this.highlightsMatchOn)) return;
         const pos = instance.countCols() * row + col;
         const highlightInfo = this.infoFromLog.byPos[pos];
+        if (!highlightInfo) return;
+        const cls = 'wb-' + highlightInfo.highlight + '-cell';
+        const on = (cls == 'wb-invalid-cell' ? this.highlightsOn : this.highlightsMatchOn);
+        if (!on) return;
         const $td = $(td);
-        const cls = highlightInfo ? 'wb-' + highlightInfo.highlight + '-cell' : 'wb-invalid_cell';
         if (highlightInfo || (
             row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
         )) {
@@ -366,7 +380,7 @@ var WBView = Backbone.View.extend({
     },
     upload: function() {
         const begin = () => {
-            $.post('/api/workbench/upload/' + this.wb.id + '/').fail(jqxhr => {
+            $.post('/api/workbench/upload/' + this.wb.id + '/' + this.multiMatchSetting + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
                 this.closeUploadProgress();
             });
@@ -392,7 +406,7 @@ var WBView = Backbone.View.extend({
     },
     validateNoMatch: function() {
         this.checkUploaderLock('Validator', () => {
-            $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
+            $.post('/api/workbench/validate/' + this.wb.id + '/' + this.multiMatchSetting + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
                 this.closeUploadProgress();
             });
@@ -475,16 +489,32 @@ var WBView = Backbone.View.extend({
         const maxPos = nCols * this.hot.countRows();
         for(let i = currentPos + dir; i >= 0 && i < maxPos; i += dir) {
             if (this.infoFromLog.byPos[i] != null) {
-                this.currentPos = [Math.floor(i / nCols), i % nCols];
-                break;
+                var info = this.infoFromLog.byPos[i];
+                if ((info.highlight == 'invalid' && this.highlightsOn) || (info.highlight != 'invalid' && this.highlightsMatchOn)) {
+                    this.currentPos = [Math.floor(i / nCols), i % nCols];
+                    break;
+                }
             }
         }
         this.currentPos && this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
     },
     removeHighlights: function() {
-        this.highlightsOn = false;
+        //this.highlightsOn = false;
         this.hot.render();
     },
+    
+    toggleHighlightsError: function() {
+        this.highlightsOn = this.$('.wb-toggle-highlights').prop('checked');
+        this.hot.render();
+    },
+
+    toggleHighlightsMatch: function() {
+        this.highlightsMatchOn = this.$('.wb-toggle-highlights-match').prop('checked');
+        this.hot.render();
+    },
+
+        
+    /*
     toggleHighlights: function() {
         if (this.highlightsOn) {
             this.removeHighlights();
@@ -493,7 +523,9 @@ var WBView = Backbone.View.extend({
             this.showHighlights();
             this.$('.wb-toggle-highlights').text('Hide');
         }
-    },
+    },*/
+
+   
     delete: function(e) {
         let dialog;
         const doDelete = () => {
