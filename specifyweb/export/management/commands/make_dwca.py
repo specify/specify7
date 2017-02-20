@@ -105,8 +105,9 @@ def process_stanza(node):
 
     output_node = ElementTree.Element(node.tag)
     output_node.set('rowType', node.attrib['rowType'])
+    output_node.set('fieldsEnclosedBy', '"')
     output_node.set('fieldsTerminatedBy', ',')
-    output_node.set('linesTerminatedBy', '\\n')
+    output_node.set('linesTerminatedBy', '\\r\\n')
 
     files = ElementTree.SubElement(output_node, 'files')
     for name, fs in field_sets.items():

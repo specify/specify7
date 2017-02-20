@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 import json
 import csv
@@ -167,8 +168,12 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             if not strip_id:
                 header = ['id'] + header
             csv_writer.writerow(header)
+
         for row in query.yield_per(1):
-            encoded = [unicode(f).encode('utf-8') for f in (row[1:] if strip_id else row)]
+            encoded = [
+                re.sub('\r|\n', ' ', unicode(f).encode('utf-8'))
+                for f in (row[1:] if strip_id else row)
+            ]
             csv_writer.writerow(encoded)
 
     logger.debug('query_to_csv finished')
