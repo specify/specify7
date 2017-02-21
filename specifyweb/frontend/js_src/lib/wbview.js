@@ -111,7 +111,7 @@ function parseLog(log, nCols) {
 var WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
-    matchWithValidate: true,
+    matchWithValidate: false,
     multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'uploadClicked',
@@ -177,11 +177,17 @@ var WBView = Backbone.View.extend({
                 this.$('.wb-invalid-cell-count').text(this.infoFromLog.highlights.length);
 
                 this.$('.wb-invalid-cells')[this.infoFromLog.highlights.length > 0 ? 'show' : 'hide']();
-                var turnOn = (this.infoFromLog.highlights.length > 0 || this.infoFromLog.duplicateEntry) ? true : false;
-                this.$('.wb-toggle-highlights').prop('checked',turnOn);
-                this.$('.wb-toggle-highlights-match').prop('checked',turnOn);
-                this.highlightsOn = turnOn;
-                this.highlightsMatchOn = turnOn;
+                var turnOnInvalids = (this.infoFromLog.highlights.filter(function(hl){
+                    return hl.highlight == 'invalid';}).length > 0
+                                      || this.infoFromLog.duplicateEntry);
+                var turnOnMatches = this.infoFromLog.highlights.filter(function(hl){
+                    return hl.highlight != 'invalid';}).length > 0;
+                this.$('.wb-toggle-err-lbl').prop('hidden', !turnOnInvalids);
+                this.$('.wb-toggle-highlights').prop('checked',turnOnInvalids);
+                this.$('.wb-toggle-match-lbl').prop('hidden', !turnOnMatches);
+                this.$('.wb-toggle-highlights-match').prop('checked',turnOnMatches);
+                this.highlightsOn = turnOnInvalids;
+                this.highlightsMatchOn = turnOnMatches;
                 this.hot.render();
             });
     },
@@ -464,7 +470,7 @@ var WBView = Backbone.View.extend({
                     $('.rows', dialog).hide();
                 } else {
                     $('.rows', dialog).show();
-                    $('.rows td', dialog).text(`${1 + status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
+                    $('.rows td', dialog).text(`${status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
                 }
 
                 if (!status.is_running) {
