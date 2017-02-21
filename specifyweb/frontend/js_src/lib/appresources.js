@@ -9,6 +9,7 @@ const _ = require('underscore');
 const app = require('./specifyapp.js');
 const schema = require('./schema.js');
 const SaveButton = require('./savebutton.js');
+const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
 
@@ -55,7 +56,10 @@ const ResourceDataView = Backbone.View.extend({
                 .attr('readonly', !userInfo.isadmin);
 
             userInfo.isadmin && this.$el.append(
-                new SaveButton({model: this.appresourceData}).render().el
+                new SaveButton({model: this.appresourceData}).render().el,
+                new DeleteButton({model: this.model}).render()
+                    .on('deleted', () => navigation.go('/specify/appresources/'))
+                    .el
             );
         });
 
