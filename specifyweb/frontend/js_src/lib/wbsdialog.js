@@ -112,12 +112,11 @@ module.exports =  Backbone.View.extend({
                     var uploaded = _.reduce(data, function(memo, row){return row[0] == 1 ? row[1] : memo;}, 0);
                     var txt = '(' + total + ')';
                     var style="display:none";
-                    if (total == uploaded) {
-                        //txt += ' *';
+                    if (uploaded != 0) {
                         style += ";color:green";
-                    } else if (uploaded != 0) {
-                        //txt += ' %';
-                        style += ";color:yello";
+                        if (total > uploaded) {
+                            txt = '(' + uploaded + ' / ' + total + ')';
+                        }
                     }
                     $('.item-count', entry).prop('style', style);
                     $('.item-count', entry).text(txt).show();
