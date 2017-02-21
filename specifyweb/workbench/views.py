@@ -296,3 +296,20 @@ def upload_status(request, wb_id):
     status = status_from_log(log_fnames[0]) if len(log_fnames) > 0 else None
     return http.HttpResponse(toJson(status), content_type='application/json')
 
+@login_maybe_required
+@require_GET
+def row_status(request, wb_id):
+    wb_id = int(wb_id)
+    cursor = connection.cursor()
+
+    logger.debug("geting row status for wb %d", wb_id)
+    cursor.execute("""
+    select uploadstatus, count(workbenchrowid) 
+    from workbench wb inner join workbenchrow wbr on wb.workbenchid = wbr.workbenchid 
+    where wbr.workbenchid = %s
+    group by 1 order by 1
+    """, [wb_id])
+
+    
+    rows = cursor.fetchall()
+    return http.HttpResponse(toJson(rows), content_type='application/json')

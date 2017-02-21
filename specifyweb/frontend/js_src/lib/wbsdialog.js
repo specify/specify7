@@ -107,8 +107,20 @@ module.exports =  Backbone.View.extend({
                 $('<td class="item-count" style="display:none">'));
 
             _.delay(function() {
-                wb.getRelatedObjectCount('workbenchrows').done(function(count) {
-                    $('.item-count', entry).text('(' + count + ')').show();
+                $.get('/api/workbench/row_status/' + wb.id + '/').done(function (data) {
+                    var total = _.reduce(data, function(memo, row){return memo + row[1];}, 0);
+                    var uploaded = _.reduce(data, function(memo, row){return row[0] == 1 ? row[1] : memo;}, 0);
+                    var txt = '(' + total + ')';
+                    var style="display:none";
+                    if (total == uploaded) {
+                        //txt += ' *';
+                        style += ";color:green";
+                    } else if (uploaded != 0) {
+                        //txt += ' %';
+                        style += ";color:yello";
+                    }
+                    $('.item-count', entry).prop('style', style);
+                    $('.item-count', entry).text(txt).show();
                 });
             }, 100);
             return entry[0];
