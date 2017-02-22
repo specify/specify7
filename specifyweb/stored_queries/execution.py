@@ -101,7 +101,7 @@ def field_specs_from_json(json_fields):
     corresponding sqlalchemy query.
     """
     def ephemeral_field_from_json(json):
-        return EphemeralField(**{field: json[field.lower()] for field in EphemeralField._fields})
+        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
     return [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
