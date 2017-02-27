@@ -128,7 +128,7 @@ def validate_fields(field_sets):
 
 def make_dwca(collection, user, definition, output_file, eml=None):
     try:
-        os.remove('output_file')
+        os.remove(output_file)
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
