@@ -3,8 +3,8 @@ from xml.etree import ElementTree
 from django.core.management.base import BaseCommand, CommandError
 
 from specifyweb.specify.models import Spquery
+from specifyweb.export.dwca import prettify
 
-from .make_dwca import prettify
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
