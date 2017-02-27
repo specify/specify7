@@ -168,7 +168,7 @@ const AppResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            '<h2>Specify Application Resources</h2>',
+            $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
             new GlobalResourcesView(this.options).render().el,
             $('<div>').append(
                 '<h3 class="toggle-content">Disciplines</h3>',
