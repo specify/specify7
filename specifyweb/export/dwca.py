@@ -25,11 +25,16 @@ def prettify(elem):
 
 ExportField = namedtuple('ExportField', 'field_spec term is_core_id')
 
+class ConstantField(namedtuple('ConstantField', 'value term')):
+    is_core_id = False
+
 class DwCAException(Exception):
     pass
 
 def parse_fields(query_node):
     return [
+        ConstantField(node.attrib['constant'], node.attrib['term'])
+        if 'constant' in node.attrib else
         ExportField(
             field_spec = EphemeralField(
                 stringId   = node.attrib['stringId'],
@@ -76,11 +81,18 @@ def process_stanza(node):
     ElementTree.SubElement(output_node, 'id' if node.tag == 'core' else 'coreid') \
                .set('index', str(validated_fields.id_field_idx))
 
-    for i, field in enumerate([f for f in validated_fields.field_set if f.field_spec.isDisplay]):
+    for i, field in enumerate([f for f in validated_fields.field_set
+                               if isinstance(f, ExportField) and f.field_spec.isDisplay
+    ]):
         if field.term is not None:
             field_node = ElementTree.SubElement(output_node, 'field')
             field_node.set('index', str(i))
             field_node.set('term', field.term)
+
+    for field in [f for f in validated_fields.field_set if isinstance(f, ConstantField)]:
+        field_node = ElementTree.SubElement(output_node, 'field')
+        field_node.set('term', field.term)
+        field_node.set('default', field.value)
 
     return namedtuple('ProcessedStanza', 'output_node field_sets query_tableids')(
         output_node, field_sets, query_tableids)
@@ -90,6 +102,7 @@ def run_query(collection, user, tableid, fields, path):
     field_specs = [
         QueryField.from_spqueryfield(f.field_spec)
         for f in fields
+        if isinstance(f, ExportField)
     ]
     with session_context() as session:
         query_to_csv(session, collection, user, tableid, field_specs, path, strip_id=True)
@@ -102,7 +115,9 @@ def validate_fields(field_sets):
 
     try:
         id_field_idx, id_field = (
-            (i, f) for i, f in enumerate(field_set)
+            (i, f) for i, f in enumerate([f for f in field_set
+                                          if isinstance(f, ExportField)
+                                          and f.field_spec.isDisplay])
             if f.is_core_id
         ).next()
     except StopIteration:
