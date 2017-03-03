@@ -76,56 +76,55 @@ const uniquifyName = require('./wbuniquifyname.js');
 
 
 module.exports =  Backbone.View.extend({
-        __name__: "WbsDialog",
-        className: "wbs-dialog table-list-dialog",
-        initialize: function(options) {
-            this.wbs = options.wbs.models;
-        },
-        render: function() {
-            var entries = _.map(this.wbs, this.dialogEntry, this);
-            $('<table>').append(entries).appendTo(this.el);
-            this.$el.dialog({
-                title: "Datasets",
-                maxHeight: 400,
-                modal: true,
-                close: function() { $(this).remove(); },
-                buttons: [
-                    { text: 'New', click: this.newWB.bind(this) },
-                    { text: 'Import', click: function() { navigation.go('/workbench-import/'); } },
-                    { text: 'Cancel', click: function() { $(this).dialog('close'); } }
-                ]
-            });
-            return this;
-        },
-        dialogEntry: function(wb) {
-            var img = $('<img>', { src: '/images/Workbench32x32.png' });
-            var href = '/workbench/' + wb.id + '/';
-            var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wb.get('name'));
-            var entry = $('<tr>').append(
-                $('<td>').append(img),
-                $('<td>').append(link),
-                $('<td class="item-count" style="display:none">'));
-
-            _.delay(function() {
-                $.get('/api/workbench/row_status/' + wb.id + '/').done(function (data) {
-                    var total = _.reduce(data, function(memo, row){return memo + row[1];}, 0);
-                    var uploaded = _.reduce(data, function(memo, row){return row[0] == 1 ? row[1] : memo;}, 0);
-                    var txt = '(' + total + ')';
-                    var style="display:none";
-                    if (uploaded != 0) {
-                        style += ";color:green";
-                        if (total > uploaded) {
-                            txt = '(' + uploaded + ' / ' + total + ')';
-                        }
+    __name__: "WbsDialog",
+    className: "wbs-dialog table-list-dialog",
+    initialize: function(options) {
+        this.wbs = options.wbs.models;
+    },
+    render: function() {
+        var entries = _.map(this.wbs, this.dialogEntry, this);
+        $('<table>').append(entries).appendTo(this.el);
+        this.$el.dialog({
+            title: "Datasets",
+            maxHeight: 400,
+            modal: true,
+            close: function() { $(this).remove(); },
+            buttons: [
+                { text: 'New', click: this.newWB.bind(this) },
+                { text: 'Import', click: function() { navigation.go('/workbench-import/'); } },
+                { text: 'Cancel', click: function() { $(this).dialog('close'); } }
+            ]
+        });
+        return this;
+    },
+    dialogEntry: function(wb) {
+        var wbImgSrc = '/images/Workbench32x32.png';
+        var img = $('<img>', { src: wbImgSrc });
+        var href = '/workbench/' + wb.id + '/';
+        var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wb.get('name'));
+        var entry = $('<tr>').append(
+            $('<td>').append(img),
+            $('<td>').append(link),
+            $('<td class="item-count" style="display:none">'));
+        
+        _.delay(function() {
+            $.get('/api/workbench/row_status/' + wb.id + '/').done(function (data) {
+                var total = _.reduce(data, function(memo, row){return memo + row[1];}, 0);
+                var uploaded = _.reduce(data, function(memo, row){return row[0] == 1 ? row[1] : memo;}, 0);
+                var txt = '(' + total + ')';
+                if (uploaded != 0) {
+                    if (total > uploaded) {
+                        txt = '(' + uploaded + ' / ' + total + ')';
                     }
-                    $('.item-count', entry).prop('style', style);
-                    $('.item-count', entry).text(txt).show();
-                });
-            }, 100);
-            return entry[0];
-        },
-        newWB: function() {
-            new NewWorkbenchDialog().render();
-        }
-    });
+                    $('[src="' + wbImgSrc + '"]', entry).attr('src', '/images/Checkmark32x32.png');
+                }
+                $('.item-count', entry).text(txt).show();
+            });
+        }, 100);
+        return entry[0];
+    },
+    newWB: function() {
+        new NewWorkbenchDialog().render();
+    }
+});
 
