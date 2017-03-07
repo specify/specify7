@@ -12,16 +12,20 @@
 
 <body>
   <header id="site-header">
-    <a id="site-logo" href="/specify/" class="intercept-navigation"></a>
-    <div id="site-notifications"></div>
-    <div id="user-tools">
-      <a class="username"></a>
-      <a class="login-logout"></a>
-      |
-      <select></select>
-      <form id="express-search" action="/specify/express_search/">
-        <input type="search" class="express-search-query" name="q" placeholder="Search">
-      </form>
+    <div id="site-header-main">
+      <a id="site-logo" href="/specify/" class="intercept-navigation"></a>
+
+      <div id="user-tools">
+        <div>
+          <a class="username"></a> <a class="login-logout"></a> | <select></select>
+        </div>
+        <div>
+          <div id="site-notifications"></div>
+          <form id="express-search" action="/specify/express_search/">
+            <input type="search" class="express-search-query" name="q" placeholder="Search">
+          </form>
+        </div>
+      </div>
     </div>
     <nav id="site-nav"><ul><li id="header-loading">Specify is loading...</li></ul></nav>
   </header>
