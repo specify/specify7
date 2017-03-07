@@ -4,15 +4,17 @@ from datetime import datetime
 import json
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 
 from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
+from ..specify.models import Spquery
 
 from .dwca import make_dwca
+from .extract_query import extract_query as extract
 
 
 @login_maybe_required
@@ -55,3 +57,11 @@ def export(request):
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
+
+
+@login_maybe_required
+@require_GET
+@never_cache
+def extract_query(request, query_id):
+    query = Spquery.objects.get(id=query_id)
+    return HttpResponse(extract(query), 'text/xml')
