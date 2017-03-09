@@ -10,5 +10,4 @@ urlpatterns = [
     url(r'^upload_status/(?P<wb_id>.+)/', views.upload_status),
     url(r'^upload_log/(?P<upload_id>.+)/', views.upload_log),
     url(r'^row_status/(?P<wb_id>.+)/', views.row_status),
-    url(r'^upload_tbl/', views.upload_tbl),
 ]
