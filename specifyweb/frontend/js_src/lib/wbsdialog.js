@@ -98,7 +98,7 @@ module.exports =  Backbone.View.extend({
         return this;
     },
     dialogEntry: function(wb) {
-        var wbImgSrc = '/images/Workbench32x32.png';
+        var wbImgSrc = '/images/wb_not_uploaded.png';
         var img = $('<img>', { src: wbImgSrc });
         var href = '/workbench/' + wb.id + '/';
         var link = $('<a>', {href: href, 'class': "intercept-navigation"}).text(wb.get('name'));
@@ -116,7 +116,7 @@ module.exports =  Backbone.View.extend({
                     if (total > uploaded) {
                         txt = '(' + uploaded + ' / ' + total + ')';
                     }
-                    $('[src="' + wbImgSrc + '"]', entry).attr('src', '/images/Checkmark32x32.png');
+                    $('[src="' + wbImgSrc + '"]', entry).attr('src', '/images/wb_uploaded-01.png');
                 }
                 $('.item-count', entry).text(txt).show();
             });

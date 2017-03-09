@@ -124,7 +124,8 @@ var WBView = Backbone.View.extend({
         'click .wb-toggle-highlights': 'toggleHighlightsError',
         'click .wb-toggle-highlights-match': 'toggleHighlightsMatch',
         'click .wb-upload-details': 'showUploadLog',
-        'click .wb-setting': 'showSettingsDlg'
+        //'click .wb-setting': 'showSettingsDlg'
+        'click .wb-setting': 'uploadTblTest'
     },
     initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -401,6 +402,21 @@ var WBView = Backbone.View.extend({
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
                 ]
             });
+        });
+    },
+    uploadTblTest: function() {
+        var mappings = {'table': 'agent','map': [
+            [{'field': 'FirstName', 'wbcol': 11},{'field': 'LastName', 'wbcol': 12},{'field':'MiddleInitial', 'wbcol': 13}],
+            [{'field': 'FirstName', 'wbcol': 14},{'field': 'LastName', 'wbcol': 15},{'field':'MiddleInitial', 'wbcol': 16}],
+            [{'field': 'FirstName', 'wbcol': 17},{'field': 'LastName', 'wbcol': 18},{'field':'MiddleInitial', 'wbcol': 19}]
+        ]};
+        var args = {'settings': [{'multi-match-action': 'pick'}], 'vals': [['division_id', '2'],['AgentType', '1']]};
+        $.post('/api/workbench/upload_tbl/', {
+            wb_id: 6,
+            mappings: JSON.stringify(mappings),
+            args: JSON.stringify(args)
+        }).done(function(data){
+            console.info(data);
         });
     },
     validate: function() {

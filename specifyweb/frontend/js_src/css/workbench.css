@@ -50,15 +50,15 @@
 }
 
 .wbs-form .wb-invalid-cell {
-    background-color: #faa;
+    background-color: #e04c58;
 }
 
 .wbs-form .wb-no-match-cell {
-    background-color: #aaf;
+    background-color: #6694da;
 }
 
 .wbs-form .wb-multi-match-cell {
-    background-color: #afa;
+    background-color: #54cd76;
 }
 
 .wb-upload-details ul li {
