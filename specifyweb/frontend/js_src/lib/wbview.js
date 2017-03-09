@@ -124,8 +124,8 @@ var WBView = Backbone.View.extend({
         'click .wb-toggle-highlights': 'toggleHighlightsError',
         'click .wb-toggle-highlights-match': 'toggleHighlightsMatch',
         'click .wb-upload-details': 'showUploadLog',
-        //'click .wb-setting': 'showSettingsDlg'
-        'click .wb-setting': 'uploadTblTest'
+        click .wb-setting': 'showSettingsDlg'
+        //'click .wb-setting': 'uploadTblTest'
     },
     initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
