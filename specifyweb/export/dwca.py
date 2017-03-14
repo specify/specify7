@@ -5,8 +5,10 @@ import subprocess
 import shutil
 from tempfile import mkdtemp
 from collections import namedtuple
+from uuid import uuid4
+from datetime import date
 
-from xml.etree import ElementTree
+from xml.etree import ElementTree as ET
 from xml.dom import minidom
 
 from specifyweb.stored_queries.execution import EphemeralField, query_to_csv
@@ -14,6 +16,7 @@ from specifyweb.stored_queries.queryfield import QueryField
 from specifyweb.stored_queries.models import session_context
 
 logger = logging.getLogger(__name__)
+ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
 
 class DwCAException(Exception):
     pass
@@ -22,7 +25,7 @@ class DwCAException(Exception):
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """
-    rough_string = ElementTree.tostring(elem, 'utf-8')
+    rough_string = ET.tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="\t")
 
@@ -59,15 +62,15 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields queries')):
         return export_fields
 
     def to_xml(self):
-        output_node = ElementTree.Element('core' if self.is_core else 'extension')
+        output_node = ET.Element('core' if self.is_core else 'extension')
         output_node.set('rowType', self.row_type)
         output_node.set('fieldsEnclosedBy', '"')
         output_node.set('fieldsTerminatedBy', ',')
         output_node.set('linesTerminatedBy', '\\r\\n')
 
-        files_node = ElementTree.SubElement(output_node, 'files')
+        files_node = ET.SubElement(output_node, 'files')
         for query in self.queries:
-            location = ElementTree.SubElement(files_node, 'location')
+            location = ET.SubElement(files_node, 'location')
             location.text = query.file_name
 
         export_fields = self.get_export_fields()
@@ -78,17 +81,17 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields queries')):
         elif len(id_fields) > 1:
             raise DwCAException("Definition includes multiple id fields.")
 
-        id_node = ElementTree.SubElement(output_node, 'id' if self.is_core else 'coreid')
+        id_node = ET.SubElement(output_node, 'id' if self.is_core else 'coreid')
         id_node.set('index', str(id_fields[0]))
 
         for field in export_fields:
             if field.term is not None:
-                field_node = ElementTree.SubElement(output_node, 'field')
+                field_node = ET.SubElement(output_node, 'field')
                 field_node.set('index', str(field.index))
                 field_node.set('term', field.term)
 
         for field in self.constant_fields:
-            field_node = ElementTree.SubElement(output_node, 'field')
+            field_node = ET.SubElement(output_node, 'field')
             field_node.set('term', field.term)
             field_node.set('default', field.value)
 
@@ -177,12 +180,12 @@ def make_dwca(collection, user, definition, output_file, eml=None):
 
     output_dir = mkdtemp()
     try:
-        element_tree = ElementTree.fromstring(definition)
+        element_tree = ET.fromstring(definition)
 
         core_stanza = Stanza.from_xml(element_tree.find('core'))
         extension_stanzas = [Stanza.from_xml(node) for node in element_tree.findall('extension')]
 
-        output_node = ElementTree.Element('archive')
+        output_node = ET.Element('archive')
         output_node.set('xmlns', "http://rs.tdwg.org/dwc/text/")
         output_node.set('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance")
         output_node.set('xmlns:xs', "http://www.w3.org/2001/XMLSchema")
@@ -190,8 +193,7 @@ def make_dwca(collection, user, definition, output_file, eml=None):
 
         if eml is not None:
             output_node.set('metadata', 'eml.xml')
-            with open(os.path.join(output_dir, 'eml.xml'), 'wb') as f:
-                f.write(eml.encode('utf-8'))
+            write_eml(eml, os.path.join(output_dir, 'eml.xml'))
 
         output_node.append(core_stanza.to_xml())
         for stanza in extension_stanzas:
@@ -210,3 +212,26 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         subprocess.check_call(['zip', '-r', '-j', output_file, output_dir])
     finally:
         shutil.rmtree(output_dir)
+
+def write_eml(source, output_path, pub_date=None, package_id=None):
+    if pub_date is None:
+        pub_date = date.today()
+
+    if package_id is None:
+        package_id = str(uuid4())
+
+    eml = ET.fromstring(source.encode('utf-8') if isinstance(source, unicode) else source)
+    eml.attrib.update({
+        'system': 'Specify',
+        'scope': 'system',
+        'packageId': package_id,
+    })
+
+    dataset = eml.find('dataset')
+
+    for e in dataset.findall('pubDate'):
+        dataset.remove(e)
+
+    pubDate = ET.SubElement(dataset, 'pubDate')
+    pubDate.text = pub_date.isoformat()
+    ET.ElementTree(eml).write(output_path, encoding='utf-8')
