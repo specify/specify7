@@ -25,8 +25,6 @@ function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-//const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
-//const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const highlightRE = /^(mi|)\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
 const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
@@ -35,29 +33,6 @@ function atoi(str) { return parseInt(str, 10); }
 
 function parseLog(log, nCols) {
     const lines = log.split('\n');
-
-    /*const highlightsInvalid = lines
-              .map(line => highlightInvalidRE.exec(line))
-              .filter(match => match != null)
-              .map(match => ({
-                  row: atoi(match[1]),
-                  cols: match.slice(2, match.length - 1).map(atoi),
-                  message: match[match.length - 1],
-                  highlight: 'invalid'
-              }));
-
-    const highlightsMatchInfo = lines
-              .map(line => highlightMatchInfoRE.exec(line))
-              .filter(match => match != null)
-              .map(match => ({
-                  row: atoi(match[1]),
-                  cols: match.slice(2, match.length - 1).map(atoi),
-                  message: match[match.length - 1],
-                  highlight: match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match'
-              }));
-
-    const highlights = highlightsInvalid.concat(highlightsMatchInfo);*/
-
     
    const highlights = lines
               .map(line => highlightRE.exec(line))
@@ -75,13 +50,6 @@ function parseLog(log, nCols) {
             (rows, col) => ((rows[highlight.row * nCols + col] = highlight), rows)
             , rows)
         , []);
-
-    //var byPos = highlights.reduce(function (rows, highlight) {
-    //    return highlight.cols.reduce(function (rows, col) {
-    //        var cols = col.
-    //        return rows[highlight.row * nCols + col] = highlight, rows;
-    //    }, rows);
-    //}, []);
     
     const errors = lines
               .map(line => errorRE.exec(line))
@@ -116,7 +84,6 @@ var WBView = Backbone.View.extend({
     events: {
         'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
-        //'click .wb-match': 'match',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
@@ -124,8 +91,8 @@ var WBView = Backbone.View.extend({
         'click .wb-toggle-highlights': 'toggleHighlightsError',
         'click .wb-toggle-highlights-match': 'toggleHighlightsMatch',
         'click .wb-upload-details': 'showUploadLog',
-        //'click .wb-setting': 'showSettingsDlg'
-        'click .wb-setting': 'uploadTblTest'
+        'click .wb-setting': 'showSettingsDlg',
+        'click .wb-upload': 'uploadTblTest'
     },
     initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -405,16 +372,69 @@ var WBView = Backbone.View.extend({
         });
     },
     uploadTblTest: function() {
+        /*
         var mappings = {'table': 'agent','map': [
             [{'field': 'FirstName', 'wbcol': 11},{'field': 'LastName', 'wbcol': 12},{'field':'MiddleInitial', 'wbcol': 13}],
             [{'field': 'FirstName', 'wbcol': 14},{'field': 'LastName', 'wbcol': 15},{'field':'MiddleInitial', 'wbcol': 16}],
             [{'field': 'FirstName', 'wbcol': 17},{'field': 'LastName', 'wbcol': 18},{'field':'MiddleInitial', 'wbcol': 19}]
         ]};
-        var args = {'settings': [{'multi-match-action': 'pick'}], 'vals': [['division_id', '2'],['AgentType', '1']]};
+         */
+        var mappings = {
+            'table': 'collectionobject',
+            'args': {},
+            'map': [
+                [{'field': 'AltCatalogNumber', 'wbcol': 0},
+                 {'parents': [
+                     {'field': 'CatalogerID',
+                      'mappings': {
+                          'table': 'agent',
+                          'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': [{'AgentType': '1'}]}, 
+                          'map': [
+                              [{'field': 'FirstName', 'wbcol': 1},
+                               {'field': 'LastName', 'wbcol': 2},
+                               {'field':'MiddleInitial', 'wbcol': 3}]
+                          ]}
+                     },
+                     {'field': 'CollectingEventID',
+                      'mappings': {
+                          'table': 'collectingevent',
+                          'args': {'settings': [{'multi-match-action': 'pick'}]},
+                          'map': [
+                              [{'field': 'StationFieldNumber', 'wbcol': 6},
+                               {'children': [{
+                                   'mappings': {
+                                       'link': 'CollectingEventID',
+                                       'table': 'collector',
+                                       'map': [
+                                           {'parents': [
+                                               {'field': 'AgentID',
+                                                'mappings': {
+                                                    'table': 'agent',
+                                                    'map': [
+                                                        [{'field': 'FirstName', 'wbcol': 7},{'field': 'LastName', 'wbcol': 8}],
+                                                        [{'field': 'FirstName', 'wbcol': 9},{'field': 'LastName', 'wbcol': 10}]
+                                                    ]
+                                                }}]
+                                           }
+                                       ]
+                                   }
+                               }]}]]
+                      }}
+                          
+                 ]},
+                 {'children': [{
+                     'mappings': {
+                         'link': 'CollectionObjectID',
+                         'table': 'otheridentifier',
+                         'map': [[{'field': 'Identifier', 'wbcol': 4}],[{'field': 'Identifier', 'wbcol': 5}]]
+                     }
+                 }]}
+                ]]
+        };
+      
         $.post('/api/workbench/upload_tbl/', {
             wb_id: 6,
-            mappings: JSON.stringify(mappings),
-            args: JSON.stringify(args)
+            mappings: JSON.stringify(mappings)
         }).done(function(data){
             console.info(data);
         });
@@ -521,33 +541,16 @@ var WBView = Backbone.View.extend({
         this.currentPos && this.hot.selectCell(this.currentPos[0], this.currentPos[1]);
     },
     removeHighlights: function() {
-        //this.highlightsOn = false;
         this.hot.render();
     },
-    
     toggleHighlightsError: function() {
         this.highlightsOn = this.$('.wb-toggle-highlights').prop('checked');
         this.hot.render();
     },
-
     toggleHighlightsMatch: function() {
         this.highlightsMatchOn = this.$('.wb-toggle-highlights-match').prop('checked');
         this.hot.render();
-    },
-
-        
-    /*
-    toggleHighlights: function() {
-        if (this.highlightsOn) {
-            this.removeHighlights();
-            this.$('.wb-toggle-highlights').text('Show');
-        } else {
-            this.showHighlights();
-            this.$('.wb-toggle-highlights').text('Hide');
-        }
-    },*/
-
-   
+    },   
     delete: function(e) {
         let dialog;
         const doDelete = () => {
