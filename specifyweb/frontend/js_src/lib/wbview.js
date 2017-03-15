@@ -379,6 +379,7 @@ var WBView = Backbone.View.extend({
             [{'field': 'FirstName', 'wbcol': 17},{'field': 'LastName', 'wbcol': 18},{'field':'MiddleInitial', 'wbcol': 19}]
         ]};
          */
+        //mappings below based on wb wupsy, wb_id=9
         var mappings = {
             'table': 'collectionobject',
             'args': {},
