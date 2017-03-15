@@ -95,11 +95,10 @@ const ResourceList = Backbone.View.extend({
     events: {
         'click .new-resource': 'openNameDialog'
     },
-    initialize({resources, getDirectory, selectedResource, canAddResource = true, ResourceModel}) {
+    initialize({resources, getDirectory, selectedResource, ResourceModel}) {
         this.resources = resources;
         this.getDirectory = getDirectory;
         this.selectedResource = selectedResource;
-        this.canAddResource = canAddResource;
         this.ResourceModel = ResourceModel;
         this.views = _(resources).sortBy(r => r.get('name').toLowerCase())
             .map(r => new ResourceView({model: r, selectedResource: this.selectedResource}));
@@ -109,7 +108,7 @@ const ResourceList = Backbone.View.extend({
         this.$el.append(
             this.views.map(v => v.render().el)
         );
-        if (this.canAddResource && userInfo.isadmin) {
+        if (userInfo.isadmin) {
             this.$el.append('<li class="new-resource">New Resource</li>');
         }
         return this;
@@ -189,13 +188,18 @@ const GlobalResourcesView = Backbone.View.extend({
         // distinguished by the usertype field
         // i'm not going to bother separating them out for now
         const globalDirs = directories
-                  .filter(d => d.get('discipline') == null)
-                  .map(d => d.get('resource_uri'));
+                  .filter(d => d.get('discipline') == null);
+
+        const dirURIs = globalDirs.map(d => d.get('resource_uri'));
+
+        // all new resources will be added to the common directory
+        // because, why not?
+        const commonDir = globalDirs.filter(d => d.get('usertype') === 'Common')[0];
 
         this.resourceList = new ResourceList({
-            resources: resources.filter(r => globalDirs.includes(r.get('spappresourcedir'))),
+            resources: resources.filter(r => dirURIs.includes(r.get('spappresourcedir'))),
             selectedResource: selectedResource,
-            canAddResource: false, // because there are multiple dirs it could go into
+            getDirectory: () => Q(commonDir),
             ResourceModel: ResourceModel
         });
     },
@@ -205,6 +209,15 @@ const GlobalResourcesView = Backbone.View.extend({
             this.resourceList.render().$el.toggle(this.resourceList.containsSelected)
         );
         return this;
+    },
+    getDirectory() {
+        let directory = this.directories[0];
+        if (directory != null) return Q(directory);
+        directory = new schema.models.SpAppResourceDir.Resource({
+            ispersonal: false,
+            discipline: this.discipline.get('resource_uri')
+        });
+        return Q(directory.save()).then(() => directory);
     }
 });
 
