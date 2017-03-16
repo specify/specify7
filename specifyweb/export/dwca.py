@@ -1,7 +1,7 @@
 import os
 import errno
 import logging
-import subprocess
+import re
 import shutil
 from tempfile import mkdtemp
 from collections import namedtuple
@@ -172,12 +172,6 @@ class ConstantField(namedtuple('ConstantField', 'value term')):
 
 
 def make_dwca(collection, user, definition, output_file, eml=None):
-    try:
-        os.remove(output_file)
-    except OSError as e:
-        if e.errno != errno.ENOENT:
-            raise
-
     output_dir = mkdtemp()
     try:
         element_tree = ET.fromstring(definition)
@@ -208,8 +202,8 @@ def make_dwca(collection, user, definition, output_file, eml=None):
                     path = os.path.join(output_dir, query.file_name)
                     query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path, strip_id=True)
 
-
-        subprocess.check_call(['zip', '-r', '-j', output_file, output_dir])
+        basename = re.sub(r'\.zip$', '', output_file)
+        shutil.make_archive(basename, 'zip', output_dir, logger=logger)
     finally:
         shutil.rmtree(output_dir)
 
