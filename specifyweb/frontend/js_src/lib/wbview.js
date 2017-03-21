@@ -383,60 +383,53 @@ var WBView = Backbone.View.extend({
         var mappings = {
             'table': 'collectionobject',
             'args': {},
-            'map': [
-                [{'field': 'AltCatalogNumber', 'wbcol': 0},
-                 {'parents': [
-                     {'field': 'CatalogerID',
-                      'mappings': {
-                          'table': 'agent',
-                          'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': [{'AgentType': '1'}]}, 
-                          'map': [
-                              [{'field': 'FirstName', 'wbcol': 1},
-                               {'field': 'LastName', 'wbcol': 2},
-                               {'field':'MiddleInitial', 'wbcol': 3}]
+            'parents': [
+                {'field': 'CatalogerID',
+                 'mapping': { 
+                     'table': 'agent',
+                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'AgentType': '1'}}, 
+                     'fields': [
+                         [{'field': 'FirstName', 'wbcol': 1},
+                          {'field': 'LastName', 'wbcol': 2},
+                          {'field':'MiddleInitial', 'wbcol': 3}]
+                     ]}
+                },
+                {'field': 'CollectingEventID',
+                 'mapping': {
+                     'table': 'collectingevent',
+                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'Discipline_ID': 3}},
+                     'fields':[[{'field': 'StationFieldNumber', 'wbcol': 6}]],
+                     'children': [
+                         {'link': 'CollectingEventID',
+                          'table': 'collector',
+                          'parents': [
+                              {'field': 'AgentID',
+                               'mapping': {
+                                   'table': 'agent',
+                                   'args': {'vals': {'AgentType': '1'}},
+                                   'fields': [
+                                       [{'field': 'FirstName', 'wbcol': 7},{'field': 'LastName', 'wbcol': 8}],
+                                       [{'field': 'FirstName', 'wbcol': 9},{'field': 'LastName', 'wbcol': 10}]
+                                   ]
+                               }}
                           ]}
-                     },
-                     {'field': 'CollectingEventID',
-                      'mappings': {
-                          'table': 'collectingevent',
-                          'args': {'settings': [{'multi-match-action': 'pick'}]},
-                          'map': [
-                              [{'field': 'StationFieldNumber', 'wbcol': 6},
-                               {'children': [{
-                                   'mappings': {
-                                       'link': 'CollectingEventID',
-                                       'table': 'collector',
-                                       'map': [
-                                           {'parents': [
-                                               {'field': 'AgentID',
-                                                'mappings': {
-                                                    'table': 'agent',
-                                                    'map': [
-                                                        [{'field': 'FirstName', 'wbcol': 7},{'field': 'LastName', 'wbcol': 8}],
-                                                        [{'field': 'FirstName', 'wbcol': 9},{'field': 'LastName', 'wbcol': 10}]
-                                                    ]
-                                                }}]
-                                           }
-                                       ]
-                                   }
-                               }]}]]
-                      }}
-                          
-                 ]},
-                 {'children': [{
-                     'mappings': {
-                         'link': 'CollectionObjectID',
-                         'table': 'otheridentifier',
-                         'map': [[{'field': 'Identifier', 'wbcol': 4}],[{'field': 'Identifier', 'wbcol': 5}]]
-                     }
-                 }]}
-                ]]
+                     ]
+                 }}
+            ],
+            'fields': [[{'field': 'AltCatalogNumber', 'wbcol': 0}]],
+            'children': [
+                {'link': 'CollectionObjectID',
+                 'table': 'otheridentifier',
+                 'fields': [[{'field': 'Identifier', 'wbcol': 4}],[{'field': 'Identifier', 'wbcol': 5}]]
+                }
+            ]
         };
       
-        $.post('/api/workbench/upload_tbl/', {
-            wb_id: 6,
+        $.post('/api/workbench/upload7/', {
+            wb_id: 9,
             mappings: JSON.stringify(mappings)
         }).done(function(data){
+            console.info('uploaded');
             console.info(data);
         });
     },

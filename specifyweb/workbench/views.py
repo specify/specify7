@@ -315,38 +315,55 @@ def row_status(request, wb_id):
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
 def has_data(mappings, mapping_idx, row):
-    mapping = mappings['map'][mapping_idx]
+    mapping = mappings['fields'][mapping_idx]
     #assuming one-to-many mappings are the same
     i = 1 + (len(mapping) * mapping_idx)
     for m in range(len(mapping)):
         if row[i + m] is not None and row[i + m] != "''" and row[i + m] != "":
             return True
+    if 'parents' in mapping:
+        for p in mapping['parents']:
+            if 'recs' in p:
+                if p['recs'][row] is not None:
+                    return True
     return False;
 
-def get_dict(mappings, mapping_idx, row, ununder):
-    mapping = mappings['map'][mapping_idx]
+def get_dict(mapping, mapping_idx, row, ununder):
+    fields = mapping['fields'][mapping_idx]
     #assuming one-to-many mappings are the same
-    i = 1 + (len(mapping) * mapping_idx)
+    i = 1 + (len(fields) * mapping_idx)
     values = {}
-    for m in mapping:
-        fld_name = m['field'].lower();
-        if (ununder):
-            fld_name = fld_name.replace("_","")
+    for f in fields:
         fld_val = row[i]
         if fld_val == "''" or fld_val == "":
             fld_val = None
-        values[fld_name] = fld_val
+        values[f['field'].lower()] = fld_val
         i = i + 1
-    for fld_name in mapping['args']['vals'].keys():
-        if (ununder):
-            fld_name = fld_name.replace("_","")
-        values[fld_name] = int(v[1]);
-    #print(values)
-    return values
+    if 'parents' in mapping:
+        if 'recs' in mapping['parents']:
+            for p in mapping['parents']:
+                values[p['field'].lower()] = p['recs'][row]
+    if 'args' in mapping:
+        if 'vals' in mapping['args']:
+            for fld_name in mapping['args']['vals'].keys():
+                v = mapping['args']['vals'][fld_name]
+                if isinstance(v, list):
+                    values[fld_name.lower()] = int(v[row])
+                else:
+                    values[fld_name.lower()] = int(v)
+    result = {}
+    if ununder:
+        for k in values.keys():
+            result[k.replace("_","")] = values[k]
+    else:
+        result = values
+    return result 
 
 def get_matches(collection, mappings, mapping_idx, row):
     vals = get_dict(mappings, mapping_idx, row, False)
     ctrls = {'domainfilter': 'true', 'orderby': '', 'offset': '0', 'limit': '200000'}
+    #print(vals)
+    #print(ctrls)
     matches = get_collection(collection, mappings['table'], ctrls, vals)
     result = []
     for obj in matches['objects']:
@@ -386,17 +403,19 @@ def get_matches_bak(mappings, mapping_idx, args, row):
     return rows 
 
 def add_record(collection, user, mappings, mapping_idx, row):
-    values = get_dict(mappings, mapping_idx, row, True)
+    values = get_dict(mappings, mapping_idx, row, False)
     tbl = mappings['table']
+    print(tbl)
+    print(values)
     obj = create_obj(collection, user, tbl, values)
     #print(obj)
     return obj_to_data(obj)['id']
 
-def get_match_id(collection, mappings, mapping_idx, row):
-    if has_data(mappings, mapping_idx, row):
-        matches = get_matches(collection, mappings, mapping_idx, row)
+def get_match_id(collection, mapping, mapping_idx, row):
+    if has_data(mapping, mapping_idx, row):
+        matches = get_matches(collection, mapping, mapping_idx, row)
         if len(matches) > 1:
-            return pick_match(matches)
+            return pick_match(mapping, matches)
         elif len(matches) == 1:
             return matches[0][0]
         else:
@@ -404,17 +423,19 @@ def get_match_id(collection, mappings, mapping_idx, row):
     else:
         return None
 
-def pick_match(matches):
-    settings = matches['args']['settings']
-    mma = None
-
+def pick_match(mapping, matches):
+    settings = []
+    if 'args' in mapping:
+        if 'settings' in mapping['args']:
+            settings = mapping['args']['settings']
+    multi_match_action = None
     for setting in settings:
         if setting['multi-match-action'] is not None:
-            mma = setting['multi-match-action']
+            multi_match_action = setting['multi-match-action']
             
-    if mma == 'add':
+    if multi_match_action == 'add':
         return None
-    elif mma == 'pick':
+    elif multi_match_action == 'pick':
         return matches[0][0]
     else:
         return -1
@@ -424,8 +445,9 @@ def get_ds_cells_sql(wb_id, mappings):
     
     sql = "select r.RowNumber "
 
-    for mapping in mappings['map']:
+    for mapping in mappings['fields']:
         for m in mapping:
+            #print(m)
             #mysql-specific quote function
             subsql = """
             (select celldata from workbenchdataitem di 
@@ -434,7 +456,7 @@ def get_ds_cells_sql(wb_id, mappings):
             """.format(wbcol=m['wbcol'], field=m['field'])
             sql += ", " + subsql
 
-    sql += " from workbenchrow r where r.workbenchid = 6 and r.uploadstatus = 0 order by 1"
+    sql += " from workbenchrow r where r.workbenchid = " + wb_id + " and r.uploadstatus = 0 order by 1"
 
     return sql
 
@@ -475,43 +497,52 @@ def get_ds_cells_sql(wb_id, mappings):
 
 def upload_tbl(wb_id, mapping, collection, user):
     cells_sql = get_ds_cells_sql(wb_id, mapping)
-    
+    #print(cells_sql)
     cursor = connection.cursor()
     cursor.execute(cells_sql)
     rows = cursor.fetchall()
 
-    result = []
+    result = {}
     for row in rows:
         match_ids = []
-        for m in range(len(mappings['map'])):
-            match_id = get_match_id(collection, mappings, m, row)
+        for m in range(len(mapping['fields'])):
+            match_id = get_match_id(collection, mapping, m, row)
             if match_id == -1:
-                match_id = add_record(collection, user, mappings, m, row)
+                match_id = add_record(collection, user, mapping, m, row)
             match_ids.append(match_id)    
-        result.append((row[0], match_ids))
+        result[row[0]] = match_ids
         
     return result
 
-@login_maybe_required
-@require_POST
-def upload(wb_id, mappings, collection, user):
+def upload_by_7(wb_id, mapping, collection, user):
+    if 'parents' in mapping:
+        for parent in mapping['parents']:
+            parent['recs'] = upload_by_7(wb_id, parent['mapping'], collection, user)
+    print('did parents')
+    
+    recs = upload_tbl(wb_id, mapping, collection, user)
+    print('did upload_tbl')
+    
+    if 'children' in mapping:
+        for child in mapping['children']:
+            if 'args' not in child:
+                child['args'] = {}
+            child['args'][child['link']] = recs
+            child['recs'] = upload(wb_id, child, collection, user)    
 
-    wb_id = request.POST.get('wb_id')
-    mappings = json.loads(request.POST['mappings'])
+    print('did children')
+    mapping['recs'] = recs    
+    return mapping
+    
+@login_maybe_required
+@apply_access_control
+@require_POST
+def upload7(request):
+
+    wb_id = request.POST['wb_id']
+    mapping = json.loads(request.POST['mappings'])
     collection = request.specify_collection
     user = request.specify_user_agent
-    
-    map = mappings['map']
-    for parent in map['parents']:
-        parent['recs'] = upload(wb_id, parent['mappings'], collection, user)
-    
-    recs = upload_tbl(wb_id, mappings, collection, user)
 
-    for child in map['children']:
-        if 'args' not in child['mappings']:
-            child['mappings']['args'] = {}
-        child['mappings']['args'][child['link']] = recs
-        child['recs'] = upload(wb_id, child, collection, user)    
-            
-    mappings['recs'] = recs    
-    return http.HttpResponse(toJson(mappings), content_type='application/json')
+    result = upload_by_7(wb_id, mapping, collection, user)
+    return http.HttpResponse(toJson(result), content_type='application/json')
