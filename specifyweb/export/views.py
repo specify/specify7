@@ -1,7 +1,11 @@
 import os
+from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
+from email.Utils import formatdate
 import json
+
+from xml.etree import ElementTree as ET
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST, require_GET
@@ -11,10 +15,75 @@ from django.conf import settings
 from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from ..specify.models import Spquery
+from ..specify.models import Spquery, Spappresourcedata
 
-from .dwca import make_dwca
+from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
+
+
+@require_GET
+@never_cache
+def rss_feed(request):
+    try:
+        feed_resource = Spappresourcedata.objects.get(
+            spappresource__name="ExportFeed",
+            spappresource__spappresourcedir__usertype="Common",
+            spappresource__spappresourcedir__discipline=None,
+        )
+    except Spappresourcedata.DoesNotExist:
+        raise Http404
+
+    def_tree = ET.fromstring(feed_resource.data)
+
+    rss_node = ET.Element('rss')
+    rss_node.set('xmlns:ipt', "http://ipt.gbif.org/")
+    rss_node.set('version', "2.0")
+
+    chan_node = ET.SubElement(rss_node, 'channel')
+    ET.SubElement(chan_node, 'link').text = request.build_absolute_uri()
+
+    for tag in 'title description language'.split():
+        for node in def_tree.findall(tag):
+            ET.SubElement(chan_node, tag).text = node.text
+
+    for item_def in def_tree.findall('item'):
+        filename = item_def.attrib['filename']
+        path = os.path.join(settings.DEPOSITORY_DIR, "export_feed", filename)
+        try:
+            mtime = os.path.getmtime(path)
+        except OSError as e:
+            if e.errno == errno.ENOENT:
+                continue
+            else:
+                raise
+
+        item_node = ET.SubElement(chan_node, 'item')
+
+        for tag in 'title id guid description'.split():
+            for node in item_def.findall(tag):
+                ET.SubElement(item_node, tag).text = node.text
+
+        ET.SubElement(item_node, 'link').text = request.build_absolute_uri(
+            '/static/depository/export_feed/%s' % filename
+        )
+
+        ET.SubElement(item_node, 'ipt:eml').text = request.build_absolute_uri(
+            '/export/extract_eml/%s' % filename
+        )
+
+        ET.SubElement(item_node, 'pubDate').text = formatdate(mtime)
+        ET.SubElement(item_node, 'type').text = "DWCA"
+
+    return HttpResponse(prettify(rss_node), content_type='text/xml')
+
+
+@require_GET
+@never_cache
+def extract_eml(request, filename):
+    with ZipFile(os.path.join(settings.DEPOSITORY_DIR, "export_feed", filename), 'r') as archive:
+        meta = ET.fromstring(archive.open('meta.xml').read())
+        eml = archive.open(meta.attrib['metadata']).read()
+    return HttpResponse(eml, content_type='text/xml')
 
 
 @login_maybe_required
@@ -56,7 +125,6 @@ def export(request):
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
-
 
 
 @login_maybe_required
