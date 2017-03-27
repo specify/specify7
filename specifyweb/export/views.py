@@ -43,6 +43,9 @@ def rss_feed(request):
             ET.SubElement(chan_node, tag).text = node.text
 
     for item_def in def_tree.findall('item'):
+        if 'publish' not in item_def.attrib or item_def.attrib['publish'] != 'true':
+            continue
+
         filename = item_def.attrib['filename']
         path = os.path.join(FEED_DIR, filename)
         try:
