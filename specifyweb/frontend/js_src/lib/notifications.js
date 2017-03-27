@@ -48,6 +48,11 @@ messageCollection.startFetching();
 $(document).on('visibilitychange', () => messageCollection.startFetching());
 
 const renderMessage = {
+    'feed-item-updated': message => {
+        const filename = message.get('file');
+        const href = '/static/depository/export_feed/' + filename;
+        return `<p>Export feed item updated. <a href="${href}" download>${filename}</a></p>`;
+    },
     'dwca-export-complete': message => {
         const href = '/static/depository/' + message.get('file');
         return `<p>DwCA export completed. <a href="${href}" download>Download.</a></p>`;

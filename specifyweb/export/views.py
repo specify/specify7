@@ -15,25 +15,21 @@ from django.conf import settings
 from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from ..specify.models import Spquery, Spappresourcedata
+from ..specify.models import Spquery
 
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
+from .feed import FEED_DIR, get_feed_resource, update_feed
 
 
 @require_GET
 @never_cache
 def rss_feed(request):
-    try:
-        feed_resource = Spappresourcedata.objects.get(
-            spappresource__name="ExportFeed",
-            spappresource__spappresourcedir__usertype="Common",
-            spappresource__spappresourcedir__discipline=None,
-        )
-    except Spappresourcedata.DoesNotExist:
+    feed_resource = get_feed_resource()
+    if feed_resource is None:
         raise Http404
 
-    def_tree = ET.fromstring(feed_resource.data)
+    def_tree = ET.fromstring(feed_resource)
 
     rss_node = ET.Element('rss')
     rss_node.set('xmlns:ipt', "http://ipt.gbif.org/")
@@ -48,7 +44,7 @@ def rss_feed(request):
 
     for item_def in def_tree.findall('item'):
         filename = item_def.attrib['filename']
-        path = os.path.join(settings.DEPOSITORY_DIR, "export_feed", filename)
+        path = os.path.join(FEED_DIR, filename)
         try:
             mtime = os.path.getmtime(path)
         except OSError as e:
@@ -80,7 +76,7 @@ def rss_feed(request):
 @require_GET
 @never_cache
 def extract_eml(request, filename):
-    with ZipFile(os.path.join(settings.DEPOSITORY_DIR, "export_feed", filename), 'r') as archive:
+    with ZipFile(os.path.join(FEED_DIR, filename), 'r') as archive:
         meta = ET.fromstring(archive.open('meta.xml').read())
         eml = archive.open(meta.attrib['metadata']).read()
     return HttpResponse(eml, content_type='text/xml')
@@ -126,6 +122,16 @@ def export(request):
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
+@login_maybe_required
+@require_POST
+def force_update(request):
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+
+    thread = Thread(target=update_feed, kwargs={'force': True, 'notify_user': request.specify_user})
+    thread.daemon = True
+    thread.start()
+    return HttpResponse('OK', content_type='text/plain')
 
 @login_maybe_required
 @require_GET
