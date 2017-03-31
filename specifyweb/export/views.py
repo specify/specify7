@@ -1,4 +1,5 @@
 import os
+import errno
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
