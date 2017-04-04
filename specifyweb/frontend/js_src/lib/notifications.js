@@ -50,16 +50,29 @@ $(document).on('visibilitychange', () => messageCollection.startFetching());
 const renderMessage = {
     'feed-item-updated': message => {
         const filename = message.get('file');
-        const href = '/static/depository/export_feed/' + filename;
-        return `<p>Export feed item updated. <a href="${href}" download>${filename}</a></p>`;
+        const rendered = $('<p>Export feed item updated. <a download></a></p>');
+        $('a', rendered).attr('href', '/static/depository/export_feed/' + filename).text(filename);
+        return rendered;
+    },
+    'update-feed-failed': message => {
+        const rendered = $('<p>Export feed update failed. <a download>Exception</a></p>');
+        $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
+        return rendered;
     },
     'dwca-export-complete': message => {
-        const href = '/static/depository/' + message.get('file');
-        return `<p>DwCA export completed. <a href="${href}" download>Download.</a></p>`;
+        const rendered = $('<p>DwCA export completed. <a download>Download.</a></p>');
+        $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
+        return rendered;
+    },
+    'dwca-export-failed': message => {
+        const rendered = $('<p>DwCA export failed. <a download>Exception</a></p>');
+        $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
+        return rendered;
     },
     'query-export-complete': message => {
-        const href = '/static/depository/' + message.get('file');
-        return `<p>Query export to CSV completed. <a href="${href}" download>Download.</a></p>`;
+        const rendered = $('<p>Query export to CSV completed. <a download>Download.</a></p>');
+        $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
+        return rendered;
     },
     default: message => JSON.stringify(message.toJSON())
 };

@@ -1,5 +1,7 @@
 import os
 import errno
+import logging
+import traceback
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
@@ -22,6 +24,7 @@ from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
 
+logger = logging.getLogger(__name__)
 
 @require_GET
 @never_cache
@@ -114,12 +117,21 @@ def export(request):
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
 
     def do_export():
-        make_dwca(collection, user, definition, path, eml=eml)
-
-        Message.objects.create(user=user, content=json.dumps({
-            'type': 'dwca-export-complete',
-            'file': filename
-        }))
+        try:
+            make_dwca(collection, user, definition, path, eml=eml)
+        except Exception as e:
+            tb = traceback.format_exc()
+            logger.error('make_dwca failed: %s', tb)
+            Message.objects.create(user=user, content=json.dumps({
+                'type': 'dwca-export-failed',
+                'exception': str(e),
+                'traceback': tb if settings.DEBUG else None,
+            }))
+        else:
+            Message.objects.create(user=user, content=json.dumps({
+                'type': 'dwca-export-complete',
+                'file': filename
+            }))
 
     thread = Thread(target=do_export)
     thread.daemon = True
@@ -132,7 +144,20 @@ def force_update(request):
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
 
-    thread = Thread(target=update_feed, kwargs={'force': True, 'notify_user': request.specify_user})
+    user = request.specify_user # I don't want to close over the entire request.
+    def try_update_feed():
+        try:
+            update_feed(force=True, notify_user=user)
+        except Exception as e:
+            tb = traceback.format_exc()
+            logger.error('update_feed failed: %s', tb)
+            Message.objects.create(user=user, content=json.dumps({
+                'type': 'update-feed-failed',
+                'exception': str(e),
+                'traceback': tb if settings.DEBUG else None,
+            }))
+
+    thread = Thread(target=try_update_feed)
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
