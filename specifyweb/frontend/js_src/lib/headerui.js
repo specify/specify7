@@ -26,8 +26,8 @@ var toolModules = [
     require('./toolbarmasterkey.js'),
     require('./toolbarusers.js'),
     require('./toolbartreerepair.js'),
-    require('./toolbardwca.js'),
     require('./toolbarresources.js'),
+    require('./toolbardwca.js'),
     require('./toolbarforceupdate.js'),
 ];
 
