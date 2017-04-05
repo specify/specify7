@@ -30,4 +30,5 @@
 .appresource-data textarea {
     width: 100%;
     height: 50em;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
