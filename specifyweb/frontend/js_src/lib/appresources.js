@@ -48,7 +48,7 @@ const ResourceDataView = Backbone.View.extend({
             return this;
         }
 
-        this.$el.append('<textarea spellcheck=false>');
+        this.$el.append('<textarea spellcheck="false" wrap="off">');
 
         this.model.rget('spappresourcedatas', true).done(sards => {
             this.appresourceData = sards.first();
