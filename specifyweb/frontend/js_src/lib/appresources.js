@@ -12,6 +12,7 @@ const SaveButton = require('./savebutton.js');
 const DeleteButton = require('./deletebutton.js');
 const userInfo = require('./userinfo.js');
 const navigation = require('./navigation.js');
+const newResourceTmpl = require('./templates/newappresource.html');
 
 function makeUrl(resource) {
     return {
@@ -141,19 +142,13 @@ const ResourceList = Backbone.View.extend({
             thisCreateResource( $('input', this).val() );
         };
 
-        const dialog = $('<div title="New Resource Name">\n' +
-                         '<form>\n' +
-                         '<label>New Resource Name:</label>\n' +
-                         '<input type="text">\n' +
-                         '<input type="submit" style="display: none;">\n' +
-                         '</form>\n' +
-                         '</div>').dialog({
-                             modal: true,
-                             close: function() { $(this).remove(); },
-                             buttons: [
-                                 {text: 'Create', click: createResource},
-                                 {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                             ]});
+        const dialog = $(newResourceTmpl()).dialog({
+            modal: true,
+            close: function() { $(this).remove(); },
+            buttons: [
+                {text: 'Create', click: createResource},
+                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+            ]});
         $('input', dialog).focus();
         $('form', dialog).submit(createResource);
     }

@@ -2,6 +2,8 @@
 
 const $ = require('jquery');
 const Q = require('q');
+const chooseTmpl = require('./templates/chooseDwCADef.html');
+const startedTmpl = require('./templates/dwcaExportStarted.html');
 
 const title = 'Make DwCA';
 
@@ -18,27 +20,12 @@ function execute() {
         });
     }
 
-    dialog = $(`
-<div>
-<form>
-<p class="error"></p>
-<p>
-<label>DwCA definition:</label>
-<input type="text" class="dwca-definition">
-</p>
-<p>
-<label>Metadata resource:</label>
-<input type="text" class="dwca-metadata">
-</p>
-<input type="submit" style="display: none;">
-</form>
-</div>
-`).dialog({
+    dialog = $(chooseTmpl()).dialog({
     modal: true,
     title: title,
     close: function() { $(this).remove(); dialog = null; },
     buttons: [
-        {text: 'Next', click: next},
+        {text: 'Start', click: next},
         {text: 'Cancel', click: function() { $(this).dialog('close'); }}
     ]});
 
@@ -88,20 +75,13 @@ function startExport(definition, metadata) {
 
     $.post('/export/make_dwca/', params).done(() => {
         dialog.dialog('close');
-        dialog = $(`
-<div>
-Export started. You will receive a notification
-when the export is complete.
-</div>
-`
-                  ).dialog({
-                      modal: true,
-                      title: title,
-                      close: function() { $(this).remove(); dialog = null; },
-                      buttons: [
-                          {text: 'OK', click: function() { $(this).dialog('close'); }}
-                      ]});
-
+        dialog = $(startedTmpl()).dialog({
+            modal: true,
+            title: title,
+            close: function() { $(this).remove(); dialog = null; },
+            buttons: [
+                {text: 'OK', click: function() { $(this).dialog('close'); }}
+            ]});
     });
 }
 
