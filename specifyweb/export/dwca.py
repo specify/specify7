@@ -29,29 +29,36 @@ def prettify(elem):
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="\t")
 
-class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields queries')):
+class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_fields id_field_idx queries')):
     "Represents either a core or extension definition."
     @classmethod
     def from_xml(cls, node):
+        queries = [Query.from_xml(query_node) for query_node in node.find('queries')]
+        export_fields, id_field_idx = cls.get_export_fields(queries)
+        constant_fields = [ConstantField.from_xml(fn) for fn in node.findall('field')]
+
         return cls(
             is_core = node.tag == 'core',
             row_type = node.attrib['rowType'],
-            queries = [Query.from_xml(query_node) for query_node in node.find('queries')],
-            constant_fields = [ConstantField.from_xml(fn) for fn in node.findall('field')],
+            queries = queries,
+            constant_fields = constant_fields,
+            export_fields = export_fields,
+            id_field_idx = id_field_idx,
         )
 
-    def get_export_fields(self):
+    @staticmethod
+    def get_export_fields(queries):
         """Returns a representation of the fields in the query result data
         for the meta.xml field information.
 
         For each query the fields have to match up.
         """
         try:
-            export_fields = self.queries[0].get_export_fields()
+            export_fields = queries[0].get_export_fields()
         except IndexError:
             raise DwCAException("Definition doesn't include any queries.")
 
-        for q in self.queries[1:]:
+        for q in queries[1:]:
             fields = q.get_export_fields()
             if fields != export_fields:
                 raise DwCAException("""
@@ -59,7 +66,14 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields queries')):
                 Offending values: %s vs %s
                 """ % (fields, export_fields))
 
-        return export_fields
+        id_fields = [f.index for f in export_fields if f.is_core_id]
+
+        if len(id_fields) < 1:
+            raise DwCAException("Definition doesn't include id field.")
+        elif len(id_fields) > 1:
+            raise DwCAException("Definition includes multiple id fields.")
+
+        return export_fields, id_fields[0]
 
     def to_xml(self):
         output_node = ET.Element('core' if self.is_core else 'extension')
@@ -73,18 +87,10 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields queries')):
             location = ET.SubElement(files_node, 'location')
             location.text = query.file_name
 
-        export_fields = self.get_export_fields()
-        id_fields = [f.index for f in export_fields if f.is_core_id]
-
-        if len(id_fields) < 1:
-            raise DwCAException("Definition doesn't include id field.")
-        elif len(id_fields) > 1:
-            raise DwCAException("Definition includes multiple id fields.")
-
         id_node = ET.SubElement(output_node, 'id' if self.is_core else 'coreid')
-        id_node.set('index', str(id_fields[0]))
+        id_node.set('index', str(self.id_field_idx))
 
-        for field in export_fields:
+        for field in self.export_fields:
             if field.term is not None:
                 field_node = ET.SubElement(output_node, 'field')
                 field_node.set('index', str(field.index))
@@ -196,11 +202,25 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         with open(os.path.join(output_dir, 'meta.xml'), 'w') as meta_xml:
             meta_xml.write(prettify(output_node))
 
+        core_ids = set()
+        def collect_ids(row):
+            core_ids.add(row[core_stanza.id_field_idx + 1])
+            return True
+
         with session_context() as session:
-            for stanza in [core_stanza] + extension_stanzas:
+            for query in core_stanza.queries:
+                path = os.path.join(output_dir, query.file_name)
+                query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
+                             strip_id=True, row_filter=collect_ids)
+
+            for stanza in extension_stanzas:
+                def filter_ids(row):
+                    return row[stanza.id_field_idx + 1] in core_ids
+
                 for query in stanza.queries:
                     path = os.path.join(output_dir, query.file_name)
-                    query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path, strip_id=True)
+                    query_to_csv(session, collection, user, query.tableid, query.get_field_specs(), path,
+                                 strip_id=True, row_filter=filter_ids)
 
         basename = re.sub(r'\.zip$', '', output_file)
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)

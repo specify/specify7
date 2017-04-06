@@ -149,7 +149,7 @@ def stored_query_to_csv(query_id, collection, user, path):
         query_to_csv(session, collection, user, tableid, field_specs, path)
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
-                 recordsetid=None, add_header=False, strip_id=False):
+                 recordsetid=None, add_header=False, strip_id=False, row_filter=None):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -170,6 +170,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             csv_writer.writerow(header)
 
         for row in query.yield_per(1):
+            if row_filter is not None and not row_filter(row): continue
             encoded = [
                 re.sub('\r|\n', ' ', unicode(f).encode('utf-8'))
                 for f in (row[1:] if strip_id else row)
