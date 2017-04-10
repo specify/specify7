@@ -13,6 +13,7 @@ var userInfo               = require('./userinfo.js');
 
 const editReport = require('./editreport.js');
 const csrftoken = require('./csrftoken.js');
+const populateForm = require('./populateform.js');
 
 var title =  "Reports";
 
@@ -183,7 +184,7 @@ var FixImagesDialog = Backbone.View.extend({
         if (!attachments) return;
 
         var index = this.$('.missing-attachments a').index(evt.currentTarget);
-        var attachmentPlugin = new AttachmentPlugin();
+        var attachmentPlugin = new AttachmentPlugin({populateForm: populateForm});
         makeDialog(attachmentPlugin.render().$el, {
             title: "Choose file"
         });
