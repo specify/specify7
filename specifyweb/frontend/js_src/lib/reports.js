@@ -410,7 +410,7 @@ function runReport(reportResources, recordSetId, fieldUIs) {
 
 function fixupImages(reportXML) {
     var reportDOM = $.parseXML(reportXML);
-    var badImageUrl = '"http://' + window.location.host + '/images/unknown.png"';
+    var badImageUrl = `"${window.location.origin}/images/unknown.png"`;
     var badImageExpressions = [];
     var filenames = {};
     $('imageExpression', reportDOM).each(function() {
