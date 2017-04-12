@@ -2,6 +2,7 @@ import re, logging
 from collections import namedtuple
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
+from django.db import connection, transaction
 
 from datetime import date
 logger = logging.getLogger(__name__)
@@ -32,24 +33,72 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
     #def __init__(self, a, b, c, d):
     regrouped = False
     grouping = None
+
+    def get_scope(self, model):
+        print dir(model)
+        try:
+            model.collectionmemberid
+            return 'coll'
+        except:
+            try:
+                model.disciplineid
+                return 'dsp'
+            except:
+                try:
+                    model.divisionid
+                    return 'div'
+                except:
+                    return None
+
     
-    def regroup(self):
+    def regroup(self, model):
         if not self.regrouped:
-            sql = self.get_grouping_sql()
-            self.grouping = self.get_grouping(sql)
+            scope = self.get_scope(model)
+            sql = self.get_grouping_sql(scope)
+            self.grouping = self.get_grouping(scope,sql)
             self.regrouped = True
             
-    def get_grouping_sql(self):
+    def get_grouping_sql(self, scope):
         #need to pick autonumsch tbl based on model...
-        tbl = 'autonumsch_coll'
-        fld = 'a.collectionid'
-        sql = 'select distinct m.collectionid from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = ac.autonumberingschemeid inner join '
-        sql += tbl + ' on m.autonumberingschemeid = ans.autonumberingschemeid where '
-        sql += fld + ' = ' + str(self.collection.id) + " and formatname = '" + self.format_name + "'"
+        
+        tbl = 'autonumsch_' + scope
+        if scope == 'coll':
+            fld = 'collectionid'
+            gid = self.collection.id
+        elif scope == 'dsp':
+            fld = 'disciplineid'
+            gid = self.collection.discipline.id
+        elif scope == 'div':
+            fld = 'divisionid'
+            gid = self.collection.discipline.division.id
+            
+        sql = 'select distinct m.' + fld + ' from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid inner join '
+        sql += tbl + ' m on m.autonumberingschemeid = ans.autonumberingschemeid where '
+        sql += 'a.' + fld + ' = ' + str(gid) + " and formatname = '" + self.format_name + "'"
         return sql
 
-    def get_grouping(self, sql):
-        return ('collectionmemberid__in', [4,32768]) 
+    def get_grouping(self, scope, sql):
+        #return ('collectionmemberid__in', [4,32768]) 
+        cursor = connection.cursor()
+        try:
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+        finally:
+            cursor.close()
+
+        ids = []
+        for r in rows:
+            ids.append(r[0])
+        if len(ids) > 0:
+            if scope == 'coll':
+                g0 = 'collectionmemberid__in'
+            elif scope == 'dsp':
+                g0 = 'disciplineid__in'
+            elif scope == 'div':
+                g0 = 'divisionid__in'
+            return [g0, ids]
+        else:
+            return None
         
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
@@ -92,7 +141,7 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
             return filter_by_collection(objs, collection)
         else:
             #flt = self.grouping[0] + '__in=[' + ",".join(str(g) for g in self.grouping[1]) + ']'
-            #print flt
+            print self.grouping[1]
             return objs.filter(**{self.grouping[0]: self.grouping[1]})
         
     def autonumber(self, collection, model, vals, year=None):
@@ -100,7 +149,6 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
         fieldname = self.field_name.lower()
 
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
-        self.regroup()
         try:
             #biggest = filter_by_collection(objs, collection).order_by('-' + fieldname)[0]
             biggest = self.filter_by_grouping(objs, collection).order_by('-' + fieldname)[0]
