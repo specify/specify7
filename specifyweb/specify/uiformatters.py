@@ -10,27 +10,47 @@ from specifyweb.context.app_resource import get_app_resource
 
 from .filter_by_col import filter_by_collection
 
-def get_uiformatter(collection, user, formatter_name):
-    xml, __ = get_app_resource(collection, user, "UIFormatters")
+def get_uiformatter(collection_arg, user, formatter_name):
+    xml, __ = get_app_resource(collection_arg, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
     external = node.find('external')
     if external is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return CatalogNumberNumeric()
+            return UIFormatter(model_name = 'CollectionObject', field_name = 'CatalogNumber', fields = [CNNField()],format_name = formatter_name, collection = collection_arg)
         else:
             return None
     else:
         return UIFormatter(
-            model_name = node.attrib['class'].split('.')[-1],
-            field_name = node.attrib['fieldname'],
-            fields = map(new_field, node.findall('field')))
+            model_name = node.attrib['class'].split('.')[-1],field_name = node.attrib['fieldname'], fields = map(new_field, node.findall('field')), format_name = formatter_name, collection = collection_arg)
 
 class AutonumberOverflowException(Exception):
     pass
 
-class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
+class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format_name collection")):
+    #def __init__(self, a, b, c, d):
+    regrouped = False
+    grouping = None
+    
+    def regroup(self):
+        if not self.regrouped:
+            sql = self.get_grouping_sql()
+            self.grouping = self.get_grouping(sql)
+            self.regrouped = True
+            
+    def get_grouping_sql(self):
+        #need to pick autonumsch tbl based on model...
+        tbl = 'autonumsch_coll'
+        fld = 'a.collectionid'
+        sql = 'select distinct m.collectionid from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = ac.autonumberingschemeid inner join '
+        sql += tbl + ' on m.autonumberingschemeid = ans.autonumberingschemeid where '
+        sql += fld + ' = ' + str(self.collection.id) + " and formatname = '" + self.format_name + "'"
+        return sql
+
+    def get_grouping(self, sql):
+        return ('collectionmemberid__in', [4,32768]) 
+        
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
         return '^%s$' % regexp
@@ -67,13 +87,23 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
                 filled_vals.append(val)
         return filled_vals
 
+    def filter_by_grouping(self, objs, collection):
+        if self.grouping is None:
+            return filter_by_collection(objs, collection)
+        else:
+            #flt = self.grouping[0] + '__in=[' + ",".join(str(g) for g in self.grouping[1]) + ']'
+            #print flt
+            return objs.filter(**{self.grouping[0]: self.grouping[1]})
+        
     def autonumber(self, collection, model, vals, year=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
+        self.regroup()
         try:
-            biggest = filter_by_collection(objs, collection).order_by('-' + fieldname)[0]
+            #biggest = filter_by_collection(objs, collection).order_by('-' + fieldname)[0]
+            biggest = self.filter_by_grouping(objs, collection).order_by('-' + fieldname)[0]
         except IndexError:
             filled_vals = self.fill_vals_no_prior(with_year)
         else:
@@ -177,19 +207,30 @@ class SeparatorField(Field):
     def value_regexp(self):
         return self.wild_regexp()
 
-class CatalogNumberNumeric(UIFormatter):
-    class CNNField(NumericField):
-        def __new__(cls):
-            return NumericField.__new__( cls, size=9, inc=9)
-
-        def value_regexp(self):
-            return r'[0-9]{0,%d}' % self.size
-
-        def canonicalize(self, value):
-            return '0' * (self.size - len(value)) + value
-
+class CNNField(NumericField):
     def __new__(cls):
-        return UIFormatter.__new__(cls,
-                                   model_name='CollectionObject',
-                                   field_name='catalogNumber',
-                                   fields=[CatalogNumberNumeric.CNNField()])
+        return NumericField.__new__( cls, size=9, inc=9)
+
+    def value_regexp(self):
+        return r'[0-9]{0,%d}' % self.size
+
+    def canonicalize(self, value):
+        return '0' * (self.size - len(value)) + value
+
+#class CatalogNumberNumeric(UIFormatter):
+        
+    #def __new__(cls, formatter_name, collection):
+    #    return UIFormatter.__new__(cls,
+    #                               model_name='CollectionObject',
+    #                               field_name='catalogNumber',
+    #                               fields=[CatalogNumberNumeric.CNNField()],
+    #                               format_name=formatter_name,
+    #                               collection=collection)
+
+    #def __init__(self):
+        #self.model_name='CollectionObject'
+        #self.field_name='CatalogNumber'
+        #self.fields=[CatalogNumberNumeric.CNNField()]
+        #self.format_name=formatter_name
+        #self.collection=collection
+        #UIFormatter.__init__(self)
