@@ -72,8 +72,6 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
             return None
             
     def get_grouping_sql(self):
-        #need to pick autonumsch tbl based on model...
-
         fld, gid, scope, ffld = self.scope_info
         tbl = 'autonumsch_' + scope
             
@@ -144,8 +142,6 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
         if self.grouping is None:
             return filter_by_collection(objs, collection)
         else:
-            print '                                                                                                      '
-            print self.grouping[1]
             return objs.filter(**{self.grouping[0]: self.grouping[1]})
         
     def autonumber(self, collection, model, vals, year=None):
