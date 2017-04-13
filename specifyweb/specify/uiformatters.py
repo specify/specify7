@@ -31,8 +31,9 @@ class AutonumberOverflowException(Exception):
 
 class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format_name collection")):
     #def __init__(self, a, b, c, d):
-    regrouped = False
+    grouped = False
     grouping = None
+    scope_info = None
 
     def get_scope(self, model):
         print dir(model)
@@ -41,64 +42,67 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
             return 'coll'
         except:
             try:
-                model.disciplineid
+                model.discipline_id
                 return 'dsp'
             except:
                 try:
-                    model.divisionid
+                    model.division_id
                     return 'div'
                 except:
                     return None
 
     
-    def regroup(self, model):
-        if not self.regrouped:
-            scope = self.get_scope(model)
-            sql = self.get_grouping_sql(scope)
-            self.grouping = self.get_grouping(scope,sql)
-            self.regrouped = True
-            
-    def get_grouping_sql(self, scope):
-        #need to pick autonumsch tbl based on model...
-        
-        tbl = 'autonumsch_' + scope
+    def get_group(self, model):
+        if not self.grouped:
+            self.scope_info = self.get_scope_info(model)
+            if self.scope_info is not None:
+                sql = self.get_grouping_sql()
+                self.grouping = self.get_grouping(sql)
+            self.grouped = True
+
+    def get_scope_info(self, model):
+        scope = self.get_scope(model)
         if scope == 'coll':
-            fld = 'collectionid'
-            gid = self.collection.id
+            return ('collectionid', self.collection.id, scope, 'collectionmemberid')
         elif scope == 'dsp':
-            fld = 'disciplineid'
-            gid = self.collection.discipline.id
+            return ('disciplineid', self.collection.discipline.id, scope, 'discipline_id')
         elif scope == 'div':
-            fld = 'divisionid'
-            gid = self.collection.discipline.division.id
-            
-        sql = 'select distinct m.' + fld + ' from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid inner join '
-        sql += tbl + ' m on m.autonumberingschemeid = ans.autonumberingschemeid where '
-        sql += 'a.' + fld + ' = ' + str(gid) + " and formatname = '" + self.format_name + "'"
-        return sql
-
-    def get_grouping(self, scope, sql):
-        #return ('collectionmemberid__in', [4,32768]) 
-        cursor = connection.cursor()
-        try:
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-        finally:
-            cursor.close()
-
-        ids = []
-        for r in rows:
-            ids.append(r[0])
-        if len(ids) > 0:
-            if scope == 'coll':
-                g0 = 'collectionmemberid__in'
-            elif scope == 'dsp':
-                g0 = 'disciplineid__in'
-            elif scope == 'div':
-                g0 = 'divisionid__in'
-            return [g0, ids]
+            return ('divisionid', self.collection.discipline.division.id, scope, 'division_id')
         else:
             return None
+            
+    def get_grouping_sql(self):
+        #need to pick autonumsch tbl based on model...
+
+        fld, gid, scope, ffld = self.scope_info
+        tbl = 'autonumsch_' + scope
+            
+        if fld is not None and gid is not None:
+            sql = 'select distinct m.' + fld + ' from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid inner join '
+            sql += tbl + ' m on m.autonumberingschemeid = ans.autonumberingschemeid where '
+            sql += 'a.' + fld + ' = ' + str(gid) + " and formatname = '" + self.format_name + "'"
+            return sql
+        else:
+            return None
+
+    def get_grouping(self, sql):
+        if sql is None:
+            return None
+        else:
+            cursor = connection.cursor()
+            try:
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+            finally:
+                cursor.close()
+
+            ids = []
+            for r in rows:
+                ids.append(r[0])
+            if len(ids) > 0:
+                return [self.scope_info[3] + '__in', ids]
+            else:
+                return None
         
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
@@ -140,7 +144,7 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
         if self.grouping is None:
             return filter_by_collection(objs, collection)
         else:
-            #flt = self.grouping[0] + '__in=[' + ",".join(str(g) for g in self.grouping[1]) + ']'
+            print '                                                                                                      '
             print self.grouping[1]
             return objs.filter(**{self.grouping[0]: self.grouping[1]})
         
@@ -150,7 +154,6 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format
 
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         try:
-            #biggest = filter_by_collection(objs, collection).order_by('-' + fieldname)[0]
             biggest = self.filter_by_grouping(objs, collection).order_by('-' + fieldname)[0]
         except IndexError:
             filled_vals = self.fill_vals_no_prior(with_year)

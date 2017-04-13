@@ -34,7 +34,7 @@ def do_autonumbering(collection, obj, fields):
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     for formatter, vals in fields:
-        formatter.regroup(obj.__class__)
+        formatter.get_group(obj.__class__)
         
     with lock_tables(obj._meta.db_table):
         for formatter, vals in fields:
