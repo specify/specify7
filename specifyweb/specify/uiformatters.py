@@ -30,25 +30,23 @@ class AutonumberOverflowException(Exception):
     pass
 
 class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format_name collection")):
-    #def __init__(self, a, b, c, d):
     grouped = False
     grouping = None
     scope_info = None
 
     def get_scope(self, model):
-        print dir(model)
         try:
             model.collectionmemberid
             return 'coll'
-        except:
+        except AttributeError:
             try:
                 model.discipline_id
                 return 'dsp'
-            except:
+            except AttributeError:
                 try:
                     model.division_id
                     return 'div'
-                except:
+                except AttributeError:
                     return None
 
     
