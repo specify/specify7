@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 from specifyweb.context.app_resource import get_app_resource
 
 from .filter_by_col import filter_by_collection
+from . import models
 
 def get_uiformatter(collection_arg, user, formatter_name):
     xml, __ = get_app_resource(collection_arg, user, "UIFormatters")
@@ -19,21 +20,29 @@ def get_uiformatter(collection_arg, user, formatter_name):
     if external is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return UIFormatter(model_name = 'CollectionObject', field_name = 'CatalogNumber', fields = [CNNField()],format_name = formatter_name, collection = collection_arg)
+            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name, collection_arg)
         else:
             return None
     else:
         return UIFormatter(
-            model_name = node.attrib['class'].split('.')[-1],field_name = node.attrib['fieldname'], fields = map(new_field, node.findall('field')), format_name = formatter_name, collection = collection_arg)
+            node.attrib['class'].split('.')[-1], node.attrib['fieldname'], map(new_field, node.findall('field')), formatter_name, collection_arg)
 
 class AutonumberOverflowException(Exception):
     pass
 
-class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields format_name collection")):
+class UIFormatter:
     grouped = False
     grouping = None
     scope_info = None
 
+    def __init__(self, model_name, field_name, fields, format_name, collection):
+        self.model_name = model_name
+        self.field_name = field_name
+        self.fields = fields
+        self.format_name = format_name
+        self.collection = collection
+        self.get_group(getattr(models, self.model_name))
+    
     def get_scope(self, model):
         try:
             model.collectionmemberid
@@ -262,20 +271,3 @@ class CNNField(NumericField):
     def canonicalize(self, value):
         return '0' * (self.size - len(value)) + value
 
-#class CatalogNumberNumeric(UIFormatter):
-        
-    #def __new__(cls, formatter_name, collection):
-    #    return UIFormatter.__new__(cls,
-    #                               model_name='CollectionObject',
-    #                               field_name='catalogNumber',
-    #                               fields=[CatalogNumberNumeric.CNNField()],
-    #                               format_name=formatter_name,
-    #                               collection=collection)
-
-    #def __init__(self):
-        #self.model_name='CollectionObject'
-        #self.field_name='CatalogNumber'
-        #self.fields=[CatalogNumberNumeric.CNNField()]
-        #self.format_name=formatter_name
-        #self.collection=collection
-        #UIFormatter.__init__(self)
