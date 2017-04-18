@@ -40,7 +40,7 @@ module.exports = Backbone.View.extend({
             this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
                 this.model.rget('children').pipe(function(children) {
                     return children
-                        .fetch({ limit: 1, filters: { orderby: 'rankid'}})
+                        .fetch({ limit: 1, filters: { orderby: 'rankID'}})
                         .pipe(function() {
                             return children.pluck('rankid')[0];
                         });
