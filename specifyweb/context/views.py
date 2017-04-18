@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
 from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
@@ -110,6 +111,7 @@ def choose_collection(request):
 
 @require_http_methods(['GET', 'PUT'])
 @never_cache
+@ensure_csrf_cookie
 def api_login(request):
     if request.method == 'PUT':
         data = json.load(request)
