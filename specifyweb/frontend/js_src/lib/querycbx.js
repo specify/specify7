@@ -30,7 +30,7 @@ function isTreeModel(model) {
     return treemodels.indexOf(model.specifyModel.name.toLowerCase() != -1);
 }
 
-function makeQuery(model, lowestTreeRank, relatedModel, searchFieldStr, q) {
+function makeQuery(model, relatedModel, searchFieldStr, q, lowestTreeRank, lowestChildRank) {
     var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
     query.set({
         'name': "Ephemeral QueryCBX query",
@@ -96,7 +96,7 @@ function makeQuery(model, lowestTreeRank, relatedModel, searchFieldStr, q) {
                 'isrelfld': false,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': lowestTreeRank,
+                'startvalue': Math.min(lowestTreeRank,lowestChildRank),
                 'operstart': 3,
                 'position': 3
             });
@@ -132,22 +132,27 @@ var QueryCbx = Backbone.View.extend({
         this.forceCollection = options.forceCollection || null;
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
-    },
-    initAndQuery: function(query) {
-        if (isTreeModel(this.model) && this.lowestTreeRank == null) {
-            var bits = this.model.get('definition').split('/');
-            var treedefid = bits[bits.length - 2]; //probably not a good idea
-            var pieces = this.model.get('definitionitem').split('/');
-            var defItemModel = schema.getModel(pieces[pieces.length - 3]); //another less than good idea
-            const items = new defItemModel.LazyCollection({limit: 1, filters: {treedef: treedefid}, orderby: '-rankID'});
-            var _this_ =  this;
-            items.fetch().done(function(){
-                //neither the limit nor the orderby filter above seem to be working?...
-                _this_.lowestTreeRank = items.models[items.models.length - 1].get('rankid');
-                query();
+        if (isTreeModel(this.model)) {
+            this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
+                this.model.rget('children').pipe(function(children) {
+                    return children
+                        .fetch({ limit: 1, filters: { orderby: 'rankID'}})
+                        .pipe(function() {
+                            return children.pluck('rankid')[0];
+                        });
+                });
+            this.lowestTreeRankPromise = this.model.rget('parent.definition', true).pipe(function(def) {
+                var defid = def.id;
+                var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
+                const items = new defItemModel.LazyCollection({limit: 1, filters: {treedef: defid}, orderby: '-rankID'});
+                return items.fetch().pipe(function(){
+                    //neither the limit nor the orderby filter above seem to be working?...
+                    return items.models[items.models.length - 1].get('rankid');
+                });
             });
         } else {
-            query();
+            this.lowestChildRankPromise = null;
+            this.lowestTreeRankPromise = null;
         }
     },
     select: function (event, ui) {
@@ -205,23 +210,22 @@ var QueryCbx = Backbone.View.extend({
         this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, this.fieldName, control);
         return this;
     },
-    makeQuery: function (searchFieldStrs, request, response) {
-        var query = this.makeQuery2.bind(this, searchFieldStrs, request, response);
-        this.initAndQuery(query);
-    },
-    makeQuery2: function(searchFieldStrs, request, response) {
-        var queries = _.map(searchFieldStrs, function(s) {
-            return makeQuery(this.model, this.lowestTreeRank, this.relatedModel, s, request.term);
-        }, this);
-        if (this.forceCollection) {
-            console.log('force query collection id to:', this.forceCollection.id);
-            _.invoke(queries, 'set', 'collectionid', this.forceCollection.id);
-        }
-        var requests = _.map(queries, function(query) {
-            return $.post('/stored_query/ephemeral/', JSON.stringify(query)).pipe(function(data) { return data; });
+    makeQuery: function(searchFieldStrs, request, response) {
+        var siht = this;
+        $.when(this.lowestChildRankPromise, this.lowestTreeRankPromise).done(function(lowestChildRank, lowestTreeRank) {
+            var queries = _.map(searchFieldStrs, function(s) {
+                return makeQuery(siht.model, siht.relatedModel, s, request.term, lowestTreeRank, lowestChildRank);
+            }, siht);
+            if (siht.forceCollection) {
+                console.log('force query collection id to:', siht.forceCollection.id);
+                _.invoke(queries, 'set', 'collectionid', siht.forceCollection.id);
+            }
+            var requests = _.map(queries, function(query) {
+                return $.post('/stored_query/ephemeral/', JSON.stringify(query)).pipe(function(data) { return data; });
+            });
+            whenAll(requests).pipe(siht.processResponse.bind(siht)).done(response);
         });
-        whenAll(requests).pipe(this.processResponse.bind(this)).done(response);
-    },        
+    },                
     processResponse: function(resps) {
         var data = _.pluck(resps, 'results');
         var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
