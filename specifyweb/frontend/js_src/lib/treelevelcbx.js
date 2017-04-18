@@ -13,8 +13,19 @@ function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
     };
     if (lowestChildRank != null) filters['rankid__lt'] = lowestChildRank;
 
-    const children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters});
-    return children.fetch({limit: 0}).pipe(() => children);
+    const children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters, orderby: 'rankID'});
+    return children.fetch({limit: 0}).pipe(() => {
+        var possibilities = [];
+        for (var i = 0; i < children.length; i++) {
+            possibilities.push(children.models[i]);
+            if (children.models[i].get('isEnforced')) {
+                break;
+            }
+        }
+        children.models = possibilities;
+        children.length  = possibilities.length;
+        children._totalCount = possibilities.length;
+        return children;});
 }
 
 module.exports = Backbone.View.extend({

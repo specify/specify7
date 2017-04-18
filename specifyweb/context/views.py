@@ -191,6 +191,7 @@ def domain(request):
         'embeddedCollectingEvent': collection.isembeddedcollectingevent,
         'embeddedPaleoContext': collection.discipline.ispaleocontextembedded,
         'paleoContextChildTable': collection.discipline.paleocontextchildtable,
+        'catalogNumFormatName': collection.catalognumformatname,
         }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')

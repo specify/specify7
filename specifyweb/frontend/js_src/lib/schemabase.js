@@ -29,6 +29,7 @@ var initialContext = require('./initialcontext.js');
         schemaBase.embeddedCollectingEvent = data.embeddedCollectingEvent;
         schemaBase.embeddedPaleoContext = data.embeddedPaleoContext;
         schemaBase.paleoContextChildTable = data.paleoContextChildTable;
+        schemaBase.catalogNumFormatName = data.catalogNumFormatName;
     });
 
     module.exports = schemaBase;

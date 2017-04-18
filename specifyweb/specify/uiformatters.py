@@ -2,6 +2,7 @@ import re, logging
 from collections import namedtuple
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
+from django.db import connection, transaction
 
 from datetime import date
 logger = logging.getLogger(__name__)
@@ -9,28 +10,105 @@ logger = logging.getLogger(__name__)
 from specifyweb.context.app_resource import get_app_resource
 
 from .filter_by_col import filter_by_collection
+from . import models
 
-def get_uiformatter(collection, user, formatter_name):
-    xml, __ = get_app_resource(collection, user, "UIFormatters")
+def get_uiformatter(collection_arg, user, formatter_name):
+    xml, __ = get_app_resource(collection_arg, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
     external = node.find('external')
     if external is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return CatalogNumberNumeric()
+            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name, collection_arg)
         else:
             return None
     else:
         return UIFormatter(
-            model_name = node.attrib['class'].split('.')[-1],
-            field_name = node.attrib['fieldname'],
-            fields = map(new_field, node.findall('field')))
+            node.attrib['class'].split('.')[-1], node.attrib['fieldname'], map(new_field, node.findall('field')), formatter_name, collection_arg)
 
 class AutonumberOverflowException(Exception):
     pass
 
-class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
+class UIFormatter:
+    grouped = False
+    grouping = None
+    scope_info = None
+
+    def __init__(self, model_name, field_name, fields, format_name, collection):
+        self.model_name = model_name
+        self.field_name = field_name
+        self.fields = fields
+        self.format_name = format_name
+        self.collection = collection
+        self.get_group(getattr(models, self.model_name))
+    
+    def get_scope(self, model):
+        try:
+            model.collectionmemberid
+            return 'coll'
+        except AttributeError:
+            try:
+                model.discipline_id
+                return 'dsp'
+            except AttributeError:
+                try:
+                    model.division_id
+                    return 'div'
+                except AttributeError:
+                    return None
+
+    
+    def get_group(self, model):
+        if not self.grouped:
+            self.scope_info = self.get_scope_info(model)
+            if self.scope_info is not None:
+                sql = self.get_grouping_sql()
+                self.grouping = self.get_grouping(sql)
+            self.grouped = True
+
+    def get_scope_info(self, model):
+        scope = self.get_scope(model)
+        if scope == 'coll':
+            return ('collectionid', self.collection.id, scope, 'collectionmemberid')
+        elif scope == 'dsp':
+            return ('disciplineid', self.collection.discipline.id, scope, 'discipline_id')
+        elif scope == 'div':
+            return ('divisionid', self.collection.discipline.division.id, scope, 'division_id')
+        else:
+            return None
+            
+    def get_grouping_sql(self):
+        fld, gid, scope, ffld = self.scope_info
+        tbl = 'autonumsch_' + scope
+            
+        if fld is not None and gid is not None:
+            sql = 'select distinct m.' + fld + ' from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid inner join '
+            sql += tbl + ' m on m.autonumberingschemeid = ans.autonumberingschemeid where '
+            sql += 'a.' + fld + ' = ' + str(gid) + " and formatname = '" + self.format_name + "'"
+            return sql
+        else:
+            return None
+
+    def get_grouping(self, sql):
+        if sql is None:
+            return None
+        else:
+            cursor = connection.cursor()
+            try:
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+            finally:
+                cursor.close()
+
+            ids = []
+            for r in rows:
+                ids.append(r[0])
+            if len(ids) > 0:
+                return [self.scope_info[3] + '__in', ids]
+            else:
+                return None
+        
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
         return '^%s$' % regexp
@@ -67,13 +145,19 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
                 filled_vals.append(val)
         return filled_vals
 
+    def filter_by_grouping(self, objs, collection):
+        if self.grouping is None:
+            return filter_by_collection(objs, collection)
+        else:
+            return objs.filter(**{self.grouping[0]: self.grouping[1]})
+        
     def autonumber(self, collection, model, vals, year=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         try:
-            biggest = filter_by_collection(objs, collection).order_by('-' + fieldname)[0]
+            biggest = self.filter_by_grouping(objs, collection).order_by('-' + fieldname)[0]
         except IndexError:
             filled_vals = self.fill_vals_no_prior(with_year)
         else:
@@ -177,19 +261,13 @@ class SeparatorField(Field):
     def value_regexp(self):
         return self.wild_regexp()
 
-class CatalogNumberNumeric(UIFormatter):
-    class CNNField(NumericField):
-        def __new__(cls):
-            return NumericField.__new__( cls, size=9, inc=9)
-
-        def value_regexp(self):
-            return r'[0-9]{0,%d}' % self.size
-
-        def canonicalize(self, value):
-            return '0' * (self.size - len(value)) + value
-
+class CNNField(NumericField):
     def __new__(cls):
-        return UIFormatter.__new__(cls,
-                                   model_name='CollectionObject',
-                                   field_name='catalogNumber',
-                                   fields=[CatalogNumberNumeric.CNNField()])
+        return NumericField.__new__( cls, size=9, inc=9)
+
+    def value_regexp(self):
+        return r'[0-9]{0,%d}' % self.size
+
+    def canonicalize(self, value):
+        return '0' * (self.size - len(value)) + value
+
