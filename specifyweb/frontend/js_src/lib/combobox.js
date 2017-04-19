@@ -58,9 +58,10 @@ var TreeLevelCBX        = require('./treelevelcbx.js');
             .then(function(picklist) {
                 options.pickList = picklist;
 
+                options.limit = picklist.get('readonly') ? picklist.get('sizelimit') : 0;
                 if (options.limit < 1) options.limit = 0;
                 var Control = picklist.get('readonly') ? ReadOnlyPickListCBX : PickListCBX;
-
+                
                 switch (picklist.get('type')) {
                 case 0: // items in picklistitems table
                     return new (Control.extend(mixins.userDefined))(options);
