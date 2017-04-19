@@ -120,7 +120,6 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
                 });
                 fields.add(descFilterField);
             }
-        }
     }
     
     return query;
