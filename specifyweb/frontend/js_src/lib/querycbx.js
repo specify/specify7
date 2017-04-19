@@ -133,7 +133,7 @@ var initialContext    = require('./initialcontext.js');
             control.attr('title', 'Searches: ' + fieldTitles.join(', '));
 
             this.readOnly || control.autocomplete({
-                minLength: 3,
+                minLength: 1,
                 source: this.makeQuery.bind(this, searchFieldStrs)
             });
 

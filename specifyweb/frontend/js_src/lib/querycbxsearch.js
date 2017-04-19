@@ -70,12 +70,12 @@ module.exports = Backbone.View.extend({
             whenAll(results.map(format)).done(this.displayResults.bind(this));
         },
         displayResults: function(formattedResults) {
-            var items = _.map(formattedResults, function(formattedResult) {
-                return $('<li>').append($('<a>').text(formattedResult))[0];
-            });
+            formattedResults.sort();
+            const items = formattedResults.map(formattedResult => $('<li>').append($('<a>').text(formattedResult))[0]);
             this.$('.querycbx-search-results').append(items);
 
             if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
+            if (formattedResults.length === 100) this.$('.querycbx-search-results').append('<li>...</li>');
         },
         select: function(evt) {
             evt.preventDefault();

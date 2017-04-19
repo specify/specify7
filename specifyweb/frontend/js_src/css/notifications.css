@@ -1,9 +1,9 @@
 /* notifications.css */
 
 #site-notifications {
-    display: inline-block;
     padding: 5px;
     cursor: pointer;
+    margin-right: 5px;
 }
 
 #site-notifications.unread-notifications {

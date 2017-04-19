@@ -11,7 +11,7 @@ def autonumber_and_save(collection, user, obj):
                    format__isnull=False)
 
     formatter_names = Item.objects.filter(**filters).values_list('format', flat=True)
-    logger.debug("formtters for %s: %s", obj, formatter_names)
+    logger.debug("formatters for %s: %s", obj, formatter_names)
 
     uiformatters = [get_uiformatter(collection, user, f) for f in formatter_names]
     logger.debug("uiformatters for %s: %s", obj, uiformatters)
@@ -33,11 +33,16 @@ def autonumber_and_save(collection, user, obj):
 def do_autonumbering(collection, obj, fields):
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
+    # The autonumber action is prepared and thunked outside the locked table
+    # context since it looks at other tables and that is not allowed by mysql
+    # if those tables are not also locked.
+    thunks = [
+        formatter.prepare_autonumber_thunk(collection, obj.__class__, vals)
+        for formatter, vals in fields
+    ]
+
     with lock_tables(obj._meta.db_table):
-        for formatter, vals in fields:
-            value = formatter.autonumber(collection, obj.__class__, vals)
-            setattr(obj, formatter.field_name.lower(), value)
+        for apply_autonumbering_to in thunks:
+            apply_autonumbering_to(obj)
+
         obj.save()
-
-
-

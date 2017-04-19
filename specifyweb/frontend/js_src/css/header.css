@@ -2,17 +2,20 @@
 
 header {
     background: #fff;
-    position: relative;
     margin: 0px 15px;
 }
 
+#site-header-main {
+    display: flex;
+    justify-content: space-between;
+}
+
 #site-logo {
-    display: inline-block;
     background-image: url(/static/img/seven_logo.png);
     background-size: 185px 55px;
     width: 185px;
     height: 55px;
-    margin: 10px 0 0 20px;
+    margin: 10px 0 10px 20px;
 }
 
 #header-loading {
@@ -25,9 +28,9 @@ header {
 }
 
 header nav {
+    clear: both;
     border-top: solid 6px #f4763d;
     background: #f1f2f2;
-    margin-top: 5px;
     box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
 }
 
@@ -71,10 +74,14 @@ nav li img {
 }
 
 #user-tools {
-    position: absolute;
-    top: 10px;
-    right: 20px;
+    margin-top: 10px;
+    margin-right: 20px;
     text-align: right;
+}
+
+#user-tools div:last-child {
+    display: flex;
+    justify-content: flex-end;
 }
 
 #user-tools a {
@@ -101,7 +108,7 @@ nav li img {
 }
 
 #express-search .express-search-query {
-    width: 100%;
+    width: 20em;
     background: #f1f2f2;
     border: 1px solid #aaa;
     font-size: 14px;
