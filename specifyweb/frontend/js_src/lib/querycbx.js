@@ -30,7 +30,7 @@ function isTreeModel(model) {
     return treemodels.indexOf(model.specifyModel.name.toLowerCase() != -1);
 }
 
-function makeQuery(model, relatedModel, searchFieldStr, q, lowestTreeRank, lowestChildRank) {
+function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChildRank) {
     var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
     query.set({
         'name': "Ephemeral QueryCBX query",
@@ -71,36 +71,55 @@ function makeQuery(model, relatedModel, searchFieldStr, q, lowestTreeRank, lowes
     fields.add(dispField);
 
     if (isTreeModel(model)) {
-        if (model.id) {
-            var descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+        var tblId = model.specifyModel.tableId;
+        var tblName = model.specifyModel.name.toLowerCase();
+        var descFilterField;
+        var pos = 2;
+         if (model.id) {
+            descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
             descFilterField.set({
                 'fieldname': "nodeNumber",
-                'stringid': "4.taxon.nodeNumber",
-                'tablelist': "4",
+                'stringid': tblId + "." + tblName + ".nodeNumber",
+                'tablelist': tblId,
                 'sorttype': 0,
                 'isrelfld': false,
                 'isdisplay': false,
                 'isnot': true,
                 'startvalue': model.get("nodenumber") + ',' + model.get("highestchildnodenumber"),
                 'operstart': 9,
-                'position': 2
+                'position': pos++
             });
             fields.add(descFilterField);
-        
-            descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
-            descFilterField.set({
-                'fieldname': "rankId",
-                'stringid': "4.taxon.rankId",
-                'tablelist': "4",
-                'sorttype': 0,
-                'isrelfld': false,
-                'isdisplay': false,
-                'isnot': false,
-                'startvalue': Math.min(lowestTreeRank,lowestChildRank),
-                'operstart': 3,
-                'position': 3
-            });
-            fields.add(descFilterField);
+        }
+        if (treeRanks != null) {
+            if (model.get('rankid')) //original value, not updated with unsaved changes {
+                var r = _.findIndex(treeRanks, function(rank) {
+                    return rank.rankid == model.get('rankid');
+                });
+                if (r != -1) {
+                    for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
+                    var nextRankId = treeRanks[i-1].rankid;
+                }   
+            }
+            var lastTreeRankId = _.last(treeRanks).rankid;
+            
+            var lowestRankId = Math.min(lastTreeRankId, nextRankId || lastTreeRankId, lowestChildRank || lastTreeRankId);
+            if (lowestRankId != 0) {
+                descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+                descFilterField.set({
+                    'fieldname': "rankId",
+                    'stringid': tblId + "." + tblName + ".rankId",
+                    'tablelist': tblId,
+                    'sorttype': 0,
+                    'isrelfld': false,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': lowestRankId,
+                    'operstart': 3,
+                    'position': pos++
+                });
+                fields.add(descFilterField);
+            }
         }
     }
     
@@ -113,8 +132,6 @@ function lookupTypesearch(name) {
 
 var QueryCbx = Backbone.View.extend({
     __name__: "QueryCbx",
-
-    lowestTreeRank: null,
 
     events: {
         'click .querycbx-edit, .querycbx-display': 'displayRelated',
@@ -133,26 +150,40 @@ var QueryCbx = Backbone.View.extend({
         // Hides buttons other than search for purposes of Host Taxon Plugin
         this.hideButtons = !!options.hideButtons;
         if (isTreeModel(this.model)) {
-            this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
-                this.model.rget('children').pipe(function(children) {
-                    return children
-                        .fetch({ limit: 1, filters: { orderby: 'rankID'}})
-                        .pipe(function() {
-                            return children.pluck('rankid')[0];
+            var fieldName = this.$el.attr('name');
+            if (fieldName == 'parent') {
+                this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
+                    this.model.rget('children').pipe(function(children) {
+                        return children
+                            .fetch({limit: 1, filters: { orderby: 'rankID'}})
+                            .pipe(function() {
+                                return children.pluck('rankid')[0];
+                            });
+                    });
+                this.treeRanksPromise = this.model.rget('parent.definition', true).pipe(function(def) {
+                    var defid = def.id;
+                    var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
+                    var items = new defItemModel.LazyCollection({limit: 0, filters: {treedef: defid}, orderby: 'rankID'});
+                    return items.fetch().pipe(function(){
+                        //neither the limit nor the orderby filter above seem to be working?...
+                        //return items.models[items.models.length - 1].get('rankid');
+                        return _.map(items.models, function(item) {
+                            return {'rankid': item.get('rankid'), 'isenforced': item.get('isenforced')};
                         });
+                    });
                 });
-            this.lowestTreeRankPromise = this.model.rget('parent.definition', true).pipe(function(def) {
-                var defid = def.id;
-                var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
-                const items = new defItemModel.LazyCollection({limit: 1, filters: {treedef: defid}, orderby: '-rankID'});
-                return items.fetch().pipe(function(){
-                    //neither the limit nor the orderby filter above seem to be working?...
-                    return items.models[items.models.length - 1].get('rankid');
-                });
-            });
+            } else if (fieldName == 'acceptedParent') {
+                //need different restrictions -- if it's ever enabled on forms
+                this.lowestChildRankPromise = null;
+                this.treeRanksPromise = null;
+            } else if (fieldName == 'hybridParent1' || fieldName == 'hybridParent2') {
+                //no idea what kind of restrictions are needed for these...
+                this.lowestChildRankPromise = null;
+                this.treeRanksPromise = null;
+            }
         } else {
             this.lowestChildRankPromise = null;
-            this.lowestTreeRankPromise = null;
+            this.treeRanksPromise = null;
         }
     },
     select: function (event, ui) {
@@ -212,9 +243,9 @@ var QueryCbx = Backbone.View.extend({
     },
     makeQuery: function(searchFieldStrs, request, response) {
         var siht = this;
-        $.when(this.lowestChildRankPromise, this.lowestTreeRankPromise).done(function(lowestChildRank, lowestTreeRank) {
+        $.when(this.lowestChildRankPromise, this.treeRanksPromise).done(function(lowestChildRank, treeRanks) {
             var queries = _.map(searchFieldStrs, function(s) {
-                return makeQuery(siht.model, siht.relatedModel, s, request.term, lowestTreeRank, lowestChildRank);
+                return makeQuery(siht.model, siht.relatedModel, s, request.term, treeRanks, lowestChildRank);
             }, siht);
             if (siht.forceCollection) {
                 console.log('force query collection id to:', siht.forceCollection.id);
