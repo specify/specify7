@@ -66,7 +66,7 @@ def tree_view(request, treedef, tree, parentid):
                         .group_by(id_col) \
                         .filter(treedef_col == int(treedef)) \
                         .filter(node.ParentID == parentid) \
-                        .order_by(node.name)
+                        .order_by(orderby)
         results = list(query)
 
     return HttpResponse(toJson(results), content_type='application/json')

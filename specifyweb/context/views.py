@@ -4,7 +4,8 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.utils.http import is_safe_url
 from django.views.decorators.http import require_http_methods, require_GET
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.template.response import TemplateResponse
 from django.contrib.auth import authenticate, views as auth_views, logout as auth_logout, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
@@ -38,6 +39,7 @@ def users_collections(cursor, user_id):
 
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
+@never_cache
 def user_collection_access(request, userid):
     if not request.specify_user.is_admin():
         return HttpResponseForbidden()
@@ -73,6 +75,7 @@ class CollectionChoiceField(forms.ChoiceField):
 
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
+@never_cache
 def choose_collection(request):
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
@@ -107,6 +110,8 @@ def choose_collection(request):
     return TemplateResponse(request, 'choose_collection.html', context)
 
 @require_http_methods(['GET', 'PUT'])
+@never_cache
+@ensure_csrf_cookie
 def api_login(request):
     if request.method == 'PUT':
         data = json.load(request)
@@ -136,6 +141,7 @@ def api_login(request):
 
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
+@never_cache
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
     current = request.COOKIES.get('collection', None)
@@ -158,6 +164,7 @@ def collection(request):
 
 @login_maybe_required
 @require_GET
+@never_cache
 @cache_control(max_age=86400, private=True)
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
@@ -172,7 +179,7 @@ def user(request):
 
 @login_maybe_required
 @require_GET
-@cache_control(max_age=86400, private=True)
+@never_cache
 def domain(request):
     """Return the context hierarchy of the logged in collection."""
     collection = request.specify_collection

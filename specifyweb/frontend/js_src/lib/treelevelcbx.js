@@ -2,6 +2,7 @@
 
 const $ = require('jquery');
 const _ = require('underscore');
+const Q = require('q');
 const Backbone = require('./backbone.js');
 
 
@@ -15,17 +16,9 @@ function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
 
     const children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters, orderby: 'rankID'});
     return children.fetch({limit: 0}).pipe(() => {
-        var possibilities = [];
-        for (var i = 0; i < children.length; i++) {
-            possibilities.push(children.models[i]);
-            if (children.models[i].get('isEnforced')) {
-                break;
-            }
-        }
-        children.models = possibilities;
-        children.length  = possibilities.length;
-        children._totalCount = possibilities.length;
-        return children;});
+        const firstEnforced = children.models.find(child => child.get('isEnforced'));
+        return children.models.slice(0, children.models.indexOf(firstEnforced) + 1);
+    });
 }
 
 module.exports = Backbone.View.extend({
@@ -37,14 +30,9 @@ module.exports = Backbone.View.extend({
             this.model.on('change:parent', this.render, this);
             this.lastFetch = null;
             this.field = this.model.specifyModel.getField(this.$el.attr('name'));
-            this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
-                this.model.rget('children').pipe(function(children) {
-                    return children
-                        .fetch({ limit: 1, filters: { orderby: 'rankID'}})
-                        .pipe(function() {
-                            return children.pluck('rankid')[0];
-                        });
-                });
+            this.lowestChildRankPromise = this.model.isNew() ? Q(null) : Q(this.model.rget('children'))
+                .then(children => Q(children.fetch({ limit: 1, filters: { orderby: 'rankid'}}))
+                      .then(() => children.pluck('rankid')[0]));
         },
         render: function() {
             this.$el.empty();
@@ -53,22 +41,22 @@ module.exports = Backbone.View.extend({
                 return this;
             }
             this.$el.prop('disabled', false);
-            var fetch = this.lastFetch = $.when(
+            const fetch = this.lastFetch = Q([
                 this.lowestChildRankPromise,
                 this.model.rget('parent.definitionitem', true),
                 this.model.rget('parent.definitionitem.treedef', true)
-            ).pipe(getPossibleRanks);
+            ]).spread(getPossibleRanks);
 
-            fetch.done(this.fillIn.bind(this, fetch));
+            fetch.done(higherRanks => this.fillIn(fetch, higherRanks));
             return this;
         },
         fillIn: function(fetch, higherRanks) {
             if (fetch !== this.lastFetch) return;
 
-            var fieldName = this.$el.attr('name');
-            var value = this.model.get(fieldName);
-            var options = higherRanks.map(function(rank) {
-                var url = rank.url();
+            const fieldName = this.$el.attr('name');
+            const value = this.model.get(fieldName);
+            const options = higherRanks.map(rank => {
+                const url = rank.url();
                 return $('<option>', {
                     value: url,
                     selected: url === value
@@ -76,12 +64,12 @@ module.exports = Backbone.View.extend({
             });
             this.$el.append(options);
             // # make sure value in the resouce is consitent with what is displayed.
-            if (!value || this.$el.find('option[value="' + value + '"]').length < 1) {
-                this.model.set(fieldName, higherRanks.first());
+            if (!value || this.$el.find(`option[value="${value}"]`).length < 1) {
+                this.model.set(fieldName, higherRanks[0]);
             }
         },
         changed: function() {
-            var selected = this.field.getRelatedModel().Resource.fromUri(this.$el.val());
+            const selected = this.field.getRelatedModel().Resource.fromUri(this.$el.val());
             this.model.set(this.$el.attr('name'), selected);
         }
     });

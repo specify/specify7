@@ -166,9 +166,9 @@ module.exports =  PrepDialog.extend({
                 evt.preventDefault();
             } else {
                 if (evt.target.checked) {
-                    $(this.$('.prepselect-amt')[idx]).attr('value', this.options.preps[idx].available);
+                    $(this.$('.prepselect-amt')[idx])[0].value = available;
                 } else {
-                    $(this.$('.prepselect-amt')[idx]).attr('value', 0);
+                    $(this.$('.prepselect-amt')[idx])[0].value = 0;
                 }
             }
         },
@@ -214,14 +214,19 @@ module.exports =  PrepDialog.extend({
             var amounts = this.$(':input.prepselect-amt');
             var chks = this.$(':checkbox');
             for (var p=0; p < amounts.length; p++) {
-                $(amounts[p]).attr('value', this.options.preps[p].available );
-                $(chks[p]).attr('checked', this.options.preps[p].available  > 0);
+                amounts[p].value = this.options.preps[p].available ;
+                chks[p].checked = (this.options.preps[p].available  > 0);
             };
         },
 
         deSelectAll: function() {
-            this.$(':input.prepselect-amt').attr('value', 0);
-            this.$(':checkbox').attr('checked', false);
+            //this.$(':input.prepselect-amt').attr('value', 0);
+            //this.$(':checkbox').attr('checked', false);
+            var amounts = this.$(':input.prepselect-amt');
+            for (var p=0; p < amounts.length; p++) {
+                amounts[p].value = 0;
+            }
+            this.$(':checkbox').attr('checked',  false);
         },
 
         //<<<<<<<<<<<<<<<<<<<<<<< events
@@ -309,7 +314,7 @@ module.exports =  PrepDialog.extend({
             var amounts = this.$(':input.prepselect-amt');
 
             for (var p=0; p < this.options.preps.length; p++) {
-                var amt = $(amounts[p]).attr('value');
+                var amt = amounts[p].value;
                 if ('0' != amt && '' != amt) {
                     items[items.length] = this.processPrep(baseTbl, itemModel, this.options.preps[p], amt);
                 }

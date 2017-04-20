@@ -2,7 +2,7 @@ import re, logging
 from collections import namedtuple
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
-from django.db import connection, transaction
+from django.db import connection
 
 from datetime import date
 logger = logging.getLogger(__name__)
@@ -10,105 +10,72 @@ logger = logging.getLogger(__name__)
 from specifyweb.context.app_resource import get_app_resource
 
 from .filter_by_col import filter_by_collection
-from . import models
 
-def get_uiformatter(collection_arg, user, formatter_name):
-    xml, __ = get_app_resource(collection_arg, user, "UIFormatters")
+def get_uiformatter(collection, user, formatter_name):
+    xml, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
     external = node.find('external')
     if external is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name, collection_arg)
+            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name)
         else:
             return None
     else:
         return UIFormatter(
-            node.attrib['class'].split('.')[-1], node.attrib['fieldname'], map(new_field, node.findall('field')), formatter_name, collection_arg)
+            model_name = node.attrib['class'].split('.')[-1],
+            field_name = node.attrib['fieldname'],
+            fields = map(new_field, node.findall('field')),
+            format_name = formatter_name,
+        )
 
 class AutonumberOverflowException(Exception):
     pass
 
-class UIFormatter:
-    grouped = False
-    grouping = None
-    scope_info = None
+ScopeInfo = namedtuple('ScopeInfo', "db_id_field id scope django_id_field")
 
-    def __init__(self, model_name, field_name, fields, format_name, collection):
-        self.model_name = model_name
-        self.field_name = field_name
-        self.fields = fields
-        self.format_name = format_name
-        self.collection = collection
-        self.get_group(getattr(models, self.model_name))
-    
-    def get_scope(self, model):
-        try:
-            model.collectionmemberid
-            return 'coll'
-        except AttributeError:
-            try:
-                model.discipline_id
-                return 'dsp'
-            except AttributeError:
-                try:
-                    model.division_id
-                    return 'div'
-                except AttributeError:
-                    return None
+def get_autonumber_group_filter(model, collection, format_name):
+    default = lambda objs: filter_by_collection(objs, collection)
 
-    
-    def get_group(self, model):
-        if not self.grouped:
-            self.scope_info = self.get_scope_info(model)
-            if self.scope_info is not None:
-                sql = self.get_grouping_sql()
-                self.grouping = self.get_grouping(sql)
-            self.grouped = True
+    scope_info = (
+        ScopeInfo('collectionid', collection.id, 'coll', 'collectionmemberid') if hasattr(model, 'collectionmemberid') else
+        ScopeInfo('disciplineid', collection.discipline.id, 'dsp', 'discipline_id') if hasattr(model, 'discipline_id') else
+        ScopeInfo('divisionid', collection.discipline.division.id, 'div', 'division_id') if hasattr(model, 'division_id') else
+        None
+    )
 
-    def get_scope_info(self, model):
-        scope = self.get_scope(model)
-        if scope == 'coll':
-            return ('collectionid', self.collection.id, scope, 'collectionmemberid')
-        elif scope == 'dsp':
-            return ('disciplineid', self.collection.discipline.id, scope, 'discipline_id')
-        elif scope == 'div':
-            return ('divisionid', self.collection.discipline.division.id, scope, 'division_id')
-        else:
-            return None
-            
-    def get_grouping_sql(self):
-        fld, gid, scope, ffld = self.scope_info
-        tbl = 'autonumsch_' + scope
-            
-        if fld is not None and gid is not None:
-            sql = 'select distinct m.' + fld + ' from ' + tbl + ' a inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid inner join '
-            sql += tbl + ' m on m.autonumberingschemeid = ans.autonumberingschemeid where '
-            sql += 'a.' + fld + ' = ' + str(gid) + " and formatname = '" + self.format_name + "'"
-            return sql
-        else:
-            return None
+    logger.info("autonumbering with %s and format_name = %r", scope_info, format_name)
 
-    def get_grouping(self, sql):
-        if sql is None:
-            return None
-        else:
-            cursor = connection.cursor()
-            try:
-                cursor.execute(sql)
-                rows = cursor.fetchall()
-            finally:
-                cursor.close()
+    if scope_info is None or scope_info.db_id_field is None or scope_info.id is None:
+        logger.debug("using default collection based autonumbering b/c of missing scope_info fields")
+        return default
 
-            ids = []
-            for r in rows:
-                ids.append(r[0])
-            if len(ids) > 0:
-                return [self.scope_info[3] + '__in', ids]
-            else:
-                return None
-        
+    sql = '''
+    select distinct m.{db_id_field} from autonumsch_{scope} a
+    inner join autonumberingscheme ans on ans.autonumberingschemeid = a.autonumberingschemeid
+    inner join autonumsch_{scope} m on m.autonumberingschemeid = ans.autonumberingschemeid
+    where a.{db_id_field} = %(gid)s and formatname = %(format_name)s
+    '''.format(**scope_info._asdict())
+
+    cursor = connection.cursor()
+    try:
+        cursor.execute(sql, {'gid': scope_info.id, 'format_name': format_name})
+        rows = cursor.fetchall()
+    finally:
+        cursor.close()
+
+    if len(rows) > 0:
+        an_filter = {scope_info.django_id_field + '__in': [r[0] for r in rows]}
+        logger.debug("using %s for autonumber filtering", an_filter)
+        return lambda objs: objs.filter(**an_filter)
+    else:
+        logger.debug("using default collection based autonumbering b/c no autonumsch was found")
+        return default
+
+
+class UIFormatter(namedtuple('UIFormatter', "model_name field_name fields format_name")):
+
     def parse_regexp(self):
         regexp = ''.join('(%s)' % f.wild_or_value_regexp() for f in self.fields)
         return '^%s$' % regexp
@@ -128,64 +95,68 @@ class UIFormatter:
         return False
 
     def autonumber_regexp(self, vals):
-        regexp = []
-        for field, val in zip(self.fields, vals):
-            if field.is_wild(val):
-                regexp.append('(%s)' % field.value_regexp())
-            else:
-                regexp.append('(%s)' % re.escape(val))
-        return '^%s$' % ''.join(regexp)
+        return '^{}$'.format(''.join(
+            '({})'.format(field.value_regexp() if field.is_wild(val) else re.escape(val))
+            for field, val in zip(self.fields, vals)
+        ))
 
     def fillin_year(self, vals, year=None):
-        filled_vals = []
-        for field, val in zip(self.fields, vals):
-            if field.by_year and field.is_wild(val):
-                filled_vals.append("%d" % (year or date.today().year))
-            else:
-                filled_vals.append(val)
-        return filled_vals
+        if year is None:
+            year = date.today().year
 
-    def filter_by_grouping(self, objs, collection):
-        if self.grouping is None:
-            return filter_by_collection(objs, collection)
-        else:
-            return objs.filter(**{self.grouping[0]: self.grouping[1]})
-        
-    def autonumber(self, collection, model, vals, year=None):
+        return [
+            ("%d" % year) if field.by_year and field.is_wild(val) else val
+            for field, val in zip(self.fields, vals)
+        ]
+
+    def prepare_autonumber_thunk(self, collection, model, vals, year=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
+        group_filter = get_autonumber_group_filter(model, collection, self.format_name)
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
-        try:
-            biggest = self.filter_by_grouping(objs, collection).order_by('-' + fieldname)[0]
-        except IndexError:
-            filled_vals = self.fill_vals_no_prior(with_year)
-        else:
-            filled_vals = self.fill_vals_after(getattr(biggest, fieldname))
-        return ''.join(filled_vals)
+        filtered_objs = group_filter(objs).order_by('-' + fieldname)
+        # At this point the query for the autonumber is defined but not yet executed.
+
+        # The actual lookup and setting of the autonumbering value
+        # is thunked so that it can be executed in context of locked tables.
+        def apply_autonumbering_to(obj):
+            try:
+                biggest = filtered_objs[0] # actual lookup occurs here
+            except IndexError:
+                filled_vals = self.fill_vals_no_prior(with_year)
+            else:
+                filled_vals = self.fill_vals_after(getattr(biggest, fieldname))
+
+            # And here the new value is assigned to the object.  It is
+            # the callers responsibilty to save the object within the
+            # same locked tables context because there maybe multiple
+            # autonumber fields.
+            setattr(obj, self.field_name.lower(), ''.join(filled_vals))
+
+        return apply_autonumbering_to
 
     def fill_vals_after(self, prior):
-        filled = []
-        for field, val in zip(self.fields, self.parse(prior)):
-            if field.inc:
-                new_val = ("%0" + str(field.size) + "d") % (1 + int(val))
-                if len(new_val) > field.size:
-                    raise AutonumberOverflowException(
-                        'created value: %s longer than limit: %d current max: %s' %
-                        (new_val, field.size, prior))
-                filled.append(new_val)
-            else:
-                filled.append(val)
-        return filled
+
+        def inc_val(size, val):
+            format_code = "%0{}d".format(size)
+            new_val = format_code % (1 + int(val))
+            if len(new_val) > size:
+                raise AutonumberOverflowException(
+                    'created value: %s longer than limit: %d current max: %s' %
+                    (new_val, size, prior))
+            return new_val
+
+        return [
+            inc_val(field.size, val) if field.inc else val
+            for field, val in zip(self.fields, self.parse(prior))
+        ]
 
     def fill_vals_no_prior(self, vals):
-        filled = []
-        for field, val in zip(self.fields, vals):
-            if field.is_wild(val):
-                filled.append("1".zfill(field.size))
-            else:
-                filled.append(val)
-        return filled
+        return [
+            "1".zfill(field.size) if field.is_wild(val) else val
+            for field, val in zip(self.fields, vals)
+        ]
 
     def canonicalize(self, values):
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
@@ -263,11 +234,10 @@ class SeparatorField(Field):
 
 class CNNField(NumericField):
     def __new__(cls):
-        return NumericField.__new__( cls, size=9, inc=9)
+        return NumericField.__new__(cls, size=9, inc=9)
 
     def value_regexp(self):
         return r'[0-9]{0,%d}' % self.size
 
     def canonicalize(self, value):
-        return '0' * (self.size - len(value)) + value
-
+        return value.zfill(self.size)

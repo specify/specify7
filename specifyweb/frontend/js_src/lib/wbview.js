@@ -19,12 +19,15 @@ var navigation = require('./navigation.js');
 const template = require('./templates/wbview.html');
 const statusTemplate = require('./templates/wbuploadstatus.html');
 const detailsTemplate = require('./templates/wbuploaddetails.html');
+const settingsTemplate = require('./templates/wbsettings.html');
 
 function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-const highlightRE = /^\[(\d+) \[\[(\d+ ?)*\]\]\] (.*)$/;
+//const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+//const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
+const highlightRE = /^(mi|)\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
 const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
 
@@ -32,21 +35,54 @@ function atoi(str) { return parseInt(str, 10); }
 
 function parseLog(log, nCols) {
     const lines = log.split('\n');
-    const highlights = lines
-              .map(line => highlightRE.exec(line))
+
+    /*const highlightsInvalid = lines
+              .map(line => highlightInvalidRE.exec(line))
               .filter(match => match != null)
               .map(match => ({
                   row: atoi(match[1]),
                   cols: match.slice(2, match.length - 1).map(atoi),
-                  message: match[match.length - 1]
+                  message: match[match.length - 1],
+                  highlight: 'invalid'
               }));
 
+    const highlightsMatchInfo = lines
+              .map(line => highlightMatchInfoRE.exec(line))
+              .filter(match => match != null)
+              .map(match => ({
+                  row: atoi(match[1]),
+                  cols: match.slice(2, match.length - 1).map(atoi),
+                  message: match[match.length - 1],
+                  highlight: match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match'
+              }));
+
+    const highlights = highlightsInvalid.concat(highlightsMatchInfo);*/
+
+    
+   const highlights = lines
+              .map(line => highlightRE.exec(line))
+              .filter(match => match != null)
+              .map(match => ({
+                  row: atoi(match[2]),
+                  cols: match.slice(3, match.length - 1).map(atoi),
+                  message: match[match.length - 1],
+                  highlight: match[1] == 'mi'
+                      ? (match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match') : 'invalid'
+              }));
+    
     const byPos = highlights.reduce(
         (rows, highlight) => highlight.cols.reduce(
             (rows, col) => ((rows[highlight.row * nCols + col] = highlight), rows)
             , rows)
         , []);
 
+    //var byPos = highlights.reduce(function (rows, highlight) {
+    //    return highlight.cols.reduce(function (rows, col) {
+    //        var cols = col.
+    //        return rows[highlight.row * nCols + col] = highlight, rows;
+    //    }, rows);
+    //}, []);
+    
     const errors = lines
               .map(line => errorRE.exec(line))
               .filter(match => match != null)
@@ -75,15 +111,19 @@ function parseLog(log, nCols) {
 var WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
+    matchWithValidate: false,
+    multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
+        //'click .wb-match': 'match',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
-        'click .wb-upload-details': 'showUploadLog'
+        'click .wb-upload-details': 'showUploadLog',
+        'click .wb-setting': 'showSettingsDlg'
     },
     initialize: function({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -151,6 +191,22 @@ var WBView = Backbone.View.extend({
             close: function() { $(this).remove(); }
         });
     },
+    showSettingsDlg: function(event) {
+        event.preventDefault();
+        var thisthis = this;
+        $(settingsTemplate({
+            match: this.matchWithValidate,
+            multi: this.multiMatchSetting
+        })).dialog({
+            modal: true,
+            width: 'auto',
+            close: function() {
+                thisthis.matchWithValidate = $('.wb-match-chkbox')[0].checked;
+                thisthis.multiMatchSetting = $('.wb-upload-multiple-match-set')[0].value;
+                $(this).remove();
+            }
+        });
+    },
     setupHOT: function (colHeaders, columns) {
         if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
 
@@ -186,7 +242,7 @@ var WBView = Backbone.View.extend({
         };
 
         this.$('.wb-spreadsheet').tooltip({
-            items: ".wb-invalid-cell",
+            items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
             content: function() { return makeTooltip(this); }
         });
 
@@ -206,16 +262,18 @@ var WBView = Backbone.View.extend({
         const pos = instance.countCols() * row + col;
         const highlightInfo = this.infoFromLog.byPos[pos];
         const $td = $(td);
+        const cls = highlightInfo ? 'wb-' + highlightInfo.highlight + '-cell' : 'wb-invalid_cell';
         if (highlightInfo || (
             row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
         )) {
-            $td.addClass('wb-invalid-cell');
+            $td.addClass(cls);
         } else {
-            $td.removeClass('wb-invalid-cell');
+            $td.removeClass(cls);
         }
     },
     spreadSheetChanged: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
+        this.$('.wb-upload, .wb-match').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
     },
@@ -256,12 +314,13 @@ var WBView = Backbone.View.extend({
     },
     spreadSheetUpToDate: function() {
         this.$('.wb-upload, .wb-validate').prop('disabled', false);
+        this.$('.wb-upload, .wb-match').prop('disabled', false);
         this.$('.wb-save').prop('disabled', true);
         navigation.removeUnloadProtect(this);
     },
     checkUploaderLock(title, next) {
         const query = new schema.models.SpTaskSemaphore.LazyCollection({
-            filters: { taskname: "WORKBENCHUPLOAD", islocked: true }
+            filters: { taskname: "WORKBENCHUPLOAD", islocked: "True" }
         });
         query.fetch().done(() => {
             if (query.length > 0) {
@@ -325,8 +384,24 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
+        if (this.matchWithValidate) {
+            this.validateWithMatch();
+        } else {
+            this.validateNoMatch();
+        }
+    },
+    validateNoMatch: function() {
         this.checkUploaderLock('Validator', () => {
             $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
+                this.checkDeletedFail(jqxhr);
+                this.closeUploadProgress();
+            });
+            this.openUploadProgress();
+        });
+    },
+    validateWithMatch: function() {
+        this.checkUploaderLock('Validator', () => {
+            $.post('/api/workbench/match/' + this.wb.id + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
                 this.closeUploadProgress();
             });
