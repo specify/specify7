@@ -30,6 +30,13 @@ def tree_mutation(mutation):
         return HttpResponse(toJson(result), content_type="application/json")
     return wrapper
 
+def get_view_order(tree_table, node):
+    #Maybe check preferences?
+    #Or maybe arg to tree_view from client setting?
+    #Maybe use startPeriod,node.name to better deal with null periods?
+    #Should order be ascending or descending?
+    return node.name if tree_table.name != 'GeologicTimePeriod' else node.startPeriod
+
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree, parentid):
@@ -42,7 +49,8 @@ def tree_view(request, treedef, tree, parentid):
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-
+    orderby = get_view_order(tree_table, node)
+    
     with models.session_context() as session:
         query = session.query(id_col,
                               node.name,
@@ -58,7 +66,7 @@ def tree_view(request, treedef, tree, parentid):
                         .group_by(id_col) \
                         .filter(treedef_col == int(treedef)) \
                         .filter(node.ParentID == parentid) \
-                        .order_by(node.name)
+                        .order_by(orderby)
         results = list(query)
 
     return HttpResponse(toJson(results), content_type='application/json')
