@@ -1,3 +1,5 @@
+import re
+
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
@@ -6,7 +8,7 @@ from django.db import connection, transaction
 
 from .views import login_maybe_required, apply_access_control
 from .api import get_object_or_404, obj_to_data, toJson
-from .models import datamodel
+from .models import datamodel, Spappresourcedata
 from . import tree_extras
 
 from sqlalchemy.orm import aliased
@@ -14,6 +16,7 @@ from sqlalchemy import sql, types
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.context.app_resource import get_app_resource
 
 def tree_mutation(mutation):
     @login_maybe_required
@@ -31,11 +34,19 @@ def tree_mutation(mutation):
     return wrapper
 
 def get_view_order(tree_table, node):
-    #Maybe check preferences?
-    #Or maybe arg to tree_view from client setting?
-    #Maybe use startPeriod,node.name to better deal with null periods?
-    #Should order be ascending or descending?
-    return node.name if tree_table.name != 'GeologicTimePeriod' else node.startPeriod
+    global view_order_fld
+    if tree_table.name == 'GeologicTimePeriod':
+        #seems dumb to load this for every expansion, but using global would require restarting server to detect changes in pref??
+        #maybe should make this an api method the client can call and send result as arg to tree_view? or sort client side??
+        res = Spappresourcedata.objects.filter(
+            spappresource__name='preferences',
+            spappresource__spappresourcedir__usertype='Prefs')
+        remote_prefs = '\n'.join(r.data for r in res)
+        match = re.search(r'GeologicTimePeriod\.treeview\_sort\_field=(.+)', remote_prefs)
+        view_order_fld = tree_table.name.lower() + '.' + match.group(1) if match is not None else node.name
+        return view_order_fld
+    else:
+        return node.name
 
 @login_maybe_required
 @require_GET
@@ -90,7 +101,7 @@ def tree_stats(request, treedef, tree, parentid):
 
     target, make_joins = getattr(StatsQuerySpecialization, tree)()
     target_id = getattr(target, target._id)
-
+ 
     direct_count = sql.cast(
         sql.func.sum(sql.case([(sql.and_(target_id != None, descendant_id == node_id), 1)], else_=0)),
         types.Integer)
