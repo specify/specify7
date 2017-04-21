@@ -112,7 +112,14 @@ var setTitle = app.setTitle;
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
             var params = querystring.deparam();
-            params.conformation && this.applyConformation(params.conformation);
+            if (!params.conformation) {
+                var pname = this.table.toLowerCase() + '.default_initial_conformation';
+                var conformation  = typeof remoteprefs[pname] === 'string' ?
+                        remoteprefs[pname] : params.conformation;
+            } else {
+                conformation = params.conformation;
+            }
+            conformation && this.applyConformation(conformation);
         },
         search: function(event, ui) {
             this.$('.tree-search').blur();
