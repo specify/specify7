@@ -2,8 +2,6 @@ import re, logging
 from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql
-from sqlalchemy.sql.expression import extract
-
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.models import datamodel
@@ -202,7 +200,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                     orm_field = sql.func.DATE(orm_field)
 
                 if field.is_temporal() and self.date_part != "Full Date":
-                    orm_field = extract(self.date_part, orm_field)
+                    orm_field = sql.extract(self.date_part, orm_field)
 
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
@@ -237,47 +235,44 @@ def get_uiformatter(collection, tablename, fieldname):
     else:
         return get_uiformatter(collection, None, field_format)
 
-def get_tree_def(query, collection, tree_name):
-    if tree_name == 'Storage':
-        return collection.discipline.division.institution.storagetreedef_id
-    else:
-        treedef_field = "%streedef_id" % tree_name.lower()
-        return  getattr(collection.discipline, treedef_field)
+def get_treedef(collection, tree_name):
+    return (collection.discipline.division.institution.storagetreedef
+            if tree_name == 'Storage' else
+            getattr(collection.discipline, tree_name.lower() + "treedef"))
+
 
 def handle_tree_field(query, node, table, tree_rank, tree_field, collection, join_cache):
     assert collection is not None # Not sure it makes sense to query across collections
     logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
 
-    if join_cache is not None and (table, 'TreeRank-' + tree_rank) in join_cache:
-        ancestor = join_cache[(table, 'TreeRank-' + tree_rank)]
-        logger.debug("using join cache for %r.%s", table, tree_rank)
+    treedefitem_column = table.name + 'TreeDefItemID'
+
+    if join_cache is not None and (table, 'TreeRanks') in join_cache:
+        logger.debug("using join cache for %r tree ranks.", table)
+        ancestors, treedef = join_cache[(table, 'TreeRanks')]
     else:
-        # Get the tree definition for this collection.
-        treedef = get_tree_def(query, collection, table.name)
-        treedef_column = table.name + 'TreeDefID'
-        treedefitem_column = table.name + 'TreeDefItemID'
+        treedef = get_treedef(collection, table.name)
+        rank_count = treedef.treedefitems.count()
 
-        # The tree def item table.
-        treedefitem = orm.aliased(getattr(models, table.name + 'TreeDefItem'))
+        ancestors = [node]
+        for i in range(rank_count-1):
+            ancestor = orm.aliased(node)
+            query = query.outerjoin(ancestor, ancestors[-1].ParentID == getattr(ancestor, ancestor._id))
+            ancestors.append(ancestor)
 
-        # Going to join the tree def items from the correct tree at the given rank.
-        treedef_join_cond = sql.and_(getattr(treedefitem, treedef_column) == treedef, treedefitem.name == tree_rank)
-
-        # Alias the tree table for ancestor rows.
-        ancestor = orm.aliased(node)
         if join_cache is not None:
-            join_cache[(table, 'TreeRank-' + tree_rank)] = ancestor
-            logger.debug("adding to join cache %r, %r", (table, tree_rank), ancestor)
+            logger.debug("adding to join cache for %r tree ranks.", table)
+            join_cache[(table, 'TreeRanks')] = (ancestors, treedef)
 
-        # The join condition for the ancestor is that it has the correct tree def item (rank) and the
-        # target (node) row has a node number encompassed by the ancestor's node number range.
-        ancestor_join_cond = sql.and_(getattr(ancestor, treedefitem_column) == getattr(treedefitem, treedefitem._id),
-                                      node.nodeNumber.between(ancestor.nodeNumber, ancestor.highestChildNodeNumber))
+    treedefitem_param = sql.bindparam('tdi_%d' % gensym(), value=treedef.treedefitems.get(name=tree_rank).id)
 
-        query = query.join(treedefitem, treedef_join_cond).outerjoin(ancestor, ancestor_join_cond)
+    column_name = 'name' if tree_field is None else tree_field.lower()
 
-    # The actual column to return.
-    column = getattr(ancestor, 'name' if tree_field is None else tree_field.lower())
+    column = sql.case([
+        (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))
+        for ancestor in ancestors
+    ])
+
     return query, column
 
 def build_join(query, table, model, join_path, join_cache):
@@ -305,3 +300,8 @@ def build_join(query, table, model, join_path, join_cache):
         table, model = next_table, aliased
     return query, model, table, field
 
+gensym_count = 0
+def gensym():
+    global gensym_count
+    gensym_count += 1
+    return gensym_count
