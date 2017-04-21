@@ -15,6 +15,7 @@ var TreeNodeView = require('./treenodeview.js');
 
 const contextMenuBuilder = require('./treectxmenu.js');
 const userInfo = require('./userinfo.js');
+const remoteprefs  = require('./remoteprefs.js');
 
 var setTitle = app.setTitle;
 
@@ -28,7 +29,6 @@ var setTitle = app.setTitle;
         initialize: function(options) {
             this.treeDefItems = options.treeDefItems;
             this.collapsedRanks = options.collapsedRanks;
-
         },
         render: function() {
             var headings = this.treeDefItems.map(
@@ -72,6 +72,11 @@ var setTitle = app.setTitle;
             this.header = new TreeHeader({treeDefItems: this.treeDefItems, collapsedRanks: this.collapsedRanks});
 
             this.header.on('updateCollapsed', this.updateCollapsed, this);
+
+            //node sort order
+            this.sortField = typeof remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] === 'string' ?
+                remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] : 'name';
+
         },
         render: function() {
             this.$el.data('view', this);
@@ -93,7 +98,7 @@ var setTitle = app.setTitle;
             return this;
         },
         getRows: function() {
-            $.getJSON(this.baseUrl + 'null/').done(this.gotRows.bind(this));
+            $.getJSON(this.baseUrl + 'null/' + this.sortField + '/').done(this.gotRows.bind(this));
         },
         gotRows: function(rows) {
             this.roots = rows.map(row => new TreeNodeView({

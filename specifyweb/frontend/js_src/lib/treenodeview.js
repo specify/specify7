@@ -9,40 +9,44 @@ var schema       = require('./schema.js');
 var remoteprefs  = require('./remoteprefs.js');
 
 var TreeNodeView = Backbone.View.extend({
-        __name__: "TreeNodeView",
-        tagName: "tr",
-        className: "tree-node",
-        events: {
-            'keydown .tree-node-name': 'keydown',
-            'click a.open': 'openNode',
-            'click a.close': 'closeNode'
-        },
+    __name__: "TreeNodeView",
+    tagName: "tr",
+    className: "tree-node",
+    events: {
+        'keydown .tree-node-name': 'keydown',
+        'click a.open': 'openNode',
+        'click a.close': 'closeNode'
+    },
     initialize: function({table, ranks, collapsedRanks, path, baseUrl, treeView, row}) {
-            this.table = table;
+        this.table = table;
         this.ranks = ranks;
         this.collapsedRanks = collapsedRanks;
-            this.path = path || [];
-            this.baseUrl = baseUrl;
-            this.treeView = treeView;
-            this.specifyModel = schema.getModel(this.table);
-            this.childNodes = null;
-            this.expanded = false;
-            this.opened = false;
+        this.path = path || [];
+        this.baseUrl = baseUrl;
+        this.treeView = treeView;
+        this.specifyModel = schema.getModel(this.table);
+        this.childNodes = null;
+        this.expanded = false;
+        this.opened = false;
+        
+        // unpack the database row into fields on this object
+        [this.nodeId,
+         this.name,
+         this.fullName,
+         this.nodeNumber,
+         this.highestNodeNumber,
+         this.rankId,
+         this.acceptedId,
+         this.acceptedName,
+         this.children,
+         this.allCOs,
+         this.directCOs
+        ] = row;
 
-            // unpack the database row into fields on this object
-            [this.nodeId,
-             this.name,
-             this.fullName,
-             this.nodeNumber,
-             this.highestNodeNumber,
-             this.rankId,
-             this.acceptedId,
-             this.acceptedName,
-             this.children,
-             this.allCOs,
-             this.directCOs
-            ] = row;
-        },
+        //node sort order
+        this.sortField = typeof remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] === 'string' ?
+            remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] : 'name';
+    },
         render: function() {
             this.$el.empty();
 
@@ -178,7 +182,7 @@ var TreeNodeView = Backbone.View.extend({
         getChildren: function() {
             console.log('getChildren', this.name);
             this.$('.expander').removeClass('open').addClass('wait');
-            return $.getJSON(this.baseUrl + this.nodeId + '/').pipe(this.gotChildren.bind(this));
+            return $.getJSON(this.baseUrl + this.nodeId + '/' + this.sortField + '/').pipe(this.gotChildren.bind(this));
         },
         gotChildren: function(childRows) {
             this.loadStats();

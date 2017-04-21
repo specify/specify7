@@ -33,24 +33,10 @@ def tree_mutation(mutation):
         return HttpResponse(toJson(result), content_type="application/json")
     return wrapper
 
-def get_view_order(tree_table, node):
-    global view_order_fld
-    if tree_table.name == 'GeologicTimePeriod':
-        #seems dumb to load this for every expansion, but using global would require restarting server to detect changes in pref??
-        #maybe should make this an api method the client can call and send result as arg to tree_view? or sort client side??
-        res = Spappresourcedata.objects.filter(
-            spappresource__name='preferences',
-            spappresource__spappresourcedir__usertype='Prefs')
-        remote_prefs = '\n'.join(r.data for r in res)
-        match = re.search(r'GeologicTimePeriod\.treeview\_sort\_field=(.+)', remote_prefs)
-        view_order_fld = tree_table.name.lower() + '.' + match.group(1) if match is not None else node.name
-        return view_order_fld
-    else:
-        return node.name
 
 @login_maybe_required
 @require_GET
-def tree_view(request, treedef, tree, parentid):
+def tree_view(request, treedef, tree, parentid, sortfield):
     tree_table = datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -60,7 +46,9 @@ def tree_view(request, treedef, tree, parentid):
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-    orderby = get_view_order(tree_table, node)
+    orderby = tree_table.name.lower() + '.' + sortfield
+    
+
 
     with models.session_context() as session:
         query = session.query(id_col,
