@@ -164,31 +164,29 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         field = self.get_field()
         return field is not None and field.is_temporal()
 
-    def build_join(self, query, join_path, join_cache):
+    def build_join(self, query, join_path):
         model = getattr(models, self.root_table.name)
-        return build_join(query, self.root_table, model, join_path, join_cache)
+        return query.build_join(self.root_table, model, join_path)
 
-    def add_to_query(self, query, objformatter, value=None, op_num=None, negate=False,
-                     collection=None, join_cache=None):
+    def add_to_query(self, query, value=None, op_num=None, negate=False):
         no_filter = op_num is None
 
         if self.tree_rank is None and self.get_field() is None:
-            query, orm_field = objformatter.objformat(query, getattr(models, self.root_table.name), None, join_cache)
+            query, orm_field = query.objectformatter.objformat(query, getattr(models, self.root_table.name), None)
             no_filter = True
         elif self.is_relationship():
             # will be formatting or aggregating related objects
             if self.get_field().type == 'many-to-one':
-                query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
-                query, orm_field = objformatter.objformat(query, orm_model, None, join_cache)
+                query, orm_model, table, field = self.build_join(query, self.join_path)
+                query, orm_field = query.objectformatter.objformat(query, orm_model, None)
             else:
-                query, orm_model, table, field = self.build_join(query, self.join_path[:-1], join_cache)
-                orm_field = objformatter.aggregate(query, self.get_field(), orm_model, None)
+                query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
+                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, None)
         else:
-            query, orm_model, table, field = self.build_join(query, self.join_path, join_cache)
+            query, orm_model, table, field = self.build_join(query, self.join_path)
 
             if self.tree_rank is not None:
-                query, orm_field = handle_tree_field(query, orm_model, table, self.tree_rank,
-                                                     self.tree_field, collection, join_cache)
+                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
 
@@ -204,13 +202,11 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
-                _, other_field = value.add_to_query(query.reset_joinpoint(),
-                                                    objformatter,
-                                                    join_cache=join_cache)
+                _, other_field = value.add_to_query(query.reset_joinpoint())
                 uiformatter = None
                 value = other_field
             else:
-                uiformatter = field and get_uiformatter(collection, table.name, field.name)
+                uiformatter = field and get_uiformatter(query.collection, table.name, field.name)
                 value = value
 
             op = QueryOps(uiformatter).by_op_num(op_num)
@@ -234,74 +230,3 @@ def get_uiformatter(collection, tablename, fieldname):
         return None
     else:
         return get_uiformatter(collection, None, field_format)
-
-def get_treedef(collection, tree_name):
-    return (collection.discipline.division.institution.storagetreedef
-            if tree_name == 'Storage' else
-            getattr(collection.discipline, tree_name.lower() + "treedef"))
-
-
-def handle_tree_field(query, node, table, tree_rank, tree_field, collection, join_cache):
-    assert collection is not None # Not sure it makes sense to query across collections
-    logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
-
-    treedefitem_column = table.name + 'TreeDefItemID'
-
-    if join_cache is not None and (table, 'TreeRanks') in join_cache:
-        logger.debug("using join cache for %r tree ranks.", table)
-        ancestors, treedef = join_cache[(table, 'TreeRanks')]
-    else:
-        treedef = get_treedef(collection, table.name)
-        rank_count = treedef.treedefitems.count()
-
-        ancestors = [node]
-        for i in range(rank_count-1):
-            ancestor = orm.aliased(node)
-            query = query.outerjoin(ancestor, ancestors[-1].ParentID == getattr(ancestor, ancestor._id))
-            ancestors.append(ancestor)
-
-        if join_cache is not None:
-            logger.debug("adding to join cache for %r tree ranks.", table)
-            join_cache[(table, 'TreeRanks')] = (ancestors, treedef)
-
-    treedefitem_param = sql.bindparam('tdi_%d' % gensym(), value=treedef.treedefitems.get(name=tree_rank).id)
-
-    column_name = 'name' if tree_field is None else tree_field.lower()
-
-    column = sql.case([
-        (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))
-        for ancestor in ancestors
-    ])
-
-    return query, column
-
-def build_join(query, table, model, join_path, join_cache):
-    path = deque(join_path)
-    field = None
-    while len(path) > 0:
-        field = path.popleft()
-        if isinstance(field, str):
-            field = table.get_field(field, strict=True)
-        if not field.is_relationship:
-            break
-
-        next_table = datamodel.get_table(field.relatedModelName, strict=True)
-        logger.debug("joining: %r to %r via %r", table, next_table, field)
-        if join_cache is not None and (model, field.name) in join_cache:
-            aliased = join_cache[(model, field.name)]
-            logger.debug("using join cache for %r.%s", model, field.name)
-        else:
-            aliased = orm.aliased(getattr(models, next_table.name))
-            if join_cache is not None:
-                join_cache[(model, field.name)] = aliased
-                logger.debug("adding to join cache %r, %r", (model, field.name), aliased)
-
-            query = query.outerjoin(aliased, getattr(model, field.name))
-        table, model = next_table, aliased
-    return query, model, table, field
-
-gensym_count = 0
-def gensym():
-    global gensym_count
-    gensym_count += 1
-    return gensym_count
