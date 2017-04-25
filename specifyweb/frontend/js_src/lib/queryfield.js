@@ -211,9 +211,11 @@ module.exports =  Backbone.View.extend({
                     $('<option>', {value: 'treerank-' + item.get('name')})
                         .text(item.get('name'))
                         .appendTo(optGroup);
-                    $('<option>', {value: 'treerank-' + item.get('name') + ' author'})
-                        .text(item.get('name') + ' author')
-                        .appendTo(optGroup);
+                    if (item.specifyModel.name == 'TaxonTreeDefItem') {
+                        $('<option>', {value: 'treerank-' + item.get('name') + ' Author'})
+                            .text(item.get('name') + ' Author')
+                            .appendTo(optGroup);
+                    }
                 });
             });
         },
