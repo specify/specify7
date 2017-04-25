@@ -21,21 +21,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['param_count'] = 0
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
-    def filter(self, *args, **kwargs):
-        return self._replace(query=self.query.filter(*args, **kwargs))
-
-    def join(self, *args, **kwargs):
-        return self._replace(query=self.query.join(*args, **kwargs))
-
-    def outerjoin(self, *args, **kwargs):
-        return self._replace(query=self.query.outerjoin(*args, **kwargs))
-
-    def add_columns(self, *args, **kwargs):
-        return self._replace(query=self.query.add_columns(*args, **kwargs))
-
-    def reset_joinpoint(self):
-        return self._replace(query=self.query.reset_joinpoint())
-
     def handle_tree_field(self, node, table, tree_rank, tree_field):
         query = self
         assert query.collection is not None # Not sure it makes sense to query across collections
@@ -99,3 +84,11 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             table, model = next_table, aliased
         return query, model, table, field
 
+def add_proxy_method(name):
+    def proxy(self, *args, **kwargs):
+        method = getattr(self.query, name)
+        return self._replace(query=method(*args, **kwargs))
+    setattr(QueryConstruct, name, proxy)
+
+for name in 'filter join outerjoin add_columns reset_joinpoint'.split():
+    add_proxy_method(name)
