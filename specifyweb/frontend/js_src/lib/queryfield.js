@@ -211,6 +211,9 @@ module.exports =  Backbone.View.extend({
                     $('<option>', {value: 'treerank-' + item.get('name')})
                         .text(item.get('name'))
                         .appendTo(optGroup);
+                    $('<option>', {value: 'treerank-' + item.get('name') + ' author'})
+                        .text(item.get('name') + ' author')
+                        .appendTo(optGroup);
                 });
             });
         },
