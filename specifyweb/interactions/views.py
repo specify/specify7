@@ -2,7 +2,6 @@ import json
 from datetime import date
 
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.db.models.fields import FieldDoesNotExist
 from django.db import connection, transaction
 from django import http
@@ -36,7 +35,6 @@ def preps_available_rs(request, recordset_id):
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
 def preps_available_ids(request):
     # make sure the field is actually a field in the collection object table
@@ -167,9 +165,8 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
-@transaction.commit_on_success
+@transaction.atomic
 def loan_return_all_items(request):
     if 'returnedDate' in request.POST:
         returned_date = unicode(request.POST['returnedDate'])
@@ -205,7 +202,6 @@ def loan_return_all_items(request):
     return http.HttpResponse(toJson([prepsReturned, loansClosed]), content_type='application/json')
 
 @require_GET
-@csrf_exempt
 @login_maybe_required
 def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     args = [prep_id];
@@ -234,7 +230,6 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     
 
 @require_POST
-@csrf_exempt
 @login_maybe_required
 def prep_interactions(request):
     cursor = connection.cursor()

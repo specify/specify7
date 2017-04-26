@@ -40,7 +40,7 @@ var reports           = require('./reports.js');
 
     function isActionEntry(entry) {
         var actionAttr = entry.attr('action');
-        return actionAttr && actionAttr != 'OpenNewView';
+        return actionAttr && actionAttr != 'OpenNewView' && actionAttr != 'NEW_ACC';
     }
 
     function getFormsPromise() {

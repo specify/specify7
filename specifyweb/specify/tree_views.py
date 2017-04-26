@@ -1,7 +1,6 @@
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
 from django.db import connection, transaction
 
@@ -20,8 +19,7 @@ def tree_mutation(mutation):
     @login_maybe_required
     @require_POST
     @apply_access_control
-    @csrf_exempt
-    @transaction.commit_on_success
+    @transaction.atomic
     @wraps(mutation)
     def wrapper(*args, **kwargs):
         try:
@@ -189,14 +187,14 @@ class StatsQuerySpecialization:
 
 @login_maybe_required
 @require_GET
-def path(request, model, id):
+def path(request, tree, id):
     id = int(id)
-    tree_node = get_object_or_404(model, id=id)
+    tree_node = get_object_or_404(tree, id=id)
 
     data = {node.definitionitem.name: obj_to_data(node)
             for node in get_tree_path(tree_node)}
 
-    data['resource_uri'] = '/api/specify_tree/%s/%d/path/' % (model, id)
+    data['resource_uri'] = '/api/specify_tree/%s/%d/path/' % (tree, id)
 
     return HttpResponse(toJson(data), content_type='application/json')
 
@@ -207,8 +205,8 @@ def get_tree_path(tree_node):
 
 @login_maybe_required
 @require_GET
-def predict_fullname(request, model, parentid):
-    parent = get_object_or_404(model, id=parentid)
+def predict_fullname(request, tree, parentid):
+    parent = get_object_or_404(tree, id=parentid)
     depth = parent.definition.treedefitems.count()
     reverse = parent.definition.fullnamedirection == -1
     defitemid = int(request.GET['treedefitemid'])
@@ -219,20 +217,27 @@ def predict_fullname(request, model, parentid):
     return HttpResponse(fullname, content_type='text/plain')
 
 @tree_mutation
-def merge(request, model, id):
-    node = get_object_or_404(model, id=id)
-    target = get_object_or_404(model, id=request.POST['target'])
+def merge(request, tree, id):
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.merge(node, target)
 
 @tree_mutation
-def synonymize(request, model, id):
-    node = get_object_or_404(model, id=id)
-    target = get_object_or_404(model, id=request.POST['target'])
+def move(request, tree, id):
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
+    node.parent = target
+    node.save()
+
+@tree_mutation
+def synonymize(request, tree, id):
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.synonymize(node, target)
 
 @tree_mutation
-def unsynonymize(request, model, id):
-    node = get_object_or_404(model, id=id)
+def unsynonymize(request, tree, id):
+    node = get_object_or_404(tree, id=id)
     tree_extras.unsynonymize(node)
 
 @tree_mutation

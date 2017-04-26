@@ -1,5 +1,7 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 
-urlpatterns = patterns('specifyweb.barvis.views',
-    url(r'^taxon_bar/$', 'taxon_bar'),
-)
+from . import views
+
+urlpatterns = [
+    url(r'^taxon_bar/$', views.taxon_bar),
+]

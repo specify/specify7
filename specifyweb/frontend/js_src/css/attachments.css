@@ -1,5 +1,9 @@
 /* attachments.css */
 
+.specify-attachments-view {
+    width: 100%
+}
+
 .specify-attachments-view .attachments-header {
     display: flex;
     margin-bottom: 10px;

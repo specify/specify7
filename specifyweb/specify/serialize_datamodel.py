@@ -1,6 +1,6 @@
 from collections import OrderedDict
+import json
 
-from django.utils import simplejson
 from django.conf import settings
 
 def table_to_dict(table):
@@ -50,4 +50,4 @@ def datamodel_to_seq(datamodel):
 
 def datamodel_to_json(datamodel):
     indent = {'indent': 2} if settings.DEBUG else {}
-    return simplejson.dumps(datamodel_to_seq(datamodel), **indent)
+    return json.dumps(datamodel_to_seq(datamodel), **indent)

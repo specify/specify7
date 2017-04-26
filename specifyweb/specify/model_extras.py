@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.base_user import BaseUserManager
 
 from .tree_extras import Tree
 
@@ -14,6 +14,8 @@ class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
     is_active = True
+    is_anonymous = False
+    is_authenticated = True
     objects = SpecifyUserManager()
 
     def get_full_name(self):
@@ -21,9 +23,6 @@ class Specifyuser(models.Model):
 
     def get_short_name(self):
         return self.name
-
-    def is_authenticated(self):
-        return True
 
     def set_password(self, password):
         from .encryption import encrypt
@@ -59,7 +58,6 @@ class Specifyuser(models.Model):
             SELECT SpPrincipalId, %s FROM spprincipal
             WHERE Name = 'Administrator'
             """, [self.id])
-            transaction.commit_unless_managed()
         except IntegrityError:
             # It's already in there.
             pass
@@ -76,7 +74,6 @@ class Specifyuser(models.Model):
           WHERE Name = 'Administrator'
         )
         """, [self.id])
-        transaction.commit_unless_managed()
 
     def save(self, *args, **kwargs):
         # There is a signal handler that updates last_login when

@@ -12,7 +12,7 @@ def get_cached(attr, func, request):
     return getattr(request, attr)
 
 def get_user(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return request.user
     elif settings.ANONYMOUS_USER:
         return Specifyuser.objects.get(name=settings.ANONYMOUS_USER)

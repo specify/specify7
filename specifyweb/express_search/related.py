@@ -1,11 +1,11 @@
 import logging
 
-from specifyweb.specify.models import datamodel
+from ..specify.models import datamodel
 
-from specifyweb.stored_queries.queryfield import QueryField
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
-from specifyweb.stored_queries.query_ops import QueryOps
-from specifyweb.stored_queries.views import build_query
+from ..stored_queries.queryfield import QueryField
+from ..stored_queries.queryfieldspec import QueryFieldSpec
+from ..stored_queries.query_ops import QueryOps
+from ..stored_queries.execution import build_query
 
 logger = logging.getLogger(__name__)
 

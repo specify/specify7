@@ -98,7 +98,7 @@ class UIFormatter(namedtuple("UIFormatter", "model_name field_name fields")):
         filled = []
         for field, val in zip(self.fields, vals):
             if field.is_wild(val):
-                filled.append(field.size * "0")
+                filled.append("1".zfill(field.size))
             else:
                 filled.append(val)
         return filled

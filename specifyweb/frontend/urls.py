@@ -1,5 +1,7 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 
-urlpatterns = patterns('specifyweb.frontend.views',
-    (r'', 'specify')
-)
+from . import views
+
+urlpatterns = [
+    url(r'', views.specify),
+]

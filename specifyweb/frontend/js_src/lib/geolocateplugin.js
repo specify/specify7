@@ -36,10 +36,9 @@ module.exports =  UIPlugin.extend({
         const url = querystring.param("//www.museum.tulane.edu/geolocate/web/webgeoreflight.aspx", data)
                   .replace(/%7c/gi, '|'); // GEOLocate doesn't like '|' to be uri escaped.
 
-        var listener = function(evt) {
-            if (evt.origin === "http://www.museum.tulane.edu")
-                this.gotGeoRef(evt.data);
-        }.bind(this);
+        const listener = evt => {
+            if (/www\.museum\.tulane\.edu$/.test(evt.origin)) this.gotGeoRef(evt.data);
+        };
 
         window.addEventListener('message', listener, false);
 

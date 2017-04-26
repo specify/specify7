@@ -40,7 +40,9 @@ var navigation = require('./navigation.js');
     });
 
     function execute() {
-        var users = new schema.models.SpecifyUser.LazyCollection();
+        const users = new schema.models.SpecifyUser.LazyCollection({
+            filters: {orderby: 'name'}
+        });
         users.fetch({limit: 0}).done(function() {
             new UsersView({ users: users }).render();
         });

@@ -1,7 +1,6 @@
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 from .encryption import encrypt
@@ -16,7 +15,6 @@ def make_master_key(userpass):
 
 @require_POST
 @login_required
-@csrf_exempt
 def master_key(request):
     password = request.POST['password']
     if request.specify_user.check_password(password):

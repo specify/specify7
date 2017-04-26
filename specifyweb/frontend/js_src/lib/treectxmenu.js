@@ -189,10 +189,8 @@ const TreeActionHint = Backbone.View.extend({
 
 class MoveNodeAction extends Action {
     execute() {
-        const objectNode = new this.model.Resource({id: this.node.nodeId });
-        const receiverNode = new this.model.Resource({id: this.receivingNode.nodeId});
-        return Q(objectNode.fetch()).then(
-            () => objectNode.set('parent', receiverNode.url()).save());
+        return Q($.post(`/api/specify_tree/${this.table}/${this.node.nodeId}/move/`,
+                        {target: this.receivingNode.nodeId}));
     }
 
     message() {
