@@ -105,9 +105,8 @@ def tree_stats(request, treedef, tree, parentid):
         # The join depth only needs to be enough to reach the bottom of the tree.
         # That will be the number of distinct rankID values not less than
         # the rankIDs of the children of parentid.
-        depth, = session.query(sql.func.count(distinct(tree_node.rankId))) \
-                        .join(child, tree_node.rankId >= child.rankId) \
-                        .filter(child.ParentID == parentid)[0]
+        highest_rank = session.query(sql.func.min(tree_node.rankId)).filter(tree_node.ParentID==parentid).as_scalar()
+        depth, = session.query(sql.func.count(distinct(tree_node.rankId))).filter(tree_node.rankId >= highest_rank)[0]
 
         query = session.query(getattr(child, child._id)) \
                             .filter(child.ParentID == parentid) \
