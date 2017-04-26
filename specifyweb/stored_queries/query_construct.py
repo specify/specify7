@@ -48,7 +48,9 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         query = query._replace(param_count=self.param_count+1)
         treedefitem_param = sql.bindparam('tdi_%s' % query.param_count, value=treedef.treedefitems.get(name=tree_rank).id)
 
-        column_name = 'name' if tree_field is None else tree_field.lower()
+        column_name = 'name' if tree_field is None else \
+                      node._id if tree_field == 'ID' else \
+                      tree_field.lower()
 
         column = sql.case([
             (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))

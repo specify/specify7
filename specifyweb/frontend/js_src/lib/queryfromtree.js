@@ -24,7 +24,7 @@ function paleoPathP() {
     });
 }
 
-function buildQuery(tree, user, paleoPath, fullname, name, treedefitem) {
+function buildQuery(tree, user, paleoPath, fullname, nodeId, treedefitem) {
     const query = new schema.models.SpQuery.Resource();
     const model = schema.models.CollectionObject;
     query.set({
@@ -41,7 +41,7 @@ function buildQuery(tree, user, paleoPath, fullname, name, treedefitem) {
     });
 
     return Q(query.rget('fields')).then(queryFields => {
-        queryFields.add( fieldsFor[tree.name](model, name, treedefitem.get('name'), paleoPath) );
+        queryFields.add( fieldsFor[tree.name](model, nodeId, treedefitem.get('name'), paleoPath) );
         return query;
     });
 }
@@ -49,7 +49,7 @@ function buildQuery(tree, user, paleoPath, fullname, name, treedefitem) {
 function makeField(model, path, treeRank, options) {
     const pathArray = [model.name].concat(path.split('.'));
     const fieldSpec = QueryFieldSpec.fromPath(pathArray);
-    fieldSpec.treeRank = treeRank;
+    fieldSpec.treeRank = treeRank != null ? treeRank + ' ID' : null;
 
     return new schema.models.SpQueryField.Resource()
         .set(fieldSpec.toSpQueryAttrs())
@@ -57,7 +57,7 @@ function makeField(model, path, treeRank, options) {
 }
 
 var fieldsFor = {
-    Taxon: function(model, name, rank) {
+    Taxon: function(model, nodeId, rank) {
         var position = 0;
         return [
             makeField(model, 'catalogNumber', null, {
@@ -80,7 +80,7 @@ var fieldsFor = {
                 'sorttype': 0,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': name,
+                'startvalue': nodeId,
                 'operstart': 1,
                 'position': position++
             }),
@@ -94,7 +94,7 @@ var fieldsFor = {
             })
         ];
     },
-    Geography: function(model, name, rank) {
+    Geography: function(model, nodeId, rank) {
         var position = 0;
         return [
             makeField(model, 'catalogNumber', null, {
@@ -141,13 +141,13 @@ var fieldsFor = {
                 'sorttype': 0,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': name,
+                'startvalue': nodeId,
                 'operstart': 1,
                 'position': position++
             })
         ];
     },
-    Storage: function(model, name, rank) {
+    Storage: function(model, nodeId, rank) {
         var position = 0;
         return [
             makeField(model, 'catalogNumber', null, {
@@ -186,13 +186,13 @@ var fieldsFor = {
                 'sorttype': 0,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': name,
+                'startvalue': nodeId,
                 'operstart': 1,
                 'position': position++
             })
         ];
     },
-    GeologicTimePeriod: function(model, name, rank, paleoPath) {
+    GeologicTimePeriod: function(model, nodeId, rank, paleoPath) {
         var position = 0;
         return [
             makeField(model, 'catalogNumber', null, {
@@ -232,13 +232,13 @@ var fieldsFor = {
                 'sorttype': 0,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': name,
+                'startvalue': nodeId,
                 'operstart': 1,
                 'position': position++
             })
         ];
     },
-    LithoStrat: function(model, name, rank, paleoPath) {
+    LithoStrat: function(model, nodeId, rank, paleoPath) {
         var position = 0;
         return [
             makeField(model, 'catalogNumber', null, {
@@ -277,7 +277,7 @@ var fieldsFor = {
                 'sorttype': 0,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': name,
+                'startvalue': nodeId,
                 'operstart': 1,
                 'position': position++
             })
@@ -291,7 +291,7 @@ module.exports =  function(user, table, nodeId) {
     return Q([
         paleoPathP(),
         node.rget('fullname'),
-        node.rget('name'),
+        nodeId,
         node.rget('definitionitem', true),
     ]).spread((...args) => buildQuery(tree, user, ...args));
 };

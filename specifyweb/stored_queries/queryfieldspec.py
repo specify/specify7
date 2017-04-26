@@ -22,8 +22,11 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 # to request a filter on that subportion of the date.
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
-# Pull out any field other than name from taxon query fields.
+# Pull out author or groupnumber field from taxon query fields.
 TAXON_FIELD_RE = re.compile(r'(.*) (Author)|(GroupNumber)$')
+
+# Look to see if we are dealing with a tree node ID.
+TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
 
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
@@ -110,13 +113,18 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         field = node.get_field(extracted_fieldname, strict=False)
         tree_rank = tree_field = None
         if field is None:
-            tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
-                               if node is datamodel.get_table('Taxon') else None
-            if tree_field_match:
-                tree_rank = tree_field_match.group(1)
-                tree_field = tree_field_match.group(2)
+            tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
+            if tree_id_match:
+                tree_rank = tree_id_match.group(1)
+                tree_field = 'ID'
             else:
-                tree_rank = extracted_fieldname if extracted_fieldname else None
+                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
+                                   if node is datamodel.get_table('Taxon') else None
+                if tree_field_match:
+                    tree_rank = tree_field_match.group(1)
+                    tree_field = tree_field_match.group(2)
+                else:
+                    tree_rank = extracted_fieldname if extracted_fieldname else None
         else:
             join_path.append(field)
             if field.is_temporal() and date_part is None:
