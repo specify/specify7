@@ -48,7 +48,7 @@ def user_collection_access(request, userid):
     if request.method == 'PUT':
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        with transaction.commit_on_success():
+        with transaction.atomic():
             cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
             cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
                            'select spprincipalid from specifyuser_spprincipal)')
