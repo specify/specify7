@@ -51,14 +51,41 @@ module.exports =  Backbone.View.extend({
     },
     validate: function(deferred) {
         var value = this.$el.val().trim();        
-        return this.listInput ? this.validateList(value, deferred) : this.validateValue(value, differred);
+        if (this.listInput) {
+            return this.validateList(value, deferred);
+        } else {
+            try {
+                return this.validateValue(value, deferred);
+            } catch (e) {
+                if (Array.isArray(e) && e[0] === this) {
+                    this.trigger('addsaveblocker', e[1], e[2], e[3]);
+                } else {
+                    throw e;
+                }
+                return undefined;
+            }
+        }
     },
     validateList: function(value, deferred) {
-        // return this.validateValue(value, deferred);
         var values = value.split(",");
         var results = [];
+        /*It might be nice to accept valid listitems and reject invalids?
+         For now if the list contains any invalid entries everything is rejected.
+         */
+        //var errors = [];
         for (var v = 0; v < values.length; v++) {
-            results.push(this.validateValue(values[v].trim(), deferred));
+            try {
+                results.push(this.validateValue(values[v].trim(), deferred));
+            } catch (e) {
+                if (Array.isArray(e) && e[0] === this) {
+                    //errors.push(e);
+                    this.trigger('addsaveblocker', e[1], e[2], e[3]);
+                    return undefined;
+                } else {
+                    throw e;
+                    return undefined;
+                }
+            }
         }
         return results;
     },
@@ -69,8 +96,8 @@ module.exports =  Backbone.View.extend({
 
         var isRequired = this.$el.is('.specify-required-field');
         if (value === '' && isRequired) {
-            this.trigger('addsaveblocker', 'fieldrequired', "Field is required.", deferred);
-            return undefined;
+            throw [this, 'fieldrequired', 'Field is reqired.', deferred];
+             return undefined;
         } else {
             this.trigger('removesaveblocker', 'fieldrequired');
         }
@@ -78,7 +105,7 @@ module.exports =  Backbone.View.extend({
         if (this.formatter) {
             var formatterVals = this.formatter.parse(value);
             if (!formatterVals) {
-                this.trigger('addsaveblocker', 'badformat', "Required format: " + this.formatter.value(), deferred);
+                throw [this, 'badformat', 'Required format: ' + this.formatter.value(), deferred];
                 return undefined;
             } else {
                 this.trigger('removesaveblocker', 'badformat');
@@ -88,7 +115,7 @@ module.exports =  Backbone.View.extend({
 
         var parseResult = this.parser(value);
         if (!parseResult.isValid) {
-            this.trigger('addsaveblocker', 'cantparse', parseResult.reason, deferred);
+            throw [this, 'cantparse', parseResult.reason, deferred];
             return undefined;
         } else {
             this.trigger('removesaveblocker', 'cantparse');
