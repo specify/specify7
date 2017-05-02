@@ -95,7 +95,7 @@ var ToolTipMgr   = require('./tooltipmgr.js');
         }
     };
 
-    var ADD_VALUES_HINT = "Add values one by one:";
+    var ADD_VALUES_HINT = "Add values one by one, or as comma-separated list:";
 
     var In = {
         events: {
