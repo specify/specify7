@@ -48,7 +48,7 @@ var ReportListDialog = Backbone.View.extend({
             });
         }
         if (this.options.autoSelectSingle && appResources.length == 1) {
-            this.getReport(appResources[0], getReportParams);
+            this.getReport(appResources.models[0], getReportParams);
         }
         function byType(type) {
             return appResources.filter(function(r) {
