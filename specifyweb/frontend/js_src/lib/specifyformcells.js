@@ -32,6 +32,9 @@ var processColumnDef       = require('./processcolumndef.js');
                     }
                     if (ignore && ignore.toLowerCase() == 'true') {
                         control.addClass('specify-ignore-field');
+                        if (fieldName && ['printOnSave', 'generateInvoice', 'generateLabelChk'].indexOf(fieldName) != 0) {
+                            control.addClass('specify-print-on-save');
+                        }
                     }
                     doingFormTable && control.addClass('specify-field-in-table');
                 }

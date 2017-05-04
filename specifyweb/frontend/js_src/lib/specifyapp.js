@@ -71,6 +71,9 @@ var systemInfo   = require('./systeminfo.js');
         });
 
         view.on('saved', function(resource, options) {
+            if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
+                console.log('generating label or invoice');
+            }
             if (options.addAnother) {
                 showResource(options.newResource, recordSet);
             } else if (options.wasNew) {
