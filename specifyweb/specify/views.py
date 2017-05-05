@@ -120,13 +120,14 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
+@require_GET
 def support_login(request):
     if not settings.ALLOW_SUPPORT_LOGIN:
         return http.HttpResponseForbidden()
 
     from django.contrib.auth import login, authenticate
 
-    user = authenticate(token=request.REQUEST['token'])
+    user = authenticate(token=request.GET['token'])
     if user is not None:
         login(request, user)
         return http.HttpResponseRedirect('/')

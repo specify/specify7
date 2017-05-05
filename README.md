@@ -7,6 +7,16 @@ browser on your local machine.
 
 Intstructions for deployment follow.
 
+**Note:** If updating from a previous version, some of the python
+dependencies have changed. It is recommended to place the new version
+in a separate directory next to the previous version and install all
+the new dependencies in a Python virtualenv as described below. That
+will avoid version conflicts and allow the previous version to
+continue working while the new version is being set up. When the new
+version is working satifactorily using the test server, the Apache
+conf can be changed to point to it (or changed back to the old
+version, if problems arise).
+
 
 Install system dependencies.
 -----------------------------------

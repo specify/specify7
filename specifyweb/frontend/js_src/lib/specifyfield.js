@@ -71,7 +71,9 @@ var assert = require('./assert.js');
             return l && l.get('ishidden');
         },
         isDependent: function() {
-            return this.dependent;
+            return (this.model.name == 'CollectionObject' && this.name == 'collectingEvent') ? schema.embeddedCollectingEvent
+                : (this.model.name.toLowerCase() == schema.paleoContextChild && this.name == 'paleoContext') ? schema.embeddedPaleoContext
+                : this.dependent;
         },
         isTemporal: function() {
             return _(['java.util.Date', 'java.util.Calendar']).contains(this.type);
