@@ -41,14 +41,7 @@ var initialContext = require('./initialcontext.js');
         this.fields = _.map(tableDef.fields, function(fieldDef) {
             return new schema.Field(model, fieldDef);
         }).concat(_.map(tableDef.relationships, function(relDef) {
-            var rel = new schema.Relationship(model, relDef);
-            if (model.name == 'CollectionObject' && rel.name == 'collectingEvent') {
-                rel.dependent = schema.embeddedCollectingEvent;
-            }
-            if (rel.name == 'paleoContext' && model.name.toLowerCase() == schema.paleoContextChildTable) {
-                rel.dependent = schema.embeddedPaleoContext;
-            }
-            return rel;
+            return  new schema.Relationship(model, relDef);
         }));
     };
     _.extend(schema.Model.prototype, {
