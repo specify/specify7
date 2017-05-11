@@ -85,7 +85,7 @@ module.exports = {
             },
             customInit: function(collectionObject) {
                 var ceField = collectionObject.specifyModel.getField('collectingevent');
-                if (ceField.dependent && collectionObject.get('collectingevent') == null) {
+                if (ceField.isDependent() && collectionObject.get('collectingevent') == null) {
                     collectionObject.set('collectingevent', new schema.models.CollectingEvent.Resource());
                 }
             }
