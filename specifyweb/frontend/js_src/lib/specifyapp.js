@@ -14,6 +14,7 @@ var navigation   = require('./navigation.js');
 var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
 var systemInfo   = require('./systeminfo.js');
+var reports      = require('./reports.js');
 
     var currentView;
     var versionMismatchWarned = false;
@@ -73,6 +74,11 @@ var systemInfo   = require('./systeminfo.js');
         view.on('saved', function(resource, options) {
             if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
                 console.log('generating label or invoice');
+                reports({
+                    tblId: resource.specifyModel.tableId,
+                    recordToPrintId: resource.id,
+                    autoSelectSingle: true
+                });
             }
             if (options.addAnother) {
                 showResource(options.newResource, recordSet);

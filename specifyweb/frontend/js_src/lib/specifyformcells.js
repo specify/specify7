@@ -7,6 +7,9 @@ var processField           = require('./specifyformfields.js');
 var parseSpecifyProperties = require('./parsespecifyproperties.js');
 var processColumnDef       = require('./processcolumndef.js');
 
+const cookies              = require('./cookies.js');
+const userInfo             = require('./userinfo.js');
+
     function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
         var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;

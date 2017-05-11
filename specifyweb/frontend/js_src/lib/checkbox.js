@@ -4,6 +4,7 @@ var $        = require('jquery');
 var _        = require('underscore');
 var Backbone = require('./backbone.js');
 var Q        = require('q');
+var cookies  = require('./cookies.js');
 
 module.exports =  Backbone.View.extend({
     __name__: "CheckBox",
@@ -39,6 +40,9 @@ module.exports =  Backbone.View.extend({
     change: function() {
         if (!this.$el.hasClass('specify-ignore-field')) {
             this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
+        }
+        if (this.$el.hasClass('specify-print-on-save')) {
+            this.$el.attr('check-cookie') && cookies.createCookie(this.$el.attr('check-cookie'), this.el.checked);
         }
     }
 });

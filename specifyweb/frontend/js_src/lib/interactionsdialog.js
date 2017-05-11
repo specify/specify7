@@ -128,7 +128,7 @@ module.exports = Backbone.View.extend({
                 //assuming loan invoice for now (52 is loan tableid)
                 reports({
                     tblId: 52,
-                    metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
+                    //metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
                     autoSelectSingle: true
                 });
             } else {
