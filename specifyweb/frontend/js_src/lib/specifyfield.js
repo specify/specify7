@@ -72,7 +72,7 @@ var assert = require('./assert.js');
         },
         isDependent: function() {
             return (this.model.name == 'CollectionObject' && this.name == 'collectingEvent') ? schema.embeddedCollectingEvent
-                : (this.model.name.toLowerCase() == schema.paleoContextChild && this.name == 'paleoContext') ? schema.embeddedPaleoContext
+                : (this.model.name.toLowerCase() == schema.paleoContextChildTable && this.name == 'paleoContext') ? schema.embeddedPaleoContext
                 : this.dependent;
         },
         isTemporal: function() {
