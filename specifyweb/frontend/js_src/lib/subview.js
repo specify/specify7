@@ -81,6 +81,7 @@ module.exports =  Backbone.View.extend({
                 var _this = this;
                 this.dialog = new QueryCbxSearch({
                     model: searchTemplateResource,
+                    populateForm: this.populateForm,
                     selected: function(resource) {
                         _this.model.set(_this.fieldName, resource);
                     }
