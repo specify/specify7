@@ -27,7 +27,7 @@ var treemodels = ["geography", "geologictimeperiod", "lithostrat", "storage", "t
 initialContext.load('app.resource?name=TypeSearches', data => typesearches = data);
 
 function isTreeModel(model) {
-    return treemodels.indexOf(model.specifyModel.name.toLowerCase() != -1);
+    return treemodels.indexOf(model.specifyModel.name.toLowerCase()) != -1;
 }
 
 function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChildRank) {
