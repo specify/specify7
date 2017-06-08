@@ -16,8 +16,17 @@ function getPossibleRanks(lowestChildRank, parentTreeDefItem, treeDef) {
 
     const children = new parentTreeDefItem.specifyModel.LazyCollection({filters: filters, orderby: 'rankID'});
     return children.fetch({limit: 0}).pipe(() => {
-        const firstEnforced = children.models.find(child => child.get('isEnforced'));
-        return children.models.slice(0, children.models.indexOf(firstEnforced) + 1);
+        var possibilities = [];
+        for (var i = 0; i < children.length; i++) {
+            possibilities.push(children.models[i]);
+            if (children.models[i].get('isEnforced')) {
+                break;
+            }
+        }
+        children.models = possibilities;
+        children.length  = possibilities.length;
+        children._totalCount = possibilities.length;
+        return children;
     });
 }
 
