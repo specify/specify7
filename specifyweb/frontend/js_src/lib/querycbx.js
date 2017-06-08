@@ -18,6 +18,7 @@ var ToolTipMgr        = require('./tooltipmgr.js');
 var QueryCbxSearch    = require('./querycbxsearch.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var initialContext    = require('./initialcontext.js');
+var domain            = require('./domain.js');
 
 var dataobjformat = dataobjformatters.format;
 
@@ -30,7 +31,7 @@ function isTreeModel(model) {
     return treemodels.indexOf(model.specifyModel.name.toLowerCase()) != -1;
 }
 
-function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChildRank) {
+function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChildRank, fieldName) {
     var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
     query.set({
         'name': "Ephemeral QueryCBX query",
@@ -75,7 +76,8 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
         var tblName = model.specifyModel.name.toLowerCase();
         var descFilterField;
         var pos = 2;
-         if (model.id) {
+        //add not-a-descendant condition
+        if (model.id) {
             descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
             descFilterField.set({
                 'fieldname': "nodeNumber",
@@ -91,14 +93,17 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
             });
             fields.add(descFilterField);
         }
-        if (treeRanks != null) {
-            if (model.get('rankid')) //original value, not updated with unsaved changes {
-                var r = _.findIndex(treeRanks, function(rank) {
-                    return rank.rankid == model.get('rankid');
-                });
-                if (r != -1) {
+        if (fieldName === 'parent') {
+            //add rank limits
+            if (treeRanks != null) {
+                if (model.get('rankid')) //original value, not updated with unsaved changes {
+                    var r = _.findIndex(treeRanks, function(rank) {
+                        return rank.rankid == model.get('rankid');
+                    });
+                var nextRankId = 0;
+                if (r && r != -1) {
                     for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
-                    var nextRankId = treeRanks[i-1].rankid;
+                    nextRankId = treeRanks[i-1].rankid;
                 }   
             }
             var lastTreeRankId = _.last(treeRanks).rankid;
@@ -120,6 +125,11 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
                 });
                 fields.add(descFilterField);
             }
+        } else if (fieldName === 'acceptedParent') {
+            //nothing to do
+        } else if (fieldName === 'hybridParent1' || fieldName === 'hybridParent2') {
+            //nothing to do
+        }
     }
     
     return query;
@@ -159,7 +169,7 @@ var QueryCbx = Backbone.View.extend({
                                 return children.pluck('rankid')[0];
                             });
                     });
-                this.treeRanksPromise = this.model.rget('parent.definition', true).pipe(function(def) {
+                this.treeRanksPromise = this.getTreeDefinition(this.model).pipe(function(def) {
                     var defid = def.id;
                     var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
                     var items = new defItemModel.LazyCollection({limit: 0, filters: {treedef: defid}, orderby: 'rankID'});
@@ -172,18 +182,23 @@ var QueryCbx = Backbone.View.extend({
                     });
                 });
             } else if (fieldName == 'acceptedParent') {
-                //need different restrictions -- if it's ever enabled on forms
-                this.lowestChildRankPromise = null;
-                this.treeRanksPromise = null;
+                //don't need to do anything. Form system prevents lookups/edits 
             } else if (fieldName == 'hybridParent1' || fieldName == 'hybridParent2') {
-                //no idea what kind of restrictions are needed for these...
-                this.lowestChildRankPromise = null;
-                this.treeRanksPromise = null;
+                //No idea what restrictions there should be, the only obviously required one - that a taxon is not a hybrid of itself, seems to
+                //already be enforced
             }
         } else {
             this.lowestChildRankPromise = null;
             this.treeRanksPromise = null;
         }
+    },
+    getTreeDefinition: function(model) {
+        if (model.isNew()) {
+            var treeDefFieldName = model.specifyModel.name.toLowerCase() + 'treedef';
+            return domain.getDomainResource('discipline').rget(treeDefFieldName, true);
+        } else {
+            return model.rget('definition', true);
+        }   
     },
     select: function (event, ui) {
         var resource = ui.item.resource;
@@ -244,7 +259,7 @@ var QueryCbx = Backbone.View.extend({
         var siht = this;
         $.when(this.lowestChildRankPromise, this.treeRanksPromise).done(function(lowestChildRank, treeRanks) {
             var queries = _.map(searchFieldStrs, function(s) {
-                return makeQuery(siht.model, siht.relatedModel, s, request.term, treeRanks, lowestChildRank);
+                return makeQuery(siht.model, siht.relatedModel, s, request.term, treeRanks, lowestChildRank, siht.fieldName);
             }, siht);
             if (siht.forceCollection) {
                 console.log('force query collection id to:', siht.forceCollection.id);
