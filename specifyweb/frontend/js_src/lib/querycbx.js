@@ -203,7 +203,7 @@ var QueryCbx = Backbone.View.extend({
                 } else {
                     var children = new this.model.specifyModel.LazyCollection({filters: {parent_id: this.model.id}, orderby: 'rankID'});
                     this.lowestChildRankPromise = children.fetch().pipe(function() {
-                        return childRes.models[0].get('rankid');
+                        return children.models[0].get('rankid');
                     });
                 }
                 this.treeRanksPromise = this.getTreeDefinition(this.model).pipe(function(def) {

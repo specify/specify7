@@ -60,11 +60,10 @@ module.exports =  UIPlugin.extend({
         },
     gotRels: function(related) {
         var otherSide = this.otherSide + 'side';
-        related.fetch().pipe(function() {
-            return whenAll(_.map(related.models, function(rel) {
+        whenAll(_.map(related.models, function(rel) {
                 return rel.rget(otherSide, true);
-            }));
-        }).done(this.gotRelatedObjects.bind(this));
+        })).done(this.gotRelatedObjects.bind(this));
+
     },
         gotRelatedObjects: function(collectionObjects) {
             var table = this.el;
