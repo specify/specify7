@@ -52,6 +52,7 @@ var querystring = require('./querystring.js');
             }};
     }
 
+
     var ResourceBase = Backbone.Model.extend({
         __name__: "ResourceBase",
         populated: false,   // indicates if this resource has data
@@ -119,6 +120,7 @@ var querystring = require('./querystring.js');
         url: function() {
             // returns the api uri for this resource. if the resource is newly created
             // (no id), return the uri for the collection it belongs to
+            // If url form changes, see idFromUrl method
             var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
                 (!this.isNew() ? (this.id + '/') : '');
             return this.recordsetid == null ? url :
@@ -549,7 +551,13 @@ var querystring = require('./querystring.js');
             assert(!_(match).isNull(), "Bad resource uri: " + uri);
             assert(match[1] === this.specifyModel.name.toLowerCase());
             return new this({ id: parseInt(match[2], 10) }, options);
+        },
+        idFromUrl: function(url) {
+            //assiming urls are constructed by ResourceBase.url method
+            var urlChunks = url.split('/');
+            return urlChunks[urlChunks.length - 2];
         }
+
     });
 
 module.exports = ResourceBase;

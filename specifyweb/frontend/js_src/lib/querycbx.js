@@ -19,6 +19,7 @@ var QueryCbxSearch    = require('./querycbxsearch.js');
 var QueryFieldSpec    = require('./queryfieldspec.js');
 var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
+var resourceapi       = require('./resourceapi.js');
 
 var dataobjformat = dataobjformatters.format;
 
@@ -155,15 +156,11 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
             fields.add(descFilterField);
             
         } else if (qcbx.fieldName === 'rightSide') {
-            //sinful
-            var urlChunks = qcbx.model.get('collectionreltype').split('/');
-            var relTypeId = urlChunks[urlChunks.length - 2];
+            var relTypeId = resourceapi.idFromUrl(qcbx.model.get('collectionreltype'));
             var rel = leftSideRels.find(function(i){ return i.relid == relTypeId;});
             qcbx.forceCollection = {id: rel.rightsidecollectionid};
         } else if (qcbx.fieldName === 'leftSide') {
-            //shameless
-            urlChunks = qcbx.model.get('collectionreltype').split('/');
-            relTypeId = urlChunks[urlChunks.length - 2];
+            relTypeId = resourceapi.idFromUrl(qcbx.model.get('collectionreltype'));
             rel = rightSideRels.find(function(i){ return i.relid == relTypeId;});
             qcbx.forceCollection = {id: rel.rightsidecollectionid};
         }
@@ -232,10 +229,8 @@ var QueryCbx = Backbone.View.extend({
             });
             this.leftSideRelsPromise = leftRels.fetch().pipe(function() {
                 return _.map(leftRels.models, function(item) {
-                    //is this a sin?
-                    var urlChunks = item.get('rightsidecollection').split('/');
                     return {'relid': item.id,
-                            'rightsidecollectionid': urlChunks[urlChunks.length - 2]};
+                            'rightsidecollectionid': resourceapi.idFromUrl(item.get('rightsidecollection'))};
                 });
             });
             var rightRels = new schema.models.CollectionRelType.LazyCollection({
@@ -243,10 +238,8 @@ var QueryCbx = Backbone.View.extend({
             });
             this.rightSideRelsPromise = rightRels.fetch().pipe(function() {
                 return _.map(rightRels.models, function(item) {
-                    //is this a sin?
-                    var urlChunks = item.get('leftsidecollection').split('/');
                     return {'relid': item.id,
-                            'rightsidecollectionid': urlChunks[urlChunks.length - 2]};
+                            'rightsidecollectionid': resourceapi.idFromUrl(item.get('leftsidecollection'))};
                 });
             });
         }
