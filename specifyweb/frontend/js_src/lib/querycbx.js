@@ -31,12 +31,12 @@ function isTreeModel(model) {
     return treemodels.indexOf(model.specifyModel.name.toLowerCase()) != -1;
 }
 
-function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChildRank, fieldName) {
+function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, rightSideRels, qcbx) {
     var query = new schema.models.SpQuery.Resource({}, {noBusinessRules: true});
     query.set({
         'name': "Ephemeral QueryCBX query",
-        'contextname': relatedModel.name,
-        'contexttableid': relatedModel.tableId,
+        'contextname': qcbx.relatedModel.name,
+        'contexttableid': qcbx.relatedModel.tableId,
         'selectdistinct': false,
         'countonly': false,
         'specifyuser': null,
@@ -46,7 +46,7 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
     });
     var fields = query._rget(['fields']); // Cheating, but I don't want to deal with the pointless promise.
 
-    var searchFieldSpec = QueryFieldSpec.fromPath([relatedModel.name].concat(searchFieldStr.split('.')));
+    var searchFieldSpec = QueryFieldSpec.fromPath([qcbx.relatedModel.name].concat(searchFieldStr.split('.')));
     var searchField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
     searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
         'sorttype': 0,
@@ -59,7 +59,7 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
     fields.add(searchField);
 
     
-    var dispFieldSpec = QueryFieldSpec.fromPath([relatedModel.name]);
+    var dispFieldSpec = QueryFieldSpec.fromPath([qcbx.relatedModel.name]);
     var dispField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
     dispField.set(dispFieldSpec.toSpQueryAttrs()).set({
         'sorttype': 1,
@@ -71,13 +71,13 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
     });
     fields.add(dispField);
 
-    if (isTreeModel(model)) {
-        var tblId = model.specifyModel.tableId;
-        var tblName = model.specifyModel.name.toLowerCase();
+    if (isTreeModel(qcbx.model)) {
+        var tblId = qcbx.model.specifyModel.tableId;
+        var tblName = qcbx.model.specifyModel.name.toLowerCase();
         var descFilterField;
         var pos = 2;
         //add not-a-descendant condition
-        if (model.id) {
+        if (qcbx.model.id) {
             descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
             descFilterField.set({
                 'fieldname': "nodeNumber",
@@ -87,18 +87,18 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
                 'isrelfld': false,
                 'isdisplay': false,
                 'isnot': true,
-                'startvalue': model.get("nodenumber") + ',' + model.get("highestchildnodenumber"),
+                'startvalue': qcbx.model.get("nodenumber") + ',' + qcbx.model.get("highestchildnodenumber"),
                 'operstart': 9,
                 'position': pos++
             });
             fields.add(descFilterField);
         }
-        if (fieldName === 'parent') {
+        if (qcbx.fieldName === 'parent') {
             //add rank limits
             if (treeRanks != null) {
-                if (model.get('rankid')) //original value, not updated with unsaved changes {
+                if (qcbx.model.get('rankid')) //original value, not updated with unsaved changes {
                     var r = _.findIndex(treeRanks, function(rank) {
-                        return rank.rankid == model.get('rankid');
+                        return rank.rankid == qcbx.model.get('rankid');
                     });
                 var nextRankId = 0;
                 if (r && r != -1) {
@@ -125,10 +125,47 @@ function makeQuery(model, relatedModel, searchFieldStr, q, treeRanks, lowestChil
                 });
                 fields.add(descFilterField);
             }
-        } else if (fieldName === 'acceptedParent') {
+        } else if (qcbx.fieldName === 'acceptedParent') {
             //nothing to do
-        } else if (fieldName === 'hybridParent1' || fieldName === 'hybridParent2') {
+        } else if (qcbx.fieldName === 'hybridParent1' || qcbx.fieldName === 'hybridParent2') {
             //nothing to do
+        }
+    }
+
+    if (qcbx.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
+        var subview = qcbx.$el.parents().filter('td.specify-subview').first();
+        var relName = subview.attr('data-specify-field-name');
+        if (qcbx.fieldName === 'collectionRelType') {
+            //add condition for current collection
+            tblId = qcbx.relatedModel.tableId;
+            tblName = qcbx.relatedModel.name.toLowerCase();
+            descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+            descFilterField.set({
+                'fieldname': "collectionRelTypeId",
+                'stringid': tblId + "." + tblName + ".collectionRelTypeId",
+                'tablelist': tblId,
+                'sorttype': 0,
+                'isrelfld': false,
+                'isdisplay': false,
+                'isnot': false,
+                'startvalue': _.pluck(relName === 'rightSideRels' ? leftSideRels : rightSideRels, 'relid').toString(),
+                'operstart': 10,
+                'position': 2
+            });
+            fields.add(descFilterField);
+            
+        } else if (qcbx.fieldName === 'rightSide') {
+            //sinful
+            var urlChunks = qcbx.model.get('collectionreltype').split('/');
+            var relTypeId = urlChunks[urlChunks.length - 2];
+            var rel = leftSideRels.find(function(i){ return i.relid == relTypeId;});
+            qcbx.forceCollection = {id: rel.rightsidecollectionid};
+        } else if (qcbx.fieldName === 'leftSide') {
+            //shameless
+            urlChunks = qcbx.model.get('collectionreltype').split('/');
+            relTypeId = urlChunks[urlChunks.length - 2];
+            rel = rightSideRels.find(function(i){ return i.relid == relTypeId;});
+            qcbx.forceCollection = {id: rel.rightsidecollectionid};
         }
     }
     
@@ -190,6 +227,31 @@ var QueryCbx = Backbone.View.extend({
         } else {
             this.lowestChildRankPromise = null;
             this.treeRanksPromise = null;
+        }
+        if (this.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
+            var collection = domain.getDomainResource('collection');
+            var leftRels = new schema.models.CollectionRelType.LazyCollection({
+                filters: {leftsidecollection: collection.id}
+            });
+            this.leftSideRelsPromise = leftRels.fetch().pipe(function() {
+                return _.map(leftRels.models, function(item) {
+                    //is this a sin?
+                    var urlChunks = item.get('rightsidecollection').split('/');
+                    return {'relid': item.id,
+                            'rightsidecollectionid': urlChunks[urlChunks.length - 2]};
+                });
+            });
+            var rightRels = new schema.models.CollectionRelType.LazyCollection({
+                filters: {rightsidecollection: collection.id}
+            });
+            this.rightSideRelsPromise = rightRels.fetch().pipe(function() {
+                return _.map(rightRels.models, function(item) {
+                    //is this a sin?
+                    var urlChunks = item.get('leftsidecollection').split('/');
+                    return {'relid': item.id,
+                            'rightsidecollectionid': urlChunks[urlChunks.length - 2]};
+                });
+            });
         }
     },
     getTreeDefinition: function(model) {
@@ -257,9 +319,9 @@ var QueryCbx = Backbone.View.extend({
     },
     makeQuery: function(searchFieldStrs, request, response) {
         var siht = this;
-        $.when(this.lowestChildRankPromise, this.treeRanksPromise).done(function(lowestChildRank, treeRanks) {
+        $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
             var queries = _.map(searchFieldStrs, function(s) {
-                return makeQuery(siht.model, siht.relatedModel, s, request.term, treeRanks, lowestChildRank, siht.fieldName);
+                return makeQuery(s, request.term, treeRanks, lowestChildRank, leftSideRels, rightSideRels, siht);
             }, siht);
             if (siht.forceCollection) {
                 console.log('force query collection id to:', siht.forceCollection.id);
