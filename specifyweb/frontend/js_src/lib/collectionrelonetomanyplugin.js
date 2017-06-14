@@ -51,18 +51,21 @@ module.exports =  UIPlugin.extend({
             default:
                 throw new Error("related collection plugin used with relation that doesn't match current collection");
             }
-            this.model.rget(this.side + 'siderels').done(this.gotRels.bind(this));
+            
+            var relModel = schema.getModel('CollectionRelationship');
+            var filters = this.side == 'left' ? {leftside_id: this.model.id, collectionreltype_id: this.relType.id}
+                : {rightside_id: this.model.id, collectionreltype_id: this.relType.id};
+            var items = new relModel.LazyCollection({filters: filters});
+            items.fetch().done(this.gotRels.bind(this, items));
         },
-        gotRels: function(related) {
-            related.filters.collectionreltype = this.relType.id;
-
-            var otherSide = this.otherSide + 'side';
-            related.fetch().pipe(function() {
-                return whenAll(related.map(function(rel) {
-                    return rel.rget(otherSide, true);
-                }));
-            }).done(this.gotRelatedObjects.bind(this));
-        },
+    gotRels: function(related) {
+        var otherSide = this.otherSide + 'side';
+        related.fetch().pipe(function() {
+            return whenAll(_.map(related.models, function(rel) {
+                return rel.rget(otherSide, true);
+            }));
+        }).done(this.gotRelatedObjects.bind(this));
+    },
         gotRelatedObjects: function(collectionObjects) {
             var table = this.el;
             var otherCollectionFormatted = format(this.otherCollection);

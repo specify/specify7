@@ -198,21 +198,19 @@ var QueryCbx = Backbone.View.extend({
         if (isTreeModel(this.model)) {
             var fieldName = this.$el.attr('name');
             if (fieldName == 'parent') {
-                this.lowestChildRankPromise = this.model.isNew() ? $.when(null) :
-                    this.model.rget('children').pipe(function(children) {
-                        return children
-                            .fetch({limit: 1, filters: { orderby: 'rankID'}})
-                            .pipe(function() {
-                                return children.pluck('rankid')[0];
-                            });
+                if (this.model.isNew()) {
+                    this.lowestChildRankPromise = $.when(null);
+                } else {
+                    var children = new this.model.specifyModel.LazyCollection({filters: {parent_id: this.model.id}, orderby: 'rankID'});
+                    this.lowestChildRankPromise = children.fetch().pipe(function() {
+                        return childRes.models[0].get('rankid');
                     });
+                }
                 this.treeRanksPromise = this.getTreeDefinition(this.model).pipe(function(def) {
                     var defid = def.id;
                     var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
-                    var items = new defItemModel.LazyCollection({limit: 0, filters: {treedef: defid}, orderby: 'rankID'});
+                    var items = new defItemModel.LazyCollection({limit: 0, filters: {treedef_id: defid}, orderby: 'rankID'});
                     return items.fetch().pipe(function(){
-                        //neither the limit nor the orderby filter above seem to be working?...
-                        //return items.models[items.models.length - 1].get('rankid');
                         return _.map(items.models, function(item) {
                             return {'rankid': item.get('rankid'), 'isenforced': item.get('isenforced')};
                         });
@@ -229,9 +227,8 @@ var QueryCbx = Backbone.View.extend({
             this.treeRanksPromise = null;
         }
         if (this.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
-            var collection = domain.getDomainResource('collection');
             var leftRels = new schema.models.CollectionRelType.LazyCollection({
-                filters: {leftsidecollection: collection.id}
+                filters: {leftsidecollection_id: schema.domainLevelIds.collection}
             });
             this.leftSideRelsPromise = leftRels.fetch().pipe(function() {
                 return _.map(leftRels.models, function(item) {
@@ -242,7 +239,7 @@ var QueryCbx = Backbone.View.extend({
                 });
             });
             var rightRels = new schema.models.CollectionRelType.LazyCollection({
-                filters: {rightsidecollection: collection.id}
+                filters: {rightsidecollection_id: schema.domainLevelIds.collection}
             });
             this.rightSideRelsPromise = rightRels.fetch().pipe(function() {
                 return _.map(rightRels.models, function(item) {
