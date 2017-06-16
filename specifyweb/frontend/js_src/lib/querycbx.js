@@ -149,7 +149,7 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
                 'isrelfld': false,
                 'isdisplay': false,
                 'isnot': false,
-                'startvalue': _.pluck(relName === 'rightSideRels' ? leftSideRels : rightSideRels, 'relid').toString(),
+                'startvalue': _.pluck(relName === 'leftSideRels' ? leftSideRels : rightSideRels, 'relid').toString(),
                 'operstart': 10,
                 'position': 2
             });
@@ -251,6 +251,102 @@ var QueryCbx = Backbone.View.extend({
         } else {
             return model.rget('definition', true);
         }   
+    },
+    getSpecialConditions: function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
+        var fields = [];
+        if (isTreeModel(this.model)) {
+            var tblId = this.model.specifyModel.tableId;
+            var tblName = this.model.specifyModel.name.toLowerCase();
+            var descFilterField;
+            var pos = 2;
+            //add not-a-descendant condition
+            if (this.model.id) {
+                descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+                descFilterField.set({
+                    'fieldname': "nodeNumber",
+                    'stringid': tblId + "." + tblName + ".nodeNumber",
+                    'tablelist': tblId,
+                    'sorttype': 0,
+                    'isrelfld': false,
+                    'isdisplay': false,
+                    'isnot': true,
+                    'startvalue': this.model.get("nodenumber") + ',' + this.model.get("highestchildnodenumber"),
+                    'operstart': 9,
+                    'position': pos++
+                });
+                fields.push(descFilterField);
+            }
+            if (this.fieldName === 'parent') {
+                //add rank limits
+                if (treeRanks != null) {
+                    if (this.model.get('rankid')) //original value, not updated with unsaved changes {
+                        var r = _.findIndex(treeRanks, function(rank) {
+                            return rank.rankid == this.model.get('rankid');
+                        });
+                    var nextRankId = 0;
+                    if (r && r != -1) {
+                        for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
+                        nextRankId = treeRanks[i-1].rankid;
+                    }   
+                }
+                var lastTreeRankId = _.last(treeRanks).rankid;
+                
+                var lowestRankId = Math.min(lastTreeRankId, nextRankId || lastTreeRankId, lowestChildRank || lastTreeRankId);
+                if (lowestRankId != 0) {
+                    descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+                    descFilterField.set({
+                        'fieldname': "rankId",
+                        'stringid': tblId + "." + tblName + ".rankId",
+                        'tablelist': tblId,
+                        'sorttype': 0,
+                        'isrelfld': false,
+                        'isdisplay': false,
+                        'isnot': false,
+                        'startvalue': lowestRankId,
+                        'operstart': 3,
+                        'position': pos++
+                    });
+                    fields.push(descFilterField);
+                }
+            } else if (this.fieldName === 'acceptedParent') {
+                //nothing to do
+            } else if (this.fieldName === 'hybridParent1' || this.fieldName === 'hybridParent2') {
+                //nothing to do
+            }
+        }
+
+        if (this.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
+            var subview = this.$el.parents().filter('td.specify-subview').first();
+            var relName = subview.attr('data-specify-field-name');
+            if (this.fieldName === 'collectionRelType') {
+                //add condition for current collection
+                tblId = this.relatedModel.tableId;
+                tblName = this.relatedModel.name.toLowerCase();
+                descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+                descFilterField.set({
+                    'fieldname': "collectionRelTypeId",
+                    'stringid': tblId + "." + tblName + ".collectionRelTypeId",
+                    'tablelist': tblId,
+                    'sorttype': 0,
+                    'isrelfld': false,
+                    'isdisplay': false,
+                    'isnot': false,
+                    'startvalue': _.pluck(relName === 'leftSideRels' ? leftSideRels : rightSideRels, 'relid').toString(),
+                    'operstart': 10,
+                    'position': 2
+                });
+                fields.push(descFilterField);
+            } else if (this.fieldName === 'rightSide') {
+                var relTypeId = resourceapi.idFromUrl(this.model.get('collectionreltype'));
+                var rel = leftSideRels.find(function(i){ return i.relid == relTypeId;});
+                this.forceCollection = {id: rel.rightsidecollectionid};
+            } else if (this.fieldName === 'leftSide') {
+                relTypeId = resourceapi.idFromUrl(this.model.get('collectionreltype'));
+                rel = rightSideRels.find(function(i){ return i.relid == relTypeId;});
+                this.forceCollection = {id: rel.rightsidecollectionid};
+            }
+        }
+        return fields;
     },
     select: function (event, ui) {
         var resource = ui.item.resource;
@@ -373,14 +469,32 @@ var QueryCbx = Backbone.View.extend({
             noValidation: true
         });
 
-        self.dialog = new QueryCbxSearch({
-            populateForm: self.populateForm,
-            forceCollection: self.forceCollection,
-            model: searchTemplateResource,
-            selected: function(resource) {
-                self.model.set(self.fieldName, resource);
-            }
-        }).render().$el.on('remove', function() { self.dialog = null; });
+        $.when(this.lowestChildRankPromise, this.treeRanksPromise, this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
+            var xtraConditions = self.getSpecialConditions(lowestChildRank, treeRanks, leftSideRels, rightSideRels);
+            var xtraFilters = [];
+            //send special conditions to dialog
+            //extremely skimpy. will work only for current known cases
+            _.each(xtraConditions, function(x) {
+                if (x.get('fieldname') === 'rankId') {
+                    xtraFilters.push({field: 'rankId', op: 'lt', value: x.get('startvalue')});
+                } else if (x.get('fieldname') === 'nodeNumber') {
+                    xtraFilters.push({field: 'nodeNumber', op: 'unbetween', value: x.get('startvalue')});
+                 } else if (x.get('fieldname') === 'collectionRelTypeId') {
+                     xtraFilters.push({field: 'id', op: 'in', value: x.get('startvalue')});
+                } else {
+                    console.warn('extended filter not created for:', x);
+                }
+            });
+            self.dialog = new QueryCbxSearch({
+                populateForm: self.populateForm,
+                forceCollection: self.forceCollection,
+                xtraFilters: xtraFilters,
+                model: searchTemplateResource,
+                selected: function(resource) {
+                    self.model.set(self.fieldName, resource);
+                }
+            }).render().$el.on('remove', function() { self.dialog = null; });
+        });
     },
     displayRelated: function(event) {
         event.preventDefault();
