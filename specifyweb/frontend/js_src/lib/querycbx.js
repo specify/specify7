@@ -72,97 +72,10 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
     });
     fields.add(dispField);
 
-    if (isTreeModel(qcbx.model)) {
-        var tblId = qcbx.model.specifyModel.tableId;
-        var tblName = qcbx.model.specifyModel.name.toLowerCase();
-        var descFilterField;
-        var pos = 2;
-        //add not-a-descendant condition
-        if (qcbx.model.id) {
-            descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
-            descFilterField.set({
-                'fieldname': "nodeNumber",
-                'stringid': tblId + "." + tblName + ".nodeNumber",
-                'tablelist': tblId,
-                'sorttype': 0,
-                'isrelfld': false,
-                'isdisplay': false,
-                'isnot': true,
-                'startvalue': qcbx.model.get("nodenumber") + ',' + qcbx.model.get("highestchildnodenumber"),
-                'operstart': 9,
-                'position': pos++
-            });
-            fields.add(descFilterField);
-        }
-        if (qcbx.fieldName === 'parent') {
-            //add rank limits
-            if (treeRanks != null) {
-                if (qcbx.model.get('rankid')) //original value, not updated with unsaved changes {
-                    var r = _.findIndex(treeRanks, function(rank) {
-                        return rank.rankid == qcbx.model.get('rankid');
-                    });
-                var nextRankId = 0;
-                if (r && r != -1) {
-                    for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
-                    nextRankId = treeRanks[i-1].rankid;
-                }   
-            }
-            var lastTreeRankId = _.last(treeRanks).rankid;
-            
-            var lowestRankId = Math.min(lastTreeRankId, nextRankId || lastTreeRankId, lowestChildRank || lastTreeRankId);
-            if (lowestRankId != 0) {
-                descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
-                descFilterField.set({
-                    'fieldname': "rankId",
-                    'stringid': tblId + "." + tblName + ".rankId",
-                    'tablelist': tblId,
-                    'sorttype': 0,
-                    'isrelfld': false,
-                    'isdisplay': false,
-                    'isnot': false,
-                    'startvalue': lowestRankId,
-                    'operstart': 3,
-                    'position': pos++
-                });
-                fields.add(descFilterField);
-            }
-        } else if (qcbx.fieldName === 'acceptedParent') {
-            //nothing to do
-        } else if (qcbx.fieldName === 'hybridParent1' || qcbx.fieldName === 'hybridParent2') {
-            //nothing to do
-        }
-    }
-
-    if (qcbx.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
-        var subview = qcbx.$el.parents().filter('td.specify-subview').first();
-        var relName = subview.attr('data-specify-field-name');
-        if (qcbx.fieldName === 'collectionRelType') {
-            //add condition for current collection
-            tblId = qcbx.relatedModel.tableId;
-            tblName = qcbx.relatedModel.name.toLowerCase();
-            descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
-            descFilterField.set({
-                'fieldname': "collectionRelTypeId",
-                'stringid': tblId + "." + tblName + ".collectionRelTypeId",
-                'tablelist': tblId,
-                'sorttype': 0,
-                'isrelfld': false,
-                'isdisplay': false,
-                'isnot': false,
-                'startvalue': _.pluck(relName === 'leftSideRels' ? leftSideRels : rightSideRels, 'relid').toString(),
-                'operstart': 10,
-                'position': 2
-            });
-            fields.add(descFilterField);
-            
-        } else if (qcbx.fieldName === 'rightSide') {
-            var relTypeId = resourceapi.idFromUrl(qcbx.model.get('collectionreltype'));
-            var rel = leftSideRels.find(function(i){ return i.relid == relTypeId;});
-            qcbx.forceCollection = {id: rel.rightsidecollectionid};
-        } else if (qcbx.fieldName === 'leftSide') {
-            relTypeId = resourceapi.idFromUrl(qcbx.model.get('collectionreltype'));
-            rel = rightSideRels.find(function(i){ return i.relid == relTypeId;});
-            qcbx.forceCollection = {id: rel.rightsidecollectionid};
+    var extraFields = qcbx.getSpecialConditions(lowestChildRank, treeRanks, leftSideRels, rightSideRels);
+    if (extraFields) {
+        for (var f = 0; f < extraFields.length; f++) {
+            fields.add(extraFields[f]);
         }
     }
     
