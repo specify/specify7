@@ -9,14 +9,60 @@ const UIPlugin          = require('./uiplugin.js');
 const whenAll           = require('./whenall.js');
 const schema            = require('./schema.js');
 const userInfo          = require('./userinfo.js');
+const QueryCbxSearch    = require('./querycbxsearch.js');
 
 const format = dataobjformatters.format;
 
 module.exports =  UIPlugin.extend({
         __name__: "CollectionRelOneToManyPlugin",
         events: {
-            'click a': 'go'
+            'click a.sp-rel-plugin-other-side': 'go',
+            'click a.sp-rel-plugin-remove': 'remove',
+            'click a.sp-rel-plugin-add': 'add'
         },
+    remove: function(evt) {
+        var idx = this.$('a').filter(".sp-rel-plugin-remove").index(evt.currentTarget);
+        var toRemove = this.items.models[idx];
+        this.model.dependentResources[this.side + 'siderels'].remove(toRemove);
+        this.items.remove(toRemove);
+        this.$('tr').filter(".sp-rel-plugin-" + this.relType.id)[idx].remove();
+    },
+    add: function(evt) {
+        console.info("add");
+        this.openSearch();
+    },
+    openSearch: function() {
+        var self = this;
+
+        if (self.dialog) {
+            // if the open dialog is for search just close it and don't open a new one
+            var closeOnly = self.dialog.hasClass('querycbx-dialog-search');
+            self.dialog.dialog('close');
+            if (closeOnly) return;
+        }
+
+        var searchTemplateResource = new schema.models.CollectionObject.Resource({}, {
+            noBusinessRules: true,
+            noValidation: true
+        });
+        
+        self.dialog = new QueryCbxSearch({
+            populateForm:this. populateForm,
+            forceCollection: self.otherCollection,
+            model: searchTemplateResource,
+            selected: function(resource) {
+                var toAdd = new schema.models.CollectionRelationship.Resource();
+                toAdd.set(self.otherSide + 'Side', resource);
+                toAdd.set(self.side + 'Side', self.model);
+                toAdd.set('collectionreltype', self.relType);
+                self.model.dependentResources[self.side + 'siderels'].add(toAdd);
+                self.items.add(toAdd);
+                self.addElForRelatedObj(resource, format(self.otherCollection));
+            }
+        }).render().$el.on('remove', function() { self.dialog = null; });
+        
+        
+    }, 
         render: function() {
             var table = $('<table>').addClass('collectionrelonetomanyplugin');
             this.$el.replaceWith(table);
@@ -55,8 +101,8 @@ module.exports =  UIPlugin.extend({
             var relModel = schema.getModel('CollectionRelationship');
             var filters = this.side == 'left' ? {leftside_id: this.model.id, collectionreltype_id: this.relType.id}
                 : {rightside_id: this.model.id, collectionreltype_id: this.relType.id};
-            var items = new relModel.LazyCollection({filters: filters});
-            items.fetch().done(this.gotRels.bind(this, items));
+            this.items = new relModel.LazyCollection({filters: filters});
+            this.items.fetch().done(this.gotRels.bind(this, this.items));
         },
     gotRels: function(related) {
         var otherSide = this.otherSide + 'side';
@@ -65,17 +111,26 @@ module.exports =  UIPlugin.extend({
         })).done(this.gotRelatedObjects.bind(this));
 
     },
+    addElForRelatedObj: function(co, otherColFormatted) {
+        var table = this.el;
+        var rowClass = {class: "sp-rel-plugin-" + this.relType.id};
+        var tr = $('<tr>', rowClass).appendTo(table);
+        var label = $('<a>', { class: "sp-rel-plugin-other-side", href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
+        format(co).done(function(text) { label.text(text); });
+        var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
+        otherColFormatted.done(function(text) { collection.text(text); });
+        $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: "Remove"}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
+    },
         gotRelatedObjects: function(collectionObjects) {
             var table = this.el;
             var otherCollectionFormatted = format(this.otherCollection);
-
-           _.each(collectionObjects, function(co) {
-               var tr = $('<tr>').appendTo(table);
-               var label = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
-               format(co).done(function(text) { label.text(text); });
-               var collection = $('<a>', { href: co.viewUrl() }).appendTo($('<td>').appendTo(tr));
-               otherCollectionFormatted.done(function(text) { collection.text(text); });
+            var self = this;
+            _.each(collectionObjects, function(co) {
+                self.addElForRelatedObj(co, otherCollectionFormatted);
            });
+            var footer = $('<tfoot>').appendTo(table);
+            $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
+           
         },
         go: function(evt) {
             evt.preventDefault();
