@@ -35,9 +35,12 @@ const userInfo             = require('./userinfo.js');
                     }
                     if (ignore && ignore.toLowerCase() == 'true') {
                         control.addClass('specify-ignore-field');
-                        if (fieldName && ['printOnSave', 'generateInvoice', 'generateLabelChk'].indexOf(fieldName) != 0) {
+                        if (fieldName && ['printonsave', 'generateinvoice', 'generatelabelchk'].indexOf(fieldName.toLowerCase()) != 0) {
                             control.addClass('specify-print-on-save');
                         }
+                    }
+                    if (fieldName && fieldName.toLowerCase() === 'isonloan') {
+                        control.addClass('specify-is-on-loan');
                     }
                     doingFormTable && control.addClass('specify-field-in-table');
                 }

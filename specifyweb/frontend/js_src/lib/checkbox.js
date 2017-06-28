@@ -5,6 +5,7 @@ var _        = require('underscore');
 var Backbone = require('./backbone.js');
 var Q        = require('q');
 var cookies  = require('./cookies.js');
+var schema = require('./schema.js');
 
 module.exports =  Backbone.View.extend({
     __name__: "CheckBox",
@@ -12,7 +13,15 @@ module.exports =  Backbone.View.extend({
         'change': 'change'
     },
     render: function() {
-        if (!this.$el.hasClass('specify-ignore-field')) {
+         if (this.$el.hasClass('specify-is-on-loan')) {
+            var openLoanPreps = new schema.models.LoanPreparation.LazyCollection({
+                filters: {preparation_id: this.model.get('id'), isresolved: false}
+            });
+            var $el = this.$el;
+            $.when(openLoanPreps.fetch()).done(function() {
+                $el.prop('checked', openLoanPreps.length);
+            });
+        } else if (!this.$el.hasClass('specify-ignore-field')) {
             Q(this.model.getResourceAndField(this.$el.attr('name')))
                 .spread(this._render.bind(this))
                 .done();
@@ -38,7 +47,7 @@ module.exports =  Backbone.View.extend({
         resource.on('change:' + fieldName, set);
     },
     change: function() {
-        if (!this.$el.hasClass('specify-ignore-field')) {
+        if (!this.$el.hasClass('specify-is-on-loan') && !this.$el.hasClass('specify-ignore-field')) {
             this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
         }
         if (this.$el.hasClass('specify-print-on-save')) {
