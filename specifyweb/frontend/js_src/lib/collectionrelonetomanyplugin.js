@@ -14,12 +14,12 @@ const QueryCbxSearch    = require('./querycbxsearch.js');
 const format = dataobjformatters.format;
 
 module.exports =  UIPlugin.extend({
-        __name__: "CollectionRelOneToManyPlugin",
-        events: {
-            'click a.sp-rel-plugin-other-side': 'go',
-            'click a.sp-rel-plugin-remove': 'remove',
-            'click a.sp-rel-plugin-add': 'add'
-        },
+    __name__: "CollectionRelOneToManyPlugin",
+    events: {
+        'click a.sp-rel-plugin-other-side': 'go',
+        'click a.sp-rel-plugin-remove': 'remove',
+        'click a.sp-rel-plugin-add': 'add'
+    },
     remove: function(evt) {
         var idx = this.$('a').filter(".sp-rel-plugin-remove").index(evt.currentTarget);
         var toRemove = this.items.models[idx];
@@ -63,53 +63,54 @@ module.exports =  UIPlugin.extend({
         
         
     }, 
-        render: function() {
-            var table = $('<table>').addClass('collectionrelonetomanyplugin');
-            this.$el.replaceWith(table);
-            this.setElement(table);
-            table.append('<tr><th>Collection Object</th><th>Collection</th></tr>');
-            this.model.isNew() || this.fillIn();
-            return this;
-        },
-        fillIn: function() {
-            var collection = new schema.models.CollectionRelType.LazyCollection({
-                filters: { name: this.init.relname }
-            });
-            collection.fetch({limit: 1})
-                .pipe(function() { return collection.first(); })
-                .pipe(function(relType) {
-                    return $.when(relType, relType.rget('leftsidecollection'), relType.rget('rightsidecollection'));
-                }).done(this.gotRelType.bind(this));
-        },
-        gotRelType: function(relType, leftSideCollection, rightSideCollection) {
-            this.relType = relType;
-            switch (schema.domainLevelIds.collection) {
-            case leftSideCollection.id:
-                this.side = 'left';
-                this.otherSide = 'right';
-                this.otherCollection = rightSideCollection;
-                break;
-            case rightSideCollection.id:
-                this.side = 'right';
-                this.otherSide = 'left';
-                this.otherCollection = leftSideCollection;
-                break;
-            default:
-                throw new Error("related collection plugin used with relation that doesn't match current collection");
-            }
-            
-            var relModel = schema.getModel('CollectionRelationship');
-            var filters = this.side == 'left' ? {leftside_id: this.model.id, collectionreltype_id: this.relType.id}
-                : {rightside_id: this.model.id, collectionreltype_id: this.relType.id};
-            this.items = new relModel.LazyCollection({filters: filters});
-            this.items.fetch().done(this.gotRels.bind(this, this.items));
-        },
+    render: function() {
+        var table = $('<table>').addClass('collectionrelonetomanyplugin');
+        this.$el.replaceWith(table);
+        this.setElement(table);
+        table.append('<tr><th>Collection Object</th><th>Collection</th></tr>');
+        var footer = $('<tfoot>').appendTo(table);
+        $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
+        this.model.isNew() || this.fillIn();
+        return this;
+    },
+    fillIn: function() {
+        var collection = new schema.models.CollectionRelType.LazyCollection({
+            filters: { name: this.init.relname }
+        });
+        collection.fetch({limit: 1})
+            .pipe(function() { return collection.first(); })
+            .pipe(function(relType) {
+                return $.when(relType, relType.rget('leftsidecollection'), relType.rget('rightsidecollection'));
+            }).done(this.gotRelType.bind(this));
+    },
+    gotRelType: function(relType, leftSideCollection, rightSideCollection) {
+        this.relType = relType;
+        switch (schema.domainLevelIds.collection) {
+        case leftSideCollection.id:
+            this.side = 'left';
+            this.otherSide = 'right';
+            this.otherCollection = rightSideCollection;
+            break;
+        case rightSideCollection.id:
+            this.side = 'right';
+            this.otherSide = 'left';
+            this.otherCollection = leftSideCollection;
+            break;
+        default:
+            throw new Error("related collection plugin used with relation that doesn't match current collection");
+        }
+        
+        var relModel = schema.getModel('CollectionRelationship');
+        var filters = this.side == 'left' ? {leftside_id: this.model.id, collectionreltype_id: this.relType.id}
+            : {rightside_id: this.model.id, collectionreltype_id: this.relType.id};
+        this.items = new relModel.LazyCollection({filters: filters});
+        this.items.fetch().done(this.gotRels.bind(this, this.items));
+    },
     gotRels: function(related) {
         var otherSide = this.otherSide + 'side';
         whenAll(_.map(related.models, function(rel) {
-                return rel.rget(otherSide, true);
+            return rel.rget(otherSide, true);
         })).done(this.gotRelatedObjects.bind(this));
-
     },
     addElForRelatedObj: function(co, otherColFormatted) {
         var table = this.el;
@@ -121,34 +122,30 @@ module.exports =  UIPlugin.extend({
         otherColFormatted.done(function(text) { collection.text(text); });
         $('<span>', {class:"ui-icon ui-icon-trash"}).appendTo($('<a>', {class: "sp-rel-plugin-remove", title: "Remove"}).appendTo($('<td>', { class: "remove"}).appendTo(tr)));
     },
-        gotRelatedObjects: function(collectionObjects) {
-            var table = this.el;
-            var otherCollectionFormatted = format(this.otherCollection);
-            var self = this;
-            _.each(collectionObjects, function(co) {
-                self.addElForRelatedObj(co, otherCollectionFormatted);
-           });
-            var footer = $('<tfoot>').appendTo(table);
-            $('<span>', {class: "ui-icon ui-icon-plus"}).appendTo($('<a>', {class: "sp-rel-plugin-add"}).appendTo(footer));
-           
-        },
-        go: function(evt) {
-            evt.preventDefault();
-            const collections = userInfo.available_collections.map(c => c[0]);
-            if (collections.includes(this.otherCollection.id)) {
-                navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
-            } else {
-                $('<div>').text(
-                    `You do not have access to the collection ${this.otherCollection.get('collectionname')}
- through the currently logged in account.`
-                ).dialog({
-                    title: "Access denied.",
-                    close() { $(this).remove(); },
-                    buttons: {
-                        Ok() { $(this).dialog('close'); }
-                    }
-                });
-            }
+    gotRelatedObjects: function(collectionObjects) {
+        var otherCollectionFormatted = format(this.otherCollection);
+        var self = this;
+        _.each(collectionObjects, function(co) {
+            self.addElForRelatedObj(co, otherCollectionFormatted);
+        });
+    },
+    go: function(evt) {
+        evt.preventDefault();
+        const collections = userInfo.available_collections.map(c => c[0]);
+        if (collections.includes(this.otherCollection.id)) {
+            navigation.switchCollection(this.otherCollection, $(evt.currentTarget).prop('href'));
+        } else {
+            $('<div>').text(
+                `You do not have access to the collection ${this.otherCollection.get('collectionname')}
+                through the currently logged in account.`
+            ).dialog({
+                title: "Access denied.",
+                close() { $(this).remove(); },
+                buttons: {
+                    Ok() { $(this).dialog('close'); }
+                }
+            });
         }
-    }, { pluginsProvided: ["CollectionRelOneToManyPlugin"] });
+    }
+}, { pluginsProvided: ["CollectionRelOneToManyPlugin"] });
 

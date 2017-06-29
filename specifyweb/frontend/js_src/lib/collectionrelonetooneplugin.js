@@ -15,7 +15,7 @@ module.exports =  OneToMany.extend({
         this.$el.replaceWith(control);
         this.setElement(control);
         this.$('button').hide(); // disable this for now.
-        this.fillIn();
+        this.model.isNew() || this.fillIn();
         return this;
     },
     gotRelatedObjects: function(collectionObjects) {
