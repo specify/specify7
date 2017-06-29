@@ -13,13 +13,16 @@ module.exports =  Backbone.View.extend({
         'change': 'change'
     },
     render: function() {
-         if (this.$el.hasClass('specify-is-on-loan')) {
+        if (this.$el.hasClass('specify-is-on-loan')) {
             var openLoanPreps = new schema.models.LoanPreparation.LazyCollection({
                 filters: {preparation_id: this.model.get('id'), isresolved: false}
             });
-            var $el = this.$el;
+            var self = this;
+            //this.$el.prop('disabled', true); //don't like the looks of this
             $.when(openLoanPreps.fetch()).done(function() {
-                $el.prop('checked', openLoanPreps.length);
+                self.$el.prop('checked', openLoanPreps.length);
+                self.isOnLoan = openLoanPreps.length;
+                
             });
         } else if (!this.$el.hasClass('specify-ignore-field')) {
             Q(this.model.getResourceAndField(this.$el.attr('name')))
@@ -49,9 +52,13 @@ module.exports =  Backbone.View.extend({
     change: function() {
         if (!this.$el.hasClass('specify-is-on-loan') && !this.$el.hasClass('specify-ignore-field')) {
             this.model.set(this.$el.attr('name'), this.$el.prop('checked'));
-        }
-        if (this.$el.hasClass('specify-print-on-save')) {
-            this.$el.attr('check-cookie') && cookies.createCookie(this.$el.attr('check-cookie'), this.el.checked);
+        } else {
+            if (this.$el.hasClass('specify-print-on-save')) {
+                this.$el.attr('check-cookie') && cookies.createCookie(this.$el.attr('check-cookie'), this.el.checked);
+            }
+            if (this.$el.hasClass('specify-is-on-loan')) {
+                this.$el.prop('checked', this.isOnLoan);
+            }
         }
     }
 });
