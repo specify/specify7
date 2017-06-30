@@ -22,7 +22,7 @@ function makeDialog(el, options) {
     dialog && dialog.dialog('close');
     var done = options.done;
     dialog = el.dialog(_.extend({
-        modal: false,
+        modal: true,
         close: function() { dialog = null; $(this).remove(); done && done();}
     }, options));
 }
@@ -48,8 +48,12 @@ var ReportListDialog = Backbone.View.extend({
                 return false;
             });
         }
-        if (this.options.autoSelectSingle && appResources.length == 1) {
-            this.getReport(appResources.models[0], getReportParams);
+        if (this.options.autoSelectSingle) {
+            if (appResources.length == 1) {
+                this.getReport(appResources.models[0], getReportParams);
+            } else if (appResources.length == 0) {
+                alert("No reports are available for this table."); //currently safe to assume a tableid was provided.
+            }
         }
         function byType(type) {
             return appResources.filter(function(r) {
@@ -60,7 +64,7 @@ var ReportListDialog = Backbone.View.extend({
         this.labels = byType('jrxml/label');
     },
     render: function() {
-        if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length == 1)) {
+        if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length <= 1)) {
             var reports = $('<table class="reports">');
             var labels = $('<table class="labels">');
 
