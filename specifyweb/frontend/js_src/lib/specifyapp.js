@@ -60,7 +60,7 @@ var reports      = require('./reports.js');
         jqxhr.errorHandled = true;
     }
 
-function viewSaved(resource, recordSet, pushUrl, view, options) {
+function viewSaved(resource, recordSet, options) {
     if (options.addAnother) {
         showResource(options.newResource, recordSet);
     } else if (options.wasNew) {
@@ -70,8 +70,6 @@ function viewSaved(resource, recordSet, pushUrl, view, options) {
         reloadResource.recordsetid = resource.recordsetid;
         reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
     }
-    pushUrl && navigation.push(resource.viewUrl());
-    setCurrentView(view);
 }
 
     // build and display view for resource
@@ -93,10 +91,10 @@ function showResource(resource, recordSet, pushUrl) {
                     tblId: resource.specifyModel.tableId,
                     recordToPrintId: resource.id,
                     autoSelectSingle: true,
-                    done: viewSaved.bind(this, resource, recordSet, pushUrl, view, options)
+                    done: viewSaved.bind(this, resource, recordSet, options)
                 });
             } else {
-                viewSaved(resource, recordSet, pushUrl, view, options);
+                viewSaved(resource, recordSet, options);
             }
         }).on('deleted', function() {
             if (view.next) {
