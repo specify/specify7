@@ -60,8 +60,22 @@ var reports      = require('./reports.js');
         jqxhr.errorHandled = true;
     }
 
+function viewSaved(resource, recordSet, pushUrl, view, options) {
+    if (options.addAnother) {
+        showResource(options.newResource, recordSet);
+    } else if (options.wasNew) {
+        navigation.go(resource.viewUrl());
+    } else {
+        const reloadResource = new resource.constructor({ id: resource.id });
+        reloadResource.recordsetid = resource.recordsetid;
+        reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
+    }
+    pushUrl && navigation.push(resource.viewUrl());
+    setCurrentView(view);
+}
+
     // build and display view for resource
-    function showResource(resource, recordSet, pushUrl) {
+function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
             className: "specify-root-form",
@@ -72,22 +86,17 @@ var reports      = require('./reports.js');
         });
 
         view.on('saved', function(resource, options) {
+            var todoNext;
             if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
                 console.log('generating label or invoice');
-                reports({
+                reports( {
                     tblId: resource.specifyModel.tableId,
                     recordToPrintId: resource.id,
-                    autoSelectSingle: true
+                    autoSelectSingle: true,
+                    done: viewSaved.bind(this, resource, recordSet, pushUrl, view, options)
                 });
-            }
-            if (options.addAnother) {
-                showResource(options.newResource, recordSet);
-            } else if (options.wasNew) {
-                navigation.go(resource.viewUrl());
             } else {
-                const reloadResource = new resource.constructor({ id: resource.id });
-                reloadResource.recordsetid = resource.recordsetid;
-                reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
+                viewSaved(resource, recordSet, pushUrl, view, options);
             }
         }).on('deleted', function() {
             if (view.next) {
@@ -101,9 +110,8 @@ var reports      = require('./reports.js');
         }).on('changetitle', function(resource, title) {
             setTitle(title);
         });
-
-        pushUrl && navigation.push(resource.viewUrl());
-        setCurrentView(view);
+    pushUrl && navigation.push(resource.viewUrl());
+    setCurrentView(view);
     }
 
     //set title of browser tab

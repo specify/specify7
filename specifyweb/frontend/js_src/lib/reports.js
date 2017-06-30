@@ -20,9 +20,10 @@ var title =  "Reports";
 var dialog;
 function makeDialog(el, options) {
     dialog && dialog.dialog('close');
+    var done = options.done;
     dialog = el.dialog(_.extend({
-        modal: true,
-        close: function() { dialog = null; $(this).remove(); }
+        modal: false,
+        close: function() { dialog = null; $(this).remove(); done && done();}
     }, options));
 }
 
@@ -77,8 +78,11 @@ var ReportListDialog = Backbone.View.extend({
                 maxHeight: 400,
                 buttons: [
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
+                ],
+                done: this.options.done
             });
+        } else {
+            this.options.done && this.options.done();
         }
         return this;
     },
