@@ -74,7 +74,7 @@ module.exports = Backbone.View.extend({
             this.$el.append(options);
             // # make sure value in the resouce is consitent with what is displayed.
             if (!value || this.$el.find(`option[value="${value}"]`).length < 1) {
-                this.model.set(fieldName, higherRanks[0]);
+                this.model.set(fieldName, higherRanks.models[0]);
             }
         },
         changed: function() {
