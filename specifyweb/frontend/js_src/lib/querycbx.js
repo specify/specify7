@@ -49,11 +49,12 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
 
     var searchFieldSpec = QueryFieldSpec.fromPath([qcbx.relatedModel.name].concat(searchFieldStr.split('.')));
     var searchField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
+    var qstr = qcbx && isTreeModel(qcbx.model) ? '%' + q : q;
     searchField.set(searchFieldSpec.toSpQueryAttrs()).set({
         'sorttype': 0,
         'isdisplay': false,
         'isnot': false,
-        'startvalue': q,
+        'startvalue': qstr,
         'operstart': 15,
         'position': 0
     });

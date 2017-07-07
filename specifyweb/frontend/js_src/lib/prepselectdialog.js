@@ -237,10 +237,10 @@ module.exports =  PrepDialog.extend({
                 filters: { id: key }
             });
             var _self = this;
-            irec.fetch().done(function(arg) {
+            irec.fetch().done(function() {
                 this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
 
-                var resourceModel = new model.Resource(arg.objects[0]);
+                var resourceModel = irec.models[0];
 
                 new ResourceView({
                     populateForm: populateForm,
