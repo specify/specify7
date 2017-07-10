@@ -451,3 +451,9 @@ def renumber_tree(table):
             ") as sub on sub.parentid = t.{table}id\n"
             "set highestchildnodenumber = hcnn where rankid = %(rank)s\n"
         ).format(table=table), {'rank': rank})
+
+    # Clear the BadNodes and UpdateNodes flags.
+    from .models import datamodel, Sptasksemaphore
+    tree_model = datamodel.get_table(table)
+    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
