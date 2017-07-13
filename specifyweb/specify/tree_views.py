@@ -1,5 +1,3 @@
-import re
-
 from functools import wraps
 
 from django.views.decorators.http import require_GET, require_POST
@@ -8,7 +6,7 @@ from django.db import connection, transaction
 
 from .views import login_maybe_required, apply_access_control
 from .api import get_object_or_404, obj_to_data, toJson
-from .models import datamodel, Spappresourcedata
+from .models import datamodel
 from . import tree_extras
 
 from sqlalchemy.orm import aliased
@@ -16,7 +14,6 @@ from sqlalchemy import sql, types
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.context.app_resource import get_app_resource
 
 def tree_mutation(mutation):
     @login_maybe_required
@@ -33,7 +30,6 @@ def tree_mutation(mutation):
         return HttpResponse(toJson(result), content_type="application/json")
     return wrapper
 
-
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree, parentid, sortfield):
@@ -47,8 +43,6 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby = tree_table.name.lower() + '.' + sortfield
-    
-
 
     with models.session_context() as session:
         query = session.query(id_col,
@@ -89,7 +83,7 @@ def tree_stats(request, treedef, tree, parentid):
 
     target, make_joins = getattr(StatsQuerySpecialization, tree)()
     target_id = getattr(target, target._id)
- 
+
     direct_count = sql.cast(
         sql.func.sum(sql.case([(sql.and_(target_id != None, descendant_id == node_id), 1)], else_=0)),
         types.Integer)
