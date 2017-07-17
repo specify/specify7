@@ -60,7 +60,7 @@ def ephemeral(request):
 @require_POST
 @login_maybe_required
 @never_cache
-def export(request):
+def export_csv(request):
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -76,11 +76,34 @@ def export(request):
 
     filename = 'query_results_%s.csv' % datetime.now().isoformat()
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename))
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'csv'))
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
+@require_POST
+@login_maybe_required
+@never_cache
+def export_kml(request):
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    logger.info('export query: %s', spquery)
+
+    if 'collectionid' in spquery:
+        collection = Collection.objects.get(pk=spquery['collectionid'])
+        logger.debug('forcing collection to %s', collection.collectionname)
+    else:
+        collection = request.specify_collection
+
+    filename = 'query_results_%s.kml' % datetime.now().isoformat()
+
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'kml'))
+    thread.daemon = True
+    thread.start()
+    return HttpResponse('OK', content_type='text/plain')
 
 @require_POST
 @login_maybe_required
