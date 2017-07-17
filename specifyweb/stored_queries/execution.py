@@ -176,6 +176,12 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     logger.debug('query_to_csv finished')
 
+def row_has_geocoords(coord_cols, row):
+    """Assuming single point
+    """
+    return row[coord_cols[0]] != None and row[coord_cols[0]] != '' and row[coord_cols[1]] != None and row[coord_cols[1]] != ''
+
+    
 def query_to_kml(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, add_header=False, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
@@ -201,7 +207,6 @@ def query_to_kml(session, collection, user, tableid, field_specs, path,
     documentElement = kmlElement.appendChild(documentElement)
 
     coord_cols = getCoordinateColumns(field_specs)
-    print coord_cols
 
     if not strip_id:
         model = models.models_by_tableid[tableid]
@@ -211,8 +216,9 @@ def query_to_kml(session, collection, user, tableid, field_specs, path,
     print table
     
     for row in query.yield_per(1):
-        placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, field_specs)
-        documentElement.appendChild(placemarkElement)
+        if row_has_geocoords(coord_cols, row):
+            placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, field_specs)
+            documentElement.appendChild(placemarkElement)
 
     kmlFile = open(path, 'w')
     kmlFile.write(kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8'))
