@@ -302,7 +302,7 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def set_fullnames(table, depth, reverse=False, node_number_range=None):
+def set_fullnames(table, depth, reverse=False):
     cursor = connection.cursor()
     sql = (
         "update {table} t0\n"
@@ -318,10 +318,8 @@ def set_fullnames(table, depth, reverse=False, node_number_range=None):
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
     )
-    if node_number_range is not None:
-        sql += "and t0.nodenumber between %s and %s\n"
     logger.debug('fullname update sql:\n%s', sql)
-    return cursor.execute(sql, node_number_range)
+    return cursor.execute(sql)
 
 def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
     cursor = connection.cursor()
@@ -451,3 +449,9 @@ def renumber_tree(table):
             ") as sub on sub.parentid = t.{table}id\n"
             "set highestchildnodenumber = hcnn where rankid = %(rank)s\n"
         ).format(table=table), {'rank': rank})
+
+    # Clear the BadNodes and UpdateNodes flags.
+    from .models import datamodel, Sptasksemaphore
+    tree_model = datamodel.get_table(table)
+    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)

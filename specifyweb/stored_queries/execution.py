@@ -17,6 +17,7 @@ from ..notifications.models import Message
 from . import models
 from .queryfield import QueryField
 from .format import ObjectFormatter
+from .query_construct import QueryConstruct
 
 
 logger = logging.getLogger(__name__)
@@ -472,10 +473,16 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
 
     replace_nulls = if True, replace null values with ""
     """
-    objectformatter = ObjectFormatter(collection, user, replace_nulls)
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
-    query = session.query(id_field)
+
+    query = QueryConstruct(
+        collection=collection,
+        objectformatter=ObjectFormatter(collection, user, replace_nulls),
+        query=session.query(id_field),
+    )
+
+
     query = filter_by_collection(model, query, collection)
 
     if recordsetid is not None:
@@ -485,18 +492,15 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
-    join_cache = {}
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field = fs.add_to_query(query, objectformatter,
-                                       join_cache=join_cache,
-                                       collection=collection)
+        query, field = fs.add_to_query(query)
         if fs.display:
-            query = query.add_columns(objectformatter.fieldformat(fs, field))
+            query = query.add_columns(query.objectformatter.fieldformat(fs, field))
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
 
-    logger.debug("query: %s", query)
-    return query, order_by_exprs
+    logger.debug("query: %s", query.query)
+    return query.query, order_by_exprs
