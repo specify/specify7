@@ -208,6 +208,23 @@ var router             = require('./router.js');
             var cls = $(evt.currentTarget).attr('class');
             var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
             var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
+            if (cls == 'query-kml') {
+                var captions = _.chain(this.fieldUIs)
+                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                        .pluck('fieldSpec')
+                        .map(function(f){
+                            var field = _.last(f.joinPath);
+                            var name = f.treeRank || field.getLocalizedName();
+                            if (f.datePart &&  f.datePart != 'Full Date') {
+                                name += ' (' + f.datePart + ')';
+                            }
+                            return name;
+                        }).value();
+                //sneaky cheat. Doesn't seem any facility for localizations in the query api
+                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
+                this.query.set('captions', captions);
+            }
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
                 $('<div title="Unable to Export">Please add latitude and longitude fields to the query. ' +
                   '</div>').dialog({

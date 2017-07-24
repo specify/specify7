@@ -125,7 +125,7 @@ def do_export(spquery, collection, user, filename, exporttype):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, add_header=True, strip_id=True)
         elif exporttype == 'kml':
-            query_to_kml(session, collection, user, tableid, field_specs, path,
+            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'],
                          recordsetid=recordsetid, add_header=True, strip_id=False)
             
     Message.objects.create(user=user, content=json.dumps({
@@ -183,7 +183,7 @@ def row_has_geocoords(coord_cols, row):
     return row[coord_cols[0]] != None and row[coord_cols[0]] != '' and row[coord_cols[1]] != None and row[coord_cols[1]] != ''
 
     
-def query_to_kml(session, collection, user, tableid, field_specs, path,
+def query_to_kml(session, collection, user, tableid, field_specs, path, captions,
                  recordsetid=None, add_header=False, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
@@ -195,7 +195,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path,
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
     print("query_to_kml")
-    print(field_specs)
+    print(captions)
     
     logger.debug('query_to_kml starting')
 
@@ -218,7 +218,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path,
     
     for row in query.yield_per(1):
         if row_has_geocoords(coord_cols, row):
-            placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, field_specs)
+            placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, captions)
             documentElement.appendChild(placemarkElement)
 
     kmlFile = open(path, 'w')
@@ -242,7 +242,7 @@ def getCoordinateColumns(field_specs):
             
     return [lng, lat]
 
-def createPlacemark(kmlDoc, row, coord_cols, table, field_specs):
+def createPlacemark(kmlDoc, row, coord_cols, table, captions):
   # This creates a  element for a row of data.
     #print row
     placemarkElement = kmlDoc.createElement('Placemark')
@@ -254,9 +254,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, field_specs):
     for f in range(1 if table != None else 0, len(row)):
         if f != coord_cols[0] and f != coord_cols[1]:
             dataElement = kmlDoc.createElement('Data')
-            jp = field_specs[f - adj].fieldspec.join_path
-            f_name = jp[len(jp)-1].name
-            dataElement.setAttribute('name', f_name)
+            dataElement.setAttribute('name', captions[f-adj])
             valueElement = kmlDoc.createElement('value')
             dataElement.appendChild(valueElement)
             valueText = kmlDoc.createTextNode(row[f])
