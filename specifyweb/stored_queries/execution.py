@@ -251,7 +251,11 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions):
   
     # Loop through the columns and create a  element for every field that has a value.
     adj = 0 if table == None else 1
-    for f in range(1 if table != None else 0, len(row)):
+    nameElement = kmlDoc.createElement('name')
+    nameText = kmlDoc.createTextNode(row[adj])
+    nameElement.appendChild(nameText)
+    placemarkElement.appendChild(nameElement)
+    for f in range(adj, len(row)):
         if f != coord_cols[0] and f != coord_cols[1]:
             dataElement = kmlDoc.createElement('Data')
             dataElement.setAttribute('name', captions[f-adj])
