@@ -92,6 +92,9 @@ def export_kml(request):
 
     logger.info('export query: %s', spquery)
 
+    abs_uri = request.build_absolute_uri('')
+    the_host = abs_uri.replace(request.path_info,'')
+    
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
         logger.debug('forcing collection to %s', collection.collectionname)
@@ -100,7 +103,7 @@ def export_kml(request):
 
     filename = 'query_results_%s.kml' % datetime.now().isoformat()
 
-    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'kml'))
+    thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, filename, 'kml', the_host))
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')

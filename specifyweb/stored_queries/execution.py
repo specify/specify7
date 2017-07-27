@@ -106,7 +106,7 @@ def field_specs_from_json(json_fields):
     return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
-def do_export(spquery, collection, user, filename, exporttype):
+def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
     to a file, and creates "export completed" message when finished.
 
@@ -125,7 +125,7 @@ def do_export(spquery, collection, user, filename, exporttype):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, add_header=True, strip_id=True)
         elif exporttype == 'kml':
-            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'],
+            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, add_header=True, strip_id=False)
             
     Message.objects.create(user=user, content=json.dumps({
@@ -183,7 +183,7 @@ def row_has_geocoords(coord_cols, row):
     return row[coord_cols[0]] != None and row[coord_cols[0]] != '' and row[coord_cols[1]] != None and row[coord_cols[1]] != ''
 
     
-def query_to_kml(session, collection, user, tableid, field_specs, path, captions,
+def query_to_kml(session, collection, user, tableid, field_specs, path, captions, host,
                  recordsetid=None, add_header=False, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
@@ -218,7 +218,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     
     for row in query.yield_per(1):
         if row_has_geocoords(coord_cols, row):
-            placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, captions)
+            placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, captions, host)
             documentElement.appendChild(placemarkElement)
 
     kmlFile = open(path, 'w')
@@ -227,22 +227,27 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     logger.debug('query_to_kml finished')
 
 def getCoordinateColumns(field_specs):
-    lat = -1
-    lng = -1
+    lat1, lng1, lat2, lng2, lltype = (-1,-1,-1,-1,-1)
     f = 1
     for fld in field_specs:
         if fld.fieldspec.table.name == 'Locality':
             jp = fld.fieldspec.join_path
-            f_name = jp[len(jp)-1].name
+            f_name = jp[len(jp)-1].name.lower()
             if f_name == 'longitude1':
-                lng = f
+                lng1 = f
             elif f_name == 'latitude1':
-                lat = f
+                lat1 = f
+            elif f_name == 'longitude2':
+                lng2 = f
+            elif f_name == 'latitude2':
+                lat2 = f
+            elif f_name == 'latlongtype':
+                lltype = f
         f = f + 1
             
-    return [lng, lat]
+    return [lng1, lat1, lng2, lat2, lltype]
 
-def createPlacemark(kmlDoc, row, coord_cols, table, captions):
+def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
   # This creates a  element for a row of data.
     #print row
     placemarkElement = kmlDoc.createElement('Placemark')
@@ -256,7 +261,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions):
     nameElement.appendChild(nameText)
     placemarkElement.appendChild(nameElement)
     for f in range(adj, len(row)):
-        if f != coord_cols[0] and f != coord_cols[1]:
+        if f not in coord_cols:
             dataElement = kmlDoc.createElement('Data')
             dataElement.setAttribute('name', captions[f-adj])
             valueElement = kmlDoc.createElement('value')
@@ -277,13 +282,11 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions):
     
     #add the url
     if table != None:
-        #need to find the server for real
-        server = 'localhost:8000'
         urlElement = kmlDoc.createElement('Data')
         urlElement.setAttribute('name', 'go to')
         urlValue = kmlDoc.createElement('value')
         urlElement.appendChild(urlValue)
-        urlText = kmlDoc.createTextNode('http://' + server + '/specify/view/' + table + '/' + str(row[0]) + '/')
+        urlText = kmlDoc.createTextNode(host + '/specify/view/' + table + '/' + str(row[0]) + '/')
         urlValue.appendChild(urlText)
         extElement.appendChild(urlElement)
     
