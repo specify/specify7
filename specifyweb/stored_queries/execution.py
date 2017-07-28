@@ -244,8 +244,15 @@ def getCoordinateColumns(field_specs):
             elif f_name == 'latlongtype':
                 lltype = f
         f = f + 1
-            
-    return [lng1, lat1, lng2, lat2, lltype]
+
+    result = [lng1, lat1]
+    if lng2 != -1 and lat2 != -1:
+        result.append(lng2)
+        result.append(lat2)
+        if lltype != -1:
+            result.append(lltype)
+
+    return result
 
 def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
   # This creates a  element for a row of data.
@@ -271,13 +278,18 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
             extElement.appendChild(dataElement)
 
 
+            
     #display coords
     crdElement = kmlDoc.createElement('Data')
     crdElement.setAttribute('name', 'coordinates')
     crdValue = kmlDoc.createElement('value')
     crdElement.appendChild(crdValue)
-    crdText = kmlDoc.createTextNode(row[coord_cols[1]] + ', ' + row[coord_cols[0]])
-    crdValue.appendChild(crdText)
+    crdStr = row[coord_cols[1]] + ', ' + row[coord_cols[0]]
+    if len(coord_cols) >= 4:
+        crdStr += ' : ' + row[coord_cols[3]] + ', ' + row[coord_cols[2]]
+    if len(coord_cols) == 5:
+        crdStr += ' (' + row[coord_cols[4]] + ')'
+    crdValue.appendChild(kmlDoc.createTextNode(crdStr))
     extElement.appendChild(crdElement)
     
     #add the url
@@ -291,14 +303,52 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
         extElement.appendChild(urlElement)
     
     #add coords
+    if len(coord_cols) == 5:
+        coord_type = row[coord_cols[4]].lower()
+    elif len(coord_cols) == 4:
+        coord_type = 'line'
+    else:
+        coord_type = 'point'
+
+    
     pointElement = kmlDoc.createElement('Point')
-    placemarkElement.appendChild(pointElement)
     coordinates = row[coord_cols[0]] + ',' + row[coord_cols[1]]
     coorElement = kmlDoc.createElement('coordinates')
     coorElement.appendChild(kmlDoc.createTextNode(coordinates))
     pointElement.appendChild(coorElement)
 
-    
+    if coord_type == 'point':
+        placemarkElement.appendChild(pointElement)
+    else:
+        multiElement = kmlDoc.createElement('MultiGeometry')
+        multiElement.appendChild(pointElement)
+        if coord_type == 'line':
+            lineElement = kmlDoc.createElement('LineString')
+            tessElement = kmlDoc.createElement('tessellate')
+            tessElement.appendChild(kmlDoc.createTextNode('1'))
+            lineElement.appendChild(tessElement)
+            coordinates =  row[coord_cols[0]] + ',' + row[coord_cols[1]] + ' ' +  row[coord_cols[2]] + ',' + row[coord_cols[3]]
+            coorElement = kmlDoc.createElement('coordinates')
+            coorElement.appendChild(kmlDoc.createTextNode(coordinates))
+            lineElement.appendChild(coorElement)
+            multiElement.appendChild(lineElement)
+        else:
+            ringElement = kmlDoc.createElement('LinearRing')
+            tessElement = kmlDoc.createElement('tessellate')
+            tessElement.appendChild(kmlDoc.createTextNode('1'))
+            ringElement.appendChild(tessElement)
+            coordinates = row[coord_cols[0]] + ',' + row[coord_cols[1]]
+            coordinates += ' ' + row[coord_cols[2]] + ',' + row[coord_cols[1]]
+            coordinates += ' ' + row[coord_cols[2]] + ',' + row[coord_cols[3]]
+            coordinates += ' ' + row[coord_cols[0]] + ',' + row[coord_cols[3]]
+            coordinates += ' ' + row[coord_cols[0]] + ',' + row[coord_cols[1]]
+            coorElement = kmlDoc.createElement('coordinates')
+            coorElement.appendChild(kmlDoc.createTextNode(coordinates))
+            ringElement.appendChild(coorElement)
+            multiElement.appendChild(ringElement)
+
+        placemarkElement.appendChild(multiElement)
+
     return placemarkElement
 
 #############################################################################################################
