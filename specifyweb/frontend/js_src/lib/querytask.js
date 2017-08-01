@@ -192,7 +192,7 @@ var router             = require('./router.js');
         hasGeoCoords: function() {
             var lat = false, lng = false, latt = false, lngt = false;
             this.fieldUIs.forEach(function(f){
-                if (f.spqueryfield.get('tablelist').split(',').pop() == 2) {
+                if (f.spqueryfield.get('isdisplay') && f.spqueryfield.get('tablelist').split(',').pop() == 2) {
                     var fld = f.spqueryfield.get('fieldname').toLowerCase();
                     lat = lat || fld === 'latitude1';
                     lng = lng || fld === 'longitude1';
@@ -208,23 +208,6 @@ var router             = require('./router.js');
             var cls = $(evt.currentTarget).attr('class');
             var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
             var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
-            if (cls == 'query-kml') {
-                var captions = _.chain(this.fieldUIs)
-                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
-                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
-                        .pluck('fieldSpec')
-                        .map(function(f){
-                            var field = _.last(f.joinPath);
-                            var name = f.treeRank || field.getLocalizedName();
-                            if (f.datePart &&  f.datePart != 'Full Date') {
-                                name += ' (' + f.datePart + ')';
-                            }
-                            return name;
-                        }).value();
-                //sneaky cheat. Doesn't seem any facility for localizations in the query api
-                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
-                this.query.set('captions', captions);
-            }
             if (fileDesc == 'KML' && !this.hasGeoCoords()) {
                 $('<div title="Unable to Export">Please add latitude and longitude fields to the query. ' +
                   '</div>').dialog({
@@ -232,6 +215,24 @@ var router             = require('./router.js');
                       close: function() { $(this).remove(); }
                   });
                 return;
+            }
+            if (cls == 'query-kml') {
+                var captions = _.chain(this.fieldUIs)
+                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                        .map(function(f) { return {spec: f.fieldSpec, isdisplay: f.spqueryfield.get('isdisplay')};})
+                        .map(function(f){
+                            var field = _.last(f.spec.joinPath);
+                            var name = f.spec.treeRank || field.getLocalizedName();
+                            if (f.spec.datePart &&  f.spec.datePart != 'Full Date') {
+                                name += ' (' + f.spec.datePart + ')';
+                            }
+                            //return {caption: name, isdisplay: f.isdisplay};
+                            return name;
+                        }).value();
+                //sneaky cheat. Doesn't seem to be a facility for localizations in the query api
+                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
+                this.query.set('captions', captions);
             }
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;

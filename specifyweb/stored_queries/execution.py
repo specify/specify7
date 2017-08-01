@@ -158,16 +158,13 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-
-    print("query_to_csv")
-    print(field_specs)
     
     logger.debug('query_to_csv starting')
 
     with open(path, 'wb') as f:
         csv_writer = csv.writer(f)
         if add_header:
-            header = [fs.fieldspec.to_stringid() for fs in field_specs]
+            header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
             if not strip_id:
                 header = ['id'] + header
             csv_writer.writerow(header)
@@ -193,9 +190,6 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-
-    print("query_to_kml")
-    print(captions)
     
     logger.debug('query_to_kml starting')
 
@@ -207,14 +201,13 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     documentElement = kmlDoc.createElement('Document')
     documentElement = kmlElement.appendChild(documentElement)
 
-    coord_cols = getCoordinateColumns(field_specs)
-
     if not strip_id:
         model = models.models_by_tableid[tableid]
         table = str(getattr(model, model._id)).split('.')[0].lower() #wtfiw
     else:
         table = None
-    print table
+
+    coord_cols = getCoordinateColumns(field_specs, table != None)
     
     for row in query.yield_per(1):
         if row_has_geocoords(coord_cols, row):
@@ -226,9 +219,9 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
             
     logger.debug('query_to_kml finished')
 
-def getCoordinateColumns(field_specs):
+def getCoordinateColumns(field_specs, hasId):
     lat1, lng1, lat2, lng2, lltype = (-1,-1,-1,-1,-1)
-    f = 1
+    f = 1 if hasId else 0
     for fld in field_specs:
         if fld.fieldspec.table.name == 'Locality':
             jp = fld.fieldspec.join_path
@@ -243,7 +236,8 @@ def getCoordinateColumns(field_specs):
                 lat2 = f
             elif f_name == 'latlongtype':
                 lltype = f
-        f = f + 1
+        if fld.display:
+            f = f + 1
 
     result = [lng1, lat1]
     if lng2 != -1 and lat2 != -1:
@@ -351,83 +345,6 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
 
     return placemarkElement
 
-#############################################################################################################
-## kml from csv stuff...
-
-
-#import geocoding_for_kml
-#import csv
-#import xml.dom.minidom
-#import sys
-
-
-#def extractAddress(row):
-  # This extracts an address from a row and returns it as a string. This requires knowing
-  # ahead of time what the columns are that hold the address information.
-#  return '%s,%s,%s,%s,%s' % (row['Address1'], row['Address2'], row['City'], row['State'], row['Zip'])
-
-#def createPlacemark(kmlDoc, row, order):
-  # This creates a  element for a row of data.
-  # A row is a dict.
-#  placemarkElement = kmlDoc.createElement('Placemark')
-#  extElement = kmlDoc.createElement('ExtendedData')
-#  placemarkElement.appendChild(extElement)
-  
-  # Loop through the columns and create a  element for every field that has a value.
-#  for key in order:
-#    if row[key]:
-#      dataElement = kmlDoc.createElement('Data')
-#      dataElement.setAttribute('name', key)
-#      valueElement = kmlDoc.createElement('value')
-#      dataElement.appendChild(valueElement)
-#      valueText = kmlDoc.createTextNode(row[key])
-#      valueElement.appendChild(valueText)
-#      extElement.appendChild(dataElement)
-  
-#  pointElement = kmlDoc.createElement('Point')
-#  placemarkElement.appendChild(pointElement)
-#  coordinates = geocoding_for_kml.geocode(extractAddress(row))
-#  coorElement = kmlDoc.createElement('coordinates')
-#  coorElement.appendChild(kmlDoc.createTextNode(coordinates))
-#  pointElement.appendChild(coorElement)
-#  return placemarkElement
-
-#def createKML(csvReader, fileName, order):
-  # This constructs the KML document from the CSV file.
-#  kmlDoc = xml.dom.minidom.Document()
-  
-#  kmlElement = kmlDoc.createElementNS('http://earth.google.com/kml/2.2', 'kml')
-#  kmlElement.setAttribute('xmlns','http://earth.google.com/kml/2.2')
-#  kmlElement = kmlDoc.appendChild(kmlElement)
-#  documentElement = kmlDoc.createElement('Document')
-#  documentElement = kmlElement.appendChild(documentElement)
-
-  # Skip the header line.
-#  csvReader.next()
-  
-#  for row in csvReader:
-#    placemarkElement = createPlacemark(kmlDoc, row, order)
-#    documentElement.appendChild(placemarkElement)
-#  kmlFile = open(fileName, 'w')
-#  kmlFile.write(kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8'))
-
-#def main():
-  # This reader opens up 'google-addresses.csv', which should be replaced with your own.
-  # It creates a KML file called 'google.kml'.
-  
-  # If an argument was passed to the script, it splits the argument on a comma
-  # and uses the resulting list to specify an order for when columns get added.
-  # Otherwise, it defaults to the order used in the sample.
-  
-#  if len(sys.argv) >1: order = sys.argv[1].split(',')
-#  else: order = ['Office','Address1','Address2','Address3','City','State','Zip','Phone','Fax']
-#  csvreader = csv.DictReader(open('google-addresses.csv'),order)
-#  kml = createKML(csvreader, 'google-addresses.kml', order)
-#if __name__ == '__main__':
-#  main()
-
-  ## ... kml from csv stuff
-  #############################################################################################################
   
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
