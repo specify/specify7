@@ -172,38 +172,17 @@ var userInfo       = require('./userinfo.js');
             }));
         },
         exportQuery: function() {
-            this.spquery.rget('fields').done(function(fields) {
-                var doc = document.implementation.createDocument("", "", null);
-                var query = doc.createElement("query");
-                query.setAttribute("name", this.spquery.get("name"));
-                query.setAttribute("contextName", this.spquery.get("contextname"));
-                query.setAttribute("contextTableId", this.spquery.get("contexttableid"));
-                query.setAttribute("isFavorite", this.spquery.get("isfavorite"));
-                query.setAttribute("named", "true");
-                query.setAttribute("ordinal", this.spquery.get("ordinal"));
-                query.setAttribute("appversion", "6.5.02"); // TODO: get appropriate value from somewhere
-
-                fields.each(this.exportField.bind(this, doc, query));
-
-                var queries = doc.createElement("queries");
-                queries.appendChild(query);
-                doc.appendChild(queries);
-
-                var blob = new Blob([
-                    new XMLSerializer().serializeToString(doc)
-                ], {type: 'application/xml'});
-
-                window.open(window.URL.createObjectURL(blob));
-            }.bind(this));
-        },
-        exportField: function(doc, query, field) {
-            var f = doc.createElement("field");
-            _.each(["position", "fieldName", "isNot", "isDisplay", "isPrompt", "isRelFld",
-                    "alwaysFilter", "stringId", "operStart", "operEnd", "startValue", "endValue",
-                    "sortType", "tableList", "contextTableIdent", "columnAlias"], function(attr) {
-                        f.setAttribute(attr, field.get(attr.toLowerCase()));
-                    });
-            query.appendChild(f);
+            $.get({url: `/export/extract_query/${this.spquery.id}/`, dataType: 'text'}).done(xml => {
+                const dialog = $('<div><textarea cols="120" rows="40" readonly></textarea></div>');
+                $('textarea', dialog).text(xml);
+                dialog.dialog({
+                    modal: true,
+                    width: 'auto',
+                    title: "Query XML for DwCA definition.",
+                    close() { $(this).remove(); },
+                    buttons: { Close() { $(this).dialog('close'); } }
+                });
+            });
         }
     });
 

@@ -176,7 +176,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         model = getattr(models, self.root_table.name)
         return query.build_join(self.root_table, model, join_path)
 
-    def add_to_query(self, query, value=None, op_num=None, negate=False):
+    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None):
         no_filter = op_num is None
 
         if self.tree_rank is None and self.get_field() is None:
@@ -186,10 +186,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             # will be formatting or aggregating related objects
             if self.get_field().type == 'many-to-one':
                 query, orm_model, table, field = self.build_join(query, self.join_path)
-                query, orm_field = query.objectformatter.objformat(query, orm_model, None)
+                query, orm_field = query.objectformatter.objformat(query, orm_model, formatter)
             else:
                 query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
-                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, None)
+                orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, formatter)
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
 

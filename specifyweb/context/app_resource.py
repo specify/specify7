@@ -138,7 +138,7 @@ def get_app_resource_dirs_for_level(collection, user, level):
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
-        'Personal'   : (True        , usertype  , collection  , discipline)  ,
+        'Personal'   : (True        , 'IGNORE'  , collection  , discipline)  ,
         'UserType'   : (False       , usertype  , collection  , discipline)  ,
         'Collection' : (False       , None      , collection  , discipline)  ,
         'Discipline' : (False       , None      , None        , discipline)  ,
@@ -154,6 +154,9 @@ def get_app_resource_dirs_for_level(collection, user, level):
     if filters['ispersonal']:
         if user is None: return []
         filters['specifyuser'] = user
+        # when filtering by user, usertype is implied
+        # also if a user's type is changed, what would happen?
+        del filters['usertype']
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)

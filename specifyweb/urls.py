@@ -16,6 +16,7 @@ from .barvis import urls as tt_urls
 from .report_runner import urls as report_urls
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
+from .export import urls as export_urls
 
 urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
@@ -55,5 +56,6 @@ urlpatterns = [
     url(r'^report_runner/', include(report_urls)),
     url(r'^interactions/', include(interaction_urls)),
     url(r'^notifications/', include(notification_urls)),
+    url(r'^export/', include(export_urls)),
     # url(r'^testcontext/', include()),
 ]

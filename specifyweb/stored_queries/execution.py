@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 import json
 import csv
@@ -92,18 +93,17 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
+
 def field_specs_from_json(json_fields):
     """Given deserialized json data representing an array of SpQueryField
     records, return an array of QueryField objects that can build the
     corresponding sqlalchemy query.
     """
-    class EphemeralField(
-        namedtuple('EphemeralField', "stringId, isRelFld, operStart, startValue, isNot, isDisplay, sortType")):
-        @classmethod
-        def from_json(cls, json):
-            return cls(**{field: json[field.lower()] for field in cls._fields})
+    def ephemeral_field_from_json(json):
+        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
-    return [QueryField.from_spqueryfield(EphemeralField.from_json(data))
+    return [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
 def do_export(spquery, collection, user, filename, exporttype, host):
@@ -149,7 +149,7 @@ def stored_query_to_csv(query_id, collection, user, path):
         query_to_csv(session, collection, user, tableid, field_specs, path)
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
-                 recordsetid=None, add_header=False, strip_id=False):
+                 recordsetid=None, add_header=False, strip_id=False, row_filter=None):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -168,8 +168,13 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             if not strip_id:
                 header = ['id'] + header
             csv_writer.writerow(header)
+
         for row in query.yield_per(1):
-            encoded = [unicode(f).encode('utf-8') for f in (row[1:] if strip_id else row)]
+            if row_filter is not None and not row_filter(row): continue
+            encoded = [
+                re.sub('\r|\n', ' ', unicode(f).encode('utf-8'))
+                for f in (row[1:] if strip_id else row)
+            ]
             csv_writer.writerow(encoded)
 
     logger.debug('query_to_csv finished')
