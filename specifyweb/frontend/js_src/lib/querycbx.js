@@ -20,6 +20,7 @@ var QueryFieldSpec    = require('./queryfieldspec.js');
 var initialContext    = require('./initialcontext.js');
 var domain            = require('./domain.js');
 var resourceapi       = require('./resourceapi.js');
+var userInfo          = require('./userinfo.js');
 
 var dataobjformat = dataobjformatters.format;
 
@@ -250,17 +251,25 @@ var QueryCbx = Backbone.View.extend({
                     'position': 2
                 });
                 fields.push(descFilterField);
-            } else if (this.fieldName === 'rightSide') {
-                var relTypeId = resourceapi.idFromUrl(this.model.get('collectionreltype'));
-                var rel = leftSideRels.find(function(i){ return i.relid == relTypeId;});
-                this.forceCollection = {id: rel.rightsidecollectionid};
-            } else if (this.fieldName === 'leftSide') {
-                relTypeId = resourceapi.idFromUrl(this.model.get('collectionreltype'));
-                rel = rightSideRels.find(function(i){ return i.relid == relTypeId;});
-                this.forceCollection = {id: rel.rightsidecollectionid};
+            } else {
+                var relCollId = this.getRelatedCollectionId(leftSideRels, rightSideRels);
+                if (relCollId) {
+                    this.forceCollection = {id: relCollId};
+                }
             }
         }
         return fields;
+    },
+    getRelatedCollectionId: function(leftSideRels, rightSideRels) {
+        if (this.model.specifyModel.name.toLowerCase() === 'collectionrelationship') {
+            if (this.fieldName === 'rightSide' || this.fieldName === 'leftSide') {
+                var rels = this.fieldName === 'rightSide' ? leftSideRels : rightSideRels;
+                var relTypeId = resourceapi.idFromUrl(this.model.get('collectionreltype'));
+                var rel = rels.find(function(i){ return i.relid == relTypeId;});
+                return rel.rightsidecollectionid;
+            }
+        }
+        return null;
     },
     select: function (event, ui) {
         var resource = ui.item.resource;
@@ -412,13 +421,46 @@ var QueryCbx = Backbone.View.extend({
     },
     displayRelated: function(event) {
         event.preventDefault();
+        var cette = this;
+        $.when(this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(leftSideRels, rightSideRels) {
+            var relCollId = cette.getRelatedCollectionId(leftSideRels, rightSideRels);
+            if (relCollId) {
+                const collections = userInfo.available_collections.map(c => c[0]);
+                if (!collections.includes(relCollId)) {
+                    var otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
+                    otherColl.fetch().done(function() {
+                        $('<div>').text(
+                            `You do not have access to the collection ${otherColl.get('collectionname')}
+                            through the currently logged in account.`
+                        ).dialog({
+                            title: "Access denied.",
+                            close() { $(this).remove(); },
+                            buttons: {
+                                Ok() { $(this).dialog('close'); }
+                            }
+                        });
+                    });
+                    return;
+                } else {
+                    var mode = 'display';
+                    this.closeDialogIfAlreadyOpen(mode);
+                    var uri = this.model.get(this.fieldName);
+                    if (!uri) return;
+                    var related = this.relatedModel.Resource.fromUri(uri);
+                    this.openDialog(mode, related);
+                }   
+            }
+                
+        });
+        /* pre-security check...
         var mode = 'display';
         this.closeDialogIfAlreadyOpen(mode);
-
         var uri = this.model.get(this.fieldName);
         if (!uri) return;
         var related = this.relatedModel.Resource.fromUri(uri);
         this.openDialog(mode, related);
+        ...pre-security check*/
+        
     },
     addRelated: function(event) {
         event.preventDefault();
