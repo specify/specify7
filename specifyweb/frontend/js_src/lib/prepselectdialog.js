@@ -20,7 +20,7 @@ module.exports =  PrepDialog.extend({
             'click :checkbox': 'prepCheck',
             'click .ui-spinner-button': 'spun', //when not binding in finishRender()
             'keyup .ui-spinner-input': 'putin', //when not binding in finishRender()
-            'keydown .prepselect-amt': 'prepselectKeyDown' //when binding in finishRender() ?
+            'keydown .prepselect-amt': 'prepselectKeyDown' 
         },
         availabilityDblChk: false,
 
