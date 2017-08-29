@@ -2,12 +2,19 @@ import os
 import sys
 sys.dont_write_bytecode = True
 
+ALLOW_SPECIFY6_PASSWORDS = True
+
 from .specify_settings import *
 
 try:
     from .local_specify_settings import *
 except ImportError:
     pass
+
+try:
+    from .ldap_settings import *
+except ImportError:
+    AUTH_LDAP_SERVER_URI = None
 
 try:
     from .debug import DEBUG
@@ -200,10 +207,15 @@ INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
-AUTHENTICATION_BACKENDS = (
-    'specifyweb.specify.support_login.SupportLoginBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
+AUTHENTICATION_BACKENDS = []
+if ALLOW_SUPPORT_LOGIN:
+    AUTHENTICATION_BACKENDS.append('specifyweb.specify.support_login.SupportLoginBackend')
+
+if ALLOW_SPECIFY6_PASSWORDS:
+    AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
+
+if AUTH_LDAP_SERVER_URI is not None:
+    AUTHENTICATION_BACKENDS.append('django_auth_ldap.backend.LDAPBackend')
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -221,4 +233,5 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
 

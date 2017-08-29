@@ -1,7 +1,15 @@
+import logging
+
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
+from django.conf import settings
 
 from .tree_extras import Tree
+
+if settings.AUTH_LDAP_SERVER_URI is not None:
+    from . import ldap_extras
+
+logger = logging.getLogger(__name__)
 
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):
@@ -18,6 +26,9 @@ class Specifyuser(models.Model):
     is_authenticated = True
     objects = SpecifyUserManager()
 
+    def get_username(self):
+        return getattr(self, self.USERNAME_FIELD)
+
     def get_full_name(self):
         return self.name
 
@@ -28,10 +39,17 @@ class Specifyuser(models.Model):
         from .encryption import encrypt
         self.password = encrypt(password, password)
 
+    def set_unusable_password(self):
+        self.password = "unusable"
+
     def check_password(self, password):
         from .encryption import decrypt
         if password == '': return False
-        decrypted = decrypt(self.password, password)
+        try:
+            decrypted = decrypt(self.password, password)
+        except Exception as e:
+            logger.error("Password decryption failed: %s", e)
+            return False
         return decrypted == password
 
     def is_admin(self):
