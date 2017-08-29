@@ -1,4 +1,5 @@
 import logging
+from collections import namedtuple
 
 from django.dispatch import receiver
 from django_auth_ldap.backend import populate_user
@@ -10,10 +11,21 @@ django_auth_logger = logging.getLogger('django_auth_ldap')
 django_auth_logger.addHandler(logging.StreamHandler())
 django_auth_logger.setLevel(logging.DEBUG)
 
+UserTypes = namedtuple('UserTypes', 'admin manager full_access limited_access guest')
+USERTYPES = UserTypes(
+    admin='Admin',
+    manager='Manager',
+    full_access='FullAccess',
+    limited_access='LimitedAccess',
+    guest='Guest',
+)
+
 @receiver(populate_user)
 def handle_populate_user(sender, user, ldap_user, **kwargs):
-    from .models import Division, Agent
+    from django.db import connection
+    from .models import Collection, Division, Agent
     from .agent_types import agent_types
+    from specifyweb.context.views import set_users_collections
 
     for division in Division.objects.all():
         agent, created = Agent.objects.get_or_create(
@@ -28,23 +40,32 @@ def handle_populate_user(sender, user, ldap_user, **kwargs):
         if created:
             logger.info("created agent for user %s in division %s", user.name, division.name)
 
-    groups = ldap_user.group_names
-    usertype = settings.SPECIFY_LDAP_USERTYPE_MAP
-    if usertype.admin in groups:
-        user.usertype = 'Manager'
+    usertype = settings.SPECIFY_LDAP_USERTYPE_MAP(USERTYPES, ldap_user)
+
+    assert usertype in USERTYPES, """
+    settings.SPECIFY_LDAP_USERTYPE_MAP must return one of {}. Got {}, instead.
+    """.format(USERTYPES, usertype)
+
+    if usertype == USERTYPES.admin:
+        user.usertype = USERTYPES.manager
         user.set_admin()
         logger.info("making user %s an admin", user.name)
 
-    elif usertype.manager in groups:
-        user.usertype = 'Manager'
-
-    elif usertype.full_access in groups:
-        user.usertype = 'FullAccess'
-
-    elif usertype.limited_access in groups:
-        user.usertype = 'LimitedAccess'
-
     else:
-        user.usertype = 'Guest'
+        user.usertype = usertype
+        user.clear_admin()
 
     logger.info("setting usertype %s on user %s", user.usertype, user.name)
+
+
+    collections = list(Collection.objects.all())
+    user_collections = settings.SPECIFY_LDAP_COLLECTIONS(collections, ldap_user)
+
+    assert all(c in collections for c in user_collections), \
+        "settings.SPECIFY_LDAP_COLLECTIONS must return a specify collection record."
+
+    set_users_collections(connection.cursor(), user, [c.id for c in user_collections])
+
+    logger.info("granting access to %s for user %s",
+                [c.collectionname for c in user_collections],
+                user.name)

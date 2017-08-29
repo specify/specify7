@@ -10,7 +10,6 @@ enable LDAP authentication.
 
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
-from .specify_ldap import UserTypeMap
 
 
 # This section is LDAP server configuration and user search.
@@ -60,20 +59,59 @@ ALLOW_SPECIFY6_PASSWORDS = False
 
 
 # At each successful LDAP login, the user's Specify usertype and admin
-# status will be adjusted according to the following mapping to LDAP
-# group names. If a user is in multiple groups, they will receive the
-# most privileged usertype of the groups. If no groups match, the user
-# will be given usertype Guest.
-#
-# The usertype assignment only occurs at the time of login. Changing
-# a user's LDAP group membership will have no effect on logged in
-# users until they login after the change.
+# status will be adjusted according to the following mapping function.
 
-SPECIFY_LDAP_USERTYPE_MAP = UserTypeMap(
-    admin='specify-admin',
-    manager='specify-manager',
-    full_access='specify-full-access',
-    limited_access='specify-limited-access',
-)
+def SPECIFY_LDAP_USERTYPE_MAP(specify_usertype, ldap_user):
+    """Map the LDAP user to a Specify user type.
 
+    specify_usertype - A namedtuple of the possible user types.
+    ldap_user - The LDAP user object that was authenticated.
 
+    Must return one entry from specify_usertype.
+
+    The usertype assignment only occurs at the time of login. Changing
+    a user's LDAP group membership will have no effect on logged in
+    users until they login after the change.
+    """
+
+    # (ldap_group_name, specify_usertype) in order of descending
+    # privilege
+    mapping = (
+
+        ('specify-admin', specify_usertype.admin),
+        ('specify-manager', specify_usertype.manager),
+        ('specify-full-access', specify_usertype.full_access),
+        ('specify-limited-access', specify_usertype.limited_access),
+    )
+
+    # Return the most privileged user type that is mapped to a group
+    # the user belongs to.
+    for group, usertype in mapping:
+        if group in ldap_user.group_names:
+            return usertype
+
+    return specify_usertype.guest
+
+# At each successful LDAP login, the user's collection access will be
+# updated according to the following function.
+
+def SPECIFY_LDAP_COLLECTIONS(specify_collections, ldap_user):
+    """Return a list of collections the user should have access to.
+
+    specify_collections - A list of all collections in the database.
+    ldap_user - The LDAP user object that was authenticated.
+
+    The granting and removal of collection access only occurs at the
+    time of login.
+    """
+
+    # This implementation will grant users access to any collection
+    # when they are a member of the LDAP group named
+    # "specify-collection-{COLLECTION-CODE}" where {COLLECTION-CODE}
+    # is one of the values from the code field of the collection table.
+
+    return [
+        collection
+        for collection in specify_collections
+        if "specify-collection-" + collection.code in ldap_user.group_names
+    ]
