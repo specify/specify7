@@ -29,7 +29,11 @@ AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=users,dc=ldap-test,dc=specifycloud,dc=org
 #
 # See http://django-auth-ldap.readthedocs.io/en/stable/groups.html
 
-AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=groups,dc=ldap-test,dc=specifycloud,dc=org", ldap.SCOPE_SUBTREE, "(objectClass=posixGroup)")
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+    "ou=groups,dc=ldap-test,dc=specifycloud,dc=org",
+    ldap.SCOPE_SUBTREE,
+    "(objectClass=posixGroup)")
+
 AUTH_LDAP_GROUP_TYPE = PosixGroupType()
 
 AUTH_LDAP_REQUIRE_GROUP = "cn=specify-login,ou=groups,dc=ldap-test,dc=specifycloud,dc=org"
@@ -74,10 +78,8 @@ def SPECIFY_LDAP_USERTYPE_MAP(specify_usertype, ldap_user):
     users until they login after the change.
     """
 
-    # (ldap_group_name, specify_usertype) in order of descending
-    # privilege
+    # (ldap_group, specify_usertype) in order of decreasing privilege
     mapping = (
-
         ('specify-admin', specify_usertype.admin),
         ('specify-manager', specify_usertype.manager),
         ('specify-full-access', specify_usertype.full_access),
@@ -91,6 +93,7 @@ def SPECIFY_LDAP_USERTYPE_MAP(specify_usertype, ldap_user):
             return usertype
 
     return specify_usertype.guest
+
 
 # At each successful LDAP login, the user's collection access will be
 # updated according to the following function.
