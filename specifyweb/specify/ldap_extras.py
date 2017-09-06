@@ -40,32 +40,33 @@ def handle_populate_user(sender, user, ldap_user, **kwargs):
         if created:
             logger.info("created agent for user %s in division %s", user.name, division.name)
 
-    usertype = settings.SPECIFY_LDAP_USERTYPE_MAP(USERTYPES, ldap_user)
+    if settings.SPECIFY_LDAP_USERTYPE_MAP is not None:
+        usertype = settings.SPECIFY_LDAP_USERTYPE_MAP(USERTYPES, ldap_user)
 
-    assert usertype in USERTYPES, """
-    settings.SPECIFY_LDAP_USERTYPE_MAP must return one of {}. Got {}, instead.
-    """.format(USERTYPES, usertype)
+        assert usertype in USERTYPES, """
+        settings.SPECIFY_LDAP_USERTYPE_MAP must return one of {}. Got {}, instead.
+        """.format(USERTYPES, usertype)
 
-    if usertype == USERTYPES.admin:
-        user.usertype = USERTYPES.manager
-        user.set_admin()
-        logger.info("making user %s an admin", user.name)
+        if usertype == USERTYPES.admin:
+            user.usertype = USERTYPES.manager
+            user.set_admin()
+            logger.info("making user %s an admin", user.name)
 
-    else:
-        user.usertype = usertype
-        user.clear_admin()
+        else:
+            user.usertype = usertype
+            user.clear_admin()
 
-    logger.info("setting usertype %s on user %s", user.usertype, user.name)
+        logger.info("setting usertype %s on user %s", user.usertype, user.name)
 
+    if settings.SPECIFY_LDAP_COLLECTIONS is not None:
+        collections = list(Collection.objects.all())
+        user_collections = settings.SPECIFY_LDAP_COLLECTIONS(collections, ldap_user)
 
-    collections = list(Collection.objects.all())
-    user_collections = settings.SPECIFY_LDAP_COLLECTIONS(collections, ldap_user)
+        assert all(c in collections for c in user_collections), \
+            "settings.SPECIFY_LDAP_COLLECTIONS must return a specify collection record."
 
-    assert all(c in collections for c in user_collections), \
-        "settings.SPECIFY_LDAP_COLLECTIONS must return a specify collection record."
+        set_users_collections(connection.cursor(), user, [c.id for c in user_collections])
 
-    set_users_collections(connection.cursor(), user, [c.id for c in user_collections])
-
-    logger.info("granting access to %s for user %s",
-                [c.collectionname for c in user_collections],
-                user.name)
+        logger.info("granting access to %s for user %s",
+                    [c.collectionname for c in user_collections],
+                    user.name)

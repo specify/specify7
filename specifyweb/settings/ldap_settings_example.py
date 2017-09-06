@@ -64,6 +64,11 @@ ALLOW_SPECIFY6_PASSWORDS = False
 
 # At each successful LDAP login, the user's Specify usertype and admin
 # status will be adjusted according to the following mapping function.
+#
+# To disable mapping set the parameter to None, and the usertype
+# will not be adjusted:
+#
+#  SPECIFY_LDAP_USERTYPE_MAP = None
 
 def SPECIFY_LDAP_USERTYPE_MAP(specify_usertype, ldap_user):
     """Map the LDAP user to a Specify user type.
@@ -97,6 +102,11 @@ def SPECIFY_LDAP_USERTYPE_MAP(specify_usertype, ldap_user):
 
 # At each successful LDAP login, the user's collection access will be
 # updated according to the following function.
+#
+# To disable this feature set the value to None, and users'
+# collection access privileges will not be adjusted:
+#
+# SPECIFY_LDAP_COLLECTIONS = None
 
 def SPECIFY_LDAP_COLLECTIONS(specify_collections, ldap_user):
     """Return a list of collections the user should have access to.
