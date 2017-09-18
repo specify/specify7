@@ -528,7 +528,7 @@ def upload_by_7(wb_id, mapping, collection, user):
             if 'args' not in child:
                 child['args'] = {}
             child['args'][child['link']] = recs
-            child['recs'] = upload(wb_id, child, collection, user)    
+            child['recs'] = upload_tbl(wb_id, child, collection, user)    
 
     print('did children')
     mapping['recs'] = recs    
