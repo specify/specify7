@@ -1,7 +1,7 @@
 from collections import namedtuple
 import sqlalchemy
 
-from specifyweb.specify.uiformatters import CatalogNumberNumeric
+from specifyweb.specify.uiformatters import CNNField
 
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
@@ -95,7 +95,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return (field == False) | (field == None)
 
     def op_startswith(self, field, value):
-        if isinstance(self.uiformatter, CatalogNumberNumeric):
+        if self.uiformatter is not None and isinstance(self.uiformatter.fields[0], CNNField) and len(self.uiformatter.fields) == 1:
             value = value.lstrip('0')
             return field.op('REGEXP')("^0*" + value)
         else:

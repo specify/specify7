@@ -15,6 +15,8 @@ var TreeNodeView = require('./treenodeview.js');
 
 const contextMenuBuilder = require('./treectxmenu.js');
 const userInfo = require('./userinfo.js');
+const remoteprefs  = require('./remoteprefs.js');
+const cookies = require('./cookies.js');
 
 var setTitle = app.setTitle;
 
@@ -28,7 +30,6 @@ var setTitle = app.setTitle;
         initialize: function(options) {
             this.treeDefItems = options.treeDefItems;
             this.collapsedRanks = options.collapsedRanks;
-
         },
         render: function() {
             var headings = this.treeDefItems.map(
@@ -55,7 +56,10 @@ var setTitle = app.setTitle;
         __name__: "TreeView",
         className: "tree-view",
         events: {
-            'autocompleteselect': 'search'
+            'autocompleteselect': 'search',
+            'click .tree-conform-save': 'setDefaultConformation',
+            'click .tree-conform-restore': 'restoreDefaultConformation',
+            'click .tree-conform-forget': 'forgetDefaultConformation'
         },
         initialize: function(options) {
             this.table = options.table;
@@ -72,6 +76,11 @@ var setTitle = app.setTitle;
             this.header = new TreeHeader({treeDefItems: this.treeDefItems, collapsedRanks: this.collapsedRanks});
 
             this.header.on('updateCollapsed', this.updateCollapsed, this);
+
+            //node sort order
+            this.sortField = typeof remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] === 'string' ?
+                remoteprefs[this.table.toLowerCase() + ".treeview_sort_field"] : 'name';
+
         },
         render: function() {
             this.$el.data('view', this);
@@ -83,6 +92,7 @@ var setTitle = app.setTitle;
             setTitle(title);
             $('<h1>').text(title).appendTo(this.el);
             this.$el.append(this.makeSearchBox());
+            this.$el.append(this.makeBtns());
             $('<table>').appendTo(this.el).append(
                 this.header.render().el,
                 $('<tfoot>').append(_.map(this.ranks, function() { return $('<th>')[0]; })),
@@ -93,7 +103,10 @@ var setTitle = app.setTitle;
             return this;
         },
         getRows: function() {
-            $.getJSON(this.baseUrl + 'null/').done(this.gotRows.bind(this));
+            $.getJSON(this.baseUrl + 'null/' + this.sortField + '/').done(this.gotRows.bind(this));
+        },
+        getDefaultConformPrefName: function() {
+            return userInfo.id + '.' + this.table.toLowerCase() + '.' + this.treeDef.id + '.default_initial_conformation';
         },
         gotRows: function(rows) {
             this.roots = rows.map(row => new TreeNodeView({
@@ -107,7 +120,39 @@ var setTitle = app.setTitle;
             this.$('tbody').empty();
             _.invoke(this.roots, 'render');
             var params = querystring.deparam();
-            params.conformation && this.applyConformation(params.conformation);
+            if (!params.conformation) {
+                var conformation  = typeof remoteprefs[this.getDefaultConformPrefName()] === 'string' ?
+                        remoteprefs[this.getDefaultConformPrefName()] : params.conformation;
+            } else {
+                conformation = params.conformation;
+            }
+            conformation && this.applyConformation(conformation);
+        },
+        getDefaultConformation: function() {
+            //return remoteprefs[this.getDefaultConformPrefName()];
+            return cookies.readCookie(this.getDefaultConformPrefName());
+        },
+        restoreDefaultConformation: function() {
+            //so that there are no open nodes that are not open in the default...
+            //this.applyConformation("~-");
+            _.each(this.roots, function(root) {
+                _.each(root.childNodes, function(node) {
+                    node.remove();
+                });
+                root.closeNode();
+                root.childNodes = null;
+            });
+            var conformation = this.getDefaultConformation();
+            conformation && this.applyConformation(conformation);
+        },
+        setDefaultConformation: function() {
+            var serialized = JSON.stringify(TreeNodeView.conformation(this.roots));
+            var encoded = serialized.replace(/\[/g, '~').replace(/\]/g, '-').replace(/,/g, '');
+            //remoteprefs[this.getDefaultConformPrefName()] = encoded;
+            cookies.createCookie(this.getDefaultConformPrefName(), encoded);
+        },
+        forgetDefaultConformation: function() {
+            cookies.eraseCookie(this.getDefaultConformPrefName());
         },
         search: function(event, ui) {
             this.$('.tree-search').blur();
@@ -136,6 +181,11 @@ var setTitle = app.setTitle;
                     });
                 }
             });
+        },
+        makeBtns: function() {
+            return $('<button type="button" class="tree-conform-save" tabindex="2" title="save tree layout">remember</button>'
+                     + '<button type="button" class="tree-conform-restore" tabindex="3" title="display saved tree layout">restore</button>'
+                    + '<button type="button" class="tree-conform-forget" tabindex="4" title="forget saved tree layout">forget</button>');
         },
         applyConformation: function(encoded) {
             var serialized = encoded.replace(/([^~])~/g, '$1,~').replace(/~/g, '[').replace(/-/g, ']');

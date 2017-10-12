@@ -82,6 +82,9 @@ SPECIAL_DELETION_RULES = {
     'Workbenchdataitem.workbenchrow': models.DO_NOTHING,
     'Workbenchrowimage.workbenchrow': models.DO_NOTHING,
     'Workbenchrowexportedrelationship.workbenchrow': models.DO_NOTHING,
+
+    'Spappresourcedata.spappresource': models.CASCADE,
+    'Spappresourcedata.spviewsetobj': models.CASCADE,
 }
 
 def make_relationship(modelname, rel, datamodel):

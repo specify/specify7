@@ -61,7 +61,8 @@ var ToolTipMgr   = require('./tooltipmgr.js');
                 el: el,
                 model: this.model,
                 formatter: this.inputFormatter,
-                parser: this.parser
+                parser: this.parser,
+                listInput: this.listInput
             }).render()
                 .on('changed', this.inputChanged.bind(this, i))
                 .on('addsaveblocker', this.addSaveBlocker.bind(this, i))
@@ -94,13 +95,13 @@ var ToolTipMgr   = require('./tooltipmgr.js');
         }
     };
 
-    var ADD_VALUES_HINT = "Add values one by one:";
+    var ADD_VALUES_HINT = "Add values one by one, or as comma-separated list:";
 
     var In = {
         events: {
             'keydown input': 'keydown'
         },
-        opName: 'In', negation: 'Not In', types: ['strings', 'numbers'],
+        opName: 'In', negation: 'Not In', types: ['strings', 'numbers'], listInput: true,
         input: '<span class="in-values">' + ADD_VALUES_HINT + '</span> <input type="text">', format: true,
         getValue: function() {
             return this.values.join(',');

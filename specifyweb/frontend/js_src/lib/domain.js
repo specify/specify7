@@ -33,7 +33,8 @@ var schema = require('./schema.js');
 
     var domain = {
         getDomainResource: function(level) {
-            return new (schema.getModel(level).Resource)({ id: schema.domainLevelIds[level] });
+            const id = schema.domainLevelIds[level];
+            return id == null ? null : new (schema.getModel(level).Resource)({ id: id });
         },
         getTreeDef: function(treeName) {
             treeName = treeName.toLowerCase();

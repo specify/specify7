@@ -194,7 +194,7 @@ module.exports = RecordSetsDialog.extend({
         makeSnagDisplay: function(prepsData, missing, invalidEntries, action) {
             var slozzler = $('<div class="i-action-entry-snag">');
             slozzler.append('<h4>' + this.getSnagDisplayHdr() + '</h4>');
-            if (invalidEntries.length > 0) {
+            if (invalidEntries && invalidEntries.length > 0) {
                 slozzler.append(this.makeSnagList(this.getInvalidEntrySnagTxt(), invalidEntries));
             }
             if (missing.length > 0) {

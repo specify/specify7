@@ -18,7 +18,9 @@ module.exports =  PrepDialog.extend({
         events: {
             'click a.prepselect-unavailable': 'prepInteractions',
             'click :checkbox': 'prepCheck',
-            'keydown .prepselect-amt': 'prepselectKeyDown'
+            'click .ui-spinner-button': 'spun', //when not binding in finishRender()
+            'keyup .ui-spinner-input': 'putin', //when not binding in finishRender()
+            'keydown .prepselect-amt': 'prepselectKeyDown' 
         },
         availabilityDblChk: false,
 
@@ -61,7 +63,7 @@ module.exports =  PrepDialog.extend({
         },
         finishRender: function() {
             var spinners = this.$(".prepselect-amt");
-            spinners.spinner({
+            spinners.spinner(/*{
                 change: _.bind(function( evt ) {
                     var idx = this.$(".prepselect-amt").index(evt.currentTarget);
                     if (idx >= 0) {
@@ -83,7 +85,7 @@ module.exports =  PrepDialog.extend({
                         this.$(':checkbox')[idx].checked = val > 0;
                     }
                 }, this)
-            });
+                              }*/);
             spinners.width(50);
         },
 
@@ -153,9 +155,44 @@ module.exports =  PrepDialog.extend({
 
         //events >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+    putin: function(evt) {
+        var isUpDownArrow = ["ArrowDown", "ArrowUp"].indexOf(evt.key) >= 0;
+        if (isUpDownArrow || !isNaN(String.fromCharCode(evt.which))) {
+            var idx = this.$(".prepselect-amt").index(evt.currentTarget);
+            if (idx >= 0) {
+                if (!isUpDownArrow) {
+                    var val = new Number(evt.currentTarget.value);
+                    var max = this.options.preps[idx].available;
+                    var min = 0;
+                    if (val > new Number(max)) {
+                        evt.currentTarget.value = max + "";
+                    } else if (isNaN(val) || val < min) {
+                        evt.currentTarget.value = min + "";
+                    }
+                }
+                this.$(':checkbox')[idx].checked = new Number(evt.currentTarget.value) > 0;
+            }
+        } else {
+            evt.preventDefault();
+        }
+    },
+
+    spun: function(evt) {
+        var rows = $(evt.target).parentsUntil("tbody");
+        var row = rows[rows.length - 1];
+        var idx = this.$("tr").index(row) - 1;
+        var ui = this.$(".prepselect-amt")[idx];
+        if (idx >= 0) {
+            var val = new Number(ui.value);
+            this.$(':checkbox')[idx].checked = val > 0;
+        }
+    },
+    
         prepselectKeyDown: function( evt, a, b) {
             if (isNaN(String.fromCharCode(evt.which))) {
-                evt.preventDefault();
+                if (["ArrowLeft", "ArrowRight"].indexOf(evt.key) == -1) {
+                    evt.preventDefault();
+                }
             }
         },
 
@@ -166,9 +203,9 @@ module.exports =  PrepDialog.extend({
                 evt.preventDefault();
             } else {
                 if (evt.target.checked) {
-                    $(this.$('.prepselect-amt')[idx]).attr('value', this.options.preps[idx].available);
+                    $(this.$('.prepselect-amt')[idx])[0].value = available;
                 } else {
-                    $(this.$('.prepselect-amt')[idx]).attr('value', 0);
+                    $(this.$('.prepselect-amt')[idx])[0].value = 0;
                 }
             }
         },
@@ -214,14 +251,19 @@ module.exports =  PrepDialog.extend({
             var amounts = this.$(':input.prepselect-amt');
             var chks = this.$(':checkbox');
             for (var p=0; p < amounts.length; p++) {
-                $(amounts[p]).attr('value', this.options.preps[p].available );
-                $(chks[p]).attr('checked', this.options.preps[p].available  > 0);
+                amounts[p].value = this.options.preps[p].available ;
+                chks[p].checked = (this.options.preps[p].available  > 0);
             };
         },
 
         deSelectAll: function() {
-            this.$(':input.prepselect-amt').attr('value', 0);
-            this.$(':checkbox').attr('checked', false);
+            //this.$(':input.prepselect-amt').attr('value', 0);
+            //this.$(':checkbox').attr('checked', false);
+            var amounts = this.$(':input.prepselect-amt');
+            for (var p=0; p < amounts.length; p++) {
+                amounts[p].value = 0;
+            }
+            this.$(':checkbox').attr('checked',  false);
         },
 
         //<<<<<<<<<<<<<<<<<<<<<<< events
@@ -232,10 +274,10 @@ module.exports =  PrepDialog.extend({
                 filters: { id: key }
             });
             var _self = this;
-            irec.fetch().done(function(arg) {
+            irec.fetch().done(function() {
                 this.dialog = $('<div>', {'class': 'querycbx-dialog-display'});
 
-                var resourceModel = new model.Resource(arg.objects[0]);
+                var resourceModel = irec.models[0];
 
                 new ResourceView({
                     populateForm: populateForm,
@@ -309,7 +351,7 @@ module.exports =  PrepDialog.extend({
             var amounts = this.$(':input.prepselect-amt');
 
             for (var p=0; p < this.options.preps.length; p++) {
-                var amt = $(amounts[p]).attr('value');
+                var amt = amounts[p].value;
                 if ('0' != amt && '' != amt) {
                     items[items.length] = this.processPrep(baseTbl, itemModel, this.options.preps[p], amt);
                 }

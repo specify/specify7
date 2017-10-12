@@ -23,8 +23,8 @@ urlpatterns = [
         url(r'^(?P<id>\d+)/synonymize/$', tree_views.synonymize),
         url(r'^(?P<id>\d+)/unsynonymize/$', tree_views.unsynonymize),
         url(r'^(?P<parentid>\d+)/predict_fullname/$', tree_views.predict_fullname),
-        url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/$', tree_views.tree_view),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
+        url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
     ])),
 
