@@ -260,3 +260,39 @@ After changing Apache's config files, restart it.
 
     sudo invoke-rc.d apache2 restart
 
+
+Updating Specify 7
+===================
+To update the Specify 7 server software follow this procedure.
+
+0. Backup your Specify database using MySQL dump or the Specify backup and restore tool.
+
+1. Clone or download an new copy of this repository in a directory 
+next to your existing installation.
+
+    `git clone git://github.com/specify/specify7.git specify7-new-version`
+
+2. Copy the settings from the existing to the new installation.
+
+    `cp -a specify7/specifyweb/settings/local\* specify7-new-version/specifyweb/settings/`
+    
+3. Make sure to update the `THICK_CLIENT_LOCATION` setting in `local_specify_settings.py`,
+if you are updating the Specify 6 version.
+
+4. If you are using Python virtualenvs for your Specify 7 Python deps (recommended),
+then create a new virtualenv for the new installation.
+
+```
+    virtualenv specify7/ve
+    source specify7/ve/bin/activate
+```
+
+6. Run `make all` which will pull down the Python dependencies,
+build the JS bundles, and apply any necessary database migrations.
+
+    `make all`
+    
+7. Testing it out with the [development server](#the-development-server).
+
+8. Deploy the new version by updating your Apache config to replace the old
+installation paths with the new.
