@@ -267,24 +267,24 @@ To update the Specify 7 server software follow this procedure.
 
 0. Backup your Specify database using MySQL dump or the Specify backup and restore tool.
 
-1. Clone or download an new copy of this repository in a directory 
+1. Clone or download a new copy of this repository in a directory 
 next to your existing installation.
 
     `git clone git://github.com/specify/specify7.git specify7-new-version`
 
 2. Copy the settings from the existing to the new installation.
 
-    `cp -a specify7/specifyweb/settings/local\* specify7-new-version/specifyweb/settings/`
+    `cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
     
 3. Make sure to update the `THICK_CLIENT_LOCATION` setting in `local_specify_settings.py`,
 if you are updating the Specify 6 version.
 
-4. If you are using Python virtualenvs for your Specify 7 Python deps (recommended),
+4. If you are using Python virtualenvs for your Specify 7 Python dependancies (recommended),
 then create a new virtualenv for the new installation.
 
 ```
-    virtualenv specify7/ve
-    source specify7/ve/bin/activate
+    virtualenv specify7-new-version/ve
+    source specify7-new-version/ve/bin/activate
 ```
 
 6. Run `make all` which will pull down the Python dependencies,
