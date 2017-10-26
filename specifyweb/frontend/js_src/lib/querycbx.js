@@ -421,46 +421,32 @@ var QueryCbx = Backbone.View.extend({
     },
     displayRelated: function(event) {
         event.preventDefault();
-        var cette = this;
-        $.when(this.leftSideRelsPromise, this.rightSideRelsPromise).done(function(leftSideRels, rightSideRels) {
-            var relCollId = cette.getRelatedCollectionId(leftSideRels, rightSideRels);
-            if (relCollId) {
-                const collections = userInfo.available_collections.map(c => c[0]);
-                if (!collections.includes(relCollId)) {
-                    var otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
-                    otherColl.fetch().done(function() {
-                        $('<div>').text(
-                            `You do not have access to the collection ${otherColl.get('collectionname')}
+        $.when(this.leftSideRelsPromise, this.rightSideRelsPromise).done((leftSideRels, rightSideRels) => {
+            const relCollId = this.getRelatedCollectionId(leftSideRels, rightSideRels);
+            const collections = userInfo.available_collections.map(c => c[0]);
+            if (relCollId && !collections.includes(relCollId)) {
+                const otherColl = new schema.models.Collection.LazyCollection({limit: 0, filters: {id: relCollId}});
+                otherColl.fetch().done(function() {
+                    $('<div>').text(
+                        `You do not have access to the collection ${otherColl.get('collectionname')}
                             through the currently logged in account.`
-                        ).dialog({
-                            title: "Access denied.",
-                            close() { $(this).remove(); },
-                            buttons: {
-                                Ok() { $(this).dialog('close'); }
-                            }
-                        });
+                    ).dialog({
+                        title: "Access denied.",
+                        close() { $(this).remove(); },
+                        buttons: {
+                            Ok() { $(this).dialog('close'); }
+                        }
                     });
-                    return;
-                } else {
-                    var mode = 'display';
-                    this.closeDialogIfAlreadyOpen(mode);
-                    var uri = this.model.get(this.fieldName);
-                    if (!uri) return;
-                    var related = this.relatedModel.Resource.fromUri(uri);
-                    this.openDialog(mode, related);
-                }   
+                });
+                return;
+            } else {
+                this.closeDialogIfAlreadyOpen('display');
+                var uri = this.model.get(this.fieldName);
+                if (!uri) return;
+                var related = this.relatedModel.Resource.fromUri(uri);
+                this.openDialog('display', related);
             }
-                
         });
-        /* pre-security check...
-        var mode = 'display';
-        this.closeDialogIfAlreadyOpen(mode);
-        var uri = this.model.get(this.fieldName);
-        if (!uri) return;
-        var related = this.relatedModel.Resource.fromUri(uri);
-        this.openDialog(mode, related);
-        ...pre-security check*/
-        
     },
     addRelated: function(event) {
         event.preventDefault();
