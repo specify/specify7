@@ -104,19 +104,22 @@ module.exports = Backbone.View.extend({
     },
         gotResults: function(results) {
             this.results = this.xfilter(results);
-            whenAll(results.map(format)).done(this.displayResults.bind(this));
+            whenAll(this.results.map(format)).done(this.displayResults.bind(this));
         },
-        displayResults: function(formattedResults) {
-            formattedResults.sort();
-            const items = formattedResults.map(formattedResult => $('<li>').append($('<a>').text(formattedResult))[0]);
-            this.$('.querycbx-search-results').append(items);
+    displayResults: function(formattedResults) {
+        const items = _.sortBy( formattedResults.map((formatted, i) => ({
+            dom: $('<li>').append($('<a>').text(formatted).data('result-index', i)[0]),
+            formatted: formatted
+        })), 'formatted');
 
-            if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
-            if (formattedResults.length === 100) this.$('.querycbx-search-results').append('<li>...</li>');
-        },
+        this.$('.querycbx-search-results').append(_.pluck(items, 'dom'));
+
+        if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
+        if (formattedResults.length === 100) this.$('.querycbx-search-results').append('<li>...</li>');
+    },
         select: function(evt) {
             evt.preventDefault();
-            var index = this.$('.querycbx-search-results a').index(evt.currentTarget);
+            const index = $(evt.currentTarget).data('result-index');
             this.options.selected(this.results.at(index));
             this.$el.dialog('close');
         }
