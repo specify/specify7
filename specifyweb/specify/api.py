@@ -11,6 +11,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 from django.core.exceptions import ObjectDoesNotExist, FieldError
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist
+from django.utils.deprecation import CallableBool
 
 from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
@@ -24,6 +25,8 @@ class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
         from decimal import Decimal
+        if isinstance(obj, CallableBool):
+            return obj()
         if isinstance(obj, Decimal):
             return str(obj)
         if hasattr(obj, 'isoformat'):
