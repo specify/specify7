@@ -23,7 +23,7 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
 # Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) (Author)|(GroupNumber)$')
+TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(GroupNumber))$')
 
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
@@ -137,7 +137,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                      tree_rank=tree_rank,
                      tree_field=tree_field)
 
-        logger.debug('parsed %s related %s to %s', stringid, is_relation, result)
+        logger.debug('parsed %s (is_relation %s) to %s. extracted_fieldname = %s',
+                     stringid, is_relation, result, extracted_fieldname)
         return result
 
     def __init__(self, *args, **kwargs):
