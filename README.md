@@ -29,7 +29,7 @@ After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
-Intstructions for deployment follow.
+Instructions for deployment follow.
 
 **Note:** If updating from a previous version, some of the python
 dependencies have changed. It is recommended to place the new version
@@ -42,6 +42,12 @@ conf can be changed to point to it (or changed back to the old
 version, if problems arise).
 
 
+# Deployment with Docker
+If you would like to deploy Specify 7 in a [Docker](https://www.docker.com/) container checkout the instructions in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):  https://github.com/MfN-Berlin/specify7-docker
+
+
+
+# Ordinary deployment
 Install system dependencies.
 -----------------------------------
 Specify 7 requires Python 2.7 which is the default for recent Linux
