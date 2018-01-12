@@ -460,8 +460,16 @@ var QueryParamsDialog = Backbone.View.extend({
 function runReport(reportResources, recordSetId, fieldUIs) {
     dialog && dialog.dialog('close');
     var query = reportResources.query;
-    query.limit = 0;
-    query.recordsetid = recordSetId;
+    if (_.isFunction(query.set)) {
+        query.set('limit', 0);
+        query.set('recordsetid', recordSetId);
+    } else {
+        // Not sure if this branch is needed.
+        // Only for the case that query is a raw JS object
+        // rather than a Backbone resource object.
+        query.limit = 0;
+        query.recordsetid = recordSetId;
+    }
 
     var reportWindowContext = "ReportWindow" + Math.random();
     window.open("", reportWindowContext);
