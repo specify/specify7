@@ -12,7 +12,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from django.db import connection, transaction
 from django.conf import settings
 
-from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, get_collection
+from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data, get_collection, parse_uri
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
@@ -328,7 +328,7 @@ def has_data(mappings, mapping_idx, row):
                     return True
     return False;
 
-def get_dict(mapping, mapping_idx, row, ununder):
+def get_dict(mapping, mapping_idx, row, ununder, descope):
     fields = mapping['fields'][mapping_idx]
     #assuming one-to-many mappings are the same
     i = 1 + (len(fields) * mapping_idx)
@@ -346,11 +346,14 @@ def get_dict(mapping, mapping_idx, row, ununder):
     if 'args' in mapping:
         if 'vals' in mapping['args']:
             for fld_name in mapping['args']['vals'].keys():
-                v = mapping['args']['vals'][fld_name]
-                if isinstance(v, list):
-                    values[fld_name.lower()] = int(v[row])
-                else:
-                    values[fld_name.lower()] = int(v)
+                if not descope or fld_name.lower() not in ('division_id', 'discipline_id', 'collectionmember_id', 'divisionid', 'disciplineid','collectionmemberid','division','discipline','collectionmember'):
+                    v = mapping['args']['vals'][fld_name]
+                    if isinstance(v, list):
+                        values[fld_name.lower()] = int(v[row])
+                    elif isinstance(v, basestring):
+                        values[fld_name.lower()] = v
+                    else:
+                        values[fld_name.lower()] = v
     result = {}
     if ununder:
         for k in values.keys():
@@ -360,7 +363,8 @@ def get_dict(mapping, mapping_idx, row, ununder):
     return result 
 
 def get_matches(collection, mappings, mapping_idx, row):
-    vals = get_dict(mappings, mapping_idx, row, False)
+    print "get_matches++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    vals = get_dict(mappings, mapping_idx, row, False, True)
     ctrls = {'domainfilter': 'true', 'orderby': '', 'offset': '0', 'limit': '200000'}
     #print(vals)
     #print(ctrls)
@@ -403,7 +407,8 @@ def get_matches_bak(mappings, mapping_idx, args, row):
     return rows 
 
 def add_record(collection, user, mappings, mapping_idx, row):
-    values = get_dict(mappings, mapping_idx, row, False)
+    print "add_record++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    values = get_dict(mappings, mapping_idx, row, False, False)
     tbl = mappings['table']
     print(tbl)
     print(values)
@@ -412,6 +417,7 @@ def add_record(collection, user, mappings, mapping_idx, row):
     return obj_to_data(obj)['id']
 
 def get_match_id(collection, mapping, mapping_idx, row):
+    print "get_match_id++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     if has_data(mapping, mapping_idx, row):
         matches = get_matches(collection, mapping, mapping_idx, row)
         if len(matches) > 1:
@@ -447,7 +453,7 @@ def get_ds_cells_sql(wb_id, mappings):
 
     for mapping in mappings['fields']:
         for m in mapping:
-            #print(m)
+            print(m)
             #mysql-specific quote function
             subsql = """
             (select celldata from workbenchdataitem di 
@@ -496,6 +502,8 @@ def get_ds_cells_sql(wb_id, mappings):
 
 
 def upload_tbl(wb_id, mapping, collection, user):
+    print "upload_tbl+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    print mapping
     cells_sql = get_ds_cells_sql(wb_id, mapping)
     #print(cells_sql)
     cursor = connection.cursor()
@@ -515,11 +523,12 @@ def upload_tbl(wb_id, mapping, collection, user):
     return result
 
 def upload_by_7(wb_id, mapping, collection, user):
+    print "upload_by_7+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     if 'parents' in mapping:
         for parent in mapping['parents']:
             parent['recs'] = upload_by_7(wb_id, parent['mapping'], collection, user)
     print('did parents')
-    
+
     recs = upload_tbl(wb_id, mapping, collection, user)
     print('did upload_tbl')
     
@@ -528,7 +537,7 @@ def upload_by_7(wb_id, mapping, collection, user):
             if 'args' not in child:
                 child['args'] = {}
             child['args'][child['link']] = recs
-            child['recs'] = upload_tbl(wb_id, child, collection, user)    
+            child['recs'] = upload_by_7(wb_id, child, collection, user)    
 
     print('did children')
     mapping['recs'] = recs    

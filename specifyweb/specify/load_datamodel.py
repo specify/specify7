@@ -38,6 +38,10 @@ class Table(object):
 
     def get_field(self, fieldname, strict=False):
         fieldname = fieldname.lower()
+
+        #print "load_datamodel.get_field(" + fieldname + ")+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        #print self.fields + self.relationships
+        
         for field in self.fields + self.relationships + [self.idField]:
             if field.name.lower() == fieldname:
                 return field

@@ -346,7 +346,7 @@ def set_fields_from_data(obj, data):
 
 def is_dependent_field(obj, field_name):
     return (
-        obj.specify_model.get_field(field_name).dependent
+        (obj.specify_model.get_field(field_name) != None and obj.specify_model.get_field(field_name).dependent)
 
         or (obj.__class__ is models.Collectionobject and
             field_name == 'collectingevent' and
@@ -393,6 +393,10 @@ def handle_fk_fields(collection, agent, obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
+    print "api.handle_fk_fields()+++++++++++++++++++++++++++++++++++++++++++++"
+    print obj
+    print data
+    
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
     for field_name, val in items:
@@ -641,6 +645,7 @@ def field_to_val(obj, field):
         return getattr(obj, field.name)
 
 def get_collection(logged_in_collection, model, control_params, params={}):
+    print "get_collection++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
     if isinstance(model, basestring):
@@ -658,6 +663,9 @@ def get_collection(logged_in_collection, model, control_params, params={}):
             val = val.split(',')
 
         filters.update({param: val})
+
+    print filters
+    
     try:
         objs = model.objects.filter(**filters)
     except (ValueError, FieldError) as e:

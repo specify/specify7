@@ -82,7 +82,7 @@ var WBView = Backbone.View.extend({
     matchWithValidate: false,
     multiMatchSetting: 'skip',
     events: {
-        'click .wb-upload': 'uploadClicked',
+        //'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
@@ -382,12 +382,12 @@ var WBView = Backbone.View.extend({
         //mappings below based on wb wupsy, wb_id=9
         var mappings = {
             'table': 'collectionobject',
-            'args': {},
+            'args': {'vals': {'CollectionMember': '/api/specify/collection/4'}},
             'parents': [
                 {'field': 'CatalogerID',
                  'mapping': { 
                      'table': 'agent',
-                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'AgentType': '1'}}, 
+                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'AgentType': 1, 'Division': '/api/specify/division/2'}}, 
                      'fields': [
                          [{'field': 'FirstName', 'wbcol': 1},
                           {'field': 'LastName', 'wbcol': 2},
@@ -397,7 +397,7 @@ var WBView = Backbone.View.extend({
                 {'field': 'CollectingEventID',
                  'mapping': {
                      'table': 'collectingevent',
-                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'Discipline_ID': 3}},
+                     'args': {'settings': [{'multi-match-action': 'pick'}], 'vals': {'Discipline': '/api/specify/discipline/3'}},
                      'fields':[[{'field': 'StationFieldNumber', 'wbcol': 6}]],
                      'children': [
                          {'link': 'CollectingEventID',
@@ -406,13 +406,15 @@ var WBView = Backbone.View.extend({
                               {'field': 'AgentID',
                                'mapping': {
                                    'table': 'agent',
-                                   'args': {'vals': {'AgentType': '1'}},
+                                   'args': {'vals': {'AgentType': 1, 'Division': '/api/specify/division/2'}},
                                    'fields': [
                                        [{'field': 'FirstName', 'wbcol': 7},{'field': 'LastName', 'wbcol': 8}],
                                        [{'field': 'FirstName', 'wbcol': 9},{'field': 'LastName', 'wbcol': 10}]
-                                   ]
-                               }}
-                          ]}
+                                   ]}
+                              }
+                          ],
+                          'fields': []
+                         }
                      ]
                  }}
             ],
