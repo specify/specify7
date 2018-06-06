@@ -18,6 +18,8 @@ var IActionItemFormTable = require('./formtableinteractionitem.js');
 var SubView              = require('./subview.js');
 var CheckBox             = require('./checkbox.js');
 var SpinnerUI            = require('./spinnerui.js');
+var cookies              = require('./cookies.js');
+var userInfo             = require('./userinfo.js');
 
     var MultiView = Backbone.View.extend({
         __name__: "MultiView",
@@ -80,9 +82,15 @@ var SpinnerUI            = require('./spinnerui.js');
     };
 
     var populateCommand = function(resource, control) {
-        var cmd = uicommands[control.attr('action')] || uicommands.CommandNotAvailable;
+        var cmd = uicommands[control.attr('action')] || uicommands[control.attr('name')] || uicommands.CommandNotAvailable;
         var view = new cmd({ el: control, model: resource, populateForm: populateForm });
         view.render();
+    };
+
+    var populateReportOnSaver = function (resource, control) {
+        var chookie =  userInfo.id + '.sp-print-on-save.' + resource.specifyModel.name + '.' + control.attr('name');
+        control.attr('check-cookie', chookie);
+        control.prop('checked', cookies.readCookie(chookie) === 'true' ? true : false); 
     };
 
     var populateForm = function(form, resource) {
@@ -95,6 +103,9 @@ var SpinnerUI            = require('./spinnerui.js');
         });
         _.each(form.find('.specify-uicommand'), function(node) {
             populateCommand(resource, $(node));
+        });
+        _.each(form.find('.specify-print-on-save'), function(node) {
+            populateReportOnSaver(resource, $(node));
         });
         return form;
     };

@@ -58,7 +58,6 @@ class Specifyuser(models.Model):
             SELECT SpPrincipalId, %s FROM spprincipal
             WHERE Name = 'Administrator'
             """, [self.id])
-            transaction.commit_unless_managed()
         except IntegrityError:
             # It's already in there.
             pass
@@ -75,7 +74,6 @@ class Specifyuser(models.Model):
           WHERE Name = 'Administrator'
         )
         """, [self.id])
-        transaction.commit_unless_managed()
 
     def save(self, *args, **kwargs):
         # There is a signal handler that updates last_login when

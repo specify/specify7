@@ -9,23 +9,31 @@ from specifyweb.specify.models import Specifyuser
 TTL = settings.SUPPORT_LOGIN_TTL
 
 class Command(BaseCommand):
-    args = '<username>'
     help = 'Creates a token for support login as the given user.'
-    option_list = BaseCommand.option_list + (
-        make_option('--list',
-                    action='store_true',
-                    dest='list',
-                    default=False,
-                    help='List users in database'),
-    )
 
-    def handle(self, username=None, **options):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--username',
+            default=None
+        )
+
+        parser.add_argument(
+            '--list',
+            action='store_true',
+            dest='list',
+            default=False,
+            help='List users in database',
+        )
+
+    def handle(self, **options):
         if options['list']:
             def admin(user): return 'admin' if user.is_admin() else ''
 
             for user in Specifyuser.objects.all():
                 self.stdout.write('\t'.join((user.name, user.usertype, admin(user))))
             return
+
+        username = options['username']
 
         if not settings.ALLOW_SUPPORT_LOGIN:
             raise CommandError('support login not enabled')

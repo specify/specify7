@@ -14,6 +14,7 @@ var navigation   = require('./navigation.js');
 var ResourceView = require('./resourceview.js');
 var router       = require('./router.js');
 var systemInfo   = require('./systeminfo.js');
+var reports      = require('./reports.js');
 
     var currentView;
     var versionMismatchWarned = false;
@@ -59,8 +60,20 @@ var systemInfo   = require('./systeminfo.js');
         jqxhr.errorHandled = true;
     }
 
+function viewSaved(resource, recordSet, options) {
+    if (options.addAnother) {
+        showResource(options.newResource, recordSet);
+    } else if (options.wasNew) {
+        navigation.go(resource.viewUrl());
+    } else {
+        const reloadResource = new resource.constructor({ id: resource.id });
+        reloadResource.recordsetid = resource.recordsetid;
+        reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
+    }
+}
+
     // build and display view for resource
-    function showResource(resource, recordSet, pushUrl) {
+function showResource(resource, recordSet, pushUrl) {
         var viewMode = userInfo.isReadOnly ? 'view' : 'edit';
         var view = new ResourceView({
             className: "specify-root-form",
@@ -71,14 +84,17 @@ var systemInfo   = require('./systeminfo.js');
         });
 
         view.on('saved', function(resource, options) {
-            if (options.addAnother) {
-                showResource(options.newResource, recordSet);
-            } else if (options.wasNew) {
-                navigation.go(resource.viewUrl());
+            var todoNext;
+            if (this.reporterOnSave && this.reporterOnSave.prop('checked')) {
+                console.log('generating label or invoice');
+                reports( {
+                    tblId: resource.specifyModel.tableId,
+                    recordToPrintId: resource.id,
+                    autoSelectSingle: true,
+                    done: viewSaved.bind(this, resource, recordSet, options)
+                });
             } else {
-                const reloadResource = new resource.constructor({ id: resource.id });
-                reloadResource.recordsetid = resource.recordsetid;
-                reloadResource.fetch().done(() => showResource(reloadResource, recordSet));
+                viewSaved(resource, recordSet, options);
             }
         }).on('deleted', function() {
             if (view.next) {
@@ -92,9 +108,8 @@ var systemInfo   = require('./systeminfo.js');
         }).on('changetitle', function(resource, title) {
             setTitle(title);
         });
-
-        pushUrl && navigation.push(resource.viewUrl());
-        setCurrentView(view);
+    pushUrl && navigation.push(resource.viewUrl());
+    setCurrentView(view);
     }
 
     //set title of browser tab

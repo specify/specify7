@@ -34,10 +34,6 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
 
-# Workbench uploader log directory.
-# Must exist and be writeable by the web server process.
-WB_UPLOAD_LOG_DIR = "/var/cache/specify_wb_upload/"
-
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
 ANONYMOUS_USER = None
@@ -49,9 +45,22 @@ RAVEN_CONFIG = None
 ALLOW_SUPPORT_LOGIN = False
 SUPPORT_LOGIN_TTL = 300
 
+# Usage stats are transmitted to the following address.
+# Set to None to disable.
 STATS_URL = "https://stats.specifycloud.org/capture"
 
-# Export settings.
+# Workbench uploader log directory.
+# Must exist and be writeable by the web server process.
+WB_UPLOAD_LOG_DIR = "/var/cache/specify_wb_upload/"
+
+# Asynchronously generated exports are placed in
+# the following directory. This include query result
+# exports and Darwin Core archives.
 DEPOSITORY_DIR = '/home/specify/specify_depository'
 
+# Old notifications are deleted after this many days.
+# If DEPOSITORY_DIR is being cleaned out with a
+# scheduled job, this interval should be shorter
+# than the clean out time, so that notifications
+# are not left that refer to deleted exports.
 NOTIFICATION_TTL_DAYS = 7

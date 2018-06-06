@@ -13,15 +13,17 @@ var userInfo               = require('./userinfo.js');
 
 const editReport = require('./editreport.js');
 const csrftoken = require('./csrftoken.js');
+const populateForm = require('./populateform.js');
 
 var title =  "Reports";
 
 var dialog;
 function makeDialog(el, options) {
     dialog && dialog.dialog('close');
+    var done = options.done;
     dialog = el.dialog(_.extend({
         modal: true,
-        close: function() { dialog = null; $(this).remove(); }
+        close: function() { dialog = null; $(this).remove(); done && done();}
     }, options));
 }
 
@@ -46,8 +48,12 @@ var ReportListDialog = Backbone.View.extend({
                 return false;
             });
         }
-        if (this.options.autoSelectSingle && appResources.length == 1) {
-            this.getReport(appResources[0], getReportParams);
+        if (this.options.autoSelectSingle) {
+            if (appResources.length == 1) {
+                this.getReport(appResources.models[0], getReportParams);
+            } else if (appResources.length == 0) {
+                alert("No reports are available for this table."); //currently safe to assume a tableid was provided.
+            }
         }
         function byType(type) {
             return appResources.filter(function(r) {
@@ -58,7 +64,7 @@ var ReportListDialog = Backbone.View.extend({
         this.labels = byType('jrxml/label');
     },
     render: function() {
-        if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length == 1)) {
+        if (!(this.options.autoSelectSingle && this.reports.length + this.labels.length <= 1)) {
             var reports = $('<table class="reports">');
             var labels = $('<table class="labels">');
 
@@ -76,8 +82,11 @@ var ReportListDialog = Backbone.View.extend({
                 maxHeight: 400,
                 buttons: [
                     {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
+                ],
+                done: this.options.done
             });
+        } else {
+            this.options.done && this.options.done();
         }
         return this;
     },
@@ -104,7 +113,7 @@ var ReportListDialog = Backbone.View.extend({
             filters: { appresource: appResource.id }
         });
         var dataFetch = appResource.rget('spappresourcedatas', true);
-
+        var reportOptions = this.options;
         $.when(dataFetch, reports.fetch({ limit: 1 })).done(function(data) {
             if (data.length > 1) {
                 console.warn("found multiple report definitions for appresource id:", appResource.id);
@@ -128,7 +137,8 @@ var ReportListDialog = Backbone.View.extend({
                         report: report,
                         appResourceData: appResourceData,
                         reportXML: reportXML,
-                        query: query
+                        query: query,
+                        reportOptions: reportOptions
                     };
                     if (imageFixResult.isOK) {
                         action(_({}).extend(reportResources, {reportXML: imageFixResult.reportXML}));
@@ -183,7 +193,7 @@ var FixImagesDialog = Backbone.View.extend({
         if (!attachments) return;
 
         var index = this.$('.missing-attachments a').index(evt.currentTarget);
-        var attachmentPlugin = new AttachmentPlugin();
+        var attachmentPlugin = new AttachmentPlugin({populateForm: populateForm});
         makeDialog(attachmentPlugin.render().$el, {
             title: "Choose file"
         });
@@ -239,12 +249,76 @@ function getReportParams(reportResources) {
     var reportDOM = $.parseXML(reportResources.reportXML);
     var parameters = $('parameter[isForPrompting="true"]', reportDOM);
     if (parameters.length < 1) {
-        getRecordSets(_.extend({parameters: {}}, reportResources));
+        if (reportResources.reportOptions.recordToPrintId) {
+            runReportForRecord(_.extend({parameters: {}}, reportResources));
+        } else {
+            getRecordSets(_.extend({parameters: {}}, reportResources));
+        }
     } else {
         new ReportParametersDialog({reportResources: reportResources, parameters: parameters}).render();
     }
 }
 
+function runReportForRecord(reportResources) {
+    clearQueryFilters(reportResources);
+    addRecordIdFilterToQuery(reportResources);
+    runReport(reportResources);
+}
+
+function addRecordIdFilterToQuery(reportResources) {
+    var queryResource = reportResources.query;
+    if (queryResource) {
+        var options = reportResources.reportOptions;
+        var newfield = new schema.models.SpQueryField.Resource();
+        var samplefield = queryResource.dependentResources.fields.models[0];
+        var tblModel = _.find(schema.models, function(m) {return m.tableId == options.tblId;}); 
+        //newfield.set('allownulls', null);
+        newfield.set('alwaysfilter', false);
+        newfield.set('columnalias', tblModel.idFieldName);
+        newfield.set('contexttableident', options.tblId);
+        //newfield.set('createdbyagent', samplefield.get('createdbyagent'));
+        newfield.set('endvalue', null);
+        newfield.set('fieldname', tblModel.idFieldName);
+        newfield.set('formatname', null);
+        //newfield.set('id', -1);
+        newfield.set('isdisplay', false);
+        newfield.set('isnot', false);
+        newfield.set('isprompt', false);
+        newfield.set('isrelfld', false);
+        //newfield.set('mappings', null);
+        //newfield.set('modifiedbyagent', samplefield.get('modifiedbyagent'));
+        newfield.set('operend', null);
+        newfield.set('operstart',1);
+        newfield.set('position', queryResource.dependentResources.fields.length);
+        newfield.set('query', samplefield.get('query'));
+        //newfield.set('resource_uri', null);
+        newfield.set('sorttype', 0);
+        newfield.set('startvalue', options.recordToPrintId.toString());
+        newfield.set('stringid',options.tblId + '.' + tblModel.name.toLowerCase() + '.' + tblModel.idFieldName);
+        newfield.set('tablelist', options.tblId);
+        //newfield.set('timestampcreated', samplefield.get('timestampcreated'));
+        //newfield.set('timestampmodified', samplefield.get('timestampmodified'));
+        //newfield.set('version', 0);
+        queryResource.dependentResources.fields.models.push(newfield);
+        queryResource.dependentResources.fields.length++;
+    }    
+}
+
+function clearQueryFilters(reportResources) {
+    var queryResource = reportResources.query;
+    if (queryResource) {
+        _.each(queryResource.dependentResources.fields.models, function(f) {
+            if (!f.get('alwaysfilter')) {
+                f.set('operstart',1);
+                f.set('operend',null);
+                f.set('startvalue','');
+                f.set('endvalue',null);
+            }
+        });
+    }
+}
+
+    
 var ReportParametersDialog = Backbone.View.extend({
     __name__: "ReportParametersDialog",
     className: "report-parameters-dialog",
@@ -385,7 +459,7 @@ var QueryParamsDialog = Backbone.View.extend({
 
 function runReport(reportResources, recordSetId, fieldUIs) {
     dialog && dialog.dialog('close');
-    var query = reportResources.query.toJSON();
+    var query = reportResources.query;
     query.limit = 0;
     query.recordsetid = recordSetId;
 
@@ -410,7 +484,7 @@ function runReport(reportResources, recordSetId, fieldUIs) {
 
 function fixupImages(reportXML) {
     var reportDOM = $.parseXML(reportXML);
-    var badImageUrl = '"http://' + window.location.host + '/images/unknown.png"';
+    var badImageUrl = `"${window.location.origin}/images/unknown.png"`;
     var badImageExpressions = [];
     var filenames = {};
     $('imageExpression', reportDOM).each(function() {

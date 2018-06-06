@@ -40,7 +40,7 @@ var reports           = require('./reports.js');
 
     function isActionEntry(entry) {
         var actionAttr = entry.attr('action');
-        return actionAttr && actionAttr != 'OpenNewView';
+        return actionAttr && actionAttr != 'OpenNewView' && actionAttr != 'NEW_ACC';
     }
 
     function getFormsPromise() {
@@ -128,7 +128,7 @@ module.exports = Backbone.View.extend({
                 //assuming loan invoice for now (52 is loan tableid)
                 reports({
                     tblId: 52,
-                    metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
+                    //metaDataFilter:  {prop: 'reporttype', val: 'invoice'},
                     autoSelectSingle: true
                 });
             } else {

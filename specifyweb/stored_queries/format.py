@@ -13,9 +13,9 @@ from specifyweb.context.app_resource import get_app_resource
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 
 from . import models
-from .queryfieldspec import build_join
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
+from .query_construct import QueryConstruct
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ class ObjectFormatter(object):
         else:
             return format
 
-    def objformat(self, query, orm_table, formatter_name, join_cache=None):
+    def objformat(self, query, orm_table, formatter_name):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
         formatterNode = self.getFormatterDef(specify_model, formatter_name)
@@ -109,10 +109,10 @@ class ObjectFormatter(object):
 
         def make_expr(query, fieldNode):
             path = fieldNode.text.split('.')
-            query, table, model, specify_field = build_join(query, specify_model, orm_table, path, join_cache)
+            query, table, model, specify_field = query.build_join(specify_model, orm_table, path)
             if specify_field.is_relationship:
                 formatter_name = fieldNode.attrib.get('formatter', None)
-                query, expr = self.objformat(query, table, formatter_name, join_cache)
+                query, expr = self.objformat(query, table, formatter_name)
             else:
                 expr = self._fieldformat(specify_field, getattr(table, specify_field.name))
 
@@ -162,12 +162,16 @@ class ObjectFormatter(object):
         order_by = [getattr(orm_table, order_by)] if order_by != '' else []
 
         join_column = list(inspect(getattr(orm_table, field.otherSideName)).property.local_columns)[0]
-        subquery = orm.Query([]).select_from(orm_table) \
+        subquery = QueryConstruct(
+            collection=query.collection,
+            objectformatter=self,
+            query=orm.Query([]).select_from(orm_table) \
                              .filter(join_column == getattr(rel_table, rel_table._id)) \
                              .correlate(rel_table)
-        subquery, formatted = self.objformat(subquery, orm_table, formatter_name, {})
+        )
+        subquery, formatted = self.objformat(subquery, orm_table, formatter_name)
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by))
-        return subquery.add_column(aggregated).as_scalar()
+        return subquery.query.add_column(aggregated).as_scalar()
 
     def fieldformat(self, query_field, field):
         field_spec = query_field.fieldspec

@@ -31,6 +31,7 @@ class RelatedSearchMeta(type):
                        value="",
                        negate=False,
                        display=True,
+                       format_name=None,
                        sort_type=0)
             for col in Rs.columns]
 
@@ -41,6 +42,7 @@ class RelatedSearchMeta(type):
                 value="",
                 negate=False,
                 display=True,
+                format_name=None,
                 sort_type=0))
 
         def make_filter(f, negate):
@@ -50,6 +52,7 @@ class RelatedSearchMeta(type):
                               value=col_to_fs(val) if isinstance(val, F) else val,
                               negate=negate,
                               display=False,
+                              format_name=None,
                               sort_type=0)
 
         Rs.filter_fields = [make_filter(f, False) for f in Rs.filters] + \
@@ -126,6 +129,7 @@ class RelatedSearch(object):
             value=primary_query,
             negate=False,
             display=False,
+            format_name=None,
             sort_type=0)
 
         logger.debug("primary queryfield: %s", primary_field)

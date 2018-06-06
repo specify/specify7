@@ -7,6 +7,9 @@ var processField           = require('./specifyformfields.js');
 var parseSpecifyProperties = require('./parsespecifyproperties.js');
 var processColumnDef       = require('./processcolumndef.js');
 
+const cookies              = require('./cookies.js');
+const userInfo             = require('./userinfo.js');
+
     function processCell(formNumber, doingFormTable, mode, cellNode) {
         var cell = $(cellNode);
         var id = cell.attr('id') ? 'specify-field-' + formNumber + '-' + cell.attr('id') : undefined;
@@ -32,6 +35,12 @@ var processColumnDef       = require('./processcolumndef.js');
                     }
                     if (ignore && ignore.toLowerCase() == 'true') {
                         control.addClass('specify-ignore-field');
+                        if (fieldName && ['printonsave', 'generateinvoice', 'generatelabelchk'].indexOf(fieldName.toLowerCase()) != 0) {
+                            control.addClass('specify-print-on-save');
+                        }
+                    }
+                    if (fieldName && fieldName.toLowerCase() === 'isonloan') {
+                        control.addClass('specify-is-on-loan');
                     }
                     doingFormTable && control.addClass('specify-field-in-table');
                 }

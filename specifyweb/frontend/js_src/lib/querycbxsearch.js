@@ -9,6 +9,7 @@ var api               = require('./specifyapi.js');
 var dataobjformatters = require('./dataobjformatters.js');
 var whenAll           = require('./whenall.js');
 var initialContext    = require('./initialcontext.js');
+var resourceapi       = require('./resourceapi.js');
 
     var dialogdefs;
     initialContext.load('app.resource?name=DialogDefs', data => dialogdefs = data);
@@ -25,6 +26,7 @@ module.exports = Backbone.View.extend({
         initialize: function(options) {
             this.populateForm = options.populateForm;
             this.forceCollection = options.forceCollection || null;
+            this.xtraFilters = options.xtraFilters;
         },
         render: function() {
             var dialogDef = $('dialog[type="search"][name="' + this.model.specifyModel.searchDialog + '"]', dialogdefs);
@@ -65,17 +67,52 @@ module.exports = Backbone.View.extend({
             this.$('.querycbx-search-results').empty();
             api.queryCbxExtendedSearch(this.model, this.forceCollection).done(this.gotResults.bind(this));
         },
+    xfilter: function(results) {
+        //apply special conditions.
+        //probably would be better to send special conditions to server?
+        //extremely skimpy. will work only for current known cases
+        var self = this;
+        results.models = _.filter(results.models, function(result) {
+            return _.reduce(self.xtraFilters, function(memo, value){
+                if (!memo) {
+                    return false;
+                }
+                return self.applyXFilter(result, value);
+            }, true);
+        });
+        return results;
+    },
+    applyXFilter: function(item, filter) {
+        if (filter.op === 'unbetween') {
+            var val = item.get(filter.field);
+            var range = filter.value.split(',');
+            return val < range[0] && val > range[1];
+        } else if (filter.op === 'in') {
+            var vals = filter.value.split(',');
+            for (var v = 0; v < vals.length; v++) {
+                if (vals[v] == item.get(filter.field)) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (filter.op === 'lt') {
+            return item.get(filter.field) < filter.value;
+        } else {
+            console.warn('extended query combo box filter ignored:', filter);
+            return true;
+        }
+    },
         gotResults: function(results) {
-            this.results = results;
+            this.results = this.xfilter(results);
             whenAll(results.map(format)).done(this.displayResults.bind(this));
         },
         displayResults: function(formattedResults) {
-            var items = _.map(formattedResults, function(formattedResult) {
-                return $('<li>').append($('<a>').text(formattedResult))[0];
-            });
+            formattedResults.sort();
+            const items = formattedResults.map(formattedResult => $('<li>').append($('<a>').text(formattedResult))[0]);
             this.$('.querycbx-search-results').append(items);
 
             if (formattedResults.length < 1) this.$('.querycbx-search-results').append('<li>No hits</li>');
+            if (formattedResults.length === 100) this.$('.querycbx-search-results').append('<li>...</li>');
         },
         select: function(evt) {
             evt.preventDefault();

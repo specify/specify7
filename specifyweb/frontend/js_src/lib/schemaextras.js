@@ -36,6 +36,10 @@ module.exports = {
         CollectionObject: function(model) {
             var collection = model.getField('collection');
             collection.otherSideName = 'collectionObjects';
+            var catalognumber = model.getField('catalognumber');
+            catalognumber.getFormat = function() {
+                return schema.catalogNumFormatName || schema.Field.prototype.getFormat.apply(this);
+            };
         },
         Division: function(model) {
             var fields = model.getAllFields();

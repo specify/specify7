@@ -22,7 +22,7 @@ var dataobjformatters = require('./dataobjformatters.js');
     //
     function fromTable(info) {
         var plModel = schema.getModel(info.pickList.get('tablename'));
-        var plItemCollection = new plModel.LazyCollection();
+        var plItemCollection = new plModel.LazyCollection({domainfilter: true});
         return Q(plItemCollection.fetch({ limit: info.limit }))
             .then(function() { return formatItems(info, plItemCollection); });
     }

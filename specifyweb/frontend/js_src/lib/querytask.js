@@ -24,7 +24,8 @@ var router             = require('./router.js');
         events: {
             'change :checkbox': 'optionChanged',
             'click .query-execute': 'search',
-            'click .query-csv': 'searchCSV',
+            'click .query-csv': 'searchDownload',
+            'click .query-kml': 'searchDownload',
             'click .query-to-recordset': 'makeRecordSet',
             'click .query-save': 'save',
             'click .query-save-as': 'saveAs',
@@ -67,7 +68,7 @@ var router             = require('./router.js');
             ul.sortable({ update: this.updatePositions.bind(this) });
         },
         addFieldUI: function(spqueryfield) {
-            this.$('.query-execute, .query-csv, .query-to-recordset').prop('disabled', false);
+            this.$('.query-execute, .query-csv, .query-kml, .query-to-recordset').prop('disabled', false);
             return new QueryFieldUI({
                 parentView: this,
                 model: this.model,
@@ -79,7 +80,7 @@ var router             = require('./router.js');
             this.fieldUIs = _(this.fieldUIs).without(ui);
             this.fields.remove(spqueryfield);
             this.updatePositions();
-            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-csv, .query-save, .query-to-recordset').prop('disabled', true);
+            (this.fieldUIs.length < 1) && this.$('.query-execute, .query-csv, .query-kml, .query-save, .query-to-recordset').prop('disabled', true);
         },
         updatePositions: function() {
             _.invoke(this.fieldUIs, 'positionChanged');
@@ -184,23 +185,69 @@ var router             = require('./router.js');
                 });
         },
         search: function(evt) {
-            this.$('.query-execute, .query-csv').blur();
+            this.$('.query-execute, .query-csv, .query-kml').blur();
             this.deleteIncompleteFields(() => this.search_());
         },
-        searchCSV: function(evt) {
-            this.$('.query-execute, .query-csv').blur();
+
+        hasGeoCoords: function() {
+            var lat = false, lng = false, latt = false, lngt = false;
+            this.fieldUIs.forEach(function(f){
+                if (f.spqueryfield.get('isdisplay') && f.spqueryfield.get('tablelist').split(',').pop() == 2) {
+                    var fld = f.spqueryfield.get('fieldname').toLowerCase();
+                    lat = lat || fld === 'latitude1';
+                    lng = lng || fld === 'longitude1';
+                    //latt = latt || fld === 'lat1text';
+                    //lngt = lngt || fld === 'long1text';
+                }
+            });
+            return (lat && lng) || (latt && lngt);;
+        },
+        
+        searchDownload: function(evt) {
+            this.$('.query-execute, .query-csv, .query-kml').blur();
+            var cls = $(evt.currentTarget).attr('class');
+            var postUrl = '/stored_query/' + (cls == 'query-csv' ? 'exportcsv' : 'exportkml') + '/';
+            var fileDesc = cls == 'query-csv' ? 'CSV' : 'KML';
+            if (fileDesc == 'KML' && !this.hasGeoCoords()) {
+                $('<div title="Unable to Export">Please add latitude and longitude fields to the query. ' +
+                  '</div>').dialog({
+                      modal: true,
+                      close: function() { $(this).remove(); }
+                  });
+                return;
+            }
+            if (cls == 'query-kml') {
+                var captions = _.chain(this.fieldUIs)
+                        .filter(function(f) { return f.spqueryfield.get('isdisplay'); })
+                        .sortBy(function(f) { return f.spqueryfield.get('position'); })
+                        .map(function(f) { return {spec: f.fieldSpec, isdisplay: f.spqueryfield.get('isdisplay')};})
+                        .map(function(f){
+                            var field = _.last(f.spec.joinPath);
+                            var name = f.spec.treeRank || field.getLocalizedName();
+                            if (f.spec.datePart &&  f.spec.datePart != 'Full Date') {
+                                name += ' (' + f.spec.datePart + ')';
+                            }
+                            //return {caption: name, isdisplay: f.isdisplay};
+                            return name;
+                        }).value();
+                //sneaky cheat. Doesn't seem to be a facility for localizations in the query api
+                //And it may be better to use the 'live' captions in case they get adjusted to avoid duplication.
+                this.query.set('captions', captions);
+            }
             this.deleteIncompleteFields(() => {
                 if (this.fieldUIs.length < 1) return;
-                $.post('/stored_query/export/', JSON.stringify(this.query));
+                $.post(postUrl, JSON.stringify(this.query));
                 $('<div title="Query Started">The query has begun executing. ' +
-                  'You will receive a notification when the results CSV file ' +
+                  'You will receive a notification when the results ' + fileDesc + ' file ' +
                   'is ready for download.' +
                   '</div>').dialog({
                       modal: true,
                       close: function() { $(this).remove(); }
                   });
             });
+            
         },
+        
         search_: function() {
             if (this.fieldUIs.length < 1) return;
 
