@@ -10,6 +10,7 @@ from . import (
     address_rules,
     discipline_rules,
     agent_rules,
+    agentspecialty_rules,
     groupperson_rules,
     shipment_rules,
     attachment_rules,
