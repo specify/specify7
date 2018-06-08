@@ -84,7 +84,7 @@ def get_viewsets_from_db(collection, user, level):
     def viewsets():
         for o in objs:
             try:
-                yield ElementTree.XML(o.data)
+                yield ElementTree.fromstring(o.data.encode('utf-8'))
             except Exception as e:
                 logger.error("Bad XML in view set: %s\n%s  id = %s", e, o, o.id)
 
