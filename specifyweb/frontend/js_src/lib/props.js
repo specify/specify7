@@ -2,9 +2,10 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
+const escapeRegExp = require('./escaperegexp.js');
 
     function reForKey(key) {
-        return RegExp('^' + key + '\\s*[\\s=:]\\s*(.*)$', 'm');
+        return RegExp('^' + escapeRegExp(key) + '\\s*[\\s=:]\\s*(.*)$', 'm');
     }
 
     function unescape(value) {
