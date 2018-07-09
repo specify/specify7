@@ -31,7 +31,8 @@ module.exports = RecordSetsDialog.extend({
             'click a.i-action-rs': 'toggleRs',
             'click a.i-action-enter': 'toggleCats',
             'keyup textarea.i-action-entry': 'catNumChange',
-            'click input.i-action-noprep': 'zeroPrepLoan'
+            'click input.i-action-noprep': 'zeroPrepLoan',
+            'click input.i-action-noco': 'zeroCoPrep'
         },
 
 
@@ -87,7 +88,14 @@ module.exports = RecordSetsDialog.extend({
                 return "Without preparations";
             }
         },
-
+        getNoCOCaption: function() {
+            if (!this.options.interactionresource) {
+                return "";
+            } else {
+                return "Add unassociated item";
+            }
+        },
+    
         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< l10n-able stuff
 
 
@@ -162,6 +170,9 @@ module.exports = RecordSetsDialog.extend({
             var noPrepCap = this.getNoPrepCaption();
             if (noPrepCap != "") {
                 this.$el.append('<br><input type="button" class="i-action-noprep" value="' + noPrepCap + '"</><br>');
+            }
+            if (this.options.interactionresource) {
+                this.$el.append('<br><input type="button" class="i-action-noco" value="' + this.getNoCOCaption() + '"</><br>');                
             }
         },
         touchUpUI: function() {
@@ -292,9 +303,21 @@ module.exports = RecordSetsDialog.extend({
                     }
                 }
             }
-            if (prepsData.length == 0 || missing.length > 0 || (!isRs && invalidEntries.length > 0)) {
-                this.$('textarea.i-action-entry').after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
-                return;
+            if (prepsData.length == 0) {
+                if ("unassociated item" == action && this.options.interactionresource) {
+                    console.info("adding uncataloged co");
+                    var itemModelName = this.options.interactionresource.specifyModel.name + "preparation";
+                    var itemModel = schema.getModel(itemModelName);
+                    var item = new itemModel.Resource();
+                    item.initialize();
+                    if (this.options.interactionresource.specifyModel.name == "Loan") {
+                        item.set('quantityReturned', 0);
+                        item.set('quantityResolved', 0);
+                    }
+                    this.options.itemcollection.add([item]);
+                } else {
+                    this.$('textarea.i-action-entry').after(this.makeSnagDisplay(prepsData, missing, invalidEntries, action));
+                } 
             } else {
                 this.showPrepSelectDlg(prepsData, action);
             }
@@ -341,6 +364,11 @@ module.exports = RecordSetsDialog.extend({
             navigation.go(new model.Resource().viewUrl());
         },
 
+        zeroCoPrep: function() {
+            this.$el.dialog('close');
+            this.availablePrepsReady(false, "unassociated item", "none", [], [], []);
+        },
+    
         interactionAction: function(selection, isRs, invalidEntries) {
             if (this.options.close) {
                 this.$el.dialog('close');
