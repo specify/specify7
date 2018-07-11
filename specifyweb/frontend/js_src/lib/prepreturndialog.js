@@ -64,6 +64,11 @@ const PrepReturnRow = Backbone.View.extend({
                         this.$('.return-taxon').text(taxon == null ? "" : taxon.get('fullname'));
                         this.$('.return-prep-type').text(pt.get('name'));
                     });
+                } else {
+                    var desc = lp.get('descriptionofmaterial') ?
+                            lp.get('descriptionofmaterial').substr(0,50) :
+                            "uncataloged";
+                    this.$('.return-taxon').text(desc);
                 }
             }
         );
