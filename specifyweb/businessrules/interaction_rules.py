@@ -37,12 +37,14 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
 
 @orm_signal_handler('pre_save', 'Giftpreparation')
 def giftprep_quantity_must_be_lte_availability(ipreparation):
-    available = get_availability(ipreparation.preparation, ipreparation.id, "giftpreparationid")
-    if available < ipreparation.quantity:
-        raise BusinessRuleException("gift preparation quantity exceeds availability" + " (" + str(ipreparation.id) + ": " + str(ipreparation.quantity) + " " + str(available) +")")
+    if ipreparation.preparation is not None:
+        available = get_availability(ipreparation.preparation, ipreparation.id, "giftpreparationid")
+        if available < ipreparation.quantity:
+            raise BusinessRuleException("gift preparation quantity exceeds availability" + " (" + str(ipreparation.id) + ": " + str(ipreparation.quantity) + " " + str(available) +")")
 
 @orm_signal_handler('pre_save', 'Exchangeoutprep')
 def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
-    available = get_availability(ipreparation.preparation, ipreparation.id, "exchangeoutprepid")
-    if available < ipreparation.quantity:
-        raise BusinessRuleException("exchangeout preparation quantity exceeds availability")
+    if ipreparation.preparation is not None:
+        available = get_availability(ipreparation.preparation, ipreparation.id, "exchangeoutprepid")
+        if available < ipreparation.quantity:
+            raise BusinessRuleException("exchangeout preparation quantity exceeds availability")
