@@ -11,7 +11,7 @@ from django.conf import settings
 from specifyweb.specify.views import login_maybe_required
 
 server_urls = None
-server_time_delta = None
+server_time_delta = 0
 
 class AttachmentError(Exception):
     pass
@@ -33,7 +33,8 @@ def get_settings(request):
 
     data = {
         'collection': get_collection(),
-        'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
+        'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET,
+        'public_image_server_fileupload_url': settings.PUBLIC_IMAGE_SERVER_FILEUPLOAD_URL
         }
     data.update(server_urls)
     return HttpResponse(json.dumps(data), content_type='application/json')
@@ -55,6 +56,7 @@ def get_upload_params(request):
         'token': generate_token(get_timestamp(), attch_loc)
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 def make_attachment_filename(filename):
     uuid = str(uuid4())
@@ -132,4 +134,3 @@ def test_key():
         raise AttachmentError("Attachment key test failed.")
 
 init()
-
