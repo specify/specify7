@@ -30,6 +30,10 @@ WEB_ATTACHMENT_COLLECTION = None
 # Set to true if asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 
+PUBLIC_IMAGE_SERVER_FILEUPLOAD_URL = None
+
+PUBLIC_IMAGE_SERVER_KEY = None
+
 # Report runner service
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
