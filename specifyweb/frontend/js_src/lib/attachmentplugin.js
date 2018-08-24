@@ -6,7 +6,7 @@ var _ = require('underscore');
 
 var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
-var attachmentserverprivate = require('./attachmentserverbase.js');
+var attachmentserverprivate = require('./attachments.js');
 var attachmentserverpublic = require('./attachmentserverpublic.js');
 
 module.exports =  UIPlugin.extend({

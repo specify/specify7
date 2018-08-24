@@ -5,12 +5,12 @@ var _ = require('underscore');
 
 var schema         = require('./schema.js');
 var initialContext = require('./initialcontext.js');
-var attachmentserverbase = require('./attachmentserverbase.js');
+var attachmentserverbase = require('./attachments.js');
 
 var settings;
 initialContext.load('attachment_settings.json', data => settings = data);
 
-function functionthatjustpipesthings(notused) {
+function placeholderforlorisauthentication(notused) {
     return $.get('/attachment_gw/get_token/', { filename: 'asfdas' });
 }
 
@@ -20,7 +20,7 @@ var attachmentserverpublic = {
       var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
 
       var attachmentlocation = attachment.get('attachmentlocation');
-      return functionthatjustpipesthings(attachmentlocation).pipe(function(token) {
+      return placeholderforlorisauthentication(attachmentlocation).pipe(function(token) {
           return $('<img>', {src: `http://localhost:5050/loris/${attachmentlocation}/full/${scale},/0/default.jpg`, style: style});
       });
   },
