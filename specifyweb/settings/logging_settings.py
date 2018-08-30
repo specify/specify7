@@ -5,13 +5,7 @@
 # more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'standard': {
-            'format': '[%(asctime)s] [%(levelname)s] [%(name)s:%(lineno)s] %(message)s',
-            'datefmt': "%d/%b/%Y %H:%M:%S"
-        },
-    },
+    'disable_existing_loggers': False,
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -27,25 +21,18 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
-        'logfile': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/home/specify/logs/specify.log',
-            'maxBytes': 1024*1024,
-            'backupCount': 10,
-            'formatter': 'standard',
-        }
     },
     'loggers': {
-        'specifyweb': {
-            'handlers': ['logfile'],
+        'django.request': {
+            'handlers': ['mail_admins'],
             'level': 'DEBUG',
             'propagate': True,
         },
-        'django.request': {
-            'handlers': ['mail_admins', 'logfile'],
-            'level': 'DEBUG',
+        'specify': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': True,
         },
     }
 }
+
