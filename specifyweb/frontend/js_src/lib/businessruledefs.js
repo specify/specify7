@@ -274,18 +274,5 @@ module.exports = {
                 role: {field: 'borrow', otherfields: ['agent']},
                 agent: {field: 'borrow', otherfields: ['role']}
             }
-        },
-        Shipment: {
-            customChecks: {
-                shippedto: function(shipment) {
-                    return shipment.rget('shippedto.addresses').pipe(function(addresses) {
-                        return {
-                            valid: addresses == null || addresses.length > 0,
-                            reason: "Shipped to agent must have an address.",
-                            key: "br-shippedto-address"
-                        };
-                    });
-                }
-            }
         }
     };
