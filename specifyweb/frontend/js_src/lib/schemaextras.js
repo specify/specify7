@@ -40,7 +40,7 @@ module.exports = {
                 isRelationship: true,
                 isRequired: false,
                 isHidden: alwaysTrue,
-                type: 'many-to-one', //not-really, but it works
+                type: 'one-to-one', 
                 otherSideName: 'CollectionObject',
                 relatedModelName: 'Determination',
                 readOnly: true
