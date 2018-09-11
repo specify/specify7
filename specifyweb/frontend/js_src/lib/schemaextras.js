@@ -34,6 +34,18 @@ module.exports = {
             fields.push(collectionObjects);
         },
         CollectionObject: function(model) {
+            var fields = model.getAllFields();
+            var currDet = _(new schema.Field(model)).extend({
+                name: 'currentDetermination',
+                isRelationship: true,
+                isRequired: false,
+                isHidden: alwaysTrue,
+                type: 'many-to-one', //not-really, but it works
+                otherSideName: 'CollectionObject',
+                relatedModelName: 'Determination',
+                readOnly: true
+            });
+            fields.push(currDet);
             var collection = model.getField('collection');
             collection.otherSideName = 'collectionObjects';
             var catalognumber = model.getField('catalognumber');
