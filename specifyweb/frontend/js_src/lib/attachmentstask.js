@@ -4,7 +4,7 @@ var $         = require('jquery');
 var _         = require('underscore');
 var Backbone  = require('./backbone.js');
 
-var attachments  = require('./attachments.js');
+var attachments  = require('./attachments/attachments.js');
 var router       = require('./router.js');
 var app          = require('./specifyapp.js');
 var schema       = require('./schema.js');

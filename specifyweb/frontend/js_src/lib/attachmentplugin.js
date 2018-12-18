@@ -6,8 +6,12 @@ var _ = require('underscore');
 
 var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
-var attachmentserverprivate = require('./attachments.js');
-var attachmentserverpublic = require('./attachmentserverpublic.js');
+var initialContext = require('./initialcontext.js');
+var attachmentserverprivate = require('./attachments/attachments.js');
+var attachmentserverpublic = require('./attachments/attachmentserverpublic.js');
+
+var settings;
+initialContext.load('attachment_settings.json', data => settings = data);
 
 module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
@@ -35,16 +39,21 @@ module.exports =  UIPlugin.extend({
             return this;
         },
         addAttachment: function() {
-            this.$el.append('<form enctype="multipart/form-data"><input type="checkbox" id="isPublicImage">  Is this a public image file?<br><input type="file" name="file"></form>');
-        },
+            this.$el.append('<form enctype="multipart/form-data">');
+            var servers = Object.keys(settings.attachment_servers);
+            var options = '';
+            for (var i = 0; i < servers.length; i++){
+                options += '<option value="' + servers[i] + '">' + servers[i][0].toUpperCase() + servers[i].substring(1).toLowerCase() + '</option>';
+            }
+            this.$el.append('Attachment Server: <select selected="PRIVATE" id="attachmentserver">'+options+'</select><input type="file" name="file"></form>');
+         },
         fileSelected: function(evt) {
             var files = this.$(':file').get(0).files;
             if (files.length === 0) return;
 
-            var isPublicImage = this.$('#isPublicImage').get(0).checked;
-            this.startUpload(files[0], isPublicImage);
+            this.startUpload(files[0]);
         },
-        startUpload: function(file, isPublicImage) {
+        startUpload: function(file) {
             var self = this;
 
             self.progressBar = $('<div class="attachment-upload-progress">').progressbar();
@@ -53,9 +62,11 @@ module.exports =  UIPlugin.extend({
                 .appendTo(self.el)
                 .append(self.progressBar)
                 .dialog({ modal:true });
-
-            if (isPublicImage) { var attachmentserver = attachmentserverpublic;}
-            else {var attachmentserver = attachmentserverprivate;}
+            
+            var sel = this.$('#attachmentserver').get(0);
+            var selected = sel.options[sel.selectedIndex];
+            var attachmentserverjs = settings.attachment_servers[selected.value];
+            var attachmentserver = require('./attachments/'+attachmentserverjs);
 
             attachmentserver.uploadFile(file, function(progressEvt) {
                 self.uploadProgress(progressEvt);

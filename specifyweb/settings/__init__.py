@@ -10,6 +10,11 @@ except ImportError:
     pass
 
 try:
+    from .local_attachment_settings import *
+except ImportError:
+    pass
+
+try:
     from .debug import DEBUG
 except ImportError:
     DEBUG = False

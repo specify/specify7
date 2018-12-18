@@ -8,7 +8,7 @@ var schema                 = require('./schema.js');
 var QueryFieldUI           = require('./queryfield.js');
 var parsespecifyproperties = require('./parsespecifyproperties.js');
 var AttachmentPlugin       = require('./attachmentplugin.js');
-var attachments            = require('./attachments.js');
+var attachments            = require('./attachments/attachments.js');
 var userInfo               = require('./userinfo.js');
 
 const editReport = require('./editreport.js');

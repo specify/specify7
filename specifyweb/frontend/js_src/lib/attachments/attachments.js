@@ -3,10 +3,10 @@
 var $ = require('jquery');
 var _ = require('underscore');
 
-var icons          = require('./icons.js');
-var schema         = require('./schema.js');
-var assert         = require('./assert.js');
-var initialContext = require('./initialcontext.js');
+var icons          = require('./../icons.js');
+var schema         = require('./../schema.js');
+var assert         = require('./../assert.js');
+var initialContext = require('./../initialcontext.js');
 
 var settings;
 initialContext.load('attachment_settings.json', data => settings = data);
@@ -95,7 +95,7 @@ var attachments = {
         var formData = new FormData();
         var attachmentLocation;
         var attachment;
-
+        
         return $.get('/attachment_gw/get_upload_params/', {filename: file.name})
         .pipe(function(uploadParams) {
             attachmentLocation = uploadParams.attachmentlocation;
@@ -122,7 +122,8 @@ var attachments = {
             return new schema.models.Attachment.Resource({
                 attachmentlocation: attachmentLocation,
                 mimetype: file.type,
-                origfilename: file.name
+                origfilename: file.name,
+                servername: 'PRIVATE',
             });
         });
     }
