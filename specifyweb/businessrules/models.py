@@ -12,7 +12,6 @@ from . import (
     agent_rules,
     agentspecialty_rules,
     groupperson_rules,
-    shipment_rules,
     attachment_rules,
     guid_rules,
     interaction_rules,
