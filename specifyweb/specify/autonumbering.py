@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from .lock_tables import lock_tables
 from .models import Splocalecontaineritem as Item
+from .models import Collectionobject
 from .uiformatters import get_uiformatter, AutonumberOverflowException
 
 def autonumber_and_save(collection, user, obj):
@@ -10,7 +11,16 @@ def autonumber_and_save(collection, user, obj):
                    container__name=obj.__class__.__name__.lower(),
                    format__isnull=False)
 
-    formatter_names = Item.objects.filter(**filters).values_list('format', flat=True)
+    formatter_names = list(
+        Item.objects
+        .filter(**filters)
+        .exclude(container__name='collectionobject', name='catalognumber')
+        .values_list('format', flat=True)
+    )
+
+    if obj.__class__ is Collectionobject:
+        formatter_names.append(collection.catalognumformatname)
+
     logger.debug("formatters for %s: %s", obj, formatter_names)
 
     uiformatters = [get_uiformatter(collection, user, f) for f in formatter_names]
