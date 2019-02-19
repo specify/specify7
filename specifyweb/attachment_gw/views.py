@@ -11,15 +11,15 @@ from django.conf import settings
 from specifyweb.specify.views import login_maybe_required
 
 server_urls = None
-server_time_delta = None
+server_time_delta = 0
 
 class AttachmentError(Exception):
     pass
 
 def get_collection():
     "Assumes that all collections are stored together."
-    if settings.WEB_ATTACHMENT_COLLECTION:
-        return settings.WEB_ATTACHMENT_COLLECTION
+    if settings.ATTACHMENT_SERVERS['PRIVATE']['COLLECTION']:
+        return settings.ATTACHMENT_SERVERS['PRIVATE']['COLLECTION']
 
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
@@ -30,10 +30,13 @@ def get_collection():
 def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
-
     data = {
+        'attachment_servers': dict((server, settings.ATTACHMENT_SERVERS[server]['JS_SRC']) for server in settings.ATTACHMENT_SERVERS.keys()),
         'collection': get_collection(),
-        'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
+        'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
+        'public_image_server_base_url': settings.ATTACHMENT_SERVERS['LORIS']['URL'],
+        'public_image_server_fileupload_url': settings.ATTACHMENT_SERVERS['LORIS']['FILEUPLOAD_URL']
+        
         }
     data.update(server_urls)
     return HttpResponse(json.dumps(data), content_type='application/json')
@@ -56,6 +59,7 @@ def get_upload_params(request):
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
 
+
 def make_attachment_filename(filename):
     uuid = str(uuid4())
     name, extension = splitext(filename)
@@ -75,7 +79,7 @@ def delete_attachment_file(attch_loc):
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
     timestamp = str(timestamp)
-    mac = hmac.new(settings.WEB_ATTACHMENT_KEY,
+    mac = hmac.new(settings.ATTACHMENT_SERVERS['PRIVATE']['KEY'],
                    timestamp + filename)
     return ':'.join((mac.hexdigest(), timestamp))
 
@@ -95,11 +99,11 @@ def update_time_delta(response):
 
 def init():
     global server_urls
-
-    if settings.WEB_ATTACHMENT_URL in (None, ''):
+    
+    if settings.ATTACHMENT_SERVERS['PRIVATE']['URL'] in (None, ''):
         return
 
-    r = requests.get(settings.WEB_ATTACHMENT_URL)
+    r = requests.get(settings.ATTACHMENT_SERVERS['PRIVATE']['URL'])
     if r.status_code != 200:
         return
 
@@ -132,4 +136,3 @@ def test_key():
         raise AttachmentError("Attachment key test failed.")
 
 init()
-
