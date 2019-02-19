@@ -30,15 +30,26 @@ def get_collection():
 def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
+
     data = {
-        'attachment_servers': dict((server, settings.ATTACHMENT_SERVERS[server]['JS_SRC']) for server in settings.ATTACHMENT_SERVERS.keys()),
+        'attachment_servers': {
+            server: server_settings['JS_SRC']
+            for server, server_settings in settings.ATTACHMENT_SERVERS.items()
+        },
         'collection': get_collection(),
         'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
-        'public_image_server_base_url': settings.ATTACHMENT_SERVERS['LORIS']['URL'],
-        'public_image_server_fileupload_url': settings.ATTACHMENT_SERVERS['LORIS']['FILEUPLOAD_URL']
-        
-        }
+    }
+
+    loris_settings = settings.ATTACHMENT_SERVERS.get('LORIS', None)
+    if loris_settings is not None:
+        # don't fail if settings for LORIS are not included
+        data.update({
+            'public_image_server_base_url':  loris_settings['URL'],
+            'public_image_server_fileupload_url': loris_settings['FILEUPLOAD_URL'],
+        })
+
     data.update(server_urls)
+
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 @login_maybe_required
@@ -99,7 +110,7 @@ def update_time_delta(response):
 
 def init():
     global server_urls
-    
+
     if settings.ATTACHMENT_SERVERS['PRIVATE']['URL'] in (None, ''):
         return
 
