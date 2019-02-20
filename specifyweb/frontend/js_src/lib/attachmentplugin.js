@@ -37,13 +37,19 @@ module.exports =  UIPlugin.extend({
             return this;
         },
         addAttachment: function() {
-            this.$el.append('<form enctype="multipart/form-data">');
-            var servers = Object.keys(settings.attachment_servers);
-            var options = '';
-            for (var i = 0; i < servers.length; i++){
-                options += '<option value="' + servers[i] + '">' + servers[i][0].toUpperCase() + servers[i].substring(1).toLowerCase() + '</option>';
-            }
-            this.$el.append('Attachment Server: <select selected="PRIVATE" id="attachmentserver">'+options+'</select><input type="file" name="file"></form>');
+            const servers = Object.keys(settings.attachment_servers);
+            this.$el.append(
+                $('<form enctype="multipart/form-data">').append(
+                    'Attachment Server: ',
+                    $('<select selected="PRIVATE" id="attachmentserver">').append(
+                        servers.map(
+                            server => $('<option>', {value: server})
+                                .text(server.charAt(0).toUpperCase() + server.substring(1).toLowerCase())
+                        )
+                    ),
+                    '<input type="file" name="file">'
+                )
+            );
          },
         fileSelected: function(evt) {
             var files = this.$(':file').get(0).files;
@@ -60,7 +66,7 @@ module.exports =  UIPlugin.extend({
                 .appendTo(self.el)
                 .append(self.progressBar)
                 .dialog({ modal:true });
-            
+
             var sel = this.$('#attachmentserver').get(0);
             var selected = sel.options[sel.selectedIndex];
             var attachmentserverjs = settings.attachment_servers[selected.value];
