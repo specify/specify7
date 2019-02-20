@@ -14,6 +14,7 @@ function placeholderforlorisauthentication(notused) {
 }
 
 var attachmentserverpublic = {
+  servername: 'LORIS',
   getThumbnail: function(attachment, scale) {
       scale || (scale = 256);
       var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";

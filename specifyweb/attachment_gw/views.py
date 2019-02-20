@@ -32,10 +32,7 @@ def get_settings(request):
         return HttpResponse("{}", content_type='application/json')
 
     data = {
-        'attachment_servers': {
-            server: server_settings['JS_SRC']
-            for server, server_settings in settings.ATTACHMENT_SERVERS.items()
-        },
+        'attachment_servers': settings.ATTACHMENT_SERVERS.keys(),
         'collection': get_collection(),
         'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
     }

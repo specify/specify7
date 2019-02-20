@@ -46,6 +46,8 @@ function getToken(filename) {
 }
 
 var attachments = {
+    servername: 'PRIVATE',
+
     systemAvailable: function() { return !_.isEmpty(settings); },
 
     getThumbnail: function(attachment, scale) {
