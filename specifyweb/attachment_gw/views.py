@@ -31,21 +31,22 @@ def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
 
-    data = {
-        'attachment_servers': settings.ATTACHMENT_SERVERS.keys(),
+    private_server_settings = {
         'collection': get_collection(),
         'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
     }
 
+    private_server_settings.update(server_urls)
+
+    data = {'PRIVATE': private_server_settings}
+
     loris_settings = settings.ATTACHMENT_SERVERS.get('LORIS', None)
     if loris_settings is not None:
         # don't fail if settings for LORIS are not included
-        data.update({
-            'public_image_server_base_url':  loris_settings['URL'],
-            'public_image_server_fileupload_url': loris_settings['FILEUPLOAD_URL'],
-        })
-
-    data.update(server_urls)
+        data['LORIS'] = {
+            'base_url':  loris_settings['URL'],
+            'fileupload_url': loris_settings['FILEUPLOAD_URL'],
+        }
 
     return HttpResponse(json.dumps(data), content_type='application/json')
 

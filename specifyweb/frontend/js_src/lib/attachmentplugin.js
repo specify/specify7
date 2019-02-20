@@ -44,7 +44,7 @@ module.exports =  UIPlugin.extend({
                 $('<form enctype="multipart/form-data">').append(
                     'Attachment Server: ',
                     $('<select selected="PRIVATE" id="attachmentserver">').append(
-                        settings.attachment_servers.map(
+                        Object.keys(settings).map(
                             server => $('<option>', {value: server})
                                 .text(server.charAt(0).toUpperCase() + server.substring(1).toLowerCase())
                         )

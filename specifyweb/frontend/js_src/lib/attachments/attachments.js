@@ -39,13 +39,17 @@ function iconForMimeType(mimetype) {
 }
 
 function getToken(filename) {
-    return settings.token_required_for_get ?
+    return settings.PRIVATE.token_required_for_get ?
                 $.get('/attachment_gw/get_token/', { filename: filename })
                 : $.when(null);
 }
 
 var attachments = {
     servername: 'PRIVATE',
+
+    getSetting: function(key) {
+        return settings[this.servername][key];
+    },
 
     systemAvailable: function() { return !_.isEmpty(settings); },
 
@@ -61,9 +65,9 @@ var attachments = {
 
         var attachmentLocation = attachment.get('attachmentlocation');
 
-        return getToken(attachmentLocation).pipe(function(token) {
-            var src = settings.read + "?" + $.param({
-                coll: settings.collection,
+        return getToken(attachmentLocation).pipe(token => {
+            var src = this.getSetting('read') + "?" + $.param({
+                coll: this.getSetting('collection'),
                 type: "T",
                 filename: attachmentLocation,
                 token: token,
@@ -74,8 +78,8 @@ var attachments = {
         });
     },
     originalURL: function(attachmentLocation, token, downLoadName) {
-        return settings.read + "?" + $.param({
-            coll: settings.collection,
+        return this.getSetting('read') + "?" + $.param({
+            coll: this.getSetting('collection'),
             type: "O",
             filename: attachmentLocation,
             downloadname: downLoadName,
@@ -95,19 +99,19 @@ var attachments = {
         var formData = new FormData();
         var attachmentLocation;
         var attachment;
-        
+
         return $.get('/attachment_gw/get_upload_params/', {filename: file.name})
-        .pipe(function(uploadParams) {
+        .pipe(uploadParams => {
             attachmentLocation = uploadParams.attachmentlocation;
 
             formData.append('file', file);
             formData.append('token', uploadParams.token);
             formData.append('store', attachmentLocation);
             formData.append('type', "O");
-            formData.append('coll', settings.collection);
+            formData.append('coll', this.getSetting('collection'));
 
             return $.ajax({
-                url: settings.write,
+                url: this.getSetting('write'),
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -118,12 +122,12 @@ var attachments = {
                     return xhr;
                 }
             });
-        }).pipe(function() {
+        }).pipe(() => {
             return new schema.models.Attachment.Resource({
                 attachmentlocation: attachmentLocation,
                 mimetype: file.type,
                 origfilename: file.name,
-                servername: 'PRIVATE',
+                servername: this.servername
             });
         });
     }
