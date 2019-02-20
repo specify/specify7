@@ -6,9 +6,8 @@ var _ = require('underscore');
 var schema         = require('./../schema.js');
 var initialContext = require('./../initialcontext.js');
 var attachmentserverbase = require('./attachments.js');
+var settings = require('./../attachmentsettings.js');
 
-var settings;
-initialContext.load('attachment_settings.json', data => settings = data);
 
 function placeholderforlorisauthentication(notused) {
     return $.get('/attachment_gw/get_token/', { filename: 'asfdas' });

@@ -7,9 +7,8 @@ var icons          = require('./../icons.js');
 var schema         = require('./../schema.js');
 var assert         = require('./../assert.js');
 var initialContext = require('./../initialcontext.js');
+var settings       = require('./../attachmentsettings.js');
 
-var settings;
-initialContext.load('attachment_settings.json', data => settings = data);
 
 var thumbnailable = ['image/jpeg', 'image/gif', 'image/png', 'image/tiff', 'application/pdf'];
 

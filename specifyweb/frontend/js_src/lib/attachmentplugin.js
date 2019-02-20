@@ -9,9 +9,7 @@ var UIPlugin    = require('./uiplugin.js');
 var initialContext = require('./initialcontext.js');
 var attachmentserverprivate = require('./attachments/attachments.js');
 var attachmentserverpublic = require('./attachments/attachmentserverpublic.js');
-
-var settings;
-initialContext.load('attachment_settings.json', data => settings = data);
+var settings = require('./attachmentsettings.js');
 
 module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
