@@ -4,7 +4,6 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var schema         = require('./../schema.js');
-var initialContext = require('./../initialcontext.js');
 var attachmentserverbase = require('./attachments.js');
 var settings = require('./../attachmentsettings.js');
 

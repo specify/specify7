@@ -6,7 +6,6 @@ var _ = require('underscore');
 
 var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
-var initialContext = require('./initialcontext.js');
 var settings = require('./attachmentsettings.js');
 
 const serverPlugins = [

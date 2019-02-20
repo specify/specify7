@@ -6,7 +6,6 @@ var _ = require('underscore');
 var icons          = require('./../icons.js');
 var schema         = require('./../schema.js');
 var assert         = require('./../assert.js');
-var initialContext = require('./../initialcontext.js');
 var settings       = require('./../attachmentsettings.js');
 
 
