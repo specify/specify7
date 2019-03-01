@@ -496,6 +496,8 @@ function fixupImages(reportXML) {
     var badImageExpressions = [];
     var filenames = {};
     $('imageExpression', reportDOM).each(function() {
+        if ($(this).hasClass('java.net.URL')) return;
+
         var imageExpression = $(this).text();
         if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
         if (imageExpression.match(/^new\s*java\.net\.URL\s*\(\s*"http:\/\//)) return;
