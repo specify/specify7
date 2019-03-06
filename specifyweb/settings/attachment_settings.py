@@ -4,9 +4,7 @@ ATTACHMENT_SERVERS = {
         'URL': '',
         'KEY': '',
         'COLLECTION': None,
-        'REQUIRES_KEY_FOR_GET': False,
-        'JS_SRC': 'attachments.js'
-    },
-
+        'REQUIRES_KEY_FOR_GET': False
+    }
 }
 

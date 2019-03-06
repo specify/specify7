@@ -6,17 +6,13 @@ var _ = require('underscore');
 
 var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
-var initialContext = require('./initialcontext.js');
+var settings = require('./attachmentsettings.js');
 
-var attachmentserverprivate = require('./attachments/attachments.js');
-var attachmentserverpublic = require('./attachments/attachmentserverpublic.js');
-var attachmentserveriip = require('./attachments/attachmentserveriip.js');
+const serverPlugins = [
+    require('./attachments/attachments.js'),
+    require('./attachments/attachmentserverpublic.js')
+];
 
-//var servers = {attachmentserverprivate: require('./attachments/attachments.js'),              
-//              }
-
-var settings;
-initialContext.load('attachment_settings.json', data => settings = data);
 
 module.exports =  UIPlugin.extend({
         __name__: "AttachmentsPlugin",
@@ -26,7 +22,7 @@ module.exports =  UIPlugin.extend({
         },
         render: function() {
             var self = this;
-            if (!attachmentserverprivate) {
+            if (serverPlugins.find(plugin => plugin.servername === 'PRIVATE') == null) {
                 self.$el.replaceWith('<div>Attachment server unavailable.</div>');
                 return this;
             }
@@ -43,13 +39,18 @@ module.exports =  UIPlugin.extend({
             return this;
         },
         addAttachment: function() {
-            this.$el.append('<form enctype="multipart/form-data">');
-            var servers = Object.keys(settings.attachment_servers_js);
-            var options = '';
-            for (var i = 0; i < servers.length; i++){
-                options += '<option value="' + servers[i] + '">' + servers[i][0].toUpperCase() + servers[i].substring(1).toLowerCase() + '</option>';
-            }
-            this.$el.append('Attachment Server: <select selected="PRIVATE" id="attachmentserver">'+options+'</select><input type="file" name="file"></form>');
+            this.$el.append(
+                $('<form enctype="multipart/form-data">').append(
+                    'Attachment Server: ',
+                    $('<select selected="PRIVATE" id="attachmentserver">').append(
+                        Object.keys(settings).map(
+                            server => $('<option>', {value: server})
+                                .text(server.charAt(0).toUpperCase() + server.substring(1).toLowerCase())
+                        )
+                    ),
+                    '<input type="file" name="file">'
+                )
+            );
          },
         fileSelected: function(evt) {
             var files = this.$(':file').get(0).files;
@@ -66,16 +67,16 @@ module.exports =  UIPlugin.extend({
                 .appendTo(self.el)
                 .append(self.progressBar)
                 .dialog({ modal:true });
-            
+
             var sel = this.$('#attachmentserver').get(0);
             var selected = sel.options[sel.selectedIndex];
-            var attachmentserverjs = settings.attachment_servers_js[selected.value];
-            console.log('./attachments/'+attachmentserverjs);
-            //var attachmentserver = servers[attachmentserverjs];
-            var attachmentserver = require('./attachments/'+attachmentserverjs);
-            
-            
-            attachmentserver.uploadFile(file, function(progressEvt) {
+            var plugin = serverPlugins.find(plugin => plugin.servername === selected.value);
+            if (plugin == null) {
+                console.error("no attachment plugin for server type:", selected.value);
+                return;
+            }
+
+            plugin.uploadFile(file, function(progressEvt) {
                 self.uploadProgress(progressEvt);
             }).done(function(attachment) {
                 self.uploadComplete(attachment);
@@ -100,25 +101,23 @@ module.exports =  UIPlugin.extend({
             self.progressDialog.dialog('close');
         },
         displayAttachment: function(attachment) {
-            var self = this;
-            self.$el.empty().append('<div class="specify-attachment-display">');
+            this.$el.empty().append('<div class="specify-attachment-display">');
 
-            var attachmentservername = attachment.attributes.servername;
-            var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
-            var attachmentserver = require('./attachments/'+attachmentserverjs);
+            const plugin = serverPlugins.find(
+                plugin => plugin.servername === (attachment.get('ispublic') ? 'LORIS' : 'PRIVATE')
+            );
 
-            attachmentserver.getThumbnail(attachment).done(function(img) {
-                $('<a>').append(img).appendTo(self.$('.specify-attachment-display'));
+            plugin.getThumbnail(attachment).done(img => {
+                $('<a>').append(img).appendTo(this.$('.specify-attachment-display'));
             });
         },
         openOriginal: function(evt) {
             evt.preventDefault();
             this.model.rget('attachment', true).done(function(attachment) {
-                var attachmentservername = attachment.attributes.servername;
-                var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
-                var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
-                var attachmentserver = require('./attachments/'+attachmentserverjs);
-                attachmentserver.openOriginal(attachment);
+                const plugin = serverPlugins.find(
+                );
+                    plugin => plugin.servername === (attachment.get('ispublic') ? 'LORIS' : 'PRIVATE')
+                plugin.openOriginal(attachment);
             });
         }
     }, { pluginsProvided: ['AttachmentPlugin'] });

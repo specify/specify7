@@ -55,7 +55,7 @@ def get_settings(request):
         'collection': get_collection(),
         'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
         }
-    data.update(server_urls)
+
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 @login_maybe_required
@@ -144,7 +144,7 @@ def update_time_delta(response):
 
 def init():
     global server_urls
-    
+
     if settings.ATTACHMENT_SERVERS['PRIVATE']['URL'] in (None, ''):
         return
 

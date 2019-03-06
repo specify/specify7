@@ -10,9 +10,11 @@ except ImportError:
     pass
 
 try:
-    from .local_attachment_settings import *
+    from .local_attachment_settings import ATTACHMENT_SERVERS
 except ImportError:
-    pass
+    # Import default values from attachment_settings.py
+    # in case the user doesn't supply local_attachment_settings.py
+    from .attachment_settings import ATTACHMENT_SERVERS
 
 try:
     from .debug import DEBUG
