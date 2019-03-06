@@ -10,7 +10,8 @@ var settings = require('./attachmentsettings.js');
 
 const serverPlugins = [
     require('./attachments/attachments.js'),
-    require('./attachments/attachmentserverpublic.js')
+    require('./attachments/attachmentserverpublic.js'),
+    require('./attachments/attachmentserveriip.js'),
 ];
 
 
@@ -45,7 +46,7 @@ module.exports =  UIPlugin.extend({
                     $('<select selected="PRIVATE" id="attachmentserver">').append(
                         Object.keys(settings).map(
                             server => $('<option>', {value: server})
-                                .text(server.charAt(0).toUpperCase() + server.substring(1).toLowerCase())
+                                .text(server.charAt(0).toUpperCase() + server.substring(1).toUpperCase())
                         )
                     ),
                     '<input type="file" name="file">'
@@ -104,7 +105,7 @@ module.exports =  UIPlugin.extend({
             this.$el.empty().append('<div class="specify-attachment-display">');
 
             const plugin = serverPlugins.find(
-                plugin => plugin.servername === (attachment.get('ispublic') ? 'LORIS' : 'PRIVATE')
+                plugin => plugin.servername === attachment.get('servername')
             );
 
             plugin.getThumbnail(attachment).done(img => {
@@ -115,8 +116,8 @@ module.exports =  UIPlugin.extend({
             evt.preventDefault();
             this.model.rget('attachment', true).done(function(attachment) {
                 const plugin = serverPlugins.find(
+                    plugin => plugin.servername === attachment.get('servername')
                 );
-                    plugin => plugin.servername === (attachment.get('ispublic') ? 'LORIS' : 'PRIVATE')
                 plugin.openOriginal(attachment);
             });
         }
