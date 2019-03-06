@@ -10,10 +10,9 @@ specifyweb/virtenv
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
 /specifyweb/settings/local_logging_settings.py
+/specifyweb/settings/local_attachment_settings.py
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
-
-
 
 # Build artifacts:
 /specifyweb/settings/build_version.py

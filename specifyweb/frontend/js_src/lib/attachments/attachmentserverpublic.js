@@ -18,7 +18,7 @@ var attachmentserverpublic = {
   getThumbnail: function(attachment, scale) {
       scale || (scale = 256);
       var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
-      var base_url = settings.public_image_server_base_url;
+      var base_url = settings.attachment_servers_url['LORIS'];
       var attachmentlocation = attachment.get('attachmentlocation');
       return placeholderforlorisauthentication(attachmentlocation).pipe(function(token) {
           return $('<img>', {src: `${base_url}/${attachmentlocation}/full/${scale},/0/default.jpg`, style: style});
@@ -32,7 +32,7 @@ var attachmentserverpublic = {
       var attachmentlocation = file.name;
       
       return $.ajax({
-              url: settings.public_image_server_fileupload_url,
+              url: settings.attachment_servers_upload_url['LORIS'],
               type: 'POST',
               data: formData,
               processData: false,
@@ -50,7 +50,7 @@ var attachmentserverpublic = {
   },
   openOriginal: function(attachment) {
       var attachmentlocation = attachment.get('origfilename');
-      var base_url = settings.public_image_server_base_url;
+      var base_url = settings.attachment_servers_url['LORIS'];
       var src = `${base_url}/${attachmentlocation}/full/full/0/default.jpg`;
       window.open(src);
   }

@@ -7,8 +7,13 @@ var _ = require('underscore');
 var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
 var initialContext = require('./initialcontext.js');
+
 var attachmentserverprivate = require('./attachments/attachments.js');
 var attachmentserverpublic = require('./attachments/attachmentserverpublic.js');
+var attachmentserveriip = require('./attachments/attachmentserveriip.js');
+
+//var servers = {attachmentserverprivate: require('./attachments/attachments.js'),              
+//              }
 
 var settings;
 initialContext.load('attachment_settings.json', data => settings = data);
@@ -28,7 +33,6 @@ module.exports =  UIPlugin.extend({
             var control = $('<div class="specify-attachment-container">');
             self.$el.replaceWith(control);
             self.setElement(control);
-
             if (self.model && self.model.get('attachment')) {
                 self.model.rget('attachment', true).done(function(attachment) {
                     self.displayAttachment(attachment);
@@ -40,7 +44,7 @@ module.exports =  UIPlugin.extend({
         },
         addAttachment: function() {
             this.$el.append('<form enctype="multipart/form-data">');
-            var servers = Object.keys(settings.attachment_servers);
+            var servers = Object.keys(settings.attachment_servers_js);
             var options = '';
             for (var i = 0; i < servers.length; i++){
                 options += '<option value="' + servers[i] + '">' + servers[i][0].toUpperCase() + servers[i].substring(1).toLowerCase() + '</option>';
@@ -65,9 +69,12 @@ module.exports =  UIPlugin.extend({
             
             var sel = this.$('#attachmentserver').get(0);
             var selected = sel.options[sel.selectedIndex];
-            var attachmentserverjs = settings.attachment_servers[selected.value];
+            var attachmentserverjs = settings.attachment_servers_js[selected.value];
+            console.log('./attachments/'+attachmentserverjs);
+            //var attachmentserver = servers[attachmentserverjs];
             var attachmentserver = require('./attachments/'+attachmentserverjs);
-
+            
+            
             attachmentserver.uploadFile(file, function(progressEvt) {
                 self.uploadProgress(progressEvt);
             }).done(function(attachment) {
@@ -96,8 +103,9 @@ module.exports =  UIPlugin.extend({
             var self = this;
             self.$el.empty().append('<div class="specify-attachment-display">');
 
-            if (attachment.attributes.ispublic) { var attachmentserver = attachmentserverpublic;}
-            else {var attachmentserver = attachmentserverprivate;}
+            var attachmentservername = attachment.attributes.servername;
+            var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
+            var attachmentserver = require('./attachments/'+attachmentserverjs);
 
             attachmentserver.getThumbnail(attachment).done(function(img) {
                 $('<a>').append(img).appendTo(self.$('.specify-attachment-display'));
@@ -106,8 +114,10 @@ module.exports =  UIPlugin.extend({
         openOriginal: function(evt) {
             evt.preventDefault();
             this.model.rget('attachment', true).done(function(attachment) {
-                if (attachment.get('ispublic')) { var attachmentserver = attachmentserverpublic;}
-                else {var attachmentserver = attachmentserverprivate;}
+                var attachmentservername = attachment.attributes.servername;
+                var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
+                var attachmentserverjs = settings.attachment_servers_js[attachmentservername];
+                var attachmentserver = require('./attachments/'+attachmentserverjs);
                 attachmentserver.openOriginal(attachment);
             });
         }

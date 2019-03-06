@@ -1,10 +1,11 @@
 from uuid import uuid4
 from xml.etree import ElementTree
 from os.path import splitext
-import requests, time, hmac, json
+from datetime import datetime
+import requests, time, hmac, json, hashlib
 
 from django.http import HttpResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET,require_POST
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 
@@ -12,9 +13,26 @@ from specifyweb.specify.views import login_maybe_required
 
 server_urls = None
 server_time_delta = 0
+IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
+IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
 
 class AttachmentError(Exception):
     pass
+
+def get_md5(file):
+    md5 = hashlib.md5(file.read()).hexdigest()
+    file.seek(0)
+    return md5
+
+def encode_hmac(params):
+    param_string = ''
+    for param in params:
+        param_string += str(param) + '\n'
+    to_hash = bytes(param_string).encode('latin-1')
+    hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'), 
+                            to_hash, 
+                            hashlib.sha512).hexdigest().encode('latin-1')
+    return hmac_encoded
 
 def get_collection():
     "Assumes that all collections are stored together."
@@ -31,12 +49,11 @@ def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
     data = {
-        'attachment_servers': dict((server, settings.ATTACHMENT_SERVERS[server]['JS_SRC']) for server in settings.ATTACHMENT_SERVERS.keys()),
+        'attachment_servers_js': dict((server, settings.ATTACHMENT_SERVERS[server]['JS_SRC']) for server in settings.ATTACHMENT_SERVERS.keys()),
+        'attachment_servers_url': dict((server, settings.ATTACHMENT_SERVERS[server]['URL']) for server in settings.ATTACHMENT_SERVERS.keys()),
+        'attachment_servers_upload_url': dict((server, settings.ATTACHMENT_SERVERS[server]['FILEUPLOAD_URL']) for server in settings.ATTACHMENT_SERVERS.keys()),
         'collection': get_collection(),
         'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
-        'public_image_server_base_url': settings.ATTACHMENT_SERVERS['LORIS']['URL'],
-        'public_image_server_fileupload_url': settings.ATTACHMENT_SERVERS['LORIS']['FILEUPLOAD_URL']
-        
         }
     data.update(server_urls)
     return HttpResponse(json.dumps(data), content_type='application/json')
@@ -47,6 +64,34 @@ def get_token(request):
     filename = request.GET['filename']
     token = generate_token(get_timestamp(), filename)
     return HttpResponse(token, content_type='text/plain')
+
+
+@login_maybe_required
+@require_POST
+def post_to_iip(request):
+    file = request.FILES['file']
+    timestamp = str(datetime.utcnow())
+    fn = file.name
+    md5 = get_md5(file)
+    file.seek(0)
+    specify_user = request.user._wrapped.name
+    hmac_encoded = encode_hmac([fn,specify_user,timestamp,md5])
+    data = {'fn':fn, 
+         'specify_user':specify_user,
+         'timestamp':timestamp,
+         'md5_sum': md5,
+         'hmac_sig': hmac_encoded}
+    
+    r = requests.request("POST",
+                     url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'], 
+                     verify=False, 
+                     files={'file': file},
+                     data=data, 
+                     headers={'Authorization': 'Token '+IIP_TOKEN})
+    if '.tif' not in r.content:
+        raise AttachmentError('Attachment failed')
+    new_filename = r.content.split('"')[1]
+    return HttpResponse(new_filename, content_type='text/plain')
 
 @login_maybe_required
 @require_GET

@@ -95,7 +95,6 @@ var attachments = {
         var formData = new FormData();
         var attachmentLocation;
         var attachment;
-        
         return $.get('/attachment_gw/get_upload_params/', {filename: file.name})
         .pipe(function(uploadParams) {
             attachmentLocation = uploadParams.attachmentlocation;
