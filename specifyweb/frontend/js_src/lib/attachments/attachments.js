@@ -39,13 +39,13 @@ function iconForMimeType(mimetype) {
 }
 
 function getToken(filename) {
-    return settings.PRIVATE.token_required_for_get ?
+    return settings.DEFAULT.token_required_for_get ?
                 $.get('/attachment_gw/get_token/', { filename: filename })
                 : $.when(null);
 }
 
 var attachments = {
-    servername: 'PRIVATE',
+    servername: 'DEFAULT',
 
     getSetting: function(key) {
         return settings[this.servername][key];
@@ -127,7 +127,7 @@ var attachments = {
                 attachmentlocation: attachmentLocation,
                 mimetype: file.type,
                 origfilename: file.name,
-                servername: this.servername
+                attachmentstorageconfig: this.servername
             });
         });
     }

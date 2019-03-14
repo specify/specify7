@@ -23,7 +23,7 @@ module.exports =  UIPlugin.extend({
         },
         render: function() {
             var self = this;
-            if (serverPlugins.find(plugin => plugin.servername === 'PRIVATE') == null) {
+            if (serverPlugins.find(plugin => plugin.servername === 'DEFAULT') == null) {
                 self.$el.replaceWith('<div>Attachment server unavailable.</div>');
                 return this;
             }
@@ -43,10 +43,10 @@ module.exports =  UIPlugin.extend({
             this.$el.append(
                 $('<form enctype="multipart/form-data">').append(
                     'Attachment Server: ',
-                    $('<select selected="PRIVATE" id="attachmentserver">').append(
+                    $('<select selected="Default" id="attachmentserver">').append(
                         Object.keys(settings).map(
                             server => $('<option>', {value: server})
-                                .text(server.charAt(0).toUpperCase() + server.substring(1).toUpperCase())
+                                .text(settings[server]['caption'])
                         )
                     ),
                     '<input type="file" name="file">'
@@ -105,7 +105,7 @@ module.exports =  UIPlugin.extend({
             this.$el.empty().append('<div class="specify-attachment-display">');
 
             const plugin = serverPlugins.find(
-                plugin => plugin.servername === attachment.get('servername')
+                plugin => plugin.servername === attachment.get('attachmentstorageconfig')
             );
 
             plugin.getThumbnail(attachment).done(img => {
@@ -116,7 +116,7 @@ module.exports =  UIPlugin.extend({
             evt.preventDefault();
             this.model.rget('attachment', true).done(function(attachment) {
                 const plugin = serverPlugins.find(
-                    plugin => plugin.servername === attachment.get('servername')
+                    plugin => plugin.servername === attachment.get('attachmentstorageconfig')
                 );
                 plugin.openOriginal(attachment);
             });

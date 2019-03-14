@@ -40,7 +40,7 @@ var attachmentserverpublic = {
               mimetype: file.type,
               origfilename: file.name,
               ispublic: 1,
-              servername: this.servername
+              attachmentstorageconfig: this.servername
           });
           return attachment;
       });

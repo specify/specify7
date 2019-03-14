@@ -36,8 +36,8 @@ def encode_hmac(params):
 
 def get_collection():
     "Assumes that all collections are stored together."
-    if settings.ATTACHMENT_SERVERS['PRIVATE']['COLLECTION']:
-        return settings.ATTACHMENT_SERVERS['PRIVATE']['COLLECTION']
+    if settings.ATTACHMENT_SERVERS['DEFAULT']['COLLECTION']:
+        return settings.ATTACHMENT_SERVERS['DEFAULT']['COLLECTION']
 
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
@@ -49,14 +49,15 @@ def get_settings(request):
     if server_urls is None:
         return HttpResponse("{}", content_type='application/json')
 
-    private_server_settings = {
+    default_server_settings = {
         'collection': get_collection(),
-        'token_required_for_get': settings.ATTACHMENT_SERVERS['PRIVATE']['REQUIRES_KEY_FOR_GET'],
+        'token_required_for_get': settings.ATTACHMENT_SERVERS['DEFAULT']['REQUIRES_KEY_FOR_GET'],
+        'caption': settings.ATTACHMENT_SERVERS['DEFAULT']['CAPTION'],
     }
 
-    private_server_settings.update(server_urls)
+    default_server_settings.update(server_urls)
 
-    data = {'PRIVATE': private_server_settings}
+    data = {'DEFAULT': default_server_settings}
 
     loris_settings = settings.ATTACHMENT_SERVERS.get('LORIS', None)
     if loris_settings is not None:
@@ -64,6 +65,7 @@ def get_settings(request):
         data['LORIS'] = {
             'base_url':  loris_settings['URL'],
             'fileupload_url': loris_settings['FILEUPLOAD_URL'],
+            'caption': loris_settings['CAPTION'],
         }
         
     iip_settings = settings.ATTACHMENT_SERVERS.get('IIP', None)
@@ -72,6 +74,7 @@ def get_settings(request):
         data['IIP'] = {
             'base_url':  iip_settings['URL'],
             'fileupload_url': iip_settings['FILEUPLOAD_URL'],
+            'caption': iip_settings['CAPTION'],
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -141,7 +144,7 @@ def delete_attachment_file(attch_loc):
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
     timestamp = str(timestamp)
-    mac = hmac.new(settings.ATTACHMENT_SERVERS['PRIVATE']['KEY'],
+    mac = hmac.new(settings.ATTACHMENT_SERVERS['DEFAULT']['KEY'],
                    timestamp + filename)
     return ':'.join((mac.hexdigest(), timestamp))
 
@@ -162,10 +165,10 @@ def update_time_delta(response):
 def init():
     global server_urls
 
-    if settings.ATTACHMENT_SERVERS['PRIVATE']['URL'] in (None, ''):
+    if settings.ATTACHMENT_SERVERS['DEFAULT']['URL'] in (None, ''):
         return
 
-    r = requests.get(settings.ATTACHMENT_SERVERS['PRIVATE']['URL'])
+    r = requests.get(settings.ATTACHMENT_SERVERS['DEFAULT']['URL'])
     if r.status_code != 200:
         return
 
