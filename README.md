@@ -2,11 +2,11 @@
   Specify 7
   =========
   
-  The Specify Software Project is funded by the Advances in
-  Biological Informatics Program, U.S. National Science Foundation
-  (NSF/BIO: 1565098).
+  The Specify Collections Consortium is funded by
+  its member institutions and by an award from the US NSF
+  (BIO/DBI: 1565098).
     
-  Specify 7 Copyright © 2017 University of Kansas Center for
+  Specify 7 Copyright © 2019 University of Kansas Center for
   Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
   (GPL2).
@@ -16,7 +16,7 @@
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.
-    Lawrence, KS USA 66045
+    Lawrence, KS 66045 USA
  
 
 
