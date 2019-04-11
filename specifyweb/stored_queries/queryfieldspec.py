@@ -229,6 +229,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 def get_uiformatter(collection, tablename, fieldname):
     from specifyweb.specify.models import Splocalecontaineritem
     from specifyweb.specify.uiformatters import get_uiformatter
+
+    if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
+        return get_uiformatter(collection, None, collection.catalognumformatname)
+
     try:
         field_format = Splocalecontaineritem.objects.get(
             container__discipline=collection.discipline,

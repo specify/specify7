@@ -34,7 +34,7 @@ module.exports =   UIPlugin.extend({
             var newEl;
 
             placeHolder.val() === 'plugin' && placeHolder.val('');
-            this.fieldName = placeHolder.attr('name');
+            this.fieldName = placeHolder.attr('name').toLowerCase();
             var fieldInfo = this.model.specifyModel.getField(this.fieldName);
             var webLinkName = this.init.weblink == null ? fieldInfo.getWebLinkName() : this.init.weblink;
             if (webLinkName == null) console.error("couldn't determine weblink for", this.fieldName);
