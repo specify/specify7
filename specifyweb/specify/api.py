@@ -325,7 +325,7 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     data = cleanData(model, data, agent)
     obj = model()
     handle_fk_fields(collection, agent, obj, data)
-    set_fields_from_data(obj, data)
+    set_fields_from_data(obj, data, False)
     set_field_if_exists(obj, 'createdbyagent', agent)
     set_field_if_exists(obj, 'collectionmemberid', collection.id)
     try:
