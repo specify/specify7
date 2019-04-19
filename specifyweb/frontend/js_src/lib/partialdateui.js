@@ -71,11 +71,21 @@ module.exports =  UIPlugin.extend({
 
             this.$('select').val(precisionIdx);
         },
-        updatePrecision: function() {
-            this.model.set(this.init.tp, parseInt(this.$('select').val()));
-            this.setInput();
-            this.model.saveBlockers.remove('invaliddate:' + this.init.df);
-        },
+    updatePrecision: function() {
+        var precisionIdx = parseInt(this.$('select').val());
+        this.model.set(this.init.tp, precisionIdx);
+        this.setInput();
+        this.model.saveBlockers.remove('invaliddate:' + this.init.df);
+
+        var m = moment(this.model.get(this.init.df));
+        switch (precisions[precisionIdx-1]) {
+        case 'year':
+            m = m.month(0);
+        case 'month-year':
+            m = m.date(1);
+        }
+        this.updateIfValid(m);
+    },
         updateIfValid: function(m, invalidMessage) {
             if (m == null) {
                 this.model.set(this.init.df, null);
