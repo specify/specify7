@@ -168,6 +168,7 @@ def new_field(node):
         'numeric': NumericField,
         'year': YearField,
         'alphanumeric': AlphaNumField,
+        'anychar': AnyCharField,
         'separator': SeparatorField
         }[node.attrib['type']]
     return Field(
@@ -213,6 +214,10 @@ class YearField(Field):
 class AlphaNumField(Field):
     def value_regexp(self):
         return r'[a-zA-Z0-9]{%d}' % self.size
+
+class AnyCharField(Field):
+    def value_regexp(self):
+        return r'.{%d}' % self.size
 
 class AlphaField(Field):
     def value_regexp(self):
