@@ -338,35 +338,14 @@ def create_obj(collection, agent, model, data, parent_obj=None):
     handle_to_many(collection, agent, obj, data)
     return obj
 
-def should_audit(field):
-    if field.name == 'timestampmodified':
-        return False
-    else:
-        return True
-    
-def fld_change_info(obj, field, val):
-    if should_audit(field):
-        value = prepare_value(field, val)
-        old_value = getattr(obj, field.name)
-        if str(old_value) != str(value):
-            return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
-        else:
-            return None
-    
-def set_fields_from_data(obj, data, audit):
+def set_fields_from_data(obj, data):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set all fields provided by data that are not related object fields.
     """
-    dirty_flds = [] 
     for field_name, val in data.items():
         field = obj._meta.get_field(field_name)
         if not field.is_relation:
-            if audit:
-                fld_change = fld_change_info(obj, field, val)
-                if fld_change is not None:
-                    dirty_flds.append(fld_change)
             setattr(obj, field_name, prepare_value(field, val))
-    return dirty_flds
 
 def is_dependent_field(obj, field_name):
     return (
@@ -419,25 +398,21 @@ def handle_fk_fields(collection, agent, obj, data):
     """
     items = reorder_fields_for_embedding(obj.__class__, data)
     dependents_to_delete = []
-    dirty = []
     for field_name, val in items:
         field = obj._meta.get_field(field_name)
         if not field.many_to_one: continue
 
         old_related = get_related_or_none(obj, field_name)
         dependent = is_dependent_field(obj, field_name)
-        old_related_id = None if old_related is None else old_related.id
-        new_related_id = None
 
         if val is None:
             setattr(obj, field_name, None)
             if dependent and old_related:
                 dependents_to_delete.append(old_related)
-        
+
         elif isinstance(val, field.related_model):
             # The related value was patched into the data by a parent object.
             setattr(obj, field_name, val)
-            new_related_id = val.id
 
         elif isinstance(val, basestring):
             # The related object is given by a URI reference.
@@ -446,7 +421,6 @@ def handle_fk_fields(collection, agent, obj, data):
             assert fk_model == field.related_model.__name__.lower()
             assert fk_id is not None
             setattr(obj, field_name, get_object_or_404(fk_model, id=fk_id))
-            new_related_id = fk_id
 
         elif hasattr(val, 'items'):  # i.e. it's a dict of some sort
             # The related object is represented by a nested dict of data.
@@ -468,14 +442,10 @@ def handle_fk_fields(collection, agent, obj, data):
             setattr(obj, field_name, rel_obj)
             if dependent and old_related and old_related.id != rel_obj.id:
                 dependents_to_delete.append(old_related)
-            new_related_id = rel_obj.id
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
-        if str(old_related_id) != str(new_related_id):
-            dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
-
-    return dependents_to_delete, dirty
+    return dependents_to_delete
 
 def handle_to_many(collection, agent, obj, data):
     """For every key in the dict 'data' which is a *-to-many field in the
@@ -559,10 +529,8 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     """
     obj = get_object_or_404(name, id=int(id))
     data = cleanData(obj.__class__, data, agent)
-    fk_info = handle_fk_fields(collection, agent, obj, data)
-    print fk_info
-    dependents_to_delete = fk_info[0]
-    dirty = fk_info[1] + set_fields_from_data(obj, data, True)
+    dependents_to_delete = handle_fk_fields(collection, agent, obj, data)
+    set_fields_from_data(obj, data)
 
     try:
         obj._meta.get_field('modifiedbyagent')
@@ -572,9 +540,8 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
         obj.modifiedbyagent = agent
 
     bump_version(obj, version)
-    #print obj.text2
     obj.save(force_update=True)
-    auditlog.update(obj, agent, parent_obj, dirty)
+    auditlog.update(obj, agent, parent_obj)
     for dep in dependents_to_delete:
         delete_obj(agent, dep, parent_obj=obj)
     handle_to_many(collection, agent, obj, data)
