@@ -17,7 +17,8 @@ var QueryFieldInputUI = require('./queryfieldinput.js');
         numbers: ['java.lang.Integer', 'java.lang.Long', 'java.lang.Byte',
                   'java.lang.Short', 'java.lang.Float', 'java.lang.Double', 'java.math.BigDecimal'],
         dates: ['java.util.Calendar', 'java.util.Date', 'java.sql.Timestamp'],
-        bools: ['java.lang.Boolean']
+        bools: ['java.lang.Boolean'],
+        catnos: []
     };
 
 module.exports =  Backbone.View.extend({
@@ -358,7 +359,7 @@ module.exports =  Backbone.View.extend({
             if (this.fieldSpec.treeRank) return 'strings';
             var field = this.getField();
             if (field.model.name === 'CollectionObject' &&
-                field.name === 'catalogNumber') return 'numbers';
+                field.name === 'catalogNumber') return 'catnos';
 
             for (var type in types) {
                 if (_(types[type]).contains(field.type)) return type;
