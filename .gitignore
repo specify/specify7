@@ -25,3 +25,4 @@ specifyweb/virtenv
 /specifyweb/frontend/templates/specify-built.html
 /local_specifyweb_apache.conf
 
+/specifyweb/settings/ldap_settings.py
