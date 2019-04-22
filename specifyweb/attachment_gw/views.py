@@ -1,3 +1,4 @@
+import logging
 from uuid import uuid4
 from xml.etree import ElementTree
 from os.path import splitext
@@ -10,6 +11,8 @@ from django.views.decorators.cache import cache_control
 from django.conf import settings
 
 from specifyweb.specify.views import login_maybe_required
+
+logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = 0
@@ -166,16 +169,21 @@ def get_default_settings(key):
     if 'DEFAULT' in settings.ATTACHMENT_SERVERS:
         return settings.ATTACHMENT_SERVERS['DEFAULT'][key]
 
+    if key == 'CAPTION':
+        return 'Default'
+
     return getattr(settings, 'WEB_ATTACHMENT_' + key, None)
 
 def init():
     global server_urls
 
     if get_default_settings('URL') in (None, ''):
+        logger.info("no default attachment server set")
         return
 
     r = requests.get(get_default_settings('URL'))
     if r.status_code != 200:
+        logger.warning("couldn't get settings from attachment server %s", get_default_settings('URL'))
         return
 
     update_time_delta(r)

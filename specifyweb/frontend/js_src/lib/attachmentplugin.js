@@ -104,8 +104,9 @@ module.exports =  UIPlugin.extend({
         displayAttachment: function(attachment) {
             this.$el.empty().append('<div class="specify-attachment-display">');
 
+            const attachmentstorageconfig = attachment.get('attachmentstorageconfig') || 'DEFAULT';
             const plugin = serverPlugins.find(
-                plugin => plugin.servername === attachment.get('attachmentstorageconfig')
+                plugin => plugin.servername === attachmentstorageconfig
             );
 
             plugin.getThumbnail(attachment).done(img => {
