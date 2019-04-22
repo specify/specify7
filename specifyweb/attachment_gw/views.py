@@ -13,8 +13,6 @@ from specifyweb.specify.views import login_maybe_required
 
 server_urls = None
 server_time_delta = 0
-IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
-IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
 
 class AttachmentError(Exception):
     pass
@@ -25,19 +23,20 @@ def get_md5(file):
     return md5
 
 def encode_hmac(params):
+    IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
     param_string = ''
     for param in params:
         param_string += str(param) + '\n'
     to_hash = bytes(param_string).encode('latin-1')
-    hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'), 
-                            to_hash, 
+    hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'),
+                            to_hash,
                             hashlib.sha512).hexdigest().encode('latin-1')
     return hmac_encoded
 
 def get_collection():
     "Assumes that all collections are stored together."
-    if settings.ATTACHMENT_SERVERS['DEFAULT']['COLLECTION']:
-        return settings.ATTACHMENT_SERVERS['DEFAULT']['COLLECTION']
+    if get_default_settings('COLLECTION'):
+        return get_default_settings('COLLECTION')
 
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
@@ -51,8 +50,8 @@ def get_settings(request):
 
     default_server_settings = {
         'collection': get_collection(),
-        'token_required_for_get': settings.ATTACHMENT_SERVERS['DEFAULT']['REQUIRES_KEY_FOR_GET'],
-        'caption': settings.ATTACHMENT_SERVERS['DEFAULT']['CAPTION'],
+        'token_required_for_get': get_default_settings('REQUIRES_KEY_FOR_GET'),
+        'caption': get_default_settings('CAPTION'),
     }
 
     default_server_settings.update(server_urls)
@@ -67,7 +66,7 @@ def get_settings(request):
             'fileupload_url': loris_settings['FILEUPLOAD_URL'],
             'caption': loris_settings['CAPTION'],
         }
-        
+
     iip_settings = settings.ATTACHMENT_SERVERS.get('IIP', None)
     if iip_settings is not None:
         # don't fail if settings for IIP are not included
@@ -89,6 +88,7 @@ def get_token(request):
 @login_maybe_required
 @require_POST
 def post_to_iip(request):
+    IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
     file = request.FILES['file']
     timestamp = str(datetime.utcnow())
     fn = file.name
@@ -96,17 +96,17 @@ def post_to_iip(request):
     file.seek(0)
     specify_user = request.user._wrapped.name
     hmac_encoded = encode_hmac([fn,specify_user,timestamp,md5])
-    data = {'fn':fn, 
+    data = {'fn':fn,
          'specify_user':specify_user,
          'timestamp':timestamp,
          'md5_sum': md5,
          'hmac_sig': hmac_encoded}
-    
+
     r = requests.request("POST",
-                     url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'], 
-                     verify=False, 
+                     url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'],
+                     verify=False,
                      files={'file': file},
-                     data=data, 
+                     data=data,
                      headers={'Authorization': 'Token '+IIP_TOKEN})
     if '.tif' not in r.content:
         raise AttachmentError('Attachment failed')
@@ -144,7 +144,7 @@ def delete_attachment_file(attch_loc):
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
     timestamp = str(timestamp)
-    mac = hmac.new(settings.ATTACHMENT_SERVERS['DEFAULT']['KEY'],
+    mac = hmac.new(get_default_settings('KEY'),
                    timestamp + filename)
     return ':'.join((mac.hexdigest(), timestamp))
 
@@ -162,13 +162,19 @@ def update_time_delta(response):
     global server_time_delta
     server_time_delta = int(timestamp) - int(time.time())
 
+def get_default_settings(key):
+    if 'DEFAULT' in settings.ATTACHMENT_SERVERS:
+        return settings.ATTACHMENT_SERVERS['DEFAULT'][key]
+
+    return getattr(settings, 'WEB_ATTACHMENT_' + key, None)
+
 def init():
     global server_urls
 
-    if settings.ATTACHMENT_SERVERS['DEFAULT']['URL'] in (None, ''):
+    if get_default_settings('URL') in (None, ''):
         return
 
-    r = requests.get(settings.ATTACHMENT_SERVERS['DEFAULT']['URL'])
+    r = requests.get(get_default_settings('URL'))
     if r.status_code != 200:
         return
 

@@ -1,10 +1,11 @@
 # Specify Attachment Server Settings
 ATTACHMENT_SERVERS = {
-'PRIVATE':    {
+    'DEFAULT':    {
         'URL': '',
         'KEY': '',
         'COLLECTION': None,
-        'REQUIRES_KEY_FOR_GET': False
+        'REQUIRES_KEY_FOR_GET': False,
+        'CAPTION': 'Default',
     }
 }
 
