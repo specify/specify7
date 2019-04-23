@@ -522,7 +522,9 @@ function fixupImages(reportXML) {
                 missingAttachments.push(filename);
                 imageUrl = badImageUrl;
             } else {
-                imageUrl = '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"';
+                imageUrl = attachments.systemAvailable() ?
+                    '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"' :
+                    badImageUrl;
             }
             _.each(imageExprs, function(e) { e.text(imageUrl); });
         });
