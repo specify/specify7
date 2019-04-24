@@ -26,10 +26,8 @@ class AuditLog(object):
             remote_prefs = '\n'.join(r.data for r in res)
             match = re.search(r'auditing\.do_audits=(.+)', remote_prefs)
             if match is None:
-                print "no match"
                 self._auditing = True
             else:
-                print "auditing.do_audits=" + match.group(1)
                 self._auditing = False if match.group(1).lower() == 'false' else True
             match = re.search(r'auditing\.audit_field_updates=(.+)', remote_prefs)
             if match is None:
