@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 CollectionObject_model = datamodel.get_table('CollectionObject')
 Agent_model = datamodel.get_table('Agent')
+Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatter(object):
     def __init__(self, collection, user, replace_nulls):
@@ -92,6 +93,7 @@ class ObjectFormatter(object):
     def objformat(self, query, orm_table, formatter_name):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
+        
         formatterNode = self.getFormatterDef(specify_model, formatter_name)
         if formatterNode is None:
             logger.warn("no dataobjformatter for %s", specify_model)
@@ -207,6 +209,9 @@ class ObjectFormatter(object):
         if specify_field is Agent_model.get_field('agentType'):
             return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
 
+        if specify_field is Spauditlog_model.get_field('action'):
+            return case({0: 'Add', 1: 'Update', 2: 'Remove'}, field)
+        
         return field
 
 
