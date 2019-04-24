@@ -44,6 +44,9 @@ class AuditLog(object):
                 self._log_fld_update(vals, obj, log_obj, agent)
         return log_obj
 
+    def update(self, obj, agent, parent_record=None):
+        return self._log(self.UPDATE, obj, agent, parent_record)
+
     def insert(self, obj, agent, parent_record=None):
         return self._log(self.INSERT, obj, agent, parent_record)
 

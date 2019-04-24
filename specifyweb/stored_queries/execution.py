@@ -366,13 +366,41 @@ def run_ephemeral_query(collection, user, spquery):
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
-
+    try:
+        format_audits = spquery['formatauditrecids']
+    except:
+        format_audits = False
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
 
         return execute(session, collection, user, tableid, distinct, count_only,
-                       field_specs, limit, offset, recordsetid)
+                       field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
+def augment_field_specs(field_specs, formatauditobjs=False):
+    print "augment_field_specs ######################################"
+    new_field_specs = []
+    for fs in field_specs:
+        print fs
+        print fs.fieldspec.table.tableId
+        field = fs.fieldspec.join_path[-1]
+        model = models.models_by_tableid[fs.fieldspec.table.tableId]
+        if field.type == 'java.util.Calendar':
+            precision_field = field.name + "Precision"
+            has_precision = hasattr(model, precision_field)
+            if has_precision:
+                new_field_specs.append(make_augmented_field_spec(fs, model, precision_field))
+        elif formatauditobjs and model.name.lower.startswith('spauditlog'):
+            if field.name.lower() in 'newvalue, oldvalue':
+                log_model = models.models_by_tableid[530];
+                new_field_specs.append(make_augmented_field_spec(fs, log_model, 'TableNum'))
+                new_field_specs.append(make_augmented_field_spec(fs, model, 'FieldName'))
+            elif field.name.lower() == 'recordid':
+                new_field_specs.append(make_augmented_field_spec(fs, model, 'TableNum'))
+    print "################################ sceps_dleif_tnemgua"
+
+def make_augmented_field_spec(field_spec, model, field_name):
+    print "make_augmented_field_spec ######################################"
+                                                             
 def recordset(collection, user, user_agent, recordset_info):
     "Create a record set from the records matched by a query."
     spquery = recordset_info['fromquery']
@@ -407,11 +435,11 @@ def recordset(collection, user, user_agent, recordset_info):
 
     return new_rs_id
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None):
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session)
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs)
 
     if distinct:
         query = query.distinct()
@@ -426,7 +454,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)}
 
-def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False):
+def build_query(session, collection, user, tableid, field_specs, recordsetid=None, replace_nulls=False, formatauditobjs=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -470,10 +498,11 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
+    #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field = fs.add_to_query(query)
+        query, field = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
             query = query.add_columns(query.objectformatter.fieldformat(fs, field))
 

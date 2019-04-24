@@ -37,6 +37,24 @@ def users_collections(cursor, user_id):
 
     return list(cursor.fetchall())
 
+def set_users_collections(cursor, user, collectionids):
+    with transaction.atomic():
+        cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [user.id])
+        cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
+                       'select spprincipalid from specifyuser_spprincipal)')
+
+        for collectionid in collectionids:
+            principal = Spprincipal.objects.create(
+                groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
+                grouptype=None,
+                name=user.name,
+                priority=80,
+            )
+            cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
+                           [collectionid, principal.id])
+            cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
+                           'values (%s, %s)', [user.id, principal.id])
+
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
@@ -48,21 +66,7 @@ def user_collection_access(request, userid):
     if request.method == 'PUT':
         collections = json.loads(request.body)
         user = Specifyuser.objects.get(id=userid)
-        with transaction.atomic():
-            cursor.execute("delete from specifyuser_spprincipal where specifyuserid = %s", [userid])
-            cursor.execute('delete from spprincipal where grouptype is null and spprincipalid not in ('
-                           'select spprincipalid from specifyuser_spprincipal)')
-            for collectionid in collections:
-                principal = Spprincipal.objects.create(
-                    groupsubclass='edu.ku.brc.af.auth.specify.principal.UserPrincipal',
-                    grouptype=None,
-                    name=user.name,
-                    priority=80,
-                )
-                cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
-                               [collectionid, principal.id])
-                cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) '
-                               'values (%s, %s)', [userid, principal.id])
+        set_users_collections(cursor, user, collections)
 
     collections = users_collections(cursor, userid)
     return HttpResponse(json.dumps([row[0] for row in collections]),
