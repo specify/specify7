@@ -1,20 +1,49 @@
 import logging
 logger = logging.getLogger(__name__)
+import re
 
 from .models import Spauditlog
 from .models import Spauditlogfield
+from specifyweb.context.app_resource import get_app_resource
+from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 
 class AuditLog(object):
     INSERT = 0
     UPDATE = 1
     REMOVE = 2
 
+    _auditingFlds = None
+    _auditing = None
+    
+    def isAuditingFlds(self):
+        return self.isAuditing() and self._auditingFlds
+
+    def isAuditing(self):
+        if self._auditing is None:
+            res = Spappresourcedata.objects.filter(
+                spappresource__name='preferences',
+                spappresource__spappresourcedir__usertype='Prefs')
+            remote_prefs = '\n'.join(r.data for r in res)
+            match = re.search(r'auditing\.do_audits=(.+)', remote_prefs)
+            if match is None:
+                print "no match"
+                self._auditing = True
+            else:
+                print "auditing.do_audits=" + match.group(1)
+                self._auditing = False if match.group(1).lower() == 'false' else True
+            match = re.search(r'auditing\.audit_field_updates=(.+)', remote_prefs)
+            if match is None:
+                self._auditingFlds = True
+            else:
+                self._auditingFlds = False if match.group(1).lower() == 'false' else True
+            
+        return self._auditing;
+    
     def update(self, obj, agent, parent_record, dirty_flds):
-        print "AUDITLOG UPDATE"
-        print dirty_flds
         log_obj = self._log(self.UPDATE, obj, agent, parent_record)
-        for vals in dirty_flds:
-            self._log_fld_update(vals, obj, log_obj, agent)
+        if log_obj is not None:
+            for vals in dirty_flds:
+                self._log_fld_update(vals, obj, log_obj, agent)
         return log_obj
 
     def insert(self, obj, agent, parent_record=None):
@@ -24,21 +53,20 @@ class AuditLog(object):
         return self._log(self.REMOVE, obj, agent, parent_record)
 
     def _log(self, action, obj, agent, parent_record):
-        logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
-        assert obj.id is not None, "attempt to add object with null id to audit log"
-        return Spauditlog.objects.create(
-            action=action,
-            parentrecordid=parent_record and parent_record.id,
-            parenttablenum=parent_record and parent_record.specify_model.tableId,
-            recordid=obj.id,
-            recordversion=obj.version,
-            tablenum=obj.specify_model.tableId,
-            createdbyagent=agent,
-            modifiedbyagent=agent)
+        if self.isAuditing():
+            logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
+            assert obj.id is not None, "attempt to add object with null id to audit log"
+            return Spauditlog.objects.create(
+                action=action,
+                parentrecordid=parent_record and parent_record.id,
+                parenttablenum=parent_record and parent_record.specify_model.tableId,
+                recordid=obj.id,
+                recordversion=obj.version,
+                tablenum=obj.specify_model.tableId,
+                createdbyagent=agent,
+                modifiedbyagent=agent)
     
     def _log_fld_update(self, vals, obj, log, agent):
-        print "_log_fld_update"
-        print vals
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
             newvalue=vals['new_value'],

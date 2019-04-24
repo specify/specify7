@@ -413,7 +413,7 @@ def reorder_fields_for_embedding(cls, data):
         yield (key, data[key])
 
 
-def handle_fk_fields(collection, agent, obj, data):
+def handle_fk_fields(collection, agent, obj, data, checkchanges = False):
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -472,7 +472,7 @@ def handle_fk_fields(collection, agent, obj, data):
             data[field_name] = obj_to_data(rel_obj)
         else:
             raise Exception('bad foreign key field in data')
-        if str(old_related_id) != str(new_related_id):
+        if checkchanges and str(old_related_id) != str(new_related_id):
             dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
 
     return dependents_to_delete, dirty
@@ -549,6 +549,7 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
     for dep in dependents_to_delete:
       delete_obj(agent, dep, parent_obj=obj)
 
+      
 @transaction.atomic
 def put_resource(collection, agent, name, id, version, data):
     return update_obj(collection, agent, name, id, version, data)
@@ -559,10 +560,10 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
     """
     obj = get_object_or_404(name, id=int(id))
     data = cleanData(obj.__class__, data, agent)
-    fk_info = handle_fk_fields(collection, agent, obj, data)
+    fk_info = handle_fk_fields(collection, agent, obj, data, auditlog.isAuditingFlds())
     print fk_info
     dependents_to_delete = fk_info[0]
-    dirty = fk_info[1] + set_fields_from_data(obj, data, True)
+    dirty = fk_info[1] + set_fields_from_data(obj, data, auditlog.isAuditingFlds())
 
     try:
         obj._meta.get_field('modifiedbyagent')
@@ -572,7 +573,6 @@ def update_obj(collection, agent, name, id, version, data, parent_obj=None):
         obj.modifiedbyagent = agent
 
     bump_version(obj, version)
-    #print obj.text2
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
