@@ -1,14 +1,13 @@
 "use strict";
- 
+
 var $ = require('jquery');
 var _ = require('underscore');
 
 var schema         = require('./../schema.js');
 var initialContext = require('./../initialcontext.js');
 var attachmentserverbase = require('./attachments.js');
+var settings       = require('./../attachmentsettings.js');
 
-var settings;
-initialContext.load('attachment_settings.json', data => settings = data);
 
 function placeholderforlorisauthentication(notused) {
     return $.get('/attachment_gw/get_token/', { filename: 'asfdas' });
@@ -17,9 +16,9 @@ function placeholderforlorisauthentication(notused) {
 function getHmacPOST(file) {
     var formData = new FormData();
     formData.append('file', file);
-    
+
     return $.ajax({
-        url: '/attachment_gw/post_to_iip/', 
+        url: '/attachment_gw/post_to_iip/',
         type: "POST",
         data: formData,
         processData: false,
@@ -29,7 +28,7 @@ function getHmacPOST(file) {
 }
 
 var attachmentserveriip = {
-  servername: 'IIP', 
+  servername: 'IIP',
   getThumbnail: function(attachment, scale) {
       scale || (scale = 256);
       var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
@@ -72,4 +71,3 @@ var attachmentserveriip = {
 };
 
 module.exports = Object.assign(Object.create(attachmentserverbase), attachmentserveriip);
-
