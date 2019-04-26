@@ -14,6 +14,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             checkbox: function() {
                 var control = $('<input type=checkbox class="specify-field">');
                 control.attr('disabled', doingFormTable || mode === 'view');
+                control.attr('checked', cell.attr('default') === 'true');
                 if (doingFormTable) {
                     return control.attr('data-specify-field-label-override', cell.attr('label'));
                 }

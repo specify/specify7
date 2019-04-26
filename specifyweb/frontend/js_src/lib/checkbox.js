@@ -22,7 +22,6 @@ module.exports =  Backbone.View.extend({
             $.when(openLoanPreps.fetch()).done(function() {
                 self.$el.prop('checked', openLoanPreps.length);
                 self.isOnLoan = openLoanPreps.length;
-                
             });
         } else if (!this.$el.hasClass('specify-ignore-field')) {
             Q(this.model.getResourceAndField(this.$el.attr('name')))
@@ -40,6 +39,11 @@ module.exports =  Backbone.View.extend({
         field.readOnly && this.$el.prop('disabled', true);
 
         var fieldName = field.name.toLowerCase();
+
+        if (resource.isNew()) {
+            console.log('setting default value', this.$el.prop('checked'), 'into', field);
+            resource.set(fieldName, this.$el.prop('checked'));
+        }
 
         var $el = this.$el;
         var set = function() {
