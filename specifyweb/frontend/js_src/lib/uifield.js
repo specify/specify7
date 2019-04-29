@@ -89,7 +89,9 @@ module.exports =  Backbone.View.extend({
 
             if (resource.isNew() && this.$el.val()) {
                 console.log('setting default value', this.$el.val(), 'into', field);
+                inputUI.readOnly = false;
                 inputUI.fillIn(this.$el.val()).change();
+                inputUI.readOnly = readOnly;
             }
 
             if (resource) {

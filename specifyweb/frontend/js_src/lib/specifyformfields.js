@@ -55,7 +55,8 @@ module.exports = function(doingFormTable, mode, cell, id) {
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             dsptextfield: function() {
-                return $('<input type=text class="specify-field" readonly>');
+                return $('<input type=text class="specify-field" readonly>')
+                    .attr('value', cell.attr('default'));
             },
             formattedtext: function() {
                 return $('<input type=text class="specify-formattedtext specify-field">')
