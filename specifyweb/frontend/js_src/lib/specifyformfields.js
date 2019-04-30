@@ -61,6 +61,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             },
             formattedtext: function() {
                 return $('<input type=text class="specify-formattedtext specify-field">')
+                    .attr('value', cell.attr('default'))
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             label: function() {

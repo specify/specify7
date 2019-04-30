@@ -112,7 +112,9 @@ var dateFormatStr = require('./dateformat.js');
         },
 
         "java.sql.Timestamp": function(field, value) {
-            var parsed = moment(value, dateFormatStr(), true);
+            var parsed = ("" + value).toLowerCase() === "today" ?
+                moment() :
+                moment(value, dateFormatStr(), true);
             if (!parsed.isValid()) {
                 return {
                     isValid: false,
