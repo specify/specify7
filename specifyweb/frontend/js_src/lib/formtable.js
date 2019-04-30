@@ -144,6 +144,8 @@ module.exports =  Backbone.View.extend({
                 if (this.added === resource) {
                     row.expand();
                     this.added = null;
+                } else if (resource.isNew()) {
+                    row.expand();
                 }
             }, this);
         },

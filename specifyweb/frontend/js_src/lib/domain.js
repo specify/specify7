@@ -5,6 +5,8 @@ var _ = require('underscore');
 
 var api = require('./specifyapi.js');
 var schema = require('./schema.js');
+var remoteprefs = require('./remoteprefs.js');
+
 
     function takeBetween(items, startElem, endElem) {
         var start = 1 + _.indexOf(items, startElem);
@@ -19,6 +21,26 @@ var schema = require('./schema.js');
             var parentResource = domain.getDomainResource(domainField.name);
             if (parentResource != null) {
                 resource.set(domainField.name, parentResource.url());
+            }
+        }
+
+        if (resource.specifyModel.name.toLowerCase() === "collectionobject") {
+            const colId = parentResource.get('id');
+            if (remoteprefs["CO_CREATE_COA_" + colId]  === "true") {
+                const coaModel = resource.specifyModel.getField('collectionobjectattribute').getRelatedModel();
+                const coa = new coaModel.Resource();
+                coa.placeInSameHierarchy(resource);
+                resource.set('collectionobjectattribute', coa);
+            }
+            if (remoteprefs["CO_CREATE_PREP_" + colId]  === "true") {
+                const prepModel = resource.specifyModel.getField('preparations').getRelatedModel();
+                const prep = new prepModel.Resource();
+                resource.rget('preparations').done(preps => preps.add(prep));
+            }
+            if (remoteprefs["CO_CREATE_DET_" + colId]  === "true") {
+                const detModel = resource.specifyModel.getField('determinations').getRelatedModel();
+                const det = new detModel.Resource();
+                resource.rget('determinations').done(dets => dets.add(det));
             }
         }
     });
