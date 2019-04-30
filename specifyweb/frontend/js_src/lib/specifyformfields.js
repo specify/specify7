@@ -38,7 +38,8 @@ module.exports = function(doingFormTable, mode, cell, id) {
             combobox: function() {
                 var control = $('<select class="specify-combobox specify-field">');
                 control.attr({'disabled': doingFormTable || mode === 'view',
-                              'data-specify-picklist': cell.attr('picklist')});
+                              'data-specify-picklist': cell.attr('picklist'),
+                              'data-specify-default': cell.attr('default')});
                 return control;
             },
             spinner: function() {

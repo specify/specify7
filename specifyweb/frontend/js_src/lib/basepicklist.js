@@ -17,6 +17,9 @@ module.exports =  Backbone.View.extend({
         },
         gotInfo: function(info) {
             this.info = info;
+            if (info.resource.isNew()) {
+                info.resource.set(info.field.name.toLowerCase(), info.default);
+            }
             if (!info.remote) {
                 this.toolTipMgr = new ToolTipMgr(this).enable();
                 this.saveblockerEnhancement = new saveblockers.FieldViewEnhancer(this, info.field.name);
