@@ -69,6 +69,7 @@ module.exports = function(doingFormTable, mode, cell, id) {
             },
             plugin: function() {
                 return $('<input type=button value="plugin" class="specify-uiplugin specify-field">')
+                    .attr('data-specify-default', cell.attr('default'))
                     .attr('disabled', doingFormTable || mode === 'view');
             },
             browse: function() {
