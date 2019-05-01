@@ -16,15 +16,14 @@ var remoteprefs = require('./remoteprefs.js');
 
 
     api.on('newresource', function(resource) {
-        var domainField = resource.specifyModel.orgRelationship();
-        if (domainField && !resource.get(domainField.name)) {
-            var parentResource = domain.getDomainResource(domainField.name);
-            if (parentResource != null) {
-                resource.set(domainField.name, parentResource.url());
-            }
+        const domainField = resource.specifyModel.orgRelationship();
+        const parentResource = domainField && domain.getDomainResource(domainField.name);
+        if (parentResource && !resource.get(domainField.name)) {
+            resource.set(domainField.name, parentResource.url());
         }
 
-        if (resource.specifyModel.name.toLowerCase() === "collectionobject") {
+        // need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
+        if (resource.specifyModel.name.toLowerCase() === "collectionobject" && parentResource) {
             const colId = parentResource.get('id');
             if (remoteprefs["CO_CREATE_COA_" + colId]  === "true") {
                 const coaModel = resource.specifyModel.getField('collectionobjectattribute').getRelatedModel();
