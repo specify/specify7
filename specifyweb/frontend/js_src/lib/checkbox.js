@@ -40,9 +40,9 @@ module.exports =  Backbone.View.extend({
 
         var fieldName = field.name.toLowerCase();
 
-        if (resource.isNew()) {
-            console.log('setting default value', this.$el.prop('checked'), 'into', field);
-            resource.set(fieldName, this.$el.prop('checked'));
+        if (resource.isNew() && this.$el.data('specify-default') != null) {
+            console.log('setting default value', this.$el.data('specify-default'), 'into', field);
+            resource.set(fieldName, this.$el.data('specify-default'));
         }
 
         var $el = this.$el;
