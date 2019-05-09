@@ -17,6 +17,11 @@ except ImportError:
     AUTH_LDAP_SERVER_URI = None
 
 try:
+    from .saml2_settings import SAML2_AUTH
+except ImportError:
+    SAML2_AUTH = None
+
+try:
     from .debug import DEBUG
 except ImportError:
     DEBUG = False
@@ -189,6 +194,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
     'django.contrib.auth',
+)
+
+if SAML2_AUTH is not None:
+    INSTALLED_APPS += ('django_saml2_auth',)
+
+INSTALLED_APPS += (
     'specifyweb.specify',
     'specifyweb.stored_queries',
     'specifyweb.businessrules',
@@ -233,5 +244,4 @@ try:
     from .local_settings import *
 except ImportError:
     pass
-
 

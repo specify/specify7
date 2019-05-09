@@ -4,3 +4,5 @@ SQLAlchemy==1.2.11
 requests==2.2.1
 pycrypto==2.4.1
 django-auth-ldap==1.2.15
+django-saml2-auth-ai==2.1.2
+

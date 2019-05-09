@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 from .specify.views import support_login, images, properties
 from .context.views import choose_collection
@@ -18,17 +19,25 @@ from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .export import urls as export_urls
 
-urlpatterns = [
+if settings.SAML2_AUTH is not None:
+    import django_saml2_auth.views
+    auth_urlpatterns = [
+        url(r'^saml2_auth/', include('django_saml2_auth.urls')),
+        url(r'^accounts/login/$', django_saml2_auth.views.signin),
+    ]
+else:
+    auth_urlpatterns = [
+        # log in and log out pages
+        url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'}),
+        url(r'^accounts/password_change/$', auth_views.password_change,
+            {'template_name': 'password_change.html', 'post_change_redirect': '/'}),
+    ]
+
+urlpatterns = auth_urlpatterns + [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
-    # log in and log out pages
-    url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'}),
-    url(r'^accounts/logout/$', auth_views.logout, {'template_name': 'logout.html', 'next_page': '/accounts/login/'}),
-    url(r'^accounts/password_change/$', auth_views.password_change,
-        {'template_name': 'password_change.html', 'post_change_redirect': '/'}),
-
     url(r'^accounts/support_login/$', support_login),
-
+    url(r'^accounts/logout/$', auth_views.logout, {'template_name': 'logged_out.html'}),
     url(r'^accounts/choose_collection/$', choose_collection),
 
     # just redirect root url to the main specify view

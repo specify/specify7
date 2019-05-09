@@ -12,7 +12,8 @@ specifyweb/virtenv
 /specifyweb/settings/local_logging_settings.py
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
-
+/specifyweb/settings/ldap_settings.py
+/specifyweb/settings/saml2_settings.py
 
 
 # Build artifacts:
@@ -25,4 +26,3 @@ specifyweb/virtenv
 /specifyweb/frontend/templates/specify-built.html
 /local_specifyweb_apache.conf
 
-/specifyweb/settings/ldap_settings.py

@@ -1,7 +1,9 @@
+from collections import namedtuple
 import logging
 
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
 from .tree_extras import Tree
@@ -10,6 +12,14 @@ if settings.AUTH_LDAP_SERVER_URI is not None:
     from . import ldap_extras
 
 logger = logging.getLogger(__name__)
+
+def get_user_for_saml(name):
+    model = get_user_model()
+    username_attr = settings.SAML2_AUTH['ATTRIBUTES_MAP']['username']
+    try:
+        return model.objects.get(**{model.USERNAME_FIELD: name[username_attr][0]})
+    except model.DoesNotExist:
+        return namedtuple('FakeUser', 'is_active')(is_active=False)
 
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):

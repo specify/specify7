@@ -61,7 +61,7 @@ On Ubuntu:
 
     sudo apt-get install \
         git python-pip python-dev libmysqlclient-dev \
-        libssl-dev build-essential curl
+        libssl-dev build-essential curl xmlsec1
 
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 
