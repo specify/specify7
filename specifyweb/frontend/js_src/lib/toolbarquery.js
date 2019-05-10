@@ -128,7 +128,10 @@ var userInfo       = require('./userinfo.js');
     var EditQueryDialog = Backbone.View.extend({
         __name__: "EditQueryDialog",
         className: "query-edit-dialog",
-        events: {'click .query-export': 'exportQuery'},
+        events: {
+            'click .query-export': 'exportQuery',
+            'click .create-report': 'createReport'
+        },
         initialize: function(options) {
             this.spquery = options.spquery;
             this.model = schema.getModelById(this.spquery.get('contexttableid'));
@@ -139,6 +142,26 @@ var userInfo       = require('./userinfo.js');
         },
         _render: function(form) {
             form.find('.specify-form-header:first').remove();
+
+            if (!this.spquery.isNew()) {
+                form.append(`
+                  <ul style="padding: 0">
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="query-export">Export query for DwCA definition.</a>
+                     </li>
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="create-report">Define report based on query.</a>
+                     </li>
+                     <li style="display:flex;margin:5px">
+                         <span class="ui-icon ui-icon-circle-plus"/>
+                         <a class="create-label">Define label based on query.</a>
+                     </li>
+                  </ul>
+                `);
+            }
+
             var buttons = $('<div class="specify-form-buttons">').appendTo(form);
 
             if (!this.readOnly) {
@@ -160,8 +183,6 @@ var userInfo       = require('./userinfo.js');
                     dialog.$el.dialog('close');
                     dialog = null;
                 });
-
-                $('<input type="button" value="Export" class="query-export">').appendTo(buttons);
             }
 
             populateform(form, this.spquery);
@@ -170,6 +191,25 @@ var userInfo       = require('./userinfo.js');
                 width: 'auto',
                 title: title
             }));
+        },
+        createReport() {
+            $('<div>').append(
+                $('<input type="text" placeholder="Report Name" size="40">')
+            ).dialog({
+                modal: true,
+                width: 'auto',
+                title: "Create new report.",
+                close() { $(this).remove(); },
+                buttons: {
+                    Create() {
+                        $(this).dialog('close');
+                        createReport(this.spquery);
+                    },
+                    Cancel() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
         },
         exportQuery: function() {
             $.get({url: `/export/extract_query/${this.spquery.id}/`, dataType: 'text'}).done(xml => {
