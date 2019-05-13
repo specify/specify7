@@ -10,7 +10,7 @@ from django.conf import settings
 from django.template import loader, Context
 
 from ..specify.views import login_maybe_required
-from ..specify.api import objs_to_data, toJson
+from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
 from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
 from ..stored_queries.execution import run_ephemeral_query, models
 from ..stored_queries.queryfield import QueryField
@@ -83,6 +83,17 @@ def get_reports_by_tbl(request, tbl_id):
     data = objs_to_data(reports)
     return HttpResponse(toJson(data), content_type="application/json")
 
+@require_POST
+@login_maybe_required
+def create(request):
+    report = create_report(
+        request.specify_user.id,
+        request.specify_collection.discipline.id,
+        request.POST['queryid'],
+        request.POST['mimetype'],
+        request.POST['name'],
+    )
+    return HttpResponseCreated(toJson(obj_to_data(report)), content_type="application/json")
 
 @transaction.atomic
 def create_report(user_id, discipline_id, query_id, mimetype, name):
@@ -96,6 +107,7 @@ def create_report(user_id, discipline_id, query_id, mimetype, name):
         name=name,
         description=name,
         specifyuser_id=user_id,
+        metadata="tableid=-1;reporttype=Report;",
         )
     appresource.spappresourcedatas.create(
         version=0,

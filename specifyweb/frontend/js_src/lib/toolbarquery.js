@@ -1,17 +1,18 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+const $        = require('jquery');
+const _        = require('underscore');
+const Q        = require('q');
+const Backbone = require('./backbone.js');
 
-var schema         = require('./schema.js');
-var navigation     = require('./navigation.js');
-var specifyform    = require('./specifyform.js');
-var populateform   = require('./populateform.js');
-var SaveButton     = require('./savebutton.js');
-var DeleteButton   = require('./deletebutton.js');
-var initialContext = require('./initialcontext.js');
-var userInfo       = require('./userinfo.js');
+const schema         = require('./schema.js');
+const navigation     = require('./navigation.js');
+const specifyform    = require('./specifyform.js');
+const populateform   = require('./populateform.js');
+const SaveButton     = require('./savebutton.js');
+const DeleteButton   = require('./deletebutton.js');
+const initialContext = require('./initialcontext.js');
+const userInfo       = require('./userinfo.js');
 
     var qbDef;
     initialContext.loadResource('querybuilder.xml', data => qbDef = data);
@@ -130,7 +131,7 @@ var userInfo       = require('./userinfo.js');
         className: "query-edit-dialog",
         events: {
             'click .query-export': 'exportQuery',
-            'click .create-report': 'createReport'
+            'click .create-report, .create-label': 'createReport'
         },
         initialize: function(options) {
             this.spquery = options.spquery;
@@ -192,18 +193,29 @@ var userInfo       = require('./userinfo.js');
                 title: title
             }));
         },
-        createReport() {
-            $('<div>').append(
-                $('<input type="text" placeholder="Report Name" size="40">')
-            ).dialog({
+        createReport(evt) {
+            const isLabel = evt.currentTarget.classList.contains('create-label');
+            const nameInput = $(`<input type="text" placeholder="${isLabel ? "Label" : "Report"} Name" size="40">`);
+
+            const createReport = () => Q($.post('/report_runner/create/', {
+                queryid: this.spquery.id,
+                mimetype: isLabel ? "jrxml/label" : "jrxml/report",
+                name: nameInput.val(),
+            })).then(reportJSON => {
+                const report = new schema.models.SpReport.Resource(reportJSON);
+                return report.rget('appresource');
+            }).done(appresource => navigation.go(`/specify/appresources/${appresource.id}/`));
+
+            $('<div>').append(nameInput).dialog({
                 modal: true,
                 width: 'auto',
-                title: "Create new report.",
+                title: isLabel ? "Create new label." : "Create new report.",
                 close() { $(this).remove(); },
                 buttons: {
                     Create() {
+                        if (nameInput.val().trim() == "") return;
                         $(this).dialog('close');
-                        createReport(this.spquery);
+                        createReport();
                     },
                     Cancel() {
                         $(this).dialog('close');
