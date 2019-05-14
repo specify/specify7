@@ -88,6 +88,9 @@ UNIQUENESS_RULES = {
     'Repositoryagreement': {
         'repositoryagreementnumber': ['division'],
         },
+    'Spappresourcedata': {
+        'spappresource': [None],
+        },
     }
 
 uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)

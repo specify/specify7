@@ -48,16 +48,24 @@ const ResourceDataView = Backbone.View.extend({
             return this;
         }
 
-        this.$el.append('<textarea spellcheck="false" wrap="off">');
-
         this.model.rget('spappresourcedatas', true).done(sards => {
             this.appresourceData = sards.first();
-            this.$('textarea')
-                .text(this.appresourceData.get('data'))
-                .attr('readonly', !userInfo.isadmin);
 
-            userInfo.isadmin && this.$el.append(
-                new SaveButton({model: this.appresourceData}).render().el,
+            if (this.appresourceData) {
+                $('<textarea spellcheck="false" wrap="off">')
+                    .text(this.appresourceData.get('data'))
+                    .attr('readonly', !userInfo.isadmin)
+                    .appendTo(this.el);
+
+                userInfo.isadmin && this.$el.append(
+                    new SaveButton({model: this.appresourceData}).render().el
+                );
+            } else {
+                $('<p>This app resource appears to be corrupt but may be in the process of being saved by another '
+                  + 'session. It can be deleted if that is not the case.</p>').appendTo(this.el);
+            }
+
+            userInfo.isadmin &&  this.$el.append(
                 new DeleteButton({model: this.model}).render()
                     .on('deleted', () => navigation.go('/specify/appresources/'))
                     .el
