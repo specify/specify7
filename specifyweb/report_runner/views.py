@@ -62,7 +62,7 @@ def get_reports(request):
             Q(spappresourcedir__ispersonal=False))
 
 
-    data = objs_to_data(reports)
+    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
     return HttpResponse(toJson(data), content_type="application/json")
 
 @require_GET
@@ -80,7 +80,7 @@ def get_reports_by_tbl(request, tbl_id):
         .filter(
             Q(spreports__query__contexttableid=tbl_id))
 
-    data = objs_to_data(reports)
+    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
     return HttpResponse(toJson(data), content_type="application/json")
 
 @require_POST
