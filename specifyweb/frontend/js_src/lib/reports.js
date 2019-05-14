@@ -1,19 +1,19 @@
 "use strict";
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
+const $        = require('jquery');
+const _        = require('underscore');
+const Backbone = require('./backbone.js');
 
-var schema                 = require('./schema.js');
-var QueryFieldUI           = require('./queryfield.js');
-var parsespecifyproperties = require('./parsespecifyproperties.js');
-var AttachmentPlugin       = require('./attachmentplugin.js');
-var attachments            = require('./attachments.js');
-var userInfo               = require('./userinfo.js');
+const schema                 = require('./schema.js');
+const QueryFieldUI           = require('./queryfield.js');
+const parsespecifyproperties = require('./parsespecifyproperties.js');
+const AttachmentPlugin       = require('./attachmentplugin.js');
+const attachments            = require('./attachments.js');
+const userInfo               = require('./userinfo.js');
 
-const editReport = require('./editreport.js');
 const csrftoken = require('./csrftoken.js');
 const populateForm = require('./populateform.js');
+const navigation = require('./navigation.js');
 
 var title =  "Reports";
 
@@ -31,7 +31,8 @@ var ReportListDialog = Backbone.View.extend({
     __name__: "ReportListDialog",
     className: "reports-dialog table-list-dialog",
     events: {
-        'click a': 'getReportUI'
+        'click a.select': 'getReportUI',
+        'click a.edit': 'editReport',
     },
     initialize: function(options) {
         var appResources = this.options.appResources;
@@ -105,8 +106,12 @@ var ReportListDialog = Backbone.View.extend({
     getReportUI: function(evt) {
         evt.preventDefault();
         var appResource = $(evt.currentTarget).closest('tr').data('resource');
-        var action = $(evt.currentTarget).hasClass('edit') ? editReport : getReportParams;
-        this.getReport(appResource, action);
+        this.getReport(appResource, getReportParams);
+    },
+    editReport(evt) {
+        evt.preventDefault();
+        const appResource = $(evt.currentTarget).closest('tr').data('resource');
+        navigation.go(`/specify/appresources/${appResource.id}/`);
     },
     getReport: function(appResource, action) {
         var reports = new schema.models.SpReport.LazyCollection({
