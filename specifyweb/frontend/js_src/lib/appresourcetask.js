@@ -6,7 +6,8 @@ const router = require('./router.js');
 function appResources(type, id) {
     require.ensure(['./appresources.js'], require => {
         const appResourcesModule = require('./appresources.js');
-        appResourcesModule[type](Number(id));
+        const idInt = parseInt(id);
+        appResourcesModule[type](isNaN(idInt) ? null : idInt);
     }, 'appresources');
 }
 
