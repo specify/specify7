@@ -25,12 +25,19 @@ const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     id: "appresource-page",
     initialize({resources, selectedId}) {
-        this.selected = resources.filter(r => r.id === selectedId)[0];
+        this.selectedId = selectedId;
+        this.resources = resources;
     },
     render() {
-        new AppResourcesView(Object.assign({selectedResource: this.selected}, this.options)).render().$el.appendTo(this.el);
-        if (this.selected != null) {
-            new ResourceDataView({model: this.selected}).render().$el.appendTo(this.el);
+        const selected = this.resources.filter(r => r.id === this.selectedId)[0];
+        new AppResourcesView(Object.assign({selectedResource: selected}, this.options)).render().$el.appendTo(this.el);
+
+        if (this.selectedId != null) {
+            if (selected != null) {
+                new ResourceDataView({model: selected}).render().$el.appendTo(this.el);
+            } else {
+                $(`<p style="margin:auto">${this.options.ResourceModel.getLocalizedName()} not found.</p>`).appendTo(this.el);
+            }
         }
         return this;
     }
