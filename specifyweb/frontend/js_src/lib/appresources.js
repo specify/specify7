@@ -56,6 +56,7 @@ const ResourceDataView = Backbone.View.extend({
         }
 
         this.model.rget('spappresourcedatas', true).done(sards => {
+            const buttonsDiv = $('<div class="specify-form-buttons">');
             this.appresourceData = sards.first();
 
             if (this.appresourceData) {
@@ -64,7 +65,7 @@ const ResourceDataView = Backbone.View.extend({
                     .attr('readonly', !userInfo.isadmin)
                     .appendTo(this.el);
 
-                userInfo.isadmin && this.$el.append(
+                userInfo.isadmin && buttonsDiv.append(
                     new SaveButton({model: this.appresourceData}).render().el
                 );
             } else {
@@ -72,11 +73,13 @@ const ResourceDataView = Backbone.View.extend({
                   + 'session. It can be deleted if that is not the case.</p>').appendTo(this.el);
             }
 
-            userInfo.isadmin &&  this.$el.append(
+            userInfo.isadmin &&  buttonsDiv.append(
                 new DeleteButton({model: this.model}).render()
                     .on('deleted', () => navigation.go('/specify/appresources/'))
                     .el
             );
+
+            this.$el.append(buttonsDiv);
         });
 
         return this;
