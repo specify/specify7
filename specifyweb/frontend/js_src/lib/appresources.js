@@ -118,7 +118,7 @@ const ResourceList = Backbone.View.extend({
             this.views.map(v => v.render().el)
         );
         if (userInfo.isadmin) {
-            this.$el.append('<li class="new-resource">New Resource</li>');
+            this.$el.append(`<li class="new-resource">New ${this.ResourceModel.getLocalizedName()}</li>`);
         }
         return this;
     },
@@ -132,10 +132,9 @@ const ResourceList = Backbone.View.extend({
             });
             return Q(resource.save()).then(() => resource);
         }).then(resource => {
-            const resourceData = new schema.models.SpAppResourceData.Resource({
-                spappresource: resource.get('resource_uri'),
-                data: ""
-            });
+            const resourceFieldName = this.ResourceModel.getField('spappresourcedatas').getReverse().name;
+            const resourceData = new schema.models.SpAppResourceData.Resource({data: ""});
+            resourceData.set(resourceFieldName, resource.get('resource_uri'));
             return Q(resourceData.save()).then(() => resource);
         }).done(resource => {
             navigation.go(makeUrl(resource));
@@ -205,7 +204,7 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content">Global Resources (${this.resourceList.resources.length})</h3>`,
+            `<h3 class="toggle-content">Global (${this.resourceList.resources.length})</h3>`,
             this.resourceList.render().$el.toggle(this.resourceList.containsSelected)
         );
         return this;
