@@ -3,10 +3,24 @@
 #appresource-page {
     display: flex;
     width: 100%;
+    justify-content: left;
+}
+
+#appresources-view {
+    padding: 0px 20px 10px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
+    display: table;
 }
 
 #appresources-view div {
-    margin-left: 2em;
+    margin-left: 1em;
+}
+
+#appresources-view ul {
+    margin-left: 1em;
+    padding: 0;
 }
 
 #appresources-view .toggle-content {
@@ -24,7 +38,12 @@
 
 .appresource-data {
     flex-grow: 1;
-    margin: 20px;
+    margin-left: 20px;
+    padding: 0px 20px 10px;
+    background: #f1f2f2;
+    box-shadow: 0 0 4px rgba(0,0,0,.33), 0 2px 4px rgba(0,0,0,.5);
+    border: 1px solid #ddd;
+    display: table;
 }
 
 .appresource-data textarea {

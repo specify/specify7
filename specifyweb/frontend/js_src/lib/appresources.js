@@ -60,6 +60,10 @@ const ResourceDataView = Backbone.View.extend({
             this.appresourceData = sards.first();
 
             if (this.appresourceData) {
+                $('<h2 class="specify-form-header">').append(
+                    $('<span class="view-title">').text(this.model.get('name'))
+                ).appendTo(this.el);
+
                 $('<textarea spellcheck="false" wrap="off">')
                     .text(this.appresourceData.get('data'))
                     .attr('readonly', !userInfo.isadmin)
@@ -214,7 +218,7 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content">Global (${this.resourceList.resources.length})</h3>`,
+            `<h3 class="toggle-content">Global <small>(${this.resourceList.resources.length})</small></h3>`,
             this.resourceList.render().$el.toggle(this.resourceList.containsSelected)
         );
         return this;
@@ -250,7 +254,7 @@ const DisciplinesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content">Disciplines (${this.count})</h3>`,
+            `<h3 class="toggle-content">Disciplines <small>(${this.count})</small></h3>`,
             $('<div>').append(this.views.map(v => v.render().el)).toggle(this.containsSelected)
         );
         return this;
@@ -295,7 +299,7 @@ const DisciplineResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h3 class="toggle-content">').text(this.discipline.get('name') + ` (${this.count})`),
+            $('<h3 class="toggle-content">').text(this.discipline.get('name')).append(` <small>(${this.count})</small>`),
             $('<div>').append(
                 this.resourceList.render().el,
                 this.collectionViews.map(v => v.render().el)
@@ -360,12 +364,12 @@ const CollectionResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.collection.get('collectionname') + ` (${this.count})`),
+            $('<h4 class="toggle-content">').text(this.collection.get('collectionname')).append(` <small>(${this.count})</small>`),
             $('<div>').append(
                 this.resourceList.render().el,
-                $('<h5 class="toggle-content">').text(`User Types (${this.userTypeView.count})`),
+                $('<h5 class="toggle-content">').text('User Types').append(` <small>(${this.userTypeView.count})</small>`),
                 this.userTypeView.render().el,
-                $('<h5 class="toggle-content">').text(`Users (${this.userView.count})`),
+                $('<h5 class="toggle-content">').text('Users').append(` <small>(${this.userView.count})</small>`),
                 this.userView.render().el
             ).toggle(this.containsSelected)
         );
@@ -436,7 +440,7 @@ const UserTypeResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.usertype + ` (${this.count})`),
+            $('<h4 class="toggle-content">').text(this.usertype).append(` <small>(${this.count})</small>`),
             this.resourceList.render().$el.toggle(this.containsSelected)
         );
         return this;
@@ -508,7 +512,7 @@ const UserResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.user.get('name') + ` (${this.count})`),
+            $('<h4 class="toggle-content">').text(this.user.get('name')).append(` <small>(${this.count})</small>`),
             this.resourceList.render().$el.toggle(this.containsSelected)
         );
         return this;
