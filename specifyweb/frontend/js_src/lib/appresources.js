@@ -172,10 +172,7 @@ const AppResourcesView = Backbone.View.extend({
         this.$el.append(
             $('<h2>').text(this.options.ResourceModel.getLocalizedName()),
             new GlobalResourcesView(this.options).render().el,
-            $('<div>').append(
-                '<h3 class="toggle-content">Disciplines</h3>',
-                new DisciplinesView(this.options).render().el
-            )
+            new DisciplinesView(this.options).render().el
         );
         return this;
     },
@@ -208,7 +205,7 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            '<h3 class="toggle-content">Global Resources</h3>',
+            `<h3 class="toggle-content">Global Resources (${this.resourceList.resources.length})</h3>`,
             this.resourceList.render().$el.toggle(this.resourceList.containsSelected)
         );
         return this;
@@ -240,11 +237,13 @@ const DisciplinesView = Backbone.View.extend({
         );
 
         this.containsSelected = this.views.some(v => v.containsSelected);
+        this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
         this.$el.append(
-            this.views.map(v => v.render().el)
-        ).toggle(this.containsSelected);
+            `<h3 class="toggle-content">Disciplines (${this.count})</h3>`,
+            $('<div>').append(this.views.map(v => v.render().el)).toggle(this.containsSelected)
+        );
         return this;
     }
 });
@@ -282,10 +281,12 @@ const DisciplineResourcesView = Backbone.View.extend({
 
         this.containsSelected = this.resourceList.containsSelected ||
             this.collectionViews.some(v => v.containsSelected);
+
+        this.count = this.resources.length + this.collectionViews.reduce((a, v) => a + v.count, 0);
     },
     render() {
         this.$el.append(
-            $('<h3 class="toggle-content">').text(this.discipline.get('name')),
+            $('<h3 class="toggle-content">').text(this.discipline.get('name') + ` (${this.count})`),
             $('<div>').append(
                 this.resourceList.render().el,
                 this.collectionViews.map(v => v.render().el)
@@ -345,15 +346,17 @@ const CollectionResourcesView = Backbone.View.extend({
         this.containsSelected = this.resourceList.containsSelected ||
             this.userTypeView.containsSelected ||
             this.userView.containsSelected;
+
+        this.count = this.resources.length + this.userTypeView.count + this.userView.count;
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.collection.get('collectionname')),
+            $('<h4 class="toggle-content">').text(this.collection.get('collectionname') + ` (${this.count})`),
             $('<div>').append(
                 this.resourceList.render().el,
-                $('<h5 class="toggle-content">').text("User Types"),
+                $('<h5 class="toggle-content">').text(`User Types (${this.userTypeView.count})`),
                 this.userTypeView.render().el,
-                $('<h5 class="toggle-content">').text("Users"),
+                $('<h5 class="toggle-content">').text(`Users (${this.userView.count})`),
                 this.userView.render().el
             ).toggle(this.containsSelected)
         );
@@ -388,6 +391,7 @@ const UserTypeView = Backbone.View.extend({
         );
 
         this.containsSelected = this.views.some(v => v.containsSelected);
+        this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
         this.$el.append(this.views.map(v => v.render().el)).toggle(this.containsSelected);
@@ -419,10 +423,11 @@ const UserTypeResourcesView = Backbone.View.extend({
         });
 
         this.containsSelected = this.resourceList.containsSelected;
+        this.count = this.resources.length;
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.usertype),
+            $('<h4 class="toggle-content">').text(this.usertype + ` (${this.count})`),
             this.resourceList.render().$el.toggle(this.containsSelected)
         );
         return this;
@@ -457,6 +462,7 @@ const UserView = Backbone.View.extend({
         );
 
         this.containsSelected = this.views.some(v => v.containsSelected);
+        this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
         this.$el.append(this.views.map(v => v.render().el)).toggle(this.containsSelected);
@@ -489,10 +495,11 @@ const UserResourcesView = Backbone.View.extend({
         });
 
         this.containsSelected = this.resourceList.containsSelected;
+        this.count = this.resources.length;
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.user.get('name')),
+            $('<h4 class="toggle-content">').text(this.user.get('name') + ` (${this.count})`),
             this.resourceList.render().$el.toggle(this.containsSelected)
         );
         return this;
