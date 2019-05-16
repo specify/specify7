@@ -58,7 +58,8 @@ const ResourceDataView = Backbone.View.extend({
     __name__: "AppResourceDataView",
     className: "appresource-data",
     events: {
-        'keyup textarea': 'dataChanged'
+        'keyup textarea': 'dataChanged',
+        'click .load-file': 'loadFile'
     },
     render() {
         if (this.model == null) {
@@ -75,12 +76,15 @@ const ResourceDataView = Backbone.View.extend({
                     $('<span class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
-                $('<textarea spellcheck="false" wrap="off">')
-                    .text(this.appresourceData.get('data'))
-                    .attr('readonly', !userInfo.isadmin)
-                    .appendTo(this.el);
+                const textarea = $('<textarea spellcheck="false" wrap="off">')
+                      .text(this.appresourceData.get('data'))
+                      .attr('readonly', !userInfo.isadmin)
+                      .appendTo(this.el);
+
+                this.appresourceData.on('change', () => textarea.text(this.appresourceData.get('data')));
 
                 userInfo.isadmin && buttonsDiv.append(
+                    '<a class="load-file">Load File</a>',
                     new SaveButton({model: this.appresourceData}).render().el
                 );
 
@@ -108,6 +112,24 @@ const ResourceDataView = Backbone.View.extend({
     },
     dataChanged() {
         this.appresourceData.set('data', this.$('textarea').val());
+    },
+    loadFile() {
+        const fileInput = $('<input type="file">');
+        const dialog = $('<div><p>Select the file to be loaded into the editor.</p></div>').append(fileInput).dialog({
+            modal: true,
+            title: "Load file",
+            close: function() { $(this).remove(); },
+            buttons: { Cancel() { $(this).dialog('close'); } }
+        });
+        fileInput.on('change', () => {
+            const file = fileInput[0].files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => this.appresourceData.set('data', e.target.result);
+                reader.readAsText(file);
+                dialog.dialog('close');
+            }
+        });
     }
 });
 
