@@ -72,6 +72,13 @@ const ResourceDataView = Backbone.View.extend({
                 userInfo.isadmin && buttonsDiv.append(
                     new SaveButton({model: this.appresourceData}).render().el
                 );
+
+                const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
+                const url = (window.URL || window.webkitURL).createObjectURL(blob);
+                const link = $('<a>Download</a>').attr({href: url, download: this.model.get('name')});
+
+
+                buttonsDiv.append(link);
             } else {
                 $('<p>This app resource appears to be corrupt but may be in the process of being saved by another '
                   + 'session. It can be deleted if that is not the case.</p>').appendTo(this.el);

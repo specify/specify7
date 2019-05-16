@@ -56,7 +56,8 @@ div.specify-view-content-container,
     text-align: right;
 }
 
-.specify-form-buttons input {
+.specify-form-buttons input,
+.specify-form-buttons a {
     margin-right: 10px;
     border-radius: 0;
     border: 2px solid #f4763d;
@@ -65,18 +66,27 @@ div.specify-view-content-container,
     padding: 4px;
 }
 
+.specify-form-buttons a {
+    font-size: 11px;
+    vertical-align: middle;
+}
+
 .specify-form-buttons input:hover,
-.specify-form-buttons input:focus {
+.specify-form-buttons input:focus,
+.specify-form-buttons a:hover,
+.specify-form-buttons a:focus {
     outline: none;
     border: 2px solid #f79244;
     background: #f4763d;
 }
 
-.specify-form-buttons input:active {
+.specify-form-buttons input:active,
+.specify-form-buttons a:active {
     color: #000;
 }
 
-.specify-form-buttons input:disabled {
+.specify-form-buttons input:disabled,
+.specify-form-buttons a:disabled {
     background: #d3d3d3;
     border: none;
 }
