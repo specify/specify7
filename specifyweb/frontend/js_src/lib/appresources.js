@@ -21,6 +21,17 @@ function makeUrl(resource) {
     }[resource.specifyModel.name];
 }
 
+function fileExtFor(resource) {
+    if (resource.specifyModel.name === 'SpViewSetObj') {
+        return ".xml";
+    }
+    const mimetype = resource.get('mimetype');
+    if (/^jrxml/.test(mimetype)) return '.jrxml';
+    if (mimetype === 'text/xml') return '.xml';
+    if (resource.get('name') === 'preferences') return '.properties';
+    return "";
+}
+
 const AppResourcePage = Backbone.View.extend({
     __name__: "AppresourcePage",
     id: "appresource-page",
@@ -75,10 +86,10 @@ const ResourceDataView = Backbone.View.extend({
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
                 const url = (window.URL || window.webkitURL).createObjectURL(blob);
-                const link = $('<a>Download</a>').attr({href: url, download: this.model.get('name')});
-
-
-                buttonsDiv.append(link);
+                $('<a>Download</a>').attr({
+                    href: url,
+                    download: this.model.get('name') + fileExtFor(this.model)
+                }).appendTo(buttonsDiv);
             } else {
                 $('<p>This app resource appears to be corrupt but may be in the process of being saved by another '
                   + 'session. It can be deleted if that is not the case.</p>').appendTo(this.el);
