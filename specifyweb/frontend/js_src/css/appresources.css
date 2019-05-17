@@ -51,3 +51,11 @@
     height: 50em;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
+
+.appresource-data .mimetype-input {
+    margin-left: 10px;
+}
+
+.appresource-data .metadata-input input{
+    width: 400px;
+}

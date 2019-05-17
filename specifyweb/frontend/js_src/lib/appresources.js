@@ -59,7 +59,8 @@ const ResourceDataView = Backbone.View.extend({
     className: "appresource-data",
     events: {
         'keyup textarea': 'dataChanged',
-        'click .load-file': 'loadFile'
+        'click .load-file': 'loadFile',
+        'change input': 'metadataChanged',
     },
     render() {
         if (this.model == null) {
@@ -76,6 +77,14 @@ const ResourceDataView = Backbone.View.extend({
                     $('<span class="view-title">').text(this.model.get('name'))
                 ).appendTo(this.el);
 
+                $('<label class="metadata-input">Metadata: <input type="text" spellcheck="false"/><label>').appendTo(this.el);
+                $('.metadata-input input', this.el).val(this.model.get('metadata'));
+
+                if (this.model.specifyModel.name === 'SpAppResource') {
+                    $('<label class="mimetype-input">Mimetype: <input type="text" spellcheck="false"/><label>').appendTo(this.el);
+                    $('.mimetype-input input', this.el).val(this.model.get('mimetype'));
+                }
+
                 const textarea = $('<textarea spellcheck="false" wrap="off">')
                       .text(this.appresourceData.get('data'))
                       .attr('readonly', !userInfo.isadmin)
@@ -85,7 +94,9 @@ const ResourceDataView = Backbone.View.extend({
 
                 userInfo.isadmin && buttonsDiv.append(
                     '<a class="load-file">Load File</a>',
-                    new SaveButton({model: this.appresourceData}).render().el
+                    new SaveButton({model: this.appresourceData})
+                        .on('savecomplete', () => this.model.save()) // so the save button does both
+                        .render().el
                 );
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
@@ -109,6 +120,11 @@ const ResourceDataView = Backbone.View.extend({
         });
 
         return this;
+    },
+    metadataChanged() {
+        this.model.set('mimetype', $('.mimetype-input input', this.el).val());
+        this.model.set('metadata', $('.metadata-input input', this.el).val());
+        this.appresourceData.trigger('saverequired'); // this is bad.
     },
     dataChanged() {
         this.appresourceData.set('data', this.$('textarea').val());
