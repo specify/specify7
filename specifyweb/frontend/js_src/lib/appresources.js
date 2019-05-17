@@ -246,9 +246,24 @@ const AppResourcesView = Backbone.View.extend({
         return this;
     },
     toggle(evt) {
-        $(evt.currentTarget).next().slideToggle();
+        const toToggle = $(evt.currentTarget).next();
+        setStoredToggleState(this.options.ResourceModel, $(evt.currentTarget).data('appdir'), !toToggle.is(":visible"));
+        toToggle.slideToggle();
     }
 });
+
+function getStoredToggleState(resourceModel, levelKey) {
+    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInfo.id}`;
+    const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
+    return !!toggleStates[levelKey];
+}
+
+function setStoredToggleState(resourceModel, levelKey, state) {
+    const key = `AppResource.visibleDirs.${resourceModel.name}.${userInfo.id}`;
+    const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
+    toggleStates[levelKey] = state;
+    window.localStorage.setItem(key, JSON.stringify(toggleStates));
+}
 
 const GlobalResourcesView = Backbone.View.extend({
     __name__: "GlobalResourcesView",
@@ -274,8 +289,9 @@ const GlobalResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content">Global <small>(${this.resourceList.resources.length})</small></h3>`,
-            this.resourceList.render().$el.toggle(this.resourceList.containsSelected)
+            `<h3 class="toggle-content" data-appdir="global">Global <small>(${this.resourceList.resources.length})</small></h3>`,
+            this.resourceList.render().$el
+                .toggle(this.resourceList.containsSelected || getStoredToggleState(this.options.ResourceModel, 'global'))
         );
         return this;
     },
@@ -310,8 +326,9 @@ const DisciplinesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            `<h3 class="toggle-content">Disciplines <small>(${this.count})</small></h3>`,
-            $('<div>').append(this.views.map(v => v.render().el)).toggle(this.containsSelected)
+            `<h3 class="toggle-content" data-appdir="disciplines">Disciplines <small>(${this.count})</small></h3>`,
+            $('<div>').append(this.views.map(v => v.render().el))
+                .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'disciplines'))
         );
         return this;
     }
@@ -355,11 +372,14 @@ const DisciplineResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h3 class="toggle-content">').text(this.discipline.get('name')).append(` <small>(${this.count})</small>`),
+            $('<h3 class="toggle-content">')
+                .data('appdir', this.discipline.get('resource_uri'))
+                .text(this.discipline.get('name'))
+                .append(` <small>(${this.count})</small>`),
             $('<div>').append(
                 this.resourceList.render().el,
                 this.collectionViews.map(v => v.render().el)
-            ).toggle(this.containsSelected)
+            ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.discipline.get('resource_uri')))
         );
         return this;
     },
@@ -420,14 +440,21 @@ const CollectionResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.collection.get('collectionname')).append(` <small>(${this.count})</small>`),
+            $('<h4 class="toggle-content">')
+                .data('appdir', this.collection.get('resource_uri'))
+                .text(this.collection.get('collectionname'))
+                .append(` <small>(${this.count})</small>`),
             $('<div>').append(
                 this.resourceList.render().el,
-                $('<h5 class="toggle-content">').text('User Types').append(` <small>(${this.userTypeView.count})</small>`),
+                $('<h5 class="toggle-content" data-appdir="usertypes">')
+                    .text('User Types')
+                    .append(` <small>(${this.userTypeView.count})</small>`),
                 this.userTypeView.render().el,
-                $('<h5 class="toggle-content">').text('Users').append(` <small>(${this.userView.count})</small>`),
+                $('<h5 class="toggle-content" data-appdir="users">')
+                    .text('Users')
+                    .append(` <small>(${this.userView.count})</small>`),
                 this.userView.render().el
-            ).toggle(this.containsSelected)
+            ).toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.collection.get('resource_uri')))
         );
         return this;
     },
@@ -463,7 +490,8 @@ const UserTypeView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
-        this.$el.append(this.views.map(v => v.render().el)).toggle(this.containsSelected);
+        this.$el.append(this.views.map(v => v.render().el))
+            .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'usertypes'));
         return this;
     }
 });
@@ -496,8 +524,12 @@ const UserTypeResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.usertype).append(` <small>(${this.count})</small>`),
-            this.resourceList.render().$el.toggle(this.containsSelected)
+            $('<h4 class="toggle-content">')
+                .data('appdir', 'usertype-' + this.usertype)
+                .text(this.usertype)
+                .append(` <small>(${this.count})</small>`),
+            this.resourceList.render().$el
+                .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'usertype-' + this.usertype))
         );
         return this;
     },
@@ -534,7 +566,8 @@ const UserView = Backbone.View.extend({
         this.count = this.views.reduce((a, v) => a + v.count, 0);
     },
     render() {
-        this.$el.append(this.views.map(v => v.render().el)).toggle(this.containsSelected);
+        this.$el.append(this.views.map(v => v.render().el))
+            .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, 'users'));
         return this;
     }
 });
@@ -568,8 +601,12 @@ const UserResourcesView = Backbone.View.extend({
     },
     render() {
         this.$el.append(
-            $('<h4 class="toggle-content">').text(this.user.get('name')).append(` <small>(${this.count})</small>`),
-            this.resourceList.render().$el.toggle(this.containsSelected)
+            $('<h4 class="toggle-content">')
+                .data('appdir', this.user.get('resource_uri'))
+                .text(this.user.get('name'))
+                .append(` <small>(${this.count})</small>`),
+            this.resourceList.render().$el
+                .toggle(this.containsSelected || getStoredToggleState(this.options.ResourceModel, this.user.get('resource_uri')))
         );
         return this;
     },
