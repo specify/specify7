@@ -234,8 +234,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query = query.filter(sql.not_(f) if negate else f)
 
         query = query.reset_joinpoint()
-        dir(query)
-        dir(orm_field)
         return query, orm_field
 
 def get_uiformatter(collection, tablename, fieldname):

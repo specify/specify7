@@ -185,10 +185,17 @@ class ObjectFormatter(object):
             if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
                and field_spec.date_part == "Full Date":
                 prec_fld = field_spec.get_field().name + 'Precision'
-                orm_table = getattr(models, field_spec.root_table.name)
-                orm_prec_fld = getattr(orm_table, prec_fld)
+                orm_table = getattr(models, field_spec.table.name)
+                logger.info(prec_fld)
+                logger.info(orm_table)
+                try:
+                    orm_prec_fld = getattr(orm_table, prec_fld)
+                except:
+                    logger.info("no prec field for", prec_fld)
+                    orm_prec_fld = None
                 if orm_prec_fld is not None:
-                    field = func.date_format(field, case({1: self.date_format, 2: self.date_format_month, 3: self.date_format_year}, orm_prec_fld))
+                    #field = func.date_format(field, case({1: self.date_format, 2: self.date_format_month, 3: self.date_format_year}, orm_prec_fld))
+                    field = case({1: func.date_format(field, self.date_format), 2: func.date_format(field, self.date_format_month), 3: func.date_format(field, self.date_format_year)}, orm_prec_fld)
                 else:
                     field = func.date_format(field, self.date_format)
 
