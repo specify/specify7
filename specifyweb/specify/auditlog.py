@@ -4,8 +4,10 @@ import re
 
 from .models import Spauditlog
 from .models import Spauditlogfield
+from django.db import connection
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
+from time import time
 
 class AuditLog(object):
     INSERT = 0
@@ -14,12 +16,15 @@ class AuditLog(object):
 
     _auditingFlds = None
     _auditing = None
+    _lastCheck = None
+    _checkInterval = 5000
     
     def isAuditingFlds(self):
         return self.isAuditing() and self._auditingFlds
-
+        
     def isAuditing(self):
-        if self._auditing is None:
+        if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self. _checkInterval:
+            print "CHECKING AUDIT SETTINGS AGAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             res = Spappresourcedata.objects.filter(
                 spappresource__name='preferences',
                 spappresource__spappresourcedir__usertype='Prefs')
@@ -34,7 +39,8 @@ class AuditLog(object):
                 self._auditingFlds = True
             else:
                 self._auditingFlds = False if match.group(1).lower() == 'false' else True
-            
+            self.purge()
+            self._lastCheck = time()
         return self._auditing;
     
     def update(self, obj, agent, parent_record, dirty_flds):
@@ -72,6 +78,19 @@ class AuditLog(object):
             spauditlog=log,
             createdbyagent=agent,
             modifiedbyagent=agent)
-        
 
+    def purge(self):
+        res = Spappresourcedata.objects.filter(
+            spappresource__name='preferences',
+            spappresource__spappresourcedir__usertype='Prefs')
+        remote_prefs = '\n'.join(r.data for r in res)
+        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', remote_prefs)
+        if match is not None:
+            cursor = connection.cursor()
+            sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            cursor.execute(sql)
+            sql = "delete from spauditlog where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            cursor.execute(sql)
+        return True
+    
 auditlog = AuditLog()
