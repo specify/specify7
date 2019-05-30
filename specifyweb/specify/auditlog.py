@@ -24,7 +24,6 @@ class AuditLog(object):
         
     def isAuditing(self):
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self. _checkInterval:
-            print "CHECKING AUDIT SETTINGS AGAIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             res = Spappresourcedata.objects.filter(
                 spappresource__name='preferences',
                 spappresource__spappresourcedir__usertype='Prefs')
