@@ -81,9 +81,9 @@ class AuditLog(object):
     def purge(self):
         res = Spappresourcedata.objects.filter(
             spappresource__name='preferences',
-            spappresource__spappresourcedir__usertype='Prefs')
-        remote_prefs = '\n'.join(r.data for r in res)
-        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', remote_prefs)
+            spappresource__spappresourcedir__usertype='Global Prefs')
+        global_prefs = '\n'.join(r.data for r in res)
+        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', global_prefs)
         if match is not None:
             cursor = connection.cursor()
             sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
