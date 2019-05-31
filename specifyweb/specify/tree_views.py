@@ -235,7 +235,7 @@ def predict_fullname(request, tree, parentid):
 def merge(request, tree, id):
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
-    tree_extras.merge(node, target)
+    tree_extras.merge(node, target, request.specify_user_agent)
 
 @tree_mutation
 def move(request, tree, id):

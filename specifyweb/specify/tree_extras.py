@@ -149,7 +149,7 @@ def moving_node(to_save):
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
-def merge(node, into):
+def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
@@ -171,7 +171,10 @@ def merge(node, into):
 
     for retry in range(100):
         try:
+            id = node.id;
             node.delete()
+            node.id = id
+            log_merge(node, into, model, agent)
             return
         except ProtectedError as e:
             related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
@@ -181,6 +184,11 @@ def merge(node, into):
 
     assert False, "failed to move all referrences to merged tree node"
 
+def log_merge(node, into, model, agent):
+    dirty_flds = [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}]
+    from .auditlog import auditlog
+    auditlog.log_action(auditlog.TREE_MERGE, node, agent, None, dirty_flds)
+    
 def synonymize(node, into):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)

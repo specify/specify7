@@ -2,8 +2,8 @@ import logging
 logger = logging.getLogger(__name__)
 import re
 
-from .models import Spauditlog
-from .models import Spauditlogfield
+from specifyweb.specify.models import Spauditlog
+from specifyweb.specify.models import Spauditlogfield
 from django.db import connection
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
@@ -13,6 +13,9 @@ class AuditLog(object):
     INSERT = 0
     UPDATE = 1
     REMOVE = 2
+    TREE_MERGE = 3
+    TREE_MOVE = 4
+    TREE_SYNONYMIZE = 5
 
     _auditingFlds = None
     _auditing = None
@@ -43,12 +46,15 @@ class AuditLog(object):
         return self._auditing;
     
     def update(self, obj, agent, parent_record, dirty_flds):
-        log_obj = self._log(self.UPDATE, obj, agent, parent_record)
+        self.log_action(self.UPDATE, obj, agent, parent_record, dirty_flds)
+    
+    def log_action(self, action, obj, agent, parent_record, dirty_flds):
+        log_obj = self._log(action, obj, agent, parent_record)
         if log_obj is not None:
             for vals in dirty_flds:
                 self._log_fld_update(vals, obj, log_obj, agent)
         return log_obj
-
+        
     def insert(self, obj, agent, parent_record=None):
         return self._log(self.INSERT, obj, agent, parent_record)
 
