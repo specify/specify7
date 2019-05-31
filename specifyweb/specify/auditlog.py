@@ -16,6 +16,7 @@ class AuditLog(object):
     TREE_MERGE = 3
     TREE_MOVE = 4
     TREE_SYNONYMIZE = 5
+    TREE_UNSYNONYMIZE = 6
 
     _auditingFlds = None
     _auditing = None
