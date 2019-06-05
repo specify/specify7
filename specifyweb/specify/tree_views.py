@@ -15,6 +15,8 @@ from sqlalchemy import sql, types, distinct
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
+from .auditcodes import TREE_MOVE
+
 
 def tree_mutation(mutation):
     @login_maybe_required
@@ -241,19 +243,28 @@ def merge(request, tree, id):
 def move(request, tree, id):
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
+    old_parent = node.parent
+    old_parentid = old_parent.id
+    old_fullname = node.fullname
     node.parent = target
+    old_stamp = node.timestampmodified
     node.save()
-
+    node = get_object_or_404(tree, id=id)
+    if getattr(node, 'timestampmodified') > old_stamp:
+        tree_extras.mutation_log(TREE_MOVE, node, request.specify_user_agent, node.parent,
+                                 [{'field_name': 'parentid','old_value': old_parentid, 'new_value': target.id},
+                                  {'field_name': 'fullname','old_value': old_fullname, 'new_value': node.fullname}])
+                                                                                                                
 @tree_mutation
 def synonymize(request, tree, id):
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
-    tree_extras.synonymize(node, target)
+    tree_extras.synonymize(node, target, request.specify_user_agent)
 
 @tree_mutation
 def unsynonymize(request, tree, id):
     node = get_object_or_404(tree, id=id)
-    tree_extras.unsynonymize(node)
+    tree_extras.unsynonymize(node, request.specify_user_agent)
 
 @tree_mutation
 def repair_tree(request, tree):

@@ -9,14 +9,9 @@ from specifyweb.context.app_resource import get_app_resource
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 from time import time
 
+from . import auditcodes
+
 class AuditLog(object):
-    INSERT = 0
-    UPDATE = 1
-    REMOVE = 2
-    TREE_MERGE = 3
-    TREE_MOVE = 4
-    TREE_SYNONYMIZE = 5
-    TREE_UNSYNONYMIZE = 6
 
     _auditingFlds = None
     _auditing = None
