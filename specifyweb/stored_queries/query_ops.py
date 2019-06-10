@@ -78,7 +78,6 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return field.in_(values)
 
     def op_contains(self, field, value):
-        value = self.format(value)
         return field.contains(value)
 
     def op_empty(self, field, value):

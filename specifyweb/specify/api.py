@@ -611,6 +611,10 @@ def obj_to_data(obj):
         data['isonloan'] = obj.isonloan()
     elif isinstance(obj, models.Specifyuser):
         data['isadmin'] = obj.is_admin()
+    elif isinstance(obj, models.Collectionobject):
+        dets = data['determinations']
+        currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []
+        data['currentdetermination'] = currDets[0] if len(dets) > 0 else None;
 
     return data
 

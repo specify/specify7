@@ -366,7 +366,7 @@ var WBView = Backbone.View.extend({
     },
     upload: function() {
         const begin = () => {
-            $.post('/api/workbench/upload/' + this.wb.id + '/').fail(jqxhr => {
+            $.post('/api/workbench/upload/' + this.wb.id + '/'+ this.multiMatchSetting + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
                 this.closeUploadProgress();
             });
@@ -392,7 +392,7 @@ var WBView = Backbone.View.extend({
     },
     validateNoMatch: function() {
         this.checkUploaderLock('Validator', () => {
-            $.post('/api/workbench/validate/' + this.wb.id + '/').fail(jqxhr => {
+            $.post('/api/workbench/validate/' + this.wb.id + '/' + this.multiMatchSetting + '/').fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
                 this.closeUploadProgress();
             });
@@ -450,7 +450,7 @@ var WBView = Backbone.View.extend({
                     $('.rows', dialog).hide();
                 } else {
                     $('.rows', dialog).show();
-                    $('.rows td', dialog).text(`${1 + status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
+                    $('.rows td', dialog).text(`${status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
                 }
 
                 if (!status.is_running) {

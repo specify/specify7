@@ -85,7 +85,7 @@ var ToolTipMgr   = require('./tooltipmgr.js');
     });
 
     var Between = {
-        opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers'],
+        opName: 'Between', negation: 'Not Between', types: ['strings', 'dates', 'numbers', 'catnos'],
         input: '<input type="text"> and <input type="text">', format: true,
         getValue: function() {
             return this.values.join(',');
@@ -101,7 +101,7 @@ var ToolTipMgr   = require('./tooltipmgr.js');
         events: {
             'keydown input': 'keydown'
         },
-        opName: 'In', negation: 'Not In', types: ['strings', 'numbers'], listInput: true,
+        opName: 'In', negation: 'Not In', types: ['strings', 'numbers', 'catnos'], listInput: true,
         input: '<span class="in-values">' + ADD_VALUES_HINT + '</span> <input type="text">', format: true,
         getValue: function() {
             return this.values.join(',');
@@ -127,20 +127,46 @@ var ToolTipMgr   = require('./tooltipmgr.js');
         }
     };
 
+var Contains = {
+    opName: 'Contains',
+    negation: "Doesn't Contain",
+    types: ['strings', 'catnos'],
+    addUIFieldInput: function(el, i) {
+        return new UIFieldInput({
+            el: el,
+            model: this.model,
+            parser: stringParser
+        }).render().on('changed', this.inputChanged.bind(this, i));
+    }
+};
+
+var Like = {
+    opName: 'Like',
+    negation: 'Not Like',
+    types: ['strings', 'catnos'],
+    addUIFieldInput: function(el, i) {
+        return new UIFieldInput({
+            el: el,
+            model: this.model,
+            parser: stringParser
+        }).render().on('changed', this.inputChanged.bind(this, i));
+    }
+};
+
     var opInfo = [
-        {opName: 'Like', negation: 'Not Like', types: ['strings']},
-        {opName: '=', negation: '≠', types: ['strings', 'numbers', 'dates'], format: true},
-        {opName: '>', negation: '≯', types: ['numbers', 'dates'], format: true},
-        {opName: '<', negation: '≮', types: ['numbers', 'dates'], format: true},
-        {opName: '≥', negation: '≱', types: ['numbers'], format: true},
-        {opName: '≤', negation: '≰', types: ['numbers'], format: true},
+        Like,
+        {opName: '=', negation: '≠', types: ['strings', 'numbers', 'dates', 'catnos'], format: true},
+        {opName: '>', negation: '≯', types: ['numbers', 'dates', 'catnos'], format: true},
+        {opName: '<', negation: '≮', types: ['numbers', 'dates', 'catnos'], format: true},
+        {opName: '≥', negation: '≱', types: ['numbers', 'catnos'], format: true},
+        {opName: '≤', negation: '≰', types: ['numbers', 'catnos'], format: true},
         {opName: 'True', negation: 'Not True', types: ['bools'], input: null},
         {opName: 'False', negation: 'Not False', types: ['bools'], input: null},
         {opName: 'Does not matter', types: ['bools'], input: null},
         Between,
         In,
-        {opName: 'Contains', negation: "Doesn't Contain", types: ['strings']},
-        {opName: 'Empty', negation: 'Not Empty', types: ['strings', 'bools', 'dates', 'numbers'], input: null},
+        Contains,
+        {opName: 'Empty', negation: 'Not Empty', types: ['strings', 'bools', 'dates', 'numbers', 'catnos'], input: null},
         {opName: 'True or Null', negation: 'False', types: ['bools'], input: null},
         {opName: 'False or Null', negation: 'True', types: ['bools'], input: null}
     ];

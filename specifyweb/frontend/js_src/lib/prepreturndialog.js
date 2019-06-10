@@ -54,14 +54,23 @@ const PrepReturnRow = Backbone.View.extend({
             lp.rget('preparation.collectionobject', true),
             lp.rget('preparation.preptype', true)
         ).then(
-            (co, pt) => co.rget('determinations').pipe(dets => {
-                const det = dets.filter(d => d.get('iscurrent'))[0];
-                return det == null ? null : det.rget('preferredtaxon', true);
-            }).then(taxon => {
-                this.$('.return-catnum').text(formatCatNo(co.get('catalognumber')));
-                this.$('.return-taxon').text(taxon == null ? "" : taxon.get('fullname'));
-                this.$('.return-prep-type').text(pt.get('name'));
-            })
+            (co, pt) => {
+                if (co) {
+                    co.rget('determinations').pipe(dets => {
+                        const det = dets.filter(d => d.get('iscurrent'))[0];
+                        return det == null ? null : det.rget('preferredtaxon', true);
+                    }).then(taxon => {
+                        this.$('.return-catnum').text(formatCatNo(co.get('catalognumber')));
+                        this.$('.return-taxon').text(taxon == null ? "" : taxon.get('fullname'));
+                        this.$('.return-prep-type').text(pt.get('name'));
+                    });
+                } else {
+                    var desc = lp.get('descriptionofmaterial') ?
+                            lp.get('descriptionofmaterial').substr(0,50) :
+                            "uncataloged";
+                    this.$('.return-taxon').text(desc);
+                }
+            }
         );
 
         return this;

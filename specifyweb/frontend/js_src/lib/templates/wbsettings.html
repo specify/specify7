@@ -13,11 +13,16 @@
                   selected
                   <% } %>
                   >Skip</option>
-          <option class="wb-upload-first-multi-match" value="first"
-                  <% if (multi == 'first') {%>
+          <option class="wb-upload-first-multi-match" value="pick"
+                  <% if (multi == 'pick') {%>
                   selected
                   <% } %>
                   >Use First</option>
+          <option class="wb-upload-first-multi-match" value="new"
+                  <% if (multi == 'new') {%>
+                  selected
+                  <% } %>
+                  >Add New</option>
         </select>
       </td>
     </tr>

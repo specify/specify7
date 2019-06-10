@@ -8,7 +8,7 @@ from Crypto.Random.random import randint
 ITERATION_COUNT = 1000
 
 def decrypt(text, password):
-    key = password.encode() # since it could be a unicode object
+    key = password.encode('utf-8') # since it could be a unicode object
     fromhex = text.decode('hex')
     salt, ciphertext = fromhex[:8], fromhex[8:]
 
@@ -18,13 +18,14 @@ def decrypt(text, password):
     des = DES.new(deskey, DES.MODE_CBC, iv)
     padded = des.decrypt(ciphertext)
     paddinglen = ord(padded[-1])
-    return padded[:-paddinglen]
+    return padded[:-paddinglen].decode('utf-8')
 
 def encrypt(text, password):
-    paddinglen = 8 - len(text) % 8
-    padded = text + chr(paddinglen) * paddinglen
+    text_encoded = text.encode('utf-8')
+    paddinglen = 8 - len(text_encoded) % 8
+    padded = text_encoded + chr(paddinglen) * paddinglen
 
-    key = password.encode()
+    key = password.encode('utf-8')
     salt = make_salt()
 
     derivedkey = generate_derivedkey(key, salt)

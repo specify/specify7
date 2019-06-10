@@ -50,7 +50,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         column_name = 'name' if tree_field is None else \
                       node._id if tree_field == 'ID' else \
-                      tree_field.lower()
+                      table.get_field(tree_field.lower()).name
 
         column = sql.case([
             (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))

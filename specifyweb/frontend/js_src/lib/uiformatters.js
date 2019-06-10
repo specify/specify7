@@ -4,7 +4,7 @@ var $              = require('jquery');
 var _              = require('underscore');
 var Backbone       = require('./backbone.js');
 var initialContext = require('./initialcontext.js');
-
+const escapeRegExp = require('./escaperegexp.js');
 
     var uiformatters;
     initialContext.load('app.resource?name=UIFormatters', data => uiformatters = $(data));
@@ -74,6 +74,7 @@ var initialContext = require('./initialcontext.js');
             'alpha': AlphaField,
             'numeric': NumericField,
             'alphanumeric': AlphaNumField,
+            'anychar': AnyCharField,
             'separator': SeparatorField
         }[node.attr('type')])({
             size: parseInt(node.attr('size'), 10),
@@ -121,6 +122,13 @@ var initialContext = require('./initialcontext.js');
         }
     });
 
+    var AnyCharField = Field.extend({
+        __name__: "AnyCharField",
+        valueRegexp: function() {
+            return '.{' + this.size + '}';
+        }
+    });
+
     var SeparatorField = ConstantField.extend({
         __name__: "SeparatorField"
     });
@@ -144,10 +152,6 @@ var initialContext = require('./initialcontext.js');
         }
     )});
 
-
-    function escapeRegExp(str) {
-        return str.replace(/[-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    }
 
     function getUIFormatter(name) {
         var node = $(uiformatters.find('[name="' + name + '"]'));

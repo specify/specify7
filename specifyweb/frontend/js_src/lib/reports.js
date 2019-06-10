@@ -460,8 +460,16 @@ var QueryParamsDialog = Backbone.View.extend({
 function runReport(reportResources, recordSetId, fieldUIs) {
     dialog && dialog.dialog('close');
     var query = reportResources.query;
-    query.limit = 0;
-    query.recordsetid = recordSetId;
+    if (_.isFunction(query.set)) {
+        query.set('limit', 0);
+        query.set('recordsetid', recordSetId);
+    } else {
+        // Not sure if this branch is needed.
+        // Only for the case that query is a raw JS object
+        // rather than a Backbone resource object.
+        query.limit = 0;
+        query.recordsetid = recordSetId;
+    }
 
     var reportWindowContext = "ReportWindow" + Math.random();
     window.open("", reportWindowContext);
@@ -488,6 +496,8 @@ function fixupImages(reportXML) {
     var badImageExpressions = [];
     var filenames = {};
     $('imageExpression', reportDOM).each(function() {
+        if ($(this).hasClass('java.net.URL')) return;
+
         var imageExpression = $(this).text();
         if (imageExpression.match(/^it\.businesslogic\.ireport\.barcode\.BcImage\.getBarcodeImage/)) return;
         if (imageExpression.match(/^new\s*java\.net\.URL\s*\(\s*"http:\/\//)) return;
@@ -512,7 +522,9 @@ function fixupImages(reportXML) {
                 missingAttachments.push(filename);
                 imageUrl = badImageUrl;
             } else {
-                imageUrl = '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"';
+                imageUrl = attachments.systemAvailable() ?
+                    '"' + attachments.originalURL(attachment.get('attachmentlocation')) + '"' :
+                    badImageUrl;
             }
             _.each(imageExprs, function(e) { e.text(imageUrl); });
         });

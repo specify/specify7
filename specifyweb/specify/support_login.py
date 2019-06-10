@@ -1,3 +1,4 @@
+import logging
 import hmac
 from hashlib import sha256
 from time import time
@@ -5,6 +6,8 @@ from time import time
 from django.conf import settings
 
 from specifyweb.specify.models import Specifyuser
+
+logger = logging.getLogger(__name__)
 
 TTL = settings.SUPPORT_LOGIN_TTL
 
@@ -18,6 +21,7 @@ def make_token(user):
 
 class SupportLoginBackend(object):
     def authenticate(self, token=None):
+        logger.info("attempting support login")
         try:
             userid, timestamp, digest = token.split('-')
         except ValueError:

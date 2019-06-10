@@ -463,6 +463,7 @@ def build_query(session, collection, user, tableid, field_specs, recordsetid=Non
     query = filter_by_collection(model, query, collection)
 
     if recordsetid is not None:
+        logger.debug("joining query to recordset: %s", recordsetid)
         recordset = session.query(models.RecordSet).get(recordsetid)
         assert recordset.dbTableId == tableid
         query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \

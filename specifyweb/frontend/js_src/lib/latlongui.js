@@ -47,13 +47,18 @@ module.exports =  UIPlugin.extend({
                     input.val(value).keyup();
                     input.change(function() {
                         var parsed = input.data('parsed');
-                        resource.set(fieldName, input.val());
-                        if (parsed) {
-                            resource
-                                .set(inferredField, parsed.asFloat())
-                                .set('srclatlongunit', parsed.soCalledUnit())
-                                .set('originallatlongunit', parsed.soCalledUnit());
+                        var attrs = {};
+                        attrs[fieldName] = input.val();
+                        if (input.val().trim() === '') {
+                            attrs[inferredField]         = null;
+                            attrs['srclatlongunit']      = null;
+                            attrs['originallatlongunit'] = null;
+                        } else if (parsed) {
+                            attrs[inferredField]         = parsed.asFloat();
+                            attrs['srclatlongunit']      = parsed.soCalledUnit();
+                            attrs['originallatlongunit'] = parsed.soCalledUnit();
                         }
+                        resource.set(attrs);
                     });
                     input.prop('disabled', self.disabled);
                 });
