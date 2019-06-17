@@ -42,7 +42,7 @@ class AuditLog(object):
         return self._auditing;
     
     def update(self, obj, agent, parent_record, dirty_flds):
-        self.log_action(self.UPDATE, obj, agent, parent_record, dirty_flds)
+        self.log_action(auditcodes.UPDATE, obj, agent, parent_record, dirty_flds)
     
     def log_action(self, action, obj, agent, parent_record, dirty_flds):
         log_obj = self._log(action, obj, agent, parent_record)
@@ -52,10 +52,10 @@ class AuditLog(object):
         return log_obj
         
     def insert(self, obj, agent, parent_record=None):
-        return self._log(self.INSERT, obj, agent, parent_record)
+        return self._log(auditcodes.INSERT, obj, agent, parent_record)
 
     def remove(self, obj, agent, parent_record=None):
-        return self._log(self.REMOVE, obj, agent, parent_record)
+        return self._log(auditcodes.REMOVE, obj, agent, parent_record)
 
     def _log(self, action, obj, agent, parent_record):
         if self.isAuditing():
