@@ -61,7 +61,6 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
     });
     fields.add(searchField);
 
-    
     var dispFieldSpec = QueryFieldSpec.fromPath([qcbx.relatedModel.name]);
     var dispField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
     dispField.set(dispFieldSpec.toSpQueryAttrs()).set({
@@ -80,7 +79,7 @@ function makeQuery(searchFieldStr, q, treeRanks, lowestChildRank, leftSideRels, 
             fields.add(extraFields[f]);
         }
     }
-    
+
     return query;
 }
 
@@ -118,18 +117,14 @@ var QueryCbx = Backbone.View.extend({
                         return children.models[0].get('rankid');
                     });
                 }
-                this.treeRanksPromise = this.getTreeDefinition(this.model).pipe(function(def) {
-                    var defid = def.id;
-                    var defItemModel = schema.getModel(def.specifyModel.name + 'Item'); //another less than good idea
-                    var items = new defItemModel.LazyCollection({limit: 0, filters: {treedef_id: defid}, orderby: 'rankID'});
-                    return items.fetch().pipe(function(){
-                        return _.map(items.models, function(item) {
-                            return {'rankid': item.get('rankid'), 'isenforced': item.get('isenforced')};
-                        });
-                    });
-                });
+                this.treeRanksPromise = this.getTreeDefinition(this.model)
+                    .pipe(def => def.rget('treedefitems'))
+                    .pipe(items => items.fetch({limit: 0}).pipe(
+                        () => _.sortBy(items.map(item => ({rankid: item.get('rankid'), isenforced: item.get('isenforced')})),
+                                       item => item.rankid)
+                    ));
             } else if (fieldName == 'acceptedParent') {
-                //don't need to do anything. Form system prevents lookups/edits 
+                //don't need to do anything. Form system prevents lookups/edits
             } else if (fieldName == 'hybridParent1' || fieldName == 'hybridParent2') {
                 //No idea what restrictions there should be, the only obviously required one - that a taxon is not a hybrid of itself, seems to
                 //already be enforced
@@ -165,7 +160,7 @@ var QueryCbx = Backbone.View.extend({
             return domain.getDomainResource('discipline').rget(treeDefFieldName, true);
         } else {
             return model.rget('definition', true);
-        }   
+        }
     },
     getSpecialConditions: function(lowestChildRank, treeRanks, leftSideRels, rightSideRels) {
         var fields = [];
@@ -202,10 +197,10 @@ var QueryCbx = Backbone.View.extend({
                     if (r && r != -1) {
                         for (var i = r+1; i < treeRanks.length && !treeRanks[i].isenforced; i++);
                         nextRankId = treeRanks[i-1].rankid;
-                    }   
+                    }
                 }
                 var lastTreeRankId = _.last(treeRanks).rankid;
-                
+
                 var lowestRankId = Math.min(lastTreeRankId, nextRankId || lastTreeRankId, lowestChildRank || lastTreeRankId);
                 if (lowestRankId != 0) {
                     descFilterField = new schema.models.SpQueryField.Resource({}, {noBusinessRules: true});
@@ -341,7 +336,7 @@ var QueryCbx = Backbone.View.extend({
             });
             whenAll(requests).pipe(siht.processResponse.bind(siht)).done(response);
         });
-    },                
+    },
     processResponse: function(resps) {
         var data = _.pluck(resps, 'results');
         var allResults = _.reduce(data, function(a, b) { return a.concat(b); }, []);
@@ -533,4 +528,3 @@ var QueryCbx = Backbone.View.extend({
 });
 
 module.exports =  QueryCbx;
-
