@@ -227,7 +227,8 @@ def available_related_searches(request):
 
     express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
     active = [int(q.find('id').text)
-              for q in express_search_config.findall('relatedQueries/relatedquery[@isactive="true"]')]
+              for q in express_search_config.findall('relatedQueries/relatedquery')
+              if q.attrib.get('isactive', None) == 'true'  or q.find("[isActive='true']")]
 
     result = [name for name in related_searches.__all__
               if getattr(related_searches, name).id in active]
