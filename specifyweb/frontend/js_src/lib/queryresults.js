@@ -8,8 +8,142 @@ var dataobjformatters = require('./dataobjformatters.js');
 var fieldformat = require('./fieldformat.js');
 
 
-    
+/*    
+         not sure how this connectes to supporting captions for field and table names.
+         */
+function auditedObjFormatter(fieldSpecs, model) {
+    this.fieldSpecs = fieldSpecs;
+    this.model = model;
+   
+    this.auditObjFlds = [
+        'spauditlog.parentrecordid',
+        'spauditlog.recordid',
+        'spauditlogfield.oldvalue',
+        'spauditlog.newvalue'
+    ];
 
+    this.auditObjReqFlds = [
+        'spauditlog.parenttablenum',
+        'spauditlog.tablenum'
+    ];
+
+    this.fieldSpecFullName = function(spec) {
+        return (spec.table.name + '.' + (spec.getField() ? spec.getField().name : '')).toLowerCase();
+    };
+        
+    this.buildFldsToSet = function() {
+        var result = [];
+        for (var i = 0; i < this.fieldSpecs.length; i++) {
+            var r = this.auditObjReqFlds.indexOf(this.fieldSpecFullName(this.fieldSpecs[i]));
+            if (r >= 0) {
+                result.push({name: this.auditObjReqFlds[r].split('.')[1], idx: i});
+            }
+        }
+        return result;
+    };
+
+    this.fldsToSet = this.buildFldsToSet();
+    
+    this.auditObjFormatRequired = function() {
+        return _.find(this.fieldSpecs, function(fieldSpec) {
+            var tblName = fieldSpec.table.name.toLowerCase();
+            var fld = fieldSpec.getField();
+            var fldName = fld ? fld.name.toLowerCase() : '';
+            return this.auditObjFlds.indexOf(tblName + '.' + fldName) >= 0;
+        }, this);
+    };
+    this.active = this.auditObjFormatRequired();
+    
+    this.reqAuditFormatFldsSelected = function() {
+        var finder = function(reqFld, fieldSpec) {
+            return reqFld[0] == fieldSpec.table.name.toLowerCase()
+                && reqFld[1] == fieldSpec.getField().name.toLowerCase();
+        };
+        var toFind = {parentTableNum: ['spauditlog','parenttablenum'],
+                      tableNum: ['spauditlog','tablenum'],
+                      fieldName: ['spauditlogfield','fieldname']};
+        for (var f = 0; f < this.fieldSpecs.length; f++) {
+            var tblName = this.fieldSpecs[f].table.name.toLowerCase();
+            if (['spauditlog', 'spauditlogfield'].indexOf(tblName) >= 0) {
+                var fldName = this.fieldSpecs[f].getField().name.toLowerCase();
+                var findee;
+                if (toFind.parentTableNum && fldName == 'parentrecordid') {
+                    findee = 'parentTableNum';
+                } else if (toFind.tableNum && fldName == 'recordid') {
+                    findee = 'tableNum';
+                } else if (toFind.fieldName && ['oldvalue','newvalue'].indexOf(fldName) >= 0) {
+                    findee = 'fieldName';
+                } else {
+                    var key = (_.invert(toFind))[[tblName, fldName].toString()];
+                    key && delete toFind[key];
+                }
+                if (findee) { 
+                    if (!_.find(this.fieldSpecs, finder.bind(this, toFind[findee]))) {
+                        return false;
+                    } else {
+                        delete toFind[findee];
+                    }
+                }
+                if (_.size(toFind) == 0) {
+                    break;
+                }
+            }
+        }
+        return true;
+    };
+
+    this.setResourceReqFlds = function(resource, resultrow) {
+        _.forEach(this.fldsToSet, function(fld) {
+            if (!resource.get(fld.name)) {
+                resource.set(fld.name, resultrow[fld.idx + 1]);
+            }
+        }, this);
+        return resource;
+    };
+
+    this.format = function(field, result, resource, cell, value) {
+        var afkModel = this.getAuditLogForeignKeyModel(field, result, resource);
+        if (afkModel) {
+            var fko = new afkModel.LazyCollection({filters: {id: value}});   
+            fko.fetch({limit: 1}).done(function(){
+                dataobjformatters.format(fko.models[0]).done(function(str){
+                    cell.text(str == null || str == '' ? afkModel.name + ':{' + value + '}' : str);
+                });
+            });
+        }
+    };
+
+    this.getAuditedField = function(field, result, resource) {
+        for (var i = 0; i < this.fieldSpecs.length; i++) {
+            var fld = this.fieldSpecs[i].getField();
+            if (fld && fld.name.toLowerCase() == 'fieldname') {
+                var auditedFldName = result[i+1];
+                break;
+            }
+        }
+        if (auditedFldName) {
+            var tableNum = resource.get('tablenum');
+            var model = isNaN(tableNum) ? schema.models[tableNum] : schema.getModelById(tableNum);
+            return model.getField(auditedFldName);
+        } else {
+            return null;
+        }
+    };
+    
+    this.getAuditLogForeignKeyModel = function(field, result, resource) {
+        if (['recordid','parentrecordid'].indexOf(field.name.toLowerCase()) >= 0) {
+            return schema.getModelById(resource.get('tablenum'));
+        }
+        if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
+            var auditedFld = this.getAuditedField(field, result, resource);
+            if (auditedFld && auditedFld.isRelationship) {
+                return schema.models[auditedFld.relatedModelName];
+            }
+        }
+        return null;
+    };
+
+}
 
     var QueryResultsView = Backbone.View.extend({
         __name__: "QueryResultsView",
@@ -21,6 +155,10 @@ var fieldformat = require('./fieldformat.js');
             this.fieldSpecs = options.fieldSpecs;
             this.linkField = options.linkField || 0;
             this.model = options.model;
+            this.auditObjFormatter = new auditedObjFormatter(this.fieldSpecs, this.model);
+            this.format = this.format || this.auditObjFormatter.active;
+            this.forceResourceLoad = this.auditObjFormatter.active && !this.auditObjFormatter.reqAuditFormatFldsSelected();
+
             console.log('QueryResultsView options:', options);
         },
         detectEndOfResults: function(results) {
@@ -29,90 +167,20 @@ var fieldformat = require('./fieldformat.js');
         },
         renderResult: function(row, fieldSpec, rowHref, result, idx, format, resource) {
             var value = result[idx];
-            var field = fieldSpec.getField();
-            if (field && (format || resource.populated)) {
-                if (value && resource.specifyModel.name == 'SpAuditLog') {
-                    var afkModel = this.getAuditLogForeignKeyModel(field, result, resource);
-                    if (afkModel) {
-                        var fko = new afkModel.LazyCollection({filters: {id: value}});   
-                         fko.fetch({limit: 1}).done(function(){
-                            dataobjformatters.format(fko.models[0]).done(function(str){
-                                cell.text(str == null || str == '' ? afkModel.name + ':{' + value + '}' : str);
-                            });
-                        });
-                    }
-                } else if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
-                    value = fieldformat(field, value);
-                }
-            }
             var cell =  $('<a class="query-result-link">')
                     .prop('href', rowHref)
                     .text(value == null ? '' : value); 
+            var field = fieldSpec.getField();
+            if (field && format) {
+                if (value && this.auditObjFormatter.active) {
+                    this.auditObjFormatter.format(field, result, resource, cell, value);
+                } else if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
+                    cell.text = fieldformat(field, value);
+                }
+            }
             row.append($('<td>').append(cell));
         },
-        formatValue: function(fieldSpec, value, result, resource) {
-            var field = fieldSpec.getField();
-            if (!field) return value;
-            if (resource.specifyModel.name == 'SpAuditLog') {
-                var afkFld = this.getAuditLogForeignKey(field, result, resource);
-                if (afkFld) {
-                    return fieldformat(field, value);
-                }
-            }
-            if (!fieldSpec.datePart || fieldSpec.datePart == 'Full Date') {
-                return fieldformat(field, value);
-            }
-            return value;
-        },
-        getAuditedField: function(field, result, resource) {
-            for (var i = 0; i < this.fieldSpecs.length; i++) {
-                var fld = this.fieldSpecs[i].getField();
-                if (fld && fld.name.toLowerCase() == 'fieldname') {
-                    var auditedFldName = result[i+1];
-                    break;
-                }
-            }
-            if (auditedFldName) {
-                var model = schema.getModelById(resource.get('tablenum'));
-                return model.getField(auditedFldName);
-            } else {
-                return null;
-            }
-        },
-        getAuditLogForeignKeyModel: function(field, result, resource) {
-            if (['recordid','parentrecordid'].indexOf(field.name.toLowerCase()) >= 0) {
-                return schema.getModelById(resource.get('tablenum'));
-            }
-            if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
-                var auditedFld = this.getAuditedField(field, result, resource);
-                if (auditedFld && auditedFld.isRelationship) {
-                    return schema.models[auditedFld.relatedModelName];
-                }
-            }
-            return null;
-        },
-        doLoadResource: function() {
-            var result = false;
-            if (this.model.name == "SpAuditLog") {
-                //and relevant format options and fields
-                result = true;
-            };
-            return result;
-        },
-        resourceLoaded: function(resource, todo) {
-            //HEY!!!!!
-            //don't need to load fields anymore because getAuditedField() requires FieldName to be a column in the results.
-            if (resource.specifyModel.name == "SpAuditLog" /*&& fieldSpecs contains old/new value*/) {
-                resource.rget('fields').pipe(function(fields){
-                    return fields.fetch({limit: 0}).pipe(function() { return fields; });
-                }).done(function(fields) {
-                    resource.auditflds = fields;
-                    todo();
-                });
-            } else {
-                todo();
-            }
-        },
+
         addResult: function(result, table, resource) {
             var row = $('<tr class="query-result">').appendTo(table).data('resource', resource);
             var href = resource.viewUrl();
@@ -123,15 +191,15 @@ var fieldformat = require('./fieldformat.js');
         addResults: function(results) {
             var table = this.$('table.query-results');
             _.each(results.results, function(result) {
-                if (this.doLoadResource()) {
+                if (this.forceResourceLoad) {
                     var siht = this;
                     var lr = new this.model.LazyCollection({filters: {id: result[this.linkField]}});   
                     lr.fetch({limit: 1}).done(function(){
-                        siht.resourceLoaded(lr.models[0],  siht.addResult.bind(siht, result, table, lr.models[0]));
+                        siht.addResult(siht, result, table, lr.models[0]);
                     });
                 } else {
                     var resource = new this.model.Resource({ id: result[this.linkField] });
-                    this.addResult(result, table, resource);
+                    this.addResult(result, table, this.auditObjFormatter.setResourceReqFlds(resource, result));
                 }
             }, this);
             return results.results.length;
