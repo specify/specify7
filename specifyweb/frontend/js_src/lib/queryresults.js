@@ -8,12 +8,10 @@ var dataobjformatters = require('./dataobjformatters.js');
 var fieldformat = require('./fieldformat.js');
 
 
-/*    
-         not sure how this connectes to supporting captions for field and table names.
-         */
-function auditedObjFormatter(fieldSpecs, model) {
+function auditedObjFormatter(fieldSpecs, model, localize) {
     this.fieldSpecs = fieldSpecs;
     this.model = model;
+    this.localize = localize;
    
     this.auditObjFlds = [
         'spauditlog.parentrecordid',
@@ -104,15 +102,29 @@ function auditedObjFormatter(fieldSpecs, model) {
     this.format = function(field, result, resource, cell, value) {
         var afkModel = this.getAuditLogForeignKeyModel(field, result, resource);
         if (afkModel) {
-            var fko = new afkModel.LazyCollection({filters: {id: value}});   
-            fko.fetch({limit: 1}).done(function(){
-                dataobjformatters.format(fko.models[0]).done(function(str){
-                    cell.text(str == null || str == '' ? afkModel.name + ':{' + value + '}' : str);
+            if (this.fieldsToLocalize.indexOf(field.name.toLowerCase()) >= 0) {
+                cell.text(this.localize(field, value, afkModel));
+            } else {
+                var fko = new afkModel.LazyCollection({filters: {id: value}});   
+                fko.fetch({limit: 1}).done(function(){
+                    dataobjformatters.format(fko.models[0]).done(function(str){
+                        cell.text(str == null || str == '' ? afkModel.name + ':{' + value + '}' : str);
+                    });
                 });
-            });
+            }
         }
     };
 
+    this.localize = function(field, value, model) {
+        var fldName = field.name.toLowerCase();
+        if (['tablenum', 'parenttablenum'].indexOf(fldName) >= 0) 
+            return model.getLocalizedName();
+        var fld = model.getField(value.toLowerCase());
+        if (fld)
+            return fld.getLocalizedName();
+        return value;
+    };
+    
     this.getAuditedField = function(field, result, resource) {
         for (var i = 0; i < this.fieldSpecs.length; i++) {
             var fld = this.fieldSpecs[i].getField();
@@ -129,10 +141,17 @@ function auditedObjFormatter(fieldSpecs, model) {
             return null;
         }
     };
+
+    this.fieldsToLocalize = ['tablenum','parenttablenum','fieldname'];
     
     this.getAuditLogForeignKeyModel = function(field, result, resource) {
-        if (['recordid','parentrecordid'].indexOf(field.name.toLowerCase()) >= 0) {
-            return schema.getModelById(resource.get('tablenum'));
+        var fldNames = ['recordid','parentrecordid'];
+        if (this.localize) {
+            fldNames = fldNames.concat(this.fieldsToLocalize);
+        }
+        if (fldNames.indexOf(field.name.toLowerCase()) >= 0) {
+            var tableNum = resource.get('tablenum');
+            return isNaN(tableNum) ? schema.models[tableNum] : schema.getModelById(tableNum);
         }
         if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
             var auditedFld = this.getAuditedField(field, result, resource);
@@ -155,7 +174,7 @@ function auditedObjFormatter(fieldSpecs, model) {
             this.fieldSpecs = options.fieldSpecs;
             this.linkField = options.linkField || 0;
             this.model = options.model;
-            this.auditObjFormatter = new auditedObjFormatter(this.fieldSpecs, this.model);
+            this.auditObjFormatter = new auditedObjFormatter(this.fieldSpecs, this.model, true);
             this.format = this.format || this.auditObjFormatter.active;
             this.forceResourceLoad = this.auditObjFormatter.active && !this.auditObjFormatter.reqAuditFormatFldsSelected();
 
