@@ -170,12 +170,11 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             'click .query-result-link': 'openRecord'
         },
         initialize: function(options) {
-            this.format = options.format;
             this.fieldSpecs = options.fieldSpecs;
             this.linkField = options.linkField || 0;
             this.model = options.model;
             this.auditObjFormatter = new auditedObjFormatter(this.fieldSpecs, this.model, true);
-            this.format = this.format || this.auditObjFormatter.active;
+            this.format = options.format && this.auditObjFormatter.active;
             this.forceResourceLoad = this.auditObjFormatter.active && !this.auditObjFormatter.reqAuditFormatFldsSelected();
 
             console.log('QueryResultsView options:', options);

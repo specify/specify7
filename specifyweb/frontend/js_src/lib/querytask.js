@@ -58,6 +58,12 @@ var router             = require('./router.js');
 
             this.$('input[name="selectDistinct"]').prop('checked', this.query.get('selectdistinct'));
             this.$('input[name="countOnly"]').prop('checked', this.query.get('countonly'));
+            this.$('input[name="formatAudits"]').prop('checked', this.query.get('formatauditrecids'));
+            //only visible for spauditlog queries
+            this.$('input[name="formatAudits"]').prop('hidden', this.query.get('contexttableid') != 530);
+            this.$('label[name="formatAuditsLabel"]').prop('hidden', this.query.get('contexttableid') != 530);
+            
+            
             return this;
         },
         gotFields: function(spqueryfields) {
@@ -257,6 +263,7 @@ var router             = require('./router.js');
                 model: this.model,
                 scrollOnWindow: true,
                 countOnly: this.query.get('countonly'),
+                format: this.query.get('formatauditrecids'),
                 fetchResults: this.fetchResults(),
                 fetchCount: this.fetchCount(),
                 fieldSpecs: _.chain(this.fieldUIs)
@@ -289,7 +296,8 @@ var router             = require('./router.js');
         optionChanged: function() {
             this.query.set({
                 selectdistinct: this.$('input[name="selectDistinct"]').prop('checked'),
-                countonly: this.$('input[name="countOnly"]').prop('checked')
+                countonly: this.$('input[name="countOnly"]').prop('checked'),
+                formatauditrecids: this.$('input[name="formatAudits"]').prop('checked')
             });
         }
     });
@@ -315,6 +323,7 @@ module.exports =  function() {
                 'contexttableid': model.tableId,
                 'selectdistinct': false,
                 'countonly': false,
+                'formatauditrecids': false,
                 'specifyuser': userInfo.resource_uri,
                 'isfavorite': true,
                 // ordinal seems to always get set to 32767 by Specify 6
