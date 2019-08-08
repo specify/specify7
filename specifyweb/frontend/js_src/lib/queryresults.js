@@ -175,7 +175,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             this.model = options.model;
             this.auditObjFormatter = new auditedObjFormatter(this.fieldSpecs, this.model, true);
             this.format = options.format && this.auditObjFormatter.active;
-            this.forceResourceLoad = this.auditObjFormatter.active && !this.auditObjFormatter.reqAuditFormatFldsSelected();
+            this.forceResourceLoad = this.format && this.auditObjFormatter.active && !this.auditObjFormatter.reqAuditFormatFldsSelected();
 
             console.log('QueryResultsView options:', options);
         },
@@ -213,7 +213,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
                     var siht = this;
                     var lr = new this.model.LazyCollection({filters: {id: result[this.linkField]}});   
                     lr.fetch({limit: 1}).done(function(){
-                        siht.addResult(siht, result, table, lr.models[0]);
+                        siht.addResult(result, table, lr.models[0]);
                     });
                 } else {
                     var resource = new this.model.Resource({ id: result[this.linkField] });
