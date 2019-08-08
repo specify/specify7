@@ -149,8 +149,9 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         if (this.localize) {
             fldNames = fldNames.concat(this.fieldsToLocalize);
         }
-        if (fldNames.indexOf(field.name.toLowerCase()) >= 0) {
-            var tableNum = resource.get('tablenum');
+        var fldName = field.name.toLowerCase();
+        if (fldNames.indexOf(fldName) >= 0) {
+            var tableNum = fldName.startsWith('parent') ? resource.get('parenttablenum') : resource.get('tablenum');
             return isNaN(tableNum) ? schema.models[tableNum] : schema.getModelById(tableNum);
         }
         if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
