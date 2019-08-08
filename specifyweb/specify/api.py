@@ -348,7 +348,7 @@ def fld_change_info(obj, field, val):
     if should_audit(field):
         value = prepare_value(field, val)
         old_value = getattr(obj, field.name)
-        if str(old_value) != str(value):
+        if unicode(old_value) != unicode(value):
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
         else:
             return None
