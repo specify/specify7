@@ -65,21 +65,21 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             if (['spauditlog', 'spauditlogfield'].indexOf(tblName) >= 0) {
                 var fldName = this.fieldSpecs[f].getField().name.toLowerCase();
                 var findee;
-                if (toFind.parentTableNum && fldName == 'parentrecordid') {
-                    findee = 'parentTableNum';
-                } else if (toFind.tableNum && fldName == 'recordid') {
-                    findee = 'tableNum';
-                } else if (toFind.fieldName && ['oldvalue','newvalue'].indexOf(fldName) >= 0) {
-                    findee = 'fieldName';
+                if (fldName == 'parentrecordid') {
+                    findee = toFind.parentTableNum;
+                } else if (fldName == 'recordid') {
+                    findee = toFind.tableNum;
+                } else if (['oldvalue','newvalue'].indexOf(fldName) >= 0) {
+                    findee = toFind.fieldName;
                 } else {
-                    var key = (_.invert(toFind))[[tblName, fldName].toString()];
-                    key && delete toFind[key];
+                    //if the field happens to be in the toFind list remove it 'cause we found it
+                    delete toFind[(_.invert(toFind))[[tblName, fldName].toString()]];
                 }
                 if (findee) { 
-                    if (!_.find(this.fieldSpecs, finder.bind(this, toFind[findee]))) {
+                    if (!_.find(this.fieldSpecs, finder.bind(this, findee))) {
                         return false;
                     } else {
-                        delete toFind[findee];
+                        delete toFind[(_.invert(toFind))[findee.toString()]];
                     }
                 }
                 if (_.size(toFind) == 0) {
@@ -112,7 +112,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
                     });
                 });
             }
-        }
+        } 
     };
 
     this.localize = function(field, value, model) {
