@@ -96,8 +96,11 @@ var userInfo       = require('./userinfo.js');
         render: function() {
             var $table = $('<table>');
             var makeEntry = this.dialogEntry.bind(this);
+            var appendIt = this.shouldShow.bind(this);
             _.each(this.options.tables, function(table) {
-                $table.append(makeEntry(table));
+                if (appendIt(table)) {
+                    $table.append(makeEntry(table));
+                }
             });
             this.$el.append($table);
             this.$el.dialog(_.extend({}, commonDialogOpts, {
@@ -106,6 +109,11 @@ var userInfo       = require('./userinfo.js');
                 buttons: [{ text: 'Cancel', click: function() { $(this).dialog('close'); } }]
             }));
             return this;
+        },
+        shouldShow: function(table) {
+            // could expand this to check table permissions in general when security is implemented.
+            //spauditlog is kind of a special case (in sp6 anyway) because its permissions are not user accessible.
+            return table.attr('name').toLowerCase() != 'spauditlog' || userInfo.usertype == 'Manager';
         },
         dialogEntry: function(table) {
             var model = schema.getModel(table.attr('name'));
