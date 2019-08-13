@@ -15,8 +15,8 @@ var props          = require('./props.js');
 
 module.exports =  {
         localize: function(s, fallback) {
-            for(let bundle of bundles) {
-                let localized = props.getProperty(bundle, s);
+            for (var bundle in bundles) {
+                var localized = props.getProperty(bundles[bundle], s);
                 if (localized) return localized;
             }
             return fallback || s;
