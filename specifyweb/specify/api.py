@@ -10,7 +10,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError
 from django.db.models.fields.related import ForeignKey
-from django.db.models.fields import DateTimeField, FieldDoesNotExist
+from django.db.models.fields import DateTimeField, FieldDoesNotExist, FloatField, DecimalField
 from django.utils.deprecation import CallableBool
 
 from . import models
@@ -347,6 +347,8 @@ def should_audit(field):
 def fld_change_info(obj, field, val):
     if should_audit(field):
         value = prepare_value(field, val)
+        if isinstance(field, FloatField) or isinstance(field, DecimalField):
+            value = value and float(value)
         old_value = getattr(obj, field.name)
         if unicode(old_value) != unicode(value):
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
