@@ -60,11 +60,21 @@ class AuditLog(object):
     def _log(self, action, obj, agent, parent_record):
         if self.isAuditing():
             logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
+            print dir(obj)
             assert obj.id is not None, "attempt to add object with null id to audit log"
+            parentId = parent_record and parent_record.id
+            parentTbl = parent_record and parent_record.specify_model.tableId
+            if not parent_record:
+                scoper = next((s for s in ['collectionmember', 'collection', 'discipline', 'division'] if hasattr(obj, s)), None)
+                scopeObj = scoper and getattr(obj, scoper)
+                if scopeObj:
+                    parentId = scopeObj.id
+                    parentTbl = scopeObj.specify_model.tableId
+                
             return Spauditlog.objects.create(
                 action=action,
-                parentrecordid=parent_record and parent_record.id,
-                parenttablenum=parent_record and parent_record.specify_model.tableId,
+                parentrecordid=parentId,
+                parenttablenum=parentTbl,
                 recordid=obj.id,
                 recordversion=obj.version,
                 tablenum=obj.specify_model.tableId,
