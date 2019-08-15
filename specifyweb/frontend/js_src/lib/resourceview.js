@@ -9,6 +9,7 @@ var dataobjformatters = require('./dataobjformatters.js');
 var viewheader        = require('./templates/viewheader.html');
 var SaveButton        = require('./savebutton.js');
 var DeleteButton      = require('./deletebutton.js');
+const GbifInfo = require('./gbifinfo.js');
 
 var NO_ADD_ANOTHER = [
     'Gift',
@@ -88,6 +89,10 @@ module.exports =  Backbone.View.extend({
             nextUrl: self.next && self.next.viewUrl(),
             newUrl: self.newUrl
         }));
+        if (self.model.specifyModel.name === "CollectionObject") {
+            let gbifInfo = new GbifInfo({model: self.model, el: $('.gbif-info', self.header)});
+            gbifInfo.render();
+        }
         var view = self.model.specifyModel.view || self.model.specifyModel.name;
         specifyform.buildViewByName(view, 'form', self.mode).done(function(form) {
             self.populateForm(form, self.model);
