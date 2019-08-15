@@ -60,7 +60,6 @@ class AuditLog(object):
     def _log(self, action, obj, agent, parent_record):
         if self.isAuditing():
             logger.info("inserting into auditlog: %s", [action, obj, agent, parent_record])
-            print dir(obj)
             assert obj.id is not None, "attempt to add object with null id to audit log"
             parentId = parent_record and parent_record.id
             parentTbl = parent_record and parent_record.specify_model.tableId
