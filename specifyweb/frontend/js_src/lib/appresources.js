@@ -60,6 +60,7 @@ const ResourceDataView = Backbone.View.extend({
     events: {
         'keyup textarea': 'dataChanged',
         'click .load-file': 'loadFile',
+        'click .create-eml': 'createEml',
         'change input': 'metadataChanged',
     },
     render() {
@@ -93,6 +94,7 @@ const ResourceDataView = Backbone.View.extend({
                 this.appresourceData.on('change', () => textarea.text(this.appresourceData.get('data')));
 
                 userInfo.isadmin && buttonsDiv.append(
+                    '<a class="create-eml">Create EML</a>',
                     '<a class="load-file">Load File</a>',
                     new SaveButton({model: this.appresourceData})
                         .on('savecomplete', () => this.model.save()) // so the save button does both
@@ -145,6 +147,36 @@ const ResourceDataView = Backbone.View.extend({
                 reader.readAsText(file);
                 dialog.dialog('close');
             }
+        });
+    },
+    createEml() {
+        $.post('/export/create_ipt_resource/').done(iptResourceUrl => {
+            $('<div>').append(
+                $('<iframe>', {width: 1020, height: 685, src: iptResourceUrl})
+            ).dialog({
+                modal: true,
+                width: 1050,
+                height: 800,
+                title: "Create EML using the IPT metadata forms",
+                close: function() { $(this).remove(); },
+                buttons: {
+                    Continue: () => {
+                        $.post('/export/load_eml_from_ipt/', {
+                            iptResourceUrl: iptResourceUrl,
+                            appresourceDataId: this.appresourceData.id
+                        }).fail(jqxhr => {
+                            if (jqxhr.status === 404) {
+                                $('<div>Please save the IPT metadata forms before continuing.</div>').dialog({
+                                    modal: true,
+                                    close: function() { $(this).remove(); },
+                                });
+                                jqxhr.errorHandled = true;
+                            }
+                        }).done(() => window.location.reload());
+                    },
+                    Cancel() { $(this).dialog('close'); }
+                }
+            });
         });
     }
 });

@@ -2,6 +2,8 @@ import os
 import errno
 import logging
 import traceback
+from uuid import uuid4
+import requests
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
@@ -18,13 +20,14 @@ from django.conf import settings
 from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from ..specify.models import Spquery
+from ..specify.models import Spquery, Spappresourcedata
 
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
 
 logger = logging.getLogger(__name__)
+
 
 @require_GET
 @never_cache
@@ -168,3 +171,39 @@ def force_update(request):
 def extract_query(request, query_id):
     query = Spquery.objects.get(id=query_id)
     return HttpResponse(extract(query), 'text/xml')
+
+
+@login_maybe_required
+@require_POST
+@never_cache
+def create_ipt_resource(request):
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+
+    uuid = str(uuid4())
+    r = requests.post(settings.IPT_URL + '/manage/create.do', allow_redirects=False, data={
+        'shortname': uuid,
+        'resourceType': 'occurrence',
+    })
+    if r.status_code < 400:
+        return HttpResponse(settings.IPT_URL + "/manage/metadata-basic.do?r=" + uuid, content_type="text/plain")
+    else:
+        raise Exception(r)
+
+@login_maybe_required
+@require_POST
+@never_cache
+def load_eml_from_ipt(request):
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+
+    uuid = request.POST['iptResourceUrl'][-36:]
+    r = requests.get(settings.IPT_URL + '/eml.do?r=' + uuid)
+    eml = r.text
+    if eml.startswith('<!DOCTYPE html>'):
+        raise Http404
+
+    appresourcedata = Spappresourcedata.objects.get(id=request.POST['appresourceDataId'])
+    appresourcedata.data = eml
+    appresourcedata.save()
+    return HttpResponse('OK', content_type="text/pain")

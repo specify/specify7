@@ -64,3 +64,8 @@ DEPOSITORY_DIR = '/home/specify/specify_depository'
 # than the clean out time, so that notifications
 # are not left that refer to deleted exports.
 NOTIFICATION_TTL_DAYS = 7
+
+# URL for an instance of modified IPT for
+# creating DwCA metadata
+IPT_URL = 'http://metadata.specifycloud.org'
+

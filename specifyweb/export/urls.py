@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^make_dwca/$', views.export),
     url(r'extract_query/(?P<query_id>\d+)/$', views.extract_query),
     url(r'force_update/$', views.force_update),
+    url(r'create_ipt_resource/$', views.create_ipt_resource),
+    url(r'load_eml_from_ipt/$', views.load_eml_from_ipt),
 ]
