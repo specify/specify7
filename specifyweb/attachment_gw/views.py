@@ -27,13 +27,13 @@ def get_md5(file):
 
 def encode_hmac(params):
     IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
-    param_string = ''
-    for param in params:
-        param_string += str(param) + '\n'
+    sep = '\n'
+    param_string = sep.join(params)
     to_hash = bytes(param_string).encode('latin-1')
     hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'),
                             to_hash,
                             hashlib.sha512).hexdigest().encode('latin-1')
+                            
     return hmac_encoded
 
 def get_collection():
@@ -99,18 +99,17 @@ def post_to_iip(request):
     file.seek(0)
     specify_user = request.user._wrapped.name
     hmac_encoded = encode_hmac([fn,specify_user,timestamp,md5])
-    data = {'fn':fn,
+
+    data = {'filename':fn,
          'specify_user':specify_user,
-         'timestamp':timestamp,
-         'md5_sum': md5,
-         'hmac_sig': hmac_encoded}
+         'timestamp':timestamp}
 
     r = requests.request("POST",
                      url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'],
                      verify=False,
                      files={'file': file},
                      data=data,
-                     headers={'Authorization': 'Token '+IIP_TOKEN})
+                     headers={'Authorization': IIP_TOKEN+':'+hmac_encoded}) 
     if '.tif' not in r.content:
         raise AttachmentError('Attachment failed')
     new_filename = r.content.split('"')[1]
