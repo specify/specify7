@@ -109,10 +109,15 @@ def post_to_iip(request):
                      verify=False,
                      files={'file': file},
                      data=data,
-                     headers={'Authorization': IIP_TOKEN+':'+hmac_encoded}) 
-    if '.tif' not in r.content:
+                     headers={'Authorization': IIP_TOKEN+':'+hmac_encoded})
+                     
+    # The server returns JSON which contains the stored file path as the element
+    # 'file_path'
+    resp_data = json.loads(r.content)
+    new_filename = resp_data['file_path']
+    if '.tif' not in new_filename:
         raise AttachmentError('Attachment failed')
-    new_filename = r.content.split('"')[1]
+
     return HttpResponse(new_filename, content_type='text/plain')
 
 @login_maybe_required
