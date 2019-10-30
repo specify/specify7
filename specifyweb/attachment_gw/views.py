@@ -61,21 +61,12 @@ def get_settings(request):
 
     data = {'DEFAULT': default_server_settings}
 
-    loris_settings = settings.ATTACHMENT_SERVERS.get('LORIS', None)
-    if loris_settings is not None:
-        # don't fail if settings for LORIS are not included
-        data['LORIS'] = {
-            'base_url':  loris_settings['URL'],
-            'fileupload_url': loris_settings['FILEUPLOAD_URL'],
-            'caption': loris_settings['CAPTION'],
-        }
-
     iip_settings = settings.ATTACHMENT_SERVERS.get('IIP', None)
     if iip_settings is not None:
         # don't fail if settings for IIP are not included
         data['IIP'] = {
             'base_url':  iip_settings['URL'],
-            'fileupload_url': iip_settings['FILEUPLOAD_URL'],
+            'fileupload_url': iip_settings['URL']+'/upload',
             'caption': iip_settings['CAPTION'],
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
@@ -100,12 +91,13 @@ def post_to_iip(request):
     specify_user = request.user._wrapped.name
     hmac_encoded = encode_hmac([fn,specify_user,timestamp,md5])
 
-    data = {'filename':fn,
-         'specify_user':specify_user,
-         'timestamp':timestamp}
+    data = {
+        'filename': fn,
+        'specify_user': specify_user,
+        'timestamp': timestamp
+        }
 
-    r = requests.request("POST",
-                     url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'],
+    r = requests.post(url=settings.ATTACHMENT_SERVERS['IIP']['URL']+'/upload',
                      verify=False,
                      files={'file': file},
                      data=data,
@@ -114,11 +106,20 @@ def post_to_iip(request):
     # The server returns JSON which contains the stored file path as the element
     # 'file_path'
     resp_data = json.loads(r.content)
-    new_filename = resp_data['file_path']
-    if '.tif' not in new_filename:
+    
+    attachment_location = resp_data['file_path']
+    if '.tif' not in attachment_location:
         raise AttachmentError('Attachment failed')
 
-    return HttpResponse(new_filename, content_type='text/plain')
+    return_data = {
+        'attachmentlocation': attachment_location,
+        'filecreateddate': resp_data['file_created_date'],
+        'dateimaged': resp_data['date_imaged'],
+        'copyrightholder': resp_data['copyright_holder'],
+        'capturedevice': resp_data['capture_device'],
+        }
+    
+    return HttpResponse(json.dumps(return_data), content_type='application/json')
 
 @login_maybe_required
 @require_GET
@@ -137,16 +138,34 @@ def make_attachment_filename(filename):
     name, extension = splitext(filename)
     return uuid + extension
 
-def delete_attachment_file(attch_loc):
-    data = {
-        'filename': attch_loc,
-        'coll': get_collection(),
-        'token': generate_token(get_timestamp(), attch_loc)
-        }
-    r = requests.post(server_urls["delete"], data=data)
-    update_time_delta(r)
-    if r.status_code not in (200, 404):
-        raise AttachmentError("Deletion failed: " + r.text)
+def delete_attachment_file(attch_loc, storage_config):
+    if storage_config == 'DEFAULT':
+        data = {
+            'filename': attch_loc,
+            'coll': get_collection(),
+            'token': generate_token(get_timestamp(), attch_loc)
+            }
+        r = requests.post(server_urls["delete"], data=data)
+        update_time_delta(r)
+        if r.status_code not in (200, 404):
+            raise AttachmentError("Deletion failed: " + r.text)
+    # FIXME: should be elif storage_config == ...
+    else:
+        IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
+        timestamp = str(datetime.utcnow())
+
+        hmac_encoded = encode_hmac([attch_loc,timestamp])
+
+        data = {
+                'filename': attch_loc,
+                'timestamp': timestamp
+                }
+        r = requests.post(url=settings.ATTACHMENT_SERVERS['IIP']['URL']+'/delete',
+                        verify=False,
+                        data=data,
+                        headers={'Authorization': IIP_TOKEN+':'+hmac_encoded})
+        if r.status_code not in (200, 404):
+            raise AttachmentError("Deletion failed: " + r.text)
 
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """

@@ -35,7 +35,7 @@ var attachmentserveriip = {
       var base_url = this.getSetting('base_url');
       var attachmentLocation = attachment.get('attachmentlocation');
       return placeholderforlorisauthentication(attachmentLocation).pipe(function(token) {
-          return $('<img>', {src: `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/${scale},/0/default.jpg`, style: style});
+          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}`, style: style}); // return $('<img>', {src: `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/${scale},/0/default.jpg`, style: style});
       });
   },
   uploadFile: function(file, progressCB) {
@@ -50,10 +50,14 @@ var attachmentserveriip = {
               data: formData,
               processData: false,
               contentType: false,
-          }).pipe(function(attachmentLocation) {
+          }).pipe(function(response) {
           console.log(this.servername);
           var attachment = new schema.models.Attachment.Resource({
-              attachmentlocation: attachmentLocation,
+              attachmentlocation: response.attachmentlocation,
+              capturedevice: response.capturedevice,
+              copyrightholder: response.copyrightholder,
+              dateimaged: response.dateimaged,
+              filecreateddate: response.filecreateddate,
               mimetype: file.type,
               origfilename: file.name,
               ispublic: 1,
@@ -65,7 +69,7 @@ var attachmentserveriip = {
   openOriginal: function(attachment) {
       var attachmentLocation = attachment.get('attachmentlocation');
       var base_url = this.getSetting('base_url');
-      var src = `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/full/0/default.jpg`;
+      var src = `${base_url}/fullsize/${attachmentLocation}`; // var src = `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/full/0/default.jpg`;
       window.open(src);
   }
 };
