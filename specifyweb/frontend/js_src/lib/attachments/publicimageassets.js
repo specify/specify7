@@ -28,14 +28,14 @@ function getHmacPOST(file) {
 }
 
 var attachmentserveriip = {
-  servername: 'IIP',
+  servername: 'PIA',
   getThumbnail: function(attachment, scale) {
       scale || (scale = 256);
       var style = "max-width:" + scale + "px; " + "max-height:" + scale + "px;";
       var base_url = this.getSetting('base_url');
       var attachmentLocation = attachment.get('attachmentlocation');
       return placeholderforlorisauthentication(attachmentLocation).pipe(function(token) {
-          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}`, style: style}); // return $('<img>', {src: `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/${scale},/0/default.jpg`, style: style});
+          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}`, style: style});
       });
   },
   uploadFile: function(file, progressCB) {
@@ -61,7 +61,7 @@ var attachmentserveriip = {
               mimetype: file.type,
               origfilename: file.name,
               ispublic: 1,
-              attachmentstorageconfig: 'IIP'
+              attachmentstorageconfig: 'PIA'
           });
           return attachment;
         });
@@ -69,7 +69,7 @@ var attachmentserveriip = {
   openOriginal: function(attachment) {
       var attachmentLocation = attachment.get('attachmentlocation');
       var base_url = this.getSetting('base_url');
-      var src = `${base_url}/fullsize/${attachmentLocation}`; // var src = `${base_url}/iipsrv?IIIF=${attachmentLocation}/full/full/0/default.jpg`;
+      var src = `${base_url}/fullsize/${attachmentLocation}`;
       window.open(src);
   }
 };

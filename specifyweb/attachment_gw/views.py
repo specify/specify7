@@ -26,7 +26,7 @@ def get_md5(file):
     return md5
 
 def encode_hmac(params):
-    IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
+    IIP_KEY = settings.ATTACHMENT_SERVERS['PIA']['KEY']
     sep = '\n'
     param_string = sep.join(params)
     to_hash = bytes(param_string).encode('latin-1')
@@ -61,10 +61,10 @@ def get_settings(request):
 
     data = {'DEFAULT': default_server_settings}
 
-    iip_settings = settings.ATTACHMENT_SERVERS.get('IIP', None)
+    iip_settings = settings.ATTACHMENT_SERVERS.get('PIA', None)
     if iip_settings is not None:
         # don't fail if settings for IIP are not included
-        data['IIP'] = {
+        data['PIA'] = {
             'base_url':  iip_settings['URL'],
             'fileupload_url': iip_settings['URL']+'/upload',
             'caption': iip_settings['CAPTION'],
@@ -82,7 +82,7 @@ def get_token(request):
 @login_maybe_required
 @require_POST
 def post_to_iip(request):
-    IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
+    IIP_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
     file = request.FILES['file']
     timestamp = str(datetime.utcnow())
     fn = file.name
@@ -97,7 +97,7 @@ def post_to_iip(request):
         'timestamp': timestamp
         }
 
-    r = requests.post(url=settings.ATTACHMENT_SERVERS['IIP']['URL']+'/upload',
+    r = requests.post(url=settings.ATTACHMENT_SERVERS['PIA']['URL']+'/upload',
                      verify=False,
                      files={'file': file},
                      data=data,
@@ -151,7 +151,7 @@ def delete_attachment_file(attch_loc, storage_config):
             raise AttachmentError("Deletion failed: " + r.text)
     # FIXME: should be elif storage_config == ...
     else:
-        IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
+        IIP_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
         timestamp = str(datetime.utcnow())
 
         hmac_encoded = encode_hmac([attch_loc,timestamp])
@@ -160,7 +160,7 @@ def delete_attachment_file(attch_loc, storage_config):
                 'filename': attch_loc,
                 'timestamp': timestamp
                 }
-        r = requests.post(url=settings.ATTACHMENT_SERVERS['IIP']['URL']+'/delete',
+        r = requests.post(url=settings.ATTACHMENT_SERVERS['PIA']['URL']+'/delete',
                         verify=False,
                         data=data,
                         headers={'Authorization': IIP_TOKEN+':'+hmac_encoded})

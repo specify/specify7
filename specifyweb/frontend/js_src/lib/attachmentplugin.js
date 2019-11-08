@@ -8,10 +8,10 @@ var api         = require('./specifyapi.js');
 var UIPlugin    = require('./uiplugin.js');
 var settings = require('./attachmentsettings.js');
 
+
 const serverPlugins = [
     require('./attachments/attachments.js'),
-    require('./attachments/attachmentserverpublic.js'),
-    require('./attachments/attachmentserveriip.js'),
+    require('./attachments/publicimageassets.js'),
 ];
 
 
