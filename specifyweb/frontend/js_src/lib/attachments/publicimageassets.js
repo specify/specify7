@@ -18,7 +18,7 @@ function getHmacPOST(file) {
     formData.append('file', file);
 
     return $.ajax({
-        url: '/attachment_gw/post_to_iip/',
+        url: '/attachment_gw/post_to_pia/',
         type: "POST",
         data: formData,
         processData: false,
@@ -27,7 +27,7 @@ function getHmacPOST(file) {
     });
 }
 
-var attachmentserveriip = {
+var publicimageassets = {
   servername: 'PIA',
   getThumbnail: function(attachment, scale) {
       scale || (scale = 256);
@@ -45,7 +45,7 @@ var attachmentserveriip = {
       formData.append('file', file);
 
       return $.ajax({
-              url: '/attachment_gw/post_to_iip/',
+              url: '/attachment_gw/post_to_pia/',
               type: 'POST',
               data: formData,
               processData: false,
@@ -74,4 +74,4 @@ var attachmentserveriip = {
   }
 };
 
-module.exports = Object.assign(Object.create(attachmentserverbase), attachmentserveriip);
+module.exports = Object.assign(Object.create(attachmentserverbase), publicimageassets);

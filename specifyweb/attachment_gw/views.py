@@ -26,11 +26,11 @@ def get_md5(file):
     return md5
 
 def encode_hmac(params):
-    IIP_KEY = settings.ATTACHMENT_SERVERS['PIA']['KEY']
+    PIA_KEY = settings.ATTACHMENT_SERVERS['PIA']['KEY']
     sep = '\n'
     param_string = sep.join(params)
     to_hash = bytes(param_string).encode('latin-1')
-    hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'),
+    hmac_encoded = hmac.new(bytes(PIA_KEY).encode('latin-1'),
                             to_hash,
                             hashlib.sha512).hexdigest().encode('latin-1')
                             
@@ -61,13 +61,13 @@ def get_settings(request):
 
     data = {'DEFAULT': default_server_settings}
 
-    iip_settings = settings.ATTACHMENT_SERVERS.get('PIA', None)
-    if iip_settings is not None:
-        # don't fail if settings for IIP are not included
+    pia_settings = settings.ATTACHMENT_SERVERS.get('PIA', None)
+    if pia_settings is not None:
+        # don't fail if settings for PIA are not included
         data['PIA'] = {
-            'base_url':  iip_settings['URL'],
-            'fileupload_url': iip_settings['URL']+'/upload',
-            'caption': iip_settings['CAPTION'],
+            'base_url':  pia_settings['URL'],
+            'fileupload_url': pia_settings['URL']+'/upload',
+            'caption': pia_settings['CAPTION'],
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -81,8 +81,8 @@ def get_token(request):
 
 @login_maybe_required
 @require_POST
-def post_to_iip(request):
-    IIP_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
+def post_to_pia(request):
+    PIA_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
     file = request.FILES['file']
     timestamp = str(datetime.utcnow())
     fn = file.name
@@ -101,7 +101,7 @@ def post_to_iip(request):
                      verify=False,
                      files={'file': file},
                      data=data,
-                     headers={'Authorization': IIP_TOKEN+':'+hmac_encoded})
+                     headers={'Authorization': PIA_TOKEN+':'+hmac_encoded})
                      
     # The server returns JSON which contains the stored file path as the element
     # 'file_path'
@@ -151,7 +151,7 @@ def delete_attachment_file(attch_loc, storage_config):
             raise AttachmentError("Deletion failed: " + r.text)
     # FIXME: should be elif storage_config == ...
     else:
-        IIP_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
+        PIA_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
         timestamp = str(datetime.utcnow())
 
         hmac_encoded = encode_hmac([attch_loc,timestamp])
@@ -163,7 +163,7 @@ def delete_attachment_file(attch_loc, storage_config):
         r = requests.post(url=settings.ATTACHMENT_SERVERS['PIA']['URL']+'/delete',
                         verify=False,
                         data=data,
-                        headers={'Authorization': IIP_TOKEN+':'+hmac_encoded})
+                        headers={'Authorization': PIA_TOKEN+':'+hmac_encoded})
         if r.status_code not in (200, 404):
             raise AttachmentError("Deletion failed: " + r.text)
 
