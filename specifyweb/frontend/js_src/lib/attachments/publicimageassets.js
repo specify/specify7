@@ -35,7 +35,7 @@ var publicimageassets = {
       var base_url = this.getSetting('base_url');
       var attachmentLocation = attachment.get('attachmentlocation');
       return placeholderforlorisauthentication(attachmentLocation).pipe(function(token) {
-          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}`, style: style});
+          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}?scale=${scale}`, style: style});
       });
   },
   uploadFile: function(file, progressCB) {
