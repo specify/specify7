@@ -58,7 +58,7 @@ var publicimageassets = {
               copyrightholder: response.copyrightholder,
               dateimaged: response.dateimaged,
               filecreateddate: response.filecreateddate,
-              mimetype: file.type,
+              mimetype: response.mimetype,
               origfilename: file.name,
               ispublic: 1,
               attachmentstorageconfig: 'PIA'
