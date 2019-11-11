@@ -107,12 +107,13 @@ def post_to_pia(request):
     # 'file_path'
     resp_data = json.loads(r.content)
     
-    attachment_location = resp_data['file_path']
+    attachment_location = resp_data['resource_identifier']
     if '.tif' not in attachment_location:
         raise AttachmentError('Attachment failed')
 
     return_data = {
-        'attachmentlocation': attachment_location,
+        'attachmentlocation': resp_data['asset_identifier'],
+        'mimetype': resp_data['mime_type'],
         'filecreateddate': resp_data['file_created_date'],
         'dateimaged': resp_data['date_imaged'],
         'copyrightholder': resp_data['copyright_holder'],
