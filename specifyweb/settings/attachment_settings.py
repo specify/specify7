@@ -5,7 +5,14 @@ ATTACHMENT_SERVERS = {
     #     'KEY': '',
     #     'COLLECTION': None,
     #     'REQUIRES_KEY_FOR_GET': False,
-    #     'CAPTION': 'Default',
+    #     'CAPTION': 'Default'
+    # },
+    # 'PIA': {
+    #     'URL': '',
+    #     'KEY': '',
+    #     'TOKEN': '',
+    #     'COLLECTION': None,
+    #     'REQUIRES_KEY_FOR_GET': False,
+    #     'CAPTION': ''
     # }
 }
-
