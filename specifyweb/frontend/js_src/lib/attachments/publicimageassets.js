@@ -35,7 +35,7 @@ var publicimageassets = {
       var base_url = this.getSetting('base_url');
       var attachmentLocation = attachment.get('attachmentlocation');
       return placeholderforlorisauthentication(attachmentLocation).pipe(function(token) {
-          return $('<img>', {src: `${base_url}/thumbnail/${attachmentLocation}?scale=${scale}`, style: style});
+          return $('<img>', {src: `${base_url}/${attachmentLocation}/thumbnail?scale=${scale}`, style: style});
       });
   },
   uploadFile: function(file, progressCB) {
@@ -69,7 +69,7 @@ var publicimageassets = {
   openOriginal: function(attachment) {
       var attachmentLocation = attachment.get('attachmentlocation');
       var base_url = this.getSetting('base_url');
-      var src = `${base_url}/fullsize/${attachmentLocation}`;
+      var src = `${base_url}/${attachmentLocation}/fullsize`;
       window.open(src);
   }
 };
