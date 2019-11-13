@@ -139,7 +139,7 @@ def make_attachment_filename(filename):
     name, extension = splitext(filename)
     return uuid + extension
 
-def delete_attachment_file(attch_loc, storage_config):
+def delete_attachment_file(attch_loc, original_filename, storage_config):
     if storage_config == 'DEFAULT':
         data = {
             'filename': attch_loc,
@@ -155,13 +155,19 @@ def delete_attachment_file(attch_loc, storage_config):
         PIA_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
         timestamp = str(datetime.utcnow())
 
-        hmac_encoded = encode_hmac([attch_loc,timestamp])
+        hmac_encoded = encode_hmac([original_filename,timestamp])
 
         data = {
-                'filename': attch_loc,
+                'filename': original_filename,
                 'timestamp': timestamp
                 }
-        r = requests.post(url=settings.ATTACHMENT_SERVERS['PIA']['URL']+'/delete',
+        
+        sep = '/'
+        
+        delete_path = sep.join([settings.ATTACHMENT_SERVERS['PIA']['URL'],
+                                attch_loc, 'delete'])
+        
+        r = requests.delete(url=delete_path,
                         verify=False,
                         data=data,
                         headers={'Authorization': PIA_TOKEN+':'+hmac_encoded})
