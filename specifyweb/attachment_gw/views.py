@@ -26,14 +26,14 @@ def get_md5(file):
     return md5
 
 def encode_hmac(params):
-    IIP_KEY = settings.ATTACHMENT_SERVERS['IIP']['KEY']
-    param_string = ''
-    for param in params:
-        param_string += str(param) + '\n'
+    PIA_KEY = settings.ATTACHMENT_SERVERS['PIA']['KEY']
+    sep = '\n'
+    param_string = sep.join(params)
     to_hash = bytes(param_string).encode('latin-1')
-    hmac_encoded = hmac.new(bytes(IIP_KEY).encode('latin-1'),
+    hmac_encoded = hmac.new(bytes(PIA_KEY).encode('latin-1'),
                             to_hash,
                             hashlib.sha512).hexdigest().encode('latin-1')
+                            
     return hmac_encoded
 
 def get_collection():
@@ -61,22 +61,13 @@ def get_settings(request):
 
     data = {'DEFAULT': default_server_settings}
 
-    loris_settings = settings.ATTACHMENT_SERVERS.get('LORIS', None)
-    if loris_settings is not None:
-        # don't fail if settings for LORIS are not included
-        data['LORIS'] = {
-            'base_url':  loris_settings['URL'],
-            'fileupload_url': loris_settings['FILEUPLOAD_URL'],
-            'caption': loris_settings['CAPTION'],
-        }
-
-    iip_settings = settings.ATTACHMENT_SERVERS.get('IIP', None)
-    if iip_settings is not None:
-        # don't fail if settings for IIP are not included
-        data['IIP'] = {
-            'base_url':  iip_settings['URL'],
-            'fileupload_url': iip_settings['FILEUPLOAD_URL'],
-            'caption': iip_settings['CAPTION'],
+    pia_settings = settings.ATTACHMENT_SERVERS.get('PIA', None)
+    if pia_settings is not None:
+        # don't fail if settings for PIA are not included
+        data['PIA'] = {
+            'base_url':  pia_settings['URL'],
+            'fileupload_url': pia_settings['URL']+'/upload',
+            'caption': pia_settings['CAPTION'],
         }
     return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -90,8 +81,8 @@ def get_token(request):
 
 @login_maybe_required
 @require_POST
-def post_to_iip(request):
-    IIP_TOKEN = settings.ATTACHMENT_SERVERS['IIP']['TOKEN']
+def post_to_pia(request):
+    PIA_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
     file = request.FILES['file']
     timestamp = str(datetime.utcnow())
     fn = file.name
@@ -99,22 +90,37 @@ def post_to_iip(request):
     file.seek(0)
     specify_user = request.user._wrapped.name
     hmac_encoded = encode_hmac([fn,specify_user,timestamp,md5])
-    data = {'fn':fn,
-         'specify_user':specify_user,
-         'timestamp':timestamp,
-         'md5_sum': md5,
-         'hmac_sig': hmac_encoded}
 
-    r = requests.request("POST",
-                     url=settings.ATTACHMENT_SERVERS['IIP']['FILEUPLOAD_URL'],
+    data = {
+        'filename': fn,
+        'specify_user': specify_user,
+        'timestamp': timestamp
+        }
+
+    r = requests.post(url=settings.ATTACHMENT_SERVERS['PIA']['URL']+'/upload',
                      verify=False,
                      files={'file': file},
                      data=data,
-                     headers={'Authorization': 'Token '+IIP_TOKEN})
-    if '.tif' not in r.content:
+                     headers={'Authorization': PIA_TOKEN+':'+hmac_encoded})
+                     
+    # The server returns JSON which contains the stored file path as the element
+    # 'file_path'
+    resp_data = json.loads(r.content)
+    
+    attachment_location = resp_data['resource_identifier']
+    if '.tif' not in attachment_location:
         raise AttachmentError('Attachment failed')
-    new_filename = r.content.split('"')[1]
-    return HttpResponse(new_filename, content_type='text/plain')
+
+    return_data = {
+        'attachmentlocation': resp_data['asset_identifier'],
+        'mimetype': resp_data['mime_type'],
+        'filecreateddate': resp_data['file_created_date'],
+        'dateimaged': resp_data['date_imaged'],
+        'copyrightholder': resp_data['copyright_holder'],
+        'capturedevice': resp_data['capture_device'],
+        }
+    
+    return HttpResponse(json.dumps(return_data), content_type='application/json')
 
 @login_maybe_required
 @require_GET
@@ -133,16 +139,40 @@ def make_attachment_filename(filename):
     name, extension = splitext(filename)
     return uuid + extension
 
-def delete_attachment_file(attch_loc):
-    data = {
-        'filename': attch_loc,
-        'coll': get_collection(),
-        'token': generate_token(get_timestamp(), attch_loc)
-        }
-    r = requests.post(server_urls["delete"], data=data)
-    update_time_delta(r)
-    if r.status_code not in (200, 404):
-        raise AttachmentError("Deletion failed: " + r.text)
+def delete_attachment_file(attch_loc, original_filename, storage_config):
+    if storage_config == 'DEFAULT':
+        data = {
+            'filename': attch_loc,
+            'coll': get_collection(),
+            'token': generate_token(get_timestamp(), attch_loc)
+            }
+        r = requests.post(server_urls["delete"], data=data)
+        update_time_delta(r)
+        if r.status_code not in (200, 404):
+            raise AttachmentError("Deletion failed: " + r.text)
+    # FIXME: should be elif storage_config == ...
+    else:
+        PIA_TOKEN = settings.ATTACHMENT_SERVERS['PIA']['TOKEN']
+        timestamp = str(datetime.utcnow())
+
+        hmac_encoded = encode_hmac([original_filename,timestamp])
+
+        data = {
+                'filename': original_filename,
+                'timestamp': timestamp
+                }
+        
+        sep = '/'
+        
+        delete_path = sep.join([settings.ATTACHMENT_SERVERS['PIA']['URL'],
+                                attch_loc, 'delete'])
+        
+        r = requests.delete(url=delete_path,
+                        verify=False,
+                        data=data,
+                        headers={'Authorization': PIA_TOKEN+':'+hmac_encoded})
+        if r.status_code not in (200, 404):
+            raise AttachmentError("Deletion failed: " + r.text)
 
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
