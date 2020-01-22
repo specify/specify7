@@ -28,6 +28,8 @@ class ObjectFormatter(object):
         formattersXML, _ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
+        self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)
+        self.date_format_month = MYSQL_TO_MONTH.get(self.date_format)
         self.collection = collection
         self.replace_nulls = replace_nulls
 
@@ -182,7 +184,20 @@ class ObjectFormatter(object):
 
             if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
                and field_spec.date_part == "Full Date":
-                field = func.date_format(field, self.date_format)
+                prec_fld = field_spec.get_field().name + 'Precision'
+                orm_table = getattr(models, field_spec.table.name)
+                logger.info(prec_fld)
+                logger.info(orm_table)
+                try:
+                    orm_prec_fld = getattr(orm_table, prec_fld)
+                except:
+                    logger.info("no prec field for", prec_fld)
+                    orm_prec_fld = None
+                if orm_prec_fld is not None:
+                    #field = func.date_format(field, case({1: self.date_format, 2: self.date_format_month, 3: self.date_format_year}, orm_prec_fld))
+                    field = case({1: func.date_format(field, self.date_format), 2: func.date_format(field, self.date_format_month), 3: func.date_format(field, self.date_format_year)}, orm_prec_fld)
+                else:
+                    field = func.date_format(field, self.date_format)
 
             elif field_spec.tree_rank is not None:
                 pass
@@ -199,6 +214,9 @@ class ObjectFormatter(object):
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 
+        if specify_field is Spauditlog_model.get_field('tableNum') or specify_field is Spauditlog_model.get_field('parentTableNum'):
+            return case(self.get_tablenum_cases(), field)
+
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
 
@@ -210,10 +228,18 @@ class ObjectFormatter(object):
             return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
 
         if specify_field is Spauditlog_model.get_field('action'):
-            return case({0: 'Add', 1: 'Update', 2: 'Remove'}, field)
-        
+            return case({0: 'Add', 1: 'Update', 2: 'Remove', 3: 'Tree Merge', 4: 'Tree Move', 5: 'Tree Synonymize', 6: 'Tree Unsynonymize'}, field)
+
+            
         return field
 
+    def get_tablenum_cases(self):
+        serious_cases = {}
+        for t in models.models_by_tableid:
+            model = models.models_by_tableid[t]
+            serious_cases[t] = str(getattr(model, model._id)).split('.')[0] #wtfiw++; but should use the "title"
+        return serious_cases
+        
 
 def get_date_format():
     res = Spappresourcedata.objects.filter(
@@ -225,6 +251,61 @@ def get_date_format():
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format
+
+
+MYSQL_TO_YEAR = {
+    "%m %d %y": "%y",
+    "%m %d %Y": "%Y",
+    "%m-%d-%y": "%y",
+    "%m-%d-%Y": "%Y",
+    "%m.%d.%y": "%y",
+    "%m.%d.%Y": "%Y",
+    "%m/%d/%y": "%y",
+    "%m/%d/%Y": "%Y",
+    "%d %m %y": "%y",
+    "%d %m %Y": "%Y",
+    "%d %b %Y": "%Y",
+    "%d-%m-%y": "%y",
+    "%d-%m-%Y": "%Y",
+    "%d-%b-%Y": "%Y",
+    "%d.%m.%y": "%y",
+    "%d.%m.%Y": "%Y",
+    "%d.%b.%Y": "%Y",
+    "%d/%m/%y": "%y",
+    "%d/%m/%Y": "%Y",
+    "%d/%b/%Y": "%Y",
+    "%Y %m %d": "%Y",
+    "%Y-%m-%d": "%Y",
+    "%Y.%m.%d": "%Y",
+    "%Y/%m/%d": "%Y",
+}
+
+MYSQL_TO_MONTH = {
+    "%m %d %y": "%m %y",
+    "%m %d %Y": "%m %Y",
+    "%m-%d-%y": "%m-%y",
+    "%m-%d-%Y": "%m-%Y",
+    "%m.%d.%y": "%m.%y",
+    "%m.%d.%Y": "%m.%Y",
+    "%m/%d/%y": "%m/%y",
+    "%m/%d/%Y": "%m/%Y",
+    "%d %m %y": "%m %y",
+    "%d %m %Y": "%m %Y",
+    "%d %b %Y": "%b %Y",
+    "%d-%m-%y": "%m-%y",
+    "%d-%m-%Y": "%m-%Y",
+    "%d-%b-%Y": "%b-%Y",
+    "%d.%m.%y": "%m.%y",
+    "%d.%m.%Y": "%m.%Y",
+    "%d.%b.%Y": "%b.%Y",
+    "%d/%m/%y": "%m/%y",
+    "%d/%m/%Y": "%m/%Y",
+    "%d/%b/%Y": "%b/%Y",
+    "%Y %m %d": "%Y %m",
+    "%Y-%m-%d": "%Y-%m",
+    "%Y.%m.%d": "%Y.%m",
+    "%Y/%m/%d": "%Y/%m",
+}
 
 LDLM_TO_MYSQL = {
     "MM dd yy":   "%m %d %y",
@@ -252,3 +333,4 @@ LDLM_TO_MYSQL = {
     "yyyy.MM.dd": "%Y.%m.%d",
     "yyyy/MM/dd": "%Y/%m/%d",
 }
+

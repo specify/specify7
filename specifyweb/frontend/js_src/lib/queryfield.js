@@ -280,6 +280,9 @@ module.exports =  Backbone.View.extend({
         opSelected: function() {
             this.operation = this.$('.op-type').val();
             if (this.operation == 'anything') {
+                this.$('input.op-negate').prop('checked', false);
+                this.$('input.op-negate').button('refresh');                
+                this.opNegateChanged();
                 this.valueChanged(null, "");
             }
             this.update();

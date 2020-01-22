@@ -177,9 +177,20 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         model = getattr(models, self.root_table.name)
         return query.build_join(self.root_table, model, join_path)
 
-    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None):
+    def is_auditlog_obj_format_field(self, formatauditobjs):
+        if not formatauditobjs or self.get_field() is None:
+            return False
+        else:
+            return self.get_field().name.lower() in ['oldvalue','newvalue']
+                    
+    def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
         no_filter = op_num is None
-
+        #print "############################################################################"
+        #print "formatauditobjs " + str(formatauditobjs)
+        #if self.get_field() is not None:
+        #    print "field name " + self.get_field().name
+        #print "is auditlog obj format field = " + str(self.is_auditlog_obj_format_field(formatauditobjs))
+        #print "############################################################################"
         if self.tree_rank is None and self.get_field() is None:
             query, orm_field = query.objectformatter.objformat(query, getattr(models, self.root_table.name), None)
             no_filter = True
@@ -223,7 +234,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             query = query.filter(sql.not_(f) if negate else f)
 
         query = query.reset_joinpoint()
-
         return query, orm_field
 
 def get_uiformatter(collection, tablename, fieldname):

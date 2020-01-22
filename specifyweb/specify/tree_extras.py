@@ -3,11 +3,14 @@ from contextlib import contextmanager
 import logging
 logger = logging.getLogger(__name__)
 
+
 from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
+
+from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_UNSYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table):
@@ -149,7 +152,11 @@ def moving_node(to_save):
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
-def merge(node, into):
+def mutation_log(action, node, agent, parent, dirty_flds):
+    from .auditlog import auditlog
+    auditlog.log_action(action, node, agent, node.parent, dirty_flds)
+    
+def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
@@ -171,7 +178,11 @@ def merge(node, into):
 
     for retry in range(100):
         try:
+            id = node.id;
             node.delete()
+            node.id = id
+            mutation_log(TREE_MERGE, node, agent, node.parent,
+                         [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
             return
         except ProtectedError as e:
             related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
@@ -181,7 +192,7 @@ def merge(node, into):
 
     assert False, "failed to move all referrences to merged tree node"
 
-def synonymize(node, into):
+def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
     assert type(into) is model
@@ -197,18 +208,27 @@ def synonymize(node, into):
         raise BusinessRuleException('Synonymizing node "{node.fullname}" which has children.'
                                     .format(node=node))
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
-
+    #assuming synonym can't be synonymized
+    mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,
+                 [{'field_name': 'acceptedid','old_value': None, 'new_value': target.id},
+                  {'field_name': 'isaccepted','old_value': True, 'new_value': False}])
+    
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
         from .models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
 
-def unsynonymize(node):
+def unsynonymize(node, agent):
     logger.info('unsynonmizing %s', node)
     model = type(node)
+    old_acceptedid = node.accepted_id
     node.accepted_id = None
     node.isaccepted = True
     node.save()
+    mutation_log(TREE_UNSYNONYMIZE, node, agent, node.parent,
+                 [{'field_name': 'acceptedid','old_value': old_acceptedid, 'new_value': None},
+                  {'field_name': 'isaccepted','old_value': False, 'new_value': True}])
+    
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=F('taxon'))
 

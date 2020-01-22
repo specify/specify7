@@ -32,7 +32,7 @@ class QueryField(namedtuple('QueryField', [
                    format_name = field.formatName,
                    sort_type = field.sortType)
 
-    def add_to_query(self, query, no_filter=False):
+    def add_to_query(self, query, no_filter=False, formatauditobjs=False):
         logger.info("adding field %s", self)
         value_required_for_filter = QueryOps.OPERATIONS[self.op_num] not in (
             'op_true',              # 6
@@ -46,4 +46,4 @@ class QueryField(namedtuple('QueryField', [
                                   and value_required_for_filter
                                   and not self.negate)
 
-        return self.fieldspec.add_to_query(query, value=self.value, op_num=None if no_filter else self.op_num, negate=self.negate, formatter=self.format_name)
+        return self.fieldspec.add_to_query(query, value=self.value, op_num=None if no_filter else self.op_num, negate=self.negate, formatter=self.format_name, formatauditobjs=formatauditobjs)
