@@ -67,6 +67,7 @@ def load(wb_id):
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
 def load_gt_61_cols(wb_id):
+    logger.info("load_gt_61_cols")
     cursor = connection.cursor()
     cursor.execute("""
     select workbenchtemplateid
@@ -95,7 +96,11 @@ def group_rows(rows):
     row = next(i)
     current_row = list(row)
     while True:
-        row = next(i)
+        row = next(i, None)
+        if row is None:
+            yield current_row
+            break
+
         if row[0] == current_row[0]:
             current_row.append(row[1])
         else:

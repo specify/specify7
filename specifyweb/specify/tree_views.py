@@ -171,7 +171,7 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
         loc = aliased(models.Locality)
         pc  = aliased(models.PaleoContext)
 
-        pc_target = collection.discipline.paleocontextchildtable
+        pc_target = self.collection.discipline.paleocontextchildtable
         join_col = pc.ChronosStratID if chronos_or_litho == 'chronos' else pc.LithoStratID
 
         query = query.outerjoin(pc, join_col == descendant_id)

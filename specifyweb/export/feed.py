@@ -75,7 +75,9 @@ def needs_update(path, days):
             raise
     else:
         update_interval = 24*60*60 * days
-        return time.time() - mtime < update_interval
+        age = time.time() - mtime
+        logger.debug("archive age: %s update interval: %s", age, update_interval)
+        return age > update_interval
 
 def create_notification(user, filename):
     Message.objects.create(user=user, content=json.dumps({

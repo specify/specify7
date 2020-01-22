@@ -44,6 +44,6 @@ module.exports = function(field, value) {
             return bt(value);
         }
 
-        return value || '';
+        return value == null ? '' :  value;
     };
 

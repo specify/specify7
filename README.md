@@ -60,8 +60,8 @@ Other required software:
 On Ubuntu:
 
     sudo apt-get install \
-        git python-pip python-dev libmysqlclient-dev \
-        libssl-dev build-essential curl npm
+        git python-pip python-dev libmysqlclient-dev npm \
+        libsasl2-dev libldap2-dev libssl-dev build-essential curl
 
     curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 
