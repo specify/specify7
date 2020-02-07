@@ -156,8 +156,7 @@ var QueryCbx = Backbone.View.extend({
     },
     getTreeDefinition: function(model) {
         if (model.isNew()) {
-            var treeDefFieldName = model.specifyModel.name.toLowerCase() + 'treedef';
-            return domain.getDomainResource('discipline').rget(treeDefFieldName, true);
+            return domain.getTreeDef(model.specifyModel.name);
         } else {
             return model.rget('definition', true);
         }
