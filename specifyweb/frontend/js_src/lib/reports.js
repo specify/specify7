@@ -549,7 +549,7 @@ module.exports =  function(options) {
         appRs.url = () => "/report_runner/get_reports/";
     }
 
-    appRs.fetch({ limit: 100 }).done(
+    appRs.fetch().done(
         () => new ReportListDialog(_.extend(options, { appResources: appRs })).render()
     );
 };

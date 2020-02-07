@@ -35,7 +35,7 @@ var TransListDialog = Backbone.View.extend({
         var resolved = this.resolvedloans.length;
         var gifted = this.gifts.length;
         var exchanged = this.exchanges.length;
-        
+
         var openLoans = open ? $('<table class="open-loans">') : null;
         var resolvedLoans = resolved ? $('<table class="resolved-loans">') : null;
         var gifts = gifted ? $('<table class="gifts">') : null;
@@ -45,7 +45,7 @@ var TransListDialog = Backbone.View.extend({
         resolvedLoans && _.map(this.options.resolvedloans.models, this.makeEntry.bind(this, resolvedLoans, 'loan', 'loannumber'));
         gifts && _.map(this.options.gifts.models, this.makeEntry.bind(this, gifts, 'gift', 'giftnumber'));
         exchanges && _.map(this.options.exchanges.models, this.makeEntry.bind(this, exchanges, 'exchange', 'exchangeoutnumber'));
-        
+
         this.$el
             .append("<h2>Open Loans</h2>").append(openLoans || ' (none) ')
             .append("<h2>Resolved Loans</h2>").append(resolvedLoans || ' (none) ')
@@ -80,7 +80,7 @@ var TransListDialog = Backbone.View.extend({
     displayTrans: function(evt) {
         console.log(evt);
     }
-    
+
 });
 
 module.exports =  UICmd.extend({
@@ -91,17 +91,14 @@ module.exports =  UICmd.extend({
     initialize({populateForm}) {
         this.populateForm = populateForm;
     },
+    render() {
+        if (this.model.isNew() || this.model.get('id') == null) {
+            this.$el.hide();
+        }
+        return this;
+    },
     click: function(evt) {
         evt.preventDefault();
-        if (this.model.isNew() || this.model.get('id') == null) {
-            $("<p>").append("Transactions cannot be displayed in this context.").dialog({
-                modal: true,
-                width: 500,
-                title: this.$el[0].value,
-                close: function() { $(this).remove(); }
-            });
-            return;
-        };
 
         var openLoanPreps = new schema.models.LoanPreparation.LazyCollection({
             filters: {preparation_id: this.model.get('id'), isresolved: false}
