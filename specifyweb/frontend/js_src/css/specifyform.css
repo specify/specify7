@@ -91,6 +91,15 @@ input.specify-field[type="text"], .querycbx-strct input, .specify-object-formatt
     -moz-box-sizing: border-box;
 }
 
+input.specify-field[type="text"][readonly] {
+    background: #eee;
+    color: #555;
+}
+
+input.specify-field[type="text"][readonly]:focus {
+    outline: none;
+}
+
 select.specify-field {
     width: 100%;
 }
