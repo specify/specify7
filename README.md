@@ -43,7 +43,10 @@ version, if problems arise).
 
 
 # Deployment with Docker
-If you would like to deploy Specify 7 in a [Docker](https://www.docker.com/) container checkout the instructions in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):  https://github.com/MfN-Berlin/specify7-docker
+If you would like to deploy Specify 7 in a
+[Docker](https://www.docker.com/) container checkout the instructions
+in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):
+https://github.com/MfN-Berlin/specify7-docker
 
 
 
@@ -69,7 +72,7 @@ On Ubuntu:
         git python-pip python-dev libmysqlclient-dev npm \
         libsasl2-dev libldap2-dev libssl-dev build-essential curl
 
-    curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 
     sudo apt-get install nodejs
 
