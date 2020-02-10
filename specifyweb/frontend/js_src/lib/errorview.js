@@ -22,7 +22,7 @@ module.exports = {
                 this.$el.attr('title', 'Unexpected Error')
                     .append('<p>An unexpected error has occured during communication with the server.</p>');
                 var response = this.options.jqxhr.responseText;
-                if (/^Exception at/.test(response)) {
+                if (/^Traceback:/m.test(response)) {
                     this.$el.append($('<textarea readonly>').val(response).css({'min-width': 800, 'min-height': 600}));
                 }
                 this.$el.dialog({
