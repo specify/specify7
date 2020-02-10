@@ -2,11 +2,11 @@
   Specify 7
   =========
   
-  The Specify Software Project is funded by the Advances in
-  Biological Informatics Program, U.S. National Science Foundation
-  (NSF/BIO: 1565098).
+  The Specify Collections Consortium is funded by
+  its member institutions and by an award from the US NSF
+  (BIO/DBI: 1565098).
     
-  Specify 7 Copyright © 2017 University of Kansas Center for
+  Specify 7 Copyright © 2019 University of Kansas Center for
   Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
   (GPL2).
@@ -16,7 +16,7 @@
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.
-    Lawrence, KS USA 66045
+    Lawrence, KS 66045 USA
  
 
 
@@ -29,7 +29,7 @@ After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
 browser on your local machine.
 
-Intstructions for deployment follow.
+Instructions for deployment follow.
 
 **Note:** If updating from a previous version, some of the python
 dependencies have changed. It is recommended to place the new version
@@ -42,6 +42,12 @@ conf can be changed to point to it (or changed back to the old
 version, if problems arise).
 
 
+# Deployment with Docker
+If you would like to deploy Specify 7 in a [Docker](https://www.docker.com/) container checkout the instructions in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):  https://github.com/MfN-Berlin/specify7-docker
+
+
+
+# Ordinary deployment
 Install system dependencies.
 -----------------------------------
 Specify 7 requires Python 2.7 which is the default for recent Linux
