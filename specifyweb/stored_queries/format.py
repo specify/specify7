@@ -95,7 +95,6 @@ class ObjectFormatter(object):
     def objformat(self, query, orm_table, formatter_name):
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__, strict=True)
-        
         formatterNode = self.getFormatterDef(specify_model, formatter_name)
         if formatterNode is None:
             logger.warn("no dataobjformatter for %s", specify_model)
@@ -230,7 +229,7 @@ class ObjectFormatter(object):
         if specify_field is Spauditlog_model.get_field('action'):
             return case({0: 'Add', 1: 'Update', 2: 'Remove', 3: 'Tree Merge', 4: 'Tree Move', 5: 'Tree Synonymize', 6: 'Tree Unsynonymize'}, field)
 
-            
+
         return field
 
     def get_tablenum_cases(self):
@@ -239,7 +238,7 @@ class ObjectFormatter(object):
             model = models.models_by_tableid[t]
             serious_cases[t] = str(getattr(model, model._id)).split('.')[0] #wtfiw++; but should use the "title"
         return serious_cases
-        
+
 
 def get_date_format():
     res = Spappresourcedata.objects.filter(
@@ -247,7 +246,7 @@ def get_date_format():
         spappresource__spappresourcedir__usertype='Prefs')
     remote_prefs = '\n'.join(r.data for r in res)
     match = re.search(r'ui\.formatting\.scrdateformat=(.+)', remote_prefs)
-    date_format = match.group(1) if match is not None else 'yyyy-MM-dd'
+    date_format = match.group(1).strip() if match is not None else 'yyyy-MM-dd'
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format
@@ -333,4 +332,3 @@ LDLM_TO_MYSQL = {
     "yyyy.MM.dd": "%Y.%m.%d",
     "yyyy/MM/dd": "%Y/%m/%d",
 }
-
