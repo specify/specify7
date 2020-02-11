@@ -43,18 +43,15 @@ nav ul {
 
 nav li {
     margin-right: 30px;
-    padding: 12px 0 6px 0;
-    border-bottom: solid 4px #f1f2f2;
-}
-
-nav li:hover {
-    border-bottom: solid 4px #f4763d;
+    padding: 0;
 }
 
 nav a {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
+    padding: 12px 0 6px 0;
+    border-bottom: solid 4px #f1f2f2;
 }
 
 nav a:link,
@@ -64,6 +61,7 @@ nav a:visited {
 
 nav a:hover {
     color: #000;
+    border-bottom: solid 4px #f4763d;
 }
 
 nav li img {
