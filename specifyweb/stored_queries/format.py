@@ -227,7 +227,7 @@ class ObjectFormatter(object):
             return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
 
         if specify_field is Spauditlog_model.get_field('action'):
-            return case({0: 'Add', 1: 'Update', 2: 'Remove', 3: 'Tree Merge', 4: 'Tree Move', 5: 'Tree Synonymize', 6: 'Tree Unsynonymize'}, field)
+            return case({0: 'Add [0]', 1: 'Update [1]', 2: 'Remove [2]', 3: 'Tree Merge [3]', 4: 'Tree Move [4]', 5: 'Tree Synonymize [5]', 6: 'Tree Unsynonymize [6]'}, field)
 
 
         return field
@@ -236,7 +236,7 @@ class ObjectFormatter(object):
         serious_cases = {}
         for t in models.models_by_tableid:
             model = models.models_by_tableid[t]
-            serious_cases[t] = str(getattr(model, model._id)).split('.')[0] #wtfiw++; but should use the "title"
+            serious_cases[t] = str(getattr(model, model._id)).split('.')[0] + ' [' + str(t) + ']' #wtfiw++; but should use the "title"
         return serious_cases
 
 
