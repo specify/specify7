@@ -1,23 +1,23 @@
 
   Specify 7
   =========
-  
+
   The Specify Collections Consortium is funded by
   its member institutions and by an award from the US NSF
   (BIO/DBI: 1565098).
-    
+
   Specify 7 Copyright © 2019 University of Kansas Center for
   Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
   (GPL2).
 
- 
+
     Specify Software Project
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.
     Lawrence, KS 66045 USA
- 
+
 
 
 
@@ -95,14 +95,14 @@ In the directory `specify7/specifyweb/settings` you will find the
 `specify_settings.py` file. Make a copy of this file as
 `local_specify_settings.py` and edit it. The file contains comments
 explaining the various settings.
-    
+
 
 Python Virtual Environment.
 ---------------------------
 Using a Python
 [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 will avoid version conflicts with other Python libraries on your
-system. Also it avoids having to use a superuser account to install
+system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
 ### Installing *virtualenv*
@@ -176,7 +176,7 @@ Applies Specify schema changes to the database named in the
 settings. This step may fail if the master user configured in the
 settings does not have DDL privileges. Changing the `MASTER_NAME` and
 `MASTER_PASSWORD` settings to the MySQL root user will allow the
-changes to be applied. Afterwards the master user settings can be
+changes to be applied. Afterward the master user settings can be
 restored.
 
 ### make clean
@@ -193,7 +193,7 @@ Turn on debugging.
 ------------------
 For development purposes, Django debugging should be turned on. It
 will enable stacktraces in responses that encounter exceptions, and
-allow operation with the unoptimized Javascript files. 
+allow operation with the unoptimized Javascript files.
 
 Debugging can be enabled by creating the file
 `specify7/specifyweb/settings/debug.py` with the contents, `DEBUG =
@@ -202,7 +202,7 @@ True`.
 The development server.
 -----------------------
 Specify7 can be run using the Django development server. If you are
-using Python virtual environment, you will of course need to activate
+using Python, virtual environment, you will, of course, need to activate
 it first.
 
     python specify7/specifyweb/manage.py runserver
@@ -276,7 +276,7 @@ To update the Specify 7 server software follow this procedure.
 
 0. Backup your Specify database using MySQL dump or the Specify backup and restore tool.
 
-1. Clone or download a new copy of this repository in a directory 
+1. Clone or download a new copy of this repository in a directory
 next to your existing installation.
 
     `git clone git://github.com/specify/specify7.git specify7-new-version`
@@ -284,7 +284,7 @@ next to your existing installation.
 2. Copy the settings from the existing to the new installation.
 
     `cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
-    
+
 3. Make sure to update the `THICK_CLIENT_LOCATION` setting in `local_specify_settings.py`,
 if you are updating the Specify 6 version.
 
@@ -300,7 +300,7 @@ then create a new virtualenv for the new installation.
 build the JS bundles, and apply any necessary database migrations.
 
     `make all`
-    
+
 7. Testing it out with the [development server](#the-development-server).
 
 8. Deploy the new version by updating your Apache config to replace the old
