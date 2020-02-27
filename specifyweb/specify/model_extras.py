@@ -121,11 +121,11 @@ class Preparation(models.Model):
 
         cursor.execute("""
         SELECT COALESCE(
-           SUM(GREATEST(0, COALESCE(Quantity - QuantityResolved, 0))),
+           SUM({GREATEST}(0, COALESCE(Quantity - QuantityResolved, 0))),
            0)
         FROM loanpreparation
         WHERE PreparationID = %s AND NOT IsResolved
-        """, [self.id])
+        """.format(GREATEST='MAX' if connection.vendor == 'sqlite' else 'GREATEST'), [self.id])
 
         result = cursor.fetchone()
         return result[0] > 0
