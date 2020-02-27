@@ -99,7 +99,7 @@ def make_relationship(modelname, rel, datamodel):
     # I think maybe it is a superclass thing and not really a table?
     # Ignore it for now.
     if relatedmodel == 'Usergroupscope':
-        return None
+        return models.IntegerField(db_column=rel.column, null=True)
 
     if rel.type == 'one-to-many':
         return None # only define the "to" side of the relationship
