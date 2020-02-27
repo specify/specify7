@@ -1,13 +1,15 @@
+from time import time
 import logging
 logger = logging.getLogger(__name__)
 import re
 
+from django.db import connection
+from django.conf import settings
+
 from specifyweb.specify.models import Spauditlog
 from specifyweb.specify.models import Spauditlogfield
-from django.db import connection
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
-from time import time
 
 from . import auditcodes
 
@@ -22,6 +24,8 @@ class AuditLog(object):
         return self.isAuditing() and self._auditingFlds
         
     def isAuditing(self):
+        if settings.DISABLE_AUDITING:
+            return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
             res = Spappresourcedata.objects.filter(
                 spappresource__name='preferences',
