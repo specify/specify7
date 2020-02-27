@@ -135,6 +135,13 @@ class GetCollectionForm(forms.Form):
 
     orderby = forms.CharField(required=False)
 
+    defaults = dict(
+        domainfilter=None,
+        limit=0,
+        offset=0,
+        orderby=None,
+    )
+
     def clean_limit(self):
         limit = self.cleaned_data['limit']
         return 20 if limit is None else limit
@@ -698,7 +705,7 @@ def field_to_val(obj, field):
     else:
         return getattr(obj, field.name)
 
-def get_collection(logged_in_collection, model, control_params, params={}):
+def get_collection(logged_in_collection, model, control_params=GetCollectionForm.defaults, params={}):
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
     if isinstance(model, basestring):
