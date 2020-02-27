@@ -20,8 +20,8 @@ def added_user(sender, instance, created, raw, **kwargs):
         )
         cursor.execute('update spprincipal set usergroupscopeid = %s where spprincipalid = %s',
                        (collection.id, principal.id))
-        cursor.execute('insert specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) values (%s, %s)',
-                       (user.id, principal.id))
+        # cursor.execute('insert into specifyuser_spprincipal(SpecifyUserID, SpPrincipalID) values (%s, %s)',
+        #                (user.id, principal.id))
 
 @receiver(signals.pre_delete, sender=Specifyuser)
 def deleting_user(sender, instance, **kwargs):
