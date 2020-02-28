@@ -57,6 +57,9 @@ class MainSetupTearDown:
             division=self.division,
             specifyuser=self.specifyuser)
 
+        self.collectingevent = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
         self.collectionobjects = [
             models.Collectionobject.objects.create(
                 collection=self.collection,
@@ -230,16 +233,20 @@ class RecordSetTests(MainSetupTearDown, TransactionTestCase):
 
 class ApiRelatedFieldsTests(ApiTests):
     def test_get_to_many_uris_with_regular_othersidename(self):
-        data = api.get_resource('agent', self.agent.id)
-        self.assertEqual(data['agentattachments'],
-                         api.uri_for_model('agentattachment') +
-                         '?agent=%d' % self.agent.id)
+        data = api.get_resource('collectingevent', self.collectingevent.id)
+        self.assertEqual(data['collectionobjects'],
+                         api.uri_for_model('collectionobject') +
+                         '?collectingevent=%d' % self.collectingevent.id)
 
     def test_get_to_many_uris_with_special_othersidename(self):
         data = api.get_resource('agent', self.agent.id)
+
+        # This one is actually a regular othersidename
         self.assertEqual(data['collectors'],
                          api.uri_for_model('collector') +
                          '?agent=%d' % self.agent.id)
+
+        # This one is the special otherside name ("organization" instead of "agent")
         self.assertEqual(data['orgmembers'],
                          api.uri_for_model('agent') +
                          '?organization=%d' % self.agent.id)
