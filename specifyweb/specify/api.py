@@ -676,19 +676,19 @@ def obj_to_data(obj):
         data['unresolvedQuantities'] = unresolvedQuantities
     return data
 
-def to_many_to_data(obj, related_object):
-    """Return the URI or nested data of the 'related_object' collection
+def to_many_to_data(obj, rel):
+    """Return the URI or nested data of the 'rel' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
-    parent_model = related_object.model.specify_model
-    field_name = related_object.get_accessor_name()
+    parent_model = rel.model.specify_model
+    field_name = rel.get_accessor_name()
     field = parent_model.get_field(field_name)
     if field is not None and field.dependent:
         objs = getattr(obj, field_name)
         return [obj_to_data(o) for o in objs.all()]
 
-    collection_uri = uri_for_model(related_object.model)
-    return collection_uri + '?' + urlencode([(related_object.field.name.lower(), str(obj.id))])
+    collection_uri = uri_for_model(rel.related_model)
+    return collection_uri + '?' + urlencode([(rel.field.name.lower(), str(obj.id))])
 
 def field_to_val(obj, field):
     """Return the value or nested data or URI for the given field which should
