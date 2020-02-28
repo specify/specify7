@@ -48,7 +48,9 @@ DATABASES = {
         'PASSWORD': MASTER_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
-     }
+        'TEST': {
+            }
+    },
  }
 
 
@@ -57,19 +59,21 @@ TESTING_DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
 #        'ENGINE': 'hibernateboolsbackend.backends.mysql',
         'NAME': "specifytest",
-        'USER': "Master",
-        'PASSWORD': "Master",
-        'HOST': '127.0.0.1',
-        'PORT': '3307',
+        # 'USER': "Master",
+        # 'PASSWORD': "Master",
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3307',
     }
 }
 
 if 'test' in sys.argv:
-    TESTING = True
-    DATABASES = TESTING_DATABASES
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    # DATABASES['default']['TEST']['NAME'] = 'specifytest.sqlite3'
+    # TESTING = True
+    # DATABASES = TESTING_DATABASES
     SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
-    TESTING = False
+    # TESTING = False
     SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
         MASTER_NAME,
         MASTER_PASSWORD,
