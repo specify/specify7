@@ -545,7 +545,7 @@ class ExchangeOutCO(RelatedSearch):
         'exchangedate'
         ]
 
-__all__ = [cls.__name__ for cls in globals().values()
+__all__ = [cls.__name__ for cls in list(globals().values())
            if isinstance(cls, type) and
            issubclass(cls, RelatedSearch) and
            not cls is RelatedSearch]

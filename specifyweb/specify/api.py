@@ -1,4 +1,4 @@
-from urllib import urlencode
+from urllib.parse import urlencode
 import json
 import re
 import logging
@@ -195,7 +195,7 @@ def get_object_or_404(model, *args, **kwargs):
     in place of the model class."""
     from django.shortcuts import get_object_or_404 as get_object
 
-    if isinstance(model, basestring):
+    if isinstance(model, str):
         model = get_model_or_404(model)
     return get_object(model, *args, **kwargs)
 
@@ -265,7 +265,7 @@ def post_resource(collection, agent, name, data, recordsetid=None):
         # add the resource to the record set
         try:
             recordset = models.Recordset.objects.get(id=recordsetid)
-        except models.Recordset.DoesNotExist, e:
+        except models.Recordset.DoesNotExist as e:
             raise RecordSetException(e)
 
         if recordset.dbtableid != obj.specify_model.tableId:
@@ -293,7 +293,7 @@ def cleanData(model, data, agent):
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
     cleaned = {}
-    for field_name in data.keys():
+    for field_name in list(data.keys()):
         if field_name in ('resource_uri', 'recordset_info'):
             # These fields are meta data, not part of the resource.
             continue
@@ -327,7 +327,7 @@ def cleanData(model, data, agent):
 def create_obj(collection, agent, model, data, parent_obj=None):
     """Create a new instance of 'model' and populate it with 'data'."""
     logger.debug("creating %s with data: %s", model, data)
-    if isinstance(model, basestring):
+    if isinstance(model, str):
         model = get_model_or_404(model)
     data = cleanData(model, data, agent)
     obj = model()
@@ -357,7 +357,7 @@ def fld_change_info(obj, field, val):
         if isinstance(field, FloatField) or isinstance(field, DecimalField):
             value = value and float(value)
         old_value = getattr(obj, field.name)
-        if unicode(old_value) != unicode(value):
+        if str(old_value) != str(value):
             return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
         else:
             return None
@@ -367,7 +367,7 @@ def set_fields_from_data(obj, data, audit):
      set all fields provided by data that are not related object fields.
      """
      dirty_flds = [] 
-     for field_name, val in data.items():
+     for field_name, val in list(data.items()):
          field = obj._meta.get_field(field_name)
          if not field.is_relation:
              if audit:
@@ -418,7 +418,7 @@ def reorder_fields_for_embedding(cls, data):
 
     if put_first in data:
         yield (put_first, data[put_first])
-    for key in data.viewkeys() - {put_first}:
+    for key in data.keys() - {put_first}:
         yield (key, data[key])
 
 
@@ -448,7 +448,7 @@ def handle_fk_fields(collection, agent, obj, data, checkchanges = False):
             setattr(obj, field_name, val)
             new_related_id = val.id
 
-        elif isinstance(val, basestring):
+        elif isinstance(val, str):
             # The related object is given by a URI reference.
             assert not dependent, "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
             fk_model, fk_id = parse_uri(val)
@@ -496,7 +496,7 @@ def handle_to_many(collection, agent, obj, data):
     Nested data items with ids will be updated. Those without ids will be
     created as new resources.
     """
-    for field_name, val in data.items():
+    for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
 
@@ -544,11 +544,11 @@ def delete_obj(agent, obj, version=None, parent_obj=None):
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
-    dependents_to_delete = filter(None, (
+    dependents_to_delete = [_f for _f in (
         get_related_or_none(obj, field.name)
         for field in obj._meta.get_fields()
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
-    ))
+    ) if _f]
 
     auditlog.remove(obj, agent, parent_obj)
     if version is not None:
@@ -617,7 +617,7 @@ def bump_version(obj, version):
     obj.version = version + 1
 
 def prepare_value(field, val):
-    if isinstance(field, DateTimeField) and isinstance(val, basestring):
+    if isinstance(field, DateTimeField) and isinstance(val, str):
         return val.replace('T', ' ')
     return val
 
@@ -636,7 +636,7 @@ def obj_to_data(obj):
     fields = obj._meta.get_fields()
     if isinstance(obj, models.Specifyuser):
         # block out password field from users table
-        fields = filter(lambda f: f.name != 'password', fields)
+        fields = [f for f in fields if f.name != 'password']
 
     data = dict((field.name, field_to_val(obj, field))
                 for field in fields
@@ -691,12 +691,12 @@ def field_to_val(obj, field):
 def get_collection(logged_in_collection, model, control_params=GetCollectionForm.defaults, params={}):
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
-    if isinstance(model, basestring):
+    if isinstance(model, str):
         model = get_model_or_404(model)
 
     filters = {}
 
-    for param, val in params.items():
+    for param, val in list(params.items()):
         if param in control_params:
             # filter out control parameters
             continue
@@ -742,7 +742,7 @@ def uri_for_model(model, id=None):
     """Given a Django model and optionally an id, return a URI
     for the collection or resource (if an id is given).
     """
-    if not isinstance(model, basestring):
+    if not isinstance(model, str):
         model = model.__name__
     uri = '/api/specify/%s/' % model.lower()
     if id is not None:

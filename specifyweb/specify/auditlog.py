@@ -75,7 +75,7 @@ class AuditLog(object):
                         field = obj._meta.get_field(fldattr);
                         if isinstance(val, field.related_model):
                             self._log_fld_update({'field_name': fldattr, 'old_value': val.id, 'new_value': None}, log_obj, agent)
-                        elif isinstance(val, basestring) and not val.endswith('.None'):
+                        elif isinstance(val, str) and not val.endswith('.None'):
                             fk_model, fk_id = parse_uri(val)
                             if fk_model == field.related_model.__name__.lower() and  fk_id is not None:
                                 self._log_fld_update({'field_name': fldattr, 'old_value': fk_id, 'new_value': None}, log_obj, agent)

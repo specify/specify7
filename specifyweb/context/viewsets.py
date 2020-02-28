@@ -29,7 +29,7 @@ def get_view(collection, user, viewname):
 
     # take the first view from the generator
     try:
-        viewset, view, source, level = matches.next()
+        viewset, view, source, level = next(matches)
     except StopIteration:
         raise Http404("view: %s not found" % viewname)
 

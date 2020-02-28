@@ -253,7 +253,7 @@ def IF(if_expr, then_expr, else_expr=EMPTY):
         return 'if({}, {}, {})'.format(if_expr, then_expr, else_expr)
 
 def CONCAT(exprs, separator=''):
-    exprs = filter(lambda e: e != EMPTY, exprs)
+    exprs = [e for e in exprs if e != EMPTY]
 
     if len(exprs) == 0:
         return EMPTY
@@ -296,7 +296,7 @@ def fullname_expr(depth, reverse):
                     IN_NAME(j)
                     # if going from leaf to root, "after" means farther down, j = i+1 -> depth-1.
                     # if going from root to leaf, "after" means farther up, j = i-1 -> 0.
-                    for j in (range(i+1, depth) if reverse else reversed(range(i)))
+                    for j in (list(range(i+1, depth)) if reverse else reversed(list(range(i))))
                 ]),
                 SEPARATOR(i)
                )
@@ -304,7 +304,7 @@ def fullname_expr(depth, reverse):
         # forward is root to leaf
         # reverse is leaf to root
         # leaf is i = 0, root is i = depth-1
-        for i in (range(depth) if reverse else reversed(range(depth)))
+        for i in (list(range(depth)) if reverse else reversed(list(range(depth))))
     ])
 
     # if node is not in fullname, its fullname is just its name
@@ -393,7 +393,7 @@ def validate_tree_numbering(table):
         "found {} nodenumbers not nested by parent".format(not_nested_count)
 
 def path_expr(table, depth):
-    return CONCAT([ID(table, i) for i in reversed(range(depth))], ',')
+    return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
 
 def print_paths(table, depth):
     cursor = connection.cursor()
@@ -404,8 +404,8 @@ def print_paths(table, depth):
     )
     cursor.execute(sql)
     for r in cursor.fetchall()[:100]:
-        print r
-    print sql
+        print(r)
+    print(sql)
 
 def renumber_tree(table):
     logger.info('renumbering tree')

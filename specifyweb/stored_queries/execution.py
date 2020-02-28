@@ -172,7 +172,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
         for row in query.yield_per(1):
             if row_filter is not None and not row_filter(row): continue
             encoded = [
-                re.sub('\r|\n', ' ', unicode(f).encode('utf-8'))
+                re.sub('\r|\n', ' ', str(f).encode('utf-8'))
                 for f in (row[1:] if strip_id else row)
             ]
             csv_writer.writerow(encoded)
@@ -377,11 +377,11 @@ def run_ephemeral_query(collection, user, spquery):
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
 def augment_field_specs(field_specs, formatauditobjs=False):
-    print "augment_field_specs ######################################"
+    print("augment_field_specs ######################################")
     new_field_specs = []
     for fs in field_specs:
-        print fs
-        print fs.fieldspec.table.tableId
+        print(fs)
+        print(fs.fieldspec.table.tableId)
         field = fs.fieldspec.join_path[-1]
         model = models.models_by_tableid[fs.fieldspec.table.tableId]
         if field.type == 'java.util.Calendar':
@@ -396,10 +396,10 @@ def augment_field_specs(field_specs, formatauditobjs=False):
                 new_field_specs.append(make_augmented_field_spec(fs, model, 'FieldName'))
             elif field.name.lower() == 'recordid':
                 new_field_specs.append(make_augmented_field_spec(fs, model, 'TableNum'))
-    print "################################ sceps_dleif_tnemgua"
+    print("################################ sceps_dleif_tnemgua")
 
 def make_augmented_field_spec(field_spec, model, field_name):
-    print "make_augmented_field_spec ######################################"
+    print("make_augmented_field_spec ######################################")
                                                              
 def recordset(collection, user, user_agent, recordset_info):
     "Create a record set from the records matched by a query."

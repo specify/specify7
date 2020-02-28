@@ -6,7 +6,7 @@ models_by_tableid = build_models(__name__, datamodel)
 
 # inject the model definitions into this module's namespace
 globals().update((model.__name__, model)
-                 for model in models_by_tableid.values())
+                 for model in list(models_by_tableid.values()))
 
 #check_versions(Spversion)
 

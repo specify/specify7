@@ -26,7 +26,7 @@ def get_uiformatter(collection, user, formatter_name):
         return UIFormatter(
             model_name = node.attrib['class'].split('.')[-1],
             field_name = node.attrib['fieldname'],
-            fields = map(new_field, node.findall('field')),
+            fields = list(map(new_field, node.findall('field'))),
             format_name = formatter_name,
         )
 
