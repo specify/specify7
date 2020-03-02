@@ -25,7 +25,7 @@ class GiftTests(ApiTests):
                 discipline=self.discipline)
 
     def test_discipline_required(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IntegrityError):
             models.Gift.objects.create(
                 giftnumber='12',
                 discipline=None)

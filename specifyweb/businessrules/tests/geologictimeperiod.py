@@ -16,7 +16,7 @@ class Geologictimeperiod(ApiTests):
 
     def test_delete_blocked_by_biostratspaleocontext(self):
         self.rootgtp.biostratspaleocontext.create(
-            collectionmemberid=0)
+            discipline=self.discipline)
 
         with self.assertRaises(ProtectedError):
             self.rootgtp.delete()
@@ -26,7 +26,7 @@ class Geologictimeperiod(ApiTests):
 
     def test_delete_blocked_by_chronosstratspaleocontext(self):
         self.rootgtp.chronosstratspaleocontext.create(
-            collectionmemberid=0)
+            discipline=self.discipline)
 
         with self.assertRaises(ProtectedError):
             self.rootgtp.delete()
@@ -36,7 +36,7 @@ class Geologictimeperiod(ApiTests):
 
     def test_delete_blocked_by_chronosstratendpaleocontext(self):
         t = models.Paleocontext.objects.create(
-            collectionmemberid=0,
+            discipline=self.discipline,
             chronosstratend=self.rootgtp)
 
         with self.assertRaises(ProtectedError):
@@ -62,7 +62,7 @@ class Geologictimeperiod(ApiTests):
             definitionitem=age)
 
         context = first_age.chronosstratspaleocontext.create(
-            collectionmemberid=0)
+            discipline=self.discipline)
 
         with self.assertRaises(ProtectedError):
             self.rootgtp.delete()

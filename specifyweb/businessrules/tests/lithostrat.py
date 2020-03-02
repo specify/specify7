@@ -21,7 +21,7 @@ class LithostratTests(ApiTests):
 
     def test_delete_blocked_by_paleocontext(self):
         self.rootlithostrat.paleocontexts.create(
-            collectionmemberid=0)
+            discipline=self.discipline)
 
         with self.assertRaises(ProtectedError):
             self.rootlithostrat.delete()
@@ -48,7 +48,7 @@ class LithostratTests(ApiTests):
             rankid=layer.rankid)
 
         context = deep.paleocontexts.create(
-            collectionmemberid=0)
+            discipline=self.discipline)
 
         with self.assertRaises(ProtectedError):
             self.rootlithostrat.delete()
