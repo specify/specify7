@@ -42,7 +42,6 @@ nav ul {
 }
 
 nav li {
-    margin-right: 30px;
     padding: 0;
 }
 
@@ -50,7 +49,7 @@ nav a {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
-    padding: 12px 0 6px 0;
+    padding: 12px 15px 6px 15px;
     border-bottom: solid 4px #f1f2f2;
 }
 
