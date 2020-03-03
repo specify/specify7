@@ -62,7 +62,7 @@ def get_view(collection, user, viewname):
     data['altviews'] = dict((altview.attrib['name'], altview.attrib.copy())
                             for altview in altviews)
 
-    data['viewdefs'] = dict((viewdef.attrib['name'], ElementTree.tostring(viewdef))
+    data['viewdefs'] = dict((viewdef.attrib['name'], ElementTree.tostring(viewdef, encoding="unicode"))
                             for viewdef in viewdefs)
 
     # these properties are useful to see where the view was found for debugging
