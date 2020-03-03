@@ -8,6 +8,8 @@ from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
 from django.http import Http404
+from django.utils.encoding import force_bytes
+
 from specifyweb.specify.models import Spappresourcedata
 
 from . import app_resource as AR
@@ -16,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 def get_view(collection, user, viewname):
     """Return the data for the named view for the given user logged into the given collection."""
+    logger.debug("get_view %s %s %s", collection, user, viewname)
     # setup a generator that looks for the view in the proper discovery order
     matches = ((viewset, view, src, level)
                # db first, then disk
@@ -84,7 +87,7 @@ def get_viewsets_from_db(collection, user, level):
     def viewsets():
         for o in objs:
             try:
-                yield ElementTree.fromstring(o.data.encode('utf-8'))
+                yield ElementTree.fromstring(force_bytes(o.data))
             except Exception as e:
                 logger.error("Bad XML in view set: %s\n%s  id = %s", e, o, o.id)
 

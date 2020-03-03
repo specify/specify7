@@ -176,7 +176,7 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
 #    'middleware.profilemiddleware.ProfileMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -184,7 +184,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware'
-)
+]
 
 ROOT_URLCONF = 'specifyweb.urls'
 

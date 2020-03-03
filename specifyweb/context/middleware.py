@@ -46,11 +46,16 @@ def get_readonly(request):
 
 class ContextMiddleware(object):
     """Adds information about the logged in user and collection to requests."""
-    def process_request(self, request):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
         request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
         request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
         request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
         request.specify_readonly   = SimpleLazyObject(lambda: get_cached('_cached_specify_readonly', get_readonly, request))
+
+        return self.get_response(request)
 
     def process_template_response(self, request, response):
         collection = getattr(request, 'specify_collection', None)
