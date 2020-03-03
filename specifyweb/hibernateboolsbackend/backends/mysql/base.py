@@ -3,7 +3,7 @@
 from django.db.backends.mysql.base import *
 
 django_conversions.update({
-        FIELD_TYPE.BIT: lambda x: x != '\x00',
+        FIELD_TYPE.BIT: lambda x: x != b'\x00',
 })
 
 DatabaseIntrospection.data_types_reverse.update({

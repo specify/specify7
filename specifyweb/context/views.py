@@ -304,7 +304,7 @@ def system_info(request):
 
     info = dict(
         version=settings.VERSION,
-        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
         stats_url=settings.STATS_URL,
