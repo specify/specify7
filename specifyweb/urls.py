@@ -22,10 +22,10 @@ urlpatterns = [
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
 
     # log in and log out pages
-    url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'}),
-    url(r'^accounts/logout/$', auth_views.logout, {'template_name': 'logout.html', 'next_page': '/accounts/login/'}),
-    url(r'^accounts/password_change/$', auth_views.password_change,
-        {'template_name': 'password_change.html', 'post_change_redirect': '/'}),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html')),
+    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(template_name='logout.html', next_page='/accounts/login/')),
+    url(r'^accounts/password_change/$', auth_views.PasswordChangeView.as_view(
+        template_name='password_change.html', success_url='/')),
 
     url(r'^accounts/support_login/$', support_login),
 

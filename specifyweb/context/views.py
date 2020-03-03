@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, views as auth_views, logout as aut
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django import forms
+from django.utils.encoding import force_text
 from django.db import connection, transaction
 
 from specifyweb.specify.models import Collection, Spappresourcedata, Spversion,Agent, Institution, Specifyuser, Spprincipal
@@ -291,7 +292,10 @@ def remote_prefs(request):
         spappresource__name='preferences',
         spappresource__spappresourcedir__usertype='Prefs')
 
-    data = '\n'.join(r.data for r in res)
+    # Spappresource.data is stored in a blob field even though we treat
+    # it as a TextField. Starting in django 2.2 it doesn't automatically
+    # get decoded from bytes to str.
+    data = '\n'.join(force_text(r.data) for r in res)
     return HttpResponse(data, content_type='text/x-java-properties')
 
 @require_GET
