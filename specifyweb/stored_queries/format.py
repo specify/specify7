@@ -10,6 +10,7 @@ from sqlalchemy.sql.functions import concat, count
 from sqlalchemy import types
 
 from specifyweb.context.app_resource import get_app_resource
+from specifyweb.context.remote_prefs import get_remote_prefs
 from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
 
 from . import models
@@ -241,11 +242,7 @@ class ObjectFormatter(object):
 
 
 def get_date_format():
-    res = Spappresourcedata.objects.filter(
-        spappresource__name='preferences',
-        spappresource__spappresourcedir__usertype='Prefs')
-    remote_prefs = '\n'.join(r.data for r in res)
-    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', remote_prefs)
+    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', get_remote_prefs())
     date_format = match.group(1).strip() if match is not None else 'yyyy-MM-dd'
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
