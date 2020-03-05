@@ -11,10 +11,9 @@ from django.contrib.auth import authenticate, views as auth_views, logout as aut
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django import forms
-from django.utils.encoding import force_text
 from django.db import connection, transaction
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion,Agent, Institution, Specifyuser, Spprincipal
+from specifyweb.specify.models import Collection, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -22,6 +21,7 @@ from specifyweb.specify.specify_jar import specify_jar
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
+from .remote_prefs import get_remote_prefs
 
 
 def set_collection_cookie(response, collection_id):
@@ -288,15 +288,7 @@ def view(request):
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
-    res = Spappresourcedata.objects.filter(
-        spappresource__name='preferences',
-        spappresource__spappresourcedir__usertype='Prefs')
-
-    # Spappresource.data is stored in a blob field even though we treat
-    # it as a TextField. Starting in django 2.2 it doesn't automatically
-    # get decoded from bytes to str.
-    data = '\n'.join(force_text(r.data) for r in res)
-    return HttpResponse(data, content_type='text/x-java-properties')
+    return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_GET
 @cache_control(max_age=86400, public=True)

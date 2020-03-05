@@ -9,7 +9,8 @@ from django.conf import settings
 from specifyweb.specify.models import Spauditlog
 from specifyweb.specify.models import Spauditlogfield
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
+from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
+from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem
 
 from . import auditcodes
 
@@ -27,16 +28,12 @@ class AuditLog(object):
         if settings.DISABLE_AUDITING:
             return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
-            res = Spappresourcedata.objects.filter(
-                spappresource__name='preferences',
-                spappresource__spappresourcedir__usertype='Prefs')
-            remote_prefs = '\n'.join(r.data for r in res)
-            match = re.search(r'auditing\.do_audits=(.+)', remote_prefs)
+            match = re.search(r'auditing\.do_audits=(.+)', get_remote_prefs())
             if match is None:
                 self._auditing = True
             else:
                 self._auditing = False if match.group(1).lower() == 'false' else True
-            match = re.search(r'auditing\.audit_field_updates=(.+)', remote_prefs)
+            match = re.search(r'auditing\.audit_field_updates=(.+)', get_remote_prefs())
             if match is None:
                 self._auditingFlds = True
             else:
@@ -120,11 +117,7 @@ class AuditLog(object):
             modifiedbyagent=agent)
 
     def purge(self):
-        res = Spappresourcedata.objects.filter(
-            spappresource__name='preferences',
-            spappresource__spappresourcedir__usertype='Global Prefs')
-        global_prefs = '\n'.join(r.data for r in res)
-        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', global_prefs)
+        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', get_global_prefs())
         logger.info("checking to see if purge is required")
         if match is not None:
             cursor = connection.cursor()
