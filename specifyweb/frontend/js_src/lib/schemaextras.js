@@ -70,6 +70,44 @@ module.exports = {
             var division = model.getField('division');
             division.otherSideName = 'accessions';
         },
+    Loan: function(model) {
+        var totalItems = _(new schema.Field(model)).extend({
+            name: 'totalItems',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(totalItems);
+        var totalQuantities = _(new schema.Field(model)).extend({
+            name: 'totalQuantities',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(totalQuantities);
+        var unresolvedItems = _(new schema.Field(model)).extend({
+            name: 'unresolvedItems',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(unresolvedItems);
+        var unresolvedQuantities = _(new schema.Field(model)).extend({
+            name: 'unresolvedQuantities',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(unresolvedQuantities);
+    },
         PrepType: function(model) {
             var fields = model.getAllFields();
             var preparations = _(new schema.Field(model)).extend({

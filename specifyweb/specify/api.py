@@ -649,7 +649,22 @@ def obj_to_data(obj):
         dets = data['determinations']
         currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []
         data['currentdetermination'] = currDets[0] if len(currDets) > 0 else None;
-
+    elif isinstance(obj, models.Loan):
+        preps = data['loanpreparations']
+        items = 0
+        quantities = 0
+        unresolvedItems = 0
+        unresolvedQuantities = 0
+        for prep in preps:
+            items = items + 1;
+            quantities = quantities + prep['quantity']
+            if not prep['isresolved']:
+                unresolvedItems = unresolvedItems + 1;
+                unresolvedQuantities = unresolvedQuantities + (prep['quantity'] - prep['quantityresolved'])
+        data['totalItems'] = items
+        data['totalQuantities'] = quantities
+        data['unresolvedItems'] = unresolvedItems
+        data['unresolvedQuantities'] = unresolvedQuantities                                                             
     return data
 
 def to_many_to_data(obj, related_object):
