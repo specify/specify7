@@ -4,13 +4,14 @@ from functools import reduce
 import logging
 import csv
 from typing import *
-logger = logging.getLogger(__name__)
 
 from django.db import transaction
 
 from specifyweb.specify import models
 
 from .views import load
+
+logger = logging.getLogger(__name__)
 
 UploadTable = namedtuple('UploadTable', 'name wbcols static toOne toMany')
 ToManyRecord = namedtuple('ToManyRecord', 'name wbcols static toOne')
@@ -80,13 +81,17 @@ def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
 
     attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
-    to_many_filter_attrs = to_many_filters(upload_table.toMany, row)
+    to_many_filters, to_many_excludes = to_many_filters_and_excludes(upload_table.toMany, row)
 
-    matched_records = reduce(lambda q, f: q.filter(**f), to_many_filter_attrs, model.objects.filter(**attrs, **upload_table.static))
+    matched_records = reduce(lambda q, e: q.exclude(**e),
+                             to_many_excludes,
+                             reduce(lambda q, f: q.filter(**f),
+                                    to_many_filters,
+                                    model.objects.filter(**attrs, **upload_table.static)))
 
     n_matched = matched_records.count()
     if n_matched == 0:
-        if any(v is not None for v in attrs.values()) or to_many_filter_attrs:
+        if any(v is not None for v in attrs.values()) or to_many_filters:
             uploaded = model.objects.create(**attrs, **upload_table.static)
             toManyResults = {
                 fieldname: upload_to_manys(model, uploaded.id, fieldname, records, row)
@@ -103,42 +108,39 @@ def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
         return UploadResult(MatchedMultiple(ids = [r.id for r in matched_records]), toOneResults, {})
 
 
-def to_many_filters(to_manys: dict, row: Row) -> List[Dict]:
-    return [
-        f
-        for toManyField, records in to_manys.items()
-        for record in records
-        for f in filter_record(toManyField, record, row)
-    ]
+def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], List[Dict]]:
+    filters: List[Dict] = []
+    excludes: List[Dict] = []
 
-
-def filter_to_many(to_manys: dict, row: Row, query):
     for toManyField, records in to_manys.items():
         for record in records:
-            filters = filter_record(toManyField, record, row)
-            query = query.filter(**filters)
-    return query
+            fs, es = filter_record(toManyField, record, row)
+            filters += fs
+            excludes += es
+
+    return (filters, excludes)
 
 
-def filter_record(path: str, record: ToManyRecord, row: Row) -> List[Dict]:
+def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict], List[Dict]]:
     filters = {
         (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
         for caption, fieldname in record.wbcols.items()
     }
 
     for toOneField, toOneTable in record.toOne.items():
-        for f in filter_record(path + '__' + toOneField, toOneTable, row):
+        fs, es = filter_record(path + '__' + toOneField, toOneTable, row)
+        for f in fs:
             filters.update(f)
 
     if all(v is None for v in filters.values()):
-        return []
+        return ([], [{path + "__in": getattr(models, record.name).objects.filter(**record.static)}])
 
     filters.update({
         (path + '__' + fieldname): value
         for fieldname, value in record.static.items()
     })
 
-    return [filters]
+    return ([filters], [])
 
 
 def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) -> List[UploadResult]:
