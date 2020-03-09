@@ -66,6 +66,8 @@ def do_upload_csv(csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[
     ]
 
 
+Exclude = namedtuple('Exclude', 'lookup table filters')
+
 def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
     model = getattr(models, upload_table.name)
 
@@ -83,7 +85,7 @@ def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
 
     to_many_filters, to_many_excludes = to_many_filters_and_excludes(upload_table.toMany, row)
 
-    matched_records = reduce(lambda q, e: q.exclude(**e),
+    matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filters)}),
                              to_many_excludes,
                              reduce(lambda q, f: q.filter(**f),
                                     to_many_filters,
@@ -108,9 +110,9 @@ def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
         return UploadResult(MatchedMultiple(ids = [r.id for r in matched_records]), toOneResults, {})
 
 
-def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], List[Dict]]:
+def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], List[Exclude]]:
     filters: List[Dict] = []
-    excludes: List[Dict] = []
+    excludes: List[Exclude] = []
 
     for toManyField, records in to_manys.items():
         for record in records:
@@ -121,7 +123,7 @@ def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], 
     return (filters, excludes)
 
 
-def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict], List[Dict]]:
+def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict], List[Exclude]]:
     filters = {
         (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
         for caption, fieldname in record.wbcols.items()
@@ -133,7 +135,7 @@ def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict]
             filters.update(f)
 
     if all(v is None for v in filters.values()):
-        return ([], [{path + "__in": getattr(models, record.name).objects.filter(**record.static)}])
+        return ([], [Exclude(path + "__in", record.name, record.static)])
 
     filters.update({
         (path + '__' + fieldname): value

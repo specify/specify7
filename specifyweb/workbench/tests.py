@@ -4,7 +4,7 @@ from unittest import skip
 
 from specifyweb.specify import models, api
 from specifyweb.specify.api_tests import ApiTests
-from .upload import UploadTable, ToManyRecord, do_upload_csv
+from .upload import UploadTable, ToManyRecord, Exclude, do_upload_csv
 from . import upload
 
 class UploadTests(ApiTests):
@@ -82,7 +82,7 @@ class UploadTests(ApiTests):
             },
         )
 
-    def test_filter_to_many(self):
+    def test_filter_to_many_single(self):
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date,Country,Date Collected,Start Date Collected,End Date Collected,Collection Method,Prep Type 1,Accession No.,Remarks,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name
 59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,
@@ -99,7 +99,9 @@ class UploadTests(ApiTests):
             'collectors__isprimary': True,
             'collectors__ordernumber': 0}])
 
-        self.assertEqual(set(excludes[0].keys()), set(['collectors__in']))
+        self.assertEqual(
+            excludes,
+            [Exclude(lookup='collectors__in', table='Collector', filters={'isprimary': False, 'ordernumber': 1, 'division_id': 21})])
 
     def test_filter_multiple_to_many(self):
         reader = csv.DictReader(io.StringIO(
