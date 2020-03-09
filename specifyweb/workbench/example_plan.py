@@ -22,7 +22,7 @@ example_plan = UploadTable(
                     ToManyRecord(
                         name = 'Collector',
                         wbcols = {},
-                        static = {'isprimary': True, 'ordernumber': 0, 'divisionid': 2},
+                        static = {'isprimary': True, 'ordernumber': 0, 'division_id': 2},
                         toOne = {
                             'agent': UploadTable(
                                 name = 'Agent',
@@ -43,7 +43,7 @@ example_plan = UploadTable(
                     ToManyRecord(
                         name = 'Collector',
                         wbcols = {},
-                        static = {'isprimary': False, 'ordernumber': 1, 'divisionid': 2},
+                        static = {'isprimary': False, 'ordernumber': 1, 'division_id': 2},
                         toOne = {
                             'agent': UploadTable(
                                 name = 'Agent',

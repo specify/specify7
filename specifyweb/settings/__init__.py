@@ -68,7 +68,7 @@ TESTING_DATABASES = {
 
 if 'test' in sys.argv:
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-    # DATABASES['default']['TEST']['NAME'] = 'specifytest.sqlite3'
+    DATABASES['default']['TEST']['NAME'] = 'specifytest.sqlite3'
     # TESTING = True
     # DATABASES = TESTING_DATABASES
     SA_DATABASE_URL = 'sqlite:///:memory:'
