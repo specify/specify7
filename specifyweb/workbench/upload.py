@@ -1,9 +1,8 @@
-from collections import namedtuple
 from functools import reduce
 
 import logging
 import csv
-from typing import *
+from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 
 from django.db import transaction
 
@@ -13,33 +12,56 @@ from .views import load
 
 logger = logging.getLogger(__name__)
 
-UploadTable = namedtuple('UploadTable', 'name wbcols static toOne toMany')
-ToManyRecord = namedtuple('ToManyRecord', 'name wbcols static toOne')
+
+class ToManyRecord(NamedTuple):
+    name: str
+    wbcols: Dict[str, str]
+    static: Dict[str, Any]
+    toOne: Dict[str, Any]
+
+class UploadTable(NamedTuple):
+    name: str
+    wbcols: Dict[str, str]
+    static: Dict[str, Any]
+    toOne: Dict[str, Any]
+    toMany: Dict[str, List[ToManyRecord]]
+
+
 Row = Dict[str, str]
 
 
-class Uploaded(namedtuple('Uploaded', 'id')):
-    def get_id(self):
+class Uploaded(NamedTuple):
+    id: int
+
+    def get_id(self) -> Optional[int]:
         return self.id
 
 
-class Matched(namedtuple('Matched', 'id')):
-    def get_id(self):
+class Matched(NamedTuple):
+    id: int
+
+    def get_id(self) -> Optional[int]:
         return self.id
 
 
-class MatchedMultiple(namedtuple('MatchedMultiple', 'ids')):
-    def get_id(self):
+class MatchedMultiple(NamedTuple):
+    ids: List[int]
+
+    def get_id(self) -> Optional[int]:
         return self.ids[0]
 
 
-class NullRecord(namedtuple('NullRecord', '')):
-    def get_id(self):
+class NullRecord(object):
+    def get_id(self) -> Optional[int]:
         return None
 
 
-class UploadResult(namedtuple('UploadResult', 'record_result toOne toMany')):
-    def get_id(self):
+class UploadResult(NamedTuple):
+    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord]
+    toOne: Dict[str, Any]
+    toMany: Dict[str, Any]
+
+    def get_id(self) -> Optional[int]:
         return self.record_result.get_id()
 
 
@@ -66,7 +88,11 @@ def do_upload_csv(csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[
     ]
 
 
-Exclude = namedtuple('Exclude', 'lookup table filters')
+class Exclude(NamedTuple):
+    lookup: str
+    table: str
+    filters: Dict[str, Any]
+
 
 def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
     model = getattr(models, upload_table.name)
