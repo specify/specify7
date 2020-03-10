@@ -13,6 +13,17 @@ from .views import load
 logger = logging.getLogger(__name__)
 
 Row = Dict[str, str]
+Filter = Dict[str, Any]
+
+class Exclude(NamedTuple):
+    lookup: str
+    table: str
+    filters: Filter
+
+
+class FilterPack(NamedTuple):
+    filters: List[Filter]
+    excludes: List[Exclude]
 
 
 class Uploaded(NamedTuple):
@@ -134,13 +145,8 @@ def do_upload_csv(csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[
     ]
 
 
-class Exclude(NamedTuple):
-    lookup: str
-    table: str
-    filters: Dict[str, Any]
 
-
-def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: Row) -> Tuple[List[Dict[str, Any]], List[Exclude]]:
+def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: Row) -> FilterPack:
     filters: List[Dict] = []
     excludes: List[Exclude] = []
 
@@ -150,10 +156,10 @@ def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: R
             filters += fs
             excludes += es
 
-    return (filters, excludes)
+    return FilterPack(filters, excludes)
 
 
-def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict[str, Any]], List[Exclude]]:
+def filter_record(path: str, record: Union[UploadTable, ToManyRecord], row: Row) -> FilterPack:
     filters = {
         (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
         for caption, fieldname in record.wbcols.items()
@@ -165,14 +171,14 @@ def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict[
             filters.update(f)
 
     if all(v is None for v in filters.values()):
-        return ([], [Exclude(path + "__in", record.name, record.static)])
+        return FilterPack([], [Exclude(path + "__in", record.name, record.static)])
 
     filters.update({
         (path + '__' + fieldname): value
         for fieldname, value in record.static.items()
     })
 
-    return ([filters], [])
+    return FilterPack([filters], [])
 
 
 def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) -> List[UploadResult]:
