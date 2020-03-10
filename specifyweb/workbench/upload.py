@@ -136,7 +136,7 @@ def upload_row_table(upload_table: UploadTable, row: Row) -> UploadResult:
         return UploadResult(MatchedMultiple(ids = [r.id for r in matched_records]), toOneResults, {})
 
 
-def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], List[Exclude]]:
+def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: Row) -> Tuple[List[Dict[str, Any]], List[Exclude]]:
     filters: List[Dict] = []
     excludes: List[Exclude] = []
 
@@ -149,7 +149,7 @@ def to_many_filters_and_excludes(to_manys: dict, row: Row) -> Tuple[List[Dict], 
     return (filters, excludes)
 
 
-def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict], List[Exclude]]:
+def filter_record(path: str, record: ToManyRecord, row: Row) -> Tuple[List[Dict[str, Any]], List[Exclude]]:
     filters = {
         (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
         for caption, fieldname in record.wbcols.items()

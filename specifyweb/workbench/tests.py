@@ -28,10 +28,22 @@ class UploadTests(ApiTests):
                     wbcols = {
                         # 'End Date Collected' : 'enddate',
                         # 'Start Date Collected' : 'startdate',
-                'Station No.' : 'stationfieldnumber',
+                        'Station No.' : 'stationfieldnumber',
                     },
                     static = {'discipline_id': self.discipline.id},
-                    toOne = {},
+                    toOne = {
+                        'locality': UploadTable(
+                            name = 'Locality',
+                            wbcols = {
+                                'Site': 'localityname',
+                                'Latitude1': 'lat1text',
+                                'Longitude1': 'long1text',
+                            },
+                            static = {'discipline_id': self.discipline.id, 'srclatlongunit': 0},
+                            toOne = {},
+                            toMany = {},
+                            )
+                    },
                     toMany = {
                         'collectors': [
                             ToManyRecord(
@@ -185,4 +197,18 @@ class UploadTests(ApiTests):
         self.assertEqual(
             set(co.collectingevent.collectors.get(ordernumber=0).agent.lastname for co in cos),
             set(('Raines', 'Palmer', 'Weddle', 'Buffington', 'Garcia', 'Sealink', 'Moller')))
+
+        self.assertEqual(
+            set(co.collectingevent.locality.localityname for co in cos),
+            set((
+                'Cochran Pit, N of Route 80, W of LaBelle',
+                'Off Punta Rosalia, E pf Anakena',
+                'Hanga Nui',
+                'Off Punta Rosalia, E of Anakena',
+                '[Lat-long site]',
+                'Near Tahai',
+                '90 mi east of Charleston',
+                'Off Hanga-Teo, on N. coast',
+                'Off Punta Rosalia, E of Anakean',
+                'Cochran Pit, N of Rt. 80, W of LaBelle',)))
 
