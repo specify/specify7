@@ -182,3 +182,7 @@ class UploadTests(ApiTests):
             [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="1380").collectingevent.collectors.order_by("ordernumber")],
             ["Raines"])
 
+        self.assertEqual(
+            set(co.collectingevent.collectors.get(ordernumber=0).agent.lastname for co in cos),
+            set(('Raines', 'Palmer', 'Weddle', 'Buffington', 'Garcia', 'Sealink', 'Moller')))
+
