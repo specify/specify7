@@ -4,7 +4,7 @@ from unittest import skip
 
 from specifyweb.specify import models, api
 from specifyweb.specify.api_tests import ApiTests
-from .upload import UploadTable, ToManyRecord, Exclude, do_upload_csv
+from .upload import UploadTable, ToManyRecord, TreeRecord, Exclude, do_upload_csv
 from . import upload
 
 class UploadTests(ApiTests):
@@ -40,7 +40,17 @@ class UploadTests(ApiTests):
                                 'Longitude1': 'long1text',
                             },
                             static = {'discipline_id': self.discipline.id, 'srclatlongunit': 0},
-                            toOne = {},
+                            toOne = {
+                                # 'geography': TreeRecord(
+                                #     name = 'Geography',
+                                #     ranks = {
+                                #         'Continent': 'Continent',
+                                #         'Country': 'Country',
+                                #         'State/Prov/Pref': 'State',
+                                #         'Region': 'County',
+                                #     }
+                                # ),
+                            },
                             toMany = {},
                             )
                     },
