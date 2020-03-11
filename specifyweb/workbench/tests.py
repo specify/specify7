@@ -15,6 +15,11 @@ class UploadTests(ApiTests):
         self.discipline.type = "fish"
         self.discipline.save()
 
+        self.geographytreedef.treedefitems.create(name='Continent', rankid=100)
+        self.geographytreedef.treedefitems.create(name='Country', rankid=200)
+        self.geographytreedef.treedefitems.create(name='State', rankid=300)
+        self.geographytreedef.treedefitems.create(name='County', rankid=400)
+
         self.example_plan = UploadTable(
             name = 'Collectionobject',
             wbcols = {
@@ -43,8 +48,10 @@ class UploadTests(ApiTests):
                             toOne = {
                                 # 'geography': TreeRecord(
                                 #     name = 'Geography',
+                                #     treedefname = 'Geographytreedef',
+                                #     treedefid = self.geographytreedef.id,
                                 #     ranks = {
-                                #         'Continent': 'Continent',
+                                #         'Continent/Ocean': 'Continent',
                                 #         'Country': 'Country',
                                 #         'State/Prov/Pref': 'State',
                                 #         'Region': 'County',
@@ -117,13 +124,13 @@ class UploadTests(ApiTests):
             'collectors__agent__lastname': 'Redfern',
             'collectors__agent__middleinitial': None,
             'collectors__agent__title': None,
-            'collectors__division_id': 21,
+            'collectors__division_id': self.division.id,
             'collectors__isprimary': True,
             'collectors__ordernumber': 0}])
 
         self.assertEqual(
             excludes,
-            [Exclude(lookup='collectors__in', table='Collector', filters={'isprimary': False, 'ordernumber': 1, 'division_id': 21})])
+            [Exclude(lookup='collectors__in', table='Collector', filters={'isprimary': False, 'ordernumber': 1, 'division_id': self.division.id})])
 
     def test_filter_multiple_to_many(self):
         reader = csv.DictReader(io.StringIO(
@@ -138,7 +145,7 @@ class UploadTests(ApiTests):
              'collectors__agent__lastname': 'Raines',
              'collectors__agent__middleinitial': None,
              'collectors__agent__title': None,
-             'collectors__division_id': 21,
+             'collectors__division_id': self.division.id,
              'collectors__isprimary': True,
              'collectors__ordernumber': 0},
             {'collectors__agent__agenttype': 1,
@@ -146,7 +153,7 @@ class UploadTests(ApiTests):
              'collectors__agent__lastname': 'Taylor',
              'collectors__agent__middleinitial': None,
              'collectors__agent__title': None,
-             'collectors__division_id': 21,
+             'collectors__division_id': self.division.id,
              'collectors__isprimary': False,
              'collectors__ordernumber': 1}])
 
@@ -222,3 +229,69 @@ class UploadTests(ApiTests):
                 'Off Punta Rosalia, E of Anakean',
                 'Cochran Pit, N of Rt. 80, W of LaBelle',)))
 
+
+    def test_tree_1(self):
+        reader = csv.DictReader(io.StringIO(
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
+5033,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,8 Sep 1973,8 Sep 1973,,,,8,0,0,Dry; shell,Dry,,,,,,1,"Caloosahatchee,Pinecrest Unit #4",U/Juv,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
+'''))
+        tree_record = TreeRecord(
+            name = 'Geography',
+            treedefname = 'Geographytreedef',
+            treedefid = self.geographytreedef.id,
+            ranks = {
+                'Continent/Ocean': 'Continent',
+                'Country': 'Country',
+                'State/Prov/Pref': 'State',
+                'Region': 'County',
+            }
+        )
+        row = next(reader)
+        to_upload, matched = tree_record.match(row)
+
+        self.assertEqual(to_upload, [
+            [models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."],
+            [models.Geographytreedefitem.objects.get(name="State"), "FLORIDA"],
+            [models.Geographytreedefitem.objects.get(name="Country"), "USA"],
+            [models.Geographytreedefitem.objects.get(name="Continent"), "North America"],
+            [models.Geographytreedefitem.objects.get(name="Planet"), "Upload"],
+        ])
+
+        self.assertEqual(matched, [])
+
+        planet = models.Geography.objects.create(
+            name="Upload",
+            definitionitem=models.Geographytreedefitem.objects.get(name="Planet"),
+            definition=self.geographytreedef,
+        )
+
+        continent = models.Geography.objects.create(
+            name="North America",
+            definitionitem=models.Geographytreedefitem.objects.get(name="Continent"),
+            definition=self.geographytreedef,
+            parent=planet,
+        )
+
+        country = models.Geography.objects.create(
+            name="USA",
+            definitionitem=models.Geographytreedefitem.objects.get(name="Country"),
+            definition=self.geographytreedef,
+            parent=continent,
+        )
+
+        state = models.Geography.objects.create(
+            name="Florida",
+            definitionitem=models.Geographytreedefitem.objects.get(name="State"),
+            definition=self.geographytreedef,
+            parent=country,
+        )
+
+        # county = models.Geography.objects.create(
+        #     name="Hendry Co.",
+        #     definitionitem=models.Geographytreedefitem.objects.get(name="County"),
+        #     definition=self.geographytreedef,
+        #     parent=state,
+        # )
+
+        result = tree_record.match(row)
+        self.assertEqual(result, ([[models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."]], [state.id]))

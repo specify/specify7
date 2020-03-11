@@ -44,6 +44,9 @@ class Tree(models.Model):
             super(Tree, self).save(*args, **kwargs)
 
         if prev_self is None:
+            if self.parent is None:
+                return save()
+
             with validate_node_numbers(self._meta.db_table):
                 adding_node(self)
                 save()

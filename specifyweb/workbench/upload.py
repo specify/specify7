@@ -1,12 +1,14 @@
 from functools import reduce
+from itertools import dropwhile
 
 import logging
 import csv
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 
-from django.db import transaction
+from django.db import transaction, connection
 
 from specifyweb.specify import models
+from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .views import load
 
@@ -70,6 +72,98 @@ class ToManyRecord(NamedTuple):
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
+    treedefname: str
+    treedefid: int
+
+    def upload_row(self, row: Row) -> UploadResult:
+        to_upload, matched = self.match(row)
+        if not to_upload:
+            if not matched:
+                return UploadResult(NullRecord(), {}, {})
+            elif len(matched) == 1:
+                return UploadResult(Matched(matched[0]), {}, {})
+            else:
+                return UploadResult(MatchedMultiple(matched), {}, {})
+
+        model = getattr(models, self.name)
+        parent_id = matched[0] if matched else None
+
+        for treedefitem, value in reversed(to_upload):
+            uploaded = model.objects.create(
+                name=value,
+                definitionitem=treedefitem,
+                definition_id=self.treedefid
+            )
+            parent_id = uploaded.id
+
+        return UploadResult(Uploaded(uploaded.id), {}, {})
+
+
+    def match(self, row: Row) -> Tuple[List[List], List[int]]:
+        model = getattr(models, self.name)
+        tablename = model._meta.db_table
+        treedef = getattr(models, self.treedefname).objects.get(id=self.treedefid)
+        ranks = treedef.treedefitems.order_by("-rankid")
+        depth = len(ranks)
+        values = {
+            rankname: parse_string(row[wbcol])
+            for wbcol, rankname in self.ranks.items()
+        }
+
+        all_levels = list(dropwhile(lambda p: p[1] is None, (
+            [rank, values.get(rank.name, None)]
+            for rank in ranks)))
+
+        if not all_levels:
+            return ([], [])
+
+        if all_levels[-1][1] is None:
+            all_levels[-1][1] = "Upload"
+
+        all_levels = [
+            [rank, "Upload" if rank.isenforced and value is None else value]
+            for rank, value in all_levels
+            if value is not None or rank.isenforced
+        ]
+
+        cursor = connection.cursor()
+        to_upload: List[List] = []
+        while all_levels:
+            matchers = [
+                "and d{}.rankid = %s and t{}.name = %s\n".format(i,i)
+                for i, __ in enumerate(all_levels)
+            ]
+
+            params = [
+                p
+                for rank, value in all_levels
+                for p in (rank.rankid, value)
+            ]
+
+
+            sql = (
+                "select t0.{table}id \n"
+                "from {table} t0\n"
+                "{parent_joins}\n"
+                "{definition_joins}\n"
+                "where t{root}.parentid is null\n"
+                "{matchers}\n"
+            ).format(
+                root=depth-1,
+                table=tablename,
+                parent_joins=parent_joins(tablename, depth),
+                definition_joins=definition_joins(tablename, depth),
+                matchers="\n".join(matchers)
+            )
+            cursor.execute(sql, params)
+            result = list(r[0] for r in cursor.fetchall())
+            if result:
+                return (to_upload, result)
+            else:
+                to_upload.append(all_levels.pop(0))
+
+        return (to_upload, [])
+
 
 class UploadTable(NamedTuple):
     name: str
@@ -204,6 +298,12 @@ def parse_value(model, fieldname: str, value: str) -> Any:
         result = value.strip()
         if result == "":
             result = None
+    return result
+
+def parse_string(value: str) -> Optional[str]:
+    result = value.strip()
+    if result == "":
+        return None
     return result
 
 def caption_to_index(wbtmis, caption):
