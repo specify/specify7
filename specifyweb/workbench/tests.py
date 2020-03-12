@@ -46,17 +46,17 @@ class UploadTests(ApiTests):
                             },
                             static = {'discipline_id': self.discipline.id, 'srclatlongunit': 0},
                             toOne = {
-                                # 'geography': TreeRecord(
-                                #     name = 'Geography',
-                                #     treedefname = 'Geographytreedef',
-                                #     treedefid = self.geographytreedef.id,
-                                #     ranks = {
-                                #         'Continent/Ocean': 'Continent',
-                                #         'Country': 'Country',
-                                #         'State/Prov/Pref': 'State',
-                                #         'Region': 'County',
-                                #     }
-                                # ),
+                                'geography': TreeRecord(
+                                    name = 'Geography',
+                                    treedefname = 'Geographytreedef',
+                                    treedefid = self.geographytreedef.id,
+                                    ranks = {
+                                        'Continent/Ocean': 'Continent',
+                                        'Country': 'Country',
+                                        'State/Prov/Pref': 'State',
+                                        'Region': 'County',
+                                    }
+                                ),
                             },
                             toMany = {},
                             )
@@ -286,6 +286,7 @@ class UploadTests(ApiTests):
             parent=country,
         )
 
+        # The following should be created by the upload:
         # county = models.Geography.objects.create(
         #     name="Hendry Co.",
         #     definitionitem=models.Geographytreedefitem.objects.get(name="County"),
