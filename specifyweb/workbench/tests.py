@@ -4,7 +4,7 @@ from unittest import skip
 
 from specifyweb.specify import models, api
 from specifyweb.specify.api_tests import ApiTests
-from .upload import UploadTable, ToManyRecord, TreeRecord, Exclude, do_upload_csv
+from .upload import UploadTable, ToManyRecord, TreeRecord, Exclude, do_upload_csv, Uploaded, UploadResult, Matched
 from . import upload
 
 class UploadTests(ApiTests):
@@ -293,5 +293,15 @@ class UploadTests(ApiTests):
         #     parent=state,
         # )
 
-        result = tree_record.match(row)
-        self.assertEqual(result, ([[models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."]], [state.id]))
+        self.assertEqual(tree_record.match(row), ([[models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."]], [state.id]))
+
+        upload_result = tree_record.upload_row(row)
+        self.assertTrue(isinstance(upload_result.record_result, Uploaded))
+
+        uploaded = models.Geography.objects.get(id=upload_result.get_id())
+        self.assertEqual(uploaded.name, "Hendry Co.")
+        self.assertEqual(uploaded.definitionitem.name, "County")
+        self.assertEqual(uploaded.parent.id, state.id)
+
+        self.assertEqual(tree_record.match(row), ([], [upload_result.get_id()]))
+        self.assertEqual(tree_record.upload_row(row), UploadResult(Matched(id=upload_result.get_id()), {}, {}))

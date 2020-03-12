@@ -92,7 +92,8 @@ class TreeRecord(NamedTuple):
             uploaded = model.objects.create(
                 name=value,
                 definitionitem=treedefitem,
-                definition_id=self.treedefid
+                definition_id=self.treedefid,
+                parent_id=parent_id,
             )
             parent_id = uploaded.id
 
