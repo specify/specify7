@@ -69,6 +69,27 @@ class ToManyRecord(NamedTuple):
     static: Dict[str, Any]
     toOne: Dict[str, Any]
 
+    def filter_on(self, path: str, row: Row) -> FilterPack:
+        filters = {
+            (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
+            for caption, fieldname in self.wbcols.items()
+        }
+
+        for toOneField, toOneTable in self.toOne.items():
+            fs, es = toOneTable.filter_on(path + '__' + toOneField, row)
+            for f in fs:
+                filters.update(f)
+
+        if all(v is None for v in filters.values()):
+            return FilterPack([], [Exclude(path + "__in", self.name, self.static)])
+
+        filters.update({
+            (path + '__' + fieldname): value
+            for fieldname, value in self.static.items()
+        })
+
+        return FilterPack([filters], [])
+
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
@@ -173,6 +194,27 @@ class UploadTable(NamedTuple):
     toOne: Dict[str, Any]
     toMany: Dict[str, List[ToManyRecord]]
 
+    def filter_on(self, path: str, row: Row) -> FilterPack:
+        filters = {
+            (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
+            for caption, fieldname in self.wbcols.items()
+        }
+
+        for toOneField, toOneTable in self.toOne.items():
+            fs, es = toOneTable.filter_on(path + '__' + toOneField, row)
+            for f in fs:
+                filters.update(f)
+
+        if all(v is None for v in filters.values()):
+            return FilterPack([], [Exclude(path + "__in", self.name, self.static)])
+
+        filters.update({
+            (path + '__' + fieldname): value
+            for fieldname, value in self.static.items()
+        })
+
+        return FilterPack([filters], [])
+
     def upload_row(self, row: Row) -> UploadResult:
         model = getattr(models, self.name)
 
@@ -247,33 +289,12 @@ def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: R
 
     for toManyField, records in to_manys.items():
         for record in records:
-            fs, es = filter_record(toManyField, record, row)
+            fs, es = record.filter_on(toManyField, row)
             filters += fs
             excludes += es
 
     return FilterPack(filters, excludes)
 
-
-def filter_record(path: str, record: Union[UploadTable, ToManyRecord], row: Row) -> FilterPack:
-    filters = {
-        (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
-        for caption, fieldname in record.wbcols.items()
-    }
-
-    for toOneField, toOneTable in record.toOne.items():
-        fs, es = filter_record(path + '__' + toOneField, toOneTable, row)
-        for f in fs:
-            filters.update(f)
-
-    if all(v is None for v in filters.values()):
-        return FilterPack([], [Exclude(path + "__in", record.name, record.static)])
-
-    filters.update({
-        (path + '__' + fieldname): value
-        for fieldname, value in record.static.items()
-    })
-
-    return FilterPack([filters], [])
 
 
 def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) -> List[UploadResult]:
