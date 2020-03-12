@@ -71,6 +71,7 @@ module.exports = {
             division.otherSideName = 'accessions';
         },
     Loan: function(model) {
+        var fields = model.getAllFields();
         var totalItems = _(new schema.Field(model)).extend({
             name: 'totalItems',
             isRelationship: false,
