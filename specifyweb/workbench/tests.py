@@ -20,13 +20,69 @@ class UploadTests(ApiTests):
         self.geographytreedef.treedefitems.create(name='State', rankid=300)
         self.geographytreedef.treedefitems.create(name='County', rankid=400)
 
+
+        self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
+        self.taxontreedef.treedefitems.create(name='Taxonomy Root', rankid=0)
+        self.taxontreedef.treedefitems.create(name='Kingdom', rankid=10)
+        self.taxontreedef.treedefitems.create(name='Phylum', rankid=30)
+        self.taxontreedef.treedefitems.create(name='Class', rankid=60)
+        self.taxontreedef.treedefitems.create(name='Order', rankid=100)
+        self.taxontreedef.treedefitems.create(name='Superfamily', rankid=130)
+        self.taxontreedef.treedefitems.create(name='Family', rankid=140)
+        self.taxontreedef.treedefitems.create(name='Genus', rankid=180)
+        self.taxontreedef.treedefitems.create(name='Subgenus', rankid=190)
+        self.taxontreedef.treedefitems.create(name='Species', rankid=220)
+        self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
+
+
         self.example_plan = UploadTable(
             name = 'Collectionobject',
             wbcols = {
                 "BMSM No." : 'catalognumber',
             },
             static = {'collection_id': self.collection.id},
-            toMany = {},
+            toMany = {
+                'determinations': [
+                    ToManyRecord(
+                        name = 'Determination',
+                        wbcols = {},
+                        static = {
+                            'collectionmemberid': self.collection.id,
+                            'iscurrent': True,
+                        },
+                        toOne = {
+                            'determiner': UploadTable(
+                                name = 'Agent',
+                                wbcols = {
+                                    'Determiner 1 Title': 'title',
+                                    'Determiner 1 First Name': 'firstname',
+                                    'Determiner 1 Middle Initial': 'middleinitial',
+                                    'Determiner 1 Last Name': 'lastname',
+                                },
+                                static = {
+                                    'agenttype': 1
+                                },
+                                toOne = {},
+                                toMany = {},
+                            ),
+                            'taxon': TreeRecord(
+                                name = 'Taxon',
+                                treedefname = 'Taxontreedef',
+                                treedefid = self.taxontreedef.id,
+                                ranks = {
+                                    'Class': 'Class',
+                                    'Superfamily': 'Superfamily',
+                                    'Family': 'Family',
+                                    'Genus': 'Genus',
+                                    'Subgenus': 'Subgenus',
+                                    'Species': 'Species',
+                                    'Subspecies': 'Subspecies',
+                                }
+                            )
+                        },
+                    ),
+                ],
+            },
             toOne = {
                 'collectingevent': UploadTable(
                     name = 'Collectingevent',
@@ -191,18 +247,22 @@ class UploadTests(ApiTests):
 '''))
         do_upload_csv(reader, self.example_plan)
 
+        # Check that collection objects were uploaded.
         expected_cats = "1365 1366 1367 1368 1373 1374 1375 1378 1380 1381 1382 1383 1384 1385 1386 1387 1906 5009 5033 5035 5043 5081 5083 5091 5097".split()
         cos = models.Collectionobject.objects.filter(catalognumber__in=expected_cats)
         self.assertEqual(cos.count(), len(expected_cats))
 
+        # Check that only one copy of a given agent/collectingevent was uploaded.
         self.assertEqual(models.Agent.objects.filter(lastname="Garcia").count(), 1)
         self.assertEqual(models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)").count(), 1)
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1365").collectingevent.stationfieldnumber, None)
 
+        # Check which collectingevents got uploaded for some cases.
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1365").collectingevent.stationfieldnumber, None)
         self.assertEqual(
             set(ce.stationfieldnumber for ce in models.Collectingevent.objects.filter(collectors__agent__lastname="Garcia")),
             set([None, "D-7(1)", "D-4(1)"]))
 
+        # Check the collectors for some collection objects.
         self.assertEqual(
             [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="1378").collectingevent.collectors.order_by("ordernumber")],
             ["Raines", "Taylor"])
@@ -215,6 +275,7 @@ class UploadTests(ApiTests):
             set(co.collectingevent.collectors.get(ordernumber=0).agent.lastname for co in cos),
             set(('Raines', 'Palmer', 'Weddle', 'Buffington', 'Garcia', 'Sealink', 'Moller')))
 
+        # Check that localities got uploaded.
         self.assertEqual(
             set(co.collectingevent.locality.localityname for co in cos),
             set((
@@ -228,6 +289,27 @@ class UploadTests(ApiTests):
                 'Off Hanga-Teo, on N. coast',
                 'Off Punta Rosalia, E of Anakean',
                 'Cochran Pit, N of Rt. 80, W of LaBelle',)))
+
+        # Check that taxa got uploaded without dupes.
+        self.assertEqual(models.Taxon.objects.get(definitionitem__name='Taxonomy Root').name, "Upload")
+
+        self.assertEqual(
+            sorted(t.name for t in models.Taxon.objects.filter(definitionitem__name='Class')),
+            'Gastropoda Scaphopoda'.split())
+
+        self.assertEqual(
+            sorted(t.name for t in models.Taxon.objects.filter(definitionitem__name='Superfamily')),
+            '''Acteonoidea Buccinoidea Cerithioidea Fissurelloidea Muricoidea Pleurotomarioidea Rissooidea Stromboidea Vanikoroidea Velutinoidea'''\
+            .split())
+
+        # Check the determination of a specific collectionobject.
+        taxon = models.Collectionobject.objects.get(catalognumber="5081").determinations.all()[0].taxon
+        self.assertEqual((taxon.name, taxon.definitionitem.name), ("evergladesensis", "Species"))
+        self.assertEqual((taxon.parent.name, taxon.parent.definitionitem.name), ("Strombus", "Genus"))
+        self.assertEqual((taxon.parent.parent.name, taxon.parent.parent.definitionitem.name), ("Strombidae", "Family"))
+        self.assertEqual((taxon.parent.parent.parent.name, taxon.parent.parent.parent.definitionitem.name), ("Stromboidea", "Superfamily"))
+        self.assertEqual((taxon.parent.parent.parent.parent.name, taxon.parent.parent.parent.parent.definitionitem.name), ("Gastropoda", "Class"))
+        self.assertEqual((taxon.parent.parent.parent.parent.parent.name, taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Upload", "Taxonomy Root"))
 
 
     def test_tree_1(self):
