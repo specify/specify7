@@ -4,10 +4,12 @@ from itertools import dropwhile
 import logging
 import csv
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from dateparser import DateDataParser
 
 from django.db import transaction, connection
 
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .views import load
@@ -71,8 +73,9 @@ class ToManyRecord(NamedTuple):
 
     def filter_on(self, path: str, row: Row) -> FilterPack:
         filters = {
-            (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
+            (path + '__' + fieldname_): value
             for caption, fieldname in self.wbcols.items()
+            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).items()
         }
 
         for toOneField, toOneTable in self.toOne.items():
@@ -199,9 +202,11 @@ class UploadTable(NamedTuple):
 
     def filter_on(self, path: str, row: Row) -> FilterPack:
         filters = {
-            (path + '__' + fieldname): parse_value(None, fieldname, row[caption])
+            (path + '__' + fieldname_): value
             for caption, fieldname in self.wbcols.items()
+            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).items()
         }
+
 
         for toOneField, toOneTable in self.toOne.items():
             fs, es = toOneTable.filter_on(path + '__' + toOneField, row)
@@ -227,8 +232,9 @@ class UploadTable(NamedTuple):
         }
 
         attrs = {
-            fieldname: parse_value(model, fieldname, row[caption])
+            fieldname_: value
             for caption, fieldname in self.wbcols.items()
+            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).items()
         }
 
         attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
@@ -316,14 +322,44 @@ def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) ->
     ]
 
 
-def parse_value(model, fieldname: str, value: str) -> Any:
-    result: Any
+def parse_value(tablename: str, fieldname: str, value: str) -> Dict[str, Any]:
+    value = value.strip()
+    if value == "":
+        return {fieldname: None}
 
-    if value is not None:
-        result = value.strip()
-        if result == "":
-            result = None
-    return result
+    table = datamodel.get_table(tablename)
+    field = table.get_field(fieldname)
+
+    if field.is_temporal():
+        precision_field = table.get_field(fieldname + 'precision')
+        parsed = DateDataParser(settings={
+            'PREFER_DAY_OF_MONTH': 'first',
+            'PREFER_DATES_FROM': 'past',
+            'STRICT_PARSING': precision_field is None,
+        }).get_date_data(value)
+
+        if parsed['date_obj'] is None:
+            raise Exception("bad date value: {}".format(value))
+
+        if precision_field is None:
+            if parsed['period'] == 'day':
+                return {fieldname: parsed['date_obj']}
+            else:
+                raise Exception("bad date value: {}".format(value))
+        else:
+            prec = parsed['period']
+            date = parsed['date_obj']
+            if prec == 'day':
+                return {fieldname: date, precision_field.name.lower(): 0}
+            elif prec == 'month':
+                return {fieldname: date.replace(day=1), precision_field.name.lower(): 1}
+            elif prec == 'year':
+                return {fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2}
+            else:
+                raise Exception('expected date precision to be day month or year. got: {}'.format(prec))
+    else:
+        return {fieldname: value}
+
 
 def parse_string(value: str) -> Optional[str]:
     result = value.strip()
