@@ -96,6 +96,9 @@ class TreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
 
+    def filter_on(self, path: str, row: Row) -> FilterPack:
+        return FilterPack([], [])
+
     def upload_row(self, row: Row) -> UploadResult:
         to_upload, matched = self.match(row)
         if not to_upload:
