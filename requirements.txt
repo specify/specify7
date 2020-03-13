@@ -4,3 +4,4 @@ SQLAlchemy==1.2.11
 requests==2.2.1
 pycryptodome==3.9.7
 django-auth-ldap==1.2.15
+dateparser==0.7.4

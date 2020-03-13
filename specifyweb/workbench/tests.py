@@ -1,6 +1,7 @@
 import io
 import csv
 from unittest import skip
+from datetime import datetime
 
 from specifyweb.specify import models, api
 from specifyweb.specify.api_tests import ApiTests
@@ -45,7 +46,9 @@ class UploadTests(ApiTests):
                 'determinations': [
                     ToManyRecord(
                         name = 'Determination',
-                        wbcols = {},
+                        wbcols = {
+                            'ID Date': 'determineddate',
+                        },
                         static = {
                             'collectionmemberid': self.collection.id,
                             'iscurrent': True,
@@ -87,8 +90,8 @@ class UploadTests(ApiTests):
                 'collectingevent': UploadTable(
                     name = 'Collectingevent',
                     wbcols = {
-                        # 'End Date Collected' : 'enddate',
-                        # 'Start Date Collected' : 'startdate',
+                        'End Date Collected' : 'enddate',
+                        'Start Date Collected' : 'startdate',
                         'Station No.' : 'stationfieldnumber',
                     },
                     static = {'discipline_id': self.discipline.id},
@@ -236,14 +239,14 @@ class UploadTests(ApiTests):
 1386,Gastropoda,Vanikoroidea,Eulimidae,Subniso,,osorioae,,"Raines, 2003",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,"In sand & rubble, along base of cliffs",10,20,0,,,Paratype,512,,"PARATYPES. In pouch # 9, paratypes 4 & 5.  La Conchiglia 34 (no. 305): 46-47 (holotype LACM 2957, fig. 5a, b).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,"109° 19' 45"" W",,Point,,JSG,28/05/2013,0,Marine,0,B. Raines,,B.,,Raines,,,,,,,,,,,,
 1387,Gastropoda,Vanikoroidea,Eulimidae,Hemiliostraca,,clarimaculosa,,"(Raines, 2003)",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,cf.,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E pf Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,"In sand & rubble, along base of cliffs",10,20,0,,,Paratype,512,,"PARATYPES. In pouch # 10, paratypes 4 & 5.  La Conchiglia 34 (no. 305): 47-48 (holotype LACM 2959, fig. 6).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,"109° 19' 45"" W",,Point,,JSG,12/01/2017,0,Marine,0,B. Raines,,B.,,Raines,,,,,,,,,,,,
 1906,Gastropoda,Pleurotomarioidea,Pleurotomariidae,Perotrochus,,maureri,,"Harasewych & Askew, 1993",,,,,,, , ,,USA,SOUTH CAROLINA,,90 mi east of Charleston,,NW Atlantic O.,4 May 1987,4 May 1987,,,,1,1,0,Dry; shell,Dry,,,Deep water; water temperature 9.7° C,195,204,0,,,,461,,"Topotype, but no evidence that it is a paratype.  Received in exchange from U.S. Nat'l. Mus (1993) for a specimen from the BMSM that was taken off Jacksonville, FL, in 200 fms (366 m)",HEP,JSG,22/10/1997,"32° 43' 57"" N",,"78° 05' 41"" W",,Point,,,,0,Marine,0,Johnson Sealink (Submersible),,Johnson,,Sealink,,,,,,,,,,,,
-5009,Gastropoda,Muricoidea,Volutidae,Scaphella,,floridana,,"(Heilprin, 1886)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1980,00/00/1980,,,,2,0,0,Dry; shell,Dry,,,,,,1,,U/Juv,,340,,Spoil banks.,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,JHL,25/05/2016,0,Marine,0,M. Palmer,,M.,,Palmer,,,,,,,,,,,,
+5009,Gastropoda,Muricoidea,Volutidae,Scaphella,,floridana,,"(Heilprin, 1886)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1980,1980,,,,2,0,0,Dry; shell,Dry,,,,,,1,,U/Juv,,340,,Spoil banks.,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,JHL,25/05/2016,0,Marine,0,M. Palmer,,M.,,Palmer,,,,,,,,,,,,
 5033,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,8 Sep 1973,8 Sep 1973,,,,8,0,0,Dry; shell,Dry,,,,,,1,"Caloosahatchee,Pinecrest Unit #4",U/Juv,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
-5035,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1971,00/00/1971,,,,4,0,0,Dry; shell,Dry,,,,,,1,,U/Ad & Juv,,241,,"3 Adults, 1 Juvenile",LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
-5043,Gastropoda,Stromboidea,Strombidae,Lobatus,,mayacensis,,"(Tucker & Wilson, 1933)",,D. Hargreave,,D.,,Hargreave, , ,aff.,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1977,00/00/1977,,,,1,0,0,Dry; shell,Dry,,,,,,1,,,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
-5081,Gastropoda,Stromboidea,Strombidae,Strombus,,evergladesensis,,"Petuch, 1991",,D. Hargreave,,D.,,Hargreave, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1977,00/00/1977,,,,1,0,0,Dry; shell,Dry,,,,,,1,,,,150,,Collected from 1977-1978.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,18/06/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
+5035,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1971,1971,,,,4,0,0,Dry; shell,Dry,,,,,,1,,U/Ad & Juv,,241,,"3 Adults, 1 Juvenile",LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
+5043,Gastropoda,Stromboidea,Strombidae,Lobatus,,mayacensis,,"(Tucker & Wilson, 1933)",,D. Hargreave,,D.,,Hargreave, , ,aff.,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1977,1977,,,,1,0,0,Dry; shell,Dry,,,,,,1,,,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
+5081,Gastropoda,Stromboidea,Strombidae,Strombus,,evergladesensis,,"Petuch, 1991",,D. Hargreave,,D.,,Hargreave, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,1977,1977,,,,1,0,0,Dry; shell,Dry,,,,,,1,,,,150,,Collected from 1977-1978.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,18/06/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
 5083,Gastropoda,Stromboidea,Strombidae,Strombus,,evergladesensis,,"Petuch, 1991",,D. Hargreave,,D.,,Hargreave, , ,cf.,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,,,,1,,,,23,,"ID uncertain, either 'evergladesensis' or 'sarasotaensis'",LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,18/06/2016,0,Marine,0,L. Weddle,,L.,,Weddle,,,,,,,,,,,,
 5091,Gastropoda,Muricoidea,Marginellidae,Prunum,,donovani,,"(Olsson, 1967)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,2,0,0,Dry; shell,Dry,,,,,,1,,,,150,,,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,25/10/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
-5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,00/00/1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
+5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
         do_upload_csv(reader, self.example_plan)
 
@@ -303,14 +306,19 @@ class UploadTests(ApiTests):
             .split())
 
         # Check the determination of a specific collectionobject.
-        taxon = models.Collectionobject.objects.get(catalognumber="5081").determinations.all()[0].taxon
-        self.assertEqual((taxon.name, taxon.definitionitem.name), ("evergladesensis", "Species"))
-        self.assertEqual((taxon.parent.name, taxon.parent.definitionitem.name), ("Strombus", "Genus"))
-        self.assertEqual((taxon.parent.parent.name, taxon.parent.parent.definitionitem.name), ("Strombidae", "Family"))
-        self.assertEqual((taxon.parent.parent.parent.name, taxon.parent.parent.parent.definitionitem.name), ("Stromboidea", "Superfamily"))
-        self.assertEqual((taxon.parent.parent.parent.parent.name, taxon.parent.parent.parent.parent.definitionitem.name), ("Gastropoda", "Class"))
-        self.assertEqual((taxon.parent.parent.parent.parent.parent.name, taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Upload", "Taxonomy Root"))
+        det = models.Collectionobject.objects.get(catalognumber="5081").determinations.get()
+        self.assertEqual(det.determineddate, None)
 
+        self.assertEqual((det.taxon.name, det.taxon.definitionitem.name), ("evergladesensis", "Species"))
+        self.assertEqual((det.taxon.parent.name, det.taxon.parent.definitionitem.name), ("Strombus", "Genus"))
+        self.assertEqual((det.taxon.parent.parent.name, det.taxon.parent.parent.definitionitem.name), ("Strombidae", "Family"))
+        self.assertEqual((det.taxon.parent.parent.parent.name, det.taxon.parent.parent.parent.definitionitem.name), ("Stromboidea", "Superfamily"))
+        self.assertEqual((det.taxon.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.definitionitem.name), ("Gastropoda", "Class"))
+        self.assertEqual((det.taxon.parent.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Upload", "Taxonomy Root"))
+
+        # Check determination dates.
+        self.assertEqual(set(co.determinations.get().determineddate for co in cos), set((None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0))))
+        self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 1)))
 
     def test_tree_1(self):
         reader = csv.DictReader(io.StringIO(
