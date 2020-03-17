@@ -227,7 +227,7 @@ class ObjectFormatter(object):
             return case({0: 'Organization', 1: 'Person', 2: 'Other', 3: 'Group'}, field)
 
         if specify_field is Spauditlog_model.get_field('action'):
-            return case({0: 'Add [0]', 1: 'Update [1]', 2: 'Remove [2]', 3: 'Tree Merge [3]', 4: 'Tree Move [4]', 5: 'Tree Synonymize [5]', 6: 'Tree Unsynonymize [6]'}, field)
+            return case({0: 'Insert [0]', 1: 'Update [1]', 2: 'Delete [2]', 3: 'Tree Merge [3]', 4: 'Tree Move [4]', 5: 'Tree Synonymize [5]', 6: 'Tree Unsynonymize [6]'}, field)
 
 
         return field
