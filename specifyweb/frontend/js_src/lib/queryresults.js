@@ -124,7 +124,19 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
             return fld.getLocalizedName();
         return value;
     };
-    
+
+    this.getDeIdeedTableName = function(table) {
+	var tablePlusID = table;
+	if (isNaN(tablePlusID)) {
+	    // remove numbers appended for clarity
+	    //changes to stored_queries/format.py may affect this
+	    if (tablePlusID.match(/.* \[[1-9][0-9]*\]/g)) {
+		var s = tablePlusID.search(/ \[[1-9][0-9]*\]/);
+		tablePlusID = tablePlusID.slice(0, s);
+	    }
+	}
+	return tablePlusID;
+    }
     this.getAuditedField = function(field, result, resource) {
         for (var i = 0; i < this.fieldSpecs.length; i++) {
             var fld = this.fieldSpecs[i].getField();
@@ -135,7 +147,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         }
         if (auditedFldName) {
             var tableNum = resource.get('tablenum');
-            var model = isNaN(tableNum) ? schema.models[tableNum] : schema.getModelById(tableNum);
+            var model = isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : schema.getModelById(tableNum);
             return model.getField(auditedFldName);
         } else {
             return null;
@@ -152,7 +164,7 @@ function auditedObjFormatter(fieldSpecs, model, localize) {
         var fldName = field.name.toLowerCase();
         if (fldNames.indexOf(fldName) >= 0) {
             var tableNum = fldName.startsWith('parent') ? resource.get('parenttablenum') : resource.get('tablenum');
-            return isNaN(tableNum) ? schema.models[tableNum] : schema.getModelById(tableNum);
+            return isNaN(tableNum) ? schema.models[this.getDeIdeedTableName(tableNum)] : schema.getModelById(tableNum);
         }
         if (['newvalue','oldvalue'].indexOf(field.name.toLowerCase()) >= 0) {
             var auditedFld = this.getAuditedField(field, result, resource);
