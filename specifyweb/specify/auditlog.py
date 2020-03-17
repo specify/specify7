@@ -103,8 +103,8 @@ class AuditLog(object):
     def _log_fld_update(self, vals, log, agent):
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
-            newvalue=vals['new_value'],
-            oldvalue=vals['old_value'],
+            newvalue=vals['new_value'][:(2**16 - 1)],
+            oldvalue=vals['old_value'][:(2**16 - 1)],
             spauditlog=log,
             createdbyagent=agent,
             modifiedbyagent=agent)
