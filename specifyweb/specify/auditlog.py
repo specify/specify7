@@ -16,13 +16,13 @@ class AuditLog(object):
     _auditingFlds = None
     _auditing = None
     _lastCheck = None
-    _checkInterval = 5000
+    _checkInterval = 900
     
     def isAuditingFlds(self):
         return self.isAuditing() and self._auditingFlds
         
     def isAuditing(self):
-        if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self. _checkInterval:
+        if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
             res = Spappresourcedata.objects.filter(
                 spappresource__name='preferences',
                 spappresource__spappresourcedir__usertype='Prefs')
@@ -118,8 +118,10 @@ class AuditLog(object):
         if match is not None:
             cursor = connection.cursor()
             sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql]);
             cursor.execute(sql)
             sql = "delete from spauditlog where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql]);
             cursor.execute(sql)
         return True
     
