@@ -316,9 +316,20 @@ class UploadTests(ApiTests):
         self.assertEqual((det.taxon.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.definitionitem.name), ("Gastropoda", "Class"))
         self.assertEqual((det.taxon.parent.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Upload", "Taxonomy Root"))
 
-        # Check determination dates.
+        # Check some determination dates.
         self.assertEqual(set(co.determinations.get().determineddate for co in cos), set((None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0))))
         self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 1)))
+
+        # Check some collectingevent dates.
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1906").collectingevent.startdate, datetime(1987,5,4,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1906").collectingevent.startdateprecision, 0)
+
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="5009").collectingevent.startdate, datetime(1980,1,1,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="5009").collectingevent.startdateprecision, 2)
+
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1378").collectingevent.startdate, datetime(1998,4,1,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1378").collectingevent.startdateprecision, 1)
+
 
     def test_tree_1(self):
         reader = csv.DictReader(io.StringIO(
