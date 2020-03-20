@@ -5,7 +5,10 @@ from datetime import datetime
 
 from specifyweb.specify import models, api
 from specifyweb.specify.api_tests import ApiTests
-from .upload import UploadTable, ToManyRecord, TreeRecord, Exclude, do_upload_csv, Uploaded, UploadResult, Matched
+from .upload import (
+    UploadTable, ToManyRecord, TreeRecord, Exclude, TreeDefItemWithValue,
+    TreeMatchResult, do_upload_csv, Uploaded, UploadResult, Matched
+)
 from . import upload
 
 class UploadTests(ApiTests):
@@ -189,7 +192,7 @@ class UploadTests(ApiTests):
 
         self.assertEqual(
             excludes,
-            [Exclude(lookup='collectors__in', table='Collector', filters={'isprimary': False, 'ordernumber': 1, 'division_id': self.division.id})])
+            [Exclude(lookup='collectors__in', table='Collector', filter={'isprimary': False, 'ordernumber': 1, 'division_id': self.division.id})])
 
     def test_filter_multiple_to_many(self):
         reader = csv.DictReader(io.StringIO(
@@ -294,7 +297,7 @@ class UploadTests(ApiTests):
                 'Cochran Pit, N of Rt. 80, W of LaBelle',)))
 
         # Check that taxa got uploaded without dupes.
-        self.assertEqual(models.Taxon.objects.get(definitionitem__name='Taxonomy Root').name, "Upload")
+        self.assertEqual(models.Taxon.objects.get(definitionitem__name='Taxonomy Root').name, "Uploaded")
 
         self.assertEqual(
             sorted(t.name for t in models.Taxon.objects.filter(definitionitem__name='Class')),
@@ -314,7 +317,7 @@ class UploadTests(ApiTests):
         self.assertEqual((det.taxon.parent.parent.name, det.taxon.parent.parent.definitionitem.name), ("Strombidae", "Family"))
         self.assertEqual((det.taxon.parent.parent.parent.name, det.taxon.parent.parent.parent.definitionitem.name), ("Stromboidea", "Superfamily"))
         self.assertEqual((det.taxon.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.definitionitem.name), ("Gastropoda", "Class"))
-        self.assertEqual((det.taxon.parent.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Upload", "Taxonomy Root"))
+        self.assertEqual((det.taxon.parent.parent.parent.parent.parent.name, det.taxon.parent.parent.parent.parent.parent.definitionitem.name), ("Uploaded", "Taxonomy Root"))
 
         # Check some determination dates.
         self.assertEqual(set(co.determinations.get().determineddate for co in cos), set((None, datetime(2003, 11, 1, 0, 0), datetime(2002, 1, 1, 0, 0))))
@@ -351,17 +354,17 @@ class UploadTests(ApiTests):
         to_upload, matched = tree_record.match(row)
 
         self.assertEqual(to_upload, [
-            [models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."],
-            [models.Geographytreedefitem.objects.get(name="State"), "FLORIDA"],
-            [models.Geographytreedefitem.objects.get(name="Country"), "USA"],
-            [models.Geographytreedefitem.objects.get(name="Continent"), "North America"],
-            [models.Geographytreedefitem.objects.get(name="Planet"), "Upload"],
+            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."),
+            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="State"), "FLORIDA"),
+            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Country"), "USA"),
+            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Continent"), "North America"),
+            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Planet"), "Uploaded"),
         ])
 
         self.assertEqual(matched, [])
 
         planet = models.Geography.objects.create(
-            name="Upload",
+            name="Uploaded",
             definitionitem=models.Geographytreedefitem.objects.get(name="Planet"),
             definition=self.geographytreedef,
         )
@@ -395,7 +398,10 @@ class UploadTests(ApiTests):
         #     parent=state,
         # )
 
-        self.assertEqual(tree_record.match(row), ([[models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."]], [state.id]))
+        self.assertEqual(
+            tree_record.match(row),
+            TreeMatchResult([TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="County"), "Hendry Co.")], [state.id])
+        )
 
         upload_result = tree_record.upload_row(row)
         self.assertTrue(isinstance(upload_result.record_result, Uploaded))

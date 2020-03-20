@@ -22,7 +22,7 @@ Filter = Dict[str, Any]
 class Exclude(NamedTuple):
     lookup: str
     table: str
-    filters: Filter
+    filter: Filter
 
 
 class FilterPack(NamedTuple):
@@ -93,6 +93,14 @@ class ToManyRecord(NamedTuple):
 
         return FilterPack([filters], [])
 
+class TreeDefItemWithValue(NamedTuple):
+    treedefitem: Any
+    value: Optional[str]
+
+class TreeMatchResult(NamedTuple):
+    to_upload: List[TreeDefItemWithValue]
+    matched: List[int]
+
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
@@ -127,44 +135,48 @@ class TreeRecord(NamedTuple):
         return UploadResult(Uploaded(uploaded.id), {}, {})
 
 
-    def match(self, row: Row) -> Tuple[List[List], List[int]]:
+    def match(self, row: Row) -> TreeMatchResult:
         model = getattr(models, self.name)
         tablename = model._meta.db_table
         treedef = getattr(models, self.treedefname).objects.get(id=self.treedefid)
-        ranks = treedef.treedefitems.order_by("-rankid")
-        depth = len(ranks)
+        treedefitems = treedef.treedefitems.order_by("-rankid")
+        depth = len(treedefitems)
         values = {
             rankname: parse_string(row[wbcol])
             for wbcol, rankname in self.ranks.items()
         }
 
-        all_levels = list(dropwhile(lambda p: p[1] is None, (
-            [rank, values.get(rank.name, None)]
-            for rank in ranks)))
+        items_with_values = list(dropwhile(lambda p: p.value is None, (
+            TreeDefItemWithValue(item, values.get(item.name, None))
+            for item in treedefitems
+        )))
 
-        if not all_levels:
-            return ([], [])
+        if not items_with_values:
+            # no tree data for this row
+            return TreeMatchResult([], [])
 
-        if all_levels[-1][1] is None:
-            all_levels[-1][1] = "Upload"
+        if items_with_values[-1].value is None:
+            # make sure there is a value for root of tree
+            root = items_with_values.pop()
+            items_with_values.append(root._replace(value="Uploaded"))
 
-        all_levels = [
-            [rank, "Upload" if rank.isenforced and value is None else value]
-            for rank, value in all_levels
-            if value is not None or rank.isenforced
+        items_with_values_enforced = [
+            TreeDefItemWithValue(item, "Uploaded" if item.isenforced and value is None else value)
+            for item, value in items_with_values
+            if value is not None or item.isenforced
         ]
 
         cursor = connection.cursor()
-        to_upload: List[List] = []
-        while all_levels:
+        to_upload: List[TreeDefItemWithValue] = []
+        while items_with_values_enforced:
             matchers = [
                 "and d{}.rankid = %s and t{}.name = %s\n".format(i,i)
-                for i, __ in enumerate(all_levels)
+                for i, __ in enumerate(items_with_values_enforced)
             ]
 
             params = [
                 p
-                for rank, value in all_levels
+                for rank, value in items_with_values_enforced
                 for p in (rank.rankid, value)
             ]
 
@@ -186,11 +198,11 @@ class TreeRecord(NamedTuple):
             cursor.execute(sql, params)
             result = list(r[0] for r in cursor.fetchall())
             if result:
-                return (to_upload, result)
+                return TreeMatchResult(to_upload, result)
             else:
-                to_upload.append(all_levels.pop(0))
+                to_upload.append(items_with_values_enforced.pop(0))
 
-        return (to_upload, [])
+        return TreeMatchResult(to_upload, [])
 
 
 class UploadTable(NamedTuple):
@@ -241,7 +253,7 @@ class UploadTable(NamedTuple):
 
         to_many_filters, to_many_excludes = to_many_filters_and_excludes(self.toMany, row)
 
-        matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filters)}),
+        matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
                                  to_many_excludes,
                                  reduce(lambda q, f: q.filter(**f),
                                         to_many_filters,
