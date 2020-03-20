@@ -1,18 +1,19 @@
+
 import io
 import csv
 from unittest import skip
 from datetime import datetime
 
-from specifyweb.specify import models, api
+from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
-from .upload import (
-    UploadTable, ToManyRecord, TreeRecord, Exclude, TreeDefItemWithValue,
-    TreeMatchResult, do_upload_csv, Uploaded, UploadResult, Matched
-)
-from . import upload
+from .upload.data import Uploaded, UploadResult, Matched, Exclude
+from .upload.upload_table import UploadTable, to_many_filters_and_excludes
+from .upload.tomany import ToManyRecord
+from .upload.treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
+from .upload.upload import do_upload_csv
 
 class UploadTests(ApiTests):
-    def setUp(self):
+    def setUp(self) -> None:
         super(UploadTests, self).setUp()
 
         # some views are not defined above the discipline level
@@ -173,13 +174,13 @@ class UploadTests(ApiTests):
             },
         )
 
-    def test_filter_to_many_single(self):
+    def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date,Country,Date Collected,Start Date Collected,End Date Collected,Collection Method,Prep Type 1,Accession No.,Remarks,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name
 59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,
 '''))
         row = next(reader)
-        filters, excludes = upload.to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
+        filters, excludes = to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
         self.assertEqual(filters, [{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
@@ -194,13 +195,13 @@ class UploadTests(ApiTests):
             excludes,
             [Exclude(lookup='collectors__in', table='Collector', filter={'isprimary': False, 'ordernumber': 1, 'division_id': self.division.id})])
 
-    def test_filter_multiple_to_many(self):
+    def test_filter_multiple_to_many(self) -> None:
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1378,Gastropoda,Rissooidea,Rissoinidae,Rissoina,,delicatissima,,"Raines, 2002",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,In sand at base of cliffs,10,20,0,,,Paratype,512,," PARATYPES.  In pouch no. 1, paratypes 4 & 5.  Raines, B.K. 2002.  La Conchiglia 34 ( no. 304) : 16 (holotype LACM 2934, Fig. 9).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,109° 19' 45' W,,Point,,JSG,23/12/2014,0,Marine,0,B. Raines and M. Taylor,,B.,,Raines,,M.,,Taylor,,,,,,,,
 '''))
         row = next(reader)
-        filters, excludes = upload.to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
+        filters, excludes = to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
         self.assertEqual(filters, [
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',
@@ -222,7 +223,7 @@ class UploadTests(ApiTests):
         self.assertEqual(excludes, [])
 
 
-    def test_1(self):
+    def test_1(self) -> None:
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
@@ -334,7 +335,7 @@ class UploadTests(ApiTests):
         self.assertEqual(models.Collectionobject.objects.get(catalognumber="1378").collectingevent.startdateprecision, 1)
 
 
-    def test_tree_1(self):
+    def test_tree_1(self) -> None:
         reader = csv.DictReader(io.StringIO(
 '''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
 5033,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,8 Sep 1973,8 Sep 1973,,,,8,0,0,Dry; shell,Dry,,,,,,1,"Caloosahatchee,Pinecrest Unit #4",U/Juv,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
@@ -411,5 +412,5 @@ class UploadTests(ApiTests):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        self.assertEqual(tree_record.match(row), ([], [upload_result.get_id()]))
-        self.assertEqual(tree_record.upload_row(row), UploadResult(Matched(id=upload_result.get_id()), {}, {}))
+        self.assertEqual(tree_record.match(row), ([], [uploaded.id]))
+        self.assertEqual(tree_record.upload_row(row), UploadResult(Matched(id=uploaded.id), {}, {}))
