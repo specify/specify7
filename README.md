@@ -1,18 +1,21 @@
 
-  Specify 7
-  =========
+Specify 7
+=========
 
-  The Specify Collections Consortium is funded by
-  its member institutions and by an award from the US NSF
-  (BIO/DBI: 1565098).
+Specify Software is a product of the Specify Collections Consortium
+that is funded by its member institutions. Consortium Founding Members
+include: University of Michigan, University of Florida, Denmark
+Consortium of Museums, and the University of Kansas. The Consortium
+operates under the non-profit U.S. tax status of the University of
+Kansas Center for Research. Specify was supported previously by
+multiple awards from the U.S. National Science Foundation.
 
-  Specify 7 Copyright © 2019 University of Kansas Center for
-  Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is
-  free software licensed under GNU General Public License 2
-  (GPL2).
+Specify 7 Copyright © 2020 University of Kansas Center for
+Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is free
+software licensed under GNU General Public License 2 (GPL2).
 
 
-    Specify Software Project
+    Specify Collections Consortium
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.

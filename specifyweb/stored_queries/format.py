@@ -60,17 +60,7 @@ class ObjectFormatter(object):
             or lookup('class', specify_model.classname)
 
     def catalog_number_is_numeric(self):
-        try:
-            locale_item = Splocalecontaineritem.objects.get(
-                container__discipline=self.collection.discipline,
-                container__name='collectionobject',
-                container__schematype=0,
-                name='catalogNumber')
-            formatter = locale_item.format
-        except Splocalecontaineritem.DoesNotExist:
-            return False
-
-        return formatter == 'CatalogNumberNumeric'
+        return self.collection.catalognumformatname == 'CatalogNumberNumeric'
 
     def pseudo_sprintf(self, format, expr):
         """Handle format attribute of fields in data object formatter definitions.
