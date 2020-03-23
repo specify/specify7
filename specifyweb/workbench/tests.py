@@ -11,6 +11,7 @@ from .upload.upload_table import UploadTable, to_many_filters_and_excludes
 from .upload.tomany import ToManyRecord
 from .upload.treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload.upload import do_upload_csv
+from .upload.parsing import parse_latlong
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
@@ -104,8 +105,8 @@ class UploadTests(ApiTests):
                             name = 'Locality',
                             wbcols = {
                                 'Site': 'localityname',
-                                'Latitude1': 'lat1text',
-                                'Longitude1': 'long1text',
+                                'Latitude1': 'latitude1',
+                                'Longitude1': 'longitude1',
                             },
                             static = {'discipline_id': self.discipline.id, 'srclatlongunit': 0},
                             toOne = {
@@ -261,6 +262,7 @@ class UploadTests(ApiTests):
 
         # Check that only one copy of a given agent/collectingevent was uploaded.
         self.assertEqual(models.Agent.objects.filter(lastname="Garcia").count(), 1)
+        print([ce.locality.latitude1 for ce in models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)")])
         self.assertEqual(models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)").count(), 1)
 
         # Check which collectingevents got uploaded for some cases.
@@ -414,3 +416,27 @@ class UploadTests(ApiTests):
 
         self.assertEqual(tree_record.match(row), ([], [uploaded.id]))
         self.assertEqual(tree_record.upload_row(row), UploadResult(Matched(id=uploaded.id), {}, {}))
+
+    def test_parse_latlong(self) -> None:
+        tests = {
+            '34.123 N': 34.123,
+            '36:07 N': (36 + 7/60),
+            '39:51:41 N': (39 + 51/60 + 41/60/60),
+            '00.07152778 N': (0.07152778),
+            '17:22.88 N': (17 + 22.88/60),
+            '39:51:41.02 N': (39 + 51/60 + 41.02/60/60),
+            '-39:51:41': -(39 + 51/60 + 41/60/60),
+            '39:51:41 s': -(39 + 51/60 + 41/60/60),
+            '39:51.41 w': -(39 + 51.41/60),
+            '.34': (0.34),
+            '-.34': (-0.34),
+            '17:22.88 E': (17 + 22.88/60),
+            '28° N': (28),
+            '28° 19\' N': (28 + 19/60),
+            '28° 19\' 0.121" N': (28 + 19/60 + 0.121/60/60),
+            '115° 34\' 59.872" W': -(115 + 34/60 + 59.872/60/60),
+            'foobar': None,
+        }
+
+        for k, v in tests.items():
+            self.assertEqual(parse_latlong(k), v)
