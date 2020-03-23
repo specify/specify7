@@ -101,10 +101,16 @@ class AuditLog(object):
                 modifiedbyagent=agent)
     
     def _log_fld_update(self, vals, log, agent):
+        newval = vals['new_value']
+        if newval is not None:
+            newval = str(vals['new_value'])[:(2**16 - 1)]
+        oldval = vals['old_value']
+        if oldval is not None:
+            oldval = str(vals['old_value'])[:(2**16 - 1)]
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
-            newvalue=str(vals['new_value'])[:(2**16 - 1)],
-            oldvalue=str(vals['old_value'])[:(2**16 - 1)],
+            newvalue=newval,
+            oldvalue=oldval,
             spauditlog=log,
             createdbyagent=agent,
             modifiedbyagent=agent)
