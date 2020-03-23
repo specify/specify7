@@ -16,7 +16,7 @@ class AuditLog(object):
     _auditingFlds = None
     _auditing = None
     _lastCheck = None
-    _checkInterval = 900
+    _checkInterval = 120
     
     def isAuditingFlds(self):
         return self.isAuditing() and self._auditingFlds
@@ -115,6 +115,7 @@ class AuditLog(object):
             spappresource__spappresourcedir__usertype='Global Prefs')
         global_prefs = '\n'.join(r.data for r in res)
         match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', global_prefs)
+        logger.info("checking to see if purge is required")
         if match is not None:
             cursor = connection.cursor()
             sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
