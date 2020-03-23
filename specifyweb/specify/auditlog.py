@@ -16,7 +16,7 @@ class AuditLog(object):
     _auditingFlds = None
     _auditing = None
     _lastCheck = None
-    _checkInterval = 120
+    _checkInterval = 900
     
     def isAuditingFlds(self):
         return self.isAuditing() and self._auditingFlds
