@@ -8,21 +8,27 @@ from dateparser import DateDataParser
 
 from specifyweb.specify.datamodel import datamodel
 
+from .data import Filter
+
 logger = logging.getLogger(__name__)
 
-def parse_value(tablename: str, fieldname: str, value: str) -> Dict[str, Any]:
+class ParseResult(NamedTuple):
+    filter_on: Filter
+    upload: Dict[str, Any]
+
+def filter_and_upload(f: Filter) -> ParseResult:
+    return ParseResult(f, f)
+
+def parse_value(tablename: str, fieldname: str, value: str) -> ParseResult:
     value = value.strip()
     if value == "":
-        return {fieldname: None}
+        return ParseResult({fieldname: None}, {})
 
     table = datamodel.get_table(tablename)
     field = table.get_field(fieldname)
 
-    if table.name == 'Locality' and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2'):
-        latlong = parse_latlong(value)
-        if latlong is None:
-            raise Exception('bad latitude or longitude value: {}'.format(value))
-        return {fieldname: latlong}
+    if is_latlong(table, field):
+        return parse_latlong(field, value)
 
     if field.is_temporal():
         precision_field = table.get_field(fieldname + 'precision')
@@ -37,22 +43,22 @@ def parse_value(tablename: str, fieldname: str, value: str) -> Dict[str, Any]:
 
         if precision_field is None:
             if parsed['period'] == 'day':
-                return {fieldname: parsed['date_obj']}
+                return filter_and_upload({fieldname: parsed['date_obj']})
             else:
                 raise Exception("bad date value: {}".format(value))
         else:
             prec = parsed['period']
             date = parsed['date_obj']
             if prec == 'day':
-                return {fieldname: date, precision_field.name.lower(): 0}
+                return filter_and_upload({fieldname: date, precision_field.name.lower(): 0})
             elif prec == 'month':
-                return {fieldname: date.replace(day=1), precision_field.name.lower(): 1}
+                return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1})
             elif prec == 'year':
-                return {fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2}
+                return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2})
             else:
                 raise Exception('expected date precision to be day month or year. got: {}'.format(prec))
     else:
-        return {fieldname: value}
+        return filter_and_upload({fieldname: value})
 
 
 def parse_string(value: str) -> Optional[str]:
@@ -61,12 +67,26 @@ def parse_string(value: str) -> Optional[str]:
         return None
     return result
 
-def parse_latlong(value: str) -> Optional[float]:
+def is_latlong(table, field) -> bool:
+    return table.name == 'Locality' \
+        and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2')
+
+def parse_latlong(field, value: str) -> ParseResult:
+    coord = parse_coord(value)
+
+    if coord is None:
+        raise Exception('bad latitude or longitude value: {}'.format(value))
+
+    text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
+    return ParseResult(text_filter, {field.name: coord, **text_filter})
+
+
+def parse_coord(value: str) -> Optional[float]:
     for p in LATLONG_PARSER_DEFS:
         match = re.compile(p.regex, re.I).match(value)
         if match and match.group(1):
             comps = [float(match.group(i)) for i in p.comp_groups]
-            result, divisor = 0, 1
+            result, divisor = 0.0, 1
             for comp in comps:
                 result += abs(comp) / divisor
                 divisor *= 60

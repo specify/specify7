@@ -23,7 +23,7 @@ class UploadTable(NamedTuple):
         filters = {
             (path + '__' + fieldname_): value
             for caption, fieldname in self.wbcols.items()
-            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).items()
+            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
         }
 
 
@@ -50,13 +50,13 @@ class UploadTable(NamedTuple):
             for fieldname, to_one_def in self.toOne.items()
         }
 
-        attrs = {
+        filters = {
             fieldname_: value
             for caption, fieldname in self.wbcols.items()
-            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).items()
+            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
         }
 
-        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+        filters.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
         to_many_filters, to_many_excludes = to_many_filters_and_excludes(self.toMany, row)
 
@@ -64,10 +64,18 @@ class UploadTable(NamedTuple):
                                  to_many_excludes,
                                  reduce(lambda q, f: q.filter(**f),
                                         to_many_filters,
-                                        model.objects.filter(**attrs, **self.static)))
+                                        model.objects.filter(**filters, **self.static)))
 
         n_matched = matched_records.count()
         if n_matched == 0:
+            attrs = {
+                fieldname_: value
+                for caption, fieldname in self.wbcols.items()
+                for fieldname_, value in parse_value(self.name, fieldname, row[caption]).upload.items()
+            }
+
+            attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+
             if any(v is not None for v in attrs.values()) or to_many_filters:
                 uploaded = model.objects.create(**attrs, **self.static)
                 toManyResults = {

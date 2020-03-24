@@ -3,6 +3,7 @@ import io
 import csv
 from unittest import skip
 from datetime import datetime
+from decimal import Decimal
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
@@ -11,7 +12,7 @@ from .upload.upload_table import UploadTable, to_many_filters_and_excludes
 from .upload.tomany import ToManyRecord
 from .upload.treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload.upload import do_upload_csv
-from .upload.parsing import parse_latlong
+from .upload.parsing import parse_coord
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
@@ -262,7 +263,6 @@ class UploadTests(ApiTests):
 
         # Check that only one copy of a given agent/collectingevent was uploaded.
         self.assertEqual(models.Agent.objects.filter(lastname="Garcia").count(), 1)
-        print([ce.locality.latitude1 for ce in models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)")])
         self.assertEqual(models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)").count(), 1)
 
         # Check which collectingevents got uploaded for some cases.
@@ -286,18 +286,26 @@ class UploadTests(ApiTests):
 
         # Check that localities got uploaded.
         self.assertEqual(
-            set(co.collectingevent.locality.localityname for co in cos),
-            set((
-                'Cochran Pit, N of Route 80, W of LaBelle',
-                'Off Punta Rosalia, E pf Anakena',
-                'Hanga Nui',
-                'Off Punta Rosalia, E of Anakena',
-                '[Lat-long site]',
-                'Near Tahai',
-                '90 mi east of Charleston',
-                'Off Hanga-Teo, on N. coast',
-                'Off Punta Rosalia, E of Anakean',
-                'Cochran Pit, N of Rt. 80, W of LaBelle',)))
+            set((l.localityname, l.latitude1, l.lat1text, l.longitude1, l.long1text)
+                for l in [co.collectingevent.locality for co in cos]
+            ),
+            set([
+                ('Off Hanga-Teo, on N. coast', Decimal('-27.0602777778'), "27° 03' 37'' S", Decimal('-109.3661111111'), "109° 21' 58' W"),
+                ('[Lat-long site]', Decimal('27.8116666667'), "27° 48.7' N", Decimal('-93.0480000000'), "93° 2.88' W"),
+                ('Off Punta Rosalia, E pf Anakena', Decimal('-27.0716666667'), '27° 04\' 18" S', Decimal('-109.3291666667'), '109° 19\' 45" W'),
+                ('[Lat-long site]', Decimal('28.1011666667'), "28° 06.07' N", Decimal('-91.0403333333'), "91° 02.42' W"),
+                ('Off Punta Rosalia, E of Anakean', Decimal('-27.0716666667'), '27° 04\' 18" S', Decimal('-109.3291666667'), '109° 19\' 45" W'),
+                ('Near Tahai', Decimal('-27.1222222222'), '27° 07\' 20" S', Decimal('-109.4416666667'), '109° 26\' 30" W'),
+                ('90 mi east of Charleston', Decimal('32.7325000000'), '32° 43\' 57" N', Decimal('-78.0947222222'), '78° 05\' 41" W'),
+                ('Hanga Nui', Decimal('-27.1294444444'), '27° 07\' 46" S', Decimal('-109.2763888889'), '109° 16\' 35" W'),
+                ('[Lat-long site]', Decimal('27.9850000000'), "27° 59.1' N", Decimal('-91.6466666667'), "91° 38.8' W"),
+                ('Cochran Pit, N of Rt. 80, W of LaBelle', Decimal('26.7349833333'), "26° 44.099' N", Decimal('-81.4837833333'), "81° 29.027' W"),
+                ('Off Punta Rosalia, E of Anakena', Decimal('-27.0716666667'), '27° 04\' 18" S', Decimal('-109.3291666667'), '109° 19\' 45" W'),
+                ('[Lat-long site]', Decimal('27.9856666667'), "27° 59.14' N", Decimal('-91.6471666667'), "91° 38.83' W"),
+                ('Off Punta Rosalia, E of Anakena', Decimal('-27.0716666667'), '27° 04\' 18" S', Decimal('-109.3291666667'), "109° 19' 45' W"),
+                ('[Lat-long site]', Decimal('28.0573333333'), "28° 03.44' N", Decimal('-92.4496666667'), "92° 26.98' W"),
+                ('Cochran Pit, N of Route 80, W of LaBelle', Decimal('26.7349833333'), "26° 44.099' N", Decimal('-81.4837833333'), "81° 29.027' W"),
+            ]))
 
         # Check that taxa got uploaded without dupes.
         self.assertEqual(models.Taxon.objects.get(definitionitem__name='Taxonomy Root').name, "Uploaded")
@@ -439,4 +447,4 @@ class UploadTests(ApiTests):
         }
 
         for k, v in tests.items():
-            self.assertEqual(parse_latlong(k), v)
+            self.assertEqual(parse_coord(k), v)
