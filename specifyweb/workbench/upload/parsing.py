@@ -3,7 +3,7 @@ import logging
 import math
 import re
 
-from typing import Dict, Any, Optional, List, NamedTuple
+from typing import Dict, Any, Optional, List, NamedTuple, Tuple
 from dateparser import DateDataParser
 
 from specifyweb.specify.datamodel import datamodel
@@ -72,16 +72,17 @@ def is_latlong(table, field) -> bool:
         and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2')
 
 def parse_latlong(field, value: str) -> ParseResult:
-    coord = parse_coord(value)
+    coord, unit = parse_coord(value)
 
     if coord is None:
         raise Exception('bad latitude or longitude value: {}'.format(value))
 
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
-    return ParseResult(text_filter, {field.name: coord, **text_filter})
+    return ParseResult(text_filter,
+                       {field.name: coord, 'originallatlongunit': unit, **text_filter})
 
 
-def parse_coord(value: str) -> Optional[float]:
+def parse_coord(value: str) -> Optional[Tuple[float, int]]:
     for p in LATLONG_PARSER_DEFS:
         match = re.compile(p.regex, re.I).match(value)
         if match and match.group(1):
@@ -93,30 +94,34 @@ def parse_coord(value: str) -> Optional[float]:
             result = math.copysign(result, comps[0])
             if match.group(p.dir_group).lower() in ("s", "w"):
                 result = -result
-            return result
+            return (result, p.unit)
     return None
 
 class LatLongParserDef(NamedTuple):
     regex: str
     comp_groups: List[int]
     dir_group: int
+    unit: int
 
 LATLONG_PARSER_DEFS = [
     LatLongParserDef(
         r'^(-?\d{0,3}(\.\d*)?)[^\d\.nsew]*([nsew]?)$',
         [1],
-        3
+        3,
+        0
     ),
 
     LatLongParserDef(
         r'^(-?\d{1,3})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$',
         [1, 2],
-        4
+        4,
+        2
     ),
 
     LatLongParserDef(
         r'^(-?\d{1,3})[^\d\.]+(\d{1,2})[^\d\.]+(\d{0,2}(\.\d*)?)[^\d\.nsew]*([nsew]?)$',
         [1, 2, 3],
-        5
+        5,
+        1
     ),
 ]
