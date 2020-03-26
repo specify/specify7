@@ -2,6 +2,7 @@ import os
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
 from django.template import loader, Context
 from django.conf import settings
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 login_maybe_required = (lambda func: func) if settings.ANONYMOUS_USER else login_required
 
 @login_maybe_required
+@ensure_csrf_cookie
 def specify(request):
     resp = loader.get_template('specify.html').render(Context({
         'use_raven': settings.RAVEN_CONFIG is not None,
