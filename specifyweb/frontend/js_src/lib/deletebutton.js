@@ -18,7 +18,7 @@ module.exports =  Backbone.View.extend({
     },
         render: function() {
             this.$el.addClass('deletebutton');
-            this.button = $('<input type="button" value="*Delete" class="delete-button">').appendTo(this.el);
+            this.button = $('<a href="#" class="delete-button">*Delete</a>').appendTo(this.el);
             this.promise = $.get('/api/delete_blockers/' +
                                  this.model.specifyModel.name.toLowerCase() +
                                  '/' + this.model.id + '/');
@@ -28,7 +28,7 @@ module.exports =  Backbone.View.extend({
         gotBlockers: function(blockers) {
             this.blockers = blockers;
             if(blockers.length < 1) {
-                this.button.attr("value", "Delete");
+                this.button.text("Delete");
             }
         },
         openDialog: function(evt) {

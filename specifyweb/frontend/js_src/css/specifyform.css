@@ -53,16 +53,22 @@ div.specify-view-content-container,
 }
 
 .specify-form-buttons {
-    text-align: right;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    border-top: 2px solid #f4763d;
+    padding-top: 4px;
 }
 
 .specify-form-buttons input {
-    margin-right: 10px;
+    margin-left: 10px;
     border-radius: 0;
     border: 2px solid #f4763d;
     background: #f79244;
     color: #fff;
     padding: 4px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .specify-form-buttons input:hover,
@@ -78,7 +84,12 @@ div.specify-view-content-container,
 
 .specify-form-buttons input:disabled {
     background: #d3d3d3;
-    border: none;
+    border: 2px solid #d3d3d3;
+}
+
+.specify-form-buttons .deletebutton {
+    padding: 4px;
+    font-weight: bold;
 }
 
 textarea.specify-field {

@@ -58,11 +58,6 @@ module.exports =  Backbone.View.extend({
         },
         render: function() {
             this.$el.addClass('savebutton');
-            this.$el.append($('<input>', {
-                type: "submit",
-                "class": "save-button",
-                value: "Save"
-            }));
             if (this.options.addAnother) {
                 this.$el.append($('<input>', {
                     type: "submit",
@@ -70,6 +65,11 @@ module.exports =  Backbone.View.extend({
                     value: "Save and Add Another"
                 }));
             }
+            this.$el.append($('<input>', {
+                type: "submit",
+                "class": "save-button",
+                value: "Save"
+            }));
             this.buttons = this.$(':submit');
             this.buttons.appendTo(this.el);
 
