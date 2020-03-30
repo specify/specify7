@@ -112,15 +112,18 @@ module.exports = {
             },
             customInit: function(determination) {
                 if (determination.isNew()) {
-                    var setCurrentIfNoneIsSet = function() {
-                        if (!(determination.collection.any(function(other) {
-                            return other.get('iscurrent');
-                        }))) {
-                            determination.set('iscurrent', true);
+                    const setCurrent = function() {
+                        determination.set('iscurrent', true);
+                        if (determination.collection != null) {
+                            determination.collection.each(function(other) {
+                                if (other.cid !== determination.cid) {
+                                    other.set('iscurrent', false);
+                                }
+                            });
                         }
                     };
-                    if (determination.collection != null) setCurrentIfNoneIsSet();
-                    determination.on('add', setCurrentIfNoneIsSet);
+                    if (determination.collection != null) setCurrent();
+                    determination.on('add', setCurrent);
                 }
             },
             customChecks: {
