@@ -144,6 +144,9 @@ module.exports = {
                             }
                         });
                     }
+                    if (determination.collection != null && !determination.collection.any(c => c.get('iscurrent'))) {
+                        determination.set('iscurrent', true);
+                    }
                     return {valid: true};
                 }
             }
