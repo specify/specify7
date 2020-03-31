@@ -45,7 +45,7 @@ class UploadTests(ApiTests):
         self.example_plan = UploadTable(
             name = 'Collectionobject',
             wbcols = {
-                "BMSM No." : 'catalognumber',
+                'catalognumber' : "BMSM No.",
             },
             static = {'collection_id': self.collection.id},
             toMany = {
@@ -53,7 +53,7 @@ class UploadTests(ApiTests):
                     ToManyRecord(
                         name = 'Determination',
                         wbcols = {
-                            'ID Date': 'determineddate',
+                            'determineddate': 'ID Date',
                         },
                         static = {
                             'collectionmemberid': self.collection.id,
@@ -63,10 +63,10 @@ class UploadTests(ApiTests):
                             'determiner': UploadTable(
                                 name = 'Agent',
                                 wbcols = {
-                                    'Determiner 1 Title': 'title',
-                                    'Determiner 1 First Name': 'firstname',
-                                    'Determiner 1 Middle Initial': 'middleinitial',
-                                    'Determiner 1 Last Name': 'lastname',
+                                    'title': 'Determiner 1 Title',
+                                    'firstname': 'Determiner 1 First Name',
+                                    'middleinitial': 'Determiner 1 Middle Initial',
+                                    'lastname': 'Determiner 1 Last Name',
                                 },
                                 static = {
                                     'agenttype': 1
@@ -96,18 +96,18 @@ class UploadTests(ApiTests):
                 'collectingevent': UploadTable(
                     name = 'Collectingevent',
                     wbcols = {
-                        'End Date Collected' : 'enddate',
-                        'Start Date Collected' : 'startdate',
-                        'Station No.' : 'stationfieldnumber',
+                        'enddate' : 'End Date Collected',
+                        'startdate' : 'Start Date Collected',
+                        'stationfieldnumber' : 'Station No.',
                     },
                     static = {'discipline_id': self.discipline.id},
                     toOne = {
                         'locality': UploadTable(
                             name = 'Locality',
                             wbcols = {
-                                'Site': 'localityname',
-                                'Latitude1': 'latitude1',
-                                'Longitude1': 'longitude1',
+                                'localityname': 'Site',
+                                'latitude1': 'Latitude1',
+                                'longitude1': 'Longitude1',
                             },
                             static = {'discipline_id': self.discipline.id, 'srclatlongunit': 0},
                             toOne = {
@@ -136,10 +136,10 @@ class UploadTests(ApiTests):
                                     'agent': UploadTable(
                                         name = 'Agent',
                                         wbcols = {
-                                            'Collector 1 Title'          : 'title',
-                                            'Collector 1 First Name'     : 'firstname',
-                                            'Collector 1 Middle Initial' : 'middleinitial',
-                                            'Collector 1 Last Name'      : 'lastname',
+                                            'title'          : 'Collector 1 Title',
+                                            'firstname'     : 'Collector 1 First Name',
+                                            'middleinitial' : 'Collector 1 Middle Initial',
+                                            'lastname'      : 'Collector 1 Last Name',
                                         },
                                         static = {
                                             'agenttype': 1
@@ -157,10 +157,10 @@ class UploadTests(ApiTests):
                                     'agent': UploadTable(
                                         name = 'Agent',
                                         wbcols = {
-                                            'Collector 2 Title'          : 'title',
-                                            'Collector 2 First Name'     : 'firstname',
-                                            'Collector 2 Middle Initial' : 'middleinitial',
-                                            'Collector 2 Last name'      : 'lastname',
+                                            'title'          : 'Collector 2 Title',
+                                            'firstname'     : 'Collector 2 First Name',
+                                            'middleinitial' : 'Collector 2 Middle Initial',
+                                            'lastname'      : 'Collector 2 Last name',
                                         },
                                         static = {
                                             'agenttype': 1
