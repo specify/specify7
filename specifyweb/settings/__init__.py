@@ -59,15 +59,15 @@ TESTING_DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
         'NAME': "specifytest",
-        'USER': "Master",
-        'PASSWORD': "Master",
+        'USER': "master",
+        'PASSWORD': "master",
         # 'HOST': '127.0.0.1',
         # 'PORT': '3307',
     }
 }
 
 if 'test' in sys.argv:
-    # DATABASES = TESTING_DATABASES
+    DATABASES = TESTING_DATABASES
     # DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
     # DATABASES['default']['TEST']['NAME'] = 'specifytest.sqlite3'
     # TESTING = True
