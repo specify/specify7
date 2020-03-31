@@ -7,12 +7,12 @@ from decimal import Decimal
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
-from .upload.data import Uploaded, UploadResult, Matched, Exclude
-from .upload.upload_table import UploadTable, to_many_filters_and_excludes
-from .upload.tomany import ToManyRecord
-from .upload.treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
-from .upload.upload import do_upload_csv
-from .upload.parsing import parse_coord
+from .data import Uploaded, UploadResult, Matched, Exclude
+from .upload_table import UploadTable, to_many_filters_and_excludes
+from .tomany import ToManyRecord
+from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
+from .upload import do_upload_csv
+from .parsing import parse_coord
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
