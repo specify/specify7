@@ -16,7 +16,7 @@ class ToManyRecord(NamedTuple):
     def filter_on(self, path: str, row: Row) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value
-            for caption, fieldname in self.wbcols.items()
+            for fieldname, caption in self.wbcols.items()
             for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
         }
 
