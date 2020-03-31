@@ -74,11 +74,12 @@ def is_latlong(table, field) -> bool:
         and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2')
 
 def parse_latlong(field, value: str) -> ParseResult:
-    coord, unit = parse_coord(value)
+    parsed = parse_coord(value)
 
-    if coord is None:
+    if parsed is None:
         raise Exception('bad latitude or longitude value: {}'.format(value))
 
+    coord, unit = parsed
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
     return ParseResult(text_filter,
                        {field.name: coord, 'originallatlongunit': unit, **text_filter})
