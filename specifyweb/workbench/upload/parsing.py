@@ -32,11 +32,13 @@ def parse_value(tablename: str, fieldname: str, value: str) -> ParseResult:
 
     if field.is_temporal():
         precision_field = table.get_field(fieldname + 'precision')
-        parsed = DateDataParser(settings={
-            'PREFER_DAY_OF_MONTH': 'first',
-            'PREFER_DATES_FROM': 'past',
-            'STRICT_PARSING': precision_field is None,
-        }).get_date_data(value)
+        parsed = DateDataParser(
+            settings={
+                'PREFER_DAY_OF_MONTH': 'first',
+                'PREFER_DATES_FROM': 'past',
+                'STRICT_PARSING': precision_field is None,
+            },
+        ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
 
         if parsed['date_obj'] is None:
             raise Exception("bad date value: {}".format(value))
