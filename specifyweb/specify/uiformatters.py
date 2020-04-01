@@ -1,14 +1,17 @@
+
 import re, logging
 from typing import NamedTuple, List, Optional, Sequence
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 from django.db import connection
+from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
 logger = logging.getLogger(__name__)
 
 from specifyweb.context.app_resource import get_app_resource
 
+from .models import Splocalecontaineritem as Item
 from .filter_by_col import filter_by_collection
 
 class AutonumberOverflowException(Exception):
@@ -227,7 +230,7 @@ class CNNField(NumericField):
     def canonicalize(self, value: str) -> str:
         return value.zfill(self.size)
 
-def get_uiformatter(collection, user, formatter_name: str) -> Optional[UIFormatter]:
+def get_uiformatter_by_name(collection, user, formatter_name: str) -> Optional[UIFormatter]:
     xml, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
@@ -261,3 +264,44 @@ def new_field(node) -> Field:
         value = node.attrib.get('value'),
         inc = node.attrib.get('inc') == 'true',
         by_year = node.attrib.get('byyear') == 'true')
+
+def get_uiformatters(collection, user, tablename: str) -> List[UIFormatter]:
+    filters = dict(container__discipline=collection.discipline,
+                   container__name=tablename.lower(),
+                   format__isnull=False)
+
+    formatter_names = list(
+        Item.objects
+        .filter(**filters)
+        .exclude(container__name='collectionobject', name='catalognumber')
+        .values_list('format', flat=True)
+    )
+
+    if tablename.lower() == 'collectionobject':
+        formatter_names.append(collection.catalognumformatname)
+
+    logger.debug("formatters for %s: %s", tablename, formatter_names)
+
+    uiformatters = [
+        f for f in
+        (get_uiformatter_by_name(collection, user, fn) for fn in formatter_names)
+        if f is not None
+    ]
+    logger.debug("uiformatters for %s: %s", tablename, uiformatters)
+    return uiformatters
+
+def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
+
+    if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
+        return get_uiformatter_by_name(collection, None, collection.catalognumformatname)
+
+    try:
+        field_format = Item.objects.get(
+            container__discipline=collection.discipline,
+            container__name=tablename.lower(),
+            name=fieldname.lower(),
+            format__isnull=False).format
+    except ObjectDoesNotExist:
+        return None
+    else:
+        return get_uiformatter_by_name(collection, None, field_format)

@@ -1,34 +1,17 @@
+
+from typing import List, Tuple, Sequence
+
 import logging
 logger = logging.getLogger(__name__)
 
 from .lock_tables import lock_tables
-from .models import Splocalecontaineritem as Item
-from .models import Collectionobject
-from .uiformatters import get_uiformatter, AutonumberOverflowException
+from .uiformatters import UIFormatter, get_uiformatters, AutonumberOverflowException
 
-def autonumber_and_save(collection, user, obj):
-    filters = dict(container__discipline=collection.discipline,
-                   container__name=obj.__class__.__name__.lower(),
-                   format__isnull=False)
-
-    formatter_names = list(
-        Item.objects
-        .filter(**filters)
-        .exclude(container__name='collectionobject', name='catalognumber')
-        .values_list('format', flat=True)
-    )
-
-    if obj.__class__ is Collectionobject:
-        formatter_names.append(collection.catalognumformatname)
-
-    logger.debug("formatters for %s: %s", obj, formatter_names)
-
-    uiformatters = [get_uiformatter(collection, user, f) for f in formatter_names]
-    logger.debug("uiformatters for %s: %s", obj, uiformatters)
+def autonumber_and_save(collection, user, obj) -> None:
+    uiformatters = get_uiformatters(collection, user, obj.__class__.__name__)
 
     autonumber_fields = [(formatter, vals)
                          for formatter in uiformatters
-                         if formatter is not None
                          for value in [getattr(obj, formatter.field_name.lower())]
                          if value is not None
                          for vals in [formatter.parse(value)]
@@ -40,7 +23,7 @@ def autonumber_and_save(collection, user, obj):
         logger.debug("no fields to autonumber for %s", obj)
         obj.save()
 
-def do_autonumbering(collection, obj, fields):
+def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     # The autonumber action is prepared and thunked outside the locked table
