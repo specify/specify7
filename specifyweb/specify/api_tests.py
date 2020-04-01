@@ -107,7 +107,7 @@ class SimpleApiTests(ApiTests):
         api.delete_resource(self.agent, 'collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
 
-class RecordSetTests(MainSetupTearDown, TransactionTestCase):
+class RecordSetTests(ApiTests):
     def setUp(self):
         super(RecordSetTests, self).setUp()
         self.recordset = models.Recordset.objects.create(
