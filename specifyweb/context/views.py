@@ -84,7 +84,7 @@ class CollectionChoiceField(forms.ChoiceField):
 def choose_collection(request):
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, host=request.get_host())
+        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
         else settings.LOGIN_REDIRECT_URL
     )
 
