@@ -1,90 +1,173 @@
+
+from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
 from xml.etree import ElementTree
 import os
+import warnings
 
-from django.conf import settings
+from django.conf import settings # type: ignore
+
+class DoesNotExistError(Exception):
+    pass
+
+class TableDoesNotExistError(DoesNotExistError):
+    pass
+
+class FieldDoesNotExistError(DoesNotExistError):
+    pass
+
+
+T = TypeVar('T')
+U = TypeVar('U')
+
+def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional[T]:
+    try:
+        warnings.warn("deprecated. use strict version.", DeprecationWarning)
+        return f(lookup)
+    except DoesNotExistError:
+        if not strict:
+            return None
+        raise
 
 class Datamodel(object):
-    def get_table(self, tablename, strict=False):
+    tables: List['Table']
+
+    def get_table(self, tablename: str, strict: bool=False) -> Optional['Table']:
+        return strict_to_optional(self.get_table_strict, tablename, strict)
+
+    def get_table_strict(self, tablename: str) -> 'Table':
         tablename = tablename.lower()
         for table in self.tables:
             if table.name.lower() == tablename:
                 return table
-        if strict:
-            raise Exception("No table with name: %r" % tablename)
+        raise TableDoesNotExistError("No table with name: %r" % tablename)
 
-    def get_table_by_id(self, table_id, strict=False):
+    def get_table_by_id(self, table_id: int, strict: bool=False) -> Optional['Table']:
+        return strict_to_optional(self.get_table_by_id_strict, table_id, strict)
+
+    def get_table_by_id_strict(self, table_id: int, strict: bool=False) -> 'Table':
         for table in self.tables:
             if table.tableId == table_id:
                 return table
-        if strict:
-            raise Exception("No table with id: %d" % table_id)
+        raise TableDoesNotExistError("No table with id: %d" % table_id)
 
-    def reverse_relationship(self, relationship):
+    def reverse_relationship(self, relationship: 'Relationship') -> Optional['Relationship']:
         if hasattr(relationship, 'otherSideName'):
-            return self.get_table(relationship.relatedModelName).get_field(relationship.otherSideName)
+            return self.get_table_strict(relationship.relatedModelName).get_relationship(relationship.otherSideName)
         else:
             return None
 
 class Table(object):
-    system = False
+    system: bool = False
+    classname: str
+    table: str
+    tableId: int
+    idColumn: str
+    idFieldName: str
+    idField: 'Field'
+    view: Optional[str]
+    searchDialog: Optional[str]
+    fields: List['Field']
+    relationships: List['Relationship']
+    fieldAliases: List[Dict[str, str]]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.classname.split('.')[-1]
 
     @property
-    def django_name(self):
+    def django_name(self) -> str:
         return self.name.capitalize()
 
-    def get_field(self, fieldname, strict=False):
+    @property
+    def all_fields(self) -> List[Union['Field', 'Relationship']]:
+        def af() -> Iterable[Union['Field', 'Relationship']]:
+            for f in self.fields:
+                yield f
+            for r in self.relationships:
+                yield r
+            yield self.idField
+
+        return list(af())
+
+
+    def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
+        return strict_to_optional(self.get_field_strict, fieldname, strict)
+
+    def get_field_strict(self, fieldname: str) -> Union['Field', 'Relationship']:
         fieldname = fieldname.lower()
-        for field in self.fields + self.relationships + [self.idField]:
+        for field in self.all_fields:
             if field.name.lower() == fieldname:
                 return field
-        if strict:
-            raise Exception("Field %s not in table %s. " % (fieldname, self.name) +
-                            "Fields: %s" % [f.name for f in self.fields + self.relationships])
+        raise FieldDoesNotExistError("Field %s not in table %s. " % (fieldname, self.name) +
+                                     "Fields: %s" % [f.name for f in self.all_fields])
+
+    def get_relationship(self, name: str) -> 'Relationship':
+        field = self.get_field_strict(name)
+        assert isinstance(field, Relationship)
+        return field
 
     @property
-    def attachments_field(self):
-        attachments = self.get_field('attachments') or self.get_field(self.name + 'attachments')
-        if attachments:
-            assert isinstance(attachments, Relationship), "attachments field must be relationship"
-        return attachments
+    def attachments_field(self) -> Optional['Relationship']:
+        try:
+            return self.get_relationship('attachments')
+        except FieldDoesNotExistError:
+            try:
+                return self.get_relationship(self.name + 'attachments')
+            except FieldDoesNotExistError:
+                return None
 
     @property
-    def is_attachment_jointable(self):
+    def is_attachment_jointable(self) -> bool:
         return self.name.endswith('Attachment') and self.name != 'Attachment'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<SpecifyTable: %s>" % self.name
 
 
 class Field(object):
-    is_relationship = False
+    is_relationship: bool = False
+    name: str
+    column: str
+    indexed: bool
+    unique: bool
+    required: bool
+    type: str
+    length: int
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<SpecifyField: %s>" % self.name
 
-    def is_temporal(self):
+    def is_temporal(self) -> bool:
         return self.type in ('java.util.Date', 'java.util.Calendar')
 
 class IdField(Field):
-    def __repr__(self):
+    name: str
+    column: str
+    type: str
+
+    def __repr__(self) -> str:
         return "<SpecifyIdField: %s>" % self.name
 
 class Relationship(Field):
-    is_relationship = True
-    dependent = False
+    is_relationship: bool = True
+    dependent: bool = False
+    name: str
+    type: str
+    required: bool
+    relatedModelName: str
+    column: str
+    otherSideName: str
 
-def make_table(tabledef):
+def make_table(tabledef: ElementTree.Element) -> Table:
     table = Table()
     table.classname = tabledef.attrib['classname']
     table.table = tabledef.attrib['table']
     table.tableId = int(tabledef.attrib['tableid'])
-    table.idColumn = tabledef.find('id').attrib['column']
-    table.idFieldName = tabledef.find('id').attrib['name']
-    table.idField = make_id_field(tabledef.find('id'))
+    iddef = tabledef.find('id')
+    assert iddef is not None
+    table.idColumn = iddef.attrib['column']
+    table.idFieldName = iddef.attrib['name']
+    table.idField = make_id_field(iddef)
 
     display = tabledef.find('display')
     if display is not None:
@@ -96,14 +179,14 @@ def make_table(tabledef):
     table.fieldAliases = [make_field_alias(aliasdef) for aliasdef in tabledef.findall('fieldalias')]
     return table
 
-def make_id_field(fielddef):
+def make_id_field(fielddef: ElementTree.Element) -> IdField:
     field = IdField()
     field.name = fielddef.attrib['name']
     field.column = fielddef.attrib['column']
     field.type = fielddef.attrib['type']
     return field
 
-def make_field(fielddef):
+def make_field(fielddef: ElementTree.Element) -> Field:
     field = Field()
     field.name = fielddef.attrib['name']
     field.column = fielddef.attrib['column']
@@ -115,7 +198,7 @@ def make_field(fielddef):
         field.length = int(fielddef.attrib['length'])
     return field
 
-def make_relationship(reldef):
+def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship()
     rel.name = reldef.attrib['relationshipname']
     rel.type = reldef.attrib['type']
@@ -127,13 +210,12 @@ def make_relationship(reldef):
         rel.otherSideName = reldef.attrib['othersidename']
     return rel
 
-def make_field_alias(aliasdef):
+def make_field_alias(aliasdef: ElementTree.Element) -> Dict[str, str]:
     alias = dict(aliasdef.attrib)
     return alias
 
-def load_datamodel():
+def load_datamodel() -> Datamodel:
     datamodeldef = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
-
     datamodel = Datamodel()
     datamodel.tables = [make_table(tabledef) for tabledef in datamodeldef.findall('table')]
     add_collectingevents_to_locality(datamodel)
@@ -143,7 +225,7 @@ def load_datamodel():
 
     return datamodel
 
-def add_collectingevents_to_locality(datamodel):
+def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
     rel = Relationship()
     rel.name = 'collectingEvents'
     rel.type = 'one-to-many'
@@ -151,26 +233,24 @@ def add_collectingevents_to_locality(datamodel):
     rel.relatedModelName = 'collectingEvent'
     rel.otherSideName = 'locality'
 
-    datamodel.get_table('collectingevent').get_field('locality').otherSideName = 'collectingEvents'
-    datamodel.get_table('locality').relationships.append(rel)
+    datamodel.get_table_strict('collectingevent').get_relationship('locality').otherSideName = 'collectingEvents'
+    datamodel.get_table_strict('locality').relationships.append(rel)
 
-def flag_dependent_fields(datamodel):
+def flag_dependent_fields(datamodel: Datamodel) -> None:
     for name in dependent_fields:
         tablename, fieldname = name.split('.')
-        table = datamodel.get_table(tablename)
-        field = table.get_field(fieldname)
-        assert isinstance(field, Relationship), 'Expected relationship for %s, got %r, in %r' % (name, field, table)
+        field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
         field.dependent = True
 
     for table in datamodel.tables:
         if table.is_attachment_jointable:
-            table.get_field('attachment').dependent = True
+            table.get_relationship('attachment').dependent = True
         if table.attachments_field:
             table.attachments_field.dependent = True
 
-def flag_system_tables(datamodel):
+def flag_system_tables(datamodel: Datamodel) -> None:
     for name in system_tables:
-        datamodel.get_table(name).system = True
+        datamodel.get_table_strict(name).system = True
 
     for table in datamodel.tables:
         if table.is_attachment_jointable:
