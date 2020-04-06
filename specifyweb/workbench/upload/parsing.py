@@ -6,7 +6,7 @@ import re
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple
 from dateparser import DateDataParser # type: ignore
 
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import get_uiformatter
 
 from .data import Filter
@@ -37,36 +37,39 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Parse
         return parse_latlong(field, value)
 
     if field.is_temporal():
-        precision_field = table.get_field(fieldname + 'precision')
-        parsed = DateDataParser(
-            settings={
-                'PREFER_DAY_OF_MONTH': 'first',
-                'PREFER_DATES_FROM': 'past',
-                'STRICT_PARSING': precision_field is None,
-            },
-        ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
+        return parse_date(table, fieldname, value)
 
-        if parsed['date_obj'] is None:
-            raise Exception("bad date value: {}".format(value))
+    return filter_and_upload({fieldname: value})
 
-        if precision_field is None:
-            if parsed['period'] == 'day':
-                return filter_and_upload({fieldname: parsed['date_obj']})
-            else:
-                raise Exception("bad date value: {}".format(value))
+def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
+    precision_field = table.get_field(fieldname + 'precision')
+    parsed = DateDataParser(
+        settings={
+            'PREFER_DAY_OF_MONTH': 'first',
+            'PREFER_DATES_FROM': 'past',
+            'STRICT_PARSING': precision_field is None,
+        },
+    ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
+
+    if parsed['date_obj'] is None:
+        raise Exception("bad date value: {}".format(value))
+
+    if precision_field is None:
+        if parsed['period'] == 'day':
+            return filter_and_upload({fieldname: parsed['date_obj']})
         else:
-            prec = parsed['period']
-            date = parsed['date_obj']
-            if prec == 'day':
-                return filter_and_upload({fieldname: date, precision_field.name.lower(): 0})
-            elif prec == 'month':
-                return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1})
-            elif prec == 'year':
-                return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2})
-            else:
-                raise Exception('expected date precision to be day month or year. got: {}'.format(prec))
+            raise Exception("bad date value: {}".format(value))
     else:
-        return filter_and_upload({fieldname: value})
+        prec = parsed['period']
+        date = parsed['date_obj']
+        if prec == 'day':
+            return filter_and_upload({fieldname: date, precision_field.name.lower(): 0})
+        elif prec == 'month':
+            return filter_and_upload({fieldname: date.replace(day=1), precision_field.name.lower(): 1})
+        elif prec == 'year':
+            return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2})
+        else:
+            raise Exception('expected date precision to be day month or year. got: {}'.format(prec))
 
 
 def parse_string(value: str) -> Optional[str]:
