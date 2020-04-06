@@ -1,8 +1,11 @@
+
+from unittest import skip
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
 class BorrowAgentTests(ApiTests):
+    @skip('this rule was removed in 49ed2b30')
     def test_is_unique_in_borrow(self):
         borrow = models.Borrow.objects.create(
             collectionmemberid=self.collection.id,

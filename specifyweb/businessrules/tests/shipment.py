@@ -1,7 +1,10 @@
+
+from unittest import skip
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
+@skip("these business rules were removed in https://github.com/specify/specify7/issues/474")
 class ShipmentTests(ApiTests):
     def test_shipped_to_agent_must_exist(self):
         self.agent.addresses.create(address="somewhere")
