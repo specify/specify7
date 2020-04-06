@@ -1,4 +1,8 @@
+
 import unittest
+
+from django.db import transaction
+
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
@@ -37,11 +41,14 @@ class AgentTests(ApiTests):
         with self.assertRaises(BusinessRuleException):
             agent.delete()
 
-        agent.specifyuser = None
-        with self.assertRaises(BusinessRuleException):
-            agent.delete()
+    def test_agent_without_specifyuser_can_be_deleted(self):
+        agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Test",
+            lastname="Agent",
+            division=self.division,
+            specifyuser=None)
 
-        agent.save()
         agent.delete()
 
     @unittest.expectedFailure
