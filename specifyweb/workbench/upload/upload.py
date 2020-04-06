@@ -13,25 +13,25 @@ from .upload_table import UploadTable
 
 logger = logging.getLogger(__name__)
 
-@transaction.atomic
-def do_upload(wbid: int, upload_plan: UploadTable):
-    logger.info('do_upload')
-    wb = models.Workbench.objects.get(id=wbid)
-    logger.debug('loading rows')
-    rows = load(wbid)
-    logger.debug('%d rows to upload', len(rows))
-    wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
-        workbenchtemplate=wb.workbenchtemplate
-    )
-    return [
-        upload_plan.upload_row(row)
-        for row in rows
-    ]
+# @transaction.atomic
+# def do_upload(wbid: int, upload_plan: UploadTable):
+#     logger.info('do_upload')
+#     wb = models.Workbench.objects.get(id=wbid)
+#     logger.debug('loading rows')
+#     rows = load(wbid)
+#     logger.debug('%d rows to upload', len(rows))
+#     wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
+#         workbenchtemplate=wb.workbenchtemplate
+#     )
+#     return [
+#         upload_plan.upload_row(row)
+#         for row in rows
+#     ]
 
 
-def do_upload_csv(csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[UploadResult]:
+def do_upload_csv(collection, csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[UploadResult]:
     return [
-        upload_plan.upload_row(row)
+        upload_plan.upload_row(collection, row)
         for row in csv_reader
     ]
 

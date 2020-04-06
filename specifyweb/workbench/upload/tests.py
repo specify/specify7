@@ -22,6 +22,9 @@ class UploadTests(ApiTests):
         self.discipline.type = "fish"
         self.discipline.save()
 
+        self.collection.catalognumformatname = "CatalogNumberNumeric"
+        self.collection.save()
+
         self.geographytreedef.treedefitems.create(name='Continent', rankid=100)
         self.geographytreedef.treedefitems.create(name='Country', rankid=200)
         self.geographytreedef.treedefitems.create(name='State', rankid=300)
@@ -182,7 +185,8 @@ class UploadTests(ApiTests):
 59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,
 '''))
         row = next(reader)
-        filters, excludes = to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
+        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        filters, excludes = to_many_filters_and_excludes(self.collection, self.example_plan.toOne['collectingevent'].toMany, row)
         self.assertEqual(filters, [{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
@@ -203,7 +207,8 @@ class UploadTests(ApiTests):
 1378,Gastropoda,Rissooidea,Rissoinidae,Rissoina,,delicatissima,,"Raines, 2002",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,In sand at base of cliffs,10,20,0,,,Paratype,512,," PARATYPES.  In pouch no. 1, paratypes 4 & 5.  Raines, B.K. 2002.  La Conchiglia 34 ( no. 304) : 16 (holotype LACM 2934, Fig. 9).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,109° 19' 45' W,,Point,,JSG,23/12/2014,0,Marine,0,B. Raines and M. Taylor,,B.,,Raines,,M.,,Taylor,,,,,,,,
 '''))
         row = next(reader)
-        filters, excludes = to_many_filters_and_excludes(self.example_plan.toOne['collectingevent'].toMany, row)
+        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        filters, excludes = to_many_filters_and_excludes(self.collection, self.example_plan.toOne['collectingevent'].toMany, row)
         self.assertEqual(filters, [
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',
@@ -254,10 +259,20 @@ class UploadTests(ApiTests):
 5091,Gastropoda,Muricoidea,Marginellidae,Prunum,,donovani,,"(Olsson, 1967)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,2,0,0,Dry; shell,Dry,,,,,,1,,,,150,,,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,25/10/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
 5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
-        do_upload_csv(reader, self.example_plan)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        uploaded_catnos = []
+        for r in upload_results:
+            self.assertTrue(isinstance(r.record_result, Uploaded))
+            co = models.Collectionobject.objects.get(id=r.record_result.get_id())
+            uploaded_catnos.append(co.catalognumber)
 
         # Check that collection objects were uploaded.
-        expected_cats = "1365 1366 1367 1368 1373 1374 1375 1378 1380 1381 1382 1383 1384 1385 1386 1387 1906 5009 5033 5035 5043 5081 5083 5091 5097".split()
+        expected_cats = [
+            n.zfill(9) for n in
+            "1365 1366 1367 1368 1373 1374 1375 1378 1380 1381 1382 1383 1384 1385 1386 1387 1906 5009 5033 5035 5043 5081 5083 5091 5097".split()
+        ]
+        self.assertEqual(uploaded_catnos, expected_cats)
+
         cos = models.Collectionobject.objects.filter(catalognumber__in=expected_cats)
         self.assertEqual(cos.count(), len(expected_cats))
 
@@ -266,18 +281,18 @@ class UploadTests(ApiTests):
         self.assertEqual(models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)").count(), 1)
 
         # Check which collectingevents got uploaded for some cases.
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1365").collectingevent.stationfieldnumber, None)
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001365").collectingevent.stationfieldnumber, None)
         self.assertEqual(
             set(ce.stationfieldnumber for ce in models.Collectingevent.objects.filter(collectors__agent__lastname="Garcia")),
             set([None, "D-7(1)", "D-4(1)"]))
 
         # Check the collectors for some collection objects.
         self.assertEqual(
-            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="1378").collectingevent.collectors.order_by("ordernumber")],
+            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.collectors.order_by("ordernumber")],
             ["Raines", "Taylor"])
 
         self.assertEqual(
-            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="1380").collectingevent.collectors.order_by("ordernumber")],
+            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="000001380").collectingevent.collectors.order_by("ordernumber")],
             ["Raines"])
 
         self.assertEqual(
@@ -320,7 +335,7 @@ class UploadTests(ApiTests):
             .split())
 
         # Check the determination of a specific collectionobject.
-        det = models.Collectionobject.objects.get(catalognumber="5081").determinations.get()
+        det = models.Collectionobject.objects.get(catalognumber="000005081").determinations.get()
         self.assertEqual(det.determineddate, None)
 
         self.assertEqual((det.taxon.name, det.taxon.definitionitem.name), ("evergladesensis", "Species"))
@@ -335,14 +350,14 @@ class UploadTests(ApiTests):
         self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 1)))
 
         # Check some collectingevent dates.
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1906").collectingevent.startdate, datetime(1987,5,4,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1906").collectingevent.startdateprecision, 0)
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001906").collectingevent.startdate, datetime(1987,5,4,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001906").collectingevent.startdateprecision, 0)
 
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="5009").collectingevent.startdate, datetime(1980,1,1,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="5009").collectingevent.startdateprecision, 2)
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000005009").collectingevent.startdate, datetime(1980,1,1,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000005009").collectingevent.startdateprecision, 2)
 
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1378").collectingevent.startdate, datetime(1998,4,1,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="1378").collectingevent.startdateprecision, 1)
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
+        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.startdateprecision, 1)
 
 
     def test_tree_1(self) -> None:
@@ -414,7 +429,7 @@ class UploadTests(ApiTests):
             TreeMatchResult([TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="County"), "Hendry Co.")], [state.id])
         )
 
-        upload_result = tree_record.upload_row(row)
+        upload_result = tree_record.upload_row(self.collection, row)
         self.assertTrue(isinstance(upload_result.record_result, Uploaded))
 
         uploaded = models.Geography.objects.get(id=upload_result.get_id())
@@ -423,7 +438,7 @@ class UploadTests(ApiTests):
         self.assertEqual(uploaded.parent.id, state.id)
 
         self.assertEqual(tree_record.match(row), ([], [uploaded.id]))
-        self.assertEqual(tree_record.upload_row(row), UploadResult(Matched(id=uploaded.id), {}, {}))
+        self.assertEqual(tree_record.upload_row(self.collection, row), UploadResult(Matched(id=uploaded.id), {}, {}))
 
     def test_parse_latlong(self) -> None:
         tests = {

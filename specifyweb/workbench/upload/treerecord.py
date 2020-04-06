@@ -7,7 +7,7 @@ from itertools import dropwhile
 import logging
 from typing import List, Dict, Any, NamedTuple, Optional
 
-from django.db import connection
+from django.db import connection # type: ignore
 
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
@@ -31,10 +31,10 @@ class TreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
 
-    def filter_on(self, path: str, row: Row) -> FilterPack:
+    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         return FilterPack([], [])
 
-    def upload_row(self, row: Row) -> UploadResult:
+    def upload_row(self, collection, row: Row) -> UploadResult:
         to_upload, matched = self.match(row)
         if not to_upload:
             if not matched:

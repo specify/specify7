@@ -4,9 +4,10 @@ import math
 import re
 
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple
-from dateparser import DateDataParser
+from dateparser import DateDataParser # type: ignore
 
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.uiformatters import get_uiformatter
 
 from .data import Filter
 
@@ -19,13 +20,18 @@ class ParseResult(NamedTuple):
 def filter_and_upload(f: Filter) -> ParseResult:
     return ParseResult(f, f)
 
-def parse_value(tablename: str, fieldname: str, value: str) -> ParseResult:
+def parse_value(collection, tablename: str, fieldname: str, value: str) -> ParseResult:
     value = value.strip()
     if value == "":
         return ParseResult({fieldname: None}, {})
 
-    table = datamodel.get_table(tablename)
-    field = table.get_field(fieldname)
+    uiformatter = get_uiformatter(collection, tablename, fieldname)
+    if uiformatter:
+        canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
+        return filter_and_upload({fieldname: canonicalized})
+
+    table = datamodel.get_table_strict(tablename)
+    field = table.get_field_strict(fieldname)
 
     if is_latlong(table, field):
         return parse_latlong(field, value)
