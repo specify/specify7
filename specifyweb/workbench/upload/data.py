@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from typing_extensions import Protocol
 
 Row = Dict[str, str]
 Filter = Dict[str, Any]
@@ -47,4 +48,11 @@ class UploadResult(NamedTuple):
 
     def get_id(self) -> Optional[int]:
         return self.record_result.get_id()
+
+class Uploadable(Protocol):
+    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
+        ...
+
+    def upload_row(self, collection, row: Row) -> UploadResult:
+        ...
 

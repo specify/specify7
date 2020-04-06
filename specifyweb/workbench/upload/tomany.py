@@ -2,7 +2,7 @@ import logging
 
 from typing import Dict, Any, NamedTuple
 
-from .data import Row, FilterPack, Exclude
+from .data import Row, FilterPack, Exclude, Uploadable
 from .parsing import parse_value
 
 logger = logging.getLogger(__name__)
@@ -11,17 +11,17 @@ class ToManyRecord(NamedTuple):
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
-    toOne: Dict[str, Any]
+    toOne: Dict[str, Uploadable]
 
-    def filter_on(self, path: str, row: Row) -> FilterPack:
+    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value
             for fieldname, caption in self.wbcols.items()
-            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
+            for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).filter_on.items()
         }
 
         for toOneField, toOneTable in self.toOne.items():
-            fs, es = toOneTable.filter_on(path + '__' + toOneField, row)
+            fs, es = toOneTable.filter_on(collection, path + '__' + toOneField, row)
             for f in fs:
                 filters.update(f)
 

@@ -7,7 +7,7 @@ from typing import List, Dict, Any, NamedTuple
 from specifyweb.specify import models
 
 from .parsing import parse_value
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable
 from .tomany import ToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -16,19 +16,19 @@ class UploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
-    toOne: Dict[str, Any]
+    toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
-    def filter_on(self, path: str, row: Row) -> FilterPack:
+    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value
             for fieldname, caption in self.wbcols.items()
-            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
+            for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).filter_on.items()
         }
 
 
         for toOneField, toOneTable in self.toOne.items():
-            fs, es = toOneTable.filter_on(path + '__' + toOneField, row)
+            fs, es = toOneTable.filter_on(collection, path + '__' + toOneField, row)
             for f in fs:
                 filters.update(f)
 
@@ -42,23 +42,23 @@ class UploadTable(NamedTuple):
 
         return FilterPack([filters], [])
 
-    def upload_row(self, row: Row) -> UploadResult:
+    def upload_row(self, collection, row: Row) -> UploadResult:
         model = getattr(models, self.name)
 
         toOneResults = {
-            fieldname: to_one_def.upload_row(row)
+            fieldname: to_one_def.upload_row(collection, row)
             for fieldname, to_one_def in self.toOne.items()
         }
 
         filters = {
             fieldname_: value
             for fieldname, caption in self.wbcols.items()
-            for fieldname_, value in parse_value(self.name, fieldname, row[caption]).filter_on.items()
+            for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).filter_on.items()
         }
 
         filters.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
-        to_many_filters, to_many_excludes = to_many_filters_and_excludes(self.toMany, row)
+        to_many_filters, to_many_excludes = to_many_filters_and_excludes(collection, self.toMany, row)
 
         matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
                                  to_many_excludes,
@@ -71,7 +71,7 @@ class UploadTable(NamedTuple):
             attrs = {
                 fieldname_: value
                 for fieldname, caption in self.wbcols.items()
-                for fieldname_, value in parse_value(self.name, fieldname, row[caption]).upload.items()
+                for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).upload.items()
             }
 
             attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
@@ -79,7 +79,7 @@ class UploadTable(NamedTuple):
             if any(v is not None for v in attrs.values()) or to_many_filters:
                 uploaded = model.objects.create(**attrs, **self.static)
                 toManyResults = {
-                    fieldname: upload_to_manys(model, uploaded.id, fieldname, records, row)
+                    fieldname: upload_to_manys(collection, model, uploaded.id, fieldname, records, row)
                     for fieldname, records in self.toMany.items()
                 }
                 return UploadResult(Uploaded(id = uploaded.id), toOneResults, toManyResults)
@@ -93,13 +93,13 @@ class UploadTable(NamedTuple):
             return UploadResult(MatchedMultiple(ids = [r.id for r in matched_records]), toOneResults, {})
 
 
-def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: Row) -> FilterPack:
+def to_many_filters_and_excludes(collection, to_manys: Dict[str, List[ToManyRecord]], row: Row) -> FilterPack:
     filters: List[Dict] = []
     excludes: List[Exclude] = []
 
     for toManyField, records in to_manys.items():
         for record in records:
-            fs, es = record.filter_on(toManyField, row)
+            fs, es = record.filter_on(collection, toManyField, row)
             filters += fs
             excludes += es
 
@@ -107,7 +107,7 @@ def to_many_filters_and_excludes(to_manys: Dict[str, List[ToManyRecord]], row: R
 
 
 
-def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) -> List[UploadResult]:
+def upload_to_manys(collection, parent_model, parent_id, parent_field, records, row: Row) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -117,7 +117,7 @@ def upload_to_manys(parent_model, parent_id, parent_field, records, row: Row) ->
             static = {**record.static, fk_field: parent_id},
             toOne = record.toOne,
             toMany = {},
-        ).upload_row(row)
+        ).upload_row(collection, row)
 
         for record in records
     ]
