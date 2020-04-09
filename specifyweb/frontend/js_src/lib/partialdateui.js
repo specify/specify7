@@ -64,7 +64,18 @@ module.exports =  UIPlugin.extend({
             this.$('.partialdateui-year').val(value ? m.format('YYYY') : '');
         },
         setPrecision: function() {
-            var precisionIdx = this.model.get(this.init.tp) || 1; // default full date
+            var defaultPrec;
+            switch(this.init.defaultprecision) {
+            case 'year':
+                defaultPrec = 3;
+                break;
+            case 'month':
+                defaultPrec = 2;
+                break;
+            default:
+                defaultPrec = 1;
+            }
+            var precisionIdx = this.model.get(this.init.tp) || defaultPrec;
             _.each(precisions, function(p, i) {
                 this.$("td.partialdateui-" + p)[(i + 1 === precisionIdx) ? 'show' : 'hide']();
             }, this);
