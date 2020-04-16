@@ -43,7 +43,7 @@ version, if problems arise).
 
 
 # Deployment with Docker
-If you would like to deploy Specify 7 in a [Docker](https://www.docker.com/) container checkout the instructions in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):  https://github.com/MfN-Berlin/specify7-docker
+If you would like to deploy Specify 7 in a [Docker](https://www.docker.com/) container checkout the instructions in this repository by the Royal Botanic Gardens Victoria:  https://github.com/rbgvictoria/specify7-docker
 
 
 
