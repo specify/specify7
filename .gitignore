@@ -26,3 +26,8 @@ specifyweb/virtenv
 /local_specifyweb_apache.conf
 
 /specifyweb/settings/ldap_settings.py
+/specifyweb/frontend/wb_uploader/.cache/
+/specifyweb/frontend/wb_uploader/.spago/
+/specifyweb/frontend/wb_uploader/dist/
+/specifyweb/frontend/wb_uploader/node_modules/
+/specifyweb/frontend/wb_uploader/output/
