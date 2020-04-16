@@ -14,8 +14,6 @@ import Control.Alt ((<|>))
 import Data.Array (filter)
 import Data.Either (Either(..))
 import Data.Foldable (find)
-import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
 import Data.Map as M
 import Data.Maybe (Maybe(..), isNothing)
 import Data.String (toLower)
@@ -26,104 +24,9 @@ import Effect (Effect)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
-import Foreign (Foreign, F, ForeignError(..), readString, fail)
-import Simple.JSON (class ReadForeign, readJSON)
+import Simple.JSON (readJSON)
 
-type SpTable =
-  { classname :: String
-  , table :: String
-  , tableId :: Int
-  , view :: Maybe String
-  , searchDialog :: Maybe String
-  , system :: Boolean
-  , idColumn :: String
-  , idFieldName :: String
-  , fields :: Array SpField
-  , relationships :: Array SpRelationship
-  }
-
-data SpFieldType
-  = SpString
-  | SpText
-  | SpBoolean
-  | SpInteger
-  | SpByte
-  | SpShort
-  | SpLong
-  | SpCalendar
-  | SpDate
-  | SpTimeStamp
-  | SpFloat
-  | SpDouble
-  | SpDecimal
-
-derive instance genericSpFieldTye :: Generic SpFieldType _
-
-instance showSpFieldType :: Show SpFieldType where
-  show = genericShow
-
-instance spFieldTypeReadForeign :: ReadForeign SpFieldType where
-    readImpl :: Foreign -> F SpFieldType
-    readImpl f = readString f >>=
-      case _ of
-        "java.lang.String" -> pure SpString
-        "text" -> pure SpText
-        "java.util.Calendar" -> pure SpCalendar
-        "java.util.Date" -> pure SpDate
-        "java.sql.Timestamp" -> pure SpTimeStamp
-        "java.lang.Boolean" -> pure SpBoolean
-        "java.lang.Integer" -> pure SpInteger
-        "java.lang.Byte" -> pure SpByte
-        "java.lang.Short" -> pure SpShort
-        "java.lang.Long" -> pure SpLong
-        "java.lang.Float" -> pure SpFloat
-        "java.lang.Double" -> pure SpDouble
-        "java.math.BigDecimal" -> pure SpDecimal
-        s -> fail $ ForeignError $ "bad field type: " <> s
-
-type SpField =
-  { name :: String
-  , column :: String
-  , indexed :: Boolean
-  , unique :: Boolean
-  , required :: Boolean
-  , type :: SpFieldType
-  , length :: Maybe Int
-  }
-
-data SpRelType
-  = SpManyToOne
-  | SpOneToMany
-  | SpOneToOne
-  | SpManyToMany
-  | SpZeroToOne
-
-derive instance eqSpRelType :: Eq SpRelType
-derive instance genericSpRelTye :: Generic SpRelType _
-
-instance showSpRelType :: Show SpRelType where
-  show = genericShow
-
-instance spRelTypeReadForeign :: ReadForeign SpRelType where
-    readImpl :: Foreign -> F SpRelType
-    readImpl f = readString f >>=
-      case _ of
-        "many-to-one" -> pure SpManyToOne
-        "one-to-many" -> pure SpOneToMany
-        "one-to-one" -> pure SpOneToOne
-        "many-to-many" -> pure SpManyToMany
-        "zero-to-one" -> pure SpZeroToOne
-        s -> fail $ ForeignError $ "bad relationship type: " <> s
-
-
-type SpRelationship =
-  { name :: String
-  , type :: SpRelType
-  , required :: Boolean
-  , dependent :: Boolean
-  , relatedModelName :: String
-  , otherSideName :: Maybe String
-  }
+import Data.SpDataModel (SpField, SpRelType(..), SpRelationship, SpTable)
 
 newtype UploadTable = UploadTable
   { name :: String
