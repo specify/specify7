@@ -1,10 +1,23 @@
-module Data.SpDataModel (SpTable, SpRelationship, SpField, SpRelType(..), SpFieldType(..)) where
+module Data.SpDataModel
+       ( SpDataModel
+       , SpTable
+       , SpRelationship
+       , SpField
+       , SpRelType(..)
+       , SpFieldType(..)
+       , getTableByName
+       , getFieldByName
+       , getRelationshipByName
+       , getRelatedTable
+       ) where
 
 import Prelude
 
+import Data.Array (find)
 import Data.Generic.Rep (class Generic)
 import Data.Generic.Rep.Show (genericShow)
 import Data.Maybe (Maybe)
+import Data.String (toLower)
 import Foreign (Foreign, F, ForeignError(..), readString, fail)
 import Simple.JSON (class ReadForeign)
 
@@ -104,3 +117,16 @@ type SpRelationship =
   , otherSideName :: Maybe String
   }
 
+type SpDataModel = Array SpTable
+
+getTableByName :: SpDataModel -> String -> Maybe SpTable
+getTableByName tables name = find (_.table >>> toLower >>> ((==) $ toLower name)) tables
+
+getFieldByName :: SpTable -> String -> Maybe SpField
+getFieldByName {fields} fieldName = find (_.name >>> toLower >>> ((==) $ toLower fieldName)) fields
+
+getRelationshipByName :: SpTable -> String -> Maybe SpRelationship
+getRelationshipByName {relationships} relName = find (_.name >>> toLower >>> ((==) $ toLower relName)) relationships
+
+getRelatedTable :: SpDataModel -> SpRelationship -> Maybe SpTable
+getRelatedTable tables rel = getTableByName tables rel.relatedModelName

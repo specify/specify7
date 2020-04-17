@@ -16,9 +16,8 @@ import Data.Either (Either(..))
 import Data.Foldable (find)
 import Data.Map as M
 import Data.Maybe (Maybe(..), isNothing)
-import Data.SpDataModel (SpField, SpRelType(..), SpRelationship, SpTable)
-import Data.String (toLower)
-import Data.String.Common (split)
+import Data.SpDataModel (SpDataModel, SpField, SpRelType(..), SpRelationship, SpTable, getRelatedTable)
+import Data.String (split)
 import Data.String.Pattern (Pattern(..))
 import Data.Tuple (Tuple(..), lookup)
 import Effect (Effect)
@@ -26,7 +25,7 @@ import Effect.Aff.Class (liftAff)
 import Simple.JSON (readJSON)
 
 newtype UploadTable = UploadTable
-  { name :: String
+  { table :: SpTable
   , fieldDefs :: Array (Tuple String FieldSource)
   , toOneDefs :: M.Map String ToOneSource
   }
@@ -57,50 +56,47 @@ fetchDataModel = do
     Left err -> D.text $ "GET " <> url <> " response failed to decode: " <> AX.printError err
     Right response -> case readJSON response.body of
       Left e -> D.text $ show e
-      Right (r :: Array SpTable) -> pure r
+      Right (r :: SpDataModel) -> pure r
   t <- chooseTable datamodel
-  editTable datamodel t $ UploadTable {name: t.table, fieldDefs: [], toOneDefs: M.empty}
+  editTable datamodel t $ UploadTable {table: t, fieldDefs: [], toOneDefs: M.empty}
   where
     editTable tables t ut = do
       newUt <- tableWidget tables t ut
       editTable tables t newUt
 
-chooseTable :: Array SpTable -> Widget HTML SpTable
+chooseTable :: SpDataModel -> Widget HTML SpTable
 chooseTable tables = D.ul' $ (\t -> t <$ D.li [P.onClick] [D.text t.table]) <$> tables
 
-tableWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
-tableWidget tables  spTable ut@(UploadTable {name}) =
-  D.div'[ D.h4' [ D.text name ]
+tableWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
+tableWidget tables  spTable ut@(UploadTable {table}) =
+  D.div'[ D.h4' [ D.text table.table ]
         , fieldsWidget spTable ut
         , D.h4' [D.text "Many-to-one"]
         , toOnesWidget tables spTable ut
         ]
 
-toOnesWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
+toOnesWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
 toOnesWidget tables spTable ut@(UploadTable {toOneDefs}) =
   D.ul' $ (toOneWidget tables ut <$> M.toUnfoldable toOneDefs) <> [D.li' [addToOneWidget tables spTable ut]]
 
-addToOneWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
+addToOneWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
 addToOneWidget tables spTable (UploadTable ut) = do
   let
     undefinedRels =
       filter (\r -> r.type == SpManyToOne && (isNothing $ M.lookup r.name ut.toOneDefs)) spTable.relationships
   selected <- selectRelWidget undefinedRels
-  case find (\t -> t.table == toLower selected.relatedModelName) tables of
-    Nothing -> D.text "bad relationship"
+  case getRelatedTable tables selected of
+    Nothing -> D.text $ "bad relationship: " <> selected.name
     Just relatedTable -> do
-      let toOneSource = FromUploadTable $ UploadTable {name: relatedTable.table, fieldDefs: [], toOneDefs: M.empty}
+      let toOneSource = FromUploadTable $ UploadTable {table: relatedTable, fieldDefs: [], toOneDefs: M.empty}
       pure $ UploadTable $ ut {toOneDefs = M.insert selected.name toOneSource ut.toOneDefs}
 
-toOneWidget :: Array SpTable -> UploadTable -> Tuple String ToOneSource -> Widget HTML UploadTable
-toOneWidget tables (UploadTable parent) (Tuple relName (FromUploadTable related@(UploadTable {name: tableName}))) =
-  case find (\t -> t.table == tableName ) tables of
-    Nothing -> D.li' [D.text "bad relationship"]
-    Just spTable -> do
-      related' <- D.li' [ D.h4' [ D.text $ "upload " <> relName <> " from:" ]
-                        , FromUploadTable <$> tableWidget tables spTable related
-                        ]
-      pure $ UploadTable $ parent {toOneDefs = M.insert relName related' parent.toOneDefs}
+toOneWidget :: SpDataModel -> UploadTable -> Tuple String ToOneSource -> Widget HTML UploadTable
+toOneWidget tables (UploadTable parent) (Tuple relName (FromUploadTable related@(UploadTable {table}))) = do
+  related' <- D.li' [ D.h4' [ D.text $ "upload " <> relName <> " from:" ]
+                    , FromUploadTable <$> tableWidget tables table related
+                    ]
+  pure $ UploadTable $ parent {toOneDefs = M.insert relName related' parent.toOneDefs}
 
 
 selectRelWidget :: Array SpRelationship -> Widget HTML SpRelationship
