@@ -16,17 +16,14 @@ import Data.Either (Either(..))
 import Data.Foldable (find)
 import Data.Map as M
 import Data.Maybe (Maybe(..), isNothing)
+import Data.SpDataModel (SpField, SpRelType(..), SpRelationship, SpTable)
 import Data.String (toLower)
 import Data.String.Common (split)
 import Data.String.Pattern (Pattern(..))
 import Data.Tuple (Tuple(..), lookup)
 import Effect (Effect)
 import Effect.Aff.Class (liftAff)
-import Effect.Class (liftEffect)
-import Effect.Console (log)
 import Simple.JSON (readJSON)
-
-import Data.SpDataModel (SpField, SpRelType(..), SpRelationship, SpTable)
 
 newtype UploadTable = UploadTable
   { name :: String
@@ -74,21 +71,20 @@ chooseTable tables = D.ul' $ (\t -> t <$ D.li [P.onClick] [D.text t.table]) <$> 
 tableWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
 tableWidget tables  spTable ut@(UploadTable {name}) =
   D.div'[ D.h4' [ D.text name ]
-        , fieldsWidget ut
-        , addFieldWidget spTable ut
+        , fieldsWidget spTable ut
         , D.h4' [D.text "Many-to-one"]
         , toOnesWidget tables spTable ut
-        , addToOneWidget tables spTable ut
         ]
 
 toOnesWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
-toOnesWidget tables spTable (UploadTable ut) = do
-  Tuple relName source <- D.ul' $ toOneWidget tables <$> M.toUnfoldable ut.toOneDefs
-  pure $ UploadTable ut {toOneDefs = M.insert relName source ut.toOneDefs}
+toOnesWidget tables spTable ut@(UploadTable {toOneDefs}) =
+  D.ul' $ (toOneWidget tables ut <$> M.toUnfoldable toOneDefs) <> [D.li' [addToOneWidget tables spTable ut]]
 
 addToOneWidget :: Array SpTable -> SpTable -> UploadTable -> Widget HTML UploadTable
 addToOneWidget tables spTable (UploadTable ut) = do
-  let undefinedRels = filter (\r -> r.type == SpManyToOne) spTable.relationships
+  let
+    undefinedRels =
+      filter (\r -> r.type == SpManyToOne && (isNothing $ M.lookup r.name ut.toOneDefs)) spTable.relationships
   selected <- selectRelWidget undefinedRels
   case find (\t -> t.table == toLower selected.relatedModelName) tables of
     Nothing -> D.text "bad relationship"
@@ -96,14 +92,15 @@ addToOneWidget tables spTable (UploadTable ut) = do
       let toOneSource = FromUploadTable $ UploadTable {name: relatedTable.table, fieldDefs: [], toOneDefs: M.empty}
       pure $ UploadTable $ ut {toOneDefs = M.insert selected.name toOneSource ut.toOneDefs}
 
-toOneWidget :: Array SpTable -> Tuple String ToOneSource ->  Widget HTML (Tuple String ToOneSource)
-toOneWidget tables (Tuple relName (FromUploadTable ut@(UploadTable {name: tableName}))) =
+toOneWidget :: Array SpTable -> UploadTable -> Tuple String ToOneSource -> Widget HTML UploadTable
+toOneWidget tables (UploadTable parent) (Tuple relName (FromUploadTable related@(UploadTable {name: tableName}))) =
   case find (\t -> t.table == tableName ) tables of
-    Nothing -> D.text "bad relationship"
-    Just spTable ->
-      D.div' [ D.h4' [ D.text $ "upload " <> relName <> " from:" ]
-             , Tuple relName <$> FromUploadTable <$> (tableWidget tables spTable ut)
-             ]
+    Nothing -> D.li' [D.text "bad relationship"]
+    Just spTable -> do
+      related' <- D.li' [ D.h4' [ D.text $ "upload " <> relName <> " from:" ]
+                        , FromUploadTable <$> tableWidget tables spTable related
+                        ]
+      pure $ UploadTable $ parent {toOneDefs = M.insert relName related' parent.toOneDefs}
 
 
 selectRelWidget :: Array SpRelationship -> Widget HTML SpRelationship
@@ -117,8 +114,9 @@ selectRelWidget fields = do
     Just field -> pure field
     Nothing -> selectRelWidget fields
 
-fieldsWidget ::  forall a. UploadTable -> Widget HTML a
-fieldsWidget (UploadTable ut) = D.ul' $ showField <$> ut.fieldDefs
+fieldsWidget ::  SpTable -> UploadTable -> Widget HTML UploadTable
+fieldsWidget spTable ut@(UploadTable {fieldDefs}) =
+  D.ul' $ (showField <$> fieldDefs) <> [D.li' [addFieldWidget spTable ut]]
   where showField (Tuple name source) = case source of
           (FromDataSet column) -> D.li' [D.text $ name <> " from data set column: " <> column]
           (StaticValue value) -> D.li' [D.text $ name <> " from static value: " <> value]
