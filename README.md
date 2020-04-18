@@ -3,8 +3,7 @@
   =========
   
   The Specify Collections Consortium is funded by
-  its member institutions and by an award from the US NSF
-  (BIO/DBI: 1565098).
+  its member institutions.
     
   Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
