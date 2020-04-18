@@ -6,13 +6,12 @@
   its member institutions and by an award from the US NSF
   (BIO/DBI: 1565098).
     
-  Specify 7 Copyright © 2019 University of Kansas Center for
-  Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is
+  Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
   free software licensed under GNU General Public License 2
   (GPL2).
 
  
-    Specify Software Project
+    Specify Collections Consortium
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.
