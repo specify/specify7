@@ -1,19 +1,13 @@
 
-Specify 7
-=========
-
-Specify Software is a product of the Specify Collections Consortium
-that is funded by its member institutions. Consortium Founding Members
-include: University of Michigan, University of Florida, Denmark
-Consortium of Museums, and the University of Kansas. The Consortium
-operates under the non-profit, 501(c)3, U.S. tax status of the University of
-Kansas Center for Research. Specify was supported previously by
-multiple awards from the U.S. National Science Foundation.
-
-Specify 7 Copyright © 2020 University of Kansas Center for
-Research. Specify comes with ABSOLUTELY NO WARRANTY.  This is free
-software licensed under GNU General Public License 2 (GPL2).
-
+  Specify 7
+  =========
+  
+  The Specify Collections Consortium is funded by
+  its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
+    
+  Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
+  free software licensed under GNU General Public License 2
+  (GPL2).
 
     Specify Collections Consortium
     Biodiversity Institute
@@ -48,9 +42,8 @@ version, if problems arise).
 # Deployment with Docker
 If you would like to deploy Specify 7 in a
 [Docker](https://www.docker.com/) container checkout the instructions
-in this repository by [MfN Berlin](https://github.com/MfN-Berlin/):
-https://github.com/MfN-Berlin/specify7-docker
-
+in this repository by the Royal Botanic Gardens Victoria:
+https://github.com/rbgvictoria/specify7-docker
 
 
 # Ordinary deployment
