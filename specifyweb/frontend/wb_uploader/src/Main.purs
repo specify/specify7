@@ -27,8 +27,12 @@ newtype UploadTable
   = UploadTable
   { table :: SpTable
   , fieldDefs :: Array (Tuple String FieldSource)
-  , toOneDefs :: M.Map String ToOneSource
+  , toOneDefs :: M.Map String (RelationshipUI ToOneSource)
   }
+
+data RelationshipUI a
+  = ExpandedRel a
+  | CollapsedRel a
 
 data ToOneSource
   = FromUploadTable UploadTable
@@ -76,9 +80,9 @@ chooseTable tables = D.ul' $ (\t -> t <$ D.li [ P.onClick ] [ D.text t.table ]) 
 tableWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
 tableWidget tables spTable ut@(UploadTable { table }) =
   D.div'
-    [ D.h4' [ D.text table.table ]
+    [ D.h4' [ D.text $ "Uploading: " <> table.table ]
     , fieldsWidget spTable ut
-    , D.h4' [ D.text "Many-to-one" ]
+    , D.h4' [ D.text "To one relationships:" ]
     , toOnesWidget tables spTable ut
     ]
 
@@ -95,22 +99,24 @@ addToOneWidget tables spTable (UploadTable ut) = do
     Just relatedTable -> do
       let
         toOneSource = FromUploadTable $ UploadTable { table: relatedTable, fieldDefs: [], toOneDefs: M.empty }
-      pure $ UploadTable $ ut { toOneDefs = M.insert selected.name toOneSource ut.toOneDefs }
+      pure $ UploadTable $ ut { toOneDefs = M.insert selected.name (ExpandedRel toOneSource) ut.toOneDefs }
 
-toOneWidget :: SpDataModel -> UploadTable -> Tuple String ToOneSource -> Widget HTML UploadTable
-toOneWidget tables (UploadTable parent) (Tuple relName (FromUploadTable related@(UploadTable { table }))) = do
-  related' <-
-    D.li'
-      [ D.h4' [ D.text $ "upload " <> relName <> " from:" ]
-      , FromUploadTable <$> tableWidget tables table related
-      ]
-  pure $ UploadTable $ parent { toOneDefs = M.insert relName related' parent.toOneDefs }
+toOneWidget :: SpDataModel -> UploadTable -> Tuple String (RelationshipUI ToOneSource) -> Widget HTML UploadTable
+toOneWidget tables (UploadTable parent) (Tuple relName relUI) = do
+  relUI' <- case relUI of
+    ExpandedRel r@(FromUploadTable related@(UploadTable { table })) ->
+      D.li'
+        [ D.h4 [ (CollapsedRel r) <$ P.onClick ] [ D.text $ relName <> ":" ]
+        , ExpandedRel <$> FromUploadTable <$> tableWidget tables table related
+        ]
+    CollapsedRel r -> D.li [ (ExpandedRel r) <$ P.onClick ] [ D.h4' [ D.text relName ] ]
+  pure $ UploadTable $ parent { toOneDefs = M.insert relName relUI' parent.toOneDefs }
 
 selectRelWidget :: Array SpRelationship -> Widget HTML SpRelationship
 selectRelWidget fields = do
   let
     options =
-      [ D.option [] [ D.text "Choose field to map" ] ]
+      [ D.option [] [ D.text "Choose relationship to map" ] ]
         <> ((\f -> D.option [ P.value f.name ] [ D.text f.name ]) <$> fields)
   selected <- D.select [ P.unsafeTargetValue <$> P.onChange ] options
   case find (_.name >>> ((==) selected)) fields of
