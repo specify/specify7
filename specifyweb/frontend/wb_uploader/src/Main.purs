@@ -10,7 +10,8 @@ import Concur.React.Props as P
 import Concur.React.Run (runWidgetInDom)
 import Concur.React.Widgets (textInputEnter)
 import Control.Alt ((<|>))
-import Data.Array (filter)
+import Data.Array (filter, mapWithIndex)
+import Data.Array.NonEmpty (NonEmptyArray, alterAt, fromArray, head, singleton, snoc, toArray, updateAt)
 import Data.Either (Either(..))
 import Data.Foldable (find)
 import Data.Map as M
@@ -28,12 +29,22 @@ newtype UploadTable
   { table :: SpTable
   , fieldDefs :: Array (Tuple String FieldSource)
   , toOneDefs :: M.Map String (RelationshipUI ToOneSource)
+  , toManyDefs :: M.Map String (RelationshipUI ToManyDef)
   }
 
 data RelationshipUI a
   = ExpandedRel a
   | CollapsedRel a
 
+type ToManyDef
+  = NonEmptyArray UploadTable
+
+-- newtype ToManyRecord
+--   = ToManyRecord
+--   { table :: SpTable
+--   , fieldDefs :: Array (Tuple String FieldSource)
+--   , toOneDefs :: M.Map String (RelationshipUI ToOneSource)
+--   }
 data ToOneSource
   = FromUploadTable UploadTable
 
@@ -68,7 +79,7 @@ fetchDataModel = do
       Left e -> D.text $ show e
       Right (r :: SpDataModel) -> pure r
   t <- chooseTable datamodel
-  editTable datamodel t $ UploadTable { table: t, fieldDefs: [], toOneDefs: M.empty }
+  editTable datamodel t $ UploadTable { table: t, fieldDefs: [], toOneDefs: M.empty, toManyDefs: M.empty }
   where
   editTable tables t ut = do
     newUt <- tableWidget tables t ut
@@ -79,12 +90,68 @@ chooseTable tables = D.ul' $ (\t -> t <$ D.li [ P.onClick ] [ D.text t.table ]) 
 
 tableWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
 tableWidget tables spTable ut@(UploadTable { table }) =
-  D.div'
+  D.div [ P.style { border: "1px solid" } ]
     [ D.h4' [ D.text $ "Uploading: " <> table.table ]
     , fieldsWidget spTable ut
     , D.h4' [ D.text "To one relationships:" ]
     , toOnesWidget tables spTable ut
+    , D.h4' [ D.text "To many relationships:" ]
+    , toManysWidget tables spTable ut
     ]
+
+toManysWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
+toManysWidget tables spTable ut@(UploadTable { toManyDefs }) = D.ul' $ (toManyWidget tables ut <$> M.toUnfoldable toManyDefs) <> [ D.li' [ addToManyWidget tables spTable ut ] ]
+
+toManyWidget :: SpDataModel -> UploadTable -> Tuple String (RelationshipUI ToManyDef) -> Widget HTML UploadTable
+toManyWidget tables (UploadTable parent) (Tuple relName relUI) = do
+  result <- case relUI of
+    ExpandedRel r ->
+      D.li'
+        [ D.h4 [ (Just $ CollapsedRel r) <$ P.onClick ] [ D.text $ relName <> ":" ]
+        , (map ExpandedRel) <$> toManyRecordsWidget tables r
+        ]
+    CollapsedRel r -> D.li [ (Just $ ExpandedRel r) <$ P.onClick ] [ D.h4' [ D.text relName ] ]
+  let
+    toManyDefs' = case result of
+      Just relUI' -> M.insert relName relUI' parent.toManyDefs
+      Nothing -> M.delete relName parent.toManyDefs
+  pure $ UploadTable $ parent { toManyDefs = toManyDefs' }
+
+toManyRecordsWidget :: SpDataModel -> ToManyDef -> Widget HTML (Maybe ToManyDef)
+toManyRecordsWidget tables toManyDef =
+  D.div'
+    [ do
+        Tuple i record <- D.ol' $ mapWithIndex (toManyRecordWidget tables) $ toArray toManyDef
+        pure $ fromArray =<< alterAt i (const record) toManyDef
+    , D.a
+        [ Just (snoc toManyDef new) <$ P.onClick ]
+        [ D.text $ "Another " <> table.table ]
+    ]
+  where
+  UploadTable { table } = head toManyDef
+
+  new = UploadTable { table: table, fieldDefs: [], toOneDefs: M.empty, toManyDefs: M.empty }
+
+toManyRecordWidget :: SpDataModel -> Int -> UploadTable -> Widget HTML (Tuple Int (Maybe UploadTable))
+toManyRecordWidget tables i ut@(UploadTable { table }) = do
+  record <-
+    D.li'
+      [ D.a [ Nothing <$ P.onClick ] [ D.text "remove" ]
+      , Just <$> tableWidget tables table ut
+      ]
+  pure $ Tuple i record
+
+addToManyWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
+addToManyWidget tables spTable (UploadTable ut) = do
+  let
+    undefinedRels = filter (\r -> r.type == SpOneToMany && (isNothing $ M.lookup r.name ut.toManyDefs)) spTable.relationships
+  selected <- selectRelWidget undefinedRels
+  case getRelatedTable tables selected of
+    Nothing -> D.text $ "bad relationship: " <> selected.name
+    Just relatedTable -> do
+      let
+        toManyRecord = UploadTable { table: relatedTable, fieldDefs: [], toOneDefs: M.empty, toManyDefs: M.empty }
+      pure $ UploadTable $ ut { toManyDefs = M.insert selected.name (ExpandedRel $ singleton toManyRecord) ut.toManyDefs }
 
 toOnesWidget :: SpDataModel -> SpTable -> UploadTable -> Widget HTML UploadTable
 toOnesWidget tables spTable ut@(UploadTable { toOneDefs }) = D.ul' $ (toOneWidget tables ut <$> M.toUnfoldable toOneDefs) <> [ D.li' [ addToOneWidget tables spTable ut ] ]
@@ -98,7 +165,7 @@ addToOneWidget tables spTable (UploadTable ut) = do
     Nothing -> D.text $ "bad relationship: " <> selected.name
     Just relatedTable -> do
       let
-        toOneSource = FromUploadTable $ UploadTable { table: relatedTable, fieldDefs: [], toOneDefs: M.empty }
+        toOneSource = FromUploadTable $ UploadTable { table: relatedTable, fieldDefs: [], toOneDefs: M.empty, toManyDefs: M.empty }
       pure $ UploadTable $ ut { toOneDefs = M.insert selected.name (ExpandedRel toOneSource) ut.toOneDefs }
 
 toOneWidget :: SpDataModel -> UploadTable -> Tuple String (RelationshipUI ToOneSource) -> Widget HTML UploadTable
