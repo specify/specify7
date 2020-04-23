@@ -169,24 +169,8 @@ class ObjectFormatter(object):
     def fieldformat(self, query_field, field):
         field_spec = query_field.fieldspec
         if field_spec.get_field() is not None:
-            field_type = field_spec.get_field().type
-
-            if field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date") \
-               and field_spec.date_part == "Full Date":
-                prec_fld = field_spec.get_field().name + 'Precision'
-                orm_table = getattr(models, field_spec.table.name)
-                logger.info(prec_fld)
-                logger.info(orm_table)
-                try:
-                    orm_prec_fld = getattr(orm_table, prec_fld)
-                except:
-                    logger.info("no prec field for", prec_fld)
-                    orm_prec_fld = None
-                if orm_prec_fld is not None:
-                    #field = func.date_format(field, case({1: self.date_format, 2: self.date_format_month, 3: self.date_format_year}, orm_prec_fld))
-                    field = case({1: func.date_format(field, self.date_format), 2: func.date_format(field, self.date_format_month), 3: func.date_format(field, self.date_format_year)}, orm_prec_fld)
-                else:
-                    field = func.date_format(field, self.date_format)
+            if field_spec.is_temporal() and field_spec.date_part == "Full Date":
+                field = self._dateformat(field_spec.get_field(), field)
 
             elif field_spec.tree_rank is not None:
                 pass
@@ -198,6 +182,16 @@ class ObjectFormatter(object):
                 field = self._fieldformat(field_spec.get_field(), field)
 
         return blank_nulls(field) if self.replace_nulls else field
+
+    def _dateformat(self, specify_field, field):
+        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+
+        format_expr = \
+            case({2: self.date_format_month, 3: self.date_format_year}, prec_fld, else_=self.date_format) \
+            if prec_fld is not None \
+            else self.date_format
+
+        return func.date_format(field, format_expr)
 
     def _fieldformat(self, specify_field, field):
         if specify_field.type == "java.lang.Boolean":
