@@ -1,12 +1,13 @@
 
-# The webapp server piggy backs on the thick client.
+# The webapp server piggybacks on the thick client.
 # Set the path to a thick client installation.
 THICK_CLIENT_LOCATION = '/opt/Specify'
 
-# Set the database name to the mysql database you
+# Set the database name to the MySQL database you
 # want to access.
 DATABASE_NAME = 'SpecifyDB'
 
+# Database hostname or IP
 DATABASE_HOST = ''
 DATABASE_PORT = ''
 
@@ -18,7 +19,7 @@ MASTER_PASSWORD = 'MasterPassword'
 # Select the schema localization language.
 SCHEMA_LANGUAGE = 'en'
 
-# The Specify web attachement server URL.
+# The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
 
 # The Specify web attachment server key.
@@ -27,7 +28,7 @@ WEB_ATTACHMENT_KEY = None
 # The collection name to use with the web attachment server.
 WEB_ATTACHMENT_COLLECTION = None
 
-# Set to true if asset server requires auth token to get files.
+# Set to true if the asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 
 # Report runner service
@@ -54,7 +55,7 @@ STATS_URL = "https://stats.specifycloud.org/capture"
 WB_UPLOAD_LOG_DIR = "/var/cache/specify_wb_upload/"
 
 # Asynchronously generated exports are placed in
-# the following directory. This include query result
+# the following directory. This includes query result
 # exports and Darwin Core archives.
 DEPOSITORY_DIR = '/home/specify/specify_depository'
 
