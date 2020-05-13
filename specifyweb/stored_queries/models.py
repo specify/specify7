@@ -33,8 +33,8 @@ def generate_models():
 
 tables, classes = generate_models()
 
-models_by_tableid = dict((cls.tableid, cls) for cls in classes.values())
+models_by_tableid = dict((cls.tableid, cls) for cls in list(classes.values()))
 
 globals().update(classes)
 
-__all__ = ['session_context', 'tables', 'classes', 'models_by_tableid'] + classes.keys()
+__all__ = ['session_context', 'tables', 'classes', 'models_by_tableid'] + list(classes.keys())

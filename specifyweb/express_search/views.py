@@ -18,6 +18,7 @@ from ..stored_queries.queryfieldspec import QueryFieldSpec
 from ..stored_queries.execution import filter_by_collection
 
 from .search_terms import parse_search_str
+from functools import reduce
 
 logger = logging.getLogger(__name__)
 
@@ -112,7 +113,7 @@ def search(request):
                    for searchtable in express_search_config.findall('tables/searchtable')
                    if specific_table == "" or searchtable.find('tableName').text.lower() == specific_table]
 
-        result = {k: v for r in results for (k,v) in r.items()}
+        result = {k: v for r in results for (k,v) in list(r.items())}
         return HttpResponse(toJson(result), content_type='application/json')
 
 class RelatedSearchForm(SearchForm):

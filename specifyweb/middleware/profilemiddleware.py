@@ -3,7 +3,7 @@ import tempfile
 import hotshot
 import hotshot.stats
 from django.conf import settings
-from cStringIO import StringIO
+from io import StringIO
 
 class ProfileMiddleware(object):
     """
@@ -28,7 +28,7 @@ class ProfileMiddleware(object):
     def process_response(self, request, response):
         if settings.DEBUG: # and request.GET.has_key('prof'):
             self.prof.close()
-            print self.tmpfile.name
+            print(self.tmpfile.name)
 
             # out = StringIO()
             # old_stdout = sys.stdout

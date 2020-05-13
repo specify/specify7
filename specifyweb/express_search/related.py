@@ -60,9 +60,7 @@ class RelatedSearchMeta(type):
 
         return Rs
 
-class RelatedSearch(object):
-    __metaclass__ = RelatedSearchMeta
-
+class RelatedSearch(object, metaclass=RelatedSearchMeta):
     distinct = False
     filters = []
     excludes = []
@@ -72,9 +70,9 @@ class RelatedSearch(object):
 
     @classmethod
     def execute(cls, session, config, terms, collection, user, limit, offset):
-        queries = filter(None, (
+        queries = [_f for _f in (
             cls(defn).build_related_query(session, config, terms, collection, user)
-            for defn in cls.definitions))
+            for defn in cls.definitions) if _f]
 
         if len(queries) > 0:
             query = queries[0].union(*queries[1:])

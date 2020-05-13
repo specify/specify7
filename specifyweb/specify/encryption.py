@@ -43,7 +43,7 @@ def make_salt():
 
 def generate_derivedkey(key, salt, iterations=ITERATION_COUNT):
     out = key + salt
-    for i in xrange(iterations):
+    for i in range(iterations):
         md = md5()
         md.update(out)
         out = md.digest()

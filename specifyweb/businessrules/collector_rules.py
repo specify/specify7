@@ -1,4 +1,4 @@
-from exceptions import BusinessRuleException
+from .exceptions import BusinessRuleException
 from django.db.models import Max
 from .orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Collector

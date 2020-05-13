@@ -8,7 +8,7 @@ from .exceptions import AbortSave
 
 JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 
-attachment_tables = {model for model in models.models_by_tableid.values()
+attachment_tables = {model for model in list(models.models_by_tableid.values())
                      if model.__name__.endswith('attachment')}
 
 tables_with_attachments = {getattr(models, model.__name__.replace('attachment', ''))

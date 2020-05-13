@@ -152,7 +152,7 @@ def get_app_resource_dirs_for_level(collection, user, level):
 
     # Pull out the column names and values for the given level.
     columns, values = filter_levels['Columns'], filter_levels[level]
-    filters = dict(zip(columns, values))
+    filters = dict(list(zip(columns, values)))
 
     # At the user level, add a clause for the user column.
     if filters['ispersonal']:
