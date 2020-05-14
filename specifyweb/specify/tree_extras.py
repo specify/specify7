@@ -44,6 +44,14 @@ class Tree(models.Model):
             super(Tree, self).save(*args, **kwargs)
 
         if prev_self is None:
+            if self.parent_id is None:
+                # We're creating the root of a tree.
+                # Not sure if anything else needs to be
+                # done here, but the validation stuff won't
+                # work so skipping it.
+                save()
+                return
+
             with validate_node_numbers(self._meta.db_table):
                 adding_node(self)
                 save()
