@@ -234,7 +234,7 @@ def write_eml(source, output_path, pub_date=None, package_id=None):
     if package_id is None:
         package_id = str(uuid4())
 
-    eml = ET.fromstring(source.encode('utf-8') if isinstance(source, unicode) else source)
+    eml = ET.fromstring(source.encode('utf-8') if isinstance(source, str) else source)
     eml.attrib.update({
         'system': 'Specify',
         'scope': 'system',

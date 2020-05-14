@@ -5,7 +5,7 @@ import traceback
 from zipfile import ZipFile
 from threading import Thread
 from datetime import datetime
-from email.Utils import formatdate
+from email.utils import formatdate
 import json
 
 from xml.etree import ElementTree as ET

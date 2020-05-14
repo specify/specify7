@@ -169,7 +169,7 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 @transaction.atomic
 def loan_return_all_items(request):
     if 'returnedDate' in request.POST:
-        returned_date = unicode(request.POST['returnedDate'])
+        returned_date = str(request.POST['returnedDate'])
     else:
         returned_date = date.today()
 
@@ -249,7 +249,7 @@ def prep_interactions(request):
     group by 1;
     """
 
-    cursor.execute(sql, [unicode(request.POST['prepIds'])])
+    cursor.execute(sql, [str(request.POST['prepIds'])])
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')

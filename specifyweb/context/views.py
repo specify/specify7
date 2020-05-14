@@ -13,7 +13,7 @@ from django.conf import settings
 from django import forms
 from django.db import connection, transaction
 
-from specifyweb.specify.models import Collection, Spappresourcedata, Spversion,Agent, Institution, Specifyuser, Spprincipal
+from specifyweb.specify.models import Collection, Spversion,Agent, Institution, Specifyuser, Spprincipal
 from specifyweb.specify.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.specify_jar import specify_jar
@@ -21,6 +21,7 @@ from specifyweb.specify.specify_jar import specify_jar
 from .app_resource import get_app_resource
 from .viewsets import get_view
 from .schema_localization import get_schema_localization
+from .remote_prefs import get_remote_prefs
 
 
 def set_collection_cookie(response, collection_id):
@@ -83,7 +84,7 @@ class CollectionChoiceField(forms.ChoiceField):
 def choose_collection(request):
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, host=request.get_host())
+        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
         else settings.LOGIN_REDIRECT_URL
     )
 
@@ -287,12 +288,7 @@ def view(request):
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
-    res = Spappresourcedata.objects.filter(
-        spappresource__name='preferences',
-        spappresource__spappresourcedir__usertype='Prefs')
-
-    data = '\n'.join(r.data for r in res)
-    return HttpResponse(data, content_type='text/x-java-properties')
+    return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_GET
 @cache_control(max_age=86400, public=True)
@@ -304,7 +300,7 @@ def system_info(request):
 
     info = dict(
         version=settings.VERSION,
-        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties'))[0],
+        specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
         stats_url=settings.STATS_URL,

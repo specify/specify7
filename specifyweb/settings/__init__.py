@@ -48,28 +48,32 @@ DATABASES = {
         'PASSWORD': MASTER_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
-     }
+        'TEST': {
+            }
+    },
  }
 
 
 TESTING_DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-#        'ENGINE': 'hibernateboolsbackend.backends.mysql',
-        'NAME': "specifytest",
-        'USER': "Master",
-        'PASSWORD': "Master",
-        'HOST': '127.0.0.1',
-        'PORT': '3307',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+       'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'NAME': "specifytestnew",
+        'USER': "master",
+        'PASSWORD': "master",
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3307',
     }
 }
 
 if 'test' in sys.argv:
-    TESTING = True
     DATABASES = TESTING_DATABASES
+    # DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    # DATABASES['default']['TEST']['NAME'] = 'specifytest.sqlite3'
+    # TESTING = True
     SA_DATABASE_URL = 'sqlite:///:memory:'
 else:
-    TESTING = False
+    # TESTING = False
     SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
         MASTER_NAME,
         MASTER_PASSWORD,
@@ -172,7 +176,7 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
 #    'middleware.profilemiddleware.ProfileMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -180,7 +184,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware'
-)
+]
 
 ROOT_URLCONF = 'specifyweb.urls'
 

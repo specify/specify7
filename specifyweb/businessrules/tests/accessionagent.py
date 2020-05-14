@@ -1,8 +1,11 @@
+
+from unittest import skip
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
 
 class AccessionAgentTests(ApiTests):
+    @skip("rule was removed in 17e82c6157")
     def test_no_duped_agents_in_accession(self):
         accession = models.Accession.objects.create(
             accessionnumber='a',
@@ -17,6 +20,7 @@ class AccessionAgentTests(ApiTests):
                 agent=self.agent,
                 role='Donor')
 
+    @skip("rule was removed in 17e82c6157")
     def test_no_duped_roles_in_accession(self):
         accession = models.Accession.objects.create(
             accessionnumber='a',
@@ -64,6 +68,7 @@ class AccessionAgentTests(ApiTests):
             agent=self.agent,
             role="Collector")
 
+    @skip("rule was removed in 17e82c6157")
     def test_no_duped_agents_in_repository_agreement(self):
         repository_agreement = models.Repositoryagreement.objects.create(
             repositoryagreementnumber='foo',
@@ -79,6 +84,7 @@ class AccessionAgentTests(ApiTests):
                 agent=self.agent,
                 role='Donor')
 
+    @skip("rule was removed in 17e82c6157")
     def test_no_duped_roles_in_repository_agreement(self):
         repository_agreement = models.Repositoryagreement.objects.create(
             repositoryagreementnumber='foo',

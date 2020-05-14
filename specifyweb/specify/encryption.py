@@ -7,9 +7,9 @@ from Crypto.Random.random import randint
 
 ITERATION_COUNT = 1000
 
-def decrypt(text, password):
-    key = password.encode('utf-8') # since it could be a unicode object
-    fromhex = text.decode('hex')
+def decrypt(text: str, password: str) -> str:
+    key = password.encode('utf-8')
+    fromhex = bytes.fromhex(text)
     salt, ciphertext = fromhex[:8], fromhex[8:]
 
     derivedkey = generate_derivedkey(key, salt)
@@ -17,13 +17,13 @@ def decrypt(text, password):
 
     des = DES.new(deskey, DES.MODE_CBC, iv)
     padded = des.decrypt(ciphertext)
-    paddinglen = ord(padded[-1])
+    paddinglen = padded[-1]
     return padded[:-paddinglen].decode('utf-8')
 
-def encrypt(text, password):
+def encrypt(text: str, password: str) -> str:
     text_encoded = text.encode('utf-8')
     paddinglen = 8 - len(text_encoded) % 8
-    padded = text_encoded + chr(paddinglen) * paddinglen
+    padded = text_encoded + bytes([paddinglen]) * paddinglen
 
     key = password.encode('utf-8')
     salt = make_salt()
@@ -33,17 +33,17 @@ def encrypt(text, password):
 
     des = DES.new(deskey, DES.MODE_CBC, iv)
     ciphertext = des.encrypt(padded)
-    return str(salt + ciphertext).encode('hex').upper()
+    return (salt + ciphertext).hex().upper()
 
-def rand_byte():
+def rand_byte() -> int:
     return randint(0, 0xff)
 
-def make_salt():
-    return str(bytearray(islice(iter(rand_byte, None), 8)))
+def make_salt() -> bytes:
+    return bytes(islice(iter(rand_byte, None), 8))
 
-def generate_derivedkey(key, salt, iterations=ITERATION_COUNT):
+def generate_derivedkey(key: bytes, salt: bytes, iterations: int = ITERATION_COUNT) -> bytes:
     out = key + salt
-    for i in xrange(iterations):
+    for i in range(iterations):
         md = md5()
         md.update(out)
         out = md.digest()

@@ -120,4 +120,4 @@ def parse_search_str(collection, search_str):
     else:
         terms = search_str.split()
 
-    return map(TermForCollection.make_term, terms)
+    return list(map(TermForCollection.make_term, terms))

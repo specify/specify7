@@ -91,6 +91,6 @@ UNIQUENESS_RULES = {
     }
 
 uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)
-                    for model, rules in UNIQUENESS_RULES.items()
-                    for unique_field, parent_fields in rules.items()
+                    for model, rules in list(UNIQUENESS_RULES.items())
+                    for unique_field, parent_fields in list(rules.items())
                     for parent_field in parent_fields]

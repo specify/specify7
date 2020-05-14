@@ -1,13 +1,16 @@
+from time import time
 import logging
 logger = logging.getLogger(__name__)
 import re
 
+from django.db import connection
+from django.conf import settings
+
 from specifyweb.specify.models import Spauditlog
 from specifyweb.specify.models import Spauditlogfield
-from django.db import connection
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import datamodel, Spappresourcedata, Splocalecontainer, Splocalecontaineritem
-from time import time
+from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
+from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem
 
 from . import auditcodes
 
@@ -22,17 +25,15 @@ class AuditLog(object):
         return self.isAuditing() and self._auditingFlds
         
     def isAuditing(self):
+        if settings.DISABLE_AUDITING:
+            return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
-            res = Spappresourcedata.objects.filter(
-                spappresource__name='preferences',
-                spappresource__spappresourcedir__usertype='Prefs')
-            remote_prefs = '\n'.join(r.data for r in res)
-            match = re.search(r'auditing\.do_audits=(.+)', remote_prefs)
+            match = re.search(r'auditing\.do_audits=(.+)', get_remote_prefs())
             if match is None:
                 self._auditing = True
             else:
                 self._auditing = False if match.group(1).lower() == 'false' else True
-            match = re.search(r'auditing\.audit_field_updates=(.+)', remote_prefs)
+            match = re.search(r'auditing\.audit_field_updates=(.+)', get_remote_prefs())
             if match is None:
                 self._auditingFlds = True
             else:
@@ -71,7 +72,7 @@ class AuditLog(object):
                         field = obj._meta.get_field(fldattr);
                         if isinstance(val, field.related_model):
                             self._log_fld_update({'field_name': fldattr, 'old_value': val.id, 'new_value': None}, log_obj, agent)
-                        elif isinstance(val, basestring) and not val.endswith('.None'):
+                        elif isinstance(val, str) and not val.endswith('.None'):
                             fk_model, fk_id = parse_uri(val)
                             if fk_model == field.related_model.__name__.lower() and  fk_id is not None:
                                 self._log_fld_update({'field_name': fldattr, 'old_value': fk_id, 'new_value': None}, log_obj, agent)
@@ -103,10 +104,10 @@ class AuditLog(object):
     def _log_fld_update(self, vals, log, agent):
         newval = vals['new_value']
         if newval is not None:
-            newval = unicode(vals['new_value'])[:(2**16 - 1)]
+            newval = str(vals['new_value'])[:(2**16 - 1)]
         oldval = vals['old_value']
         if oldval is not None:
-            oldval = unicode(vals['old_value'])[:(2**16 - 1)]
+            oldval = str(vals['old_value'])[:(2**16 - 1)]
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
             newvalue=newval,
@@ -116,11 +117,7 @@ class AuditLog(object):
             modifiedbyagent=agent)
 
     def purge(self):
-        res = Spappresourcedata.objects.filter(
-            spappresource__name='preferences',
-            spappresource__spappresourcedir__usertype='Global Prefs')
-        global_prefs = '\n'.join(r.data for r in res)
-        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', global_prefs)
+        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', get_global_prefs())
         logger.info("checking to see if purge is required")
         if match is not None:
             cursor = connection.cursor()

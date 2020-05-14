@@ -16,7 +16,7 @@ from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
-from uploader_classpath import CLASSPATH
+from .uploader_classpath import CLASSPATH
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ def upload(request, wb_id, mul_match_action, no_commit, match):
         # fork so that we don't have to wait() on the child process
         cmdline = ' '.join(args) + ' 2> >(egrep "(ERROR)|(UploaderException)|(UploaderMatchSkipException)" >&1) &'
         logger.debug('starting upload w/ cmdline: %s', cmdline)
-        print cmdline
+        print(cmdline)
         subprocess.call(['/bin/bash', '-c', cmdline], stdout=f)
 
     log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))

@@ -1,3 +1,5 @@
+
+from unittest import skip
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from ..exceptions import BusinessRuleException
@@ -20,6 +22,7 @@ class CollectorTests(ApiTests):
                 division=self.division,
                 agent=self.agent)
 
+    @skip("business rule removed in https://github.com/specify/specify7/issues/327")
     def test_division_cannot_be_null(self):
         collectingevent = models.Collectingevent.objects.create(
             discipline=self.discipline)

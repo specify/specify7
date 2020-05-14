@@ -16,6 +16,7 @@ from sqlalchemy import sql, types, distinct
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from .auditcodes import TREE_MOVE
+from functools import reduce
 
 
 def tree_mutation(mutation):
