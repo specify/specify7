@@ -58,7 +58,7 @@ TESTING_DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
-        'NAME': "specify",
+        'NAME': "specifytestnew",
         'USER': "master",
         'PASSWORD': "master",
         # 'HOST': '127.0.0.1',

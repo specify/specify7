@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+    <file level="0" mimetype="text/xml" name="UIFormatters"  description="UIFormatters" file="uiformatters.xml"/>    
+    <file level="0" mimetype="text/xml" name="DialogDefs"    description="DialogDefs" file="dialog_defs.xml"/>    
+    <file level="0" mimetype="text/xml" name="DataObjFormatters" description="DataObjFormatters" file="dataobj_formatters.xml"/>    
+    <file level="0" mimetype="text/xml" name="SearchConfig"  description="SearchConfig" file="search_config.xml"/>    
+    <file level="0" mimetype="text/xml" name="Statistics"    description="Statistics" file="statistics.xml"/>    
+    <file level="0" mimetype="text/xml" name="PrefsPanelDef" description="PrefsPanelDef" file="prefs_panel_def.xml"/>    
+    <file level="0" mimetype="text/xml" name="TypeSearches"  description="TypeSearches" file="typesearch_def.xml"/>    
+    <file level="0" mimetype="text/xml" name="CollStats"     description="CollStats" file="collstats.xml"/>    
+</files>
