@@ -61,7 +61,7 @@ TESTING_DATABASES = {
         'NAME': "specifytestnew",
         'USER': "master",
         'PASSWORD': "master",
-        # 'HOST': '127.0.0.1',
+        'HOST': '127.0.0.1',
         'PORT': os.environ['MYSQL_PORT'],
     }
 }
