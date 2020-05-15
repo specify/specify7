@@ -1,7 +1,9 @@
 
+import os
+
 # The webapp server piggybacks on the thick client.
 # Set the path to a thick client installation.
-THICK_CLIENT_LOCATION = '/opt/Specify'
+THICK_CLIENT_LOCATION = os.path.join(os.environ['GITHUB_WORKSPACE'], 'specify6')
 
 # Set the database name to the MySQL database you
 # want to access.
