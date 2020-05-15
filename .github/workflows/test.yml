@@ -12,9 +12,9 @@ jobs:
         ports:
           - 3306
         env:
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
-          MYSQL_DATABASE: test
+          MYSQL_USER: master
+          MYSQL_PASSWORD: master
+          MYSQL_DATABASE: test_specify
           MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
@@ -46,5 +46,7 @@ jobs:
           done
 
       - name: Test
+        env:
+          MYSQL_PORT: ${{ job.services.mariadb.ports[3306] }}
         run: |
           python manage.py test

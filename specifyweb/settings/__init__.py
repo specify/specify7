@@ -58,11 +58,11 @@ TESTING_DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
-        'NAME': "specifytestnew",
+        'NAME': "specify",
         'USER': "master",
         'PASSWORD': "master",
         # 'HOST': '127.0.0.1',
-        # 'PORT': '3307',
+        'PORT': os.environ['MYSQL_PORT'],
     }
 }
 
