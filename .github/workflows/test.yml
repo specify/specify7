@@ -24,7 +24,7 @@ jobs:
       - name: Install Specify 6
         run: |
           wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
-          sh Specify_unix_64.sh -q
+          sh Specify_unix_64.sh -q -dir ./Specify6
 
       - name: Install ubuntu dependencies
         run: sudo apt-get install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
