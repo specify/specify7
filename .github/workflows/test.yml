@@ -3,7 +3,7 @@ name: Tests
 on: [push]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     services:
@@ -20,6 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+
+      - name: Install Specify 6
+        run: |
+          wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+          sh Specify_unix_64 -q
 
       - name: Install ubuntu dependencies
         run: sudo apt-get install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
