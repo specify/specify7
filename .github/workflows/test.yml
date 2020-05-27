@@ -12,9 +12,9 @@ jobs:
         ports:
           - 3306
         env:
-          MYSQL_USER: master
-          MYSQL_PASSWORD: master
-          MYSQL_DATABASE: test_specify
+          MYSQL_USER: MasterUser
+          MYSQL_PASSWORD: MasterPassword
+          MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
@@ -46,6 +46,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Create settings file
+        run: |
+          echo "THICK_CLIENT_LOCATION = ${{ env.GITHUB_WORKSPACE }}/Specify6" >> specifyweb/settings/local_specify_settings.py
+          echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
+          echo "DATABASE_PORT = ${{ env.MYSQL_PORT }}" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
         run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
