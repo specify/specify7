@@ -108,6 +108,24 @@ module.exports = {
             type: 'java.lang.Integer'
         });
         fields.push(unresolvedItems);
+        var resolvedPreps = _(new schema.Field(model)).extend({
+            name: 'resolvedPreps',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(resolvedPreps);
+        var resolvedItems = _(new schema.Field(model)).extend({
+            name: 'resolvedItems',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(resolvedItems);
     },
         PrepType: function(model) {
             var fields = model.getAllFields();

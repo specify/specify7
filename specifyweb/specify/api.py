@@ -667,6 +667,8 @@ def obj_to_data(obj):
         data['totalItems'] = quantities
         data['unresolvedPreps'] = unresolvedItems
         data['unresolvedItems'] = unresolvedQuantities
+        data['resolvedPreps'] = items - unresolvedItems
+        data['resolvedItems'] = quantities - unresolvedQuantities
     return data
 
 def to_many_to_data(obj, related_object):
