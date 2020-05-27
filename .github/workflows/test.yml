@@ -49,9 +49,9 @@ jobs:
 
       - name: Create settings file
         run: |
-          echo "THICK_CLIENT_LOCATION = ${{ env.GITHUB_WORKSPACE }}/Specify6" >> specifyweb/settings/local_specify_settings.py
+          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
-          echo "DATABASE_PORT = ${{ env.MYSQL_PORT }}" >> specifyweb/settings/local_specify_settings.py
+          echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
         run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
