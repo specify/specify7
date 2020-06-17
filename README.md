@@ -300,4 +300,4 @@ build the JS bundles, and apply any necessary database migrations.
 7. Testing it out with the [development server](#the-development-server).
 
 8. Deploy the new version by updating your Apache config to replace the old
-installation paths with the new.
+installation paths with the new[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fsp7-stats&uid=readme&tid=UA-169822764-3)]()
