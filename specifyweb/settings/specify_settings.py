@@ -5,16 +5,16 @@ THICK_CLIENT_LOCATION = '/opt/Specify'
 
 # Set the database name to the MySQL database you
 # want to access.
-DATABASE_NAME = 'SpecifyDB'
+DATABASE_NAME = 'sp7demofish'
 
 # Database hostname or IP
-DATABASE_HOST = ''
+DATABASE_HOST = '172.17.0.2'
 DATABASE_PORT = ''
 
 # The master user login. Use the same values as
 # you did setting up the thick client.
-MASTER_NAME = 'MasterUser'
-MASTER_PASSWORD = 'MasterPassword'
+MASTER_NAME = 'root'
+MASTER_PASSWORD = 'root'
 
 # Select the schema localization language.
 SCHEMA_LANGUAGE = 'en'
