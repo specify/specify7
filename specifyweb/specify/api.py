@@ -31,6 +31,10 @@ class JsonEncoder(json.JSONEncoder):
             return str(obj)
         if hasattr(obj, 'isoformat'):
             return obj.isoformat()
+        if isinstance(obj, bytes):
+            # assume byte data is utf encoded text.
+            # this works for things like app resources.
+            return obj.decode()
         return json.JSONEncoder.default(self, obj)
 
 def toJson(obj):
