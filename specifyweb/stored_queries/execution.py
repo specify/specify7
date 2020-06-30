@@ -127,7 +127,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, add_header=True, strip_id=False)
-            
+
     Message.objects.create(user=user, content=json.dumps({
         'type': 'query-export-complete',
         'file': filename,
@@ -158,7 +158,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-    
+
     logger.debug('query_to_csv starting')
 
     with open(path, 'w', newline='') as f:
@@ -184,7 +184,7 @@ def row_has_geocoords(coord_cols, row):
     """
     return row[coord_cols[0]] != None and row[coord_cols[0]] != '' and row[coord_cols[1]] != None and row[coord_cols[1]] != ''
 
-    
+
 def query_to_kml(session, collection, user, tableid, field_specs, path, captions, host,
                  recordsetid=None, add_header=False, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
@@ -195,11 +195,11 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     """
     set_group_concat_max_len(session)
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
-    
+
     logger.debug('query_to_kml starting')
 
     kmlDoc = xml.dom.minidom.Document()
-  
+
     kmlElement = kmlDoc.createElementNS('http://earth.google.com/kml/2.2', 'kml')
     kmlElement.setAttribute('xmlns','http://earth.google.com/kml/2.2')
     kmlElement = kmlDoc.appendChild(kmlElement)
@@ -213,15 +213,15 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
         table = None
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
-    
+
     for row in query.yield_per(1):
         if row_has_geocoords(coord_cols, row):
             placemarkElement = createPlacemark(kmlDoc, row, coord_cols, table, captions, host)
             documentElement.appendChild(placemarkElement)
 
-    kmlFile = open(path, 'w')
-    kmlFile.write(kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8'))
-            
+    with open(path, 'wb') as kmlFile:
+        kmlFile.write(kmlDoc.toprettyxml('  ', newl = '\n', encoding = 'utf-8'))
+
     logger.debug('query_to_kml finished')
 
 def getCoordinateColumns(field_specs, hasId):
@@ -259,7 +259,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     placemarkElement = kmlDoc.createElement('Placemark')
     extElement = kmlDoc.createElement('ExtendedData')
     placemarkElement.appendChild(extElement)
-  
+
     # Loop through the columns and create a  element for every field that has a value.
     adj = 0 if table == None else 1
     nameElement = kmlDoc.createElement('name')
@@ -277,7 +277,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
             extElement.appendChild(dataElement)
 
 
-            
+
     #display coords
     crdElement = kmlDoc.createElement('Data')
     crdElement.setAttribute('name', 'coordinates')
@@ -290,7 +290,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
         crdStr += ' (' + row[coord_cols[4]] + ')'
     crdValue.appendChild(kmlDoc.createTextNode(crdStr))
     extElement.appendChild(crdElement)
-    
+
     #add the url
     if table != None:
         urlElement = kmlDoc.createElement('Data')
@@ -300,7 +300,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
         urlText = kmlDoc.createTextNode(host + '/specify/view/' + table + '/' + str(row[0]) + '/')
         urlValue.appendChild(urlText)
         extElement.appendChild(urlElement)
-    
+
     #add coords
     if len(coord_cols) == 5:
         coord_type = row[coord_cols[4]].lower()
@@ -309,7 +309,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     else:
         coord_type = 'point'
 
-    
+
     pointElement = kmlDoc.createElement('Point')
     coordinates = row[coord_cols[0]] + ',' + row[coord_cols[1]]
     coorElement = kmlDoc.createElement('coordinates')
@@ -350,7 +350,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
 
     return placemarkElement
 
-  
+
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
     as an array for json serialization to the web app.
@@ -400,7 +400,7 @@ def augment_field_specs(field_specs, formatauditobjs=False):
 
 def make_augmented_field_spec(field_spec, model, field_name):
     print("make_augmented_field_spec ######################################")
-                                                             
+
 def recordset(collection, user, user_agent, recordset_info):
     "Create a record set from the records matched by a query."
     spquery = recordset_info['fromquery']
