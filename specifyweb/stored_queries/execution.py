@@ -161,7 +161,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     
     logger.debug('query_to_csv starting')
 
-    with open(path, 'wb') as f:
+    with open(path, 'w', newline='') as f:
         csv_writer = csv.writer(f)
         if add_header:
             header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
@@ -172,7 +172,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
         for row in query.yield_per(1):
             if row_filter is not None and not row_filter(row): continue
             encoded = [
-                re.sub('\r|\n', ' ', str(f).encode('utf-8'))
+                re.sub('\r|\n', ' ', str(f))
                 for f in (row[1:] if strip_id else row)
             ]
             csv_writer.writerow(encoded)
