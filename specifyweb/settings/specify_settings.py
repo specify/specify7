@@ -52,7 +52,7 @@ STATS_URL = "https://stats.specifycloud.org/capture"
 
 # Workbench uploader log directory.
 # Must exist and be writeable by the web server process.
-WB_UPLOAD_LOG_DIR = "/var/cache/specify_wb_upload/"
+WB_UPLOAD_LOG_DIR = "/home/specify/wb_upload_logs"
 
 # Asynchronously generated exports are placed in
 # the following directory. This includes query result

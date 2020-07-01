@@ -40,7 +40,7 @@ WORKDIR /opt/specify7
 RUN python3.6 -m venv ve && ve/bin/pip install -r requirements.txt
 
 RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py frontend
-RUN mkdir -p /home/specify/wb_upload /home/specify/specify_depository
+RUN mkdir -p /home/specify/wb_upload_logs /home/specify/specify_depository
 
 USER root
 
