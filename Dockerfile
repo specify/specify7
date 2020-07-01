@@ -7,7 +7,8 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 RUN apt-get update && apt-get -y install \
 	apache2 \
 	build-essential \
-	python3.6 \
+        openjdk-11-jre-headless \
+        python3.6 \
 	python3.6-dev \
         curl \
         git \
