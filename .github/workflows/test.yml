@@ -34,6 +34,9 @@ jobs:
           wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
+      - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
+        run: sed -i 's/name="origFilename" type="java.lang.String"/name="origFilename" type="text"/' ./Specify6/config/specify_datamodel.xml
+
       - name: Install ubuntu dependencies
         run: sudo apt-get install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
 
