@@ -246,7 +246,7 @@ def status_from_log(fname):
     last_row = None
     skipped_count = 0
 
-    with open(fname, 'r') as f:
+    with open(fname, 'r', encoding='utf-8') as f:
         for line in f:
             if not no_commit and NO_COMMIT_RE.search(line):
                 no_commit = True
@@ -287,7 +287,7 @@ def upload_log(request, upload_id):
     assert upload_id.startswith(settings.DATABASE_NAME)
     fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
     try:
-        return http.HttpResponse(open(fname, "r"), content_type='text/plain')
+        return http.HttpResponse(open(fname, "r", encoding='utf-8'), content_type='text/plain')
     except IOError as e:
         if e.errno == errno.ENOENT:
             raise http.Http404()
