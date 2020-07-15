@@ -4,7 +4,7 @@ FROM ubuntu:18.04
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
 # Get Ubuntu packages
-RUN apt-get update && apt-get -y install \
+RUN apt-get update && apt-get -y install --no-install-recommends \
 	apache2 \
 	build-essential \
         openjdk-11-jre-headless \
@@ -37,9 +37,12 @@ USER specify
 COPY --chown=specify:specify . /opt/specify7
 WORKDIR /opt/specify7
 
-RUN python3.6 -m venv ve && ve/bin/pip install -r requirements.txt
+RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r requirements.txt
 
-RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py frontend
+RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py frontend \
+    && rm -rf specifyweb/frontend/js_src/bower_components specifyweb/frontend/js_src/node_modules \
+    && rm -rf /home/specify/.npm /home/specify/.cache
+
 RUN mkdir -p /home/specify/wb_upload_logs /home/specify/specify_depository
 
 USER root
