@@ -53,9 +53,11 @@ module.exports = function(doingFormTable, mode, cell, id) {
                     .attr('readonly', doingFormTable || mode === 'view');
             },
             text: function() {
+                const readonly = cell.attr('readonly') && cell.attr('readonly').toLowerCase() === "true";
+
                 return $('<input type=text class="specify-field">')
                     .attr('value', cell.attr('default'))
-                    .attr('readonly', doingFormTable || mode === 'view');
+                    .attr('readonly', doingFormTable || mode === 'view' || readonly);
             },
             dsptextfield: function() {
                 return $('<input type=text class="specify-field" readonly>')
