@@ -118,7 +118,7 @@ var fieldsFor = {
                 'isdisplay': false,
                 'isnot': false,
                 'startvalue': '',
-                'operstart': 6,
+                'operstart': 13,
                 'position': position++
             }),
             makeField(model, 'collectingEvent.locality.localityName', null, {
@@ -171,7 +171,7 @@ var fieldsFor = {
                 'isdisplay': false,
                 'isnot': false,
                 'startvalue': '',
-                'operstart': 6,
+                'operstart': 13,
                 'position': position++
             }),
             makeField(model, 'preparations.storage.fullName', null, {
@@ -216,7 +216,7 @@ var fieldsFor = {
                 'isdisplay': false,
                 'isnot': false,
                 'startvalue': '',
-                'operstart': 6,
+                'operstart': 13,
                 'position': position++
             }),
 
@@ -262,7 +262,7 @@ var fieldsFor = {
                 'isdisplay': false,
                 'isnot': false,
                 'startvalue': '',
-                'operstart': 6,
+                'operstart': 13,
                 'position': position++
             }),
             makeField(model, paleoPath + '.lithoStrat.fullName', null, {
