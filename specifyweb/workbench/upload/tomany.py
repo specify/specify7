@@ -13,6 +13,14 @@ class ToManyRecord(NamedTuple):
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
 
+    def to_json(self) -> Dict:
+        result = self._asdict()
+        result['toOne'] = {
+            key: uploadable.to_json()
+            for key, uploadable in self.toOne.items()
+        }
+        return result
+
     def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value

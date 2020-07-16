@@ -4,6 +4,8 @@ import csv
 from unittest import skip
 from datetime import datetime
 from decimal import Decimal
+import json
+from jsonschema import validate
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
@@ -13,6 +15,7 @@ from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload import do_upload_csv
 from .parsing import parse_coord
+from .upload_plan_schema import schema, parse_uploadable
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
@@ -178,6 +181,11 @@ class UploadTests(ApiTests):
                 ),
             },
         )
+
+    def test_schema(self) -> None:
+        plan = self.example_plan.to_json()
+        validate(plan, schema)
+        self.assertEqual(self.example_plan, parse_uploadable(plan))
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(

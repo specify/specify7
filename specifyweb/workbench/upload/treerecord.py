@@ -31,6 +31,10 @@ class TreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
 
+    def to_json(self) -> Dict:
+        result = self._asdict()
+        return { 'treeRecord': result }
+
     def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         return FilterPack([], [])
 

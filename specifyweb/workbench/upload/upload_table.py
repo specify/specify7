@@ -19,6 +19,19 @@ class UploadTable(NamedTuple):
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
+    def to_json(self) -> Dict:
+        result = self._asdict()
+        result['toOne'] = {
+            key: uploadable.to_json()
+            for key, uploadable in self.toOne.items()
+        }
+        result['toMany'] = {
+            key: [to_many.to_json() for to_many in to_manys]
+            for key, to_manys in self.toMany.items()
+        }
+        return { 'uploadTable': result }
+
+
     def filter_on(self, collection, path: str, row: Row) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value
