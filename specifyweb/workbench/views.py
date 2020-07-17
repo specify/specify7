@@ -225,7 +225,7 @@ def upload(request, wb_id, mul_match_action, no_commit, match):
                 os.remove(fname)
             except:
                 pass
-    return http.HttpResponse(output_file, content_type="text_plain")
+    return http.HttpResponse(output_file, content_type="text/plain")
 
 
 TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'

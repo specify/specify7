@@ -8,8 +8,7 @@ from django.db import transaction
 from specifyweb.specify import models
 
 from ..views import load
-from .data import UploadResult
-from .upload_table import UploadTable
+from .data import UploadResult, Uploadable
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 #     ]
 
 
-def do_upload_csv(collection, csv_reader: csv.DictReader, upload_plan: UploadTable) -> List[UploadResult]:
+def do_upload_csv(collection, csv_reader: csv.DictReader, upload_plan: Uploadable) -> List[UploadResult]:
     return [
         upload_plan.upload_row(collection, row)
         for row in csv_reader
