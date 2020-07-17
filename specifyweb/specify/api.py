@@ -674,10 +674,12 @@ def obj_to_data(obj):
             if not prep['isresolved']:
                 unresolvedItems = unresolvedItems + 1;
                 unresolvedQuantities = unresolvedQuantities + (prep_quantity - prep_quantityresolved)
-        data['totalItems'] = items
-        data['totalQuantities'] = quantities
-        data['unresolvedItems'] = unresolvedItems
-        data['unresolvedQuantities'] = unresolvedQuantities
+        data['totalPreps'] = items
+        data['totalItems'] = quantities
+        data['unresolvedPreps'] = unresolvedItems
+        data['unresolvedItems'] = unresolvedQuantities
+        data['resolvedPreps'] = items - unresolvedItems
+        data['resolvedItems'] = quantities - unresolvedQuantities
     return data
 
 def to_many_to_data(obj, rel):

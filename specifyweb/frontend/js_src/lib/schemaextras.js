@@ -72,6 +72,15 @@ module.exports = {
         },
     Loan: function(model) {
         var fields = model.getAllFields();
+        var totalPreps = _(new schema.Field(model)).extend({
+            name: 'totalPreps',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(totalPreps);
         var totalItems = _(new schema.Field(model)).extend({
             name: 'totalItems',
             isRelationship: false,
@@ -81,15 +90,15 @@ module.exports = {
             type: 'java.lang.Integer'
         });
         fields.push(totalItems);
-        var totalQuantities = _(new schema.Field(model)).extend({
-            name: 'totalQuantities',
+        var unresolvedPreps = _(new schema.Field(model)).extend({
+            name: 'unresolvedPreps',
             isRelationship: false,
             isRequired: false,
             isHidden: alwaysTrue,
             readOnly: true,
             type: 'java.lang.Integer'
         });
-        fields.push(totalQuantities);
+        fields.push(unresolvedPreps);
         var unresolvedItems = _(new schema.Field(model)).extend({
             name: 'unresolvedItems',
             isRelationship: false,
@@ -99,15 +108,24 @@ module.exports = {
             type: 'java.lang.Integer'
         });
         fields.push(unresolvedItems);
-        var unresolvedQuantities = _(new schema.Field(model)).extend({
-            name: 'unresolvedQuantities',
+        var resolvedPreps = _(new schema.Field(model)).extend({
+            name: 'resolvedPreps',
             isRelationship: false,
             isRequired: false,
             isHidden: alwaysTrue,
             readOnly: true,
             type: 'java.lang.Integer'
         });
-        fields.push(unresolvedQuantities);
+        fields.push(resolvedPreps);
+        var resolvedItems = _(new schema.Field(model)).extend({
+            name: 'resolvedItems',
+            isRelationship: false,
+            isRequired: false,
+            isHidden: alwaysTrue,
+            readOnly: true,
+            type: 'java.lang.Integer'
+        });
+        fields.push(resolvedItems);
     },
         PrepType: function(model) {
             var fields = model.getAllFields();
