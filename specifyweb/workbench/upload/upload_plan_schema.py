@@ -22,27 +22,9 @@ schema = {
                     'description': 'The name of the Specify table the data is to be loaded into.',
                     'examples': ['Collectionobject', 'Collectingevent', 'Agent']
                 },
-                'wbcols': {
-                    'type': 'object',
-                    'description': 'Maps the columns of the destination table to the headers of the source columns of input data.',
-                    'additionalProperties': { 'type': 'string' },
-                    'examples': [
-                        {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
-                        {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
-                    ]
-                },
-                'static': {
-                    'type': 'object',
-                    'description': 'A set of static values that will be added to every record loaded.',
-                    'examples': [
-                        {'ispublic': True, 'license': 'CC BY-NC-ND 2.0'}
-                    ]
-                },
-                'toOne': {
-                    'type': 'object',
-                    'description': 'Maps the names of -to-one relationships of the table to upload definitions for each.',
-                    'additionalProperties': { '$ref': '#/definitions/uploadable' }
-                },
+                'wbcols': { '$ref': '#/definitions/wbcols' },
+                'static': { '$ref': '#/definitions/static' },
+                'toOne': { '$ref': '#/definitions/toOne' },
                 'toMany': {
                     'type': 'object',
                     'desciption': 'Maps the names of -to-many relationships of the table to an array of upload definitions for each.',
@@ -64,27 +46,9 @@ schema = {
                     'This value must be the same for every element of a toMany array.',
                     'examples': ['Collectionobject', 'Collectingevent', 'Agent']
                 },
-                'wbcols': {
-                    'type': 'object',
-                    'description': 'Maps the columns of the destination table to the headers of the source columns of input data.',
-                    'additionalProperties': { 'type': 'string' },
-                    'examples': [
-                        {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
-                        {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
-                    ]
-                },
-                'static': {
-                    'type': 'object',
-                    'description': 'A set of static values that will be added to every record loaded.',
-                    'examples': [
-                        {'ispublic': True, 'license': 'CC BY-NC-ND 2.0'}
-                    ]
-                },
-                'toOne': {
-                    'type': 'object',
-                    'description': 'Maps the names of -to-one relationships of the table to upload definitions for each.',
-                    'additionalProperties': { '$ref': '#/definitions/uploadable' }
-                },
+                'wbcols': { '$ref': '#/definitions/wbcols' },
+                'static': { '$ref': '#/definitions/static' },
+                'toOne': { '$ref': '#/definitions/toOne' },
             },
             'required': [ 'name', 'wbcols', 'static', 'toOne' ],
             'additionalProperties': False
@@ -132,6 +96,30 @@ schema = {
                 '^treeRecord$': { '$ref': '#/definitions/treeRecord' },
             },
             'additionalProperties': False
+        },
+
+        'wbcols': {
+            'type': 'object',
+            'description': 'Maps the columns of the destination table to the headers of the source columns of input data.',
+            'additionalProperties': { 'type': 'string' },
+            'examples': [
+                {'catalognumber': 'Specimen #', 'catalogeddate': 'Recored Date', 'objectcondition': 'Condition'},
+                {'lastname': 'Collector 1 Last Name', 'firstname': 'Collector 1 First Name'},
+            ]
+        },
+
+        'toOne': {
+            'type': 'object',
+            'description': 'Maps the names of -to-one relationships of the table to upload definitions for each.',
+            'additionalProperties': { '$ref': '#/definitions/uploadable' }
+        },
+
+        'static': {
+            'type': 'object',
+            'description': 'A set of static values that will be added to every record loaded.',
+            'examples': [
+                {'ispublic': True, 'license': 'CC BY-NC-ND 2.0'}
+            ]
         },
     }
 }
