@@ -1,22 +1,19 @@
 
-  Specify 7
-  =========
-  
-  The Specify Collections Consortium is funded by
-  its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
-    
-  Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
-  free software licensed under GNU General Public License 2
-  (GPL2).
+Specify 7
+=========
+
+The Specify Collections Consortium is funded by
+its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
+
+Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
+free software licensed under GNU General Public License 2
+(GPL2).
 
     Specify Collections Consortium
     Biodiversity Institute
     University of Kansas
     1345 Jayhawk Blvd.
     Lawrence, KS 66045 USA
-
-
-
 
 
 Developer Instructions
@@ -49,8 +46,7 @@ https://github.com/specify/specify7-docker
 # Ordinary deployment
 Install system dependencies.
 -----------------------------------
-Specify 7 requires Python 2.7 which is the default for recent Linux
-distributions.
+Specify 7 requires Python 3.6.
 
 Other required software:
 
@@ -60,17 +56,25 @@ Other required software:
   driver
 * The build-essential packages for compiling the Python MySQL driver
 * NodeJS to execute the Javascript minimization tool
-* Specify6 for common resource files
+* Specify 6 for common resource files and workbench uploading and validating
+* JRE for running the Specify 6 workbench uploader
 
 On Ubuntu:
 
     sudo apt-get install \
-        git python-pip python-dev libmysqlclient-dev npm \
-        libsasl2-dev libldap2-dev libssl-dev build-essential curl
-
-    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-
-    sudo apt-get install nodejs
+        build-essential \
+        openjdk-11-jre-headless \
+        python3.6 \
+        python3.6-dev \
+        git \
+        libldap2-dev \
+        libmariadbclient-dev \
+        libsasl2-dev \
+        nodejs \
+        npm \
+        python3-lxml \
+        python3-venv \
+        unzip
 
 To install Specify6, follow the Specify6 installation instructions, or
 copy an existing installation if you have one.
@@ -101,22 +105,12 @@ will avoid version conflicts with other Python libraries on your
 system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
-### Installing *virtualenv*
-First make sure a reasonably up-to-date *virtualenv* tool is installed
-on your system.
-
-    virtualenv --version
-
-If *virtualenv* is not installed, I recommend installing it using
-*pip*.
-
-    sudo pip install virtualenv
 
 ### Creating and activating the virtualenv
 I generally create a virtualenv inside the the `specify7` directory
 named simply `ve`.
 
-    virtualenv specify7/ve
+    python3.6 -m venv specify7/ve
     source specify7/ve/bin/activate
 
 The shell prompt will be modified to indicate the virtualenv is
@@ -242,7 +236,7 @@ following packages are needed:
 
 On Ubuntu:
 
-    sudo apt-get install apache2 libapache2-mod-wsgi
+    sudo apt-get install apache2 libapache2-mod-wsgi-py3
 
 Setup Apache.
 -------------
