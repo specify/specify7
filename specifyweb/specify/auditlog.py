@@ -104,10 +104,10 @@ class AuditLog(object):
     def _log_fld_update(self, vals, log, agent):
         newval = vals['new_value']
         if newval is not None:
-            newval = unicode(vals['new_value'])[:(2**16 - 1)]
+            newval = str(vals['new_value'])[:(2**16 - 1)]
         oldval = vals['old_value']
         if oldval is not None:
-            oldval = unicode(vals['old_value'])[:(2**16 - 1)]
+            oldval = str(vals['old_value'])[:(2**16 - 1)]
         return Spauditlogfield.objects.create(
             fieldname=vals['field_name'],
             newvalue=newval,
