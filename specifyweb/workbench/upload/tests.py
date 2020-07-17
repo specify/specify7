@@ -122,10 +122,10 @@ class UploadTests(ApiTests):
                                     treedefname = 'Geographytreedef',
                                     treedefid = self.geographytreedef.id,
                                     ranks = {
-                                        'Continent/Ocean': 'Continent',
+                                        'Continent': 'Continent/Ocean' ,
                                         'Country': 'Country',
-                                        'State/Prov/Pref': 'State',
-                                        'Region': 'County',
+                                        'State': 'State/Prov/Pref',
+                                        'County': 'Region',
                                     }
                                 ),
                             },
@@ -378,10 +378,10 @@ class UploadTests(ApiTests):
             treedefname = 'Geographytreedef',
             treedefid = self.geographytreedef.id,
             ranks = {
-                'Continent/Ocean': 'Continent',
+                'Continent': 'Continent/Ocean',
                 'Country': 'Country',
-                'State/Prov/Pref': 'State',
-                'Region': 'County',
+                'State': 'State/Prov/Pref',
+                'County': 'Region',
             }
         )
         row = next(reader)

@@ -77,7 +77,7 @@ schema = {
                     'description': 'Maps the ranks of the tree to the headers of the source columns of input data.',
                     'additionalProperties': { 'type': 'string' },
                     'examples': [
-                        {"Continent/Ocean": "Continent", "Country": "Country", "State/Prov/Pref": "State", "Region": "County"},
+                        {'Continent': 'Continent/Ocean', 'Country': 'Country', 'State': 'State/Prov/Pref', 'County': 'Region'},
                         {"Class": "Class", "Superfamily": "Superfamily", "Family": "Family", "Genus": "Genus", "Subgenus": "Subgenus", "Species": "Species", "Subspecies": "Subspecies"}
                     ]
                 },

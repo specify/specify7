@@ -71,7 +71,7 @@ class TreeRecord(NamedTuple):
         depth = len(treedefitems)
         values = {
             rankname: parse_string(row[wbcol])
-            for wbcol, rankname in self.ranks.items()
+            for rankname, wbcol in self.ranks.items()
         }
 
         items_with_values = list(dropwhile(lambda p: p.value is None, (
