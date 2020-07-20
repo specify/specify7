@@ -5,10 +5,11 @@ from unittest import skip
 from datetime import datetime
 from decimal import Decimal
 import json
-from jsonschema import validate
+from jsonschema import validate # type: ignore
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
+
 from .data import Uploaded, UploadResult, Matched, Exclude
 from .upload_table import UploadTable, to_many_filters_and_excludes
 from .tomany import ToManyRecord
@@ -16,6 +17,9 @@ from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload import do_upload_csv
 from .parsing import parse_coord
 from .upload_plan_schema import schema, parse_uploadable
+
+def get_table(name: str):
+    return getattr(models, name)
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
@@ -34,7 +38,7 @@ class UploadTests(ApiTests):
         self.geographytreedef.treedefitems.create(name='County', rankid=400)
 
 
-        self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
+        self.taxontreedef = get_table('Taxontreedef').objects.create(name="Test Taxonomy")
         self.taxontreedef.treedefitems.create(name='Taxonomy Root', rankid=0)
         self.taxontreedef.treedefitems.create(name='Kingdom', rankid=10)
         self.taxontreedef.treedefitems.create(name='Phylum', rankid=30)
@@ -271,7 +275,7 @@ class UploadTests(ApiTests):
         uploaded_catnos = []
         for r in upload_results:
             self.assertTrue(isinstance(r.record_result, Uploaded))
-            co = models.Collectionobject.objects.get(id=r.record_result.get_id())
+            co = get_table('Collectionobject').objects.get(id=r.record_result.get_id())
             uploaded_catnos.append(co.catalognumber)
 
         # Check that collection objects were uploaded.
@@ -281,26 +285,26 @@ class UploadTests(ApiTests):
         ]
         self.assertEqual(uploaded_catnos, expected_cats)
 
-        cos = models.Collectionobject.objects.filter(catalognumber__in=expected_cats)
+        cos = get_table('Collectionobject').objects.filter(catalognumber__in=expected_cats)
         self.assertEqual(cos.count(), len(expected_cats))
 
         # Check that only one copy of a given agent/collectingevent was uploaded.
-        self.assertEqual(models.Agent.objects.filter(lastname="Garcia").count(), 1)
-        self.assertEqual(models.Collectingevent.objects.filter(stationfieldnumber="D-7(1)").count(), 1)
+        self.assertEqual(get_table('Agent').objects.filter(lastname="Garcia").count(), 1)
+        self.assertEqual(get_table('Collectingevent').objects.filter(stationfieldnumber="D-7(1)").count(), 1)
 
         # Check which collectingevents got uploaded for some cases.
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001365").collectingevent.stationfieldnumber, None)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001365").collectingevent.stationfieldnumber, None)
         self.assertEqual(
-            set(ce.stationfieldnumber for ce in models.Collectingevent.objects.filter(collectors__agent__lastname="Garcia")),
+            set(ce.stationfieldnumber for ce in get_table('Collectingevent').objects.filter(collectors__agent__lastname="Garcia")),
             set([None, "D-7(1)", "D-4(1)"]))
 
         # Check the collectors for some collection objects.
         self.assertEqual(
-            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.collectors.order_by("ordernumber")],
+            [c.agent.lastname for c in get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.collectors.order_by("ordernumber")],
             ["Raines", "Taylor"])
 
         self.assertEqual(
-            [c.agent.lastname for c in models.Collectionobject.objects.get(catalognumber="000001380").collectingevent.collectors.order_by("ordernumber")],
+            [c.agent.lastname for c in get_table('Collectionobject').objects.get(catalognumber="000001380").collectingevent.collectors.order_by("ordernumber")],
             ["Raines"])
 
         self.assertEqual(
@@ -331,19 +335,19 @@ class UploadTests(ApiTests):
             ]))
 
         # Check that taxa got uploaded without dupes.
-        self.assertEqual(models.Taxon.objects.get(definitionitem__name='Taxonomy Root').name, "Uploaded")
+        self.assertEqual(get_table('Taxon').objects.get(definitionitem__name='Taxonomy Root').name, "Uploaded")
 
         self.assertEqual(
-            sorted(t.name for t in models.Taxon.objects.filter(definitionitem__name='Class')),
+            sorted(t.name for t in get_table('Taxon').objects.filter(definitionitem__name='Class')),
             'Gastropoda Scaphopoda'.split())
 
         self.assertEqual(
-            sorted(t.name for t in models.Taxon.objects.filter(definitionitem__name='Superfamily')),
+            sorted(t.name for t in get_table('Taxon').objects.filter(definitionitem__name='Superfamily')),
             '''Acteonoidea Buccinoidea Cerithioidea Fissurelloidea Muricoidea Pleurotomarioidea Rissooidea Stromboidea Vanikoroidea Velutinoidea'''\
             .split())
 
         # Check the determination of a specific collectionobject.
-        det = models.Collectionobject.objects.get(catalognumber="000005081").determinations.get()
+        det = get_table('Collectionobject').objects.get(catalognumber="000005081").determinations.get()
         self.assertEqual(det.determineddate, None)
 
         self.assertEqual((det.taxon.name, det.taxon.definitionitem.name), ("evergladesensis", "Species"))
@@ -358,14 +362,14 @@ class UploadTests(ApiTests):
         self.assertEqual(set(co.determinations.get().determineddateprecision for co in cos), set((None, 1)))
 
         # Check some collectingevent dates.
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001906").collectingevent.startdate, datetime(1987,5,4,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001906").collectingevent.startdateprecision, 0)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001906").collectingevent.startdate, datetime(1987,5,4,0,0))
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001906").collectingevent.startdateprecision, 0)
 
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000005009").collectingevent.startdate, datetime(1980,1,1,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000005009").collectingevent.startdateprecision, 2)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000005009").collectingevent.startdate, datetime(1980,1,1,0,0))
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000005009").collectingevent.startdateprecision, 2)
 
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
-        self.assertEqual(models.Collectionobject.objects.get(catalognumber="000001378").collectingevent.startdateprecision, 1)
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
+        self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdateprecision, 1)
 
 
     def test_tree_1(self) -> None:
@@ -388,59 +392,59 @@ class UploadTests(ApiTests):
         to_upload, matched = tree_record.match(row)
 
         self.assertEqual(to_upload, [
-            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="County"), "Hendry Co."),
-            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="State"), "FLORIDA"),
-            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Country"), "USA"),
-            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Continent"), "North America"),
-            TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="Planet"), "Uploaded"),
+            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co."),
+            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="State"), "FLORIDA"),
+            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Country"), "USA"),
+            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Continent"), "North America"),
+            TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="Planet"), "Uploaded"),
         ])
 
         self.assertEqual(matched, [])
 
-        planet = models.Geography.objects.create(
+        planet = get_table('Geography').objects.create(
             name="Uploaded",
-            definitionitem=models.Geographytreedefitem.objects.get(name="Planet"),
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Planet"),
             definition=self.geographytreedef,
         )
 
-        continent = models.Geography.objects.create(
+        continent = get_table('Geography').objects.create(
             name="North America",
-            definitionitem=models.Geographytreedefitem.objects.get(name="Continent"),
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Continent"),
             definition=self.geographytreedef,
             parent=planet,
         )
 
-        country = models.Geography.objects.create(
+        country = get_table('Geography').objects.create(
             name="USA",
-            definitionitem=models.Geographytreedefitem.objects.get(name="Country"),
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="Country"),
             definition=self.geographytreedef,
             parent=continent,
         )
 
-        state = models.Geography.objects.create(
+        state = get_table('Geography').objects.create(
             name="Florida",
-            definitionitem=models.Geographytreedefitem.objects.get(name="State"),
+            definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
             definition=self.geographytreedef,
             parent=country,
         )
 
         # The following should be created by the upload:
-        # county = models.Geography.objects.create(
+        # county = get_table('Geography').objects.create(
         #     name="Hendry Co.",
-        #     definitionitem=models.Geographytreedefitem.objects.get(name="County"),
+        #     definitionitem=get_table('Geographytreedefitem').objects.get(name="County"),
         #     definition=self.geographytreedef,
         #     parent=state,
         # )
 
         self.assertEqual(
             tree_record.match(row),
-            TreeMatchResult([TreeDefItemWithValue(models.Geographytreedefitem.objects.get(name="County"), "Hendry Co.")], [state.id])
+            TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [state.id])
         )
 
         upload_result = tree_record.upload_row(self.collection, row)
         self.assertTrue(isinstance(upload_result.record_result, Uploaded))
 
-        uploaded = models.Geography.objects.get(id=upload_result.get_id())
+        uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
         self.assertEqual(uploaded.name, "Hendry Co.")
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)

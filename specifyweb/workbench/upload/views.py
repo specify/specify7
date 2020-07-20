@@ -1,9 +1,9 @@
 import json
 import logging
-from jsonschema import validate
 from typing import Any
 import csv
 import io
+from jsonschema import validate # type: ignore
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 class UploadForm(forms.Form):
     upload_plan = forms.CharField(widget=forms.Textarea)
-    data = forms.CharField(widget=forms.Textarea)
+    csv_data = forms.CharField(widget=forms.Textarea)
     commit = forms.BooleanField(required=False)
 
 
@@ -40,7 +40,7 @@ def upload(request) -> Any:
         if form.is_valid():
             plan = json.loads(form.cleaned_data['upload_plan'])
             validate(plan, schema)
-            reader = csv.DictReader(io.StringIO(form.cleaned_data['data']))
+            reader = csv.DictReader(io.StringIO(form.cleaned_data['csv_data']))
 
             try:
                 with transaction.atomic():

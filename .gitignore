@@ -16,6 +16,7 @@ specifyweb/virtenv
 
 
 # Build artifacts:
+/.mypy_cache
 /specifyweb/settings/build_version.py
 /specifyweb/frontend/static/css/main-built.css
 /specifyweb/frontend/static/js
@@ -31,3 +32,4 @@ specifyweb/virtenv
 /specifyweb/frontend/wb_uploader/dist/
 /specifyweb/frontend/wb_uploader/node_modules/
 /specifyweb/frontend/wb_uploader/output/
+
