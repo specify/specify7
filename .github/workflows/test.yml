@@ -1,0 +1,71 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: MasterUser
+          MYSQL_PASSWORD: MasterPassword
+          MYSQL_DATABASE: test_SpecifyDB
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Get Specify 6 from cache
+        id: cache-specify6
+        uses: actions/cache@v1
+        with:
+          path: Specify6
+          key: specify6.8.00-cache
+
+      - name: Install Specify 6
+        if: steps.cache-specify6.outputs.cache-hit != 'true'
+        run: |
+          wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+          sh Specify_unix_64.sh -q -dir ./Specify6
+
+      - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
+        run: sed -i 's/name="origFilename" type="java.lang.String"/name="origFilename" type="text"/' ./Specify6/config/specify_datamodel.xml
+
+      - name: Install ubuntu dependencies
+        run: sudo apt-get install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create settings file
+        run: |
+          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
+          echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
+          echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
+
+      - name: Need these files to be present
+        run: make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+ 
+      - name: Verify MariaDB connection
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
+
+      - name: Run test suite
+        run: python manage.py test -k

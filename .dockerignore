@@ -1,0 +1,8 @@
+.git
+.github
+ve
+specifyweb/settings/local_*
+specifyweb/settings/debug.py
+specifyweb/frontend/js_src/bower_components
+specifyweb/frontend/js_src/node_modules
+specifyweb/frontend/static/js

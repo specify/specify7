@@ -74,10 +74,9 @@ def delete_attachment_file(attch_loc):
 
 def generate_token(timestamp, filename):
     """Generate the auth token for the given filename and timestamp. """
-    timestamp = str(timestamp)
-    mac = hmac.new(settings.WEB_ATTACHMENT_KEY,
-                   timestamp + filename)
-    return ':'.join((mac.hexdigest(), timestamp))
+    msg = str(timestamp).encode() + filename.encode()
+    mac = hmac.new(settings.WEB_ATTACHMENT_KEY.encode(), msg)
+    return ':'.join((mac.hexdigest(), str(timestamp)))
 
 def get_timestamp():
     """Return an integer timestamp with one second resolution for

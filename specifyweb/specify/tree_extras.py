@@ -163,7 +163,7 @@ def moving_node(to_save):
 def mutation_log(action, node, agent, parent, dirty_flds):
     from .auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
-    
+
 def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
@@ -179,7 +179,7 @@ def merge(node, into, agent):
         matched = [target_child for target_child in target_children
                    if child.name == target_child.name and child.rankid == target_child.rankid]
         if len(matched) > 0:
-            merge(child, matched[0])
+            merge(child, matched[0], agent)
         else:
             child.parent = target
             child.save()
@@ -220,7 +220,7 @@ def synonymize(node, into, agent):
     mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,
                  [{'field_name': 'acceptedid','old_value': None, 'new_value': target.id},
                   {'field_name': 'isaccepted','old_value': True, 'new_value': False}])
-    
+
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
         from .models import Determination
@@ -236,7 +236,7 @@ def unsynonymize(node, agent):
     mutation_log(TREE_UNSYNONYMIZE, node, agent, node.parent,
                  [{'field_name': 'acceptedid','old_value': old_acceptedid, 'new_value': None},
                   {'field_name': 'isaccepted','old_value': False, 'new_value': True}])
-    
+
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=F('taxon'))
 
