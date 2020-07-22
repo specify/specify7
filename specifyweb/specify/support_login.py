@@ -4,6 +4,7 @@ from hashlib import sha256
 from time import time
 
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 
 from specifyweb.specify.models import Specifyuser
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 TTL = settings.SUPPORT_LOGIN_TTL
 
 def make_digest(msg):
-    return hmac.new(settings.SECRET_KEY, msg, sha256).hexdigest()
+    return hmac.new(settings.SECRET_KEY.encode(), msg.encode(), sha256).hexdigest()
 
 def make_token(user):
     msg = "%s-%s" % (user.id, int(time()))
@@ -20,7 +21,7 @@ def make_token(user):
 
 
 class SupportLoginBackend(object):
-    def authenticate(self, token=None):
+    def authenticate(self, request, token=None):
         logger.info("attempting support login")
         try:
             userid, timestamp, digest = token.split('-')
@@ -30,6 +31,8 @@ class SupportLoginBackend(object):
         msg = "%s-%s" % (userid, timestamp)
         if digest == make_digest(msg) and int(timestamp) + TTL > time():
             return self.get_user(userid)
+        else:
+            raise PermissionDenied()
 
     def get_user(self, user_id):
         try:
