@@ -5,7 +5,7 @@ from unittest import skip
 from datetime import datetime
 from decimal import Decimal
 import json
-from jsonschema import validate # type: ignore
+from jsonschema import validate, Draft7Validator # type: ignore
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
@@ -16,18 +16,136 @@ from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload import do_upload_csv
 from .parsing import parse_coord
-from .upload_plan_schema import schema, parse_uploadable
+from .upload_plan_schema import schema, parse_plan
 
 def get_table(name: str):
-    return getattr(models, name)
+    return getattr(models, name.capitalize())
+
+example_plan_json = dict(
+    baseTableName = 'Collectionobject',
+    uploadable = { 'uploadTable': dict(
+        wbcols = {
+            'catalognumber' : "BMSM No.",
+        },
+        static = {},
+        toMany = {
+            'determinations': [
+                dict(
+                    wbcols = {
+                        'determineddate': 'ID Date',
+                    },
+                    static = {
+                        'iscurrent': True,
+                    },
+                    toOne = {
+                        'determiner': { 'uploadTable': dict(
+                            wbcols = {
+                                'title': 'Determiner 1 Title',
+                                'firstname': 'Determiner 1 First Name',
+                                'middleinitial': 'Determiner 1 Middle Initial',
+                                'lastname': 'Determiner 1 Last Name',
+                            },
+                            static = {
+                                'agenttype': 1
+                            },
+                            toOne = {},
+                            toMany = {},
+                        )},
+                        'taxon': { 'treeRecord': dict(
+                            ranks = {
+                                'Class': 'Class',
+                                'Superfamily': 'Superfamily',
+                                'Family': 'Family',
+                                'Genus': 'Genus',
+                                'Subgenus': 'Subgenus',
+                                'Species': 'Species',
+                                'Subspecies': 'Subspecies',
+                            }
+                        )}
+                    },
+                ),
+            ],
+        },
+        toOne = {
+            'collectingevent': { 'uploadTable': dict(
+                wbcols = {
+                    'enddate' : 'End Date Collected',
+                    'startdate' : 'Start Date Collected',
+                    'stationfieldnumber' : 'Station No.',
+                },
+                static = {},
+                toOne = {
+                    'locality': { 'uploadTable': dict(
+                        wbcols = {
+                            'localityname': 'Site',
+                            'latitude1': 'Latitude1',
+                            'longitude1': 'Longitude1',
+                        },
+                        static = {'srclatlongunit': 0},
+                        toOne = {
+                            'geography': { 'treeRecord': dict(
+                                ranks = {
+                                    'Continent': 'Continent/Ocean' ,
+                                    'Country': 'Country',
+                                    'State': 'State/Prov/Pref',
+                                    'County': 'Region',
+                                }
+                            )},
+                        },
+                        toMany = {},
+                    )}
+                },
+                toMany = {
+                    'collectors': [
+                        dict(
+                            wbcols = {},
+                            static = {'isprimary': True, 'ordernumber': 0},
+                            toOne = {
+                                'agent': { 'uploadTable': dict(
+                                    wbcols = {
+                                        'title'          : 'Collector 1 Title',
+                                        'firstname'     : 'Collector 1 First Name',
+                                        'middleinitial' : 'Collector 1 Middle Initial',
+                                        'lastname'      : 'Collector 1 Last Name',
+                                    },
+                                    static = {
+                                        'agenttype': 1
+                                    },
+                                    toOne = {},
+                                    toMany = {},
+                                )}
+                            }
+                        ),
+                        dict(
+                            wbcols = {},
+                            static = {'isprimary': False, 'ordernumber': 1},
+                            toOne = {
+                                'agent': { 'uploadTable': dict(
+                                    wbcols = {
+                                        'title'          : 'Collector 2 Title',
+                                        'firstname'     : 'Collector 2 First Name',
+                                        'middleinitial' : 'Collector 2 Middle Initial',
+                                        'lastname'      : 'Collector 2 Last name',
+                                    },
+                                    static = {
+                                        'agenttype': 1
+                                    },
+                                    toOne = {},
+                                    toMany = {},
+                                )}
+                            }
+                        ),
+                    ]
+                }
+            )}
+        }
+    )}
+)
 
 class UploadTests(ApiTests):
     def setUp(self) -> None:
         super(UploadTests, self).setUp()
 
-        # some views are not defined above the discipline level
-        self.discipline.type = "fish"
-        self.discipline.save()
 
         self.collection.catalognumformatname = "CatalogNumberNumeric"
         self.collection.save()
@@ -51,13 +169,17 @@ class UploadTests(ApiTests):
         self.taxontreedef.treedefitems.create(name='Species', rankid=220)
         self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
 
+        # some views are not defined above the discipline level
+        self.discipline.type = "fish"
+        self.discipline.taxontreedef = self.taxontreedef
+        self.discipline.save()
 
         self.example_plan = UploadTable(
             name = 'Collectionobject',
             wbcols = {
                 'catalognumber' : "BMSM No.",
             },
-            static = {'collection_id': self.collection.id},
+            static = {'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
             toMany = {
                 'determinations': [
                     ToManyRecord(
@@ -78,9 +200,7 @@ class UploadTests(ApiTests):
                                     'middleinitial': 'Determiner 1 Middle Initial',
                                     'lastname': 'Determiner 1 Last Name',
                                 },
-                                static = {
-                                    'agenttype': 1
-                                },
+                                static = {'division_id': self.division.id, 'agenttype': 1},
                                 toOne = {},
                                 toMany = {},
                             ),
@@ -141,7 +261,7 @@ class UploadTests(ApiTests):
                             ToManyRecord(
                                 name = 'Collector',
                                 wbcols = {},
-                                static = {'isprimary': True, 'ordernumber': 0, 'division_id': self.division.id},
+                                static = {'division_id': self.division.id, 'isprimary': True, 'ordernumber': 0},
                                 toOne = {
                                     'agent': UploadTable(
                                         name = 'Agent',
@@ -151,9 +271,7 @@ class UploadTests(ApiTests):
                                             'middleinitial' : 'Collector 1 Middle Initial',
                                             'lastname'      : 'Collector 1 Last Name',
                                         },
-                                        static = {
-                                            'agenttype': 1
-                                        },
+                                        static = {'division_id': self.division.id, 'agenttype': 1},
                                         toOne = {},
                                         toMany = {},
                                     )
@@ -162,7 +280,7 @@ class UploadTests(ApiTests):
                             ToManyRecord(
                                 name = 'Collector',
                                 wbcols = {},
-                                static = {'isprimary': False, 'ordernumber': 1, 'division_id': self.division.id},
+                                static = {'division_id': self.division.id, 'isprimary': False, 'ordernumber': 1},
                                 toOne = {
                                     'agent': UploadTable(
                                         name = 'Agent',
@@ -172,9 +290,7 @@ class UploadTests(ApiTests):
                                             'middleinitial' : 'Collector 2 Middle Initial',
                                             'lastname'      : 'Collector 2 Last name',
                                         },
-                                        static = {
-                                            'agenttype': 1
-                                        },
+                                        static = {'division_id': self.division.id, 'agenttype': 1},
                                         toOne = {},
                                         toMany = {},
                                     )
@@ -187,9 +303,11 @@ class UploadTests(ApiTests):
         )
 
     def test_schema(self) -> None:
-        plan = self.example_plan.to_json()
-        validate(plan, schema)
-        self.assertEqual(self.example_plan, parse_uploadable(plan))
+        Draft7Validator.check_schema(schema)
+        validate(example_plan_json, schema)
+        plan = parse_plan(self.collection, example_plan_json)
+        self.assertEqual(plan, self.example_plan)
+
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -205,6 +323,7 @@ class UploadTests(ApiTests):
             'collectors__agent__lastname': 'Redfern',
             'collectors__agent__middleinitial': None,
             'collectors__agent__title': None,
+            'collectors__agent__division_id': self.division.id,
             'collectors__division_id': self.division.id,
             'collectors__isprimary': True,
             'collectors__ordernumber': 0}])
@@ -227,6 +346,7 @@ class UploadTests(ApiTests):
              'collectors__agent__lastname': 'Raines',
              'collectors__agent__middleinitial': None,
              'collectors__agent__title': None,
+             'collectors__agent__division_id': self.division.id,
              'collectors__division_id': self.division.id,
              'collectors__isprimary': True,
              'collectors__ordernumber': 0},
@@ -235,6 +355,7 @@ class UploadTests(ApiTests):
              'collectors__agent__lastname': 'Taylor',
              'collectors__agent__middleinitial': None,
              'collectors__agent__title': None,
+             'collectors__agent__division_id': self.division.id,
              'collectors__division_id': self.division.id,
              'collectors__isprimary': False,
              'collectors__ordernumber': 1}])

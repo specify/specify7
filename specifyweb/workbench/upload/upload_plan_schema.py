@@ -1,4 +1,8 @@
-from typing import Dict
+from typing import Dict, Any
+
+from specifyweb.specify.datamodel import datamodel, Table, Relationship
+from specifyweb.specify.load_datamodel import DoesNotExistError
+from specifyweb.specify import models
 
 from .upload_table import UploadTable
 from .tomany import ToManyRecord
@@ -10,18 +14,19 @@ schema = {
     'description': 'The workbench upload plan defines how to load columnar data into the Specify datamodel.',
     "$schema": "http://json-schema.org/schema#",
 
-    '$ref': '#/definitions/uploadable',
+    'type': 'object',
+    'properties': {
+        'baseTableName': { 'type': 'string' },
+        'uploadable': { '$ref': '#/definitions/uploadable' },
+    },
+    'required': [ 'baseTableName', 'uploadable' ],
+    'additionalProperties': False,
 
     'definitions': {
         'uploadTable': {
             'type': 'object',
             'description': 'The uploadTable structure defines how to upload data for a given table.',
             'properties': {
-                'name' : {
-                    'type': 'string',
-                    'description': 'The name of the Specify table the data is to be loaded into.',
-                    'examples': ['Collectionobject', 'Collectingevent', 'Agent']
-                },
                 'wbcols': { '$ref': '#/definitions/wbcols' },
                 'static': { '$ref': '#/definitions/static' },
                 'toOne': { '$ref': '#/definitions/toOne' },
@@ -31,7 +36,7 @@ schema = {
                     'additionalProperties': { 'type': 'array', 'items': { '$ref': '#/definitions/toManyRecord' } }
                 }
             },
-            'required': [ 'name', 'wbcols', 'static', 'toOne', 'toMany' ],
+            'required': [ 'wbcols', 'static', 'toOne', 'toMany' ],
             'additionalProperties': False
         },
 
@@ -40,17 +45,11 @@ schema = {
             'description': 'The toManyRecord structure defines how to upload data for one record into a given table that stands '
             'in a many-to-one relationship to another.',
             'properties': {
-                'name' : {
-                    'type': 'string',
-                    'description': 'The name of the Specify table the data is to be loaded into. '
-                    'This value must be the same for every element of a toMany array.',
-                    'examples': ['Collectionobject', 'Collectingevent', 'Agent']
-                },
                 'wbcols': { '$ref': '#/definitions/wbcols' },
                 'static': { '$ref': '#/definitions/static' },
                 'toOne': { '$ref': '#/definitions/toOne' },
             },
-            'required': [ 'name', 'wbcols', 'static', 'toOne' ],
+            'required': [ 'wbcols', 'static', 'toOne' ],
             'additionalProperties': False
         },
 
@@ -58,20 +57,6 @@ schema = {
             'type': 'object',
             'description': 'The treeRecord structure defines how to upload data into Specify tree type table.',
             'properties': {
-                'name' : {
-                    'type': 'string',
-                    'description': 'The name of the Specify tree table the data is to be loaded into.',
-                    'examples': ['Taxon', 'Geography', 'Storage']
-                },
-                'treedefname': {
-                    'type': 'string',
-                    'description': 'The name of the Specify tree definition table for this tree.',
-                    'examples': ['Taxontreedef', 'Geographytreedef', 'Storagetreedef']
-                },
-                'treedefid': {
-                    'type': 'integer',
-                    'description': 'The row id of the row in the Specify tree definition table for the definition of this tree.'
-                },
                 'ranks': {
                     'type': 'object',
                     'description': 'Maps the ranks of the tree to the headers of the source columns of input data.',
@@ -82,7 +67,7 @@ schema = {
                     ]
                 },
             },
-            'required': [ 'name', 'treedefname', 'treedefid', 'ranks' ],
+            'required': [ 'ranks' ],
             'additionalProperties': False
         },
 
@@ -125,34 +110,109 @@ schema = {
 }
 
 
-def parse_uploadable(to_parse: Dict) -> Uploadable:
+def parse_plan(collection, to_parse: Dict) -> Uploadable:
+    base_table = datamodel.get_table_strict(to_parse['baseTableName'])
+    return parse_uploadable(collection, base_table, to_parse['uploadable'])
+
+
+def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(to_parse['uploadTable'])
+        return parse_upload_table(collection, table, to_parse['uploadTable'])
 
     if 'treeRecord' in to_parse:
-        return parse_tree_record(to_parse['treeRecord'])
+        return parse_tree_record(collection, table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(to_parse: Dict) -> UploadTable:
-    d = dict(to_parse)
-    d['toOne'] = {
-        key: parse_uploadable(to_one)
-        for key, to_one in to_parse['toOne'].items()
-    }
-    d['toMany'] = {
-        key: [parse_to_many_record(record) for record in to_manys]
-        for key, to_manys in to_parse['toMany'].items()
-    }
-    return UploadTable(**d)
+def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
+    extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
-def parse_tree_record(to_parse: Dict) -> TreeRecord:
-    return TreeRecord(**to_parse)
+    def rel_table(key: str) -> Table:
+        return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
 
-def parse_to_many_record(to_parse: Dict) -> ToManyRecord:
-    d = dict(to_parse)
-    d['toOne'] = {
-        key: parse_uploadable(to_one)
-        for key, to_one in to_parse['toOne'].items()
-    }
-    return ToManyRecord(**d)
+    return UploadTable(
+        name=table.django_name,
+        wbcols=to_parse['wbcols'],
+        static={**extra_static, **to_parse['static']},
+        toOne={
+            key: parse_uploadable(collection, rel_table(key), to_one)
+            for key, to_one in to_parse['toOne'].items()
+        },
+        toMany={
+            key: [parse_to_many_record(collection, rel_table(key), record) for record in to_manys]
+            for key, to_manys in to_parse['toMany'].items()
+        }
+    )
+
+def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
+    treedefname = table.django_name + 'treedef'
+    if table.name == 'Taxon':
+        treedefid = collection.discipline.taxontreedef_id
+
+    elif table.name == 'Geography':
+        treedefid = collection.discipline.geographytreedef_id
+
+    elif table.name == 'LithoStrat':
+        treedefid = collection.discipline.lithostrattreedef_id
+
+    elif table.name == 'GeologicTimePeriod':
+        treedefid = collection.discipline.geologictimeperiodtreedef_id
+
+    elif table.name == 'Storage':
+        treedefid = collection.discipline.division.institution.storagetreedef_id
+
+    else:
+        raise Exception('unexpected tree type: %s' % table)
+
+    return TreeRecord(
+        name=table.django_name,
+        ranks=to_parse['ranks'],
+        treedefname=treedefname,
+        treedefid=treedefid,
+    )
+
+def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:
+    extra_static: Dict[str, Any] = scoping_relationships(collection, table)
+
+    def rel_table(key: str) -> Table:
+        return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
+
+    return ToManyRecord(
+        name=table.django_name,
+        wbcols=to_parse['wbcols'],
+        static={**extra_static, **to_parse['static']},
+        toOne={
+            key: parse_uploadable(collection, rel_table(key), to_one)
+            for key, to_one in to_parse['toOne'].items()
+        },
+    )
+
+
+def scoping_relationships(collection, table: Table) -> Dict[str, int]:
+    extra_static: Dict[str, int] = {}
+
+    try:
+        table.get_field_strict('collectionmemberid')
+        extra_static['collectionmemberid'] = collection.id
+    except DoesNotExistError:
+        pass
+
+    try:
+        table.get_relationship('collection')
+        extra_static['collection_id'] = collection.id
+    except DoesNotExistError:
+        pass
+
+    try:
+        table.get_relationship('discipline')
+        extra_static['discipline_id'] = collection.discipline.id
+    except DoesNotExistError:
+        pass
+
+    try:
+        table.get_relationship('division')
+        extra_static['division_id'] = collection.discipline.division.id
+    except DoesNotExistError:
+        pass
+
+    return extra_static

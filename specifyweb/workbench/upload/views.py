@@ -17,7 +17,7 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
 from .upload import do_upload_csv
-from .upload_plan_schema import schema, parse_uploadable
+from .upload_plan_schema import schema, parse_plan
 
 
 logger = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ def upload(request) -> Any:
 
             try:
                 with transaction.atomic():
-                    result = do_upload_csv(request.specify_collection, reader, parse_uploadable(plan))
+                    result = do_upload_csv(request.specify_collection, reader, parse_plan(request.specify_collection, plan))
                     if not form.cleaned_data['commit']:
                         raise NoCommit()
 
