@@ -15,16 +15,17 @@ window.addEventListener('load', function () {
 	file_preview.constructor();
 
 	const screen__mapping = document.getElementById('screen__mapping');
-	mappings.fetch();
+	mappings.fetch_data_model();
 
 
-	set_screen(screen__loading);
-	change_screen(screen__file_upload);
+	commons.set_screen('main',screen__loading);
+	commons.change_screen('main',screen__file_upload);
+
 
 
 	//screen__file_upload
 	button__create_file.addEventListener('click', function () {
-		change_screen(screen__mapping);
+		commons.change_screen('main',screen__mapping);
 	});
 
 
@@ -45,7 +46,7 @@ window.addEventListener('load', function () {
 		reader.onload = function (event) {
 			const csv = event.target.result;
 
-			change_screen(screen__upload_config);
+			commons.change_screen('main',screen__upload_config);
 			file_preview.update_table(csv);
 
 		};
@@ -56,12 +57,12 @@ window.addEventListener('load', function () {
 	file_change_handler();
 
 	button__file_preview_cancel.addEventListener('click', function () {
-		change_screen(screen__file_upload);
+		commons.change_screen('main',screen__file_upload);
 		input__file.value = [];
 	});
 
 	button__file_preview_continue.addEventListener('click', function () {
-		change_screen(screen__mapping);
+		commons.change_screen('main',screen__mapping);
 		mappings.update_headers(file_preview.headers);
 	});
 

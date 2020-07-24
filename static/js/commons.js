@@ -1,23 +1,27 @@
-let current_screen = undefined
+commons = {
 
-function hide(element) {
-	element.style.display = 'none';
-}
+	current_screens: {},
 
-function show(element) {
-	element.style.display = '';
-}
+	hide: function (element) {
+		element.style.display = 'none';
+	},
 
-function set_screen(screen) {
-	current_screen = screen
-}
+	show: function (element) {
+		element.style.display = '';
+	},
 
-function change_screen(screen) {
+	set_screen: function (screen_name, screen) {
+		this.current_screens[screen_name] = screen;
+	},
 
-	if (typeof current_screen !== "undefined")
-		hide(current_screen)
+	change_screen: function (screen_name, screen) {
 
-	show(screen)
+		if (typeof this.current_screens[screen_name] !== "undefined")
+			this.hide(this.current_screens[screen_name]);
 
-	set_screen(screen)
-}
+		this.show(screen);
+
+		this.set_screen(screen_name, screen);
+	}
+
+};

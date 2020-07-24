@@ -24,10 +24,13 @@
 			href="../static/css/config.css">
 	<link
 			rel="stylesheet"
-			href="../static/css/commons.css">
+			href="../static/css/main.css">
 	<link
 			rel="stylesheet"
-			href="../static/css/main.css">
+			href="../static/css/file_preview.css">
+	<link
+			rel="stylesheet"
+			href="../static/css/mappings.css">
 	<script src="../config/main.js"></script>
 	<script src="../static/js/main.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js" integrity="sha512-V3708bc4gbMd+vnZJOHcF3I/YkNasS2J6I8EAkleFDueDfZ4osWWxm3a+Ru0F+jh8SDl8e+uH+Y68upfEkuo4w==" crossorigin="anonymous" async></script>
@@ -48,7 +51,7 @@
 	<button id="button__create_file">Create a new Dataset</button>
 </div>
 
-<div id="screen__upload_config" style="display:none">
+<div id="screen__upload_config" style="display:none"><!-- TODO: standardize screen__upload_config and file_preview -->
 	<h3 class="title">Configure upload process</h3>
 
 	<label>
@@ -87,9 +90,10 @@
 
 	<div class="custom_list">
 		<div id="table_header">
-			<span id="title__table_name">Select a table:</span>
-			<button id="button__change__table" style="display:none">Change table</button>
+			<span id="title__table_name" class="undefined"></span>
+			<button id="button__change_table" style="display:none">Change table</button>
 		</div>
+		<div id="list__tables" class="list"></div>
 		<div id="list__data_model" class="list"></div>
 	</div>
 	<div id="column__controls" class="col-2">
@@ -102,8 +106,7 @@
 			<input type="radio" name="header" class="radio__header" data-header="new_column">
 			<span id="button__new_field" class="line" tabindex="0">New column</span>
 		</label>
-
-	</div>
+	</div><!--TODO: add continue and cancel buttons-->
 
 </div>
 
