@@ -1,0 +1,80 @@
+/* screen__upload_config */
+
+#file_preview_table {
+    border-collapse: collapse;
+}
+
+#file_preview_table tr, #file_preview_table th, #file_preview_table td {
+    border: 1px solid #000;
+}
+
+
+/* screen__mapping */
+#screen__mapping {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: auto 3.5rem auto;
+}
+
+
+#column__controls {
+    display: grid;
+	align-content: center;
+}
+
+#column__controls button {
+    border: 0;
+    padding: 1rem;
+    margin: 0.5rem 0;
+}
+
+#column__controls img {
+    height: 1.5rem;
+}
+
+
+.custom_list {
+    border: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+.custom_list label {
+    display: contents;
+}
+
+.custom_list input {
+    display: none;
+}
+
+#column__headers .line {
+    cursor: pointer;
+    outline: none !important;
+	padding: 1rem;
+}
+
+#column__headers .line:hover {
+    background: var(--b2);
+}
+
+#column__headers .list .mapping {
+    float: left;
+    text-align: left;
+}
+
+#column__headers .list .header  {
+    text-align: right;
+}
+
+#column__headers .undefined:after {
+    content: 'To Be Discarded';
+}
+
+#button__new_field {
+	display: block;
+	text-align: center;
+}
+
+:checked ~ .line {
+    background: var(--b3) !important;
+    cursor: initial !important;
+}
