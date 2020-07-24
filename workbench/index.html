@@ -80,20 +80,26 @@
 	</table>
 
 	<button id="button__file_preview_continue">Continue</button>
-	<button id="button__file_preview_cancel">Cancel</button>
+	<button id="button__file_preview_cancel" class="button__cross">Cancel</button>
 </div>
 
 <div id="screen__mapping" style="display:none">
 
-	<div id="column__data_model" class="custom_list"></div>
-	<div id="column__controls" class="col-2">
-		<button id="button__map" title="Map"><img src="../static/svg/arrow.svg" alt="Map"></button><br>
-		<button id="button__delete" title="Discard"><img src="../static/svg/discard.svg" alt="Discard"></button>
+	<div class="custom_list">
+		<div id="table_header">
+			<span id="title__table_name">Select a table:</span>
+			<button id="button__change__table" style="display:none">Change table</button>
+		</div>
+		<div id="list__data_model" class="list"></div>
 	</div>
-	<div id="column__headers" class="custom_list">
+	<div id="column__controls" class="col-2">
+		<button id="button__map" title="Map" disabled><img src="../static/svg/arrow.svg" alt="Map"></button><br>
+		<button id="button__delete" title="Discard" disabled><img src="../static/svg/discard.svg" alt="Discard"></button>
+	</div>
+	<div class="custom_list">
 		<div id="list__headers" class="list"></div>
 		<label>
-			<input type="radio" name="header">
+			<input type="radio" name="header" class="radio__header" data-header="new_column">
 			<span id="button__new_field" class="line" tabindex="0">New column</span>
 		</label>
 

@@ -35,7 +35,23 @@
 
 .custom_list {
     border: 1px solid var(--border);
+}
+
+#table_header {
+	justify-content: space-between;
+	display: flex;
+	padding: 1rem;
+    background: var(--b2);
+}
+
+#table_header button {
+	border: 0;
+}
+
+.list {
+    display: grid;
     overflow-y: auto;
+    max-height: 100vh;
 }
 
 .custom_list label {
@@ -43,29 +59,31 @@
 }
 
 .custom_list input {
-    display: none;
+    opacity: 0;
+    position: absolute;
 }
 
-#column__headers .line {
+.custom_list .line {
     cursor: pointer;
     outline: none !important;
 	padding: 1rem;
+    display: list-item;
 }
 
-#column__headers .line:hover {
+.custom_list .line:hover {
     background: var(--b2);
 }
 
-#column__headers .list .mapping {
+.custom_list .list .mapping {
     float: left;
     text-align: left;
 }
 
-#column__headers .list .header  {
+.custom_list .list .header  {
     text-align: right;
 }
 
-#column__headers .undefined:after {
+.custom_list .undefined:after {
     content: 'To Be Discarded';
 }
 
