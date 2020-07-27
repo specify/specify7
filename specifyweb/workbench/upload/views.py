@@ -51,7 +51,7 @@ def upload(request) -> Any:
             except NoCommit:
                 pass
 
-            return http.HttpResponse(json.dumps(result), content_type='application/json')
+            return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
     else:
         form = UploadForm()
 
