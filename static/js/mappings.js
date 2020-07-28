@@ -1,7 +1,9 @@
 const mappings = {//TODO: do not output circular dependency
-	fetch_data_model: function () {
+
+	constructor: function() {
 
 		const global = this;
+
 
 		/* column data model */
 		global.title__table_name = document.getElementById('title__table_name');
@@ -16,6 +18,24 @@ const mappings = {//TODO: do not output circular dependency
 		/* column headers */
 		global.list__headers = document.getElementById('list__headers');
 		global.button__new_field = document.getElementById('button__new_field');
+
+
+		global.fetch_data_model();
+		global.update_headers();
+
+		commons.set_screen('mappings', global.list__tables);
+
+		global.button__change_table.addEventListener('click', global.reset_table);
+
+		global.button__map.addEventListener('click', global.map_field);
+
+		global.mappings = {};
+
+	},
+
+	fetch_data_model: function () {
+
+		const global = this;
 
 		const xhr = new XMLHttpRequest();
 		xhr.open("GET", data_model_location);
@@ -95,20 +115,54 @@ const mappings = {//TODO: do not output circular dependency
 
 		global.list__tables.innerHTML = data_model_html;
 
-		global.radios__table = document.getElementsByClassName('radio__table');
+		global.table_radios = document.getElementsByClassName('radio__table');
 
-		Object.values(global.radios__table).forEach(function (line) {
+		Object.values(global.table_radios).forEach(function (line) {
 			line.addEventListener('change', global.select_table);
 		});
 
 
+		global.new_column_id = 1;
 		global.tables = tables;
 		global.data_model = data_model;//TODO: remove this
 
-		global.update_headers();
-		commons.set_screen('mappings', global.list__tables);
+	},
 
-		button__change_table.addEventListener('click', global.reset_table);
+	map_field: function(){
+
+		const global = mappings;
+		const label = global.selected_header.parentElement;
+		const heading_mapping = label.getElementsByClassName('mapping')[0];
+
+		if(global.selected_column!=='') {
+			if(typeof heading_mapping === "undefined"){
+
+				const column_name = 'New Column '+global.new_column_id;
+
+				global.list__headers.innerHTML += '<label>' +
+					'	<input type="radio" name="header" class="radio__header" data-header="'+column_name+'">' +
+					'	<div tabindex="0" class="line">' +
+					'		<div class="mapping">'+global.selected_column+'</div>' +
+					'		<div class="header">'+column_name+'</div>' +
+					'	</div>' +
+					'</label>';
+
+				const labels = global.list__headers.getElementsByTagName('label');
+				const new_header_label = labels[labels.length-1];
+				const new_header_radio = new_header_label.getElementsByTagName('input')[0];
+
+				new_header_radio.addEventListener('change', global.change_selected_header);
+				new_header_radio.checked = true;
+
+				global.new_column_id++;
+			}
+			else {
+				heading_mapping.classList.remove('undefined');
+				heading_mapping.innerText=global.selected_column;
+			}
+		}
+
+		global.button__delete.disabled = false;
 
 	},
 
@@ -152,40 +206,86 @@ const mappings = {//TODO: do not output circular dependency
 
 		if(typeof global.table_fields !== "undefined")
 			Object.values(global.table_fields).forEach(function(field){
-				field.removeEventListener('focus',global.unfold_tree);
+				field.removeEventListener('focus',global.change_selected_field);
 			});
 
 
 		let rows_html = '';
-		const unordered_rows_lists = Object.keys(global.tables[table_name]['fields']).concat(Object.keys(global.tables[table_name]['relationships']));
-		const ordered_rows_lists = unordered_rows_lists.sort();
 
-		ordered_rows_lists.forEach(function(row_key){
+		global.get_table_rows(table_name).forEach(function(row_key){
+
+			let row_name;
+			let remote_table_name = '';
 
 			if(typeof table_data['fields'][row_key] !== "undefined")
-				rows_html += '<label class="field table_fields">' +
-					'	<input type="radio" name="field" class="radio__field" data-level="0" data-field="' + row_key + '">' +
-					'	<div tabindex="0" class="line">' +
-					'		<div class="table_name">' + table_data['fields'][row_key] + '</div>' +
-					'	</div>' +
-					'</label>';
-			else
-				rows_html += '<label class="relationship">' +
-					'	<input type="radio" name="field" class="radio__field" data-level="0" data-field="' + row_key + '">' +
-					'	<div tabindex="0" class="line">' +
-					'		<div class="table_name">' + table_data['relationships'][row_key]['friendly_relationship_name'] + '</div>' +
-					'		<div class="relationship">' + table_data['relationships'][row_key]['table_name'] + '</div>' +
-					'	</div>' +
-					'</label>';
+				row_name = table_data['fields'][row_key]
+			else {
+				remote_table_name = table_data['relationships'][row_key]['table_name']
+				row_name = '> '+ table_data['relationships'][row_key]['friendly_relationship_name']
+			}
+
+			rows_html += '<label class="table_fields">' +
+				'	<input type="radio" name="field" class="radio__field" data-table="'+table_name+'" data-remote-table="'+remote_table_name+'" data-field="' + row_key + '">' +
+				'	<div tabindex="0" class="line">' +
+				'		<div class="row_name">' + row_name + '</div>' +
+				'	</div>' +
+				'</label>';
 
 		});
 
 		global.list__data_model.innerHTML = rows_html;
 
-		global.table_fields = document.getElementsByClassName('table_fields');
+		global.table_fields = document.getElementsByClassName('radio__field');
 		Object.values(global.table_fields).forEach(function(field){
-			field.addEventListener('focus',global.unfold_tree);
+			field.addEventListener('change',global.change_selected_field);
 		});
+
+	},
+
+	get_table_rows: function(table_name){
+
+		const global = mappings;
+		const unordered_rows_list = Object.keys(global.tables[table_name]['fields']).concat(Object.keys(global.tables[table_name]['relationships']));
+		return unordered_rows_list.sort();
+
+	},
+
+	change_selected_field: function (event) {
+
+		const global = mappings;
+		const radio = event.target;
+		const label = radio.parentElement;
+		const table_name = radio.getAttribute('data-table');
+		const row_name_element = label.getElementsByClassName('row_name')[0];
+		const row_name = row_name_element.innerText;
+
+
+		global.selected_column = row_name;
+		global.remote_table_name = radio.getAttribute('data-remote-table');
+
+		global.button__map.disabled = typeof global.selected_header === "undefined" || global.remote_table_name!=='';
+		global.button__delete.disabled = label.tagName !== 'label' || label.getElementsByClassName('undefined').length === 0;
+
+
+		if(global.remote_table_name!==''){
+
+
+
+		}
+
+		// let fields_html = '';
+		//
+		// for (const [field_name, friendly_field_name] of Object.entries(global.tables[table_name]['fields']))
+		// 	fields_html += '<label class="field">' +
+		// 		'	<input type="radio" name="field" class="radio__field" data-level="' + level + '" data-field="' + field_name + '">' +
+		// 		'	<div tabindex="0" class="line">' +
+		// 		'		<div class="table_name" style="padding-left: ' + (level * 10) + 'px">' + friendly_field_name + '</div>' +
+		// 		'	</div>' +
+		// 		'</label>';
+		//
+		// label.outerHTML += fields_html;
+		//
+		// mappings.selected_radio = radio;
 
 	},
 
@@ -195,29 +295,29 @@ const mappings = {//TODO: do not output circular dependency
 		const radio = event.target;
 		const label = radio.parentElement;
 		const table_name = radio.getAttribute('data-table');
-		const level = parseInt(radio.getAttribute('data-level')) + 1;
-		const fields = global.list__data_model.getElementsByClassName('field');
+		const row_name_element = label.getElementsByClassName('row_name')[0];
+		const row_name = row_name_element.innerText;
 
-		if (fields.length > 0)
-			Object.values(fields).forEach(function (field) {//remove open fields
-				global.list__data_model.removeChild(field);
-			});
+		global.selected_column = row_name;
+		global.remote_table_name = radio.getAttribute('data-remote-table');
 
-		let fields_html = '';
+		global.button__map.disabled = typeof global.selected_header === "undefined" || global.remote_table_name!=='';
+		global.button__delete.disabled = label.tagName !== 'label' || label.getElementsByClassName('undefined').length === 0;
 
-		for (const [field_name, friendly_field_name] of Object.entries(global.tables[table_name]['fields']))
-			fields_html += '<label class="field">' +
-				'	<input type="radio" name="field" class="radio__field" data-level="' + level + '" data-field="' + field_name + '">' +
-				'	<div tabindex="0" class="line">' +
-				'		<div class="table_name" style="padding-left: ' + (level * 10) + 'px">' + friendly_field_name + '</div>' +
-				'	</div>' +
-				'</label>';
 
-		label.outerHTML += fields_html;
-
-		global.button__map.disabled = level === 0;
-
-		mappings.selected_radio = radio;
+		// let fields_html = '';
+		//
+		// for (const [field_name, friendly_field_name] of Object.entries(global.tables[table_name]['fields']))
+		// 	fields_html += '<label class="field">' +
+		// 		'	<input type="radio" name="field" class="radio__field" data-level="' + level + '" data-field="' + field_name + '">' +
+		// 		'	<div tabindex="0" class="line">' +
+		// 		'		<div class="table_name" style="padding-left: ' + (level * 10) + 'px">' + friendly_field_name + '</div>' +
+		// 		'	</div>' +
+		// 		'</label>';
+		//
+		// label.outerHTML += fields_html;
+		//
+		// mappings.selected_radio = radio;
 
 	},
 
@@ -227,6 +327,8 @@ const mappings = {//TODO: do not output circular dependency
 
 		const radio = event.target;
 		const label = radio.nextElementSibling;
+
+		global.button__map.disabled = typeof global.selected_column === "undefined" && global.remote_table_name!==''
 
 		global.button__delete.disabled = label.tagName !== 'label' || label.getElementsByClassName('undefined').length === 0;
 
@@ -257,7 +359,6 @@ const mappings = {//TODO: do not output circular dependency
 		});
 
 		global.list__headers.innerHTML = headers_html;
-
 		global.line__headers = document.getElementsByClassName('radio__header');
 
 		Object.values(global.line__headers).forEach(function (line) {
@@ -271,7 +372,7 @@ const mappings = {//TODO: do not output circular dependency
 		table_name = table_name.replace('D N A', 'DNA');
 		table_name = table_name.trim();
 		table_name = table_name.charAt(0).toUpperCase() + table_name.slice(1)
-		return table_name
+		return table_name;
 	}
 
 };

@@ -10,12 +10,12 @@ window.addEventListener('load', function () {
 
 
 	const screen__upload_config = document.getElementById('screen__upload_config');
-	const button__file_preview_cancel = document.getElementById('button__file_preview_cancel');
-	const button__file_preview_continue = document.getElementById('button__file_preview_continue');
-	file_preview.constructor();
+	const button__upload_config_cancel = document.getElementById('button__upload_config_cancel');
+	const button__upload_config_continue = document.getElementById('button__upload_config_continue');
+	upload_config.constructor();
 
 	const screen__mapping = document.getElementById('screen__mapping');
-	mappings.fetch_data_model();
+	mappings.constructor();
 
 
 	commons.set_screen('main',screen__loading);
@@ -47,7 +47,7 @@ window.addEventListener('load', function () {
 			const csv = event.target.result;
 
 			commons.change_screen('main',screen__upload_config);
-			file_preview.update_table(csv);
+			upload_config.update_table(csv);
 
 		};
 
@@ -56,14 +56,14 @@ window.addEventListener('load', function () {
 	input__file.addEventListener('change', file_change_handler);
 	file_change_handler();
 
-	button__file_preview_cancel.addEventListener('click', function () {
+	button__upload_config_cancel.addEventListener('click', function () {
 		commons.change_screen('main',screen__file_upload);
 		input__file.value = [];
 	});
 
-	button__file_preview_continue.addEventListener('click', function () {
+	button__upload_config_continue.addEventListener('click', function () {
 		commons.change_screen('main',screen__mapping);
-		mappings.update_headers(file_preview.headers);
+		mappings.update_headers(upload_config.headers);
 	});
 
 });

@@ -1,4 +1,4 @@
-const file_preview = {
+const upload_config = {
 
 	constructor: function () {
 
@@ -12,8 +12,8 @@ const file_preview = {
 		global.radio__delimiter_tab = document.getElementById('radio__delimiter_tab');
 		global.radio__delimiter_other = document.getElementById('radio__delimiter_other');
 		global.checkbox__first_line_header = document.getElementById('checkbox__first_line_header');
-		global.table_header__file_preview = document.getElementById('table_header__file_preview');
-		global.table_body__file_preview = document.getElementById('table_body__file_preview');
+		global.table_header__upload_config = document.getElementById('table_header__upload_config');
+		global.table_body__upload_config = document.getElementById('table_body__upload_config');
 		global.custom_papa_parse_config = {};
 
 
@@ -90,8 +90,8 @@ const file_preview = {
 		console.log(parsed_csv);
 
 		if (parsed_csv.data.length === 0) {
-			global.table_header__file_preview.innerHTML = '';
-			global.table_body__file_preview.innerHTML = '';
+			global.table_header__upload_config.innerHTML = '';
+			global.table_body__upload_config.innerHTML = '';
 			return false;
 		}
 
@@ -126,7 +126,7 @@ const file_preview = {
 
 
 		header_html += '</tr>';
-		global.table_header__file_preview.innerHTML = header_html;
+		global.table_header__upload_config.innerHTML = header_html;
 
 
 		//showing body
@@ -148,7 +148,7 @@ const file_preview = {
 		});
 
 
-		global.table_body__file_preview.innerHTML = body_html;
+		global.table_body__upload_config.innerHTML = body_html;
 
 
 	},

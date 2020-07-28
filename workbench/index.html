@@ -27,7 +27,7 @@
 			href="../static/css/main.css">
 	<link
 			rel="stylesheet"
-			href="../static/css/file_preview.css">
+			href="../static/css/upload_config.css">
 	<link
 			rel="stylesheet"
 			href="../static/css/mappings.css">
@@ -51,7 +51,7 @@
 	<button id="button__create_file">Create a new Dataset</button>
 </div>
 
-<div id="screen__upload_config" style="display:none"><!-- TODO: standardize screen__upload_config and file_preview -->
+<div id="screen__upload_config" style="display:none">
 	<h3 class="title">Configure upload process</h3>
 
 	<label>
@@ -77,13 +77,15 @@
 	</label>
 
 	<p>Preview:</p>
-	<table id="file_preview_table">
-		<thead id="table_header__file_preview"></thead>
-		<tbody id="table_body__file_preview"></tbody>
-	</table>
+	<div id="upload_config_table_container">
+		<table>
+			<thead id="table_header__upload_config"></thead>
+			<tbody id="table_body__upload_config"></tbody>
+		</table>
+	</div>
 
-	<button id="button__file_preview_continue">Continue</button>
-	<button id="button__file_preview_cancel" class="button__cross">Cancel</button>
+	<button id="button__upload_config_continue">Continue</button>
+	<button id="button__upload_config_cancel" class="button__cross">Cancel</button>
 </div>
 
 <div id="screen__mapping" style="display:none">
@@ -111,7 +113,7 @@
 </div>
 
 <script src="../static/js/commons.js" defer></script>
-<script src="../static/js/mappings.js" async></script>
-<script src="../static/js/file_preview.js" async></script>
+<script src="../static/js/mappings.js" defer async></script>
+<script src="../static/js/upload_config.js" defer async></script>
 
 </body>

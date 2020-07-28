@@ -1,7 +1,0 @@
-#file_preview_table {
-    border-collapse: collapse;
-}
-
-#file_preview_table tr, #file_preview_table th, #file_preview_table td {
-    border: 1px solid #000;
-}
