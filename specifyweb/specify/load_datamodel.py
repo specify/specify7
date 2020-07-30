@@ -253,6 +253,7 @@ dependent_fields = {
     'Spquery.fields',
     'Taxon.commonnames',
     'Taxon.taxoncitations',
+    'Taxon.taxonattribute',
     'Workbench.workbenchtemplate',
     'Workbenchtemplate.workbenchtemplatemappingitems',
 }
