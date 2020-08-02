@@ -16,7 +16,7 @@
     display: grid;
 }
 
-.custom_list label {
+.list > * {
     position: relative;
 }
 
@@ -29,19 +29,18 @@
     cursor: pointer;
     outline: none !important;
 	padding: 1rem;
-    display: list-item;
 }
 
 .custom_list .line:hover {
     background: var(--b2);
 }
 
-.custom_list .list .mapping, .custom_list .list .table_name {
+.list .mapping, .list .table_name {
     float: left;
     text-align: left;
 }
 
-.custom_list .list .header, .custom_list .list .relationship  {
+.list .header  {
     text-align: right;
 }
 
@@ -55,8 +54,11 @@
 }
 
 :checked ~ .line {
-    background: var(--b3) !important;
     cursor: initial !important;
+}
+
+:checked ~ .line:not(.relationship) {
+    background: var(--b3) !important;
 }
 
 
@@ -71,6 +73,7 @@
 	position: sticky;
 	width: inherit;
 	top: 0;
+    z-index: 2;
 }
 
 #title__table_name {
@@ -86,6 +89,19 @@
 	border: 0;
     padding: 0.5rem;
     cursor: pointer;
+}
+
+#list__tables .line {
+	display: list-item;
+}
+
+.table_relationship .line {/*TODO: remove this*/
+    display: block;
+}
+
+.select__field {
+	width: 100%;
+    margin-left: 0.6em;
 }
 
 

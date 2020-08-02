@@ -63,7 +63,7 @@ window.addEventListener('load', function () {
 
 	button__upload_config_continue.addEventListener('click', function () {
 		commons.change_screen('main',screen__mapping);
-		mappings.update_headers(upload_config.headers);
+		mappings.set_headers(upload_config.headers);
 	});
 
 });
