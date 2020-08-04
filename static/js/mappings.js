@@ -1,64 +1,59 @@
 const mappings = {
 
+	//configurators
 	constructor: function () {
 
-		const global = this;
+
+		// column data model
+		mappings.title__table_name = document.getElementById('title__table_name');
+		mappings.button__change_table = document.getElementById('button__change_table');
+		mappings.list__tables = document.getElementById('list__tables');
+		mappings.list__data_model = document.getElementById('list__data_model');
+
+		// column controls
+		mappings.button__map = document.getElementById('button__map');
+		mappings.button__delete = document.getElementById('button__delete');
+
+		// column headers
+		mappings.list__headers = document.getElementById('list__headers');
+		mappings.button__new_field = document.getElementById('button__new_field');
 
 
-		/* column data model */
-		global.title__table_name = document.getElementById('title__table_name');
-		global.button__change_table = document.getElementById('button__change_table');
-		global.list__tables = document.getElementById('list__tables');
-		global.list__data_model = document.getElementById('list__data_model');
+		mappings.fetch_data_model();
+		mappings.set_headers();
 
-		/* column controls */
-		global.button__map = document.getElementById('button__map');
-		global.button__delete = document.getElementById('button__delete');
+		commons.set_screen('mappings', mappings.list__tables);
 
-		/* column headers */
-		global.list__headers = document.getElementById('list__headers');
-		global.button__new_field = document.getElementById('button__new_field');
+		mappings.button__change_table.addEventListener('click', mappings.reset_table);
 
+		mappings.button__map.addEventListener('click', mappings.map_field);
+		mappings.button__delete.addEventListener('click', mappings.unmap_field);
 
-		global.fetch_data_model();
-		global.set_headers();
-
-		commons.set_screen('mappings', global.list__tables);
-
-		global.button__change_table.addEventListener('click', global.reset_table);
-
-		global.button__map.addEventListener('click', global.map_field);
-		global.button__delete.addEventListener('click', global.unmap_field);
-
-		global.mappings = {};
-		global.unique_id_counter = 0;
+		mappings.lines = mappings.list__data_model.getElementsByTagName('input');
+		mappings.headers = mappings.list__headers.getElementsByTagName('input');
 
 	},
 
 	fetch_data_model: function () {
 
-		const global = this;
-
 		const xhr = new XMLHttpRequest();
 		xhr.open("GET", data_model_location);
 		xhr.responseType = "json";
 		xhr.onload = function () {
-			global.process_data_model(xhr.response);
+			mappings.process_data_model(xhr.response);
 		};
 		xhr.send();
 
 	},
 
 	process_data_model: function (data_model) {
-
-		const global = this;
 		const tables = [];
 		let data_model_html = '';
 
 		data_model.forEach(function (table_data) {
 
 			let table_name = table_data['classname'].split('.').pop();
-			const friendly_table_name = global.get_friendly_name(table_name);
+			const friendly_table_name = mappings.get_friendly_name(table_name);
 			table_name = table_name.toLowerCase();
 
 			let fields = {};
@@ -70,7 +65,7 @@ const mappings = {
 			table_data['fields'].forEach(function (field) {
 
 				let field_name = field['column'];
-				const friendly_field_name = global.get_friendly_name(field_name);
+				const friendly_field_name = mappings.get_friendly_name(field_name);
 				field_name = field_name.toLowerCase();
 
 				fields[field_name] = friendly_field_name;
@@ -82,7 +77,7 @@ const mappings = {
 				let relationship_name = relationship['name'];
 				let relationship_type = relationship['type'];
 				let foreign_name = relationship['otherSideName'];
-				const friendly_relationship_name = global.get_friendly_name(relationship_name);
+				const friendly_relationship_name = mappings.get_friendly_name(relationship_name);
 				relationship_name = relationship_name.toLowerCase();
 
 				const table_name = relationship['relatedModelName'].toLowerCase();
@@ -109,7 +104,7 @@ const mappings = {
 				'	</div>' +
 				'</label>';
 
-			commons.set_screen('mappings', global.list__tables);
+			commons.set_screen('mappings', mappings.list__tables);
 
 		});
 
@@ -119,342 +114,23 @@ const mappings = {
 					delete tables[table_name]['relationships'][relationship_name];
 
 
-		global.list__tables.innerHTML = data_model_html;
+		mappings.list__tables.innerHTML = data_model_html;
 
 		const table_radios = document.getElementsByClassName('radio__table');
 
 		Object.values(table_radios).forEach(function (line) {
-			line.addEventListener('change', global.select_table);
+			line.addEventListener('change', mappings.set_table);
 		});
 
 
-		global.new_column_id = 1;
-		global.tables = tables;
-		global.data_model = data_model;//TODO: remove this
+		mappings.new_column_id = 1;
+		mappings.tables = tables;
+		mappings.data_model = data_model;//TODO: remove this
 
 	},
 
-	map_field: function () {
-
-		const global = mappings;
-
-		const label = global.selected_header.parentElement;
-		const heading_mapping = label.getElementsByClassName('mapping')[0];
-
-		if (global.selected_field !== '') {
-			if (typeof heading_mapping === "undefined") {
-
-				const column_name = 'New Column ' + global.new_column_id;
-
-				global.list__headers.innerHTML += '<label>' +
-					'	<input type="radio" name="header" class="radio__header" data-header="' + column_name + '">' +
-					'	<div tabindex="0" class="line">' +
-					'		<div class="mapping">' + global.selected_field + '</div>' +
-					'		<div class="header">' + column_name + '</div>' +
-					'	</div>' +
-					'</label>';
-
-				const labels = global.list__headers.getElementsByTagName('label');
-				const new_header_label = labels[labels.length - 1];
-				const new_header_radio = new_header_label.getElementsByTagName('input')[0];
-
-				new_header_radio.checked = true;
-
-
-				global.new_column_id++;
-			} else {
-				heading_mapping.classList.remove('undefined');
-
-				if(global.selected_field.tagName === 'INPUT')
-					heading_mapping.innerText = global.selected_field.parentElement.getElementsByClassName('row_name')[0].innerText;
-				else
-					heading_mapping.innerText = global.selected_field.options[global.selected_field.selectedIndex].text;
-
-			}
-		}
-
-		global.update_buttons();
-
-	},
-
-	unmap_field: function () {
-
-		const global = mappings;
-
-		const label = global.selected_header.parentElement;
-		const heading_mapping = label.getElementsByClassName('mapping')[0];
-
-		heading_mapping.classList.add('undefined');
-		heading_mapping.innerText = '';
-
-		global.update_buttons();
-
-	},
-
-	reset_table: function () {
-
-		const global = mappings;
-
-		global.selected_table.checked = false;
-		global.selected_table = undefined;
-
-		const header_mappings = global.list__headers.getElementsByClassName('mapping');
-
-		Object.values(header_mappings).forEach(function (mapping) {
-			mapping.outerHTML = '<div class="undefined mapping"></div>';
-		});
-
-		global.title__table_name.classList.add('undefined');
-		global.title__table_name.innerText = '';
-
-		commons.change_screen('mappings', global.list__tables);
-
-		global.button__change_table.style.display = 'none';
-
-	},
-
-	select_table: function (event) {
-
-		const global = mappings;
-		const radio = event.target;
-		const table_name = radio.getAttribute('data-table');
-		const table_data = global.tables[table_name];
-
-		commons.change_screen('mappings', global.list__data_model);
-
-		global.button__change_table.style.display = '';
-
-		global.title__table_name.classList.remove('undefined');
-		global.title__table_name.innerText = global.tables[table_name]['friendly_table_name'];
-
-		global.selected_table = radio;
-
-		let rows_html = '';
-
-		global.get_table_rows(table_name).forEach(function (row_data) {
-
-			let row_name;
-			let class_append = '';
-			let row_key;
-
-			if(typeof row_data === "string"){//field
-				row_key = row_data;
-				row_name = table_data['fields'][row_key];
-			}
-			else {//relationship
-				row_key = row_data[0];
-				row_name = '> ' + table_data['relationships'][row_key]['friendly_relationship_name'];
-				class_append = 'relationship';
-			}
-
-			rows_html += '<label class="table_fields">' +
-				'	<input type="radio" name="field" class="radio__field" data-field="' + row_key + '">' +
-				'	<div tabindex="0" class="line '+class_append+'">' +
-				'		<div class="row_name">' + row_name + '</div>' +
-				'	</div>' +
-				'</label>';
-
-		});
-
-		global.base_table_name = table_name;
-		global.list__data_model.innerHTML = rows_html;
-
-		global.list__data_model.addEventListener('change',function(event){
-			if(event.target && event.target.classList.contains('radio__field'))
-				global.change_selected_field(event);
-			else if(event.target && event.target.tagName==='SELECT')
-				global.change_option_field(event);
-		});
-
-		global.list__data_model.addEventListener('focus',function(event){
-			if(event.target && event.target.tagName==='SELECT')
-				global.change_option_field(event);
-		});
-
-	},
-
-	get_table_rows: function (table_name, previous_table=undefined, foreign_name=undefined) {
-
-		const global = mappings;
-
-		const rows = Object.keys(global.tables[table_name]['fields']);
-
-		Object.keys(global.tables[table_name]['relationships']).forEach(function(relationship_key){
-			const relationship = global.tables[table_name]['relationships'][relationship_key];
-			const enabled = (
-				relationship['table_name']!==previous_table ||
-				relationship_key!==foreign_name
-			);
-			rows.push([relationship_key,enabled]);
-		});
-
-		return rows.sort();
-
-	},
-
-	change_selected_field: function (event) {
-
-		const global = mappings;
-
-		const radio = event.target;
-		const label = radio.parentElement;
-		const field_key = radio.getAttribute('data-field');
-
-		global.selected_field = radio;
-
-		const opened_lists = global.list__data_model.getElementsByClassName('table_relationship');
-		Object.values(opened_lists).forEach(function(list){
-			global.list__data_model.removeChild(list);
-		});
-
-		if (global.is_selected_field_in_relationship()) {
-
-			const select_line = document.createElement('div');
-			global.list__data_model.insertBefore(select_line, label.nextSibling);
-
-			const relationship = global.tables[global.base_table_name]['relationships'][field_key];
-			const target_table_name = relationship['table_name'];
-			const foreign_name = relationship['foreign_name'];
-			select_line.outerHTML = global.get_fields_list_for_table(target_table_name,global.base_table_name,foreign_name);
-
-			label.nextElementSibling.getElementsByTagName('input')[0].checked = true;
-
-		}
-
-		global.update_buttons();
-
-	},
-
-	change_option_field: function (event) {
-
-		const global = mappings;
-		const select = event.target;
-		const label = select.parentElement;
-		const line = label.parentElement;
-		const radio = line.getElementsByTagName('input')[0];
-		radio.checked = true;
-
-		global.selected_field = select;
-
-		let element = line.nextElementSibling;//remove all <select> elements following this one
-		while(true) {
-
-			if(element === null || !element.classList.contains('table_relationship'))
-				break;
-
-			let next_element = element.nextElementSibling;
-
-			global.list__data_model.removeChild(element);
-
-			element = next_element;
-		}
-
-		if(global.is_selected_field_in_relationship()){
-
-			const select_line = document.createElement('div');
-			global.list__data_model.insertBefore(select_line, line.nextSibling);
-
-			const current_table_name = select.getAttribute('data-table');
-			const value = select.value;
-			const relationship = global.tables[current_table_name]['relationships'][value];
-			const target_table_name = relationship['table_name'];
-			const foreign_name = relationship['foreign_name'];
-			select_line.outerHTML = global.get_fields_list_for_table(target_table_name,current_table_name,foreign_name);
-
-			line.nextElementSibling.getElementsByTagName('input')[0].checked = true;
-
-		}
-
-		global.update_buttons();
-
-	},
-
-	update_buttons: function () {
-
-		const global = mappings;
-
-		global.button__map.disabled = typeof global.selected_header === "undefined" || global.is_selected_field_in_relationship();
-
-		if (typeof global.selected_header === "undefined")
-			global.button__delete.disabled = true;
-		else {
-			const header_label = global.selected_header.parentElement;
-			global.button__delete.disabled = header_label.tagName !== 'LABEL' || header_label.getElementsByClassName('undefined').length !== 0;
-		}
-
-	},
-
-	is_selected_field_in_relationship: function () {
-
-		const global = mappings;
-
-		if (global.selected_field.tagName === 'INPUT') {
-
-			const label = global.selected_field.parentElement;
-			const name = label.getElementsByClassName('row_name')[0];
-
-			return name.innerText.substr(0, 2) === '> ';
-
-		}
-
-		return global.selected_field.options[global.selected_field.selectedIndex].text.substr(0, 2) === '> ';
-
-	},
-
-	get_fields_list_for_table: function (table_name, previous_table, foreign_name) {//TODO: use relationship types
-
-		const global = this;
-
-// for="relationship_'+global.unique_id_counter+'"
-		let fields_html = '<div class="table_relationship">' +// id="relationship_'+global.unique_id_counter+'"
-			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
-			'<label class="line">'+
-			'	<select name="relationship" class="select__field" data-table="'+table_name+'">' +
-			'		<option value="0"></option>';
-
-		global.unique_id_counter++;//TODO: remove all of me && remove comments
-
-		global.get_table_rows(table_name, previous_table, foreign_name).forEach(function (row_data) {
-
-			let row_name;
-			let row_key;
-			let attribute_append = '';
-
-			if (typeof row_data === "string") {//field
-				row_key = row_data;
-				row_name = global.tables[table_name]['fields'][row_key];
-			}
-			else {//relationship
-				row_key = row_data[0];
-				row_name = '> ' + global.tables[table_name]['relationships'][row_key]['friendly_relationship_name'];
-				if(!row_data[1])
-					attribute_append += 'disabled';
-			}
-
-			fields_html += '<option value="' + row_key + '" '+attribute_append+'>' + row_name + '</option>';
-
-		});
-
-
-		fields_html += '</select>' +
-			'</label>' +
-			'</div>';
-
-		return fields_html;
-
-	},
-
-	change_selected_header: function (event) {
-
-		const global = mappings;
-		global.selected_header = event.target;
-		global.update_buttons();
-
-	},
-
+	//setters
 	set_headers: function (headers = []) {
-
-		const global = this;
 
 		let headers_html = '';
 
@@ -468,12 +144,276 @@ const mappings = {
 				'</label>';
 		});
 
-		global.list__headers.innerHTML = headers_html;
+		mappings.list__headers.innerHTML = headers_html;
 
-		global.list__headers.addEventListener('change',function(event){
-			if(event.target && event.target.classList.contains('radio__header'))
-				global.change_selected_header(event);
+		mappings.list__headers.addEventListener('change', function (event) {
+			if (event.target && event.target.classList.contains('radio__header'))
+				mappings.change_selected_header(event);
 		});
+
+	},
+
+	set_table: function (event) {
+		const radio = event.target;
+		const table_name = radio.getAttribute('data-table');
+		const table_data = mappings.tables[table_name];
+
+		commons.change_screen('mappings', mappings.list__data_model);
+
+		mappings.button__change_table.style.display = '';
+
+		mappings.title__table_name.classList.remove('undefined');
+		mappings.title__table_name.innerText = mappings.tables[table_name]['friendly_table_name'];
+
+		mappings.selected_table = radio;
+
+		let rows_html = '';
+
+		mappings.get_table_rows(table_name).forEach(function (row_key) {
+
+			let row_name;
+			let class_append = '';
+
+			if (typeof table_data['fields'][row_key] !== "undefined")//field
+				row_name = table_data['fields'][row_key];
+			else {//relationship
+				row_name = '> ' + table_data['relationships'][row_key]['friendly_relationship_name'];
+				class_append = 'relationship';
+			}
+
+			rows_html += '<label class="table_fields">' +
+				'	<input type="radio" name="field" class="radio__field" data-field="' + row_key + '">' +
+				'	<div tabindex="0" class="line ' + class_append + '">' +
+				'		<div class="row_name">' + row_name + '</div>' +
+				'	</div>' +
+				'</label>';
+
+		});
+
+		mappings.base_table_name = table_name;
+		mappings.list__data_model.innerHTML = rows_html;
+
+		mappings.list__data_model.addEventListener('change', function (event) {
+			if (event.target && event.target.classList.contains('radio__field'))
+				mappings.change_selected_field(event);
+			else if (event.target && event.target.tagName === 'SELECT')
+				mappings.change_option_field(event);
+		});
+
+		mappings.list__data_model.addEventListener('focus', function (event) {
+			if (event.target && event.target.tagName === 'SELECT')
+				mappings.change_option_field(event);
+		});
+
+		mappings.tree = {};
+		mappings.changes_made = true;
+
+	},
+
+	reset_table: function () {
+
+		mappings.selected_table.checked = false;
+		mappings.selected_table = undefined;
+
+		const header_mappings = mappings.list__headers.getElementsByClassName('mapping');
+
+		Object.values(header_mappings).forEach(function (mapping) {
+			mapping.outerHTML = '<div class="undefined mapping"></div>';
+		});
+
+		mappings.title__table_name.classList.add('undefined');
+		mappings.title__table_name.innerText = '';
+
+		commons.change_screen('mappings', mappings.list__tables);
+
+		mappings.button__change_table.style.display = 'none';
+
+	},
+
+	//functions
+	map_field: function () {
+
+		const label = mappings.selected_header.parentElement;
+		let heading_mapping = label.getElementsByClassName('mapping')[0];
+
+		if (mappings.selected_field === '')
+			return;
+
+		if (typeof heading_mapping === "undefined") {//create new header
+
+			const column_name = 'New Column ' + mappings.new_column_id;
+
+			mappings.list__headers.innerHTML += '<label>' +
+				'	<input type="radio" name="header" class="radio__header" data-header="' + column_name + '">' +
+				'	<div tabindex="0" class="line">' +
+				'		<div class="mapping"></div>' +
+				'		<div class="header">' + column_name + '</div>' +
+				'	</div>' +
+				'</label>';
+
+			const labels = mappings.list__headers.getElementsByTagName('label');
+			const new_header_label = labels[labels.length - 1];
+			heading_mapping = new_header_label.getElementsByTagName('input')[0];
+
+			heading_mapping.checked = true;
+
+			mappings.new_column_id++;
+
+		} else
+			heading_mapping.classList.remove('undefined');
+
+		heading_mapping.innerText = mappings.get_selected_field_name();
+		const line = heading_mapping.parentNode;
+		const radio = line.previousElementSibling;
+		radio.setAttribute('data-path', mappings.get_field_path());
+
+		mappings.update_buttons();
+		mappings.changes_made = true;
+
+	},
+
+	unmap_field: function () {
+
+		const label = mappings.selected_header.parentElement;
+		const heading_mapping = label.getElementsByClassName('mapping')[0];
+
+		heading_mapping.classList.add('undefined');
+		heading_mapping.innerText = '';
+
+		mappings.update_buttons();
+		mappings.changes_made = true;
+
+	},
+
+	//getters
+	get_table_rows: function (table_name) {
+
+		const fields = Object.keys(mappings.tables[table_name]['fields']);
+		const relationships = Object.keys(mappings.tables[table_name]['relationships']);
+
+		return fields.concat(relationships).sort();
+
+	},
+
+	get_related_table_rows: function (table_name, previous_table, foreign_name, current_line) {//instanceof HTMLElement
+
+		const previous_line = current_line.previousElementSibling;
+
+		let previous_element = previous_line.getElementsByTagName('select')[0];
+		if (typeof previous_element === "undefined")
+			previous_element = previous_line.getElementsByTagName('input')[0];
+
+		let mapped_nodes = [];
+		if (typeof previous_element !== "undefined") {
+			const path = mappings.get_field_path(previous_element);
+			const mappings_array = path.split('_');
+			const node_mappings_tree = mappings.array_to_tree(mappings_array);
+			const full_mappings_tree = mappings.get_mappings_tree();
+			mapped_nodes = mappings.traverse_tree(full_mappings_tree, node_mappings_tree);
+		}
+
+		const rows = Object.keys(mappings.tables[table_name]['fields']);
+
+		Object.keys(mappings.tables[table_name]['relationships']).forEach(function (relationship_key) {
+			const relationship = mappings.tables[table_name]['relationships'][relationship_key];
+			const enabled = (
+				(//disable circular relationships
+					relationship['table_name'] !== previous_table ||
+					relationship_key !== foreign_name
+				) &&
+				(//disable one-to-one and one-to-many if it is already mapped
+					typeof mapped_nodes[relationship_key] === "undefined" ||
+					(
+						relationship['type'] !== "one-to-one" &&
+						relationship['type'] !== "one-to-many"
+					)
+				)
+			);
+			rows.push([relationship_key, enabled]);
+		});
+
+		return rows.sort();
+
+	},
+
+	get_fields_list_for_table: function (table_name, previous_table, foreign_name, target_object) {
+
+		let fields_html = '<div class="table_relationship">' +
+			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
+			'<label class="line">' +
+			'	<select name="relationship" class="select__field" data-table="' + table_name + '">' +
+			'		<option value="0"></option>';
+
+		mappings.get_related_table_rows(table_name, previous_table, foreign_name, target_object).forEach(function (row_data) {
+
+			let row_name;
+			let row_key;
+			let attribute_append = '';
+
+			if (typeof row_data === "string") {//field
+				row_key = row_data;
+				row_name = mappings.tables[table_name]['fields'][row_key];
+			} else {//relationship
+				row_key = row_data[0];
+				row_name = '> ' + mappings.tables[table_name]['relationships'][row_key]['friendly_relationship_name'];
+				if (!row_data[1])
+					attribute_append += 'disabled';
+			}
+
+			fields_html += '<option value="' + row_key + '" ' + attribute_append + '>' + row_name + '</option>';
+
+		});
+
+
+		fields_html += '</select>' +
+			'</label>' +
+			'</div>';
+
+		return fields_html;
+
+	},
+
+	get_selected_field_name: function () {
+
+		if (mappings.selected_field.tagName === 'INPUT')
+			return mappings.selected_field.parentElement.getElementsByClassName('row_name')[0].innerText;
+
+		return mappings.selected_field.options[mappings.selected_field.selectedIndex].text;
+
+	},
+
+	get_field_path: function (target_field = undefined) {
+
+		if (mappings.selected_field === '')
+			return '';
+
+		const path = [];
+		const lines_count = mappings.lines.length;
+		let selected_field_found = false;
+
+		if (typeof target_field === "undefined")
+			target_field = mappings.selected_field;
+
+		for (let i = lines_count - 1; i >= 0; i--) {
+
+			let field = mappings.lines[i];
+			const field_name = field.getAttribute('data-field');
+
+			if (field_name === 'relationship')
+				field = field.nextElementSibling.getElementsByTagName('select')[0];
+
+			if (!selected_field_found && !(selected_field_found = target_field === field))
+				continue;
+
+			if (field_name !== 'relationship') {
+				path.push(field_name);
+				break;
+			} else
+				path.push(field.value);
+
+		}
+
+		return path.reverse().join('_');
 
 	},
 
@@ -484,6 +424,196 @@ const mappings = {
 		table_name = table_name.trim();
 		table_name = table_name.charAt(0).toUpperCase() + table_name.slice(1);
 		return table_name;
-	}
+	},
 
+	get_mappings_tree: function () {
+
+		if(!mappings.changes_made)
+			return mappings.tree;
+
+		let tree = {};
+
+		Object.values(mappings.headers).forEach(function (header) {
+
+			const raw_path = header.getAttribute('data-path');
+
+			if (raw_path == null)
+				return true;
+
+			const path = raw_path.split('_');
+			path.push(header);
+
+			const branch = mappings.array_to_tree(path);
+			tree = mappings.deep_merge_object(tree, branch);
+
+		});
+
+		mappings.tree = tree;
+		mappings.changes_made = false;
+
+
+		return tree;
+
+	},
+
+	//callbacks
+	change_selected_header: function (event) {
+		mappings.selected_header = event.target;
+		mappings.update_buttons();
+
+	},
+
+	change_selected_field: function (event) {
+
+		const radio = event.target;
+		const label = radio.parentElement;
+		const field_key = radio.getAttribute('data-field');
+
+		mappings.selected_field = radio;
+
+		const opened_lists = mappings.list__data_model.getElementsByClassName('table_relationship');
+		Object.values(opened_lists).forEach(function (list) {
+			mappings.list__data_model.removeChild(list);
+		});
+
+		if (mappings.is_selected_field_in_relationship()) {
+
+			const select_line = document.createElement('div');
+			mappings.list__data_model.insertBefore(select_line, label.nextSibling);
+
+			const relationship = mappings.tables[mappings.base_table_name]['relationships'][field_key];
+			const target_table_name = relationship['table_name'];
+			const foreign_name = relationship['foreign_name'];
+			select_line.outerHTML = mappings.get_fields_list_for_table(target_table_name, mappings.base_table_name, foreign_name, select_line);
+
+			label.nextElementSibling.getElementsByTagName('input')[0].checked = true;
+
+		}
+
+		mappings.update_buttons();
+
+	},
+
+	change_option_field: function (event) {
+		const select = event.target;
+		const label = select.parentElement;
+		const line = label.parentElement;
+		const radio = line.getElementsByTagName('input')[0];
+		radio.checked = true;
+
+		mappings.selected_field = select;
+
+		let element = line.nextElementSibling;//remove all <select> elements following this one
+		while (true) {
+
+			if (element === null || !element.classList.contains('table_relationship'))
+				break;
+
+			let next_element = element.nextElementSibling;
+
+			mappings.list__data_model.removeChild(element);
+
+			element = next_element;
+		}
+
+		if (mappings.is_selected_field_in_relationship()) {
+
+			const select_line = document.createElement('div');
+			mappings.list__data_model.insertBefore(select_line, line.nextSibling);
+
+			const current_table_name = select.getAttribute('data-table');
+			const value = select.value;
+			const relationship = mappings.tables[current_table_name]['relationships'][value];
+			const target_table_name = relationship['table_name'];
+			const foreign_name = relationship['foreign_name'];
+			select_line.outerHTML = mappings.get_fields_list_for_table(target_table_name, current_table_name, foreign_name, select_line);
+
+			line.nextElementSibling.getElementsByTagName('input')[0].checked = true;
+
+		}
+
+		mappings.update_buttons();
+
+	},
+
+	//helpers
+	is_selected_field_in_relationship: function () {
+
+		if (mappings.selected_field.tagName === 'INPUT') {
+
+			const label = mappings.selected_field.parentElement;
+			const name = label.getElementsByClassName('row_name')[0];
+
+			return name.innerText.substr(0, 2) === '> ';
+
+		}
+
+		return mappings.selected_field.options[mappings.selected_field.selectedIndex].text.substr(0, 2) === '> ';
+
+	},
+
+	update_buttons: function () {
+
+		mappings.button__map.disabled = typeof mappings.selected_header === "undefined" || mappings.is_selected_field_in_relationship();
+
+		if (typeof mappings.selected_header === "undefined")
+			mappings.button__delete.disabled = true;
+		else {
+			const header_label = mappings.selected_header.parentElement;
+			mappings.button__delete.disabled = header_label.tagName !== 'LABEL' || header_label.getElementsByClassName('undefined').length !== 0;
+		}
+
+	},
+
+	array_to_tree: function (array, tree = {}) {
+
+		if (array.length === 0)
+			return false;
+		const node = array.shift();
+		const data = mappings.array_to_tree(array);
+
+		if (data === false)
+			return node;
+
+		tree[node] = data;
+		return tree;
+
+	},
+
+	deep_merge_object: function (target, source) {
+
+		Object.keys(source).forEach(function (source_property) {
+			if (typeof target[source_property] === "undefined")
+				target[source_property] = source[source_property];
+			else
+				target[source_property] = mappings.deep_merge_object(target[source_property], source[source_property]);
+		});
+
+		return target;
+
+	},
+
+	traverse_tree(full_mappings_tree, node_mappings_tree) {
+
+		if(typeof node_mappings_tree==="undefined")
+			return full_mappings_tree;
+		
+		let target_key = '';
+		if (typeof node_mappings_tree === "string")
+			target_key = node_mappings_tree;
+		else {
+			const target_keys = Object.keys(node_mappings_tree);
+
+			if (target_keys.length === 0)
+				return full_mappings_tree;
+
+			target_key = target_keys[0];
+		}
+
+		if (typeof full_mappings_tree[target_key] === "undefined")
+			return false;
+
+		return mappings.traverse_tree(full_mappings_tree[target_key], node_mappings_tree[target_key]);
+
+	}
 };
