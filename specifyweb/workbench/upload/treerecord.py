@@ -52,15 +52,17 @@ class TreeRecord(NamedTuple):
         parent_id = matched[0] if matched else None
 
         for treedefitem, value in reversed(to_upload):
-            uploaded = model.objects.create(
+            obj = model(
                 name=value,
                 definitionitem=treedefitem,
+                rankid=treedefitem.rankid,
                 definition_id=self.treedefid,
                 parent_id=parent_id,
             )
-            parent_id = uploaded.id
+            obj.save(skip_tree_extras=True)
+            parent_id = obj.id
 
-        return UploadResult(Uploaded(uploaded.id), {}, {})
+        return UploadResult(Uploaded(obj.id), {}, {})
 
 
     def match(self, row: Row) -> TreeMatchResult:

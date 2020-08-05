@@ -25,7 +25,13 @@ class Tree(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, skip_tree_extras=False, **kwargs):
+        def save():
+            super(Tree, self).save(*args, **kwargs)
+
+        if skip_tree_extras:
+            return save()
+
         model = type(self)
         self.rankid = self.definitionitem.rankid
         self.definition = self.definitionitem.treedef
@@ -39,9 +45,6 @@ class Tree(models.Model):
         else:
             self.nodenumber = prev_self.nodenumber
             self.highestchildnodenumber = prev_self.highestchildnodenumber
-
-        def save():
-            super(Tree, self).save(*args, **kwargs)
 
         if prev_self is None:
             if self.parent_id is None:
