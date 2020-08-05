@@ -68,7 +68,7 @@ jobs:
           done
 
       - name: Run type checker
-        run: mypy --follow-imports silent specifyweb/workbench/upload/
+        run: mypy --follow-imports silent specifyweb/workbench
 
       - name: Run test suite
         run: python manage.py test -k
