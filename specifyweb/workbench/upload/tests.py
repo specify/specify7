@@ -9,6 +9,7 @@ from jsonschema import validate, Draft7Validator # type: ignore
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tree_extras import validate_tree_numbering
 
 from .data import Uploaded, UploadResult, Matched, Exclude
 from .upload_table import UploadTable, to_many_filters_and_excludes
@@ -492,6 +493,10 @@ class UploadTests(ApiTests):
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdateprecision, 1)
 
+        # Check that trees are valid.
+        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat'):
+            validate_tree_numbering(tree)
+            self.assertEqual(0, get_table(tree).objects.filter(fullname__isnull=True).count())
 
     def test_tree_1(self) -> None:
         reader = csv.DictReader(io.StringIO(

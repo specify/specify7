@@ -6,6 +6,7 @@ from typing import List
 from django.db import transaction
 
 from specifyweb.specify import models
+from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
 from ..views import load
 from .data import UploadResult, Uploadable
@@ -29,10 +30,15 @@ logger = logging.getLogger(__name__)
 
 
 def do_upload_csv(collection, csv_reader: csv.DictReader, upload_plan: Uploadable) -> List[UploadResult]:
-    return [
+    result = [
         upload_plan.upload_row(collection, row)
         for row in csv_reader
     ]
+    for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage'):
+        renumber_tree(tree)
+        for treedef in getattr(models, (tree + 'treedef').capitalize()).objects.all():
+            reset_fullnames(treedef)
+    return result
 
 
 def caption_to_index(wbtmis, caption):
