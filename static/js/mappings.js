@@ -17,6 +17,11 @@ const mappings = {
 		// column headers
 		mappings.list__headers = document.getElementById('list__headers');
 		mappings.button__new_field = document.getElementById('button__new_field');
+		mappings.button__show_upload_plan = document.getElementById('button__show_upload_plan');
+		mappings.control_line__new_column = document.getElementById('control_line__new_column');
+		mappings.control_line__new_static_column = document.getElementById('control_line__new_static_column');
+
+		//button group
 
 
 		mappings.fetch_data_model();
@@ -31,6 +36,11 @@ const mappings = {
 
 		mappings.lines = mappings.list__data_model.getElementsByTagName('input');
 		mappings.headers = mappings.list__headers.getElementsByTagName('input');
+
+		mappings.button__show_upload_plan.addEventListener('click', mappings.show_upload_plan);
+
+		mappings.control_line__new_column.addEventListener('change', mappings.change_selected_header);
+		mappings.control_line__new_static_column.addEventListener('change', mappings.change_selected_header);
 
 		mappings.reference_indicator = '> ';
 		mappings.level_separator = '_';
@@ -138,6 +148,10 @@ const mappings = {
 
 	},
 
+	show_upload_plan: function () {
+		console.log(mappings.get_upload_plan());
+	},
+
 	//setters
 	set_headers: function (headers = []) {
 
@@ -158,6 +172,8 @@ const mappings = {
 		mappings.list__headers.addEventListener('change', function (event) {
 			if (event.target && event.target.classList.contains('radio__header'))
 				mappings.change_selected_header(event);
+			else if (event.target && event.target.tagName ==='TEXTAREA')
+				mappings.changes_made = true;
 		});
 
 	},
@@ -248,25 +264,40 @@ const mappings = {
 		if (mappings.selected_field === '')
 			return;
 
-		if (typeof heading_mapping === "undefined") {//create new header
+		if (typeof heading_mapping === "undefined") {
 
-			const column_name = 'New Column ' + mappings.new_column_id;
+			const header_name = mappings.selected_header.getAttribute('data-header');
 
-			mappings.list__headers.innerHTML += '<label>' +
-				'	<input type="radio" name="header" class="radio__header" data-header="' + column_name + '">' +
-				'	<div tabindex="0" class="line">' +
-				'		<div class="mapping"></div>' +
-				'		<div class="header">' + column_name + '</div>' +
-				'	</div>' +
-				'</label>';
+			if (header_name === 'new_column') {//create new header
 
-			const labels = mappings.list__headers.getElementsByTagName('label');
-			const new_header_label = labels[labels.length - 1];
-			heading_mapping = new_header_label.getElementsByTagName('input')[0];
+				const column_name = 'New Column ' + mappings.new_column_id;
 
-			heading_mapping.checked = true;
+				mappings.list__headers.innerHTML += '<label>' +
+					'	<input type="radio" name="header" class="radio__header" data-header="' + column_name + '">' +
+					'	<div tabindex="0" class="line">' +
+					'		<div class="mapping"></div>' +
+					'		<div class="header">' + column_name + '</div>' +
+					'	</div>' +
+					'</label>';
 
-			mappings.new_column_id++;
+				mappings.new_column_id++;
+
+			} else if (header_name === 'new_static_column') {//create new static header
+
+				mappings.list__headers.innerHTML += '<label>' +
+					'	<input type="radio" name="header" class="radio__header">' +
+					'	<div tabindex="0" class="line">' +
+					'		<div class="mapping"></div>' +
+					'		<textarea class="value"></textarea>' +
+					'	</div>' +
+					'</label>';
+
+			}
+
+			const new_header_label = mappings.list__headers.lastElementChild;
+			mappings.selected_header = new_header_label.getElementsByTagName('input')[0];
+			mappings.selected_header.checked = true;
+			heading_mapping = new_header_label.getElementsByClassName('mapping')[0];
 
 		} else
 			heading_mapping.classList.remove('undefined');
@@ -289,21 +320,21 @@ const mappings = {
 
 	},
 
-	update_fields: function (first_line,mappings_array=[]) {
+	update_fields: function (first_line, mappings_array = []) {
 
 		let field_path;
 		if (typeof first_line === "undefined") {
 			const last_element = mappings.selected_field;
-			const last_line = mappings.find_line_element(last_element);
+			const last_line = mappings.get_line_element(last_element);
 			first_line = mappings.get_first_line(last_line);
 			field_path = mappings.get_field_path();
 		} else {
 			const last_line = mappings.get_last_line(first_line);
-			const control_element = mappings.find_control_element(last_line)[0];
+			const control_element = mappings.get_control_element(last_line)[0];
 			field_path = mappings.get_field_path(control_element);
 		}
 
-		if(mappings_array.length !== 0 && field_path[0]!==mappings_array[0])
+		if (mappings_array.length !== 0 && field_path[0] !== mappings_array[0])
 			return;
 
 		const mapped_children_count = field_path.length;
@@ -311,7 +342,7 @@ const mappings = {
 		let line = first_line;
 		for (let i = 0; i < mapped_children_count; i++) {
 
-			const control_element = mappings.find_control_element(line)[0];
+			const control_element = mappings.get_control_element(line)[0];
 
 			if (i === 0)
 				mappings.change_selected_field({target: control_element});
@@ -345,10 +376,10 @@ const mappings = {
 		const lines = Object.values(mappings.lines);
 		const lines_count = lines.length;
 		for (let i = 0; i < lines_count; i++)
-			if (lines[i].getAttribute('data-field') !== 'relationship' && i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship'){
+			if (lines[i].getAttribute('data-field') !== 'relationship' && i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {
 
 				const first_line = lines[i].parentElement;
-				mappings.update_fields(first_line,mappings_array);
+				mappings.update_fields(first_line, mappings_array);
 			}
 
 	},
@@ -382,7 +413,7 @@ const mappings = {
 		if (index === false && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
 			let mapped_nodes_count = mapped_nodes.length;
 
-			if (mapped_nodes === false)//TODO: simplify this if possible
+			if (mapped_nodes === false)
 				mapped_nodes_count = 0;
 
 			const friendly_table_name = mappings.tables[table_name]['friendly_table_name'];
@@ -441,7 +472,7 @@ const mappings = {
 	get_mapped_children: function (current_line) {
 		const previous_line = current_line.previousElementSibling;
 
-		const previous_element = mappings.find_control_element(previous_line)[0];
+		const previous_element = mappings.get_control_element(previous_line)[0];
 
 		const mappings_array = mappings.get_field_path(previous_element);
 		const node_mappings_tree = mappings.array_to_tree(mappings_array);
@@ -472,11 +503,11 @@ const mappings = {
 			target_field = mappings.selected_field;
 		}
 
-		let line = mappings.find_line_element(target_field);
+		let line = mappings.get_line_element(target_field);
 
 		while (true) {
 
-			[control_element, control_element_type] = mappings.find_control_element(line);
+			[control_element, control_element_type] = mappings.get_control_element(line);
 
 			if (control_element_type === 'select')
 				path.push(control_element.value);
@@ -554,10 +585,16 @@ const mappings = {
 
 	get_friendly_name: function (table_name) {
 		table_name = table_name.replace(/[A-Z]/g, letter => ` ${letter}`);
-		table_name = table_name.replace('D N A', 'DNA');
-		table_name = table_name.replace('G U I D', 'GUID');
 		table_name = table_name.trim();
 		table_name = table_name.charAt(0).toUpperCase() + table_name.slice(1);
+
+		const regex = /([A-Z]) ([ A-Z])/g;
+		const subst = `$1$2`;
+		table_name = table_name.replace(regex, subst);
+		table_name = table_name.replace(regex, subst);
+
+		table_name = table_name.replace('Dna', 'DNA');
+
 		return table_name;
 	},
 
@@ -576,7 +613,16 @@ const mappings = {
 				return true;
 
 			const path = raw_path.split(mappings.level_separator);
-			path.push(header);
+
+			const next_heading_line = header.nextElementSibling;
+			const mapping_text_object = next_heading_line.getElementsByClassName('header')[0];
+
+			//path.push(header);
+			if (typeof mapping_text_object === "undefined") {
+				const textarea = next_heading_line.getElementsByTagName('textarea')[0];
+				path.push({'static': textarea.value});
+			} else
+				path.push(mapping_text_object.innerText);
 
 			const branch = mappings.array_to_tree(path);
 			tree = mappings.deep_merge_object(tree, branch);
@@ -589,6 +635,104 @@ const mappings = {
 
 		return tree;
 
+	},
+
+	get_line_element: function (control_element) {
+
+		if (typeof control_element === "undefined")
+			control_element = mappings.selected_field;
+
+		const parent_element = control_element.parentElement;
+
+		if (parent_element.classList.contains('line'))
+			return parent_element.parentElement;
+
+		return parent_element;
+
+	},
+
+	get_upload_plan: function (mappings_tree = '') {
+
+		if (mappings_tree === '')
+			mappings_tree = mappings.get_mappings_tree();
+		const upload_plan = {};
+
+		upload_plan['baseTableName'] = mappings.tables[mappings.base_table_name]['friendly_table_name'];
+
+		function handle_table(table_data, table_name) {
+
+			let table_plan = {};
+
+			Object.keys(table_data).forEach(function (field_name) {
+
+				if (typeof table_plan['static'] === "undefined")
+					table_plan['static'] = {};
+
+				if (field_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {
+
+					if (Object.values(table_plan).length === 1)
+						table_plan = [];
+
+					table_plan.push(handle_table(table_data[field_name], table_name));
+
+				}
+
+				else if (typeof table_data[field_name] === "object" && typeof table_data[field_name]['static'] === "string")
+					table_plan['static'][field_name] = table_data[field_name]['static'];
+
+				else if (typeof mappings.tables[table_name]['fields'][field_name] !== "undefined") {
+					if (typeof table_plan['wbcols'] === "undefined")
+						table_plan['wbcols'] = {};
+
+					table_plan['wbcols'][field_name] = table_data[field_name];
+				} else {
+
+					const mapping = mappings.tables[table_name]['relationships'][field_name];
+					const mapping_table = mapping['table_name'];
+					const is_to_one = mapping['type'] === 'one-to-one' || mapping['type'] === 'many-to-one';
+
+					if (is_to_one) {
+
+						if (typeof table_plan['toOne'] === "undefined")
+							table_plan['toOne'] = {};
+
+						if (typeof table_plan['toOne'][field_name] === "undefined")
+							table_plan['toOne'][field_name] = handle_table(table_data[field_name], mapping_table);
+
+					} else {
+
+						if (typeof table_plan['toMany'] === "undefined")
+							table_plan['toMany'] = {};
+
+						if (typeof table_plan['toMany'][field_name] === "undefined")
+							table_plan['toMany'][field_name] = handle_table(table_data[field_name], mapping_table);
+
+
+					}
+
+				}
+
+			});
+
+			return table_plan;
+
+		}
+
+
+		upload_plan['uploadable'] = {'uploadTable': handle_table(mappings_tree, mappings.base_table_name)};
+
+		return JSON.stringify(upload_plan, null, "\t");
+
+	},
+
+	get_control_element: function (parent) {
+		const parent_select = parent.getElementsByTagName('select')[0];
+
+		if (typeof parent_select !== "undefined")
+			return [parent_select, 'select'];
+
+		const parent_input = parent.getElementsByTagName('input')[0];
+		return [parent_input, 'input'];
 	},
 
 	//callbacks
@@ -663,7 +807,7 @@ const mappings = {
 			if (value.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {//previous_selected_field was a o-m or m-m multiple
 
 				const parent_line = line.previousElementSibling;
-				[parent_control_element, parent_control_element_type] = mappings.find_control_element(parent_line);
+				[parent_control_element, parent_control_element_type] = mappings.get_control_element(parent_line);
 
 				if (parent_control_element_type === 'select') {
 					current_table_name = parent_control_element.getAttribute('data-table');
@@ -690,30 +834,6 @@ const mappings = {
 	},
 
 	//helpers
-	find_line_element: function (control_element) {
-
-		if (typeof control_element === "undefined")
-			control_element = mappings.selected_field;
-
-		const parent_element = control_element.parentElement;
-
-		if (parent_element.classList.contains('line'))
-			return parent_element.parentElement;
-
-		return parent_element;
-
-	},
-
-	find_control_element: function (parent) {
-		const parent_select = parent.getElementsByTagName('select')[0];
-
-		if (typeof parent_select !== "undefined")
-			return [parent_select, 'select'];
-
-		const parent_input = parent.getElementsByTagName('input')[0];
-		return [parent_input, 'input'];
-	},
-
 	is_selected_field_in_relationship: function () {
 
 		if (mappings.selected_field.tagName === 'INPUT') {
@@ -731,13 +851,19 @@ const mappings = {
 
 	update_buttons: function () {
 
-		mappings.button__map.disabled = typeof mappings.selected_header === "undefined" || mappings.is_selected_field_in_relationship() || mappings.selected_field.value === "0";
+		mappings.button__map.disabled =
+			typeof mappings.selected_header === "undefined" ||
+			typeof mappings.selected_field === "undefined" ||
+			mappings.is_selected_field_in_relationship() ||
+			mappings.selected_field.value === "0";
 
 		if (typeof mappings.selected_header === "undefined")
 			mappings.button__delete.disabled = true;
 		else {
 			const header_label = mappings.selected_header.parentElement;
-			mappings.button__delete.disabled = header_label.tagName !== 'LABEL' || header_label.getElementsByClassName('undefined').length !== 0;
+			mappings.button__delete.disabled =
+				header_label.tagName !== 'LABEL' ||
+				header_label.getElementsByClassName('undefined').length !== 0;
 		}
 
 	},

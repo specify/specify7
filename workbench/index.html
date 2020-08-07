@@ -108,11 +108,23 @@
     </div>
     <div class="custom_list">
         <div id="list__headers" class="list"></div>
-        <label>
-            <input type="radio" name="header" class="radio__header" data-header="new_column">
-            <span id="button__new_field" class="line" tabindex="0">New column</span>
+        <label class="control_line">
+            <input id="control_line__new_column" type="radio" name="header" class="radio__header" data-header="new_column">
+            <span class="line" tabindex="0">New column</span>
         </label>
-    </div><!--TODO: add continue and cancel buttons-->
+        <label class="control_line">
+            <input id="control_line__new_static_column" type="radio" name="header" class="radio__header" data-header="new_static_column">
+            <span class="line" tabindex="0">New static column</span>
+        </label>
+    </div>
+
+    <div id="btn_group__mapping_controls">
+
+        <button id="button__show_upload_plan">Show upload plan in the console</button>
+        <button id="button__mappings__continue" disabled>Continue</button>
+        <button id="button__mappings_cancel">Cancel</button>
+
+    </div>
 
 </div>
 

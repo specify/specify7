@@ -15,6 +15,8 @@ window.addEventListener('load', function () {
 	upload_config.constructor();
 
 	const screen__mapping = document.getElementById('screen__mapping');
+	const button__mappings__continue = document.getElementById('button__mappings__continue');
+	const button__mappings_cancel = document.getElementById('button__mappings_cancel');
 	mappings.constructor();
 
 
@@ -56,6 +58,7 @@ window.addEventListener('load', function () {
 	input__file.addEventListener('change', file_change_handler);
 	file_change_handler();
 
+
 	button__upload_config_cancel.addEventListener('click', function () {
 		commons.change_screen('main',screen__file_upload);
 		input__file.value = [];
@@ -64,6 +67,17 @@ window.addEventListener('load', function () {
 	button__upload_config_continue.addEventListener('click', function () {
 		commons.change_screen('main',screen__mapping);
 		mappings.set_headers(upload_config.headers);
+	});
+
+	button__mappings_cancel.addEventListener('click', function () {
+		commons.change_screen('main',screen__file_upload);
+		mappings.reset_table();
+		input__file.value = [];
+	});
+
+	button__mappings__continue.addEventListener('click', function () {
+		//commons.change_screen('main',screen__mapping);
+		//mappings.set_headers(upload_config.headers);
 	});
 
 });

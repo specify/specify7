@@ -8,12 +8,13 @@
 
 .custom_list {
     border: 1px solid var(--border);
-	overflow-y: auto;
-	height: calc(100vh - 16px);
+    overflow-y: auto;
+    height: calc(calc(100vh - 16px) - 3rem);
 }
 
 .list {
-    display: grid;
+    display: inline-block;
+	width: 100%;
 }
 
 .list > * {
@@ -28,7 +29,7 @@
 .custom_list .line {
     cursor: pointer;
     outline: none !important;
-	padding: 1rem;
+    padding: 1rem;
 }
 
 .custom_list .line:hover {
@@ -40,17 +41,12 @@
     text-align: left;
 }
 
-.list .header  {
+.list .header {
     text-align: right;
 }
 
 .custom_list .undefined:after {
     content: 'To Be Discarded';
-}
-
-#button__new_field {
-	display: block;
-	text-align: center;
 }
 
 :checked ~ .line {
@@ -65,14 +61,14 @@
 /* column data model */
 #table_header {
     display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 1rem;
-	background: var(--b2);
-	height: 4rem;
-	position: sticky;
-	width: inherit;
-	top: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background: var(--b2);
+    height: 4rem;
+    position: sticky;
+    width: inherit;
+    top: 0;
     z-index: 2;
 }
 
@@ -86,21 +82,21 @@
 }
 
 #button__change_table {
-	border: 0;
+    border: 0;
     padding: 0.5rem;
     cursor: pointer;
 }
 
 #list__tables .line {
-	display: list-item;
+    display: list-item;
 }
 
-.table_relationship .line {/*TODO: remove this*/
+.table_relationship .line { /*TODO: remove this*/
     display: block;
 }
 
 .select__field {
-	width: 100%;
+    width: 100%;
     margin-left: 0.6em;
 }
 
@@ -109,7 +105,7 @@
 
 #column__controls {
     display: grid;
-	align-content: center;
+    align-content: center;
 }
 
 #column__controls button {
@@ -125,3 +121,23 @@
 
 
 /* column headers */
+.list .value {
+	width: 100%;
+}
+
+.control_line {
+	position: relative;
+    display: block;
+}
+
+.control_line span {
+    display: block;
+    text-align: center;
+}
+
+
+/* buttons group */
+#btn_group__mapping_controls {
+    grid-column-start: 1;
+    grid-column-end: 4;
+}
