@@ -661,12 +661,15 @@ const mappings = {
 
 		function handle_table(table_data, table_name) {
 
-			let table_plan = {};
+			let table_plan = {
+				'name': table_name,
+				'wbcols': {},
+				'static': {},
+				'toOne': {},
+				'toMany': {},
+			};
 
 			Object.keys(table_data).forEach(function (field_name) {
-
-				if (typeof table_plan['static'] === "undefined")
-					table_plan['static'] = {};
 
 				if (field_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {
 
@@ -680,35 +683,20 @@ const mappings = {
 				else if (typeof table_data[field_name] === "object" && typeof table_data[field_name]['static'] === "string")
 					table_plan['static'][field_name] = table_data[field_name]['static'];
 
-				else if (typeof mappings.tables[table_name]['fields'][field_name] !== "undefined") {
-					if (typeof table_plan['wbcols'] === "undefined")
-						table_plan['wbcols'] = {};
-
+				else if (typeof mappings.tables[table_name]['fields'][field_name] !== "undefined")
 					table_plan['wbcols'][field_name] = table_data[field_name];
-				} else {
+
+				else {
 
 					const mapping = mappings.tables[table_name]['relationships'][field_name];
 					const mapping_table = mapping['table_name'];
 					const is_to_one = mapping['type'] === 'one-to-one' || mapping['type'] === 'many-to-one';
 
-					if (is_to_one) {
-
-						if (typeof table_plan['toOne'] === "undefined")
-							table_plan['toOne'] = {};
-
-						if (typeof table_plan['toOne'][field_name] === "undefined")
+					if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
 							table_plan['toOne'][field_name] = handle_table(table_data[field_name], mapping_table);
 
-					} else {
-
-						if (typeof table_plan['toMany'] === "undefined")
-							table_plan['toMany'] = {};
-
-						if (typeof table_plan['toMany'][field_name] === "undefined")
+					else if (typeof table_plan['toMany'][field_name] === "undefined")
 							table_plan['toMany'][field_name] = handle_table(table_data[field_name], mapping_table);
-
-
-					}
 
 				}
 

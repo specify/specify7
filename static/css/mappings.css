@@ -14,7 +14,7 @@
 
 .list {
     display: inline-block;
-	width: 100%;
+    width: 100%;
 }
 
 .list > * {
@@ -122,11 +122,14 @@
 
 /* column headers */
 .list .value {
-	width: 100%;
+    width: 100%;
+    min-height: 1rem;
+    max-height: 10rem;
+    resize: vertical;
 }
 
 .control_line {
-	position: relative;
+    position: relative;
     display: block;
 }
 
