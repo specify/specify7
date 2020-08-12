@@ -25,6 +25,7 @@ const mappings = {
 
 
 		mappings.fetch_data_model();
+		mappings.fetch_ranks();
 		mappings.set_headers();
 
 		commons.set_screen('mappings', mappings.list__tables);
@@ -46,6 +47,7 @@ const mappings = {
 		mappings.level_separator = '_';
 		mappings.friendly_level_separator = ' > ';
 		mappings.reference_symbol = '#';
+		mappings.tree_symbol = '$';
 
 	},
 
@@ -56,6 +58,18 @@ const mappings = {
 		xhr.responseType = "json";
 		xhr.onload = function () {
 			mappings.process_data_model(xhr.response);
+		};
+		xhr.send();
+
+	},
+
+	fetch_ranks: function () {
+
+		const xhr = new XMLHttpRequest();
+		xhr.open("GET", ranks_location);
+		xhr.responseType = "json";
+		xhr.onload = function () {
+			mappings.ranks = xhr.response;
 		};
 		xhr.send();
 
@@ -399,18 +413,34 @@ const mappings = {
 		let fields_html = '<div class="table_relationship">' +
 			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
 			'<label class="line">' +
-			'	<select name="relationship" class="select__field" data-table="' + table_name + '">' +
+			'	<select name="' + table_name + '" class="select__field">' +
 			'		<option value="0"></option>';
 
 
-		const relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
+		let relationship_type;
+		if(previous_table!=='')
+			relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
 
 		let mapped_nodes = mappings.get_mapped_children(current_line);
 
-		if (typeof mappings.temporary_mapped_nodes !== "undefined" && !mapped_nodes.includes(mappings.temporary_mapped_nodes))
-			mapped_nodes.push(mappings.temporary_mapped_nodes);
+		const ranks = mappings.ranks[table_name];
+		if(typeof ranks !== "undefined" && index === false){
 
-		if (index === false && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
+			const start_rank = 0;
+			const rank_names = Object.keys(ranks);
+			const rank_names_count = rank_names.length;
+
+			for (let rank_name_index = start_rank; rank_name_index < rank_names_count; rank_name_index++){
+
+				fields_html += '<option value="' + mappings.tree_symbol+rank_names[rank_name_index] + '">' + rank_names[rank_name_index] + '</option>';
+
+				if(ranks[rank_names[rank_name_index]]===true)
+					break;
+			}
+
+		}
+
+		else if (index === false && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
 			let mapped_nodes_count = mapped_nodes.length;
 
 			if (mapped_nodes === false)
@@ -790,30 +820,79 @@ const mappings = {
 			mappings.list__data_model.insertBefore(select_line, line.nextElementSibling);
 
 			let current_table_name;
-			let relationship_key = value;
+			let relationship_key;
 			let index = false;
-			if (value.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {//previous_selected_field was a o-m or m-m multiple
 
-				const parent_line = line.previousElementSibling;
-				[parent_control_element, parent_control_element_type] = mappings.get_control_element(parent_line);
+			if (value.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {//previous_selected_field was part of a tree structure
 
-				if (parent_control_element_type === 'select') {
-					current_table_name = parent_control_element.getAttribute('data-table');
-					relationship_key = parent_control_element.value;
-				} else {
-					current_table_name = mappings.base_table_name;
-					relationship_key = parent_control_element.getAttribute('data-field');
+				const table_name = select.getAttribute('name');
+
+				const ranks = mappings.ranks[table_name];
+				const rank_names = Object.keys(ranks);
+				const rank_names_count = rank_names.length;
+
+				const current_rank = value.substr(mappings.tree_symbol.length);
+
+				if(current_rank==='data')
+					select_line.outerHTML = mappings.get_html_for_table_fields(table_name, '', '', select_line, true);
+				else {
+					const start_rank = rank_names.indexOf(current_rank)+1;
+
+					let fields_html = '<div class="table_relationship">' +
+						'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
+						'<label class="line">' +
+						'	<select name="' + table_name + '" class="select__field" data-rank="'+value+'">' +
+						'		<option value="0"></option>' +
+						'		<option value="'+mappings.tree_symbol+'data">'+current_rank+' Data</option>';
+
+					for (let rank_name_index = start_rank; rank_name_index < rank_names_count; rank_name_index++){
+
+						fields_html += '<option value="' + mappings.tree_symbol+rank_names[rank_name_index] + '">' + rank_names[rank_name_index] + '</option>';
+
+						if(ranks[rank_names[rank_name_index]]===true)
+							break;
+					}
+
+
+					fields_html += '</select>' +
+						'</label>' +
+						'</div>';
+
+					select_line.outerHTML = fields_html;
 				}
 
-				index = value;
+			} else {
 
-			} else
-				current_table_name = select.getAttribute('data-table');
-			const relationship = mappings.tables[current_table_name]['relationships'][relationship_key];
-			const target_table_name = relationship['table_name'];
-			select_line.outerHTML = mappings.get_html_for_table_fields(target_table_name, current_table_name, relationship_key, select_line, index);
+				if (value.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {//previous_selected_field was a o-m or m-m multiple
+
+					const parent_line = line.previousElementSibling;
+					[parent_control_element, parent_control_element_type] = mappings.get_control_element(parent_line);
+
+					if (parent_control_element_type === 'select') {
+						current_table_name = parent_control_element.getAttribute('name');
+						relationship_key = parent_control_element.value;
+					} else {
+						current_table_name = mappings.base_table_name;
+						relationship_key = parent_control_element.getAttribute('data-field');
+					}
+
+					index = value;
+
+				} else {
+					current_table_name = select.getAttribute('name');
+					relationship_key = value;
+				}
+
+				const relationship = mappings.tables[current_table_name]['relationships'][relationship_key];
+				const target_table_name = relationship['table_name'];
+				select_line.outerHTML = mappings.get_html_for_table_fields(target_table_name, current_table_name, relationship_key, select_line, index);
+
+
+			}
+
 
 			line.nextElementSibling.getElementsByTagName('input')[0].checked = true;
+
 
 		}
 
@@ -833,7 +912,7 @@ const mappings = {
 
 		}
 
-		return mappings.selected_field.value[0] === mappings.reference_symbol || mappings.selected_field.options[mappings.selected_field.selectedIndex].text.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
+		return mappings.selected_field.value[0] === mappings.reference_symbol || mappings.selected_field.value[0]===mappings.tree_symbol || mappings.selected_field.options[mappings.selected_field.selectedIndex].text.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
 
 	},
 
