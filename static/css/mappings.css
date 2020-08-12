@@ -12,10 +12,10 @@
     height: calc(calc(100vh - 16px) - 3rem);
 }
 
-.list {
-    display: inline-block;
-    width: 100%;
-}
+/*.list {*/
+/*    display: inline-block;*/
+/*    width: 100%;*/
+/*}*/
 
 .list > * {
     position: relative;
@@ -34,6 +34,14 @@
 
 .custom_list .line:hover {
     background: var(--b2);
+}
+
+.custom_list [disabled] ~ .line {
+    cursor: not-allowed;
+}
+
+.custom_list [disabled] ~ .line:hover {
+    background: initial;
 }
 
 .list .mapping, .list .table_name {
@@ -91,13 +99,16 @@
     display: list-item;
 }
 
-.table_relationship .line { /*TODO: remove this*/
+.table_relationship .line {
     display: block;
 }
 
 .select__field {
     width: 100%;
-    margin-left: 0.6em;
+	width: -moz-available;
+	width: -webkit-fill-available;
+	width: fill-available;
+	margin-left: 1.6em;
 }
 
 
