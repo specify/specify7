@@ -197,6 +197,7 @@ const mappings = {
 		const table_name = radio.getAttribute('data-table');
 		const table_data = mappings.tables[table_name];
 
+		mappings.list__tables_scroll_postion = mappings.list__tables.parentElement.scrollTop;
 		commons.change_screen('mappings', mappings.list__data_model);
 
 		mappings.button__change_table.style.display = '';
@@ -223,23 +224,22 @@ const mappings = {
 				'<div class="table_relationship">' +
 				'	<input type="radio" name="field" class="radio__field" data-field="relationship">' +
 				'	<label class="line">' +
-				'		<select name="'+table_name+'" class="select__field" data-rank="'+mappings.tree_symbol+first_rank+'">' +
+				'		<select name="' + table_name + '" class="select__field" data-rank="' + mappings.tree_symbol + first_rank + '">' +
 				'			<option value="0"></option>';
 
-			mappings.traverse_table_ranks(ranks,function(rank_name){
+			mappings.traverse_table_ranks(ranks, function (rank_name) {
 
 				let rank_key;
 
-				if(rank_name === first_rank){
+				if (rank_name === first_rank) {
 					rank_key = 'data';
 					rank_name += ' Data';
-				}
-				else
+				} else
 					rank_key = rank_name;
 
-				rows_html += '<option value="'+mappings.tree_symbol+rank_key+'">'+rank_name+'</option>';
+				rows_html += '<option value="' + mappings.tree_symbol + rank_key + '">' + rank_name + '</option>';
 
-			},true);
+			}, true);
 
 			rows_html += '</select>' +
 				'	</label>' +
@@ -291,6 +291,20 @@ const mappings = {
 				mappings.change_option_field(event);
 		});
 
+
+		//if header is checked by browser, update selected_header
+		function select_header(header) {
+			if (header.checked) {
+				mappings.selected_header = header;
+				return false;
+			}
+		}
+
+		Object.values(mappings.headers).forEach(select_header);
+		select_header(mappings.control_line__new_column);
+		select_header(mappings.control_line__new_static_column);
+
+
 		mappings.tree = {};
 		mappings.changes_made = true;
 
@@ -311,6 +325,12 @@ const mappings = {
 		mappings.title__table_name.innerText = '';
 
 		commons.change_screen('mappings', mappings.list__tables);
+		if (typeof mappings.list__tables_scroll_postion !== "undefined") {
+			setTimeout(function () {
+				mappings.list__tables.parentElement.scrollTop = mappings.list__tables_scroll_postion;
+				mappings.list__tables_scroll_postion = undefined;
+			}, 0);
+		}
 
 		mappings.button__change_table.style.display = 'none';
 
@@ -322,18 +342,21 @@ const mappings = {
 		const label = mappings.selected_header.parentElement;
 		let heading_mapping = label.getElementsByClassName('mapping')[0];
 
-		if (mappings.selected_field === '')
+		if (mappings.selected_field === '' || mappings.selected_field.getAttribute('disabled') !== null)
 			return;
 
 		if (typeof heading_mapping === "undefined") {
 
 			const header_name = mappings.selected_header.getAttribute('data-header');
 
+			const header_line = document.createElement('div');
+			mappings.list__headers.appendChild(header_line);
+
 			if (header_name === 'new_column') {//create new header
 
 				const column_name = 'New Column ' + mappings.new_column_id;
 
-				mappings.list__headers.innerHTML += '<label>' +
+				header_line.innerHTML += '<label>' +
 					'	<input type="radio" name="header" class="radio__header" data-header="' + column_name + '">' +
 					'	<div tabindex="0" class="line">' +
 					'		<div class="mapping"></div>' +
@@ -345,7 +368,7 @@ const mappings = {
 
 			} else if (header_name === 'new_static_column') {//create new static header
 
-				mappings.list__headers.innerHTML += '<label>' +
+				header_line.innerHTML += '<label>' +
 					'	<input type="radio" name="header" class="radio__header">' +
 					'	<div tabindex="0" class="line">' +
 					'		<div class="mapping"></div>' +
@@ -371,6 +394,9 @@ const mappings = {
 		const field_path = mappings.get_field_path();
 		const string_field_path = field_path.join(mappings.level_separator);
 		radio.setAttribute('data-path', string_field_path);
+
+		if (field_path.length === 1)
+			mappings.selected_field.setAttribute('disabled', '');
 
 		const friendly_field_path = mappings.get_friendly_field_path(field_path);
 		heading_mapping.setAttribute('title', friendly_field_path);
@@ -405,11 +431,10 @@ const mappings = {
 
 			const control_element = mappings.get_control_element(line)[0];
 
-			if (i === 0){
-				if(!control_element.classList.contains('tree'))
+			if (i === 0) {
+				if (!control_element.classList.contains('tree'))
 					mappings.change_selected_field({target: control_element});
-			}
-			else {
+			} else {
 				control_element.value = field_path[i];
 				mappings.change_option_field({target: control_element});
 			}
@@ -438,12 +463,18 @@ const mappings = {
 
 		const lines = Object.values(mappings.lines);
 		const lines_count = lines.length;
-		for (let i = 0; i < lines_count; i++)
-			if (lines[i].getAttribute('data-field') !== 'relationship' && i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {
+		for (let i = 0; i < lines_count; i++) {
+			if (lines[i].getAttribute('data-field') !== 'relationship') {
+				if (i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {
+					if (i + 1 < lines_count) {
 
-				const first_line = lines[i].parentElement;
-				mappings.update_fields(first_line, mappings_array);
+						const first_line = lines[i].parentElement;
+						mappings.update_fields(first_line, mappings_array);
+					}
+				} else if (mappings_path === lines[i].getAttribute('data-field'))
+					lines[i].removeAttribute('disabled');
 			}
+		}
 
 	},
 
@@ -732,49 +763,83 @@ const mappings = {
 			mappings_tree = mappings.get_mappings_tree();
 		const upload_plan = {};
 
-		upload_plan['baseTableName'] = mappings.tables[mappings.base_table_name]['friendly_table_name'];
+		upload_plan['baseTableName'] = mappings.base_table_name;
 
-		function handle_tree(tree, rank_name, result_tree = {}) {
+		function handle_tree(tree, rank_name, table_name = '', result_tree = {}) {
 			const tree_keys = Object.keys(tree);
+
 			tree_keys.forEach(function (tree_key) {
-				if (tree_key === mappings.tree_symbol + 'data')
-					result_tree[rank_name] = tree[mappings.tree_symbol + 'data']['name'];
-				else {
+				if (tree_key === mappings.tree_symbol + 'data') {
+
+					let name = tree[mappings.tree_symbol + 'data']['name'];
+
+					if (typeof name === 'object')
+						name = name['static'];
+
+					result_tree[rank_name] = name;
+				} else {
 					const new_tree_key = tree_key.substr(mappings.tree_symbol.length);
-					result_tree = handle_tree(tree[tree_key], new_tree_key, result_tree);
+					result_tree = handle_tree(tree[tree_key], new_tree_key, '', result_tree);
 				}
 			});
+
+			if (table_name !== '') {
+				const new_result_tree = {};
+				const ranks = mappings.ranks[table_name];
+
+				Object.keys(ranks).forEach(function (key) {
+					if (typeof result_tree[key] !== "undefined")
+						new_result_tree[key] = result_tree[key];
+				});
+
+				result_tree = new_result_tree;
+			}
 
 			return result_tree;
 		}
 
-		function handle_table(table_data, table_name) {
+		function handle_table(table_data, table_name, wrap_it = true) {
 
 			if (typeof mappings.ranks[table_name] !== "undefined") {
 				const top_rank_name = Object.keys(mappings.ranks[table_name])[0];
-				return {'treeRecord': handle_tree(table_data[mappings.tree_symbol + top_rank_name], top_rank_name)};
+				return {'treeRecord': {'ranks': handle_tree(table_data[mappings.tree_symbol + top_rank_name], top_rank_name, table_name)}};
 			}
 
 			let table_plan = {
-				'name': table_name,
 				'wbcols': {},
 				'static': {},
 				'toOne': {},
-				'toMany': {},
 			};
+
+			if (wrap_it)
+				table_plan['toMany'] = {};
+
+			let is_to_many = false;
 
 			Object.keys(table_data).forEach(function (field_name) {
 
-				if (field_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol)
-					table_plan = handle_table(table_data[field_name], table_name);
+				if (field_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {
+					if (!is_to_many) {
+						is_to_many = true;
+						table_plan = [];
+					}
 
-				else if (field_name.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol)
-					table_plan = handle_tree(table_data[field_name], field_name);
+					table_plan.push(handle_table(table_data[field_name], table_name, false));
+				} else if (field_name.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol)
+					table_plan = handle_tree(table_data[field_name], field_name, table_name);
 
-				else if (typeof table_data[field_name] === "object" && typeof table_data[field_name]['static'] === "string")
-					table_plan['static'][field_name] = table_data[field_name]['static'];
+				else if (typeof table_data[field_name] === "object" && typeof table_data[field_name]['static'] === "string") {
+					let value = table_data[field_name]['static'];
 
-				else if (typeof mappings.tables[table_name]['fields'][field_name] !== "undefined")
+					if (value === 'true')
+						value = true;
+					else if (value === 'false')
+						value = false;
+					else if (!isNaN(value))
+						value = parseInt(value);
+
+					table_plan['static'][field_name] = value;
+				} else if (typeof mappings.tables[table_name]['fields'][field_name] !== "undefined")
 					table_plan['wbcols'][field_name] = table_data[field_name];
 
 				else {
@@ -794,8 +859,13 @@ const mappings = {
 			});
 
 
-			if (Array.isArray(table_plan))
-				return table_name;
+			if (Array.isArray(table_plan) || !wrap_it)
+				return table_plan;
+
+			const keys = Object.keys(table_data);
+
+			if (keys[0].substr(0, mappings.reference_symbol.length) === mappings.reference_symbol)
+				return table_plan;
 
 			return {'uploadTable': table_plan};
 
@@ -909,11 +979,11 @@ const mappings = {
 						'		<option value="0"></option>' +
 						'		<option value="' + mappings.tree_symbol + 'data">' + current_rank + ' Data</option>';
 
-					mappings.traverse_table_ranks(ranks,function(rank_name){
+					mappings.traverse_table_ranks(ranks, function (rank_name) {
 
 						fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
 
-					},false,start_rank+1);
+					}, false, start_rank);
 
 
 					fields_html += '</select>' +
@@ -978,7 +1048,7 @@ const mappings = {
 
 	},
 
-	traverse_table_ranks: function (ranks, callback, ignore_first_required=false,start_rank=0) {
+	traverse_table_ranks: function (ranks, callback, ignore_first_required = false, start_rank = 0) {
 
 		const rank_names = Object.keys(ranks);
 		const rank_names_count = rank_names.length;
@@ -987,7 +1057,7 @@ const mappings = {
 
 			callback(rank_names[rank_name_index]);
 
-			if (ranks[rank_names[rank_name_index]] === true && (!ignore_first_required || rank_name_index!==start_rank))
+			if (ranks[rank_names[rank_name_index]] === true && (!ignore_first_required || rank_name_index !== start_rank))
 				break;
 		}
 
@@ -998,6 +1068,7 @@ const mappings = {
 		mappings.button__map.disabled =
 			typeof mappings.selected_header === "undefined" ||
 			typeof mappings.selected_field === "undefined" ||
+			mappings.selected_field.getAttribute('disabled') !== null ||
 			mappings.is_selected_field_in_relationship() ||
 			mappings.selected_field.value === "0";
 

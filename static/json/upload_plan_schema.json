@@ -1,188 +1,150 @@
 {
-  "title": "Specify 7 Workbench Upload Plan",
-  "description": "The workbench upload plan defines how to load columnar data into the Specify datamodel.",
-  "$schema": "http://json-schema.org/schema#",
-  "$ref": "#/definitions/uploadable",
-  "definitions": {
-    "uploadTable": {
-      "type": "object",
-      "description": "The uploadTable structure defines how to upload data for a given table.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the Specify table the data is to be loaded into.",
-          "examples": [
-            "Collectionobject",
-            "Collectingevent",
-            "Agent"
-          ]
-        },
-        "wbcols": {
-          "$ref": "#/definitions/wbcols"
-        },
-        "static": {
-          "$ref": "#/definitions/static"
-        },
-        "toOne": {
-          "$ref": "#/definitions/toOne"
-        },
-        "toMany": {
-          "type": "object",
-          "desciption": "Maps the names of -to-many relationships of the table to an array of upload definitions for each.",
-          "additionalProperties": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/toManyRecord"
+  "catalognumber": "BMSM No.",
+  "determinations": {
+    "#1": {
+      "taxon": {
+        "$Kingdom": {
+          "$Division": {
+            "$Class": {
+              "$data": {
+                "name": "Class"
+              },
+              "$Order": {
+                "$Superfamily": {
+                  "$data": {
+                    "name": "Superfamily"
+                  },
+                  "$Family": {
+                    "$data": {
+                      "name": "Family"
+                    },
+                    "$Genus": {
+                      "$data": {
+                        "name": "Genus"
+                      },
+                      "$Subgenus": {
+                        "$data": {
+                          "name": "Subgenus"
+                        },
+                        "$Species": {
+                          "$data": {
+                            "name": "Species"
+                          },
+                          "$Subspecies": {
+                            "$data": {
+                              "name": "Subspecies"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "$data": {
+                  "name": {
+                    "static": "(no Order)"
+                  }
+                }
+              }
+            },
+            "$data": {
+              "name": {
+                "static": "(no Division)"
+              }
+            }
+          },
+          "$data": {
+            "name": {
+              "static": "(no Kingdom)"
             }
           }
         }
       },
-      "required": [
-        "name",
-        "wbcols",
-        "static",
-        "toOne",
-        "toMany"
-      ],
-      "additionalProperties": false
-    },
-    "toManyRecord": {
-      "type": "object",
-      "description": "The toManyRecord structure defines how to upload data for one record into a given table that stands in a many-to-one relationship to another.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the Specify table the data is to be loaded into. This value must be the same for every element of a toMany array.",
-          "examples": [
-            "Collectionobject",
-            "Collectingevent",
-            "Agent"
-          ]
-        },
-        "wbcols": {
-          "$ref": "#/definitions/wbcols"
-        },
-        "static": {
-          "$ref": "#/definitions/static"
-        },
-        "toOne": {
-          "$ref": "#/definitions/toOne"
+      "determiner": {
+        "title": "Determiner 1 Title",
+        "firstname": "Determiner 1 First Name",
+        "middleinitial": "Determiner 1 Middle Initial",
+        "lastname": "Determiner 1 Last Name",
+        "agenttype": {
+          "static": "1"
         }
       },
-      "required": [
-        "name",
-        "wbcols",
-        "static",
-        "toOne"
-      ],
-      "additionalProperties": false
-    },
-    "treeRecord": {
-      "type": "object",
-      "description": "The treeRecord structure defines how to upload data into Specify tree type table.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the Specify tree table the data is to be loaded into.",
-          "examples": [
-            "Taxon",
-            "Geography",
-            "Storage"
-          ]
-        },
-        "treedefname": {
-          "type": "string",
-          "description": "The name of the Specify tree definition table for this tree.",
-          "examples": [
-            "Taxontreedef",
-            "Geographytreedef",
-            "Storagetreedef"
-          ]
-        },
-        "treedefid": {
-          "type": "integer",
-          "description": "The row id of the row in the Specify tree definition table for the definition of this tree."
-        },
-        "ranks": {
-          "type": "object",
-          "description": "Maps the ranks of the tree to the headers of the source columns of input data.",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "examples": [
-            {
-              "Continent": "Continent/Ocean",
-              "Country": "Country",
-              "State": "State/Prov/Pref",
-              "County": "Region"
+      "determineddate": "ID Date",
+      "iscurrent": {
+        "static": "true"
+      }
+    }
+  },
+  "collectingevent": {
+    "locality": {
+      "geography": {
+        "$Continent": {
+          "$Country": {
+            "$data": {
+              "name": "Country"
             },
-            {
-              "Class": "Class",
-              "Superfamily": "Superfamily",
-              "Family": "Family",
-              "Genus": "Genus",
-              "Subgenus": "Subgenus",
-              "Species": "Species",
-              "Subspecies": "Subspecies"
+            "$State": {
+              "$data": {
+                "name": "State/Prov/Pref"
+              },
+              "$County": {
+                "$data": {
+                  "name": "Region"
+                }
+              }
             }
-          ]
+          },
+          "$data": {
+            "name": "Continent/Ocean"
+          }
         }
       },
-      "required": [
-        "name",
-        "treedefname",
-        "treedefid",
-        "ranks"
-      ],
-      "additionalProperties": false
-    },
-    "uploadable": {
-      "type": "object",
-      "description": "The uploadable structure differentiates among types of uploadable data structures which can be either the base structure for uploading data or stand in a -to-one relationship to another uploadable structure. Currently only uploadTable or treeRecord.",
-      "patternProperties": {
-        "^uploadTable$": {
-          "$ref": "#/definitions/uploadTable"
-        },
-        "^treeRecord$": {
-          "$ref": "#/definitions/treeRecord"
-        }
-      },
-      "additionalProperties": false
-    },
-    "wbcols": {
-      "type": "object",
-      "description": "Maps the columns of the destination table to the headers of the source columns of input data.",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "examples": [
-        {
-          "catalognumber": "Specimen #",
-          "catalogeddate": "Recored Date",
-          "objectcondition": "Condition"
-        },
-        {
-          "lastname": "Collector 1 Last Name",
-          "firstname": "Collector 1 First Name"
-        }
-      ]
-    },
-    "toOne": {
-      "type": "object",
-      "description": "Maps the names of -to-one relationships of the table to upload definitions for each.",
-      "additionalProperties": {
-        "$ref": "#/definitions/uploadable"
+      "localityname": "Site",
+      "latitude1": "Latitude1",
+      "longitude1": "Longitude1",
+      "srclatlongunit": {
+        "static": "0"
       }
     },
-    "static": {
-      "type": "object",
-      "description": "A set of static values that will be added to every record loaded.",
-      "examples": [
-        {
-          "ispublic": true,
-          "license": "CC BY-NC-ND 2.0"
+    "startdate": "Start Date Collected",
+    "enddate": "End Date Collected",
+    "collectors": {
+      "#1": {
+        "agent": {
+          "title": "Collector 1 Title",
+          "firstname": "Collector 1 First Name",
+          "middleinitial": "Collector 1 Middle Initial",
+          "lastname": "Collector 1 Last Name",
+          "agenttype": {
+            "static": "1"
+          }
+        },
+        "isprimary": {
+          "static": "true"
+        },
+        "ordernumber": {
+          "static": "0"
         }
-      ]
+      },
+      "#2": {
+        "agent": {
+          "title": "Collector 2 Title",
+          "firstname": "Collector 2 First Name",
+          "middleinitial": "Collector 2 Middle Initial",
+          "lastname": "Collector 2 Last name",
+          "agenttype": {
+            "static": "1"
+          }
+        },
+        "isprimary": {
+          "static": "false"
+        },
+        "ordernumber": {
+          "static": "1"
+        }
+      }
+    },
+    "stationfieldnumber": {
+      "static": "0"
     }
-  }
-}
+  },
