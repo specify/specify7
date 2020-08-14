@@ -1,100 +1,133 @@
 "use strict";
 
-var $         = require('jquery');
-var _         = require('underscore');
-var Immutable = require('immutable');
+const $         = require('jquery');
+const _         = require('underscore');
+const Immutable = require('immutable');
 
-var icons          = require('./icons.js');
-var schema         = require('./schemabase.js');
-var ResourceBase   = require('./resourceapi.js');
-var collectionapi  = require('./collectionapi.js');
-var initialContext = require('./initialcontext.js');
+const icons          = require('./icons.js');
+const schema         = require('./schemabase.js');
+const ResourceBase   = require('./resourceapi.js');
+const collectionapi  = require('./collectionapi.js');
+const initialContext = require('./initialcontext.js');
 
-    var localization;
-    initialContext.load('schema_localization.json', data => localization = Immutable.fromJS(data));
 
-    schema.Model = function(tableDef) {
-        this.longName = tableDef.classname;
-        this.name = this.longName.split('.').pop();
-        this.idFieldName = tableDef.idFieldName;
-        this.view = tableDef.view;
-        this.searchDialog = tableDef.searchDialog;
-        this.tableId = tableDef.tableId;
-        this.system = tableDef.system;
-        this._fieldAliases = tableDef.fieldAliases;
+// The schema config / localization information is loaded dynamically.
+var localization;
+initialContext.load('schema_localization.json', data => localization = Immutable.fromJS(data));
 
-        this.Resource = ResourceBase.extend({ __name__: this.name + 'Resource' },
-                                            { specifyModel: this });
+// Define a JS object constructor to represent Specify data objects.
+schema.Model = function(tableDef) {
+    this.longName = tableDef.classname; // Basically the Java classname of the Specify 6 ORM object.
+    this.name = this.longName.split('.').pop();
+    this.idFieldName = tableDef.idFieldName;
+    this.view = tableDef.view;
+    this.searchDialog = tableDef.searchDialog;
+    this.tableId = tableDef.tableId;
+    this.system = tableDef.system; // Indicates the model is a system table.
+    this._fieldAliases = tableDef.fieldAliases;
 
-        this.LazyCollection = collectionapi.Lazy.extend({ __name__: this.name + 'LazyCollection',
+    // A Backbone model resource for accessing the API for items of this type.
+    this.Resource = ResourceBase.extend({ __name__: this.name + 'Resource' },
+                                        { specifyModel: this });
+
+    // A Backbone collection for lazy loading a collection of items of this type.
+    this.LazyCollection = collectionapi.Lazy.extend({ __name__: this.name + 'LazyCollection',
+                                                      model: this.Resource });
+
+    // A Backbone collection for loading a fixed collection of items of this type.
+    this.StaticCollection = collectionapi.Static.extend({ __name__: this.name + 'StaticCollection',
                                                           model: this.Resource });
 
-        this.StaticCollection = collectionapi.Static.extend({ __name__: this.name + 'StaticCollection',
-                                                             model: this.Resource });
+    // A Backbone collection for loading a dependent collection of items of this type as a
+    // -to-many collection of some other resource.
+    this.DependentCollection = collectionapi.Dependent.extend({ __name__: this.name + "DependentCollection",
+                                                                model: this.Resource });
 
-        this.DependentCollection = collectionapi.Dependent.extend({ __name__: this.name + "DependentCollection",
-                                                                    model: this.Resource });
+    // A Backbone collection for loading a collection of items of this type as a backwards
+    // -to-one collection of some other resource.
+    this.ToOneCollection = collectionapi.ToOne.extend({ __name__: this.name + 'ToOneCollection',
+                                                        model: this.Resource });
 
-        this.ToOneCollection = collectionapi.ToOne.extend({ __name__: this.name + 'ToOneCollection',
-                                                            model: this.Resource });
-        var model = this;
-        this.fields = _.map(tableDef.fields, function(fieldDef) {
-            return new schema.Field(model, fieldDef);
-        }).concat(_.map(tableDef.relationships, function(relDef) {
-            return  new schema.Relationship(model, relDef);
-        }));
-    };
-    _.extend(schema.Model.prototype, {
-        _getLocalization: function() {
-            return localization.get(this.name.toLowerCase());
-        },
-        getField: function(name) {
-            if (_(name).isString()) {
-                name = name.toLowerCase().split('.');
-            }
-            var field = _(this.getAllFields()).find(function(field) { return field.name.toLowerCase() === name[0]; });
-            if (_(field).isUndefined()) {
-                var alias = _.find(this._fieldAliases, function(alias) {
-                    return alias.vname.toLowerCase() === name[0];
-                });
-                field = alias && this.getField(alias.aname);
-            }
-            return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
-        },
-        getAllFields: function () {
-            return this.fields;
-        },
-        getLocalizedName: function() {
-            var l = this._getLocalization();
-            return l ? schema.unescape(l.get('name')) : this.name;
-        },
-        getFormat: function() {
-            var l = this._getLocalization();
-            return l && l.get('format');
-        },
-        getAggregator: function() {
-            var l = this._getLocalization();
-            return l && l.get('aggregator');
-        },
-        getIcon: function() {
-            return icons.getIcon(this.name.toLowerCase());
-        },
-        orgRelationship: function() {
-            return _.chain(schema.orgHierarchy).map(this.getField, this).filter(function(field) {
-                return field && field.type === 'many-to-one';
-            }).first().value();
-        },
-        orgPath: function() {
-            if (this.name.toLowerCase() === _.last(schema.orgHierarchy)) return [];
-            var up = this.orgRelationship();
-            if (up) {
-                var path = up.getRelatedModel().orgPath();
-                path.push(up.name);
-                return path;
-            }
-            return undefined;
+    this.fields = tableDef.fields.map(fieldDef => new schema.Field(this, fieldDef))
+        .concat(tableDef.relationships.map(relDef =>  new schema.Relationship(this, relDef)));
+};
+
+// Methods on the model objects.
+_.extend(schema.Model.prototype, {
+
+    // Convenience function to access the schema localization for this table.
+    _getLocalization() {
+        return localization.get(this.name.toLowerCase());
+    },
+
+    // Return a field object representing the named field of this model.
+    // name can be either a dotted name string or an array and will traverse
+    // relationships.
+    getField(name) {
+        if (_(name).isString()) {
+            name = name.toLowerCase().split('.');
         }
-    });
+        let field = _(this.getAllFields()).find(field => field.name.toLowerCase() === name[0]);
+
+        // If we can't find the field by name, try looking for aliases.
+        if (_(field).isUndefined()) {
+            const alias = _.find(this._fieldAliases, alias => alias.vname.toLowerCase() === name[0]);
+            field = alias && this.getField(alias.aname);
+        }
+        return name.length === 1 ? field : field.getRelatedModel().getField(_(name).tail());
+    },
+
+    getAllFields () {
+        return this.fields;
+    },
+
+    // Try and return the localized name from the schema localization. If there is no
+    // localization information just return the name.
+    getLocalizedName() {
+        const l = this._getLocalization();
+        return l ? schema.unescape(l.get('name')) : this.name;
+    },
+
+
+    getFormat() {
+        const l = this._getLocalization();
+        return l && l.get('format');
+    },
+
+    getAggregator() {
+        const l = this._getLocalization();
+        return l && l.get('aggregator');
+    },
+
+    getIcon() {
+        return icons.getIcon(this.name.toLowerCase());
+    },
+
+    // Perhaps should be renamed to getScopingRelationship.
+    // Returns the relationship field of this model that places it in
+    // the collection -> discipline -> division -> institution scoping
+    // hierarchy.
+    orgRelationship() {
+        return _.chain(schema.orgHierarchy)
+            .map(this.getField, this)
+            .filter(field => field && field.type === 'many-to-one')
+            .first().value();
+    },
+
+    // Perhaps should be renamed to getScopingPath.
+    // Returns a list of relationship field names traversing the
+    // scoping hierarchy.
+    orgPath() {
+        if (this.name.toLowerCase() === _.last(schema.orgHierarchy)) return [];
+        const up = this.orgRelationship();
+        if (up) {
+            const path = up.getRelatedModel().orgPath();
+            path.push(up.name);
+            return path;
+        }
+        return undefined;
+    }
+});
 
 module.exports = schema;
 
