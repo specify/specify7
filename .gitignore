@@ -6,6 +6,9 @@
 testing
 specifypanel/ve
 specifyweb/virtenv
+.idea/
+venv/
+.DS_Store
 
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
@@ -32,4 +35,3 @@ specifyweb/virtenv
 /specifyweb/frontend/wb_uploader/dist/
 /specifyweb/frontend/wb_uploader/node_modules/
 /specifyweb/frontend/wb_uploader/output/
-

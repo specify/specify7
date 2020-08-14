@@ -1,0 +1,7 @@
+body {
+    font-family: 'Calibri', sans-serif;
+}
+
+button[disabled] {
+    cursor: not-allowed !important;
+}

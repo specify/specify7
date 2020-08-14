@@ -1,0 +1,50 @@
+{
+  "geography": {
+    "Continent": true,
+    "Country": true,
+    "State": true,
+    "County": true
+  },
+  "geologictimeperiod": {},
+  "lithostrat": {},
+  "storage": {
+    "Building": false,
+    "Collection": false,
+    "Room": false,
+    "Aisle": false,
+    "Cabinet": false,
+    "Shelf": false,
+    "Box": false,
+    "Rack": false,
+    "Vial": false
+  },
+  "taxon": {
+    "Kingdom": true,
+    "Subkingdom": false,
+    "Division": true,
+    "Subdivision": false,
+    "Superclass": false,
+    "Class": true,
+    "Subclass": false,
+    "Infraclass": false,
+    "Superorder": false,
+    "Order": true,
+    "Suborder": false,
+    "Infraorder": false,
+    "Superfamily": false,
+    "Family": true,
+    "Subfamily": false,
+    "Tribe": false,
+    "Subtribe": false,
+    "Genus": true,
+    "Subgenus": false,
+    "Section": false,
+    "Subsection": false,
+    "Species": true,
+    "Subspecies": false,
+    "Variety": false,
+    "Subvariety": false,
+    "Forma": false,
+    "Subforma": false
+  }
+}

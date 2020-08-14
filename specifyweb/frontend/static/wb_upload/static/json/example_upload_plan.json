@@ -1,0 +1,164 @@
+{
+  "uploadTable": {
+    "name": "Collectionobject",
+    "wbcols": {
+      "catalognumber": "BMSM No."
+    },
+    "static": {
+      "collection_id": 2424
+    },
+    "toOne": {
+      "collectingevent": {
+        "uploadTable": {
+          "name": "Collectingevent",
+          "wbcols": {
+            "enddate": "End Date Collected",
+            "startdate": "Start Date Collected",
+            "stationfieldnumber": "Station No."
+          },
+          "static": {
+            "discipline_id": 2378
+          },
+          "toOne": {
+            "locality": {
+              "uploadTable": {
+                "name": "Locality",
+                "wbcols": {
+                  "localityname": "Site",
+                  "latitude1": "Latitude1",
+                  "longitude1": "Longitude1"
+                },
+                "static": {
+                  "discipline_id": 2378,
+                  "srclatlongunit": 0
+                },
+                "toOne": {
+                  "geography": {
+                    "treeRecord": {
+                      "name": "Geography",
+                      "ranks": {
+                        "Continent": "Continent/Ocean",
+                        "Country": "Country",
+                        "State": "State/Prov/Pref",
+                        "County": "Region"
+                      },
+                      "treedefname": "Geographytreedef",
+                      "treedefid": 2332
+                    }
+                  }
+                },
+                "toMany": {}
+              }
+            }
+          },
+          "toMany": {
+            "collectors": [
+              {
+                "name": "Collector",
+                "wbcols": {},
+                "static": {
+                  "isprimary": true,
+                  "ordernumber": 0,
+                  "division_id": 2378
+                },
+                "toOne": {
+                  "agent": {
+                    "uploadTable": {
+                      "name": "Agent",
+                      "wbcols": {
+                        "title": "Collector 1 Title",
+                        "firstname": "Collector 1 First Name",
+                        "middleinitial": "Collector 1 Middle Initial",
+                        "lastname": "Collector 1 Last Name"
+                      },
+                      "static": {
+                        "agenttype": 1
+                      },
+                      "toOne": {},
+                      "toMany": {}
+                    }
+                  }
+                }
+              },
+              {
+                "name": "Collector",
+                "wbcols": {},
+                "static": {
+                  "isprimary": false,
+                  "ordernumber": 1,
+                  "division_id": 2378
+                },
+                "toOne": {
+                  "agent": {
+                    "uploadTable": {
+                      "name": "Agent",
+                      "wbcols": {
+                        "title": "Collector 2 Title",
+                        "firstname": "Collector 2 First Name",
+                        "middleinitial": "Collector 2 Middle Initial",
+                        "lastname": "Collector 2 Last name"
+                      },
+                      "static": {
+                        "agenttype": 1
+                      },
+                      "toOne": {},
+                      "toMany": {}
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "toMany": {
+      "determinations": [
+        {
+          "name": "Determination",
+          "wbcols": {
+            "determineddate": "ID Date"
+          },
+          "static": {
+            "collectionmemberid": 2424,
+            "iscurrent": true
+          },
+          "toOne": {
+            "determiner": {
+              "uploadTable": {
+                "name": "Agent",
+                "wbcols": {
+                  "title": "Determiner 1 Title",
+                  "firstname": "Determiner 1 First Name",
+                  "middleinitial": "Determiner 1 Middle Initial",
+                  "lastname": "Determiner 1 Last Name"
+                },
+                "static": {
+                  "agenttype": 1
+                },
+                "toOne": {},
+                "toMany": {}
+              }
+            },
+            "taxon": {
+              "treeRecord": {
+                "name": "Taxon",
+                "ranks": {
+                  "Class": "Class",
+                  "Superfamily": "Superfamily",
+                  "Family": "Family",
+                  "Genus": "Genus",
+                  "Subgenus": "Subgenus",
+                  "Species": "Species",
+                  "Subspecies": "Subspecies"
+                },
+                "treedefname": "Taxontreedef",
+                "treedefid": 2648
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

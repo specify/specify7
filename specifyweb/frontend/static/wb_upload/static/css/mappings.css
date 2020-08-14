@@ -1,0 +1,161 @@
+/* general */
+#screen__mapping {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 3.5rem 1fr;
+}
+
+
+.custom_list {
+    border: 1px solid var(--border);
+    overflow-y: auto;
+    height: calc(calc(100vh - 16px) - 3rem);
+}
+
+/*.list {*/
+/*    display: inline-block;*/
+/*    width: 100%;*/
+/*}*/
+
+.list > * {
+    position: relative;
+}
+
+.custom_list input {
+    opacity: 0;
+    position: absolute;
+}
+
+.custom_list .line {
+    cursor: pointer;
+    outline: none !important;
+    padding: 1rem;
+}
+
+.custom_list .line:hover {
+    background: var(--b2);
+}
+
+.custom_list [disabled] ~ .line {
+    cursor: not-allowed;
+}
+
+.custom_list [disabled] ~ .line:hover {
+    background: initial;
+}
+
+.list .mapping, .list .table_name {
+    float: left;
+    text-align: left;
+}
+
+.list .header {
+    text-align: right;
+}
+
+.custom_list .undefined:after {
+    content: 'To Be Discarded';
+}
+
+:checked ~ .line {
+    cursor: initial !important;
+}
+
+:checked:not([disabled]) ~ .line:not(.relationship) {
+    background: var(--b3) !important;
+}
+
+[disabled] ~ .line {
+    color: var(--t4);
+}
+
+
+/* column data model */
+#table_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background: var(--b2);
+    height: 4rem;
+    position: sticky;
+    width: inherit;
+    top: 0;
+    z-index: 2;
+}
+
+#title__table_name {
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+}
+
+#title__table_name.undefined:after {
+    content: 'Select a table:';
+}
+
+#button__change_table {
+    border: 0;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+#list__tables .line {
+    display: list-item;
+}
+
+.table_relationship .line {
+    display: block;
+}
+
+.select__field {
+    width: 100%;
+	width: -moz-available;
+	width: -webkit-fill-available;
+	width: fill-available;
+	margin-left: 1.6em;
+}
+
+
+/* column controls */
+
+#column__controls {
+    display: grid;
+    align-content: center;
+}
+
+#column__controls button {
+    border: 0;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+#column__controls img {
+    height: 1.5rem;
+}
+
+
+/* column headers */
+.list .value {
+    width: 100%;
+    min-height: 1rem;
+    max-height: 10rem;
+    resize: vertical;
+}
+
+.control_line {
+    position: relative;
+    display: block;
+}
+
+.control_line span {
+    display: block;
+    text-align: center;
+}
+
+
+/* buttons group */
+#btn_group__mapping_controls {
+    grid-column-start: 1;
+    grid-column-end: 4;
+}
