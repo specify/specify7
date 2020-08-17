@@ -1,6 +1,12 @@
 "use strict";
 
-const upload_config = {
+const papa_parse_config = {
+	preview: 5,
+	skipEmptyLines: true
+};
+
+
+module.exports = {
 
 	constructor: function () {
 

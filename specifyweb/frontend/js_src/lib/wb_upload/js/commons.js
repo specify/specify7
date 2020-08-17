@@ -1,6 +1,6 @@
 "use strict";
 
-const commons = {
+module.exports = {
 
 	current_screens: {},
 

@@ -1,4 +1,8 @@
 "use strict";
+const commons = require('./commons.js');
+
+const data_model_location = '/context/datamodel.json';
+const ranks_location = '../static/json/ranks.json';
 
 const mappings = {
 
@@ -1147,3 +1151,5 @@ const mappings = {
 
 	}
 };
+
+module.exports = mappings;

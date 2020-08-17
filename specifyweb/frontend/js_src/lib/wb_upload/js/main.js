@@ -1,4 +1,13 @@
 "use strict";
+require('../css/config.css');
+require("../css/main.css");
+require("../css/upload_config.css");
+require("../css/mappings.css");
+
+const commons = require('./commons.js');
+const mappings = require('./mappings.js');
+const upload_config = require('./upload_config.js');
+
 
 window.addEventListener('load', function () {
 

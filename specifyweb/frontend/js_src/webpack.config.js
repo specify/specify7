@@ -27,7 +27,8 @@ module.exports = {
         main: "./lib/main.js",
         login: "./lib/login.js",
         passwordchange: "./lib/passwordchange.js",
-        choosecollection: "./lib/choosecollection.js"
+        choosecollection: "./lib/choosecollection.js",
+        wbupload: "./lib/wb_upload/js/main.js",
     },
     output: {
         path: "../static/js/",
