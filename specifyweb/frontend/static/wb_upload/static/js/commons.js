@@ -1,4 +1,6 @@
-commons = {
+"use strict";
+
+const commons = {
 
 	current_screens: {},
 

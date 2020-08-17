@@ -1,3 +1,5 @@
+"use strict";
+
 const upload_config = {
 
 	constructor: function () {
@@ -87,7 +89,7 @@ const upload_config = {
 		else if (parsed_csv.meta.delimiter === "\t")
 			global.radio__delimiter_tab.checked = true;
 
-		console.log(parsed_csv);
+		// console.log(parsed_csv);
 
 		if (parsed_csv.data.length === 0) {
 			global.table_header__upload_config.innerHTML = '';

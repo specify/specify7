@@ -1,3 +1,5 @@
+"use strict";
+
 const mappings = {
 
 	//configurators
@@ -537,6 +539,8 @@ const mappings = {
 
 				let row_key;
 				let attribute_append = '';
+				let row_enabled;
+				let row_type;
 
 				[row_key, row_enabled, row_type] = rows[row_name];
 
@@ -600,6 +604,9 @@ const mappings = {
 		let line = mappings.get_line_element(target_field);
 
 		while (true) {
+
+			let control_element;
+			let control_element_type;
 
 			[control_element, control_element_type] = mappings.get_control_element(line);
 
@@ -718,12 +725,15 @@ const mappings = {
 			if (raw_path == null)
 				return true;
 
-			const path = raw_path.split(mappings.level_separator);
+			let path = [];
+
+			raw_path.split(mappings.level_separator).forEach(function(path_part){
+				path.push(path_part);
+			});
 
 			const next_heading_line = header.nextElementSibling;
 			const mapping_text_object = next_heading_line.getElementsByClassName('header')[0];
 
-			//path.push(header);
 			if (typeof mapping_text_object === "undefined") {
 				const textarea = next_heading_line.getElementsByTagName('textarea')[0];
 				path.push({'static': textarea.value});
@@ -998,6 +1008,8 @@ const mappings = {
 				if (value.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {//previous_selected_field was a o-m or m-m multiple
 
 					const parent_line = line.previousElementSibling;
+					let parent_control_element;
+					let parent_control_element_type;
 					[parent_control_element, parent_control_element_type] = mappings.get_control_element(parent_line);
 
 					if (parent_control_element_type === 'select') {
