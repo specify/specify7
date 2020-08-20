@@ -73,6 +73,7 @@ const mappings = {
 
 				const field_name = field['name'].toLowerCase();
 				const friendly_name = field.getLocalizedName();
+				const is_hidden = field.isHidden();
 
 				if (field['isRelationship']) {
 
@@ -88,6 +89,7 @@ const mappings = {
 						table_name: table_name,
 						type: relationship_type,
 						foreign_name: foreign_name,
+						is_hidden: is_hidden,
 					};
 
 				} else
@@ -166,7 +168,7 @@ const mappings = {
 
 	},
 
-	show_upload_plan: () => {
+	show_upload_plan: () => {//TODO: remove this
 		console.log(mappings.get_upload_plan());
 	},
 

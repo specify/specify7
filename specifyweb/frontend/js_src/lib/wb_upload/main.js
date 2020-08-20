@@ -5,8 +5,10 @@ require("../../css/workbench/main.css");
 const commons = require('./commons.js');
 const mappings = require('./mappings.js');
 const upload_config = require('./upload_config.js');
-
+const csrftoken = require('../csrftoken.js');
 const initialContext = require('../initialcontext.js');
+
+const api_endpoint = '../../api/workbench/upload_new/';
 
 
 initialContext.lock().promise().done(() => {
@@ -87,8 +89,44 @@ initialContext.lock().promise().done(() => {
 	});
 
 	button__mappings__continue.addEventListener('click', function () {
-		//commons.change_screen('main',screen__mapping);
-		//mappings.set_headers(upload_config.headers);
+
+		// const form_data = new FormData();
+		// form_data.append('csrfmiddlewaretoken',csrftoken);
+		// form_data.append('upload_plan',mappings.get_upload_plan());
+		// form_data.append('commit','0');
+		// form_data.append('csv_data',upload_config.csv);
+
+		const post_payload = {
+			'csrfmiddlewaretoken': csrftoken,
+			'upload_plan': mappings.get_upload_plan(),
+			'commit': false,
+			'csv_data': upload_config.csv,
+		}
+
+		const urlEncodedDataPairs = [];
+		for(let name in post_payload )
+			urlEncodedDataPairs.push( encodeURIComponent( name ) + '=' + encodeURIComponent( post_payload[name] ) );
+
+		const urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
+
+		const xhr = new XMLHttpRequest();
+		xhr.open("POST", api_endpoint, true);
+
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		xhr.onreadystatechange = function() {
+			if (this.readyState === XMLHttpRequest.DONE){
+				alert('Response code: ' + this.status + '. Scroll down to see full response');
+				const iframe = document.createElement('iframe');
+				iframe.setAttribute('srcdoc', this.response);
+				iframe.style.height = '50vh';
+				iframe.style.width = '100vw';
+				document.body.appendChild(iframe);
+			}
+		}
+		xhr.send(urlEncodedData);
+
+
 	});
 
 });
