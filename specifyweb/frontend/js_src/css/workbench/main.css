@@ -1,3 +1,7 @@
+@import url("./config.css");
+@import url("./mappings.css");
+@import url("./upload_config.css");
+
 body {
     font-family: 'Calibri', sans-serif;
 }

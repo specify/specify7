@@ -1,44 +1,15 @@
 "use strict";
-require('../css/config.css');
-require("../css/main.css");
-require("../css/upload_config.css");
-require("../css/mappings.css");
+
+require("../../css/workbench/main.css");
 
 const commons = require('./commons.js');
 const mappings = require('./mappings.js');
 const upload_config = require('./upload_config.js');
 
+const initialContext = require('../initialcontext.js');
 
-const initialContext = require('../../initialcontext.js');
-const schema = require('../../schema.js');
-const domain = require('../../domain.js');
 
 initialContext.lock().promise().done(() => {
-
-    // Here is how to access the Sp datamodel.
-    // You want to use this instead of
-    // /context/datamodel.json because
-    // then it won't load the datamodel twice
-    // and it will include the schema config info.
-
-    console.log("List of all tables:");
-    for(let modelName in schema.models) {
-        console.log(modelName, schema.models[modelName]);
-    };
-
-
-    // Here is how to load a tree def. There is a promise pipeline because it is
-    // loading a few different resources and collections dynamically.
-
-    domain.getTreeDef("taxon").pipe(treedef => treedef.rget('treedefitems')).pipe(
-        treeDefItems => treeDefItems.fetch({limit:0}).pipe(() => treeDefItems)
-    ).done(treeDefItems => {
-        console.log("List of all Taxon tree ranks (treedefitems):");
-        treeDefItems.each(item => {
-            console.log(item.get('name'), item);
-        });
-    });
-
 
 	//initialization
 	const screen__loading = document.getElementById('screen__loading');
