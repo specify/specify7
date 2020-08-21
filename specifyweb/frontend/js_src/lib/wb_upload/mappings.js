@@ -27,6 +27,8 @@ const mappings = {
 		mappings.control_line__new_static_column = document.getElementById('control_line__new_static_column');
 
 		mappings.ranks = {};
+		mappings.hide_hidden_fields = true;
+
 		mappings.fetch_data_model();
 		mappings.set_headers();
 
@@ -44,6 +46,11 @@ const mappings = {
 
 		mappings.control_line__new_column.addEventListener('change', mappings.change_selected_header);
 		mappings.control_line__new_static_column.addEventListener('change', mappings.change_selected_header);
+
+		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
+			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
+			mappings.cycle_though_fields();
+		});
 
 		mappings.reference_indicator = '> ';
 		mappings.level_separator = '_';
@@ -93,7 +100,10 @@ const mappings = {
 					};
 
 				} else
-					fields[field_name] = friendly_name;
+					fields[field_name] = {
+						friendly_field_name: friendly_name,
+						is_hidden: is_hidden,
+					};
 
 			});
 
@@ -112,7 +122,7 @@ const mappings = {
 				'</label>';
 
 
-			if(typeof relationships['definition'] !== 'undefined' && typeof relationships['definitionitem'] !== 'undefined')
+			if (typeof relationships['definition'] !== 'undefined' && typeof relationships['definitionitem'] !== 'undefined')
 				mappings.fetch_ranks(table_name);
 
 		});
@@ -149,11 +159,11 @@ const mappings = {
 
 						mappings.ranks[table_name] = {};
 
-						Object.values(treeDefItems['models']).forEach((rank)=>{
+						Object.values(treeDefItems['models']).forEach((rank) => {
 
 							const rank_id = rank.get('id');
 
-							if(rank_id === 1)
+							if (rank_id === 1)
 								return true;
 
 							const rank_name = rank.get('name');
@@ -264,7 +274,7 @@ const mappings = {
 				let row_name;
 
 				if (typeof table_data['fields'][row_key] !== 'undefined')
-					row_name = table_data['fields'][row_key];
+					row_name = table_data['fields'][row_key]['friendly_field_name'];
 				else {
 					row_name = mappings.reference_indicator + table_data['relationships'][row_key]['friendly_relationship_name'];
 					class_append += 'relationship';
@@ -318,7 +328,7 @@ const mappings = {
 
 	reset_table: () => {
 
-		if(typeof mappings.selected_table === "undefined")
+		if (typeof mappings.selected_table === "undefined")
 			return;
 
 		mappings.selected_table.checked = false;
@@ -465,7 +475,7 @@ const mappings = {
 
 		const mappings_path = mappings.selected_header.getAttribute('data-path');
 
-		if(mappings_path===null)
+		if (mappings_path === null)
 			return;
 
 		const mappings_array = mappings_path.split(mappings.level_separator);
@@ -478,20 +488,9 @@ const mappings = {
 		mappings.update_buttons();
 		mappings.changes_made = true;
 
-		const lines = Object.values(mappings.lines);
-		const lines_count = lines.length;
-		for (let i = 0; i < lines_count; i++) {
-			if (lines[i].getAttribute('data-field') !== 'relationship') {
-				if (i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {
-					if (i + 1 < lines_count) {
+		//go through each field and update it's status
+		mappings.cycle_though_fields(mappings_array, mappings_path);
 
-						const first_line = lines[i].parentElement;
-						mappings.update_fields(first_line, mappings_array);
-					}
-				} else if (mappings_path === lines[i].getAttribute('data-field'))
-					lines[i].removeAttribute('disabled');
-			}
-		}
 
 	},
 
@@ -535,18 +534,29 @@ const mappings = {
 
 			Object.keys(mappings.tables[table_name]['fields']).forEach((field_key) => {
 
-				const field_name = mappings.tables[table_name]['fields'][field_key];
+				const field_data = mappings.tables[table_name]['fields'][field_key];
+				const is_field_hidden = field_data['is_hidden'];
+
+				if (is_field_hidden && mappings.hide_hidden_fields)
+					return true;
+
+				const field_name = field_data['friendly_field_name'];
 				const enabled = !mapped_nodes.includes(field_key);
 				rows[field_name] = [field_key, enabled, 'field'];
 
 			});
 
 			Object.keys(mappings.tables[table_name]['relationships']).forEach((relationship_key) => {
-				const relationship = mappings.tables[table_name]['relationships'][relationship_key];
-				const relationship_name = relationship['friendly_relationship_name'];
+				const relationship_data = mappings.tables[table_name]['relationships'][relationship_key];
+
+				const is_field_hidden = relationship_data['is_hidden'];
+				if (is_field_hidden && mappings.hide_hidden_fields)
+					return true;
+
+				const relationship_name = relationship_data['friendly_relationship_name'];
 				const enabled = //disables circular relationships
-					relationship['foreign_name'] !== foreign_name ||
-					relationship['table_name'] !== previous_table;
+					relationship_data['foreign_name'] !== foreign_name ||
+					relationship_data['table_name'] !== previous_table;
 				rows[relationship_name] = [relationship_key, enabled, 'relationship'];
 			});
 
@@ -686,7 +696,8 @@ const mappings = {
 			return mappings.get_friendly_field_path(path, friendly_names, table_name);
 		}
 
-		const field_name = mappings.tables[table_name]['fields'][rank_name];
+		const field_data = mappings.tables[table_name]['fields'][rank_name];
+		const field_name = field_data['friendly_field_name'];
 		if (typeof field_name !== "undefined") {
 			friendly_names.push(field_name);
 			return friendly_names;
@@ -959,7 +970,7 @@ const mappings = {
 		}
 
 
-		if (mappings.is_selected_field_in_relationship()) {
+		if (mappings.is_selected_field_in_relationship() && value !== '' && value !== "0") {
 
 			const select_line = document.createElement('div');
 			mappings.list__data_model.insertBefore(select_line, line.nextElementSibling);
@@ -982,7 +993,7 @@ const mappings = {
 				else {
 					const start_rank = rank_names.indexOf(current_rank) + 1;
 
-					let fields_html = '<div class="table_relationship">' +
+					let ranks_html = '<div class="table_relationship">' +
 						'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
 						'<label class="line">' +
 						'	<select name="' + table_name + '" class="select__field" data-rank="' + value + '">' +
@@ -991,16 +1002,16 @@ const mappings = {
 
 					mappings.traverse_table_ranks(ranks, (rank_name) => {
 
-						fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
+						ranks_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
 
 					}, false, start_rank);
 
 
-					fields_html += '</select>' +
+					ranks_html += '</select>' +
 						'</label>' +
 						'</div>';
 
-					select_line.outerHTML = fields_html;
+					select_line.outerHTML = ranks_html;
 				}
 
 			} else {
@@ -1031,7 +1042,6 @@ const mappings = {
 				const target_table_name = relationship['table_name'];
 				select_line.outerHTML = mappings.get_html_for_table_fields(target_table_name, current_table_name, relationship_key, select_line, index);
 
-
 			}
 
 
@@ -1045,6 +1055,28 @@ const mappings = {
 	},
 
 	//helpers
+	cycle_though_fields: (mappings_array = [], mappings_path = '') => {
+
+		const lines = Object.values(mappings.lines);
+		const lines_count = lines.length;
+		for (let i = 0; i < lines_count; i++) {
+
+			const data_field = lines[i].getAttribute('data-field') !== 'relationship';
+			if (data_field) {//field is not relationship
+
+				if (i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {//next field exists and is relationship
+					const first_line = lines[i].parentElement;
+					mappings.update_fields(first_line, mappings_array);
+
+				} else if (mappings_array.length === 1 && mappings_path === data_field)//re_enable base table field if it was unmapped
+					lines[i].removeAttribute('disabled');
+
+			}
+
+		}
+
+	},
+
 	is_selected_field_in_relationship: () => {
 
 		if (mappings.selected_field.tagName === 'INPUT') {
@@ -1056,7 +1088,10 @@ const mappings = {
 
 		}
 
-		return mappings.selected_field.value[0] === mappings.reference_symbol || mappings.selected_field.value[0] === mappings.tree_symbol || mappings.selected_field.options[mappings.selected_field.selectedIndex].text.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
+		return mappings.selected_field.value[0] === mappings.reference_symbol ||
+			mappings.selected_field.value[0] === mappings.tree_symbol ||
+			mappings.selected_field.selectedIndex === -1 ||
+			mappings.selected_field.options[mappings.selected_field.selectedIndex].text.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
 
 	},
 

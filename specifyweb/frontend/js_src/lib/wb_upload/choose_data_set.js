@@ -31,7 +31,8 @@ const choose_data_set = {
 
 				list_of_data_sets.innerHTML = list_html;
 
-				loaded_callback();
+				if(!choose_data_set.file_selected())
+					loaded_callback();
 
 			});
 
@@ -83,7 +84,7 @@ const choose_data_set = {
 
 	flush_selected_file: () => {
 
-		choose_data_set.input__file.files = [];
+		choose_data_set.input__file.value = '';
 
 	},
 
