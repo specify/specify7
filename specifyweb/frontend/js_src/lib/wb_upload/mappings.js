@@ -190,9 +190,9 @@ const mappings = {
 		mappings.list__headers.innerHTML = headers_html;
 
 		mappings.list__headers.addEventListener('change', (event) => {
-			if (event.target && event.target.classList.contains('radio__header'))
+			if (event.target && event.target['classList'].contains('radio__header'))
 				mappings.change_selected_header(event);
-			else if (event.target && event.target.tagName === 'TEXTAREA')
+			else if (event.target && event.target['tagName'] === 'TEXTAREA')
 				mappings.changes_made = true;
 		});
 
@@ -318,6 +318,9 @@ const mappings = {
 
 	reset_table: () => {
 
+		if(typeof mappings.selected_table === "undefined")
+			return;
+
 		mappings.selected_table.checked = false;
 		mappings.selected_table = undefined;
 
@@ -344,6 +347,10 @@ const mappings = {
 
 	//functions
 	map_field: () => {
+
+		const selected_header = mappings.selected_header;
+		mappings.unmap_field();
+		mappings.selected_header = selected_header;
 
 		const label = mappings.selected_header.parentElement;
 		let heading_mapping = label.getElementsByClassName('mapping')[0];
@@ -457,6 +464,10 @@ const mappings = {
 		const heading_mapping = label.getElementsByClassName('mapping')[0];
 
 		const mappings_path = mappings.selected_header.getAttribute('data-path');
+
+		if(mappings_path===null)
+			return;
+
 		const mappings_array = mappings_path.split(mappings.level_separator);
 
 		heading_mapping.classList.add('undefined');
