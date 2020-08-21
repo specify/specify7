@@ -85,6 +85,7 @@ SPECIAL_DELETION_RULES = {
 
     'Spappresourcedata.spappresource': models.CASCADE,
     'Spappresourcedata.spviewsetobj': models.CASCADE,
+    'Spreport.appresource': models.CASCADE,
 }
 
 def make_relationship(modelname, rel, datamodel):
