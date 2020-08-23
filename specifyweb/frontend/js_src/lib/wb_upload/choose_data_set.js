@@ -5,9 +5,6 @@ const schema = require('../schema.js');
 const Q = require('q');
 const _ = require('underscore');
 
-let data_sets = [];
-let headers = [];
-
 const choose_data_set = {
 
 	constructor: (loaded_callback,selected_callback,file_change_callback) => {
@@ -16,6 +13,7 @@ const choose_data_set = {
 			filters: {specifyuser: user_info['id'], orderby: 'name'}
 		});
 
+		//fetch the list of data sets
 		wbs.fetch({limit: 5000})
 			.done(() => {
 
@@ -50,7 +48,7 @@ const choose_data_set = {
 						  .then(mappings => _['sortBy'](mappings.models, mapping => mapping.get('viewOrder')));
 
 			mappings_promise.then(mappings => _.invoke(mappings, 'get', 'caption')).done((headers) => {
-				selected_callback(headers);
+				selected_callback(headers,'');//TODO: second parameter should be upload plan
 			});
 
 		});

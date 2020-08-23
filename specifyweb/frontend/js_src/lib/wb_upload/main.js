@@ -22,9 +22,9 @@ initialContext.lock().promise().done(() => {
 	const button__create_file = document.getElementById('button__create_file');
 	choose_data_set.constructor(() => {
 		commons.change_screen('main',screen__choose_data_set);
-	}, (headers) => {
+	}, (headers,upload_plan) => {
 		commons.change_screen('main',screen__mapping);
-		mappings.set_headers(headers);
+		mappings.set_headers(headers, upload_plan);
 	}, (csv)=>{
 		commons.change_screen('main',screen__upload_config);
 		upload_config.update_table(csv);

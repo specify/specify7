@@ -2,6 +2,7 @@
 const commons = require('./commons.js');
 const schema = require('../schema.js');
 const domain = require('../domain.js');
+const auto_mapper = require('./auto_mapper.js');
 
 const mappings = {
 
@@ -148,6 +149,8 @@ const mappings = {
 		mappings.new_column_id = 1;
 		mappings.tables = tables;
 
+		auto_mapper.constructor(tables,mappings.ranks);
+
 	},
 
 	fetch_ranks: table_name => {
@@ -182,8 +185,14 @@ const mappings = {
 		console.log(mappings.get_upload_plan());
 	},
 
+	implement_mappings_tree: (mappings_tree)=>{
+
+
+
+	},
+
 	//setters
-	set_headers: function (headers = []) {
+	set_headers: function (headers = [], upload_plan='') {
 
 		let headers_html = '';
 
@@ -205,6 +214,17 @@ const mappings = {
 			else if (event.target && event.target['tagName'] === 'TEXTAREA')
 				mappings.changes_made = true;
 		});
+
+
+		//TODO: uncomment after auto mapper is done
+		// let mappings_tree = '';
+		// if(upload_plan==='')
+		// 	mappings_tree = auto_mapper.map(headers,mappings.base_table_name,mappings.tables);
+		// else {
+		// 	const upload_plan_object = JSON.parse(upload_plan)
+		// 	mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan_object)
+		// }
+		// mappings.implement_mappings_tree(mappings_tree);
 
 	},
 
@@ -572,7 +592,14 @@ const mappings = {
 				if (row_type === 'relationship')
 					row_name = mappings.reference_indicator + row_name;
 
-				if (table_name === 'taxon' && row_name !== 'Name')//TODO: remove this to enable all fields for taxa
+				if (
+					(
+						table_name === 'taxon' ||
+						table_name === 'geography' ||
+						table_name === 'storage'
+					) &&
+					row_name !== 'Name'
+				)//TODO: remove this to enable all fields for taxa
 					row_enabled = false;
 
 				if (!row_enabled)
@@ -1055,6 +1082,119 @@ const mappings = {
 	},
 
 	//helpers
+	upload_plan_to_mappings_tree: (upload_plan, base_table_name_extracted=false) => {
+
+		const tree = {};
+
+		if(base_table_name_extracted === false){
+			mappings.base_table_name = upload_plan['baseTableName'];
+
+			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadable'],true);
+		}
+
+		else if(typeof upload_plan['uploadTable'] !== "undefined")
+			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadTable'],true);
+
+		else if(typeof upload_plan['treeRecord'] !== "undefined"){
+
+			function object_pop(object){
+				const object_keys = Object.keys(object);
+				const result_object = {};
+
+				let root_key = object_keys.shift();
+				root_key = [root_key,object[root_key]];
+
+				object_keys.forEach((key)=>{
+					result_object[key] = object[key];
+				});
+
+				return [root_key,result_object,object_keys];
+			}
+
+			function handle_tree(unprocessed_tree,result_tree={}){
+
+				let root_key;
+				let root_value;
+				let result_object;
+				let object_keys;
+
+				[[root_key,root_value],result_object,object_keys] = object_pop(unprocessed_tree);
+
+				let temp_result_tree = {};
+				temp_result_tree[mappings.tree_symbol+'data'] = {'name':root_value};
+
+				if(object_keys.length!==0)
+					temp_result_tree = handle_tree(result_object,temp_result_tree);
+
+				result_tree[mappings.tree_symbol+root_key] = temp_result_tree;
+				return result_tree;
+
+			}
+
+			return handle_tree(upload_plan['treeRecord']['ranks']);
+
+		}
+
+		Object.keys(upload_plan).forEach((plan_node_name) => {
+
+			if(plan_node_name === 'wbcols'){
+
+				const workbench_columns = upload_plan[plan_node_name];
+
+				Object.keys(workbench_columns).forEach((data_model_column_name) => {
+					tree[data_model_column_name] = workbench_columns[data_model_column_name];
+				});
+
+			}
+
+			else if(plan_node_name === 'static'){
+
+				const static_columns = upload_plan[plan_node_name];
+
+				Object.keys(static_columns).forEach((data_model_column_name) => {
+					tree[data_model_column_name] = {'static':static_columns[data_model_column_name]};
+				});
+
+			}
+
+			else if(plan_node_name === 'toOne'){
+
+				const to_one_columns = upload_plan[plan_node_name];
+
+				Object.keys(to_one_columns).forEach((data_model_column_name) => {
+					tree[data_model_column_name] = mappings.upload_plan_to_mappings_tree(to_one_columns[data_model_column_name],true);
+				});
+
+			}
+
+			else if(plan_node_name === 'toMany'){
+
+				const to_many_columns = upload_plan[plan_node_name];
+
+				Object.keys(to_many_columns).forEach((table_name) => {
+
+					const final_mappings = {};
+					const original_mappings = to_many_columns[table_name];
+					let i = 1;
+
+					Object.values(original_mappings).forEach((mapping) => {
+						const final_mappings_key = mappings.reference_symbol+i;
+						final_mappings[final_mappings_key] = mappings.upload_plan_to_mappings_tree(mapping,true);
+						i++;
+					});
+
+					tree[table_name] = final_mappings;
+
+				});
+
+			}
+
+		});
+
+		return tree;
+
+	},
+
 	cycle_though_fields: (mappings_array = [], mappings_path = '') => {
 
 		const lines = Object.values(mappings.lines);
