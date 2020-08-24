@@ -28,12 +28,11 @@ def rows(request, wb_id):
     wb = get_object_or_404(models.Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
-    if request.method == "GET":
-        rows = load(wb_id)
-        return http.HttpResponse(toJson(rows), content_type='application/json')
-    elif request.method == "PUT":
+    if request.method == "PUT":
         data = json.load(request)
-        return save(wb_id, data)
+        save(wb_id, data)
+    rows = load(wb_id)
+    return http.HttpResponse(toJson(rows), content_type='application/json')
 
 def load(wb_id):
     wb = get_object_or_404(models.Workbench, id=wb_id)
@@ -174,7 +173,6 @@ def save(wb_id, data):
         for wbtmi, celldata in zip(wbtmis, row[1:])
         if celldata is not None
     ])
-    return load(wb_id)
 
 def shellquote(s):
     # this can be replaced with shlex.quote in Python 3.3
