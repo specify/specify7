@@ -14,11 +14,6 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        alias: {
-            handsontable: '../bower_components/handsontable/dist/handsontable.full.js'
-        }
-    },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
     ],

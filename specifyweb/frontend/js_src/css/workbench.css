@@ -1,4 +1,4 @@
-@import url("../bower_components/handsontable/dist/handsontable.full.css");
+@import url("../node_modules/handsontable/dist/handsontable.full.css");
 
 .wbs-form {
     width: 100%;
