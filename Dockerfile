@@ -65,6 +65,17 @@ COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/
 
 RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
 
+WORKDIR specifyweb/settings
+
+RUN echo \
+        "import os" \
+        "\nDATABASE_NAME = os.environ['SP_DATABASE_NAME']" \
+        "\nDATABASE_HOST = os.environ['SP_DATABASE_HOST']" \
+        "\nDATABASE_PORT = os.environ.get('SP_DATABASE_PORT', '')" \
+        "\nMASTER_NAME = os.environ['SP_MASTER_NAME']" \
+        "\nMASTER_PASSWORD = os.environ['SP_MASTER_PASSWORD']" \
+        > local_specify_settings.py
+
 
 ######################################################################
 
