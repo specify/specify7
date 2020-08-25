@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g 999 specify && \
-    useradd -r -u 999 -g specify specify
+        useradd -r -u 999 -g specify specify
 
 RUN mkdir -p /home/specify && chown specify.specify /home/specify
 RUN mkdir -p /opt/specify7 && chown specify.specify /opt/specify7
@@ -18,35 +18,52 @@ RUN mkdir -p /opt/specify7 && chown specify.specify /opt/specify7
 
 #####################################################################
 
-FROM common AS build
+FROM common AS build-frontend
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
         nodejs \
         npm \
-        python3-venv
+        git \
+        curl \
+        unzip
+
+RUN apt-get update && apt-get -y install --no-install-recommends \
+        make \
+        ca-certificates
+
+USER specify
+
+COPY --chown=specify:specify specifyweb/frontend /home/specify/frontend
+WORKDIR /home/specify/frontend/js_src
+
+RUN make
+
+
+#####################################################################
+
+FROM common AS build-backend
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
         libmariadbclient-dev \
-	build-essential \
-	python3.6-dev \
+        build-essential \
+        python3.6-dev \
+        python3-venv \
         libldap2-dev \
         libsasl2-dev
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
-    git \
-    curl \
-    unzip
+        git
 
 USER specify
+COPY --chown=specify:specify requirements.txt /home/specify/
+
+WORKDIR /opt/specify7
+RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 
 COPY --chown=specify:specify . /opt/specify7
-WORKDIR /opt/specify7
+COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
 
-RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r requirements.txt
-
-RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py frontend
-
-RUN rm -rf specifyweb/frontend/js_src/bower_components specifyweb/frontend/js_src/node_modules
+RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
 
 
 ######################################################################
@@ -59,7 +76,7 @@ RUN apt-get update && apt-get -y install --no-install-recommends \
         libapache2-mod-wsgi-py3 \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /opt/specify7 /opt/specify7
+COPY --from=build-backend /opt/specify7 /opt/specify7
 
 RUN rm /etc/apache2/sites-enabled/*
 RUN ln -s /opt/specify7/specifyweb_apache.conf /etc/apache2/sites-enabled/
