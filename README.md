@@ -186,7 +186,7 @@ True`.
 
 The development server.
 -----------------------
-Specify7 can be run using the Django development server. 
+Specify7 can be run using the Django development server.
 
 ```shell
 cd specify7
@@ -259,8 +259,8 @@ After changing Apache's config files restart the service.
 sudo systemctl restart apache2.service
 ```
 
-Updating Specify 7.  
-=================== 
+Updating Specify 7.
+===================
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
 from one of these version, it will be necesary to install Python 3.6
 by running the `apt-get` commands in the
@@ -272,17 +272,17 @@ proceed as follows:
    and restore tool.
 
 1. Clone or download a new copy of this repository in a directory next
-to your existing installation.
+   to your existing installation.
 
-`git clone git://github.com/specify/specify7.git specify7-new-version`
+    `git clone git://github.com/specify/specify7.git specify7-new-version`
 
 2. Copy the settings from the existing to the new installation.
 
-`cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
+    `cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
 
 3. Make sure to update the `THICK_CLIENT_LOCATION` setting in
-`local_specify_settings.py`, if you are updating the Specify 6
-version.
+   `local_specify_settings.py`, if you are updating the Specify 6
+   version.
 
 4. Create a new virtualenv for the new installation by following the
    [Python Virtual Environment](#python-virtual-environment) section
@@ -292,7 +292,19 @@ version.
 
 7. Testing it out with the [development server](#the-development-server).
 
-8. Deploy the new version by updating your Apache config to replace the old
-installation paths with the new ones and restarting Apache.
+8. Deploy the new version by updating your Apache config to replace
+   the old installation paths with the new ones and restarting Apache.
+
+Updating the Database (Specify 6) version.
+==========================================
+The Specify database is updated from one version to the next by the
+Specify 6 application. To update the database version connect to the
+database with a new verison of Specify 6 and follow the Specify 6
+update procedures.
+
+Once the database version is updated, a corresponding copy of Specify
+6 must be provided to the Specify 7 server by repeating the
+[Installing Specify 6](#installing-specify-6) section of this guide
+for the new version of Specify 6.
 
 [![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
