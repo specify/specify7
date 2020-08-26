@@ -3,16 +3,12 @@ VIRTUAL_ENV ?= /usr
 PYTHON = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
 
-.PHONY: all clean runserver webpack_watch pip_requirements django_migrations frontend python_prep build
+.PHONY: clean runserver webpack_watch pip_requirements django_migrations frontend build
 
-all: build django_migrations
-
-build: python_prep frontend
+build: frontend specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
 
 frontend:
 	$(MAKE) -C specifyweb/frontend/js_src
-
-python_prep: pip_requirements specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
 
 pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt

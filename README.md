@@ -2,12 +2,13 @@
 Specify 7
 =========
 
-The Specify Collections Consortium is funded by
-its member institutions. The Consortium web site is: http://wwww.specifysoftware.org
+The Specify Collections Consortium is funded by its member
+institutions. The Consortium web site is:
+http://wwww.specifysoftware.org
 
-Specify 7 Copyright © 2020 Specify Collections Consortium. Specify comes with ABSOLUTELY NO WARRANTY.  This is
-free software licensed under GNU General Public License 2
-(GPL2).
+Specify 7 Copyright © 2020 Specify Collections Consortium. Specify
+comes with ABSOLUTELY NO WARRANTY.  This is free software licensed
+under GNU General Public License 2 (GPL2).
 
     Specify Collections Consortium
     Biodiversity Institute
@@ -44,57 +45,50 @@ https://github.com/specify/specify7-docker
 
 
 # Ordinary deployment
+
 Install system dependencies.
 -----------------------------------
-Specify 7 requires Python 3.6.
+Specify 7 requires Python 3.6. Ubuntu 18.04 LTS is recommended. For
+other distributions these instructions will have to be adapted.
 
-Other required software:
+```shell
+sudo apt-get -y install --no-install-recommends \
+    build-essential \
+    git \
+    libldap2-dev \
+    libmariadbclient-dev \
+    libsasl2-dev \
+    nodejs \
+    npm \
+    openjdk-11-jre-headless \
+    python3-venv \
+    python3.6 \
+    python3.6-dev \
+    unzip
+```
 
-* Git to obtain the Specify 7 repository
-* Python-pip to install Python dependencies
-* Python and MySQL development packages to compile the Python MySQL
-  driver
-* The build-essential packages for compiling the Python MySQL driver
-* NodeJS to execute the Javascript minimization tool
-* Specify 6 for common resource files and workbench uploading and validating
-* JRE for running the Specify 6 workbench uploader
+Installing Specify 6.
+---------------------
+A copy of the most recent Specify 6 release is required on the server
+as Specify 7 makes use of resource files. Specify 6 code is also
+executed by the server for Workbench validation and uploads.
 
-On Ubuntu:
-
-    sudo apt-get install \
-        build-essential \
-        openjdk-11-jre-headless \
-        python3.6 \
-        python3.6-dev \
-        git \
-        libldap2-dev \
-        libmariadbclient-dev \
-        libsasl2-dev \
-        nodejs \
-        npm \
-        python3-lxml \
-        python3-venv \
-        unzip
-
-To install Specify6, follow the Specify6 installation instructions, or
-copy an existing installation if you have one.
-
+```shell
+wget http://update.specifysoftware.org/6800/Specify_unix_64.sh
+sh Specify_unix_64.sh -q -dir ./Specify6.8.0
+sudo ln -s $(pwd)/Specify6.8.0 /opt/Specify
+```
 
 Get the specifyweb source code.
 ----------------------------------
 Clone this repository.
 
-    git clone git://github.com/specify/specify7.git
+```shell
+git clone git://github.com/specify/specify7.git
+```
 
 You will now have a specify7 directory containing the source
 tree.
-
-Adjust settings files.
--------------------------
-In the directory `specify7/specifyweb/settings` you will find the
-`specify_settings.py` file. Make a copy of this file as
-`local_specify_settings.py` and edit it. The file contains comments
-explaining the various settings.
 
 
 Python Virtual Environment.
@@ -105,24 +99,19 @@ will avoid version conflicts with other Python libraries on your
 system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
-
-### Creating and activating the virtualenv
-I generally create a virtualenv inside the the `specify7` directory
-named simply `ve`.
-
-    python3.6 -m venv specify7/ve
-    source specify7/ve/bin/activate
-
-The shell prompt will be modified to indicate the virtualenv is
-active. It can be deactivated by invoking `deactivate` from the shell
-prompt.
+```shell
+python3.6 -m venv specify7/ve
+specify7/ve/bin/pip install -r specify7/requirements.txt
+```
 
 Building.
 ---------
-The *Makefile* contains several targets for building and preparinge
-Specify 7. If a virtualenv is active when *make* is invoked, it will
-be detected and used installing Python dependencies or invoking Python
-scripts.
+To build Specify 7 use the default make target.
+
+```shell
+cd specify7
+make
+```
 
 When building the frontend, *Webpack* will issue the following
 warnings that can be safely ignored:
@@ -143,20 +132,20 @@ get better results.
  @ ./bower_components/handsontable/dist/handsontable.full.js 47:38-65
 ```
 
-### make all
-The default make target *all* will invoke the steps necessary to run
-Specfy 7.
+Other make targets:
 
 ### make build
-Installs or updates dependencies and executes all build steps.
+Runs all necessary build steps.
 
 ### make frontend
 Installs or updates Javascript dependencies and builds the Javascript
 modules only.
 
-### make python_prep
-Installs or updates Python dependencies and generates
-`build_version.py` and `secret_key.py` files.
+### make clean
+Removes all generated files.
+
+
+The following targets require the virualenv to be activated:
 
 ### make pip_requirements
 Install or updates Python dependencies.
@@ -169,15 +158,21 @@ settings does not have DDL privileges. Changing the `MASTER_NAME` and
 changes to be applied. Afterward the master user settings can be
 restored.
 
-### make clean
-Removes all generated files.
-
 ### make runserver
 A shortcut for running the Django development server.
 
 ### make webpack_watch
 Run webpack in watch mode so that changes to the frontend source code
 will be automatically compiled. Useful during the development process.
+
+
+Adjust settings files.
+-------------------------
+In the directory `specify7/specifyweb/settings` you will find the
+`specify_settings.py` file. Make a copy of this file as
+`local_specify_settings.py` and edit it. The file contains comments
+explaining the various settings.
+
 
 Turn on debugging.
 ------------------
@@ -191,19 +186,17 @@ True`.
 
 The development server.
 -----------------------
-Specify7 can be run using the Django development server. If you are
-using Python, virtual environment, you will, of course, need to activate
-it first.
+Specify7 can be run using the Django development server. 
 
-    python specify7/specifyweb/manage.py runserver
+```shell
+cd specify7
+source ve/bin/activate
+make runserver
+```
 
 This will start a development server for testing purposes on
 `localhost:8000`.
 
-The *Makefile* contains a shortcut target to start the development
-server.
-
-    make runserver
 
 When the server starts up, it will issue a warning that some
 migrations have not been applied:
@@ -228,15 +221,20 @@ enable debugging (or disable it if you enabled it previously).
 
 Production requirements.
 ------------------------
-For production environments, Specify7 can be hosted by Apache. The
+For production environments Specify7 can be hosted by Apache. The
 following packages are needed:
 
 * Apache
 * mod-wsgi to connect Python to Apache
 
-On Ubuntu:
+```shell
+sudo apt-get install apache2 libapache2-mod-wsgi-py3
+```
 
-    sudo apt-get install apache2 libapache2-mod-wsgi-py3
+Warning: This will replace the Python 2.7 version of mod-wsgi that was
+used by Specify 7.4.0 and prior. If executed on a production server
+running one of those version, Specify 7 will stop working until the
+new deployment is configured.
 
 Setup Apache.
 -------------
@@ -245,53 +243,56 @@ file. Make a copy of the file as `local_specifyweb_apache.conf` and
 edit the contents to reflect the location of Specify6 and Specify7 on
 your system. There are comments showing what to change.
 
-Then, remove the default Apache welcome page.
+Then remove the default Apache welcome page and make a link to your
+`local_specifyweb_apache.conf` file.
 
-    sudo rm /etc/apache2/sites-enabled/000-default.conf
-
-And make a link to your `local_specifyweb_apache.conf` file.
-
-    sudo ln -s `pwd`/specify7/local_specifyweb_apache.conf /etc/apache2/sites-enabled/
+```shell
+sudo rm /etc/apache2/sites-enabled/000-default.conf
+sudo ln -s `pwd`/specify7/local_specifyweb_apache.conf /etc/apache2/sites-enabled/
+```
 
 Restart Apache.
 --------------
-After changing Apache's config files, restart it.
+After changing Apache's config files restart the service.
 
-    sudo invoke-rc.d apache2 restart
+```shell
+sudo systemctl restart apache2.service
+```
 
+Updating Specify 7.  
+=================== 
+Specify 7.4.0 and prior versions were based on Python 2.7. If updating
+from one of these version, it will be necesary to install Python 3.6
+by running the `apt-get` commands in the
+[Install system dependencies](#install-system-dependencies) and the
+[Production requirements](#production-requirements) steps. Then
+proceed as follows:
 
-Updating Specify 7
-===================
-To update the Specify 7 server software follow this procedure.
+0. Backup your Specify database using MySQL dump or the Specify backup
+   and restore tool.
 
-0. Backup your Specify database using MySQL dump or the Specify backup and restore tool.
+1. Clone or download a new copy of this repository in a directory next
+to your existing installation.
 
-1. Clone or download a new copy of this repository in a directory
-next to your existing installation.
-
-    `git clone git://github.com/specify/specify7.git specify7-new-version`
+`git clone git://github.com/specify/specify7.git specify7-new-version`
 
 2. Copy the settings from the existing to the new installation.
 
-    `cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
+`cp specify7/specifyweb/settings/local* specify7-new-version/specifyweb/settings/`
 
-3. Make sure to update the `THICK_CLIENT_LOCATION` setting in `local_specify_settings.py`,
-if you are updating the Specify 6 version.
+3. Make sure to update the `THICK_CLIENT_LOCATION` setting in
+`local_specify_settings.py`, if you are updating the Specify 6
+version.
 
-4. If you are using Python virtualenvs for your Specify 7 Python dependancies (recommended),
-then create a new virtualenv for the new installation.
+4. Create a new virtualenv for the new installation by following the
+   [Python Virtual Environment](#python-virtual-environment) section
+   for the new directory.
 
-```
-    virtualenv specify7-new-version/ve
-    source specify7-new-version/ve/bin/activate
-```
-
-6. Run `make all` which will pull down the Python dependencies,
-build the JS bundles, and apply any necessary database migrations.
-
-    `make all`
+6. [Build](#building) the new version of Specify 7.
 
 7. Testing it out with the [development server](#the-development-server).
 
 8. Deploy the new version by updating your Apache config to replace the old
-installation paths with the new[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+installation paths with the new ones and restarting Apache.
+
+[![analytics](http://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
