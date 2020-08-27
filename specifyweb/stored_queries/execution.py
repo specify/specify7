@@ -161,7 +161,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     logger.debug('query_to_csv starting')
 
-    with open(path, 'w', newline='') as f:
+    with open(path, 'w', newline='', encoding='utf-8') as f:
         csv_writer = csv.writer(f)
         if add_header:
             header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
