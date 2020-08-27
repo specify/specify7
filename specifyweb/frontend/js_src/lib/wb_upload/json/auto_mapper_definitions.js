@@ -1,6 +1,6 @@
 //This file contains information to help auto-map imported XLS and CSV files to the Sp6 datamodel
 //Based on https//github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
-//Matching is case insensitive
+//Matching is case insensitive. Table and field names are case insensitive
 
 //SCHEMA:
 //Table Name > Field Name > options > value
@@ -31,7 +31,7 @@ module.exports = {
 	"Accession": {
 		"number": {
 			"contains": [
-				".*?accession.*"
+				"accession"
 			]
 		}
 	},
@@ -64,8 +64,8 @@ module.exports = {
 				"^catalog(ue)?\\s*(no|num).*",
 				"^cat(ue)?\\s*(no|num).*"],
 			"string": [
-				"^number$",
-				"^num$"
+				"number",
+				"num"
 			]
 		}
 	}

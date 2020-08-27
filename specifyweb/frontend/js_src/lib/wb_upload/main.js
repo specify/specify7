@@ -108,4 +108,12 @@ initialContext.lock().promise().done(() => {
 
 	});
 
+	window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is unsaved mapping
+		if (typeof mappings.list__tables_scroll_postion !== "undefined") {
+			e.preventDefault();
+			e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';//this message won't be displayed in most browsers
+		}
+		else
+			delete e['returnValue'];
+	});
 });

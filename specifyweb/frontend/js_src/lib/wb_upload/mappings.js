@@ -29,6 +29,13 @@ const mappings = {
 
 		mappings.ranks = {};
 		mappings.hide_hidden_fields = true;
+		mappings.auto_mapper_was_run = false;
+
+		mappings.reference_indicator = '> ';
+		mappings.level_separator = '_';
+		mappings.friendly_level_separator = ' > ';
+		mappings.reference_symbol = '#';
+		mappings.tree_symbol = '$';
 
 		mappings.fetch_data_model();
 		mappings.set_headers();
@@ -53,11 +60,6 @@ const mappings = {
 			mappings.cycle_though_fields();
 		});
 
-		mappings.reference_indicator = '> ';
-		mappings.level_separator = '_';
-		mappings.friendly_level_separator = ' > ';
-		mappings.reference_symbol = '#';
-		mappings.tree_symbol = '$';
 
 	},
 
@@ -79,8 +81,14 @@ const mappings = {
 
 			table_data['fields'].forEach((field) => {
 
-				const field_name = field['name'].toLowerCase();
-				const friendly_name = field.getLocalizedName();
+				let field_name = field['name'];
+				let friendly_name = field.getLocalizedName();
+
+				if (typeof friendly_name === "undefined")
+					friendly_name = mappings.get_friendly_name(field_name);
+
+				field_name = field_name.toLowerCase();
+
 				const is_hidden = field.isHidden();
 
 				if (field['isRelationship']) {
@@ -88,6 +96,9 @@ const mappings = {
 					let foreign_name = field['otherSideName'];
 					if (typeof foreign_name !== "undefined")
 						foreign_name = foreign_name.toLowerCase();
+
+					if (field['readOnly'])
+						return true;
 
 					const relationship_type = field['type'];
 					const table_name = field['relatedModelName'].toLowerCase();
@@ -145,11 +156,11 @@ const mappings = {
 			line.addEventListener('change', mappings.set_table);
 		});
 
+		auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol);
+
 
 		mappings.new_column_id = 1;
 		mappings.tables = tables;
-
-		auto_mapper.constructor(tables,mappings.ranks);
 
 	},
 
@@ -185,16 +196,17 @@ const mappings = {
 		console.log(mappings.get_upload_plan());
 	},
 
-	implement_mappings_tree: (mappings_tree)=>{
-
+	implement_mappings_tree: (mappings_tree) => {
 
 
 	},
 
 	//setters
-	set_headers: function (headers = [], upload_plan='') {
+	set_headers: function (headers = [], upload_plan = '') {
 
 		let headers_html = '';
+
+		mappings.raw_headers = headers;
 
 		headers.forEach((header) => {
 			headers_html += '<label>' +
@@ -215,16 +227,13 @@ const mappings = {
 				mappings.changes_made = true;
 		});
 
-
-		//TODO: uncomment after auto mapper is done
-		// let mappings_tree = '';
-		// if(upload_plan==='')
-		// 	mappings_tree = auto_mapper.map(headers,mappings.base_table_name,mappings.tables);
-		// else {
-		// 	const upload_plan_object = JSON.parse(upload_plan)
-		// 	mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan_object)
-		// }
-		// mappings.implement_mappings_tree(mappings_tree);
+		let mappings_tree = '';
+		if (upload_plan !== '') {
+			const upload_plan_object = JSON.parse(upload_plan);
+			mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan_object);
+			mappings.auto_mapper_was_run = true;
+			mappings.implement_mappings_tree(mappings_tree);
+		}
 
 	},
 
@@ -234,6 +243,7 @@ const mappings = {
 		const table_data = mappings.tables[table_name];
 
 		mappings.list__tables_scroll_postion = mappings.list__tables.parentElement.scrollTop;
+		mappings.list__tables.parentElement.scrollTop = 0;
 		commons.change_screen('mappings', mappings.list__data_model);
 
 		mappings.button__change_table.style.display = '';
@@ -248,38 +258,17 @@ const mappings = {
 		if (typeof mappings.ranks[table_name] !== "undefined") {//table is a tree
 
 			const ranks = mappings.ranks[table_name];
-			const first_rank = Object.keys(ranks)[0];
 
-			rows_html = '<label class="table_fields">' +
-				'	<input type="radio" name="field" class="radio__field tree" data-field="' + mappings.tree_symbol + first_rank + '" disabled>' +
-				'	<div tabindex="0" class="line relationship">' +
-				'		<div class="row_name">' + mappings.reference_indicator + first_rank + '</div>' +
-				'	</div>' +
-				'</label>' +
+			Object.keys(ranks).forEach((rank_name) => {
 
-				'<div class="table_relationship">' +
-				'	<input type="radio" name="field" class="radio__field" data-field="relationship">' +
-				'	<label class="line">' +
-				'		<select name="' + table_name + '" class="select__field" data-rank="' + mappings.tree_symbol + first_rank + '">' +
-				'			<option value="0"></option>';
+				rows_html += '<label class="table_fields">' +
+					'	<input type="radio" name="field" class="radio__field tree" data-field="' + mappings.tree_symbol + rank_name + '">' +
+					'	<div tabindex="0" class="line relationship">' +
+					'		<div class="row_name">' + mappings.reference_indicator + rank_name + '</div>' +
+					'	</div>' +
+					'</label>';
 
-			mappings.traverse_table_ranks(ranks, (rank_name) => {
-
-				let rank_key;
-
-				if (rank_name === first_rank) {
-					rank_key = 'data';
-					rank_name += ' Data';
-				} else
-					rank_key = rank_name;
-
-				rows_html += '<option value="' + mappings.tree_symbol + rank_key + '">' + rank_name + '</option>';
-
-			}, true);
-
-			rows_html += '</select>' +
-				'	</label>' +
-				'</div>';
+			});
 
 		} else {
 
@@ -344,6 +333,13 @@ const mappings = {
 		mappings.tree = {};
 		mappings.changes_made = true;
 
+		if (mappings.auto_mapper_was_run === false) {
+			const mappings_tree = auto_mapper.map(mappings.raw_headers, mappings.base_table_name);
+			mappings.auto_mapper_was_run = true;
+			mappings.implement_mappings_tree(mappings_tree);
+		} else
+			mappings.auto_mapper_was_run = true;
+
 	},
 
 	reset_table: () => {
@@ -385,7 +381,9 @@ const mappings = {
 		const label = mappings.selected_header.parentElement;
 		let heading_mapping = label.getElementsByClassName('mapping')[0];
 
-		if (mappings.selected_field === '' || mappings.selected_field.getAttribute('disabled') !== null)
+		if (mappings.selected_field === '' ||
+			mappings.selected_field.getAttribute('disabled') !== null
+		)
 			return;
 
 		if (typeof heading_mapping === "undefined") {
@@ -515,40 +513,40 @@ const mappings = {
 	},
 
 	//getters
-
 	get_html_for_table_fields: (table_name, previous_table, foreign_name, current_line, index = false) => {
 
-		let fields_html = '<div class="table_relationship">' +
-			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
-			'<label class="line">' +
-			'	<select name="' + table_name + '" class="select__field">' +
-			'		<option value="0"></option>';
+		let fields_html = '';
 
-
-		let relationship_type;
-		if (previous_table !== '')
-			relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
 
 		let mapped_nodes = mappings.get_mapped_children(current_line);
 
 		const ranks = mappings.ranks[table_name];
-		if (typeof ranks !== "undefined" && index === false)
-			mappings.traverse_table_ranks(ranks, (rank_name) => {
-				fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
-			});
+		if (index === false) {
 
-		else if (index === false && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
-			let mapped_nodes_count = mapped_nodes.length;
+			if (typeof ranks !== "undefined")
+				Object.keys(ranks).forEach((rank_name) => {
+					fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
+				});
 
-			if (mapped_nodes === false)
-				mapped_nodes_count = 0;
+			let relationship_type;
+			if (previous_table !== '')
+				relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
 
-			const friendly_table_name = mappings.tables[table_name]['friendly_table_name'];
+			if (fields_html === '' && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
+				let mapped_nodes_count = mapped_nodes.length;
 
-			for (let i = 1; i < mapped_nodes_count + 2; i++)
-				fields_html += '<option value="' + mappings.reference_symbol + i + '">' + i + '. ' + friendly_table_name + '</option>';
+				if (mapped_nodes === false)
+					mapped_nodes_count = 0;
 
-		} else {
+				const friendly_table_name = mappings.tables[table_name]['friendly_table_name'];
+
+				for (let i = 1; i < mapped_nodes_count + 2; i++)
+					fields_html += '<option value="' + mappings.reference_symbol + i + '">' + i + '. ' + friendly_table_name + '</option>';
+			}
+
+		}
+
+		if (fields_html === '') {
 
 			const rows = {};
 
@@ -599,7 +597,7 @@ const mappings = {
 						table_name === 'storage'
 					) &&
 					row_name !== 'Name'
-				)//TODO: remove this to enable all fields for taxa
+				)//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
 					row_enabled = false;
 
 				if (!row_enabled)
@@ -611,7 +609,13 @@ const mappings = {
 		}
 
 
-		fields_html += '</select>' +
+		fields_html = '<div class="table_relationship">' +
+			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
+			'<label class="line">' +
+			'	<select name="' + table_name + '" class="select__field">' +
+			'		<option value="0"></option>' +
+			'		' + fields_html + '' +
+			'	</select>' +
 			'</label>' +
 			'</div>';
 
@@ -639,7 +643,33 @@ const mappings = {
 		if (mappings.selected_field.tagName === 'INPUT')
 			return mappings.selected_field.parentElement.getElementsByClassName('row_name')[0].innerText;
 
-		return mappings.selected_field.options[mappings.selected_field.selectedIndex].text;
+		let result = mappings.selected_field.options[mappings.selected_field.selectedIndex].text;
+
+		const line = mappings.get_line_element();
+		const previous_line = line.previousElementSibling;
+		const control_element = mappings.get_control_element(previous_line);
+		if (control_element[1] === 'select') {
+			const select = control_element[0];
+
+			const select_value = select.options[select.selectedIndex].value;
+			if(select_value.substr(0,mappings.reference_symbol.length)===mappings.reference_symbol)//is -to-many relationship
+				return select_value + ' ' + result;
+
+			const table_name = select.getAttribute('name');
+			if (typeof mappings.ranks[table_name] !== "undefined") {//if table is a tree
+				const rank_name = select.options[select.selectedIndex].text;
+				return rank_name + ' ' + result;
+			}
+		} else {
+			const input = control_element[0];
+			const data_field = input.getAttribute('data-field');
+			if (data_field.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {
+				const rank_name = data_field.substr(mappings.tree_symbol.length);
+				return rank_name + ' ' + result;
+			}
+		}
+
+		return result;
 
 	},
 
@@ -724,19 +754,13 @@ const mappings = {
 		}
 
 		const field_data = mappings.tables[table_name]['fields'][rank_name];
-		const field_name = field_data['friendly_field_name'];
-		if (typeof field_name !== "undefined") {
+		if (typeof field_data !== "undefined") {
+			const field_name = field_data['friendly_field_name'];
 			friendly_names.push(field_name);
 			return friendly_names;
 		}
 
 		if (rank_name.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {
-
-			if (rank_name === mappings.tree_symbol + 'data') {
-				friendly_names.push(friendly_names[friendly_names.length - 1] + ' Data');
-				return mappings.get_friendly_field_path(path, friendly_names, table_name);
-			}
-
 			const new_rank_name = rank_name.substr(mappings.tree_symbol.length);
 			friendly_names.push(new_rank_name);
 			return mappings.get_friendly_field_path(path, friendly_names, table_name);
@@ -805,6 +829,22 @@ const mappings = {
 
 	},
 
+	//only called if failed to find friendly_name in schema_definition
+	get_friendly_name: (table_name) => {
+		table_name = table_name.replace(/[A-Z]/g, letter => ` ${letter}`);
+		table_name = table_name.trim();
+		table_name = table_name.charAt(0).toUpperCase() + table_name.slice(1);
+
+		const regex = /([A-Z]) ([ A-Z])/g;
+		const subst = `$1$2`;
+		table_name = table_name.replace(regex, subst);
+		table_name = table_name.replace(regex, subst);
+
+		table_name = table_name.replace('Dna', 'DNA');
+
+		return table_name;
+	},
+
 	get_upload_plan: function (mappings_tree = '') {
 
 		if (mappings_tree === '')
@@ -813,44 +853,26 @@ const mappings = {
 
 		upload_plan['baseTableName'] = mappings.base_table_name;
 
-		function handle_tree(tree, rank_name, table_name = '', result_tree = {}) {
-			const tree_keys = Object.keys(tree);
-
-			tree_keys.forEach((tree_key) => {
-				if (tree_key === mappings.tree_symbol + 'data') {
-
-					let name = tree[mappings.tree_symbol + 'data']['name'];
-
-					if (typeof name === 'object')
-						name = name['static'];
-
-					result_tree[rank_name] = name;
-				} else {
-					const new_tree_key = tree_key.substr(mappings.tree_symbol.length);
-					result_tree = handle_tree(tree[tree_key], new_tree_key, '', result_tree);
-				}
-			});
-
-			if (table_name !== '') {
-				const new_result_tree = {};
-				const ranks = mappings.ranks[table_name];
-
-				Object.keys(ranks).forEach((key) => {
-					if (typeof result_tree[key] !== "undefined")
-						new_result_tree[key] = result_tree[key];
-				});
-
-				result_tree = new_result_tree;
-			}
-
-			return result_tree;
-		}
-
 		function handle_table(table_data, table_name, wrap_it = true) {
 
 			if (typeof mappings.ranks[table_name] !== "undefined") {
-				const top_rank_name = Object.keys(mappings.ranks[table_name])[0];
-				return {'treeRecord': {'ranks': handle_tree(table_data[mappings.tree_symbol + top_rank_name], top_rank_name, table_name)}};
+
+				const final_tree = {};
+
+				Object.keys(table_data).forEach((tree_key) => {
+
+					const new_tree_key = tree_key.substr(mappings.tree_symbol.length);
+					let name = table_data[tree_key]['name'];
+
+					if (typeof name === 'object')//handle static records
+						name = name['static'];
+
+					final_tree[new_tree_key] = name;
+
+				});
+
+
+				return {'treeRecord': {'ranks': final_tree}};
 			}
 
 			let table_plan = {
@@ -961,10 +983,16 @@ const mappings = {
 			const select_line = document.createElement('div');
 			mappings.list__data_model.insertBefore(select_line, label.nextElementSibling);
 
-			const relationship = mappings.tables[mappings.base_table_name]['relationships'][field_key];
-			const target_table_name = relationship['table_name'];
-			select_line.outerHTML = mappings.get_html_for_table_fields(target_table_name, mappings.base_table_name, field_key, select_line);
+			let target_table_name;
+			let index = field_key.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol;
+			if (index)
+				target_table_name = mappings.base_table_name;
+			else {
+				const relationship = mappings.tables[mappings.base_table_name]['relationships'][field_key];
+				target_table_name = relationship['table_name'];
+			}
 
+			select_line.outerHTML = mappings.get_html_for_table_fields(target_table_name, mappings.base_table_name, field_key, select_line, index);
 			label.nextElementSibling.getElementsByTagName('input')[0].checked = true;
 
 		}
@@ -1009,37 +1037,7 @@ const mappings = {
 			if (value.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {//previous_selected_field was part of a tree structure
 
 				const table_name = select.getAttribute('name');
-
-				const ranks = mappings.ranks[table_name];
-				const rank_names = Object.keys(ranks);
-
-				const current_rank = value.substr(mappings.tree_symbol.length);
-
-				if (current_rank === 'data')
-					select_line.outerHTML = mappings.get_html_for_table_fields(table_name, '', '', select_line, true);
-				else {
-					const start_rank = rank_names.indexOf(current_rank) + 1;
-
-					let ranks_html = '<div class="table_relationship">' +
-						'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
-						'<label class="line">' +
-						'	<select name="' + table_name + '" class="select__field" data-rank="' + value + '">' +
-						'		<option value="0"></option>' +
-						'		<option value="' + mappings.tree_symbol + 'data">' + current_rank + ' Data</option>';
-
-					mappings.traverse_table_ranks(ranks, (rank_name) => {
-
-						ranks_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
-
-					}, false, start_rank);
-
-
-					ranks_html += '</select>' +
-						'</label>' +
-						'</div>';
-
-					select_line.outerHTML = ranks_html;
-				}
+				select_line.outerHTML = mappings.get_html_for_table_fields(table_name, '', '', select_line, true);
 
 			} else {
 
@@ -1082,62 +1080,34 @@ const mappings = {
 	},
 
 	//helpers
-	upload_plan_to_mappings_tree: (upload_plan, base_table_name_extracted=false) => {
+	upload_plan_to_mappings_tree: (upload_plan, base_table_name_extracted = false) => {
 
 		const tree = {};
 
-		if(base_table_name_extracted === false){
+		if (base_table_name_extracted === false) {
 			mappings.base_table_name = upload_plan['baseTableName'];
 
-			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadable'],true);
-		}
+			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
+		} else if (typeof upload_plan['uploadTable'] !== "undefined")
+			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadTable'], true);
 
-		else if(typeof upload_plan['uploadTable'] !== "undefined")
-			return mappings.upload_plan_to_mappings_tree(upload_plan['uploadTable'],true);
+		else if (typeof upload_plan['treeRecord'] !== "undefined") {
 
-		else if(typeof upload_plan['treeRecord'] !== "undefined"){
+			const tree = upload_plan['treeRecord']['ranks'];
+			const new_tree = {};
 
-			function object_pop(object){
-				const object_keys = Object.keys(object);
-				const result_object = {};
+			Object.keys(tree).forEach((rank_name) => {
+				const new_rank_name = mappings.tree_symbol + rank_name;
+				new_tree[new_rank_name] = {'name': tree[rank_name]};
+			});
 
-				let root_key = object_keys.shift();
-				root_key = [root_key,object[root_key]];
-
-				object_keys.forEach((key)=>{
-					result_object[key] = object[key];
-				});
-
-				return [root_key,result_object,object_keys];
-			}
-
-			function handle_tree(unprocessed_tree,result_tree={}){
-
-				let root_key;
-				let root_value;
-				let result_object;
-				let object_keys;
-
-				[[root_key,root_value],result_object,object_keys] = object_pop(unprocessed_tree);
-
-				let temp_result_tree = {};
-				temp_result_tree[mappings.tree_symbol+'data'] = {'name':root_value};
-
-				if(object_keys.length!==0)
-					temp_result_tree = handle_tree(result_object,temp_result_tree);
-
-				result_tree[mappings.tree_symbol+root_key] = temp_result_tree;
-				return result_tree;
-
-			}
-
-			return handle_tree(upload_plan['treeRecord']['ranks']);
+			return new_tree;
 
 		}
 
 		Object.keys(upload_plan).forEach((plan_node_name) => {
 
-			if(plan_node_name === 'wbcols'){
+			if (plan_node_name === 'wbcols') {
 
 				const workbench_columns = upload_plan[plan_node_name];
 
@@ -1145,29 +1115,23 @@ const mappings = {
 					tree[data_model_column_name] = workbench_columns[data_model_column_name];
 				});
 
-			}
-
-			else if(plan_node_name === 'static'){
+			} else if (plan_node_name === 'static') {
 
 				const static_columns = upload_plan[plan_node_name];
 
 				Object.keys(static_columns).forEach((data_model_column_name) => {
-					tree[data_model_column_name] = {'static':static_columns[data_model_column_name]};
+					tree[data_model_column_name] = {'static': static_columns[data_model_column_name]};
 				});
 
-			}
-
-			else if(plan_node_name === 'toOne'){
+			} else if (plan_node_name === 'toOne') {
 
 				const to_one_columns = upload_plan[plan_node_name];
 
 				Object.keys(to_one_columns).forEach((data_model_column_name) => {
-					tree[data_model_column_name] = mappings.upload_plan_to_mappings_tree(to_one_columns[data_model_column_name],true);
+					tree[data_model_column_name] = mappings.upload_plan_to_mappings_tree(to_one_columns[data_model_column_name], true);
 				});
 
-			}
-
-			else if(plan_node_name === 'toMany'){
+			} else if (plan_node_name === 'toMany') {
 
 				const to_many_columns = upload_plan[plan_node_name];
 
@@ -1178,8 +1142,8 @@ const mappings = {
 					let i = 1;
 
 					Object.values(original_mappings).forEach((mapping) => {
-						const final_mappings_key = mappings.reference_symbol+i;
-						final_mappings[final_mappings_key] = mappings.upload_plan_to_mappings_tree(mapping,true);
+						const final_mappings_key = mappings.reference_symbol + i;
+						final_mappings[final_mappings_key] = mappings.upload_plan_to_mappings_tree(mapping, true);
 						i++;
 					});
 
@@ -1235,27 +1199,16 @@ const mappings = {
 
 	},
 
-	traverse_table_ranks: function (ranks, callback, ignore_first_required = false, start_rank = 0) {
-
-		const rank_names = Object.keys(ranks);
-		const rank_names_count = rank_names.length;
-
-		for (let rank_name_index = start_rank; rank_name_index < rank_names_count; rank_name_index++) {
-
-			callback(rank_names[rank_name_index]);
-
-			if (ranks[rank_names[rank_name_index]] === true && (!ignore_first_required || rank_name_index !== start_rank))
-				break;
-		}
-
-	},
-
 	update_buttons: () => {
 
 		mappings.button__map.disabled =
 			typeof mappings.selected_header === "undefined" ||
 			typeof mappings.selected_field === "undefined" ||
 			mappings.selected_field.getAttribute('disabled') !== null ||
+			(
+				mappings.selected_field.tagName === 'SELECT' &&
+				mappings.selected_field.options[mappings.selected_field.selectedIndex].getAttribute('disabled')===''
+			) ||
 			mappings.is_selected_field_in_relationship() ||
 			mappings.selected_field.value === "0";
 
