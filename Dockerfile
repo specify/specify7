@@ -18,18 +18,20 @@ RUN mkdir -p /opt/specify7 && chown specify.specify /opt/specify7
 
 #####################################################################
 
-FROM common AS build-frontend
+FROM common AS build-common
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        git
+
+#####################################################################
+
+FROM build-common AS build-frontend
+
+RUN apt-get -y install --no-install-recommends \
         nodejs \
-        npm \
-        git \
-        curl \
-        unzip
-
-RUN apt-get update && apt-get -y install --no-install-recommends \
-        make \
-        ca-certificates
+        npm
 
 USER specify
 
@@ -41,18 +43,14 @@ RUN make
 
 #####################################################################
 
-FROM common AS build-backend
+FROM build-common AS build-backend
 
-RUN apt-get update && apt-get -y install --no-install-recommends \
-        libmariadbclient-dev \
-        build-essential \
-        python3.6-dev \
-        python3-venv \
+RUN apt-get -y install --no-install-recommends \
         libldap2-dev \
-        libsasl2-dev
-
-RUN apt-get update && apt-get -y install --no-install-recommends \
-        git
+        libmariadbclient-dev \
+        libsasl2-dev \
+        python3-venv \
+        python3.6-dev
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
@@ -83,11 +81,9 @@ FROM common AS run
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
 	apache2 \
-        openjdk-11-jre-headless \
         libapache2-mod-wsgi-py3 \
+        openjdk-11-jre-headless \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY --from=build-backend /opt/specify7 /opt/specify7
 
 RUN rm /etc/apache2/sites-enabled/*
 RUN ln -s /opt/specify7/specifyweb_apache.conf /etc/apache2/sites-enabled/
@@ -98,5 +94,7 @@ WORKDIR /home/specify
 RUN mkdir wb_upload_logs specify_depository logs
 
 USER root
+COPY --from=build-backend /opt/specify7 /opt/specify7
+
 EXPOSE 80
 CMD apachectl -D FOREGROUND
