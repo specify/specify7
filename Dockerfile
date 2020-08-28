@@ -61,7 +61,7 @@ RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r /home/specify/r
 COPY --chown=specify:specify . /opt/specify7
 COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
 
-RUN make specifyweb/settings/build_version.py specifyweb/settings/secret_key.py
+RUN make specifyweb/settings/build_version.py
 
 WORKDIR specifyweb/settings
 
@@ -74,8 +74,11 @@ RUN echo \
         "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
         > local_specify_settings.py
 
-RUN echo "import os \nDEBUG = os.environ.get('SP7_DEBUG', '').lower() == 'true'" \
+RUN echo "import os \nDEBUG = os.environ.get('SP7_DEBUG', '').lower() == 'true'\n" \
         > debug.py
+
+RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
+        > secret_key.py
 
 
 ######################################################################
