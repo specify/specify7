@@ -125,18 +125,15 @@ const auto_mapper = {
 		const table_data = auto_mapper.tables[table_name];
 		const ranks_data = auto_mapper.ranks[table_name];
 		const fields = table_data['fields'];
+		const friendly_table_name = table_data['friendly_table_name'].toLowerCase();
 
 		if (typeof ranks_data !== "undefined") {
-
-			return;//TODO: remove this
-
-			let local_path = path;
 
 			Object.keys(ranks_data).forEach((rank_name) => {
 
 				Object.keys(fields).forEach((field_name) => {
 
-					const friendly_field_name = fields['friendly_field_name'];
+					const friendly_field_name = fields['friendly_field_name'].toLowerCase();
 
 					Object.keys(auto_mapper.unmapped_headers).forEach((header_name) => {
 
@@ -150,17 +147,20 @@ const auto_mapper = {
 
 						[stripped_name, final_name] = header_data;
 
-						if (//remap headers like `Phylum` to `Phylum > Name`
-							(
+						if (
+							(//find cases like `Phylum` and remap them to `Phylum > Name`
 								friendly_field_name === 'Name' &&
 								rank_name === stripped_name
 							) ||
-							(
-								field_name === stripped_name ||
-								friendly_field_name === final_name
+							(//find cases like `Kingdom Author`
+								rank_name + ' ' + friendly_field_name === stripped_name ||
+								rank_name + ' ' + field_name === final_name
 							)
-						)//TODO: give proper `local_path` (with all taxa ranks if need be)
-							auto_mapper.make_mapping(path, table_name, field_name, header_name);
+						){
+							const local_path = path;
+							local_path.push(table_name);
+							auto_mapper.make_mapping(local_path, field_name, field_name, header_name);
+						}
 
 					});
 
@@ -220,7 +220,7 @@ const auto_mapper = {
 
 
 			//compare each field's schema name and friendly schema name to headers
-			const friendly_field_name = field_data['friendly_field_name'];
+			const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
 
 			Object.keys(auto_mapper.unmapped_headers).forEach((header_name) => {
 
@@ -234,7 +234,14 @@ const auto_mapper = {
 
 				[stripped_name, final_name] = header_data;
 
-				if (field_name === stripped_name || friendly_field_name === final_name)
+				if (
+					field_name === stripped_name ||
+					friendly_field_name === final_name ||
+					(//find cases like `Collection Object Remarks`
+						friendly_table_name + ' ' + friendly_field_name === stripped_name ||
+						table_name + ' ' + field_name === final_name
+					)
+				)
 					auto_mapper.make_mapping(path, table_name, field_name, header_name);
 
 			});
@@ -292,7 +299,7 @@ const auto_mapper = {
 			//if there is any -to-many relationship in the path, create a new -to-many object and run while loop again
 			let path_copy = path;
 			let path_was_modified = false;
-			Object.key(path_copy).reverse().forEach((path_index) => {
+			Object.keys(path_copy).reverse().forEach((path_index) => {
 
 				if (path_copy[path_index].substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol) {
 					path_copy[path_index] = auto_mapper.reference_symbol + (parseInt(path_copy[path_index].substr(auto_mapper.reference_symbol.length)) + 1);
@@ -308,7 +315,7 @@ const auto_mapper = {
 		//remove header from unmapped headers
 		auto_mapper.unmapped_headers[header_name] = false;
 
-		auto_mapper.results[header_name] = path;
+		auto_mapper.results[header_name] = path.slice(1);//exclude the base table from the result
 
 		return true;//return whether the field got mapped or was mapped previously
 
