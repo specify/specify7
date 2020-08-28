@@ -67,12 +67,15 @@ WORKDIR specifyweb/settings
 
 RUN echo \
         "import os" \
-        "\nDATABASE_NAME = os.environ['SP_DATABASE_NAME']" \
-        "\nDATABASE_HOST = os.environ['SP_DATABASE_HOST']" \
-        "\nDATABASE_PORT = os.environ.get('SP_DATABASE_PORT', '')" \
-        "\nMASTER_NAME = os.environ['SP_MASTER_NAME']" \
-        "\nMASTER_PASSWORD = os.environ['SP_MASTER_PASSWORD']" \
+        "\nDATABASE_NAME = os.environ['DATABASE_NAME']" \
+        "\nDATABASE_HOST = os.environ['DATABASE_HOST']" \
+        "\nDATABASE_PORT = os.environ.get('DATABASE_PORT', '')" \
+        "\nMASTER_NAME = os.environ['MASTER_NAME']" \
+        "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
         > local_specify_settings.py
+
+RUN echo "import os \nDEBUG = os.environ.get('SP7_DEBUG', '').lower() == 'true'" \
+        > debug.py
 
 
 ######################################################################
