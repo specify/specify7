@@ -93,8 +93,10 @@ RUN rm /etc/apache2/sites-enabled/*
 RUN ln -s /opt/specify7/specifyweb_apache.conf /etc/apache2/sites-enabled/
 RUN ln -sf /dev/stderr /var/log/apache2/error.log && ln -sf /dev/stdout /var/log/apache2/access.log
 
-RUN mkdir -p /home/specify/wb_upload_logs /home/specify/specify_depository
-RUN chown specify.specify /home/specify/wb_upload_logs /home/specify/specify_depository
+USER specify
+WORKDIR /home/specify
+RUN mkdir wb_upload_logs specify_depository logs
 
+USER root
 EXPOSE 80
 CMD apachectl -D FOREGROUND
