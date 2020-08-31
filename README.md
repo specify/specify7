@@ -16,30 +16,27 @@ under GNU General Public License 2 (GPL2).
     1345 Jayhawk Blvd.
     Lawrence, KS 66045 USA
 
-Table of Contents
-=================
+## Table of Contents
 
    * [Specify 7](#specify-7)
+      * [Table of Contents](#table-of-contents)
    * [Installation](#installation)
       * [Installation with Docker](#installation-with-docker)
       * [Ordinary installation](#ordinary-installation)
-         * [Installing system dependencies.](#installing-system-dependencies)
-         * [Installing Specify 6.](#installing-specify-6)
-         * [Cloning Specify 7 source repository.](#cloning-specify-7-source-repository)
-         * [Setting up Python Virtual Environment.](#setting-up-python-virtual-environment)
-         * [Building.](#building)
-         * [Adjusting settings files.](#adjusting-settings-files)
-         * [Turning on debugging.](#turning-on-debugging)
-         * [The development server.](#the-development-server)
-      * [Deployment to production.](#deployment-to-production)
-         * [Installing production requirements.](#installing-production-requirements)
-         * [Setting up Apache.](#setting-up-apache)
-         * [Restarting Apache.](#restarting-apache)
-   * [Updating Specify 7.](#updating-specify-7)
-   * [Updating the database (Specify 6) version.](#updating-the-database-specify-6-version)
-
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
-
+         * [Installing system dependencies](#installing-system-dependencies)
+         * [Installing Specify 6](#installing-specify-6)
+         * [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
+         * [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
+         * [Building](#building)
+         * [Adjusting settings files](#adjusting-settings-files)
+         * [Turning on debugging](#turning-on-debugging)
+         * [The development server](#the-development-server)
+      * [Deployment to production](#deployment-to-production)
+         * [Installing production requirements](#installing-production-requirements)
+         * [Setting up Apache](#setting-up-apache)
+         * [Restarting Apache](#restarting-apache)
+   * [Updating Specify 7](#updating-specify-7)
+   * [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
 
 # Installation
 After completing these instructions you will be able to run the test
