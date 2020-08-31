@@ -12,11 +12,6 @@
     height: calc(calc(100vh - 16px) - 3rem);
 }
 
-/*.list {*/
-/*    display: inline-block;*/
-/*    width: 100%;*/
-/*}*/
-
 .list > * {
     position: relative;
 }
@@ -53,8 +48,9 @@
     text-align: right;
 }
 
-.custom_list .undefined:after {
+.custom_list label .undefined:after {
     content: 'To Be Discarded';
+    color: #900;
 }
 
 :checked ~ .line {
@@ -100,7 +96,7 @@
 }
 
 #list__tables .line {
-    display: list-item;
+    display: flex;
 }
 
 .table_relationship .line {

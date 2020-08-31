@@ -60,6 +60,18 @@ const mappings = {
 			mappings.cycle_though_fields();
 		});
 
+		mappings.list__data_model.addEventListener('change', (event) => {
+			if (event.target && event.target.classList.contains('radio__field'))
+				mappings.change_selected_field(event);
+			else if (event.target && event.target.tagName === 'SELECT')
+				mappings.change_option_field(event);
+		});
+
+		mappings.list__data_model.addEventListener('focus', (event) => {
+			if (event.target && event.target.tagName === 'SELECT')
+				mappings.change_option_field(event);
+		});
+
 
 	},
 
@@ -89,7 +101,7 @@ const mappings = {
 
 				field_name = field_name.toLowerCase();
 
-				const is_hidden = field.isHidden();
+				const is_hidden = field.isHidden()===1;
 
 				if (field['isRelationship']) {
 
@@ -134,7 +146,7 @@ const mappings = {
 				'</label>';
 
 
-			if (typeof relationships['definition'] !== 'undefined' && typeof relationships['definitionitem'] !== 'undefined')
+			if (typeof relationships['definition'] !== "undefined" && typeof relationships['definitionitem'] !== "undefined")
 				mappings.fetch_ranks(table_name);
 
 		});
@@ -156,7 +168,7 @@ const mappings = {
 			line.addEventListener('change', mappings.set_table);
 		});
 
-		auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol);
+		auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
 
 
 		mappings.new_column_id = 1;
@@ -201,12 +213,17 @@ const mappings = {
 		//TODO: create headers if they do not exist
 		//TODO: create static headers if needed
 
-		//TODO: test get_friendly_field_path_preview on normal fields
+		const base_table_columns = [];
 
 		Object.keys(array_of_mappings).forEach((header_name) => {
 			const mapping = array_of_mappings[header_name];
 			const mapping_path = mapping.join(mappings.level_separator);
 			const position = mappings.raw_headers.indexOf(header_name);
+
+			// if(typeof position === "undefined"){
+			//
+			// }
+
 			const header = mappings.headers[position];
 			const line = header.nextElementSibling;
 			const heading_mapping = line.getElementsByClassName('mapping')[0];
@@ -220,11 +237,20 @@ const mappings = {
 
 			heading_mapping.innerText = mappings.get_friendly_field_path_preview(friendly_field_path_array,mapping);
 			heading_mapping.setAttribute('title', friendly_field_path);
+
+			//disable base table columns
+			if(mapping.length===1)
+				base_table_columns.push(mapping[0]);
+		});
+
+		Object.values(mappings.lines).forEach((line) => {
+			const data_field = line.getAttribute('data-field');
+			if(data_field!=='relationship' && base_table_columns.indexOf(data_field)!==-1)
+				line.setAttribute('disabled', '')
 		});
 
 		mappings.changes_made = true;
 		mappings.update_buttons();
-		mappings.cycle_though_fields();
 
 	},
 
@@ -331,18 +357,6 @@ const mappings = {
 
 		mappings.base_table_name = table_name;
 		mappings.list__data_model.innerHTML = rows_html;
-
-		mappings.list__data_model.addEventListener('change', (event) => {
-			if (event.target && event.target.classList.contains('radio__field'))
-				mappings.change_selected_field(event);
-			else if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
-		});
-
-		mappings.list__data_model.addEventListener('focus', (event) => {
-			if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
-		});
 
 
 		//if header is checked by browser, update selected_header
@@ -466,7 +480,7 @@ const mappings = {
 		if (field_path.length === 1)
 			mappings.selected_field.setAttribute('disabled', '');
 
-		const friendly_field_path_array = mappings.get_friendly_field_path(field_path);
+		const friendly_field_path_array = mappings.get_friendly_field_path(field_path.slice());
 		const friendly_field_path = friendly_field_path_array.join(mappings.friendly_level_separator);
 
 		heading_mapping.innerText = mappings.get_friendly_field_path_preview(friendly_field_path_array,field_path);
@@ -535,11 +549,12 @@ const mappings = {
 		heading_mapping.removeAttribute('title');
 		heading_mapping.innerText = '';
 
-		mappings.update_buttons();
 		mappings.changes_made = true;
 
 		//go through each field and update it's status
 		mappings.cycle_though_fields(mappings_array, mappings_path);
+
+		mappings.update_buttons();
 
 
 	},
@@ -557,7 +572,7 @@ const mappings = {
 
 			if (typeof ranks !== "undefined")
 				Object.keys(ranks).forEach((rank_name) => {
-					fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + rank_name + '</option>';
+					fields_html += '<option value="' + mappings.tree_symbol + rank_name + '">' + mappings.reference_indicator + rank_name + '</option>';
 				});
 
 			let relationship_type;
@@ -622,14 +637,10 @@ const mappings = {
 				if (row_type === 'relationship')
 					row_name = mappings.reference_indicator + row_name;
 
-				if (
-					(
-						table_name === 'taxon' ||
-						table_name === 'geography' ||
-						table_name === 'storage'
-					) &&
+				if (//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+					typeof mappings.ranks[table_name] !== "undefined" &&
 					row_name !== 'Name'
-				)//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+				)
 					row_enabled = false;
 
 				if (!row_enabled)
@@ -669,41 +680,6 @@ const mappings = {
 		return Object.keys(tree);
 
 	},
-
-	// get_selected_field_name: () => {
-	//
-	// 	if (mappings.selected_field.tagName === 'INPUT')
-	// 		return mappings.selected_field.parentElement.getElementsByClassName('row_name')[0].innerText;
-	//
-	// 	let result = mappings.selected_field.options[mappings.selected_field.selectedIndex].text;
-	//
-	// 	const line = mappings.get_line_element();
-	// 	const previous_line = line.previousElementSibling;
-	// 	const control_element = mappings.get_control_element(previous_line);
-	// 	if (control_element[1] === 'select') {
-	// 		const select = control_element[0];
-	//
-	// 		const select_value = select.options[select.selectedIndex].value;
-	// 		if(select_value.substr(0,mappings.reference_symbol.length)===mappings.reference_symbol)//is -to-many relationship
-	// 			return select_value + ' ' + result;
-	//
-	// 		const table_name = select.getAttribute('name');
-	// 		if (typeof mappings.ranks[table_name] !== "undefined") {//if table is a tree
-	// 			const rank_name = select.options[select.selectedIndex].text;
-	// 			return rank_name + ' ' + result;
-	// 		}
-	// 	} else {
-	// 		const input = control_element[0];
-	// 		const data_field = input.getAttribute('data-field');
-	// 		if (data_field.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {
-	// 			const rank_name = data_field.substr(mappings.tree_symbol.length);
-	// 			return rank_name + ' ' + result;
-	// 		}
-	// 	}
-	//
-	// 	return result;
-	//
-	// },
 
 	get_field_path: (target_field = undefined) => {
 
@@ -780,16 +756,16 @@ const mappings = {
 			return mappings.get_friendly_field_path(path, [base_table_friendly_name], mappings.base_table_name);
 		}
 
-		const rank_name = path.shift();
+		const field_name = path.shift();
 
 		//detects a -to-many object
-		if (rank_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {
-			friendly_names.push(rank_name);
+		if (field_name.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {
+			friendly_names.push(field_name);
 			return mappings.get_friendly_field_path(path, friendly_names, table_name);
 		}
 
 		//detects a field
-		const field_data = mappings.tables[table_name]['fields'][rank_name];
+		const field_data = mappings.tables[table_name]['fields'][field_name];
 		if (typeof field_data !== "undefined") {
 			const field_name = field_data['friendly_field_name'];
 			friendly_names.push(field_name);
@@ -797,14 +773,14 @@ const mappings = {
 		}
 
 		//detects a tree
-		if (rank_name.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {
-			const new_rank_name = rank_name.substr(mappings.tree_symbol.length);
+		if (field_name.substr(0, mappings.tree_symbol.length) === mappings.tree_symbol) {
+			const new_rank_name = field_name.substr(mappings.tree_symbol.length);
 			friendly_names.push(new_rank_name);
 			return mappings.get_friendly_field_path(path, friendly_names, table_name);
 		}
 
 		//detects a relationship
-		const relationship = mappings.tables[table_name]['relationships'][rank_name];
+		const relationship = mappings.tables[table_name]['relationships'][field_name];
 		friendly_names.push(relationship['friendly_relationship_name']);
 		table_name = relationship['table_name'];
 		return mappings.get_friendly_field_path(path, friendly_names, table_name);
@@ -828,11 +804,11 @@ const mappings = {
 			return friendly_field_path[0] + ' ' + result;//e.x. for `Kingdom > Name` return `Kingdom Name`
 
 		//detect previous field being a -to-many object
-		if(friendly_field_path[path_length-2].substr(0,mappings.reference_symbol.length))
+		if(friendly_field_path[path_length-2].substr(0,mappings.reference_symbol.length)===mappings.reference_symbol)
 			return friendly_field_path[path_length-2] + ' ' + result;//e.x. for `... > #1 > Name` return `#1 Name`
 
 		//detect previous field being a tree rank
-		if(field_path[path_length-2].substr(0,mappings.tree_symbol.length))
+		if(field_path[path_length-2].substr(0,mappings.tree_symbol.length)===mappings.tree_symbol)
 			return field_path[path_length - 2].substr(mappings.tree_symbol.length) + ' ' + result;//e.x. for `$Kingdom > Name` return `Kingdom Name`
 
 
@@ -1231,8 +1207,8 @@ const mappings = {
 		const lines_count = lines.length;
 		for (let i = 0; i < lines_count; i++) {
 
-			const data_field = lines[i].getAttribute('data-field') !== 'relationship';
-			if (data_field) {//field is not a relationship
+			const data_field = lines[i].getAttribute('data-field');
+			if (data_field !== 'relationship') {//field is not a relationship
 
 				if (i + 1 < lines_count && lines[i + 1].getAttribute('data-field') === 'relationship') {//next field exists and is relationship
 					const first_line = lines[i].parentElement;

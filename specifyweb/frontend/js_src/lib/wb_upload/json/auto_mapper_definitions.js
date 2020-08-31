@@ -1,3 +1,5 @@
+"use strict"
+
 //This file contains information to help auto-map imported XLS and CSV files to the Sp6 datamodel
 //Based on https//github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 //Matching is case insensitive. Table and field names are case insensitive
