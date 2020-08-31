@@ -14,7 +14,7 @@ const auto_mapper = {
 
 		auto_mapper.regex_1 = /[^a-z\s]+/g;
 		auto_mapper.regex_2 = /\s+/g;
-		auto_mapper.depth = 8;//TODO: experiment with the best depth value
+		auto_mapper.depth = 8;
 		auto_mapper.comparisons = {
 			'regex': (header, regex) => {
 				return header.match(regex);

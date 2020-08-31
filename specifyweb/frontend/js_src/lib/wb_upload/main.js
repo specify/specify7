@@ -60,12 +60,12 @@ initialContext.lock().promise().done(() => {
 
 	button__upload_config_continue.addEventListener('click', function () {
 		commons.change_screen('main',screen__mapping);
-		mappings.set_headers(upload_config.headers);
+		mappings.set_headers(upload_config.headers,'',upload_config.checkbox__first_line_header.checked);
 	});
 
 	//go back to choosing data set
 	button__mappings_cancel.addEventListener('click', function () {
-		if(choose_data_set.file_selected())
+		if(choose_data_set.is_file_selected())
 			commons.change_screen('main',button__upload_config_cancel);
 		else
 			commons.change_screen('main',screen__choose_data_set);
@@ -108,7 +108,7 @@ initialContext.lock().promise().done(() => {
 
 	});
 
-	window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is unsaved mapping
+	window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is mapping in progress
 		if (typeof mappings.list__tables_scroll_postion !== "undefined") {
 			e.preventDefault();
 			e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';//this message won't be displayed in most browsers
