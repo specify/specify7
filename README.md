@@ -51,7 +51,7 @@ in a separate directory next to the previous version and install all
 the new dependencies in a Python virtualenv as described below. That
 will avoid version conflicts and allow the previous version to
 continue working while the new version is being set up. When the new
-version is working satifactorily using the test server, the Apache
+version is working satisfactorily using the test server, the Apache
 conf can be changed to point to it (or changed back to the old
 version, if problems arise).
 
@@ -170,7 +170,7 @@ Applies Specify schema changes to the database named in the
 settings. This step may fail if the master user configured in the
 settings does not have DDL privileges. Changing the `MASTER_NAME` and
 `MASTER_PASSWORD` settings to the MySQL root user will allow the
-changes to be applied. Afterward the master user settings can be
+changes to be applied. Afterward, the master user settings can be
 restored.
 
 #### make runserver
@@ -190,7 +190,7 @@ explaining the various settings.
 
 ### Turning on debugging
 For development purposes, Django debugging should be turned on. It
-will enable stacktraces in responses that encounter exceptions, and
+will enable stack traces in responses that encounter exceptions, and
 allow operation with the unoptimized Javascript files.
 
 Debugging can be enabled by creating the file
@@ -230,7 +230,7 @@ Start by following the development instructions above, but don't
 enable debugging (or disable it if you enabled it previously).
 
 ### Installing production requirements
-For production environments Specify7 can be hosted by Apache. The
+For production environments, Specify7 can be hosted by Apache. The
 following packages are needed:
 
 * Apache
@@ -242,7 +242,7 @@ sudo apt-get install apache2 libapache2-mod-wsgi-py3
 
 Warning: This will replace the Python 2.7 version of mod-wsgi that was
 used by Specify 7.4.0 and prior. If executed on a production server
-running one of those version, Specify 7 will stop working until the
+running one of those versions, Specify 7 will stop working until the
 new deployment is configured.
 
 ### Setting up Apache
@@ -268,7 +268,7 @@ sudo systemctl restart apache2.service
 
 # Updating Specify 7
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
-from one of these version, it will be necesary to install Python 3.6
+from one of these versions, it will be necessary to install Python 3.6
 by running the `apt-get` commands in the
 [Install system dependencies](#install-system-dependencies) and the
 [Production requirements](#production-requirements) steps. Then
@@ -304,7 +304,7 @@ proceed as follows:
 # Updating the database (Specify 6) version
 The Specify database is updated from one version to the next by the
 Specify 6 application. To update the database version connect to the
-database with a new verison of Specify 6 and follow the Specify 6
+database with a new version of Specify 6 and follow the Specify 6
 update procedures.
 
 Once the database version is updated, a corresponding copy of Specify
