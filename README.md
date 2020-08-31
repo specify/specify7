@@ -62,7 +62,7 @@ version, if problems arise).
 ## Installation with Docker
 If you would like to deploy Specify 7 in a
 [Docker](https://www.docker.com/) container checkout the instructions
-in this repository by the Royal Botanic Gardens Victoria:
+in this repository:
 https://github.com/specify/specify7-docker
 
 
