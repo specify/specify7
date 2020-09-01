@@ -22,7 +22,7 @@
     "jquery-contextmenu": "~1.10.3",
     "jquery-deparam": "~0.4.2",
     "jquery-ui": "~1.10.5",
-    "moment": "~2.10.6",
+    "moment": "~2.24.0",
     "papaparse": "~4.1.2",
     "q": "~1.4.1",
     "underscore": "~1.8.3"
