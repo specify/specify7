@@ -28,6 +28,10 @@
     padding: 1rem;
 }
 
+.custom_list .line.required {
+    font-weight: bold;
+}
+
 .custom_list .line:hover {
     background: var(--b2);
 }

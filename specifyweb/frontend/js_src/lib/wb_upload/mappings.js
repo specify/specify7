@@ -43,6 +43,18 @@ const mappings = {
 
 
 		//initialization
+		mappings.tables_to_hide = [
+			'definition',
+			'definitionitem',
+			'geographytreedef',
+			'geologictimeperiodtreedef',
+			'treedef'
+		];
+		schema.orgHierarchy.forEach((table_name) => {
+			if(table_name !== 'collectionobject')
+				mappings.tables_to_hide.push(table_name);
+		});
+
 		mappings.fetch_data_model();
 
 
@@ -70,7 +82,7 @@ const mappings = {
 
 		mappings.list__data_model.addEventListener('focus', (event) => {
 			if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);//TODO: make sure this isn't called twice
+				mappings.change_option_field(event);
 		});
 
 		mappings.list__headers.addEventListener('change', (event) => {
@@ -83,6 +95,15 @@ const mappings = {
 		mappings.list__tables.addEventListener('change', (event) => {
 			if (event.target && event.target['classList'].contains('radio__table'))
 				mappings.set_table(event);
+		});
+
+		window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is mapping in progress
+			if (typeof mappings.list__tables_scroll_postion !== "undefined") {
+				e.preventDefault();
+				e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';//this message won't be displayed in most browsers
+			}
+			else
+				delete e['returnValue'];
 		});
 
 
@@ -100,8 +121,12 @@ const mappings = {
 
 			let fields = {};
 			let relationships = {};
+			let is_a_tree = false;
 
-			if (table_data['system'])//skip system tables
+			if (
+				table_data['system'] ||
+				mappings.tables_to_hide.indexOf(table_name) !== -1
+			)
 				return true;
 
 			table_data['fields'].forEach((field) => {
@@ -115,6 +140,7 @@ const mappings = {
 				field_name = field_name.toLowerCase();
 
 				const is_hidden = field.isHidden()===1;
+				const is_required = field.isRequired;
 
 				if (field['isRelationship']) {
 
@@ -122,11 +148,17 @@ const mappings = {
 					if (typeof foreign_name !== "undefined")
 						foreign_name = foreign_name.toLowerCase();
 
-					if (field['readOnly'])
-						return true;
-
 					const relationship_type = field['type'];
 					const table_name = field['relatedModelName'].toLowerCase();
+
+					if (typeof relationships['definition'] !== "undefined" && typeof relationships['definitionitem'] !== "undefined")
+						is_a_tree = true;
+
+					if (
+						field['readOnly'] ||
+						mappings.tables_to_hide.indexOf(table_name) !== -1
+					)
+						return true;
 
 					relationships[field_name] = {
 						friendly_relationship_name: friendly_name,
@@ -134,12 +166,14 @@ const mappings = {
 						type: relationship_type,
 						foreign_name: foreign_name,
 						is_hidden: is_hidden,
+						is_required: is_required,
 					};
 
 				} else
 					fields[field_name] = {
 						friendly_field_name: friendly_name,
 						is_hidden: is_hidden,
+						is_required: is_required,
 					};
 
 			});
@@ -159,7 +193,7 @@ const mappings = {
 				'</label>';
 
 
-			if (typeof relationships['definition'] !== "undefined" && typeof relationships['definitionitem'] !== "undefined")
+			if (is_a_tree)
 				mappings.fetch_ranks(table_name);
 
 		});
@@ -368,15 +402,21 @@ const mappings = {
 
 			temp_table_rows.forEach((row_key) => {
 
-				let class_append = '';
+				let class_append = [];
 				let row_name;
 
-				if (typeof table_data['fields'][row_key] !== 'undefined')
+				if (typeof table_data['fields'][row_key] !== 'undefined'){
 					row_name = table_data['fields'][row_key]['friendly_field_name'];
+
+					if(table_data['fields'][row_key]['is_required'])
+						class_append.push('required');
+				}
 				else {
 					row_name = mappings.reference_indicator + table_data['relationships'][row_key]['friendly_relationship_name'];
-					class_append += 'relationship';
+					class_append.push('relationship');
 				}
+
+				class_append = class_append.join(' ');
 
 				rows_html += '<label class="table_fields">' +
 					'	<input type="radio" name="field" class="radio__field" data-field="' + row_key + '">' +
