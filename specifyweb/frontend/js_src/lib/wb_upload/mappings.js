@@ -1,5 +1,5 @@
 "use strict";
-const commons = require('./commons.js');
+
 const schema = require('../schema.js');
 const domain = require('../domain.js');
 const auto_mapper = require('./auto_mapper.js');
@@ -25,7 +25,6 @@ const mappings = {
 		// column headers
 		mappings.list__headers = document.getElementById('list__headers');
 		mappings.button__new_field = document.getElementById('button__new_field');
-		mappings.button__show_upload_plan = document.getElementById('button__show_upload_plan');
 		mappings.control_line__new_header = document.getElementById('control_line__new_header');
 		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
 		mappings.headers = mappings.list__headers.getElementsByTagName('input');
@@ -45,7 +44,6 @@ const mappings = {
 
 		//initialization
 		mappings.fetch_data_model();
-		commons.set_screen('mappings', mappings.list__tables);
 
 
 		//setting event listeners
@@ -54,8 +52,6 @@ const mappings = {
 
 		mappings.button__map.addEventListener('click', mappings.map_field_callback);
 		mappings.button__delete.addEventListener('click', mappings.unmap_field_callback);
-
-		mappings.button__show_upload_plan.addEventListener('click', mappings.show_upload_plan);
 
 		mappings.control_line__new_header.addEventListener('change', mappings.change_selected_header);
 		mappings.control_line__new_static_header.addEventListener('change', mappings.change_selected_header);
@@ -74,7 +70,7 @@ const mappings = {
 
 		mappings.list__data_model.addEventListener('focus', (event) => {
 			if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
+				mappings.change_option_field(event);//TODO: make sure this isn't called twice
 		});
 
 		mappings.list__headers.addEventListener('change', (event) => {
@@ -168,8 +164,6 @@ const mappings = {
 
 		});
 
-		commons.set_screen('mappings', mappings.list__tables);
-
 
 		for (const [table_name, table_data] of Object.entries(tables))//remove relationships to system tables
 			for (const [relationship_name, relationship_data] of Object.entries(table_data['relationships']))
@@ -213,10 +207,6 @@ const mappings = {
 			);
 		});
 
-	},
-
-	show_upload_plan: () => {//TODO: remove this
-		console.log(mappings.get_upload_plan());
 	},
 
 	map_field: (mapping_type,header_element,mapping) => {
@@ -342,7 +332,8 @@ const mappings = {
 
 		mappings.list__tables_scroll_postion = mappings.list__tables.parentElement.scrollTop;
 		mappings.list__tables.parentElement.scrollTop = 0;
-		commons.change_screen('mappings', mappings.list__data_model);
+		mappings.list__tables.style.display = 'none';
+		mappings.list__data_model.style.display = '';
 
 		mappings.button__change_table.style.display = '';
 
@@ -432,7 +423,7 @@ const mappings = {
 
 	},
 
-	set_headers: (headers = [], upload_plan = '', headers_defined=true) => {
+	set_headers: (headers = [], upload_plan = null, headers_defined=true) => {
 
 		let headers_html = '';
 
@@ -453,7 +444,7 @@ const mappings = {
 		mappings.list__headers.innerHTML = headers_html;
 
 		let mappings_tree = '';
-		if (upload_plan !== '') {
+		if (upload_plan !== null) {
 			const upload_plan_object = JSON.parse(upload_plan);
 
 			const base_table_name = upload_plan_object['baseTableName'];
@@ -489,7 +480,9 @@ const mappings = {
 		mappings.title__table_name.classList.add('undefined');
 		mappings.title__table_name.innerText = '';
 
-		commons.change_screen('mappings', mappings.list__tables);
+		mappings.list__tables.style.display = '';
+		mappings.list__data_model.style.display = 'none';
+
 		if (typeof mappings.list__tables_scroll_postion !== "undefined") {
 			setTimeout(() => {
 				mappings.list__tables.parentElement.scrollTop = mappings.list__tables_scroll_postion;
@@ -1012,8 +1005,15 @@ const mappings = {
 					if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
 						table_plan['toOne'][field_name] = handle_table(table_data[field_name], mapping_table);
 
-					else if (typeof table_plan['toMany'][field_name] === "undefined")
-						table_plan['toMany'][field_name] = handle_table(table_data[field_name], mapping_table);
+					else {
+
+						if (typeof table_plan['toMany'] === "undefined")
+							table_plan['toMany'] = {};
+
+						if (typeof table_plan['toMany'][field_name] === "undefined")
+							table_plan['toMany'][field_name] = handle_table(table_data[field_name], mapping_table);
+
+					}
 
 				}
 
@@ -1392,6 +1392,7 @@ const mappings = {
 
 		return result;
 	},
+
 };
 
 module.exports = mappings;

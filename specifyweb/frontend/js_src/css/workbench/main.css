@@ -1,11 +1,6 @@
 @import url("./config.css");
-@import url("./choose_data_set.css");
 @import url("./mappings.css");
 
-body {
-    font-family: 'Calibri', sans-serif;
-}
-
-button[disabled] {
+#screen__mapping button[disabled] {
     cursor: not-allowed !important;
 }

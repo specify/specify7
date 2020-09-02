@@ -3,13 +3,14 @@
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: 1fr 3.5rem 1fr;
+    width: 100%;
 }
 
 
 .custom_list {
     border: 1px solid var(--border);
     overflow-y: auto;
-    height: calc(calc(100vh - 16px) - 3rem);
+    height: calc(calc(86vh - 14px) - 3rem);/* I know this is terrible, but this is just a short term solution */
 }
 
 .list > * {

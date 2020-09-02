@@ -7,23 +7,30 @@ const _ = require('underscore');
 const Backbone = require('./backbone.js');
 const template = require('./templates/wb_upload/main.html');
 const navigation = require('./navigation.js');
-const commons = require('./wb_upload/commons.js');
 const mappings = require('./wb_upload/mappings.js');
 
 
 const PlanView = Backbone.View.extend({
+
+    
     __name__: "PlanView",
     events: {
-        'click #button__save_upload_plan': 'savePlan',
+        'click #button__save_upload_plan': 'save_plan',
+        'click #button__mappings_cancel': 'go_back',
     },
+
     initialize({wb}) {
         this.wb = wb;
         this.wbtemplatePromise = this.wb.rget('workbenchtemplate');
     },
     render() {
-        this.$el.append(template());
+
+        this.el.innerHTML = template();
+        this.el.setAttribute('id','screen__mapping');
+
         _.defer(() => this._render());
         return this;
+
     },
     _render() {
         this.wbtemplatePromise
@@ -38,10 +45,18 @@ const PlanView = Backbone.View.extend({
                     });
             });
     },
-    savePlan(evt) {
-        $(evt.currentTarget).attr('disabled', 'disabled');
+    save_plan(event) {
+
+        event.currentTarget.setAttribute('disabled', 'disabled');
+        this.go_back(event,true);
+
+    },
+    go_back(event,commit_changes=false){
         this.wbtemplatePromise.done(wbtemplate => {
-            wbtemplate.set('remarks', mappings.get_upload_plan());
+
+            if(commit_changes)
+                wbtemplate.set('remarks', mappings.get_upload_plan());
+
             wbtemplate.save().done(() => {
                 navigation.go(`/workbench/${this.wb.id}/`);
             });
