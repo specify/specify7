@@ -114,7 +114,7 @@ var WBView = Backbone.View.extend({
     matchWithValidate: false,
     multiMatchSetting: 'skip',
     events: {
-        'click .wb-upload': 'uploadClicked',
+        'click .wb-upload': 'upload',
         'click .wb-validate': 'validate',
         'click .wb-plan': 'openPlan',
         'click .wb-delete': 'delete',
@@ -369,21 +369,19 @@ var WBView = Backbone.View.extend({
     },
     upload: function() {
         const begin = () => {
-            $.post('/api/workbench/upload/' + this.wb.id + '/'+ this.multiMatchSetting + '/').fail(jqxhr => {
+            $.post(`/api/workbench/upload/${this.wb.id}/`).fail(jqxhr => {
                 this.checkDeletedFail(jqxhr);
-                this.closeUploadProgress();
+                // this.closeUploadProgress();
             });
-            this.openUploadProgress();
+            // this.openUploadProgress();
         };
-        this.checkUploaderLock('Uploader', () => {
-            $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
-                title: "Proceed with upload?",
-                modal: true,
-                buttons: [
-                    {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
-                    {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-                ]
-            });
+        $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
+            title: "Proceed with upload?",
+            modal: true,
+            buttons: [
+                {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
+                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
+            ]
         });
     },
     validate: function() {

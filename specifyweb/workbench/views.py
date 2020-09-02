@@ -6,6 +6,7 @@ import logging
 import subprocess
 from glob import glob
 from uuid import uuid4
+from typing import Sequence, Tuple
 
 from django import http
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
@@ -15,6 +16,9 @@ from django.conf import settings
 from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to_data
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
+
+Workbench = getattr(models, 'Workbench')
+Workbenchtemplatemappingitem = getattr(models, 'Workbenchtemplatemappingitem')
 
 from .uploader_classpath import CLASSPATH
 
@@ -34,9 +38,9 @@ def rows(request, wb_id):
     rows = load(wb_id)
     return http.HttpResponse(toJson(rows), content_type='application/json')
 
-def load(wb_id):
-    wb = get_object_or_404(models.Workbench, id=wb_id)
-    wbtmis = models.Workbenchtemplatemappingitem.objects.filter(
+def load(wb_id: int) -> Sequence[Tuple]:
+    wb = get_object_or_404(Workbench, id=wb_id)
+    wbtmis = Workbenchtemplatemappingitem.objects.filter(
         workbenchtemplate=wb.workbenchtemplate).order_by('vieworder')
 
     if wbtmis.count() > 60:
@@ -181,101 +185,15 @@ def shellquote(s):
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload(request, wb_id, mul_match_action, no_commit, match):
-    wb = get_object_or_404(models.Workbench, id=wb_id)
+def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
+    from .upload.upload import do_upload_wb
+    wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
-    args = [
-        settings.JAVA_PATH,
-        "-Dfile.encoding=UTF-8",
-        "-classpath", shellquote(
-            ":".join((os.path.join(settings.SPECIFY_THICK_CLIENT, jar) for jar in CLASSPATH))
-        ),
-        "edu.ku.brc.specify.tasks.subpane.wb.wbuploader.UploadCmdLine",
-        "-u", shellquote(request.specify_user.name),
-        "-U", shellquote(settings.MASTER_NAME),
-        "-P", shellquote(settings.MASTER_PASSWORD),
-        "-d", shellquote(settings.DATABASE_NAME),
-        "-b", wb_id,
-        "-c", shellquote(request.specify_collection.collectionname),
-        "-w", shellquote(settings.SPECIFY_THICK_CLIENT),
-        "-x", "false" if no_commit else "true",
-        "-k", "true" if match else "false",
-        "-n", shellquote(mul_match_action)
-    ]
 
-    if settings.DATABASE_HOST != '':
-        args.extend(["-h", shellquote(settings.DATABASE_HOST)])
+    result = do_upload_wb(request.specify_collection, wb, no_commit)
 
-    output_file = "%s_%s_%s" % (settings.DATABASE_NAME, wb_id, uuid4())
-    with open(os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file), "w") as f:
-        # we use the shell to start the uploader process to achieve a double
-        # fork so that we don't have to wait() on the child process
-        cmdline = ' '.join(args) + ' 2> >(egrep "(ERROR)|(UploaderException)|(UploaderMatchSkipException)" >&1) &'
-        logger.debug('starting upload w/ cmdline: %s', cmdline)
-        print(cmdline)
-        subprocess.call(['/bin/bash', '-c', cmdline], stdout=f)
-
-    log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
-    for fname in log_fnames:
-        if os.path.join(settings.WB_UPLOAD_LOG_DIR, output_file) != fname:
-            try:
-                os.remove(fname)
-            except:
-                pass
-    return http.HttpResponse(output_file, content_type="text/plain")
-
-
-TIMESTAMP_RE = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
-STARTING_RE = re.compile(r'^(%s): starting' % TIMESTAMP_RE, re.MULTILINE)
-ENDING_RE = re.compile(r'^(%s): \.{3}exiting (.*)$' % TIMESTAMP_RE, re.MULTILINE)
-ROW_RE = re.compile(r'uploading row (\d*)[^\d]')
-PID_RE = re.compile(r'pid = (\d*)')
-NO_COMMIT_RE = re.compile(r'Validating only. Will not commit.')
-SKIPPED_RE = re.compile('^edu.ku.brc.specify.tasks.subpane.wb.wbuploader.UploaderMatchSkipException')
-
-def status_from_log(fname):
-    pid_match    = None
-    start_match  = None
-    ending_match = None
-    no_commit = False
-    last_row = None
-    skipped_count = 0
-
-    with open(fname, 'r', encoding='utf-8') as f:
-        for line in f:
-            if not no_commit and NO_COMMIT_RE.search(line):
-                no_commit = True
-            if pid_match is None:
-                pid_match = PID_RE.match(line)
-            if start_match is None:
-                start_match = STARTING_RE.match(line)
-            if ending_match is None:
-                ending_match = ENDING_RE.match(line)
-
-            row_match = ROW_RE.match(line)
-            if row_match: last_row = int(row_match.group(1))
-
-            if SKIPPED_RE.match(line): skipped_count += 1
-
-    return {
-        'log_name': os.path.basename(fname),
-        'pid': pid_match and pid_match.group(1),
-        'start_time': start_match and start_match.group(1),
-        'last_row': last_row,
-        'end_time': ending_match and ending_match.group(1),
-        'success': ending_match and ending_match.group(2) == 'successfully.',
-        'is_running': pid_match and is_uploader_running(fname, pid_match.group(1)),
-        'no_commit': no_commit,
-        'skipped_rows': skipped_count
-    }
-
-def is_uploader_running(log_fname, uploader_pid):
-    try:
-        return log_fname == os.readlink(os.path.join('/proc', uploader_pid, 'fd/1'))
-    except OSError as e:
-        if e.errno == errno.ENOENT: return False
-        raise e
+    return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
 
 @login_maybe_required
 @require_GET

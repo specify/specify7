@@ -28,10 +28,6 @@ class UploadForm(forms.Form):
     csv_data = forms.CharField(widget=forms.Textarea)
     commit = forms.BooleanField(required=False)
 
-
-class NoCommit(Exception):
-    pass
-
 @login_maybe_required
 @apply_access_control
 def upload(request) -> Any:
@@ -42,14 +38,8 @@ def upload(request) -> Any:
             validate(plan, schema)
             reader = csv.DictReader(io.StringIO(form.cleaned_data['csv_data']))
 
-            try:
-                with transaction.atomic():
-                    result = do_upload_csv(request.specify_collection, reader, parse_plan(request.specify_collection, plan))
-                    if not form.cleaned_data['commit']:
-                        raise NoCommit()
-
-            except NoCommit:
-                pass
+            no_commit = not form.cleaned_data['commit']
+            result = do_upload_csv(request.specify_collection, reader, parse_plan(request.specify_collection, plan), no_commit)
 
             return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
     else:

@@ -38,4 +38,7 @@ runserver:
 webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
 
+typecheck:
+	mypy --follow-imports silent specifyweb/workbench
+
 .FORCE:
