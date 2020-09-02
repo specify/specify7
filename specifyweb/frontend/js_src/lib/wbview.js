@@ -116,7 +116,7 @@ var WBView = Backbone.View.extend({
     events: {
         'click .wb-upload': 'uploadClicked',
         'click .wb-validate': 'validate',
-        //'click .wb-match': 'match',
+        'click .wb-plan': 'openPlan',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
@@ -145,6 +145,9 @@ var WBView = Backbone.View.extend({
 
         this.processUploadStatus();
         return this;
+    },
+    openPlan() {
+        navigation.go(`/workbench-plan/${this.wb.id}/`);
     },
     processUploadStatus: function() {
         if (!this.uploadStatus) return;

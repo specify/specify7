@@ -19,6 +19,7 @@ var tasks = [
     require('./attachmentstask.js'),
     require('./wbtask.js'),
     require('./wbimporttask.js'),
+    require('./wbplantask.js'),
     require('./appresourcetask.js'),
 ];
 

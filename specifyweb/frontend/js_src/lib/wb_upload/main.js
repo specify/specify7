@@ -12,7 +12,7 @@ const initialContext = require('../initialcontext.js');
 const api_endpoint = '../../api/workbench/upload_new/';
 
 
-initialContext.lock().promise().done(() => {
+module.exports = () => {
 
 
 	//initialization
@@ -116,4 +116,4 @@ initialContext.lock().promise().done(() => {
 		else
 			delete e['returnValue'];
 	});
-});
+};
