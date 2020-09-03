@@ -56,8 +56,6 @@ class UploadTable(NamedTuple):
         return FilterPack([filters], [])
 
     def upload_row(self, collection, row: Row) -> UploadResult:
-        logger.debug('uploading row: %s', row)
-
         model = getattr(models, self.name.capitalize())
 
         toOneResults = {

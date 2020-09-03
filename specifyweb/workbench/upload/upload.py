@@ -27,7 +27,6 @@ class NoCommit(Exception):
 def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
     logger.debug('loading rows')
     tuples = load(wb.id)
-    logger.debug('%d rows to upload', len(tuples))
 
     captions = [
         wbtmi.caption for wbtmi in

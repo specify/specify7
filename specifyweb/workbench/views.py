@@ -50,7 +50,7 @@ def load(wb_id: int) -> Sequence[Tuple]:
 
     select_fields = ["r.workbenchrowid"]
     for wbtmi in wbtmis:
-        select_fields.append("cell%d.celldata" % wbtmi.vieworder)
+        select_fields.append("ifnull(cell%d.celldata, '')" % wbtmi.vieworder)
     from_clause = ["workbenchrow r"]
     for wbtmi in wbtmis:
         from_clause.append("left join workbenchdataitem cell%(vieworder)d "
@@ -67,7 +67,7 @@ def load(wb_id: int) -> Sequence[Tuple]:
     ])
     cursor = connection.cursor()
     cursor.execute(sql, [wb_id])
-    return cursor.fetchall()
+    return list(cursor.fetchall())
 
 def load_gt_61_cols(wb_id):
     logger.info("load_gt_61_cols")
@@ -81,7 +81,7 @@ def load_gt_61_cols(wb_id):
     wbtm = cursor.fetchone()[0]
 
     sql = """
-    select r.workbenchrowid, celldata
+    select r.workbenchrowid, ifnull(celldata, '')
     from workbenchrow r
     join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
     left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
