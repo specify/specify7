@@ -51,9 +51,18 @@ class NullRecord(NamedTuple):
     def to_json(self):
         return { 'NullRecord': self._asdict() }
 
+class FailedBusinessRule(NamedTuple):
+    message: str
+
+    def get_id(self) -> Optional[int]:
+        return None
+
+    def to_json(self):
+        return { self.__class__.__name__: self._asdict() }
+
 
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord]
+    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule]
     toOne: Dict[str, Any]
     toMany: Dict[str, Any]
 

@@ -5,9 +5,10 @@ import logging
 from typing import List, Dict, Any, NamedTuple
 
 from specifyweb.specify import models
+from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_value
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule
 from .tomany import ToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,11 @@ class UploadTable(NamedTuple):
             attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
             if any(v is not None for v in attrs.values()) or to_many_filters:
-                uploaded = model.objects.create(**attrs, **self.static)
+                try:
+                    uploaded = model.objects.create(**attrs, **self.static)
+                except BusinessRuleException as e:
+                    return UploadResult(FailedBusinessRule(str(e)), {}, {})
+
                 toManyResults = {
                     fieldname: upload_to_manys(collection, model, uploaded.id, fieldname, records, row)
                     for fieldname, records in self.toMany.items()
