@@ -117,6 +117,7 @@ var WBView = Backbone.View.extend({
         'click .wb-upload': 'upload',
         'click .wb-validate': 'validate',
         'click .wb-plan': 'openPlan',
+        'click .wb-show-plan': 'showPlan',
         'click .wb-delete': 'delete',
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
@@ -148,6 +149,24 @@ var WBView = Backbone.View.extend({
     },
     openPlan() {
         navigation.go(`/workbench-plan/${this.wb.id}/`);
+    },
+    showPlan() {
+        this.wb.rget('workbenchtemplate').done(wbtemplate => {
+            $('<div>').append($('<textarea cols="120" rows="50">').text(wbtemplate.get('remarks'))).dialog({
+                title: "Upload plan",
+                width: 'auto',
+                modal: true,
+                close() { $(this).remove(); },
+                buttons: {
+                    Save() {
+                        wbtemplate.set('remarks', $('textarea', this).val());
+                        wbtemplate.save();
+                        $(this).dialog('close');
+                    } ,
+                    Close() { $(this).dialog('close'); }
+                }
+            });
+        });
     },
     processUploadStatus: function() {
         if (!this.uploadStatus) return;
