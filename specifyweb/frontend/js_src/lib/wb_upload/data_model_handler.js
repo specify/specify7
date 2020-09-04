@@ -17,11 +17,17 @@ const data_model_handler = {
 	* Constructor that get's the references to needed variables from `mappings`. It is called from mappings.constructor
 	* @param {object} ranks - Internal object for storing what ranks are available for particular tables and which ranks are required
 	* @param {array} tables_to_hide - Array of tables that should not be fetched. Also, removes relationships to these tables
+	* @param {string} reference_symbol - String that is used as an indicator of references
+	* @param {string} tree_symbol - String that is used as an indicator of trees
+	* @param {array} required_fields_to_hide - Array of strings that represent official names of fields and relationships that are required and hidden and should remain hidden (required fields can't be hidden otherwise)
 	* */
-	constructor: (ranks, tables_to_hide) => {
+	constructor: (ranks, tables_to_hide, reference_symbol, tree_symbol, required_fields_to_hide) => {
 
 		data_model_handler.ranks = ranks;
 		data_model_handler.tables_to_hide = tables_to_hide;
+		data_model_handler.reference_symbol = reference_symbol;
+		data_model_handler.tree_symbol = tree_symbol;
+		data_model_handler.required_fields_to_hide = required_fields_to_hide;
 
 	},
 
@@ -29,7 +35,7 @@ const data_model_handler = {
 	* Fetches data model.
 	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch: (done_callback) => {
+	fetch_tables: (done_callback) => {
 
 		const tables = [];
 		let data_model_html = '';
@@ -60,8 +66,14 @@ const data_model_handler = {
 
 				field_name = field_name.toLowerCase();
 
-				const is_hidden = field.isHidden() === 1;
-				const is_required = field.isRequired;
+				let is_required = field.isRequired;
+				let is_hidden = field.isHidden() === 1;
+
+				if (is_hidden)//required fields should not be hidden
+					if (data_model_handler.required_fields_to_hide.indexOf(field_name) !== -1)//unless they are present in this list
+						is_required = false;
+					else if (is_required)
+						is_hidden = false;
 
 				if (field['isRelationship']) {
 
@@ -113,7 +125,7 @@ const data_model_handler = {
 
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				data_model_handler.fetch_ranks(table_name,done_callback);
+				data_model_handler.fetch_ranks(table_name, done_callback);
 
 		});
 
@@ -127,7 +139,7 @@ const data_model_handler = {
 		data_model_handler.tables = tables;
 		data_model_handler.data_model_html = data_model_html;
 
-		if(Object.keys(data_model_handler.ranks_queue).length===0)//there aren't any tree's
+		if (Object.keys(data_model_handler.ranks_queue).length === 0)//there aren't any tree's
 			done_callback();//so there is no need to wait for ranks to finish fetching
 
 	},
@@ -137,7 +149,7 @@ const data_model_handler = {
 	* @param {string} table_name - Official table name (from data model)
 	* @param {function} all_ranks_fetched_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_ranks: (table_name,all_ranks_fetched_callback) => {
+	fetch_ranks: (table_name, all_ranks_fetched_callback) => {
 
 		data_model_handler.ranks_queue[table_name] = true;
 
@@ -163,14 +175,14 @@ const data_model_handler = {
 						data_model_handler.ranks_queue[table_name] = false;
 
 						let still_waiting_for_ranks_to_fetch = false;
-						Object.values(data_model_handler.ranks_queue).forEach((is_waiting_for_rank_to_fetch)=>{
-							if(is_waiting_for_rank_to_fetch){
+						Object.values(data_model_handler.ranks_queue).forEach((is_waiting_for_rank_to_fetch) => {
+							if (is_waiting_for_rank_to_fetch) {
 								still_waiting_for_ranks_to_fetch = true;
 								return false;
 							}
 						});
 
-						if(!still_waiting_for_ranks_to_fetch)//the queue is empty and all ranks where fetched
+						if (!still_waiting_for_ranks_to_fetch)//the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback(data_model_handler.data_model_html, data_model_handler.tables);
 
 					});
@@ -194,7 +206,83 @@ const data_model_handler = {
 		});
 
 		return result;
-	}
+	},
+
+	show_required_missing_ranks: (table_name, mapping_tree, treat_as_regular_relationship = false, path = [], results = []) => {
+
+		if(path.length===0)//detect first run
+			path = [table_name];
+
+		const table_data = data_model_handler.tables[table_name];
+		const missing_fields = [];
+
+		const list_of_mapped_fields = Object.keys(mapping_tree);
+
+		if(list_of_mapped_fields.length>1 && !treat_as_regular_relationship){
+
+			//handle -to-many references
+			if(list_of_mapped_fields[0].substr(0,data_model_handler.reference_symbol.length)===data_model_handler.reference_symbol) {
+				list_of_mapped_fields.forEach((mapped_field_name) => {
+					const local_path = path.slice();
+					local_path.push(mapped_field_name);
+					data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], true, local_path, results);
+				});
+				return results;
+			}
+
+			//handle trees
+			else if(typeof data_model_handler.ranks[table_name] !== "undefined") {
+				Object.keys(data_model_handler.ranks[table_name]).forEach((rank_name) => {
+					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
+
+					if(list_of_mapped_fields.indexOf(rank_name) !== -1){
+						const local_path = path.slice();
+						local_path.push(rank_name);
+						data_model_handler.show_required_missing_ranks(table_name, mapping_tree[rank_name], true, local_path, results);
+					}
+					else if(is_rank_required)
+						missing_fields.push(results);
+
+				});
+				return results;
+			}
+		}
+
+		Object.keys(table_data['fields']).forEach((field_name) => {
+
+			const field_data = table_data['fields'][field_name];
+
+			if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
+				missing_fields.push(results);
+
+		});
+
+		Object.keys(table_data['relationships']).forEach((relationship_name) => {
+
+			const relationship_data = table_data['relationships'][relationship_name];
+
+			if(list_of_mapped_fields.indexOf(relationship_name) !== -1){
+
+				const table_name = relationship_data['table_name'];
+
+				const local_path = path.slice();
+				local_path.push(relationship_name);
+				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[relationship_name], false, local_path, results);
+
+			}
+			else if(relationship_data['is_required'])
+				missing_fields.push(results);
+		});
+
+		missing_fields.forEach((key_name) => {
+			const local_path = path.slice();
+			local_path.push(key_name);
+			results.push(local_path);
+		});
+
+		return results;
+
+	},
 
 };
 

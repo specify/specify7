@@ -179,7 +179,7 @@ const tree_helpers = {
 
 				result.push([mapping_type, tree_node, local_path]);
 			} else
-				result = tree_helpers.mappings_tree_to_array_of_mappings(tree_node, result, local_path);
+				tree_helpers.mappings_tree_to_array_of_mappings(tree_node, result, local_path);
 		});
 
 		return result;

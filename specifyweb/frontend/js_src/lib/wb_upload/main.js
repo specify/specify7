@@ -59,70 +59,7 @@ const main = {
 		mappings.auto_mapper_run = auto_mapper.map;
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree;
 
-		//CONFIG
-
-		if(!main.constructor_has_run)
-			main.constructor_first_run();
-		else
-			mappings.list__tables.innerHTML = mappings.data_model_html;
-
-
-		return mappings.set_headers;
-
-	},
-
-	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run: () => {
-
-		mappings.ranks = {};
-
-		main.config();//get configuration
-
-		//INITIALIZATION
-
-		//build list of tables to exclude
-		mappings.tables_to_hide = [
-			'definition',
-			'definitionitem',
-			'geographytreedef',
-			'geologictimeperiodtreedef',
-			'treedef'
-		];
-		mappings.tables_to_hide = [...mappings.tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
-
-		//fetch data model
-		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide);
-		data_model_handler.fetch((data_model_html, tables) => {
-
-			mappings.data_model_html = data_model_html;
-			mappings.list__tables.innerHTML = data_model_html;
-
-			auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
-
-			mappings.new_header_id = 1;
-			mappings.tables = tables;
-
-			main.constructor_has_run = true;
-
-
-			//initialize dependencies
-			upload_plan_converter.constructor(
-				() => {
-					return mappings.base_table_name;
-				},
-				(base_table_name) => {
-					mappings.base_table_name = base_table_name;
-				},
-				mappings.tree_symbol,
-				mappings.reference_symbol,
-				mappings.get_mappings_tree,
-				mappings.ranks,
-				mappings.tables,
-			);
-
-		});
-
-
+		//setting event listeners
 		//setting event listeners
 
 		mappings.button__change_table.addEventListener('click', mappings.reset_table);
@@ -162,6 +99,84 @@ const main = {
 				mappings.set_table(event);
 		});
 
+		//CONFIG
+
+		if(!main.constructor_has_run)
+			main.constructor_first_run();
+		else
+			mappings.list__tables.innerHTML = mappings.data_model_html;
+
+
+		return mappings.set_headers;
+
+	},
+
+	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
+	constructor_first_run: () => {
+
+		mappings.ranks = {};
+
+		main.config();//get configuration
+
+		//INITIALIZATION
+
+		//build list of tables to exclude
+		mappings.tables_to_hide = [
+			'definition',
+			'definitionitem',
+			'geographytreedef',
+			'geologictimeperiodtreedef',
+			'treedef'
+		];
+		mappings.tables_to_hide = [...mappings.tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
+
+		//all required fields are not hidden, except for these, which are made not required
+		mappings.required_fields_to_hide = [
+			'timestampcreated',
+			'collectionmemberid',
+			'rankid',
+			'defintion',
+			'definitionitem',
+			'ordernumber',
+			'isprimary',
+			'isaccepted',
+			'treedef',
+		];
+
+		//fetch data model
+		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
+		data_model_handler.fetch_tables((data_model_html, tables) => {
+
+			mappings.data_model_html = data_model_html;
+			mappings.list__tables.innerHTML = data_model_html;
+
+			auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
+
+			mappings.new_header_id = 1;
+			mappings.tables = tables;
+
+			main.constructor_has_run = true;
+
+
+			//initialize dependencies
+			upload_plan_converter.constructor(
+				() => {
+					return mappings.base_table_name;
+				},
+				(base_table_name) => {
+					mappings.base_table_name = base_table_name;
+				},
+				mappings.tree_symbol,
+				mappings.reference_symbol,
+				mappings.get_mappings_tree,
+				mappings.ranks,
+				mappings.tables,
+			);
+
+		});
+
+
+		//stopping accidental page reload
 		window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is mapping in progress
 			if (typeof mappings.list__tables_scroll_postion !== "undefined") {
 				e.preventDefault();

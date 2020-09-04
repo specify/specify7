@@ -159,26 +159,42 @@ const mappings = {
 
 			const temp_table_rows = fields.concat(relationships).sort();
 
+			const optional_table_rows = [];
+			const required_table_rows = [];
+
 			temp_table_rows.forEach((row_key) => {
 
 				let class_append = [];
 				let row_name;
+				let is_required = false;
 
 				if (typeof table_data['fields'][row_key] !== 'undefined') {
 					row_name = table_data['fields'][row_key]['friendly_field_name'];
 
-					if (table_data['fields'][row_key]['is_required'])
-						class_append.push('required');
+					is_required = table_data['fields'][row_key]['is_required'];
 				} else {
 					row_name = mappings.reference_indicator + table_data['relationships'][row_key]['friendly_relationship_name'];
 					class_append.push('relationship');
+
+					is_required = table_data['relationships'][row_key]['is_required'];
 				}
+
+				if (is_required)
+					class_append.push('required');
 
 				class_append = class_append.join(' ');
 
-				rows_html += html_generator.new_base_field(row_key, row_name, false, class_append);
+				const data = html_generator.new_base_field(row_key, row_name, false, class_append)
+				//rows_html += ;
+
+				if(is_required)
+					required_table_rows.push(data);
+				else
+					optional_table_rows.push(data);
 
 			});
+
+			rows_html = [...required_table_rows,...optional_table_rows].join('');
 
 		}
 
@@ -425,6 +441,11 @@ const mappings = {
 		const result_fields = [];
 
 
+		let relationship_type;
+		if (previous_table !== '')
+			relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
+
+
 		let mapped_nodes = mappings.get_mapped_children(current_line);
 
 		const ranks = mappings.ranks[table_name];
@@ -435,11 +456,7 @@ const mappings = {
 					result_fields.push([mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true]);
 				});
 
-			let relationship_type;
-			if (previous_table !== '')
-				relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
-
-			if (result_fields.length === 0 && (relationship_type === 'one-to-many' || relationship_type === 'many-to-many')) {
+			if (result_fields.length === 0 && (relationship_type.indexOf('-to-many') !== -1)) {
 				let mapped_nodes_count = mapped_nodes.length;
 
 				if (mapped_nodes === false)
@@ -467,7 +484,7 @@ const mappings = {
 
 				const field_name = field_data['friendly_field_name'];
 				const enabled = !mapped_nodes.includes(field_key);
-				rows[field_name] = [field_key, enabled, 'field'];
+				rows[field_name] = [field_key, enabled, 'field', field_data['is_required']];
 
 			});
 
@@ -475,23 +492,38 @@ const mappings = {
 				const relationship_data = mappings.tables[table_name]['relationships'][relationship_key];
 
 				const is_field_hidden = relationship_data['is_hidden'];
-				if (is_field_hidden && mappings.hide_hidden_fields)
+
+				if (
+					(//hide fields designated as hidden when `hide_hidden_fields` is checked
+						is_field_hidden &&
+						mappings.hide_hidden_fields
+					) ||
+					(//hide -to-many relationships inside of -to-many relationships
+						relationship_type.indexOf('-to-many') !== -1 &&
+						relationship_data['type'].indexOf('-to-many') !== -1
+					) ||
+					(//disables circular relationships
+						relationship_data['foreign_name'] !== foreign_name ||
+						relationship_data['table_name'] !== previous_table
+					)
+				)
 					return true;
 
 				const relationship_name = relationship_data['friendly_relationship_name'];
-				const enabled = //disables circular relationships
-					relationship_data['foreign_name'] !== foreign_name ||
-					relationship_data['table_name'] !== previous_table;
-				rows[relationship_name] = [relationship_key, enabled, 'relationship'];
+				rows[relationship_name] = [relationship_key, true, 'relationship', relationship_data['is_required']];
 			});
+
+			const required_fields = [];
+			const optional_fields = [];
 
 			Object.keys(rows).sort().forEach((row_name) => {
 
 				let row_key;
 				let row_enabled;
 				let row_type;
+				let is_required;
 
-				[row_key, row_enabled, row_type] = rows[row_name];
+				[row_key, row_enabled, row_type, is_required] = rows[row_name];
 
 				if (row_type === 'relationship')
 					row_name = mappings.reference_indicator + row_name;
@@ -502,9 +534,17 @@ const mappings = {
 				)
 					row_enabled = false;
 
-				result_fields.push([row_key, row_name, row_enabled]);
+				const result = [row_key, row_name, row_enabled];
+
+				if(is_required)
+					required_fields.push(result);
+				else
+					optional_fields.push(result);
 
 			});
+
+			return html_generator.new_relationship_fields(table_name, optional_fields, required_fields);
+
 		}
 
 		return html_generator.new_relationship_fields(table_name, result_fields);

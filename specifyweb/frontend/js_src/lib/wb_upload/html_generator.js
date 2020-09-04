@@ -86,15 +86,19 @@ const html_generator = {
 	/*
 	* Generates HTML for relationship with depth of 2 or more (by creating <select> element)
 	* @param {string} table_name - Official name of the parent table this relationship belongs to (from data model)
-	* @param {array} fields_array - Array of fields. Format: [field_value, field_name, is_enabled]
+	* @param {array} fields_array - Array of optional fields. Format: [field_value, field_name, is_enabled]
 	* 								{string} Official name of the field (from data model)
 	* 								{string} Human-friendly field name (from schema_localization or helper.get_friendly_name())
 	* 								{bool} Whether this field is enabled
+	* @param {array} required_fields_array - same as fields_array, but consists of required fields
 	* @return {string} HTML for relationship with depth of 2 or more
 	* */
-	new_relationship_fields: (table_name,fields_array) => {
+	new_relationship_fields: (table_name,fields_array,required_fields_array=[]) => {
 
 		let fields_html = '';
+
+		if(required_fields_array.length !== 0)
+			fields_array = [[0,'Required fields:', false],...required_fields_array,[0,'Optional fields:', false],...fields_array]
 
 		fields_array.forEach((field_data)=>{
 
