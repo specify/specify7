@@ -23,7 +23,7 @@
     "jquery-deparam": "~0.4.2",
     "jquery-ui": "~1.10.5",
     "moment": "~2.10.6",
-    "papaparse": "~4.1.2",
+    "papaparse": "~5.3.0",
     "q": "~1.4.1",
     "underscore": "~1.8.3"
   },
