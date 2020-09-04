@@ -1,4 +1,4 @@
-
+from contextlib import contextmanager
 import logging
 import csv
 import json
@@ -20,9 +20,17 @@ Rows = Union[Iterable[Row], csv.DictReader]
 
 logger = logging.getLogger(__name__)
 
-
 class Rollback(Exception):
     pass
+
+@contextmanager
+def savepoint():
+    try:
+        with transaction.atomic():
+            yield
+    except Rollback:
+        pass
+
 
 def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
     logger.debug('loading rows')
@@ -46,27 +54,18 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 
 
 def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=False) -> List[UploadResult]:
-    try:
-        with transaction.atomic():
-            results = []
-            for row in rows:
-                try:
-                    with transaction.atomic():
-                        result = upload_plan.upload_row(collection, row)
-                        results.append(result)
-                        if result.contains_failure():
-                            raise Rollback()
-                except Rollback:
-                    pass
-
-
-            fixup_trees()
+    with savepoint():
+        results = []
+        for row in rows:
+            with savepoint():
+                result = upload_plan.upload_row(collection, row)
+                results.append(result)
+                if result.contains_failure():
+                    raise Rollback()
+        fixup_trees()
 
         if no_commit:
             raise Rollback()
-
-    except Rollback:
-        pass
 
     return results
 
