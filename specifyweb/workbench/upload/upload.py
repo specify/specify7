@@ -7,7 +7,7 @@ from jsonschema import validate # type: ignore
 
 from typing import List, Dict, Iterable, Union
 
-from django.db import transaction
+from django.db import connection, transaction
 
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
@@ -50,7 +50,15 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
     upload_plan = parse_plan(collection, plan)
 
     no_commit = True
-    return do_upload(collection, rows, upload_plan, no_commit)
+    results = do_upload(collection, rows, upload_plan, no_commit)
+
+    cursor = connection.cursor()
+    for t, r in zip(tuples, results):
+        cursor.execute(
+            "update workbenchrow set bioGeomancerResults = %s where workbenchrowid = %s",
+            (json.dumps(r.to_json()), t[0])
+        )
+    return results
 
 
 def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=False) -> List[UploadResult]:
