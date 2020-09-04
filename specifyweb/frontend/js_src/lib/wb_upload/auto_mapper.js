@@ -2,9 +2,20 @@
 
 const raw_auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
 
+/*
+*
+* Auto mapper than takes data model and header names and returns possible mappings
+*
+* */
 const auto_mapper = {
 
-	//get data model and ranks
+	/*
+	* Constructor that get's the references to needed variables from `mappings`. It is called from mappings.constructor
+	* @param {object} tables - Internal object for storing data model
+	* @param {object} ranks - Internal object for storing what ranks are available for particular tables and which ranks are required
+	* @param {string} reference_symbol - A symbol or a string that is to be used to identify a tree node as a reference
+	* @param {string} reference_symbol - A symbol or a string that is to be used to identify a tree node as a tree
+	* */
 	constructor: (tables, ranks, reference_symbol, tree_symbol) => {
 
 		auto_mapper.tables = tables;
@@ -46,7 +57,15 @@ const auto_mapper = {
 
 	},
 
-	//find mapping for each header
+	/*
+	* Method that would be used by external classes to match headers to possible mappings
+	* @param {array} raw_headers - Array of strings that represent headers
+	* @param {string} base_table - Official name of the base table from data model
+	* @return {object} Returns object with mapping results
+	* For example, result may look like:
+	* 	Accession Number -> [Accession, Accession Number]
+	* 	Agent Type -> [Accession, Accession Agents, #1, Agent, Agent Type]
+	* */
 	map: (raw_headers, base_table) => {
 
 		const headers = {};
@@ -109,6 +128,12 @@ const auto_mapper = {
 
 	},
 
+	/*
+	* Used internally to loop though each field of a particular table and try to match them to unmapped headers
+	* This method iterates over the same table only once
+	* @param {string} table_name - Official name of the base table from data model
+	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
+	* */
 	find_mappings: (table_name, path = []) => {
 
 		if (
@@ -135,7 +160,7 @@ const auto_mapper = {
 
 					const field_data = fields[field_name];
 
-					if(field_data['is_hidden']===true)
+					if (field_data['is_hidden'] === true)
 						return true;//skip hidden fields
 
 					const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
@@ -161,7 +186,7 @@ const auto_mapper = {
 								striped_rank_name + ' ' + friendly_field_name === stripped_name ||
 								striped_rank_name + ' ' + field_name === final_name
 							)
-						){
+						) {
 							auto_mapper.make_mapping(path, [final_rank_name, field_name], header_name);
 							return false;//don't search for further mappings for this field since we can only
 							//map a single header to the same field
@@ -180,7 +205,7 @@ const auto_mapper = {
 
 			const field_data = fields[field_name];
 
-			if(field_data['is_hidden']===true)
+			if (field_data['is_hidden'] === true)
 				return true;//skip hidden fields
 
 			//search in definitions
@@ -264,7 +289,7 @@ const auto_mapper = {
 
 			const relationship_data = relationships[relationship_key];
 
-			if(relationship_data['is_hidden']===true)
+			if (relationship_data['is_hidden'] === true)
 				return true;//skip hidden relationships
 
 			const local_path = path.slice();
@@ -275,13 +300,13 @@ const auto_mapper = {
 
 			const new_depth_level = local_path.length;
 
-			if(new_depth_level>auto_mapper.depth)
+			if (new_depth_level > auto_mapper.depth)
 				return true;
 
 			if (typeof auto_mapper.find_mappings_queue[new_depth_level] === "undefined")
 				auto_mapper.find_mappings_queue[new_depth_level] = {};
 
-			if(
+			if (
 				typeof auto_mapper.find_mappings_queue[new_depth_level][relationship_data['table_name']] !== "undefined" ||
 				auto_mapper.searched_tables.indexOf(relationship_data['table_name']) !== -1
 			)
@@ -293,6 +318,14 @@ const auto_mapper = {
 
 	},
 
+	/*
+	* Used to check if the table's field is already mapped and if not, makes a new mapping
+	* Also, handles -to-many relationships by creating new objects
+	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
+	* @param {array} new_path_parts - Elements that should be pushed into `path`
+	* @param {string} header_name - The name of the header that should be mapped
+	* @return {bool} Whether mapping was made. Mapping fails if field is inside of a -to-one relationship or direct child of base table and is already mapped
+	* */
 	make_mapping: (path, new_path_parts, header_name) => {
 
 		const local_path = path.slice();

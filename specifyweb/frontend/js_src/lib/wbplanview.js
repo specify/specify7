@@ -8,6 +8,7 @@ const Backbone = require('./backbone.js');
 const template = require('./templates/wb_upload/main.html');
 const navigation = require('./navigation.js');
 const mappings = require('./wb_upload/mappings.js');
+const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
 
 
 const PlanView = Backbone.View.extend({
@@ -41,7 +42,15 @@ const PlanView = Backbone.View.extend({
                     .then(mappings => _.invoke(mappings, 'get', 'caption'))
                     .done(headers => {
                         mappings.constructor();
-                        mappings.set_headers(headers, upload_plan);
+
+                        function wait_for_constructor_to_finish(){
+                            if(typeof mappings.tables === "undefined")
+                                setTimeout(wait_for_constructor_to_finish,10);
+                            else
+                                mappings.set_headers(headers, upload_plan);
+                        }
+                        wait_for_constructor_to_finish();
+
                     });
             });
     },
@@ -55,7 +64,7 @@ const PlanView = Backbone.View.extend({
         this.wbtemplatePromise.done(wbtemplate => {
 
             if(commit_changes)
-                wbtemplate.set('remarks', mappings.get_upload_plan());
+                wbtemplate.set('remarks', upload_plan_converter.get_upload_plan());
 
             wbtemplate.save().done(() => {
                 navigation.go(`/workbench/${this.wb.id}/`);
