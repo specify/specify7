@@ -404,20 +404,11 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
-        if (this.matchWithValidate) {
-            this.validateWithMatch();
-        } else {
-            this.validateNoMatch();
-        }
-    },
-    validateNoMatch: function() {
-        this.checkUploaderLock('Validator', () => {
-            $.post('/api/workbench/validate/' + this.wb.id + '/' + this.multiMatchSetting + '/').fail(jqxhr => {
-                this.checkDeletedFail(jqxhr);
-                this.closeUploadProgress();
-            });
-            this.openUploadProgress();
+        $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
+            this.checkDeletedFail(jqxhr);
+            // this.closeUploadProgress();
         });
+        // this.openUploadProgress();
     },
     validateWithMatch: function() {
         this.checkUploaderLock('Validator', () => {
