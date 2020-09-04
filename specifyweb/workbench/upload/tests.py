@@ -11,7 +11,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
-from .data import Uploaded, UploadResult, Matched, Exclude
+from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule
 from .upload_table import UploadTable, to_many_filters_and_excludes
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
@@ -396,7 +396,7 @@ class UploadTests(ApiTests):
         upload_results = do_upload_csv(self.collection, reader, self.example_plan)
         uploaded_catnos = []
         for r in upload_results:
-            self.assertTrue(isinstance(r.record_result, Uploaded))
+            self.assertIsInstance(r.record_result, Uploaded)
             co = get_table('Collectionobject').objects.get(id=r.record_result.get_id())
             uploaded_catnos.append(co.catalognumber)
 
@@ -568,7 +568,7 @@ class UploadTests(ApiTests):
         )
 
         upload_result = tree_record.upload_row(self.collection, row)
-        self.assertTrue(isinstance(upload_result.record_result, Uploaded))
+        self.assertIsInstance(upload_result.record_result, Uploaded)
 
         uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
         self.assertEqual(uploaded.name, "Hendry Co.")
@@ -601,3 +601,36 @@ class UploadTests(ApiTests):
 
         for k, v in tests.items():
             self.assertEqual(parse_coord(k), v)
+
+    def test_rollback_bad_rows(self) -> None:
+        reader = csv.DictReader(io.StringIO(
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
+1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1365,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+'''))
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        failed_result = upload_results[2]
+        self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
+        for result in upload_results:
+            if result is not failed_result:
+                self.assertIsInstance(result.record_result, Uploaded)
+                self.assertEqual(1, get_table('collectionobject').objects.filter(id=result.get_id()).count())
+
+        ce_result = failed_result.toOne['collectingevent']
+        self.assertIsInstance(ce_result.record_result, Uploaded)
+        self.assertEqual(0, get_table('Collectingevent').objects.filter(id=ce_result.get_id()).count())
+
+        loc_result = ce_result.toOne['locality']
+        self.assertIsInstance(loc_result.record_result, Uploaded)
+        self.assertEqual(0, get_table('locality').objects.filter(id=loc_result.get_id()).count())
+
+        geo_result = loc_result.toOne['geography']
+        self.assertIsInstance(geo_result.record_result, Uploaded)
+        self.assertEqual(0, get_table('geography').objects.filter(id=geo_result.get_id()).count())
+
+        collector_result = ce_result.toMany['collectors'][0]
+        self.assertIsInstance(collector_result.record_result, Uploaded)
+        self.assertEqual(0, get_table('collector').objects.filter(id=collector_result.get_id()).count())
+

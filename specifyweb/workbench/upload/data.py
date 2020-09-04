@@ -21,6 +21,9 @@ class Uploaded(NamedTuple):
     def get_id(self) -> Optional[int]:
         return self.id
 
+    def is_failure(self) -> bool:
+        return False
+
     def to_json(self):
         return { 'Uploaded': self._asdict() }
 
@@ -30,6 +33,9 @@ class Matched(NamedTuple):
 
     def get_id(self) -> Optional[int]:
         return self.id
+
+    def is_failure(self) -> bool:
+        return False
 
     def to_json(self):
         return { 'Matched': self._asdict() }
@@ -41,12 +47,18 @@ class MatchedMultiple(NamedTuple):
     def get_id(self) -> Optional[int]:
         return self.ids[0]
 
+    def is_failure(self) -> bool:
+        return True
+
     def to_json(self):
         return { 'MatchedMultiple': self._asdict() }
 
 class NullRecord(NamedTuple):
     def get_id(self) -> Optional[int]:
         return None
+
+    def is_failure(self) -> bool:
+        return False
 
     def to_json(self):
         return { 'NullRecord': self._asdict() }
@@ -56,6 +68,9 @@ class FailedBusinessRule(NamedTuple):
 
     def get_id(self) -> Optional[int]:
         return None
+
+    def is_failure(self) -> bool:
+        return True
 
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
@@ -68,6 +83,12 @@ class UploadResult(NamedTuple):
 
     def get_id(self) -> Optional[int]:
         return self.record_result.get_id()
+
+    def contains_failure(self) -> bool:
+        return ( self.record_result.is_failure()
+                 or any(result.contains_failure() for result in self.toOne.values())
+                 or any(result.contains_failure() for results in self.toMany.values() for result in results)
+        )
 
     def to_json(self):
         return { 'UploadResult': {

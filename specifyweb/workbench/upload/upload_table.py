@@ -94,7 +94,7 @@ class UploadTable(NamedTuple):
                 try:
                     uploaded = model.objects.create(**attrs, **self.static)
                 except BusinessRuleException as e:
-                    return UploadResult(FailedBusinessRule(str(e)), {}, {})
+                    return UploadResult(FailedBusinessRule(str(e)), toOneResults, {})
 
                 toManyResults = {
                     fieldname: upload_to_manys(collection, model, uploaded.id, fieldname, records, row)

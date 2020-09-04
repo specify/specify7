@@ -21,7 +21,7 @@ Rows = Union[Iterable[Row], csv.DictReader]
 logger = logging.getLogger(__name__)
 
 
-class NoCommit(Exception):
+class Rollback(Exception):
     pass
 
 def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
@@ -48,19 +48,27 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=False) -> List[UploadResult]:
     try:
         with transaction.atomic():
-            result = [
-                upload_plan.upload_row(collection, row)
-                for row in rows
-            ]
+            results = []
+            for row in rows:
+                try:
+                    with transaction.atomic():
+                        result = upload_plan.upload_row(collection, row)
+                        results.append(result)
+                        if result.contains_failure():
+                            raise Rollback()
+                except Rollback:
+                    pass
+
+
             fixup_trees()
 
         if no_commit:
-            raise NoCommit()
+            raise Rollback()
 
-    except NoCommit:
+    except Rollback:
         pass
 
-    return result
+    return results
 
 do_upload_csv = do_upload
 
