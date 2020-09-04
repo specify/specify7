@@ -7,7 +7,7 @@ const _ = require('underscore');
 const Backbone = require('./backbone.js');
 const template = require('./templates/wb_upload/main.html');
 const navigation = require('./navigation.js');
-const mappings = require('./wb_upload/mappings.js');
+const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
 
 
@@ -17,7 +17,7 @@ const PlanView = Backbone.View.extend({
     __name__: "PlanView",
     events: {
         'click #button__save_upload_plan': 'save_plan',
-        'click #button__mappings_cancel': 'go_back',
+        'click #button__discard_changes': 'go_back',
     },
 
     initialize({wb}) {
@@ -41,13 +41,14 @@ const PlanView = Backbone.View.extend({
                     .then(mappings => _['sortBy'](mappings.models, mapping => mapping.get('viewOrder')))
                     .then(mappings => _.invoke(mappings, 'get', 'caption'))
                     .done(headers => {
-                        mappings.constructor();
+
+                        const set_headers = mappings_main.constructor();
 
                         function wait_for_constructor_to_finish(){
-                            if(typeof mappings.tables === "undefined")
+                            if(!mappings_main.constructor_has_run)
                                 setTimeout(wait_for_constructor_to_finish,10);
                             else
-                                mappings.set_headers(headers, upload_plan);
+                                set_headers(headers, upload_plan);
                         }
                         wait_for_constructor_to_finish();
 

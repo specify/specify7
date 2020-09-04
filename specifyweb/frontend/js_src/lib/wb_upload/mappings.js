@@ -1,151 +1,9 @@
 "use strict";
-const auto_mapper = require('./auto_mapper.js');
-const upload_plan_converter = require('./upload_plan_converter.js');
 const tree_helpers = require('./tree_helpers.js');
 const dom_helper = require('./dom_helper.js');
-const data_model_handler = require('./data_model_handler.js');
 const html_generator = require('./html_generator.js');
 
 const mappings = {
-
-
-	//CONFIGURATORS
-
-	/*
-	* Constructor that finds needed elements, calls constructors for dependencies and fetches data model
-	* */
-	constructor: () => {
-
-
-		//FINDING ELEMENTS
-
-		// column data model
-		mappings.title__table_name = document.getElementById('title__table_name');
-		mappings.button__change_table = document.getElementById('button__change_table');
-		mappings.list__tables = document.getElementById('list__tables');
-		mappings.list__data_model = document.getElementById('list__data_model');
-		mappings.lines = mappings.list__data_model.getElementsByTagName('input');
-
-
-		// column controls
-		mappings.button__map = document.getElementById('button__map');
-		mappings.button__delete = document.getElementById('button__delete');
-
-
-		// column headers
-		mappings.list__headers = document.getElementById('list__headers');
-		mappings.button__new_field = document.getElementById('button__new_field');
-		mappings.control_line__new_header = document.getElementById('control_line__new_header');
-		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
-		mappings.headers = mappings.list__headers.getElementsByTagName('input');
-
-
-		//CONFIG
-		mappings.hide_hidden_fields = true;
-		mappings.need_to_run_auto_mapper = true;
-		mappings.raw_headers = [];
-		mappings.base_table_name = undefined;
-		mappings.selected_field = undefined;
-		mappings.ranks = {};
-
-		mappings.reference_indicator = '> ';
-		mappings.level_separator = '_';
-		mappings.friendly_level_separator = ' > ';
-		mappings.reference_symbol = '#';
-		mappings.tree_symbol = '$';
-
-
-		//INITIALIZATION
-
-		//build list of tables to exclude
-		mappings.tables_to_hide = [
-			'definition',
-			'definitionitem',
-			'geographytreedef',
-			'geologictimeperiodtreedef',
-			'treedef'
-		];
-		mappings.tables_to_hide = [...mappings.tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
-
-		//fetch data model
-		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide);
-		data_model_handler.fetch((data_model_html, tables) => {
-
-			mappings.list__tables.innerHTML = data_model_html;
-
-			auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
-
-			mappings.new_header_id = 1;
-			mappings.tables = tables;
-
-
-			//initialize dependencies
-			upload_plan_converter.constructor(
-				() => {
-					return mappings.base_table_name;
-				},
-				(base_table_name) => {
-					mappings.base_table_name = base_table_name;
-				},
-				mappings.tree_symbol,
-				mappings.reference_symbol,
-				mappings.get_mappings_tree,
-				mappings.ranks,
-				mappings.tables,
-			);
-
-		});
-
-
-		//setting event listeners
-
-		mappings.button__change_table.addEventListener('click', mappings.reset_table);
-
-		mappings.button__map.addEventListener('click', mappings.map_field_callback);
-		mappings.button__delete.addEventListener('click', mappings.unmap_field_callback);
-
-		mappings.control_line__new_header.addEventListener('change', mappings.change_selected_header);
-		mappings.control_line__new_static_header.addEventListener('change', mappings.change_selected_header);
-
-		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
-			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
-			mappings.cycle_though_fields();
-		});
-
-		mappings.list__data_model.addEventListener('change', (event) => {
-			if (event.target && event.target.classList.contains('radio__field'))
-				mappings.change_selected_field(event);
-			else if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
-		});
-
-		mappings.list__data_model.addEventListener('focus', (event) => {
-			if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
-		});
-
-		mappings.list__headers.addEventListener('change', (event) => {
-			if (event.target && event.target['classList'].contains('radio__header'))
-				mappings.change_selected_header(event);
-			else if (event.target && event.target['tagName'] === 'TEXTAREA')
-				mappings.changes_made = true;
-		});
-
-		mappings.list__tables.addEventListener('change', (event) => {
-			if (event.target && event.target['classList'].contains('radio__table'))
-				mappings.set_table(event);
-		});
-
-		window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is mapping in progress
-			if (typeof mappings.list__tables_scroll_postion !== "undefined") {
-				e.preventDefault();
-				e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';//this message won't be displayed in most browsers
-			} else
-				delete e['returnValue'];
-		});
-
-
-	},
 
 
 	/*
@@ -346,7 +204,7 @@ const mappings = {
 		mappings.changes_made = true;
 
 		if (mappings.need_to_run_auto_mapper) {
-			const mappings_object = auto_mapper.map(mappings.raw_headers, mappings.base_table_name);
+			const mappings_object = mappings.auto_mapper_run(mappings.raw_headers, mappings.base_table_name);
 			const array_of_mappings = [];
 			Object.keys(mappings_object).forEach((header_name) => {
 				const mapping_path = mappings_object[header_name];
@@ -393,7 +251,7 @@ const mappings = {
 
 			mappings.set_table({target: radio});
 
-			mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(upload_plan_object);
+			mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan_object);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
 			mappings.implement_array_of_mappings(array_of_mappings);
 		}
@@ -673,6 +531,12 @@ const mappings = {
 
 	},
 
+	/* Returns a mappings path for a particular control element
+	* @param {DOMElement} [target_field=undefined] Control element (input or select). mappings.selected_field is used if undefined
+	* @return {array} Returns array of strings that represent the mapping path
+	* Example output:
+	* 	['Accession','Accession Agents','#1', 'Remarks']
+	* */
 	get_field_path: (target_field = undefined) => {
 
 		const path = [];
