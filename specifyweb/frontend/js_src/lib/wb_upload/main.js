@@ -50,6 +50,11 @@ const main = {
 		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
 		mappings.headers = mappings.list__headers.getElementsByTagName('input');
 
+		// control elements
+		main.validation_results = document.getElementById('validation_results');
+		main.validation_results_message = document.getElementById('validation_results_message');
+		main.close_validation_results = document.getElementById('close_validation_results');
+
 		mappings.hide_hidden_fields = true;
 		mappings.need_to_run_auto_mapper = true;
 		mappings.raw_headers = [];
@@ -60,7 +65,10 @@ const main = {
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree;
 
 		//setting event listeners
-		//setting event listeners
+
+		main.close_validation_results.addEventListener('click',()=>{
+			main.validation_results.style.display='none';
+		})
 
 		mappings.button__change_table.addEventListener('click', mappings.reset_table);
 
@@ -184,6 +192,29 @@ const main = {
 			} else
 				delete e['returnValue'];
 		});
+
+	},
+
+	/*
+	* Validates the current mapping and shows error messages if needed
+	* */
+	validate: ()=>{
+
+		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name,mappings.get_mappings_tree());
+
+		if(validation_results.length===0)
+			return true;
+
+		const field_locations = [];
+
+		validation_results.map(field_path => field_locations.push(mappings.get_friendly_field_path(field_path).join(mappings.friendly_level_separator)));
+
+		const validation_message = 'Please make sure to map the following required fields before proceeding:<br>'+field_locations.join('<br>');
+
+		main.validation_results.style.display = '';
+		main.validation_results_message.innerHTML = validation_message;
+
+		return validation_results;
 
 	},
 

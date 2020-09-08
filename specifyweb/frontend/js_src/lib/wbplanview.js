@@ -57,8 +57,12 @@ const PlanView = Backbone.View.extend({
     },
     save_plan(event) {
 
-        event.currentTarget.setAttribute('disabled', 'disabled');
-        this.go_back(event,true);
+        if(typeof mappings_main.validate() === "boolean"){
+
+            this.go_back(event,true);
+            event.currentTarget.setAttribute('disabled', 'disabled');
+
+        }
 
     },
     go_back(event,commit_changes=false){

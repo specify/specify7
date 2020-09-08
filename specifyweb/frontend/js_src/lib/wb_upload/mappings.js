@@ -503,8 +503,8 @@ const mappings = {
 						relationship_data['type'].indexOf('-to-many') !== -1
 					) ||
 					(//disables circular relationships
-						relationship_data['foreign_name'] !== foreign_name ||
-						relationship_data['table_name'] !== previous_table
+						relationship_data['foreign_name'] === foreign_name &&
+						relationship_data['table_name'] === previous_table
 					)
 				)
 					return true;

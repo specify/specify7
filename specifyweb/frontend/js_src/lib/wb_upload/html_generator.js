@@ -98,14 +98,13 @@ const html_generator = {
 		let fields_html = '';
 
 		if(required_fields_array.length !== 0)
-			fields_array = [[0,'Required fields:', false],...required_fields_array,[0,'Optional fields:', false],...fields_array]
+			required_fields_array.unshift([0,'Required fields:', false]);
+
+		fields_array = [...required_fields_array,[0,'Optional fields:', false],...fields_array]
 
 		fields_array.forEach((field_data)=>{
 
-			let field_value;
-			let field_name;
-			let is_enabled;
-			[field_value,field_name,is_enabled] = field_data;
+			let [field_value,field_name,is_enabled] = field_data;
 
 			let field_enabled_attribute = is_enabled ? '' : ' disabled';
 
