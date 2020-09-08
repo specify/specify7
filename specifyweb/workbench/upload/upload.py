@@ -43,7 +43,7 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 
     logger.debug('row captions: %s', captions)
 
-    rows = (dict(zip(captions, t[1:])) for t in tuples)
+    rows = (dict(zip(captions, t[2:])) for t in tuples)
 
     plan = json.loads(wb.workbenchtemplate.remarks)
     validate(plan, schema)

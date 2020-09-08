@@ -18,6 +18,7 @@ from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
 Workbench = getattr(models, 'Workbench')
+Workbenchrow = getattr(models, 'Workbenchrow')
 Workbenchtemplatemappingitem = getattr(models, 'Workbenchtemplatemappingitem')
 
 from .uploader_classpath import CLASSPATH
@@ -48,7 +49,7 @@ def load(wb_id: int) -> Sequence[Tuple]:
         # but the following is slower so only use in that case.
         return load_gt_61_cols(wb_id)
 
-    select_fields = ["r.workbenchrowid"]
+    select_fields = ["r.workbenchrowid", "r.biogeomancerresults"]
     for wbtmi in wbtmis:
         select_fields.append("ifnull(cell%d.celldata, '')" % wbtmi.vieworder)
     from_clause = ["workbenchrow r"]
@@ -81,7 +82,7 @@ def load_gt_61_cols(wb_id):
     wbtm = cursor.fetchone()[0]
 
     sql = """
-    select r.workbenchrowid, ifnull(celldata, '')
+    select r.workbenchrowid, r.biogeomancerresults, ifnull(celldata, '')
     from workbenchrow r
     join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
     left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
@@ -103,7 +104,7 @@ def group_rows(rows):
             break
 
         if row[0] == current_row[0]:
-            current_row.append(row[1])
+            current_row.append(row[2])
         else:
             yield current_row
             current_row = list(row)
@@ -130,7 +131,7 @@ def save(wb_id, data):
     """, [wb_id])
 
     wbtmis = [r[0] for r in cursor.fetchall()]
-    assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
+    assert len(wbtmis) + 2 == len(data[0]), (wbtmis, data[0])
 
     logger.debug("clearing row numbers")
     cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
@@ -174,7 +175,7 @@ def save(wb_id, data):
     """, [
         (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
         for i, row in enumerate(data)
-        for wbtmi, celldata in zip(wbtmis, row[1:])
+        for wbtmi, celldata in zip(wbtmis, row[2:])
         if celldata is not None
     ])
 
@@ -210,8 +211,7 @@ def upload_log(request, upload_id):
 
 @login_maybe_required
 @require_GET
-def upload_status(request, wb_id):
-    log_fnames = glob(os.path.join(settings.WB_UPLOAD_LOG_DIR, '%s_%s_*' % (settings.DATABASE_NAME, wb_id,)))
-    status = status_from_log(log_fnames[0]) if len(log_fnames) > 0 else None
+def upload_status(request: http.HttpRequest, wb_id: int) -> http.HttpResponse:
+    status = list(Workbenchrow.objects.filter(workbench_id=wb_id).values_list('id', 'biogeomancerresults'))
     return http.HttpResponse(toJson(status), content_type='application/json')
 

@@ -126,26 +126,87 @@ var WBView = Backbone.View.extend({
         'click .wb-upload-details': 'showUploadLog',
         'click .wb-setting': 'showSettingsDlg'
     },
-    initialize: function({wb, data, uploadStatus}) {
+    initialize({wb, data, uploadStatus}) {
         this.wb = wb;
         this.data = data;
         this.uploadStatus = uploadStatus;
         this.highlightsOn = false;
     },
-    render: function() {
+    render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
                   .then(mappings => _.sortBy(mappings.models, mapping => mapping.get('viewOrder')));
 
-        const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
-        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
+        const colHeaders = mappingsPromise.then(mappings => ["upload result"].concat(_.invoke(mappings, 'get', 'caption')));
+        const columns = mappingsPromise.then(mappings => [{data:1, readOnly:true}].concat(_.map(mappings, (m, i) => ({data: i+2}))));
 
         this.$el.append(template());
         new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
-
-        this.processUploadStatus();
         return this;
+    },
+    setupHOT (colHeaders, columns) {
+        if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
+
+        const onChanged = this.spreadSheetChanged.bind(this);
+        const renderer = this.renderCell.bind(this);
+
+        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+            height: this.calcHeight(),
+            data: this.data,
+            cells: () => ({renderer: renderer}),
+            colHeaders: colHeaders,
+            columns: columns,
+            minSpareRows: 0,
+            rowHeaders: true,
+            manualColumnResize: true,
+            columnSorting: true,
+            sortIndicator: true,
+            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
+            stretchH: 'all',
+            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
+            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
+            afterSelection: (r, c) => this.currentPos = [r,c],
+            afterChange: (change, source) => source === 'loadData' || onChanged()
+        });
+
+        const makeTooltip = td => {
+            const coords = this.hot.getCoords(td);
+            const pos = this.hot.countCols() * coords.row + coords.col;
+            const info = this.infoFromLog.byPos[pos];
+            const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
+            const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
+            return $('<span>').text(message);
+        };
+
+        this.$('.wb-spreadsheet').tooltip({
+            items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
+            content: function() { return makeTooltip(this); }
+        });
+
+        $(window).resize(this.resize.bind(this));
+    },
+    renderCell(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(null, arguments);
+        // if (!this.highlightsOn) return;
+        const $td = $(td);
+        // const rowId = instance.getSourceDataAtRow(row)[0];
+        // const rowStatus = this.uploadStatus[rowId];
+        // if (!rowStatus) {
+        //     $td.addClass('wb-invalid-cell');
+        // }
+
+        // const pos = instance.countCols() * row + col;
+        // const highlightInfo = this.infoFromLog.byPos[pos];
+        // const $td = $(td);
+        // const cls = highlightInfo ? 'wb-' + highlightInfo.highlight + '-cell' : 'wb-invalid_cell';
+        // if (highlightInfo || (
+        //     row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
+        // )) {
+        //     $td.addClass(cls);
+        // } else {
+        //     $td.removeClass(cls);
+        // }
     },
     openPlan() {
         navigation.go(`/workbench-plan/${this.wb.id}/`);
@@ -229,68 +290,12 @@ var WBView = Backbone.View.extend({
             }
         });
     },
-    setupHOT: function (colHeaders, columns) {
-        if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
-
-        const onChanged = this.spreadSheetChanged.bind(this);
-        const renderer = this.renderCell.bind(this);
-
-        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
-            height: this.calcHeight(),
-            data: this.data,
-            cells: () => ({renderer: renderer}),
-            colHeaders: colHeaders,
-            columns: columns,
-            minSpareRows: 0,
-            rowHeaders: true,
-            manualColumnResize: true,
-            columnSorting: true,
-            sortIndicator: true,
-            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
-            stretchH: 'all',
-            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
-            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
-            afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: (change, source) => source === 'loadData' || onChanged()
-        });
-
-        const makeTooltip = td => {
-            const coords = this.hot.getCoords(td);
-            const pos = this.hot.countCols() * coords.row + coords.col;
-            const info = this.infoFromLog.byPos[pos];
-            const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
-            const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
-            return $('<span>').text(message);
-        };
-
-        this.$('.wb-spreadsheet').tooltip({
-            items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
-            content: function() { return makeTooltip(this); }
-        });
-
-        $(window).resize(this.resize.bind(this));
-    },
     fixCreatedRows: function(index, amount) {
         // Handsontable doesn't insert the correct number of elements in newly
         // inserted rows. It inserts as many as there are columns, but there
         // should be an extra one at the begining representing the wb row id.
         for (let i = 0; i < amount; i++) {
             this.data[i + index] = Array(this.hot.countCols() + 1).fill(null);
-        }
-    },
-    renderCell: function(instance, td, row, col, prop, value, cellProperties) {
-        Handsontable.renderers.TextRenderer.apply(null, arguments);
-        if (!this.highlightsOn) return;
-        const pos = instance.countCols() * row + col;
-        const highlightInfo = this.infoFromLog.byPos[pos];
-        const $td = $(td);
-        const cls = highlightInfo ? 'wb-' + highlightInfo.highlight + '-cell' : 'wb-invalid_cell';
-        if (highlightInfo || (
-            row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
-        )) {
-            $td.addClass(cls);
-        } else {
-            $td.removeClass(cls);
         }
     },
     spreadSheetChanged: function() {
@@ -404,9 +409,14 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
+        $('<div>Validating...<p>Page will reload when finished.</p></div>').dialog({
+            title: "Validating...",
+            modal: true,
+        });
         $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
             this.checkDeletedFail(jqxhr);
-            // this.closeUploadProgress();
+        }).done(() => {
+            window.location.reload();
         });
         // this.openUploadProgress();
     },
@@ -562,13 +572,13 @@ module.exports = function loadWorkbench(id) {
     Q(wb.fetch().fail(app.handleError)).then(
         () => Q.all([
             Q($.get('/api/workbench/rows/' + id + '/')),
-            Q($.get('/api/workbench/upload_status/' + id + '/'))
+            // getUploadStatus(id)
         ])).spread(function(data, uploadStatus) {
             app.setTitle("WorkBench: " + wb.get('name'));
             app.setCurrentView(new WBView({
                 wb: wb,
                 data: data,
-                uploadStatus: uploadStatus
+                // uploadStatus: uploadStatus
             }));
         }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };
