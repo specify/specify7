@@ -18,6 +18,7 @@ from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload import do_upload_csv
 from .parsing import parse_coord
 from .upload_plan_schema import schema, parse_plan
+from . import validation_schema
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
@@ -634,3 +635,5 @@ class UploadTests(ApiTests):
         self.assertIsInstance(collector_result.record_result, Uploaded)
         self.assertEqual(0, get_table('collector').objects.filter(id=collector_result.get_id()).count())
 
+    def test_validation_schema_is_valid(self) -> None:
+        Draft7Validator.check_schema(validation_schema.schema)
