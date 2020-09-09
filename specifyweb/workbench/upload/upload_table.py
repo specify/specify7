@@ -7,8 +7,8 @@ from typing import List, Dict, Any, NamedTuple
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
-from .parsing import parse_value
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule, ReportInfo
+from .parsing import parse_value, ParseResult, ParseFailure
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule, FailedParsing, ReportInfo, CellIssue
 from .tomany import ToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -65,10 +65,21 @@ class UploadTable(NamedTuple):
             for fieldname, to_one_def in self.toOne.items()
         }
 
+        parsedFields: List[ParseResult] = []
+        parseFails: List[CellIssue] = []
+        for fieldname, caption in self.wbcols.items():
+            try:
+                parsedFields.append(parse_value(collection, self.name, fieldname, row[caption]))
+            except ParseFailure as e:
+                parseFails.append(CellIssue(column=caption, issue=str(e)))
+
+        if parseFails:
+            return UploadResult(FailedParsing(failures=parseFails), toOneResults, {})
+
         filters = {
             fieldname_: value
-            for fieldname, caption in self.wbcols.items()
-            for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).filter_on.items()
+            for parsedField in parsedFields
+            for fieldname_, value in parsedField.filter_on.items()
         }
 
         filters.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
@@ -85,8 +96,8 @@ class UploadTable(NamedTuple):
         if n_matched == 0:
             attrs = {
                 fieldname_: value
-                for fieldname, caption in self.wbcols.items()
-                for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).upload.items()
+                for parsedField in parsedFields
+                for fieldname_, value in parsedField.upload.items()
             }
 
             attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })

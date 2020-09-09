@@ -13,6 +13,9 @@ from .data import Filter
 
 logger = logging.getLogger(__name__)
 
+class ParseFailure(Exception):
+    pass
+
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Dict[str, Any]
@@ -52,13 +55,13 @@ def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
     ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
 
     if parsed['date_obj'] is None:
-        raise Exception("bad date value: {}".format(value))
+        raise ParseFailure("bad date value: {}".format(value))
 
     if precision_field is None:
         if parsed['period'] == 'day':
             return filter_and_upload({fieldname: parsed['date_obj']})
         else:
-            raise Exception("bad date value: {}".format(value))
+            raise ParseFailure("bad date value: {}".format(value))
     else:
         prec = parsed['period']
         date = parsed['date_obj']
@@ -69,7 +72,7 @@ def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
         elif prec == 'year':
             return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2})
         else:
-            raise Exception('expected date precision to be day month or year. got: {}'.format(prec))
+            raise ParseFailure('expected date precision to be day month or year. got: {}'.format(prec))
 
 
 def parse_string(value: str) -> Optional[str]:
@@ -86,7 +89,7 @@ def parse_latlong(field, value: str) -> ParseResult:
     parsed = parse_coord(value)
 
     if parsed is None:
-        raise Exception('bad latitude or longitude value: {}'.format(value))
+        raise ParseFailure('bad latitude or longitude value: {}'.format(value))
 
     coord, unit = parsed
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}

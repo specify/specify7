@@ -127,9 +127,27 @@ class FailedBusinessRule(NamedTuple):
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
 
+class FailedParsing(NamedTuple):
+    failures: List[CellIssue]
+
+    def get_id(self) -> Optional[int]:
+        return None
+
+    def is_failure(self) -> bool:
+        return True
+
+    def validation_info(self) -> RowValidation:
+        return RowValidation(
+            cellIssues=self.failures,
+            newRows=[],
+            tableIssues=[]
+        )
+
+    def to_json(self):
+        return { self.__class__.__name__: self._asdict() }
 
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule]
+    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, FailedParsing]
     toOne: Dict[str, Any]
     toMany: Dict[str, Any]
 
