@@ -11,7 +11,7 @@ from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
-from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule
+from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
 from .upload_table import UploadTable, to_many_filters_and_excludes
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
@@ -577,7 +577,9 @@ class UploadTests(ApiTests):
         self.assertEqual(uploaded.parent.id, state.id)
 
         self.assertEqual(tree_record.match(row), ([], [uploaded.id]))
-        self.assertEqual(tree_record.upload_row(self.collection, row), UploadResult(Matched(id=uploaded.id), {}, {}))
+        upload_result = tree_record.upload_row(self.collection, row)
+        expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'])
+        self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 
     def test_parse_latlong(self) -> None:
         tests = {

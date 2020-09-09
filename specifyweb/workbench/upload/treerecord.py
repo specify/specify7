@@ -12,7 +12,7 @@ from django.db import connection # type: ignore
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
-from .data import Row, FilterPack, UploadResult, NullRecord, Matched, MatchedMultiple, Uploaded
+from .data import Row, FilterPack, UploadResult, NullRecord, Matched, MatchedMultiple, Uploaded, ReportInfo
 from .parsing import parse_string
 
 logger = logging.getLogger(__name__)
@@ -40,13 +40,14 @@ class TreeRecord(NamedTuple):
 
     def upload_row(self, collection, row: Row) -> UploadResult:
         to_upload, matched = self.match(row)
+        info = ReportInfo(tableName=self.name, columns=list(self.ranks.values()))
         if not to_upload:
             if not matched:
-                return UploadResult(NullRecord(), {}, {})
+                return UploadResult(NullRecord(info), {}, {})
             elif len(matched) == 1:
-                return UploadResult(Matched(matched[0]), {}, {})
+                return UploadResult(Matched(matched[0], info), {}, {})
             else:
-                return UploadResult(MatchedMultiple(matched), {}, {})
+                return UploadResult(MatchedMultiple(matched, info), {}, {})
 
         model = getattr(models, self.name)
         parent_id = matched[0] if matched else None
@@ -62,7 +63,7 @@ class TreeRecord(NamedTuple):
             obj.save(skip_tree_extras=True)
             parent_id = obj.id
 
-        return UploadResult(Uploaded(obj.id), {}, {})
+        return UploadResult(Uploaded(obj.id, info), {}, {})
 
 
     def match(self, row: Row) -> TreeMatchResult:

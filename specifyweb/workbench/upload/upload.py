@@ -56,7 +56,7 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
     for t, r in zip(tuples, results):
         cursor.execute(
             "update workbenchrow set bioGeomancerResults = %s where workbenchrowid = %s",
-            (json.dumps(r.to_json()), t[0])
+            (json.dumps(r.validation_info().to_json()), t[0])
         )
     return results
 

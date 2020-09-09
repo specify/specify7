@@ -8,7 +8,7 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_value
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule, ReportInfo
 from .tomany import ToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -58,6 +58,7 @@ class UploadTable(NamedTuple):
 
     def upload_row(self, collection, row: Row) -> UploadResult:
         model = getattr(models, self.name.capitalize())
+        info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
 
         toOneResults = {
             fieldname: to_one_def.upload_row(collection, row)
@@ -94,21 +95,21 @@ class UploadTable(NamedTuple):
                 try:
                     uploaded = model.objects.create(**attrs, **self.static)
                 except BusinessRuleException as e:
-                    return UploadResult(FailedBusinessRule(str(e)), toOneResults, {})
+                    return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
                 toManyResults = {
                     fieldname: upload_to_manys(collection, model, uploaded.id, fieldname, records, row)
                     for fieldname, records in self.toMany.items()
                 }
-                return UploadResult(Uploaded(id = uploaded.id), toOneResults, toManyResults)
+                return UploadResult(Uploaded(id=uploaded.id, info=info), toOneResults, toManyResults)
             else:
-                return UploadResult(NullRecord(), {}, {})
+                return UploadResult(NullRecord(info), {}, {})
 
         elif n_matched == 1:
-            return UploadResult(Matched(id = matched_records[0].id), toOneResults, {})
+            return UploadResult(Matched(id=matched_records[0].id, info=info), toOneResults, {})
 
         else:
-            return UploadResult(MatchedMultiple(ids = [r.id for r in matched_records]), toOneResults, {})
+            return UploadResult(MatchedMultiple(ids=[r.id for r in matched_records], info=info), toOneResults, {})
 
 
 def to_many_filters_and_excludes(collection, to_manys: Dict[str, List[ToManyRecord]], row: Row) -> FilterPack:

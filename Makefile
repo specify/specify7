@@ -2,6 +2,7 @@ VIRTUAL_ENV ?= /usr
 
 PYTHON = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
+MYPY = $(VIRTUAL_ENV)/bin/mypy
 
 .PHONY: all clean runserver webpack_watch pip_requirements django_migrations frontend python_prep build
 
@@ -39,6 +40,6 @@ webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
 
 typecheck:
-	mypy --follow-imports silent specifyweb/workbench
+	$(MYPY) --follow-imports silent specifyweb/workbench
 
 .FORCE:

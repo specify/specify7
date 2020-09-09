@@ -1,4 +1,6 @@
+from typing import NamedTuple, List, Dict
 
+from jsonschema import validate # type: ignore
 
 
 schema = {
@@ -58,6 +60,35 @@ schema = {
             }
         }
     },
-    'required': ['cellIssues', 'tableIssues'],
+    'required': ['cellIssues', 'tableIssues', 'newRows'],
     'additionalProperties': False
 }
+
+class CellIssue(NamedTuple):
+    column: str
+    issue: str
+
+class TableIssue(NamedTuple):
+    tableName: str
+    columns: List[str]
+    issue: str
+
+class NewRow(NamedTuple):
+    tableName: str
+    columns: List[str]
+    id: int
+
+
+class RowValidation(NamedTuple):
+    cellIssues: List[CellIssue]
+    tableIssues: List[TableIssue]
+    newRows: List[NewRow]
+
+    def to_json(self) -> Dict:
+        result = dict(
+            cellIssues=[i._asdict() for i in self.cellIssues],
+            tableIssues=[i._asdict() for i in self.tableIssues],
+            newRows=[i._asdict() for i in self.newRows]
+        )
+        validate(result, schema)
+        return result
