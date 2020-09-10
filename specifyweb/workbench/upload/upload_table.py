@@ -7,7 +7,7 @@ from typing import List, Dict, Any, NamedTuple
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
-from .parsing import parse_value, ParseResult, ParseFailure
+from .parsing import parse_value, ParseResult, ParseException as ParseFailure
 from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, FailedBusinessRule, FailedParsing, ReportInfo, CellIssue
 from .tomany import ToManyRecord
 

@@ -3,7 +3,7 @@ import logging
 import math
 import re
 
-from typing import Dict, Any, Optional, List, NamedTuple, Tuple
+from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union
 from dateparser import DateDataParser # type: ignore
 
 from specifyweb.specify.datamodel import datamodel, Table
@@ -13,8 +13,11 @@ from .data import Filter
 
 logger = logging.getLogger(__name__)
 
-class ParseFailure(Exception):
+class ParseException(Exception):
     pass
+
+class ParseFailure(NamedTuple):
+    message: str
 
 class ParseResult(NamedTuple):
     filter_on: Filter
@@ -24,6 +27,12 @@ def filter_and_upload(f: Filter) -> ParseResult:
     return ParseResult(f, f)
 
 def parse_value(collection, tablename: str, fieldname: str, value: str) -> ParseResult:
+    result = parse_value_(collection, tablename, fieldname, value)
+    if isinstance(result, ParseFailure):
+        raise ParseException(result.message)
+    return result
+
+def parse_value_(collection, tablename: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
     value = value.strip()
     if value == "":
         return ParseResult({fieldname: None}, {})
@@ -44,7 +53,7 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Parse
 
     return filter_and_upload({fieldname: value})
 
-def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
+def parse_date(table: Table, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
     precision_field = table.get_field(fieldname + 'precision')
     parsed = DateDataParser(
         settings={
@@ -55,13 +64,13 @@ def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
     ).get_date_data(value, date_formats=['%d/%m/%Y', '00/%m/%Y'])
 
     if parsed['date_obj'] is None:
-        raise ParseFailure("bad date value: {}".format(value))
+        return ParseFailure("bad date value: {}".format(value))
 
     if precision_field is None:
         if parsed['period'] == 'day':
             return filter_and_upload({fieldname: parsed['date_obj']})
         else:
-            raise ParseFailure("bad date value: {}".format(value))
+            return ParseFailure("bad date value: {}".format(value))
     else:
         prec = parsed['period']
         date = parsed['date_obj']
@@ -72,7 +81,7 @@ def parse_date(table: Table, fieldname: str, value: str) -> ParseResult:
         elif prec == 'year':
             return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 2})
         else:
-            raise ParseFailure('expected date precision to be day month or year. got: {}'.format(prec))
+            return ParseFailure('expected date precision to be day month or year. got: {}'.format(prec))
 
 
 def parse_string(value: str) -> Optional[str]:
@@ -85,11 +94,11 @@ def is_latlong(table, field) -> bool:
     return table.name == 'Locality' \
         and field.name in ('latitude1', 'longitude1', 'latitude2', 'longitude2')
 
-def parse_latlong(field, value: str) -> ParseResult:
+def parse_latlong(field, value: str) -> Union[ParseResult, ParseFailure]:
     parsed = parse_coord(value)
 
     if parsed is None:
-        raise ParseFailure('bad latitude or longitude value: {}'.format(value))
+        return ParseFailure('bad latitude or longitude value: {}'.format(value))
 
     coord, unit = parsed
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
