@@ -86,38 +86,47 @@ const html_generator = {
 	/*
 	* Generates HTML for relationship with depth of 2 or more (by creating <select> element)
 	* @param {string} table_name - Official name of the parent table this relationship belongs to (from data model)
-	* @param {array} fields_array - Array of optional fields. Format: [field_value, field_name, is_enabled]
+	* @param {array} optional_fields_array - Array of optional fields. Format: [field_value, field_name, is_enabled]
 	* 								{string} Official name of the field (from data model)
 	* 								{string} Human-friendly field name (from schema_localization or helper.get_friendly_name())
 	* 								{bool} Whether this field is enabled
 	* @param {array} required_fields_array - same as fields_array, but consists of required fields
 	* @return {string} HTML for relationship with depth of 2 or more
 	* */
-	new_relationship_fields: (table_name,fields_array,required_fields_array=[]) => {
+	new_relationship_fields: (table_name,optional_fields_array,required_fields_array=[]) => {
 
 		let fields_html = '';
 
-		if(required_fields_array.length !== 0)
-			required_fields_array.unshift([0,'Required fields:', false]);
 
-		fields_array = [...required_fields_array,[0,'Optional fields:', false],...fields_array]
+		function fields_array_to_html(fields_data,label) {
 
-		fields_array.forEach((field_data)=>{
+			let result = '';
 
-			let [field_value,field_name,is_enabled] = field_data;
+			fields_data.forEach((field_data)=>{
 
-			let field_enabled_attribute = is_enabled ? '' : ' disabled';
+				let [field_value,field_name,is_enabled] = field_data;
 
-			fields_html += '<option value="' + field_value + '"'+field_enabled_attribute+'>' + field_name + '</option>';
+				let field_enabled_attribute = is_enabled ? '' : ' disabled';
 
-		});
+				result += '<option value="' + field_value + '"'+field_enabled_attribute+'>' + field_name + '</option>';
+
+			});
+
+			if(result === '')
+				return '';
+
+			return '<optgroup label="'+label+'">'+result+'</optgroup>';
+
+		}
+
 
 		return '<div class="table_relationship">' +
 			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
 			'<label class="line">' +
 			'	<select name="' + table_name + '" class="select__field">' +
 			'		<option value="0"></option>' +
-			'		' + fields_html + '' +
+			'		' + fields_array_to_html(optional_fields_array,'Optional Fields') +
+			'		' + fields_array_to_html(required_fields_array, 'Required Fields') +
 			'	</select>' +
 			'</label>' +
 			'</div>';

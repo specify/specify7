@@ -417,7 +417,7 @@ const mappings = {
 		mappings.changes_made = true;
 
 		//go through each field and update it's status
-		mappings.cycle_though_fields(mappings_array, mappings_path);
+		mappings.update_all_fields(mappings_array, mappings_path);
 
 		mappings.update_buttons();
 
@@ -438,25 +438,34 @@ const mappings = {
 	* */
 	get_html_for_table_fields: (table_name, previous_table, foreign_name, current_line, index = false) => {
 
-		const result_fields = [];
+		const required_fields = [];
+		const optional_fields = [];
 
 
-		let relationship_type;
-		if (previous_table !== '')
+		let relationship_type='';
+		if (previous_table !== '' && typeof mappings.tables[previous_table]['relationships'][foreign_name] !== "undefined")
 			relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
 
 
 		let mapped_nodes = mappings.get_mapped_children(current_line);
 
-		const ranks = mappings.ranks[table_name];
 		if (index === false) {
+
+			const ranks = mappings.ranks[table_name];
 
 			if (typeof ranks !== "undefined")
 				Object.keys(ranks).forEach((rank_name) => {
-					result_fields.push([mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true]);
+
+					const data = [mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true];
+
+					if(ranks[rank_name])
+						required_fields.push(data);
+					else
+						optional_fields.push(data);
+
 				});
 
-			if (result_fields.length === 0 && (relationship_type.indexOf('-to-many') !== -1)) {
+			if (required_fields.length === 0 && optional_fields.length === 0 && (relationship_type.indexOf('-to-many') !== -1)) {
 				let mapped_nodes_count = mapped_nodes.length;
 
 				if (mapped_nodes === false)
@@ -465,13 +474,13 @@ const mappings = {
 				const friendly_table_name = mappings.tables[table_name]['friendly_table_name'];
 
 				for (let i = 1; i < mapped_nodes_count + 2; i++)
-					result_fields.push([mappings.reference_symbol + i, i + '. ' + friendly_table_name, true]);
+					optional_fields.push([mappings.reference_symbol + i, i + '. ' + friendly_table_name, true]);
 			}
+
 
 		}
 
-		if (result_fields.length === 0) {
-
+		if(required_fields.length === 0 && optional_fields.length === 0) {
 			const rows = {};
 
 			Object.keys(mappings.tables[table_name]['fields']).forEach((field_key) => {
@@ -513,9 +522,6 @@ const mappings = {
 				rows[relationship_name] = [relationship_key, true, 'relationship', relationship_data['is_required']];
 			});
 
-			const required_fields = [];
-			const optional_fields = [];
-
 			Object.keys(rows).sort().forEach((row_name) => {
 
 				let row_key;
@@ -536,18 +542,16 @@ const mappings = {
 
 				const result = [row_key, row_name, row_enabled];
 
-				if(is_required)
+				if (is_required)
 					required_fields.push(result);
 				else
 					optional_fields.push(result);
 
 			});
 
-			return html_generator.new_relationship_fields(table_name, optional_fields, required_fields);
-
 		}
 
-		return html_generator.new_relationship_fields(table_name, result_fields);
+		return html_generator.new_relationship_fields(table_name, optional_fields, required_fields);
 
 	},
 
@@ -877,14 +881,13 @@ const mappings = {
 
 	//HELPERS
 
-	//TODO: investigate this function. It looks very sketchy...
 	/*
 	* Cycles through all fields and updates them as needed
-	* Used when the user unmaps a field
+	* Used when the user unmaps a field or toggles visibility of hidden fields
 	* @param {array} [mappings_array=[]] - the mappings path that was used by the mapped field
 	* @param {string} [mappings_path=''] - same as mappings_array but as a string
 	* */
-	cycle_though_fields: (mappings_array = [], mappings_path = '') => {
+	update_all_fields: (mappings_array = [], mappings_path = '') => {
 
 		const lines = Object.values(mappings.lines);
 		const lines_count = lines.length;

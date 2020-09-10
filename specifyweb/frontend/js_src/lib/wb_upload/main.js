@@ -80,7 +80,7 @@ const main = {
 
 		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
 			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
-			mappings.cycle_though_fields();
+			mappings.update_all_fields();
 		});
 
 		mappings.list__data_model.addEventListener('change', (event) => {
