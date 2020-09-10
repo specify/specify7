@@ -409,14 +409,28 @@ var WBView = Backbone.View.extend({
         });
     },
     validate: function() {
-        $('<div>Validating...<p>Page will reload when finished.</p></div>').dialog({
-            title: "Validating...",
-            modal: true,
-        });
-        $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
-            this.checkDeletedFail(jqxhr);
-        }).done(() => {
-            window.location.reload();
+        const openPlan = () => this.openPlan();
+        this.wb.rget('workbenchtemplate.remarks').done(plan => {
+            if (plan == null || plan.trim() === "") {
+                $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
+                    title: "No Plan is defined.",
+                    modal: true,
+                    buttons: {
+                        'Create': openPlan,
+                        'Cancel': function() { $(this).dialog('close'); }
+                    }
+                });
+            } else {
+                $('<div>Validating...<p>Page will reload when finished.</p></div>').dialog({
+                    title: "Validating...",
+                    modal: true,
+                });
+                $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
+                    this.checkDeletedFail(jqxhr);
+                }).done(() => {
+                    window.location.reload();
+                });
+            }
         });
         // this.openUploadProgress();
     },

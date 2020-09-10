@@ -45,8 +45,16 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 
     rows = (dict(zip(captions, t[2:])) for t in tuples)
 
-    plan = json.loads(wb.workbenchtemplate.remarks)
-    validate(plan, schema)
+    plan_json = wb.workbenchtemplate.remarks
+    if plan_json is None or plan_json.strip() == "":
+        raise Exception("no upload plan defined for dataset")
+
+    try:
+        plan = json.loads(plan_json)
+        validate(plan, schema)
+    except ValueError:
+        raise Exception("upload plan json is invalid")
+
     upload_plan = parse_plan(collection, plan)
 
     no_commit = True
