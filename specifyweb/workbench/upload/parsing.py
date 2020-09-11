@@ -9,12 +9,10 @@ from dateparser import DateDataParser # type: ignore
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import get_uiformatter
 
-from .data import Filter
+from .data import Filter, Row
+from .validation_schema import CellIssue
 
 logger = logging.getLogger(__name__)
-
-class ParseException(Exception):
-    pass
 
 class ParseFailure(NamedTuple):
     message: str
@@ -26,13 +24,17 @@ class ParseResult(NamedTuple):
 def filter_and_upload(f: Filter) -> ParseResult:
     return ParseResult(f, f)
 
-def parse_value(collection, tablename: str, fieldname: str, value: str) -> ParseResult:
-    result = parse_value_(collection, tablename, fieldname, value)
-    if isinstance(result, ParseFailure):
-        raise ParseException(result.message)
-    return result
+def parse_many(collection, tablename: str, mapping: Dict[str, str], row: Row) -> Tuple[List[ParseResult], List[CellIssue]]:
+    results = [
+        (caption, parse_value(collection, tablename, fieldname, row[caption]))
+        for fieldname, caption in mapping.items()
+    ]
+    return (
+        [r for _, r in results if isinstance(r, ParseResult)],
+        [CellIssue(c, r.message) for c, r in results if isinstance(r, ParseFailure)]
+    )
 
-def parse_value_(collection, tablename: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
     value = value.strip()
     if value == "":
         return ParseResult({fieldname: None}, {})

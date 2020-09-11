@@ -35,11 +35,22 @@ class TreeRecord(NamedTuple):
         result = self._asdict()
         return { 'treeRecord': result }
 
-    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
+    def bind(self, collection, row: Row) -> "BoundTreeRecord":
+        return BoundTreeRecord(self.name, self.ranks, self.treedefname, self.treedefid, row)
+
+class BoundTreeRecord(NamedTuple):
+    name: str
+    ranks: Dict[str, str]
+    treedefname: str
+    treedefid: int
+    row: Row
+
+
+    def filter_on(self, path: str) -> FilterPack:
         return FilterPack([], [])
 
-    def upload_row(self, collection, row: Row) -> UploadResult:
-        to_upload, matched = self.match(row)
+    def upload_row(self) -> UploadResult:
+        to_upload, matched = self.match()
         info = ReportInfo(tableName=self.name, columns=list(self.ranks.values()))
         if not to_upload:
             if not matched:
@@ -66,14 +77,14 @@ class TreeRecord(NamedTuple):
         return UploadResult(Uploaded(obj.id, info), {}, {})
 
 
-    def match(self, row: Row) -> TreeMatchResult:
+    def match(self) -> TreeMatchResult:
         model = getattr(models, self.name)
         tablename = model._meta.db_table
         treedef = getattr(models, self.treedefname).objects.get(id=self.treedefid)
         treedefitems = treedef.treedefitems.order_by("-rankid")
         depth = len(treedefitems)
         values = {
-            rankname: parse_string(row[wbcol])
+            rankname: parse_string(self.row[wbcol])
             for rankname, wbcol in self.ranks.items()
         }
 

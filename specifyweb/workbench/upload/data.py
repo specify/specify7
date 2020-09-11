@@ -127,7 +127,7 @@ class FailedBusinessRule(NamedTuple):
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
 
-class FailedParsing(NamedTuple):
+class ParseFailures(NamedTuple):
     failures: List[CellIssue]
 
     def get_id(self) -> Optional[int]:
@@ -147,7 +147,7 @@ class FailedParsing(NamedTuple):
         return { self.__class__.__name__: self._asdict() }
 
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, FailedParsing]
+    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
     toOne: Dict[str, Any]
     toMany: Dict[str, Any]
 
@@ -186,13 +186,16 @@ class UploadResult(NamedTuple):
             'toMany': {k: [v.to_json() for v in vs] for k,vs in self.toMany.items()},
         }}
 
-
 class Uploadable(Protocol):
-    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
-        ...
-
-    def upload_row(self, collection, row: Row) -> UploadResult:
+    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
         ...
 
     def to_json(self) -> Dict:
+        ...
+
+class BoundUploadable(Protocol):
+    def filter_on(self, path: str) -> FilterPack:
+        ...
+
+    def upload_row(self) -> UploadResult:
         ...

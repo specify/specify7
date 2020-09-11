@@ -1,9 +1,9 @@
 import logging
 
-from typing import Dict, Any, NamedTuple
+from typing import Dict, Any, NamedTuple, List, Union
 
-from .data import Row, FilterPack, Exclude, Uploadable
-from .parsing import parse_value
+from .data import Row, FilterPack, Exclude, Uploadable, BoundUploadable, CellIssue, ParseFailures
+from .parsing import parse_many, ParseResult
 
 logger = logging.getLogger(__name__)
 
@@ -21,15 +21,36 @@ class ToManyRecord(NamedTuple):
         }
         return result
 
-    def filter_on(self, collection, path: str, row: Row) -> FilterPack:
+    def bind(self, collection, row: Row) -> Union["BoundToManyRecord", ParseFailures]:
+        parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
+
+        toOne: Dict[str, BoundUploadable] = {}
+        for fieldname, uploadable in self.toOne.items():
+            result = uploadable.bind(collection, row)
+            if isinstance(result, ParseFailures):
+                parseFails += result.failures
+            else:
+                toOne[fieldname] = result
+
+        return ParseFailures(parseFails) if parseFails else BoundToManyRecord(self.name, self.wbcols, self.static, parsedFields, toOne)
+
+class BoundToManyRecord(NamedTuple):
+    name: str
+    wbcols: Dict[str, str]
+    static: Dict[str, Any]
+    parsedFields: List[ParseResult]
+    toOne: Dict[str, BoundUploadable]
+
+
+    def filter_on(self, path: str) -> FilterPack:
         filters = {
             (path + '__' + fieldname_): value
-            for fieldname, caption in self.wbcols.items()
-            for fieldname_, value in parse_value(collection, self.name, fieldname, row[caption]).filter_on.items()
+            for parsedField in self.parsedFields
+            for fieldname_, value in parsedField.filter_on.items()
         }
 
         for toOneField, toOneTable in self.toOne.items():
-            fs, es = toOneTable.filter_on(collection, path + '__' + toOneField, row)
+            fs, es = toOneTable.filter_on(path + '__' + toOneField)
             for f in fs:
                 filters.update(f)
 

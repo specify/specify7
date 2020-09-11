@@ -13,7 +13,7 @@ from specifyweb.specify import models
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
 from ..views import load
-from .data import UploadResult, Uploadable, Row
+from .data import UploadResult, Uploadable, Row,  ParseFailures
 from .upload_plan_schema import schema, parse_plan
 
 Rows = Union[Iterable[Row], csv.DictReader]
@@ -71,10 +71,11 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 
 def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=False) -> List[UploadResult]:
     with savepoint():
-        results = []
+        results: List[UploadResult] = []
         for row in rows:
             with savepoint():
-                result = upload_plan.upload_row(collection, row)
+                bind_result = upload_plan.bind(collection, row)
+                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.upload_row()
                 results.append(result)
                 if result.contains_failure():
                     raise Rollback()

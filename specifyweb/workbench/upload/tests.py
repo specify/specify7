@@ -11,8 +11,8 @@ from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
-from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
-from .upload_table import UploadTable, to_many_filters_and_excludes
+from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ParseFailures, ReportInfo, CellIssue
+from .upload_table import UploadTable, to_many_filters_and_excludes, BoundUploadTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from .upload import do_upload_csv
@@ -313,12 +313,14 @@ class UploadTests(ApiTests):
 
     def test_filter_to_many_single(self) -> None:
         reader = csv.DictReader(io.StringIO(
-'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date,Country,Date Collected,Start Date Collected,End Date Collected,Collection Method,Prep Type 1,Accession No.,Remarks,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name
-59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date,Country,Date Collected,Start Date Collected,End Date Collected,Collection Method,Prep Type 1,Accession No.,Remarks,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Site
+59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,,
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
-        filters, excludes = to_many_filters_and_excludes(self.collection, self.example_plan.toOne['collectingevent'].toMany, row)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
+        assert isinstance(uploadable, BoundUploadTable)
+        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual(filters, [{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
@@ -341,7 +343,9 @@ class UploadTests(ApiTests):
 '''))
         row = next(reader)
         assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
-        filters, excludes = to_many_filters_and_excludes(self.collection, self.example_plan.toOne['collectingevent'].toMany, row)
+        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
+        assert isinstance(uploadable, BoundUploadTable)
+        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual(filters, [
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',
@@ -516,7 +520,7 @@ class UploadTests(ApiTests):
             }
         )
         row = next(reader)
-        to_upload, matched = tree_record.match(row)
+        to_upload, matched = tree_record.bind(self.collection, row).match()
 
         self.assertEqual(to_upload, [
             TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co."),
@@ -564,11 +568,11 @@ class UploadTests(ApiTests):
         # )
 
         self.assertEqual(
-            tree_record.match(row),
+            tree_record.bind(self.collection, row).match(),
             TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [state.id])
         )
 
-        upload_result = tree_record.upload_row(self.collection, row)
+        upload_result = tree_record.bind(self.collection, row).upload_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
 
         uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
@@ -576,8 +580,8 @@ class UploadTests(ApiTests):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        self.assertEqual(tree_record.match(row), ([], [uploaded.id]))
-        upload_result = tree_record.upload_row(self.collection, row)
+        self.assertEqual(tree_record.bind(self.collection, row).match(), ([], [uploaded.id]))
+        upload_result = tree_record.bind(self.collection, row).upload_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'])
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 
@@ -639,3 +643,31 @@ class UploadTests(ApiTests):
 
     def test_validation_schema_is_valid(self) -> None:
         Draft7Validator.check_schema(validation_schema.schema)
+
+    def test_parsing_errors_reported(self) -> None:
+        reader = csv.DictReader(io.StringIO(
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
+1365,Gastropoda,Fissurelloidea,Fissurellidae,Diodora,,meta,,"(Ihering, 1927)",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,6,0,0,Dry; shell,Dry,,,,71,74,0,,,,313,,Dredged,JSG,MJP,22/01/2003,28° 03.44' N,,92° 26.98' W,,Point,,JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1366,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,phrixodes,,"Dall, 1927",,,,,,, , ,,USA,LOUISIANA,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,3,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, , ,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+1368,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,tuberculosa,,"Libassi, 1859",,Emilio Garcia,,Emilio,,Garcia,Jan 2002,00/01/2002,,USA,LOUISIANA,off Louisiana coast,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,,,,,11,0,0,Dry; shell,Dry,,,"Subtidal 65-91 m, in coralline [sand]",65,91,0,,,,313,,Dredged.  Original label no. 23331.,JSG,MJP,22/01/2003,27° 59.14' N,,91° 38.83' W,,Point,D-4(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+'''))
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        failed_result = upload_results[2]
+        self.assertIsInstance(failed_result.record_result, ParseFailures)
+        for result in upload_results:
+            if result is not failed_result:
+                self.assertIsInstance(result.record_result, Uploaded)
+                self.assertEqual(1, get_table('collectionobject').objects.filter(id=result.get_id()).count())
+
+
+    def test_multiple_parsing_errors_reported(self) -> None:
+        reader = csv.DictReader(io.StringIO(
+'''BMSM No.,Class,Superfamily,Family,Genus,Subgenus,Species,Subspecies,Species Author,Subspecies Author,Who ID First Name,Determiner 1 Title,Determiner 1 First Name,Determiner 1 Middle Initial,Determiner 1 Last Name,ID Date Verbatim,ID Date,ID Status,Country,State/Prov/Pref,Region,Site,Sea Basin,Continent/Ocean,Date Collected,Start Date Collected,End Date Collected,Collection Method,Verbatim Collecting method,No. of Specimens,Live?,W/Operc,Lot Description,Prep Type 1,- Paired valves,for bivalves - Single valves,Habitat,Min Depth (M),Max Depth (M),Fossil?,Stratum,Sex / Age,Lot Status,Accession No.,Original Label,Remarks,Processed by,Cataloged by,DateCataloged,Latitude1,Latitude2,Longitude1,Longitude2,Lat Long Type,Station No.,Checked by,Label Printed,Not for publication on Web,Realm,Estimated,Collected Verbatim,Collector 1 Title,Collector 1 First Name,Collector 1 Middle Initial,Collector 1 Last Name,Collector 2 Title,Collector 2 First Name,Collector 2 Middle Initial,Collector 2 Last name,Collector 3 Title,Collector 3 First Name,Collector 3 Middle Initial,Collector 3 Last Name,Collector 4 Title,Collector 4 First Name,Collector 4 Middle Initial,Collector 4 Last Name
+1367,Gastropoda,Fissurelloidea,Fissurellidae,Emarginula,,sicula,,"J.E. Gray, 1825",,,,,,, ,bad date,,USA,Foobar,,[Lat-long site],Gulf of Mexico,NW Atlantic O.,Date unk'n,foobar,,,,1,0,0,Dry; shell,Dry,,,In coral rubble,57,65,0,,,,313,,,JSG,MJP,22/01/2003,28° 06.07' N,,91° 02.42' W,,Point,D-7(1),JSG,19/06/2003,0,Marine,0,Emilio Garcia,,Emilio,,Garcia,,,,,,,,,,,,
+'''))
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan)
+        failed_result = upload_results[0].record_result
+        self.assertIsInstance(failed_result, ParseFailures)
+        assert isinstance(failed_result, ParseFailures) # make typechecker happy
+        self.assertEqual([CellIssue(column='Start Date Collected', issue='bad date value: foobar'), CellIssue(column='ID Date', issue='bad date value: bad date')], failed_result.failures)
