@@ -1,6 +1,6 @@
 "use strict";
 
-const raw_auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
+let auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
 
 /*
 *
@@ -38,22 +38,19 @@ const auto_mapper = {
 			}
 		};
 
-		const new_auto_mapper_definitions = {};
-
-		Object.keys(raw_auto_mapper_definitions).forEach((table_name) => {
+		//convert all field names in the mapping definitions to lower case
+		auto_mapper_definitions = Object.keys(auto_mapper_definitions).reduce((auto_mapper_definitions,table_name) => {
 			const new_table_name = table_name.toLowerCase();
 
-			const new_fields = {};
-			const fields = raw_auto_mapper_definitions[table_name];
-			Object.keys(fields).forEach((field_name) => {
+			const fields = auto_mapper_definitions[table_name];
+			auto_mapper_definitions[new_table_name] = Object.keys(fields).reduce((new_fields, field_name) => {
 				const new_field_name = field_name.toLowerCase();
 				new_fields[new_field_name] = fields[field_name];
-			});
+			},{});
 
-			new_auto_mapper_definitions[new_table_name] = fields;
-		});
+			return auto_mapper_definitions;
 
-		auto_mapper.auto_mapper_definitions = new_auto_mapper_definitions;
+		}, auto_mapper_definitions);
 
 	},
 
@@ -68,13 +65,11 @@ const auto_mapper = {
 	* */
 	map: (raw_headers, base_table) => {
 
-		const headers = {};
-
 		if (raw_headers.length === 0)
-			return headers;
+			return {};
 
 		//strip extra characters to increase mapping success
-		raw_headers.forEach(function (original_name) {
+		auto_mapper.unmapped_headers = raw_headers.reduce(function (headers, original_name) {
 
 			let stripped_name = original_name.toLowerCase();
 			stripped_name = stripped_name.replace(auto_mapper.regex_1, '');
@@ -84,13 +79,12 @@ const auto_mapper = {
 
 			headers[original_name] = [stripped_name, final_name];
 
-		});
+			return headers;
+
+		},{});
 
 		auto_mapper.searched_tables = [];
 		auto_mapper.results = {};
-		auto_mapper.unmapped_headers = headers;
-
-
 		auto_mapper.find_mappings_queue = {
 			0: {}
 		};
@@ -172,10 +166,7 @@ const auto_mapper = {
 						if (header_data === false)
 							return true;//skip mapped
 
-						let stripped_name;
-						let final_name;
-
-						[stripped_name, final_name] = header_data;
+						let [stripped_name, final_name] = header_data;
 
 						if (
 							(//find cases like `Phylum` and remap them to `Phylum > Name`
@@ -210,11 +201,11 @@ const auto_mapper = {
 
 			//search in definitions
 			if (
-				typeof auto_mapper.auto_mapper_definitions[table_name] !== "undefined" &&
-				typeof auto_mapper.auto_mapper_definitions[table_name][field_name] !== "undefined"
+				typeof auto_mapper_definitions[table_name] !== "undefined" &&
+				typeof auto_mapper_definitions[table_name][field_name] !== "undefined"
 			) {
 
-				const field_comparisons = auto_mapper.auto_mapper_definitions[table_name][field_name];
+				const field_comparisons = auto_mapper_definitions[table_name][field_name];
 
 				//compile regex strings
 				if (typeof field_comparisons['regex'] !== "undefined")
@@ -262,10 +253,7 @@ const auto_mapper = {
 				if (header_data === false)
 					return true;
 
-				let stripped_name;
-				let final_name;
-
-				[stripped_name, final_name] = header_data;
+				let [stripped_name, final_name] = header_data;
 
 				if (
 					field_name === stripped_name ||
@@ -328,29 +316,22 @@ const auto_mapper = {
 	* */
 	make_mapping: (path, new_path_parts, header_name) => {
 
-		const local_path = path.slice();
+		const local_path = [...path,...new_path_parts];
 
-		new_path_parts.forEach((part) => {
-			local_path.push(part);
-		});
 
 		//check if this path is already mapped
 		while (true) {
 
 			//go over mapped headers to see if this path was already mapped
-			let path_already_mapped = false;
-			Object.values(auto_mapper.results).forEach((mapping_path) => {
-				if (path === mapping_path) {
-					path_already_mapped = true;
-					return false;
-				}
+			let path_already_mapped = Object.values(auto_mapper.results).some((mapping_path) => {
+				return path === mapping_path;
 			});
 
 			if (!path_already_mapped)
 				break;
 
 			//if there is any -to-many relationship in the path, create a new -to-many object and run while loop again
-			let local_path_copy = local_path.slice();
+			const local_path_copy = local_path.slice();
 			let path_was_modified = false;
 			Object.keys(local_path_copy).reverse().forEach((path_index) => {
 
@@ -364,6 +345,26 @@ const auto_mapper = {
 			if (!path_was_modified)
 				return false;
 		}
+
+
+		//prevent -to-many inside of -to-many //TODO: remove this in the future
+		let distance_from_parent_to_many=-1;
+		let has_nested_to_many = local_path.some((element) => {
+			const is_to_many = element.substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol;
+
+			if(distance_from_parent_to_many===1 && is_to_many)
+				return true;
+
+			if(is_to_many)
+				distance_from_parent_to_many = 0;
+			else if(distance_from_parent_to_many!==-1)
+				distance_from_parent_to_many++;
+
+		});
+
+		if(has_nested_to_many)
+			return false;
+
 
 		//remove header from unmapped headers
 		auto_mapper.unmapped_headers[header_name] = false;

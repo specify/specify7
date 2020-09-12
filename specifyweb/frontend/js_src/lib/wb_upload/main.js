@@ -1,5 +1,6 @@
 "use strict";
 
+const $ = require('jquery');
 const mappings = require('./mappings.js');
 const auto_mapper = require('./auto_mapper.js');
 const data_model_handler = require('./data_model_handler.js');
@@ -50,11 +51,8 @@ const main = {
 		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
 		mappings.headers = mappings.list__headers.getElementsByTagName('input');
 
-		// control elements
-		main.validation_results = document.getElementById('validation_results');
-		main.validation_results_message = document.getElementById('validation_results_message');
-		main.close_validation_results = document.getElementById('close_validation_results');
 
+		// control elements
 		mappings.hide_hidden_fields = true;
 		mappings.need_to_run_auto_mapper = true;
 		mappings.raw_headers = [];
@@ -64,12 +62,8 @@ const main = {
 		mappings.auto_mapper_run = auto_mapper.map;
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree;
 
+
 		//setting event listeners
-
-		main.close_validation_results.addEventListener('click',()=>{
-			main.validation_results.style.display='none';
-		})
-
 		mappings.button__change_table.addEventListener('click', mappings.reset_table);
 
 		mappings.button__map.addEventListener('click', mappings.map_field_callback);
@@ -211,8 +205,15 @@ const main = {
 
 		const validation_message = 'Please make sure to map the following required fields before proceeding:<br>'+field_locations.join('<br>');
 
-		main.validation_results.style.display = '';
-		main.validation_results_message.innerHTML = validation_message;
+		let dialog = $('<div>'+validation_message+'</div>').dialog({
+			modal: true,
+			title: 'Invalid Mapping',
+			close: function() { $(this).remove(); dialog = null; },
+			buttons: [
+				{text: 'Cancel', click: function() { $(this).dialog('close'); }}
+			]
+			});
+
 
 		return validation_results;
 

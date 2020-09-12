@@ -38,8 +38,6 @@ const upload_plan_converter = {
 	* */
 	upload_plan_to_mappings_tree: (upload_plan, base_table_name_extracted = false) => {
 
-		const tree = {};
-
 		if (base_table_name_extracted === false) {
 			upload_plan_converter.set_base_table_name(upload_plan['baseTableName']);
 
@@ -49,69 +47,73 @@ const upload_plan_converter = {
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined") {
 
-			const tree = upload_plan['treeRecord']['ranks'];
-			const new_tree = {};
+			const tree_ranks = upload_plan['treeRecord']['ranks'];
 
-			Object.keys(tree).forEach((rank_name) => {
+			return Object.keys(tree_ranks).reduce((new_tree, rank_name) => {
+
 				const new_rank_name = upload_plan_converter.tree_symbol + rank_name;
-				new_tree[new_rank_name] = {'name': tree[rank_name]};
-			});
+				new_tree[new_rank_name] = {'name': tree_ranks[rank_name]};
+				return new_tree;
 
-			return new_tree;
+			}, {});
 
 		}
 
-		Object.keys(upload_plan).forEach((plan_node_name) => {
+		return Object.keys(upload_plan).reduce((tree, plan_node_name) => {
 
 			if (plan_node_name === 'wbcols') {
 
 				const workbench_headers = upload_plan[plan_node_name];
 
-				Object.keys(workbench_headers).forEach((data_model_header_name) => {
+				return Object.keys(workbench_headers).reduce((tree, data_model_header_name) => {
 					tree[data_model_header_name] = workbench_headers[data_model_header_name];
-				});
+					return tree;
+				}, tree);
 
 			} else if (plan_node_name === 'static') {
 
 				const static_headers = upload_plan[plan_node_name];
 
-				Object.keys(static_headers).forEach((data_model_header_name) => {
+				return Object.keys(static_headers).reduce((tree, data_model_header_name) => {
 					tree[data_model_header_name] = {'static': static_headers[data_model_header_name]};
-				});
+					return tree;
+				}, tree);
 
 			} else if (plan_node_name === 'toOne') {
 
 				const to_one_headers = upload_plan[plan_node_name];
 
-				Object.keys(to_one_headers).forEach((data_model_header_name) => {
+				return Object.keys(to_one_headers).reduce((tree, data_model_header_name) => {
 					tree[data_model_header_name] = upload_plan_converter.upload_plan_to_mappings_tree(to_one_headers[data_model_header_name], true);
-				});
+					return tree;
+				}, tree);
 
 			} else if (plan_node_name === 'toMany') {
 
 				const to_many_headers = upload_plan[plan_node_name];
 
-				Object.keys(to_many_headers).forEach((table_name) => {
+				return Object.keys(to_many_headers).reduce((tree, table_name) => {
 
 					const final_mappings = {};
 					const original_mappings = to_many_headers[table_name];
 					let i = 1;
 
-					Object.values(original_mappings).forEach((mapping) => {
+					tree[table_name] = Object.values(original_mappings).reduce((final_mappings, mapping) => {
+
 						const final_mappings_key = upload_plan_converter.reference_symbol + i;
 						final_mappings[final_mappings_key] = upload_plan_converter.upload_plan_to_mappings_tree(mapping, true);
+
 						i++;
-					});
+						return final_mappings;
 
-					tree[table_name] = final_mappings;
+					}, final_mappings);
 
-				});
+					return tree;
+				}, tree);
 
 			}
 
-		});
-
-		return tree;
+		}, {});
 
 	},
 
@@ -133,9 +135,7 @@ const upload_plan_converter = {
 
 			if (typeof upload_plan_converter.ranks[table_name] !== "undefined") {
 
-				const final_tree = {};
-
-				Object.keys(table_data).forEach((tree_key) => {
+				const final_tree = Object.keys(table_data).reduce((final_tree, tree_key) => {
 
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
 					let name = table_data[tree_key]['name'];
@@ -145,8 +145,9 @@ const upload_plan_converter = {
 
 					final_tree[new_tree_key] = name;
 
-				});
+					return final_tree;
 
+				}, {});
 
 				return {'treeRecord': {'ranks': final_tree}};
 			}
@@ -162,7 +163,7 @@ const upload_plan_converter = {
 
 			let is_to_many = false;
 
-			Object.keys(table_data).forEach((field_name) => {
+			table_plan = Object.keys(table_data).reduce((table_plan, field_name) => {
 
 				if (field_name.substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol) {
 					if (!is_to_many) {
@@ -209,7 +210,9 @@ const upload_plan_converter = {
 
 				}
 
-			});
+				return table_plan;
+
+			}, table_plan);
 
 
 			if (Array.isArray(table_plan) || !wrap_it)

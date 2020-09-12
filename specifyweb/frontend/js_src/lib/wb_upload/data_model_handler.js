@@ -37,10 +37,9 @@ const data_model_handler = {
 	* */
 	fetch_tables: (done_callback) => {
 
-		const tables = [];
 		let data_model_html = '';
 
-		Object.values(schema.models).forEach((table_data) => {
+		const tables = Object.values(schema.models).reduce((tables, table_data) => {
 
 			const table_name = table_data['longName'].split('.').pop().toLowerCase();
 			const friendly_table_name = table_data.getLocalizedName();
@@ -127,7 +126,9 @@ const data_model_handler = {
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
 				data_model_handler.fetch_ranks(table_name, done_callback);
 
-		});
+			return tables;
+
+		}, {});
 
 
 		for (const [table_name, table_data] of Object.entries(tables))//remove relationships to system tables
@@ -158,9 +159,8 @@ const data_model_handler = {
 				treeDefItems => {
 					treeDefItems.fetch({limit: 0}).done(() => {
 
-						data_model_handler.ranks[table_name] = {};
 
-						Object.values(treeDefItems['models']).forEach((rank) => {
+						data_model_handler.ranks[table_name] = Object.values(treeDefItems['models']).reduce((table_ranks, rank) => {
 
 							const rank_id = rank.get('id');
 
@@ -168,18 +168,16 @@ const data_model_handler = {
 								return true;
 
 							const rank_name = rank.get('name');
-							data_model_handler.ranks[table_name][rank_name] = rank.get('isenforced');
+							table_ranks[rank_name] = rank.get('isenforced');
+
+							return table_ranks;
 
 						});
 
 						data_model_handler.ranks_queue[table_name] = false;
 
-						let still_waiting_for_ranks_to_fetch = false;
-						Object.values(data_model_handler.ranks_queue).forEach((is_waiting_for_rank_to_fetch) => {
-							if (is_waiting_for_rank_to_fetch) {
-								still_waiting_for_ranks_to_fetch = true;
-								return false;
-							}
+						let still_waiting_for_ranks_to_fetch = Object.values(data_model_handler.ranks_queue).find((is_waiting_for_rank_to_fetch) => {
+							return is_waiting_for_rank_to_fetch;
 						});
 
 						if (!still_waiting_for_ranks_to_fetch)//the queue is empty and all ranks where fetched
@@ -197,15 +195,9 @@ const data_model_handler = {
 	* @result {array} list of hierarchy tables
 	* */
 	get_list_of_hierarchy_tables() {
-
-		const result = [];
-
-		schema.orgHierarchy.forEach((table_name) => {
-			if (table_name !== 'collectionobject')
-				result.push(table_name);
+		return schema.orgHierarchy.filter((table_name) => {
+			return table_name !== 'collectionobject';
 		});
-
-		return result;
 	},
 
 	/*
@@ -214,82 +206,75 @@ const data_model_handler = {
 	* @param {object} mapping_tree - Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 	* @returns {array} Returns array of mapping paths (array).
 	* */
-	show_required_missing_ranks: (table_name, mapping_tree = false, previous_table_name='', path = [], results = []) => {
-
-		function add_missing_field(missing_fields,local_path){
-			missing_fields.push(local_path);
-		}
+	show_required_missing_ranks: (table_name, mapping_tree = false, previous_table_name = '', path = [], results = []) => {
 
 		const table_data = data_model_handler.tables[table_name];
-		const missing_fields = [];
 
 		const list_of_mapped_fields = Object.keys(mapping_tree);
 
 		//handle -to-many references
-		if(list_of_mapped_fields[0].substr(0,data_model_handler.reference_symbol.length)===data_model_handler.reference_symbol) {
+		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
 			list_of_mapped_fields.forEach((mapped_field_name) => {
-				const local_path = path.slice();
-				local_path.push(mapped_field_name);
+				const local_path = [...path, mapped_field_name];
 				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			});
 			return results;
 		}
 
 		//handle trees
-		else if(typeof data_model_handler.ranks[table_name] !== "undefined"){
+		else if (typeof data_model_handler.ranks[table_name] !== "undefined") {
 
 			const keys = Object.keys(data_model_handler.ranks[table_name]);
 
-			if(keys.indexOf(path.slice(-1)[0]) === -1){
-				keys.forEach((rank_name) => {
+			if (keys.indexOf(path.slice(-1)[0]) === -1)
+				return keys.reduce((results, rank_name) => {
 					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
-					const local_path = path.slice();
-					local_path.push(data_model_handler.tree_symbol+rank_name);
+					const local_path = [...path, data_model_handler.tree_symbol + rank_name];
 
-					if(list_of_mapped_fields.indexOf(rank_name) !== -1)
+					if (list_of_mapped_fields.indexOf(rank_name) !== -1)
 						data_model_handler.show_required_missing_ranks(table_name, mapping_tree[rank_name], previous_table_name, local_path, results);
-					else if(is_rank_required)
-						add_missing_field(results,local_path);
+					else if (is_rank_required)
+						results.push(local_path);
 
-				});
-				return results;
-			}
+					return results;
+
+				}, results);
 		}
 
 		//handle regular relationships
-		Object.keys(table_data['fields']).forEach((field_name) => {
+		results = Object.keys(table_data['fields']).reduce((results, field_name) => {
 
 			const field_data = table_data['fields'][field_name];
 
-			const local_path = path.slice();
-			local_path.push(field_name);
+			const local_path = [...path, field_name];
 
 			if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
-				add_missing_field(results,local_path);
+				results.push(local_path);
 
-		});
+			return results;
 
-		Object.keys(table_data['relationships']).forEach((relationship_name) => {
+		}, results);
+
+		return Object.keys(table_data['relationships']).reduce((results, relationship_name) => {
 
 			const relationship_data = table_data['relationships'][relationship_name];
-			const local_path = path.slice();
-			local_path.push(relationship_name);
+			const local_path = [...path, relationship_name];
 
-			if(previous_table_name!==''){
+			if (previous_table_name !== '') {
 
 				let previous_relationship_name = local_path.slice(-2)[0];
-				if(
-					previous_relationship_name.substr(0,data_model_handler.reference_symbol.length)===data_model_handler.reference_symbol ||
-					previous_relationship_name.substr(0,data_model_handler.tree_symbol.length)===data_model_handler.tree_symbol
+				if (
+					previous_relationship_name.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol ||
+					previous_relationship_name.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol
 				)
 					previous_relationship_name = local_path.slice(-3)[0];
 
 				const parent_relationship_data = data_model_handler.tables[previous_table_name]['relationships'][previous_relationship_name];
 
-				if(
+				if (
 					(//disable circular relationships
-						relationship_data['foreign_name']===previous_relationship_name &&
-						parent_relationship_data['table_name']===table_name
+						relationship_data['foreign_name'] === previous_relationship_name &&
+						parent_relationship_data['table_name'] === table_name
 					) ||
 					(//skip -to-many inside of -to-many
 						parent_relationship_data['type'].indexOf('-to-many') !== -1 ||
@@ -299,13 +284,14 @@ const data_model_handler = {
 					return true;
 			}
 
-			if(list_of_mapped_fields.indexOf(relationship_name) !== -1)
+			if (list_of_mapped_fields.indexOf(relationship_name) !== -1)
 				data_model_handler.show_required_missing_ranks(relationship_data['table_name'], mapping_tree[relationship_name], table_name, local_path, results);
-			else if(relationship_data['is_required'])
-				add_missing_field(results,local_path);
-		});
+			else if (relationship_data['is_required'])
+				results.push(local_path);
 
-		return results;
+			return results;
+
+		}, results);
 
 	},
 

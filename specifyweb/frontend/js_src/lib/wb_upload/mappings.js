@@ -1,4 +1,5 @@
 "use strict";
+
 const tree_helpers = require('./tree_helpers.js');
 const dom_helper = require('./dom_helper.js');
 const html_generator = require('./html_generator.js');
@@ -81,14 +82,9 @@ const mappings = {
 		if (array_of_mappings.length === 0)
 			return false;
 
-		const base_table_columns = [];
+		const base_table_columns = Object.values(array_of_mappings).reduce((base_table_columns, header_data) => {
 
-		Object.values(array_of_mappings).forEach((header_data) => {
-
-			let header;
-			let mapping;
-			let mapping_type;
-			[mapping_type, header, mapping] = header_data;
+			let [mapping_type, header, mapping] = header_data;
 
 			if (mapping_type === 'existing_header') {
 				const position = mappings.raw_headers.indexOf(header);
@@ -101,7 +97,9 @@ const mappings = {
 			if (mapping.length === 1)
 				base_table_columns.push(mapping[0]);
 
-		});
+			return base_table_columns;
+
+		},[]);
 
 		Object.values(mappings.lines).forEach((radio) => {
 			const data_field = dom_helper.get_field_name(radio);
@@ -148,9 +146,9 @@ const mappings = {
 
 			const ranks = mappings.ranks[table_name];
 
-			Object.keys(ranks).forEach((rank_name) => {
-				rows_html += html_generator.new_base_field(mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true);
-			});
+			rows_html += Object.keys(ranks).map((rank_name)=>{
+				return html_generator.new_base_field(mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true);
+			}).join('');
 
 		} else {
 
@@ -159,14 +157,11 @@ const mappings = {
 
 			const temp_table_rows = fields.concat(relationships).sort();
 
-			const optional_table_rows = [];
-			const required_table_rows = [];
-
-			temp_table_rows.forEach((row_key) => {
+			const rows = temp_table_rows.reduce((rows,row_key) => {
 
 				let class_append = [];
 				let row_name;
-				let is_required = false;
+				let is_required;
 
 				if (typeof table_data['fields'][row_key] !== 'undefined') {
 					row_name = table_data['fields'][row_key]['friendly_field_name'];
@@ -185,16 +180,19 @@ const mappings = {
 				class_append = class_append.join(' ');
 
 				const data = html_generator.new_base_field(row_key, row_name, false, class_append)
-				//rows_html += ;
 
-				if(is_required)
-					required_table_rows.push(data);
-				else
-					optional_table_rows.push(data);
+				const is_required_string = is_required ? 'required_table_rows' : 'optional_table_rows';
 
+				rows[is_required_string].push(data);
+
+				return rows;
+
+			}, {
+				'required_table_rows':[],
+				'optional_table_rows':[],
 			});
 
-			rows_html = [...required_table_rows,...optional_table_rows].join('');
+			rows_html = [...rows['required_table_rows'],...rows['optional_table_rows']].join('');
 
 		}
 
@@ -204,27 +202,22 @@ const mappings = {
 
 
 		//if header is checked by browser, update selected_header
-		function select_header(header) {
+		const headers_to_check = [...mappings.headers, mappings.control_line__new_header, mappings.control_line__new_static_header];
+		headers_to_check.some((header)=>{
 			if (header.checked) {
 				mappings.selected_header = header;
-				return false;
+				return true;
 			}
-		}
-
-		Object.values(mappings.headers).forEach(select_header);
-		select_header(mappings.control_line__new_header);
-		select_header(mappings.control_line__new_static_header);
-
+		});
 
 		mappings.tree = {};
 		mappings.changes_made = true;
 
 		if (mappings.need_to_run_auto_mapper) {
 			const mappings_object = mappings.auto_mapper_run(mappings.raw_headers, mappings.base_table_name);
-			const array_of_mappings = [];
-			Object.keys(mappings_object).forEach((header_name) => {
+			const array_of_mappings = Object.keys(mappings_object).map((header_name) => {
 				const mapping_path = mappings_object[header_name];
-				array_of_mappings.push(['existing_header', header_name, mapping_path]);
+				return ['existing_header', header_name, mapping_path];
 			});
 			mappings.need_to_run_auto_mapper = false;
 			mappings.implement_array_of_mappings(array_of_mappings);
@@ -246,9 +239,10 @@ const mappings = {
 
 		mappings.raw_headers = headers;
 
-		headers.forEach((header) => {
-			headers_html += html_generator.new_header(header, 'unmapped_header');
-		});
+
+		headers_html += headers.map((header) => {
+			return html_generator.new_header(header, 'unmapped_header');
+		}).join('');
 
 		mappings.list__headers.innerHTML = headers_html;
 
@@ -285,10 +279,13 @@ const mappings = {
 		mappings.selected_table.checked = false;
 		mappings.selected_table = undefined;
 
-		const header_mappings = mappings.list__headers.getElementsByClassName('mapping');
+		Object.values(mappings.headers).forEach((header_radio)=>{
 
-		Object.values(header_mappings).forEach((mapping) => {
-			mapping.outerHTML = html_generator.unmapped_header_mapping;
+			header_radio.removeAttribute('data-path');
+			const label = header_radio.nextElementSibling;
+			const header_mapping = dom_helper.get_mappping_friendly_name_element(label);
+			header_mapping.outerHTML = html_generator.unmapped_header_mapping;
+
 		});
 
 		mappings.title__table_name.classList.add('undefined');
@@ -481,55 +478,60 @@ const mappings = {
 		}
 
 		if(required_fields.length === 0 && optional_fields.length === 0) {
-			const rows = {};
 
-			Object.keys(mappings.tables[table_name]['fields']).forEach((field_key) => {
+			//build a list of fields and relationships
+			const rows = [
 
-				const field_data = mappings.tables[table_name]['fields'][field_key];
-				const is_field_hidden = field_data['is_hidden'];
+				...Object.keys(mappings.tables[table_name]['fields']).reduce((rows,field_key) => {
 
-				if (is_field_hidden && mappings.hide_hidden_fields)
-					return true;
+					const field_data = mappings.tables[table_name]['fields'][field_key];
+					const is_field_hidden = field_data['is_hidden'];
 
-				const field_name = field_data['friendly_field_name'];
-				const enabled = !mapped_nodes.includes(field_key);
-				rows[field_name] = [field_key, enabled, 'field', field_data['is_required']];
+					if (is_field_hidden && mappings.hide_hidden_fields)
+						return rows;
 
-			});
+					const field_name = field_data['friendly_field_name'];
+					const enabled = !mapped_nodes.includes(field_key);
+					rows[field_name] = [field_key, enabled, 'field', field_data['is_required']];
 
-			Object.keys(mappings.tables[table_name]['relationships']).forEach((relationship_key) => {
-				const relationship_data = mappings.tables[table_name]['relationships'][relationship_key];
+					return rows;
 
-				const is_field_hidden = relationship_data['is_hidden'];
+				},{}),
 
-				if (
-					(//hide fields designated as hidden when `hide_hidden_fields` is checked
-						is_field_hidden &&
-						mappings.hide_hidden_fields
-					) ||
-					(//hide -to-many relationships inside of -to-many relationships
-						relationship_type.indexOf('-to-many') !== -1 &&
-						relationship_data['type'].indexOf('-to-many') !== -1
-					) ||
-					(//disables circular relationships
-						relationship_data['foreign_name'] === foreign_name &&
-						relationship_data['table_name'] === previous_table
+				...Object.keys(mappings.tables[table_name]['relationships']).reduce((rows,relationship_key) => {
+					const relationship_data = mappings.tables[table_name]['relationships'][relationship_key];
+
+					const is_field_hidden = relationship_data['is_hidden'];
+
+					if (
+						(//hide fields designated as hidden when `hide_hidden_fields` is checked
+							is_field_hidden &&
+							mappings.hide_hidden_fields
+						) ||
+						(//hide -to-many relationships inside of -to-many relationships
+							relationship_type.indexOf('-to-many') !== -1 &&
+							relationship_data['type'].indexOf('-to-many') !== -1
+						) ||
+						(//disables circular relationships
+							relationship_data['foreign_name'] === foreign_name &&
+							relationship_data['table_name'] === previous_table
+						)
 					)
-				)
-					return true;
+						return rows;
 
-				const relationship_name = relationship_data['friendly_relationship_name'];
-				rows[relationship_name] = [relationship_key, true, 'relationship', relationship_data['is_required']];
-			});
+					const relationship_name = relationship_data['friendly_relationship_name'];
+					rows[relationship_name] = [relationship_key, true, 'relationship', relationship_data['is_required']];
 
+					return rows;
+
+				}, {})
+
+			];
+
+			//sort && display fields
 			Object.keys(rows).sort().forEach((row_name) => {
 
-				let row_key;
-				let row_enabled;
-				let row_type;
-				let is_required;
-
-				[row_key, row_enabled, row_type, is_required] = rows[row_name];
+				let [row_key, row_enabled, row_type, is_required] = rows[row_name];
 
 				if (row_type === 'relationship')
 					row_name = mappings.reference_indicator + row_name;
@@ -595,10 +597,7 @@ const mappings = {
 
 		while (true) {
 
-			let control_element;
-			let control_element_type;
-
-			[control_element, control_element_type] = dom_helper.get_control_element(line);
+			let [control_element, control_element_type] = dom_helper.get_control_element(line);
 
 			if (control_element_type === 'select')
 				path.push(control_element.value);
@@ -711,26 +710,18 @@ const mappings = {
 		if (!mappings.changes_made)
 			return mappings.tree;
 
-		let tree = {};
-
-		Object.values(mappings.headers).forEach((header) => {
+		mappings.tree = Object.values(mappings.headers).reduce((tree,header) => {
 
 			const raw_path = dom_helper.get_mapping_path(header);
 
 			if (raw_path == null)
-				return true;
+				return tree;
 
-			let path = [];
-
-			raw_path.split(mappings.level_separator).forEach((path_part) => {
-				path.push(path_part);
-			});
+			const path = raw_path.split(mappings.level_separator);
 
 			const next_heading_line = header.nextElementSibling;
 
-			let header_type;
-			let header_control_element;
-			[header_control_element, header_type] = dom_helper.get_header_control_element(next_heading_line);
+			let [header_control_element, header_type] = dom_helper.get_header_control_element(next_heading_line);
 
 			if (header_type === 'static')
 				path.push({'static': header_control_element.value});
@@ -738,15 +729,15 @@ const mappings = {
 				path.push(header_control_element.innerText);
 
 			const branch = tree_helpers.array_to_tree(path);
-			tree = tree_helpers.deep_merge_object(tree, branch);
 
-		});
+			return tree_helpers.deep_merge_object(tree, branch);
 
-		mappings.tree = tree;
+		},{});
+
+
 		mappings.changes_made = false;
 
-
-		return tree;
+		return mappings.tree;
 
 	},
 
@@ -844,9 +835,7 @@ const mappings = {
 				if (value.substr(0, mappings.reference_symbol.length) === mappings.reference_symbol) {//previous_selected_field was a o-m or m-m multiple
 
 					const parent_line = line.previousElementSibling;
-					let parent_control_element;
-					let parent_control_element_type;
-					[parent_control_element, parent_control_element_type] = dom_helper.get_control_element(parent_line);
+					let [parent_control_element, parent_control_element_type] = dom_helper.get_control_element(parent_line);
 
 					if (parent_control_element_type === 'select') {
 						current_table_name = dom_helper.get_relationship_name(parent_control_element);

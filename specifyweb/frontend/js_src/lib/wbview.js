@@ -170,6 +170,8 @@ var WBView = Backbone.View.extend({
             afterChange: (change, source) => source === 'loadData' || onChanged()
         });
 
+        WBView.colHeaders = colHeaders;
+
         const makeTooltip = td => {
             const coords = this.hot.getCoords(td);
             const pos = this.hot.countCols() * coords.row + coords.col;
@@ -187,6 +189,20 @@ var WBView = Backbone.View.extend({
         $(window).resize(this.resize.bind(this));
     },
     renderCell(instance, td, row, col, prop, value, cellProperties) {
+
+        if(col===0)
+            try {
+                JSON.parse(value);
+                WBView.validation_result = JSON.parse(value);
+            } catch (e) {
+                if(e instanceof SyntaxError)
+                    console.log('Failed to parse validation message (' + (typeof value) + '): '+value);
+                WBView.validation_result = false;
+            }
+        else {
+
+        }
+
         Handsontable.renderers.TextRenderer.apply(null, arguments);
         // if (!this.highlightsOn) return;
         const $td = $(td);

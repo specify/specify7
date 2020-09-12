@@ -94,14 +94,16 @@ const tree_helpers = {
 	* */
 	deep_merge_object: (target, source) => {
 
-		Object.keys(source).forEach((source_property) => {
+		return Object.keys(source).reduce((target, source_property) => {
+
 			if (typeof target[source_property] === "undefined")
 				target[source_property] = source[source_property];
 			else
 				target[source_property] = tree_helpers.deep_merge_object(target[source_property], source[source_property]);
-		});
 
-		return target;
+			return target;
+
+		}, target);
 
 	},
 
@@ -161,10 +163,13 @@ const tree_helpers = {
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
 	mappings_tree_to_array_of_mappings: (mappings_tree, result = [], path = []) => {
-		Object.keys(mappings_tree).forEach((tree_node_name) => {
+
+		return Object.keys(mappings_tree).reduce((result, tree_node_name) => {
+
 			const tree_node = mappings_tree[tree_node_name];
 			const local_path = path.slice();
 			local_path.push(tree_node_name);
+
 			if (typeof tree_node !== 'object') {
 
 				let mapping_type;
@@ -178,11 +183,14 @@ const tree_helpers = {
 					mapping_type = 'new_header';
 
 				result.push([mapping_type, tree_node, local_path]);
+
 			} else
 				tree_helpers.mappings_tree_to_array_of_mappings(tree_node, result, local_path);
-		});
 
-		return result;
+			return result;
+
+		}, result);
+
 	},
 
 

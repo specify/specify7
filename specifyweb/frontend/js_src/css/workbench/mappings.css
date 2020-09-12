@@ -160,22 +160,3 @@
     grid-column-start: 1;
     grid-column-end: 4;
 }
-
-/* validation message */
-#validation_results {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	position: fixed;
-	top: 0;
-	left: 0;
-	align-items: center;
-	justify-content: center;
-	background: #000a;
-}
-
-#validation_results_container {
-	border: 0.1rem solid var(--border);
-	padding: 1rem;
-	background: var(--b1);
-}
