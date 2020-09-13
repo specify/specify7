@@ -77,7 +77,7 @@ const mappings = {
 	* 								  									 {string} static_value - Value of a static field if mapping type is `static_value`
 	* 									 @param {array} mapping_path - Mapping path array
 	* */
-	implement_array_of_mappings: (array_of_mappings) => {
+	implement_array_of_mappings: array_of_mappings => {
 
 		if (array_of_mappings.length === 0)
 			return false;
@@ -101,7 +101,7 @@ const mappings = {
 
 		},[]);
 
-		Object.values(mappings.lines).forEach((radio) => {
+		Object.values(mappings.lines).forEach(radio => {
 			const data_field = dom_helper.get_field_name(radio);
 			if (data_field !== 'relationship' && base_table_columns.indexOf(data_field) !== -1)
 				radio.setAttribute('disabled', '');
@@ -122,7 +122,7 @@ const mappings = {
 	/* Select table
 	* @param {Object} event - event object. Only event.target property is used
 	* */
-	set_table: (event) => {
+	set_table: event => {
 
 		const radio = event.target;
 		const table_name = dom_helper.get_table_name(radio);
@@ -146,9 +146,9 @@ const mappings = {
 
 			const ranks = mappings.ranks[table_name];
 
-			rows_html += Object.keys(ranks).map((rank_name)=>{
-				return html_generator.new_base_field(mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true);
-			}).join('');
+			rows_html += Object.keys(ranks).map(rank_name =>
+				html_generator.new_base_field(mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true)
+			).join('');
 
 		} else {
 
@@ -203,7 +203,7 @@ const mappings = {
 
 		//if header is checked by browser, update selected_header
 		const headers_to_check = [...mappings.headers, mappings.control_line__new_header, mappings.control_line__new_static_header];
-		headers_to_check.some((header)=>{//break if found a checked header
+		headers_to_check.some(header =>{//break if found a checked header
 			if (header.checked)
 				mappings.selected_header = header;
 			return header.checked;
@@ -238,9 +238,7 @@ const mappings = {
 		mappings.raw_headers = headers;
 
 
-		headers_html += headers.map((header) => {
-			return html_generator.new_header(header, 'unmapped_header');
-		}).join('');
+		headers_html += headers.map(header => html_generator.new_header(header, 'unmapped_header')).join('');
 
 		mappings.list__headers.innerHTML = headers_html;
 
@@ -277,7 +275,7 @@ const mappings = {
 		mappings.selected_table.checked = false;
 		mappings.selected_table = undefined;
 
-		Object.values(mappings.headers).forEach((header_radio)=>{
+		Object.values(mappings.headers).forEach(header_radio =>{
 
 			header_radio.removeAttribute('data-path');
 			const label = header_radio.nextElementSibling;
@@ -524,7 +522,7 @@ const mappings = {
 			);
 
 			//sort && display fields
-			Object.keys(rows).sort().forEach((row_name) => {
+			Object.keys(rows).sort().forEach(row_name => {
 
 				let [row_key, row_enabled, row_type, is_required] = rows[row_name];
 
@@ -557,7 +555,7 @@ const mappings = {
 	* @param {DOMElement} current_line - select that would be used as a basis for checking
 	* @return {array} Returns array of fields that are already mapped and should be disabled
 	* */
-	get_mapped_children: (current_line) => {
+	get_mapped_children: current_line => {
 		const previous_line = current_line.previousElementSibling;
 
 		const previous_element = dom_helper.get_control_element(previous_line)[0];
@@ -742,7 +740,7 @@ const mappings = {
 	/*
 	* Callback for handling change to selected header
 	* */
-	change_selected_header: (event) => {
+	change_selected_header: event => {
 		mappings.selected_header = event.target;
 		mappings.update_buttons();
 
@@ -751,7 +749,7 @@ const mappings = {
 	/*
 	* Callback for handling change to direct child of a base table
 	* */
-	change_selected_field: (event) => {
+	change_selected_field: event => {
 
 		const radio = event.target;
 		const label = radio.parentElement;
@@ -787,7 +785,7 @@ const mappings = {
 	/*
 	* Callback for handling the change to the value of <select>
 	* */
-	change_option_field: (event) => {
+	change_option_field: event => {
 		const select = event.target;
 		const value = select.value;
 		const label = select.parentElement;

@@ -77,26 +77,26 @@ const main = {
 			mappings.update_all_fields();
 		});
 
-		mappings.list__data_model.addEventListener('change', (event) => {
+		mappings.list__data_model.addEventListener('change', event => {
 			if (event.target && event.target.classList.contains('radio__field'))
 				mappings.change_selected_field(event);
 			else if (event.target && event.target.tagName === 'SELECT')
 				mappings.change_option_field(event);
 		});
 
-		mappings.list__data_model.addEventListener('focus', (event) => {
+		mappings.list__data_model.addEventListener('focus', event => {
 			if (event.target && event.target.tagName === 'SELECT')
 				mappings.change_option_field(event);
 		});
 
-		mappings.list__headers.addEventListener('change', (event) => {
+		mappings.list__headers.addEventListener('change', event => {
 			if (event.target && event.target['classList'].contains('radio__header'))
 				mappings.change_selected_header(event);
 			else if (event.target && event.target['tagName'] === 'TEXTAREA')
 				mappings.changes_made = true;
 		});
 
-		mappings.list__tables.addEventListener('change', (event) => {
+		mappings.list__tables.addEventListener('change', event => {
 			if (event.target && event.target['classList'].contains('radio__table'))
 				mappings.set_table(event);
 		});
@@ -162,12 +162,8 @@ const main = {
 
 			//initialize dependencies
 			upload_plan_converter.constructor(
-				() => {
-					return mappings.base_table_name;
-				},
-				(base_table_name) => {
-					mappings.base_table_name = base_table_name;
-				},
+				() => mappings.base_table_name,
+				base_table_name => mappings.base_table_name = base_table_name,
 				mappings.tree_symbol,
 				mappings.reference_symbol,
 				mappings.get_mappings_tree,

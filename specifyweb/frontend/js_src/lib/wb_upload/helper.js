@@ -13,7 +13,7 @@ const helper = {
 	* @param {string} name - Original field name
 	* @return {string} Human friendly field name
 	* */
-	get_friendly_name: (name) => {
+	get_friendly_name: name => {
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);

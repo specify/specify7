@@ -27,15 +27,9 @@ const auto_mapper = {
 		auto_mapper.regex_2 = /\s+/g;
 		auto_mapper.depth = 8;
 		auto_mapper.comparisons = {
-			'regex': (header, regex) => {
-				return header.match(regex);
-			},
-			'string': (header, string) => {
-				return header === string;
-			},
-			'contains': (header, string) => {
-				return header.indexOf(string) !== -1;
-			}
+			'regex': (header, regex) => header.match(regex),
+			'string': (header, string) => header === string,
+			'contains': (header, string) => header.indexOf(string) !== -1
 		};
 
 		//convert all field names in the mapping definitions to lower case
@@ -99,7 +93,7 @@ const auto_mapper = {
 
 			const queue_data = Object.values(auto_mapper.find_mappings_queue);
 
-			queue_data.forEach((mappings_data) => {
+			queue_data.forEach(mappings_data => {
 				Object.assign(mappings_data).forEach(([table_name,path]) => {
 					auto_mapper.find_mappings(table_name, path);
 				});
@@ -136,7 +130,7 @@ const auto_mapper = {
 		const friendly_table_name = table_data['friendly_table_name'].toLowerCase();
 
 		if (typeof ranks_data !== "undefined")
-			return Object.keys(ranks_data).forEach((rank_name) => {
+			return Object.keys(ranks_data).forEach(rank_name => {
 
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = auto_mapper.tree_symbol + rank_name;
@@ -206,7 +200,7 @@ const auto_mapper = {
 						Object.entries(auto_mapper.comparisons).some(([comparison_key,comparison_function]) => {//loop over defined comparisons
 
 							if (typeof field_comparisons[comparison_key] !== "undefined")
-								Object.values(field_comparisons[comparison_key]).some((comparison_value) => {//loop over each value of a comparison
+								Object.values(field_comparisons[comparison_key]).some(comparison_value => {//loop over each value of a comparison
 									if (comparison_function(lowercase_header_key, comparison_value)) {
 										matched = auto_mapper.make_mapping(path, [field_name], header_key);
 										if (matched)
@@ -299,7 +293,7 @@ const auto_mapper = {
 		while (true) {
 
 			//go over mapped headers to see if this path was already mapped
-			let path_already_mapped = Object.values(auto_mapper.results).some((mapping_path) => local_path === mapping_path );
+			let path_already_mapped = Object.values(auto_mapper.results).some(mapping_path => local_path === mapping_path );
 
 			if (!path_already_mapped)
 				break;
@@ -324,7 +318,7 @@ const auto_mapper = {
 
 		//prevent -to-many inside of -to-many //TODO: remove this in the future
 		let distance_from_parent_to_many=-1;
-		let has_nested_to_many = local_path.some((element) => {
+		let has_nested_to_many = local_path.some(element => {
 			const is_to_many = element.substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol;
 
 			if(distance_from_parent_to_many===1 && is_to_many)

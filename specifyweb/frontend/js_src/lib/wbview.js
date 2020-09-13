@@ -146,7 +146,17 @@ var WBView = Backbone.View.extend({
         return this;
     },
     setupHOT (colHeaders, columns) {
-        if (this.data.length < 1) this.data.push(Array(columns.length + 1).fill(null));
+
+        if (this.data.length < 1)
+            this.data.push(Array(columns.length + 1).fill(null));
+
+        columns = columns.map(columns=>{
+            columns.validator = this.validateCell;
+            return columns;
+        });
+
+        WBView.column_indexes = colHeaders;
+        WBView.validation_results = {};
 
         const onChanged = this.spreadSheetChanged.bind(this);
         const renderer = this.renderCell.bind(this);
@@ -167,51 +177,51 @@ var WBView = Backbone.View.extend({
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
             afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: (change, source) => source === 'loadData' || onChanged()
+            afterChange: (change, source) => source === 'loadData' || onChanged(),
         });
 
-        WBView.column_indexes = Object.entries(colHeaders).reduce((column_indexes, [column_index, column_header])=>{
-            column_indexes[column_index] = column_header;
-            return column_indexes;
-        },{});
+        // const makeTooltip = td => {
+        //     const coords = this.hot.getCoords(td);
+        //     const pos = this.hot.countCols() * coords.row + coords.col;
+        //     const info = this.infoFromLog.byPos[pos];
+        //     const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
+        //     const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
+        //     return $('<span>').text(message);
+        // };
+        //
+        // this.$('.wb-spreadsheet').tooltip({
+        //     items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
+        //     content: function() { return makeTooltip(this); }
+        // });
 
-        const makeTooltip = td => {
-            const coords = this.hot.getCoords(td);
-            const pos = this.hot.countCols() * coords.row + coords.col;
-            const info = this.infoFromLog.byPos[pos];
-            const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
-            const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
-            return $('<span>').text(message);
-        };
+        const get_td_title = td => td.getAttribute('title');
 
         this.$('.wb-spreadsheet').tooltip({
-            items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
-            content: function() { return makeTooltip(this); }
+            items: ".wb-invalid-cell",
+            content: function() { return get_td_title(this); }
         });
 
         $(window).resize(this.resize.bind(this));
     },
+
     renderCell(instance, td, row, col, prop, value, cellProperties) {
 
-        if(col===0)
+        const validation_results_parsed = typeof WBView.validation_results[row] !== "undefined";
+        const is_first_column = col===0;
+
+        if(!validation_results_parsed && is_first_column)
             try {
 
                 const validation_results_raw = JSON.parse(value);
 
                 let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
 
-                    const validation_record = {
-                        'type': 'table_error',
-                        'table_name': table_issue['tableName'],
-                        'description': table_issue['issue']
-                    };
-
                     table_issue['columns'].reduce((validation_results,column_name)=>{
 
                         if(typeof validation_results[column_name] === "undefined")
                             validation_results[column_name] = [];
 
-                        validation_results[column_name].push(validation_record);
+                        validation_results[column_name].push(table_issue['issue']);
 
                         return validation_results;
 
@@ -222,36 +232,22 @@ var WBView = Backbone.View.extend({
 
                 validation_results = validation_results_raw['cellIssues'].reduce((validation_results,cell_issue)=>{
 
-                    const validation_record = {
-                        'type': 'cell_error',
-                        'description': cell_issue['issue']
-                    };
-
                     const column_name = cell_issue['column'];
 
                     if(typeof validation_results[column_name] === "undefined")
                         validation_results[column_name] = [];
 
-                    validation_results[column_name].push(validation_record);
+                    validation_results[column_name].push(cell_issue['issue']);
 
                     return validation_results;
                 },validation_results);
 
                 validation_results = validation_results_raw['newRows'].reduce((validation_results,table_issue)=>{
 
-                    const validation_record = {
-                        'type': 'new_row',
-                        'table_name': table_issue['tableName'],
-                    };
-
                     table_issue['columns'].reduce((validation_results,column_name)=>{
 
                         if(typeof validation_results[column_name] === "undefined")
-                            validation_results[column_name] = [];
-                        else if(validation_results[column_name].some((column_error) => column_error['type']!=='new_row' ))
-                            return validation_results;//if there are any errors in this cell, don't show it as `new`
-
-                        validation_results[column_name].push(validation_record);
+                            validation_results[column_name] = true;
 
                         return validation_results;
 
@@ -260,17 +256,33 @@ var WBView = Backbone.View.extend({
                     return validation_results;
                 },validation_results);
 
+                WBView.validation_results[row] = validation_results;
+
 
             } catch (exception) {
 
-                if(!(exception instanceof SyntaxError))//catch only JSON parse errors
+                if(!(exception instanceof SyntaxError))//only catch JSON parse errors
                     throw exception;
 
                 console.error('Failed to parse validation message (' + (typeof value) + '): '+value);
-                WBView.validation_results = {};
+                WBView.validation_results[row] = {};
 
             }
-        else {
+
+        else if(validation_results_parsed && !is_first_column){
+
+            const column_name = WBView.column_indexes[col];
+            const column_validation_result = WBView.validation_results[row][column_name];
+
+            td.removeAttribute('title');
+
+            if(typeof column_validation_result === "boolean")
+                td.classList.add('wb-no-match-cell');
+
+            else if(typeof column_validation_result !== "undefined"){
+                td.setAttribute('title',column_validation_result.join("\n"));
+                td.classList.add('wb-invalid-cell');
+            }
 
         }
 

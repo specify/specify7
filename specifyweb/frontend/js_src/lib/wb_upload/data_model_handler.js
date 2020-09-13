@@ -35,7 +35,7 @@ const data_model_handler = {
 	* Fetches data model.
 	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_tables: (done_callback) => {
+	fetch_tables: done_callback => {
 
 		let data_model_html = '';
 
@@ -55,7 +55,7 @@ const data_model_handler = {
 			)
 				return tables;
 
-			table_data['fields'].forEach((field) => {
+			table_data['fields'].forEach(field => {
 
 				let field_name = field['name'];
 				let friendly_name = field.getLocalizedName();
@@ -176,9 +176,10 @@ const data_model_handler = {
 
 						data_model_handler.ranks_queue[table_name] = false;
 
-						let still_waiting_for_ranks_to_fetch = Object.values(data_model_handler.ranks_queue).find((is_waiting_for_rank_to_fetch) => {
-							return is_waiting_for_rank_to_fetch;
-						});
+						let still_waiting_for_ranks_to_fetch =
+							Object.values(data_model_handler.ranks_queue).find(
+								is_waiting_for_rank_to_fetch => is_waiting_for_rank_to_fetch
+							);
 
 						if (!still_waiting_for_ranks_to_fetch)//the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback(data_model_handler.data_model_html, data_model_handler.tables);
@@ -194,11 +195,10 @@ const data_model_handler = {
 	* Returns a list of hierarchy tables
 	* @result {array} list of hierarchy tables
 	* */
-	get_list_of_hierarchy_tables() {
-		return schema.orgHierarchy.filter((table_name) => {
-			return table_name !== 'collectionobject';
-		});
-	},
+	get_list_of_hierarchy_tables: ()  =>
+		schema.orgHierarchy.filter(
+			table_name => table_name !== 'collectionobject'
+		),
 
 	/*
 	* Iterates over the mapping_tree to find required fields that are missing
@@ -214,7 +214,7 @@ const data_model_handler = {
 
 		//handle -to-many references
 		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
-			list_of_mapped_fields.forEach((mapped_field_name) => {
+			list_of_mapped_fields.forEach(mapped_field_name => {
 				const local_path = [...path, mapped_field_name];
 				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			});

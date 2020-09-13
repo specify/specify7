@@ -17,16 +17,13 @@ const html_generator = {
 	* @param {string} friendly_table_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
 	* @return {string} HTML for table
 	* */
-	new_table: (table_name, friendly_table_name) => {
-
-		return '<label>' +
-			'		<input type="radio" name="table" class="radio__table" data-table="' + table_name + '">' +
-			'		<div tabindex="0" class="line">' +
-			'			<div class="mapping">' + friendly_table_name + '</div>' +
-			'		</div>' +
-			'	</label>';
-
-	},
+	new_table: (table_name, friendly_table_name) =>
+		'<label>' +
+		'		<input type="radio" name="table" class="radio__table" data-table="' + table_name + '">' +
+		'		<div tabindex="0" class="line">' +
+		'			<div class="mapping">' + friendly_table_name + '</div>' +
+		'		</div>' +
+		'	</label>',
 
 	/*
 	* Generates HTML for a new header (either static or not)
@@ -97,7 +94,7 @@ const html_generator = {
 
 		function fields_array_to_html(fields_data, label, other_fields_length) {
 
-			let result = fields_data.map((field_data) => {
+			let result = fields_data.map(field_data => {
 
 				let [field_value, field_name, is_enabled] = field_data;
 

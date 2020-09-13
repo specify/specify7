@@ -16,9 +16,7 @@ const dom_helper = {
 	* @param {DOMElement} radio - Radio button
 	* @return {string} Official table name (from data model)
 	* */
-	get_table_name: (radio) => {
-		return radio.getAttribute('data-table');
-	},
+	get_table_name: radio => radio.getAttribute('data-table'),
 
 
 	//FIELDS
@@ -31,7 +29,7 @@ const dom_helper = {
 	* 				  {DOMElement} control_element - Control Element
 	* 				  {string} control_element_tag_name - select/input
 	* */
-	get_control_element: (parent) => {
+	get_control_element: parent => {
 		const parent_select = parent.getElementsByTagName('select')[0];
 
 		if (typeof parent_select !== "undefined")
@@ -47,7 +45,7 @@ const dom_helper = {
 	* @param {DOMElement} control_element - SELECT or INPUT
 	* @return {DOMElement} DIV or LABEL that is a parent of control element
 	* */
-	get_line_element: (control_element) => {
+	get_line_element: control_element => {
 
 		const parent_element = control_element.parentElement;
 
@@ -63,7 +61,7 @@ const dom_helper = {
 	* @param {DOMElement} line - DIV or LABEL Line where the search starts
 	* @return {DOMElement} DIV or LABEL that is the last line of this relationship
 	* */
-	get_last_line: (line) => {
+	get_last_line: line => {
 
 		while (true) {
 
@@ -83,7 +81,7 @@ const dom_helper = {
 	* @param {DOMElement} line - DIV or LABEL Line where the search starts
 	* @return {DOMElement} DIV or LABEL that is the first line of this relationship
 	* */
-	get_first_line: (line) => {
+	get_first_line: line => {
 
 		while (true) {
 
@@ -103,35 +101,29 @@ const dom_helper = {
 	* @param {DOMElement} radio - <input type="radio"> for a field
 	* @return {string} Official field name (from data model)
 	* */
-	get_field_name: (radio) => {
-		return radio.getAttribute('data-field');
-	},
+	get_field_name: radio => radio.getAttribute('data-field'),
 
 	/*
 	* Get's the text value of a label for a particular field
 	* @param {DOMElement} label - <label> for a field
 	* @return {string} Friendly name of a field
 	* */
-	get_friendly_field_name: (label) => {
-		return label.getElementsByClassName('row_name')[0];
-	},
+	get_friendly_field_name: label => label.getElementsByClassName('row_name')[0],
 
 	/*
 	* Checks whether field is disabled
 	* @param {DOMElement} - <input type="radio"> or <option> for a field or relationship
 	* @return {bool} whether field is disabled
 	* */
-	is_field_disabled: (field) => {
-		return field.getAttribute('disabled') !== null;
-	},
+	is_field_disabled: field => field.getAttribute('disabled') !== null,
 
 	/*
 	* Removes all <select> elements from the list of fields
 	* @param {DOMElement} parent - shared parent for all <select> elements
 	* */
-	close_open_lists: (parent) => {
+	close_open_lists: parent => {
 		const opened_lists = parent.getElementsByClassName('table_relationship');
-		Object.values(opened_lists).forEach((list) => {
+		Object.values(opened_lists).forEach(list => {
 			parent.removeChild(list);
 		});
 	},
@@ -144,9 +136,7 @@ const dom_helper = {
 	* @param {DOMElement} radio - <input type="radio"> for a header
 	* @return {string} Header name
 	* */
-	get_header_name: (radio) => {
-		return radio.getAttribute('data-header');
-	},
+	get_header_name: radio =>  radio.getAttribute('data-header'),
 
 	/*
 	* Get mapping path <input type="radio"> for a header
@@ -154,18 +144,14 @@ const dom_helper = {
 	* @return {string} Header mapping path
 	* Example return: accession_accessionagents_#1_agent_firstname
 	* */
-	get_mapping_path: (radio) => {
-		return radio.getAttribute('data-path');
-	},
+	get_mapping_path: radio =>  radio.getAttribute('data-path'),
 
 	/*
 	* Get the name of the relationship <select> belongs to
 	* @param {DOMElement} select - <select> for a relationship
 	* @return {string} Official relationship name (from data model)
 	* */
-	get_relationship_name: (select) => {
-		return select.getAttribute('name');
-	},
+	get_relationship_name: select => select.getAttribute('name'),
 
 	/*
 	* Get's control element for a header and gives it's tag name
@@ -174,7 +160,7 @@ const dom_helper = {
 	* 				  {DOMElement} control_element - Control Element
 	* 				  {string} control_element_tag_name - select/input
 	* */
-	get_header_control_element: (parent) => {
+	get_header_control_element: parent => {
 
 		const header_name = parent.getElementsByClassName('header')[0];
 
@@ -194,18 +180,14 @@ const dom_helper = {
 	* OR
 	* Kingdom Author
 	* */
-	get_mappping_friendly_name_element: (label) => {
-		return label.getElementsByClassName('mapping')[0];
-	},
+	get_mappping_friendly_name_element: label => label.getElementsByClassName('mapping')[0],
 
 	/*
 	* Checks whether a particular header is mapped
 	* @param {DOMElement} label - <label> of a header
 	* @return {bool} Whether a header is mapped
 	* */
-	is_header_unmapped: (label) => {
-		return label.getElementsByClassName('undefined').length !== 0;
-	},
+	is_header_unmapped: label => label.getElementsByClassName('undefined').length !== 0,
 
 };
 
