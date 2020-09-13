@@ -53,7 +53,7 @@ const data_model_handler = {
 				table_data['system'] ||
 				data_model_handler.tables_to_hide.indexOf(table_name) !== -1
 			)
-				return true;
+				return tables;
 
 			table_data['fields'].forEach((field) => {
 
@@ -140,7 +140,7 @@ const data_model_handler = {
 		data_model_handler.tables = tables;
 		data_model_handler.data_model_html = data_model_html;
 
-		if (Object.keys(data_model_handler.ranks_queue).length === 0)//there aren't any tree's
+		if (Object.keys(data_model_handler.ranks_queue).length === 0)//there aren't any trees
 			done_callback();//so there is no need to wait for ranks to finish fetching
 
 	},
@@ -165,14 +165,14 @@ const data_model_handler = {
 							const rank_id = rank.get('id');
 
 							if (rank_id === 1)
-								return true;
+								return table_ranks;
 
 							const rank_name = rank.get('name');
 							table_ranks[rank_name] = rank.get('isenforced');
 
 							return table_ranks;
 
-						});
+						}, {});
 
 						data_model_handler.ranks_queue[table_name] = false;
 
@@ -226,7 +226,7 @@ const data_model_handler = {
 
 			const keys = Object.keys(data_model_handler.ranks[table_name]);
 
-			if (keys.indexOf(path.slice(-1)[0]) === -1)
+			if (keys.indexOf(path.slice(-1)[0]) === -1)//last path element is a rank
 				return keys.reduce((results, rank_name) => {
 					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
 					const local_path = [...path, data_model_handler.tree_symbol + rank_name];
@@ -242,9 +242,7 @@ const data_model_handler = {
 		}
 
 		//handle regular relationships
-		results = Object.keys(table_data['fields']).reduce((results, field_name) => {
-
-			const field_data = table_data['fields'][field_name];
+		results = Object.entries(table_data['fields']).reduce((results, [field_name,field_data]) => {
 
 			const local_path = [...path, field_name];
 
@@ -255,9 +253,8 @@ const data_model_handler = {
 
 		}, results);
 
-		return Object.keys(table_data['relationships']).reduce((results, relationship_name) => {
+		return Object.entries(table_data['relationships']).reduce((results, [relationship_name,relationship_data]) => {
 
-			const relationship_data = table_data['relationships'][relationship_name];
 			const local_path = [...path, relationship_name];
 
 			if (previous_table_name !== '') {
@@ -281,7 +278,7 @@ const data_model_handler = {
 						relationship_data['type'].indexOf('-to-many') !== -1
 					)
 				)
-					return true;
+					return results;
 			}
 
 			if (list_of_mapped_fields.indexOf(relationship_name) !== -1)

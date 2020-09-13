@@ -52,12 +52,10 @@ const tree_helpers = {
 		if (typeof node_mappings_tree === "string")
 			target_key = node_mappings_tree;
 		else {
-			const target_keys = Object.keys(node_mappings_tree);
+			target_key = Object.keys(node_mappings_tree).shift();
 
-			if (target_keys.length === 0)
+			if (typeof target_key === "undefined")
 				return full_mappings_tree;
-
-			target_key = target_keys[0];
 		}
 
 		if (typeof full_mappings_tree[target_key] === "undefined")
@@ -94,12 +92,12 @@ const tree_helpers = {
 	* */
 	deep_merge_object: (target, source) => {
 
-		return Object.keys(source).reduce((target, source_property) => {
+		return Object.entries(source).reduce((target, [source_property, source_value]) => {
 
 			if (typeof target[source_property] === "undefined")
-				target[source_property] = source[source_property];
+				target[source_property] = source_value;
 			else
-				target[source_property] = tree_helpers.deep_merge_object(target[source_property], source[source_property]);
+				target[source_property] = tree_helpers.deep_merge_object(target[source_property], source_value);
 
 			return target;
 
@@ -164,9 +162,8 @@ const tree_helpers = {
 	* */
 	mappings_tree_to_array_of_mappings: (mappings_tree, result = [], path = []) => {
 
-		return Object.keys(mappings_tree).reduce((result, tree_node_name) => {
+		return Object.entries(mappings_tree).reduce((result, [tree_node_name,tree_node]) => {
 
-			const tree_node = mappings_tree[tree_node_name];
 			const local_path = path.slice();
 			local_path.push(tree_node_name);
 

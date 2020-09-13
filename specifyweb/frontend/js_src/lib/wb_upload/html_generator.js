@@ -95,7 +95,7 @@ const html_generator = {
 	* */
 	new_relationship_fields: (table_name, optional_fields_array, required_fields_array = []) => {
 
-		function fields_array_to_html(fields_data, label) {
+		function fields_array_to_html(fields_data, label, other_fields_length) {
 
 			let result = fields_data.map((field_data) => {
 
@@ -110,6 +110,9 @@ const html_generator = {
 			if (result === '')
 				return '';
 
+			if(other_fields_length===0)
+				return result;
+
 			return '<optgroup label="' + label + '">' + result + '</optgroup>';
 
 		}
@@ -120,8 +123,8 @@ const html_generator = {
 			'<label class="line">' +
 			'	<select name="' + table_name + '" class="select__field">' +
 			'		<option value="0"></option>' +
-			'		' + fields_array_to_html(required_fields_array, 'Required Fields') +
-			'		' + fields_array_to_html(optional_fields_array, 'Optional Fields') +
+			'		' + fields_array_to_html(required_fields_array, 'Required Fields', optional_fields_array.length) +
+			'		' + fields_array_to_html(optional_fields_array, 'Optional Fields', required_fields_array.length) +
 			'	</select>' +
 			'</label>' +
 			'</div>';

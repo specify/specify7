@@ -39,13 +39,13 @@ const auto_mapper = {
 		};
 
 		//convert all field names in the mapping definitions to lower case
-		auto_mapper_definitions = Object.keys(auto_mapper_definitions).reduce((auto_mapper_definitions,table_name) => {
+		auto_mapper_definitions = Object.entries(auto_mapper_definitions).reduce((auto_mapper_definitions,[table_name,fields]) => {
 			const new_table_name = table_name.toLowerCase();
 
-			const fields = auto_mapper_definitions[table_name];
-			auto_mapper_definitions[new_table_name] = Object.keys(fields).reduce((new_fields, field_name) => {
+			auto_mapper_definitions[new_table_name] = Object.entries(fields).reduce((new_fields, [field_name,field_data]) => {
 				const new_field_name = field_name.toLowerCase();
-				new_fields[new_field_name] = fields[field_name];
+				new_fields[new_field_name] = field_data;
+				return new_fields;
 			},{});
 
 			return auto_mapper_definitions;
@@ -90,7 +90,6 @@ const auto_mapper = {
 		};
 		auto_mapper.find_mappings_queue[0][base_table] = [];//add the base table to `find_mappings_queue`
 
-		let depth_keys = Object.keys(auto_mapper.find_mappings_queue);
 		let find_mappings_queue;
 
 		while (true) {
@@ -98,22 +97,15 @@ const auto_mapper = {
 			find_mappings_queue = auto_mapper.find_mappings_queue;
 			auto_mapper.find_mappings_queue = {};
 
-			depth_keys.forEach((depth_level) => {
-				const mappings_data = find_mappings_queue[depth_level];
+			const queue_data = Object.values(auto_mapper.find_mappings_queue);
 
-				Object.keys(mappings_data).forEach((table_name) => {
-
-					const path = mappings_data[table_name];
-
+			queue_data.forEach((mappings_data) => {
+				Object.assign(mappings_data).forEach(([table_name,path]) => {
 					auto_mapper.find_mappings(table_name, path);
-
 				});
-
 			});
 
-			depth_keys = Object.keys(auto_mapper.find_mappings_queue);
-
-			if (depth_keys.length === 0)
+			if (queue_data.length === 0)
 				break;
 
 		}
@@ -143,28 +135,23 @@ const auto_mapper = {
 		const fields = table_data['fields'];
 		const friendly_table_name = table_data['friendly_table_name'].toLowerCase();
 
-		if (typeof ranks_data !== "undefined") {
-
-			Object.keys(ranks_data).forEach((rank_name) => {
+		if (typeof ranks_data !== "undefined")
+			return Object.keys(ranks_data).forEach((rank_name) => {
 
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = auto_mapper.tree_symbol + rank_name;
 
-				Object.keys(fields).forEach((field_name) => {
-
-					const field_data = fields[field_name];
+				Object.entries(fields).forEach(([field_name,field_data]) => {
 
 					if (field_data['is_hidden'] === true)
 						return true;//skip hidden fields
 
 					const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
 
-					Object.keys(auto_mapper.unmapped_headers).forEach((header_name) => {
-
-						const header_data = auto_mapper.unmapped_headers[header_name];
+					Object.entries(auto_mapper.unmapped_headers).some(([header_name,header_data]) => {
 
 						if (header_data === false)
-							return true;//skip mapped
+							return false;//skip mapped
 
 						let [stripped_name, final_name] = header_data;
 
@@ -179,7 +166,7 @@ const auto_mapper = {
 							)
 						) {
 							auto_mapper.make_mapping(path, [final_rank_name, field_name], header_name);
-							return false;//don't search for further mappings for this field since we can only
+							return true;//don't search for further mappings for this field since we can only
 							//map a single header to the same field
 						}
 
@@ -189,12 +176,7 @@ const auto_mapper = {
 
 			});
 
-			return;
-		}
-
-		Object.keys(fields).forEach((field_name) => {
-
-			const field_data = fields[field_name];
+		Object.entries(fields).forEach(([field_name,field_data]) => {
 
 			if (field_data['is_hidden'] === true)
 				return true;//skip hidden fields
@@ -209,32 +191,31 @@ const auto_mapper = {
 
 				//compile regex strings
 				if (typeof field_comparisons['regex'] !== "undefined")
-					Object.keys(field_comparisons['regex']).forEach((regex_index) => {
-						field_comparisons['regex'][regex_index] = new RegExp(field_comparisons['regex'][regex_index]);
+					Object.entries(field_comparisons['regex']).forEach(([regex_index,regex_string]) => {
+						field_comparisons['regex'][regex_index] = new RegExp(regex_string);
 					});
 
-				Object.keys(auto_mapper.unmapped_headers).forEach((header_key) => {//loop over headers
+				Object.entries(auto_mapper.unmapped_headers).forEach(([header_key,header]) => {//loop over headers
 
-					const header = auto_mapper.unmapped_headers[header_key];
 					if (header !== false) {
 
 						const lowercase_header_key = header_key.toLowerCase();
 
 						let matched = false;
 
-						Object.keys(auto_mapper.comparisons).forEach((comparison_key) => {//loop over defined comparisons
+						Object.entries(auto_mapper.comparisons).some(([comparison_key,comparison_function]) => {//loop over defined comparisons
 
 							if (typeof field_comparisons[comparison_key] !== "undefined")
-								Object.values(field_comparisons[comparison_key]).forEach((comparison_value) => {//loop over each value of a comparison
-									if (auto_mapper.comparisons[comparison_key](lowercase_header_key, comparison_value)) {
+								Object.values(field_comparisons[comparison_key]).some((comparison_value) => {//loop over each value of a comparison
+									if (comparison_function(lowercase_header_key, comparison_value)) {
 										matched = auto_mapper.make_mapping(path, [field_name], header_key);
 										if (matched)
-											return false;
+											return true;
 									}
 								});
 
 							if (matched)
-								return false;
+								return true;
 
 						});
 
@@ -246,9 +227,7 @@ const auto_mapper = {
 			//compare each field's schema name and friendly schema name to headers
 			const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
 
-			Object.keys(auto_mapper.unmapped_headers).forEach((header_name) => {
-
-				const header_data = auto_mapper.unmapped_headers[header_name];
+			Object.entries(auto_mapper.unmapped_headers).forEach(([header_name,header_data]) => {
 
 				if (header_data === false)
 					return true;
@@ -273,15 +252,12 @@ const auto_mapper = {
 		const relationships = table_data['relationships'];
 
 
-		Object.keys(relationships).forEach((relationship_key) => {
-
-			const relationship_data = relationships[relationship_key];
+		Object.entries(relationships).forEach(([relationship_key,relationship_data]) => {
 
 			if (relationship_data['is_hidden'] === true)
 				return true;//skip hidden relationships
 
-			const local_path = path.slice();
-			local_path.push(relationship_key);
+			const local_path = [...path,relationship_key];
 
 			if (relationship_data['type'] === 'one-to-many' || relationship_data['type'] === 'many-to-many')
 				local_path.push(auto_mapper.reference_symbol + 1);
@@ -316,29 +292,28 @@ const auto_mapper = {
 	* */
 	make_mapping: (path, new_path_parts, header_name) => {
 
-		const local_path = [...path,...new_path_parts];
+		let local_path = [...path,...new_path_parts];
 
 
 		//check if this path is already mapped
 		while (true) {
 
 			//go over mapped headers to see if this path was already mapped
-			let path_already_mapped = Object.values(auto_mapper.results).some((mapping_path) => {
-				return path === mapping_path;
-			});
+			let path_already_mapped = Object.values(auto_mapper.results).some((mapping_path) => local_path === mapping_path );
 
 			if (!path_already_mapped)
 				break;
 
 			//if there is any -to-many relationship in the path, create a new -to-many object and run while loop again
-			const local_path_copy = local_path.slice();
 			let path_was_modified = false;
-			Object.keys(local_path_copy).reverse().forEach((path_index) => {
 
-				if (local_path_copy[path_index].substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol) {
-					local_path_copy[path_index] = auto_mapper.reference_symbol + (parseInt(local_path_copy[path_index].substr(auto_mapper.reference_symbol.length)) + 1);
-					path_was_modified = true;
-				}
+			local_path = Object.entries(local_path).reverse().some(([local_path_index,local_path_part]) => {
+
+				path_was_modified = local_path_part.substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol;
+				if (path_was_modified)
+					local_path[local_path_index] = auto_mapper.reference_symbol + (parseInt(local_path_part.substr(auto_mapper.reference_symbol.length)) + 1);
+
+				return path_was_modified;
 
 			});
 
@@ -359,6 +334,8 @@ const auto_mapper = {
 				distance_from_parent_to_many = 0;
 			else if(distance_from_parent_to_many!==-1)
 				distance_from_parent_to_many++;
+
+			return false;
 
 		});
 

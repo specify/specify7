@@ -8,6 +8,38 @@
 
 const upload_plan_converter = {
 
+	 upload_plan_processing_functions: {
+		'wbcols': (tree, [key, value]) => {
+			tree[key] = value;
+			return tree;
+		},
+		'static': (tree, [key, value]) => {
+			tree[key] = {'static': value};
+			return tree;
+		},
+		'toOne': (tree, [key, value]) => {
+			tree[key] = upload_plan_converter.upload_plan_to_mappings_tree(value, true);
+			return tree;
+		},
+		'toMany': (tree, [key, original_mappings]) => {
+
+			const final_mappings = {};
+			let i = 1;
+
+			tree[key] = Object.values(original_mappings).reduce((final_mappings, mapping) => {
+
+				const final_mappings_key = upload_plan_converter.reference_symbol + i;
+				final_mappings[final_mappings_key] = upload_plan_converter.upload_plan_to_mappings_tree(mapping, true);
+
+				i++;
+				return final_mappings;
+
+			}, final_mappings);
+
+			return tree;
+		},
+	},
+
 	/*
 	* Constructor that get's the references to needed variables from `mappings`. It is called from mappings.constructor
 	* @param {string} base_table_name - Official name of the base table (from data model)
@@ -49,71 +81,20 @@ const upload_plan_converter = {
 
 			const tree_ranks = upload_plan['treeRecord']['ranks'];
 
-			return Object.keys(tree_ranks).reduce((new_tree, rank_name) => {
+			return Object.entries(tree_ranks).reduce((new_tree, [rank_name, rank_data]) => {
 
 				const new_rank_name = upload_plan_converter.tree_symbol + rank_name;
-				new_tree[new_rank_name] = {'name': tree_ranks[rank_name]};
+				new_tree[new_rank_name] = {'name': rank_data};
 				return new_tree;
 
 			}, {});
 
 		}
 
-		return Object.keys(upload_plan).reduce((tree, plan_node_name) => {
-
-			if (plan_node_name === 'wbcols') {
-
-				const workbench_headers = upload_plan[plan_node_name];
-
-				return Object.keys(workbench_headers).reduce((tree, data_model_header_name) => {
-					tree[data_model_header_name] = workbench_headers[data_model_header_name];
-					return tree;
-				}, tree);
-
-			} else if (plan_node_name === 'static') {
-
-				const static_headers = upload_plan[plan_node_name];
-
-				return Object.keys(static_headers).reduce((tree, data_model_header_name) => {
-					tree[data_model_header_name] = {'static': static_headers[data_model_header_name]};
-					return tree;
-				}, tree);
-
-			} else if (plan_node_name === 'toOne') {
-
-				const to_one_headers = upload_plan[plan_node_name];
-
-				return Object.keys(to_one_headers).reduce((tree, data_model_header_name) => {
-					tree[data_model_header_name] = upload_plan_converter.upload_plan_to_mappings_tree(to_one_headers[data_model_header_name], true);
-					return tree;
-				}, tree);
-
-			} else if (plan_node_name === 'toMany') {
-
-				const to_many_headers = upload_plan[plan_node_name];
-
-				return Object.keys(to_many_headers).reduce((tree, table_name) => {
-
-					const final_mappings = {};
-					const original_mappings = to_many_headers[table_name];
-					let i = 1;
-
-					tree[table_name] = Object.values(original_mappings).reduce((final_mappings, mapping) => {
-
-						const final_mappings_key = upload_plan_converter.reference_symbol + i;
-						final_mappings[final_mappings_key] = upload_plan_converter.upload_plan_to_mappings_tree(mapping, true);
-
-						i++;
-						return final_mappings;
-
-					}, final_mappings);
-
-					return tree;
-				}, tree);
-
-			}
-
-		}, {});
+		return Object.entries(upload_plan).reduce((tree, [plan_node_name, plan_node_data]) =>
+			Object.entries(plan_node_data).reduce(upload_plan_converter.upload_plan_processing_functions[plan_node_name], tree),
+			{}
+		);
 
 	},
 
@@ -135,10 +116,10 @@ const upload_plan_converter = {
 
 			if (typeof upload_plan_converter.ranks[table_name] !== "undefined") {
 
-				const final_tree = Object.keys(table_data).reduce((final_tree, tree_key) => {
+				const final_tree = Object.entries(table_data).reduce((final_tree, [tree_key,tree_rank_data]) => {
 
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
-					let name = table_data[tree_key]['name'];
+					let name = tree_rank_data['name'];
 
 					if (typeof name === 'object')//handle static records
 						name = name['static'];
@@ -163,7 +144,7 @@ const upload_plan_converter = {
 
 			let is_to_many = false;
 
-			table_plan = Object.keys(table_data).reduce((table_plan, field_name) => {
+			table_plan = Object.entries(table_data).reduce((table_plan, [field_name,field_data]) => {
 
 				if (field_name.substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol) {
 					if (!is_to_many) {
@@ -171,12 +152,12 @@ const upload_plan_converter = {
 						table_plan = [];
 					}
 
-					table_plan.push(handle_table(table_data[field_name], table_name, false));
+					table_plan.push(handle_table(field_data, table_name, false));
 				} else if (field_name.substr(0, upload_plan_converter.tree_symbol.length) === upload_plan_converter.tree_symbol)
 					table_plan = handle_table(table_data, table_name, false);
 
-				else if (typeof table_data[field_name] === "object" && typeof table_data[field_name]['static'] === "string") {
-					let value = table_data[field_name]['static'];
+				else if (typeof field_data === "object" && typeof field_data['static'] === "string") {
+					let value = field_data['static'];
 
 					if (value === 'true')
 						value = true;
@@ -187,7 +168,7 @@ const upload_plan_converter = {
 
 					table_plan['static'][field_name] = value;
 				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined")
-					table_plan['wbcols'][field_name] = table_data[field_name];
+					table_plan['wbcols'][field_name] = field_data;
 
 				else {
 
@@ -196,7 +177,7 @@ const upload_plan_converter = {
 					const is_to_one = mapping['type'] === 'one-to-one' || mapping['type'] === 'many-to-one';
 
 					if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
-						table_plan['toOne'][field_name] = handle_table(table_data[field_name], mapping_table);
+						table_plan['toOne'][field_name] = handle_table(field_data, mapping_table);
 
 					else {
 
@@ -204,7 +185,7 @@ const upload_plan_converter = {
 							table_plan['toMany'] = {};
 
 						if (typeof table_plan['toMany'][field_name] === "undefined")
-							table_plan['toMany'][field_name] = handle_table(table_data[field_name], mapping_table);
+							table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
 
 					}
 
@@ -218,9 +199,7 @@ const upload_plan_converter = {
 			if (Array.isArray(table_plan) || !wrap_it)
 				return table_plan;
 
-			const keys = Object.keys(table_data);
-
-			if (keys[0].substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol)
+			if (Object.keys(table_data).shift().substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol)
 				return table_plan;
 
 			return {'uploadTable': table_plan};

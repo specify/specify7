@@ -203,11 +203,10 @@ const mappings = {
 
 		//if header is checked by browser, update selected_header
 		const headers_to_check = [...mappings.headers, mappings.control_line__new_header, mappings.control_line__new_static_header];
-		headers_to_check.some((header)=>{
-			if (header.checked) {
+		headers_to_check.some((header)=>{//break if found a checked header
+			if (header.checked)
 				mappings.selected_header = header;
-				return true;
-			}
+			return header.checked;
 		});
 
 		mappings.tree = {};
@@ -215,10 +214,9 @@ const mappings = {
 
 		if (mappings.need_to_run_auto_mapper) {
 			const mappings_object = mappings.auto_mapper_run(mappings.raw_headers, mappings.base_table_name);
-			const array_of_mappings = Object.keys(mappings_object).map((header_name) => {
-				const mapping_path = mappings_object[header_name];
-				return ['existing_header', header_name, mapping_path];
-			});
+			const array_of_mappings = Object.entries(mappings_object).map(([header_name,mapping_path]) =>
+				['existing_header', header_name, mapping_path]
+			);
 			mappings.need_to_run_auto_mapper = false;
 			mappings.implement_array_of_mappings(array_of_mappings);
 		}
@@ -451,11 +449,11 @@ const mappings = {
 			const ranks = mappings.ranks[table_name];
 
 			if (typeof ranks !== "undefined")
-				Object.keys(ranks).forEach((rank_name) => {
+				Object.entries(ranks).forEach(([rank_name,is_required]) => {
 
 					const data = [mappings.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true];
 
-					if(ranks[rank_name])
+					if(is_required)
 						required_fields.push(data);
 					else
 						optional_fields.push(data);
@@ -480,11 +478,9 @@ const mappings = {
 		if(required_fields.length === 0 && optional_fields.length === 0) {
 
 			//build a list of fields and relationships
-			const rows = [
+			const rows = Object.assign(
+				Object.entries(mappings.tables[table_name]['fields']).reduce((rows,[field_key,field_data]) => {
 
-				...Object.keys(mappings.tables[table_name]['fields']).reduce((rows,field_key) => {
-
-					const field_data = mappings.tables[table_name]['fields'][field_key];
 					const is_field_hidden = field_data['is_hidden'];
 
 					if (is_field_hidden && mappings.hide_hidden_fields)
@@ -498,8 +494,7 @@ const mappings = {
 
 				},{}),
 
-				...Object.keys(mappings.tables[table_name]['relationships']).reduce((rows,relationship_key) => {
-					const relationship_data = mappings.tables[table_name]['relationships'][relationship_key];
+				Object.entries(mappings.tables[table_name]['relationships']).reduce((rows,[relationship_key,relationship_data]) => {
 
 					const is_field_hidden = relationship_data['is_hidden'];
 
@@ -526,7 +521,7 @@ const mappings = {
 
 				}, {})
 
-			];
+			);
 
 			//sort && display fields
 			Object.keys(rows).sort().forEach((row_name) => {

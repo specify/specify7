@@ -170,7 +170,10 @@ var WBView = Backbone.View.extend({
             afterChange: (change, source) => source === 'loadData' || onChanged()
         });
 
-        WBView.colHeaders = colHeaders;
+        WBView.column_indexes = Object.entries(colHeaders).reduce((column_indexes, [column_index, column_header])=>{
+            column_indexes[column_index] = column_header;
+            return column_indexes;
+        },{});
 
         const makeTooltip = td => {
             const coords = this.hot.getCoords(td);
@@ -192,12 +195,80 @@ var WBView = Backbone.View.extend({
 
         if(col===0)
             try {
-                JSON.parse(value);
-                WBView.validation_result = JSON.parse(value);
-            } catch (e) {
-                if(e instanceof SyntaxError)
-                    console.log('Failed to parse validation message (' + (typeof value) + '): '+value);
-                WBView.validation_result = false;
+
+                const validation_results_raw = JSON.parse(value);
+
+                let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
+
+                    const validation_record = {
+                        'type': 'table_error',
+                        'table_name': table_issue['tableName'],
+                        'description': table_issue['issue']
+                    };
+
+                    table_issue['columns'].reduce((validation_results,column_name)=>{
+
+                        if(typeof validation_results[column_name] === "undefined")
+                            validation_results[column_name] = [];
+
+                        validation_results[column_name].push(validation_record);
+
+                        return validation_results;
+
+                    },validation_results);
+
+                    return validation_results;
+                },[]);
+
+                validation_results = validation_results_raw['cellIssues'].reduce((validation_results,cell_issue)=>{
+
+                    const validation_record = {
+                        'type': 'cell_error',
+                        'description': cell_issue['issue']
+                    };
+
+                    const column_name = cell_issue['column'];
+
+                    if(typeof validation_results[column_name] === "undefined")
+                        validation_results[column_name] = [];
+
+                    validation_results[column_name].push(validation_record);
+
+                    return validation_results;
+                },validation_results);
+
+                validation_results = validation_results_raw['newRows'].reduce((validation_results,table_issue)=>{
+
+                    const validation_record = {
+                        'type': 'new_row',
+                        'table_name': table_issue['tableName'],
+                    };
+
+                    table_issue['columns'].reduce((validation_results,column_name)=>{
+
+                        if(typeof validation_results[column_name] === "undefined")
+                            validation_results[column_name] = [];
+                        else if(validation_results[column_name].some((column_error) => column_error['type']!=='new_row' ))
+                            return validation_results;//if there are any errors in this cell, don't show it as `new`
+
+                        validation_results[column_name].push(validation_record);
+
+                        return validation_results;
+
+                    },validation_results);
+
+                    return validation_results;
+                },validation_results);
+
+
+            } catch (exception) {
+
+                if(!(exception instanceof SyntaxError))//catch only JSON parse errors
+                    throw exception;
+
+                console.error('Failed to parse validation message (' + (typeof value) + '): '+value);
+                WBView.validation_results = {};
+
             }
         else {
 
