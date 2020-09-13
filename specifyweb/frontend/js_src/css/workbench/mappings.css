@@ -17,7 +17,7 @@
     position: relative;
 }
 
-.custom_list input {
+.custom_list [type="radio"] {
     opacity: 0;
     position: absolute;
 }
@@ -25,7 +25,7 @@
 .custom_list .line {
     cursor: pointer;
     outline: none !important;
-    padding: 1rem;
+    padding: 0.9rem;
 }
 
 .custom_list .line.required {
@@ -44,17 +44,24 @@
     background: initial;
 }
 
-.list .mapping, .list .table_name {
+.list .table_name {
     float: left;
     text-align: left;
 }
 
 .list .header {
     text-align: right;
+	background: transparent;
+	border: none;
+	outline: none;
+	flex-grow: 1;
+	font-size: inherit;
+	margin: 0;
+	padding: 0;
 }
 
 .custom_list label .undefined:after {
-    content: 'To Be Discarded';
+    content: 'To Be Ignored';
     color: #900;
 }
 
@@ -100,8 +107,9 @@
     cursor: pointer;
 }
 
-#list__tables .line {
+.custom_list .line {
     display: flex;
+    justify-content: space-between;
 }
 
 .table_relationship .line {

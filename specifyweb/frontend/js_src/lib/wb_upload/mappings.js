@@ -719,7 +719,7 @@ const mappings = {
 			if (header_type === 'static')
 				path.push({'static': header_control_element.value});
 			else
-				path.push(header_control_element.innerText);
+				path.push(header_control_element.getAttribute('data-original_value'));
 
 			const branch = tree_helpers.array_to_tree(path);
 

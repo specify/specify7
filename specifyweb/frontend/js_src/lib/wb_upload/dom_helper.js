@@ -110,6 +110,14 @@ const dom_helper = {
 	* */
 	get_friendly_field_name: label => label.getElementsByClassName('row_name')[0],
 
+
+	/*
+	* Get the name of the relationship <select> belongs to
+	* @param {DOMElement} select - <select> for a relationship
+	* @return {string} Official relationship name (from data model)
+	* */
+	get_relationship_name: select => select.getAttribute('name'),
+
 	/*
 	* Checks whether field is disabled
 	* @param {DOMElement} - <input type="radio"> or <option> for a field or relationship
@@ -145,13 +153,6 @@ const dom_helper = {
 	* Example return: accession_accessionagents_#1_agent_firstname
 	* */
 	get_mapping_path: radio =>  radio.getAttribute('data-path'),
-
-	/*
-	* Get the name of the relationship <select> belongs to
-	* @param {DOMElement} select - <select> for a relationship
-	* @return {string} Official relationship name (from data model)
-	* */
-	get_relationship_name: select => select.getAttribute('name'),
 
 	/*
 	* Get's control element for a header and gives it's tag name

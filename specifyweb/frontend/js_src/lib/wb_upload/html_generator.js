@@ -40,7 +40,7 @@ const html_generator = {
 		if (header_type === 'static_header')
 			control_element = '<textarea class="value">' + header_name + '</textarea>';
 		else {
-			control_element = '<div class="header">' + header_name + '</div>';
+			control_element = '<input class="header" data-original_value="'+header_name+'" value="' + header_name + '">';
 
 			if (header_type === 'mapped_header')
 				header_name_attribute = ' data-header="' + header_name + '"';

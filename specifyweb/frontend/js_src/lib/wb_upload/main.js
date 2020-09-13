@@ -49,7 +49,7 @@ const main = {
 		mappings.button__new_field = document.getElementById('button__new_field');
 		mappings.control_line__new_header = document.getElementById('control_line__new_header');
 		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
-		mappings.headers = mappings.list__headers.getElementsByTagName('input');
+		mappings.headers = mappings.list__headers.getElementsByClassName('radio__header');
 
 
 		// control elements
