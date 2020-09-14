@@ -3,17 +3,25 @@ import errno
 import logging
 import re
 import shutil
+from datetime import date
 from tempfile import mkdtemp
 from collections import namedtuple
+from typing import NamedTuple, List, TypeVar, Type, Tuple, Optional
 from uuid import uuid4
 from datetime import date
 
 from xml.etree import ElementTree as ET
-from xml.dom import minidom
+from xml.dom import minidom # type: ignore
 
-from specifyweb.stored_queries.execution import EphemeralField, query_to_csv
-from specifyweb.stored_queries.queryfield import QueryField
-from specifyweb.stored_queries.models import session_context
+from ..specify import models
+from ..stored_queries.execution import EphemeralField, query_to_csv, execute
+from ..stored_queries.queryfield import QueryField
+from ..stored_queries.models import session_context
+from ..context.app_resource import get_app_resource
+
+Spappresourcedata = getattr(models, 'Spappresourcedata')
+Collection = getattr(models, 'Collection')
+Specifyuser = getattr(models, 'Specifyuser')
 
 logger = logging.getLogger(__name__)
 ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
@@ -22,18 +30,27 @@ class DwCAException(Exception):
     pass
 
 # from http://stackoverflow.com/a/17402424
-def prettify(elem):
+def prettify(elem: ET.Element) -> str:
     """Return a pretty-printed XML string for the Element.
     """
     rough_string = ET.tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="\t")
 
-class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_fields id_field_idx queries')):
+S = TypeVar('S', bound='Stanza')
+class Stanza(NamedTuple):
     "Represents either a core or extension definition."
+    is_core: bool
+    row_type: str
+    constant_fields: List["ConstantField"]
+    export_fields: List["ExportField"]
+    id_field_idx: int
+    queries: List["Query"]
+
+
     @classmethod
-    def from_xml(cls, node):
-        queries = [Query.from_xml(query_node) for query_node in node.find('queries')]
+    def from_xml(cls: Type[S], node: ET.Element) -> S:
+        queries = [Query.from_xml(query_node) for query_node in (node.find('queries') or [])]
         export_fields, id_field_idx = cls.get_export_fields(queries)
         constant_fields = [ConstantField.from_xml(fn) for fn in node.findall('field')]
 
@@ -47,7 +64,7 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
         )
 
     @staticmethod
-    def get_export_fields(queries):
+    def get_export_fields(queries: List["Query"]) -> Tuple[List["ExportField"], int]:
         """Returns a representation of the fields in the query result data
         for the meta.xml field information.
 
@@ -66,7 +83,7 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
                 Offending values: %s vs %s
                 """ % (fields, export_fields))
 
-        id_fields = [f.index for f in export_fields if f.is_core_id]
+        id_fields = [f.idx for f in export_fields if f.is_core_id]
 
         if len(id_fields) < 1:
             raise DwCAException("Definition doesn't include id field.")
@@ -75,7 +92,7 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
 
         return export_fields, id_fields[0]
 
-    def to_xml(self):
+    def to_xml(self) -> ET.Element:
         output_node = ET.Element('core' if self.is_core else 'extension')
         output_node.set('rowType', self.row_type)
         output_node.set('fieldsEnclosedBy', '"')
@@ -90,28 +107,28 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
         id_node = ET.SubElement(output_node, 'id' if self.is_core else 'coreid')
         id_node.set('index', str(self.id_field_idx))
 
-        for field in self.export_fields:
-            if field.term is not None:
+        for efield in self.export_fields:
+            if efield.term is not None:
                 field_node = ET.SubElement(output_node, 'field')
-                field_node.set('index', str(field.index))
-                field_node.set('term', field.term)
+                field_node.set('index', str(efield.index))
+                field_node.set('term', efield.term)
 
-        for field in self.constant_fields:
+        for cfield in self.constant_fields:
             field_node = ET.SubElement(output_node, 'field')
-            field_node.set('term', field.term)
-            field_node.set('default', field.value)
+            field_node.set('term', cfield.term)
+            field_node.set('default', cfield.value)
 
         return output_node
 
-class Query(namedtuple('Query', 'tableid file_name query_fields')):
-    """Represents the information about a query that goes into the archive.
+Q = TypeVar('Q', bound='Query')
+class Query(NamedTuple):
+    "Represents the information about a query that goes into the archive."
+    tableid: int # the table the query is over.
+    file_name: str # the name of the file in the archive that will contain the data.
+    query_fields: List["QueryDefField"] # represents the fields of the query. [QueryDefField(...)]
 
-    tableid -- the table the query is over.
-    file_name -- the name of the file in the archive that will contain the data.
-    query_fields -- represents the fields of the query. [QueryDefField(...)]
-    """
     @classmethod
-    def from_xml(cls, query_node):
+    def from_xml(cls: Type[Q], query_node: ET.Element) -> Q:
         return cls(
             tableid = int(query_node.attrib['contextTableId']),
 
@@ -123,34 +140,33 @@ class Query(namedtuple('Query', 'tableid file_name query_fields')):
             ],
         )
 
-    def get_export_fields(self):
-        return tuple(
-            ExportField(index=i, term=f.term, is_core_id=f.is_core_id)
+    def get_export_fields(self) -> List["ExportField"]:
+        return [
+            ExportField(idx=i, term=f.term, is_core_id=f.is_core_id)
             for i, f in enumerate(f for f in self.query_fields if f.field_spec.isDisplay)
-        )
+        ]
 
-    def get_field_specs(self):
+    def get_field_specs(self) -> List[QueryField]:
         return [QueryField.from_spqueryfield(f.field_spec) for f in self.query_fields]
 
 
-class ExportField(namedtuple('ExportField', 'index term is_core_id')):
-    """Represents a field in a query in terms of how it will appear in the meta.xml
+class ExportField(NamedTuple):
+    "Represents a field in a query in terms of how it will appear in the meta.xml"
+    idx: int # the column of the field in the query output (zero-based).
+    term: Optional[str] # the Darwin core or extension term the field contains. can be None.
+    is_core_id: bool # whether the field represents the coreId field.
 
-    index -- the column of the field in the query output (zero-based).
-    term -- the Darwin core or extension term the field contains. can be None.
-    is_core_id -- whether the field represents the coreId field.
-    """
-    pass
 
-class QueryDefField(namedtuple('QueryDefField', 'field_spec term is_core_id')):
-    """Represents the fields of a query and what Darwin core or extension term the represents.
+QDF = TypeVar('QDF', bound="QueryDefField")
+class QueryDefField(NamedTuple):
+    "Represents the fields of a query and what Darwin core or extension term the represents."
 
-    field_spec -- the internal query information.
-    term -- the darwin core/extension term. can be None for e.g. filtering fields.
-    is_core_id -- whether the field represents the coreId field.
-    """
+    field_spec: EphemeralField # the internal query information.
+    term: Optional[str] # the darwin core/extension term. can be None for e.g. filtering fields.
+    is_core_id: bool # whether the field represents the coreId field.
+
     @classmethod
-    def from_xml(cls, node):
+    def from_xml(cls: Type[QDF], node: ET.Element) -> QDF:
         return cls(
             field_spec = EphemeralField(
                 stringId   = node.attrib['stringId'],
@@ -163,26 +179,32 @@ class QueryDefField(namedtuple('QueryDefField', 'field_spec term is_core_id')):
                 sortType   = 0,
             ),
 
-            term = node.attrib.get('term', None),
+            term = node.attrib.get('term'),
 
             is_core_id = node.tag == 'id',
         )
 
-class ConstantField(namedtuple('ConstantField', 'value term')):
+CF = TypeVar('CF', bound="ConstantField")
+class ConstantField(NamedTuple):
     """Represents a field that will be included in the meta.xml
     with a default value and no index into the query results data.
     """
+    value: str
+    term: str
+
     @classmethod
-    def from_xml(cls, node):
+    def from_xml(cls: Type[CF], node: ET.Element) -> CF:
         return cls(value=node.attrib['value'], term=node.attrib['term'])
 
 
-def make_dwca(collection, user, definition, output_file, eml=None):
+def make_dwca(collection, user, definition: str, output_file: str , eml: Optional[str]=None) -> None:
     output_dir = mkdtemp()
     try:
         element_tree = ET.fromstring(definition)
 
-        core_stanza = Stanza.from_xml(element_tree.find('core'))
+        core_xml = element_tree.find('core')
+        assert core_xml is not None
+        core_stanza = Stanza.from_xml(core_xml)
         extension_stanzas = [Stanza.from_xml(node) for node in element_tree.findall('extension')]
 
         output_node = ET.Element('archive')
@@ -227,7 +249,66 @@ def make_dwca(collection, user, definition, output_file, eml=None):
     finally:
         shutil.rmtree(output_dir)
 
-def write_eml(source, output_path, pub_date=None, package_id=None):
+def by_core_id(collection_id: int, user_id: int, definition: str, core_id: str):
+    collection = Collection.objects.get(id=collection_id)
+    user = Specifyuser.objects.get(id=user_id)
+    dwca_def, _ = get_app_resource(collection, user, definition)
+
+    element_tree = ET.fromstring(dwca_def)
+
+    core_xml = element_tree.find('core')
+    assert core_xml is not None
+    core_stanza = Stanza.from_xml(core_xml)
+    extension_stanzas = [Stanza.from_xml(node) for node in element_tree.findall('extension')]
+
+    with session_context() as session:
+        core_rows = []
+        core_export_fields, _ = Stanza.get_export_fields(core_stanza.queries)
+        core_terms = [f.term for f in core_export_fields]
+        for query in core_stanza.queries:
+            query_ = limit_query_by_core_id(query, core_id)
+            core_rows.extend(
+                execute(session, collection, user, query.tableid, False, False, query_.get_field_specs(), 2, 0)['results']
+            )
+        if len(core_rows) > 1:
+            raise Exception('DwCA definition returns multiple records for a given id.')
+
+        if not core_rows:
+            return None
+
+        core_result = list(zip(core_terms, core_rows[0][1:]))
+
+        extensions = []
+        for stanza in extension_stanzas:
+            ext_rows = []
+            ext_export_fields, _ = Stanza.get_export_fields(stanza.queries)
+            ext_terms = [f.term for f in ext_export_fields]
+            for query in stanza.queries:
+                query_ = limit_query_by_core_id(query, core_id)
+                ext_rows.extend(
+                    execute(session, collection, user, query.tableid, False, False, query_.get_field_specs(), 0, 0)['results']
+                )
+            extensions.append({'class': stanza.row_type, 'records': [list(zip(ext_terms, row[1:])) for row in ext_rows]})
+
+    return {'core': core_result, 'extensions': extensions}
+
+
+def limit_query_by_core_id(query: Query, core_id: str) -> Query:
+    def limit_core_id(f: QueryDefField) -> QueryDefField:
+        return f._replace(field_spec=f.field_spec._replace(
+            startValue=core_id,
+            operStart=1, # equality
+            isNot=False,
+        ))
+
+    return query._replace(
+        query_fields=[
+            limit_core_id(f) if f.is_core_id else f
+            for f in query.query_fields
+        ]
+    )
+
+def write_eml(source: str, output_path: str, pub_date: Optional[date]=None, package_id: Optional[str]=None) -> None:
     if pub_date is None:
         pub_date = date.today()
 
@@ -242,7 +323,7 @@ def write_eml(source, output_path, pub_date=None, package_id=None):
     })
 
     dataset = eml.find('dataset')
-
+    assert dataset is not None
     for e in dataset.findall('pubDate'):
         dataset.remove(e)
 

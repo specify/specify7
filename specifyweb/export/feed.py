@@ -8,11 +8,15 @@ from xml.etree import ElementTree as ET
 
 from django.conf import settings
 
-from ..specify.models import Spappresourcedata, Collection, Specifyuser
+from ..specify import models
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
 
 from .dwca import make_dwca
+
+Spappresourcedata = getattr(models, 'Spappresourcedata')
+Collection = getattr(models, 'Collection')
+Specifyuser = getattr(models, 'Specifyuser')
 
 logger = logging.getLogger(__name__)
 

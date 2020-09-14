@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.specify.models import Spquery
+from specifyweb.specify import models
 from specifyweb.export.extract_query import extract_query
 
+Spquery = getattr(models, 'Spquery')
 
 class Command(BaseCommand):
     def add_arguments(self, parser):

@@ -12,17 +12,20 @@ from xml.etree import ElementTree as ET
 
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.conf import settings
 
-from ..specify.views import login_maybe_required
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from ..specify.models import Spquery
+from ..specify import models
+from ..specify.api import toJson
 
-from .dwca import make_dwca, prettify
+from .dwca import make_dwca, prettify, by_core_id
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
+
+Spquery = getattr(models, 'Spquery')
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +91,34 @@ def extract_eml(request, filename):
         eml = archive.open(meta.attrib['metadata']).read()
     return HttpResponse(eml, content_type='text/xml')
 
+@require_GET
+@never_cache
+def occurrence(request, dataset_id, occurrence_id):
+    feed_resource = get_feed_resource()
+    if feed_resource is None:
+        raise Http404('No export feed defined.')
 
-@login_maybe_required
+    def_tree = ET.fromstring(feed_resource)
+
+    items_by_id = {
+        item_def.find('id').text: item_def
+        for item_def in def_tree.findall('item')
+        if 'publish' in item_def.attrib and item_def.attrib['publish'] == 'true'
+    }
+
+    try:
+        item_def = items_by_id[dataset_id]
+    except KeyError:
+        raise Http404('No such dataset.')
+
+    record = by_core_id(item_def.attrib['collectionId'], item_def.attrib['userId'], item_def.attrib['definition'], occurrence_id)
+    if not record:
+        raise Http404('No such record.')
+
+    return HttpResponse(toJson(record), content_type='text/plain')
+
+
+@login_required
 @require_POST
 @never_cache
 def export(request):
@@ -138,7 +167,7 @@ def export(request):
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
-@login_maybe_required
+@login_required
 @require_POST
 def force_update(request):
     if not request.specify_user.is_admin():
@@ -162,7 +191,7 @@ def force_update(request):
     thread.start()
     return HttpResponse('OK', content_type='text/plain')
 
-@login_maybe_required
+@login_required
 @require_GET
 @never_cache
 def extract_query(request, query_id):

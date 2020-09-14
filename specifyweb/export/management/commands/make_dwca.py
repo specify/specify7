@@ -2,10 +2,13 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 
+from specifyweb.specify import models
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.specify.models import Specifyuser, Collection
 
 from specifyweb.export.dwca import make_dwca
+
+Collection = getattr(models, 'Collection')
+Specifyuser = getattr(models, 'Specifyuser')
 
 logger = logging.getLogger(__name__)
 
