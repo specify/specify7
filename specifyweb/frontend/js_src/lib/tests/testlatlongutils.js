@@ -26,6 +26,10 @@ module.exports =  function() {
         '28° 19\' N': [28, 19, latlongutils.Lat],
         '28° 19\' 0.121" N': [28, 19, 0.121, latlongutils.Lat],
         '115° 34\' 59.872" W': [-115, 34, 59.872, latlongutils.Long],
+        '1 01 S': [-1, 1, latlongutils.Lat],
+        '1 01 W': [-1, 1, latlongutils.Long],
+        '0 01 S': [-0, 1, latlongutils.Lat],
+        '0 01 W': [-0, 1, latlongutils.Long],
         '': null,
         ' ': null,
         'foobar': null,
@@ -99,6 +103,8 @@ module.exports =  function() {
         '-115° 34\' 59.872"': [-115, 34, 59.872],
         '28° 19\'': [28, 19],
         '-115° 34.44\'': [-115, 34.44],
+        '-1° 1\'': [-1, 1],
+        '-0° 1\'': [-0, 1],
     }, function(value, key) {
         QUnit.test(key, function() {
             var coord = new latlongutils.Coord();
@@ -110,10 +116,13 @@ module.exports =  function() {
     _.each({
         '28° 30\' 36" N': new latlongutils.Lat(28.51),
         '115° 30\' 36" W': new latlongutils.Long(-115.51),
+        '0° 30\' 36" W': new latlongutils.Long(-0.51),
         '28° 30\' 36" S': new latlongutils.Lat(-28.51),
+        '0° 30\' 36" S': new latlongutils.Lat(-0.51),
         '115° 30\' 36" E': new latlongutils.Long(115.51),
         '28° 30\' 36"': new latlongutils.Coord(28.51),
         '-115° 30\' 36"': new latlongutils.Coord(-115.51),
+        '-0° 30\' 36"': new latlongutils.Coord(-0.51),
     }, function(value, key) {
         QUnit.test(key, function() {
             assert.equal(value.toDegsMinsSecs().format(), key);
