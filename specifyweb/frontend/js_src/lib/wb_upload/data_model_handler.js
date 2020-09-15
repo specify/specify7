@@ -21,7 +21,7 @@ const data_model_handler = {
 	* @param {string} tree_symbol - String that is used as an indicator of trees
 	* @param {array} required_fields_to_hide - Array of strings that represent official names of fields and relationships that are required and hidden and should remain hidden (required fields can't be hidden otherwise)
 	* */
-	constructor: (ranks, tables_to_hide, reference_symbol, tree_symbol, required_fields_to_hide) => {
+	constructor(ranks, tables_to_hide, reference_symbol, tree_symbol, required_fields_to_hide){
 
 		data_model_handler.ranks = ranks;
 		data_model_handler.tables_to_hide = tables_to_hide;
@@ -35,7 +35,7 @@ const data_model_handler = {
 	* Fetches data model.
 	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_tables: done_callback => {
+	fetch_tables(done_callback){
 
 		let data_model_html = '';
 
@@ -68,8 +68,8 @@ const data_model_handler = {
 				let is_required = field.isRequired;
 				let is_hidden = field.isHidden() === 1;
 
-				if (is_hidden)//required fields should not be hidden
-					if (data_model_handler.required_fields_to_hide.indexOf(field_name) !== -1)//unless they are present in this list
+				if (is_hidden)  // required fields should not be hidden
+					if (data_model_handler.required_fields_to_hide.indexOf(field_name) !== -1)  // unless they are present in this list
 						is_required = false;
 					else if (is_required)
 						is_hidden = false;
@@ -131,7 +131,7 @@ const data_model_handler = {
 		}, {});
 
 
-		for (const [table_name, table_data] of Object.entries(tables))//remove relationships to system tables
+		for (const [table_name, table_data] of Object.entries(tables))  // remove relationships to system tables
 			for (const [relationship_name, relationship_data] of Object.entries(table_data['relationships']))
 				if (typeof tables[relationship_data['table_name']] === "undefined")
 					delete tables[table_name]['relationships'][relationship_name];
@@ -140,8 +140,8 @@ const data_model_handler = {
 		data_model_handler.tables = tables;
 		data_model_handler.data_model_html = data_model_html;
 
-		if (Object.keys(data_model_handler.ranks_queue).length === 0)//there aren't any trees
-			done_callback();//so there is no need to wait for ranks to finish fetching
+		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
+			done_callback();  // so there is no need to wait for ranks to finish fetching
 
 	},
 
@@ -150,9 +150,9 @@ const data_model_handler = {
 	* @param {string} table_name - Official table name (from data model)
 	* @param {function} all_ranks_fetched_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_ranks: (table_name, all_ranks_fetched_callback) => {
+	fetch_ranks(table_name, all_ranks_fetched_callback){
 
-		data_model_handler.ranks_queue[table_name] = true;
+		this.ranks_queue[table_name] = true;
 
 		domain.getTreeDef(table_name).done(tree_definition => {
 			tree_definition.rget('treedefitems').done(
@@ -174,14 +174,14 @@ const data_model_handler = {
 
 						}, {});
 
-						data_model_handler.ranks_queue[table_name] = false;
+						this.ranks_queue[table_name] = false;
 
 						let still_waiting_for_ranks_to_fetch =
-							Object.values(data_model_handler.ranks_queue).find(
+							Object.values(this.ranks_queue).find(
 								is_waiting_for_rank_to_fetch => is_waiting_for_rank_to_fetch
 							);
 
-						if (!still_waiting_for_ranks_to_fetch)//the queue is empty and all ranks where fetched
+						if (!still_waiting_for_ranks_to_fetch)  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback(data_model_handler.data_model_html, data_model_handler.tables);
 
 					});
@@ -195,10 +195,11 @@ const data_model_handler = {
 	* Returns a list of hierarchy tables
 	* @result {array} list of hierarchy tables
 	* */
-	get_list_of_hierarchy_tables: ()  =>
-		schema.orgHierarchy.filter(
+	get_list_of_hierarchy_tables(){
+		return schema.orgHierarchy.filter(
 			table_name => table_name !== 'collectionobject'
-		),
+		);
+	},
 
 	/*
 	* Iterates over the mapping_tree to find required fields that are missing
@@ -206,13 +207,13 @@ const data_model_handler = {
 	* @param {object} mapping_tree - Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 	* @returns {array} Returns array of mapping paths (array).
 	* */
-	show_required_missing_ranks: (table_name, mapping_tree = false, previous_table_name = '', path = [], results = []) => {
+	show_required_missing_ranks(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
 
 		const table_data = data_model_handler.tables[table_name];
 
 		const list_of_mapped_fields = Object.keys(mapping_tree);
 
-		//handle -to-many references
+		// handle -to-many references
 		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
 			list_of_mapped_fields.forEach(mapped_field_name => {
 				const local_path = [...path, mapped_field_name];
@@ -221,12 +222,12 @@ const data_model_handler = {
 			return results;
 		}
 
-		//handle trees
+		// handle trees
 		else if (typeof data_model_handler.ranks[table_name] !== "undefined") {
 
 			const keys = Object.keys(data_model_handler.ranks[table_name]);
 
-			if (keys.indexOf(path.slice(-1)[0]) === -1)//last path element is a rank
+			if (keys.indexOf(path.slice(-1)[0]) === -1)  // last path element is a rank
 				return keys.reduce((results, rank_name) => {
 					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
 					const local_path = [...path, data_model_handler.tree_symbol + rank_name];
@@ -241,7 +242,7 @@ const data_model_handler = {
 				}, results);
 		}
 
-		//handle regular relationships
+		// handle regular relationships
 		results = Object.entries(table_data['fields']).reduce((results, [field_name,field_data]) => {
 
 			const local_path = [...path, field_name];
@@ -269,11 +270,11 @@ const data_model_handler = {
 				const parent_relationship_data = data_model_handler.tables[previous_table_name]['relationships'][previous_relationship_name];
 
 				if (
-					(//disable circular relationships
+					(  // disable circular relationships
 						relationship_data['foreign_name'] === previous_relationship_name &&
 						parent_relationship_data['table_name'] === table_name
 					) ||
-					(//skip -to-many inside of -to-many
+					(  // skip -to-many inside of -to-many
 						parent_relationship_data['type'].indexOf('-to-many') !== -1 ||
 						relationship_data['type'].indexOf('-to-many') !== -1
 					)

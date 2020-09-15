@@ -12,8 +12,8 @@ const tree_helpers = {
 	* Constructor that get's necessary variables from `mappings`
 	* @param {array} raw_headers - array of headers
 	* */
-	constructor: raw_headers => {
-		tree_helpers.raw_headers = raw_headers;
+	constructor(raw_headers){
+		this.raw_headers = raw_headers;
 	},
 
 	/*
@@ -43,7 +43,7 @@ const tree_helpers = {
 	* 		Agent Name
 	* 	Remarks
 	* */
-	traverse_tree: (full_mappings_tree, node_mappings_tree) => {
+	traverse_tree(full_mappings_tree, node_mappings_tree){
 
 		if (typeof node_mappings_tree === "undefined")
 			return full_mappings_tree;
@@ -90,8 +90,8 @@ const tree_helpers = {
 	* 			#2
 	* 				Agent
 	* */
-	deep_merge_object: (target, source) =>
-		Object.entries(source).reduce((target, [source_property, source_value]) => {
+	deep_merge_object(target, source){
+		return Object.entries(source).reduce((target, [source_property, source_value]) => {
 
 			if (typeof target[source_property] === "undefined")
 				target[source_property] = source_value;
@@ -100,7 +100,8 @@ const tree_helpers = {
 
 			return target;
 
-		}, target),
+		}, target);
+	},
 
 	/*
 	* Converts array of arrays of strings into a complete tree
@@ -121,7 +122,7 @@ const tree_helpers = {
 	* 					Last Name
 	* 				Remarks
 	* */
-	array_to_tree: (array, tree = {}) => {
+	array_to_tree(array, tree = {}){
 
 		if (array.length === 0)
 			return false;
@@ -157,9 +158,9 @@ const tree_helpers = {
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
-	mappings_tree_to_array_of_mappings: (mappings_tree, result = [], path = []) =>
+	mappings_tree_to_array_of_mappings(mappings_tree, result = [], path = []){
 
-		Object.entries(mappings_tree).reduce((result, [tree_node_name,tree_node]) => {
+		return Object.entries(mappings_tree).reduce((result, [tree_node_name,tree_node]) => {
 
 			const local_path = path.slice();
 			local_path.push(tree_node_name);
@@ -168,7 +169,7 @@ const tree_helpers = {
 
 				let mapping_type;
 
-				if (tree_helpers.raw_headers.indexOf(tree_node) !== -1)
+				if (this.raw_headers.indexOf(tree_node) !== -1)
 					mapping_type = 'existing_header';
 				else if (tree_node_name === 'static') {
 					mapping_type = 'new_static_header';
@@ -183,7 +184,9 @@ const tree_helpers = {
 
 			return result;
 
-		}, result),
+		}, result);
+
+	},
 
 
 };

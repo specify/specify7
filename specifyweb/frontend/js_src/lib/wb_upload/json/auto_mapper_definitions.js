@@ -1,15 +1,15 @@
 "use strict"
 
-//This file contains information to help auto-map imported XLS and CSV files to the Sp6 datamodel
-//Based on https//github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
-//Matching is case insensitive. Table and field names are case insensitive
+// This file contains information to help auto-map imported XLS and CSV files to the Sp6 datamodel
+// Based on https//github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
+// Matching is case insensitive. Table and field names are case insensitive
 
-//SCHEMA:
-//Table Name > Field Name > options > value
-//	Available options:
-//		regex - Regex string (header.match(regex))
-//		string - Equals string (header===string)
-//		contains - Contains string (header.indexOf(string)!==-1)
+// SCHEMA:
+// Table Name > Field Name > options > value
+// 	Available options:
+// 		regex - Regex string (header.match(regex))
+// 		string - Equals string (header===string)
+// 		contains - Contains string (header.indexOf(string)!==-1)
 
 
 

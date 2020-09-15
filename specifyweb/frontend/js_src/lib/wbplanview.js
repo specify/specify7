@@ -9,6 +9,8 @@ const template = require('./templates/wb_upload/main.html');
 const navigation = require('./navigation.js');
 const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
+// const dom_helper = require('./wb_upload/dom_helper.js');
+// const helper = require('./wb_upload/helper.js');
 
 
 const PlanView = Backbone.View.extend({
@@ -36,19 +38,50 @@ const PlanView = Backbone.View.extend({
     _render() {
         this.wbtemplatePromise
             .done(wbtemplate => {
-                const upload_plan = wbtemplate.get('remarks');
+
+                const upload_plan_string = wbtemplate.get('remarks');
+                let upload_plan;
+
+                try {
+                    upload_plan = JSON.parse(upload_plan_string);
+                } catch (exception) {
+
+                    if(!(exception instanceof SyntaxError))//only catch JSON parse errors
+                        throw exception;
+
+                    upload_plan = false;
+
+                }
+
+                if(typeof upload_plan !== "object" || typeof upload_plan['baseTableName'] === "undefined")
+                    upload_plan = false;
+
+                PlanView.upload_plan = upload_plan;
+
                 return wbtemplate.rget('workbenchtemplatemappingitems')
-                    .then(mappings => _['sortBy'](mappings.models, mapping => mapping.get('viewOrder')))
-                    .then(mappings => _.invoke(mappings, 'get', 'caption'))
-                    .done(headers => {
+                    .done(mappings => {
+                        const sorted = mappings.sortBy( mapping => mapping.get('viewOrder'));
+                        const headers = _.invoke(sorted, 'get', 'caption');
 
-                        const set_headers = mappings_main.constructor();
+                        PlanView.mappings = mappings;
 
-                        function wait_for_constructor_to_finish(){
+                        //const new_headers = helper.fix_headers(headers);
+
+                        // if(typeof new_headers !== 'boolean'){//update headers and upload plan
+                        //
+                        // }
+
+
+                        //const /*[*/set_headers/*, headers_container]*/ = mappings_main.constructor().bind(mappings_main);
+                        this.mappings = mappings_main.constructor();
+
+                        //PlanView.headers_container = headers_container;
+
+                        const wait_for_constructor_to_finish = () =>{
                             if(!mappings_main.constructor_has_run)
                                 setTimeout(wait_for_constructor_to_finish,10);
                             else
-                                set_headers(headers, upload_plan);
+                                this.mappings.set_headers(headers, PlanView.upload_plan);
                         }
                         wait_for_constructor_to_finish();
 
@@ -58,10 +91,8 @@ const PlanView = Backbone.View.extend({
     save_plan(event) {
 
         if(typeof mappings_main.validate() === "boolean"){
-
             this.go_back(event,true);
             event.currentTarget.setAttribute('disabled', 'disabled');
-
         }
 
     },

@@ -13,7 +13,7 @@ const helper = {
 	* @param {string} name - Original field name
 	* @return {string} Human friendly field name
 	* */
-	get_friendly_name: name => {
+	get_friendly_name(name){
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -27,6 +27,42 @@ const helper = {
 
 		return name;
 	},
+
+	// /*
+	// * Trims headers and makes them distinct
+	// * @param {array} headers_array - Array of strings
+	// * @return {bool} false if no changes were made OR {array} of [old_header_name,new_header_name] strings
+	// * */
+	// fix_headers(headers_array){
+	//
+	// 	let changes_made = false;
+	//
+	// 	let new_headers = headers_array.reduce((result,header_name)=>{
+	//
+	// 			let new_header_name = header_name.trim();
+	//
+	// 			if(result.indexOf(new_header_name) !== -1){
+	// 				let i=0;
+	// 				while(result.indexOf(new_header_name + ' (' + i + ')') !== -1)
+	// 					i++;
+	// 				header_name = new_header_name + ' (' + i + ')'
+	// 			}
+	//
+	// 			result.push([header_name,new_header_name]);
+	//
+	// 			if(header_name !== new_header_name)
+	// 				changes_made = true;
+	//
+	// 			return result;
+	//
+	// 		},[]);
+	//
+	// 	if(changes_made)
+	// 		return new_headers;
+	// 	else
+	// 		return false;
+	//
+	// },
 
 };
 

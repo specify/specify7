@@ -14,7 +14,7 @@ const main = {
 	/*
 	* Configuration module that set's default settings
 	* */
-	config: ()=>{
+	config(){
 
 		mappings.reference_indicator = '> ';
 		mappings.level_separator = '_';
@@ -27,9 +27,9 @@ const main = {
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
 	* */
-	constructor: () => {
+	constructor(){
 
-		//FINDING ELEMENTS
+		// FINDING ELEMENTS
 
 		// column data model
 		mappings.title__table_name = document.getElementById('title__table_name');
@@ -59,18 +59,18 @@ const main = {
 		mappings.base_table_name = undefined;
 		mappings.selected_field = undefined;
 
-		mappings.auto_mapper_run = auto_mapper.map;
-		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree;
+		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
+		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
 
 
-		//setting event listeners
-		mappings.button__change_table.addEventListener('click', mappings.reset_table);
+		// setting event listeners
+		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
 
-		mappings.button__map.addEventListener('click', mappings.map_field_callback);
-		mappings.button__delete.addEventListener('click', mappings.unmap_field_callback);
+		mappings.button__map.addEventListener('click', mappings.map_field_callback.bind(mappings));
+		mappings.button__delete.addEventListener('click', mappings.unmap_field_callback.bind(mappings));
 
-		mappings.control_line__new_header.addEventListener('change', mappings.change_selected_header);
-		mappings.control_line__new_static_header.addEventListener('change', mappings.change_selected_header);
+		mappings.control_line__new_header.addEventListener('change', mappings.change_selected_header.bind(mappings));
+		mappings.control_line__new_static_header.addEventListener('change', mappings.change_selected_header.bind(mappings));
 
 		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
 			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
@@ -96,33 +96,42 @@ const main = {
 				mappings.changes_made = true;
 		});
 
+		mappings.list__headers.addEventListener('click', event => {
+			if(event.target['classList'].contains('header')){
+				const line = event.target.parentElement;
+				const input = line.previousElementSibling;
+				input.checked = true;
+				mappings.change_selected_header({target:input})
+			}
+		});
+
 		mappings.list__tables.addEventListener('change', event => {
 			if (event.target && event.target['classList'].contains('radio__table'))
 				mappings.set_table(event);
 		});
 
-		//CONFIG
+		// CONFIG
 
-		if(!main.constructor_has_run)
+		if(!this.constructor_has_run)
 			main.constructor_first_run();
 		else
 			mappings.list__tables.innerHTML = mappings.data_model_html;
 
 
-		return mappings.set_headers;
+		return mappings;
 
 	},
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run: () => {
+	constructor_first_run(){
 
 		mappings.ranks = {};
 
-		main.config();//get configuration
+		main.config();  // get configuration
 
-		//INITIALIZATION
+		// INITIALIZATION
 
-		//build list of tables to exclude
+		// build list of tables to exclude
 		mappings.tables_to_hide = [
 			'definition',
 			'definitionitem',
@@ -132,7 +141,7 @@ const main = {
 		];
 		mappings.tables_to_hide = [...mappings.tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
 
-		//all required fields are not hidden, except for these, which are made not required
+		// all required fields are not hidden, except for these, which are made not required
 		mappings.required_fields_to_hide = [
 			'timestampcreated',
 			'collectionmemberid',
@@ -145,7 +154,7 @@ const main = {
 			'treedef',
 		];
 
-		//fetch data model
+		// fetch data model
 		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
 		data_model_handler.fetch_tables((data_model_html, tables) => {
 
@@ -157,16 +166,16 @@ const main = {
 			mappings.new_header_id = 1;
 			mappings.tables = tables;
 
-			main.constructor_has_run = true;
+			this.constructor_has_run = true;
 
 
-			//initialize dependencies
+			// initialize dependencies
 			upload_plan_converter.constructor(
 				() => mappings.base_table_name,
 				base_table_name => mappings.base_table_name = base_table_name,
 				mappings.tree_symbol,
 				mappings.reference_symbol,
-				mappings.get_mappings_tree,
+				mappings.get_mappings_tree.bind(mappings),
 				mappings.ranks,
 				mappings.tables,
 			);
@@ -174,11 +183,11 @@ const main = {
 		});
 
 
-		//stopping accidental page reload
-		window.addEventListener('beforeunload', function (e) {//stops page from reloading if there is mapping in progress
+		// stopping accidental page reload
+		window.addEventListener('beforeunload', function (e) {  // stops page from reloading if there is mapping in progress
 			if (typeof mappings.list__tables_scroll_postion !== "undefined") {
 				e.preventDefault();
-				e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';//this message won't be displayed in most browsers
+				e.returnValue = 'Are you sure you want to discard creating mapping for this dataset?';  // this message won't be displayed in most browsers
 			} else
 				delete e['returnValue'];
 		});
@@ -188,7 +197,7 @@ const main = {
 	/*
 	* Validates the current mapping and shows error messages if needed
 	* */
-	validate: ()=>{
+	validate(){
 
 		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name,mappings.get_mappings_tree());
 

@@ -1,11 +1,11 @@
 "use strict";
 require ('../css/workbench.css');
 
-var $        = require('jquery');
-var _        = require('underscore');
-var Backbone = require('./backbone.js');
-var Q        = require('q');
-var Handsontable = require('handsontable');
+const $        = require('jquery');
+const _        = require('underscore');
+const Backbone = require('./backbone.js');
+const Q        = require('q');
+const Handsontable = require('handsontable');
 const moment = require('moment');
 const humanizeDuration = require('humanize-duration');
 const Papa = require('papaparse');
@@ -25,8 +25,6 @@ function fromNow(time) {
     return humanizeDuration(moment().diff(time), { round: true, largest: 2 }) + ' ago';
 }
 
-//const highlightInvalidRE = /^\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
-//const highlightMatchInfoRE = /^mi\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const highlightRE = /^(mi|)\[(\d+) \[(\d+ ?)*\]\] (.*)$/;
 const errorRE = /^((e|E)rror:\s*(.*))|(-1,-1:\s*(.*))$/;
 const duplicateEntryRE = /ERROR .* - (Duplicate entry .*)$/;
@@ -35,28 +33,6 @@ function atoi(str) { return parseInt(str, 10); }
 
 function parseLog(log, nCols) {
     const lines = log.split('\n');
-
-    /*const highlightsInvalid = lines
-              .map(line => highlightInvalidRE.exec(line))
-              .filter(match => match != null)
-              .map(match => ({
-                  row: atoi(match[1]),
-                  cols: match.slice(2, match.length - 1).map(atoi),
-                  message: match[match.length - 1],
-                  highlight: 'invalid'
-              }));
-
-    const highlightsMatchInfo = lines
-              .map(line => highlightMatchInfoRE.exec(line))
-              .filter(match => match != null)
-              .map(match => ({
-                  row: atoi(match[1]),
-                  cols: match.slice(2, match.length - 1).map(atoi),
-                  message: match[match.length - 1],
-                  highlight: match[match.length - 1].indexOf('A new') != -1 ? 'no-match' : 'multi-match'
-              }));
-
-    const highlights = highlightsInvalid.concat(highlightsMatchInfo);*/
 
     
    const highlights = lines
@@ -75,13 +51,6 @@ function parseLog(log, nCols) {
             (rows, col) => ((rows[highlight.row * nCols + col] = highlight), rows)
             , rows)
         , []);
-
-    //var byPos = highlights.reduce(function (rows, highlight) {
-    //    return highlight.cols.reduce(function (rows, col) {
-    //        var cols = col.
-    //        return rows[highlight.row * nCols + col] = highlight, rows;
-    //    }, rows);
-    //}, []);
     
     const errors = lines
               .map(line => errorRE.exec(line))
@@ -108,7 +77,7 @@ function parseLog(log, nCols) {
 }
 
 
-var WBView = Backbone.View.extend({
+const WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
     matchWithValidate: false,
@@ -131,13 +100,15 @@ var WBView = Backbone.View.extend({
         this.data = data;
         this.uploadStatus = uploadStatus;
         this.highlightsOn = false;
+        this.column_indexes = [];
+        this.validation_results = {};
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
                   .then(mappings => _.sortBy(mappings.models, mapping => mapping.get('viewOrder')));
 
         const colHeaders = mappingsPromise.then(mappings => ["upload result"].concat(_.invoke(mappings, 'get', 'caption')));
-        const columns = mappingsPromise.then(mappings => [{data:1, readOnly:true}].concat(_.map(mappings, (m, i) => ({data: i+2}))));
+        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+2})));
 
         this.$el.append(template());
         new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
@@ -155,8 +126,10 @@ var WBView = Backbone.View.extend({
             return columns;
         });
 
-        WBView.column_indexes = colHeaders;
-        WBView.validation_results = {};
+        let column_indexes = colHeaders;
+        column_indexes.shift();  // remove validation results column
+
+        this.column_indexes = column_indexes;
 
         const onChanged = this.spreadSheetChanged.bind(this);
         const renderer = this.renderCell.bind(this);
@@ -180,20 +153,6 @@ var WBView = Backbone.View.extend({
             afterChange: (change, source) => source === 'loadData' || onChanged(),
         });
 
-        // const makeTooltip = td => {
-        //     const coords = this.hot.getCoords(td);
-        //     const pos = this.hot.countCols() * coords.row + coords.col;
-        //     const info = this.infoFromLog.byPos[pos];
-        //     const duplicateEntryMsg = coords.row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry;
-        //     const message = (info ? info.message + " " : "") + (duplicateEntryMsg || "");
-        //     return $('<span>').text(message);
-        // };
-        //
-        // this.$('.wb-spreadsheet').tooltip({
-        //     items: ".wb-invalid-cell,.wb-no-match-cell,.wb-multi-match-cell",
-        //     content: function() { return makeTooltip(this); }
-        // });
-
         const get_td_title = td => td.getAttribute('title');
 
         this.$('.wb-spreadsheet').tooltip({
@@ -206,13 +165,11 @@ var WBView = Backbone.View.extend({
 
     renderCell(instance, td, row, col, prop, value, cellProperties) {
 
-        const validation_results_parsed = typeof WBView.validation_results[row] !== "undefined";
-        const is_first_column = col===0;
+        if(typeof this.validation_results[row] === "undefined")
 
-        if(!validation_results_parsed && is_first_column)
             try {
 
-                const validation_results_raw = JSON.parse(value);
+                const validation_results_raw = JSON.parse(this.data[row][1]);
 
                 let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
 
@@ -256,7 +213,7 @@ var WBView = Backbone.View.extend({
                     return validation_results;
                 },validation_results);
 
-                WBView.validation_results[row] = validation_results;
+                this.validation_results[row] = validation_results;
 
 
             } catch (exception) {
@@ -265,47 +222,24 @@ var WBView = Backbone.View.extend({
                     throw exception;
 
                 console.error('Failed to parse validation message (' + (typeof value) + '): '+value);
-                WBView.validation_results[row] = {};
+                this.validation_results[row] = {};
 
             }
 
-        else if(validation_results_parsed && !is_first_column){
+        const column_name = this.column_indexes[col];
+        const column_validation_result = this.validation_results[row][column_name];
 
-            const column_name = WBView.column_indexes[col];
-            const column_validation_result = WBView.validation_results[row][column_name];
+        td.removeAttribute('title');
 
-            td.removeAttribute('title');
+        if(typeof column_validation_result === "boolean")
+            td.classList.add('wb-no-match-cell');
 
-            if(typeof column_validation_result === "boolean")
-                td.classList.add('wb-no-match-cell');
-
-            else if(typeof column_validation_result !== "undefined"){
-                td.setAttribute('title',column_validation_result.join("\n"));
-                td.classList.add('wb-invalid-cell');
-            }
-
+        else if(typeof column_validation_result !== "undefined"){
+            td.setAttribute('title',column_validation_result.join("\n"));
+            td.classList.add('wb-invalid-cell');
         }
 
         Handsontable.renderers.TextRenderer.apply(null, arguments);
-        // if (!this.highlightsOn) return;
-        const $td = $(td);
-        // const rowId = instance.getSourceDataAtRow(row)[0];
-        // const rowStatus = this.uploadStatus[rowId];
-        // if (!rowStatus) {
-        //     $td.addClass('wb-invalid-cell');
-        // }
-
-        // const pos = instance.countCols() * row + col;
-        // const highlightInfo = this.infoFromLog.byPos[pos];
-        // const $td = $(td);
-        // const cls = highlightInfo ? 'wb-' + highlightInfo.highlight + '-cell' : 'wb-invalid_cell';
-        // if (highlightInfo || (
-        //     row === this.infoFromLog.lastRow && this.infoFromLog.duplicateEntry
-        // )) {
-        //     $td.addClass(cls);
-        // } else {
-        //     $td.removeClass(cls);
-        // }
     },
     openPlan() {
         navigation.go(`/workbench-plan/${this.wb.id}/`);
@@ -685,13 +619,11 @@ module.exports = function loadWorkbench(id) {
     Q(wb.fetch().fail(app.handleError)).then(
         () => Q.all([
             Q($.get('/api/workbench/rows/' + id + '/')),
-            // getUploadStatus(id)
         ])).spread(function(data, uploadStatus) {
             app.setTitle("WorkBench: " + wb.get('name'));
             app.setCurrentView(new WBView({
                 wb: wb,
                 data: data,
-                // uploadStatus: uploadStatus
             }));
         }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };

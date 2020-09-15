@@ -17,13 +17,14 @@ const html_generator = {
 	* @param {string} friendly_table_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
 	* @return {string} HTML for table
 	* */
-	new_table: (table_name, friendly_table_name) =>
-		'<label>' +
-		'		<input type="radio" name="table" class="radio__table" data-table="' + table_name + '">' +
-		'		<div tabindex="0" class="line">' +
-		'			<div class="mapping">' + friendly_table_name + '</div>' +
-		'		</div>' +
-		'	</label>',
+	new_table(table_name, friendly_table_name){
+		return '<label>' +
+			'		<input type="radio" name="table" class="radio__table" data-table="' + table_name + '">' +
+			'		<div tabindex="0" class="line">' +
+			'			<div class="mapping">' + friendly_table_name + '</div>' +
+			'		</div>' +
+			'	</label>';
+	},
 
 	/*
 	* Generates HTML for a new header (either static or not)
@@ -31,7 +32,7 @@ const html_generator = {
 	* @param {string} [header_type='unmapped_header'] - unmapped_header (default) / mapped_header / static_header
 	* @return {string} HTML for a new header
 	* */
-	new_header: (header_name, header_type = 'unmapped_header') => {
+	new_header(header_name, header_type = 'unmapped_header'){
 
 		let control_element;
 		let header_name_attribute = '';
@@ -65,7 +66,7 @@ const html_generator = {
 	* @param {string} [class_append=''] - Classes to append to the resulting line. E.x `relationship` to identify relationships
 	* @return {string} HTML for field or relationship of base table
 	* */
-	new_base_field: (field_name, friendly_field_name, is_tree = false, class_append = '') => {
+	new_base_field(field_name, friendly_field_name, is_tree = false, class_append = ''){
 
 		const is_tree_class = is_tree ? ' tree' : '';
 
@@ -90,7 +91,7 @@ const html_generator = {
 	* @param {array} required_fields_array - same as fields_array, but consists of required fields
 	* @return {string} HTML for relationship with depth of 2 or more
 	* */
-	new_relationship_fields: (table_name, optional_fields_array, required_fields_array = []) => {
+	new_relationship_fields(table_name, optional_fields_array, required_fields_array = []){
 
 		function fields_array_to_html(fields_data, label, other_fields_length) {
 

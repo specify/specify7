@@ -9,7 +9,7 @@
 const dom_helper = {
 
 
-	//TABLES
+	// TABLES
 
 	/*
 	* Gets a name of the table the `radio` belongs to
@@ -19,7 +19,7 @@ const dom_helper = {
 	get_table_name: radio => radio.getAttribute('data-table'),
 
 
-	//FIELDS
+	// FIELDS
 
 	/*
 	* Get's control element for a field and gives it's tag name
@@ -29,7 +29,7 @@ const dom_helper = {
 	* 				  {DOMElement} control_element - Control Element
 	* 				  {string} control_element_tag_name - select/input
 	* */
-	get_control_element: parent => {
+	get_control_element(parent){
 		const parent_select = parent.getElementsByTagName('select')[0];
 
 		if (typeof parent_select !== "undefined")
@@ -45,7 +45,7 @@ const dom_helper = {
 	* @param {DOMElement} control_element - SELECT or INPUT
 	* @return {DOMElement} DIV or LABEL that is a parent of control element
 	* */
-	get_line_element: control_element => {
+	get_line_element(control_element){
 
 		const parent_element = control_element.parentElement;
 
@@ -61,7 +61,7 @@ const dom_helper = {
 	* @param {DOMElement} line - DIV or LABEL Line where the search starts
 	* @return {DOMElement} DIV or LABEL that is the last line of this relationship
 	* */
-	get_last_line: line => {
+	get_last_line(line){
 
 		while (true) {
 
@@ -81,7 +81,7 @@ const dom_helper = {
 	* @param {DOMElement} line - DIV or LABEL Line where the search starts
 	* @return {DOMElement} DIV or LABEL that is the first line of this relationship
 	* */
-	get_first_line: line => {
+	get_first_line(line){
 
 		while (true) {
 
@@ -129,7 +129,7 @@ const dom_helper = {
 	* Removes all <select> elements from the list of fields
 	* @param {DOMElement} parent - shared parent for all <select> elements
 	* */
-	close_open_lists: parent => {
+	close_open_lists(parent){
 		const opened_lists = parent.getElementsByClassName('table_relationship');
 		Object.values(opened_lists).forEach(list => {
 			parent.removeChild(list);
@@ -137,7 +137,35 @@ const dom_helper = {
 	},
 
 
-	//HEADERS
+	// HEADERS
+
+	// /*
+	// * Get an array of [old_header_name, new_header_name]. Unchanged headers are reported too
+	// * @return {bool} false if no changes made or {array} of [old_header_name,new_header_name] strings
+	// * */
+	// get_all_headers(headers_container){
+	//
+	// 	let changes_made = false;
+	//
+	// 	const header_elements = headers_container.getElementsByClassName('header');
+	//
+	// 	const headers = header_elements.map((header)=>{
+	//
+	// 		const header_original_value = header.getAttribute('data-original_value');
+	// 		const header_new_value = header.value;
+	//
+	// 		if(header_new_value !== header_original_value)
+	// 			changes_made = true;
+	//
+	// 		return [header_original_value,header_new_value];
+	//
+	// 	});
+	//
+	// 	if(changes_made)
+	// 		return headers;
+	// 	else
+	// 		return false;
+	// },
 
 	/*
 	* Get header name from <input type="radio"> for a header
@@ -161,7 +189,7 @@ const dom_helper = {
 	* 				  {DOMElement} control_element - Control Element
 	* 				  {string} control_element_tag_name - select/input
 	* */
-	get_header_control_element: parent => {
+	get_header_control_element(parent){
 
 		const header_name = parent.getElementsByClassName('header')[0];
 

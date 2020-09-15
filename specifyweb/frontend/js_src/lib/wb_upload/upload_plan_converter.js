@@ -49,13 +49,13 @@ const upload_plan_converter = {
 	* @param {object} ranks - Internal object for storing what ranks are available for particular tables and which ranks are required
 	* @param {object} tables - Internal object for storing data model
 	* */
-	constructor: (base_table_name, set_base_table_name, tree_symbol, reference_symbol, get_mappings_tree, ranks, tables) => {
+	constructor(base_table_name, set_base_table_name, tree_symbol, reference_symbol, get_mappings_tree, ranks, tables){
 
-		upload_plan_converter.base_table_name = base_table_name;
-		upload_plan_converter.set_base_table_name = set_base_table_name;
+		this.base_table_name = base_table_name;
+		this.set_base_table_name = set_base_table_name;
 		upload_plan_converter.tree_symbol = tree_symbol;
 		upload_plan_converter.reference_symbol = reference_symbol;
-		upload_plan_converter.get_mappings_tree = get_mappings_tree;
+		this.get_mappings_tree = get_mappings_tree;
 		upload_plan_converter.ranks = ranks;
 		upload_plan_converter.tables = tables;
 
@@ -68,10 +68,10 @@ const upload_plan_converter = {
 	* @param {bool} [base_table_name_extracted=false] - Used by recursion to store intermediate results
 	* @return {object} Returns mapping tree
 	* */
-	upload_plan_to_mappings_tree: (upload_plan, base_table_name_extracted = false) => {
+	upload_plan_to_mappings_tree(upload_plan, base_table_name_extracted = false){
 
 		if (base_table_name_extracted === false) {
-			upload_plan_converter.set_base_table_name(upload_plan['baseTableName']);
+			this.set_base_table_name(upload_plan['baseTableName']);
 
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
 		} else if (typeof upload_plan['uploadTable'] !== "undefined")
@@ -104,13 +104,14 @@ const upload_plan_converter = {
 	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used. Else, result of get_mappings_tree() would be used
 	* @return {string} Upload plan as a JSON string
 	* */
-	get_upload_plan: (mappings_tree = '') => {
+	get_upload_plan(mappings_tree = ''){
 
 		if (mappings_tree === '')
-			mappings_tree = upload_plan_converter.get_mappings_tree();
+			mappings_tree = this.get_mappings_tree();
 		const upload_plan = {};
 
-		upload_plan['baseTableName'] = upload_plan_converter.base_table_name();
+		upload_plan['baseTableName'] = this.base_table_name();
+
 
 		function handle_table(table_data, table_name, wrap_it = true) {
 
@@ -121,7 +122,7 @@ const upload_plan_converter = {
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
 					let name = tree_rank_data['name'];
 
-					if (typeof name === 'object')//handle static records
+					if (typeof name === 'object')  // handle static records
 						name = name['static'];
 
 					final_tree[new_tree_key] = name;
@@ -207,11 +208,21 @@ const upload_plan_converter = {
 		}
 
 
-		upload_plan['uploadable'] = handle_table(mappings_tree, upload_plan_converter.base_table_name());
+		upload_plan['uploadable'] = handle_table(mappings_tree, this.base_table_name());
 
 		return JSON.stringify(upload_plan, null, "\t");
 
 	},
+
+	// /*
+	// * Updates upload plan with new headers
+	// * @param {object} upload_plan - Upload plan as a parsed JSON object
+	// * */
+	// update_headers_in_upload_plan(upload_plan, headers){
+	//
+	//
+	//
+	// },
 
 };
 
