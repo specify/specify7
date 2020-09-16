@@ -53,7 +53,7 @@ const PlanView = Backbone.View.extend({
 
                 }
 
-                if(typeof upload_plan !== "object" || typeof upload_plan['baseTableName'] === "undefined")
+                if(typeof upload_plan !== "object" || upload_plan === null || typeof upload_plan['baseTableName'] === "undefined")
                     upload_plan = false;
 
                 PlanView.upload_plan = upload_plan;

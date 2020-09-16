@@ -171,49 +171,55 @@ const WBView = Backbone.View.extend({
 
                 const validation_results_raw = JSON.parse(this.data[row][1]);
 
-                let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
+                if(validation_results_raw===null)
+                    this.validation_results[row] = {};
+                else {
 
-                    table_issue['columns'].reduce((validation_results,column_name)=>{
+                    let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
+
+                        table_issue['columns'].reduce((validation_results,column_name)=>{
+
+                            if(typeof validation_results[column_name] === "undefined")
+                                validation_results[column_name] = [];
+
+                            validation_results[column_name].push(table_issue['issue']);
+
+                            return validation_results;
+
+                        },validation_results);
+
+                        return validation_results;
+                    },[]);
+
+                    validation_results = validation_results_raw['cellIssues'].reduce((validation_results,cell_issue)=>{
+
+                        const column_name = cell_issue['column'];
 
                         if(typeof validation_results[column_name] === "undefined")
                             validation_results[column_name] = [];
 
-                        validation_results[column_name].push(table_issue['issue']);
+                        validation_results[column_name].push(cell_issue['issue']);
 
                         return validation_results;
-
                     },validation_results);
 
-                    return validation_results;
-                },[]);
+                    validation_results = validation_results_raw['newRows'].reduce((validation_results,table_issue)=>{
 
-                validation_results = validation_results_raw['cellIssues'].reduce((validation_results,cell_issue)=>{
+                        table_issue['columns'].reduce((validation_results,column_name)=>{
 
-                    const column_name = cell_issue['column'];
+                            if(typeof validation_results[column_name] === "undefined")
+                                validation_results[column_name] = true;
 
-                    if(typeof validation_results[column_name] === "undefined")
-                        validation_results[column_name] = [];
+                            return validation_results;
 
-                    validation_results[column_name].push(cell_issue['issue']);
-
-                    return validation_results;
-                },validation_results);
-
-                validation_results = validation_results_raw['newRows'].reduce((validation_results,table_issue)=>{
-
-                    table_issue['columns'].reduce((validation_results,column_name)=>{
-
-                        if(typeof validation_results[column_name] === "undefined")
-                            validation_results[column_name] = true;
+                        },validation_results);
 
                         return validation_results;
-
                     },validation_results);
 
-                    return validation_results;
-                },validation_results);
+                    this.validation_results[row] = validation_results;
 
-                this.validation_results[row] = validation_results;
+                }
 
 
             } catch (exception) {
@@ -227,16 +233,20 @@ const WBView = Backbone.View.extend({
             }
 
         const column_name = this.column_indexes[col];
-        const column_validation_result = this.validation_results[row][column_name];
+        if(typeof this.validation_results[row] !== "undefined" && typeof this.validation_results[row][column_name] !== "undefined"){
 
-        td.removeAttribute('title');
+            const column_validation_result = this.validation_results[row][column_name];
 
-        if(typeof column_validation_result === "boolean")
-            td.classList.add('wb-no-match-cell');
+            td.removeAttribute('title');
 
-        else if(typeof column_validation_result !== "undefined"){
-            td.setAttribute('title',column_validation_result.join("\n"));
-            td.classList.add('wb-invalid-cell');
+            if(typeof column_validation_result === "boolean")
+                td.classList.add('wb-no-match-cell');
+
+            else if(typeof column_validation_result !== "undefined"){
+                td.setAttribute('title',column_validation_result.join("\n"));
+                td.classList.add('wb-invalid-cell');
+            }
+
         }
 
         Handsontable.renderers.TextRenderer.apply(null, arguments);

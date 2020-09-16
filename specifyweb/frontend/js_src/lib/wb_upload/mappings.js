@@ -101,11 +101,11 @@ const mappings = {
 
 		},[]);
 
-		Object.values(this.lines).forEach(radio => {
+		for(const radio of Object.values(this.lines)){
 			const data_field = dom_helper.get_field_name(radio);
 			if (data_field !== 'relationship' && base_table_columns.indexOf(data_field) !== -1)
 				radio.setAttribute('disabled', '');
-		});
+		}
 
 		// make all checkboxes unchecked again
 		this.headers[0].checked = true;
@@ -273,14 +273,14 @@ const mappings = {
 		this.selected_table.checked = false;
 		this.selected_table = undefined;
 
-		Object.values(this.headers).forEach(header_radio =>{
+		for(const header_radio of Object.values(this.headers)){
 
 			header_radio.removeAttribute('data-path');
 			const label = header_radio.nextElementSibling;
 			const header_mapping = dom_helper.get_mappping_friendly_name_element(label);
 			header_mapping.outerHTML = html_generator.unmapped_header_mapping;
 
-		});
+		}
 
 		this.title__table_name.classList.add('undefined');
 		this.title__table_name.innerText = '';
@@ -445,7 +445,7 @@ const mappings = {
 			const ranks = mappings.ranks[table_name];
 
 			if (typeof ranks !== "undefined")
-				Object.entries(ranks).forEach(([rank_name,is_required]) => {
+				for(const [rank_name,is_required] of Object.entries(ranks)){
 
 					const data = [this.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true];
 
@@ -454,7 +454,7 @@ const mappings = {
 					else
 						optional_fields.push(data);
 
-				});
+				}
 
 			if (required_fields.length === 0 && optional_fields.length === 0 && (relationship_type.indexOf('-to-many') !== -1)) {
 				let mapped_nodes_count = mapped_nodes.length;
@@ -520,7 +520,7 @@ const mappings = {
 			);
 
 			// sort && display fields
-			Object.keys(rows).sort().forEach(row_name => {
+			for(let row_name of Object.keys(rows).sort()){
 
 				let [row_key, row_enabled, row_type, is_required] = rows[row_name];
 
@@ -540,7 +540,7 @@ const mappings = {
 				else
 					optional_fields.push(result);
 
-			});
+			}
 
 		}
 

@@ -131,9 +131,8 @@ const dom_helper = {
 	* */
 	close_open_lists(parent){
 		const opened_lists = parent.getElementsByClassName('table_relationship');
-		Object.values(opened_lists).forEach(list => {
+		for(const list of Object.values(opened_lists))
 			parent.removeChild(list);
-		});
 	},
 
 

@@ -55,7 +55,7 @@ const data_model_handler = {
 			)
 				return tables;
 
-			table_data['fields'].forEach(field => {
+			for(const field of table_data['fields']){
 
 				let field_name = field['name'];
 				let friendly_name = field.getLocalizedName();
@@ -93,7 +93,7 @@ const data_model_handler = {
 						field['readOnly'] ||
 						data_model_handler.tables_to_hide.indexOf(table_name) !== -1
 					)
-						return true;
+						continue;
 
 					relationships[field_name] = {
 						friendly_relationship_name: friendly_name,
@@ -111,7 +111,7 @@ const data_model_handler = {
 						is_required: is_required,
 					};
 
-			});
+			}
 
 
 			tables[table_name] = {
@@ -128,7 +128,7 @@ const data_model_handler = {
 
 			return tables;
 
-		}, {});
+		},{});
 
 
 		for (const [table_name, table_data] of Object.entries(tables))  // remove relationships to system tables
@@ -141,7 +141,7 @@ const data_model_handler = {
 		data_model_handler.data_model_html = data_model_html;
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
-			done_callback();  // so there is no need to wait for ranks to finish fetching
+			done_callback(data_model_html, tables);  // so there is no need to wait for ranks to finish fetching
 
 	},
 
@@ -215,10 +215,10 @@ const data_model_handler = {
 
 		// handle -to-many references
 		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
-			list_of_mapped_fields.forEach(mapped_field_name => {
+			for(const mapped_field_name of list_of_mapped_fields){
 				const local_path = [...path, mapped_field_name];
 				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
-			});
+			}
 			return results;
 		}
 
