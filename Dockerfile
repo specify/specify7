@@ -80,6 +80,8 @@ RUN echo "import os \nDEBUG = os.environ.get('SP7_DEBUG', '').lower() == 'true'\
 RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
         > secret_key.py
 
+WORKDIR /opt/specify7
+RUN ve/bin/pip install --no-cache-dir gunicorn
 
 ######################################################################
 
@@ -102,5 +104,8 @@ RUN mkdir wb_upload_logs specify_depository logs
 USER root
 COPY --from=build-backend /opt/specify7 /opt/specify7
 
-EXPOSE 80
-CMD apachectl -D FOREGROUND
+EXPOSE 8000
+USER specify
+WORKDIR /opt/specify7
+RUN mv specifyweb.wsgi specifyweb_wsgi.py
+CMD ve/bin/gunicorn -w 3 -b 0.0.0.0:8000 specifyweb_wsgi
