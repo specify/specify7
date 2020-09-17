@@ -391,13 +391,25 @@ const WBView = Backbone.View.extend({
         });
         $('.progress-bar', dialog).progressbar({value: false});
 
-        // let data;
+        //automatically trim all strings
+        let data = Object.entries(this.data).reduce((rows,[row_key,row_data])=>{
+
+            rows[row_key] = row_data.map(cell_value=> {
+                if(typeof cell_value === "string")
+                    return cell_value.trim();
+                else
+                    return cell_value;
+            });
+
+            return rows;
+        },{});
+
         //
         // if(remove_empty_rows_mode==='all' || remove_empty_rows_mode==='trailing'){
         //
         //     let had_non_empty_row = false;
         //
-        //     data = Object.entries(this.data).reverse().reduce((data,[key,record])=>{
+        //     data = Object.entries(data).reverse().reduce((data,[key,record])=>{
         //
         //         if(
         //             (
@@ -416,8 +428,7 @@ const WBView = Backbone.View.extend({
         // }
 
         return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
-            data: JSON.stringify(this.data),
-            //data: JSON.stringify(data),
+            data: JSON.stringify(data),
             error: this.checkDeletedFail.bind(this),
             type: "PUT"
         })).then(data => {
