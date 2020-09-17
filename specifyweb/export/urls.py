@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^make_dwca/$', views.export),
     url(r'^extract_query/(?P<query_id>\d+)/$', views.extract_query),
     url(r'^force_update/$', views.force_update),
-    url(r'^occurrence/(?P<dataset_id>[^/]+)/(?P<occurrence_id>[^/]+)/$', views.occurrence),
+    url(r'^record/(?P<dataset_id>[^/]+)/(?P<record_id>[^/]+)/$', views.record),
 ]

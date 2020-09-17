@@ -93,7 +93,7 @@ def extract_eml(request, filename):
 
 @require_GET
 @never_cache
-def occurrence(request, dataset_id, occurrence_id):
+def record(request, dataset_id, record_id):
     feed_resource = get_feed_resource()
     if feed_resource is None:
         raise Http404('No export feed defined.')
@@ -111,7 +111,7 @@ def occurrence(request, dataset_id, occurrence_id):
     except KeyError:
         raise Http404('No such dataset.')
 
-    record = by_core_id(item_def.attrib['collectionId'], item_def.attrib['userId'], item_def.attrib['definition'], occurrence_id)
+    record = by_core_id(item_def.attrib['collectionId'], item_def.attrib['userId'], item_def.attrib['definition'], record_id)
     if not record:
         raise Http404('No such record.')
 
