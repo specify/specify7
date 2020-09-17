@@ -3,6 +3,7 @@
 const tree_helpers = require('./tree_helpers.js');
 const dom_helper = require('./dom_helper.js');
 const html_generator = require('./html_generator.js');
+const navigation = require('../navigation.js');
 
 const mappings = {
 
@@ -221,6 +222,8 @@ const mappings = {
 			mappings.implement_array_of_mappings(array_of_mappings);
 		}
 
+		navigation.addUnloadProtect(this, "This mapping has not been saved.");
+
 	},
 
 	/*
@@ -297,6 +300,8 @@ const mappings = {
 
 		this.button__change_table.style.display = 'none';
 		this.need_to_run_auto_mapper = true;
+
+		navigation.removeUnloadProtect(this);
 
 	},
 

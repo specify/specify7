@@ -165,7 +165,8 @@ const WBView = Backbone.View.extend({
                 if(typeof validation_results[row_key][column_index] === "undefined")
                     validation_results[row_key][column_index] = [];
 
-                validation_results[row_key][column_index].push(issue);
+                const ucfirst_issue = issue[0].toUpperCase() + issue.slice(1);
+                validation_results[row_key][column_index].push(ucfirst_issue);
             }
 
             for(const table_issue of validation_results_raw['tableIssues'])
@@ -374,15 +375,7 @@ const WBView = Backbone.View.extend({
     },
     save: function() {
 
-        // /*
-        // * Specifies whether to remove empty rows
-        // * all - Remove all empty rows
-        // * none - Don't remove any empty rows
-        // * trailing - Remove empty rows at the end of the dataset only
-        // * */
-        // const remove_empty_rows_mode = 'all';
-
-
+        //show saving progress bar
         var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
             title: 'Saving',
             modal: true,
@@ -404,29 +397,7 @@ const WBView = Backbone.View.extend({
             return rows;
         },{});
 
-        //
-        // if(remove_empty_rows_mode==='all' || remove_empty_rows_mode==='trailing'){
-        //
-        //     let had_non_empty_row = false;
-        //
-        //     data = Object.entries(data).reverse().reduce((data,[key,record])=>{
-        //
-        //         if(
-        //             (
-        //                 remove_empty_rows_mode==='trailing' &&
-        //                 had_non_empty_row
-        //             ) ||
-        //             record.slice(2).some(value=>value!=="") //check if there are any non empty cells
-        //         )
-        //             data[key] = record;
-        //         else
-        //             had_non_empty_row = true;
-        //
-        //         return data;
-        //
-        //     },{});
-        // }
-
+        //send data
         return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
             data: JSON.stringify(data),
             error: this.checkDeletedFail.bind(this),

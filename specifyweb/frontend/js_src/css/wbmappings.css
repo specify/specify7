@@ -176,7 +176,7 @@
 }
 
 .control_line span {
-    justify-content: center;
+    justify-content: center !important;
 }
 
 .mapping {
