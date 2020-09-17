@@ -93,7 +93,8 @@ const WBView = Backbone.View.extend({
         'click .wb-next-error, .wb-prev-error': 'gotoError',
         'click .wb-toggle-highlights': 'toggleHighlights',
         'click .wb-upload-details': 'showUploadLog',
-        'click .wb-setting': 'showSettingsDlg'
+        'click .wb-setting': 'showSettingsDlg',
+        'click .wb-cell_navigation': 'navigateCells'
     },
     initialize({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -101,7 +102,7 @@ const WBView = Backbone.View.extend({
         this.uploadStatus = uploadStatus;
         this.highlightsOn = false;
         this.column_indexes = [];
-        this.validation_results = {};
+        this.cells_to_highlight = {};
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -131,6 +132,96 @@ const WBView = Backbone.View.extend({
 
         this.column_indexes = column_indexes;
 
+        //parse validation results
+
+        const inverted_column_indexes = Object.entries(column_indexes).reduce((inverted_column_indexes,[column_index, column_name])=>{
+            inverted_column_indexes[column_name] = parseInt(column_index);
+            return inverted_column_indexes;
+        },{});
+
+        this.validation_results_object = Object.entries(this.data).reduce((validation_results,[row_key,row_data])=>{
+
+            row_key = parseInt(row_key);
+
+            let validation_results_raw = null;
+            try {
+                validation_results_raw = JSON.parse(row_data[1]);
+            } catch (exception) {
+                if(!(exception instanceof SyntaxError))//only catch JSON parse errors
+                    throw exception;
+                console.error('Failed to parse validation message (' + (typeof row_data[1]) + '): '+ row_data[1]);
+            }
+
+            if(validation_results_raw===null)
+                return validation_results;
+
+            function add_error_message(column_name, issue){
+
+                const column_index = inverted_column_indexes[column_name];
+
+                if(typeof validation_results[row_key] === "undefined")
+                    validation_results[row_key] = [];
+
+                if(typeof validation_results[row_key][column_index] === "undefined")
+                    validation_results[row_key][column_index] = [];
+
+                validation_results[row_key][column_index].push(issue);
+            }
+
+            for(const table_issue of validation_results_raw['tableIssues'])
+                for(const column_name of table_issue['columns'])
+                    add_error_message(column_name,table_issue['issue']);
+
+            for(const cell_issue of validation_results_raw['cellIssues'])
+                add_error_message(cell_issue['column'],cell_issue['issue']);
+
+            for(const table_issue of validation_results_raw['newRows'])
+                for(const column_name of table_issue['columns'])
+                    if(typeof validation_results[row_key] === "undefined" && typeof validation_results[row_key][column_name] === "undefined")
+                        validation_results[row_key][column_name] = true;
+
+            return validation_results;
+
+        },[]);
+
+        //attach error messages to cells
+        this.validation_results_array = [];
+        let navigation_cells_count = {
+            'new_cells': 0,
+            'invalid_cells': 0,
+        };
+        for(const [row_key,row_data] of Object.entries(this.validation_results_object))
+            for(const [cell_key,cell_data] of Object.entries(row_data)) {
+
+                const data = {
+                    'row': row_key,
+                    'col': cell_key,
+                    'cell_type': (typeof cell_data === "object") ? 'invalid_cells' : 'new_cells',
+                }
+
+                if (data['cell_type']==='invalid_cells')
+                    data['comment'] = {value: cell_data.join('<br>')}
+
+                navigation_cells_count[data['cell_type']]++;
+
+                this.validation_results_array.push(data);
+
+            }
+        this.validation_results_sorted = {
+            'invalid_cells': this.validation_results_array.filter(validation_result=>validation_result['cell_type']==='invalid_cells'),
+            'new_cells': this.validation_results_array.filter(validation_result=>validation_result['cell_type']==='new_cells')
+        };
+
+
+        //update navigation information
+        for(const navigation_total_element of Object.values(document.getElementsByClassName('wb-navigation_total'))){
+            const navigation_type = navigation_total_element.parentElement.getAttribute('data-navigation_type');
+            if(typeof navigation_cells_count[navigation_type] !== "undefined")
+                navigation_total_element.innerText = navigation_cells_count[navigation_type];
+        }
+
+
+        //initialize Handsontable
         const onChanged = this.spreadSheetChanged.bind(this);
         const renderer = this.renderCell.bind(this);
 
@@ -138,11 +229,14 @@ const WBView = Backbone.View.extend({
             height: this.calcHeight(),
             data: this.data,
             cells: () => ({renderer: renderer}),
+            cell: this.validation_results_array,
             colHeaders: colHeaders,
             columns: columns,
             minSpareRows: 0,
+            comments: true,
             rowHeaders: true,
             manualColumnResize: true,
+            outsideClickDeselects: false,
             columnSorting: true,
             sortIndicator: true,
             contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
@@ -153,99 +247,20 @@ const WBView = Backbone.View.extend({
             afterChange: (change, source) => source === 'loadData' || onChanged(),
         });
 
-        const get_td_title = td => td.getAttribute('title');
-
-        this.$('.wb-spreadsheet').tooltip({
-            items: ".wb-invalid-cell",
-            content: function() { return get_td_title(this); }
-        });
-
         $(window).resize(this.resize.bind(this));
     },
 
     renderCell(instance, td, row, col, prop, value, cellProperties) {
 
-        if(typeof this.validation_results[row] === "undefined")
+        if(typeof this.validation_results_object[row] !== "undefined" && typeof this.validation_results_object[row][col] !== "undefined"){
 
-            try {
-
-                const validation_results_raw = JSON.parse(this.data[row][1]);
-
-                if(validation_results_raw===null)
-                    this.validation_results[row] = {};
-                else {
-
-                    let validation_results = validation_results_raw['tableIssues'].reduce((validation_results,table_issue)=>{
-
-                        table_issue['columns'].reduce((validation_results,column_name)=>{
-
-                            if(typeof validation_results[column_name] === "undefined")
-                                validation_results[column_name] = [];
-
-                            validation_results[column_name].push(table_issue['issue']);
-
-                            return validation_results;
-
-                        },validation_results);
-
-                        return validation_results;
-                    },[]);
-
-                    validation_results = validation_results_raw['cellIssues'].reduce((validation_results,cell_issue)=>{
-
-                        const column_name = cell_issue['column'];
-
-                        if(typeof validation_results[column_name] === "undefined")
-                            validation_results[column_name] = [];
-
-                        validation_results[column_name].push(cell_issue['issue']);
-
-                        return validation_results;
-                    },validation_results);
-
-                    validation_results = validation_results_raw['newRows'].reduce((validation_results,table_issue)=>{
-
-                        table_issue['columns'].reduce((validation_results,column_name)=>{
-
-                            if(typeof validation_results[column_name] === "undefined")
-                                validation_results[column_name] = true;
-
-                            return validation_results;
-
-                        },validation_results);
-
-                        return validation_results;
-                    },validation_results);
-
-                    this.validation_results[row] = validation_results;
-
-                }
-
-
-            } catch (exception) {
-
-                if(!(exception instanceof SyntaxError))//only catch JSON parse errors
-                    throw exception;
-
-                console.error('Failed to parse validation message (' + (typeof value) + '): '+value);
-                this.validation_results[row] = {};
-
-            }
-
-        const column_name = this.column_indexes[col];
-        if(typeof this.validation_results[row] !== "undefined" && typeof this.validation_results[row][column_name] !== "undefined"){
-
-            const column_validation_result = this.validation_results[row][column_name];
-
-            td.removeAttribute('title');
+            const column_validation_result = this.validation_results_object[row][col];
 
             if(typeof column_validation_result === "boolean")
                 td.classList.add('wb-no-match-cell');
 
-            else if(typeof column_validation_result !== "undefined"){
-                td.setAttribute('title',column_validation_result.join("\n"));
+            else if(typeof column_validation_result === "object")
                 td.classList.add('wb-invalid-cell');
-            }
 
         }
 
@@ -358,6 +373,16 @@ const WBView = Backbone.View.extend({
         this.save().done();
     },
     save: function() {
+
+        // /*
+        // * Specifies whether to remove empty rows
+        // * all - Remove all empty rows
+        // * none - Don't remove any empty rows
+        // * trailing - Remove empty rows at the end of the dataset only
+        // * */
+        // const remove_empty_rows_mode = 'all';
+
+
         var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
             title: 'Saving',
             modal: true,
@@ -366,8 +391,33 @@ const WBView = Backbone.View.extend({
         });
         $('.progress-bar', dialog).progressbar({value: false});
 
+        // let data;
+        //
+        // if(remove_empty_rows_mode==='all' || remove_empty_rows_mode==='trailing'){
+        //
+        //     let had_non_empty_row = false;
+        //
+        //     data = Object.entries(this.data).reverse().reduce((data,[key,record])=>{
+        //
+        //         if(
+        //             (
+        //                 remove_empty_rows_mode==='trailing' &&
+        //                 had_non_empty_row
+        //             ) ||
+        //             record.slice(2).some(value=>value!=="") //check if there are any non empty cells
+        //         )
+        //             data[key] = record;
+        //         else
+        //             had_non_empty_row = true;
+        //
+        //         return data;
+        //
+        //     },{});
+        // }
+
         return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
             data: JSON.stringify(this.data),
+            //data: JSON.stringify(data),
             error: this.checkDeletedFail.bind(this),
             type: "PUT"
         })).then(data => {
@@ -614,7 +664,74 @@ const WBView = Backbone.View.extend({
         a.href = window.URL.createObjectURL(blob);
         a.setAttribute('download', filename);
         a.click();
-    }
+    },
+    navigateCells: function(e){
+
+        const button = e.target;
+        const direction = button.getAttribute('data-navigation_direction');
+        const button_parent = button.parentElement;
+        const type = button_parent.getAttribute('data-navigation_type');
+
+        const selected_cell = this.hot.getSelectedLast();
+        let current_row = 0;
+        let current_col = 0;
+
+        if(typeof selected_cell !== "undefined")
+            [current_row, current_col] = selected_cell;
+
+        const number_of_columns = this.hot.countCols();
+        const get_cell_position = (row,col) => {
+            return parseInt(row)*number_of_columns + parseInt(col);
+        }
+
+        const cells_to_search = {};
+        for(const cell of this.validation_results_sorted[type])
+            cells_to_search[get_cell_position(cell['row'],cell['col'])] = cell;
+
+        let cell_keys = Object.keys(cells_to_search).sort((a,b) => a-b);
+        let cell_keys_length = cell_keys.length;
+
+        if(cell_keys_length===0)
+            return;
+
+        let current_position = get_cell_position(current_row,current_col);
+
+        let target_cell=-1;
+        let cell_relative_position=0;
+
+        let comparison_function;
+
+        if(direction==='next')
+            comparison_function = (position, current_position) => position > current_position;
+        else {
+            cell_keys = cell_keys.reverse();
+            comparison_function = (position, current_position) => position < current_position;
+        }
+
+        for(const position of cell_keys) {
+            if (comparison_function(position,current_position)) {
+                target_cell = position;
+                break;
+            }
+            cell_relative_position++;
+        }
+
+        //following cell was found. Horay! 🎉🎉🎉
+        if(target_cell !== -1){
+            const coordinates = ['row','col','row','col'].map(key=>parseInt(cells_to_search[target_cell][key]));
+            this.hot.selectCell(...coordinates);
+
+            if(direction!=='next')
+                cell_relative_position = cell_keys_length - cell_relative_position;
+            else
+                cell_relative_position++;
+
+            const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
+            current_position_element.innerText = cell_relative_position;
+        }
+        //else { /* better luck next time 😓 */ }
+
+    },
 });
 
 module.exports = function loadWorkbench(id) {

@@ -1,17 +1,28 @@
 <div class="wb-header">
   <div class="wb-name">
   </div>
-  <!-- <div class="wb-upload-controls" style="display:none"> -->
-  <!--   <span class="wb-upload-info"></span> -->
-  <!--   <button class="wb-upload-details">Details</button> -->
-  <!--   <span class="wb-invalid-cells"> -->
-  <!--     <button class="wb-next-error">Next</button> -->
-  <!--     <button class="wb-prev-error">Prev</button> -->
-  <!--     <button class="wb-toggle-highlights">Hide</button> -->
-  <!--     <span class="wb-invalid-cell-count"></span> cells -->
-  <!--   </span> -->
-  <!-- </div> -->
   <div class="wb-controls">
+
+    <span data-navigation_type="new_cells">
+      <button class="wb-cell_navigation" data-navigation_direction="previous">&lt;&lt;</button>
+      New Cells (
+        <span class="wb-navigation_position">0</span>
+        /
+        <span class="wb-navigation_total">0</span>
+      )
+      <button class="wb-cell_navigation" data-navigation_direction="next">&gt;&gt;</button>
+    </span>
+
+    <span data-navigation_type="invalid_cells">
+      <button class="wb-cell_navigation" data-navigation_direction="previous">&lt;&lt;</button>
+      Invalid Cells (
+        <span class="wb-navigation_position">0</span>
+        /
+        <span class="wb-navigation_total">0</span>
+      )
+      <button class="wb-cell_navigation" data-navigation_direction="next">&gt;&gt;</button>
+    </span>
+
     <button class="wb-plan">Plan</button>
     <button class="wb-show-plan">Show Plan</button>
     <!-- <button class="wb-setting">Settings</button> -->
