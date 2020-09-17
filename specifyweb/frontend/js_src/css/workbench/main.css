@@ -1,6 +1,0 @@
-@import url("./config.css");
-@import url("./mappings.css");
-
-#screen__mapping button[disabled] {
-    cursor: not-allowed !important;
-}

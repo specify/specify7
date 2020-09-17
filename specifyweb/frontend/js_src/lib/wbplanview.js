@@ -1,11 +1,11 @@
 "use strict";
 
-require("../css/workbench/main.css");
+require("../css/wbmappings.css");
 
 const $ = require('jquery');
 const _ = require('underscore');
 const Backbone = require('./backbone.js');
-const template = require('./templates/wb_upload/main.html');
+const template = require('./templates/wbmappings.html');
 const navigation = require('./navigation.js');
 const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');

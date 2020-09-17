@@ -858,6 +858,26 @@ const mappings = {
 
 	},
 
+	/*
+	* Callback for handling the change to mapping type
+	* */
+	change_mapping_type(event) {
+
+		const mapping = event.target;
+		const is_right = mapping.classList.contains('right');
+		const is_left = mapping.classList.contains('left');
+
+		if(is_right){
+			mapping.classList.remove('right')
+			mapping.classList.add('left');
+		}
+		else if(is_left)
+			mapping.classList.remove('left');
+		else
+			mapping.classList.add('right');
+
+	},
+
 
 	//HELPERS
 
@@ -937,7 +957,6 @@ const mappings = {
 		}
 
 	},
-
 };
 
 module.exports = mappings;

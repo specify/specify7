@@ -53,6 +53,7 @@ const html_generator = {
 			'		<input type="radio" name="header" class="radio__header" ' + header_name_attribute + '>' +
 			'		<div tabindex="0" class="line">' +
 			'			' + mapping_element +
+			'			<img class="mode" src="../../../static/img/arrow.svg" alt=">">' +
 			'			' + control_element +
 			'		</div>' +
 			'	</label>';

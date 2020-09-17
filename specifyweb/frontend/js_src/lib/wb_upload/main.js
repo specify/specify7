@@ -105,6 +105,13 @@ const main = {
 			}
 		});
 
+		mappings.list__headers.oncontextmenu = event => {
+			if(event.target['classList'].contains('mapping')){
+				mappings.change_mapping_type(event);
+				return false;
+			}
+		}
+
 		mappings.list__tables.addEventListener('change', event => {
 			if (event.target && event.target['classList'].contains('radio__table'))
 				mappings.set_table(event);

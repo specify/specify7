@@ -1,3 +1,19 @@
+:root {
+    --b1: #fff;
+    --b2: #ddd;
+    --b3: #bbb;
+    --b4: #999;
+    --t1: #000;
+    --t2: #222;
+    --t3: #444;
+    --t4: #666;
+    --border: #ccc;
+}
+
+#screen__mapping button[disabled] {
+    cursor: not-allowed !important;
+}
+
 /* general */
 #screen__mapping {
     display: grid;
@@ -108,8 +124,10 @@
 }
 
 .custom_list .line {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.8rem;
 }
 
 .table_relationship .line {
@@ -159,6 +177,24 @@
 
 .control_line span {
     justify-content: center;
+}
+
+.mapping {
+    cursor: pointer;
+}
+
+.mapping + .mode {
+	opacity: 0;
+	height: 0.9rem;
+	margin-left: 1rem;
+}
+
+.mapping.left + .mode, .mapping.right + .mode {
+    opacity: initial;
+}
+
+.mapping.left + .mode {
+    transform: rotate(180deg);
 }
 
 
