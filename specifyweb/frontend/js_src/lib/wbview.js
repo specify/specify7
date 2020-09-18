@@ -94,7 +94,10 @@ const WBView = Backbone.View.extend({
         'click .wb-toggle-highlights': 'toggleHighlights',
         'click .wb-upload-details': 'showUploadLog',
         'click .wb-setting': 'showSettingsDlg',
-        'click .wb-cell_navigation': 'navigateCells'
+        'click .wb-cell_navigation': 'navigateCells',
+        'click .wb-search-button': 'searchCells',
+        'click .wb-replace-button': 'replaceCells',
+        'click .wb-show-toolbelt': 'toggleToolbelt',
     },
     initialize({wb, data, uploadStatus}) {
         this.wb = wb;
@@ -240,6 +243,9 @@ const WBView = Backbone.View.extend({
             outsideClickDeselects: false,
             columnSorting: true,
             sortIndicator: true,
+            search: {
+                searchResultClass: 'wb-search-match-cell',
+            },
             contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
@@ -647,7 +653,7 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
-    navigateCells: function(e){
+    navigateCells: function(e,match_current_cell=false){
 
         const button = e.target;
         const direction = button.getAttribute('data-navigation_direction');
@@ -662,9 +668,7 @@ const WBView = Backbone.View.extend({
             [current_row, current_col] = selected_cell;
 
         const number_of_columns = this.hot.countCols();
-        const get_cell_position = (row,col) => {
-            return parseInt(row)*number_of_columns + parseInt(col);
-        }
+        const get_cell_position = (row,col) => parseInt(row)*number_of_columns + parseInt(col);
 
         const cells_to_search = {};
         for(const cell of this.validation_results_sorted[type])
@@ -690,15 +694,18 @@ const WBView = Backbone.View.extend({
             comparison_function = (position, current_position) => position < current_position;
         }
 
-        for(const position of cell_keys) {
-            if (comparison_function(position,current_position)) {
+        for(const position of cell_keys.map(key=>parseInt(key))) {
+            if (
+                (match_current_cell && position===current_position) ||
+                comparison_function(position,current_position)
+            ) {
                 target_cell = position;
                 break;
             }
             cell_relative_position++;
         }
 
-        //following cell was found. Horay! 🎉🎉🎉
+        // following cell was found. Horay! 🎉🎉🎉
         if(target_cell !== -1){
             const coordinates = ['row','col','row','col'].map(key=>parseInt(cells_to_search[target_cell][key]));
             this.hot.selectCell(...coordinates);
@@ -710,10 +717,55 @@ const WBView = Backbone.View.extend({
 
             const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
             current_position_element.innerText = cell_relative_position;
+
+            return true;
         }
-        //else { /* better luck next time 😓 */ }
+        else  // better luck next time 😓
+            return false;
 
     },
+    searchCells: function(e){
+
+        const button = e.target;
+        const container = button.parentElement;
+        const navigation_position_element = container.getElementsByClassName('wb-navigation_position')[0];
+        const navigation_total_element = container.getElementsByClassName('wb-navigation_total')[0];
+        const search_query_element = container.getElementsByClassName('wb-search_query')[0];
+        const navigation_button = container.getElementsByClassName('wb-cell_navigation');
+        const search_query = search_query_element.value;
+
+        const searchPlugin = this.hot.getPlugin('search');
+        this.validation_results_sorted['search_results'] = searchPlugin.query(search_query);
+        this.hot.render();
+
+        navigation_total_element.innerText = this.validation_results_sorted['search_results'].length;
+        navigation_position_element.innerText = 0;
+
+        if(!this.navigateCells({target:navigation_button[0]},true))
+            this.navigateCells({target:navigation_button[1]},true)
+
+    },
+    replaceCells: function(e){
+
+        const button = e.target;
+        const container = button.parentElement;
+        const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
+        const replacement_value = replacement_value_element.value;
+
+        this.hot.setDataAtCell(this.validation_results_sorted['search_results'].map(cell=>
+            [cell['row'], cell['col'], replacement_value]
+        ));
+
+    },
+    toggleToolbelt: function(e){
+        const button = e.target;
+        const container = button.closest('.wb-header');
+        const toolbelt = container.getElementsByClassName('wb-toolbelt')[0];
+        if(toolbelt.style.display === 'none')
+            toolbelt.style.display = '';
+        else
+            toolbelt.style.display = 'none';
+    }
 });
 
 module.exports = function loadWorkbench(id) {

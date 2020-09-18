@@ -21,9 +21,24 @@
     z-index: 99;
 }
 
+.wbs-form .wb-primary-row {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.wbs-form .wb-toolbelt, .wbs-form .wb-controls {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.wbs-form .wb-toolbelt {
+    margin-top: 0.5rem;
+}
+
 .wbs-form .wb-header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
 }
 
 .wbs-form .wb-name span.ui-icon {
@@ -44,6 +59,12 @@
 .wbs-form .wb-controls button {
     margin: 3px;
 }
+
+.wbs-form .wb-toolbelt input {
+	margin: 0;
+	vertical-align: baseline;
+}
+
 .wbs-form .wb-invalid-cells {
     border: solid 1px;
     padding: 8px 5px;
@@ -57,7 +78,7 @@
     background-color: #aaf;
 }
 
-.wbs-form .wb-multi-match-cell {
+.wbs-form .wb-search-match-cell {
     background-color: #afa;
 }
 

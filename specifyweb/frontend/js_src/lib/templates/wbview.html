@@ -1,7 +1,38 @@
 <div class="wb-header">
-  <div class="wb-name">
+  <div class="wb-primary-row">
+    <div class="wb-name">
+    </div>
+    <div class="wb-controls">
+
+      <button class="wb-plan">Plan</button>
+      <button class="wb-show-plan">Show Plan</button>
+      <!-- <button class="wb-setting">Settings</button> -->
+      <button class="wb-save" disabled="disabled">Save</button>
+      <!-- <button class="wb-upload">Upload</button> -->
+      <button class="wb-validate">Validate</button>
+      <button class="wb-delete">Delete</button>
+      <button class="wb-export">Export</button>
+      <button class="wb-show-toolbelt">Toolbelt</button>
+    </div>
   </div>
-  <div class="wb-controls">
+  <div class="wb-toolbelt" style="display:none">
+    <br>
+    <span class="wb-search_replace">
+      <input type="text" class="wb-search_query" placeholder="Search Query" title="Search is not case sensitive">
+      <button class="wb-search-button">Search</button>
+      <input type="text" class="wb-replace_value" placeholder="Replacement value" title="Replacement value">
+      <button class="wb-replace-button">Replace</button>
+
+      <span data-navigation_type="search_results">
+        <button class="wb-cell_navigation" data-navigation_direction="previous">&lt;&lt;</button>
+        Search Results (
+          <span class="wb-navigation_position">0</span>
+          /
+          <span class="wb-navigation_total">0</span>
+        )
+        <button class="wb-cell_navigation" data-navigation_direction="next">&gt;&gt;</button>
+      </span>
+    </span>
 
     <span data-navigation_type="new_cells">
       <button class="wb-cell_navigation" data-navigation_direction="previous">&lt;&lt;</button>
@@ -22,15 +53,6 @@
       )
       <button class="wb-cell_navigation" data-navigation_direction="next">&gt;&gt;</button>
     </span>
-
-    <button class="wb-plan">Plan</button>
-    <button class="wb-show-plan">Show Plan</button>
-    <!-- <button class="wb-setting">Settings</button> -->
-    <button class="wb-save" disabled="disabled">Save</button>
-    <!-- <button class="wb-upload">Upload</button> -->
-    <button class="wb-validate">Validate</button>
-    <button class="wb-delete">Delete</button>
-    <button class="wb-export">Export</button>
   </div>
 </div>
 <div class="wb-spreadsheet">
