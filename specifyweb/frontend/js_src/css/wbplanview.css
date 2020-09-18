@@ -14,6 +14,7 @@
     grid-gap: 1rem;
     grid-template-columns: 1fr 3.5rem 1fr;
     width: 100%;
+    height: 86vh; /* TODO: replace this with a long-term solution*/
 }
 
 #screen__mapping button[disabled] {
@@ -24,7 +25,6 @@
 #screen__mapping .custom_list {
     border: 1px solid var(--border);
     overflow-y: auto;
-    height: calc(calc(86vh - 14px) - 3rem);/* I know this is terrible, but this is just a short term solution */
 }
 
 #screen__mapping .list > * {
