@@ -94,7 +94,7 @@ RUN echo \
         "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
         > local_specify_settings.py
 
-RUN echo "import os \nDEBUG = os.environ.get('SP7_DEBUG', '').lower() == 'true'\n" \
+RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
         > debug.py
 
 RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
