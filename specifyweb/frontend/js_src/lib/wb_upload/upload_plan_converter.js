@@ -9,34 +9,20 @@
 const upload_plan_converter = {
 
 	 upload_plan_processing_functions: {
-		'wbcols': (tree, [key, value]) => {
-			tree[key] = value;
-			return tree;
-		},
-		'static': (tree, [key, value]) => {
-			tree[key] = {'static': value};
-			return tree;
-		},
-		'toOne': (tree, [key, value]) => {
-			tree[key] = upload_plan_converter.upload_plan_to_mappings_tree(value, true);
-			return tree;
-		},
-		'toMany': (tree, [key, original_mappings]) => {
-
-			const final_mappings = {};
+		'wbcols': ([key, value]) => [key,value],
+		'static': ([key, value]) => [key,{'static': value}],
+		'toOne': ([key, value]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
+		'toMany': ([key, original_mappings]) => {
 			let i = 1;
-
-			tree[key] = Object.values(original_mappings).reduce((final_mappings, mapping) => {
-
-				const final_mappings_key = upload_plan_converter.reference_symbol + i;
-				final_mappings[final_mappings_key] = upload_plan_converter.upload_plan_to_mappings_tree(mapping, true);
-
-				i++;
-				return final_mappings;
-
-			}, final_mappings);
-
-			return tree;
+			return [
+				key,
+				Object.fromEntries(Object.values(original_mappings).map(mapping =>
+					[
+						upload_plan_converter.reference_symbol + (i++),
+						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
+					]
+				))
+			];
 		},
 	},
 
@@ -77,24 +63,14 @@ const upload_plan_converter = {
 		} else if (typeof upload_plan['uploadTable'] !== "undefined")
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadTable'], true);
 
-		else if (typeof upload_plan['treeRecord'] !== "undefined") {
+		else if (typeof upload_plan['treeRecord'] !== "undefined")
+			return Object.fromEntries(Object.entries(upload_plan['treeRecord']['ranks']).map(([rank_name, rank_data]) =>
+				[upload_plan_converter.tree_symbol + rank_name,{'name': rank_data}]
+			));
 
-			const tree_ranks = upload_plan['treeRecord']['ranks'];
-
-			return Object.entries(tree_ranks).reduce((new_tree, [rank_name, rank_data]) => {
-
-				const new_rank_name = upload_plan_converter.tree_symbol + rank_name;
-				new_tree[new_rank_name] = {'name': rank_data};
-				return new_tree;
-
-			}, {});
-
-		}
-
-		return Object.entries(upload_plan).reduce((tree, [plan_node_name, plan_node_data]) =>
-			Object.entries(plan_node_data).reduce(upload_plan_converter.upload_plan_processing_functions[plan_node_name], tree),
-			{}
-		);
+		return Object.fromEntries(Object.entries(upload_plan).map(([plan_node_name, plan_node_data]) =>
+			Object.fromEntries(Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name]))
+		));
 
 	},
 
@@ -117,7 +93,7 @@ const upload_plan_converter = {
 
 			if (typeof upload_plan_converter.ranks[table_name] !== "undefined") {
 
-				const final_tree = Object.entries(table_data).reduce((final_tree, [tree_key,tree_rank_data]) => {
+				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key,tree_rank_data]) => {
 
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
 					let name = tree_rank_data['name'];
@@ -125,11 +101,9 @@ const upload_plan_converter = {
 					if (typeof name === 'object')  // handle static records
 						name = name['static'];
 
-					final_tree[new_tree_key] = name;
+					return [new_tree_key,name];
 
-					return final_tree;
-
-				}, {});
+				}));
 
 				return {'treeRecord': {'ranks': final_tree}};
 			}

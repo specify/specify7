@@ -1,4 +1,4 @@
-:root {
+#screen__mapping {
     --b1: #fff;
     --b2: #ddd;
     --b3: #bbb;
@@ -8,64 +8,62 @@
     --t3: #444;
     --t4: #666;
     --border: #ccc;
-}
 
-#screen__mapping button[disabled] {
-    cursor: not-allowed !important;
-}
 
-/* general */
-#screen__mapping {
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: 1fr 3.5rem 1fr;
     width: 100%;
 }
 
+#screen__mapping button[disabled] {
+    cursor: not-allowed !important;
+}
 
-.custom_list {
+
+#screen__mapping .custom_list {
     border: 1px solid var(--border);
     overflow-y: auto;
     height: calc(calc(86vh - 14px) - 3rem);/* I know this is terrible, but this is just a short term solution */
 }
 
-.list > * {
+#screen__mapping .list > * {
     position: relative;
 }
 
-.custom_list [type="radio"] {
+#screen__mapping .custom_list [type="radio"] {
     opacity: 0;
     position: absolute;
 }
 
-.custom_list .line {
+#screen__mapping .custom_list .line {
     cursor: pointer;
     outline: none !important;
     padding: 0.9rem;
 }
 
-.custom_list .line.required {
+#screen__mapping .custom_list .line.required {
     font-weight: bold;
 }
 
-.custom_list .line:hover {
+#screen__mapping .custom_list .line:hover {
     background: var(--b2);
 }
 
-.custom_list [disabled] ~ .line {
+#screen__mapping .custom_list [disabled] ~ .line {
     cursor: not-allowed;
 }
 
-.custom_list [disabled] ~ .line:hover {
+#screen__mapping .custom_list [disabled] ~ .line:hover {
     background: initial;
 }
 
-.list .table_name {
+#screen__mapping .list .table_name {
     float: left;
     text-align: left;
 }
 
-.list .header {
+#screen__mapping .list .header {
     text-align: right;
 	background: transparent;
 	border: none;
@@ -76,20 +74,20 @@
 	padding: 0;
 }
 
-.custom_list label .undefined:after {
+#screen__mapping .custom_list label .undefined:after {
     content: 'To Be Ignored';
     color: #900;
 }
 
-:checked ~ .line {
+#screen__mapping :checked ~ .line {
     cursor: initial !important;
 }
 
-:checked:not([disabled]) ~ .line:not(.relationship) {
+#screen__mapping :checked:not([disabled]) ~ .line:not(.relationship) {
     background: var(--b3) !important;
 }
 
-[disabled] ~ .line {
+#screen__mapping [disabled] ~ .line {
     color: var(--t4);
 }
 
@@ -123,18 +121,18 @@
     cursor: pointer;
 }
 
-.custom_list .line {
+#screen__mapping .custom_list .line {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	font-size: 0.8rem;
 }
 
-.table_relationship .line {
+#screen__mapping .table_relationship .line {
     display: block;
 }
 
-.select__field {
+#screen__mapping .select__field {
     width: 100%;
 	width: -moz-available;
 	width: -webkit-fill-available;
@@ -163,37 +161,37 @@
 
 
 /* column headers */
-.list .value {
+#screen__mapping .list .value {
     width: 100%;
     min-height: 1rem;
     max-height: 10rem;
     resize: vertical;
 }
 
-.control_line {
+#screen__mapping .control_line {
     position: relative;
     display: block;
 }
 
-.control_line span {
+#screen__mapping .control_line span {
     justify-content: center !important;
 }
 
-.mapping {
+#screen__mapping .mapping {
     cursor: pointer;
 }
 
-.mapping + .mode {
+#screen__mapping .mapping + .mode {
 	opacity: 0;
 	height: 0.9rem;
 	margin-left: 1rem;
 }
 
-.mapping.left + .mode, .mapping.right + .mode {
+#screen__mapping .mapping.left + .mode, .mapping.right + .mode {
     opacity: initial;
 }
 
-.mapping.left + .mode {
+#screen__mapping .mapping.left + .mode {
     transform: rotate(180deg);
 }
 

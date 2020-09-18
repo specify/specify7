@@ -33,18 +33,14 @@ const auto_mapper = {
 		});
 
 		// convert all field names in the mapping definitions to lower case
-		auto_mapper_definitions = Object.entries(auto_mapper_definitions).reduce((auto_mapper_definitions,[table_name,fields]) => {
-			const new_table_name = table_name.toLowerCase();
-
-			auto_mapper_definitions[new_table_name] = Object.entries(fields).reduce((new_fields, [field_name,field_data]) => {
-				const new_field_name = field_name.toLowerCase();
-				new_fields[new_field_name] = field_data;
-				return new_fields;
-			},{});
-
-			return auto_mapper_definitions;
-
-		}, auto_mapper_definitions);
+		auto_mapper_definitions = Object.fromEntries(Object.entries(auto_mapper_definitions).map(([table_name,fields]) =>
+			[
+				table_name.toLowerCase(),
+				Object.fromEntries(Object.entries(fields).map(([field_name,field_data]) =>
+					[field_name.toLowerCase(),field_data]
+				))
+			]
+		));
 
 	},
 
@@ -64,19 +60,17 @@ const auto_mapper = {
 			return {};
 
 		// strip extra characters to increase mapping success
-		this.unmapped_headers = raw_headers.reduce(function (headers, original_name) {
+		this.unmapped_headers = Object.fromEntries(raw_headers.map(original_name => {//TODO: test if regex is readable
 
 			let stripped_name = original_name.toLowerCase();
-			stripped_name = stripped_name.replace(auto_mapper.regex_1, '');
-			stripped_name = stripped_name.replace(auto_mapper.regex_2, ' ');
+			stripped_name = stripped_name.replace(this.regex_1, '');
+			stripped_name = stripped_name.replace(this.regex_2, ' ');
 			stripped_name = stripped_name.trim();
 			const final_name = stripped_name.split(' ').join('');
 
-			headers[original_name] = [stripped_name, final_name];
+			return [original_name,[stripped_name, final_name]];
 
-			return headers;
-
-		},{});
+		}));
 
 		this.searched_tables = [];
 		this.results = {};
@@ -138,9 +132,10 @@ const auto_mapper = {
 
 					const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
 
-					Object.entries(this.unmapped_headers).filter(
-						([,header_data])=>header_data!==true
-					).some(([header_name,header_data]) => {
+					Object.entries(this.unmapped_headers).some(([header_name,header_data]) => {
+
+						if(header_data===false)//skip mapped headers
+							return true;
 
 						let [stripped_name, final_name] = header_data;
 
@@ -214,10 +209,10 @@ const auto_mapper = {
 			// compare each field's schema name and friendly schema name to headers
 			const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
 
-			for(const [header_name,header_data] of Object.entries(this.unmapped_headers).filter(
-					([,header_data]) => header_data!==false
-				)
-			){
+			for(const [header_name,header_data] of Object.entries(this.unmapped_headers)){
+
+				if(header_data===false)  // skip mapped headers
+					continue;
 
 				let [stripped_name, final_name] = header_data;
 
