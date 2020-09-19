@@ -162,21 +162,26 @@ const mappings = {
 
 				let class_append = [];
 				let row_name;
-				let is_required;
+				let key;
 
 				if (typeof table_data['fields'][row_key] !== 'undefined') {
 					row_name = table_data['fields'][row_key]['friendly_field_name'];
-
-					is_required = table_data['fields'][row_key]['is_required'];
+					key = 'fields';
 				} else {
 					row_name = mappings.reference_indicator + table_data['relationships'][row_key]['friendly_relationship_name'];
 					class_append.push('relationship');
+					key = 'relationships';
 
-					is_required = table_data['relationships'][row_key]['is_required'];
 				}
+
+				const is_required = table_data[key][row_key]['is_required'];
+				const is_hidden = table_data[key][row_key]['is_hidden'];
 
 				if (is_required)
 					class_append.push('required');
+
+				if(is_hidden)
+					class_append.push('hidden');
 
 				class_append = class_append.join(' ');
 

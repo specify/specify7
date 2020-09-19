@@ -93,6 +93,10 @@
 
 
 /* column data model */
+#list__data_model.hide_hidden_fields .hidden {
+    display: none !important;
+}
+
 #table_header {
     display: flex;
     align-items: center;

@@ -74,6 +74,12 @@ const main = {
 
 		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
 			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
+
+			if(mappings.hide_hidden_fields)
+				mappings.list__data_model.classList.add('hide_hidden_fields');
+			else
+				mappings.list__data_model.classList.remove('hide_hidden_fields');
+
 			mappings.update_all_fields();
 		});
 
