@@ -92,6 +92,10 @@ RUN echo \
         "\nMASTER_NAME = os.environ['MASTER_NAME']" \
         "\nMASTER_PASSWORD = os.environ['MASTER_PASSWORD']" \
         "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
+        "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
+        "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
+        "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
+        "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
         > local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
