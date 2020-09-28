@@ -110,7 +110,7 @@ class Stanza(NamedTuple):
         for efield in self.export_fields:
             if efield.term is not None:
                 field_node = ET.SubElement(output_node, 'field')
-                field_node.set('index', str(efield.index))
+                field_node.set('index', str(efield.idx))
                 field_node.set('term', efield.term)
 
         for cfield in self.constant_fields:
