@@ -17,116 +17,101 @@ const html_generator = {
 	* @param {string} friendly_table_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
 	* @return {string} HTML for table
 	* */
-	new_table(table_name, friendly_table_name){
-		return '<label>' +
-			'		<input type="radio" name="table" class="radio__table" data-table="' + table_name + '">' +
-			'		<div tabindex="0" class="line">' +
-			'			<div class="mapping">' + friendly_table_name + '</div>' +
-			'		</div>' +
-			'	</label>';
+	table(table_name, friendly_table_name){
+		return '<a class="wbplanview_table" href="#'+table_name+'" data-table_name="'+table_name+'">'+friendly_table_name+'</a>';
 	},
 
-	/*
-	* Generates HTML for a new header (either static or not)
-	* @param {string} header_name - name of the header / value of a static field
-	* @param {string} [header_type='unmapped_header'] - unmapped_header (default) / mapped_header / static_header
-	* @return {string} HTML for a new header
-	* */
-	new_header(header_name, header_type = 'unmapped_header'){
+	mapping_line(mappings_path){
+		/*
+		* mappings_path {array}:
+		* 	mapping_type: 'table'||'tree'||'headers'||'textarea'
+		* 	if mapping_type=='table' || mapping_type=='field':
+		*
+		* */
+		return `<div class="wbplanview_mappings_line">
+			<div class="wbplanview_mappings_line_controls">
+				<button class="wbplanview_mappings_line_delete" title="Delete mapping"><img src="../../../static/img/delete.svg" alt="Delete"></button>
+				<button class="wbplanview_mappings_line_duplicate" title="Duplicate mapping"><img src="../../../static/img/duplicate.svg" alt="Duplicate"></button>
+				<button class="wbplanview_mappings_line_move_up" title="Move mapping line up"><img src="../../../static/img/arrow.svg" alt="Duplicate" class="rotate-90-ccw"></button>
+				<button class="wbplanview_mappings_line_move_down" title="Move mapping line down"><img src="../../../static/img/arrow.svg" alt="Duplicate" class="rotate-90"></button>
+			</div>
+			<div class="wbplanview_mappings_line_elements">
+				`+html_generator.mapping_path(mappings_path)+`
+			</div>`;
+	},
 
-		let control_element;
-		let header_name_attribute = '';
-		let mapping_element = html_generator.mapped_header_mapping;
+	mapping_path(mappings_path){
+		return mappings_path.map(html_generator.mapping_element).join('');
+	},
 
-		if (header_type === 'static_header')
-			control_element = '<textarea class="value">' + header_name + '</textarea>';
-		else {
-			control_element = '<input class="header" data-original_value="'+header_name+'" value="' + header_name + '">';
+	mapping_element(mapping_details){
 
-			if (header_type === 'mapped_header')
-				header_name_attribute = ' data-header="' + header_name + '"';
-			else if (header_type === 'unmapped_header')
-				mapping_element = html_generator.unmapped_header_mapping;
+		const mapping_type = mapping_details['mapping_type'];
+
+		if(mapping_type === 'table' || mapping_type === 'tree'){
+
+			const [table_name, friendly_table_name, fields_data] = mapping_details;
+
+			return '<select data-type="'+mapping_type+'" data-table_name="'+table_name+'" title="'+friendly_table_name+'">'+
+				html_generator.table_fields(fields_data).join('')+
+				'</select>';
 		}
 
-		return '<label>' +
-			'		<input type="radio" name="header" class="radio__header" ' + header_name_attribute + '>' +
-			'		<div tabindex="0" class="line">' +
-			'			' + mapping_element +
-			'			<img class="mode" src="../../../static/img/arrow.svg" alt=">">' +
-			'			' + control_element +
-			'		</div>' +
-			'	</label>';
+		else if(mapping_type === 'headers'){
+			const headers_data = mapping_details['headers_data'];
+			return html_generator.headers(headers_data).join('');
+		}
+
+		else
+			return '';
+
 	},
 
-	/*
-	* Generates HTML for field or relationship of base table
-	* @param {string} field_name - Official name of the field (from data model)
-	* @param {string} friendly_field_name - Human-friendly field name (from schema_localization or helper.get_friendly_name())
-	* @param {bool} [is_tree=true] - Whether base table is a tree
-	* @param {string} [class_append=''] - Classes to append to the resulting line. E.x `relationship` to identify relationships
-	* @return {string} HTML for field or relationship of base table
-	* */
-	new_base_field(field_name, friendly_field_name, is_tree = false, class_append = ''){
+	table_fields(fields_data){
 
-		const is_tree_class = is_tree ? ' tree' : '';
+		const field_groups = {
+			'required_fields': [],
+			'optional_fields': [],
+			'hidden_fields': [],
+		};
 
-		if (is_tree)
-			class_append = 'relationship';
+		const field_group_labels = {
 
-		return '<label class="table_fields">' +
-			'		<input type="radio" name="field" class="radio__field ' + is_tree_class + '" data-field="' + field_name + '">' +
-			'		<div tabindex="0" class="line ' + class_append + '">' +
-			'			<div class="row_name">' + friendly_field_name + '</div>' +
-			'		</div>' +
-			'	</label>';
-	},
+		};
 
-	/*
-	* Generates HTML for relationship with depth of 2 or more (by creating <select> element)
-	* @param {string} table_name - Official name of the parent table this relationship belongs to (from data model)
-	* @param {array} optional_fields_array - Array of optional fields. Format: [field_value, field_name, is_enabled]
-	* 								{string} Official name of the field (from data model)
-	* 								{string} Human-friendly field name (from schema_localization or helper.get_friendly_name())
-	* 								{bool} Whether this field is enabled
-	* @param {array} required_fields_array - same as fields_array, but consists of required fields
-	* @return {string} HTML for relationship with depth of 2 or more
-	* */
-	new_relationship_fields(table_name, optional_fields_array, required_fields_array = []){
+		for(const field_data in fields_data){
 
-		function fields_array_to_html(fields_data, label, other_fields_length) {
+			const field_html = html_generator.table_field(field_data);
 
-			let result = fields_data.map(field_data => {
+			let field_category = 'optional_fields';
+			if(field_data['is_required'])
+				field_category = 'required_fields';
+			else if(field_data['is_hidden'])
+				field_category = 'hidden_fields';
 
-				let [field_value, field_name, is_enabled] = field_data;
-
-				let field_enabled_attribute = is_enabled ? '' : ' disabled';
-
-				return '<option value="' + field_value + '"' + field_enabled_attribute + '>' + field_name + '</option>';
-
-			}).join('');
-
-			if (result === '')
-				return '';
-
-			if(other_fields_length===0)
-				return result;
-
-			return '<optgroup label="' + label + '">' + result + '</optgroup>';
+			field_groups['required_fields'].push(field_html);
 
 		}
 
+		const result = [];
 
-		return '<div class="table_relationship">' +
-			'<input type="radio" name="field" class="radio__field" data-field="relationship">' +
-			'<label class="line">' +
-			'	<select name="' + table_name + '" class="select__field">' +
-			'		<option value="0"></option>' +
-			'		' + fields_array_to_html(required_fields_array, 'Required Fields', optional_fields_array.length) +
-			'		' + fields_array_to_html(optional_fields_array, 'Optional Fields', required_fields_array.length) +
-			'	</select>' +
-			'</label>' +
-			'</div>';
+		return result.join('');
+
+	},
+
+	table_field(field_data){
+		//is_required
+		//is_enabled
+	},
+
+	headers(headers_data){
+		return headers_data.map(html_generator.header).join('');
+	},
+
+	header(header_data){
+		//is_recommended
+		//is_enabled
+		const {header_name, header_friendly_name, header_type} = header_data;
 	},
 
 };

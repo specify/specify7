@@ -1,44 +1,7 @@
-<div class="custom_list">
+<div class="wbplanview_header">
 
-    <div id="table_header">
-        <span id="title__table_name" class="undefined"></span>
-        <button id="button__change_table" style="display:none">Change table</button>
-    </div>
-
-    <div id="list__tables" class="list"></div>
-    <div id="list__data_model" class="list hide_hidden_fields"></div>
-
-</div>
-
-
-<div id="column__controls" class="col-2">
-
-    <button id="button__map" title="Map" disabled><img src="../../../static/img/arrow.svg" alt="Map"></button>
-    <br>
-
-    <button id="button__delete" title="Discard" disabled><img src="../../../static/img/discard.svg" alt="Discard">
-    </button>
-
-</div>
-
-
-<div class="custom_list">
-
-    <div id="list__headers" class="list"></div>
-    <label class="control_line">
-        <input id="control_line__new_header" type="radio" name="header" class="radio__header" data-header="new_header">
-        <span class="line" tabindex="0">New column</span>
-    </label>
-
-    <label class="control_line">
-        <input id="control_line__new_static_header" type="radio" name="header" class="radio__header"
-               data-header="new_static_header">
-        <span class="line" tabindex="0">New static column</span>
-    </label>
-
-</div>
-
-<div id="btn_group__mapping_controls">
+    <span id="title__table_name" class="undefined"></span>
+    <button id="button__change_table" style="display:none">Change table</button>
 
     <button id="button__save_upload_plan">Save</button>
     <button id="button__discard_changes">Cancel</button>
@@ -46,5 +9,14 @@
         <input type="checkbox" id="checkbox__toggle_hidden_fields" checked>
         Hide advanced fields
     </label>
+
+</div>
+
+<div id="list__tables"></div>
+<div id="list__mappings"></div>
+
+<div id="mappings_control_panel">
+
+    <button id="add_mapping">Add</button>
 
 </div>

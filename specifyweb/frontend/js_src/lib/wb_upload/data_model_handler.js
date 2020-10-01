@@ -120,7 +120,7 @@ const data_model_handler = {
 				relationships: relationships,
 			};
 
-			data_model_html += html_generator.new_table(table_name, friendly_table_name);
+			data_model_html += html_generator.table(table_name, friendly_table_name);
 
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)

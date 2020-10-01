@@ -158,6 +158,9 @@ const WBView = Backbone.View.extend({
             if(validation_results_raw===null)
                 return validation_results;
 
+            if(typeof validation_results[row_key] === "undefined")
+                validation_results[row_key] = {};
+
             function add_error_message(column_name, issue){
 
                 const column_index = inverted_column_indexes[column_name];
@@ -181,7 +184,7 @@ const WBView = Backbone.View.extend({
 
             for(const table_issue of validation_results_raw['newRows'])
                 for(const column_name of table_issue['columns'])
-                    if(typeof validation_results[row_key] === "undefined" && typeof validation_results[row_key][column_name] === "undefined")
+                    if(typeof validation_results[row_key][column_name] === "undefined")
                         validation_results[row_key][column_name] = true;
 
             return validation_results;

@@ -2,7 +2,6 @@
 
 const $ = require('jquery');
 const mappings = require('./mappings.js');
-const auto_mapper = require('./auto_mapper.js');
 const data_model_handler = require('./data_model_handler.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
 
@@ -10,6 +9,8 @@ const upload_plan_converter = require('./upload_plan_converter.js');
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
 const main = {
+
+	//TODO: rename raw_headers to headers
 
 	/*
 	* Configuration module that set's default settings
@@ -31,97 +32,58 @@ const main = {
 
 		// FINDING ELEMENTS
 
-		// column data model
+		// header
 		mappings.title__table_name = document.getElementById('title__table_name');
 		mappings.button__change_table = document.getElementById('button__change_table');
+
+		// lists
 		mappings.list__tables = document.getElementById('list__tables');
-		mappings.list__data_model = document.getElementById('list__data_model');
-		mappings.lines = mappings.list__data_model.getElementsByTagName('input');
-
-
-		// column controls
-		mappings.button__map = document.getElementById('button__map');
-		mappings.button__delete = document.getElementById('button__delete');
-
-
-		// column headers
-		mappings.list__headers = document.getElementById('list__headers');
-		mappings.button__new_field = document.getElementById('button__new_field');
-		mappings.control_line__new_header = document.getElementById('control_line__new_header');
-		mappings.control_line__new_static_header = document.getElementById('control_line__new_static_header');
-		mappings.headers = mappings.list__headers.getElementsByClassName('radio__header');
-
+		mappings.list__mappings = document.getElementById('list__mappings');
 
 		// control elements
+		const mappings_control_panel = document.getElementsByClassName('mappings_control_panel');
+		mappings.add_mapping = mappings_control_panel.getElementsByClassName('add_mapping');
+
 		mappings.hide_hidden_fields = true;
-		mappings.need_to_run_auto_mapper = true;
 		mappings.raw_headers = [];
 		mappings.base_table_name = undefined;
-		mappings.selected_field = undefined;
 
-		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
 
 
 		// setting event listeners
 		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
 
-		mappings.button__map.addEventListener('click', mappings.map_field_callback.bind(mappings));
-		mappings.button__delete.addEventListener('click', mappings.unmap_field_callback.bind(mappings));
-
-		mappings.control_line__new_header.addEventListener('change', mappings.change_selected_header.bind(mappings));
-		mappings.control_line__new_static_header.addEventListener('change', mappings.change_selected_header.bind(mappings));
-
 		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
 			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
 
 			if(mappings.hide_hidden_fields)
-				mappings.list__data_model.classList.add('hide_hidden_fields');
+				mappings.list__mappings.classList.add('hide_hidden_fields');
 			else
-				mappings.list__data_model.classList.remove('hide_hidden_fields');
+				mappings.list__mappings.classList.remove('hide_hidden_fields');
 
-			mappings.update_all_fields();
+			mappings.update_all_mapping_lines();
 		});
 
-		mappings.list__data_model.addEventListener('change', event => {
+		mappings.list__mappings.addEventListener('change', event => {
 			if (event.target && event.target.classList.contains('radio__field'))
 				mappings.change_selected_field(event);
 			else if (event.target && event.target.tagName === 'SELECT')
 				mappings.change_option_field(event);
 		});
 
-		mappings.list__data_model.addEventListener('focus', event => {
-			if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
-		});
-
-		mappings.list__headers.addEventListener('change', event => {
-			if (event.target && event.target['classList'].contains('radio__header'))
-				mappings.change_selected_header(event);
-			else if (event.target && event.target['tagName'] === 'TEXTAREA')
-				mappings.changes_made = true;
-		});
-
-		mappings.list__headers.addEventListener('click', event => {
-			if(event.target['classList'].contains('header')){
-				const line = event.target.parentElement;
-				const input = line.previousElementSibling;
-				input.checked = true;
-				mappings.change_selected_header({target:input})
+		mappings.list__tables.addEventListener('click', event => {
+			if (event.target && event.target['classList'].contains('wbplanview_table')) {
+				event.preventDefault();
+				const table_record = event.target;
+				const table_name = table_record.getAttribute('data-table_name');
+				mappings.set_table(table_name);
 			}
 		});
 
-		mappings.list__headers.oncontextmenu = event => {
-			if(event.target['classList'].contains('mapping')){
-				mappings.change_mapping_type(event);
-				return false;
-			}
-		}
-
-		mappings.list__tables.addEventListener('change', event => {
-			if (event.target && event.target['classList'].contains('radio__table'))
-				mappings.set_table(event);
-		});
+		mappings.add_mapping.addEventListener('click', event => {
+			mappings.add_new_mapping_line_callback();
+		})
 
 		// CONFIG
 
@@ -171,10 +133,8 @@ const main = {
 		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
 		data_model_handler.fetch_tables((data_model_html, tables) => {
 
-			mappings.data_model_html = data_model_html;
+			mappings.data_model_html = data_model_html;  // cache list of tables to reuse in the future
 			mappings.list__tables.innerHTML = data_model_html;
-
-			auto_mapper.constructor(tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
 
 			mappings.new_header_id = 1;
 			mappings.tables = tables;

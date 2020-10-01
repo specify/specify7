@@ -83,34 +83,9 @@ const mappings = {
 		if (array_of_mappings.length === 0)
 			return false;
 
-		const base_table_columns = Object.values(array_of_mappings).reduce((base_table_columns, header_data) => {
-
-			let [mapping_type, header, mapping] = header_data;
-
-			if (mapping_type === 'existing_header') {
-				const position = this.raw_headers.indexOf(header);
-				header = this.headers[position];
-			}
-
-			mappings.map_field(mapping_type, header, mapping);
-
-			// disable base table columns
-			if (mapping.length === 1)
-				base_table_columns.push(mapping[0]);
-
-			return base_table_columns;
-
-		},[]);
-
-		for(const radio of Object.values(this.lines)){
-			const data_field = dom_helper.get_field_name(radio);
-			if (data_field !== 'relationship' && base_table_columns.indexOf(data_field) !== -1)
-				radio.setAttribute('disabled', '');
-		}
-
-		// make all checkboxes unchecked again
-		this.headers[0].checked = true;
-		this.headers[0].checked = false;
+		Object.values(array_of_mappings).map(header_data =>
+			mappings.map_field(...header_data)
+		);
 
 		this.changes_made = true;
 		mappings.update_buttons();
@@ -121,111 +96,34 @@ const mappings = {
 	// SETTERS
 
 	/* Select table
-	* @param {Object} event - event object. Only event.target property is used
+	* @param {mixed} - {Object} event - event object. Only event.target property is used
+	* 					OR
+	* 				   {string} event - name of the table to set
 	* */
 	set_table(event){
 
-		const radio = event.target;
-		const table_name = dom_helper.get_table_name(radio);
-		const table_data = mappings.tables[table_name];
+		let table_name;
+		if(typeof event === "object"){
+			const radio = event.target;
+			table_name = dom_helper.get_table_name(radio);
+		}
+		else
+			table_name = event;
 
 		this.list__tables_scroll_postion = this.list__tables.parentElement.scrollTop;
 		this.list__tables.parentElement.scrollTop = 0;
 		this.list__tables.style.display = 'none';
-		this.list__data_model.style.display = '';
+		this.list__mappings.style.display = '';
 
 		this.button__change_table.style.display = '';
 
 		this.title__table_name.classList.remove('undefined');
 		this.title__table_name.innerText = mappings.tables[table_name]['friendly_table_name'];
 
-		this.selected_table = radio;
-
-		let rows_html = '';
-
-		if (typeof mappings.ranks[table_name] !== "undefined") {  // table is a tree
-
-			const ranks = mappings.ranks[table_name];
-
-			rows_html += Object.keys(ranks).map(rank_name =>
-				html_generator.new_base_field(this.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true)
-			).join('');
-
-		} else {
-
-			const fields = Object.keys(mappings.tables[table_name]['fields']);
-			const relationships = Object.keys(mappings.tables[table_name]['relationships']);
-
-			const temp_table_rows = fields.concat(relationships).sort();
-
-			const rows = temp_table_rows.reduce((rows,row_key) => {
-
-				let class_append = [];
-				let row_name;
-				let key;
-
-				if (typeof table_data['fields'][row_key] !== 'undefined') {
-					row_name = table_data['fields'][row_key]['friendly_field_name'];
-					key = 'fields';
-				} else {
-					row_name = mappings.reference_indicator + table_data['relationships'][row_key]['friendly_relationship_name'];
-					class_append.push('relationship');
-					key = 'relationships';
-
-				}
-
-				const is_required = table_data[key][row_key]['is_required'];
-				const is_hidden = table_data[key][row_key]['is_hidden'];
-
-				if (is_required)
-					class_append.push('required');
-
-				if(is_hidden)
-					class_append.push('hidden');
-
-				class_append = class_append.join(' ');
-
-				const data = html_generator.new_base_field(row_key, row_name, false, class_append)
-
-				const is_required_string = is_required ? 'required_table_rows' : 'optional_table_rows';
-
-				rows[is_required_string].push(data);
-
-				return rows;
-
-			}, {
-				'required_table_rows':[],
-				'optional_table_rows':[],
-			});
-
-			rows_html = [...rows['required_table_rows'],...rows['optional_table_rows']].join('');
-
-		}
-
-
 		this.base_table_name = table_name;
-		this.list__data_model.innerHTML = rows_html;
-
-
-		// if header is checked by browser, update selected_header
-		const headers_to_check = [...this.headers, this.control_line__new_header, this.control_line__new_static_header];
-		headers_to_check.some(header =>{  // break if found a checked header
-			if (header.checked)
-				this.selected_header = header;
-			return header.checked;
-		});
 
 		this.tree = {};
 		this.changes_made = true;
-
-		if (this.need_to_run_auto_mapper) {
-			const mappings_object = mappings.auto_mapper_run(this.raw_headers, this.base_table_name);
-			const array_of_mappings = Object.entries(mappings_object).map(([header_name,mapping_path]) =>
-				['existing_header', header_name, mapping_path]
-			);
-			this.need_to_run_auto_mapper = false;
-			mappings.implement_array_of_mappings(array_of_mappings);
-		}
 
 		navigation.addUnloadProtect(this, "This mapping has not been saved.");
 
@@ -239,33 +137,19 @@ const mappings = {
 	* */
 	set_headers: function(headers = [], upload_plan = false, headers_defined = true){
 
-		let headers_html = '';
-
-		this.need_to_run_auto_mapper = headers_defined;  // don't run auto mapper if CSV file doesn't have headers
-
 		this.raw_headers = headers;
-
-
-		headers_html += headers.map(header => html_generator.new_header(header, 'unmapped_header')).join('');
-
-		this.list__headers.innerHTML = headers_html;
 
 		tree_helpers.raw_headers = this.raw_headers;
 
 		if (upload_plan !== false) {
-		let mappings_tree = '';
+			let mappings_tree = '';
 			const base_table_name = upload_plan['baseTableName'];
-			const list_of_tables = Object.keys(mappings.tables);
-			const table_position = list_of_tables.indexOf(base_table_name);
-			const label = this.list__tables.children[table_position];
-			const radio = dom_helper.get_control_element(label)[0];
-			this.need_to_run_auto_mapper = false;
 
-			mappings.set_table({target: radio});
+			mappings.set_table(base_table_name);
 
 			mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
-			mappings.implement_array_of_mappings(array_of_mappings);
+			//mappings.implement_array_of_mappings(array_of_mappings);//TODO: uncomment this
 		}
 
 	},
@@ -275,36 +159,17 @@ const mappings = {
 	* */
 	reset_table(){
 
-		if (typeof this.selected_table === "undefined")
+		if (typeof this.base_table_name === "undefined")
 			return;
-
-		this.selected_table.checked = false;
-		this.selected_table = undefined;
-
-		for(const header_radio of Object.values(this.headers)){
-
-			header_radio.removeAttribute('data-path');
-			const label = header_radio.nextElementSibling;
-			const header_mapping = dom_helper.get_mappping_friendly_name_element(label);
-			header_mapping.outerHTML = html_generator.unmapped_header_mapping;
-
-		}
 
 		this.title__table_name.classList.add('undefined');
 		this.title__table_name.innerText = '';
 
 		this.list__tables.style.display = '';
-		this.list__data_model.style.display = 'none';
-
-		if (typeof this.list__tables_scroll_postion !== "undefined") {
-			setTimeout(() => {
-				this.list__tables.parentElement.scrollTop = this.list__tables_scroll_postion;
-				this.list__tables_scroll_postion = undefined;
-			}, 0);
-		}
+		this.list__mappings.style.display = 'none';
 
 		this.button__change_table.style.display = 'none';
-		this.need_to_run_auto_mapper = true;
+		this.base_table_name = undefined;
 
 		navigation.removeUnloadProtect(this);
 
@@ -346,7 +211,7 @@ const mappings = {
 
 		this.changes_made = true;
 		mappings.update_buttons();
-		mappings.update_fields();
+		mappings.update_mapping_line();
 
 	},
 
@@ -355,7 +220,7 @@ const mappings = {
 	* @param {DOMElement} first_line - first line of a mapping path (e.x LABELs only, no DIVs)
 	* @param {array} [mappings_array=[]] - Update the field only if its mappings path = mappings_array. Checks regardless if mappings_array=[]
 	* */
-	update_fields(first_line, mappings_array = []){
+	update_mapping_line(first_line, mappings_array = []){
 
 		let field_path;
 		if (typeof first_line === "undefined") {
@@ -418,10 +283,17 @@ const mappings = {
 		this.changes_made = true;
 
 		// go through each field and update it's status
-		mappings.update_all_fields(mappings_array, mappings_path);
+		mappings.update_all_mapping_lines(mappings_array, mappings_path);
 
 		mappings.update_buttons();
 
+
+	},
+
+	add_new_mapping_line_callback(position=-1, mapping_path = []){
+
+		const new_mapping_line = document.createElement('div');
+		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_path);
 
 	},
 
@@ -746,15 +618,6 @@ const mappings = {
 	//CHANGE CALLBACKS
 
 	/*
-	* Callback for handling change to selected header
-	* */
-	change_selected_header(event){
-		this.selected_header = event.target;
-		mappings.update_buttons();
-
-	},
-
-	/*
 	* Callback for handling change to direct child of a base table
 	* */
 	change_selected_field(event){
@@ -786,7 +649,7 @@ const mappings = {
 
 		}
 
-		mappings.update_buttons();
+		mappings.update_all_mapping_lines();
 
 	},
 
@@ -864,30 +727,9 @@ const mappings = {
 
 		}
 
-		mappings.update_buttons();
+		mappings.update_all_mapping_lines();
 
 	},
-
-	/*
-	* Callback for handling the change to mapping type
-	* */
-	change_mapping_type(event) {
-
-		const mapping = event.target;
-		const is_right = mapping.classList.contains('right');
-		const is_left = mapping.classList.contains('left');
-
-		if(is_right){
-			mapping.classList.remove('right')
-			mapping.classList.add('left');
-		}
-		else if(is_left)
-			mapping.classList.remove('left');
-		else
-			mapping.classList.add('right');
-
-	},
-
 
 	//HELPERS
 
@@ -897,7 +739,7 @@ const mappings = {
 	* @param {array} [mappings_array=[]] - the mappings path that was used by the mapped field
 	* @param {string} [mappings_path=''] - same as mappings_array but as a string
 	* */
-	update_all_fields(mappings_array = [], mappings_path = ''){
+	update_all_mapping_lines(mappings_array = [], mappings_path = ''){
 
 		const lines = Object.values(this.lines);
 		const lines_count = lines.length;
@@ -908,7 +750,7 @@ const mappings = {
 
 				if (i + 1 < lines_count && dom_helper.get_field_name(lines[i + 1]) === 'relationship') {  //next field exists and is relationship
 					const first_line = lines[i].parentElement;
-					mappings.update_fields(first_line, mappings_array);
+					mappings.update_mapping_line(first_line, mappings_array);
 
 				} else if (mappings_array.length === 1 && mappings_path === data_field)  //re_enable base table field if it was unmapped
 					lines[i].removeAttribute('disabled');
@@ -919,54 +761,6 @@ const mappings = {
 
 	},
 
-	/*
-	* Checks whether selected field is a relationship
-	* @return {bool} Whether selected field is a relationship
-	* */
-	is_selected_field_in_relationship(){
-
-		if (this.selected_field.tagName === 'INPUT') {
-
-			const label = this.selected_field.parentElement;
-			const name = dom_helper.get_friendly_field_name(label);
-
-			return name.innerText.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
-
-		}
-
-		return this.selected_field.value[0] === mappings.reference_symbol ||
-			this.selected_field.value[0] === this.tree_symbol ||
-			this.selected_field.selectedIndex === -1 ||
-			this.selected_field.options[this.selected_field.selectedIndex].text.substr(0, mappings.reference_indicator.length) === mappings.reference_indicator;
-
-	},
-
-	/*
-	* Updates the state (enabled / disabled) of map and unmap buttons
-	* */
-	update_buttons(){
-
-		this.button__map.disabled =
-			typeof this.selected_header === "undefined" ||
-			typeof this.selected_field === "undefined" ||
-			dom_helper.is_field_disabled(this.selected_field) ||
-			(
-				this.selected_field.tagName === 'SELECT' &&
-				dom_helper.is_field_disabled(this.selected_field.options[this.selected_field.selectedIndex])
-			) ||
-			mappings.is_selected_field_in_relationship() ||
-			this.selected_field.value === "0";
-
-		if (typeof this.selected_header === "undefined")
-			this.button__delete.disabled = true;
-		else {
-			const header_label = this.selected_header.parentElement;
-			this.button__delete.disabled =
-				header_label.tagName !== 'LABEL' ||
-				dom_helper.is_header_unmapped(header_label);
-		}
-
-	},
 };
 
 module.exports = mappings;
