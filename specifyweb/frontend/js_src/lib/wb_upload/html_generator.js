@@ -8,9 +8,6 @@
 * */
 const html_generator = {
 
-	unmapped_header_mapping: '<div class="mapping undefined"></div>',
-	mapped_header_mapping: '<div class="mapping"></div>',
-
 	/*
 	* Generates HTML for table (for table selection screen)
 	* @param {string} table_name - Official name of the table (from data model)
@@ -32,8 +29,6 @@ const html_generator = {
 			<div class="wbplanview_mappings_line_controls">
 				<button class="wbplanview_mappings_line_delete" title="Delete mapping"><img src="../../../static/img/delete.svg" alt="Delete"></button>
 				<button class="wbplanview_mappings_line_duplicate" title="Duplicate mapping"><img src="../../../static/img/duplicate.svg" alt="Duplicate"></button>
-				<button class="wbplanview_mappings_line_move_up" title="Move mapping line up"><img src="../../../static/img/arrow.svg" alt="Duplicate" class="rotate-90-ccw"></button>
-				<button class="wbplanview_mappings_line_move_down" title="Move mapping line down"><img src="../../../static/img/arrow.svg" alt="Duplicate" class="rotate-90"></button>
 			</div>
 			<div class="wbplanview_mappings_line_elements">
 				`+html_generator.mapping_path(mappings_path)+`
@@ -52,9 +47,12 @@ const html_generator = {
 
 			const [table_name, friendly_table_name, fields_data] = mapping_details;
 
-			return '<select data-type="'+mapping_type+'" data-table_name="'+table_name+'" title="'+friendly_table_name+'">'+
-				html_generator.table_fields(fields_data).join('')+
-				'</select>';
+			return `<select data-type="`+mapping_type+`"
+						data-table_name="`+table_name+`"
+						title="`+friendly_table_name+`"
+					>`+
+						html_generator.table_fields(fields_data).join('')+
+					`</select>`;
 		}
 
 		else if(mapping_type === 'headers'){
@@ -69,15 +67,15 @@ const html_generator = {
 
 	table_fields(fields_data){
 
-		const field_groups = {
-			'required_fields': [],
-			'optional_fields': [],
-			'hidden_fields': [],
-		};
-
 		const field_group_labels = {
-
+			'required_fields': 'Required Fields',
+			'optional_fields': 'Optional Fields',
+			'hidden_fields': 'Hidden Fields',
 		};
+
+		const field_groups = Object.fromEntries(Object.entries(field_group_labels).map(([field_group_label,])=>
+			[field_group_label,[]]
+		));
 
 		for(const field_data in fields_data){
 
@@ -89,29 +87,86 @@ const html_generator = {
 			else if(field_data['is_hidden'])
 				field_category = 'hidden_fields';
 
-			field_groups['required_fields'].push(field_html);
+			field_groups[field_category].push(field_html);
 
 		}
 
-		const result = [];
-
-		return result.join('');
+		return html_generator.render_groups(field_groups, field_group_labels);
 
 	},
 
 	table_field(field_data){
-		//is_required
-		//is_enabled
+		const {field_name, field_friendly_name, is_enabled} = field_data;
+
+		const is_enabled_string = is_enabled ? '' : 'disabled';
+
+		return '<option data-field_name="'+field_name+'" '+is_enabled_string+'>'+field_friendly_name+'</option>';
 	},
 
 	headers(headers_data){
-		return headers_data.map(html_generator.header).join('');
+
+		const header_group_labels = {
+			'recommended_headers': 'Recommended headers',
+			'unmapped_headers': 'Unmapped headers',
+			'add_new_column': 'Add New Column',
+			'mapped_headers': 'Mapped Headers',
+		};
+
+		const header_groups = Object.fromEntries(Object.entries(header_group_labels).map(([header_group_label,])=>
+			[header_group_label,[]]
+		));
+
+		header_groups['add_new_column'] = [
+			{
+				'header_name': 'new_column',
+				'header_friendly_name': 'New Column',
+				'is_mapped': false,
+			},
+			{
+				'header_name': 'new_static_column',
+				'header_friendly_name': 'New Static Column',
+				'is_mapped': false,
+			},
+		];
+
+		for(const header_data in headers_data){
+
+			const header_html = html_generator.table_field(header_data);
+
+			let header_category = 'unmapped_headers';
+			if(header_html['is_mapped'])
+				header_category = 'mapped_headers';
+			else if(header_html['is_recommended'])
+				header_category = 'recommended_headers';
+
+			header_groups[header_category].push(header_html);
+
+		}
+
+		return html_generator.render_groups(header_groups, header_group_labels);
+
 	},
 
 	header(header_data){
-		//is_recommended
-		//is_enabled
-		const {header_name, header_friendly_name, header_type} = header_data;
+		const {header_name, header_friendly_name, is_mapped} = header_data;
+
+		const is_mapped_string = is_mapped ? '' : 'disabled';
+
+		return '<option data-field_name="'+header_name+'" '+is_mapped_string+'>'+header_friendly_name+'</option>';
+	},
+
+	render_groups(groups, group_labels){
+		return Object.entries(groups).map(([group_name,group_fields])=>{
+
+			if(group_fields.length!==0)
+				return `<optgroup class="wbplanview_field_group"
+							data-field_group="`+group_name+`"
+							label="`+group_labels[group_name]+`"
+						>
+						`+group_fields.join('')+`						
+					</optgroup>`;
+
+		}).join('');
 	},
 
 };
