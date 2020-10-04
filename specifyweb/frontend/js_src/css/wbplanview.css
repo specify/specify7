@@ -8,8 +8,79 @@
     --t3: #444;
     --t4: #666;
     --border: #ccc;
+
+    width: 100%;
 }
 
-.wbplanview_table {
+#wbplanview_header {
+    display: flex;
+    justify-content: space-between;
+}
+
+#wbplanview_mapping_header {
+    display: flex;
+}
+
+#title__table_name {
+    font-weight: bold;
+}
+
+#wbplanview_container {
+	padding: 2rem 0;
+}
+
+#list__tables a {
     display: block;
+}
+
+#mappings_control_panel {
+	display: flex;
+	align-items: center;
+}
+
+#add_mapping {
+	padding: 0.3rem !important;
+	border: none;
+	height: 1.6rem;
+	cursor: pointer;
+	background: var(--b2);
+	margin-right: 1rem;
+}
+
+#add_mapping img {
+	width: 1rem;
+	height: 1rem;
+}
+
+#add_mapping:hover {
+	background: var(--b3);
+}
+
+.wbplanview_mappings_line {
+	display: flex;
+}
+
+.wbplanview_mappings_line_controls button {
+    border: none;
+    background: var(--b2);
+    cursor: pointer;
+    padding: 0.3rem;
+    height: 1.6rem;
+}
+
+.wbplanview_mappings_line_controls button img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.wbplanview_mappings_line_controls button:hover {
+    background: var(--b3);
+}
+
+.rotate-90 {
+	transform: rotate(90deg);
+}
+
+.rotate-270 {
+	transform: rotate(270deg);
 }

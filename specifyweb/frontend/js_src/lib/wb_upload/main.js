@@ -41,8 +41,8 @@ const main = {
 		mappings.list__mappings = document.getElementById('list__mappings');
 
 		// control elements
-		const mappings_control_panel = document.getElementsByClassName('mappings_control_panel');
-		mappings.add_mapping = mappings_control_panel.getElementsByClassName('add_mapping');
+		mappings.add_mapping = document.getElementById('add_mapping');
+		mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 		mappings.hide_hidden_fields = true;
 		mappings.raw_headers = [];
@@ -51,19 +51,8 @@ const main = {
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
 
 
-		// setting event listeners
+		// SETTING EVENT LISTENERS
 		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
-
-		document.getElementById('checkbox__toggle_hidden_fields').addEventListener('change', () => {
-			mappings.hide_hidden_fields = !mappings.hide_hidden_fields;
-
-			if(mappings.hide_hidden_fields)
-				mappings.list__mappings.classList.add('hide_hidden_fields');
-			else
-				mappings.list__mappings.classList.remove('hide_hidden_fields');
-
-			mappings.update_all_mapping_lines();
-		});
 
 		mappings.list__mappings.addEventListener('change', event => {
 			if (event.target && event.target.classList.contains('radio__field'))
@@ -81,8 +70,15 @@ const main = {
 			}
 		});
 
-		mappings.add_mapping.addEventListener('click', event => {
-			mappings.add_new_mapping_line_callback();
+		mappings.add_mapping.addEventListener('click', () => {
+			mappings.add_new_mapping_line();
+		});
+
+		mappings.toggle_hidden_fields.addEventListener('change', () => {
+			if(mappings.list__mappings.classList.contains('hide_hidden_fields'))
+				mappings.list__mappings.classList.remove('hide_hidden_fields');
+			else
+				mappings.list__mappings.classList.add('hide_hidden_fields');
 		})
 
 		// CONFIG

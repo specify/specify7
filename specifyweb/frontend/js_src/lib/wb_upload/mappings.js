@@ -88,7 +88,7 @@ const mappings = {
 		);
 
 		this.changes_made = true;
-		mappings.update_buttons();
+		mappings.update_mapping_line();
 
 	},
 
@@ -216,51 +216,6 @@ const mappings = {
 	},
 
 	/*
-	* Updates the status (enabled/disabled) of each field
-	* @param {DOMElement} first_line - first line of a mapping path (e.x LABELs only, no DIVs)
-	* @param {array} [mappings_array=[]] - Update the field only if its mappings path = mappings_array. Checks regardless if mappings_array=[]
-	* */
-	update_mapping_line(first_line, mappings_array = []){
-
-		let field_path;
-		if (typeof first_line === "undefined") {
-			let last_element = this.selected_field;
-			if (typeof last_element === "undefined")
-				last_element = this.lines[0];
-			const last_line = dom_helper.get_line_element(last_element);
-			first_line = dom_helper.get_first_line(last_line);
-			field_path = mappings.get_field_path();
-		} else {
-			const last_line = dom_helper.get_last_line(first_line);
-			const control_element = dom_helper.get_control_element(last_line)[0];
-			field_path = mappings.get_field_path(control_element);
-		}
-
-		if (mappings_array.length !== 0 && field_path[0] !== mappings_array[0])
-			return;
-
-		const mapped_children_count = field_path.length;
-
-		let line = first_line;
-		for (let i = 0; i < mapped_children_count; i++) {
-
-			const control_element = dom_helper.get_control_element(line)[0];
-
-			if (i === 0) {
-				if (!control_element.classList.contains('tree'))
-					mappings.change_selected_field({target: control_element});
-			} else {
-				control_element.value = field_path[i];
-				mappings.change_option_field({target: control_element});
-			}
-
-			line = line.nextElementSibling;
-
-		}
-
-	},
-
-	/*
 	* Callback for when users presses the `unmap` button
 	* */
 	unmap_field_callback(){
@@ -285,20 +240,105 @@ const mappings = {
 		// go through each field and update it's status
 		mappings.update_all_mapping_lines(mappings_array, mappings_path);
 
-		mappings.update_buttons();
+		mappings.update_all_mapping_lines();
 
 
 	},
 
-	add_new_mapping_line_callback(position=-1, mapping_path = []){
+	add_new_mapping_line(position=-1, mappings_path = []){
 
 		const new_mapping_line = document.createElement('div');
-		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_path);
+
+		const lines = mappings.list__mappings.childNodes;
+
+		if(position===0 && lines.length!==0)
+			lines[0].before(new_mapping_line);
+		else if(position===-1 || position>lines.length || lines.length===0)
+			mappings.list__mappings.append(new_mapping_line);
+		else
+			lines[position].after(new_mapping_line)
+
+		mappings_path = [{
+			'mapping_type': 'table',
+			'table_name': mappings.base_table_name,
+			'table_friendly_name': mappings.tables[mappings.base_table_name]['table_friendly_name'],
+			'fields': mappings.get_list_of_fields(mappings_path)
+		},...mappings_path];
+
+		new_mapping_line.outerHTML = html_generator.mapping_line(mappings_path);
 
 	},
 
 
 	// GETTERS
+
+
+	get_list_of_fields(mappings_path){
+
+	},
+
+	get_mapped_fields(mappings_path){
+
+		//get mappings_paths
+		//compare each
+
+	},
+
+	get_mappings_path(line){
+
+		const container = line.getElementsByClassName('wbplanview_mappings_line_elements')[0];
+		const children = container.childNodes;
+
+		return children.map(mappings.get_element_data);
+
+	},
+
+	get_element_data(element){
+
+		if(element.tagName==='textarea')
+			return {
+				'mapping_type': 'static_value',
+				'static_value': element.value,
+			}
+
+		const element_type = element.getAttribute('data-type');
+
+		const result = {
+			'mapping_type': element_type,
+		}
+
+		if(element_type==='table' || element_type==='tree'){
+
+		}
+
+		else if(element_type === 'header'){
+			const group_elements = element.childNodes;
+			const group_types = group_elements.map(group=>group.getAttribute('label'));
+			const groups = group_elements.entries().map((group_element,group_index)=>{
+				const group_type = group_types[group_index];
+				const group_elements = group_element.childNodes;
+				return [group_type,group_elements];
+			});
+
+			result['fields'] = [];
+
+			for(const [group_type,group_elements] in groups)
+				if(group_type!=='add_new_column')
+					result['fields'].push(...group_elements.map(option=>{
+						return {
+							'header_name': option.value,
+							'header_friendly_name': option.innerText,
+							'is_mapped': group_type==='mapped_headers',
+							'is_recommended': group_type==='recommended_headers',
+						}
+					}));
+
+
+		}
+
+		return result;
+
+	},
 
 	/*
 	* Puts HTML for a particular relationship line into `current_line` outerHTML
@@ -732,34 +772,6 @@ const mappings = {
 	},
 
 	//HELPERS
-
-	/*
-	* Cycles through all fields and updates them as needed
-	* Used when the user unmaps a field or toggles visibility of hidden fields
-	* @param {array} [mappings_array=[]] - the mappings path that was used by the mapped field
-	* @param {string} [mappings_path=''] - same as mappings_array but as a string
-	* */
-	update_all_mapping_lines(mappings_array = [], mappings_path = ''){
-
-		const lines = Object.values(this.lines);
-		const lines_count = lines.length;
-		for (let i = 0; i < lines_count; i++) {
-
-			const data_field = dom_helper.get_field_name(lines[i]);
-			if (data_field !== 'relationship') {  //field is not a relationship
-
-				if (i + 1 < lines_count && dom_helper.get_field_name(lines[i + 1]) === 'relationship') {  //next field exists and is relationship
-					const first_line = lines[i].parentElement;
-					mappings.update_mapping_line(first_line, mappings_array);
-
-				} else if (mappings_array.length === 1 && mappings_path === data_field)  //re_enable base table field if it was unmapped
-					lines[i].removeAttribute('disabled');
-
-			}
-
-		}
-
-	},
 
 };
 

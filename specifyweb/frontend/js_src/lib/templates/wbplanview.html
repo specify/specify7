@@ -1,22 +1,31 @@
-<div class="wbplanview_header">
+<div id="wbplanview_header">
 
-    <span id="title__table_name" class="undefined"></span>
-    <button id="button__change_table" style="display:none">Change table</button>
+    <div id="wbplanview_table_header">
+        <span id="title__table_name" class="undefined"></span>
+        <button id="button__change_table" style="display:none">Change table</button>
+    </div>
 
-    <button id="button__save_upload_plan">Save</button>
-    <button id="button__discard_changes">Cancel</button>
+    <div id="wbplanview_mapping_header">
+        <button id="button__save_upload_plan">Save</button>
+        <button id="button__discard_changes">Cancel</button>
+    </div>
+
+</div>
+
+<div id="wbplanview_container">
+
+    <div id="list__tables"></div>
+    <div id="list__mappings" class="hide_hidden_fields"></div>
+
+</div>
+
+<div id="mappings_control_panel">
+
+    <button id="add_mapping" title="Add new mapping"><img src="../../../static/img/add.svg" alt="Map"></button>
+
     <label>
         <input type="checkbox" id="checkbox__toggle_hidden_fields" checked>
         Hide advanced fields
     </label>
-
-</div>
-
-<div id="list__tables"></div>
-<div id="list__mappings"></div>
-
-<div id="mappings_control_panel">
-
-    <button id="add_mapping">Add</button>
 
 </div>

@@ -28,7 +28,9 @@ const html_generator = {
 		return `<div class="wbplanview_mappings_line">
 			<div class="wbplanview_mappings_line_controls">
 				<button class="wbplanview_mappings_line_delete" title="Delete mapping"><img src="../../../static/img/delete.svg" alt="Delete"></button>
-				<button class="wbplanview_mappings_line_duplicate" title="Duplicate mapping"><img src="../../../static/img/duplicate.svg" alt="Duplicate"></button>
+				<button class="wbplanview_mappings_line_duplicate" title="Duplicate mapping"><img src="../../../static/img/copy.svg" alt="Duplicate"></button>
+				<button class="wbplanview_mappings_line_move_up" title="Move mapping up"><img src="../../../static/img/arrow.svg" class="rotate-270" alt="Move up"></button>
+				<button class="wbplanview_mappings_line_move_down" title="Move mapping down"><img src="../../../static/img/arrow.svg" class="rotate-90" alt="Move down"></button>
 			</div>
 			<div class="wbplanview_mappings_line_elements">
 				`+html_generator.mapping_path(mappings_path)+`
@@ -39,29 +41,31 @@ const html_generator = {
 		return mappings_path.map(html_generator.mapping_element).join('');
 	},
 
-	mapping_element(mapping_details){
+	mapping_element(mapping_details) {
 
-		const mapping_type = mapping_details['mapping_type'];
+		const {mapping_type} = mapping_details;
+
+		if (mapping_type === 'static_value'){
+			const {static_value} = mapping_details
+			return `<textarea>`+static_value+`</textarea>`;
+		}
+
+		let attributes='';
+		let children='';
 
 		if(mapping_type === 'table' || mapping_type === 'tree'){
-
 			const [table_name, friendly_table_name, fields_data] = mapping_details;
 
-			return `<select data-type="`+mapping_type+`"
-						data-table_name="`+table_name+`"
-						title="`+friendly_table_name+`"
-					>`+
-						html_generator.table_fields(fields_data).join('')+
-					`</select>`;
+			attributes = 'data-table_name="'+table_name+'" title="'+friendly_table_name+'"';
+			children = html_generator.table_fields(fields_data).join('');
 		}
 
 		else if(mapping_type === 'headers'){
-			const headers_data = mapping_details['headers_data'];
-			return html_generator.headers(headers_data).join('');
+			const {headers_data} = mapping_details;
+			children = html_generator.headers(headers_data).join('');
 		}
 
-		else
-			return '';
+		return `<select data-type="`+mapping_type+`" `+attributes+`>` + children + `</select>`;
 
 	},
 
@@ -100,7 +104,7 @@ const html_generator = {
 
 		const is_enabled_string = is_enabled ? '' : 'disabled';
 
-		return '<option data-field_name="'+field_name+'" '+is_enabled_string+'>'+field_friendly_name+'</option>';
+		return '<option value="'+field_name+'" '+is_enabled_string+'>'+field_friendly_name+'</option>';
 	},
 
 	headers(headers_data){
@@ -152,7 +156,7 @@ const html_generator = {
 
 		const is_mapped_string = is_mapped ? '' : 'disabled';
 
-		return '<option data-field_name="'+header_name+'" '+is_mapped_string+'>'+header_friendly_name+'</option>';
+		return '<option value="'+header_name+'" '+is_mapped_string+'>'+header_friendly_name+'</option>';
 	},
 
 	render_groups(groups, group_labels){
