@@ -150,6 +150,7 @@ const main = {
 			);
 
 		});
+		mappings.data_model_handler = data_model_handler;
 
 	},
 

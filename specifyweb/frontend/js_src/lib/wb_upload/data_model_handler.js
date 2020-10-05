@@ -42,10 +42,9 @@ const data_model_handler = {
 		const tables = Object.values(schema.models).reduce((tables, table_data) => {
 
 			const table_name = table_data['longName'].split('.').pop().toLowerCase();
-			const friendly_table_name = table_data.getLocalizedName();
+			const table_friendly_name = table_data.getLocalizedName();
 
 			let fields = {};
-			let relationships = {};
 			let has_relationship_with_definition = false;
 			let has_relationship_with_definition_item = false;
 
@@ -74,7 +73,14 @@ const data_model_handler = {
 					else if (is_required)
 						is_hidden = false;
 
-				if (field['isRelationship']) {
+				const field_data = {
+					friendly_name: friendly_name,
+					is_hidden: is_hidden,
+					is_required: is_required,
+					is_relationship: field['isRelationship'],
+				}
+
+				if (field_data['is_relationship']) {
 
 					let foreign_name = field['otherSideName'];
 					if (typeof foreign_name !== "undefined")
@@ -95,32 +101,27 @@ const data_model_handler = {
 					)
 						continue;
 
-					relationships[field_name] = {
-						friendly_relationship_name: friendly_name,
-						table_name: table_name,
-						type: relationship_type,
-						foreign_name: foreign_name,
-						is_hidden: is_hidden,
-						is_required: is_required,
-					};
+						field_data['table_name'] = table_name;
+						field_data['type'] = relationship_type;
+						field_data['foreign_name'] = foreign_name;
 
-				} else
-					fields[field_name] = {
-						friendly_field_name: friendly_name,
-						is_hidden: is_hidden,
-						is_required: is_required,
-					};
+				}
+
+				fields[field_name] = field_data;
 
 			}
 
+			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name=>
+				[field_name,fields[field_name]]
+			));
+
 
 			tables[table_name] = {
-				friendly_table_name: friendly_table_name,
-				fields: fields,
-				relationships: relationships,
+				table_friendly_name: table_friendly_name,
+				fields: ordered_fields,
 			};
 
-			data_model_html += html_generator.table(table_name, friendly_table_name);
+			data_model_html += html_generator.table(table_name, table_friendly_name);
 
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
@@ -132,9 +133,9 @@ const data_model_handler = {
 
 
 		for (const [table_name, table_data] of Object.entries(tables))  // remove relationships to system tables
-			for (const [relationship_name, relationship_data] of Object.entries(table_data['relationships']))
-				if (typeof tables[relationship_data['table_name']] === "undefined")
-					delete tables[table_name]['relationships'][relationship_name];
+			for (const [relationship_name, relationship_data] of Object.entries(table_data['fields']))
+				if (relationship_data['is_relationship'] && typeof tables[relationship_data['table_name']] === "undefined")
+					delete tables[table_name]['fields'][relationship_name];
 
 
 		data_model_handler.tables = tables;
@@ -243,55 +244,54 @@ const data_model_handler = {
 		}
 
 		// handle regular relationships
-		results = Object.entries(table_data['fields']).reduce((results, [field_name,field_data]) => {
+		for(const [field_name,field_data] of Object.entries(table_data['fields'])){
 
 			const local_path = [...path, field_name];
 
-			if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
-				results.push(local_path);
+			if(field_data['is_relationship']){
 
-			return results;
+				if (previous_table_name !== '') {
 
-		}, results);
-
-		return Object.entries(table_data['relationships']).reduce((results, [relationship_name,relationship_data]) => {
-
-			const local_path = [...path, relationship_name];
-
-			if (previous_table_name !== '') {
-
-				let previous_relationship_name = local_path.slice(-2)[0];
-				if (
-					previous_relationship_name.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol ||
-					previous_relationship_name.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol
-				)
-					previous_relationship_name = local_path.slice(-3)[0];
-
-				const parent_relationship_data = data_model_handler.tables[previous_table_name]['relationships'][previous_relationship_name];
-
-				if (
-					(  // disable circular relationships
-						relationship_data['foreign_name'] === previous_relationship_name &&
-						parent_relationship_data['table_name'] === table_name
-					) ||
-					(  // skip -to-many inside of -to-many
-						parent_relationship_data['type'].indexOf('-to-many') !== -1 ||
-						relationship_data['type'].indexOf('-to-many') !== -1
+					let previous_relationship_name = local_path.slice(-2)[0];
+					if (
+						previous_relationship_name.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol ||
+						previous_relationship_name.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol
 					)
-				)
-					return results;
+						previous_relationship_name = local_path.slice(-3)[0];
+
+					const parent_relationship_data = data_model_handler.tables[previous_table_name]['fields'][previous_relationship_name];
+
+					if (
+						(  // disable circular relationships
+							field_data['foreign_name'] === previous_relationship_name &&
+							parent_relationship_data['table_name'] === table_name
+						) ||
+						(  // skip -to-many inside of -to-many
+							parent_relationship_data['type'].indexOf('-to-many') !== -1 ||
+							field_data['type'].indexOf('-to-many') !== -1
+						)
+					)
+						continue;
+				}
+
+				if (list_of_mapped_fields.indexOf(field_name) !== -1)
+					data_model_handler.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
+				else if (field_data['is_required'])
+					results.push(local_path);
 			}
 
-			if (list_of_mapped_fields.indexOf(relationship_name) !== -1)
-				data_model_handler.show_required_missing_ranks(relationship_data['table_name'], mapping_tree[relationship_name], table_name, local_path, results);
-			else if (relationship_data['is_required'])
+			else if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
 				results.push(local_path);
 
-			return results;
+		}
 
-		}, results);
+		return results;
 
 	},
+
+	is_table_a_tree(table_name){
+		return typeof data_model_handler.ranks[table_name] !== "undefined";
+	}
 
 };
 

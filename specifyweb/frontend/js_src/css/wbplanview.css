@@ -84,3 +84,11 @@
 .rotate-270 {
 	transform: rotate(270deg);
 }
+
+.wbplanview_mappings_line_elements > * {
+	margin-left: 0.7rem;
+}
+
+.hide_hidden_fields [data-field_group="hidden_fields"] {
+    display: none;
+}

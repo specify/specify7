@@ -128,6 +128,7 @@ const upload_plan_converter = {
 					}
 
 					table_plan.push(handle_table(field_data, table_name, false));
+
 				} else if (field_name.substr(0, upload_plan_converter.tree_symbol.length) === upload_plan_converter.tree_symbol)
 					table_plan = handle_table(table_data, table_name, false);
 
@@ -142,29 +143,32 @@ const upload_plan_converter = {
 						value = parseInt(value);
 
 					table_plan['static'][field_name] = value;
-				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined")
-					table_plan['wbcols'][field_name] = field_data;
 
-				else {
+				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined"){
 
-					const mapping = upload_plan_converter.tables[table_name]['relationships'][field_name];
-					const mapping_table = mapping['table_name'];
-					const is_to_one = mapping['type'] === 'one-to-one' || mapping['type'] === 'many-to-one';
+					const field = upload_plan_converter.tables[table_name]['fields'][field_name];
 
-					if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
-						table_plan['toOne'][field_name] = handle_table(field_data, mapping_table);
+					if(field_data['is_relationship']){
+						const mapping_table = field['table_name'];
+						const is_to_one = field['type'] === 'one-to-one' || field['type'] === 'many-to-one';
 
-					else {
+						if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
+							table_plan['toOne'][field_name] = handle_table(field_data, mapping_table);
 
-						if (typeof table_plan['toMany'] === "undefined")
-							table_plan['toMany'] = {};
+						else {
+							if (typeof table_plan['toMany'] === "undefined")
+								table_plan['toMany'] = {};
 
-						if (typeof table_plan['toMany'][field_name] === "undefined")
-							table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
+							if (typeof table_plan['toMany'][field_name] === "undefined")
+								table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
+						}
 
 					}
 
+					else
+						table_plan['wbcols'][field_name] = field;
 				}
+
 
 				return table_plan;
 

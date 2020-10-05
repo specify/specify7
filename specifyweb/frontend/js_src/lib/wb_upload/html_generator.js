@@ -11,16 +11,16 @@ const html_generator = {
 	/*
 	* Generates HTML for table (for table selection screen)
 	* @param {string} table_name - Official name of the table (from data model)
-	* @param {string} friendly_table_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
+	* @param {string} table_friendly_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
 	* @return {string} HTML for table
 	* */
-	table(table_name, friendly_table_name){
-		return '<a class="wbplanview_table" href="#'+table_name+'" data-table_name="'+table_name+'">'+friendly_table_name+'</a>';
+	table(table_name, table_friendly_name){
+		return '<a class="wbplanview_table" href="#'+table_name+'" data-table_name="'+table_name+'">'+table_friendly_name+'</a>';
 	},
 
-	mapping_line(mappings_path){
+	mapping_line(mappings_line_data){
 		/*
-		* mappings_path {array}:
+		* mappings_line_data {array}:
 		* 	mapping_type: 'table'||'tree'||'headers'||'textarea'
 		* 	if mapping_type=='table' || mapping_type=='field':
 		*
@@ -33,12 +33,12 @@ const html_generator = {
 				<button class="wbplanview_mappings_line_move_down" title="Move mapping down"><img src="../../../static/img/arrow.svg" class="rotate-90" alt="Move down"></button>
 			</div>
 			<div class="wbplanview_mappings_line_elements">
-				`+html_generator.mapping_path(mappings_path)+`
+				`+html_generator.mapping_path(mappings_line_data)+`
 			</div>`;
 	},
 
-	mapping_path(mappings_path){
-		return mappings_path.map(html_generator.mapping_element).join('');
+	mapping_path(mappings_line_data){
+		return mappings_line_data.map(html_generator.mapping_element).join('');
 	},
 
 	mapping_element(mapping_details) {
@@ -54,18 +54,21 @@ const html_generator = {
 		let children='';
 
 		if(mapping_type === 'table' || mapping_type === 'tree'){
-			const [table_name, friendly_table_name, fields_data] = mapping_details;
+			const {name, friendly_name, fields_data} = mapping_details;
 
-			attributes = 'data-table_name="'+table_name+'" title="'+friendly_table_name+'"';
-			children = html_generator.table_fields(fields_data).join('');
+			attributes = 'data-name="'+name+'" title="'+friendly_name+'"';
+			children = html_generator.table_fields(fields_data);
 		}
 
 		else if(mapping_type === 'headers'){
 			const {headers_data} = mapping_details;
-			children = html_generator.headers(headers_data).join('');
+			children = html_generator.headers(headers_data);
 		}
 
-		return `<select data-type="`+mapping_type+`" `+attributes+`>` + children + `</select>`;
+		return `<select data-type="`+mapping_type+`" `+attributes+`>`
+				+ `<option value="0"></option>`
+				+ children
+			+ `</select>`;
 
 	},
 
@@ -81,9 +84,9 @@ const html_generator = {
 			[field_group_label,[]]
 		));
 
-		for(const field_data in fields_data){
+		for(const [field_name,field_data] of Object.entries(fields_data)){
 
-			const field_html = html_generator.table_field(field_data);
+			const field_html = html_generator.table_field(field_name,field_data);
 
 			let field_category = 'optional_fields';
 			if(field_data['is_required'])
@@ -99,8 +102,8 @@ const html_generator = {
 
 	},
 
-	table_field(field_data){
-		const {field_name, field_friendly_name, is_enabled} = field_data;
+	table_field(field_name,field_data){
+		const {field_friendly_name, is_enabled} = field_data;
 
 		const is_enabled_string = is_enabled ? '' : 'disabled';
 
@@ -133,9 +136,9 @@ const html_generator = {
 			},
 		];
 
-		for(const header_data in headers_data){
+		for(const [header_name,header_data] of Object.entries(headers_data)){
 
-			const header_html = html_generator.table_field(header_data);
+			const header_html = html_generator.table_field(header_name);
 
 			let header_category = 'unmapped_headers';
 			if(header_html['is_mapped'])
@@ -151,8 +154,8 @@ const html_generator = {
 
 	},
 
-	header(header_data){
-		const {header_name, header_friendly_name, is_mapped} = header_data;
+	header(header_name, header_data){
+		const {header_friendly_name, is_mapped} = header_data;
 
 		const is_mapped_string = is_mapped ? '' : 'disabled';
 

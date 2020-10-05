@@ -130,7 +130,7 @@ const tree_helpers = {
 		const data = tree_helpers.array_to_tree(array);
 
 		if (data === false)
-			return node;
+			return {};
 
 		tree[node] = data;
 		return tree;

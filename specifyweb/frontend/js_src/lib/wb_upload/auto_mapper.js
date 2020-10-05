@@ -120,7 +120,7 @@ const auto_mapper = {
 		const table_data = auto_mapper.tables[table_name];
 		const ranks_data = auto_mapper.ranks[table_name];
 		const fields = Object.entries(table_data['fields']).filter(([,field_data])=>!field_data['is_hidden']);
-		const friendly_table_name = table_data['friendly_table_name'].toLowerCase();//TODO: remove numbers from the name
+		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();//TODO: remove numbers from the name
 
 		if (typeof ranks_data !== "undefined"){//TODO: make ranks iterate over relationships too
 			for(const rank_name of Object.keys(ranks_data)){
@@ -130,7 +130,7 @@ const auto_mapper = {
 
 				for(const [field_name,field_data] of fields){
 
-					const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
+					const friendly_name = field_data['friendly_name'].toLowerCase();
 
 					Object.entries(this.unmapped_headers).some(([header_name,header_data]) => {
 
@@ -141,11 +141,11 @@ const auto_mapper = {
 
 						if (
 							(  // find cases like `Phylum` and remap them to `Phylum > Name`
-								friendly_field_name === 'name' &&
+								friendly_name === 'name' &&
 								striped_rank_name === stripped_name
 							) ||
 							(  // find cases like `Kingdom Author`
-								striped_rank_name + ' ' + friendly_field_name === stripped_name ||
+								striped_rank_name + ' ' + friendly_name === stripped_name ||
 								striped_rank_name + ' ' + field_name === final_name
 							)
 						) {
@@ -207,7 +207,7 @@ const auto_mapper = {
 
 
 			// compare each field's schema name and friendly schema name to headers
-			const friendly_field_name = field_data['friendly_field_name'].toLowerCase();
+			const friendly_name = field_data['friendly_name'].toLowerCase();
 
 			for(const [header_name,header_data] of Object.entries(this.unmapped_headers)){
 
@@ -218,9 +218,9 @@ const auto_mapper = {
 
 				if (
 					field_name === stripped_name ||
-					friendly_field_name === final_name ||
+					friendly_name === final_name ||
 					(  // find cases like `Collection Object Remarks`
-						friendly_table_name + ' ' + friendly_field_name === stripped_name ||
+						table_friendly_name + ' ' + friendly_name === stripped_name ||
 						table_name + ' ' + field_name === final_name
 					)
 				)
