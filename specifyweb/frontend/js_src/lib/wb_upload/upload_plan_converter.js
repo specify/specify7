@@ -8,11 +8,11 @@
 
 const upload_plan_converter = {
 
-	 upload_plan_processing_functions: {
-		'wbcols': ([key, value]) => [key,value],
-		'static': ([key, value]) => [key,{'static': value}],
-		'toOne': ([key, value]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
-		'toMany': ([key, original_mappings]) => {
+	upload_plan_processing_functions: {
+		wbcols: ([key, value]) => [key, value],
+		static: ([key, value]) => [key, {static: value}],
+		toOne: ([key, value]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
+		toMany: ([key, original_mappings]) => {
 			let i = 1;
 			return [
 				key,
@@ -65,11 +65,11 @@ const upload_plan_converter = {
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
 			return Object.fromEntries(Object.entries(upload_plan['treeRecord']['ranks']).map(([rank_name, rank_data]) =>
-				[upload_plan_converter.tree_symbol + rank_name,{'name': rank_data}]
+				[upload_plan_converter.tree_symbol + rank_name, {name: rank_data}]
 			));
 
-		return Object.fromEntries(Object.entries(upload_plan).reduce((results,[plan_node_name, plan_node_data]) =>
-			[...results,...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])], []
+		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
+			[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])], []
 		));
 
 	},
@@ -89,29 +89,29 @@ const upload_plan_converter = {
 		upload_plan['baseTableName'] = this.base_table_name();
 
 
-		function handle_table(table_data, table_name, wrap_it = true) {
+		function handle_table(table_data, table_name, wrap_it = true){
 
 			if (typeof upload_plan_converter.ranks[table_name] !== "undefined") {
 
-				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key,tree_rank_data]) => {
+				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
-					let name = tree_rank_data['name'];
+					let {name} = tree_rank_data;
 
 					if (typeof name === 'object')  // handle static records
 						name = name['static'];
 
-					return [new_tree_key,name];
+					return [new_tree_key, name];
 
 				}));
 
-				return {'treeRecord': {'ranks': final_tree}};
+				return {treeRecord: {ranks: final_tree}};
 			}
 
 			let table_plan = {
-				'wbcols': {},
-				'static': {},
-				'toOne': {},
+				wbcols: {},
+				static: {},
+				toOne: {},
 			};
 
 			if (wrap_it)
@@ -119,7 +119,7 @@ const upload_plan_converter = {
 
 			let is_to_many = false;
 
-			table_plan = Object.entries(table_data).reduce((table_plan, [field_name,field_data]) => {
+			table_plan = Object.entries(table_data).reduce((table_plan, [field_name, field_data]) => {
 
 				if (field_name.substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol) {
 					if (!is_to_many) {
@@ -144,11 +144,11 @@ const upload_plan_converter = {
 
 					table_plan['static'][field_name] = value;
 
-				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined"){
+				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined") {
 
 					const field = upload_plan_converter.tables[table_name]['fields'][field_name];
 
-					if(field_data['is_relationship']){
+					if (field_data['is_relationship']) {
 						const mapping_table = field['table_name'];
 						const is_to_one = field['type'] === 'one-to-one' || field['type'] === 'many-to-one';
 
@@ -163,9 +163,7 @@ const upload_plan_converter = {
 								table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
 						}
 
-					}
-
-					else
+					} else
 						table_plan['wbcols'][field_name] = field;
 				}
 
@@ -181,7 +179,7 @@ const upload_plan_converter = {
 			if (Object.keys(table_data).shift().substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol)
 				return table_plan;
 
-			return {'uploadTable': table_plan};
+			return {uploadTable: table_plan};
 
 		}
 

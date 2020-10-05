@@ -160,7 +160,7 @@ const tree_helpers = {
 	* */
 	mappings_tree_to_array_of_mappings(mappings_tree, result = [], path = []){
 
-		return Object.entries(mappings_tree).reduce((result, [tree_node_name,tree_node]) => {
+		return Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node]) => {
 
 			const local_path = path.slice();
 			local_path.push(tree_node_name);

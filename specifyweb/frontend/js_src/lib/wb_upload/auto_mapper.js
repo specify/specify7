@@ -27,17 +27,17 @@ const auto_mapper = {
 		auto_mapper.regex_2 = /\s+/g;
 		auto_mapper.depth = 8;
 		auto_mapper.comparisons = Object.entries({
-			'regex': (header, regex) => header.match(regex),
-			'string': (header, string) => header === string,
-			'contains': (header, string) => header.indexOf(string) !== -1
+			regex: (header, regex) => header.match(regex),
+			string: (header, string) => header === string,
+			contains: (header, string) => header.indexOf(string) !== -1
 		});
 
 		// convert all field names in the mapping definitions to lower case
-		auto_mapper_definitions = Object.fromEntries(Object.entries(auto_mapper_definitions).map(([table_name,fields]) =>
+		auto_mapper_definitions = Object.fromEntries(Object.entries(auto_mapper_definitions).map(([table_name, fields]) =>
 			[
 				table_name.toLowerCase(),
-				Object.fromEntries(Object.entries(fields).map(([field_name,field_data]) =>
-					[field_name.toLowerCase(),field_data]
+				Object.fromEntries(Object.entries(fields).map(([field_name, field_data]) =>
+					[field_name.toLowerCase(), field_data]
 				))
 			]
 		));
@@ -68,7 +68,7 @@ const auto_mapper = {
 			stripped_name = stripped_name.trim();
 			const final_name = stripped_name.split(' ').join('');
 
-			return [original_name,[stripped_name, final_name]];
+			return [original_name, [stripped_name, final_name]];
 
 		}));
 
@@ -88,8 +88,8 @@ const auto_mapper = {
 
 			const queue_data = Object.values(find_mappings_queue);
 
-			for(const mappings_data of queue_data)
-				for(const [table_name,path] of Object.entries(mappings_data))
+			for (const mappings_data of queue_data)
+				for (const [table_name, path] of Object.entries(mappings_data))
 					auto_mapper.find_mappings(table_name, path);
 
 			if (queue_data.length === 0)
@@ -119,22 +119,22 @@ const auto_mapper = {
 
 		const table_data = auto_mapper.tables[table_name];
 		const ranks_data = auto_mapper.ranks[table_name];
-		const fields = Object.entries(table_data['fields']).filter(([,field_data])=>!field_data['is_hidden']);
+		const fields = Object.entries(table_data['fields']).filter(([, field_data]) => !field_data['is_hidden']);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();//TODO: remove numbers from the name
 
-		if (typeof ranks_data !== "undefined"){//TODO: make ranks iterate over relationships too
-			for(const rank_name of Object.keys(ranks_data)){
+		if (typeof ranks_data !== "undefined") {//TODO: make ranks iterate over relationships too
+			for (const rank_name of Object.keys(ranks_data)) {
 
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = auto_mapper.tree_symbol + rank_name;
 
-				for(const [field_name,field_data] of fields){
+				for (const [field_name, field_data] of fields) {
 
 					const friendly_name = field_data['friendly_name'].toLowerCase();
 
-					Object.entries(this.unmapped_headers).some(([header_name,header_data]) => {
+					Object.entries(this.unmapped_headers).some(([header_name, header_data]) => {
 
-						if(header_data===false)//skip mapped headers
+						if (header_data === false)//skip mapped headers
 							return true;
 
 						let [stripped_name, final_name] = header_data;
@@ -162,7 +162,7 @@ const auto_mapper = {
 			return;
 		}
 
-		for(const [field_name,field_data] of fields){
+		for (const [field_name, field_data] of fields) {
 
 			// search in definitions
 			if (
@@ -174,10 +174,10 @@ const auto_mapper = {
 
 				// compile regex strings
 				if (typeof field_comparisons['regex'] !== "undefined")
-					for(const [regex_index,regex_string] of Object.entries(field_comparisons['regex']))
+					for (const [regex_index, regex_string] of Object.entries(field_comparisons['regex']))
 						field_comparisons['regex'][regex_index] = new RegExp(regex_string);
 
-				for(const [header_key,header] of Object.entries(this.unmapped_headers)){// loop over headers
+				for (const [header_key, header] of Object.entries(this.unmapped_headers)) {// loop over headers
 
 					if (header !== false) {
 
@@ -185,7 +185,7 @@ const auto_mapper = {
 
 						let matched = false;
 
-						auto_mapper.comparisons.some(([comparison_key,comparison_function]) => {  // loop over defined comparisons
+						auto_mapper.comparisons.some(([comparison_key, comparison_function]) => {  // loop over defined comparisons
 
 							if (typeof field_comparisons[comparison_key] !== "undefined")
 								Object.values(field_comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
@@ -209,9 +209,9 @@ const auto_mapper = {
 			// compare each field's schema name and friendly schema name to headers
 			const friendly_name = field_data['friendly_name'].toLowerCase();
 
-			for(const [header_name,header_data] of Object.entries(this.unmapped_headers)){
+			for (const [header_name, header_data] of Object.entries(this.unmapped_headers)) {
 
-				if(header_data===false)  // skip mapped headers
+				if (header_data === false)  // skip mapped headers
 					continue;
 
 				let [stripped_name, final_name] = header_data;
@@ -234,9 +234,9 @@ const auto_mapper = {
 		const relationships = Object.entries(table_data['relationships']).filter((relationship_data => !relationship_data['is_hidden']));
 
 
-		for(const [relationship_key,relationship_data] of relationships){
+		for (const [relationship_key, relationship_data] of relationships) {
 
-			const local_path = [...path,relationship_key];
+			const local_path = [...path, relationship_key];
 
 			if (relationship_data['type'] === 'one-to-many' || relationship_data['type'] === 'many-to-many')
 				local_path.push(auto_mapper.reference_symbol + 1);
@@ -271,7 +271,7 @@ const auto_mapper = {
 	* */
 	make_mapping(path, new_path_parts, header_name){
 
-		let local_path = [...path,...new_path_parts];
+		let local_path = [...path, ...new_path_parts];
 		const zipped_local_path = Object.entries(local_path);
 
 
@@ -279,7 +279,7 @@ const auto_mapper = {
 		while (true) {
 
 			// go over mapped headers to see if this path was already mapped
-			let path_already_mapped = Object.values(this.results).some(mapping_path => local_path === mapping_path );
+			let path_already_mapped = Object.values(this.results).some(mapping_path => local_path === mapping_path);
 
 			if (!path_already_mapped)
 				break;
@@ -287,7 +287,7 @@ const auto_mapper = {
 			// if there is any -to-many relationship in the path, create a new -to-many object and run while loop again
 			let path_was_modified = false;
 
-			local_path = zipped_local_path.reverse().some(([local_path_index,local_path_part]) => {
+			local_path = zipped_local_path.reverse().some(([local_path_index, local_path_part]) => {
 
 				path_was_modified = local_path_part.substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol;
 				if (path_was_modified)
@@ -303,23 +303,23 @@ const auto_mapper = {
 
 
 		// prevent -to-many inside of -to-many // TODO: remove this in the future
-		let distance_from_parent_to_many=-1;
+		let distance_from_parent_to_many = -1;
 		let has_nested_to_many = local_path.some(element => {
 			const is_to_many = element.substr(0, auto_mapper.reference_symbol.length) === auto_mapper.reference_symbol;
 
-			if(distance_from_parent_to_many===1 && is_to_many)
+			if (distance_from_parent_to_many === 1 && is_to_many)
 				return true;
 
-			if(is_to_many)
+			if (is_to_many)
 				distance_from_parent_to_many = 0;
-			else if(distance_from_parent_to_many!==-1)
+			else if (distance_from_parent_to_many !== -1)
 				distance_from_parent_to_many++;
 
 			return false;
 
 		});
 
-		if(has_nested_to_many)
+		if (has_nested_to_many)
 			return false;
 
 

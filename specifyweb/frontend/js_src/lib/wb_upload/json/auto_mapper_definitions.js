@@ -14,58 +14,58 @@
 
 
 module.exports = {
-	"CollectingEvent": {
-		"startDate": {
-			"regex": [
+	CollectingEvent:  {
+		startDate:  {
+			regex:  [
 				".*?collected.*"
 			],
-			"contains": [
+			contains:  [
 				"date",
 				"start"
 			]
 		},
-		"endDate": {
-			"contains": [
+		endDate:  {
+			contains:  [
 				"end"
 			]
 		}
 	},
-	"Accession": {
-		"number": {
-			"contains": [
+	Accession:  {
+		number:  {
+			contains:  [
 				"accession"
 			]
 		}
 	},
-	"Locality": {
-		"maxElevation": {
-			"regex": [
+	Locality:  {
+		maxElevation:  {
+			regex:  [
 				".*?max\\s*elev.*"
 			]
 		},
-		"minElevation": {
-			"contains": [
+		minElevation:  {
+			contains:  [
 				"elev"
 			]
 		}
 	},
-	"CollectionObject": {
-		"fieldNumber": {
-			"regex": [
+	CollectionObject:  {
+		fieldNumber:  {
+			regex:  [
 				"^field\\s*(no|num).*"
 			]
 		},
-		"catalogedDate": {
-			"contains": [
+		catalogedDate:  {
+			contains:  [
 				"cataloged",
 				"catalogued"
 			]
 		},
-		"catalogNumber": {
-			"regex": [
+		catalogNumber:  {
+			regex:  [
 				"^catalog(ue)?\\s*(no|num).*",
 				"^cat(ue)?\\s*(no|num).*"],
-			"string": [
+			string:  [
 				"number",
 				"num"
 			]

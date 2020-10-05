@@ -34,8 +34,12 @@ const dom_helper = {
 
 	},
 
-	get_line_elements_container(line_element){
-		return line_element.getElementsByClassName('wbplanview_mappings_line_elements')[0];
+	get_line_elements_container(element){
+
+		if(element.tagName==='DIV')
+			return element.getElementsByClassName('wbplanview_mappings_line_elements')[0];
+		else
+			return element.parentElement;
 	},
 
 	get_line_elements(line_elements_container){

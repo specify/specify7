@@ -55,10 +55,18 @@ const main = {
 		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
 
 		mappings.list__mappings.addEventListener('change', event => {
-			if (event.target && event.target.classList.contains('radio__field'))
-				mappings.change_selected_field(event);
-			else if (event.target && event.target.tagName === 'SELECT')
-				mappings.change_option_field(event);
+
+			const element = event.target;
+
+			if (element.tagName === 'SELECT') {
+				const element_type = element.getAttribute('data-type');
+
+				if (element_type === 'table')
+					mappings.field_change_callback(event);
+
+				else if (element_type === 'headers')
+					mappings.header_change_callback(event);
+			}
 		});
 
 		mappings.list__tables.addEventListener('click', event => {
@@ -75,15 +83,15 @@ const main = {
 		});
 
 		mappings.toggle_hidden_fields.addEventListener('change', () => {
-			if(mappings.list__mappings.classList.contains('hide_hidden_fields'))
+			if (mappings.list__mappings.classList.contains('hide_hidden_fields'))
 				mappings.list__mappings.classList.remove('hide_hidden_fields');
 			else
 				mappings.list__mappings.classList.add('hide_hidden_fields');
-		})
+		});
 
 		// CONFIG
 
-		if(!this.constructor_has_run)
+		if (!this.constructor_has_run)
 			main.constructor_first_run();
 		else
 			mappings.list__tables.innerHTML = mappings.data_model_html;
@@ -159,25 +167,32 @@ const main = {
 	* */
 	validate(){
 
-		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name,mappings.get_mappings_tree());
+		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
 
-		if(validation_results.length===0)
+		if (validation_results.length === 0)
 			return true;
 
 		const field_locations = [];
 
 		validation_results.map(field_path => field_locations.push(mappings.get_friendly_field_path(field_path).join(mappings.friendly_level_separator)));
 
-		const validation_message = 'Please make sure to map the following required fields before proceeding:<br>'+field_locations.join('<br>');
+		const validation_message = 'Please make sure to map the following required fields before proceeding:<br>' + field_locations.join('<br>');
 
-		let dialog = $('<div>'+validation_message+'</div>').dialog({
+		let dialog = $('<div>' + validation_message + '</div>').dialog({
 			modal: true,
 			title: 'Invalid Mapping',
-			close: function() { $(this).remove(); dialog = null; },
+			close: function(){
+				$(this).remove();
+				dialog = null;
+			},
 			buttons: [
-				{text: 'Cancel', click: function() { $(this).dialog('close'); }}
+				{
+					text: 'Cancel', click: function(){
+						$(this).dialog('close');
+					}
+				}
 			]
-			});
+		});
 
 
 		return validation_results;
