@@ -60,7 +60,9 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          build-args: BUILD_VERSION=${{ steps.prep.outputs.version }}
+          build-args: |
+            BUILD_VERSION=${{ steps.prep.outputs.version }}
+            GIT_SHA=${{ github.sha }}
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache

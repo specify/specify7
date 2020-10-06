@@ -64,8 +64,12 @@ COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/
 
 
 ARG BUILD_VERSION
+ARG GIT_SHA
 ENV BUILD_VERSION=$BUILD_VERSION
 RUN make specifyweb/settings/build_version.py
+RUN echo $BUILD_VERSION > specifyweb/frontend/static/build_version.txt
+RUN echo $GIT_SHA > specifyweb/frontend/static/git_sha.txt
+RUN date > specifyweb/frontend/static/build_date.txt
 
 
 ######################################################################
