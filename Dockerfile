@@ -62,6 +62,9 @@ RUN ve/bin/pip install --no-cache-dir gunicorn
 COPY --chown=specify:specify . /opt/specify7
 COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
 
+
+ARG BUILD_VERSION
+ENV BUILD_VERSION=$BUILD_VERSION
 RUN make specifyweb/settings/build_version.py
 
 
