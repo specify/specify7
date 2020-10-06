@@ -9,67 +9,6 @@ const mappings = {
 
 
 	/*
-	* Maps a field
-	* @param {string} mapping_type - existing_header / new_header / new_static_header
-	* @param {mixed} header_element - {DOMElement} header_element - <input type="radio"> if mapping type is `existing_header`
-	* 								  {string} header_name - Name of the header if mapping type is `new_header`
-	* 								  {string} static_value - Value of a static field if mapping type is `static_value`
-	* @param {array} mapping_path - Mapping path array
-	* @return {DOMElement} Returns header_element if mapping type is `existing_header`
-	* 					   Else, returns <input type="radio"> for a newly created element
-	* */
-	map_field(mapping_type, header_element, mapping){
-
-		let heading_mapping;
-
-		if (mapping_type === 'existing_header') {
-			const label = header_element.parentElement;
-			heading_mapping = dom_helper.get_mappping_friendly_name_element(label);
-			heading_mapping.classList.remove('undefined');
-		} else {
-
-			const header_line__element = document.createElement('div');
-			this.list__headers.appendChild(header_line__element);
-
-			if (mapping_type === 'new_header') {
-				let header_name;
-
-				if (header_element === '')
-					header_name = 'New Column ' + this.new_header_id;
-				else
-					header_name = header_element;
-
-				header_line__element.innerHTML += html_generator.new_header(header_name, 'mapped_header');
-
-				this.new_header_id++;
-			} else if (mapping_type === 'new_static_header')
-				header_line__element.innerHTML += html_generator.new_header(header_element, 'static_header');
-
-			const new_header_label = this.list__headers.lastElementChild;
-			header_element = dom_helper.get_control_element(new_header_label)[0];
-			header_element.checked = true;
-			heading_mapping = dom_helper.get_mappping_friendly_name_element(new_header_label);
-
-		}
-
-		const mapping_path = mapping.join(mappings.level_separator);
-
-		header_element.setAttribute('data-path', mapping_path);
-
-		if (mapping.length === 1 && typeof this.selected_field !== "undefined")
-			this.selected_field.setAttribute('disabled', '');
-
-		const friendly_field_path_array = mappings.get_friendly_field_path(mapping.slice());
-		const friendly_field_path = friendly_field_path_array.join(mappings.friendly_level_separator);
-
-		heading_mapping.innerText = mappings.get_friendly_field_path_preview(friendly_field_path_array, mapping);
-		heading_mapping.setAttribute('title', friendly_field_path);
-
-		return heading_mapping;
-
-	},
-
-	/*
 	* Implements array of mappings
 	* @param {array} array_of_mappings - Array of arrays of mappings like [mapping_type,header_name,mapping_path] where
 	* 									 @param {string} mapping_type - existing_header / new_header / new_static_header
@@ -83,12 +22,15 @@ const mappings = {
 		if (array_of_mappings.length === 0)
 			return false;
 
+		console.log(array_of_mappings);
+
 		Object.values(array_of_mappings).map(header_data =>
-			mappings.map_field(...header_data)
+			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'])
 		);
 
 		this.changes_made = true;
-		mappings.update_mapping_line();
+
+		mappings.update_mapped_headers();
 
 	},
 
@@ -134,9 +76,8 @@ const mappings = {
 	* */
 	set_headers: function(headers = [], upload_plan = false, headers_defined = true){
 
-		this.raw_headers = headers;
-
-		tree_helpers.raw_headers = this.raw_headers;
+		tree_helpers.raw_headers = headers;
+		this.headers = Object.fromEntries(headers.map(header_name=>[header_name,false]));
 
 		if (upload_plan !== false) {
 			let mappings_tree = '';
@@ -146,7 +87,7 @@ const mappings = {
 
 			mappings_tree = mappings.upload_plan_to_mappings_tree(upload_plan);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
-			//mappings.implement_array_of_mappings(array_of_mappings);//TODO: uncomment this
+			mappings.implement_array_of_mappings(array_of_mappings);
 		}
 
 	},
@@ -177,78 +118,11 @@ const mappings = {
 
 	// FUNCTIONS
 
-	/*
-	* Callback for when user presses the `map` button
-	* This function calls `map_field` with necessary parameters
-	* */
-	map_field_callback(){
-
-		if (typeof this.selected_field === "undefined" ||
-			dom_helper.is_field_disabled(this.selected_field)
-		)
-			return;
-
-		let mapping_type;
-		let header;
-		let mapping;
-
-		const label = this.selected_header.parentElement;
-		let heading_mapping = dom_helper.get_mappping_friendly_name_element(label);
-
-		header = this.selected_header;
-		mapping = mappings.get_field_path();
-
-		if (typeof heading_mapping === "undefined") {
-			mapping_type = dom_helper.get_header_name(this.selected_header);
-			header = '';
-		} else {
-			mapping_type = 'existing_header';
-			mappings.unmap_field_callback();
-		}
-
-		this.selected_header = mappings.map_field(mapping_type, header, mapping);
-
-		this.changes_made = true;
-		mappings.update_buttons();
-		mappings.update_mapping_line();
-
-	},
-
-	/*
-	* Callback for when users presses the `unmap` button
-	* */
-	unmap_field_callback(){
-
-		const label = this.selected_header.parentElement;
-		const heading_mapping = dom_helper.get_mappping_friendly_name_element(label);
-
-		const mappings_path = dom_helper.get_mapping_path(this.selected_header);
-
-		if (mappings_path === null)
-			return;
-
-		const mappings_array = mappings_path.split(mappings.level_separator);
-
-		heading_mapping.classList.add('undefined');
-		this.selected_header.removeAttribute('data-path');
-		heading_mapping.removeAttribute('title');
-		heading_mapping.innerText = '';
-
-		this.changes_made = true;
-
-		// go through each field and update it's status
-		mappings.update_all_mapping_lines(mappings_array, mappings_path);
-
-		mappings.update_all_mapping_lines();
-
-
-	},
-
-	add_new_mapping_line(position = -1, mappings_path = []){
+	add_new_mapping_line(position = -1, mappings_path = [], header_data){
 
 		const new_mapping_line = document.createElement('div');
 
-		const lines = mappings.list__mappings.childNodes;
+		const lines = mappings.list__mappings.children;
 
 		if (position === 0 && lines.length !== 0)
 			lines[0].before(new_mapping_line);
@@ -257,7 +131,40 @@ const mappings = {
 		else
 			lines[position].after(new_mapping_line);
 
-		const mapping_line_data = mappings.get_field_from_mappings_path(mappings_path);
+		const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mappings_path);
+		const headers = Object.fromEntries(Object.entries(mappings.headers).map(([header_name, is_mapped])=>
+			[header_name,{
+				header_friendly_name: header_name,
+				is_mapped: is_mapped,
+				is_default: header_data['mapping_type']==='existing_header' && header_data['header_name']===header_name,
+			}]
+		));
+
+		if(header_data['mapping_type']==='new_column')
+			headers['new_column'] = {
+				header_friendly_name: 'New Column',
+				is_new: false,
+				is_default: true,
+			}
+
+		if(header_data['mapping_type']==='new_static_column')
+			headers['new_static_column'] = {
+				header_friendly_name: 'New Static Column',
+				is_new: false,
+				is_default: true,
+			};
+
+		mapping_line_data.push({
+			mapping_type: 'headers',
+			headers_data: headers,
+		});
+
+		if(header_data['mapping_type']==='new_static_column')
+			mapping_line_data.push({
+				mapping_type: 'static_value',
+				static_value: header_data['header_name'],
+			});
+
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data);
 
 	},
@@ -265,7 +172,7 @@ const mappings = {
 
 	// GETTERS
 
-	get_field_from_mappings_path(mappings_path=[], recursive_payload=undefined){
+	get_mapping_line_data_from_mappings_path(mappings_path=[], recursive_payload=undefined){
 
 		let table_name = '';
 		let parent_table_name = '';
@@ -286,8 +193,10 @@ const mappings = {
 		else
 			table_name = mappings.base_table_name;
 
-		//mapping_line_data.push('getting fields for ' + table_name + ' with parent_table: ' + parent_table_name + ' and parent_table_relationship: ' + parent_table_relationship_name)
-		mapping_line_data.push(mappings.get_fields_for_table(table_name, local_mappings_path, parent_table_name, parent_table_relationship_name));
+		let default_value = mappings_path[mappings_path_position+1];
+
+		//mapping_line_data.push('getting fields for ' + table_name + ' with default_value: '+default_value+' and with parent_table: ' + parent_table_name + ' and parent_table_relationship: ' + parent_table_relationship_name)
+		mapping_line_data.push(mappings.get_fields_for_table(table_name, local_mappings_path, default_value, parent_table_name, parent_table_relationship_name));
 
 
 		const next_path_index = mappings_path_position+1;
@@ -308,7 +217,7 @@ const mappings = {
 					mappings_path_position: next_path_index,
 				};
 
-				return mappings.get_field_from_mappings_path(mappings_path,new_recursive_payload);
+				return mappings.get_mapping_line_data_from_mappings_path(mappings_path,new_recursive_payload);
 			}
 		}
 
@@ -317,7 +226,7 @@ const mappings = {
 	},
 
 
-	get_fields_for_table(table_name, mappings_path=[], parent_table_name='', parent_table_relationship_name=''){
+	get_fields_for_table(table_name, mappings_path=[], default_value="0", parent_table_name='', parent_table_relationship_name=''){
 
 		const mapped_fields = Object.keys(mappings.get_mapped_fields(mappings_path));
 
@@ -328,7 +237,7 @@ const mappings = {
 			const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
 
 			const is_enabled = (//disable field
-				mapped_fields.indexOf(field_name) === -1 ||//if it is mapped
+				mapped_fields.indexOf(field_name) !== -1 ||//if it is mapped
 				(
 					!is_relationship ||//and is not a relationship
 					(//or is of -to-one type
@@ -338,6 +247,8 @@ const mappings = {
 				)
 			);
 
+			const is_default = field_name === default_value;
+
 			const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
 
 			result_fields[field_name] = {
@@ -345,6 +256,7 @@ const mappings = {
 				is_enabled: is_enabled,
 				is_required: is_required,
 				is_hidden: is_hidden,
+				is_default: is_default,
 			};
 
 		}
@@ -408,6 +320,8 @@ const mappings = {
 					is_mapped = true;
 				}
 			}
+			else
+				continue;
 
 			mappings_path.push(result_name);
 
@@ -641,7 +555,7 @@ const mappings = {
 		if (is_relationship) {
 			const line_elements_container = dom_helper.get_line_elements_container(field_select_element);
 			const mapping_path = mappings.get_mappings_path(line_elements_container);
-			const mapping_details = mappings.get_field_from_mappings_path(mapping_path, false);
+			const mapping_details = mappings.get_mapping_details_from_mappings_path(mapping_path, false);
 			line_elements_container.append(html_generator.mapping_element(mapping_details));
 		}
 
@@ -672,12 +586,75 @@ const mappings = {
 				static_value: '',
 			};
 			line_elements_container.append(html_generator.mapping_element(mapping_details));
-		} else
+		} else {
+
+			if(selected_header !== 'new_column'){
+
+			}
+
 			delete_textarea();
 
-	}
+		}
+
+		mappings.update_mapped_headers();
+
+	},
 
 	//HELPERS
+
+	update_mapped_fields(mapping_path_filter){
+
+	},
+
+	update_mapped_headers(){
+
+		const lines = dom_helper.get_lines(mappings.list__mappings, true);
+		const select_elements = [];
+		const headers = Object.fromEntries(Object.keys(mappings.headers).map(header=>[header,false]));
+
+		let i = 0;
+		for(const line of lines){
+			const select_element = dom_helper.get_line_header_select(line);
+			if(typeof select_element === "undefined")
+				continue;
+
+			const selected_header = select_element.value;
+			select_elements[i] = [select_element, selected_header];
+			if(typeof headers[selected_header] !== "undefined")
+				headers[selected_header] = true;
+
+			i++;
+		}
+
+		mappings.headers = headers;
+		const headers_data = {};
+
+		for(const [header_name,is_mapped] of Object.entries(headers)){
+			headers_data[header_name] = {
+				header_friendly_name: header_name,
+				is_mapped: is_mapped,
+				is_default: false,
+				is_recommended: false,
+			}
+		}
+
+
+		const options_html = html_generator.headers(headers_data);
+
+		i=0;
+		for(const [select_element,selected_header] of select_elements){
+			select_element.innerHTML = options_html;
+			select_element.value = selected_header;
+			i++;
+		}
+
+		mappings.run_automapper(select_elements, headers_data);
+
+	},
+
+	run_automapper(select_elements, headers_data){
+
+	},
 
 };
 

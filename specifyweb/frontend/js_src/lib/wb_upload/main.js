@@ -10,8 +10,6 @@ const upload_plan_converter = require('./upload_plan_converter.js');
 * */
 const main = {
 
-	//TODO: rename raw_headers to headers
-
 	/*
 	* Configuration module that set's default settings
 	* */
@@ -45,7 +43,7 @@ const main = {
 		mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 		mappings.hide_hidden_fields = true;
-		mappings.raw_headers = [];
+		mappings.headers = {};
 		mappings.base_table_name = undefined;
 
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);

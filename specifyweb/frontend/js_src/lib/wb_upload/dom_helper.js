@@ -23,28 +23,38 @@ const dom_helper = {
 
 	get_lines(container, return_line_elements=false){
 
-		const lines = container.childNodes;
+		const lines = Object.values(container.children).reduce((lines,line)=>{
+			if(line.innerHTML !== '')
+				lines.push(line);
+			return lines;
+		},[]);
 
-		return Object.values(()=>{
-			if(return_line_elements)
-				return lines.map(line=>dom_helper.get_line_elements_container(line));
-			else
-				return lines;
-		});
+		if(return_line_elements)
+			return lines.map(line=>dom_helper.get_line_elements_container(line));
+		else
+			return lines;
 
 	},
 
 	get_line_elements_container(element){
-
 		if(element.tagName==='DIV')
 			return element.getElementsByClassName('wbplanview_mappings_line_elements')[0];
 		else
 			return element.parentElement;
+
 	},
 
 	get_line_elements(line_elements_container){
-		return line_elements_container.childNodes;
+		return line_elements_container.children;
 	},
+
+	get_line_header_select(line_elements_container){
+		const line_elements = dom_helper.get_line_elements(line_elements_container);
+		for(const line_element of line_elements)
+			if(line_element.getAttribute('data-type')==='headers')
+				return line_element;
+		return undefined;
+	}
 
 };
 

@@ -71,6 +71,7 @@
 /* MAPPINGS LINE */
 .wbplanview_mappings_line {
 	display: flex;
+    margin-bottom: 0.3rem;
 }
 
 
@@ -108,10 +109,19 @@
 
 
 /* MAPPINGS LINE ELEMENTS */
+.wbplanview_mappings_line_elements {
+	display: flex;
+	align-items: center;
+}
+
 .wbplanview_mappings_line_elements > * {
 	margin-left: 0.7rem;
 }
 
 .hide_hidden_fields [data-field_group="hidden_fields"] {
     display: none;
+}
+
+.mapping_arrow {
+	width: 1rem;
 }

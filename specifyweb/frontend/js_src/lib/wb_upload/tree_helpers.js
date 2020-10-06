@@ -177,7 +177,13 @@ const tree_helpers = {
 				} else
 					mapping_type = 'new_header';
 
-				result.push([mapping_type, tree_node, local_path]);
+				result.push({
+					'mapping_path': local_path,
+					'header_data': {
+						'mapping_type': mapping_type,
+						'header_name': tree_node,
+					}
+				});
 
 			} else
 				tree_helpers.mappings_tree_to_array_of_mappings(tree_node, result, local_path);

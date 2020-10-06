@@ -44,6 +44,8 @@ const html_generator = {
 
 	mapping_element(mapping_details){
 
+		//TODO: rename mapping_type to mapping_element_type
+
 		const {mapping_type} = mapping_details;
 
 		if (mapping_type === 'static_value') {
@@ -53,6 +55,7 @@ const html_generator = {
 
 		let attributes = '';
 		let children = '';
+		let prepend = '';
 
 		if (mapping_type === 'table') {
 			const {name, friendly_name, fields_data, table_name, mapping_subtype} = mapping_details;
@@ -62,9 +65,10 @@ const html_generator = {
 		} else if (mapping_type === 'headers') {
 			const {headers_data} = mapping_details;
 			children = html_generator.headers(headers_data);
+			prepend = '<img src="../../../static/img/arrow.svg" class="mapping_arrow" alt="Mapping">';
 		}
 
-		return `<select data-type="` + mapping_type + `" ` + attributes + `>`
+		return prepend+`<select data-type="` + mapping_type + `" ` + attributes + `>`
 			+ `<option value="0"></option>`
 			+ children
 			+ `</select>`;
@@ -102,11 +106,16 @@ const html_generator = {
 	},
 
 	table_field(field_name, field_data){
-		const {field_friendly_name, is_enabled} = field_data;
+		const {field_friendly_name, is_enabled, is_default} = field_data;
 
-		const is_enabled_string = is_enabled ? '' : 'disabled';
+		const attributes = [];
 
-		return '<option value="' + field_name + '" ' + is_enabled_string + '>' + field_friendly_name + '</option>';
+		if(!is_enabled)
+			attributes.push('disabled');
+		if(is_default)
+			attributes.push('selected');
+
+		return '<option value="' + field_name + '" ' + attributes.join(' ') + '>' + field_friendly_name + '</option>';
 	},
 
 	headers(headers_data){
@@ -122,27 +131,28 @@ const html_generator = {
 			[header_group_label, []]
 		));
 
-		header_groups['add_new_column'] = [
-			{
-				header_name: 'new_column',
+		if(typeof headers_data['new_column'] === "undefined")
+			headers_data['new_column'] = {
 				header_friendly_name: 'New Column',
-				is_mapped: false,
-			},
-			{
-				header_name: 'new_static_column',
+				is_new: true,
+			};
+
+		if(typeof headers_data['new_static_column'] === "undefined")
+			headers_data['new_static_column'] = {
 				header_friendly_name: 'New Static Column',
-				is_mapped: false,
-			},
-		];
+				is_new: true,
+			};
 
 		for (const [header_name, header_data] of Object.entries(headers_data)) {
 
-			const header_html = html_generator.table_field(header_name, header_data);
+			const header_html = html_generator.header(header_name, header_data);
 
 			let header_category = 'unmapped_headers';
-			if (header_html['is_mapped'])
+			if (header_data['is_new'])
+				header_category = 'add_new_column';
+			else if (header_data['is_mapped'])
 				header_category = 'mapped_headers';
-			else if (header_html['is_recommended'])
+			else if (header_data['is_recommended'])
 				header_category = 'recommended_headers';
 
 			header_groups[header_category].push(header_html);
@@ -154,11 +164,17 @@ const html_generator = {
 	},
 
 	header(header_name, header_data){
-		const {header_friendly_name, is_mapped} = header_data;
 
-		const is_mapped_string = is_mapped ? '' : 'disabled';
+		const {header_friendly_name, is_mapped, is_default} = header_data;
 
-		return '<option value="' + header_name + '" ' + is_mapped_string + '>' + header_friendly_name + '</option>';
+		const attributes = [];
+
+		if(is_mapped)
+			attributes.push('disabled');
+		if(is_default)
+			attributes.push('selected');
+
+		return '<option value="' + header_name + '" ' + attributes.join(' ') + '>' + header_friendly_name + '</option>';
 	},
 
 	render_groups(groups, group_labels){
