@@ -257,7 +257,7 @@ const mappings = {
 		else
 			lines[position].after(new_mapping_line);
 
-		const mapping_line_data = mappings.get_mapping_line_data(mappings_path, true);
+		const mapping_line_data = mappings.get_field_from_mappings_path(mappings_path);
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data);
 
 	},
@@ -265,86 +265,103 @@ const mappings = {
 
 	// GETTERS
 
+	get_field_from_mappings_path(mappings_path=[], recursive_payload=undefined){
 
-	get_mapping_line_data(mappings_path, recursive = true, mappings_path_position = -1, parent_table = '', parent_relationship = ''){
+		let table_name = '';
+		let parent_table_name = '';
+		let parent_table_relationship_name = '';
+		let mapping_line_data = [];
+		let mappings_path_position = -1;
+		let local_mappings_path = [];
 
-		if (mappings_path.length === 0) {
+		if(typeof recursive_payload !== "undefined") {
+			table_name = recursive_payload['table_name'];
+			parent_table_name = recursive_payload['parent_table_name'];
+			parent_table_relationship_name = recursive_payload['parent_table_relationship_name'];
+			mapping_line_data = recursive_payload['mapping_line_data'];
+			mappings_path_position = recursive_payload['mappings_path_position'];
+			local_mappings_path = mappings_path.slice(0,mappings_path_position);
+		}
 
-			const table_name = mappings.base_table_name;
+		else
+			table_name = mappings.base_table_name;
 
-			const mapped_fields = Object.keys(mappings.get_mapped_fields(mappings_path));
+		//mapping_line_data.push('getting fields for ' + table_name + ' with parent_table: ' + parent_table_name + ' and parent_table_relationship: ' + parent_table_relationship_name)
+		mapping_line_data.push(mappings.get_fields_for_table(table_name, local_mappings_path, parent_table_name, parent_table_relationship_name));
 
-			const result_fields = {};
 
-			for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
+		const next_path_index = mappings_path_position+1;
+		const next_path_element_name = mappings_path[next_path_index];
+		if(typeof next_path_element_name !== "undefined"){
 
-				const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
+			const next_path_element = mappings.tables[table_name]['fields'][next_path_element_name]
 
-				const is_enabled = (
-					(
-						!is_relationship && mapped_fields.indexOf(field_name) === -1
-					) ||
-					(
-						is_relationship &&
-						relationship_type !== 'one-to-one' &&
-						relationship_type !== 'one-to-many'
-					)
-				);
+			if(next_path_element['is_relationship']){
 
-				const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
+				const next_table_name = next_path_element['table_name'];
 
-				result_fields[field_name] = {
-					field_friendly_name: final_friendly_name,
-					is_enabled: is_enabled,
-					is_required: is_required,
-					is_hidden: is_hidden,
+				const new_recursive_payload = {
+					table_name: next_table_name,
+					parent_table_name: table_name,
+					parent_table_relationship_name: next_path_element_name,
+					mapping_line_data: mapping_line_data,
+					mappings_path_position: next_path_index,
 				};
 
+				return mappings.get_field_from_mappings_path(mappings_path,new_recursive_payload);
 			}
+		}
 
-			let mapping_subtype = 'simple';
-			if (mappings.data_model_handler.is_table_a_tree(table_name))
-				mapping_subtype = 'tree';
+		return mapping_line_data;
 
-			return [{
-				mapping_type: 'table',
-				mapping_subtype: mapping_subtype,
-				name: '',
-				friendly_name: mappings.tables[table_name]['table_friendly_name'],
-				table_name: table_name,
-				fields_data: result_fields,
-			}];
+	},
+
+
+	get_fields_for_table(table_name, mappings_path=[], parent_table_name='', parent_table_relationship_name=''){
+
+		const mapped_fields = Object.keys(mappings.get_mapped_fields(mappings_path));
+
+		const result_fields = {};
+
+		for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
+
+			const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
+
+			const is_enabled = (//disable field
+				mapped_fields.indexOf(field_name) === -1 ||//if it is mapped
+				(
+					!is_relationship ||//and is not a relationship
+					(//or is of -to-one type
+						relationship_type !== 'one-to-one' &&
+						relationship_type !== 'many-to-one'
+					)
+				)
+			);
+
+			const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
+
+			result_fields[field_name] = {
+				field_friendly_name: final_friendly_name,
+				is_enabled: is_enabled,
+				is_required: is_required,
+				is_hidden: is_hidden,
+			};
 
 		}
 
+		let mapping_subtype = 'simple';
+		if (mappings.data_model_handler.is_table_a_tree(table_name))
+			mapping_subtype = 'tree';
 
-		// if(mappings_path_position===-1){
-		//
-		// 	parent_table = mappings.base_table_name;
-		//
-		// 	if(!recursive && mappings_path.length!==0)
-		// 		mappings_path_position=mappings_path.length-1;
-		// 	else
-		// 		mappings_path_position=0;
-		// }
-		//
-		// const mappings_path_part = mappings_path[mappings_path_position];
-		//
-		// const result_fields = [];
+		return {
+			mapping_type: 'table',
+			mapping_subtype: mapping_subtype,
+			name: '',
+			friendly_name: mappings.tables[table_name]['table_friendly_name'],
+			table_name: table_name,
+			fields_data: result_fields,
+		};
 
-
-		// const table_name = mappings.base_table_name;
-		// //const relationship_type = '';
-		//
-		// for(const mapping_path of mappings_path){
-		//
-		// }
-		//
-		// const result_fields = [];
-		//
-		//
-		//
-		// return result_fields;
 
 	},
 
@@ -624,7 +641,7 @@ const mappings = {
 		if (is_relationship) {
 			const line_elements_container = dom_helper.get_line_elements_container(field_select_element);
 			const mapping_path = mappings.get_mappings_path(line_elements_container);
-			const mapping_details = mappings.get_mapping_line_data(mapping_path, false);
+			const mapping_details = mappings.get_field_from_mappings_path(mapping_path, false);
 			line_elements_container.append(html_generator.mapping_element(mapping_details));
 		}
 
