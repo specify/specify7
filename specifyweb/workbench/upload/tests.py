@@ -15,7 +15,7 @@ from .data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, 
 from .upload_table import UploadTable, to_many_filters_and_excludes, BoundUploadTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
-from .upload import do_upload_csv
+from .upload import do_upload, do_upload_csv
 from .parsing import parse_coord
 from .upload_plan_schema import schema, parse_plan
 from . import validation_schema
@@ -679,3 +679,43 @@ class UploadTests(ApiTests):
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
         self.assertEqual([CellIssue(column='Start Date Collected', issue='bad date value: foobar'), CellIssue(column='ID Date', issue='bad date value: bad date')], failed_result.failures)
+
+    def test_agent_type(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'agenttype': 'agenttype',
+                'lastname': 'lastname',
+            },
+            static={},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'agenttype': "Person", 'lastname': 'Doe'},
+            {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
+            {'agenttype': "Extra Terrestrial", 'lastname': 'Zoidberg'},
+            {'agenttype': "other", 'lastname': 'Juju'},
+            {'agenttype': "group", 'lastname': 'Van Halen'},
+        ]
+        results = do_upload(self.collection, data, plan)
+
+        result0 = results[0].record_result
+        assert isinstance(result0, Uploaded)
+        self.assertEqual(1, get_table('agent').objects.get(id=result0.get_id()).agenttype)
+
+        result1 = results[1].record_result
+        assert isinstance(result1, Uploaded)
+        self.assertEqual(0, get_table('agent').objects.get(id=result1.get_id()).agenttype)
+
+        result2 = results[2].record_result
+        assert isinstance(result2, ParseFailures)
+        self.assertEqual([CellIssue(column='agenttype', issue="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']")], result2.failures)
+
+        result3 = results[3].record_result
+        assert isinstance(result3, Uploaded)
+        self.assertEqual(2, get_table('agent').objects.get(id=result3.get_id()).agenttype)
+
+        result4 = results[4].record_result
+        assert isinstance(result4, Uploaded)
+        self.assertEqual(3, get_table('agent').objects.get(id=result4.get_id()).agenttype)

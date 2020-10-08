@@ -39,6 +39,9 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
     if value == "":
         return ParseResult({fieldname: None}, {})
 
+    if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
+        return parse_agenttype(value)
+
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
         canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
@@ -54,6 +57,16 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
         return parse_date(table, fieldname, value)
 
     return filter_and_upload({fieldname: value})
+
+def parse_agenttype(value: str) -> Union[ParseResult, ParseFailure]:
+    agenttypes = ['Organization', 'Person', 'Other', 'Group']
+
+    value = value.capitalize()
+    try:
+        agenttype = agenttypes.index(value)
+    except ValueError:
+        return ParseFailure("bad agent type: {}. Expected one of {}".format(value, agenttypes))
+    return filter_and_upload({'agenttype': agenttype})
 
 def parse_date(table: Table, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
     precision_field = table.get_field(fieldname + 'precision')
