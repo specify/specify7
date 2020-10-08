@@ -7,6 +7,7 @@ const Backbone = require('./backbone.js');
 const Bacon = require('baconjs');
 const Papa = require('papaparse');
 const Q = require('q');
+const xlsx = require('xlsx');
 
 const schema = require('./schema.js');
 const wbimport = require('./templates/wbimport.html');
@@ -63,11 +64,19 @@ function doImport(template, file, workbenchName, header, encoding) {
         srcfilepath: file.name
     });
 
-    const parseQ = QfromCallback(
-        callback => Papa.parse(file, {
-            encoding: encoding,
-            complete: parse => callback(parse.data)})
-    );
+
+    const file_extension = file.name.split('.').pop();
+    let parseQ;
+	if(file_extension === 'xls' || file_extension === 'xlsx')
+		parseQ = QfromCallback(
+			callback => callback(readXLSX(file))
+		);
+	else
+		parseQ = QfromCallback(
+			callback => Papa.parse(file, {
+				encoding: encoding,
+				complete: parse => callback(parse.data)})
+		);
 
     return parseQ.then(
         rows => header ? rows.slice(1) : rows
@@ -116,6 +125,46 @@ function makeMappingItems(columns) {
     );
 }
 
+function readXLSX(file, preview_size=0){
+
+	return new Promise((resolve, reject)=>{
+
+		const reader = new FileReader();
+		reader.readAsBinaryString(file);
+		reader.onload = e=>{
+
+			const raw_file_data = e.target.result;  // read file contents
+
+			const read_config = {
+				type: 'binary',
+			};
+			if(preview_size !== 0)
+				read_config.sheetRows = preview_size;
+
+			const workbook = xlsx.read(raw_file_data, read_config);  // parse file contents
+
+			const first_sheet_name = workbook.SheetNames[0];
+			const first_workbook = workbook.Sheets[first_sheet_name];  // get the first sheet data
+			let data = xlsx.utils.sheet_to_json(first_workbook, {header: 1});
+
+			if(data.length>0){  // make each row have the same number of cells
+				const header_row = data[0];
+				const number_of_headers = header_row.length;
+				const empty_row = header_row.map(()=>"");
+				data = data.map(line=>{
+					const cells_to_add = number_of_headers-line.length;
+					if(cells_to_add>0)
+						return [...line, ...empty_row.slice(0,cells_to_add)];
+					return line;
+				});
+			}
+			resolve(data);
+		};
+
+	});
+
+}
+
 const WBImportView = Backbone.View.extend({
     __name__: "WBImportView",
     className: 'workbench-import-view',
@@ -142,15 +191,26 @@ const WBImportView = Backbone.View.extend({
 
         const hasHeader = CheckedProperty(this.$(':checkbox'));
 
-        const previews = Bacon.combineAsArray(fileSelected, encodingSelected)
-              .flatMap(
-                  ([file, encoding]) => Bacon.fromCallback(
-                      callback => Papa.parse(file, {
-                          encoding: encoding,
-                          preview: 10,
-                          complete: callback
-                      })))
-              .map(parse => parse.data);
+		const previews = Bacon.combineAsArray(fileSelected, encodingSelected)
+			.flatMap(
+				([file, encoding]) => Bacon.fromCallback(
+					callback => {
+
+						const file_extension = file.name.split('.').pop();
+						const preview_size = 10;
+
+						if(file_extension === 'xls' || file_extension === 'xlsx')
+							readXLSX(file, preview_size).then(data=>callback({data: data}));
+
+						else
+							Papa.parse(file, {
+								encoding: encoding,
+								preview: preview_size,
+								complete: callback
+							});
+					}
+				))
+			.map(parse => parse.data);
 
         Preview(this.$('table'), previews, hasHeader);
 
