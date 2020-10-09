@@ -7,7 +7,119 @@ from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
 
+
 class ParsingTests(UploadTestsBase):
+    def setUp(self) -> None:
+        super().setUp()
+
+        agent = get_table('Splocalecontainer').objects.create(
+            name='agent',
+            schematype=0,
+            discipline=self.discipline,
+            ishidden=False,
+            issystem=False,
+        )
+
+        agent.items.create(
+            name='title',
+            ishidden=False,
+            issystem=False,
+            picklistname='AgentTitle',
+        )
+
+        agenttitle = get_table('Picklist').objects.create(
+            name='AgentTitle',
+            type=0,
+            collection=self.collection,
+            readonly=True,
+        )
+
+        agenttitle.picklistitems.create(title='Mr.', value='mr')
+        agenttitle.picklistitems.create(title='Ms.', value='ms')
+        agenttitle.picklistitems.create(title='Dr.', value='dr')
+
+        co = get_table('Splocalecontainer').objects.create(
+            name='collectionobject',
+            schematype=0,
+            discipline=self.discipline,
+            ishidden=False,
+            issystem=False
+        )
+
+        co.items.create(
+            name='text1',
+            ishidden=False,
+            issystem=False,
+            picklistname='Habitat',
+        )
+
+        habitat = get_table('Picklist').objects.create(
+            name='Habitat',
+            type=0,
+            collection=self.collection,
+            readonly=False,
+        )
+
+        habitat.picklistitems.create(title='Marsh', value='marsh')
+
+    def test_nonreadonly_picklist(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'catno': '1', 'habitat': 'River'},
+            {'catno': '2', 'habitat': 'Lake'},
+            {'catno': '3', 'habitat': 'Marsh'},
+            {'catno': '4', 'habitat': 'Lake'},
+            {'catno': '5', 'habitat': 'marsh'},
+            {'catno': '6', 'habitat': 'lake'},
+        ]
+        results = do_upload(self.collection, data, plan)
+        for result in results:
+            self.assertIsInstance(result.record_result, Uploaded)
+
+        for i, v in enumerate('River Lake marsh Lake marsh lake'.split()):
+            r = results[i].record_result
+            assert isinstance(r, Uploaded)
+            self.assertEqual(v, get_table('Collectionobject').objects.get(id=r.get_id()).text1)
+
+        self.assertEqual(5, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count())
+
+    def test_readonly_picklist(self) -> None:
+        plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'title': 'title',
+                'lastname': 'lastname',
+            },
+            static={'agenttype': 1},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'title': "Mr.", 'lastname': 'Doe'},
+            {'title': "Dr.", 'lastname': 'Zoidberg'},
+            {'title': "Hon.", 'lastname': 'Juju'},
+        ]
+        results = do_upload(self.collection, data, plan)
+
+        result0 = results[0].record_result
+        assert isinstance(result0, Uploaded)
+        self.assertEqual('mr', get_table('agent').objects.get(id=result0.get_id()).title)
+
+        result1 = results[1].record_result
+        assert isinstance(result1, Uploaded)
+        self.assertEqual('dr', get_table('agent').objects.get(id=result1.get_id()).title)
+
+        result2 = results[2].record_result
+        assert isinstance(result2, ParseFailures)
+        self.assertEqual([CellIssue(column='title', issue='value Hon. not in picklist AgentTitle')], result2.failures)
+
+
     def test_parse_latlong(self) -> None:
         tests = {
             '34.123 N': (34.123, 0),

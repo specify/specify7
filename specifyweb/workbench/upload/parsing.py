@@ -6,6 +6,9 @@ import re
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union
 from dateparser import DateDataParser # type: ignore
 
+from django.core.exceptions import ObjectDoesNotExist
+
+from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import get_uiformatter
 
@@ -42,6 +45,16 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
     if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
         return parse_agenttype(value)
 
+    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
+        container__discipline=collection.discipline,
+        container__schematype=0,
+        container__name=tablename.lower(),
+        name=fieldname.lower())
+
+
+    if schema_items and schema_items[0].picklistname:
+        return parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value)
+
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
         canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
@@ -57,6 +70,19 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
         return parse_date(table, fieldname, value)
 
     return filter_and_upload({fieldname: value})
+
+def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+    picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
+    if picklist.type == 0:
+        try:
+            item = picklist.picklistitems.get(title=value)
+            return filter_and_upload({fieldname: item.value})
+        except ObjectDoesNotExist:
+            if picklist.readonly:
+                return ParseFailure("value {} not in picklist {}".format(value, picklist.name))
+            return filter_and_upload({fieldname: value})
+    else:
+        raise NotImplemented("unsupported picklist type {}".format(picklist.type))
 
 def parse_agenttype(value: str) -> Union[ParseResult, ParseFailure]:
     agenttypes = ['Organization', 'Person', 'Other', 'Group']
