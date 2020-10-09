@@ -9,8 +9,6 @@ const template = require('./templates/wbplanview.html');
 const navigation = require('./navigation.js');
 const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
-// const dom_helper = require('./wb_upload/dom_helper.js');
-// const helper = require('./wb_upload/helper.js');
 
 
 const PlanView = Backbone.View.extend({
@@ -65,19 +63,9 @@ const PlanView = Backbone.View.extend({
 
                         PlanView.mappings = mappings;
 
-                        //const new_headers = helper.fix_headers(headers);
-
-                        // if(typeof new_headers !== 'boolean'){//update headers and upload plan
-                        //
-                        // }
-
-
-                        //const /*[*/set_headers/*, headers_container]*/ = mappings_main.constructor().bind(mappings_main);
                         this.mappings = mappings_main.constructor();
 
-                        //PlanView.headers_container = headers_container;
-
-                        const wait_for_constructor_to_finish = () =>{
+                        const wait_for_constructor_to_finish = () =>{//TODO: replace this with a promise
                             if(!mappings_main.constructor_has_run)
                                 setTimeout(wait_for_constructor_to_finish,10);
                             else

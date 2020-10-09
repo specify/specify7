@@ -178,10 +178,10 @@ const tree_helpers = {
 					mapping_type = 'new_header';
 
 				result.push({
-					'mapping_path': local_path,
-					'header_data': {
-						'mapping_type': mapping_type,
-						'header_name': tree_node,
+					mapping_path: local_path,
+					header_data: {
+						mapping_type: mapping_type,
+						header_name: tree_node,
 					}
 				});
 

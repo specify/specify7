@@ -30,8 +30,6 @@ const mappings = {
 
 		this.changes_made = true;
 
-		mappings.update_mapped_headers();
-
 	},
 
 
@@ -64,7 +62,8 @@ const mappings = {
 		this.tree = {};
 		this.changes_made = true;
 
-		navigation.addUnloadProtect(this, "This mapping has not been saved.");
+		//TODO: uncomment this before production
+		//navigation.addUnloadProtect(this, "This mapping has not been saved.");
 
 	},
 
@@ -81,7 +80,7 @@ const mappings = {
 
 		if (upload_plan !== false) {
 			let mappings_tree = '';
-			const base_table_name = upload_plan['baseTableName'];
+			const {baseTableName: base_table_name} = upload_plan;
 
 			mappings.set_table(base_table_name);
 
@@ -111,7 +110,8 @@ const mappings = {
 		this.button__change_table.style.display = 'none';
 		this.base_table_name = undefined;
 
-		navigation.removeUnloadProtect(this);
+		//TODO: uncomment this before production
+		//navigation.removeUnloadProtect(this);
 
 	},
 
@@ -131,39 +131,12 @@ const mappings = {
 		else
 			lines[position].after(new_mapping_line);
 
-		const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mappings_path);
-		const headers = Object.fromEntries(Object.entries(mappings.headers).map(([header_name, is_mapped])=>
-			[header_name,{
-				header_friendly_name: header_name,
-				is_mapped: is_mapped,
-				is_default: header_data['mapping_type']==='existing_header' && header_data['header_name']===header_name,
-			}]
-		));
+		const line_data = mappings.get_mapping_line_data_from_mappings_path(mappings_path);
 
-		if(header_data['mapping_type']==='new_column')
-			headers['new_column'] = {
-				header_friendly_name: 'New Column',
-				is_new: false,
-				is_default: true,
-			}
-
-		if(header_data['mapping_type']==='new_static_column')
-			headers['new_static_column'] = {
-				header_friendly_name: 'New Static Column',
-				is_new: false,
-				is_default: true,
-			};
-
-		mapping_line_data.push({
-			mapping_type: 'headers',
-			headers_data: headers,
-		});
-
-		if(header_data['mapping_type']==='new_static_column')
-			mapping_line_data.push({
-				mapping_type: 'static_value',
-				static_value: header_data['header_name'],
-			});
+		const mapping_line_data = {
+			line_data: line_data,
+			header_data: header_data,
+		}
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data);
 
@@ -179,39 +152,47 @@ const mappings = {
 		let parent_table_relationship_name = '';
 		let mapping_line_data = [];
 		let mappings_path_position = -1;
-		let local_mappings_path = [];
 
 		if(typeof recursive_payload !== "undefined") {
-			table_name = recursive_payload['table_name'];
-			parent_table_name = recursive_payload['parent_table_name'];
-			parent_table_relationship_name = recursive_payload['parent_table_relationship_name'];
-			mapping_line_data = recursive_payload['mapping_line_data'];
-			mappings_path_position = recursive_payload['mappings_path_position'];
-			local_mappings_path = mappings_path.slice(0,mappings_path_position);
+			({table_name,
+				parent_table_name,
+				parent_table_relationship_name,
+				mapping_line_data,
+				mappings_path_position
+			} = recursive_payload);
 		}
 
 		else
 			table_name = mappings.base_table_name;
 
-		let default_value = mappings_path[mappings_path_position+1];
-
 		//mapping_line_data.push('getting fields for ' + table_name + ' with default_value: '+default_value+' and with parent_table: ' + parent_table_name + ' and parent_table_relationship: ' + parent_table_relationship_name)
-		mapping_line_data.push(mappings.get_fields_for_table(table_name, local_mappings_path, default_value, parent_table_name, parent_table_relationship_name));
+		mapping_line_data.push(mappings.get_fields_for_table(table_name, mappings_path, mappings_path_position, parent_table_name, parent_table_relationship_name));
 
 
 		const next_path_index = mappings_path_position+1;
 		const next_path_element_name = mappings_path[next_path_index];
 		if(typeof next_path_element_name !== "undefined"){
 
-			const next_path_element = mappings.tables[table_name]['fields'][next_path_element_name]
+			let next_table_name = '';
+			let next_parent_table_name = '';
+			const next_path_element = mappings.tables[table_name]['fields'][next_path_element_name];
 
-			if(next_path_element['is_relationship']){
+			const next_is_tree_rank = next_path_element_name.substring(0,mappings.reference_symbol.length)===mappings.reference_symbol;
+			const next_is_to_many_instance = next_path_element_name.substring(0,mappings.tree_symbol.length)===mappings.tree_symbol;
 
-				const next_table_name = next_path_element['table_name'];
+			if(next_is_tree_rank || next_is_to_many_instance) {
+				next_table_name = table_name;
+				next_parent_table_name = parent_table_name;
+			}
+			else if(typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
+				next_table_name = next_path_element['table_name'];
+				next_parent_table_name = table_name;
+			}
 
+			if(next_table_name !== ''){
 				const new_recursive_payload = {
 					table_name: next_table_name,
-					parent_table_name: table_name,
+					parent_table_name: next_parent_table_name,
 					parent_table_relationship_name: next_path_element_name,
 					mapping_line_data: mapping_line_data,
 					mappings_path_position: next_path_index,
@@ -226,54 +207,121 @@ const mappings = {
 	},
 
 
-	get_fields_for_table(table_name, mappings_path=[], default_value="0", parent_table_name='', parent_table_relationship_name=''){
+	get_fields_for_table(table_name, mappings_path=[], mappings_path_position=-2, parent_table_name='', parent_table_relationship_name=''){
 
-		const mapped_fields = Object.keys(mappings.get_mapped_fields(mappings_path));
+		let mapping_element_type = 'simple';
+
+		if(mappings_path_position === -2)
+			mappings_path_position = mappings_path.length-1;
+		const next_mappings_path_position = mappings_path_position + 1;
+		const local_mappings_path = mappings_path.slice(next_mappings_path_position);
+		const next_mapping_path_element = mappings_path[next_mappings_path_position];
+		const default_value = (typeof next_mapping_path_element !== "undefined" ? next_mapping_path_element : "0");
+		const current_mapping_path_part = mappings_path[mappings_path_position];
+
+
+		const parent_relationship_type =
+			(
+				typeof mappings.tables[parent_table_name] !== "undefined" &&
+				typeof mappings.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
+			) ? mappings.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
+		const children_are_to_many_elements =
+			(
+				parent_relationship_type==='one-to-many' ||
+				parent_relationship_type==='many-to-many'
+			) &&
+			parent_table_relationship_name.substring(0,mappings.reference_symbol.length)!==mappings.reference_symbol;
+
+		const table_ranks = mappings.ranks[table_name];
+		const children_are_ranks =
+			typeof table_ranks !== "undefined" &&
+			parent_table_relationship_name.substring(0,mappings.tree_symbol.length)!==mappings.tree_symbol;
+
+		const mapped_fields = Object.keys(mappings.get_mapped_fields(local_mappings_path));
 
 		const result_fields = {};
 
-		for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
 
-			const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
+		if(children_are_to_many_elements){
 
-			const is_enabled = (//disable field
-				mapped_fields.indexOf(field_name) !== -1 ||//if it is mapped
-				(
-					!is_relationship ||//and is not a relationship
-					(//or is of -to-one type
-						relationship_type !== 'one-to-one' &&
-						relationship_type !== 'many-to-one'
-					)
-				)
-			);
+			mapping_element_type = 'to_many';
 
-			const is_default = field_name === default_value;
+			const max_mapped_element_number = mapped_fields.reduce((max_mapped_element_number,mapped_field)=>{
+				const mapped_element_number = parseInt(mapped_field.substring(mappings.reference_symbol.length));
+				if(mapped_element_number > max_mapped_element_number)
+					return mapped_element_number;
+				else
+					return max_mapped_element_number;
+			}, 0);
 
-			const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
+			for(let i=1; i<=(max_mapped_element_number+1); i++){
+				const mapped_object_name = mappings.reference_symbol + i;
+				result_fields[mapped_object_name] = {
+					field_friendly_name: mapped_object_name,
+					is_enabled: true,
+					is_required: false,
+					is_hidden: false,
+					is_default: mapped_object_name === default_value,
+				};
+			}
 
-			result_fields[field_name] = {
-				field_friendly_name: final_friendly_name,
-				is_enabled: is_enabled,
-				is_required: is_required,
-				is_hidden: is_hidden,
-				is_default: is_default,
-			};
+		}
+		else if(children_are_ranks){
+
+			mapping_element_type = 'tree';
+
+			for(const [rank_name, is_required] of Object.entries(table_ranks)) {
+				const formatted_rank_name = mappings.tree_symbol + rank_name;
+				result_fields[formatted_rank_name] = {
+					field_friendly_name: rank_name,
+					is_enabled: true,
+					is_required: is_required,
+					is_hidden: false,
+					is_default: formatted_rank_name === default_value,
+				};
+			}
 
 		}
 
-		let mapping_subtype = 'simple';
-		if (mappings.data_model_handler.is_table_a_tree(table_name))
-			mapping_subtype = 'tree';
+		else
+
+			for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
+
+				const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
+
+				const is_enabled = (//disable field
+					mapped_fields.indexOf(field_name) !== -1 ||//if it is mapped
+					(
+						!is_relationship ||//and is not a relationship
+						(//or is of -to-one type
+							relationship_type !== 'one-to-one' &&
+							relationship_type !== 'many-to-one'
+						)
+					)
+				);
+
+				const is_default = field_name === default_value;
+
+				const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
+
+				result_fields[field_name] = {
+					field_friendly_name: final_friendly_name,
+					is_enabled: is_enabled,
+					is_required: is_required,
+					is_hidden: is_hidden,
+					is_default: is_default,
+				};
+
+			}
+
 
 		return {
-			mapping_type: 'table',
-			mapping_subtype: mapping_subtype,
-			name: '',
+			mapping_element_type: mapping_element_type,
+			name: current_mapping_path_part,
 			friendly_name: mappings.tables[table_name]['table_friendly_name'],
 			table_name: table_name,
 			fields_data: result_fields,
 		};
-
 
 	},
 
@@ -335,6 +383,7 @@ const mappings = {
 
 	},
 
+	//TODO: fix deprecated
 	/*
 	* Puts HTML for a particular relationship line into `current_line` outerHTML
 	* @param {string} table_name - Official target table name (from data model)
@@ -396,7 +445,7 @@ const mappings = {
 				if (field_data['is_hidden'] && this.hide_hidden_fields)
 					return rows;  // hide fields designated as hidden when `hide_hidden_fields` is checked
 
-				const field_name = field_data['friendly_name'];
+				const {friendly_name: field_name} = field_data;
 
 				if (field_data['is_relationship']) {
 
@@ -452,6 +501,7 @@ const mappings = {
 
 	},
 
+	//TODO: fix deprecated
 	/*
 	* Turns a mapping path (array) into a friendly mapping path (array)
 	* @param {array} path - mapping path
@@ -497,6 +547,7 @@ const mappings = {
 
 	},
 
+	//TODO: fix deprecated
 	/*
 	* Traverses the existing mapping to create a mappings tree
 	* @return {object} Returns mappings tree
@@ -555,100 +606,20 @@ const mappings = {
 		if (is_relationship) {
 			const line_elements_container = dom_helper.get_line_elements_container(field_select_element);
 			const mapping_path = mappings.get_mappings_path(line_elements_container);
-			const mapping_details = mappings.get_mapping_details_from_mappings_path(mapping_path, false);
+			const mapping_details = mappings.get_mapping_line_data_from_mappings_path(mapping_path, false);
 			line_elements_container.append(html_generator.mapping_element(mapping_details));
 		}
 
-
-	},
-
-	header_change_callback(event){
-
-		const headers_select_element = event.target;
-		const selected_header = headers_select_element.value;
-
-		function delete_textarea(){
-			const next_element = headers_select_element.nextElementSibling;
-			if (next_element.tagName === 'TEXTAREA')
-				next_element.remove();
-		}
-
-		if (selected_header === "0") {
-			delete_textarea();
-			return;
-		}
-
-		const line_elements_container = dom_helper.get_line_elements_container(headers_select_element);
-
-		if (selected_header === 'new_static_column') {
-			const mapping_details = {
-				mapping_type: 'static_value',
-				static_value: '',
-			};
-			line_elements_container.append(html_generator.mapping_element(mapping_details));
-		} else {
-
-			if(selected_header !== 'new_column'){
-
-			}
-
-			delete_textarea();
-
-		}
-
-		mappings.update_mapped_headers();
 
 	},
 
 	//HELPERS
 
-	update_mapped_fields(mapping_path_filter){
+	update_all_lines(mapping_path_filter){
 
 	},
 
-	update_mapped_headers(){
-
-		const lines = dom_helper.get_lines(mappings.list__mappings, true);
-		const select_elements = [];
-		const headers = Object.fromEntries(Object.keys(mappings.headers).map(header=>[header,false]));
-
-		let i = 0;
-		for(const line of lines){
-			const select_element = dom_helper.get_line_header_select(line);
-			if(typeof select_element === "undefined")
-				continue;
-
-			const selected_header = select_element.value;
-			select_elements[i] = [select_element, selected_header];
-			if(typeof headers[selected_header] !== "undefined")
-				headers[selected_header] = true;
-
-			i++;
-		}
-
-		mappings.headers = headers;
-		const headers_data = {};
-
-		for(const [header_name,is_mapped] of Object.entries(headers)){
-			headers_data[header_name] = {
-				header_friendly_name: header_name,
-				is_mapped: is_mapped,
-				is_default: false,
-				is_recommended: false,
-			}
-		}
-
-
-		const options_html = html_generator.headers(headers_data);
-
-		i=0;
-		for(const [select_element,selected_header] of select_elements){
-			select_element.innerHTML = options_html;
-			select_element.value = selected_header;
-			i++;
-		}
-
-		mappings.run_automapper(select_elements, headers_data);
+	update_line(line, mapping_path){
 
 	},
 

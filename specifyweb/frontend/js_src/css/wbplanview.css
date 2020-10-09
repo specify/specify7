@@ -47,7 +47,7 @@
 
 
 
-/* MAPPING CONTROLS */
+/* MAPPING GENERAL */
 #add_mapping {
 	padding: 0.3rem !important;
 	border: none;
@@ -66,27 +66,34 @@
 	background: var(--b3);
 }
 
+#list__mappings {
+	display: grid;
+	grid-template-columns: 1.6rem max-content auto;
+	grid-auto-rows: max-content;
+	grid-gap: 1rem 0.6rem;
+}
+
 
 
 /* MAPPINGS LINE */
 .wbplanview_mappings_line {
-	display: flex;
-    margin-bottom: 0.3rem;
+	display: contents;
 }
 
 
 
 /* MAPPINGS LINE CONTROLS */
 .wbplanview_mappings_line_controls button {
-    border: none;
-    background: var(--b2);
-    cursor: pointer;
-    padding: 0.3rem;
-    height: 1.6rem;
+	border: none;
+	background: var(--b2);
+	cursor: pointer;
+	padding: 0.3rem;
+	height: 100%;
+    width: 100%;
 }
 
-.wbplanview_mappings_line_controls {
-	width: 7.2rem;
+.wbplanview_mappings_line_controls button:hover {
+    background: var(--b3);
 }
 
 .wbplanview_mappings_line_controls button img {
@@ -94,24 +101,18 @@
     height: 1rem;
 }
 
-.wbplanview_mappings_line_controls button:hover {
-    background: var(--b3);
-}
-
-.rotate-90 {
-	transform: rotate(90deg);
-}
-
-.rotate-270 {
-	transform: rotate(270deg);
-}
-
 
 
 /* MAPPINGS LINE ELEMENTS */
+.wbplanview_mappings_line_header {
+	display: flex;
+	align-items: center;
+}
+
 .wbplanview_mappings_line_elements {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 }
 
 .wbplanview_mappings_line_elements > * {

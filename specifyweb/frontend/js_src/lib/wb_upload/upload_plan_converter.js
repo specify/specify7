@@ -99,7 +99,7 @@ const upload_plan_converter = {
 					let {name} = tree_rank_data;
 
 					if (typeof name === 'object')  // handle static records
-						name = name['static'];
+						({static: name} = name);
 
 					return [new_tree_key, name];
 
