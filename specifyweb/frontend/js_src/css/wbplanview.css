@@ -14,7 +14,6 @@
 }
 
 
-
 /* HEADER */
 #wbplanview_header {
     display: flex;
@@ -30,15 +29,14 @@
 }
 
 #mappings_control_panel {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
-
 
 
 /* GENERAL */
 #wbplanview_container {
-	padding: 2rem 0;
+    padding: 2rem 0;
 }
 
 #list__tables a {
@@ -46,49 +44,46 @@
 }
 
 
-
 /* MAPPING GENERAL */
 #add_mapping {
-	padding: 0.3rem !important;
-	border: none;
-	height: 1.6rem;
-	cursor: pointer;
-	background: var(--b2);
-	margin-right: 1rem;
+    padding: 0.3rem !important;
+    border: none;
+    height: 1.6rem;
+    cursor: pointer;
+    background: var(--b2);
+    margin-right: 1rem;
 }
 
 #add_mapping img {
-	width: 1rem;
-	height: 1rem;
+    width: 1rem;
+    height: 1rem;
 }
 
 #add_mapping:hover {
-	background: var(--b3);
+    background: var(--b3);
 }
 
 #list__mappings {
-	display: grid;
-	grid-template-columns: 1.6rem max-content auto;
-	grid-auto-rows: max-content;
-	grid-gap: 1rem 0.6rem;
+    display: grid;
+    grid-template-columns: 1.6rem max-content auto;
+    grid-auto-rows: max-content;
+    grid-gap: 1rem 0.6rem;
 }
-
 
 
 /* MAPPINGS LINE */
 .wbplanview_mappings_line {
-	display: contents;
+    display: contents;
 }
-
 
 
 /* MAPPINGS LINE CONTROLS */
 .wbplanview_mappings_line_controls button {
-	border: none;
-	background: var(--b2);
-	cursor: pointer;
-	padding: 0.3rem;
-	height: 100%;
+    border: none;
+    background: var(--b2);
+    cursor: pointer;
+    padding: 0.3rem;
+    height: 100%;
     width: 100%;
 }
 
@@ -102,21 +97,20 @@
 }
 
 
-
 /* MAPPINGS LINE ELEMENTS */
 .wbplanview_mappings_line_header {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .wbplanview_mappings_line_elements {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .wbplanview_mappings_line_elements > * {
-	margin-left: 0.7rem;
+    margin-left: 0.7rem;
 }
 
 .hide_hidden_fields [data-field_group="hidden_fields"] {
@@ -124,5 +118,89 @@
 }
 
 .mapping_arrow {
-	width: 1rem;
+    width: 1rem;
+}
+
+
+/* CUSTOM SELECT ELEMENT */
+.custom_select {
+    --accent: #f4763d;
+    --line_height: 1rem;
+    --line_padding: 0.5rem;
+    --text1: #000;
+    --text2: #444;
+    --background1: #fff;
+    --background2: #ffd1bd;
+    background-color: var(--background1);
+    color: var(--text1);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.custom_select_input {
+    height: var(--line_height);
+    border: 1px solid var(--accent);
+    padding: var(--line_padding);
+}
+
+.custom_select_input:after {
+    content: '\25BC';
+    float: right;
+}
+
+.custom_select_options {
+    border: 1px solid var(--accent);
+    border-top: 0;
+    display: none;
+}
+
+.custom_select_open .custom_select_options {
+    display: inline-block;
+}
+
+.custom_select_group_label {
+    padding: calc(0.5 * var(--line_padding));
+    color: var(--text2);
+    cursor: initial;
+}
+
+.custom_select_option {
+    padding: var(--line_padding);
+    padding-left: calc(var(--line_padding) * 2);
+    display: grid;
+    grid-template-columns: auto 1fr minmax(calc(var(--line_padding) * 1.6), auto);
+    grid-column-gap: var(--line_padding);
+    min-height: var(--line_height);
+}
+
+.custom_select_option:hover, .custom_select_option:focus {
+    background-color: var(--background2);
+}
+
+.custom_select_input:hover:after {
+    color: var(--text2);
+}
+
+.custom_select_option_disabled, .custom_select_option_selected {
+    cursor: initial;
+}
+
+.custom_select_option_disabled {
+    color: var(--text2);
+    background-color: var(--background1) !important;
+}
+
+.custom_select_option_selected {
+    background-color: var(--accent) !important;
+}
+
+.custom_select_option_relationship:after {
+    content: '\25B6';
+}
+
+.custom_select_option_label {
+	display: flex;
+	align-items: center;
 }

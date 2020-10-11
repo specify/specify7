@@ -8,6 +8,10 @@
 * */
 const html_generator = {
 
+	constructor(custom_select_element){
+		html_generator.custom_select_element = custom_select_element;
+	},
+
 	/*
 	* Generates HTML for table (for table selection screen)
 	* @param {string} table_name - Official name of the table (from data model)
@@ -65,7 +69,16 @@ const html_generator = {
 
 		for (const [field_name, field_data] of Object.entries(fields_data)) {
 
-			const field_html = html_generator.table_field(field_name, field_data);
+			const {field_friendly_name, is_enabled, is_default, table_name='', is_relationship=false} = field_data;
+
+			const field_data_formatted = {
+				option_name: field_friendly_name,
+				option_value: field_name,
+				is_enabled: is_enabled,
+				is_relationship: is_relationship,
+				is_default: is_default,
+				table_name: table_name,
+			};
 
 			let field_category = 'optional_fields';
 			if (field_data['is_required'])
@@ -73,44 +86,30 @@ const html_generator = {
 			else if (field_data['is_hidden'])
 				field_category = 'hidden_fields';
 
-			field_groups[field_category].push(field_html);
+			field_groups[field_category].push(field_data_formatted);
 
 		}
 
-		const table_fields =  Object.entries(field_groups).map(([group_name, group_fields]) => {
 
+		const table_fields = [];
+		for(const [group_name, group_fields] of Object.entries(field_groups))
 			if (group_fields.length !== 0)
-				return `<optgroup class="wbplanview_field_group"
-							data-field_group="` + group_name + `"
-							label="` + field_group_labels[group_name] + `"
-						>
-						` + group_fields.join('') + `						
-					</optgroup>`;
+				table_fields.push({
+					select_group_name: group_name,
+					select_group_label: field_group_labels[group_name],
+					select_options_data: group_fields
+				});
 
-		}).join('');
+		const select_data = {
+			select_type: mapping_element_type,
+			select_name: name,
+			select_label: friendly_name,
+			select_table: table_name,
+			select_groups_data: table_fields,
+		};
 
-		return `<select data-type="` + mapping_element_type + `"
-						name="` + name + `"
-						data-type="` + mapping_element_type + `"
-						data-table="` + table_name + `"
-						title="` + friendly_name + `">
-					<option value="0"></option>`
-					+ table_fields +
-				`</select>`;
+		return html_generator.custom_select_element.new_select_html(select_data);
 
-	},
-
-	table_field(field_name, field_data){
-		const {field_friendly_name, is_enabled, is_default} = field_data;
-
-		const attributes = [];
-
-		if(!is_enabled)
-			attributes.push('disabled');
-		if(is_default)
-			attributes.push('selected');
-
-		return '<option value="' + field_name + '" ' + attributes.join(' ') + '>' + field_friendly_name + '</option>';
 	},
 
 	static_header(default_value){

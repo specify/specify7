@@ -4,6 +4,7 @@ const $ = require('jquery');
 const mappings = require('./mappings.js');
 const data_model_handler = require('./data_model_handler.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
+const custom_select_element = require('./custom_select_element.js');
 
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
@@ -157,6 +158,11 @@ const main = {
 
 		});
 		mappings.data_model_handler = data_model_handler;
+
+		mappings.get_html_generator().constructor(custom_select_element);
+
+		custom_select_element.constructor('', '');//TODO: set proper table icons url
+		custom_select_element.set_event_listeners(mappings.list__mappings, ()=>{});
 
 	},
 

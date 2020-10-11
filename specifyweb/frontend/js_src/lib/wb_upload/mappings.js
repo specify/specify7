@@ -7,6 +7,10 @@ const navigation = require('../navigation.js');
 
 const mappings = {
 
+	get_html_generator(){
+		return html_generator;
+	},
+
 
 	/*
 	* Implements array of mappings
@@ -261,7 +265,9 @@ const mappings = {
 					is_enabled: true,
 					is_required: false,
 					is_hidden: false,
+					is_relationship: true,
 					is_default: mapped_object_name === default_value,
+					table_name: table_name,
 				};
 			}
 
@@ -277,7 +283,9 @@ const mappings = {
 					is_enabled: true,
 					is_required: is_required,
 					is_hidden: false,
+					is_relationship: true,
 					is_default: formatted_rank_name === default_value,
+					table_name: table_name,
 				};
 			}
 
@@ -302,14 +310,14 @@ const mappings = {
 
 				const is_default = field_name === default_value;
 
-				const final_friendly_name = (is_relationship ? mappings.reference_indicator : '') + friendly_name;
-
 				result_fields[field_name] = {
-					field_friendly_name: final_friendly_name,
+					field_friendly_name: friendly_name,
 					is_enabled: is_enabled,
 					is_required: is_required,
 					is_hidden: is_hidden,
 					is_default: is_default,
+					is_relationship: is_relationship,
+					table_name: table_name,
 				};
 
 			}
