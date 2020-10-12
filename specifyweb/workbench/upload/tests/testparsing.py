@@ -82,12 +82,21 @@ class ParsingTests(UploadTestsBase):
         for result in results:
             self.assertIsInstance(result.record_result, Uploaded)
 
-        for i, v in enumerate('River Lake marsh Lake marsh lake'.split()):
+        for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
             r = results[i].record_result
             assert isinstance(r, Uploaded)
             self.assertEqual(v, get_table('Collectionobject').objects.get(id=r.get_id()).text1)
 
-        self.assertEqual(5, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count())
+        self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count())
+
+        for i, v in enumerate('River Lake None None None None'.split()):
+            r = results[i].record_result
+            assert isinstance(r, Uploaded)
+            if v == 'None':
+                self.assertEqual({}, r.picklistAdditions)
+            else:
+                self.assertEqual(['habitat'], list(r.picklistAdditions.keys()))
+                self.assertEqual([v], [get_table('Picklistitem').objects.get(id=id).value for id in r.picklistAdditions.values()])
 
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(

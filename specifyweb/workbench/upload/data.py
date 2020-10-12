@@ -25,6 +25,7 @@ class ReportInfo(NamedTuple):
 class Uploaded(NamedTuple):
     id: int
     info: ReportInfo
+    picklistAdditions: Dict[str, int]
 
     def get_id(self) -> Optional[int]:
         return self.id
@@ -184,6 +185,7 @@ class UploadResult(NamedTuple):
             'record_result': self.record_result.to_json(),
             'toOne': {k: v.to_json() for k,v in self.toOne.items()},
             'toMany': {k: [v.to_json() for v in vs] for k,vs in self.toMany.items()},
+            'picklistAdditions': self.picklistAdditions,
         }}
 
 class Uploadable(Protocol):

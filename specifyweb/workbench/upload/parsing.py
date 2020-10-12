@@ -17,19 +17,25 @@ from .validation_schema import CellIssue
 
 logger = logging.getLogger(__name__)
 
+class PicklistAddition(NamedTuple):
+    picklist: Any
+    caption: str
+    value: str
+
 class ParseFailure(NamedTuple):
     message: str
 
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Dict[str, Any]
+    add_to_picklist: Optional[PicklistAddition]
 
 def filter_and_upload(f: Filter) -> ParseResult:
-    return ParseResult(f, f)
+    return ParseResult(f, f, None)
 
 def parse_many(collection, tablename: str, mapping: Dict[str, str], row: Row) -> Tuple[List[ParseResult], List[CellIssue]]:
     results = [
-        (caption, parse_value(collection, tablename, fieldname, row[caption]))
+        (caption, parse_value(collection, tablename, fieldname, row[caption], caption))
         for fieldname, caption in mapping.items()
     ]
     return (
@@ -37,10 +43,10 @@ def parse_many(collection, tablename: str, mapping: Dict[str, str], row: Row) ->
         [CellIssue(c, r.message) for c, r in results if isinstance(r, ParseFailure)]
     )
 
-def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+def parse_value(collection, tablename: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
     value = value.strip()
     if value == "":
-        return ParseResult({fieldname: None}, {})
+        return ParseResult({fieldname: None}, {}, None)
 
     if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
         return parse_agenttype(value)
@@ -53,7 +59,7 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
 
 
     if schema_items and schema_items[0].picklistname:
-        return parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value)
+        return parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value, caption)
 
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
@@ -71,7 +77,7 @@ def parse_value(collection, tablename: str, fieldname: str, value: str) -> Union
 
     return filter_and_upload({fieldname: value})
 
-def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
     picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
     if picklist.type == 0:
         try:
@@ -80,6 +86,10 @@ def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: s
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return ParseFailure("value {} not in picklist {}".format(value, picklist.name))
+            else:
+                return filter_and_upload({fieldname: value})._replace(
+                    add_to_picklist=PicklistAddition(picklist=picklist, caption=caption, value=value)
+                )
             return filter_and_upload({fieldname: value})
     else:
         raise NotImplemented("unsupported picklist type {}".format(picklist.type))
@@ -143,8 +153,11 @@ def parse_latlong(field, value: str) -> Union[ParseResult, ParseFailure]:
 
     coord, unit = parsed
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
-    return ParseResult(text_filter,
-                       {field.name: coord, 'originallatlongunit': unit, **text_filter})
+    return ParseResult(
+        text_filter,
+        {field.name: coord, 'originallatlongunit': unit, **text_filter},
+        None
+    )
 
 
 def parse_coord(value: str) -> Optional[Tuple[float, int]]:

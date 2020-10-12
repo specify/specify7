@@ -126,6 +126,7 @@ class BoundUploadTable(NamedTuple):
             if any(v is not None for v in attrs.values()) or to_many_filters:
                 try:
                     uploaded = model.objects.create(**attrs, **self.static)
+                    picklist_additions = self.do_picklist_additions()
                 except BusinessRuleException as e:
                     return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
@@ -133,7 +134,7 @@ class BoundUploadTable(NamedTuple):
                     fieldname: upload_to_manys(model, uploaded.id, fieldname, records)
                     for fieldname, records in self.toMany.items()
                 }
-                return UploadResult(Uploaded(id=uploaded.id, info=info), toOneResults, toManyResults)
+                return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
             else:
                 return UploadResult(NullRecord(info), {}, {})
 
@@ -142,6 +143,15 @@ class BoundUploadTable(NamedTuple):
 
         else:
             return UploadResult(MatchedMultiple(ids=[r.id for r in matched_records], info=info), toOneResults, {})
+
+    def do_picklist_additions(self) -> Dict[str, int]:
+        added_picklist_items = {}
+        for parsedField in self.parsedFields:
+            if parsedField.add_to_picklist is not None:
+                addition = parsedField.add_to_picklist
+                pli = addition.picklist.picklistitems.create(value=addition.value, title=addition.value)
+                added_picklist_items[addition.caption] = pli.id
+        return added_picklist_items
 
 
 def to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
