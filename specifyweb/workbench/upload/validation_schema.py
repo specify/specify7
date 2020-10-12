@@ -58,9 +58,24 @@ schema = {
                 'required': ['tableName', 'columns', 'id'],
                 'additionalProperties': False
             }
-        }
+        },
+        'picklistAdditions': {
+            'type': 'array',
+            'description': 'List of items added to nonreadonly picklists.',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'name': { 'type': 'string', 'descripition': 'The name of the picklist that received a new item.' },
+                    'value': { 'type': 'string', 'description': 'The value that was added to the picklist.' },
+                    'column': { 'type': 'string', 'description': 'The column in which the new value occured.' },
+                    'id': { 'type': 'integer', 'description': 'The id of the new picklist item.' },
+                    },
+                'required': ['name', 'value', 'column', 'id'],
+                'additionalProperties': False
+            }
+        },
     },
-    'required': ['cellIssues', 'tableIssues', 'newRows'],
+    'required': ['cellIssues', 'tableIssues', 'newRows', 'picklistAdditions'],
     'additionalProperties': False
 }
 
@@ -78,17 +93,25 @@ class NewRow(NamedTuple):
     columns: List[str]
     id: int
 
+class NewPicklistItem(NamedTuple):
+    name: str
+    value: str
+    column: str
+    id: int
+
 
 class RowValidation(NamedTuple):
     cellIssues: List[CellIssue]
     tableIssues: List[TableIssue]
     newRows: List[NewRow]
+    picklistAdditions: List[NewPicklistItem]
 
     def to_json(self) -> Dict:
         result = dict(
             cellIssues=[i._asdict() for i in self.cellIssues],
             tableIssues=[i._asdict() for i in self.tableIssues],
-            newRows=[i._asdict() for i in self.newRows]
+            newRows=[i._asdict() for i in self.newRows],
+            picklistAdditions=[i._asdict() for i in self.picklistAdditions],
         )
         validate(result, schema)
         return result

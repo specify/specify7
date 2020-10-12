@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
 from typing_extensions import Protocol
 
-from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation
+from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
 
 Row = Dict[str, str]
 Filter = Dict[str, Any]
@@ -21,11 +21,16 @@ class ReportInfo(NamedTuple):
     tableName: str
     columns: List[str]
 
+class PicklistAddition(NamedTuple):
+    name: str # Name of the picklist receiving the new item
+    value: str # The value of the new item
+    caption: str # The dataset column caption generating the addition
+    id: int # The new picklistitem id
 
 class Uploaded(NamedTuple):
     id: int
     info: ReportInfo
-    picklistAdditions: Dict[str, int]
+    picklistAdditions: List[PicklistAddition]
 
     def get_id(self) -> Optional[int]:
         return self.id
@@ -41,7 +46,13 @@ class Uploaded(NamedTuple):
                 tableName=self.info.tableName,
                 columns=self.info.columns,
                 id=self.id
-            )]
+            )],
+            picklistAdditions=[NewPicklistItem(
+                name=a.name,
+                value=a.value,
+                column=a.caption,
+                id=a.id
+            ) for a in self.picklistAdditions]
         )
 
     def to_json(self):
@@ -59,7 +70,7 @@ class Matched(NamedTuple):
         return False
 
     def validation_info(self) -> RowValidation:
-        return RowValidation([], [], [])
+        return RowValidation([], [], [], [])
 
     def to_json(self):
         return { 'Matched': self._asdict() }
@@ -79,6 +90,7 @@ class MatchedMultiple(NamedTuple):
         return RowValidation(
             cellIssues=[],
             newRows=[],
+            picklistAdditions=[],
             tableIssues=[
                 TableIssue(
                     tableName=self.info.tableName,
@@ -99,7 +111,7 @@ class NullRecord(NamedTuple):
         return False
 
     def validation_info(self) -> RowValidation:
-        return RowValidation([], [], [])
+        return RowValidation([], [], [], [])
 
     def to_json(self):
         return { 'NullRecord': self._asdict() }
@@ -118,6 +130,7 @@ class FailedBusinessRule(NamedTuple):
         return RowValidation(
             cellIssues=[],
             newRows=[],
+            picklistAdditions=[],
             tableIssues=[
                 TableIssue(
                     tableName=self.info.tableName,
@@ -141,7 +154,8 @@ class ParseFailures(NamedTuple):
         return RowValidation(
             cellIssues=self.failures,
             newRows=[],
-            tableIssues=[]
+            tableIssues=[],
+            picklistAdditions=[],
         )
 
     def to_json(self):
@@ -177,15 +191,18 @@ class UploadResult(NamedTuple):
 
             newRows = info.newRows
                 + [newRow for info in toOneInfos for newRow in info.newRows]
-                + [newRow for info in toManyInfos for newRow in info.newRows]
+                + [newRow for info in toManyInfos for newRow in info.newRows],
+
+            picklistAdditions = info.picklistAdditions
+                + [picklistAddition for info in toOneInfos for picklistAddition in info.picklistAdditions]
+                + [picklistAddition for info in toManyInfos for picklistAddition in info.picklistAdditions],
         )
 
-    def to_json(self):
+    def to_json(self) -> Dict:
         return { 'UploadResult': {
             'record_result': self.record_result.to_json(),
             'toOne': {k: v.to_json() for k,v in self.toOne.items()},
             'toMany': {k: [v.to_json() for v in vs] for k,vs in self.toMany.items()},
-            'picklistAdditions': self.picklistAdditions,
         }}
 
 class Uploadable(Protocol):

@@ -1,12 +1,13 @@
 import io
 import csv
+from jsonschema import validate # type: ignore
 
 from .base import UploadTestsBase, get_table
 from ..data import Uploaded, ParseFailures, CellIssue
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
-
+from .. import validation_schema
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -80,6 +81,7 @@ class ParsingTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan)
         for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
             self.assertIsInstance(result.record_result, Uploaded)
 
         for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
@@ -93,10 +95,10 @@ class ParsingTests(UploadTestsBase):
             r = results[i].record_result
             assert isinstance(r, Uploaded)
             if v == 'None':
-                self.assertEqual({}, r.picklistAdditions)
+                self.assertEqual([], r.picklistAdditions)
             else:
-                self.assertEqual(['habitat'], list(r.picklistAdditions.keys()))
-                self.assertEqual([v], [get_table('Picklistitem').objects.get(id=id).value for id in r.picklistAdditions.values()])
+                self.assertEqual(['habitat'], [a.caption for a in r.picklistAdditions])
+                self.assertEqual([v], [get_table('Picklistitem').objects.get(id=a.id).value for a in r.picklistAdditions])
 
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(

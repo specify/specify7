@@ -74,7 +74,7 @@ class BoundTreeRecord(NamedTuple):
             obj.save(skip_tree_extras=True)
             parent_id = obj.id
 
-        return UploadResult(Uploaded(obj.id, info, {}), {}, {})
+        return UploadResult(Uploaded(obj.id, info, []), {}, {})
 
 
     def match(self) -> TreeMatchResult:

@@ -8,7 +8,7 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, CellIssue, ParseFailures
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
 from .tomany import ToManyRecord, BoundToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -144,13 +144,13 @@ class BoundUploadTable(NamedTuple):
         else:
             return UploadResult(MatchedMultiple(ids=[r.id for r in matched_records], info=info), toOneResults, {})
 
-    def do_picklist_additions(self) -> Dict[str, int]:
-        added_picklist_items = {}
+    def do_picklist_additions(self) -> List[PicklistAddition]:
+        added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
-                addition = parsedField.add_to_picklist
-                pli = addition.picklist.picklistitems.create(value=addition.value, title=addition.value)
-                added_picklist_items[addition.caption] = pli.id
+                a = parsedField.add_to_picklist
+                pli = a.picklist.picklistitems.create(value=a.value, title=a.value)
+                added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.caption, value=a.value, id=pli.id))
         return added_picklist_items
 
 
