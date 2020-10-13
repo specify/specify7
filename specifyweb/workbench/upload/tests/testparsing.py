@@ -3,7 +3,7 @@ import csv
 from jsonschema import validate # type: ignore
 
 from .base import UploadTestsBase, get_table
-from ..data import Uploaded, ParseFailures, CellIssue
+from ..data import Uploaded, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable
@@ -59,6 +59,7 @@ class ParsingTests(UploadTestsBase):
             type=0,
             collection=self.collection,
             readonly=False,
+            sizelimit=4,
         )
 
         habitat.picklistitems.create(title='Marsh', value='marsh')
@@ -99,6 +100,31 @@ class ParsingTests(UploadTestsBase):
             else:
                 self.assertEqual(['habitat'], [a.caption for a in r.picklistAdditions])
                 self.assertEqual([v], [get_table('Picklistitem').objects.get(id=a.id).value for a in r.picklistAdditions])
+
+    def test_picklist_size_overflow(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'catno': '1', 'habitat': 'River'},
+            {'catno': '2', 'habitat': 'Lake'},
+            {'catno': '3', 'habitat': 'Stream'},
+            {'catno': '4', 'habitat': 'Ocean'},
+            {'catno': '5', 'habitat': 'Lagoon'},
+        ]
+        results = do_upload(self.collection, data, plan)
+        for result in results:
+            validate(result.validation_info().to_json(), validation_schema.schema)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        self.assertIsInstance(results[2].record_result, Uploaded)
+        self.assertIsInstance(results[3].record_result, FailedBusinessRule)
+        self.assertIsInstance(results[4].record_result, FailedBusinessRule)
 
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(
