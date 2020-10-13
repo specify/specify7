@@ -59,7 +59,9 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
 
 
     if schema_items and schema_items[0].picklistname:
-        return parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value, caption)
+        result = parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value, caption)
+        if result is not None:
+            return result
 
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
@@ -77,9 +79,9 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
 
     return filter_and_upload({fieldname: value})
 
-def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
+def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure, None]:
     picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
-    if picklist.type == 0:
+    if picklist.type == 0: # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)
             return filter_and_upload({fieldname: item.value})
@@ -91,8 +93,19 @@ def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: s
                     add_to_picklist=PicklistAddition(picklist=picklist, caption=caption, value=value)
                 )
             return filter_and_upload({fieldname: value})
+
+    elif picklist.type == 1: # items from rows in some table
+        # we ignore this type of picklist because it is primarily used to choose many-to-one's on forms
+        # so it is not expected to appear on actual fields
+        return None
+
+    elif picklist.type == 2: # items from a field in some table
+        # this picklist type is rarely used and seems mostly for convenience on forms to allow
+        # quickly selecting existing values from other rows in the same table. e.g. moleculeType
+        return None
+
     else:
-        raise NotImplemented("unsupported picklist type {}".format(picklist.type))
+        raise NotImplemented("unknown picklist type {}".format(picklist.type))
 
 def parse_agenttype(value: str) -> Union[ParseResult, ParseFailure]:
     agenttypes = ['Organization', 'Person', 'Other', 'Group']
