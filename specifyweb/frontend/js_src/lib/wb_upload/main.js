@@ -37,6 +37,7 @@ const main = {
 
 		// lists
 		mappings.list__tables = document.getElementById('list__tables');
+		mappings.mapping_view = document.getElementById('mapping_view');
 		mappings.list__mappings = document.getElementById('list__mappings');
 
 		// control elements
@@ -162,7 +163,7 @@ const main = {
 		mappings.get_html_generator().constructor(custom_select_element);
 
 		custom_select_element.constructor('', '');//TODO: set proper table icons url
-		custom_select_element.set_event_listeners(mappings.list__mappings, ()=>{});
+		custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, ()=>{});
 
 	},
 
@@ -202,6 +203,10 @@ const main = {
 		return validation_results;
 
 	},
+
+	render_lists(){
+		custom_select_element.onload(mappings.list__mappings);
+	}
 
 };
 

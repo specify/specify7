@@ -22,6 +22,10 @@ const html_generator = {
 		return '<a class="wbplanview_table" href="#' + table_name + '" data-table_name="' + table_name + '">' + table_friendly_name + '</a>';
 	},
 
+	mapping_view(mappings_view_data){
+		return `<div class="">`+html_generator.mapping_path(mappings_view_data, true)+`</div>`;
+	},
+
 	mapping_line(mappings_line_data){
 		/*
 		* mappings_line_data {array}:
@@ -49,11 +53,11 @@ const html_generator = {
 			</div>`;
 	},
 
-	mapping_path(mappings_line_data){
-		return mappings_line_data.map(html_generator.mapping_element).join('');
+	mapping_path(mappings_line_data, show_table_names=false){
+		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, show_table_names)).join('');
 	},
 
-	mapping_element(mapping_details){
+	mapping_element(mapping_details, show_table_names=false){
 
 		const {name, friendly_name, fields_data, table_name, mapping_element_type} = mapping_details;
 
@@ -108,7 +112,7 @@ const html_generator = {
 			select_groups_data: table_fields,
 		};
 
-		return html_generator.custom_select_element.new_select_html(select_data);
+		return html_generator.custom_select_element.new_select_html(select_data, show_table_names);
 
 	},
 

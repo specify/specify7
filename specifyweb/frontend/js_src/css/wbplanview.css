@@ -37,6 +37,12 @@
 /* GENERAL */
 #wbplanview_container {
     padding: 2rem 0;
+    display: flex;
+	flex-direction: column;
+}
+
+#wbplanview_container > *:not(:last-child){
+    margin-bottom: 2rem;
 }
 
 #list__tables a {
@@ -107,11 +113,9 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    gap: 0.6rem;
 }
 
-.wbplanview_mappings_line_elements > * {
-    margin-left: 0.7rem;
-}
 
 .hide_hidden_fields [data-field_group="hidden_fields"] {
     display: none;
@@ -131,12 +135,23 @@
     --text2: #444;
     --background1: #fff;
     --background2: #ffd1bd;
+    --lines_to_display: 10;
+    --border_size: 1px;
     background-color: var(--background1);
     color: var(--text1);
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    width: -moz-fit-content;
     width: fit-content;
+    position: relative;
+}
+
+.custom_select_header {
+	border: var(--border_size) solid var(--accent);
+	padding: calc(var(--line_padding) * 2);
+	display: flex;
+	gap: var(--line_padding);
 }
 
 .custom_select_input {
@@ -151,13 +166,24 @@
 }
 
 .custom_select_options {
-    border: 1px solid var(--accent);
+    border: var(--border_size) solid var(--accent);
     border-top: 0;
-    display: none;
+    visibility: hidden;
+    max-height: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) * var(--lines_to_display));
+	overflow-y: scroll;
+    background-color: var(--background1);
+	position: absolute;
+	top: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) - var(--border_size));
+    z-index: 2;
+    width: max-content;
 }
 
-.custom_select_open .custom_select_options {
-    display: inline-block;
+.custom_select_open .custom_select_options, .custom_select_size_multiple .custom_select_options {
+    visibility: visible;
+}
+
+.custom_select_size_multiple .custom_select_options {
+    position: initial;
 }
 
 .custom_select_group_label {
@@ -170,7 +196,7 @@
     padding: var(--line_padding);
     padding-left: calc(var(--line_padding) * 2);
     display: grid;
-    grid-template-columns: auto 1fr minmax(calc(var(--line_padding) * 1.6), auto);
+    grid-template-columns: calc(var(--line_padding) * 2) 1fr minmax(calc(var(--line_padding) * 1.6), auto);
     grid-column-gap: var(--line_padding);
     min-height: var(--line_height);
 }

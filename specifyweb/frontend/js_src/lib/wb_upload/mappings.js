@@ -55,6 +55,7 @@ const mappings = {
 
 		this.list__tables.style.display = 'none';
 		this.list__mappings.style.display = '';
+		this.mapping_view.style.display = '';
 
 		this.button__change_table.style.display = '';
 
@@ -65,6 +66,9 @@ const mappings = {
 
 		this.tree = {};
 		this.changes_made = true;
+
+		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)];
+		mappings.mapping_view.innerHTML = html_generator.mapping_view(base_table_fields);
 
 		//TODO: uncomment this before production
 		//navigation.addUnloadProtect(this, "This mapping has not been saved.");
@@ -108,6 +112,7 @@ const mappings = {
 
 		this.list__tables.style.display = '';
 		this.list__mappings.style.display = 'none';
+		this.mapping_view.style.display = 'none';
 
 		this.list__mappings.innerHTML = '';
 
@@ -258,6 +263,7 @@ const mappings = {
 					return max_mapped_element_number;
 			}, 0);
 
+
 			for(let i=1; i<=(max_mapped_element_number+1); i++){
 				const mapped_object_name = mappings.reference_symbol + i;
 				result_fields[mapped_object_name] = {
@@ -270,6 +276,15 @@ const mappings = {
 					table_name: table_name,
 				};
 			}
+			result_fields['add'] = {
+				field_friendly_name: 'Add',
+				is_enabled: true,
+				is_required: false,
+				is_hidden: false,
+				is_relationship: true,
+				is_default: false,
+				table_name: table_name,
+			};
 
 		}
 		else if(children_are_ranks){
@@ -295,7 +310,7 @@ const mappings = {
 
 			for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
 
-				const {is_relationship, relationship_type, is_hidden, is_required, friendly_name} = field_data;
+				const {is_relationship, relationship_type, is_hidden, is_required, friendly_name, table_name} = field_data;
 
 				const is_enabled = (//disable field
 					mapped_fields.indexOf(field_name) !== -1 ||//if it is mapped
