@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^upload_status/(?P<wb_id>.+)/', views.upload_status),
     url(r'^upload_log/(?P<upload_id>.+)/', views.upload_log),
     url(r'^upload_new/', upload_views.upload),
+    url(r'^validate_row/(?P<wb_id>\d+)/', upload_views.validate_row),
 ]

@@ -44,18 +44,7 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
     logger.debug('row captions: %s', captions)
 
     rows = (dict(zip(captions, t[2:])) for t in tuples)
-
-    plan_json = wb.workbenchtemplate.remarks
-    if plan_json is None or plan_json.strip() == "":
-        raise Exception("no upload plan defined for dataset")
-
-    try:
-        plan = json.loads(plan_json)
-        validate(plan, schema)
-    except ValueError:
-        raise Exception("upload plan json is invalid")
-
-    upload_plan = parse_plan(collection, plan)
+    upload_plan = get_wb_upload_plan(collection, wb)
 
     no_commit = True
     results = do_upload(collection, rows, upload_plan, no_commit)
@@ -67,6 +56,19 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
             (json.dumps(r.validation_info().to_json()), t[0])
         )
     return results
+
+def get_wb_upload_plan(collection, wb) -> Uploadable:
+    plan_json = wb.workbenchtemplate.remarks
+    if plan_json is None or plan_json.strip() == "":
+        raise Exception("no upload plan defined for dataset")
+
+    try:
+        plan = json.loads(plan_json)
+        validate(plan, schema)
+    except ValueError:
+        raise Exception("upload plan json is invalid")
+
+    return parse_plan(collection, plan)
 
 
 def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=False) -> List[UploadResult]:
@@ -87,6 +89,13 @@ def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=F
     return results
 
 do_upload_csv = do_upload
+
+def validate_row(collection, upload_plan: Uploadable, row: Row) -> UploadResult:
+    with savepoint():
+        bind_result = upload_plan.bind(collection, row)
+        result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.upload_row()
+        raise Rollback()
+    return result
 
 def fixup_trees():
     for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage'):

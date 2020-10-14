@@ -16,9 +16,10 @@ from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
-from .upload import do_upload_csv
+from .upload import do_upload_csv, validate_row as vr, get_wb_upload_plan
 from .upload_plan_schema import schema, parse_plan
 
+Workbench = getattr(models, 'Workbench')
 
 logger = logging.getLogger(__name__)
 
@@ -47,3 +48,23 @@ def upload(request) -> Any:
 
     return render(request, 'upload_new.html', {'form': form.as_p()})
 
+@login_maybe_required
+@apply_access_control
+def validate_row(request, wb_id: str) -> http.HttpResponse:
+    wb = get_object_or_404(Workbench, id=wb_id)
+    collection = request.specify_collection
+    upload_plan = get_wb_upload_plan(collection, wb)
+
+    ValidationForm = type('ValidationForm', (forms.Form,), {
+        wbtmi.caption: forms.CharField(required=False)
+        for wbtmi in wb.workbenchtemplate.workbenchtemplatemappingitems.all()
+    })
+
+    if request.method == "POST":
+        result = vr(collection, upload_plan, request.POST)
+        return http.HttpResponse(json.dumps(result.validation_info().to_json(), indent=2), content_type='application/json')
+
+    else:
+        form = ValidationForm()
+
+    return render(request, 'validate_row.html', {'form': form.as_p()})
