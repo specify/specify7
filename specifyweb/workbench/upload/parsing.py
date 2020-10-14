@@ -45,18 +45,19 @@ def parse_many(collection, tablename: str, mapping: Dict[str, str], row: Row) ->
 
 def parse_value(collection, tablename: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure]:
     value = value.strip()
-    if value == "":
-        return ParseResult({fieldname: None}, {}, None)
-
-    if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
-        return parse_agenttype(value)
-
     schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
         container__name=tablename.lower(),
         name=fieldname.lower())
 
+    if value == "":
+        if schema_items and schema_items[0].isrequired:
+            return ParseFailure("field is required")
+        return ParseResult({fieldname: None}, {}, None)
+
+    if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
+        return parse_agenttype(value)
 
     if schema_items and schema_items[0].picklistname:
         result = parse_with_picklist(collection, schema_items[0].picklistname, fieldname, value, caption)

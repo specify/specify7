@@ -52,6 +52,14 @@ class ParsingTests(UploadTestsBase):
             ishidden=False,
             issystem=False,
             picklistname='Habitat',
+            isrequired=True,
+        )
+
+        co.items.create(
+            name='catalognumber',
+            ishidden=False,
+            issystem=False,
+            isrequired=True,
         )
 
         habitat = get_table('Picklist').objects.create(
@@ -143,6 +151,25 @@ class ParsingTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan)
         for result, expected in zip(results, [Uploaded, Uploaded, ParseFailures, ParseFailures, Uploaded]):
+            self.assertIsInstance(result.record_result, expected)
+
+    def test_required_field(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
+            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'catno': '1', 'habitat': 'River'},
+            {'catno': '', 'habitat': 'River'},
+            {'catno': '3', 'habitat': ''},
+            {'catno': '', 'habitat': ''},
+            {'catno': '5', 'habitat': 'Lagoon'},
+        ]
+        results = do_upload(self.collection, data, plan)
+        for result, expected in zip(results, [Uploaded, ParseFailures, ParseFailures, ParseFailures, Uploaded]):
             self.assertIsInstance(result.record_result, expected)
 
     def test_readonly_picklist(self) -> None:
