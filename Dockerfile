@@ -119,6 +119,7 @@ RUN echo \
         "\necho Updating static files in /volumes/static-files/" \
         "\nrsync -a --delete specifyweb/frontend/static/ /volumes/static-files/frontend-static" \
         "\ncd /opt/specify7" \
+        "\nve/bin/python manage.py migrate notifications" \
         "\nexec \"\$@\"" \
         > docker-entrypoint.sh
 RUN chmod a+x docker-entrypoint.sh
