@@ -61,6 +61,8 @@ def get_autonumber_group_filter(model, collection, format_name: str):
         logger.debug("using default collection based autonumbering b/c no autonumsch was found")
         return default
 
+class FormatMismatch(ValueError):
+    pass
 
 class UIFormatter(NamedTuple):
     model_name: str
@@ -75,8 +77,11 @@ class UIFormatter(NamedTuple):
     def parse(self, value: str) -> Sequence[str]:
         match = re.match(self.parse_regexp(), value)
         if match is None:
-            raise ValueError("value doesn't match formatter")
+            raise FormatMismatch("value {} doesn't match formatter {}". format(repr(value), self.value()))
         return match.groups()
+
+    def value(self) -> str:
+        return ''.join(f.value for f in self.fields)
 
     def needs_autonumber(self, vals: Sequence[str]) -> bool:
         for f, v in zip(self.fields, vals):

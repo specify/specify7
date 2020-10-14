@@ -126,6 +126,25 @@ class ParsingTests(UploadTestsBase):
         self.assertIsInstance(results[3].record_result, FailedBusinessRule)
         self.assertIsInstance(results[4].record_result, FailedBusinessRule)
 
+    def test_uiformatter_match(self) -> None:
+        plan = UploadTable(
+            name='Collectionobject',
+            wbcols={'catalognumber': 'catno'},
+            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            toOne={},
+            toMany={}
+        )
+        data = [
+            {'catno': '123'},
+            {'catno': '234'},
+            {'catno': 'foo'},
+            {'catno': 'bar'},
+            {'catno': '567'},
+        ]
+        results = do_upload(self.collection, data, plan)
+        for result, expected in zip(results, [Uploaded, Uploaded, ParseFailures, ParseFailures, Uploaded]):
+            self.assertIsInstance(result.record_result, expected)
+
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(
             name='Agent',

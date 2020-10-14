@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
-from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
 
 from .data import Filter, Row
 from .validation_schema import CellIssue
@@ -65,7 +65,10 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
 
     uiformatter = get_uiformatter(collection, tablename, fieldname)
     if uiformatter:
-        canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
+        try:
+            canonicalized = uiformatter.canonicalize(uiformatter.parse(value))
+        except FormatMismatch as e:
+            return ParseFailure(e.args[0])
         return filter_and_upload({fieldname: canonicalized})
 
     table = datamodel.get_table_strict(tablename)
