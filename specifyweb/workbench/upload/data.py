@@ -237,8 +237,6 @@ class Uploadable(Protocol):
     def to_json(self) -> Dict:
         ...
 
-    def is_one_to_one(self) -> bool:
-        ...
 
 class BoundUploadable(Protocol):
     def filter_on(self, path: str) -> FilterPack:
@@ -253,5 +251,3 @@ class BoundUploadable(Protocol):
     def force_upload_row(self) -> UploadResult:
         ...
 
-    def is_one_to_one(self) -> bool:
-        ...

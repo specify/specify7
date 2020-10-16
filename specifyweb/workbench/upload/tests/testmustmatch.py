@@ -5,7 +5,7 @@ from typing import List, Dict, Any, NamedTuple, Union
 from .base import UploadTestsBase, get_table
 from ..data import Uploaded, Matched, NoMatch, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
-from ..upload_table import UploadTable
+from ..upload_table import UploadTable, MustMatchTable
 from ..upload_plan_schema import schema, parse_plan
 
 class MustMatchTests(UploadTestsBase):
@@ -47,7 +47,7 @@ class MustMatchTests(UploadTestsBase):
         plan = parse_plan(self.collection, json)
         assert isinstance(plan, UploadTable)
         assert isinstance(plan.toOne['collectingevent'], UploadTable)
-        self.assertTrue(plan.toOne['collectingevent'].mustMatch)
+        self.assertIsInstance(plan.toOne['collectingevent'], MustMatchTable)
 
     def test_mustmatch_uploading(self) -> None:
         plan = parse_plan(self.collection, self.plan(must_match=True))

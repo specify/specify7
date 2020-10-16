@@ -4,7 +4,7 @@ from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 
-from .upload_table import UploadTable
+from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord
 from .data import Uploadable
@@ -122,25 +122,23 @@ def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
         return parse_upload_table(collection, table, to_parse['uploadTable'])
 
     if 'oneToOneTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['oneToOneTable'], one_to_one=True)
+        return OneToOneTable(*parse_upload_table(collection, table, to_parse['oneToOneTable']))
 
     if 'mustMatchTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['mustMatchTable'], must_match=True)
+        return MustMatchTable(*parse_upload_table(collection, table, to_parse['mustMatchTable']))
 
     if 'treeRecord' in to_parse:
         return parse_tree_record(collection, table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict, one_to_one: bool = False, must_match: bool = False) -> UploadTable:
+def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
     extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
 
     return UploadTable(
-        isOneToOne=one_to_one,
-        mustMatch=must_match,
         name=table.django_name,
         wbcols=to_parse['wbcols'],
         static={**extra_static, **to_parse['static']},

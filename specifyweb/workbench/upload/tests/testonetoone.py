@@ -5,7 +5,7 @@ from typing import List, Dict, Any, NamedTuple, Union
 from .base import UploadTestsBase, get_table
 from ..data import Uploaded, Matched, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
-from ..upload_table import UploadTable
+from ..upload_table import UploadTable, OneToOneTable
 from ..upload_plan_schema import schema, parse_plan
 
 class OneToOneTests(UploadTestsBase):
@@ -42,7 +42,7 @@ class OneToOneTests(UploadTestsBase):
         plan = parse_plan(self.collection, json)
         assert isinstance(plan, UploadTable)
         assert isinstance(plan.toOne['collectingevent'], UploadTable)
-        self.assertTrue(plan.toOne['collectingevent'].is_one_to_one())
+        self.assertIsInstance(plan.toOne['collectingevent'], OneToOneTable)
 
     def test_manytoone_parsing(self) -> None:
         json = self.plan(one_to_one=False)
@@ -50,7 +50,7 @@ class OneToOneTests(UploadTestsBase):
         plan = parse_plan(self.collection, json)
         assert isinstance(plan, UploadTable)
         assert isinstance(plan.toOne['collectingevent'], UploadTable)
-        self.assertFalse(plan.toOne['collectingevent'].is_one_to_one())
+        self.assertNotIsInstance(plan.toOne['collectingevent'], OneToOneTable)
 
     def test_onetoone_uploading(self) -> None:
         plan = parse_plan(self.collection, self.plan(one_to_one=True))
@@ -71,8 +71,6 @@ class OneToOneTests(UploadTestsBase):
             ces.add(get_table('Collectionobject').objects.get(id=r.record_result.get_id()).collectingevent_id)
 
         self.assertEqual(5, len(ces))
-
-
 
     def test_manytoone_uploading(self) -> None:
         plan = parse_plan(self.collection, self.plan(one_to_one=False))

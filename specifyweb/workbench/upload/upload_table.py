@@ -15,8 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 class UploadTable(NamedTuple):
-    isOneToOne: bool
-    mustMatch: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
@@ -60,23 +58,25 @@ class UploadTable(NamedTuple):
         if parseFails:
             return ParseFailures(parseFails)
 
-        return BoundUploadTable(self.isOneToOne, self.mustMatch, self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
+        return BoundUploadTable(self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
 
-    def is_one_to_one(self) -> bool:
-        return self.isOneToOne
+class OneToOneTable(UploadTable):
+    def bind(self, collection, row: Row) -> Union["BoundOneToOneTable", ParseFailures]:
+        b = super().bind(collection, row)
+        return b if isinstance(b, ParseFailures) else BoundOneToOneTable(*b)
+
+class MustMatchTable(UploadTable):
+    def bind(self, collection, row: Row) -> Union["BoundMustMatchTable", ParseFailures]:
+        b = super().bind(collection, row)
+        return b if isinstance(b, ParseFailures) else BoundMustMatchTable(*b)
 
 class BoundUploadTable(NamedTuple):
-    isOneToOne: bool
-    mustMatch: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]
     toMany: Dict[str, List[BoundToManyRecord]]
-
-    def is_one_to_one(self) -> bool:
-        return self.isOneToOne
 
     def filter_on(self, path: str) -> FilterPack:
         filters = {
@@ -104,21 +104,22 @@ class BoundUploadTable(NamedTuple):
         return self._handle_row(force_upload=False)
 
     def force_upload_row(self) -> UploadResult:
-        if self.mustMatch:
-            raise Exception('trying to force upload of must-match table')
         return self._handle_row(force_upload=True)
 
     def match_row(self) -> UploadResult:
-        return self._replace(mustMatch=True).upload_row()
+        return BoundMustMatchTable(*self).upload_row()
+
+    def _upload_to_ones(self) -> Dict[str, UploadResult]:
+        return {
+            fieldname: to_one_def.upload_row()
+            for fieldname, to_one_def in self.toOne.items()
+        }
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
 
-        toOneResults = {
-            fieldname: to_one_def.match_row() if self.mustMatch else to_one_def.upload_row()
-            for fieldname, to_one_def in self.toOne.items()
-        }
+        toOneResults = self._upload_to_ones()
 
         toManyFilters = to_many_filters_and_excludes(self.toMany)
 
@@ -126,9 +127,6 @@ class BoundUploadTable(NamedTuple):
             match = self._match(model, toOneResults, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
-
-        if self.mustMatch:
-            return UploadResult(NoMatch(info), toOneResults, {})
 
         return self._do_upload(model, toOneResults, toManyFilters, info)
 
@@ -176,7 +174,7 @@ class BoundUploadTable(NamedTuple):
         toOneResults.update({
             fieldname: to_one_def.force_upload_row()
             for fieldname, to_one_def in self.toOne.items()
-            if to_one_def.is_one_to_one()
+            if isinstance(to_one_def, BoundOneToOneTable)
             for result in [toOneResults[fieldname].record_result]
             if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
         })
@@ -203,6 +201,22 @@ class BoundUploadTable(NamedTuple):
                 added_picklist_items.append(PicklistAddition(name=a.picklist.name, caption=a.caption, value=a.value, id=pli.id))
         return added_picklist_items
 
+class BoundOneToOneTable(BoundUploadTable):
+    pass
+
+class BoundMustMatchTable(BoundUploadTable):
+    def force_upload_row(self) -> UploadResult:
+        raise Exception('trying to force upload of must-match table')
+
+    def _upload_to_ones(self) -> Dict[str, UploadResult]:
+        return {
+            fieldname: to_one_def.match_row()
+            for fieldname, to_one_def in self.toOne.items()
+        }
+
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> UploadResult:
+        return UploadResult(NoMatch(info), toOneResults, {})
+
 
 def to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
     filters: List[Dict] = []
@@ -222,8 +236,6 @@ def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Uplo
 
     return [
         BoundUploadTable(
-            mustMatch = False,
-            isOneToOne = False,
             name = record.name,
             wbcols = record.wbcols,
             static = {**record.static, fk_field: parent_id},

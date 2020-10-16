@@ -31,9 +31,6 @@ class TreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
 
-    def is_one_to_one(self) -> bool:
-        return False
-
     def to_json(self) -> Dict:
         result = self._asdict()
         return { 'treeRecord': result }
@@ -47,9 +44,6 @@ class BoundTreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
     row: Row
-
-    def is_one_to_one(self) -> bool:
-        return False
 
     def filter_on(self, path: str) -> FilterPack:
         return FilterPack([], [])
