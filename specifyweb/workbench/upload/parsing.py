@@ -109,7 +109,7 @@ def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: s
         return None
 
     else:
-        raise NotImplemented("unknown picklist type {}".format(picklist.type))
+        raise NotImplementedError("unknown picklist type {}".format(picklist.type))
 
 def parse_agenttype(value: str) -> Union[ParseResult, ParseFailure]:
     agenttypes = ['Organization', 'Person', 'Other', 'Group']
