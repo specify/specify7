@@ -21,7 +21,7 @@ class UploadTable(NamedTuple):
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
-    def to_json(self) -> Dict:
+    def _to_json(self) -> Dict:
         result = self._asdict()
         result['toOne'] = {
             key: uploadable.to_json()
@@ -31,7 +31,10 @@ class UploadTable(NamedTuple):
             key: [to_many.to_json() for to_many in to_manys]
             for key, to_manys in self.toMany.items()
         }
-        return { 'uploadTable': result }
+        return result
+
+    def to_json(self) -> Dict:
+        return { 'uploadTable': self._to_json() }
 
     def bind(self, collection, row: Row) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
@@ -61,11 +64,17 @@ class UploadTable(NamedTuple):
         return BoundUploadTable(self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
 
 class OneToOneTable(UploadTable):
+    def to_json(self) -> Dict:
+        return { 'oneToOneTable': self._to_json() }
+
     def bind(self, collection, row: Row) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(collection, row)
         return b if isinstance(b, ParseFailures) else BoundOneToOneTable(*b)
 
 class MustMatchTable(UploadTable):
+    def to_json(self) -> Dict:
+        return { 'mustMatchTable': self._to_json() }
+
     def bind(self, collection, row: Row) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(collection, row)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTable(*b)
