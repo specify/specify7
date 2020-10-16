@@ -28,6 +28,7 @@ const PlanView = Backbone.View.extend({
 
         this.el.innerHTML = template();
         this.el.setAttribute('id','screen__mapping');
+        this.el.setAttribute('class','hide_hidden_fields');  //TODO: respect user's preference here
 
         _.defer(() => this._render());
         return this;

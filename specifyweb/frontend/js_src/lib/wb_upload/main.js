@@ -30,6 +30,7 @@ const main = {
 	constructor(){
 
 		// FINDING ELEMENTS
+		mappings.container = document.getElementById('screen__mapping');
 
 		// header
 		mappings.title__table_name = document.getElementById('title__table_name');
@@ -49,24 +50,18 @@ const main = {
 		mappings.base_table_name = undefined;
 
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
+		mappings.custom_select_element = custom_select_element;
 
 
 		// SETTING EVENT LISTENERS
 		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
 
-		mappings.list__mappings.addEventListener('change', event => {
+		mappings.list__mappings.addEventListener('click', event => {
 
-			const element = event.target;
+			const el = event.target;
 
-			if (element.tagName === 'SELECT') {
-				const element_type = element.getAttribute('data-type');
-
-				if (element_type === 'table')
-					mappings.field_change_callback(event);
-
-				else if (element_type === 'headers')
-					mappings.header_change_callback(event);
-			}
+			if(el.closest('.wbplanview_mappings_line_delete'))
+				mappings.clear_line(el.closest('.wbplanview_mappings_line'));
 		});
 
 		mappings.list__tables.addEventListener('click', event => {
@@ -83,10 +78,10 @@ const main = {
 		});
 
 		mappings.toggle_hidden_fields.addEventListener('change', () => {
-			if (mappings.list__mappings.classList.contains('hide_hidden_fields'))
-				mappings.list__mappings.classList.remove('hide_hidden_fields');
+			if (mappings.container.classList.contains('hide_hidden_fields'))
+				mappings.container.classList.remove('hide_hidden_fields');
 			else
-				mappings.list__mappings.classList.add('hide_hidden_fields');
+				mappings.container.classList.add('hide_hidden_fields');
 		});
 
 		// CONFIG
@@ -96,6 +91,8 @@ const main = {
 		else
 			mappings.list__tables.innerHTML = mappings.data_model_html;
 
+
+		custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, mappings.custom_select_change_event);
 
 		return mappings;
 
@@ -163,7 +160,6 @@ const main = {
 		mappings.get_html_generator().constructor(custom_select_element);
 
 		custom_select_element.constructor('', '');//TODO: set proper table icons url
-		custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, ()=>{});
 
 	},
 

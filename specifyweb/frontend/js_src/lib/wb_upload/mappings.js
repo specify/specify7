@@ -365,44 +365,33 @@ const mappings = {
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
 		const mappings_path = [];
-		let is_mapped = false;
+		let position = 0;
 
 		for (const element of elements) {
 
 			const element_type = element.getAttribute('data_type');
-
 			let result_name = '';
+			const name = element.getAttribute('name');
 
-			if (element_type === 'table') {
-				const element_subtype = element.getAttribute('data_subtype');
-				const name = element.getAttribute('name');
-
-				if (element_subtype === 'simple')
-					result_name = name;
-				else if (element_subtype === 'tree')
-					result_name = mappings.tree_symbol + name;
-				else if (element_subtype === 'to_many')
-					result_name = mappings.reference_symbol + name;
-			} else if (element_type === 'headers') {
-				if (mapping_path_filter.length !== 0 && mapping_path_filter.join('_') !== mappings_path.join('_'))
-					return [];
-				else {
-					result_name = element.value;
-					is_mapped = true;
-				}
-			}
-			else
-				continue;
-
+			if (element_type === 'simple')
+				result_name = name;
+			else if (element_type === 'tree')
+				result_name = mappings.tree_symbol + name;
+			else if (element_type === 'to_many')
+				result_name = mappings.reference_symbol + name;
 			mappings_path.push(result_name);
 
-			if (is_mapped)
+			if(typeof mapping_path_filter[position] === "string" && result_name !== mapping_path_filter[position])
+				return [];
+
+			else if(typeof mapping_path_filter==="object" && element === mapping_path_filter)
 				return mappings_path;
+
+			position++;
 
 		}
 
-		if (!is_mapped)
-			return [];
+		return mappings_path;
 
 	},
 
@@ -614,6 +603,7 @@ const mappings = {
 
 	//CHANGE CALLBACKS
 
+	//TODO: fix deprecated
 	field_change_callback(event){
 
 		const field_select_element = event.target;
@@ -633,6 +623,13 @@ const mappings = {
 			line_elements_container.append(html_generator.mapping_element(mapping_details));
 		}
 
+
+	},
+
+	clear_line(line){
+
+		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)];
+		line.getElementsByClassName('wbplanview_mappings_line_elements')[0].innerHTML = html_generator.mapping_path(base_table_fields);
 
 	},
 

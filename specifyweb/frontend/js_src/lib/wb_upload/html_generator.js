@@ -23,7 +23,7 @@ const html_generator = {
 	},
 
 	mapping_view(mappings_view_data){
-		return `<div class="">`+html_generator.mapping_path(mappings_view_data, true)+`</div>`;
+		return html_generator.mapping_path(mappings_view_data, true);
 	},
 
 	mapping_line(mappings_line_data){
