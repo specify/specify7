@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -78,6 +78,7 @@ schema = {
             'uploadTable or treeRecord.',
             'patternProperties': {
                 '^uploadTable$': { '$ref': '#/definitions/uploadTable' },
+                '^oneToOneTable$': { '$ref': '#/definitions/uploadTable' },
                 '^treeRecord$': { '$ref': '#/definitions/treeRecord' },
             },
             'additionalProperties': False
@@ -117,20 +118,24 @@ def parse_plan(collection, to_parse: Dict) -> Uploadable:
 
 def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['uploadTable'])
+        return parse_upload_table(collection, table, to_parse['uploadTable'], one_to_one=False)
+
+    if 'oneToOneTable' in to_parse:
+        return parse_upload_table(collection, table, to_parse['oneToOneTable'], one_to_one=True)
 
     if 'treeRecord' in to_parse:
         return parse_tree_record(collection, table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
+def parse_upload_table(collection, table: Table, to_parse: Dict, one_to_one: bool) -> UploadTable:
     extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
 
     return UploadTable(
+        isOneToOne=one_to_one,
         name=table.django_name,
         wbcols=to_parse['wbcols'],
         static={**extra_static, **to_parse['static']},

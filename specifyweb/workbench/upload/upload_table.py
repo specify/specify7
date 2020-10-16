@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class UploadTable(NamedTuple):
+    isOneToOne: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
@@ -55,9 +56,16 @@ class UploadTable(NamedTuple):
                     boundRecords.append(result_)
             toMany[fieldname] = boundRecords
 
-        return ParseFailures(parseFails) if parseFails else BoundUploadTable(self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
+        if parseFails:
+            return ParseFailures(parseFails)
+
+        return BoundUploadTable(self.isOneToOne, self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
+
+    def is_one_to_one(self) -> bool:
+        return self.isOneToOne
 
 class BoundUploadTable(NamedTuple):
+    isOneToOne: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
@@ -65,6 +73,8 @@ class BoundUploadTable(NamedTuple):
     toOne: Dict[str, BoundUploadable]
     toMany: Dict[str, List[BoundToManyRecord]]
 
+    def is_one_to_one(self) -> bool:
+        return self.isOneToOne
 
     def filter_on(self, path: str) -> FilterPack:
         filters = {
@@ -89,6 +99,12 @@ class BoundUploadTable(NamedTuple):
         return FilterPack([filters], [])
 
     def upload_row(self) -> UploadResult:
+        return self._handle_row(force_upload=False)
+
+    def force_upload_row(self) -> UploadResult:
+        return self._handle_row(force_upload=True)
+
+    def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
 
@@ -97,6 +113,15 @@ class BoundUploadTable(NamedTuple):
             for fieldname, to_one_def in self.toOne.items()
         }
 
+        toManyFilters = to_many_filters_and_excludes(self.toMany)
+
+        if not force_upload:
+            match = self._match(model, toOneResults, toManyFilters, info)
+            if match:
+                return UploadResult(match, toOneResults, {})
+        return self._do_upload(model, toOneResults, toManyFilters, info)
+
+    def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
         filters = {
             fieldname_: value
             for parsedField in self.parsedFields
@@ -105,7 +130,7 @@ class BoundUploadTable(NamedTuple):
 
         filters.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
-        to_many_filters, to_many_excludes = to_many_filters_and_excludes(self.toMany)
+        to_many_filters, to_many_excludes = toManyFilters
 
         matched_records = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
                                  to_many_excludes,
@@ -114,37 +139,51 @@ class BoundUploadTable(NamedTuple):
                                         model.objects.filter(**filters, **self.static)))
 
         n_matched = matched_records.count()
-        if n_matched == 0:
-            attrs = {
-                fieldname_: value
-                for parsedField in self.parsedFields
-                for fieldname_, value in parsedField.upload.items()
-            }
-
-            attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
-
-            if any(v is not None for v in attrs.values()) or to_many_filters:
-                try:
-                    uploaded = model.objects.create(**attrs, **self.static)
-                    picklist_additions = self.do_picklist_additions()
-                except BusinessRuleException as e:
-                    return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
-
-                toManyResults = {
-                    fieldname: upload_to_manys(model, uploaded.id, fieldname, records)
-                    for fieldname, records in self.toMany.items()
-                }
-                return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
-            else:
-                return UploadResult(NullRecord(info), {}, {})
-
+        if n_matched > 1:
+            return MatchedMultiple(ids=[r.id for r in matched_records], info=info)
         elif n_matched == 1:
-            return UploadResult(Matched(id=matched_records[0].id, info=info), toOneResults, {})
-
+            return Matched(id=matched_records[0].id, info=info)
         else:
-            return UploadResult(MatchedMultiple(ids=[r.id for r in matched_records], info=info), toOneResults, {})
+            return None
 
-    def do_picklist_additions(self) -> List[PicklistAddition]:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> UploadResult:
+        attrs = {
+            fieldname_: value
+            for parsedField in self.parsedFields
+            for fieldname_, value in parsedField.upload.items()
+        }
+
+        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+
+        to_many_filters, to_many_excludes = toManyFilters
+
+        if all(v is None for v in attrs.values()) and not to_many_filters:
+            # nothing to upload
+            return UploadResult(NullRecord(info), {}, {})
+
+        # replace any one-to-one records that matched with forced uploads
+        toOneResults.update({
+            fieldname: to_one_def.force_upload_row()
+            for fieldname, to_one_def in self.toOne.items()
+            if to_one_def.is_one_to_one()
+            for result in [toOneResults[fieldname].record_result]
+            if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
+        })
+        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+
+        try:
+            uploaded = model.objects.create(**attrs, **self.static)
+            picklist_additions = self._do_picklist_additions()
+        except BusinessRuleException as e:
+            return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
+
+        toManyResults = {
+            fieldname: upload_to_manys(model, uploaded.id, fieldname, records)
+            for fieldname, records in self.toMany.items()
+        }
+        return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
+
+    def _do_picklist_additions(self) -> List[PicklistAddition]:
         added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
@@ -167,12 +206,12 @@ def to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -
     return FilterPack(filters, excludes)
 
 
-
 def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
         BoundUploadTable(
+            isOneToOne = False,
             name = record.name,
             wbcols = record.wbcols,
             static = {**record.static, fk_field: parent_id},

@@ -131,6 +131,7 @@ def with_scoping(
         geographytreedefid: int
 ) -> UploadTable:
     return UploadTable(
+        isOneToOne = False,
         name = 'Collectionobject',
         wbcols = {
             'catalognumber' : "BMSM No.",
@@ -149,6 +150,7 @@ def with_scoping(
                     },
                     toOne = {
                         'determiner': UploadTable(
+                            isOneToOne = False,
                             name = 'Agent',
                             wbcols = {
                                 'title': 'Determiner 1 Title',
@@ -180,6 +182,7 @@ def with_scoping(
         },
         toOne = {
             'collectingevent': UploadTable(
+                isOneToOne = False,
                 name = 'Collectingevent',
                 wbcols = {
                     'enddate' : 'End Date Collected',
@@ -189,6 +192,7 @@ def with_scoping(
                 static = {'discipline_id': disciplineid},
                 toOne = {
                     'locality': UploadTable(
+                        isOneToOne = False,
                         name = 'Locality',
                         wbcols = {
                             'localityname': 'Site',
@@ -220,6 +224,7 @@ def with_scoping(
                             static = {'division_id': divisionid, 'isprimary': True, 'ordernumber': 0},
                             toOne = {
                                 'agent': UploadTable(
+                                    isOneToOne = False,
                                     name = 'Agent',
                                     wbcols = {
                                         'title'          : 'Collector 1 Title',
@@ -239,6 +244,7 @@ def with_scoping(
                             static = {'division_id': divisionid, 'isprimary': False, 'ordernumber': 1},
                             toOne = {
                                 'agent': UploadTable(
+                                    isOneToOne = False,
                                     name = 'Agent',
                                     wbcols = {
                                         'title'          : 'Collector 2 Title',

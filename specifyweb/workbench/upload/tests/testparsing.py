@@ -74,6 +74,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_nonreadonly_picklist(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
             static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
@@ -111,6 +112,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_picklist_size_overflow(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
             static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
@@ -136,6 +138,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno'},
             static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
@@ -155,6 +158,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_required_field(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
             static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
@@ -174,6 +178,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Agent',
             wbcols={
                 'title': 'title',
@@ -263,6 +268,7 @@ class ParsingTests(UploadTestsBase):
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
+            isOneToOne = False,
             name='Agent',
             wbcols={
                 'agenttype': 'agenttype',

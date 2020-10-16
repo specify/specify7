@@ -31,6 +31,9 @@ class TreeRecord(NamedTuple):
     treedefname: str
     treedefid: int
 
+    def is_one_to_one(self) -> bool:
+        return False
+
     def to_json(self) -> Dict:
         result = self._asdict()
         return { 'treeRecord': result }
@@ -45,6 +48,8 @@ class BoundTreeRecord(NamedTuple):
     treedefid: int
     row: Row
 
+    def is_one_to_one(self) -> bool:
+        return False
 
     def filter_on(self, path: str) -> FilterPack:
         return FilterPack([], [])
@@ -76,6 +81,8 @@ class BoundTreeRecord(NamedTuple):
 
         return UploadResult(Uploaded(obj.id, info, []), {}, {})
 
+    def force_upload_row(self) -> UploadResult:
+        raise NotImplementedError()
 
     def match(self) -> TreeMatchResult:
         model = getattr(models, self.name)
