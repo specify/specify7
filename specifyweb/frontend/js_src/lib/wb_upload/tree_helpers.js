@@ -103,6 +103,21 @@ const tree_helpers = {
 		}, target);
 	},
 
+	array_to_tree(array, tree = {}){
+
+		if (array.length === 0)
+			return false;
+		const node = array.shift();
+		const data = tree_helpers.array_to_tree(array);
+
+		if (data === false)
+			return {};
+
+		tree[node] = data;
+		return tree;
+
+	},
+
 	/*
 	* Converts array of arrays of strings into a complete tree
 	* The inverse of mappings_tree_to_array_of_mappings
@@ -122,17 +137,15 @@ const tree_helpers = {
 	* 					Last Name
 	* 				Remarks
 	* */
-	array_to_tree(array, tree = {}){
+	array_of_mappings_to_mappings_tree(array_of_mappings){
 
-		if (array.length === 0)
-			return false;
-		const node = array.shift();
-		const data = tree_helpers.array_to_tree(array);
+		const tree = {};
 
-		if (data === false)
-			return {};
+		for(const mapping_path of array_of_mappings){
+			const mapping_tree = tree_helpers.array_to_tree(mapping_path);
+			tree_helpers.deep_merge_object(tree, mapping_tree);
+		}
 
-		tree[node] = data;
 		return tree;
 
 	},
@@ -140,7 +153,7 @@ const tree_helpers = {
 
 	/*
 	* Converts mappings tree to array of mappings
-	* The inverse of array_to_tree
+	* The inverse of array_of_mappings_to_mappings_tree
 	* @param {object} mappings_tree - Mappings tree
 	* @param {array} result - Used in recursion to store intermediate results
 	* @param {array} path - Used in recursion to store intermediate path

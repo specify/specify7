@@ -154,7 +154,7 @@ const mappings = {
 
 	// GETTERS
 
-	get_mapping_line_data_from_mappings_path(mappings_path=[], recursive_payload=undefined){
+	get_mapping_line_data_from_mappings_path(mappings_path=[], iterate=true, recursive_payload=undefined){
 
 		let table_name = '';
 		let parent_table_name = '';
@@ -174,8 +174,9 @@ const mappings = {
 		else
 			table_name = mappings.base_table_name;
 
-		//mapping_line_data.push('getting fields for ' + table_name + ' with default_value: '+default_value+' and with parent_table: ' + parent_table_name + ' and parent_table_relationship: ' + parent_table_relationship_name)
-		mapping_line_data.push(mappings.get_fields_for_table(table_name, mappings_path, mappings_path_position, parent_table_name, parent_table_relationship_name));
+
+		if(iterate || mappings_path.length===0 || mappings_path_position+1===mappings_path.length)
+			mapping_line_data.push(mappings.get_fields_for_table(table_name, mappings_path, mappings_path_position, parent_table_name, parent_table_relationship_name));
 
 
 		const next_path_index = mappings_path_position+1;
@@ -207,7 +208,7 @@ const mappings = {
 					mappings_path_position: next_path_index,
 				};
 
-				return mappings.get_mapping_line_data_from_mappings_path(mappings_path,new_recursive_payload);
+				return mappings.get_mapping_line_data_from_mappings_path(mappings_path,iterate, new_recursive_payload);
 			}
 		}
 
@@ -255,6 +256,9 @@ const mappings = {
 
 			mapping_element_type = 'to_many';
 
+			if(typeof next_mapping_path_element !== "undefined")
+				mapped_fields.push(next_mapping_path_element);
+
 			const max_mapped_element_number = mapped_fields.reduce((max_mapped_element_number,mapped_field)=>{
 				const mapped_element_number = parseInt(mapped_field.substring(mappings.reference_symbol.length));
 				if(mapped_element_number > max_mapped_element_number)
@@ -264,7 +268,7 @@ const mappings = {
 			}, 0);
 
 
-			for(let i=1; i<=(max_mapped_element_number+1); i++){
+			for(let i=1; i<=max_mapped_element_number; i++){
 				const mapped_object_name = mappings.reference_symbol + i;
 				result_fields[mapped_object_name] = {
 					field_friendly_name: mapped_object_name,
@@ -350,13 +354,15 @@ const mappings = {
 
 	get_mapped_fields(mappings_path){
 
-		const lines_elements_container = dom_helper.get_lines(mappings.list__mappings, true);
+		const lines_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
 
-		const mappings_paths = lines_elements_container.map(line_elements_container =>
+		const mappings_paths = lines_elements_containers.map(line_elements_container =>
 			mappings.get_mappings_path(line_elements_container, mappings_path)
 		);
 
-		return tree_helpers.array_to_tree(mappings_paths);
+		const cut_mappings_paths = mappings_paths.map(mappings_path=>mappings_path.slice(mappings_path.length));
+
+		return tree_helpers.array_of_mappings_to_mappings_tree(cut_mappings_paths);
 
 	},
 
@@ -369,16 +375,17 @@ const mappings = {
 
 		for (const element of elements) {
 
-			const element_type = element.getAttribute('data_type');
+			const element_type = element.getAttribute('data-type');
 			let result_name = '';
-			const name = element.getAttribute('name');
+			const name = element.getAttribute('data-value');
 
-			if (element_type === 'simple')
+			//TODO: decide on the value for elements
+			//if (element_type === 'simple')
 				result_name = name;
-			else if (element_type === 'tree')
-				result_name = mappings.tree_symbol + name;
-			else if (element_type === 'to_many')
-				result_name = mappings.reference_symbol + name;
+			// else if (element_type === 'tree')
+			// 	result_name = mappings.tree_symbol + name;
+			// else if (element_type === 'to_many')
+			// 	result_name = mappings.reference_symbol + name;
 			mappings_path.push(result_name);
 
 			if(typeof mapping_path_filter[position] === "string" && result_name !== mapping_path_filter[position])
@@ -603,27 +610,83 @@ const mappings = {
 
 	//CHANGE CALLBACKS
 
-	//TODO: fix deprecated
-	field_change_callback(event){
+	custom_select_change_event(custom_select_change_payload){
 
-		const field_select_element = event.target;
-		const selected_field = field_select_element.value;
+		const {
+			changed_list,
+			selected_option,
+			new_value,
+			previous_value,
+			is_relationship,
+			list_type,
+		} = custom_select_change_payload;
 
-		if (selected_field === "0")
-			return;
+		const line_elements_container = changed_list.parentElement;
 
-		const table_name = field_select_element.getAttribute('data-table_name');
-		const field_data = mappings.tables[table_name][selected_field];
-		const {is_relationship} = field_data;
+		const list_table_name = changed_list.getAttribute('data-table');
 
-		if (is_relationship) {
-			const line_elements_container = dom_helper.get_line_elements_container(field_select_element);
-			const mapping_path = mappings.get_mappings_path(line_elements_container);
-			const mapping_details = mappings.get_mapping_line_data_from_mappings_path(mapping_path, false);
-			line_elements_container.append(html_generator.mapping_element(mapping_details));
+		let mappings_path;
+
+		if(list_type === "to_many"){
+
+			//add new -to-many element
+			if(new_value==='add'){
+
+				const previous_element = selected_option.previousElementSibling;
+				let last_index = 0;
+				if(previous_element.classList.contains('custom_select_option')){
+					const last_index_string = selected_option.previousElementSibling.getAttribute('data-value');
+					last_index = parseInt(last_index_string.substr(mappings.reference_symbol.length));
+				}
+
+				const new_index = last_index+1;
+				const new_option_name = mappings.reference_symbol + new_index;
+
+				const option_data = {
+					option_name: new_option_name,
+					option_value: new_option_name,
+					is_enabled: true,
+					is_relationship: true,
+					is_default: false,
+					table_name: list_table_name,
+				};
+
+				mappings.custom_select_element.add_option(changed_list, -2, option_data, true);
+
+			}
+
+			mappings_path = mappings.get_mappings_path(line_elements_container, changed_list);
+
+			//add elements to the right if there aren't any
+
 		}
 
+		else {
 
+			mappings_path = mappings.get_mappings_path(line_elements_container);
+
+			if(list_type === 'simple'){
+
+				//remove all elements to the right
+				while(changed_list.nextElementSibling !== null)
+					changed_list.nextElementSibling.remove();
+
+
+
+				if(is_relationship){
+					const new_line_element = document.createElement('span');
+					line_elements_container.appendChild(new_line_element);
+
+					const mapping_details = mappings.get_mapping_line_data_from_mappings_path(mappings_path,false)[0];
+					new_line_element.outerHTML = html_generator.mapping_element(mapping_details);
+				}
+
+			}
+
+		}
+
+		mappings.update_all_lines(mappings_path);
+		mappings.update_all_lines([...mappings_path.slice(0,-1), previous_value]);
 	},
 
 	clear_line(line){
@@ -637,9 +700,16 @@ const mappings = {
 
 	update_all_lines(mapping_path_filter){
 
+		const lines = mappings.list__mappings.children;
+
+		for(const line of lines){
+			const line_elements_container = line.getElementsByClassName('wbplanview_mappings_line_elements');
+			mappings.update_line(line_elements_container,mapping_path_filter);
+		}
+
 	},
 
-	update_line(line, mapping_path){
+	update_line(line_elements_container, mapping_path){
 
 	},
 

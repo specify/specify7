@@ -176,6 +176,7 @@ const custom_select_element = {
 				if(custom_select_option !== null){
 
 					const change_payload = custom_select_element.change_selected_option(current_list,custom_select_option);
+					current_list.classList.remove('custom_select_open');
 
 					if(typeof change_payload === "object")
 						change_callback(change_payload);
@@ -202,6 +203,101 @@ const custom_select_element = {
 					list_input.style.setProperty('--base_width',list_options.offsetWidth + 'px');
 			}
 	},
+
+	change_selected_option(target_list, target_option){
+
+		//ignore selected and disabled elements
+		if(target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled'))
+			return false;
+
+		//unselect all options
+		for(const selected_line of target_list.querySelectorAll('.custom_select_option_selected'))
+			selected_line.classList.remove('custom_select_option_selected');
+
+		//extract data about new option
+		const custom_select_option_value = target_option.getAttribute('data-value');
+		const custom_select_option_label_element = target_option.getElementsByClassName('custom_select_option_label')[0];
+		const custom_select_option_label = custom_select_option_label_element.textContent;
+
+		const previous_list_value = target_list.getAttribute('data-value');
+
+		//don't do anything if value wasn't changed
+		if(custom_select_option_value === previous_list_value)
+			return false;
+
+		//update list data
+		const is_relationship = target_option.classList.contains('custom_select_option_relationship');
+
+		target_list.setAttribute('data_value_is_relationship',is_relationship.toString());
+		target_list.setAttribute('data-value',custom_select_option_value);
+		target_list.setAttribute('data-previous_value',previous_list_value);
+		target_option.classList.add('custom_select_option_selected');
+
+
+		//update custom_select_input
+		const custom_select_inputs = target_list.getElementsByClassName('custom_select_input');
+
+		if(custom_select_inputs !== null){
+
+			const custom_select_input = custom_select_inputs[0];
+			const table_name = target_option.getAttribute('data-table_name');
+
+			const custom_select_input_icon = custom_select_input.getElementsByClassName('custom_select_input_icon')[0];
+			custom_select_input_icon.innerHTML = custom_select_element.icon(is_relationship, true, table_name);
+
+			const custom_select_input_label = custom_select_input.getElementsByClassName('custom_select_input_label')[0];
+			custom_select_input_label.innerText = custom_select_option_label;
+
+		}
+
+
+		//call change callback with a payload
+		const list_type = target_list.getAttribute('data-type');
+		return {
+			changed_list: target_list,
+			selected_option: target_option,
+			new_value: custom_select_option_value,
+			previous_value: previous_list_value,
+			is_relationship: is_relationship,
+			list_type: list_type,
+		}
+
+	},
+
+	add_option(list,position,option_data, selected=false){
+
+		const new_option_line_html = custom_select_element.new_select_option_html(option_data);
+		let new_option_line = document.createElement('span');
+
+		const option_container = list.getElementsByClassName('custom_select_options')[0].getElementsByClassName('custom_select_group')[0];
+
+		const options = option_container.children;
+
+		if(position < -1)
+			position = options.length + position;
+
+		let new_index = 0;
+
+		if (position === 0 && options.length !== 0){
+			options[0].before(new_option_line);
+			new_index = 0;
+		}
+		else if (position === -1 || position > options.length || options.length === 0) {
+			option_container.append(new_option_line);
+			new_index = options.length-1;
+		}
+		else {
+			options[position].after(new_option_line);
+			new_index = position+1;
+		}
+
+		new_option_line.outerHTML = new_option_line_html;
+		new_option_line = options[new_index];
+
+		if(selected)
+			custom_select_element.change_selected_option(list,new_option_line);
+
+	}
 
 };
 
