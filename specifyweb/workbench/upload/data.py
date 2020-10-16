@@ -141,6 +141,31 @@ class FailedBusinessRule(NamedTuple):
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
 
+class NoMatch(NamedTuple):
+    info: ReportInfo
+
+    def get_id(self) -> Optional[int]:
+        return None
+
+    def is_failure(self) -> bool:
+        return True
+
+    def validation_info(self) -> RowValidation:
+        return RowValidation(
+            cellIssues=[],
+            newRows=[],
+            picklistAdditions=[],
+            tableIssues=[
+                TableIssue(
+                    tableName=self.info.tableName,
+                    columns=self.info.columns,
+                    issue="No matching record for must-match table."
+        )])
+
+    def to_json(self):
+        return { self.__class__.__name__: self._asdict() }
+
+
 class ParseFailures(NamedTuple):
     failures: List[CellIssue]
 
@@ -162,7 +187,7 @@ class ParseFailures(NamedTuple):
         return { self.__class__.__name__: self._asdict() }
 
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
+    record_result: Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
     toOne: Dict[str, Any]
     toMany: Dict[str, Any]
 
@@ -217,6 +242,9 @@ class Uploadable(Protocol):
 
 class BoundUploadable(Protocol):
     def filter_on(self, path: str) -> FilterPack:
+        ...
+
+    def match_row(self) -> UploadResult:
         ...
 
     def upload_row(self) -> UploadResult:

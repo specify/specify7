@@ -8,7 +8,7 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
+from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
 from .tomany import ToManyRecord, BoundToManyRecord
 
 logger = logging.getLogger(__name__)
@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class UploadTable(NamedTuple):
     isOneToOne: bool
+    mustMatch: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
@@ -59,13 +60,14 @@ class UploadTable(NamedTuple):
         if parseFails:
             return ParseFailures(parseFails)
 
-        return BoundUploadTable(self.isOneToOne, self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
+        return BoundUploadTable(self.isOneToOne, self.mustMatch, self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
 
     def is_one_to_one(self) -> bool:
         return self.isOneToOne
 
 class BoundUploadTable(NamedTuple):
     isOneToOne: bool
+    mustMatch: bool
     name: str
     wbcols: Dict[str, str]
     static: Dict[str, Any]
@@ -102,14 +104,19 @@ class BoundUploadTable(NamedTuple):
         return self._handle_row(force_upload=False)
 
     def force_upload_row(self) -> UploadResult:
+        if self.mustMatch:
+            raise Exception('trying to force upload of must-match table')
         return self._handle_row(force_upload=True)
+
+    def match_row(self) -> UploadResult:
+        return self._replace(mustMatch=True).upload_row()
 
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
 
         toOneResults = {
-            fieldname: to_one_def.upload_row()
+            fieldname: to_one_def.match_row() if self.mustMatch else to_one_def.upload_row()
             for fieldname, to_one_def in self.toOne.items()
         }
 
@@ -119,6 +126,10 @@ class BoundUploadTable(NamedTuple):
             match = self._match(model, toOneResults, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
+
+        if self.mustMatch:
+            return UploadResult(NoMatch(info), toOneResults, {})
+
         return self._do_upload(model, toOneResults, toManyFilters, info)
 
     def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
@@ -211,6 +222,7 @@ def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Uplo
 
     return [
         BoundUploadTable(
+            mustMatch = False,
             isOneToOne = False,
             name = record.name,
             wbcols = record.wbcols,

@@ -79,6 +79,7 @@ schema = {
             'patternProperties': {
                 '^uploadTable$': { '$ref': '#/definitions/uploadTable' },
                 '^oneToOneTable$': { '$ref': '#/definitions/uploadTable' },
+                '^mustMatchTable$': { '$ref': '#/definitions/uploadTable' },
                 '^treeRecord$': { '$ref': '#/definitions/treeRecord' },
             },
             'additionalProperties': False
@@ -118,17 +119,20 @@ def parse_plan(collection, to_parse: Dict) -> Uploadable:
 
 def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['uploadTable'], one_to_one=False)
+        return parse_upload_table(collection, table, to_parse['uploadTable'])
 
     if 'oneToOneTable' in to_parse:
         return parse_upload_table(collection, table, to_parse['oneToOneTable'], one_to_one=True)
+
+    if 'mustMatchTable' in to_parse:
+        return parse_upload_table(collection, table, to_parse['mustMatchTable'], must_match=True)
 
     if 'treeRecord' in to_parse:
         return parse_tree_record(collection, table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict, one_to_one: bool) -> UploadTable:
+def parse_upload_table(collection, table: Table, to_parse: Dict, one_to_one: bool = False, must_match: bool = False) -> UploadTable:
     extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
     def rel_table(key: str) -> Table:
@@ -136,6 +140,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict, one_to_one: boo
 
     return UploadTable(
         isOneToOne=one_to_one,
+        mustMatch=must_match,
         name=table.django_name,
         wbcols=to_parse['wbcols'],
         static={**extra_static, **to_parse['static']},

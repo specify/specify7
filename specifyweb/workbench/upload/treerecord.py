@@ -12,7 +12,7 @@ from django.db import connection # type: ignore
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
-from .data import Row, FilterPack, UploadResult, NullRecord, Matched, MatchedMultiple, Uploaded, ReportInfo
+from .data import Row, FilterPack, UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
 from .parsing import parse_string
 
 logger = logging.getLogger(__name__)
@@ -54,8 +54,14 @@ class BoundTreeRecord(NamedTuple):
     def filter_on(self, path: str) -> FilterPack:
         return FilterPack([], [])
 
+    def match_row(self) -> UploadResult:
+        return self._handle_row(must_match=True)
+
     def upload_row(self) -> UploadResult:
-        to_upload, matched = self.match()
+        return self._handle_row(must_match=False)
+
+    def _handle_row(self, must_match: bool) -> UploadResult:
+        to_upload, matched = self._match()
         info = ReportInfo(tableName=self.name, columns=list(self.ranks.values()))
         if not to_upload:
             if not matched:
@@ -64,6 +70,8 @@ class BoundTreeRecord(NamedTuple):
                 return UploadResult(Matched(matched[0], info), {}, {})
             else:
                 return UploadResult(MatchedMultiple(matched, info), {}, {})
+        elif must_match:
+            return UploadResult(NoMatch(info), {}, {})
 
         model = getattr(models, self.name)
         parent_id = matched[0] if matched else None
@@ -84,7 +92,7 @@ class BoundTreeRecord(NamedTuple):
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
 
-    def match(self) -> TreeMatchResult:
+    def _match(self) -> TreeMatchResult:
         model = getattr(models, self.name)
         tablename = model._meta.db_table
         treedef = getattr(models, self.treedefname).objects.get(id=self.treedefid)

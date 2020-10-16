@@ -131,6 +131,7 @@ def with_scoping(
         geographytreedefid: int
 ) -> UploadTable:
     return UploadTable(
+        mustMatch = False,
         isOneToOne = False,
         name = 'Collectionobject',
         wbcols = {
@@ -150,6 +151,7 @@ def with_scoping(
                     },
                     toOne = {
                         'determiner': UploadTable(
+                            mustMatch = False,
                             isOneToOne = False,
                             name = 'Agent',
                             wbcols = {
@@ -182,6 +184,7 @@ def with_scoping(
         },
         toOne = {
             'collectingevent': UploadTable(
+                mustMatch = False,
                 isOneToOne = False,
                 name = 'Collectingevent',
                 wbcols = {
@@ -192,6 +195,7 @@ def with_scoping(
                 static = {'discipline_id': disciplineid},
                 toOne = {
                     'locality': UploadTable(
+                        mustMatch = False,
                         isOneToOne = False,
                         name = 'Locality',
                         wbcols = {
@@ -224,6 +228,7 @@ def with_scoping(
                             static = {'division_id': divisionid, 'isprimary': True, 'ordernumber': 0},
                             toOne = {
                                 'agent': UploadTable(
+                                    mustMatch = False,
                                     isOneToOne = False,
                                     name = 'Agent',
                                     wbcols = {
@@ -244,6 +249,7 @@ def with_scoping(
                             static = {'division_id': divisionid, 'isprimary': False, 'ordernumber': 1},
                             toOne = {
                                 'agent': UploadTable(
+                                    mustMatch = False,
                                     isOneToOne = False,
                                     name = 'Agent',
                                     wbcols = {
