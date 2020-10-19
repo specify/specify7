@@ -3,7 +3,7 @@ from jsonschema import validate # type: ignore
 from typing import List, Dict, Any, NamedTuple, Union
 
 from .base import UploadTestsBase, get_table
-from ..data import Uploaded, Matched, NoMatch, ParseFailures, CellIssue, FailedBusinessRule
+from ..data import Uploaded, Matched, NoMatch, NullRecord, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..upload_table import UploadTable, MustMatchTable
 from ..upload_plan_schema import schema, parse_plan
@@ -72,3 +72,31 @@ class MustMatchTests(UploadTestsBase):
 
         self.assertEqual(starting_ce_count, get_table('Collectingevent').objects.count(),
                          "there are an equal number of collecting events before and after the upload")
+
+    def test_mustmatch_with_null(self) -> None:
+        plan = parse_plan(self.collection, self.plan(must_match=True))
+
+        data = [
+            dict(catno='0', sfn='1'),
+            dict(catno='1', sfn='2'),
+            dict(catno='2', sfn=''),
+            dict(catno='3', sfn='1'),
+            dict(catno='4', sfn='2'),
+        ]
+
+        ce_count_before_upload = get_table('Collectingevent').objects.count()
+
+        results = do_upload(self.collection, data, plan)
+        ces = set()
+        for r, expected in zip(results, [Matched, NoMatch, NullRecord, Matched, NoMatch]):
+            assert isinstance(r.record_result, Uploaded)
+            self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
+            if not r.contains_failure():
+                ce = get_table('Collectionobject').objects.get(id=r.record_result.get_id()).collectingevent_id
+                if expected is NullRecord:
+                    self.assertIsNone(ce)
+                else:
+                    ces.add(ce)
+
+        self.assertEqual(1, len(ces))
+        self.assertEqual(ce_count_before_upload, get_table('Collectingevent').objects.count())

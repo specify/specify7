@@ -3,7 +3,7 @@ from jsonschema import validate # type: ignore
 from typing import List, Dict, Any, NamedTuple, Union
 
 from .base import UploadTestsBase, get_table
-from ..data import Uploaded, Matched, ParseFailures, CellIssue, FailedBusinessRule
+from ..data import Uploaded, Matched, NullRecord, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..upload_table import UploadTable, OneToOneTable
 from ..upload_plan_schema import schema, parse_plan
@@ -92,3 +92,29 @@ class OneToOneTests(UploadTestsBase):
 
         self.assertEqual(2, len(ces))
 
+    def test_onetoone_with_null(self) -> None:
+        plan = parse_plan(self.collection, self.plan(one_to_one=True))
+
+        data = [
+            dict(catno='0', sfn='1'),
+            dict(catno='1', sfn='1'),
+            dict(catno='2', sfn='2'),
+            dict(catno='3', sfn=''),
+            dict(catno='4', sfn=''),
+        ]
+
+        ce_count_before_upload = get_table('Collectingevent').objects.count()
+
+        results = do_upload(self.collection, data, plan)
+        ces = set()
+        for r, expected in zip(results, [Uploaded, Uploaded, Uploaded, NullRecord, NullRecord]):
+            assert isinstance(r.record_result, Uploaded)
+            self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
+            ce = get_table('Collectionobject').objects.get(id=r.record_result.get_id()).collectingevent_id
+            if expected is NullRecord:
+                self.assertIsNone(ce)
+            else:
+                ces.add(ce)
+
+        self.assertEqual(3, len(ces))
+        self.assertEqual(ce_count_before_upload + 3, get_table('Collectingevent').objects.count())

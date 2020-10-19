@@ -118,12 +118,6 @@ class BoundUploadTable(NamedTuple):
     def match_row(self) -> UploadResult:
         return BoundMustMatchTable(*self).process_row()
 
-    def _process_to_ones(self) -> Dict[str, UploadResult]:
-        return {
-            fieldname: to_one_def.process_row()
-            for fieldname, to_one_def in self.toOne.items()
-        }
-
     def _handle_row(self, force_upload: bool) -> UploadResult:
         model = getattr(models, self.name.capitalize())
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
@@ -132,12 +126,32 @@ class BoundUploadTable(NamedTuple):
 
         toManyFilters = to_many_filters_and_excludes(self.toMany)
 
+        attrs = {
+            fieldname_: value
+            for parsedField in self.parsedFields
+            for fieldname_, value in parsedField.upload.items()
+        }
+
+        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
+
+        to_many_filters, to_many_excludes = toManyFilters
+
+        if all(v is None for v in attrs.values()) and not to_many_filters:
+            # nothing to upload
+            return UploadResult(NullRecord(info), {}, {})
+
         if not force_upload:
             match = self._match(model, toOneResults, toManyFilters, info)
             if match:
                 return UploadResult(match, toOneResults, {})
 
-        return self._do_upload(model, toOneResults, toManyFilters, info)
+        return self._do_upload(model, toOneResults, attrs, info)
+
+    def _process_to_ones(self) -> Dict[str, UploadResult]:
+        return {
+            fieldname: to_one_def.process_row()
+            for fieldname, to_one_def in self.toOne.items()
+        }
 
     def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
         filters = {
@@ -164,20 +178,7 @@ class BoundUploadTable(NamedTuple):
         else:
             return None
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> UploadResult:
-        attrs = {
-            fieldname_: value
-            for parsedField in self.parsedFields
-            for fieldname_, value in parsedField.upload.items()
-        }
-
-        attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
-
-        to_many_filters, to_many_excludes = toManyFilters
-
-        if all(v is None for v in attrs.values()) and not to_many_filters:
-            # nothing to upload
-            return UploadResult(NullRecord(info), {}, {})
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], attrs: Dict[str, Any], info: ReportInfo) -> UploadResult:
 
         # replace any one-to-one records that matched with forced uploads
         toOneResults.update({
@@ -223,7 +224,7 @@ class BoundMustMatchTable(BoundUploadTable):
             for fieldname, to_one_def in self.toOne.items()
         }
 
-    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> UploadResult:
+    def _do_upload(self, model, toOneResults: Dict[str, UploadResult], atrs: Dict[str, Any], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
