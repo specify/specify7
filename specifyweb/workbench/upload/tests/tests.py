@@ -8,7 +8,7 @@ from decimal import Decimal
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
 from ..data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
-from ..upload_table import UploadTable, to_many_filters_and_excludes, BoundUploadTable
+from ..upload_table import UploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from ..upload import do_upload_csv
 
@@ -26,7 +26,7 @@ class UploadTests(UploadTestsBase):
         assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
-        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
+        filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual(filters, [{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
@@ -51,7 +51,7 @@ class UploadTests(UploadTestsBase):
         assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
-        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
+        filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual(filters, [
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',

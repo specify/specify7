@@ -124,7 +124,7 @@ class BoundUploadTable(NamedTuple):
 
         toOneResults = self._process_to_ones()
 
-        toManyFilters = to_many_filters_and_excludes(self.toMany)
+        toManyFilters = _to_many_filters_and_excludes(self.toMany)
 
         attrs = {
             fieldname_: value
@@ -197,7 +197,7 @@ class BoundUploadTable(NamedTuple):
             return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
 
         toManyResults = {
-            fieldname: upload_to_manys(model, uploaded.id, fieldname, records)
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, records)
             for fieldname, records in self.toMany.items()
         }
         return UploadResult(Uploaded(uploaded.id, info, picklist_additions), toOneResults, toManyResults)
@@ -228,7 +228,7 @@ class BoundMustMatchTable(BoundUploadTable):
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
-def to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
+def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
     filters: List[Dict] = []
     excludes: List[Exclude] = []
 
@@ -241,7 +241,7 @@ def to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -
     return FilterPack(filters, excludes)
 
 
-def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[UploadResult]:
+def _upload_to_manys(parent_model, parent_id, parent_field, records) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -252,7 +252,7 @@ def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Uplo
             parsedFields = record.parsedFields,
             toOne = record.toOne,
             toMany = {},
-        ).process_row()
+        ).force_upload_row()
 
         for record in records
     ]
