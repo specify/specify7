@@ -77,7 +77,7 @@ def do_upload(collection, rows: Rows, upload_plan: Uploadable, no_commit: bool=F
         for row in rows:
             with savepoint():
                 bind_result = upload_plan.bind(collection, row)
-                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.upload_row()
+                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if result.contains_failure():
                     raise Rollback()
@@ -93,7 +93,7 @@ do_upload_csv = do_upload
 def validate_row(collection, upload_plan: Uploadable, row: Row) -> UploadResult:
     with savepoint():
         bind_result = upload_plan.bind(collection, row)
-        result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.upload_row()
+        result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
         raise Rollback()
     return result
 

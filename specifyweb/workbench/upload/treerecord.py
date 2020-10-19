@@ -51,7 +51,7 @@ class BoundTreeRecord(NamedTuple):
     def match_row(self) -> UploadResult:
         return self._handle_row(must_match=True)
 
-    def upload_row(self) -> UploadResult:
+    def process_row(self) -> UploadResult:
         return self._handle_row(must_match=False)
 
     def _handle_row(self, must_match: bool) -> UploadResult:

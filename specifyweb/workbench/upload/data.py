@@ -245,7 +245,7 @@ class BoundUploadable(Protocol):
     def match_row(self) -> UploadResult:
         ...
 
-    def upload_row(self) -> UploadResult:
+    def process_row(self) -> UploadResult:
         ...
 
     def force_upload_row(self) -> UploadResult:

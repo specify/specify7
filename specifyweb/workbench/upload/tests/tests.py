@@ -278,7 +278,7 @@ class UploadTests(UploadTestsBase):
             TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [state.id])
         )
 
-        upload_result = tree_record.bind(self.collection, row).upload_row()
+        upload_result = tree_record.bind(self.collection, row).process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
 
         uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
@@ -287,7 +287,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.parent.id, state.id)
 
         self.assertEqual(tree_record.bind(self.collection, row)._match(), ([], [uploaded.id]))
-        upload_result = tree_record.bind(self.collection, row).upload_row()
+        upload_result = tree_record.bind(self.collection, row).process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'])
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 

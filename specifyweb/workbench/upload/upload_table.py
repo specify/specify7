@@ -109,18 +109,18 @@ class BoundUploadTable(NamedTuple):
 
         return FilterPack([filters], [])
 
-    def upload_row(self) -> UploadResult:
+    def process_row(self) -> UploadResult:
         return self._handle_row(force_upload=False)
 
     def force_upload_row(self) -> UploadResult:
         return self._handle_row(force_upload=True)
 
     def match_row(self) -> UploadResult:
-        return BoundMustMatchTable(*self).upload_row()
+        return BoundMustMatchTable(*self).process_row()
 
-    def _upload_to_ones(self) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
-            fieldname: to_one_def.upload_row()
+            fieldname: to_one_def.process_row()
             for fieldname, to_one_def in self.toOne.items()
         }
 
@@ -128,7 +128,7 @@ class BoundUploadTable(NamedTuple):
         model = getattr(models, self.name.capitalize())
         info = ReportInfo(tableName=self.name, columns=list(self.wbcols.values()))
 
-        toOneResults = self._upload_to_ones()
+        toOneResults = self._process_to_ones()
 
         toManyFilters = to_many_filters_and_excludes(self.toMany)
 
@@ -217,7 +217,7 @@ class BoundMustMatchTable(BoundUploadTable):
     def force_upload_row(self) -> UploadResult:
         raise Exception('trying to force upload of must-match table')
 
-    def _upload_to_ones(self) -> Dict[str, UploadResult]:
+    def _process_to_ones(self) -> Dict[str, UploadResult]:
         return {
             fieldname: to_one_def.match_row()
             for fieldname, to_one_def in self.toOne.items()
@@ -251,7 +251,7 @@ def upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Uplo
             parsedFields = record.parsedFields,
             toOne = record.toOne,
             toMany = {},
-        ).upload_row()
+        ).process_row()
 
         for record in records
     ]
