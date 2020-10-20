@@ -6,7 +6,9 @@ from typing import List, Dict, Any, NamedTuple, Union
 
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.specify.datamodel import datamodel
 
+from .scoping import scoping_relationships
 from .parsing import parse_many, ParseResult, ParseFailure
 from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
 from .tomany import ToManyRecord, BoundToManyRecord
@@ -21,8 +23,16 @@ class UploadTable(NamedTuple):
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
+    def apply_scoping(self, collection) -> "UploadTable":
+        table = datamodel.get_table_strict(self.name)
+        return self._replace(
+            static={**scoping_relationships(collection, table), **self.static},
+            toOne={f: u.apply_scoping(collection) for f, u in self.toOne.items()},
+            toMany={f: [r.apply_scoping(collection) for r in rs] for f, rs in self.toMany.items()},
+        )
+
     def _to_json(self) -> Dict:
-        result = self._asdict()
+        result = dict(wbcols=self.wbcols, static=self.static)
         result['toOne'] = {
             key: uploadable.to_json()
             for key, uploadable in self.toOne.items()
@@ -35,6 +45,9 @@ class UploadTable(NamedTuple):
 
     def to_json(self) -> Dict:
         return { 'uploadTable': self._to_json() }
+
+    def unparse(self) -> Dict:
+        return { 'baseTableName': self.name, 'uploadable': self.to_json() }
 
     def bind(self, collection, row: Row) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)

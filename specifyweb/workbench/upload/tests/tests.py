@@ -27,7 +27,7 @@ class UploadTests(UploadTestsBase):
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
-        self.assertEqual(filters, [{
+        self.assertEqual([{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
             'collectors__agent__lastname': 'Redfern',
@@ -36,7 +36,7 @@ class UploadTests(UploadTestsBase):
             'collectors__agent__division_id': self.division.id,
             'collectors__division_id': self.division.id,
             'collectors__isprimary': True,
-            'collectors__ordernumber': 0}])
+            'collectors__ordernumber': 0}], filters)
 
         self.assertEqual(
             excludes,
@@ -52,7 +52,7 @@ class UploadTests(UploadTestsBase):
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
-        self.assertEqual(filters, [
+        self.assertEqual([
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',
              'collectors__agent__lastname': 'Raines',
@@ -70,7 +70,7 @@ class UploadTests(UploadTestsBase):
              'collectors__agent__division_id': self.division.id,
              'collectors__division_id': self.division.id,
              'collectors__isprimary': False,
-             'collectors__ordernumber': 1}])
+             'collectors__ordernumber': 1}], filters)
 
         self.assertEqual(excludes, [])
 
@@ -216,7 +216,6 @@ class UploadTests(UploadTestsBase):
 '''))
         tree_record = TreeRecord(
             name = 'Geography',
-            treedefname = 'Geographytreedef',
             treedefid = self.geographytreedef.id,
             ranks = {
                 'Continent': 'Continent/Ocean',

@@ -123,19 +123,13 @@ json = dict(
     )}
 )
 
-def with_scoping(
-        collectionid: int,
-        disciplineid: int,
-        divisionid: int,
-        taxontreedefid: int,
-        geographytreedefid: int
-) -> UploadTable:
+def with_scoping(collection) -> UploadTable:
     return UploadTable(
         name = 'Collectionobject',
         wbcols = {
             'catalognumber' : "BMSM No.",
         },
-        static = {'collectionmemberid': collectionid, 'collection_id': collectionid},
+        static = {},
         toMany = {
             'determinations': [
                 ToManyRecord(
@@ -144,7 +138,6 @@ def with_scoping(
                         'determineddate': 'ID Date',
                     },
                     static = {
-                        'collectionmemberid': collectionid,
                         'iscurrent': True,
                     },
                     toOne = {
@@ -156,14 +149,13 @@ def with_scoping(
                                 'middleinitial': 'Determiner 1 Middle Initial',
                                 'lastname': 'Determiner 1 Last Name',
                             },
-                            static = {'division_id': divisionid, 'agenttype': 1},
+                            static = {'agenttype': 1},
                             toOne = {},
                             toMany = {},
                         ),
                         'taxon': TreeRecord(
                             name = 'Taxon',
-                            treedefname = 'Taxontreedef',
-                            treedefid = taxontreedefid,
+                            treedefid = None,
                             ranks = {
                                 'Class': 'Class',
                                 'Superfamily': 'Superfamily',
@@ -186,7 +178,7 @@ def with_scoping(
                     'startdate' : 'Start Date Collected',
                     'stationfieldnumber' : 'Station No.',
                 },
-                static = {'discipline_id': disciplineid},
+                static = {},
                 toOne = {
                     'locality': UploadTable(
                         name = 'Locality',
@@ -195,12 +187,11 @@ def with_scoping(
                             'latitude1': 'Latitude1',
                             'longitude1': 'Longitude1',
                         },
-                        static = {'discipline_id': disciplineid, 'srclatlongunit': 0},
+                        static = {'srclatlongunit': 0},
                         toOne = {
                             'geography': TreeRecord(
                                 name = 'Geography',
-                                treedefname = 'Geographytreedef',
-                                treedefid = geographytreedefid,
+                                treedefid = None,
                                 ranks = {
                                     'Continent': 'Continent/Ocean' ,
                                     'Country': 'Country',
@@ -217,7 +208,7 @@ def with_scoping(
                         ToManyRecord(
                             name = 'Collector',
                             wbcols = {},
-                            static = {'division_id': divisionid, 'isprimary': True, 'ordernumber': 0},
+                            static = {'isprimary': True, 'ordernumber': 0},
                             toOne = {
                                 'agent': UploadTable(
                                     name = 'Agent',
@@ -227,7 +218,7 @@ def with_scoping(
                                         'middleinitial' : 'Collector 1 Middle Initial',
                                         'lastname'      : 'Collector 1 Last Name',
                                     },
-                                    static = {'division_id': divisionid, 'agenttype': 1},
+                                    static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},
                                 )
@@ -236,7 +227,7 @@ def with_scoping(
                         ToManyRecord(
                             name = 'Collector',
                             wbcols = {},
-                            static = {'division_id': divisionid, 'isprimary': False, 'ordernumber': 1},
+                            static = {'isprimary': False, 'ordernumber': 1},
                             toOne = {
                                 'agent': UploadTable(
                                     name = 'Agent',
@@ -246,7 +237,7 @@ def with_scoping(
                                         'middleinitial' : 'Collector 2 Middle Initial',
                                         'lastname'      : 'Collector 2 Last name',
                                     },
-                                    static = {'division_id': divisionid, 'agenttype': 1},
+                                    static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},
                                 )
@@ -256,4 +247,4 @@ def with_scoping(
                 }
             ),
         },
-    )
+    ).apply_scoping(collection)

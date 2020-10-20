@@ -133,7 +133,6 @@ def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
     raise ValueError('unknown uploadable type')
 
 def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
-    extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -141,7 +140,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
     return UploadTable(
         name=table.django_name,
         wbcols=to_parse['wbcols'],
-        static={**extra_static, **to_parse['static']},
+        static=to_parse['static'],
         toOne={
             key: parse_uploadable(collection, rel_table(key), to_one)
             for key, to_one in to_parse['toOne'].items()
@@ -153,34 +152,13 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
     )
 
 def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
-    treedefname = table.django_name + 'treedef'
-    if table.name == 'Taxon':
-        treedefid = collection.discipline.taxontreedef_id
-
-    elif table.name == 'Geography':
-        treedefid = collection.discipline.geographytreedef_id
-
-    elif table.name == 'LithoStrat':
-        treedefid = collection.discipline.lithostrattreedef_id
-
-    elif table.name == 'GeologicTimePeriod':
-        treedefid = collection.discipline.geologictimeperiodtreedef_id
-
-    elif table.name == 'Storage':
-        treedefid = collection.discipline.division.institution.storagetreedef_id
-
-    else:
-        raise Exception('unexpected tree type: %s' % table)
-
     return TreeRecord(
         name=table.django_name,
         ranks=to_parse['ranks'],
-        treedefname=treedefname,
-        treedefid=treedefid,
+        treedefid=None,
     )
 
 def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:
-    extra_static: Dict[str, Any] = scoping_relationships(collection, table)
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -188,39 +166,9 @@ def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyReco
     return ToManyRecord(
         name=table.django_name,
         wbcols=to_parse['wbcols'],
-        static={**extra_static, **to_parse['static']},
+        static=to_parse['static'],
         toOne={
             key: parse_uploadable(collection, rel_table(key), to_one)
             for key, to_one in to_parse['toOne'].items()
         },
     )
-
-
-def scoping_relationships(collection, table: Table) -> Dict[str, int]:
-    extra_static: Dict[str, int] = {}
-
-    try:
-        table.get_field_strict('collectionmemberid')
-        extra_static['collectionmemberid'] = collection.id
-    except DoesNotExistError:
-        pass
-
-    try:
-        table.get_relationship('collection')
-        extra_static['collection_id'] = collection.id
-    except DoesNotExistError:
-        pass
-
-    try:
-        table.get_relationship('discipline')
-        extra_static['discipline_id'] = collection.discipline.id
-    except DoesNotExistError:
-        pass
-
-    try:
-        table.get_relationship('division')
-        extra_static['division_id'] = collection.discipline.division.id
-    except DoesNotExistError:
-        pass
-
-    return extra_static

@@ -10,6 +10,7 @@ from typing import List, Dict, Any, NamedTuple, Optional
 from django.db import connection # type: ignore
 
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .data import Row, FilterPack, UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
@@ -28,21 +29,45 @@ class TreeMatchResult(NamedTuple):
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
-    treedefname: str
-    treedefid: int
+    treedefid: Optional[int]
+
+    def apply_scoping(self, collection) -> "TreeRecord":
+        table = datamodel.get_table_strict(self.name)
+
+        if table.name == 'Taxon':
+            treedefid = collection.discipline.taxontreedef_id
+
+        elif table.name == 'Geography':
+            treedefid = collection.discipline.geographytreedef_id
+
+        elif table.name == 'LithoStrat':
+            treedefid = collection.discipline.lithostrattreedef_id
+
+        elif table.name == 'GeologicTimePeriod':
+            treedefid = collection.discipline.geologictimeperiodtreedef_id
+
+        elif table.name == 'Storage':
+            treedefid = collection.discipline.division.institution.storagetreedef_id
+
+        else:
+            raise Exception('unexpected tree type: %s' % table)
+
+        return self._replace(treedefid=treedefid)
 
     def to_json(self) -> Dict:
-        result = self._asdict()
+        result = dict(ranks=self.ranks)
         return { 'treeRecord': result }
 
+    def unparse(self) -> Dict:
+        return { 'baseTableName': self.name, 'uploadble': self.to_json() }
+
     def bind(self, collection, row: Row) -> "BoundTreeRecord":
-        return BoundTreeRecord(self.name, self.ranks, self.treedefname, self.treedefid, row)
+        return BoundTreeRecord(self.name, self.ranks, self.treedefid, row)
 
 class BoundTreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
-    treedefname: str
-    treedefid: int
+    treedefid: Optional[int]
     row: Row
 
     def filter_on(self, path: str) -> FilterPack:
@@ -89,7 +114,8 @@ class BoundTreeRecord(NamedTuple):
     def _match(self) -> TreeMatchResult:
         model = getattr(models, self.name)
         tablename = model._meta.db_table
-        treedef = getattr(models, self.treedefname).objects.get(id=self.treedefid)
+        treedefname = tablename.capitalize() + 'treedef'
+        treedef = getattr(models, treedefname).objects.get(id=self.treedefid)
         treedefitems = treedef.treedefitems.order_by("-rankid")
         depth = len(treedefitems)
         values = {

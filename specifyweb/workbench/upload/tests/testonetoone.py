@@ -53,7 +53,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertNotIsInstance(plan.toOne['collectingevent'], OneToOneTable)
 
     def test_onetoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True))
+        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
 
         data = [
             dict(catno='0', sfn='1'),
@@ -73,7 +73,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(5, len(ces))
 
     def test_manytoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=False))
+        plan = parse_plan(self.collection, self.plan(one_to_one=False)).apply_scoping(self.collection)
 
         data = [
             dict(catno='0', sfn='1'),
@@ -93,7 +93,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(2, len(ces))
 
     def test_onetoone_with_null(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True))
+        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
 
         data = [
             dict(catno='0', sfn='1'),

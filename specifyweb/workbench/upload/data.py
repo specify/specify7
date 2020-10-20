@@ -231,10 +231,16 @@ class UploadResult(NamedTuple):
         }}
 
 class Uploadable(Protocol):
+    def apply_scoping(self, collection) -> "Uploadable":
+        ...
+
     def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
         ...
 
     def to_json(self) -> Dict:
+        ...
+
+    def unparse(self) -> Dict:
         ...
 
 

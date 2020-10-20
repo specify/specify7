@@ -2,6 +2,9 @@ import logging
 
 from typing import Dict, Any, NamedTuple, List, Union
 
+from specifyweb.specify.datamodel import datamodel
+
+from .scoping import scoping_relationships
 from .data import Row, FilterPack, Exclude, Uploadable, BoundUploadable, CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
 
@@ -13,8 +16,15 @@ class ToManyRecord(NamedTuple):
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
 
+    def apply_scoping(self, collection) -> "ToManyRecord":
+        table = datamodel.get_table_strict(self.name)
+        return self._replace(
+            static={**scoping_relationships(collection, table), **self.static},
+            toOne={f: u.apply_scoping(collection) for f, u in self.toOne.items()},
+        )
+
     def to_json(self) -> Dict:
-        result = self._asdict()
+        result = dict(wbcols=self.wbcols, static=self.static, toOne=self.toOne)
         result['toOne'] = {
             key: uploadable.to_json()
             for key, uploadable in self.toOne.items()

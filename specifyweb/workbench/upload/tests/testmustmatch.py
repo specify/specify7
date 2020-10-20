@@ -50,7 +50,7 @@ class MustMatchTests(UploadTestsBase):
         self.assertIsInstance(plan.toOne['collectingevent'], MustMatchTable)
 
     def test_mustmatch_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(must_match=True))
+        plan = parse_plan(self.collection, self.plan(must_match=True)).apply_scoping(self.collection)
 
         data = [
             dict(catno='0', sfn='1'),
@@ -74,7 +74,7 @@ class MustMatchTests(UploadTestsBase):
                          "there are an equal number of collecting events before and after the upload")
 
     def test_mustmatch_with_null(self) -> None:
-        plan = parse_plan(self.collection, self.plan(must_match=True))
+        plan = parse_plan(self.collection, self.plan(must_match=True)).apply_scoping(self.collection)
 
         data = [
             dict(catno='0', sfn='1'),

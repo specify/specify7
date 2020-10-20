@@ -76,10 +76,10 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -113,10 +113,10 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -138,10 +138,10 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': 'catno'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '123'},
             {'catno': '234'},
@@ -157,10 +157,10 @@ class ParsingTests(UploadTestsBase):
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '', 'habitat': 'River'},
@@ -182,7 +182,7 @@ class ParsingTests(UploadTestsBase):
             static={'agenttype': 1},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'title': "Mr.", 'lastname': 'Doe'},
             {'title': "Dr.", 'lastname': 'Zoidberg'},
@@ -271,7 +271,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
