@@ -219,7 +219,11 @@ const custom_select_element = {
 		const custom_select_option_label_element = target_option.getElementsByClassName('custom_select_option_label')[0];
 		const custom_select_option_label = custom_select_option_label_element.textContent;
 
-		const previous_list_value = target_list.getAttribute('data-value');
+		let previous_list_value = target_list.getAttribute('data-value');
+		const previous_previous_value = target_list.getAttribute('data-previous_value');
+
+		//don't change values if new value is 'add'
+		const list_type = target_list.getAttribute('data-type');
 
 		//don't do anything if value wasn't changed
 		if(custom_select_option_value === previous_list_value)
@@ -252,15 +256,15 @@ const custom_select_element = {
 
 
 		//call change callback with a payload
-		const list_type = target_list.getAttribute('data-type');
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
 			new_value: custom_select_option_value,
 			previous_value: previous_list_value,
+			previous_previous_value: previous_previous_value,
 			is_relationship: is_relationship,
 			list_type: list_type,
-		}
+		};
 
 	},
 
@@ -297,7 +301,28 @@ const custom_select_element = {
 		if(selected)
 			custom_select_element.change_selected_option(list,new_option_line);
 
-	}
+	},
+
+	enable_disabled_options(list){
+
+		const options = list.getElementsByClassName('custom_select_option');
+
+		for(const option of options)
+			option.classList.remove('custom_select_option_disabled');
+
+	},
+
+	toggle_option(list, option_name, action){
+
+		const option = list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
+
+		if(action==='enable')
+			option.classList.remove('custom_select_option_disabled');
+
+		else if(action==='disable')
+			option.classList.add('custom_select_option_disabled');
+
+	},
 
 };
 

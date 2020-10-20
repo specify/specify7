@@ -28,6 +28,41 @@ const helper = {
 		return name;
 	},
 
+	find_array_divergence_point(source, search){
+
+		//source : Accession > Accession Agents > #1 > Agent > First Name
+		//search : []
+		//search : Accession > Accession Agents > #1
+
+		if(source === null || search === null)
+			return null;
+
+		const source_length = source.length;
+		const search_length = search.length;
+
+		if(search_length === 0)
+			return 0;
+
+		if(source_length === 0 || source_length < search_length)
+			return -1;
+
+		let outer_index = 0;
+
+		for(const [index, search_value] of search.entries()){
+
+			const source_value = source[index];
+
+			if(source_value !== search_value)
+				return -1;
+
+			outer_index = index;
+
+		}
+
+		return outer_index;
+
+	},
+
 };
 
 module.exports = helper;
