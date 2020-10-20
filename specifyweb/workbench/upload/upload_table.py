@@ -6,9 +6,7 @@ from typing import List, Dict, Any, NamedTuple, Union
 
 from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify.datamodel import datamodel
 
-from .scoping import scoping_relationships
 from .parsing import parse_many, ParseResult, ParseFailure
 from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
 from .tomany import ToManyRecord, BoundToManyRecord
@@ -24,12 +22,8 @@ class UploadTable(NamedTuple):
     toMany: Dict[str, List[ToManyRecord]]
 
     def apply_scoping(self, collection) -> "UploadTable":
-        table = datamodel.get_table_strict(self.name)
-        return self._replace(
-            static={**scoping_relationships(collection, table), **self.static},
-            toOne={f: u.apply_scoping(collection) for f, u in self.toOne.items()},
-            toMany={f: [r.apply_scoping(collection) for r in rs] for f, rs in self.toMany.items()},
-        )
+        from .scoping import apply_scoping_to_uploadtable as apply_scoping
+        return apply_scoping(self, collection)
 
     def _to_json(self) -> Dict:
         result = dict(wbcols=self.wbcols, static=self.static)

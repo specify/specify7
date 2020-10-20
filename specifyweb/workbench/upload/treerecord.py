@@ -10,7 +10,6 @@ from typing import List, Dict, Any, NamedTuple, Optional
 from django.db import connection # type: ignore
 
 from specifyweb.specify import models
-from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
 from .data import Row, FilterPack, UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
@@ -32,27 +31,8 @@ class TreeRecord(NamedTuple):
     treedefid: Optional[int]
 
     def apply_scoping(self, collection) -> "TreeRecord":
-        table = datamodel.get_table_strict(self.name)
-
-        if table.name == 'Taxon':
-            treedefid = collection.discipline.taxontreedef_id
-
-        elif table.name == 'Geography':
-            treedefid = collection.discipline.geographytreedef_id
-
-        elif table.name == 'LithoStrat':
-            treedefid = collection.discipline.lithostrattreedef_id
-
-        elif table.name == 'GeologicTimePeriod':
-            treedefid = collection.discipline.geologictimeperiodtreedef_id
-
-        elif table.name == 'Storage':
-            treedefid = collection.discipline.division.institution.storagetreedef_id
-
-        else:
-            raise Exception('unexpected tree type: %s' % table)
-
-        return self._replace(treedefid=treedefid)
+        from .scoping import apply_scoping_to_treerecord as apply_scoping
+        return apply_scoping(self, collection)
 
     def to_json(self) -> Dict:
         result = dict(ranks=self.ranks)
