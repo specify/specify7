@@ -108,7 +108,7 @@ const custom_select_element = {
 
 		const classes = ['custom_select_option'];
 
-		if (!is_enabled)
+		if (!is_enabled && !is_relationship) //don't disable relationships
 			classes.push('custom_select_option_disabled');
 
 		if (is_relationship)
@@ -319,7 +319,8 @@ const custom_select_element = {
 		if(action==='enable')
 			option.classList.remove('custom_select_option_disabled');
 
-		else if(action==='disable')
+		//dont disable relationships
+		else if(action==='disable' && !option.classList.contains('custom_select_option_relationship'))
 			option.classList.add('custom_select_option_disabled');
 
 	},

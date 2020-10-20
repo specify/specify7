@@ -45,7 +45,7 @@ const dom_helper = {
 	},
 
 	get_line_elements(line_elements_container){
-		return line_elements_container.children;
+		return Object.values(line_elements_container.children);
 	},
 
 	get_line_header_select(line_elements_container){

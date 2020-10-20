@@ -34,6 +34,7 @@ const mappings = {
 		);
 
 		this.changes_made = true;
+		mappings.update_all_lines();
 
 	},
 
@@ -217,7 +218,6 @@ const mappings = {
 
 	},
 
-
 	get_fields_for_table(table_name, mappings_path=[], mappings_path_position=-2, parent_table_name='', parent_table_relationship_name=''){
 
 		let mapping_element_type = 'simple';
@@ -378,8 +378,21 @@ const mappings = {
 	get_mapped_fields(mappings_path_filter){
 		return tree_helpers.traverse_tree(
 			mappings.get_mappings_tree(),
-			mappings_path_filter,
+			tree_helpers.array_to_tree([...mappings_path_filter]),
 		);
+	},
+
+	//TODO: remove this
+	get_simple_mapped_fields(mappings_path_filter){
+		const mapped_fields = Object.entries(mappings.get_mapped_fields(mappings_path_filter));
+		return mapped_fields.reduce((simple_mapped_fields, [field_name, field_data])=>{
+
+			if(field_data.length === 0)
+				simple_mapped_fields.push(field_name);
+
+			return simple_mapped_fields;
+
+		},[]);
 	},
 
 	get_mappings_path(line_elements_container, mapping_path_filter = []){
@@ -606,6 +619,7 @@ const mappings = {
 
 		let mappings_path;
 		let need_to_add_block = false;
+		let previous_value_is_relationship = true;
 
 		if(list_type === "to_many"){
 
@@ -640,18 +654,21 @@ const mappings = {
 			mappings_path = mappings.get_mappings_path(line_elements_container, changed_list);
 
 			//add block to the right if there aren't any
-			need_to_add_block = changed_list.nextElementSibling === null
+			need_to_add_block = changed_list.nextElementSibling === null;
 
 		}
 
 		else {
 
 			//remove all elements to the right only if list is not a `tree` and not a `to_many`
-			if(list_type === 'simple')
+			if(list_type === 'simple'){
 				while(changed_list.nextElementSibling !== null) {
 					changed_list.nextElementSibling.remove();
 					mappings.changes_made = true;
 				}
+
+				previous_value_is_relationship = mappings.tables[list_table_name]['fields'][previous_value]['is_relationship'];
+			}
 
 			//add block to the right if selected field is a relationship
 			need_to_add_block = is_relationship;
@@ -661,7 +678,6 @@ const mappings = {
 		}
 
 		if(need_to_add_block){
-
 			mappings.changes_made = true;
 
 			const new_line_element = document.createElement('span');
@@ -672,13 +688,16 @@ const mappings = {
 		}
 
 		//update fields that match certain mappings path's
+		const base_mapping_path = mappings_path.slice(0,-1);
 		const paths_to_update = [
-			[...mappings_path.slice(0,-1), previous_value],
+			base_mapping_path,
 		];
+
+		if(previous_value_is_relationship)
+			paths_to_update.push([...base_mapping_path, previous_value]);
+
 		if(list_type === "to_many" && new_value==='add')
-			paths_to_update.push([...mappings_path.slice(0,-1), previous_previous_value]);
-		else
-			paths_to_update.push(mappings_path);
+			paths_to_update.push([...base_mapping_path, previous_previous_value]);
 
 		for(const mappings_path of paths_to_update)
 			mappings.update_all_lines(mappings_path);
@@ -695,14 +714,11 @@ const mappings = {
 
 	//HELPERS
 
-	update_all_lines(mapping_path_filter){
+	update_all_lines(mapping_path_filter = null){
 
-		const lines = mappings.list__mappings.children;
-
-		for(const line of lines){
-			const line_elements_container = line.getElementsByClassName('wbplanview_mappings_line_elements');
-			mappings.update_line(line_elements_container,mapping_path_filter);
-		}
+		const lines = dom_helper.get_lines(mappings.list__mappings, true);
+		for(const line of lines)
+			mappings.update_line(line,mapping_path_filter);
 
 	},
 
@@ -713,8 +729,8 @@ const mappings = {
 
 		const update_mapped_fields = (select_element, mapped_fields)=>{
 			mappings.custom_select_element.enable_disabled_options(select_element);
-			for(const mapped_field of mapped_fields)
-				mappings.custom_select_element.toggle_option(select_element, mapped_field,'enable');
+			for(const mapped_field of Object.keys(mapped_fields))
+				mappings.custom_select_element.toggle_option(select_element, mapped_field,'disable');
 		};
 
 		if(filter_mapping_path === null)
@@ -735,10 +751,6 @@ const mappings = {
 			update_mapped_fields(target_select_element, mapped_fields);
 
 		}
-
-	},
-
-	run_automapper(select_elements, headers_data){
 
 	},
 

@@ -106,14 +106,11 @@ const tree_helpers = {
 	array_to_tree(array, tree = {}){
 
 		if (array.length === 0)
-			return false;
-		const node = array.shift();
-		const data = tree_helpers.array_to_tree(array);
-
-		if (data === false)
 			return {};
 
-		tree[node] = data;
+		const node = array.shift();
+		tree[node] = tree_helpers.array_to_tree(array);
+
 		return tree;
 
 	},

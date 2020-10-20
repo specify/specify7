@@ -46,20 +46,17 @@ const helper = {
 		if(source_length === 0 || source_length < search_length)
 			return -1;
 
-		let outer_index = 0;
+		for(const [index, source_value] of source.entries()){
 
-		for(const [index, search_value] of search.entries()){
+			const search_value = search[index];
 
-			const source_value = source[index];
+			if(typeof search_value === "undefined")
+				return index;
 
 			if(source_value !== search_value)
 				return -1;
 
-			outer_index = index;
-
 		}
-
-		return outer_index;
 
 	},
 
