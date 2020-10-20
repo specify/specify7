@@ -163,40 +163,43 @@ const main = {
 
 	},
 
+	/* TODO update deprecated*/
 	/*
 	* Validates the current mapping and shows error messages if needed
 	* */
 	validate(){
 
-		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
+		return true;
 
-		if (validation_results.length === 0)
-			return true;
-
-		const field_locations = [];
-
-		validation_results.map(field_path => field_locations.push(mappings.get_friendly_field_path(field_path).join(mappings.friendly_level_separator)));
-
-		const validation_message = 'Please make sure to map the following required fields before proceeding:<br>' + field_locations.join('<br>');
-
-		let dialog = $('<div>' + validation_message + '</div>').dialog({
-			modal: true,
-			title: 'Invalid Mapping',
-			close: function(){
-				$(this).remove();
-				dialog = null;
-			},
-			buttons: [
-				{
-					text: 'Cancel', click: function(){
-						$(this).dialog('close');
-					}
-				}
-			]
-		});
-
-
-		return validation_results;
+		// const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
+		//
+		// if (validation_results.length === 0)
+		// 	return true;
+		//
+		// const field_locations = [];
+		//
+		// validation_results.map(field_path => field_locations.push(mappings.get_friendly_field_path(field_path).join(mappings.friendly_level_separator)));
+		//
+		// const validation_message = 'Please make sure to map the following required fields before proceeding:<br>' + field_locations.join('<br>');
+		//
+		// let dialog = $('<div>' + validation_message + '</div>').dialog({
+		// 	modal: true,
+		// 	title: 'Invalid Mapping',
+		// 	close: function(){
+		// 		$(this).remove();
+		// 		dialog = null;
+		// 	},
+		// 	buttons: [
+		// 		{
+		// 			text: 'Cancel', click: function(){
+		// 				$(this).dialog('close');
+		// 			}
+		// 		}
+		// 	]
+		// });
+		//
+		//
+		// return validation_results;
 
 	},
 

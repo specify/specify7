@@ -353,25 +353,25 @@ const mappings = {
 
 	},
 
-	get_all_mapped_fields(){
+	get_all_mapped_fields(include_headers = false){
 
-		if(!mappings.changes_made)
+		if(!include_headers && !mappings.changes_made)
 			return mappings.mapped_fields;
 
 		const lines_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
 
 		return mappings.mapped_fields = lines_elements_containers.map(line_elements_container =>
-			mappings.get_mappings_path(line_elements_container)
+			mappings.get_mappings_path(line_elements_container, [], include_headers)
 		);
 
 	},
 
-	get_mappings_tree(){
-		if(!mappings.changes_made)
+	get_mappings_tree(include_headers = false){
+		if(!include_headers && !mappings.changes_made)
 			return mappings.mappings_tree;
 
 		return mappings.mappings_tree = tree_helpers.array_of_mappings_to_mappings_tree(
-			mappings.get_all_mapped_fields()
+			mappings.get_all_mapped_fields(include_headers)
 		);
 	},
 
@@ -382,25 +382,22 @@ const mappings = {
 		);
 	},
 
-	//TODO: remove this
-	get_simple_mapped_fields(mappings_path_filter){
-		const mapped_fields = Object.entries(mappings.get_mapped_fields(mappings_path_filter));
-		return mapped_fields.reduce((simple_mapped_fields, [field_name, field_data])=>{
-
-			if(field_data.length === 0)
-				simple_mapped_fields.push(field_name);
-
-			return simple_mapped_fields;
-
-		},[]);
-	},
-
-	get_mappings_path(line_elements_container, mapping_path_filter = []){
+	get_mappings_path(line_elements_container, mapping_path_filter = [], include_headers = false){
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
 		const mappings_path = [];
 		let position = 0;
+
+		const return_path = (path)=>{
+			if(include_headers){
+				const line = line_elements_container.parentElement;
+				const line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
+				const header_name = line_header.innerText;
+				return [...path,header_name];
+			}
+			return path;
+		}
 
 		for (const element of elements) {
 
@@ -421,16 +418,16 @@ const mappings = {
 				mappings_path.push(result_name);
 
 			if(typeof mapping_path_filter[position] === "string" && result_name !== mapping_path_filter[position])
-				return [];
+				return return_path([]);
 
 			else if(typeof mapping_path_filter==="object" && element === mapping_path_filter)
-				return mappings_path;
+				return return_path(mappings_path);
 
 			position++;
 
 		}
 
-		return mappings_path;
+		return return_path(mappings_path);
 
 	},
 

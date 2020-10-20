@@ -83,7 +83,7 @@ const upload_plan_converter = {
 	get_upload_plan(mappings_tree = ''){
 
 		if (mappings_tree === '')
-			mappings_tree = this.get_mappings_tree();
+			mappings_tree = this.get_mappings_tree(true);
 		const upload_plan = {};
 
 		upload_plan['baseTableName'] = this.base_table_name();
@@ -148,7 +148,7 @@ const upload_plan_converter = {
 
 					const field = upload_plan_converter.tables[table_name]['fields'][field_name];
 
-					if (field_data['is_relationship']) {
+					if (field['is_relationship']) {
 						const mapping_table = field['table_name'];
 						const is_to_one = field['type'] === 'one-to-one' || field['type'] === 'many-to-one';
 
@@ -164,7 +164,7 @@ const upload_plan_converter = {
 						}
 
 					} else
-						table_plan['wbcols'][field_name] = field;
+						table_plan['wbcols'][field_name] = Object.keys(field_data)[0];
 				}
 
 
@@ -189,16 +189,6 @@ const upload_plan_converter = {
 		return JSON.stringify(upload_plan, null, "\t");
 
 	},
-
-	// /*
-	// * Updates upload plan with new headers
-	// * @param {object} upload_plan - Upload plan as a parsed JSON object
-	// * */
-	// update_headers_in_upload_plan(upload_plan, headers){
-	//
-	//
-	//
-	// },
 
 };
 
