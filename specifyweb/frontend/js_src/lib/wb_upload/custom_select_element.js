@@ -207,8 +207,10 @@ const custom_select_element = {
 	change_selected_option(target_list, target_option){
 
 		//ignore selected and disabled elements
-		if(target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled'))
-			return false;
+		if(target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled')) {
+			target_list.classList.add('custom_select_open');
+			return;
+		}
 
 		//unselect all options
 		for(const selected_line of target_list.querySelectorAll('.custom_select_option_selected'))

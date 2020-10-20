@@ -342,12 +342,12 @@ const mappings = {
 					continue;
 
 
-				const is_enabled = (
-					(  // disable field
-						mapped_fields.indexOf(field_name) !== -1 &&  // if it is mapped
-						!is_relationship  // and is not a relationship
-					) || ( //TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-						typeof table_ranks !== "undefined" &&
+				const is_enabled = (// disable field
+					(
+						mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
+						is_relationship  // or is a relationship
+					) && ( //TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+						typeof table_ranks !== "undefined" ||
 						field_name !== 'name'
 					)
 				);
@@ -562,7 +562,9 @@ const mappings = {
 					mappings.changes_made = true;
 				}
 
-				previous_value_is_relationship = mappings.tables[list_table_name]['fields'][previous_value]['is_relationship'];
+				previous_value_is_relationship =
+					previous_value !== "0" &&
+					mappings.tables[list_table_name]['fields'][previous_value]['is_relationship'];
 			}
 
 			//add block to the right if selected field is a relationship
@@ -580,6 +582,7 @@ const mappings = {
 
 			const mapping_details = mappings.get_mapping_line_data_from_mappings_path(mappings_path,false)[0];
 			new_line_element.outerHTML = html_generator.mapping_element(mapping_details);
+			mappings.custom_select_element.resize_elements([line_elements_container.children[line_elements_container.children.length-1]]);
 		}
 
 		//update fields that match certain mappings path's
