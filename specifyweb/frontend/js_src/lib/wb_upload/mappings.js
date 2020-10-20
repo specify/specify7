@@ -225,7 +225,7 @@ const mappings = {
 		if(mappings_path_position === -2)
 			mappings_path_position = mappings_path.length-1;
 		const next_mappings_path_position = mappings_path_position + 1;
-		const local_mappings_path = mappings_path.slice(next_mappings_path_position);
+		const local_mappings_path = mappings_path.slice(0, next_mappings_path_position);
 		const next_mapping_path_element = mappings_path[next_mappings_path_position];
 		const default_value = (typeof next_mapping_path_element !== "undefined" ? next_mapping_path_element : "0");
 		const current_mapping_path_part = mappings_path[mappings_path_position];
@@ -315,20 +315,46 @@ const mappings = {
 
 			for (const [field_name, field_data] of Object.entries(mappings.tables[table_name]['fields'])) {
 
-				const {is_relationship, relationship_type, is_hidden, is_required, friendly_name, table_name} = field_data;
 
-				const is_enabled = (//disable field
-					mapped_fields.indexOf(field_name) !== -1 ||//if it is mapped
-					(
-						!is_relationship ||//and is not a relationship
-						(//or is of -to-one type
-							relationship_type !== 'one-to-one' &&
-							relationship_type !== 'many-to-one'
-						)
+				const {
+					is_relationship,
+					type: relationship_type,
+					is_hidden, is_required,
+					foreign_name,
+					friendly_name,
+					table_name
+				} = field_data;
+
+				if(
+					(  // skip circular relationships
+						is_relationship &&
+						table_name===parent_table_name &&
+						typeof foreign_name !== "undefined" &&
+						typeof mappings.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
+						mappings.tables[parent_table_name]['fields'][foreign_name]['foreign_name']===field_name
+					) ||
+					(  // skip -to-many inside of -to-many
+						is_relationship &&
+						relationship_type.indexOf('-to-many') !== -1 &&
+						parent_relationship_type.indexOf('-to-many') !== -1
+					)
+				)
+					continue;
+
+
+				const is_enabled = (
+					(  // disable field
+						mapped_fields.indexOf(field_name) !== -1 &&  // if it is mapped
+						!is_relationship  // and is not a relationship
+					) || ( //TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+						typeof table_ranks !== "undefined" &&
+						field_name !== 'name'
 					)
 				);
 
+
 				const is_default = field_name === default_value;
+
 
 				result_fields[field_name] = {
 					field_friendly_name: friendly_name,
@@ -339,6 +365,7 @@ const mappings = {
 					is_relationship: is_relationship,
 					table_name: table_name,
 				};
+
 
 			}
 
@@ -401,18 +428,7 @@ const mappings = {
 
 		for (const element of elements) {
 
-			//TODO: decide on the value for elements
 			const result_name = element.getAttribute('data-value');
-			/*const element_type = element.getAttribute('data-type');
-			let result_name = '';
-			const name = element.getAttribute('data-value');
-
-			if (element_type === 'simple')
-				result_name = name;
-			else if (element_type === 'tree')
-				result_name = mappings.tree_symbol + name;
-			else if (element_type === 'to_many')
-				result_name = mappings.reference_symbol + name;*/
 
 			if(result_name !== null)
 				mappings_path.push(result_name);
@@ -432,124 +448,6 @@ const mappings = {
 	},
 
 	/*//TODO: fix deprecated
-	/!*
-	* Puts HTML for a particular relationship line into `current_line` outerHTML
-	* @param {string} table_name - Official target table name (from data model)
-	* @param {string{ previous_table - Official name for the current table (a.k.a parent of to table_name) (from data model)
-	* @param {string} foreign_name - Name of this relationship in previous_table
-	* @param {DOMElement} current_line - Element which would have it's outerHTML replaced with the result of this function
-	* @param {bool} index - A terrible name for a variable that tells whether to check if this relationship is -to-many or a tree. If set to false, relationship would be treated as -to-one
-	*
-	* *!/
-	get_html_for_table_fields(table_name, previous_table, foreign_name, current_line, index = false){
-
-		const required_fields = [];
-		const optional_fields = [];
-
-
-		let relationship_type = '';
-		if (previous_table !== '' && typeof mappings.tables[previous_table]['relationships'][foreign_name] !== "undefined")
-			relationship_type = mappings.tables[previous_table]['relationships'][foreign_name]['type'];
-
-
-		let mapped_nodes = mappings.get_mapped_children(current_line);
-
-		if (index === false) {
-
-			const ranks = mappings.ranks[table_name];
-
-			if (typeof ranks !== "undefined")
-				for (const [rank_name, is_required] of Object.entries(ranks)) {
-
-					const data = [this.tree_symbol + rank_name, mappings.reference_indicator + rank_name, true];
-
-					if (is_required)
-						required_fields.push(data);
-					else
-						optional_fields.push(data);
-
-				}
-
-			if (required_fields.length === 0 && optional_fields.length === 0 && (relationship_type.indexOf('-to-many') !== -1)) {
-				let mapped_nodes_count = mapped_nodes.length;
-
-				if (mapped_nodes === false)
-					mapped_nodes_count = 0;
-
-				const table_friendly_name = mappings.tables[table_name]['table_friendly_name'];
-
-				for (let i = 1; i < mapped_nodes_count + 2; i++)
-					optional_fields.push([mappings.reference_symbol + i, i + '. ' + table_friendly_name, true]);
-			}
-
-
-		}
-
-		if (required_fields.length === 0 && optional_fields.length === 0) {
-
-			// build a list of fields and relationships
-			const rows = Object.entries(mappings.tables[table_name]['fields']).reduce((rows, [field_key, field_data]) => {
-
-				if (field_data['is_hidden'] && this.hide_hidden_fields)
-					return rows;  // hide fields designated as hidden when `hide_hidden_fields` is checked
-
-				const {friendly_name: field_name} = field_data;
-
-				if (field_data['is_relationship']) {
-
-					if (
-						(  // hide -to-many relationships inside of -to-many relationships
-							relationship_type.indexOf('-to-many') !== -1 &&
-							field_data['type'].indexOf('-to-many') !== -1
-						) ||
-						(  // disables circular relationships
-							field_data['foreign_name'] === foreign_name &&
-							field_data['table_name'] === previous_table
-						)
-					)
-						return rows;
-
-					rows[field_name] = [field_key, true, 'relationship', field_data['is_required']];
-
-				} else {
-					const enabled = !mapped_nodes.includes(field_key);
-					rows[field_name] = [field_key, enabled, 'field', field_data['is_required']];
-				}
-
-				return rows;
-
-			}, {});
-
-			// sort && display fields
-			for (let row_name of Object.keys(rows).sort()) {
-
-				let [row_key, row_enabled, row_type, is_required] = rows[row_name];
-
-				if (row_type === 'relationship')
-					row_name = mappings.reference_indicator + row_name;
-
-				if (  // TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-					typeof mappings.ranks[table_name] !== "undefined" &&
-					row_name !== 'Name'
-				)
-					row_enabled = false;
-
-				const result = [row_key, row_name, row_enabled];
-
-				if (is_required)
-					required_fields.push(result);
-				else
-					optional_fields.push(result);
-
-			}
-
-		}
-
-		return html_generator.new_relationship_fields(table_name, optional_fields, required_fields);
-
-	},
-
-	//TODO: fix deprecated
 	/!*
 	* Turns a mapping path (array) into a friendly mapping path (array)
 	* @param {array} path - mapping path

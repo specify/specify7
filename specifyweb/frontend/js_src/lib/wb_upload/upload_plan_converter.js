@@ -96,7 +96,7 @@ const upload_plan_converter = {
 				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
 					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
-					let {name} = tree_rank_data;
+					let name = Object.keys(tree_rank_data['name'])[0];
 
 					if (typeof name === 'object')  // handle static records
 						({static: name} = name);
