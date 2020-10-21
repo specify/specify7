@@ -618,7 +618,35 @@ const mappings = {
 
 	mapping_view_map_button_callback(){
 
-		const mapping_path = mappings.get_mappings_path();
+		//find selected line
+		const lines = dom_helper.get_lines(mappings.list__mappings);
+		let selected_line;
+
+		for (const line of lines)
+			if (line.classList.contains('wbplanview_mappings_line_focused')) {
+				selected_line = line;
+				break;
+			}
+
+
+		//don't do anything if no line is selected
+		if (typeof selected_line === "undefined")
+			return;
+
+
+		//don't do anything if selected value is disabled
+		const is_enabled = mappings.custom_select_element.is_selected_option_enabled(
+			mappings.mapping_view.childNodes[mappings.mapping_view.childNodes.length - 1]
+		);
+
+		if (!is_enabled)
+			return;
+
+		//implement the mapping path on the selected field
+		const mapping_path = mappings.get_mappings_path(mappings.mapping_view);
+		const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mapping_path);
+		const select_line_elements_container = dom_helper.get_line_elements_container(selected_line);
+		select_line_elements_container.innerHTML = html_generator.mapping_path(mapping_line_data);
 
 	},
 
@@ -670,8 +698,8 @@ const mappings = {
 
 		//deselect all lines
 		const lines = dom_helper.get_lines(mappings.list__mappings);
-		for(const mapping_line of lines)
-			if(mapping_line !== line)
+		for (const mapping_line of lines)
+			if (mapping_line !== line)
 				mapping_line.classList.remove('wbplanview_mappings_line_focused');
 
 
@@ -685,7 +713,7 @@ const mappings = {
 
 
 		//if line is mapped, update the mapping view
-		if(mapping_path[mapping_path.length-1]!=="0"){
+		if (mapping_path[mapping_path.length - 1] !== "0") {
 			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mapping_path);
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data);
 		}

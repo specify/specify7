@@ -327,6 +327,10 @@ const custom_select_element = {
 
 		const option = list.querySelector('.custom_select_option[data-value="' + option_name + '"]');
 
+		//don't do anything if can't find the requested option
+		if(option === null)
+			return;
+
 		if (action === 'enable')
 			option.classList.remove('custom_select_option_disabled');
 
@@ -335,6 +339,18 @@ const custom_select_element = {
 			option.classList.add('custom_select_option_disabled');
 
 	},
+
+	is_selected_option_enabled(list){
+
+		const options = list.getElementsByClassName('custom_select_option');
+
+		for (const option of options)
+			if(option.classList.contains('custom_select_option_selected'))
+				return !option.classList.contains('custom_select_option_disabled');
+
+		return true;
+
+	}
 
 };
 
