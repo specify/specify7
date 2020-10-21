@@ -187,14 +187,14 @@ def shellquote(s):
 @apply_access_control
 @require_POST
 def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
-    from .upload.upload import do_upload_wb
+    from .tasks import upload
     wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
 
-    result = do_upload_wb(request.specify_collection, wb, no_commit)
+    async_result = upload.delay(request.specify_collection.id, wb.id, no_commit)
 
-    return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
+    return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
 
 @login_maybe_required
 @require_GET
