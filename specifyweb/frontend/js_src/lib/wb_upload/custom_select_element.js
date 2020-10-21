@@ -54,7 +54,7 @@ const custom_select_element = {
 							break outer_loop;
 						}
 
-			if(default_label !== 0)
+			if (default_label !== 0)
 				default_icon = custom_select_element.icon(is_relationship, true, table_name);
 
 			is_relationship_text = is_relationship.toString();
@@ -72,19 +72,19 @@ const custom_select_element = {
 
 
 		return `<span
-					class="custom_select `+custom_select_type+`"
+					class="custom_select ` + custom_select_type + `"
 					title="` + select_label + `"
 					data-name="` + select_name + `"
-					data_value_is_relationship="`+is_relationship_text+`"
-					data-value="`+default_name+`"
+					data_value_is_relationship="` + is_relationship_text + `"
+					data-value="` + default_name + `"
 					data-previous_value="0"
 					data-table="` + select_table + `"
 					data-type="` + select_type + `">
-			`+header+`
-			`+preview+`
+			` + header + `
+			` + preview + `
 			<span class="custom_select_options">
 				` + first_row +
-				(select_groups_data.map(select_group_data => custom_select_element.new_select_group_html(select_group_data)).join('')) + `
+			(select_groups_data.map(select_group_data => custom_select_element.new_select_group_html(select_group_data)).join('')) + `
 			</span>
 		</span>`;
 	},
@@ -121,7 +121,7 @@ const custom_select_element = {
 		return `<span
 					class="` + (classes.join(' ')) + `"
 					data-value="` + option_value + `"
-					data-table_name="`+table_name+`"
+					data-table_name="` + table_name + `"
 					tabindex="0">
 			<span class="custom_select_option_icon">` + custom_select_element.icon(is_relationship, is_default, table_name) + `</span>
 			<span class="custom_select_option_label">` + option_name + `</span>
@@ -129,30 +129,29 @@ const custom_select_element = {
 	},
 
 	icon(is_relationship, is_default, table_name){
-		if(is_relationship && table_name !== ''){
+		if (is_relationship && table_name !== '') {
 			//TODO: enable table icons once ready
 			//'<img src="' + custom_select_element.table_icons_base_path + table_name + custom_select_element.table_icons_extension + '" alt="' + table_name + '">
 
 
-			const table_sub_name = table_name.substr(0,2);
-			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0)*2))*7.2;
-			const color = 'hsl('+color_hue+', 100%, 50%)';
-			return '<span style="color:'+color+'">'+(table_sub_name.toUpperCase())+'</span>';
-		}
-		else
+			const table_sub_name = table_name.substr(0, 2);
+			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
+			const color = 'hsl(' + color_hue + ', 100%, 50%)';
+			return '<span style="color:' + color + '">' + (table_sub_name.toUpperCase()) + '</span>';
+		} else
 			return '';
 	},
 
 	set_event_listeners(container, change_callback){
-		container.addEventListener('click',e=>{
+		container.addEventListener('click', e => {
 
 			const el = e.target;
 
 			//toggle list options
-			if(el.closest('.custom_select_input')!==null){
+			if (el.closest('.custom_select_input') !== null) {
 				const select_container = el.closest('.custom_select');
 				const select_container_classList = select_container.classList;
-				if(select_container_classList.contains('custom_select_open'))
+				if (select_container_classList.contains('custom_select_open'))
 					select_container_classList.remove('custom_select_open');
 				else
 					select_container_classList.add('custom_select_open');
@@ -162,23 +161,23 @@ const custom_select_element = {
 			const lists = container.getElementsByClassName('custom_select');
 			const current_list = el.closest('.custom_select');
 
-			for(const list of lists)
-				if(list !== current_list)  //dont close current list
+			for (const list of lists)
+				if (list !== current_list)  //dont close current list
 					list.classList.remove('custom_select_open');
 
 			//recalculate width of each object
 			custom_select_element.resize_elements(lists);
 
-			if(current_list !== null){
+			if (current_list !== null) {
 
 				//check if option was changed
 				const custom_select_option = el.closest('.custom_select_option');
-				if(custom_select_option !== null){
+				if (custom_select_option !== null) {
 
-					const change_payload = custom_select_element.change_selected_option(current_list,custom_select_option);
+					const change_payload = custom_select_element.change_selected_option(current_list, custom_select_option);
 					current_list.classList.remove('custom_select_open');
 
-					if(typeof change_payload === "object")
+					if (typeof change_payload === "object")
 						change_callback(change_payload);
 
 				}
@@ -196,24 +195,24 @@ const custom_select_element = {
 	},
 
 	resize_elements(lists){
-		for(const list of lists){
-				const list_input = list.getElementsByClassName('custom_select_input')[0];
-				const list_options = list.getElementsByClassName('custom_select_options')[0];
-				if(typeof list_input !== "undefined" && typeof list_options !== "undefined")
-					list_input.style.setProperty('--base_width',list_options.offsetWidth + 'px');
-			}
+		for (const list of lists) {
+			const list_input = list.getElementsByClassName('custom_select_input')[0];
+			const list_options = list.getElementsByClassName('custom_select_options')[0];
+			if (typeof list_input !== "undefined" && typeof list_options !== "undefined")
+				list_input.style.setProperty('--base_width', list_options.offsetWidth + 'px');
+		}
 	},
 
 	change_selected_option(target_list, target_option){
 
 		//ignore selected and disabled elements
-		if(target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled')) {
+		if (target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled')) {
 			target_list.classList.add('custom_select_open');
 			return;
 		}
 
 		//unselect all options
-		for(const selected_line of target_list.querySelectorAll('.custom_select_option_selected'))
+		for (const selected_line of target_list.querySelectorAll('.custom_select_option_selected'))
 			selected_line.classList.remove('custom_select_option_selected');
 
 		//extract data about new option
@@ -228,22 +227,22 @@ const custom_select_element = {
 		const list_type = target_list.getAttribute('data-type');
 
 		//don't do anything if value wasn't changed
-		if(custom_select_option_value === previous_list_value)
+		if (custom_select_option_value === previous_list_value)
 			return false;
 
 		//update list data
 		const is_relationship = target_option.classList.contains('custom_select_option_relationship');
 
-		target_list.setAttribute('data_value_is_relationship',is_relationship.toString());
-		target_list.setAttribute('data-value',custom_select_option_value);
-		target_list.setAttribute('data-previous_value',previous_list_value);
+		target_list.setAttribute('data_value_is_relationship', is_relationship.toString());
+		target_list.setAttribute('data-value', custom_select_option_value);
+		target_list.setAttribute('data-previous_value', previous_list_value);
 		target_option.classList.add('custom_select_option_selected');
 
 
 		//update custom_select_input
 		const custom_select_inputs = target_list.getElementsByClassName('custom_select_input');
 
-		if(custom_select_inputs !== null){
+		if (custom_select_inputs.length !== 0) {
 
 			const custom_select_input = custom_select_inputs[0];
 			const table_name = target_option.getAttribute('data-table_name');
@@ -270,7 +269,7 @@ const custom_select_element = {
 
 	},
 
-	add_option(list,position,option_data, selected=false){
+	add_option(list, position, option_data, selected = false){
 
 		const new_option_line_html = custom_select_element.new_select_option_html(option_data);
 		let new_option_line = document.createElement('span');
@@ -279,29 +278,27 @@ const custom_select_element = {
 
 		const options = option_container.children;
 
-		if(position < -1)
+		if (position < -1)
 			position = options.length + position;
 
 		let new_index = 0;
 
-		if (position === 0 && options.length !== 0){
+		if (position === 0 && options.length !== 0) {
 			options[0].before(new_option_line);
 			new_index = 0;
-		}
-		else if (position === -1 || position > options.length || options.length === 0) {
+		} else if (position === -1 || position > options.length || options.length === 0) {
 			option_container.append(new_option_line);
-			new_index = options.length-1;
-		}
-		else {
+			new_index = options.length - 1;
+		} else {
 			options[position].after(new_option_line);
-			new_index = position+1;
+			new_index = position + 1;
 		}
 
 		new_option_line.outerHTML = new_option_line_html;
 		new_option_line = options[new_index];
 
-		if(selected)
-			custom_select_element.change_selected_option(list,new_option_line);
+		if (selected)
+			custom_select_element.change_selected_option(list, new_option_line);
 
 	},
 
@@ -309,20 +306,20 @@ const custom_select_element = {
 
 		const options = list.getElementsByClassName('custom_select_option');
 
-		for(const option of options)
+		for (const option of options)
 			option.classList.remove('custom_select_option_disabled');
 
 	},
 
 	toggle_option(list, option_name, action){
 
-		const option = list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
+		const option = list.querySelector('.custom_select_option[data-value="' + option_name + '"]');
 
-		if(action==='enable')
+		if (action === 'enable')
 			option.classList.remove('custom_select_option_disabled');
 
 		//dont disable relationships
-		else if(action==='disable' && !option.classList.contains('custom_select_option_relationship'))
+		else if (action === 'disable' && !option.classList.contains('custom_select_option_relationship'))
 			option.classList.add('custom_select_option_disabled');
 
 	},

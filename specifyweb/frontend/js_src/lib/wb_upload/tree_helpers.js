@@ -138,7 +138,7 @@ const tree_helpers = {
 
 		const tree = {};
 
-		for(const mapping_path of array_of_mappings){
+		for (const mapping_path of array_of_mappings) {
 			const mapping_tree = tree_helpers.array_to_tree(mapping_path);
 			tree_helpers.deep_merge_object(tree, mapping_tree);
 		}

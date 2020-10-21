@@ -34,26 +34,26 @@ const helper = {
 		//search : []
 		//search : Accession > Accession Agents > #1
 
-		if(source === null || search === null)
+		if (source === null || search === null)
 			return null;
 
 		const source_length = source.length;
 		const search_length = search.length;
 
-		if(search_length === 0)
+		if (search_length === 0)
 			return 0;
 
-		if(source_length === 0 || source_length < search_length)
+		if (source_length === 0 || source_length < search_length)
 			return -1;
 
-		for(const [index, source_value] of source.entries()){
+		for (const [index, source_value] of source.entries()) {
 
 			const search_value = search[index];
 
-			if(typeof search_value === "undefined")
+			if (typeof search_value === "undefined")
 				return index;
 
-			if(source_value !== search_value)
+			if (source_value !== search_value)
 				return -1;
 
 		}

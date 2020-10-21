@@ -54,7 +54,7 @@ const data_model_handler = {
 			)
 				return tables;
 
-			for(const field of table_data['fields']){
+			for (const field of table_data['fields']) {
 
 				let field_name = field['name'];
 				let friendly_name = field.getLocalizedName();
@@ -78,7 +78,7 @@ const data_model_handler = {
 					is_hidden: is_hidden,
 					is_required: is_required,
 					is_relationship: field['isRelationship'],
-				}
+				};
 
 				if (field_data['is_relationship']) {
 
@@ -101,9 +101,9 @@ const data_model_handler = {
 					)
 						continue;
 
-						field_data['table_name'] = table_name;
-						field_data['type'] = relationship_type;
-						field_data['foreign_name'] = foreign_name;
+					field_data['table_name'] = table_name;
+					field_data['type'] = relationship_type;
+					field_data['foreign_name'] = foreign_name;
 
 				}
 
@@ -111,8 +111,8 @@ const data_model_handler = {
 
 			}
 
-			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name=>
-				[field_name,fields[field_name]]
+			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
+				[field_name, fields[field_name]]
 			));
 
 
@@ -129,7 +129,7 @@ const data_model_handler = {
 
 			return tables;
 
-		},{});
+		}, {});
 
 
 		for (const [table_name, table_data] of Object.entries(tables))  // remove relationships to system tables
@@ -216,7 +216,7 @@ const data_model_handler = {
 
 		// handle -to-many references
 		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
-			for(const mapped_field_name of list_of_mapped_fields){
+			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
 				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			}
@@ -244,11 +244,11 @@ const data_model_handler = {
 		}
 
 		// handle regular relationships
-		for(const [field_name,field_data] of Object.entries(table_data['fields'])){
+		for (const [field_name, field_data] of Object.entries(table_data['fields'])) {
 
 			const local_path = [...path, field_name];
 
-			if(field_data['is_relationship']){
+			if (field_data['is_relationship']) {
 
 				if (previous_table_name !== '') {
 
@@ -278,9 +278,7 @@ const data_model_handler = {
 					data_model_handler.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
-			}
-
-			else if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
+			} else if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
 				results.push(local_path);
 
 		}

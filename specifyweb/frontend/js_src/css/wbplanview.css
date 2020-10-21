@@ -11,10 +11,10 @@
     --border: #ccc;
 
     width: 100%;
-	display: grid;
-	grid-template-rows: auto auto 1fr auto auto;
-	grid-gap: 1rem;
-	height: calc(100vh - 150px);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    grid-gap: 1rem;
+    height: calc(100vh - 150px);
 }
 
 
@@ -45,13 +45,13 @@
 
 #mapping_view_parent {
     display: flex;
-	flex-wrap: nowrap;
-	overflow-y: scroll;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
 }
 
 #mapping_view {
-    	display: flex;
-	flex-wrap: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 #list__tables a {
@@ -80,10 +80,9 @@
 
 #list__mappings {
     display: grid;
-	grid-template-columns: 2.2rem max-content auto;
-	grid-auto-rows: max-content;
-	grid-row-gap: 1rem;
-	overflow-x: hidden;
+    grid-template-columns: 2.2rem max-content auto;
+    grid-auto-rows: max-content;
+    overflow-x: hidden;
 }
 
 
@@ -93,12 +92,12 @@
 }
 
 .wbplanview_mappings_line > * {
-	border-bottom: 1px solid #ccc;
-	padding-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem 0;
 }
 
 .wbplanview_mappings_line > *:not(:last-child) {
-	padding-right: 0.6rem;
+    padding-right: 0.6rem;
 }
 
 
@@ -152,8 +151,8 @@
     --text1: #000;
     --text2: #666;
     --background1: #fff;
-	--background2: #fdb;
-	--accent: #f73;
+    --background2: #fdb;
+    --accent: #f73;
     --lines_to_display: 10;
     --border_size: 1px;
     background-color: var(--background1);
@@ -169,27 +168,27 @@
 }
 
 .custom_select:after {
-	content: '\2192';
-	font-size: var(--line_height);
-	padding-left: var(--line_padding);
-	display: flex;
-	align-items: center;
-	grid-area: next_arrow;
+    content: '\2192';
+    font-size: var(--line_height);
+    padding-left: var(--line_padding);
+    display: flex;
+    align-items: center;
+    grid-area: next_arrow;
 }
 
-.custom_select:last-child:after {
-	visibility: hidden;
+.custom_select:last-of-type:after {
+    visibility: hidden;
 }
 
 .custom_select_header, .custom_select_input {
     grid-area: header;
-	border: var(--border_size) solid var(--accent);
+    border: var(--border_size) solid var(--accent);
 }
 
 .custom_select_header {
-	padding: calc(var(--line_padding) * 2);
-	display: flex;
-	gap: var(--line_padding);
+    padding: calc(var(--line_padding) * 2);
+    display: flex;
+    gap: var(--line_padding);
 }
 
 .custom_select_input {
@@ -211,10 +210,10 @@
     border-top: 0;
     visibility: hidden;
     max-height: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) * var(--lines_to_display));
-	overflow-y: scroll;
+    overflow-y: scroll;
     background-color: var(--background1);
-	position: absolute;
-	top: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) - var(--border_size));
+    position: absolute;
+    top: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) - var(--border_size));
     z-index: 2;
     width: max-content;
 }
@@ -234,27 +233,27 @@
 }
 
 .custom_select_group[data-group="optional_fields"] {
-	--background1: #ffd;
-	--background2: #fdb;
-	--accent: #f73;
+    --background1: #ffd;
+    --background2: #fdb;
+    --accent: #f73;
 }
 
 .custom_select_group[data-group="required_fields"] {
-	--background1: #dff;
-	--background2: #cff;
-	--accent: #3ef;
+    --background1: #dff;
+    --background2: #cff;
+    --accent: #3ef;
 }
 
 .custom_select_group[data-group="hidden_fields"] {
-	--background1: #ccc;
-	--background2: #aaa;
-	--accent: #666;
+    --background1: #ccc;
+    --background2: #aaa;
+    --accent: #666;
 }
 
 .hide_hidden_fields .custom_select_group[data-group="hidden_fields"] {
-	visibility: hidden;
+    visibility: hidden;
     height: 0;
-	overflow: hidden;
+    overflow: hidden;
 }
 
 .custom_select_group_label {
@@ -265,7 +264,7 @@
 }
 
 .custom_select[data-type="to_many"] .custom_select_group_label {
-	display: none;
+    display: none;
 }
 
 .custom_select_option {
@@ -288,9 +287,9 @@
 .custom_select_option_selected:not(.custom_select_option_relationship) .custom_select_option_icon:after,
 .custom_select_option_disabled .custom_select_option_icon:after,
 .custom_select[data_value_is_relationship="false"] .custom_select_input .custom_select_input_icon:after {
-	content: '\2713';
-	display: flex;
-	justify-content: center;
+    content: '\2713';
+    display: flex;
+    justify-content: center;
     color: #4f2;
 }
 
