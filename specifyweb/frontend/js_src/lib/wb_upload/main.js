@@ -39,6 +39,7 @@ const main = {
 		// lists
 		mappings.list__tables = document.getElementById('list__tables');
 		mappings.mapping_view = document.getElementById('mapping_view');
+		mappings.mapping_view_map_button = document.getElementById('wbplanview_mapping_view_map_button');
 		mappings.list__mappings = document.getElementById('list__mappings');
 
 		// control elements
@@ -60,9 +61,17 @@ const main = {
 
 			const el = event.target;
 
-			if(el.closest('.wbplanview_mappings_line_delete'))
-				mappings.clear_line(el.closest('.wbplanview_mappings_line'));
+			const wbplanview_mappings_line_delete = el.closest('.wbplanview_mappings_line_delete');
+			if (wbplanview_mappings_line_delete)
+				mappings.clear_line(wbplanview_mappings_line_delete);
+
+			const wbplanview_mappings_line = el.closest('.wbplanview_mappings_line');
+			if (wbplanview_mappings_line)
+				mappings.focus_line(wbplanview_mappings_line);
+
 		});
+
+		mappings.mapping_view_map_button.addEventListener('click',mappings.mapping_view_map_button_callback);
 
 		mappings.list__tables.addEventListener('click', event => {
 			if (event.target && event.target['classList'].contains('wbplanview_table')) {

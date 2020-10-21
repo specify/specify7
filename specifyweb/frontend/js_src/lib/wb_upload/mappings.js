@@ -230,7 +230,11 @@ const mappings = {
 		const local_mappings_path = mappings_path.slice(0, next_mappings_path_position);
 		const next_mapping_path_element = mappings_path[next_mappings_path_position];
 		const default_value = (typeof next_mapping_path_element !== "undefined" ? next_mapping_path_element : "0");
-		const current_mapping_path_part = mappings_path[mappings_path_position];
+
+		let current_mapping_path_part = mappings_path[mappings_path_position];
+		//TODO: find out if names are needed for 1st level path elements
+		// if(typeof current_mapping_path_part === "undefined")
+		// 	current_mapping_path_part = mappings.base_table_name;
 
 
 		const parent_relationship_type =
@@ -420,7 +424,7 @@ const mappings = {
 				const line = line_elements_container.parentElement;
 				const line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
 				const header_name = line_header.innerText;
-				return [...path,header_name];
+				return [...path, header_name];
 			}
 			return path;
 		};
@@ -504,6 +508,7 @@ const mappings = {
 			previous_previous_value,
 			is_relationship,
 			list_type,
+			is_multiple
 		} = custom_select_change_payload;
 
 		const line_elements_container = changed_list.parentElement;
@@ -589,13 +594,16 @@ const mappings = {
 			base_mapping_path,
 		];
 
-		if(previous_value_is_relationship)
-			paths_to_update.push([...base_mapping_path, previous_value]);
+		if (is_relationship)
+			paths_to_update.push([...base_mapping_path, new_value]);
 
 		if (list_type === "to_many" && new_value === 'add')
 			paths_to_update.push([...base_mapping_path, previous_previous_value]);
 
-		for(const mappings_path of paths_to_update)
+		else if (previous_value_is_relationship)
+			paths_to_update.push([...base_mapping_path, previous_value]);
+
+		for (const mappings_path of paths_to_update)
 			mappings.update_all_lines(mappings_path);
 	},
 
@@ -608,13 +616,21 @@ const mappings = {
 
 	},
 
+	mapping_view_map_button_callback(){
+
+		const mapping_path = mappings.get_mappings_path();
+
+	},
+
 	//HELPERS
 
 	update_all_lines(mapping_path_filter = null){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings, true);
-		for(const line of lines)
-			mappings.update_line(line,mapping_path_filter);
+		lines.push(mappings.mapping_view);
+
+		for (const line of lines)
+			mappings.update_line(line, mapping_path_filter);
 
 	},
 
@@ -650,6 +666,31 @@ const mappings = {
 
 	},
 
+	focus_line(line){
+
+		//deselect all lines
+		const lines = dom_helper.get_lines(mappings.list__mappings);
+		for(const mapping_line of lines)
+			if(mapping_line !== line)
+				mapping_line.classList.remove('wbplanview_mappings_line_focused');
+
+
+		//select the current line
+		line.classList.add('wbplanview_mappings_line_focused');
+
+
+		//get mapping path
+		const line_elements_container = dom_helper.get_line_elements_container(line);
+		const mapping_path = mappings.get_mappings_path(line_elements_container);
+
+
+		//if line is mapped, update the mapping view
+		if(mapping_path[mapping_path.length-1]!=="0"){
+			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mapping_path);
+			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data);
+		}
+
+	}
 };
 
 module.exports = mappings;

@@ -25,7 +25,25 @@ const custom_select_element = {
 		let first_row = '';
 		let is_relationship_text = 'false';
 
-		if(show_table_names) {
+		//find if there are any value checked
+		let default_label = 0;
+		let default_icon = '';
+		let is_relationship = false;
+		let table_name = '';
+		outer_loop:
+			for (const select_group_data of select_groups_data)
+				for (const select_field_data of select_group_data['select_options_data'])
+					if (select_field_data.is_default) {
+						({
+							option_name: default_label,
+							option_value: default_name,
+							is_relationship,
+							table_name
+						} = select_field_data);
+						break outer_loop;
+					}
+
+		if (show_table_names) {
 			custom_select_type = 'custom_select_size_multiple';
 
 			header = `
@@ -37,22 +55,9 @@ const custom_select_element = {
 						` + select_label + `
 					</span>
 				</span>`;
-		}
-		else {
+
+		} else {
 			custom_select_type = 'custom_select_size_one';
-
-			let default_label = 0;
-			let default_icon = '';
-			let is_relationship = false;
-			let table_name = '';
-
-			outer_loop:
-				for (const select_group_data of select_groups_data)
-					for (const select_field_data of select_group_data['select_options_data'])
-						if (select_field_data.is_default) {
-							({option_name: default_label, option_value: default_name, is_relationship, table_name} = select_field_data);
-							break outer_loop;
-						}
 
 			if (default_label !== 0)
 				default_icon = custom_select_element.icon(is_relationship, true, table_name);
@@ -60,14 +65,19 @@ const custom_select_element = {
 			is_relationship_text = is_relationship.toString();
 
 			preview = `<span class="custom_select_input" tabindex="0">
-							<span class="custom_select_input_icon">`+default_icon+`</span>
-							<span class="custom_select_input_label">`+default_label+`</span>
+							<span class="custom_select_input_icon">` + default_icon + `</span>
+							<span class="custom_select_input_label">` + default_label + `</span>
 						</span>`;
-			first_row = `<span
-							class="custom_select_option ` + (default_label === 0 ? ' custom_select_option_selected' : '') + `"
-							data-value="0"
-							tabindex="0">
-						</span>`;
+
+			first_row = custom_select_element.new_select_option_html({
+				option_name: '',
+				option_value: '0',
+				is_enabled: true,
+				is_relationship: false,
+				is_default: default_label === 0,
+				table_name: ''
+			});
+
 		}
 
 
@@ -257,6 +267,7 @@ const custom_select_element = {
 
 
 		//call change callback with a payload
+		const is_multiple = target_list.classList.contains('custom_select_size_multiple');
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
@@ -265,6 +276,7 @@ const custom_select_element = {
 			previous_previous_value: previous_previous_value,
 			is_relationship: is_relationship,
 			list_type: list_type,
+			is_multiple: is_multiple,
 		};
 
 	},
