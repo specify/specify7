@@ -8,7 +8,7 @@ from decimal import Decimal
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
 from ..data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
-from ..upload_table import UploadTable, _to_many_filters_and_excludes, BoundUploadTable
+from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from ..upload import do_upload_csv
 
@@ -23,7 +23,7 @@ class UploadTests(UploadTestsBase):
 59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
@@ -48,7 +48,7 @@ class UploadTests(UploadTestsBase):
 1378,Gastropoda,Rissooidea,Rissoinidae,Rissoina,,delicatissima,,"Raines, 2002",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,In sand at base of cliffs,10,20,0,,,Paratype,512,," PARATYPES.  In pouch no. 1, paratypes 4 & 5.  Raines, B.K. 2002.  La Conchiglia 34 ( no. 304) : 16 (holotype LACM 2934, Fig. 9).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,109° 19' 45' W,,Point,,JSG,23/12/2014,0,Marine,0,B. Raines and M. Taylor,,B.,,Raines,,M.,,Taylor,,,,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
@@ -216,14 +216,13 @@ class UploadTests(UploadTestsBase):
 '''))
         tree_record = TreeRecord(
             name = 'Geography',
-            treedefid = self.geographytreedef.id,
             ranks = {
                 'Continent': 'Continent/Ocean',
                 'Country': 'Country',
                 'State': 'State/Prov/Pref',
                 'County': 'Region',
             }
-        )
+        ).apply_scoping(self.collection)
         row = next(reader)
         to_upload, matched = tree_record.bind(self.collection, row)._match()
 

@@ -8,8 +8,11 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .data import FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Uploadable, BoundUploadable, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
-from .tomany import ToManyRecord, BoundToManyRecord
+from .data import (
+    FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord,
+    Uploadable, ScopedUploadable, BoundUploadable,
+    FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures)
+from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +24,7 @@ class UploadTable(NamedTuple):
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
-    def apply_scoping(self, collection) -> "UploadTable":
+    def apply_scoping(self, collection) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable as apply_scoping
         return apply_scoping(self, collection)
 
@@ -42,6 +45,14 @@ class UploadTable(NamedTuple):
 
     def unparse(self) -> Dict:
         return { 'baseTableName': self.name, 'uploadable': self.to_json() }
+
+class ScopedUploadTable(NamedTuple):
+    name: str
+    wbcols: Dict[str, str]
+    static: Dict[str, Any]
+    toOne: Dict[str, ScopedUploadable]
+    toMany: Dict[str, List[ScopedToManyRecord]]
+    scopingAttrs: Dict[str, int]
 
     def bind(self, collection, row: Row) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
@@ -68,23 +79,42 @@ class UploadTable(NamedTuple):
         if parseFails:
             return ParseFailures(parseFails)
 
-        return BoundUploadTable(self.name, self.wbcols, self.static, parsedFields, toOne, toMany)
+        return BoundUploadTable(
+            name=self.name,
+            wbcols=self.wbcols,
+            static=self.static,
+            scopingAttrs=self.scopingAttrs,
+            parsedFields=parsedFields,
+            toOne=toOne,
+            toMany=toMany,
+        )
 
 class OneToOneTable(UploadTable):
+    def apply_scoping(self, collection) -> "ScopedOneToOneTable":
+        s = super().apply_scoping(collection)
+        return ScopedOneToOneTable(*s)
+
     def to_json(self) -> Dict:
         return { 'oneToOneTable': self._to_json() }
 
+class ScopedOneToOneTable(ScopedUploadTable):
     def bind(self, collection, row: Row) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(collection, row)
         return b if isinstance(b, ParseFailures) else BoundOneToOneTable(*b)
 
 class MustMatchTable(UploadTable):
+    def apply_scoping(self, collection) -> "ScopedMustMatchTable":
+        s = super().apply_scoping(collection)
+        return ScopedMustMatchTable(*s)
+
     def to_json(self) -> Dict:
         return { 'mustMatchTable': self._to_json() }
 
+class ScopedMustMatchTable(ScopedUploadTable):
     def bind(self, collection, row: Row) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(collection, row)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTable(*b)
+
 
 class BoundUploadTable(NamedTuple):
     name: str
@@ -93,6 +123,13 @@ class BoundUploadTable(NamedTuple):
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]
     toMany: Dict[str, List[BoundToManyRecord]]
+    scopingAttrs: Dict[str, int]
+
+    def is_one_to_one(self) -> bool:
+        return False
+
+    def must_match(self) -> bool:
+        return False
 
     def filter_on(self, path: str) -> FilterPack:
         filters = {
@@ -107,11 +144,11 @@ class BoundUploadTable(NamedTuple):
                 filters.update(f)
 
         if all(v is None for v in filters.values()):
-            return FilterPack([], [Exclude(path + "__in", self.name, self.static)])
+            return FilterPack([], [Exclude(path + "__in", self.name, {**self.scopingAttrs, **self.static})])
 
         filters.update({
             (path + '__' + fieldname): value
-            for fieldname, value in self.static.items()
+            for fieldname, value in {**self.scopingAttrs, **self.static}.items()
         })
 
         return FilterPack([filters], [])
@@ -175,7 +212,7 @@ class BoundUploadTable(NamedTuple):
                                  to_many_excludes,
                                  reduce(lambda q, f: q.filter(**f),
                                         to_many_filters,
-                                        model.objects.filter(**filters, **self.static)))
+                                        model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
 
         n_matched = matched_records.count()
         if n_matched > 1:
@@ -191,14 +228,14 @@ class BoundUploadTable(NamedTuple):
         toOneResults.update({
             fieldname: to_one_def.force_upload_row()
             for fieldname, to_one_def in self.toOne.items()
-            if isinstance(to_one_def, BoundOneToOneTable)
+            if to_one_def.is_one_to_one()
             for result in [toOneResults[fieldname].record_result]
             if isinstance(result, Matched) or isinstance(result, MatchedMultiple)
         })
         attrs.update({ model._meta.get_field(fieldname).attname: v.get_id() for fieldname, v in toOneResults.items() })
 
         try:
-            uploaded = model.objects.create(**attrs, **self.static)
+            uploaded = model.objects.create(**attrs, **self.scopingAttrs, **self.static)
             picklist_additions = self._do_picklist_additions()
         except BusinessRuleException as e:
             return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
@@ -219,9 +256,13 @@ class BoundUploadTable(NamedTuple):
         return added_picklist_items
 
 class BoundOneToOneTable(BoundUploadTable):
-    pass
+    def is_one_to_one(self) -> bool:
+        return True
 
 class BoundMustMatchTable(BoundUploadTable):
+    def must_match(self) -> bool:
+        return True
+
     def force_upload_row(self) -> UploadResult:
         raise Exception('trying to force upload of must-match table')
 
@@ -253,13 +294,13 @@ def _upload_to_manys(parent_model, parent_id, parent_field, records) -> List[Upl
 
     return [
         BoundUploadTable(
-            name = record.name,
-            wbcols = record.wbcols,
-            static = {**record.static, fk_field: parent_id},
-            parsedFields = record.parsedFields,
-            toOne = record.toOne,
-            toMany = {},
+            name=record.name,
+            wbcols=record.wbcols,
+            scopingAttrs=record.scopingAttrs,
+            parsedFields=record.parsedFields,
+            toOne=record.toOne,
+            static={**record.static, fk_field: parent_id},
+            toMany={},
         ).force_upload_row()
-
         for record in records
     ]

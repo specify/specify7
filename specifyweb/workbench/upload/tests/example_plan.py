@@ -1,4 +1,4 @@
-from ..upload_table import UploadTable
+from ..upload_table import UploadTable, ScopedUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord
 
@@ -123,7 +123,7 @@ json = dict(
     )}
 )
 
-def with_scoping(collection) -> UploadTable:
+def with_scoping(collection) -> ScopedUploadTable:
     return UploadTable(
         name = 'Collectionobject',
         wbcols = {
@@ -155,7 +155,6 @@ def with_scoping(collection) -> UploadTable:
                         ),
                         'taxon': TreeRecord(
                             name = 'Taxon',
-                            treedefid = None,
                             ranks = {
                                 'Class': 'Class',
                                 'Superfamily': 'Superfamily',
@@ -191,7 +190,6 @@ def with_scoping(collection) -> UploadTable:
                         toOne = {
                             'geography': TreeRecord(
                                 name = 'Geography',
-                                treedefid = None,
                                 ranks = {
                                     'Continent': 'Continent/Ocean' ,
                                     'Country': 'Country',

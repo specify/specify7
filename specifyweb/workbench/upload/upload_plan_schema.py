@@ -155,7 +155,6 @@ def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
     return TreeRecord(
         name=table.django_name,
         ranks=to_parse['ranks'],
-        treedefid=None,
     )
 
 def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:

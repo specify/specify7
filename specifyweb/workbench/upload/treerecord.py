@@ -28,9 +28,8 @@ class TreeMatchResult(NamedTuple):
 class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
-    treedefid: Optional[int]
 
-    def apply_scoping(self, collection) -> "TreeRecord":
+    def apply_scoping(self, collection) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
@@ -41,14 +40,25 @@ class TreeRecord(NamedTuple):
     def unparse(self) -> Dict:
         return { 'baseTableName': self.name, 'uploadble': self.to_json() }
 
+class ScopedTreeRecord(NamedTuple):
+    name: str
+    ranks: Dict[str, str]
+    treedefid: int
+
     def bind(self, collection, row: Row) -> "BoundTreeRecord":
         return BoundTreeRecord(self.name, self.ranks, self.treedefid, row)
 
 class BoundTreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, str]
-    treedefid: Optional[int]
+    treedefid: int
     row: Row
+
+    def is_one_to_one(self) -> bool:
+        return False
+
+    def must_match(self) -> bool:
+        return False
 
     def filter_on(self, path: str) -> FilterPack:
         return FilterPack([], [])

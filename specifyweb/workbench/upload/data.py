@@ -231,10 +231,7 @@ class UploadResult(NamedTuple):
         }}
 
 class Uploadable(Protocol):
-    def apply_scoping(self, collection) -> "Uploadable":
-        ...
-
-    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
+    def apply_scoping(self, collection) -> "ScopedUploadable":
         ...
 
     def to_json(self) -> Dict:
@@ -243,8 +240,18 @@ class Uploadable(Protocol):
     def unparse(self) -> Dict:
         ...
 
+class ScopedUploadable(Protocol):
+    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
+        ...
+
 
 class BoundUploadable(Protocol):
+    def is_one_to_one(self) -> bool:
+        ...
+
+    def must_match(self) -> bool:
+        ...
+
     def filter_on(self, path: str) -> FilterPack:
         ...
 
