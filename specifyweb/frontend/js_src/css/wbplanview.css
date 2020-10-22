@@ -17,6 +17,10 @@
     height: calc(100vh - 150px);
 }
 
+#screen__mapping.hide_mapping_view {
+    grid-template-rows: auto 1fr auto auto;
+}
+
 
 /* HEADER */
 #wbplanview_header {
@@ -62,6 +66,10 @@
 #mapping_view {
     display: flex;
     flex-wrap: nowrap;
+}
+
+#screen__mapping.hide_mapping_view #mapping_view_parent {
+    display: none;
 }
 
 #wbplanview_mapping_view_map_button {

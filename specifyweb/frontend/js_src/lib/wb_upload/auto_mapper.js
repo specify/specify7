@@ -119,7 +119,7 @@ const auto_mapper = {
 
 		const table_data = auto_mapper.tables[table_name];
 		const ranks_data = auto_mapper.ranks[table_name];
-		const fields = Object.entries(table_data['fields']).filter(([, field_data]) => !field_data['is_hidden']);
+		const fields = Object.entries(table_data['fields']).filter(([, field_data]) => !field_data['is_hidden'] && !field_data['is_relationship']);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();//TODO: remove numbers from the name
 
 		if (typeof ranks_data !== "undefined") {//TODO: make ranks iterate over relationships too
@@ -231,7 +231,7 @@ const auto_mapper = {
 		}
 
 
-		const relationships = Object.entries(table_data['relationships']).filter((relationship_data => !relationship_data['is_hidden']));
+		const relationships = Object.entries(table_data['fields']).filter((relationship_data => !relationship_data['is_hidden'] && relationship_data['is_relationship']));
 
 
 		for (const [relationship_key, relationship_data] of relationships) {

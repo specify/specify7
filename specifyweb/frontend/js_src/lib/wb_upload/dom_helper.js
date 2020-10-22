@@ -48,12 +48,12 @@ const dom_helper = {
 		return Object.values(line_elements_container.children);
 	},
 
-	get_line_header_select(line_elements_container){
-		const line_elements = dom_helper.get_line_elements(line_elements_container);
-		for(const line_element of line_elements)
-			if(line_element.getAttribute('data-type')==='headers')
-				return line_element;
-		return undefined;
+	get_line_header(line){
+
+		const wbplanview_mappings_line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
+
+		return wbplanview_mappings_line_header.innerText;
+
 	}
 
 };

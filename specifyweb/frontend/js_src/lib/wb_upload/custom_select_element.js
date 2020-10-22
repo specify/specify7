@@ -291,23 +291,15 @@ const custom_select_element = {
 		const options = option_container.children;
 
 		if (position < -1)
-			position = options.length + position;
+			position = options.length + 1 + position;
 
-		let new_index = 0;
-
-		if (position === 0 && options.length !== 0) {
-			options[0].before(new_option_line);
-			new_index = 0;
-		} else if (position === -1 || position > options.length || options.length === 0) {
-			option_container.append(new_option_line);
-			new_index = options.length - 1;
-		} else {
-			options[position].after(new_option_line);
-			new_index = position + 1;
-		}
+		if (position >= options.length)
+			option_container.appendChild(new_option_line);
+		else
+			option_container.insertBefore(new_option_line, options[position]);
 
 		new_option_line.outerHTML = new_option_line_html;
-		new_option_line = options[new_index];
+		new_option_line = options[position];
 
 		if (selected)
 			custom_select_element.change_selected_option(list, new_option_line);
@@ -324,6 +316,10 @@ const custom_select_element = {
 	},
 
 	toggle_option(list, option_name, action){
+
+		//don't do anything if seeking for the default option
+		if(option_name === '0')
+			return;
 
 		const option = list.querySelector('.custom_select_option[data-value="' + option_name + '"]');
 

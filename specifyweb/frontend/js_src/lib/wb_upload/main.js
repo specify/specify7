@@ -2,6 +2,7 @@
 
 const $ = require('jquery');
 const mappings = require('./mappings.js');
+const auto_mapper = require('./auto_mapper.js');
 const data_model_handler = require('./data_model_handler.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
 const custom_select_element = require('./custom_select_element.js');
@@ -10,6 +11,18 @@ const custom_select_element = require('./custom_select_element.js');
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
 const main = {
+
+	/* TODO:
+		* replace all nextElementSibling, previousElementSibling, getAttribute with methods
+		* replace mappings and etc with `this`
+		* replace abbreviations with icons
+		* remove console log messages
+		* add comments
+		* add method descriptions
+		* enable `unsaved changes` confirmation message before exiting the page
+		* reformat & refactor code
+	*
+	* */
 
 	/*
 	* Configuration module that set's default settings
@@ -34,7 +47,9 @@ const main = {
 
 		// header
 		mappings.title__table_name = document.getElementById('title__table_name');
+		mappings.wbplanview_table_header_content = document.getElementById('wbplanview_table_header_content');
 		mappings.button__change_table = document.getElementById('button__change_table');
+		mappings.button__toggle_mapping_view = document.getElementById('button__toggle_mapping_view');
 
 		// lists
 		mappings.list__tables = document.getElementById('list__tables');
@@ -49,13 +64,23 @@ const main = {
 		mappings.hide_hidden_fields = true;
 		mappings.headers = {};
 		mappings.base_table_name = undefined;
+		mappings.need_to_define_lines = true;
+		mappings.need_to_run_auto_mapper = true;
 
+		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
 		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
 		mappings.custom_select_element = custom_select_element;
 
 
 		// SETTING EVENT LISTENERS
 		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
+
+		mappings.button__toggle_mapping_view.addEventListener('click',()=>{
+			if(mappings.container.classList.contains('hide_mapping_view'))
+				mappings.container.classList.remove('hide_mapping_view');
+			else
+				mappings.container.classList.add('hide_mapping_view');
+		});
 
 		mappings.list__mappings.addEventListener('click', event => {
 
@@ -162,6 +187,8 @@ const main = {
 				mappings.ranks,
 				mappings.tables,
 			);
+
+			auto_mapper.constructor(mappings.tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
 
 		});
 		mappings.data_model_handler = data_model_handler;

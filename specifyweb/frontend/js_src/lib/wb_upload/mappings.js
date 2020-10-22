@@ -30,7 +30,7 @@ const mappings = {
 		console.log(array_of_mappings);
 
 		Object.values(array_of_mappings).map(header_data =>
-			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'])
+				mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'])
 		);
 
 		this.changes_made = true;
@@ -59,7 +59,7 @@ const mappings = {
 		this.list__mappings.style.display = '';
 		this.mapping_view.style.display = '';
 
-		this.button__change_table.style.display = '';
+		this.wbplanview_table_header_content.style.display = '';
 
 		this.title__table_name.classList.remove('undefined');
 		this.title__table_name.innerText = mappings.tables[table_name]['table_friendly_name'];
@@ -75,6 +75,44 @@ const mappings = {
 		//TODO: uncomment this before production
 		//navigation.addUnloadProtect(this, "This mapping has not been saved.");
 
+		if(mappings.need_to_define_lines){
+			mappings.need_to_define_lines = false;
+
+			const result_lines = [];
+			for(const header of Object.keys(this.headers)){
+
+				const mapping_line_data = {
+					line_data: base_table_fields,
+					header_data: {
+						mapping_type: 'existing_header',
+						header_name: header,
+					},
+				};
+				const mapping_line_html = html_generator.mapping_line(mapping_line_data);
+
+				result_lines.push(mapping_line_html);
+
+			}
+
+			mappings.list__mappings.innerHTML = result_lines.join('');
+
+		}
+
+		if(mappings.need_to_run_automapper){
+			const mappings_object = mappings.auto_mapper_run(Object.keys(this.headers), this.base_table_name);
+			const array_of_mappings = mappings_object.map(([header_name,mapping_path]) => {
+				return {
+					mapping_path: mapping_path,
+					header_data: {
+						mapping_type: 'existing_header',
+						header_name: header_name,
+					}
+				};
+			});
+			this.need_to_run_auto_mapper = false;
+			mappings.implement_array_of_mappings(array_of_mappings);
+		}
+
 	},
 
 	/*
@@ -84,6 +122,10 @@ const mappings = {
 	* @param {bool} [headers_defined=true] - Whether CSV file had headers in the first line
 	* */
 	set_headers: function(headers = [], upload_plan = false, headers_defined = true){
+
+		//remove all existing lines
+		mappings.list__mappings.innerHTML = '';
+
 
 		tree_helpers.raw_headers = headers;
 		this.headers = Object.fromEntries(headers.map(header_name => [header_name, false]));
@@ -98,6 +140,11 @@ const mappings = {
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
 			mappings.implement_array_of_mappings(array_of_mappings);
 		}
+
+		else
+			mappings.need_to_define_lines = true;
+
+		mappings.need_to_run_automapper = headers_defined;
 
 	},
 
@@ -118,11 +165,14 @@ const mappings = {
 
 		this.list__mappings.innerHTML = '';
 
-		this.button__change_table.style.display = 'none';
+		this.wbplanview_table_header_content.style.display = 'none';
 		this.base_table_name = undefined;
 
 		//TODO: uncomment this before production
 		//navigation.removeUnloadProtect(this);
+
+		mappings.need_to_define_lines = true;
+		mappings.need_to_run_auto_mapper = true;
 
 	},
 
@@ -131,16 +181,27 @@ const mappings = {
 
 	add_new_mapping_line(position = -1, mappings_path = [], header_data){
 
-		const new_mapping_line = document.createElement('div');
+		const lines = dom_helper.get_lines(mappings.list__mappings);
 
-		const lines = mappings.list__mappings.children;
+		//before adding new header, check if it already present
+		const {header_name} = header_data;
+		const header_index = Object.keys(this.headers).indexOf(header_name);
+		let new_mapping_line = lines[header_index];
 
-		if (position === 0 && lines.length !== 0)
-			lines[0].before(new_mapping_line);
-		else if (position === -1 || position > lines.length || lines.length === 0)
-			mappings.list__mappings.append(new_mapping_line);
-		else
-			lines[position].after(new_mapping_line);
+		//find position for new header
+		if(typeof new_mapping_line === "undefined"){
+
+			new_mapping_line = document.createElement('div');
+
+			if (position < -1)
+				position = lines.length + 1 + position;
+
+			if (position >= lines.length)
+				mappings.list__mappings.appendChild(new_mapping_line);
+			else
+				mappings.list__mappings.insertBefore(new_mapping_line, lines[position]);
+
+		}
 
 		const line_data = mappings.get_mapping_line_data_from_mappings_path(mappings_path);
 
@@ -690,8 +751,54 @@ const mappings = {
 			const target_select_element = select_elements[intersection_point];
 			update_mapped_fields(target_select_element, mapped_fields);
 
+			if(target_select_element.getAttribute('data-type')==='to_many'){
+				const options = target_select_element.getElementsByClassName('custom_select_option');
+				const option_values = Object.values(options).map(option=>option.getAttribute('data-value'));
+				let max_value = mappings.get_max_to_many_value(option_values);
+				const max_mapped_value = mappings.get_max_to_many_value(Object.keys(mapped_fields));
+
+				max_value++;
+				while(max_mapped_value>=max_value){
+
+					const new_option_name = mappings.reference_symbol + max_value;
+					const list_table = target_select_element.getAttribute('data-table');
+
+					const option_data = {
+						option_name: new_option_name,
+						option_value: new_option_name,
+						is_enabled: true,
+						is_relationship: true,
+						is_default: false,
+						table_name: list_table,
+					};
+
+					mappings.custom_select_element.add_option(target_select_element, -2, option_data, false);
+
+					max_value++;
+
+				}
+			}
+
+
 		}
 
+	},
+
+	get_max_to_many_value(values){
+		return values.reduce((max, value)=>{
+
+			//skip `add` values and other possible NaN cases
+			if(value.substr(0,mappings.reference_symbol.length)!==mappings.reference_symbol)
+				return max;
+
+			const number = parseInt(value.substr(mappings.reference_symbol.length))
+
+			if(number > max)
+				return number;
+
+			return max;
+
+		}, 0);
 	},
 
 	focus_line(line){

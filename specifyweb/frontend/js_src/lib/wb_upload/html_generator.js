@@ -44,13 +44,14 @@ const html_generator = {
 			header_html = header_name;
 
 		return `<div class="wbplanview_mappings_line">
-			<div class="wbplanview_mappings_line_controls">
-				<button class="wbplanview_mappings_line_delete" title="Clear mapping"><img src="../../../static/img/discard.svg" alt="Clear mapping"></button>
-			</div>
-			<div class="wbplanview_mappings_line_header">`+header_html+`</div>
-			<div class="wbplanview_mappings_line_elements">
-				` + html_generator.mapping_path(line_data) + `
-			</div>`;
+					<div class="wbplanview_mappings_line_controls">
+						<button class="wbplanview_mappings_line_delete" title="Clear mapping"><img src="../../../static/img/discard.svg" alt="Clear mapping"></button>
+					</div>
+					<div class="wbplanview_mappings_line_header">`+header_html+`</div>
+					<div class="wbplanview_mappings_line_elements">
+						` + html_generator.mapping_path(line_data) + `
+					</div>
+				</div>`;
 	},
 
 	mapping_path(mappings_line_data, show_table_names=false){
