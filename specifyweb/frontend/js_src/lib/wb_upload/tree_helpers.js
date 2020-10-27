@@ -103,13 +103,17 @@ const tree_helpers = {
 		}, target);
 	},
 
-	array_to_tree(array, tree = {}){
+	array_to_tree(array, has_headers = false, tree = {}){
 
 		if (array.length === 0)
 			return {};
 
 		const node = array.shift();
-		tree[node] = tree_helpers.array_to_tree(array);
+
+		if (has_headers && array.length === 0)
+			return node;
+
+		tree[node] = tree_helpers.array_to_tree(array, has_headers);
 
 		return tree;
 
@@ -134,12 +138,12 @@ const tree_helpers = {
 	* 					Last Name
 	* 				Remarks
 	* */
-	array_of_mappings_to_mappings_tree(array_of_mappings){
+	array_of_mappings_to_mappings_tree(array_of_mappings, include_headers){
 
 		const tree = {};
 
 		for (const mapping_path of array_of_mappings) {
-			const mapping_tree = tree_helpers.array_to_tree(mapping_path);
+			const mapping_tree = tree_helpers.array_to_tree(mapping_path, include_headers);
 			tree_helpers.deep_merge_object(tree, mapping_tree);
 		}
 

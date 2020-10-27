@@ -451,9 +451,17 @@ const mappings = {
 
 		const lines_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
 
-		return mappings.mapped_fields = lines_elements_containers.map(line_elements_container =>
-			mappings.get_mappings_path(line_elements_container, [], include_headers)
-		);
+		const unmapped_path_length = 1 + include_headers;
+
+		return mappings.mapped_fields = lines_elements_containers.reduce((mapped_fields, line_elements_container) => {
+
+			const mappings_path = mappings.get_mappings_path(line_elements_container, [], include_headers);
+
+			if(mappings_path.length > unmapped_path_length || mappings_path[0]!=="0")
+				mapped_fields.push(mappings_path);
+
+			return mapped_fields;
+		}, []);
 
 	},
 
@@ -462,7 +470,8 @@ const mappings = {
 			return mappings.mappings_tree;
 
 		return mappings.mappings_tree = tree_helpers.array_of_mappings_to_mappings_tree(
-			mappings.get_all_mapped_fields(include_headers)
+			mappings.get_all_mapped_fields(include_headers),
+			include_headers
 		);
 	},
 
