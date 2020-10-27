@@ -60,6 +60,19 @@ const helper = {
 
 	},
 
+	deconstruct_mapping_path(mapping_path, has_header=false, detect_unmapped=true){
+
+		let header;
+		if(has_header)
+			header = mapping_path.pop();
+
+		if(detect_unmapped && mapping_path[mapping_path.length-1]==="0")
+			mapping_path = [];
+
+		return [mapping_path, header];
+
+	},
+
 };
 
 module.exports = helper;

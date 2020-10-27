@@ -213,7 +213,18 @@ const custom_select_element = {
 		}
 	},
 
+	find_option_by_name(list, option_name){
+		return list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
+	},
+
 	change_selected_option(target_list, target_option){
+
+		//if target_option is option's name, find option element
+		if(typeof target_option === 'string'){
+			target_option = custom_select_element.find_option_by_name(target_list, target_option);
+			if(target_option===null)
+				return;
+		}
 
 		//ignore selected and disabled elements
 		if (target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled')) {

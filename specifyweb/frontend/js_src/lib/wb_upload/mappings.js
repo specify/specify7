@@ -69,7 +69,7 @@ const mappings = {
 		this.tree = {};
 		this.changes_made = true;
 
-		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)];
+		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)[0]];
 		mappings.mapping_view.innerHTML = html_generator.mapping_view(base_table_fields);
 
 		//TODO: uncomment this before production
@@ -217,6 +217,7 @@ const mappings = {
 
 	// GETTERS
 
+	//mapping_path should not include fields, only relationships
 	get_mapping_line_data_from_mappings_path(mappings_path = [], iterate = true, recursive_payload = undefined){
 
 		let table_name = '';
@@ -242,7 +243,15 @@ const mappings = {
 			mappings_path.length === 0 ||
 			mappings_path_position + 1 === mappings_path.length
 		)
-			mapping_line_data.push(mappings.get_fields_for_table(table_name, mappings_path, mappings_path_position, parent_table_name, parent_table_relationship_name));
+			mapping_line_data.push(
+				mappings.get_fields_for_table(
+					table_name,
+					mappings_path,
+					mappings_path_position,
+					parent_table_name,
+					parent_table_relationship_name
+				)
+			);
 
 
 		const next_path_index = mappings_path_position + 1;
@@ -319,7 +328,6 @@ const mappings = {
 
 		const result_fields = {};
 
-
 		if (children_are_to_many_elements) {
 
 			mapping_element_type = 'to_many';
@@ -338,6 +346,7 @@ const mappings = {
 
 			for (let i = 1; i <= max_mapped_element_number; i++) {
 				const mapped_object_name = mappings.reference_symbol + i;
+
 				result_fields[mapped_object_name] = {
 					field_friendly_name: mapped_object_name,
 					is_enabled: true,
@@ -419,7 +428,6 @@ const mappings = {
 
 				const is_default = field_name === default_value;
 
-
 				result_fields[field_name] = {
 					field_friendly_name: friendly_name,
 					is_enabled: is_enabled,
@@ -455,7 +463,10 @@ const mappings = {
 
 		return mappings.mapped_fields = lines_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
-			const mappings_path = mappings.get_mappings_path(line_elements_container, [], include_headers);
+			const mappings_path = mappings.get_mappings_path({
+				line_elements_container: line_elements_container,
+				include_headers: include_headers
+			});
 
 			if(mappings_path.length > unmapped_path_length || mappings_path[0]!=="0")
 				mapped_fields.push(mappings_path);
@@ -482,14 +493,33 @@ const mappings = {
 		);
 	},
 
-	get_mappings_path(line_elements_container, mapping_path_filter = [], include_headers = false){
+	get_mappings_path(payload){
+
+		const {
+			line_elements_container,
+			mapping_path_filter = [],
+			include_headers = false,
+			exclude_unmapped = false,
+			exclude_non_relationship_values = false,
+		} = payload;
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
 		const mappings_path = [];
 		let position = 0;
 
-		const return_path = (path) => {
+		const return_path = (path, element) => {
+
+			if(exclude_unmapped && path[path.length-1]==="0")
+				path = [];
+
+			if(exclude_non_relationship_values){
+				const is_relationship = element.getAttribute('data_value_is_relationship');
+
+				if(!is_relationship)
+					path.pop();
+			}
+
 			if (include_headers) {
 				const line = line_elements_container.parentElement;
 				const line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
@@ -507,10 +537,10 @@ const mappings = {
 				mappings_path.push(result_name);
 
 			if (typeof mapping_path_filter[position] === "string" && result_name !== mapping_path_filter[position])
-				return return_path([]);
+				return return_path([], element);
 
 			else if (typeof mapping_path_filter === "object" && element === mapping_path_filter)
-				return return_path(mappings_path);
+				return return_path(mappings_path, element);
 
 			position++;
 
@@ -585,7 +615,6 @@ const mappings = {
 
 		const list_table_name = changed_list.getAttribute('data-table');
 
-		let mappings_path;
 		let need_to_add_block = false;
 		let previous_value_is_relationship = true;
 
@@ -619,8 +648,6 @@ const mappings = {
 
 			}
 
-			mappings_path = mappings.get_mappings_path(line_elements_container, changed_list);
-
 			//add block to the right if there aren't any
 			need_to_add_block = changed_list.nextElementSibling === null;
 
@@ -641,9 +668,13 @@ const mappings = {
 			//add block to the right if selected field is a relationship
 			need_to_add_block = is_relationship;
 
-			mappings_path = mappings.get_mappings_path(line_elements_container);
-
 		}
+
+		const mappings_path = mappings.get_mappings_path({
+			line_elements_container: line_elements_container,
+			exclude_non_relationship_values:true,
+			mapping_path_filter: changed_list,
+		});
 
 		if (need_to_add_block) {
 			mappings.changes_made = true;
@@ -673,6 +704,8 @@ const mappings = {
 		else if (previous_value_is_relationship)
 			paths_to_update.push([...base_mapping_path, previous_value]);
 
+		mappings.deduplicate_mappings();
+
 		for (const mappings_path of paths_to_update)
 			mappings.update_all_lines(mappings_path);
 	},
@@ -681,7 +714,7 @@ const mappings = {
 
 		const line = wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line');
 
-		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)];
+		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)[0]];
 		line.getElementsByClassName('wbplanview_mappings_line_elements')[0].innerHTML = html_generator.mapping_path(base_table_fields);
 
 		mappings.changes_made = true;
@@ -713,7 +746,9 @@ const mappings = {
 		);
 
 		//implement the mapping path on the selected field
-		const mapping_path = mappings.get_mappings_path(mappings.mapping_view);
+		const mapping_path = mappings.get_mappings_path({
+			line_elements_container:mappings.mapping_view
+		});
 
 		if (is_mapped)
 			mapping_path.pop();
@@ -738,7 +773,9 @@ const mappings = {
 
 	update_line(line_elements_container, filter_mapping_path = null){
 
-		const mapping_path = mappings.get_mappings_path(line_elements_container);
+		const mapping_path = mappings.get_mappings_path({
+			line_elements_container:line_elements_container,
+		});
 		const select_elements = dom_helper.get_line_elements(line_elements_container);
 
 		const update_mapped_fields = (select_element, mapped_fields) => {
@@ -829,7 +866,9 @@ const mappings = {
 
 		//get mapping path
 		const line_elements_container = dom_helper.get_line_elements_container(line);
-		const mapping_path = mappings.get_mappings_path(line_elements_container);
+		const mapping_path = mappings.get_mappings_path({
+			line_elements_container:line_elements_container,
+		});
 
 
 		//if line is mapped, update the mapping view
@@ -838,7 +877,6 @@ const mappings = {
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data);
 		}
 
-	}
 };
 
 module.exports = mappings;
