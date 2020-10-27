@@ -668,7 +668,9 @@ const mappings = {
 			mappings.update_all_lines(mappings_path);
 	},
 
-	clear_line(line){
+	clear_line(wbplanview_mappings_line_delete){
+
+		const line = wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line');
 
 		const base_table_fields = [mappings.get_fields_for_table(this.base_table_name)];
 		line.getElementsByClassName('wbplanview_mappings_line_elements')[0].innerHTML = html_generator.mapping_path(base_table_fields);
@@ -695,16 +697,18 @@ const mappings = {
 			return;
 
 
-		//don't do anything if selected value is disabled
-		const is_enabled = mappings.custom_select_element.is_selected_option_enabled(
+		//don't map the last node if it is already mapped
+		//e.g convert `Accession > Accession Number` to `Accession`  if `Accession Number` is a field and is mapped
+		const is_mapped = !mappings.custom_select_element.is_selected_option_enabled(
 			mappings.mapping_view.childNodes[mappings.mapping_view.childNodes.length - 1]
 		);
 
-		if (!is_enabled)
-			return;
-
 		//implement the mapping path on the selected field
 		const mapping_path = mappings.get_mappings_path(mappings.mapping_view);
+
+		if (is_mapped)
+			mapping_path.pop();
+
 		const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path(mapping_path);
 		const select_line_elements_container = dom_helper.get_line_elements_container(selected_line);
 		select_line_elements_container.innerHTML = html_generator.mapping_path(mapping_line_data);
