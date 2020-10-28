@@ -22,18 +22,16 @@ const html_generator = {
 		return '<a class="wbplanview_table" href="#' + table_name + '" data-table_name="' + table_name + '">' + table_friendly_name + '</a>';
 	},
 
-	mapping_view(mappings_view_data){
-		return html_generator.mapping_path(mappings_view_data, true);
+	mapping_view(mappings_view_data, use_cached){
+		return html_generator.mapping_path(mappings_view_data, true, use_cached);
 	},
 
-	mapping_line(mappings_line_data){
+	mapping_line(mappings_line_data, use_cached){
 		/*
 		* mappings_line_data {array}:
 		* 	mapping_element_type: 'simple'||'to_many'||'tree'
 		*
 		* */
-
-		console.log(mappings_line_data);
 
 		const {line_data, header_data: {mapping_type, header_name}} = mappings_line_data;
 
@@ -49,16 +47,16 @@ const html_generator = {
 					</div>
 					<div class="wbplanview_mappings_line_header">`+header_html+`</div>
 					<div class="wbplanview_mappings_line_elements">
-						` + html_generator.mapping_path(line_data) + `
+						` + html_generator.mapping_path(line_data, false, use_cached) + `
 					</div>
 				</div>`;
 	},
 
-	mapping_path(mappings_line_data, show_table_names=false){
-		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, show_table_names)).join('');
+	mapping_path(mappings_line_data, show_table_names=false, use_cached=false){
+		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, show_table_names, use_cached)).join('');
 	},
 
-	mapping_element(mapping_details, show_table_names=false){
+	mapping_element(mapping_details, show_table_names=false, use_cached=false){
 
 		const {name, friendly_name, fields_data, table_name, mapping_element_type} = mapping_details;
 
@@ -113,7 +111,7 @@ const html_generator = {
 			select_groups_data: table_fields,
 		};
 
-		return html_generator.custom_select_element.new_select_html(select_data, show_table_names);
+		return html_generator.custom_select_element.new_select_html(select_data, show_table_names, use_cached);
 
 	},
 

@@ -58,6 +58,8 @@ const helper = {
 
 		}
 
+		return search_length-1;
+
 	},
 
 	deconstruct_mapping_path(mapping_path, has_header=false, detect_unmapped=true){
@@ -70,6 +72,33 @@ const helper = {
 			mapping_path = [];
 
 		return [mapping_path, header];
+
+	},
+
+	//array_of_mappings with headers
+	find_duplicate_mappings(array_of_mappings){
+
+		const filtered_array_of_mappings = array_of_mappings.map(mapping_path=>helper.deconstruct_mapping_path(mapping_path)[0]);
+		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path=>mapping_path.join());
+
+		const duplicate_indexes = [];
+		let index = 0;
+		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path)=>{
+
+			if(string_mapping_path==='')
+				return dictionary_of_mappings;
+
+			if(typeof dictionary_of_mappings[string_mapping_path] === "undefined")
+				dictionary_of_mappings[string_mapping_path] = 1;
+			else
+				duplicate_indexes.push(index);
+
+			index++;
+			return dictionary_of_mappings;
+
+		},{});
+
+		return duplicate_indexes;
 
 	},
 

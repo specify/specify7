@@ -6,9 +6,10 @@ const custom_select_element = {
 	constructor(table_icons_base_path = '', table_icons_extension = ''){
 		custom_select_element.table_icons_base_path = table_icons_base_path;
 		custom_select_element.table_icons_extension = table_icons_extension;
+		custom_select_element.cached_select_elements = {};
 	},
 
-	new_select_html(select_data, show_table_names){
+	new_select_html(select_data, show_table_names, use_cached=false){
 
 		const {
 			select_type,
@@ -18,6 +19,11 @@ const custom_select_element = {
 			select_groups_data = []
 		} = select_data;
 
+		const string_payload = JSON.stringify([select_data, show_table_names]);
+
+		if(use_cached && typeof custom_select_element.cached_select_elements[string_payload] !== "undefined")
+			return custom_select_element.cached_select_elements[string_payload];
+
 		let default_name = 0;
 		let header = '';
 		let preview = '';
@@ -25,7 +31,7 @@ const custom_select_element = {
 		let first_row = '';
 		let is_relationship_text = 'false';
 
-		//find if there are any value checked
+		//find if there is any value checked
 		let default_label = 0;
 		let default_icon = '';
 		let is_relationship = false;
@@ -81,27 +87,35 @@ const custom_select_element = {
 		}
 
 
-		return `<span
-					class="custom_select ` + custom_select_type + `"
-					title="` + select_label + `"
-					data-name="` + select_name + `"
-					data_value_is_relationship="` + is_relationship_text + `"
-					data-value="` + default_name + `"
-					data-previous_value="0"
-					data-table="` + select_table + `"
-					data-type="` + select_type + `">
+		return custom_select_element.cached_select_elements[string_payload] = `<span
+				class="custom_select ` + custom_select_type + `"
+				title="` + select_label + `"
+				data-name="` + select_name + `"
+				data_value_is_relationship="` + is_relationship_text + `"
+				data-value="` + default_name + `"
+				data-previous_value="0"
+				data-table="` + select_table + `"
+				data-type="` + select_type + `">
 			` + header + `
 			` + preview + `
 			<span class="custom_select_options">
 				` + first_row +
-			(select_groups_data.map(select_group_data => custom_select_element.new_select_group_html(select_group_data)).join('')) + `
+				(
+					select_groups_data.map(
+						select_group_data => custom_select_element.new_select_group_html(select_group_data)
+					).join('')
+				) + `
 			</span>
 		</span>`;
 	},
 
 	new_select_group_html(select_group_data){
 
-		const {select_group_name, select_group_label, select_options_data} = select_group_data;
+		const {
+			select_group_name,
+			select_group_label,
+			select_options_data
+		} = select_group_data;
 
 		return `<span
 					class="custom_select_group"
@@ -114,7 +128,14 @@ const custom_select_element = {
 
 	new_select_option_html(select_option_data){
 
-		const {option_name, option_value, is_enabled = true, is_relationship = false, is_default = false, table_name = ''} = select_option_data;
+		const {
+			option_name,
+			option_value,
+			is_enabled = true,
+			is_relationship = false,
+			is_default = false,
+			table_name = ''
+		} = select_option_data;
 
 		const classes = ['custom_select_option'];
 

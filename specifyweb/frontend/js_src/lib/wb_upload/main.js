@@ -42,98 +42,108 @@ const main = {
 	* */
 	constructor(){
 
-		// FINDING ELEMENTS
-		mappings.container = document.getElementById('screen__mapping');
+		return new Promise((resolve)=> {
 
-		// header
-		mappings.title__table_name = document.getElementById('title__table_name');
-		mappings.wbplanview_table_header_content = document.getElementById('wbplanview_table_header_content');
-		mappings.button__change_table = document.getElementById('button__change_table');
-		mappings.button__toggle_mapping_view = document.getElementById('button__toggle_mapping_view');
+			// FINDING ELEMENTS
+			mappings.container = document.getElementById('screen__mapping');
 
-		// lists
-		mappings.list__tables = document.getElementById('list__tables');
-		mappings.mapping_view = document.getElementById('mapping_view');
-		mappings.mapping_view_map_button = document.getElementById('wbplanview_mapping_view_map_button');
-		mappings.list__mappings = document.getElementById('list__mappings');
+			// header
+			mappings.title__table_name = document.getElementById('title__table_name');
+			mappings.wbplanview_table_header_content = document.getElementById('wbplanview_table_header_content');
+			mappings.button__change_table = document.getElementById('button__change_table');
+			mappings.button__toggle_mapping_view = document.getElementById('button__toggle_mapping_view');
 
-		// control elements
-		mappings.add_mapping = document.getElementById('add_mapping');
-		mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
+			// lists
+			mappings.list__tables = document.getElementById('list__tables');
+			mappings.mapping_view = document.getElementById('mapping_view');
+			mappings.mapping_view_map_button = document.getElementById('wbplanview_mapping_view_map_button');
+			mappings.list__mappings = document.getElementById('list__mappings');
 
-		mappings.hide_hidden_fields = true;
-		mappings.headers = {};
-		mappings.base_table_name = undefined;
-		mappings.need_to_define_lines = true;
-		mappings.need_to_run_auto_mapper = true;
+			// control elements
+			mappings.add_mapping = document.getElementById('add_mapping');
+			mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
-		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
-		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
-		mappings.custom_select_element = custom_select_element;
+			mappings.hide_hidden_fields = true;
+			mappings.hide_mapping_view = false;
+			mappings.headers = {};
+			mappings.base_table_name = undefined;
+			mappings.need_to_define_lines = true;
+			mappings.need_to_run_auto_mapper = true;
+			mappings.cached_mappings_line_data = {};
+
+			mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
+			mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
+			mappings.custom_select_element = custom_select_element;
 
 
-		// SETTING EVENT LISTENERS
-		mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
+			// SETTING EVENT LISTENERS
+			mappings.button__change_table.addEventListener('click', mappings.reset_table.bind(mappings));
 
-		mappings.button__toggle_mapping_view.addEventListener('click',()=>{
-			if(mappings.container.classList.contains('hide_mapping_view'))
-				mappings.container.classList.remove('hide_mapping_view');
+			mappings.button__toggle_mapping_view.addEventListener('click', () => {
+				mappings.hide_mapping_view = !mappings.container.classList.contains('hide_mapping_view');
+				if (mappings.hide_mapping_view)
+					mappings.container.classList.add('hide_mapping_view');
+				else {
+					mappings.container.classList.remove('hide_mapping_view');
+					mappings.update_mapping_view();
+				}
+			});
+
+			mappings.list__mappings.addEventListener('click', event => {
+
+				const el = event.target;
+
+				const wbplanview_mappings_line_delete = el.closest('.wbplanview_mappings_line_delete');
+				if (wbplanview_mappings_line_delete)
+					mappings.clear_line(wbplanview_mappings_line_delete);
+
+				const wbplanview_mappings_line = el.closest('.wbplanview_mappings_line');
+				if (wbplanview_mappings_line)
+					mappings.focus_line(wbplanview_mappings_line);
+
+			});
+
+			mappings.mapping_view_map_button.addEventListener('click', mappings.mapping_view_map_button_callback);
+
+			mappings.list__tables.addEventListener('click', event => {
+				if (event.target && event.target['classList'].contains('wbplanview_table')) {
+					event.preventDefault();
+					const table_record = event.target;
+					const table_name = table_record.getAttribute('data-table_name');
+					mappings.set_table(table_name);
+				}
+			});
+
+			mappings.add_mapping.addEventListener('click', () => {//TODO: fix deprecated
+				mappings.add_new_mapping_line();
+			});
+
+			mappings.toggle_hidden_fields.addEventListener('change', () => {
+				if (mappings.container.classList.contains('hide_hidden_fields'))
+					mappings.container.classList.remove('hide_hidden_fields');
+				else
+					mappings.container.classList.add('hide_hidden_fields');
+			});
+
+			// CONFIG
+
+			if (!this.constructor_has_run)
+				main.constructor_first_run(resolve);
 			else
-				mappings.container.classList.add('hide_mapping_view');
+				mappings.list__tables.innerHTML = mappings.data_model_html;
+
+
+			custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, mappings.custom_select_change_event);
+
+
+			if(this.constructor_has_run)
+				resolve(mappings);
 		});
-
-		mappings.list__mappings.addEventListener('click', event => {
-
-			const el = event.target;
-
-			const wbplanview_mappings_line_delete = el.closest('.wbplanview_mappings_line_delete');
-			if (wbplanview_mappings_line_delete)
-				mappings.clear_line(wbplanview_mappings_line_delete);
-
-			const wbplanview_mappings_line = el.closest('.wbplanview_mappings_line');
-			if (wbplanview_mappings_line)
-				mappings.focus_line(wbplanview_mappings_line);
-
-		});
-
-		mappings.mapping_view_map_button.addEventListener('click',mappings.mapping_view_map_button_callback);
-
-		mappings.list__tables.addEventListener('click', event => {
-			if (event.target && event.target['classList'].contains('wbplanview_table')) {
-				event.preventDefault();
-				const table_record = event.target;
-				const table_name = table_record.getAttribute('data-table_name');
-				mappings.set_table(table_name);
-			}
-		});
-
-		mappings.add_mapping.addEventListener('click', () => {
-			mappings.add_new_mapping_line();
-		});
-
-		mappings.toggle_hidden_fields.addEventListener('change', () => {
-			if (mappings.container.classList.contains('hide_hidden_fields'))
-				mappings.container.classList.remove('hide_hidden_fields');
-			else
-				mappings.container.classList.add('hide_hidden_fields');
-		});
-
-		// CONFIG
-
-		if (!this.constructor_has_run)
-			main.constructor_first_run();
-		else
-			mappings.list__tables.innerHTML = mappings.data_model_html;
-
-
-		custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, mappings.custom_select_change_event);
-
-		return mappings;
 
 	},
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run(){
+	constructor_first_run(promise_resolve){
 
 		mappings.ranks = {};
 
@@ -175,6 +185,7 @@ const main = {
 			mappings.tables = tables;
 
 			this.constructor_has_run = true;
+			promise_resolve(mappings);
 
 
 			// initialize dependencies

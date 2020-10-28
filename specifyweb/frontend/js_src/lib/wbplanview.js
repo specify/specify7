@@ -64,17 +64,13 @@ const PlanView = Backbone.View.extend({
 
                         PlanView.mappings = mappings;
 
-                        this.mappings = mappings_main.constructor();
+                        const constructor_done_promise = mappings_main.constructor();
 
-                        const wait_for_constructor_to_finish = () =>{//TODO: replace this with a promise
-                            if(!mappings_main.constructor_has_run)
-                                setTimeout(wait_for_constructor_to_finish,10);
-                            else {
-                                this.mappings.set_headers(headers, PlanView.upload_plan);
-                                mappings_main.render_lists();
-                            }
-                        }
-                        wait_for_constructor_to_finish();
+                        constructor_done_promise.then(mappings=>{
+                            this.mappings = mappings;
+                            this.mappings.set_headers(headers, PlanView.upload_plan);
+                            mappings_main.render_lists();
+                        })
 
                     });
             });
