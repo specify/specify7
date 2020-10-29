@@ -17,6 +17,7 @@ const PlanView = Backbone.View.extend({
     __name__: "PlanView",
     events: {
         'click #button__save_upload_plan': 'save_plan',
+        'click #button__validate_upload_plan': 'validate_plan',
         'click #button__discard_changes': 'go_back',
     },
 
@@ -64,7 +65,7 @@ const PlanView = Backbone.View.extend({
 
                         PlanView.mappings = mappings;
 
-                        const constructor_done_promise = mappings_main.constructor();
+                        const constructor_done_promise = mappings_main.constructor(this.save_plan);
 
                         constructor_done_promise.then(mappings=>{
                             this.mappings = mappings;
@@ -75,14 +76,16 @@ const PlanView = Backbone.View.extend({
                     });
             });
     },
-    save_plan(event) {
+    save_plan(event, ignore_validation=false) {
 
-        if(typeof mappings_main.validate() === "boolean"){
+        if(ignore_validation || typeof mappings_main.validate() === "boolean"){
             this.go_back(event,true);
-            event.currentTarget.setAttribute('disabled', 'disabled');
+            if(typeof event !== "undefined")
+                event.currentTarget.setAttribute('disabled', 'disabled');
         }
 
     },
+    validate_plan: () => mappings_main.validate(),
     go_back(event,commit_changes=false){
         this.wbtemplatePromise.done(wbtemplate => {
 

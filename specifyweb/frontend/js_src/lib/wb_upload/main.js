@@ -40,9 +40,9 @@ const main = {
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
 	* */
-	constructor(){
+	constructor(save_plan_function){
 
-		return new Promise((resolve)=> {
+		return new Promise((resolve) => {
 
 			// FINDING ELEMENTS
 			mappings.container = document.getElementById('screen__mapping');
@@ -128,7 +128,7 @@ const main = {
 			// CONFIG
 
 			if (!this.constructor_has_run)
-				main.constructor_first_run(resolve);
+				main.constructor_first_run(resolve, save_plan_function);
 			else
 				mappings.list__tables.innerHTML = mappings.data_model_html;
 
@@ -136,14 +136,14 @@ const main = {
 			custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, mappings.custom_select_change_event);
 
 
-			if(this.constructor_has_run)
+			if (this.constructor_has_run)
 				resolve(mappings);
 		});
 
 	},
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run(promise_resolve){
+	constructor_first_run(promise_resolve, save_plan_function){
 
 		mappings.ranks = {};
 
@@ -208,6 +208,8 @@ const main = {
 
 		custom_select_element.constructor('', '');//TODO: set proper table icons url
 
+		main.save_plan = save_plan_function;
+
 	},
 
 	/* TODO update deprecated*/
@@ -216,37 +218,34 @@ const main = {
 	* */
 	validate(){
 
-		return true;
+		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
 
-		// const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
-		//
-		// if (validation_results.length === 0)
-		// 	return true;
-		//
-		// const field_locations = [];
-		//
-		// validation_results.map(field_path => field_locations.push(mappings.get_friendly_field_path(field_path).join(mappings.friendly_level_separator)));
-		//
-		// const validation_message = 'Please make sure to map the following required fields before proceeding:<br>' + field_locations.join('<br>');
-		//
-		// let dialog = $('<div>' + validation_message + '</div>').dialog({
-		// 	modal: true,
-		// 	title: 'Invalid Mapping',
-		// 	close: function(){
-		// 		$(this).remove();
-		// 		dialog = null;
-		// 	},
-		// 	buttons: [
-		// 		{
-		// 			text: 'Cancel', click: function(){
-		// 				$(this).dialog('close');
-		// 			}
-		// 		}
-		// 	]
-		// });
-		//
-		//
-		// return validation_results;
+		if (validation_results.length === 0)
+			return true;
+
+		const div = document.createElement('div');
+		div.innerHTML = mappings.format_validation_results(validation_results);
+
+		let dialog = $(div).dialog({
+			modal: true,
+			title: 'Unmapped required fields detected',
+			close: function(){
+				$(this).remove();
+				dialog = null;
+			},
+			width: document.documentElement.clientWidth * 0.8,
+			buttons: [
+				{
+					text: 'Return to mapping headers', click: () => $(this).dialog('close')
+				},
+				{
+					text: 'Save unfinished mapping', click: () => main.save_plan(undefined, true)
+				}
+			]
+		});
+
+
+		return validation_results;
 
 	},
 

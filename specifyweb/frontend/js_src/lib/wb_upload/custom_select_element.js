@@ -9,7 +9,7 @@ const custom_select_element = {
 		custom_select_element.cached_select_elements = {};
 	},
 
-	new_select_html(select_data, show_table_names, use_cached=false){
+	new_select_html(select_data, custom_select_type, use_cached=false){
 
 		const {
 			select_type,
@@ -19,7 +19,7 @@ const custom_select_element = {
 			select_groups_data = []
 		} = select_data;
 
-		const string_payload = JSON.stringify([select_data, show_table_names]);
+		const string_payload = JSON.stringify([select_data, custom_select_type]);
 
 		if(use_cached && typeof custom_select_element.cached_select_elements[string_payload] !== "undefined")
 			return custom_select_element.cached_select_elements[string_payload];
@@ -27,9 +27,10 @@ const custom_select_element = {
 		let default_name = 0;
 		let header = '';
 		let preview = '';
-		let custom_select_type = '';
 		let first_row = '';
+		let custom_select_type_class = '';
 		let is_relationship_text = 'false';
+		let groups_html = '';
 
 		//find if there is any value checked
 		let default_label = 0;
@@ -49,8 +50,8 @@ const custom_select_element = {
 						break outer_loop;
 					}
 
-		if (show_table_names) {
-			custom_select_type = 'custom_select_size_multiple';
+		if (custom_select_type==='opened_list') {
+			custom_select_type_class = 'custom_select_size_multiple';
 
 			header = `
 				<span class="custom_select_header">
@@ -63,7 +64,6 @@ const custom_select_element = {
 				</span>`;
 
 		} else {
-			custom_select_type = 'custom_select_size_one';
 
 			if (default_label !== 0)
 				default_icon = custom_select_element.icon(is_relationship, true, table_name);
@@ -75,20 +75,30 @@ const custom_select_element = {
 							<span class="custom_select_input_label">` + default_label + `</span>
 						</span>`;
 
-			first_row = custom_select_element.new_select_option_html({
-				option_name: '',
-				option_value: '0',
-				is_enabled: true,
-				is_relationship: false,
-				is_default: default_label === 0,
-				table_name: ''
-			});
+			if(custom_select_type==='closed_list') {
+				custom_select_type_class = 'custom_select_size_one';
+				first_row = custom_select_element.new_select_option_html({
+					option_name: '',
+					option_value: '0',
+					is_enabled: true,
+					is_relationship: false,
+					is_default: default_label === 0,
+					table_name: ''
+				});
+			}
+			else if(custom_select_type==='preview_list')
+				custom_select_type_class = 'custom_select_size_zero';
 
 		}
 
+		if(custom_select_type!=='preview_list')
+			groups_html = select_groups_data.map(
+					select_group_data => custom_select_element.new_select_group_html(select_group_data)
+				).join('');
+
 
 		return custom_select_element.cached_select_elements[string_payload] = `<span
-				class="custom_select ` + custom_select_type + `"
+				class="custom_select ` + custom_select_type_class + `"
 				title="` + select_label + `"
 				data-name="` + select_name + `"
 				data_value_is_relationship="` + is_relationship_text + `"
@@ -99,12 +109,9 @@ const custom_select_element = {
 			` + header + `
 			` + preview + `
 			<span class="custom_select_options">
-				` + first_row +
-				(
-					select_groups_data.map(
-						select_group_data => custom_select_element.new_select_group_html(select_group_data)
-					).join('')
-				) + `
+				` + first_row
+				  + groups_html
+				+ `
 			</span>
 		</span>`;
 	},
@@ -299,7 +306,7 @@ const custom_select_element = {
 
 
 		//call change callback with a payload
-		const is_multiple = target_list.classList.contains('custom_select_size_multiple');
+		const custom_select_type = target_list.classList.contains('custom_select_type');
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
@@ -308,7 +315,7 @@ const custom_select_element = {
 			previous_previous_value: previous_previous_value,
 			is_relationship: is_relationship,
 			list_type: list_type,
-			is_multiple: is_multiple,
+			custom_select_type: custom_select_type,
 		};
 
 	},

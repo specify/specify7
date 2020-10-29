@@ -60,7 +60,7 @@ const auto_mapper = {
 			return {};
 
 		// strip extra characters to increase mapping success
-		this.unmapped_headers = Object.fromEntries(raw_headers.map(original_name => {//TODO: test if regex is readable
+		this.unmapped_headers = Object.fromEntries(raw_headers.map(original_name => {
 
 			let stripped_name = original_name.toLowerCase();
 			stripped_name = stripped_name.replace(this.regex_1, '');
@@ -107,7 +107,7 @@ const auto_mapper = {
 	* @param {string} table_name - Official name of the base table from data model
 	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
 	* */
-	find_mappings(table_name, path = []){
+	find_mappings(table_name, path = [], index = true){
 
 		if (
 			this.searched_tables.indexOf(table_name) !== -1 ||  // don't iterate over the same table again
@@ -122,41 +122,43 @@ const auto_mapper = {
 		const fields = Object.entries(table_data['fields']).filter(([, field_data]) => !field_data['is_hidden'] && !field_data['is_relationship']);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();//TODO: remove numbers from the name
 
-		if (typeof ranks_data !== "undefined") {//TODO: make ranks iterate over relationships too
+		if (index && typeof ranks_data !== "undefined") {
 			for (const rank_name of Object.keys(ranks_data)) {
 
-				const striped_rank_name = rank_name.toLowerCase();
-				const final_rank_name = auto_mapper.tree_symbol + rank_name;
+				auto_mapper.find_mappings(table_name,[...path, auto_mapper.tree_symbol + rank_name], false);
 
-				for (const [field_name, field_data] of fields) {
-
-					const friendly_name = field_data['friendly_name'].toLowerCase();
-
-					Object.entries(this.unmapped_headers).some(([header_name, header_data]) => {
-
-						if (header_data === false)//skip mapped headers
-							return true;
-
-						let [stripped_name, final_name] = header_data;
-
-						if (
-							(  // find cases like `Phylum` and remap them to `Phylum > Name`
-								friendly_name === 'name' &&
-								striped_rank_name === stripped_name
-							) ||
-							(  // find cases like `Kingdom Author`
-								striped_rank_name + ' ' + friendly_name === stripped_name ||
-								striped_rank_name + ' ' + field_name === final_name
-							)
-						) {
-							auto_mapper.make_mapping(path, [final_rank_name, field_name], header_name);
-							return true;  // don't search for further mappings for this field since we can only
-							// map a single header to the same field
-						}
-
-					});
-
-				}
+				// const striped_rank_name = rank_name.toLowerCase();
+				// const final_rank_name = auto_mapper.tree_symbol + rank_name;
+				//
+				// for (const [field_name, field_data] of fields) {
+				//
+				// 	const friendly_name = field_data['friendly_name'].toLowerCase();
+				//
+				// 	Object.entries(this.unmapped_headers).some(([header_name, header_data]) => {
+				//
+				// 		if (header_data === false)//skip mapped headers
+				// 			return true;
+				//
+				// 		let [stripped_name, final_name] = header_data;
+				//
+				// 		if (
+				// 			(  // find cases like `Phylum` and remap them to `Phylum > Name`
+				// 				friendly_name === 'name' &&
+				// 				striped_rank_name === stripped_name
+				// 			) ||
+				// 			(  // find cases like `Kingdom Author`
+				// 				striped_rank_name + ' ' + friendly_name === stripped_name ||
+				// 				striped_rank_name + ' ' + field_name === final_name
+				// 			)
+				// 		) {
+				// 			auto_mapper.make_mapping(path, [final_rank_name, field_name], header_name);
+				// 			return true;  // don't search for further mappings for this field since we can only
+				// 			// map a single header to the same field
+				// 		}
+				//
+				// 	});
+				//
+				// }
 
 			}
 			return;
@@ -300,7 +302,6 @@ const auto_mapper = {
 			if (!path_was_modified)
 				return false;
 		}
-
 
 		// prevent -to-many inside of -to-many // TODO: remove this in the future
 		let distance_from_parent_to_many = -1;

@@ -227,14 +227,17 @@ const data_model_handler = {
 		else if (typeof data_model_handler.ranks[table_name] !== "undefined") {
 
 			const keys = Object.keys(data_model_handler.ranks[table_name]);
+			const last_path_element = path.slice(-1)[0];
+			const last_path_element_is_a_rank = last_path_element.substr(0,data_model_handler.tree_symbol.length)===data_model_handler.tree_symbol;
 
-			if (keys.indexOf(path.slice(-1)[0]) === -1)  // last path element is a rank
+			if (!last_path_element_is_a_rank)
 				return keys.reduce((results, rank_name) => {
 					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
-					const local_path = [...path, data_model_handler.tree_symbol + rank_name];
+					const complimented_rank_name = data_model_handler.tree_symbol + rank_name;
+					const local_path = [...path, complimented_rank_name];
 
-					if (list_of_mapped_fields.indexOf(rank_name) !== -1)
-						data_model_handler.show_required_missing_ranks(table_name, mapping_tree[rank_name], previous_table_name, local_path, results);
+					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
+						data_model_handler.show_required_missing_ranks(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -243,14 +246,17 @@ const data_model_handler = {
 				}, results);
 		}
 
-		// handle regular relationships
+		// handle regular fields and relationships
 		for (const [field_name, field_data] of Object.entries(table_data['fields'])) {
 
 			const local_path = [...path, field_name];
 
+			const is_mapped = list_of_mapped_fields.indexOf(field_name) !== -1;
+
+
 			if (field_data['is_relationship']) {
 
-				if (previous_table_name !== '') {
+				if(previous_table_name !== ''){
 
 					let previous_relationship_name = local_path.slice(-2)[0];
 					if (
@@ -264,22 +270,26 @@ const data_model_handler = {
 					if (
 						(  // disable circular relationships
 							field_data['foreign_name'] === previous_relationship_name &&
-							parent_relationship_data['table_name'] === table_name
+							field_data['table_name'] === previous_table_name
 						) ||
 						(  // skip -to-many inside of -to-many
-							parent_relationship_data['type'].indexOf('-to-many') !== -1 ||
+							parent_relationship_data['type'].indexOf('-to-many') !== -1 &&
 							field_data['type'].indexOf('-to-many') !== -1
 						)
 					)
 						continue;
+
 				}
 
-				if (list_of_mapped_fields.indexOf(field_name) !== -1)
+				if(is_mapped)
 					data_model_handler.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
-			} else if (field_data['is_required'] && list_of_mapped_fields.indexOf(field_name) === -1)
+			}
+
+			else if (!is_mapped && field_data['is_required'])
 				results.push(local_path);
+
 
 		}
 

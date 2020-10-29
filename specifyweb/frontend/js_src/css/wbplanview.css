@@ -111,6 +111,16 @@
     overflow-x: hidden;
 }
 
+.list_of_mappings {
+	margin: 1rem;
+}
+
+.list_of_mappings > *{
+    padding-bottom: 1rem;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 1rem;
+}
+
 
 /* MAPPINGS LINE */
 .wbplanview_mappings_line {
@@ -228,7 +238,21 @@
     cursor: pointer;
 }
 
-.custom_select_input:after {
+.custom_select_input, .custom_select_option {
+    display: grid;
+    grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
+    grid-column-gap: var(--white_space);
+    padding: var(--white_space);
+    min-height: calc(2 * var(--white_space));
+}
+
+.custom_select_size_zero .custom_select_input {
+    display: flex;
+	flex-direction: row;
+	width: max-content;
+}
+
+.custom_select:not(.custom_select_size_zero) .custom_select_input:after {
     content: '\25BC';
     float: right;
 }
@@ -247,7 +271,8 @@
     position: absolute;
     top: calc(calc(4 * var(--white_space)) - var(--border_size));
     z-index: 2;
-    width: max-content;
+    width: auto;
+	min-width: max-content;
     cursor: pointer;
 }
 
@@ -303,14 +328,6 @@
 .custom_select_option {
     padding: var(--white_space);
     padding-left: calc(var(--white_space) * 2);
-}
-
-.custom_select_input, .custom_select_option {
-    display: grid;
-    grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
-    grid-column-gap: var(--white_space);
-    padding: var(--white_space);
-    min-height: calc(2 * var(--white_space));
 }
 
 .custom_select_option:hover, .custom_select_option:focus {

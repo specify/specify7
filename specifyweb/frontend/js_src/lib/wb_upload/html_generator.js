@@ -23,7 +23,7 @@ const html_generator = {
 	},
 
 	mapping_view(mappings_view_data, use_cached){
-		return html_generator.mapping_path(mappings_view_data, true, use_cached);
+		return html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached);
 	},
 
 	mapping_line(mappings_line_data, use_cached){
@@ -47,16 +47,16 @@ const html_generator = {
 					</div>
 					<div class="wbplanview_mappings_line_header">`+header_html+`</div>
 					<div class="wbplanview_mappings_line_elements">
-						` + html_generator.mapping_path(line_data, false, use_cached) + `
+						` + html_generator.mapping_path(line_data, 'closed_list', use_cached) + `
 					</div>
 				</div>`;
 	},
 
-	mapping_path(mappings_line_data, show_table_names=false, use_cached=false){
-		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, show_table_names, use_cached)).join('');
+	mapping_path(mappings_line_data, custom_select_type='closed_list', use_cached=false){
+		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, custom_select_type, use_cached)).join('');
 	},
 
-	mapping_element(mapping_details, show_table_names=false, use_cached=false){
+	mapping_element(mapping_details, custom_select_type='closed_list', use_cached=false){
 
 		const {name, friendly_name, fields_data, table_name, mapping_element_type} = mapping_details;
 
@@ -111,7 +111,7 @@ const html_generator = {
 			select_groups_data: table_fields,
 		};
 
-		return html_generator.custom_select_element.new_select_html(select_data, show_table_names, use_cached);
+		return html_generator.custom_select_element.new_select_html(select_data, custom_select_type, use_cached);
 
 	},
 
