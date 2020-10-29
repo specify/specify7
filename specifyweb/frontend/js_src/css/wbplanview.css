@@ -79,7 +79,6 @@
 #wbplanview_mapping_view_map_button:after {
 	content: '\2192';
 	font-size: 2rem;
-	padding-left: var(--line_padding);
 	display: flex;
 	align-items: center;
 	color: #0f0;
@@ -178,8 +177,7 @@
 
 /* CUSTOM SELECT ELEMENT */
 .custom_select {
-    --line_height: 1rem;
-    --line_padding: 0.5rem;
+    --white_space: 0.5rem;
     --text1: #000;
     --text2: #666;
     --background1: #fff;
@@ -187,21 +185,22 @@
     --accent: #f73;
     --lines_to_display: 10;
     --border_size: 1px;
+    --base_width: auto;
     color: var(--text1);
     display: grid;
     grid-template-areas:
 		"header next_arrow"
 		"options next_arrow";
-    grid-template-columns: auto calc(2 * var(--line_height));
+    grid-template-columns: auto calc(4 * var(--white_space));
 	grid-template-rows: auto 1fr;
-    width: max-content;
+    width: calc(var(--base_width) + calc(4 * var(--white_space)));
     position: relative;
 }
 
 .custom_select:after {
     content: '\2192';
-    font-size: var(--line_height);
-    padding-left: var(--line_padding);
+    font-size: calc(2 * var(--white_space));
+    padding-left: var(--white_space);
     display: flex;
     align-items: center;
     grid-area: next_arrow;
@@ -218,14 +217,14 @@
 }
 
 .custom_select_header {
-    padding: calc(var(--line_padding) * 2);
+    padding: calc(var(--white_space) * 2);
     display: flex;
-    gap: var(--line_padding);
+    gap: var(--white_space);
 }
 
 .custom_select_input {
     --base_width: auto;
-    width: calc(calc(var(--base_width) - calc(2 * var(--line_padding))) - 2px);
+    width: calc(calc(var(--base_width) - calc(2 * var(--white_space))) - 2px);
     cursor: pointer;
 }
 
@@ -242,13 +241,13 @@
     border: var(--border_size) solid var(--accent);
     border-top: 0;
     visibility: hidden;
-    max-height: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) * var(--lines_to_display));
+    max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
     overflow-y: scroll;
     background-color: var(--background1);
     position: absolute;
-    top: calc(calc(var(--line_height) + calc(2 * var(--line_padding))) - var(--border_size));
+    top: calc(calc(4 * var(--white_space)) - var(--border_size));
     z-index: 2;
-    width: auto;
+    width: max-content;
     cursor: pointer;
 }
 
@@ -292,7 +291,7 @@
 
 .custom_select_group_label {
     background-color: var(--background2);
-    padding: calc(0.5 * var(--line_padding));
+    padding: calc(0.5 * var(--white_space));
     color: var(--text2);
     cursor: initial;
 }
@@ -302,16 +301,16 @@
 }
 
 .custom_select_option {
-    padding: var(--line_padding);
-    padding-left: calc(var(--line_padding) * 2);
+    padding: var(--white_space);
+    padding-left: calc(var(--white_space) * 2);
 }
 
 .custom_select_input, .custom_select_option {
     display: grid;
-    grid-template-columns: calc(var(--line_padding) * 2) 1fr minmax(calc(var(--line_padding) * 1.6), auto);
-    grid-column-gap: var(--line_padding);
-    padding: var(--line_padding);
-    min-height: var(--line_height);
+    grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
+    grid-column-gap: var(--white_space);
+    padding: var(--white_space);
+    min-height: calc(2 * var(--white_space));
 }
 
 .custom_select_option:hover, .custom_select_option:focus {

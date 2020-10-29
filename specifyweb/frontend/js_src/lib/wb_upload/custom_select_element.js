@@ -230,7 +230,7 @@ const custom_select_element = {
 			const list_input = list.getElementsByClassName('custom_select_input')[0];
 			const list_options = list.getElementsByClassName('custom_select_options')[0];
 			if (typeof list_input !== "undefined" && typeof list_options !== "undefined")
-				list_input.style.setProperty('--base_width', list_options.offsetWidth + 'px');
+				list.style.setProperty('--base_width', list_options.offsetWidth + 'px');
 		}
 	},
 
