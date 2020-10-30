@@ -28,6 +28,7 @@ const data_model_handler = {
 		data_model_handler.reference_symbol = reference_symbol;
 		data_model_handler.tree_symbol = tree_symbol;
 		data_model_handler.required_fields_to_hide = required_fields_to_hide;
+		data_model_handler.cache = {};
 
 	},
 
@@ -36,6 +37,23 @@ const data_model_handler = {
 	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
 	fetch_tables(done_callback){
+
+		if(typeof localStorage !== "undefined"){
+			const tables = localStorage.getItem('specify7_wbplanview_data_model_tables');
+			const data_model_html = localStorage.getItem('specify7_wbplanview_data_model_html_tables');
+			const ranks = localStorage.getItem('specify7_wbplanview_data_model_ranks');
+			if(
+				tables !== null &&
+				data_model_html !== null &&
+				ranks !== null
+			){
+				data_model_handler.tables = JSON.parse(tables);
+				data_model_handler.data_model_html = data_model_html;
+				data_model_handler.ranks = JSON.parse(ranks);
+				done_callback(data_model_handler.data_model_html, data_model_handler.tables);
+				return;
+			}
+		}
 
 		let data_model_html = '';
 
@@ -89,11 +107,15 @@ const data_model_handler = {
 					const relationship_type = field['type'];
 					const table_name = field['relatedModelName'].toLowerCase();
 
-					if (field_name === 'definition')
+					if (field_name === 'definition'){
 						has_relationship_with_definition = true;
+						continue;
+					}
 
-					if (field_name === 'definitionitem')
+					if (field_name === 'definitionitem') {
 						has_relationship_with_definition_item = true;
+						continue;
+					}
 
 					if (
 						field['readOnly'] ||
@@ -141,6 +163,11 @@ const data_model_handler = {
 		data_model_handler.tables = tables;
 		data_model_handler.data_model_html = data_model_html;
 
+		if(typeof localStorage !== "undefined"){
+			localStorage.setItem('specify7_wbplanview_data_model_tables', JSON.stringify(data_model_handler.tables));
+			localStorage.setItem('specify7_wbplanview_data_model_html_tables', JSON.stringify(data_model_handler.data_model_html));
+		}
+
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
 			done_callback(data_model_html, tables);  // so there is no need to wait for ranks to finish fetching
 
@@ -159,7 +186,6 @@ const data_model_handler = {
 			tree_definition.rget('treedefitems').done(
 				treeDefItems => {
 					treeDefItems.fetch({limit: 0}).done(() => {
-
 
 						data_model_handler.ranks[table_name] = Object.values(treeDefItems['models']).reduce((table_ranks, rank) => {
 
@@ -182,8 +208,14 @@ const data_model_handler = {
 								is_waiting_for_rank_to_fetch => is_waiting_for_rank_to_fetch
 							);
 
-						if (!still_waiting_for_ranks_to_fetch)  // the queue is empty and all ranks where fetched
+						//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+						this.tables[table_name]['fields'] = {'name':this.tables[table_name]['fields']['name']};
+
+						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback(data_model_handler.data_model_html, data_model_handler.tables);
+							if(typeof localStorage !== "undefined")
+								localStorage.setItem('specify7_wbplanview_data_model_ranks', JSON.stringify(data_model_handler.ranks));
+						}
 
 					});
 				}
@@ -299,7 +331,197 @@ const data_model_handler = {
 
 	is_table_a_tree(table_name){
 		return typeof data_model_handler.ranks[table_name] !== "undefined";
-	}
+	},
+
+	schema_navigator(payload){
+
+		let {
+			callbacks,
+			recursive_payload=undefined,
+			internal_payload={},
+			config : {
+				use_cache = false,
+				cache_name,
+			}
+		} = payload
+
+
+		let table_name = '';
+		let parent_table_name = '';
+		let parent_table_relationship_name = '';
+
+		if (typeof recursive_payload === "undefined")
+			table_name = callbacks['get_base_table'](internal_payload);
+		else
+			({
+				table_name,
+				parent_table_name,
+				parent_table_relationship_name,
+			} = recursive_payload);
+
+		const callback_payload = {
+			table_name: table_name,
+		}
+
+
+		if (callbacks.iterate(internal_payload))
+			data_model_handler.schema_navigator_instance({
+				table_name: table_name,
+				internal_payload : internal_payload,
+				parent_table_name: parent_table_name,
+				parent_table_relationship_name: parent_table_relationship_name,
+				use_cache: use_cache,
+				cache_name: cache_name,
+				callbacks: callbacks,
+				callback_payload: callback_payload,
+			});
+
+
+		const next_path_element_data = callbacks['get_next_path_element'](internal_payload, callback_payload);
+
+		if(typeof next_path_element_data === "undefined")
+			return callbacks['get_final_data'](internal_payload);
+
+		const {
+			next_path_element_name,
+			next_path_element,
+		} = next_path_element_data;
+
+		let next_table_name = '';
+		let next_parent_table_name = '';
+
+		if (
+			data_model_handler.value_is_reference_item(next_path_element_name) ||
+			data_model_handler.value_is_tree_rank(next_path_element_name)
+		) {
+			next_table_name = table_name;
+			next_parent_table_name = parent_table_name;
+		} else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
+			next_table_name = next_path_element['table_name'];
+			next_parent_table_name = table_name;
+		}
+
+		if (next_table_name !== '')
+			return data_model_handler.schema_navigator(
+		{
+					callbacks: callbacks,
+					recursive_payload: {
+						table_name: next_table_name,
+						parent_table_name: next_parent_table_name,
+						parent_table_relationship_name: next_path_element_name,
+					},
+					internal_payload: internal_payload,
+					config: {
+						use_cache: use_cache,
+						cache_name: cache_name,
+					},
+				}
+			);
+
+		return callbacks['get_final_data'](internal_payload);
+
+	},
+
+	schema_navigator_instance(payload){
+
+		const {
+			table_name,
+			internal_payload,
+			parent_table_name = '',
+			parent_table_relationship_name = '',
+			use_cache: use_cache = false,
+			cache_name: cache_name = false,
+			callbacks,
+			callback_payload,
+		} = payload;
+
+
+		let json_payload;
+
+		if(cache_name !== false)
+			json_payload = JSON.stringify(payload);
+
+		if (use_cache){
+
+			if(typeof data_model_handler.cache[cache_name] === "undefined")
+				data_model_handler.cache[cache_name] = {};
+
+			const cache = data_model_handler.cache[cache_name][json_payload];
+			if(typeof cache !== "undefined"){
+				callback_payload.data = cache;
+				return callbacks['commit_instance_data'](internal_payload, callback_payload);
+			}
+		}
+
+		callbacks['navigator_instance_pre'](internal_payload, callback_payload);
+
+		const parent_relationship_type =
+			(
+				typeof data_model_handler.tables[parent_table_name] !== "undefined" &&
+				typeof data_model_handler.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
+			) ? data_model_handler.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
+		const children_are_to_many_elements =
+			data_model_handler.relationship_is_to_many(parent_relationship_type)
+			!data_model_handler.value_is_reference_item(parent_table_relationship_name);
+
+		const children_are_ranks =
+			data_model_handler.is_table_a_tree(table_name) &&
+			!data_model_handler.value_is_tree_rank(parent_table_relationship_name);
+
+		callback_payload.parent_relationship_type = parent_relationship_type;
+		callback_payload.parent_table_name = parent_table_name;
+
+		if (children_are_to_many_elements)
+			callbacks['handle_to_many_children'](internal_payload, callback_payload)
+		else if (children_are_ranks)
+			callbacks['handle_tree_ranks'](internal_payload, callback_payload)
+		else
+			callbacks['handle_simple_fields'](internal_payload, callback_payload);
+
+
+		const data = callbacks['get_instance_data'](internal_payload, callback_payload);
+		callback_payload.data = data;
+		callbacks['commit_instance_data'](internal_payload, callback_payload);
+
+		if(cache_name !== false)
+			data_model_handler.cache[cache_name][json_payload] = data;
+
+		return data;
+
+	},
+
+	relationship_is_to_many: relationship_type =>
+		relationship_type.indexOf('-to-many') !== -1,
+
+	value_is_reference_item: value =>
+		value.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol,
+
+	value_is_tree_rank: value =>
+		value.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol,
+
+	get_index_from_reference_item_name: value =>
+		parseInt(value.substr(data_model_handler.reference_symbol.length)),
+
+	get_name_from_tree_rank_name(value){
+		return value.substr(data_model_handler.tree_symbol.length);
+	},
+
+	get_max_to_many_value(values){
+		return values.reduce((max, value) => {
+
+			//skip `add` values and other possible NaN cases
+			if (!data_model_handler.value_is_reference_item(value))
+				return max;
+
+			const number = data_model_handler.get_index_from_reference_item_name(value);
+
+			if (number > max)
+				return number;
+
+			return max;
+
+		}, 0);
+	},
 
 };
 
