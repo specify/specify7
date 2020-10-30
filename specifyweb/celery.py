@@ -22,8 +22,6 @@ app.autodiscover_tasks()
 def debug_task(self):
     print(f'Request: {self.request!r}')
 
-
-
 logger = get_task_logger(__name__)
 
 

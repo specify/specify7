@@ -4,8 +4,7 @@ import csv
 import json
 from jsonschema import validate # type: ignore
 
-
-from typing import List, Dict, Iterable, Union
+from typing import List, Dict, Union, Callable, Optional, Sized
 
 from django.db import connection, transaction
 
@@ -16,7 +15,8 @@ from ..views import load
 from .data import UploadResult, ScopedUploadable, Row,  ParseFailures
 from .upload_plan_schema import schema, parse_plan
 
-Rows = Union[Iterable[Row], csv.DictReader]
+Rows = Union[List[Row], csv.DictReader]
+Progress = Callable[[int, Optional[int]], None]
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,13 @@ def savepoint():
         pass
 
 
-def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
+def do_upload_wb(collection, wb, no_commit: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
+    cursor = connection.cursor()
+    cursor.execute(
+        "update workbenchrow set bioGeomancerResults = null where workbenchid = %s",
+        (wb.id,)
+    )
+
     logger.debug('loading rows')
     tuples = load(wb.id)
 
@@ -43,13 +49,12 @@ def do_upload_wb(collection, wb, no_commit: bool) -> List[UploadResult]:
 
     logger.debug('row captions: %s', captions)
 
-    rows = (dict(zip(captions, t[2:])) for t in tuples)
+    rows = [dict(zip(captions, t[2:])) for t in tuples]
     upload_plan = get_wb_upload_plan(collection, wb)
 
     no_commit = True
-    results = do_upload(collection, rows, upload_plan, no_commit)
+    results = do_upload(collection, rows, upload_plan, no_commit, progress)
 
-    cursor = connection.cursor()
     for t, r in zip(tuples, results):
         cursor.execute(
             "update workbenchrow set bioGeomancerResults = %s where workbenchrowid = %s",
@@ -71,7 +76,8 @@ def get_wb_upload_plan(collection, wb) -> ScopedUploadable:
     return parse_plan(collection, plan).apply_scoping(collection)
 
 
-def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False) -> List[UploadResult]:
+def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, progress: Optional[Progress]=None) -> List[UploadResult]:
+    total = len(rows) if isinstance(rows, Sized) else None
     with savepoint():
         results: List[UploadResult] = []
         for row in rows:
@@ -79,6 +85,8 @@ def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: 
                 bind_result = upload_plan.bind(collection, row)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
+                if progress is not None:
+                    progress(len(results), total)
                 if result.contains_failure():
                     raise Rollback()
         fixup_trees()

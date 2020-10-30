@@ -192,7 +192,15 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
 
-    async_result = upload.delay(request.specify_collection.id, wb.id, no_commit)
+    with transaction.atomic():
+        wb = Workbench.objects.select_for_update().get(id=wb_id)
+        assert wb.lockedbyusername is None
+
+        taskid = str(uuid4())
+        wb.lockedbyusername = taskid
+        wb.save()
+
+    async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
 
     return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
 
@@ -209,9 +217,16 @@ def upload_log(request, upload_id):
         else:
             raise
 
-@login_maybe_required
+# @login_maybe_required
 @require_GET
-def upload_status(request: http.HttpRequest, wb_id: int) -> http.HttpResponse:
-    status = list(Workbenchrow.objects.filter(workbench_id=wb_id).values_list('id', 'biogeomancerresults'))
-    return http.HttpResponse(toJson(status), content_type='application/json')
+def upload_status(request, wb_id: int) -> http.HttpResponse:
+    from . import tasks
+    wb = get_object_or_404(Workbench, id=wb_id)
+    # if (wb.specifyuser != request.specify_user):
+    #     return http.HttpResponseForbidden()
 
+    if wb.lockedbyusername is None:
+        return http.HttpResponse(json.dumps(None), content_type='application/json')
+
+    result = tasks.upload.AsyncResult(wb.lockedbyusername)
+    return http.HttpResponse(json.dumps([result.state, result.info]), content_type='application/json')
