@@ -22,6 +22,30 @@ const html_generator = {
 		return '<a class="wbplanview_table" href="#' + table_name + '" data-table_name="' + table_name + '">' + table_friendly_name + '</a>';
 	},
 
+	tables(list_of_tables){
+
+		const fields_data = Object.fromEntries(Object.entries(list_of_tables).map(([table_name, table_label])=>
+			[
+				table_name,
+				{
+					field_friendly_name: table_label,
+					table_name: table_name,
+					is_relationship:true
+				}
+			]
+		));
+
+		const mapping_details = {
+			name: 'list_of_base_tables',
+			friendly_name: 'Select a base table:',
+			fields_data: fields_data,
+			mapping_element_type: 'list_of_tables',
+		};
+
+		return html_generator.mapping_element(mapping_details, 'opened_list');
+
+	},
+
 	mapping_view(mappings_view_data, use_cached){
 		return html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached);
 	},
@@ -58,7 +82,13 @@ const html_generator = {
 
 	mapping_element(mapping_details, custom_select_type='closed_list', use_cached=false){
 
-		const {name, friendly_name, fields_data, table_name, mapping_element_type} = mapping_details;
+		const {
+			name,
+			friendly_name,
+			fields_data,
+			table_name='',
+			mapping_element_type='simple'
+		} = mapping_details;
 
 		const field_group_labels = {
 			required_fields: 'Required Fields',
@@ -72,7 +102,13 @@ const html_generator = {
 
 		for (const [field_name, field_data] of Object.entries(fields_data)) {
 
-			const {field_friendly_name, is_enabled, is_default, table_name='', is_relationship=false} = field_data;
+			const {
+				field_friendly_name,
+				is_enabled= true,
+				is_default= false,
+				table_name='',
+				is_relationship=false
+			} = field_data;
 
 			const field_data_formatted = {
 				option_name: field_friendly_name,

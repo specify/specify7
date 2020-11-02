@@ -48,8 +48,8 @@ const main = {
 			mappings.container = document.getElementById('screen__mapping');
 
 			// header
+			mappings.wbplanview_header = document.getElementById('wbplanview_header');
 			mappings.title__table_name = document.getElementById('title__table_name');
-			mappings.wbplanview_table_header_content = document.getElementById('wbplanview_table_header_content');
 			mappings.button__change_table = document.getElementById('button__change_table');
 			mappings.button__toggle_mapping_view = document.getElementById('button__toggle_mapping_view');
 
@@ -60,7 +60,7 @@ const main = {
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
-			mappings.add_mapping = document.getElementById('add_mapping');
+			// mappings.add_mapping = document.getElementById('add_mapping');
 			mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 			mappings.hide_hidden_fields = true;
@@ -70,10 +70,6 @@ const main = {
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
 			mappings.cached_mappings_line_data = {};
-
-			mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
-			mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
-			mappings.custom_select_element = custom_select_element;
 
 
 			// SETTING EVENT LISTENERS
@@ -105,18 +101,9 @@ const main = {
 
 			mappings.mapping_view_map_button.addEventListener('click', mappings.mapping_view_map_button_callback);
 
-			mappings.list__tables.addEventListener('click', event => {
-				if (event.target && event.target['classList'].contains('wbplanview_table')) {
-					event.preventDefault();
-					const table_record = event.target;
-					const table_name = table_record.getAttribute('data-table_name');
-					mappings.set_table(table_name);
-				}
-			});
-
-			mappings.add_mapping.addEventListener('click', () => {//TODO: fix deprecated
-				mappings.add_new_mapping_line();
-			});
+			// mappings.add_mapping.addEventListener('click', () => {//TODO: fix deprecated
+			// 	mappings.add_new_mapping_line();
+			// });
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
 				if (mappings.container.classList.contains('hide_hidden_fields'))
@@ -127,23 +114,28 @@ const main = {
 
 			// CONFIG
 
+			const done_callback = ()=> {
+				mappings.container.classList.add('loaded');
+				resolve(mappings);
+			};
+
+
 			if (!this.constructor_has_run)
-				main.constructor_first_run(resolve, save_plan_function);
+				main.constructor_first_run(done_callback, save_plan_function);
 			else
 				mappings.list__tables.innerHTML = mappings.data_model_html;
 
 
-			custom_select_element.set_event_listeners(mappings.list__mappings.parentElement, mappings.custom_select_change_event);
-
+			custom_select_element.set_event_listeners(mappings.container, mappings.custom_select_change_event);
 
 			if (this.constructor_has_run)
-				resolve(mappings);
+				done_callback();
 		});
 
 	},
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run(promise_resolve, save_plan_function){
+	constructor_first_run(done_callback, save_plan_function){
 
 		mappings.ranks = {};
 
@@ -151,15 +143,36 @@ const main = {
 
 		// INITIALIZATION
 
+		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
+		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
+		mappings.custom_select_element = custom_select_element;
+		mappings.get_html_generator().constructor(custom_select_element);
+		custom_select_element.constructor('', '');//TODO: set proper table icons url
+		auto_mapper.constructor(data_model_handler);
+
 		// build list of tables to exclude
-		mappings.tables_to_hide = [
+		let tables_to_hide = [
 			'definition',
 			'definitionitem',
 			'geographytreedef',
 			'geologictimeperiodtreedef',
 			'treedef'
 		];
-		mappings.tables_to_hide = [...mappings.tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
+
+		//Forbid setting any of the tables that have these keywords as base tables
+		const table_keywords_to_exclude = [
+			'Authorization',
+			'Citation',
+			'Variant',
+			'Attribute',
+			'Property',
+			'Item',
+			'Definition',
+			'Pnt',
+			'Type',
+		]
+
+		tables_to_hide = [...tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
 
 		// all required fields are not hidden, except for these, which are made not required
 		mappings.required_fields_to_hide = [
@@ -175,7 +188,7 @@ const main = {
 		];
 
 		// fetch data model
-		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
+		data_model_handler.constructor(mappings.ranks, tables_to_hide, table_keywords_to_exclude, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
 		data_model_handler.fetch_tables((data_model_html, tables, ranks) => {
 
 			mappings.data_model_html = data_model_html;  // cache list of tables to reuse in the future
@@ -186,28 +199,19 @@ const main = {
 			mappings.ranks = ranks;
 
 			this.constructor_has_run = true;
-			promise_resolve(mappings);
+			done_callback();
 
 
 			// initialize dependencies
 			upload_plan_converter.constructor(
 				() => mappings.base_table_name,
 				base_table_name => mappings.base_table_name = base_table_name,
-				mappings.tree_symbol,
-				mappings.reference_symbol,
+				data_model_handler,
 				mappings.get_mappings_tree.bind(mappings),
-				mappings.ranks,
-				mappings.tables,
 			);
-
-			auto_mapper.constructor(data_model_handler);
 
 		});
 		mappings.data_model_handler = data_model_handler;
-
-		mappings.get_html_generator().constructor(custom_select_element);
-
-		custom_select_element.constructor('', '');//TODO: set proper table icons url
 
 		main.save_plan = save_plan_function;
 

@@ -12,7 +12,7 @@ const custom_select_element = {
 	new_select_html(select_data, custom_select_type, use_cached=false){
 
 		const {
-			select_type,
+			select_type = 'simple',
 			select_name = '',
 			select_label = '',
 			select_table = '',
@@ -72,7 +72,7 @@ const custom_select_element = {
 							<span class="custom_select_input_label">` + default_label + `</span>
 						</span>`;
 
-			if(custom_select_type==='closed_list')
+			if(custom_select_type==='closed_list' && select_type !== 'to_many')
 				first_row = custom_select_element.new_select_option_html({
 					option_name: '',
 					option_value: '0',

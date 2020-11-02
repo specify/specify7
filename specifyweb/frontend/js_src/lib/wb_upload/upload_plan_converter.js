@@ -18,7 +18,7 @@ const upload_plan_converter = {
 				key,
 				Object.fromEntries(Object.values(original_mappings).map(mapping =>
 					[
-						upload_plan_converter.reference_symbol + (i++),
+						upload_plan_converter.data_model_handler.reference_symbol + (i++),
 						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
 					]
 				))
@@ -35,21 +35,18 @@ const upload_plan_converter = {
 	* @param {object} ranks - Internal object for storing what ranks are available for particular tables and which ranks are required
 	* @param {object} tables - Internal object for storing data model
 	* */
-	constructor(base_table_name, set_base_table_name, tree_symbol, reference_symbol, get_mappings_tree, ranks, tables){
+	constructor(base_table_name, set_base_table_name, data_model_handler, get_mappings_tree){
 
 		this.base_table_name = base_table_name;
 		this.set_base_table_name = set_base_table_name;
-		upload_plan_converter.tree_symbol = tree_symbol;
-		upload_plan_converter.reference_symbol = reference_symbol;
+		upload_plan_converter.data_model_handler = data_model_handler;
 		this.get_mappings_tree = get_mappings_tree;
-		upload_plan_converter.ranks = ranks;
-		upload_plan_converter.tables = tables;
 
 	},
 
 	/*
 	* Converts upload plan to internal tree structure
-	* Inverse of get_upload_plan
+	* Inverse of mappings_tree_to_upload_plan
 	* @param {object} upload_plan - Upload plan
 	* @param {bool} [base_table_name_extracted=false] - Used by recursion to store intermediate results
 	* @return {object} Returns mapping tree
@@ -65,7 +62,7 @@ const upload_plan_converter = {
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
 			return Object.fromEntries(Object.entries(upload_plan['treeRecord']['ranks']).map(([rank_name, rank_data]) =>
-				[upload_plan_converter.tree_symbol + rank_name, {name: rank_data}]
+				[upload_plan_converter.data_model_handler.tree_symbol + rank_name, {name: rank_data}]
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
@@ -74,16 +71,17 @@ const upload_plan_converter = {
 
 	},
 
+	get_upload_plan: () =>
+		upload_plan_converter.mappings_tree_to_upload_plan(this.get_mappings_tree(true)),
+
 	/*
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
 	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used. Else, result of get_mappings_tree() would be used
 	* @return {string} Upload plan as a JSON string
 	* */
-	get_upload_plan(mappings_tree = ''){
+	mappings_tree_to_upload_plan(mappings_tree){
 
-		if (mappings_tree === '')
-			mappings_tree = this.get_mappings_tree(true);
 		const upload_plan = {};
 
 		upload_plan['baseTableName'] = this.base_table_name();
@@ -91,11 +89,11 @@ const upload_plan_converter = {
 
 		function handle_table(table_data, table_name, wrap_it = true){
 
-			if (typeof upload_plan_converter.ranks[table_name] !== "undefined") {
+			if (typeof upload_plan_converter.data_model_handler.ranks[table_name] !== "undefined") {
 
 				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
-					const new_tree_key = tree_key.substr(upload_plan_converter.tree_symbol.length);
+					const new_tree_key = tree_key.substr(upload_plan_converter.data_model_handler.tree_symbol.length);
 					let name = Object.keys(tree_rank_data['name'])[0];
 
 					if (typeof name === 'object')  // handle static records
@@ -121,7 +119,7 @@ const upload_plan_converter = {
 
 			table_plan = Object.entries(table_data).reduce((table_plan, [field_name, field_data]) => {
 
-				if (field_name.substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol) {
+				if (field_name.substr(0, upload_plan_converter.data_model_handler.reference_symbol.length) === upload_plan_converter.data_model_handler.reference_symbol) {
 					if (!is_to_many) {
 						is_to_many = true;
 						table_plan = [];
@@ -129,7 +127,7 @@ const upload_plan_converter = {
 
 					table_plan.push(handle_table(field_data, table_name, false));
 
-				} else if (field_name.substr(0, upload_plan_converter.tree_symbol.length) === upload_plan_converter.tree_symbol)
+				} else if (field_name.substr(0, upload_plan_converter.data_model_handler.tree_symbol.length) === upload_plan_converter.data_model_handler.tree_symbol)
 					table_plan = handle_table(table_data, table_name, false);
 
 				else if (typeof field_data === "object" && typeof field_data['static'] === "string") {
@@ -144,9 +142,9 @@ const upload_plan_converter = {
 
 					table_plan['static'][field_name] = value;
 
-				} else if (typeof upload_plan_converter.tables[table_name]['fields'][field_name] !== "undefined") {
+				} else if (typeof upload_plan_converter.data_model_handler.tables[table_name]['fields'][field_name] !== "undefined") {
 
-					const field = upload_plan_converter.tables[table_name]['fields'][field_name];
+					const field = upload_plan_converter.data_model_handler.tables[table_name]['fields'][field_name];
 
 					if (field['is_relationship']) {
 						const mapping_table = field['table_name'];
@@ -176,7 +174,7 @@ const upload_plan_converter = {
 			if (Array.isArray(table_plan) || !wrap_it)
 				return table_plan;
 
-			if (Object.keys(table_data).shift().substr(0, upload_plan_converter.reference_symbol.length) === upload_plan_converter.reference_symbol)
+			if (Object.keys(table_data).shift().substr(0, upload_plan_converter.data_model_handler.reference_symbol.length) === upload_plan_converter.data_model_handler.reference_symbol)
 				return table_plan;
 
 			return {uploadTable: table_plan};

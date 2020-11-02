@@ -21,10 +21,11 @@ const data_model_handler = {
 	* @param {string} tree_symbol - String that is used as an indicator of trees
 	* @param {array} required_fields_to_hide - Array of strings that represent official names of fields and relationships that are required and hidden and should remain hidden (required fields can't be hidden otherwise)
 	* */
-	constructor(ranks, tables_to_hide, reference_symbol, tree_symbol, required_fields_to_hide){
+	constructor(ranks, tables_to_hide, table_keywords_to_exclude, reference_symbol, tree_symbol, required_fields_to_hide){
 
 		data_model_handler.ranks = ranks;
 		data_model_handler.tables_to_hide = tables_to_hide;
+		data_model_handler.table_keywords_to_exclude = table_keywords_to_exclude;
 		data_model_handler.reference_symbol = reference_symbol;
 		data_model_handler.tree_symbol = tree_symbol;
 		data_model_handler.required_fields_to_hide = required_fields_to_hide;
@@ -55,9 +56,9 @@ const data_model_handler = {
 			}
 		}
 
-		let data_model_html = '';
+		const table_previews = {};
 
-		const tables = Object.values(schema.models).reduce((tables, table_data) => {
+		data_model_handler.tables = Object.values(schema.models).reduce((tables, table_data) => {
 
 			const table_name = table_data['longName'].split('.').pop().toLowerCase();
 			const table_friendly_name = table_data.getLocalizedName();
@@ -138,13 +139,13 @@ const data_model_handler = {
 			));
 
 
+			if(!data_model_handler.table_keywords_to_exclude.some(table_keyword_to_exclude=>table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
+				table_previews[table_name] = table_friendly_name;
+
 			tables[table_name] = {
 				table_friendly_name: table_friendly_name,
 				fields: ordered_fields,
 			};
-
-			data_model_html += html_generator.table(table_name, table_friendly_name);
-
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
 				data_model_handler.fetch_ranks(table_name, done_callback);
@@ -154,14 +155,13 @@ const data_model_handler = {
 		}, {});
 
 
-		for (const [table_name, table_data] of Object.entries(tables))  // remove relationships to system tables
+		for (const [table_name, table_data] of Object.entries(data_model_handler.tables))  // remove relationships to system tables
 			for (const [relationship_name, relationship_data] of Object.entries(table_data['fields']))
-				if (relationship_data['is_relationship'] && typeof tables[relationship_data['table_name']] === "undefined")
-					delete tables[table_name]['fields'][relationship_name];
+				if (relationship_data['is_relationship'] && typeof data_model_handler.tables[relationship_data['table_name']] === "undefined")
+					delete data_model_handler.tables[table_name]['fields'][relationship_name];
 
 
-		data_model_handler.tables = tables;
-		data_model_handler.data_model_html = data_model_html;
+		data_model_handler.data_model_html = html_generator.tables(table_previews);
 
 		if(typeof localStorage !== "undefined"){
 			localStorage.setItem('specify7_wbplanview_data_model_tables', JSON.stringify(data_model_handler.tables));
@@ -169,7 +169,7 @@ const data_model_handler = {
 		}
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
-			done_callback(data_model_html, tables);  // so there is no need to wait for ranks to finish fetching
+			done_callback(data_model_handler.data_model_html, data_model_handler.tables);  // so there is no need to wait for ranks to finish fetching
 
 	},
 

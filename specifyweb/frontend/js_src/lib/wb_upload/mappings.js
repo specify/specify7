@@ -45,22 +45,9 @@ const mappings = {
 	* 					OR
 	* 				   {string} event - name of the table to set
 	* */
-	set_table(event){
+	set_table(table_name){
 
-		let table_name;
-		if (typeof event === "object") {
-			const radio = event.target;
-			table_name = dom_helper.get_table_name(radio);
-		} else
-			table_name = event;
-
-		this.list__tables.style.display = 'none';
-		this.list__mappings.style.display = '';
-		this.mapping_view.style.display = '';
-
-		this.wbplanview_table_header_content.style.display = '';
-
-		this.title__table_name.classList.remove('undefined');
+		this.container.classList.add('table_selected');
 		this.title__table_name.innerText = mappings.tables[table_name]['table_friendly_name'];
 
 		this.base_table_name = table_name;
@@ -158,16 +145,11 @@ const mappings = {
 		if (typeof this.base_table_name === "undefined")
 			return;
 
-		this.title__table_name.classList.add('undefined');
+		this.container.classList.remove('table_selected');
 		this.title__table_name.innerText = '';
-
-		this.list__tables.style.display = '';
-		this.list__mappings.style.display = 'none';
-		this.mapping_view.style.display = 'none';
 
 		this.list__mappings.innerHTML = '';
 
-		this.wbplanview_table_header_content.style.display = 'none';
 		this.base_table_name = undefined;
 
 		//TODO: uncomment this before production
@@ -556,6 +538,9 @@ const mappings = {
 		const list_table_name = changed_list.getAttribute('data-table');
 
 		let previous_value_is_relationship = true;
+
+		if(list_type === 'list_of_tables')
+			return mappings.set_table(new_value);
 
 		if (list_type === "to_many") {
 

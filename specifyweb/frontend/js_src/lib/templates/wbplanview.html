@@ -1,41 +1,54 @@
-<div id="wbplanview_header">
-
-    <div id="wbplanview_table_header">
-        <span id="title__table_name" class="undefined"></span>
-        <span id="wbplanview_table_header_content">
-            <button id="button__change_table">Change table</button>
-            <button id="button__toggle_mapping_view">Toggle Mapping View</button>
-        </span>
-    </div>
-
-    <div id="wbplanview_mapping_header">
-        <button id="button__validate_upload_plan">Validate</button>
-        <button id="button__save_upload_plan">Save</button>
-        <button id="button__discard_changes">Cancel</button>
-    </div>
-
+<div id="wbplanview_loading_screen">
+    Loading...
 </div>
 
-<div id="wbplanview_container">
+<div id="wbplanview_content">
 
-    <div id="list__tables"></div>
-    <div id="mapping_view_parent">
-        <div id="mapping_view_container">
-            <div id="mapping_view"></div>
+    <div id="wbplanview_header">
+
+        <div id="wbplanview_table_header">
+            <span id="title__table_name"></span>
+                <button id="button__change_table" class="visible_when_table_selected">Change table</button>
+                <button id="button__toggle_mapping_view" class="visible_when_table_selected">Toggle Mapping View</button>
+            </span>
         </div>
-        <button id="wbplanview_mapping_view_map_button">Map</button>
+
+        <div id="wbplanview_mapping_header">
+            <button id="button__validate_upload_plan" class="visible_when_table_selected">Validate</button>
+            <button id="button__save_upload_plan" class="visible_when_table_selected">Save</button>
+            <button id="button__discard_changes">Cancel</button>
+        </div>
+
     </div>
-    <div id="list__mappings"></div>
 
-</div>
+    <div id="wbplanview_container">
 
-<div id="mappings_control_panel">
+        <div id="list__tables"></div>
 
-    <button id="add_mapping" title="Add new mapping"><img src="../../../static/img/add.svg" alt="Map"></button>
+        <div id="mapping_content">
 
-    <label>
-        <input type="checkbox" id="checkbox__toggle_hidden_fields">
-        Reveal hidden fields
-    </label>
+            <div id="mapping_view_parent">
+                <div id="mapping_view_container">
+                    <div id="mapping_view"></div>
+                </div>
+                <button id="wbplanview_mapping_view_map_button">Map</button>
+            </div>
+
+            <div id="list__mappings"></div>
+
+            <div id="mappings_control_panel">
+
+                <button id="add_mapping" title="Add new mapping"><img src="../../../static/img/add.svg" alt="Map"></button>
+
+                <label>
+                    <input type="checkbox" id="checkbox__toggle_hidden_fields">
+                    Reveal hidden fields
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
