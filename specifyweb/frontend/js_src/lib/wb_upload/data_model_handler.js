@@ -48,7 +48,7 @@ const data_model_handler = {
 				ranks !== null
 			){
 				data_model_handler.tables = JSON.parse(tables);
-				data_model_handler.data_model_html = data_model_html;
+				data_model_handler.data_model_html = JSON.parse(data_model_html);
 				data_model_handler.ranks = JSON.parse(ranks);
 				done_callback(data_model_handler.data_model_html, data_model_handler.tables);
 				return;
@@ -233,128 +233,6 @@ const data_model_handler = {
 			table_name => table_name !== 'collectionobject'
 		);
 	},
-
-	// new_show_required_missing_ranks(base_table_name, mapping_tree){
-	//
-	// 	const internal_payload = {
-	// 		mapping_tree: mapping_tree,
-	// 		element_queue: [],
-	// 		path: [base_table_name],
-	// 		results: [],
-	// 	};
-	//
-	// 	const callbacks = {
-	// 		get_base_table: () =>
-	// 			base_table_name,
-	//
-	// 		iterate: internal_payload =>
-	// 			Object.keys(internal_payload.mappings_tree).length !== 0 ||
-	// 			internal_payload.element_queue.length !== 0,
-	//
-	// 		get_next_path_element(internal_payload, callback_payload){
-	//
-	// 			internal_payload.list_of_mapped_fields = Object.keys(mapping_tree);
-	//
-	// 			return {
-	// 				next_path_element_name: internal_payload.element_queue,
-	// 				next_path_element: internal_payload.element_queue.map(element_name=>
-	// 					data_model_handler.tables[callback_payload.table_name]['fields'][element_name]
-	// 				)
-	// 			};
-	//
-	// 		},
-	//
-	// 		navigator_instance_pre: internal_payload =>
-	// 			internal_payload.element_queue = [],
-	//
-	// 		handle_to_many_children: internal_payload =>
-	// 			internal_payload.element_queue = internal_payload.list_of_mapped_fields,
-	//
-	// 		handle_tree_ranks: (internal_payload, callback_payload) =>
-	// 			internal_payload.element_queue = Object.keys(data_model_handler.ranks[callback_payload.table_name]).reduce((ranks_to_review,rank_name)=>{
-	//
-	// 				const is_rank_required = data_model_handler.ranks[callback_payload.table_name][rank_name];
-	// 				const complimented_rank_name = data_model_handler.tree_symbol + rank_name;
-	// 				const local_path = [...internal_payload.path, complimented_rank_name];
-	//
-	// 				if (internal_payload.list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-	// 					ranks_to_review.push(complimented_rank_name);
-	// 				else if (is_rank_required)
-	// 					internal_payload.results.push(local_path);
-	//
-	// 				return ranks_to_review;
-	//
-	// 			}, []),
-	//
-	//
-	// 		handle_simple_fields: (internal_payload, callback_payload) =>
-	// 			internal_payload.element_queue = Object.entries(
-	// 				data_model_handler.tables[callback_payload.table_name]['fields']
-	// 			).reduce((relationships_to_review,[field_name, field_data])=>{
-	//
-	// 				const local_path = [...internal_payload.path, field_name];
-	//
-	// 				const is_mapped = internal_payload.list_of_mapped_fields.indexOf(field_name) !== -1;
-	//
-	//
-	// 				if (field_data['is_relationship']) {
-	//
-	// 					if(callback_payload.parent_table_name !== ''){
-	//
-	// 						let previous_relationship_name = local_path.slice(-2)[0];
-	// 						if (
-	// 							previous_relationship_name.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol ||
-	// 							previous_relationship_name.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol
-	// 						)
-	// 							previous_relationship_name = local_path.slice(-3)[0];
-	//
-	// 						if (
-	// 							(  // disable circular relationships
-	// 								field_data['foreign_name'] === previous_relationship_name &&
-	// 								field_data['table_name'] === callback_payload.parent_table_name
-	// 							) ||
-	// 							(  // skip -to-many inside of -to-many
-	// 								data_model_handler.relationship_is_to_many(callback_payload.parent_relationship_type) &&
-	// 								data_model_handler.relationship_is_to_many(field_data['type'])
-	// 							)
-	// 						)
-	// 							return relationships_to_review;
-	//
-	// 					}
-	//
-	// 					if(is_mapped)
-	// 						relationships_to_review.push(field_name);
-	// 					else if (field_data['is_required'])
-	// 						internal_payload.results.push(local_path);
-	// 				}
-	//
-	// 				else if (!is_mapped && field_data['is_required'])
-	// 					internal_payload.results.push(local_path);
-	//
-	// 				return relationships_to_review;
-	//
-	// 			},[]),
-	//
-	// 		get_instance_data: internal_payload =>
-	// 			internal_payload.results,
-	//
-	// 		commit_instance_data: internal_payload =>
-	// 			internal_payload.results,
-	//
-	// 		get_final_data: internal_payload =>
-	// 			internal_payload.results,
-	// 	}
-	//
-	// 	return data_model_handler.schema_navigator({
-	// 		callbacks: callbacks,
-	// 		internal_payload: internal_payload,
-	// 		config: {
-	// 			use_cache: true,
-	// 			cache_name: 'missing_ranks_validator',
-	// 		}
-	// 	});
-	//
-	// },
 
 	/*
 	* Iterates over the mapping_tree to find required fields that are missing
