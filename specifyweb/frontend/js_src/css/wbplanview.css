@@ -246,13 +246,13 @@
     min-height: calc(2 * var(--white_space));
 }
 
-.custom_select_size_zero .custom_select_input {
+.custom_select[data-type="preview_list"] .custom_select_input {
     display: flex;
 	flex-direction: row;
 	width: max-content;
 }
 
-.custom_select:not(.custom_select_size_zero) .custom_select_input:after {
+.custom_select:not([data-type="preview_list"]) .custom_select_input:after {
     content: '\25BC';
     float: right;
 }
@@ -276,11 +276,11 @@
     cursor: pointer;
 }
 
-.custom_select_open .custom_select_options, .custom_select_size_multiple .custom_select_options {
+.custom_select_open .custom_select_options, .custom_select[data-type="opened_list"] .custom_select_options {
     visibility: visible;
 }
 
-.custom_select_size_multiple .custom_select_options {
+.custom_select[data-type="opened_list"] .custom_select_options {
     position: initial;
 }
 

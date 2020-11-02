@@ -1,74 +1,147 @@
-"use strict"
+'use strict'
 
-// This file contains information to help auto-map imported XLS and CSV files to the Sp6 datamodel
-// Based on https//github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
-// Matching is case insensitive. Table and field names are case insensitive
+// This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
+// Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 
-// SCHEMA:
-// Table Name > Field Name > options > value
+//	SCHEMA:
+//	shortcuts (object):
+//		[base_table_name] (object, case insensitive):
+//			[field_name] (object, case insensitive):
+//				[option] (array, case insensitive):
+//					[value] (string, case sensitive)
+//	synonyms (object):
+//		[table_name] (object, case insensitive):
+//			[field_name] (object, case insensitive):
+//				[option] (array, case insensitive):
+//					[value] (string, case sensitive)
+//
 // 	Available options:
 // 		regex - Regex string (header.match(regex))
 // 		string - Equals string (header===string)
 // 		contains - Contains string (header.indexOf(string)!==-1)
 
 
-
 module.exports = {
-	CollectingEvent:  {
-		startDate:  {
-			regex:  [
-				".*?collected.*"
-			],
-			contains:  [
-				"date",
-				"start"
-			]
+	shortcuts: {
+		CollectionObject: [
+			{
+				mapping_path: ['cataloger','lastName'],
+				headers: {
+					contains: [
+						'cataloged by',
+						'catalogued by',
+						'cataloger',
+					]
+				},
+			},
+			{
+				mapping_path: ['collectingEvent','locality','geography','country','name'],
+				headers: {
+					string: [
+						'country',
+					]
+				}
+			}
+		],
+		Determination: [
+			{
+				mapping_path: ['determiner','lastname'],
+				headers: {
+					contains: [
+						'determiner',
+					]
+				}
+			}
+		],
+	},
+	synonyms: {
+		CollectingEvent:  {
+			verbatimDate: {
+				contains: [
+					'date verbatim'
+				]
+			},
+			startDate:  {
+				contains:  [
+					'date',
+					'start',
+					'collected',
+				]
+			},
+			endDate:  {
+				contains:  [
+					'end'
+				]
+			},
+			method: {
+				contains: [
+					'method'
+				]
+			}
 		},
-		endDate:  {
-			contains:  [
-				"end"
-			]
+		Accession:  {
+			accessionnumber:  {
+				contains:  [
+					'accession'
+				]
+			}
+		},
+		Locality:  {
+			maxElevation:  {
+				contains: [
+					'max elev',
+					'max depth'
+				],
+			},
+			minElevation:  {
+				contains:  [
+					'elev',
+					'depth'
+				]
+			}
+		},
+		CollectionObject:  {
+			fieldNumber:  {
+				contains: [
+					'field no',
+					'field num'
+				]
+			},
+			catalogedDate:  {
+				contains:  [
+					'cataloged date',
+					'catalogued date'
+				]
+			},
+			catalogNumber:  {
+				regex:  [
+					'^catalog(ue)?\\s*(no|num).*',
+					'^cat(ue)?\\s*(no|num).*'],
+				string:  [
+					'number',
+					'num',
+					'bmsm no.'
+				]
+			}
+		},
+		Geography: {
+			state: {
+				contains: [
+					'state',
+				]
+			},
+			continent: {
+				contains: [
+					'continent',
+				]
+			}
+		},
+		PrepType: {
+			name: {
+				contains: [
+					'prep '
+				]
+			}
 		}
 	},
-	Accession:  {
-		number:  {
-			contains:  [
-				"accession"
-			]
-		}
-	},
-	Locality:  {
-		maxElevation:  {
-			regex:  [
-				".*?max\\s*elev.*"
-			]
-		},
-		minElevation:  {
-			contains:  [
-				"elev"
-			]
-		}
-	},
-	CollectionObject:  {
-		fieldNumber:  {
-			regex:  [
-				"^field\\s*(no|num).*"
-			]
-		},
-		catalogedDate:  {
-			contains:  [
-				"cataloged",
-				"catalogued"
-			]
-		},
-		catalogNumber:  {
-			regex:  [
-				"^catalog(ue)?\\s*(no|num).*",
-				"^cat(ue)?\\s*(no|num).*"],
-			string:  [
-				"number",
-				"num"
-			]
-		}
-	}
-}
+};

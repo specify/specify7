@@ -268,8 +268,8 @@ const mappings = {
 					return undefined;
 
 				return {
-					next_path_element_name: next_path_element_name,
-					next_path_element: mappings.tables[table_name]['fields'][next_path_element_name]
+					next_path_elements_name: next_path_element_name,
+					next_path_elements: mappings.tables[table_name]['fields'][next_path_element_name]
 				};
 
 			},
@@ -555,7 +555,6 @@ const mappings = {
 
 		const list_table_name = changed_list.getAttribute('data-table');
 
-		let need_to_add_block = false;
 		let previous_value_is_relationship = true;
 
 		if (list_type === "to_many") {
@@ -588,9 +587,6 @@ const mappings = {
 
 			}
 
-			//add block to the right if there aren't any
-			need_to_add_block = changed_list.nextElementSibling === null;
-
 		} else {
 
 			const remove_block_to_the_right = //remove all elements to the right
@@ -609,9 +605,6 @@ const mappings = {
 					mappings.tables[list_table_name]['fields'][previous_value]['is_relationship']
 				);
 
-			//add block to the right if selected field is a relationship
-			need_to_add_block = remove_block_to_the_right && is_relationship;
-
 		}
 
 		const mappings_path = mappings.get_mappings_path({
@@ -619,7 +612,9 @@ const mappings = {
 			mapping_path_filter: changed_list,
 		});
 
-		if (need_to_add_block) {
+
+		//add block to the right if there aren't any and selected field is a relationship
+		if (changed_list.nextElementSibling === null && is_relationship) {
 			mappings.changes_made = true;
 
 			const new_line_element = document.createElement('span');
@@ -795,7 +790,7 @@ const mappings = {
 				const target_select_element = select_elements[intersection_point];
 				update_mapped_fields(target_select_element, mapped_fields);
 
-				if (target_select_element.getAttribute('data-type') === 'to_many') {
+				if (target_select_element.getAttribute('data-mapping_type') === 'to_many') {
 					const options = target_select_element.getElementsByClassName('custom_select_option');
 					const option_values = Object.values(options).map(option => option.getAttribute('data-value'));
 					let max_value = mappings.get_max_to_many_value(option_values);

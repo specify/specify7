@@ -28,7 +28,6 @@ const custom_select_element = {
 		let header = '';
 		let preview = '';
 		let first_row = '';
-		let custom_select_type_class = '';
 		let is_relationship_text = 'false';
 		let groups_html = '';
 
@@ -51,8 +50,6 @@ const custom_select_element = {
 					}
 
 		if (custom_select_type==='opened_list') {
-			custom_select_type_class = 'custom_select_size_multiple';
-
 			header = `
 				<span class="custom_select_header">
 					<span class="custom_select_header_icon">
@@ -75,8 +72,7 @@ const custom_select_element = {
 							<span class="custom_select_input_label">` + default_label + `</span>
 						</span>`;
 
-			if(custom_select_type==='closed_list') {
-				custom_select_type_class = 'custom_select_size_one';
+			if(custom_select_type==='closed_list')
 				first_row = custom_select_element.new_select_option_html({
 					option_name: '',
 					option_value: '0',
@@ -85,9 +81,6 @@ const custom_select_element = {
 					is_default: default_label === 0,
 					table_name: ''
 				});
-			}
-			else if(custom_select_type==='preview_list')
-				custom_select_type_class = 'custom_select_size_zero';
 
 		}
 
@@ -98,14 +91,15 @@ const custom_select_element = {
 
 
 		return custom_select_element.cached_select_elements[string_payload] = `<span
-				class="custom_select ` + custom_select_type_class + `"
+				class="custom_select"
 				title="` + select_label + `"
 				data-name="` + select_name + `"
 				data_value_is_relationship="` + is_relationship_text + `"
 				data-value="` + default_name + `"
 				data-previous_value="0"
 				data-table="` + select_table + `"
-				data-type="` + select_type + `">
+				data-mapping_type="` + select_type + `"
+				data-type="`+custom_select_type+`">
 			` + header + `
 			` + preview + `
 			<span class="custom_select_options">
@@ -273,7 +267,7 @@ const custom_select_element = {
 		const previous_previous_value = target_list.getAttribute('data-previous_value');
 
 		//don't change values if new value is 'add'
-		const list_type = target_list.getAttribute('data-type');
+		const list_type = target_list.getAttribute('data-mapping_type');
 
 		//don't do anything if value wasn't changed
 		if (custom_select_option_value === previous_list_value)
@@ -305,8 +299,7 @@ const custom_select_element = {
 		}
 
 
-		//call change callback with a payload
-		const custom_select_type = target_list.classList.contains('custom_select_type');
+		const custom_select_type = target_list.getAttribute('data-type');
 		return {
 			changed_list: target_list,
 			selected_option: target_option,

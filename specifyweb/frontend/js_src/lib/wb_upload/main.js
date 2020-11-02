@@ -176,13 +176,14 @@ const main = {
 
 		// fetch data model
 		data_model_handler.constructor(mappings.ranks, mappings.tables_to_hide, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
-		data_model_handler.fetch_tables((data_model_html, tables) => {
+		data_model_handler.fetch_tables((data_model_html, tables, ranks) => {
 
 			mappings.data_model_html = data_model_html;  // cache list of tables to reuse in the future
 			mappings.list__tables.innerHTML = data_model_html;
 
 			mappings.new_header_id = 1;
 			mappings.tables = tables;
+			mappings.ranks = ranks;
 
 			this.constructor_has_run = true;
 			promise_resolve(mappings);
@@ -199,7 +200,7 @@ const main = {
 				mappings.tables,
 			);
 
-			auto_mapper.constructor(mappings.tables, mappings.ranks, mappings.reference_symbol, mappings.tree_symbol);
+			auto_mapper.constructor(data_model_handler);
 
 		});
 		mappings.data_model_handler = data_model_handler;

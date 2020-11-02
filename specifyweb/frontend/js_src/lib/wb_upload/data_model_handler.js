@@ -50,7 +50,7 @@ const data_model_handler = {
 				data_model_handler.tables = JSON.parse(tables);
 				data_model_handler.data_model_html = JSON.parse(data_model_html);
 				data_model_handler.ranks = JSON.parse(ranks);
-				done_callback(data_model_handler.data_model_html, data_model_handler.tables);
+				done_callback(data_model_handler.data_model_html, data_model_handler.tables, data_model_handler.ranks);
 				return;
 			}
 		}
@@ -329,7 +329,7 @@ const data_model_handler = {
 
 	},
 
-	is_table_a_tree(table_name){
+	table_is_tree(table_name){
 		return typeof data_model_handler.ranks[table_name] !== "undefined";
 	},
 
@@ -481,7 +481,7 @@ const data_model_handler = {
 			!data_model_handler.value_is_reference_item(parent_table_relationship_name);
 
 		const children_are_ranks =
-			data_model_handler.is_table_a_tree(table_name) &&
+			data_model_handler.table_is_tree(table_name) &&
 			!data_model_handler.value_is_tree_rank(parent_table_relationship_name);
 
 		callback_payload.parent_relationship_type = parent_relationship_type;
@@ -510,17 +510,18 @@ const data_model_handler = {
 		relationship_type.indexOf('-to-many') !== -1,
 
 	value_is_reference_item: value =>
+		typeof value !== "undefined" &&
 		value.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol,
 
 	value_is_tree_rank: value =>
+		typeof value !== "undefined" &&
 		value.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol,
 
 	get_index_from_reference_item_name: value =>
 		parseInt(value.substr(data_model_handler.reference_symbol.length)),
 
-	get_name_from_tree_rank_name(value){
-		return value.substr(data_model_handler.tree_symbol.length);
-	},
+	get_name_from_tree_rank_name: value =>
+		value.substr(data_model_handler.tree_symbol.length),
 
 	get_max_to_many_value(values){
 		return values.reduce((max, value) => {
