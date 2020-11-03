@@ -187,11 +187,25 @@ const custom_select_element = {
 			//toggle list options
 			if (el.closest('.custom_select_input') !== null) {
 				const select_container = el.closest('.custom_select');
-				const select_container_classList = select_container.classList;
-				if (select_container_classList.contains('custom_select_open'))
-					select_container_classList.remove('custom_select_open');
-				else
-					select_container_classList.add('custom_select_open');
+				if (select_container.classList.contains('custom_select_open'))
+					select_container.classList.remove('custom_select_open');
+				else {
+					select_container.classList.add('custom_select_open');
+
+					// scroll the list down to selected option
+					const selected_options = custom_select_element.get_selected_options(select_container);
+					if(selected_options.length !== 0){
+						const selected_option = selected_options[0];
+						const options_container = select_container.getElementsByClassName('custom_select_options')[0];
+
+						if(  // scroll down if
+							options_container.scrollTop === 0 && // the list is not already scrolled
+							options_container.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight // and selected item is not visible
+						)
+							options_container.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
+
+					}
+				}
 			}
 
 			//close opened lists
@@ -380,11 +394,11 @@ const custom_select_element = {
 	},
 
 	get_selected_options: list =>
-		list.getElementsByClassName('custom_select_option'),
+		list.getElementsByClassName('custom_select_option_selected'),
 
 	is_selected_option_enabled(list){
 
-		const options = custom_select_element.get_selected_option(list);
+		const options = custom_select_element.get_selected_options(list);
 
 		for (const option of options)
 			if(option.classList.contains('custom_select_option_selected'))
