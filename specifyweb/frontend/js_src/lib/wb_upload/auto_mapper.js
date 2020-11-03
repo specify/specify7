@@ -1,6 +1,7 @@
 "use strict";
 
 let auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
+let data_model = require('./data_model.js');
 
 /*
 *
@@ -9,6 +10,16 @@ let auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
 * */
 const auto_mapper = {
 
+	regex_1: /[^a-z\s]+/g,
+	regex_2: /\s+/g,
+	depth: 8,
+	comparisons: Object.entries({
+		regex: (header, regex) => header.match(regex),
+		string: (header, string) => header === string,
+		contains: (header, string) => header.indexOf(string) !== -1
+	}),
+	mapped_definitions_were_converted: false,
+
 	/*
 	* Constructor that get's the references to needed variables from `mappings`. It is called from mappings.constructor
 	* @param {object} tables - Internal object for storing data model
@@ -16,20 +27,9 @@ const auto_mapper = {
 	* @param {string} reference_symbol - A symbol or a string that is to be used to identify a tree node as a reference
 	* @param {string} reference_symbol - A symbol or a string that is to be used to identify a tree node as a tree
 	* */
-	constructor(data_model_handler){
+	auto_mapper_definitions_to_lower_case(){
 
-		auto_mapper.data_model_handler = data_model_handler;
-
-
-		auto_mapper.regex_1 = /[^a-z\s]+/g;
-		auto_mapper.regex_2 = /\s+/g;
-		auto_mapper.depth = 8;
-		auto_mapper.comparisons = Object.entries({
-			regex: (header, regex) => header.match(regex),
-			string: (header, string) => header === string,
-			contains: (header, string) => header.indexOf(string) !== -1
-		});
-
+		auto_mapper.mapped_definitions_were_converted = true;
 
 		// convert all table names and field names in the mapping definitions to lower case
 		const to_lower_case = (object) => Object.fromEntries(
@@ -61,6 +61,9 @@ const auto_mapper = {
 	* */
 	map(raw_headers, base_table){
 
+		if(!auto_mapper.mapped_definitions_were_converted)
+			auto_mapper.auto_mapper_definitions_to_lower_case();
+
 		if (raw_headers.length === 0)
 			return {};
 
@@ -86,7 +89,7 @@ const auto_mapper = {
 
 		let find_mappings_queue;
 
-		auto_mapper.find_mappings_in_defined_shortcuts(base_table);
+		// auto_mapper.find_mappings_in_defined_shortcuts(base_table);
 
 		while (true) {
 
@@ -113,19 +116,19 @@ const auto_mapper = {
 		if (path.length > auto_mapper.depth)  // don't go beyond the depth limit
 			return;
 
-		const table_data = auto_mapper.data_model_handler.tables[table_name];
+		const table_data = data_model.tables[table_name];
 
 		// handle trees
-		if (auto_mapper.data_model_handler.table_is_tree(table_name)) {
+		if (data_model.table_is_tree(table_name)) {
 
-			const keys = Object.keys(auto_mapper.data_model_handler.ranks[table_name]);
+			const keys = Object.keys(data_model.ranks[table_name]);
 			const last_path_element = path.slice(-1)[0];
-			const last_path_element_is_a_rank = last_path_element.substr(0,auto_mapper.data_model_handler.tree_symbol.length)===auto_mapper.data_model_handler.tree_symbol;
+			const last_path_element_is_a_rank = data_model.value_is_tree_rank(last_path_element);
 
 			if (!last_path_element_is_a_rank)
 				return keys.reduce((results, rank_name) => {
-					const is_rank_required = auto_mapper.data_model_handler.ranks[table_name][rank_name];
-					const complimented_rank_name = auto_mapper.data_model_handler.tree_symbol + rank_name;
+					const is_rank_required = data_model.ranks[table_name][rank_name];
+					const complimented_rank_name = data_model.tree_symbol + rank_name;
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
@@ -152,12 +155,12 @@ const auto_mapper = {
 
 					let previous_relationship_name = local_path.slice(-2)[0];
 					if (
-						previous_relationship_name.substr(0, auto_mapper.data_model_handler.reference_symbol.length) === auto_mapper.data_model_handler.reference_symbol ||
-						previous_relationship_name.substr(0, auto_mapper.data_model_handler.tree_symbol.length) === auto_mapper.data_model_handler.tree_symbol
+						data_model.value_is_reference_item(previous_relationship_name) ||
+						data_model.value_is_tree_rank(previous_relationship_name)
 					)
 						previous_relationship_name = local_path.slice(-3)[0];
 
-					const parent_relationship_data = auto_mapper.data_model_handler.tables[previous_table_name]['fields'][previous_relationship_name];
+					const parent_relationship_data = data_model.tables[previous_table_name]['fields'][previous_relationship_name];
 
 					if (
 						(  // disable circular relationships
@@ -219,7 +222,7 @@ const auto_mapper = {
 
 									let new_path_parts;
 									if(is_tree_rank)
-										new_path_parts = [auto_mapper.data_model_handler.tree_symbol + field_name[0].toUpperCase() + field_name.substr(1), 'name'];
+										new_path_parts = [data_model.tree_symbol + field_name[0].toUpperCase() + field_name.substr(1), 'name'];
 									else
 										new_path_parts = [field_name];
 
@@ -254,16 +257,19 @@ const auto_mapper = {
 
 		this.searched_tables.push(table_name);
 
-		const table_data = auto_mapper.data_model_handler.tables[table_name];
-		const ranks_data = auto_mapper.data_model_handler.ranks[table_name];
-		const fields = Object.entries(table_data['fields']).filter(([, field_data]) => !field_data['is_hidden'] && !field_data['is_relationship']);
+		const table_data = data_model.tables[table_name];
+		const ranks_data = data_model.ranks[table_name];
+		const fields = Object.entries(table_data['fields']).filter(([, field_data]) =>
+			!field_data['is_hidden'] &&
+			!field_data['is_relationship']
+		);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();
 
 		if (index && typeof ranks_data !== "undefined") {
 			for (const rank_name of Object.keys(ranks_data)) {
 
 				const striped_rank_name = rank_name.toLowerCase();
-				const final_rank_name = auto_mapper.data_model_handler.tree_symbol + rank_name;
+				const final_rank_name = data_model.tree_symbol + rank_name;
 
 				auto_mapper.find_mappings_in_definitions(path, table_name,striped_rank_name,true);
 
@@ -318,6 +324,7 @@ const auto_mapper = {
 				let [stripped_name, final_name] = header_data;
 
 				if (
+					field_name === header_name.toLowerCase() ||
 					field_name === stripped_name ||
 					friendly_name === final_name ||
 					(  // find cases like `Collection Object Remarks`
@@ -341,8 +348,8 @@ const auto_mapper = {
 
 			const local_path = [...path, relationship_key];
 
-			if (auto_mapper.data_model_handler.relationship_is_to_many(relationship_data['type']))
-				local_path.push(auto_mapper.data_model_handler.reference_symbol + 1);
+			if (data_model.relationship_is_to_many(relationship_data['type']))
+				local_path.push(data_model.format_reference_item(1));
 
 			const new_depth_level = local_path.length;
 
@@ -375,10 +382,9 @@ const auto_mapper = {
 	make_mapping(path, new_path_parts, header_name){
 
 		let local_path = [...path, ...new_path_parts];
-		const zipped_local_path = Object.entries(local_path);
-
 
 		// check if this path is already mapped
+		let i = 0;
 		while (true) {
 
 			// go over mapped headers to see if this path was already mapped
@@ -389,14 +395,13 @@ const auto_mapper = {
 			if (!path_already_mapped)
 				break;
 
-			// if there is any -to-many relationship in the path, create a new -to-many object and run while loop again
-			let path_was_modified = false;
+			i++;
 
-			local_path = zipped_local_path.reverse().some(([local_path_index, local_path_part]) => {
+			let path_was_modified = Object.entries(local_path).reverse().some(([local_path_index, local_path_part]) => {
 
-				path_was_modified = auto_mapper.data_model_handler.value_is_reference_item(local_path_part);
+				path_was_modified = data_model.value_is_reference_item(local_path_part);
 				if (path_was_modified)
-					local_path[local_path_index] = auto_mapper.data_model_handler.reference_symbol + (auto_mapper.data_model_handler.get_index_from_reference_item_name(local_path_part) + 1);
+					local_path[local_path_index] = data_model.format_reference_item(data_model.get_index_from_reference_item_name(local_path_part) + 1);
 
 				return path_was_modified;
 
@@ -409,7 +414,7 @@ const auto_mapper = {
 		// prevent -to-many inside of -to-many // TODO: remove this in the future
 		let distance_from_parent_to_many = -1;
 		let has_nested_to_many = local_path.some(element => {
-			const is_to_many = auto_mapper.data_model_handler.value_is_reference_item(element);
+			const is_to_many = data_model.value_is_reference_item(element);
 
 			if (distance_from_parent_to_many === 1 && is_to_many)
 				return true;

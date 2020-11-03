@@ -1,5 +1,7 @@
 "use strict";
 
+const custom_select_element = require('./custom_select_element.js');
+
 
 /*
 *
@@ -7,10 +9,6 @@
 *
 * */
 const html_generator = {
-
-	constructor(custom_select_element){
-		html_generator.custom_select_element = custom_select_element;
-	},
 
 	/*
 	* Generates HTML for table (for table selection screen)
@@ -147,7 +145,7 @@ const html_generator = {
 			select_groups_data: table_fields,
 		};
 
-		return html_generator.custom_select_element.new_select_html(select_data, custom_select_type, use_cached);
+		return custom_select_element.new_select_html(select_data, custom_select_type, use_cached);
 
 	},
 

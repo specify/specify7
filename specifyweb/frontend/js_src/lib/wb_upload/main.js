@@ -2,8 +2,7 @@
 
 const $ = require('jquery');
 const mappings = require('./mappings.js');
-const auto_mapper = require('./auto_mapper.js');
-const data_model_handler = require('./data_model_handler.js');
+const data_model = require('./data_model.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
 const custom_select_element = require('./custom_select_element.js');
 
@@ -11,31 +10,6 @@ const custom_select_element = require('./custom_select_element.js');
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
 const main = {
-
-	/* TODO:
-		* replace all nextElementSibling, previousElementSibling, getAttribute with methods
-		* replace mappings and etc with `this`
-		* replace abbreviations with icons
-		* remove console log messages
-		* add comments
-		* add method descriptions
-		* enable `unsaved changes` confirmation message before exiting the page
-		* reformat & refactor code
-	*
-	* */
-
-	/*
-	* Configuration module that set's default settings
-	* */
-	config(){
-
-		mappings.reference_indicator = '> ';
-		mappings.level_separator = '_';
-		mappings.friendly_level_separator = ' > ';
-		mappings.reference_symbol = '#';
-		mappings.tree_symbol = '$';
-
-	},
 
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
@@ -101,7 +75,7 @@ const main = {
 
 			mappings.mapping_view_map_button.addEventListener('click', mappings.mapping_view_map_button_callback);
 
-			// mappings.add_mapping.addEventListener('click', () => {//TODO: fix deprecated
+			// mappings.add_mapping.addEventListener('click', () => {
 			// 	mappings.add_new_mapping_line();
 			// });
 
@@ -123,7 +97,7 @@ const main = {
 			if (!this.constructor_has_run)
 				main.constructor_first_run(done_callback, save_plan_function);
 			else
-				mappings.list__tables.innerHTML = mappings.data_model_html;
+				mappings.list__tables.innerHTML = mappings.data_model_html; //TODO: use cache module here instead
 
 
 			custom_select_element.set_event_listeners(mappings.container, mappings.custom_select_change_event);
@@ -137,93 +111,72 @@ const main = {
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
 	constructor_first_run(done_callback, save_plan_function){
 
-		mappings.ranks = {};
+		data_model.view_payload = {
 
-		main.config();  // get configuration
+			// all required fields are not hidden, except for these, which are made not required
+			required_fields_to_hide: [
+				'timestampcreated',
+				'collectionmemberid',
+				'rankid',
+				'defintion',
+				'definitionitem',
+				'ordernumber',
+				'isprimary',
+				'isaccepted',
+				'treedef',
+			],
+			tables_to_hide: [
+				'definition',
+				'definitionitem',
+				'geographytreedef',
+				'geologictimeperiodtreedef',
+				'treedef',
+				...data_model.get_list_of_hierarchy_tables()
+			],
 
-		// INITIALIZATION
+			// forbid setting any of the tables that have these keywords as base tables
+			table_keywords_to_exclude: [
+				'Authorization',
+				'Variant',
+				'Attribute',
+				'Property',
+				'Item',
+				'Definition',
+				'Pnt',
+				'Type',
+			],
 
-		mappings.auto_mapper_run = auto_mapper.map.bind(auto_mapper);
-		mappings.upload_plan_to_mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree.bind(upload_plan_converter);
-		mappings.custom_select_element = custom_select_element;
-		mappings.get_html_generator().constructor(custom_select_element);
-		custom_select_element.constructor('', '');//TODO: set proper table icons url
-		auto_mapper.constructor(data_model_handler);
+			required_fields_to_be_made_optional: {
+				'agent': ['agenttype'],
+				'determination': ['current'],
+				'loadpreparation': ['isresolved'],
+				'locality': ['srclatlongunit'],
+			},
 
-		// build list of tables to exclude
-		let tables_to_hide = [
-			'definition',
-			'definitionitem',
-			'geographytreedef',
-			'geologictimeperiodtreedef',
-			'treedef'
-		];
-
-		//Forbid setting any of the tables that have these keywords as base tables
-		const table_keywords_to_exclude = [
-			'Authorization',
-			'Citation',
-			'Variant',
-			'Attribute',
-			'Property',
-			'Item',
-			'Definition',
-			'Pnt',
-			'Type',
-		]
-
-		tables_to_hide = [...tables_to_hide, ...data_model_handler.get_list_of_hierarchy_tables()];
-
-		// all required fields are not hidden, except for these, which are made not required
-		mappings.required_fields_to_hide = [
-			'timestampcreated',
-			'collectionmemberid',
-			'rankid',
-			'defintion',
-			'definitionitem',
-			'ordernumber',
-			'isprimary',
-			'isaccepted',
-			'treedef',
-		];
+		}
 
 		// fetch data model
-		data_model_handler.constructor(mappings.ranks, tables_to_hide, table_keywords_to_exclude, mappings.reference_symbol, mappings.tree_symbol, mappings.required_fields_to_hide);
-		data_model_handler.fetch_tables((data_model_html, tables, ranks) => {
+		data_model.fetch_tables(() => {
 
-			mappings.data_model_html = data_model_html;  // cache list of tables to reuse in the future
-			mappings.list__tables.innerHTML = data_model_html;
-
-			mappings.new_header_id = 1;
-			mappings.tables = tables;
-			mappings.ranks = ranks;
+			mappings.data_model_html = data_model.data_model_html;  // TODO: replace with global caching module
+			mappings.list__tables.innerHTML = data_model.data_model_html;
 
 			this.constructor_has_run = true;
 			done_callback();
 
-
-			// initialize dependencies
-			upload_plan_converter.constructor(
-				() => mappings.base_table_name,
-				base_table_name => mappings.base_table_name = base_table_name,
-				data_model_handler,
-				mappings.get_mappings_tree.bind(mappings),
-			);
-
 		});
-		mappings.data_model_handler = data_model_handler;
+		mappings.data_model = data_model;
 
 		main.save_plan = save_plan_function;
 
 	},
 
-	/* TODO update deprecated*/
 	/*
 	* Validates the current mapping and shows error messages if needed
 	* */
 	validate(){
 
-		const validation_results = data_model_handler.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
 
 		if (validation_results.length === 0)
 			return true;
@@ -241,7 +194,9 @@ const main = {
 			width: document.documentElement.clientWidth * 0.8,
 			buttons: [
 				{
-					text: 'Return to mapping headers', click: () => $(this).dialog('close')
+					text: 'Return to mapping headers', click: function(){
+						$(this).dialog('close')
+					},
 				},
 				{
 					text: 'Save unfinished mapping', click: () => main.save_plan(undefined, true)
@@ -253,10 +208,6 @@ const main = {
 		return validation_results;
 
 	},
-
-	render_lists(){
-		custom_select_element.onload(mappings.list__mappings);
-	}
 
 };
 

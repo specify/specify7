@@ -9,16 +9,6 @@
 const dom_helper = {
 
 
-	// TABLES
-
-	/*
-	* Gets a name of the table the `radio` belongs to
-	* @param {DOMElement} link - Link with table name
-	* @return {string} Official table name (from data model)
-	* */
-	get_table_name: link => link.getAttribute('data-table'),
-
-
 	// FIELDS
 
 	get_lines(container, return_line_elements=false){
@@ -53,6 +43,23 @@ const dom_helper = {
 		const wbplanview_mappings_line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
 
 		return wbplanview_mappings_line_header.innerText;
+
+	},
+
+
+	// MISC
+
+	has_next_sibling: element =>
+		element.nextElementSibling !== null,
+
+	remove_elements_to_the_right(element){
+
+		let changes_made = dom_helper.has_next_sibling(element);
+
+		while (dom_helper.has_next_sibling(element))
+			element.nextElementSibling.remove();
+
+		return changes_made;
 
 	}
 

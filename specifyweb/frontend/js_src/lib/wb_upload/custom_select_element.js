@@ -3,12 +3,15 @@
 
 const custom_select_element = {
 
-	constructor(table_icons_base_path = '', table_icons_extension = ''){
-		custom_select_element.table_icons_base_path = table_icons_base_path;
-		custom_select_element.table_icons_extension = table_icons_extension;
-		custom_select_element.cached_select_elements = {};
-	},
+	// TODO: integrate caching solutions
+	cached_select_elements: {},
 
+	// TODO: set proper table icons URL
+	table_icons_base_path: '',
+	table_icons_extension: '',
+
+
+	// generators
 	new_select_html(select_data, custom_select_type, use_cached=false){
 
 		const {
@@ -174,6 +177,8 @@ const custom_select_element = {
 			return '';
 	},
 
+
+	// loading
 	set_event_listeners(container, change_callback){
 		container.addEventListener('click', e => {
 
@@ -235,10 +240,8 @@ const custom_select_element = {
 		}
 	},
 
-	find_option_by_name(list, option_name){
-		return list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
-	},
 
+	// helpers
 	change_selected_option(target_list, target_option){
 
 		//if target_option is option's name, find option element
@@ -259,15 +262,15 @@ const custom_select_element = {
 			selected_line.classList.remove('custom_select_option_selected');
 
 		//extract data about new option
-		const custom_select_option_value = target_option.getAttribute('data-value');
+		const custom_select_option_value = custom_select_element.get_option_value(target_option);
 		const custom_select_option_label_element = target_option.getElementsByClassName('custom_select_option_label')[0];
 		const custom_select_option_label = custom_select_option_label_element.textContent;
 
-		let previous_list_value = target_list.getAttribute('data-value');
+		let previous_list_value = custom_select_element.get_list_value(target_list);
 		const previous_previous_value = target_list.getAttribute('data-previous_value');
 
 		//don't change values if new value is 'add'
-		const list_type = target_list.getAttribute('data-mapping_type');
+		const list_type = custom_select_element.get_list_mapping_type(target_list);
 
 		//don't do anything if value wasn't changed
 		if (custom_select_option_value === previous_list_value)
@@ -300,6 +303,7 @@ const custom_select_element = {
 
 
 		const custom_select_type = target_list.getAttribute('data-type');
+		const list_table_name = custom_select_element.get_list_table_name(target_list);
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
@@ -309,6 +313,7 @@ const custom_select_element = {
 			is_relationship: is_relationship,
 			list_type: list_type,
 			custom_select_type: custom_select_type,
+			list_table_name: list_table_name,
 		};
 
 	},
@@ -368,9 +373,18 @@ const custom_select_element = {
 
 	},
 
+
+	// getters
+	find_option_by_name(list, option_name){
+		return list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
+	},
+
+	get_selected_options: list =>
+		list.getElementsByClassName('custom_select_option'),
+
 	is_selected_option_enabled(list){
 
-		const options = list.getElementsByClassName('custom_select_option');
+		const options = custom_select_element.get_selected_option(list);
 
 		for (const option of options)
 			if(option.classList.contains('custom_select_option_selected'))
@@ -378,7 +392,22 @@ const custom_select_element = {
 
 		return true;
 
-	}
+	},
+
+	get_option_value: option_element =>
+		option_element.getAttribute('data-value'),
+
+	get_list_value: list_element =>
+		list_element.getAttribute('data-value'),
+
+	get_list_table_name: list_element =>
+		list_element.getAttribute('data-table'),
+
+	get_list_mapping_type: list_element =>
+		list_element.getAttribute('data-mapping_type'),
+
+	element_is_relationship: element =>
+		element.getAttribute('data_value_is_relationship') === 'true',
 
 };
 

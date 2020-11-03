@@ -70,7 +70,6 @@ const PlanView = Backbone.View.extend({
                         constructor_done_promise.then(mappings=>{
                             this.mappings = mappings;
                             this.mappings.set_headers(headers, PlanView.upload_plan);
-                            mappings_main.render_lists();
                         })
 
                     });

@@ -26,7 +26,7 @@
 }
 
 #screen__mapping.loaded #wbplanview_loading_screen,
-#screen__mapping:not(.loaded) + #wbplanview_content {
+#screen__mapping:not(.loaded) #wbplanview_content {
     display: none;
 }
 
@@ -273,6 +273,10 @@
     cursor: pointer;
 }
 
+.custom_select[data-type="preview_list"] .custom_select_input_label {
+	cursor: initial;
+}
+
 .custom_select_input,
 .custom_select_option {
     display: grid;
@@ -310,6 +314,9 @@
     width: auto;
 	min-width: max-content;
     cursor: pointer;
+}
+
+.custom_select[data-type="closed_list"] .custom_select_options {
     box-shadow: 0 0 calc(0.5 * var(--white_space)) calc(0.5 * var(--white_space)) var(--border);
 	clip-path: inset(0px calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) calc(-1 * var(--white_space)));
 }

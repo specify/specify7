@@ -4,34 +4,20 @@ const schema = require('../schema.js');
 const domain = require('../domain.js');
 const helper = require('./helper.js');
 const html_generator = require('./html_generator.js');
+const mappings = require('./mappings.js');
 
 
 /*
 * Fetches data model with tree ranks and converts them to convenient format
 * */
-const data_model_handler = {
+const data_model = {
+
+	reference_symbol: '#',
+	tree_symbol: '$',
+	new_header_id: 1,
 
 	ranks_queue: {},
-
-	/*
-	* Constructor that get's the references to needed variables from `mappings`. It is called from mappings.constructor
-	* @param {object} ranks - Internal object for storing what ranks are available for particular tables and which ranks are required
-	* @param {array} tables_to_hide - Array of tables that should not be fetched. Also, removes relationships to these tables
-	* @param {string} reference_symbol - String that is used as an indicator of references
-	* @param {string} tree_symbol - String that is used as an indicator of trees
-	* @param {array} required_fields_to_hide - Array of strings that represent official names of fields and relationships that are required and hidden and should remain hidden (required fields can't be hidden otherwise)
-	* */
-	constructor(ranks, tables_to_hide, table_keywords_to_exclude, reference_symbol, tree_symbol, required_fields_to_hide){
-
-		data_model_handler.ranks = ranks;
-		data_model_handler.tables_to_hide = tables_to_hide;
-		data_model_handler.table_keywords_to_exclude = table_keywords_to_exclude;
-		data_model_handler.reference_symbol = reference_symbol;
-		data_model_handler.tree_symbol = tree_symbol;
-		data_model_handler.required_fields_to_hide = required_fields_to_hide;
-		data_model_handler.cache = {};
-
-	},
+	cache: {}, // TODO: replace this with global caching solution
 
 	/*
 	* Fetches data model.
@@ -48,17 +34,17 @@ const data_model_handler = {
 				data_model_html !== null &&
 				ranks !== null
 			){
-				data_model_handler.tables = JSON.parse(tables);
-				data_model_handler.data_model_html = JSON.parse(data_model_html);
-				data_model_handler.ranks = JSON.parse(ranks);
-				done_callback(data_model_handler.data_model_html, data_model_handler.tables, data_model_handler.ranks);
+				data_model.tables = JSON.parse(tables);
+				data_model.data_model_html = JSON.parse(data_model_html);
+				data_model.ranks = JSON.parse(ranks);
+				done_callback(data_model.data_model_html, data_model.tables, data_model.ranks);
 				return;
 			}
 		}
 
 		const table_previews = {};
 
-		data_model_handler.tables = Object.values(schema.models).reduce((tables, table_data) => {
+		data_model.tables = Object.values(schema.models).reduce((tables, table_data) => {
 
 			const table_name = table_data['longName'].split('.').pop().toLowerCase();
 			const table_friendly_name = table_data.getLocalizedName();
@@ -69,7 +55,7 @@ const data_model_handler = {
 
 			if (
 				table_data['system'] ||
-				data_model_handler.tables_to_hide.indexOf(table_name) !== -1
+				data_model.view_payload.tables_to_hide.indexOf(table_name) !== -1
 			)
 				return tables;
 
@@ -86,11 +72,19 @@ const data_model_handler = {
 				let is_required = field.isRequired;
 				let is_hidden = field.isHidden() === 1;
 
-				if (is_hidden)  // required fields should not be hidden
-					if (data_model_handler.required_fields_to_hide.indexOf(field_name) !== -1)  // unless they are present in this list
-						is_required = false;
-					else if (is_required)
-						is_hidden = false;
+				// required fields should not be hidden // unless they are present in this list
+				if (data_model.view_payload.required_fields_to_hide.indexOf(field_name) !== -1){
+					is_required = false;
+					is_hidden = true;
+				}
+				else if (is_hidden && is_required)
+					is_hidden = false;
+
+				if(
+					typeof data_model.view_payload.required_fields_to_be_made_optional[table_name] !== "undefined" &&
+					data_model.view_payload.required_fields_to_be_made_optional[table_name].includes(field_name)
+				)
+					is_required = false;
 
 				const field_data = {
 					friendly_name: friendly_name,
@@ -120,7 +114,7 @@ const data_model_handler = {
 
 					if (
 						field['readOnly'] ||
-						data_model_handler.tables_to_hide.indexOf(table_name) !== -1
+						data_model.view_payload.tables_to_hide.indexOf(table_name) !== -1
 					)
 						continue;
 
@@ -139,7 +133,7 @@ const data_model_handler = {
 			));
 
 
-			if(!data_model_handler.table_keywords_to_exclude.some(table_keyword_to_exclude=>table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
+			if(!data_model.view_payload.table_keywords_to_exclude.some(table_keyword_to_exclude=>table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
 				table_previews[table_name] = table_friendly_name;
 
 			tables[table_name] = {
@@ -148,28 +142,28 @@ const data_model_handler = {
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				data_model_handler.fetch_ranks(table_name, done_callback);
+				data_model.fetch_ranks(table_name, done_callback);
 
 			return tables;
 
 		}, {});
 
 
-		for (const [table_name, table_data] of Object.entries(data_model_handler.tables))  // remove relationships to system tables
+		for (const [table_name, table_data] of Object.entries(data_model.tables))  // remove relationships to system tables
 			for (const [relationship_name, relationship_data] of Object.entries(table_data['fields']))
-				if (relationship_data['is_relationship'] && typeof data_model_handler.tables[relationship_data['table_name']] === "undefined")
-					delete data_model_handler.tables[table_name]['fields'][relationship_name];
+				if (relationship_data['is_relationship'] && typeof data_model.tables[relationship_data['table_name']] === "undefined")
+					delete data_model.tables[table_name]['fields'][relationship_name];
 
 
-		data_model_handler.data_model_html = html_generator.tables(table_previews);
+		data_model.data_model_html = html_generator.tables(table_previews);
 
 		if(typeof localStorage !== "undefined"){
-			localStorage.setItem('specify7_wbplanview_data_model_tables', JSON.stringify(data_model_handler.tables));
-			localStorage.setItem('specify7_wbplanview_data_model_html_tables', JSON.stringify(data_model_handler.data_model_html));
+			localStorage.setItem('specify7_wbplanview_data_model_tables', JSON.stringify(data_model.tables));
+			localStorage.setItem('specify7_wbplanview_data_model_html_tables', JSON.stringify(data_model.data_model_html));
 		}
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
-			done_callback(data_model_handler.data_model_html, data_model_handler.tables);  // so there is no need to wait for ranks to finish fetching
+			done_callback();  // so there is no need to wait for ranks to finish fetching
 
 	},
 
@@ -187,7 +181,7 @@ const data_model_handler = {
 				treeDefItems => {
 					treeDefItems.fetch({limit: 0}).done(() => {
 
-						data_model_handler.ranks[table_name] = Object.values(treeDefItems['models']).reduce((table_ranks, rank) => {
+						data_model.ranks[table_name] = Object.values(treeDefItems['models']).reduce((table_ranks, rank) => {
 
 							const rank_id = rank.get('id');
 
@@ -212,9 +206,9 @@ const data_model_handler = {
 						this.tables[table_name]['fields'] = {'name':this.tables[table_name]['fields']['name']};
 
 						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
-							all_ranks_fetched_callback(data_model_handler.data_model_html, data_model_handler.tables);
+							all_ranks_fetched_callback();
 							if(typeof localStorage !== "undefined")
-								localStorage.setItem('specify7_wbplanview_data_model_ranks', JSON.stringify(data_model_handler.ranks));
+								localStorage.setItem('specify7_wbplanview_data_model_ranks', JSON.stringify(data_model.ranks));
 						}
 
 					});
@@ -242,34 +236,34 @@ const data_model_handler = {
 	* */
 	show_required_missing_ranks(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
 
-		const table_data = data_model_handler.tables[table_name];
+		const table_data = data_model.tables[table_name];
 
 		const list_of_mapped_fields = Object.keys(mapping_tree);
 
 		// handle -to-many references
-		if (list_of_mapped_fields[0].substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol) {
+		if (data_model.value_is_reference_item(list_of_mapped_fields[0])) {
 			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
-				data_model_handler.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
+				data_model.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			}
 			return results;
 		}
 
 		// handle trees
-		else if (typeof data_model_handler.ranks[table_name] !== "undefined") {
+		else if (typeof data_model.ranks[table_name] !== "undefined") {
 
-			const keys = Object.keys(data_model_handler.ranks[table_name]);
+			const keys = Object.keys(data_model.ranks[table_name]);
 			const last_path_element = path.slice(-1)[0];
-			const last_path_element_is_a_rank = last_path_element.substr(0,data_model_handler.tree_symbol.length)===data_model_handler.tree_symbol;
+			const last_path_element_is_a_rank = data_model.value_is_tree_rank(last_path_element);
 
 			if (!last_path_element_is_a_rank)
 				return keys.reduce((results, rank_name) => {
-					const is_rank_required = data_model_handler.ranks[table_name][rank_name];
-					const complimented_rank_name = data_model_handler.tree_symbol + rank_name;
+					const is_rank_required = data_model.ranks[table_name][rank_name];
+					const complimented_rank_name = data_model.tree_symbol + rank_name;
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model_handler.show_required_missing_ranks(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
+						data_model.show_required_missing_ranks(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -292,12 +286,12 @@ const data_model_handler = {
 
 					let previous_relationship_name = local_path.slice(-2)[0];
 					if (
-						previous_relationship_name.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol ||
-						previous_relationship_name.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol
+						data_model.value_is_reference_item(previous_relationship_name) ||
+						data_model.value_is_tree_rank(previous_relationship_name)
 					)
 						previous_relationship_name = local_path.slice(-3)[0];
 
-					const parent_relationship_data = data_model_handler.tables[previous_table_name]['fields'][previous_relationship_name];
+					const parent_relationship_data = data_model.tables[previous_table_name]['fields'][previous_relationship_name];
 
 					if (
 						(  // disable circular relationships
@@ -314,7 +308,7 @@ const data_model_handler = {
 				}
 
 				if(is_mapped)
-					data_model_handler.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
+					data_model.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
 			}
@@ -330,7 +324,7 @@ const data_model_handler = {
 	},
 
 	table_is_tree(table_name){
-		return typeof data_model_handler.ranks[table_name] !== "undefined";
+		return typeof data_model.ranks[table_name] !== "undefined";
 	},
 
 	schema_navigator(payload){
@@ -365,7 +359,7 @@ const data_model_handler = {
 
 
 		if (callbacks.iterate(internal_payload))
-			data_model_handler.schema_navigator_instance({
+			data_model.schema_navigator_instance({
 				table_name: table_name,
 				internal_payload : internal_payload,
 				parent_table_name: parent_table_name,
@@ -401,8 +395,8 @@ const data_model_handler = {
 			const next_path_element = next_path_elements.pop();
 
 			if (
-				data_model_handler.value_is_reference_item(next_path_element_name) ||
-				data_model_handler.value_is_tree_rank(next_path_element_name)
+				data_model.value_is_reference_item(next_path_element_name) ||
+				data_model.value_is_tree_rank(next_path_element_name)
 			) {
 				next_table_name = table_name;
 				next_parent_table_name = parent_table_name;
@@ -412,7 +406,7 @@ const data_model_handler = {
 			}
 
 			if (next_table_name !== '')
-				schema_navigator_results.push(data_model_handler.schema_navigator(
+				schema_navigator_results.push(data_model.schema_navigator(
 					{
 						callbacks: callbacks,
 						recursive_payload: {
@@ -459,10 +453,10 @@ const data_model_handler = {
 
 		if (use_cache){
 
-			if(typeof data_model_handler.cache[cache_name] === "undefined")
-				data_model_handler.cache[cache_name] = {};
+			if(typeof data_model.cache[cache_name] === "undefined")
+				data_model.cache[cache_name] = {};
 
-			const cache = data_model_handler.cache[cache_name][json_payload];
+			const cache = data_model.cache[cache_name][json_payload];
 			if(typeof cache !== "undefined"){
 				callback_payload.data = cache;
 				return callbacks['commit_instance_data'](internal_payload, callback_payload);
@@ -473,16 +467,16 @@ const data_model_handler = {
 
 		const parent_relationship_type =
 			(
-				typeof data_model_handler.tables[parent_table_name] !== "undefined" &&
-				typeof data_model_handler.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
-			) ? data_model_handler.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
+				typeof data_model.tables[parent_table_name] !== "undefined" &&
+				typeof data_model.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
+			) ? data_model.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
 		const children_are_to_many_elements =
-			data_model_handler.relationship_is_to_many(parent_relationship_type)
-			!data_model_handler.value_is_reference_item(parent_table_relationship_name);
+			data_model.relationship_is_to_many(parent_relationship_type)
+			!data_model.value_is_reference_item(parent_table_relationship_name);
 
 		const children_are_ranks =
-			data_model_handler.table_is_tree(table_name) &&
-			!data_model_handler.value_is_tree_rank(parent_table_relationship_name);
+			data_model.table_is_tree(table_name) &&
+			!data_model.value_is_tree_rank(parent_table_relationship_name);
 
 		callback_payload.parent_relationship_type = parent_relationship_type;
 		callback_payload.parent_table_name = parent_table_name;
@@ -500,7 +494,7 @@ const data_model_handler = {
 		callbacks['commit_instance_data'](internal_payload, callback_payload);
 
 		if(cache_name !== false)
-			data_model_handler.cache[cache_name][json_payload] = data;
+			data_model.cache[cache_name][json_payload] = data;
 
 		return data;
 
@@ -511,26 +505,26 @@ const data_model_handler = {
 
 	value_is_reference_item: value =>
 		typeof value !== "undefined" &&
-		value.substr(0, data_model_handler.reference_symbol.length) === data_model_handler.reference_symbol,
+		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol,
 
 	value_is_tree_rank: value =>
 		typeof value !== "undefined" &&
-		value.substr(0, data_model_handler.tree_symbol.length) === data_model_handler.tree_symbol,
+		value.substr(0, data_model.tree_symbol.length) === data_model.tree_symbol,
 
 	get_index_from_reference_item_name: value =>
-		parseInt(value.substr(data_model_handler.reference_symbol.length)),
+		parseInt(value.substr(data_model.reference_symbol.length)),
 
 	get_name_from_tree_rank_name: value =>
-		value.substr(data_model_handler.tree_symbol.length),
+		value.substr(data_model.tree_symbol.length),
 
 	get_max_to_many_value(values){
 		return values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
-			if (!data_model_handler.value_is_reference_item(value))
+			if (!data_model.value_is_reference_item(value))
 				return max;
 
-			const number = data_model_handler.get_index_from_reference_item_name(value);
+			const number = data_model.get_index_from_reference_item_name(value);
 
 			if (number > max)
 				return number;
@@ -540,6 +534,12 @@ const data_model_handler = {
 		}, 0);
 	},
 
+	format_reference_item: rank_name =>
+		data_model.reference_symbol + rank_name,
+
+	format_tree_rank: rank_name =>
+		data_model.tree_symbol + rank_name,
+
 };
 
-module.exports = data_model_handler;
+module.exports = data_model;
