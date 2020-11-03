@@ -197,10 +197,9 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
         assert wb.lockedbyusername is None
 
         taskid = str(uuid4())
+        async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
         wb.lockedbyusername = taskid
         wb.save()
-
-    async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
 
     return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
 
@@ -230,3 +229,18 @@ def upload_status(request, wb_id: int) -> http.HttpResponse:
 
     result = tasks.upload.AsyncResult(wb.lockedbyusername)
     return http.HttpResponse(json.dumps([result.state, result.info]), content_type='application/json')
+
+@login_maybe_required
+@apply_access_control
+@require_POST
+def upload_abort(request, wb_id) -> http.HttpResponse:
+    from . import tasks
+    wb = get_object_or_404(Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
+
+    if wb.lockedbyusername is None:
+        return http.HttpResponse('not running', content_type='text/plain')
+
+    tasks.upload.AsyncResult(wb.lockedbyusername).revoke(terminate=True)
+    return http.HttpResponse('ok', content_type='text/plain')

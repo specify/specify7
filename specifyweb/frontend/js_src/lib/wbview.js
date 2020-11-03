@@ -118,6 +118,8 @@ const WBView = Backbone.View.extend({
         new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
+
+        if (this.uploadStatus) this.openUploadProgress();
         return this;
     },
     setupHOT (colHeaders, columns) {
@@ -505,18 +507,13 @@ const WBView = Backbone.View.extend({
                     }
                 });
             } else {
-                $('<div>Validating...<p>Page will reload when finished.</p></div>').dialog({
-                    title: "Validating...",
-                    modal: true,
-                });
                 $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
                     this.checkDeletedFail(jqxhr);
                 }).done(() => {
-                    window.location.reload();
+                    this.openUploadProgress();
                 });
             }
         });
-        // this.openUploadProgress();
     },
     validateWithMatch: function() {
         this.checkUploaderLock('Validator', () => {
@@ -538,46 +535,34 @@ const WBView = Backbone.View.extend({
         const dialog = this.uploadProgressDialog = $(statusTemplate()).dialog({
             modal: true,
             open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-            close: function() { $(this).remove(); stopRefresh(); }
+            close: function() { $(this).remove(); stopRefresh(); },
+            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/upload_abort/${this.wb.id}/`); }}]
         });
         $('.status td', dialog).text('...');
 
-        const refresh = () => $.get('/api/workbench/upload_status/' + this.wb.id + '/').done(
-            (status) => {
+        const refresh = () => $.get(`/api/workbench/upload_status/${this.wb.id}/`).done(
+            status => {
                 if (this.stopUploadProgressRefresh) {
                     return;
                 } else {
                     window.setTimeout(refresh, refreshTime);
                 }
 
-                if (status == null) return;
-                if (status.no_commit != null) {
-                    dialog.dialog('option', 'title',
-                                  (status.no_commit ? 'Validation' : 'Upload') +
-                                  ' status');
-                }
-                const statusText = status.is_running ? 'Running...'
-                      : status.success ?
-                          (status.no_commit ? 'Validation passed.' : 'Upload succeeded.')
-                      : (status.no_commit ? 'Validation failed.' : 'Upload failed.');
-
-
-                $('.status td', dialog).text(statusText);
-                $('.startTime td', dialog).text(fromNow(status.start_time));
-
-                if (status.last_row == null) {
-                    $('.rows', dialog).hide();
-                } else {
-                    $('.rows', dialog).show();
-                    $('.rows td', dialog).text(`${status.last_row} / ${this.hot.countRows()} (${status.skipped_rows} skipped)`);
-                }
-
-                if (!status.is_running) {
+                if (status == null) {
                     stopRefresh();
                     dialog.dialog('option', 'buttons',
                                   [{text: 'Close', click: function() { $(this).dialog('close'); }}]);
-                    this.uploadStatus = status;
-                    this.processUploadStatus();
+                } else {
+                    const [state, meta] = status;
+
+
+                    $('.status td', dialog).text(state);
+                    if (state === 'PROGRESS') {
+                        $('.rows', dialog).show();
+                        $('.rows td', dialog).text(`${meta.current} / ${this.hot.countRows()}`);
+                    } else {
+                        $('.rows', dialog).hide();
+                    }
                 }
             });
 
@@ -748,7 +733,7 @@ const WBView = Backbone.View.extend({
         navigation_position_element.innerText = 0;
 
         if(!this.navigateCells({target:navigation_button[0]},true))
-            this.navigateCells({target:navigation_button[1]},true)
+            this.navigateCells({target:navigation_button[1]},true);
 
     },
     replaceCells: function(e){
@@ -792,12 +777,14 @@ module.exports = function loadWorkbench(id) {
     var wb = new schema.models.Workbench.Resource({id: id});
     Q(wb.fetch().fail(app.handleError)).then(
         () => Q.all([
-            Q($.get('/api/workbench/rows/' + id + '/')),
+            Q($.get(`/api/workbench/rows/${id}/`)),
+            Q($.get(`/api/workbench/upload_status/${id}/`)),
         ])).spread(function(data, uploadStatus) {
             app.setTitle("WorkBench: " + wb.get('name'));
             app.setCurrentView(new WBView({
                 wb: wb,
                 data: data,
+                uploadStatus: uploadStatus
             }));
         }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };
