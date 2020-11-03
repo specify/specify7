@@ -16,7 +16,7 @@ const cache = {
 	commit_to_storage(){
 
 		for(const [bucket_name, bucket_data] of Object.entries(cache.buckets))
-			if(bucket_data['type'] === 'local_storage' && Object.keys(bucket_data['data']).length !== 0)
+			if(bucket_data['type'] === 'local_storage' && Object.keys(bucket_data['records']).length !== 0)
 				localStorage.setItem(bucket_name, JSON.stringify(bucket_data));
 
 	},
@@ -42,15 +42,15 @@ const cache = {
 				typeof cache.buckets[full_bucket_name] === "undefined" &&
 				!cache.initialize_bucket(full_bucket_name)
 			) ||
-			typeof cache.buckets[full_bucket_name]['data'][cache_name] === "undefined"
+			typeof cache.buckets[full_bucket_name]['records'][cache_name] === "undefined"
 		)
 			return false;
 
 		else {
 
-			cache.buckets[full_bucket_name]['usage']++;
+			cache.buckets[full_bucket_name]['records'][cache_name]['use_count']++;
 
-			return cache.buckets[full_bucket_name]['data'][cache_name];
+			return cache.buckets[full_bucket_name]['records'][cache_name]['value'];
 
 		}
 
@@ -62,13 +62,15 @@ const cache = {
 
 		if(typeof cache.buckets[full_bucket_name] === "undefined"){
 			cache.buckets[full_bucket_name] = {
-				'type': bucket_type,
-				'data': {},
-				'usage': 0,
+				type: bucket_type,
+				records: {},
 			}
 		}
 
-		cache.buckets[full_bucket_name]['data'][cache_name] = cache_value;
+		cache.buckets[full_bucket_name]['records'][cache_name] = {
+			value: cache_value,
+			use_count: 0,
+		};
 
 		cache.trim_bucket(bucket_name);
 
@@ -82,34 +84,34 @@ const cache = {
 		if (
 			(
 				cache.buckets[full_bucket_name]['type'] === 'local_storage' &&
-				Object.keys(cache.buckets[full_bucket_name]).length < cache.local_storage_bucket_soft_limit
+				Object.keys(cache.buckets[full_bucket_name]['records']).length < cache.local_storage_bucket_soft_limit
 			) ||
 			(
 				cache.buckets[full_bucket_name]['type'] === 'session_storage' &&
-				Object.keys(cache.buckets[full_bucket_name]).length < cache.session_storage_bucket_soft_limit
+				Object.keys(cache.buckets[full_bucket_name]['records']).length < cache.session_storage_bucket_soft_limit
 			)
 		)
 			return false;
 
-		const cache_usages = Object.values(cache.buckets[full_bucket_name]['data']).map(({usage}) => usage);
+		const cache_usages = Object.values(cache.buckets[full_bucket_name]['records']).map(({use_count}) => use_count);
 		const total_usage = cache_usages.reduce((total_usage, usage) => {
 			return total_usage + usage;
-		},0)
-		const cache_items_count = cache.buckets[full_bucket_name].length;
+		},0);
+		const cache_items_count = cache_usages.length;
 		const average_usage  = total_usage / cache_items_count;
 		const usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
 
-		console.log('Trimming caches with usage under ' + usage_to_trim)
+		console.log('Trimming caches with usage under ' + usage_to_trim);
 
-		const cache_keys = Object.keys(cache.buckets[full_bucket_name]['data']);
-		for(const [cache_index, cache_usage] of cache_usages){
+		const cache_keys = Object.keys(cache.buckets[full_bucket_name]['records']);
+		for(const [cache_index, cache_usage] of Object.entries(cache_usages)){
 
 			if(cache_usage >= usage_to_trim)
 				continue;
 
 			const cache_key = cache_keys[cache_index];
 
-			cache.buckets[full_bucket_name]['data'][cache_key] = undefined;
+			cache.buckets[full_bucket_name]['records'][cache_key] = undefined;
 
 			console.log('Trimming cache from bucket ' + full_bucket_name + ' under key ' + cache_key);
 
@@ -118,6 +120,13 @@ const cache = {
 		return true;
 
 	},
+
+	wipe_all(){
+
+		cache.buckets = {};
+		localStorage.clear();
+
+	}
 
 };
 
