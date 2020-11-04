@@ -226,9 +226,6 @@ const mappings = {
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
 
-		//flush dom lines cache
-		dom_helper.get_lines(mappings.list__mappings, false, undefined);
-
 		mappings.update_all_lines(mappings_path);
 
 	},
@@ -456,8 +453,6 @@ const mappings = {
 
 		const lines_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
 
-		const unmapped_path_length = 1 + include_headers;
-
 		return mappings.mapped_fields = lines_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
 			const mappings_path = mappings.get_mappings_path({
@@ -467,10 +462,7 @@ const mappings = {
 
 			if (
 				!skip_empty ||
-				(
-					mappings_path.length > unmapped_path_length &&
-					mappings_path[0] !== "0"
-				)
+				mappings_path[mappings_path.length-1] !== "0"
 			)
 				mapped_fields.push(mappings_path);
 

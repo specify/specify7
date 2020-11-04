@@ -13,45 +13,14 @@ const dom_helper = {
 
 	// FIELDS
 
-	get_lines(container, return_line_elements=false, use_cache = true){
-
-		const cache_name = 'lines_' + return_line_elements.toString();
-
-		if(use_cache === undefined){  // flush cache
-			cache.set('dom',cache_name,false, {
-				bucket_type: 'session_storage',
-			});
-			cache.set('dom','lines_' + (!return_line_elements).toString(),false, {
-				bucket_type: 'session_storage',
-			});
-			return;
-		}
-
-		if(use_cache){
-			const lines = cache.get('dom', cache_name);
-			if(lines)
-				return [...lines];
-		}
-
-		// const lines = Object.values(container.children).reduce((lines,line)=>{
-		// 	if(line.innerHTML !== '')
-		// 		lines.push(line);
-		// 	return lines;
-		// },[]);
+	get_lines(container, return_line_elements=false){
 
 		const lines = Object.values(container.children);
-		let result;
 
 		if(return_line_elements)
-			result = lines.map(line=>dom_helper.get_line_elements_container(line));
+			return lines.map(line=>dom_helper.get_line_elements_container(line));
 		else
-			result = lines;
-
-		cache.set('dom',cache_name,result,{
-			bucket_type: 'session_storage',
-		});
-
-		return [...result];
+			return lines;
 
 	},
 

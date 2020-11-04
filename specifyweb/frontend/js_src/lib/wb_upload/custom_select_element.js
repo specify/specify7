@@ -390,10 +390,13 @@ const custom_select_element = {
 		if(option_name === '0')
 			return;
 
-		const option = list.querySelector('.custom_select_option[data-value="' + option_name + '"]');
+		const options = Object.values(list.getElementsByClassName('custom_select_option'));
+		const option = options.filter(option=>
+			option.getAttribute('data-value')===option_name
+		)[0];
 
 		//don't do anything if can't find the requested option
-		if(option === null)
+		if(typeof option === "undefined")
 			return;
 
 		if (action === 'enable')
