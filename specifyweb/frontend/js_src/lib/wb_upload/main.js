@@ -44,6 +44,7 @@ const main = {
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
 			mappings.cached_mappings_line_data = {};
+			mappings.lines = [];
 
 
 			// SETTING EVENT LISTENERS
@@ -90,6 +91,7 @@ const main = {
 
 			const done_callback = ()=> {
 				mappings.container.classList.add('loaded');
+				this.constructor_has_run = true;
 				resolve(mappings);
 			};
 
@@ -97,7 +99,7 @@ const main = {
 			if (!this.constructor_has_run)
 				main.constructor_first_run(done_callback, save_plan_function);
 			else
-				mappings.list__tables.innerHTML = mappings.data_model_html; //TODO: use cache module here instead
+				mappings.list__tables.innerHTML = data_model.html_tables;
 
 
 			custom_select_element.set_event_listeners(mappings.container, mappings.custom_select_change_event);
@@ -158,14 +160,10 @@ const main = {
 		// fetch data model
 		data_model.fetch_tables(() => {
 
-			mappings.data_model_html = data_model.data_model_html;  // TODO: replace with global caching module
-			mappings.list__tables.innerHTML = data_model.data_model_html;
-
-			this.constructor_has_run = true;
+			mappings.list__tables.innerHTML = data_model.html_tables;
 			done_callback();
 
 		});
-		mappings.data_model = data_model;
 
 		main.save_plan = save_plan_function;
 

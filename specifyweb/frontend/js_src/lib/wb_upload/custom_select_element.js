@@ -1,14 +1,14 @@
 "use strict";
 
 
-const custom_select_element = {
+const cache = require('./cache.js');
 
-	// TODO: integrate caching solutions
-	cached_select_elements: {},
+const custom_select_element = {
 
 	// TODO: set proper table icons URL
 	table_icons_base_path: '',
 	table_icons_extension: '',
+	cache_bucket_name: 'select_elements',
 
 
 	// generators
@@ -22,10 +22,19 @@ const custom_select_element = {
 			select_groups_data = []
 		} = select_data;
 
-		const string_payload = JSON.stringify([select_data, custom_select_type]);
 
-		if(use_cached && typeof custom_select_element.cached_select_elements[string_payload] !== "undefined")
-			return custom_select_element.cached_select_elements[string_payload];
+		//making a copy of payload with all options enabled
+		const select_data_copy = JSON.parse(JSON.stringify(select_data));
+		for(const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
+			for(const option_name of Object.keys(group_data['select_options_data']))
+				select_data_copy['select_groups_data'][group_name]['select_options_data'][option_name]['is_enabled'] = false;
+		const cache_key = JSON.stringify([custom_select_type,select_data_copy]);
+
+		if(cache_key && use_cached) {
+			const data = cache.get(custom_select_element.cache_bucket_name, cache_key);
+			if(data)
+				return data;
+		}
 
 		let default_name = 0;
 		let header = '';
@@ -93,7 +102,7 @@ const custom_select_element = {
 				).join('');
 
 
-		return custom_select_element.cached_select_elements[string_payload] = `<span
+		const result = `<span
 				class="custom_select"
 				title="` + select_label + `"
 				data-name="` + select_name + `"
@@ -111,6 +120,12 @@ const custom_select_element = {
 				+ `
 			</span>
 		</span>`;
+
+		if(cache_key)
+			cache.set(custom_select_element.cache_bucket_name,cache_key,result);
+
+		return result;
+
 	},
 
 	new_select_group_html(select_group_data){

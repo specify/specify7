@@ -8,7 +8,7 @@
 
 
 const data_model = require('./data_model.js');
-let mappings = require('./mappings.js');
+const mappings = require('./mappings.js');
 
 const upload_plan_converter = {
 

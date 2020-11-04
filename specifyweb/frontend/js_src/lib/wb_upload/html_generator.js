@@ -55,7 +55,13 @@ const html_generator = {
 		*
 		* */
 
-		const {line_data, header_data: {mapping_type, header_name}} = mappings_line_data;
+		const {
+			line_data,
+			header_data: {
+				mapping_type,
+				header_name
+			}
+		} = mappings_line_data;
 
 		let header_html;
 		if(mapping_type === 'new_static_column')
@@ -74,9 +80,14 @@ const html_generator = {
 				</div>`;
 	},
 
-	mapping_path(mappings_line_data, custom_select_type='closed_list', use_cached=false){
-		return mappings_line_data.map(mapping_details => html_generator.mapping_element(mapping_details, custom_select_type, use_cached)).join('');
-	},
+	mapping_path: (mappings_line_data, custom_select_type='closed_list', use_cached=false) =>
+		mappings_line_data.map(mapping_details =>
+			html_generator.mapping_element(
+				mapping_details,
+				custom_select_type,
+				use_cached,
+			)
+		).join(''),
 
 	mapping_element(mapping_details, custom_select_type='closed_list', use_cached=false){
 

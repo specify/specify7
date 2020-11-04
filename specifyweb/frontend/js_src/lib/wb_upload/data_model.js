@@ -4,7 +4,7 @@ const schema = require('../schema.js');
 const domain = require('../domain.js');
 const helper = require('./helper.js');
 const html_generator = require('./html_generator.js');
-const mappings = require('./mappings.js');
+const cache = require('./cache.js');
 
 
 /*
@@ -17,7 +17,6 @@ const data_model = {
 	new_header_id: 1,
 
 	ranks_queue: {},
-	cache: {}, // TODO: replace this with global caching solution
 
 	/*
 	* Fetches data model.
@@ -26,20 +25,13 @@ const data_model = {
 	fetch_tables(done_callback){
 
 		if(typeof localStorage !== "undefined"){
-			const tables = localStorage.getItem('specify7_wbplanview_data_model_tables');
-			const data_model_html = localStorage.getItem('specify7_wbplanview_data_model_html_tables');
-			const ranks = localStorage.getItem('specify7_wbplanview_data_model_ranks');
-			if(
-				tables !== null &&
-				data_model_html !== null &&
-				ranks !== null
-			){
-				data_model.tables = JSON.parse(tables);
-				data_model.data_model_html = JSON.parse(data_model_html);
-				data_model.ranks = JSON.parse(ranks);
-				done_callback(data_model.data_model_html, data_model.tables, data_model.ranks);
-				return;
-			}
+			data_model.tables = cache.get('data_model','tables');
+			data_model.html_tables = cache.get('data_model','html_tables');
+			data_model.ranks = cache.get('data_model','ranks');
+			if(data_model.tables && data_model.html_tables && data_model.ranks)
+				return done_callback();
+			else
+				data_model.ranks = {};
 		}
 
 		const table_previews = {};
@@ -154,13 +146,9 @@ const data_model = {
 				if (relationship_data['is_relationship'] && typeof data_model.tables[relationship_data['table_name']] === "undefined")
 					delete data_model.tables[table_name]['fields'][relationship_name];
 
-
-		data_model.data_model_html = html_generator.tables(table_previews);
-
-		if(typeof localStorage !== "undefined"){
-			localStorage.setItem('specify7_wbplanview_data_model_tables', JSON.stringify(data_model.tables));
-			localStorage.setItem('specify7_wbplanview_data_model_html_tables', JSON.stringify(data_model.data_model_html));
-		}
+		data_model.html_tables = html_generator.tables(table_previews);
+		cache.set('data_model','html_tables', data_model.html_tables);
+		cache.set('data_model','tables', data_model.tables);
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
 			done_callback();  // so there is no need to wait for ranks to finish fetching
@@ -207,8 +195,7 @@ const data_model = {
 
 						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback();
-							if(typeof localStorage !== "undefined")
-								localStorage.setItem('specify7_wbplanview_data_model_ranks', JSON.stringify(data_model.ranks));
+							cache.set('data_model','ranks', data_model.ranks);
 						}
 
 					});
@@ -453,12 +440,9 @@ const data_model = {
 
 		if (use_cache){
 
-			if(typeof data_model.cache[cache_name] === "undefined")
-				data_model.cache[cache_name] = {};
-
-			const cache = data_model.cache[cache_name][json_payload];
-			if(typeof cache !== "undefined"){
-				callback_payload.data = cache;
+			const cached_data = cache.get(cache_name, json_payload);
+			if(cached_data){
+				callback_payload.data = cached_data;
 				return callbacks['commit_instance_data'](internal_payload, callback_payload);
 			}
 		}
@@ -494,7 +478,7 @@ const data_model = {
 		callbacks['commit_instance_data'](internal_payload, callback_payload);
 
 		if(cache_name !== false)
-			data_model.cache[cache_name][json_payload] = data;
+			cache.set(cache_name, json_payload, data);
 
 		return data;
 

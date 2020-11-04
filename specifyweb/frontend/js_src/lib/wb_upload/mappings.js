@@ -44,7 +44,7 @@ const mappings = {
 	* 					OR
 	* 				   {string} event - name of the table to set
 	* */
-	set_table(table_name){
+	set_table(table_name, headers_to_shadow_define=[]){
 
 		this.container.classList.remove('loaded');
 
@@ -79,6 +79,10 @@ const mappings = {
 							header_name: header,
 						},
 					};
+
+					if(headers_to_shadow_define.indexOf(header) !== -1)
+						mapping_line_data['line_data'] = [];
+
 					const mapping_line_html = html_generator.mapping_line(mapping_line_data, true);
 
 					result_lines.push(mapping_line_html);
@@ -131,18 +135,24 @@ const mappings = {
 		this.headers = Object.fromEntries(headers.map(header_name => [header_name, false]));
 
 		if (upload_plan !== false) {
+
 			let mappings_tree = '';
 			const {baseTableName: base_table_name} = upload_plan;
 
-			mappings.set_table(base_table_name);
-
 			mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(upload_plan);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
+			const defined_headers = array_of_mappings.filter(({header_data: {mapping_type}})=>
+				mapping_type==="existing_header"
+			).map(({header_data: {header_name}})=>
+				header_name
+			);
+
+			mappings.set_table(base_table_name, defined_headers);
 			mappings.implement_array_of_mappings(array_of_mappings);
 		} else
 			mappings.need_to_define_lines = true;
 
-		mappings.need_to_run_automapper = headers_defined;
+		mappings.need_to_run_automapper = headers_defined && upload_plan === false;
 
 	},
 
@@ -207,6 +217,9 @@ const mappings = {
 		};
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
+
+		//flush dom lines cache
+		dom_helper.get_lines(mappings.list__mappings, false, undefined);
 
 		mappings.update_all_lines(mappings_path);
 
@@ -274,7 +287,7 @@ const mappings = {
 				internal_payload.default_value = (typeof internal_payload.next_mapping_path_element !== "undefined" ? internal_payload.next_mapping_path_element : "0");
 
 				internal_payload.current_mapping_path_part = internal_payload.mappings_path[internal_payload.mappings_path_position];
-				internal_payload.result_fields = [];
+				internal_payload.result_fields = {};
 				internal_payload.mapped_fields = Object.keys(mappings.get_mapped_fields(local_mappings_path));
 			},
 
@@ -800,7 +813,7 @@ const mappings = {
 							table_name: list_table,
 						};
 
-						mappings.custom_select_element.add_option(target_select_element, -2, option_data, false);
+						custom_select_element.add_option(target_select_element, -2, option_data, false);
 
 						max_value++;
 
@@ -909,7 +922,7 @@ const mappings = {
 			const line_elements = dom_helper.get_line_elements(line);
 			const last_custom_select = line_elements.pop();
 
-			this.custom_select_element.change_selected_option(last_custom_select, '0');
+			custom_select_element.change_selected_option(last_custom_select, '0');
 
 		}
 

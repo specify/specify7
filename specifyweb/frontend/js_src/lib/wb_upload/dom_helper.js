@@ -6,23 +6,48 @@
 *
 * */
 
+const cache = require('./cache.js');
+
 const dom_helper = {
 
 
 	// FIELDS
 
-	get_lines(container, return_line_elements=false){
+	get_lines(container, return_line_elements=false, use_cache = true){
 
-		const lines = Object.values(container.children).reduce((lines,line)=>{
-			if(line.innerHTML !== '')
-				lines.push(line);
-			return lines;
-		},[]);
+		const cache_name = 'lines_' + return_line_elements.toString();
+
+		if(use_cache === undefined){  // flush cache
+			cache.set('dom',cache_name,false);
+			cache.set('dom','lines_' + (!return_line_elements).toString(),false);
+			return;
+		}
+
+		if(use_cache){
+			const lines = cache.get('dom', cache_name);
+			if(lines)
+				return lines;
+		}
+
+		// const lines = Object.values(container.children).reduce((lines,line)=>{
+		// 	if(line.innerHTML !== '')
+		// 		lines.push(line);
+		// 	return lines;
+		// },[]);
+
+		const lines = container.children;
+		let result;
 
 		if(return_line_elements)
-			return lines.map(line=>dom_helper.get_line_elements_container(line));
+			result = lines.map(line=>dom_helper.get_line_elements_container(line));
 		else
-			return lines;
+			result = lines;
+
+		cache.set('dom',cache_name,result,{
+			'storage_type': 'session_storage',
+		});
+
+		return result;
 
 	},
 
