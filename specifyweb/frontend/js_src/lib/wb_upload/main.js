@@ -40,11 +40,12 @@ const main = {
 			mappings.hide_hidden_fields = true;
 			mappings.hide_mapping_view = false;
 			mappings.headers = {};
-			mappings.base_table_name = undefined;
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
 			mappings.cached_mappings_line_data = {};
 			mappings.lines = [];
+			data_model.base_table_name = undefined;
+			upload_plan_converter.get_mappings_tree = mappings.get_mappings_tree.bind(mappings);
 
 
 			// SETTING EVENT LISTENERS
@@ -174,7 +175,7 @@ const main = {
 	* */
 	validate(){
 
-		const validation_results = data_model.show_required_missing_ranks(mappings.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model.show_required_missing_ranks(data_model.base_table_name, mappings.get_mappings_tree());
 
 		if (validation_results.length === 0)
 			return true;

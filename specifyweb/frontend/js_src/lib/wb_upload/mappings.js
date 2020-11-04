@@ -52,7 +52,7 @@ const mappings = {
 
 			this.title__table_name.innerText = data_model.tables[table_name]['table_friendly_name'];
 
-			this.base_table_name = table_name;
+			data_model.base_table_name = table_name;
 
 			this.tree = {};
 			this.changes_made = true;
@@ -94,7 +94,7 @@ const mappings = {
 			}
 
 			if (mappings.need_to_run_automapper) {
-				const mappings_object = auto_mapper.map(Object.keys(this.headers), this.base_table_name);
+				const mappings_object = auto_mapper.map(Object.keys(this.headers), data_model.base_table_name);
 				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) => {
 					return {
 						mapping_path: mapping_path,
@@ -161,7 +161,7 @@ const mappings = {
 	* */
 	reset_table(){
 
-		if (typeof this.base_table_name === "undefined")
+		if (typeof data_model.base_table_name === "undefined")
 			return;
 
 		this.container.classList.remove('table_selected');
@@ -169,7 +169,7 @@ const mappings = {
 
 		this.list__mappings.innerHTML = '';
 
-		this.base_table_name = undefined;
+		data_model.base_table_name = undefined;
 
 		//TODO: uncomment this before production
 		//navigation.removeUnloadProtect(this);
@@ -251,7 +251,7 @@ const mappings = {
 
 		const callbacks = {
 			get_base_table: () =>
-				mappings.base_table_name,
+				data_model.base_table_name,
 
 			iterate: internal_payload =>
 				(
@@ -448,12 +448,18 @@ const mappings = {
 
 	get_array_of_mappings(include_headers = false, skip_empty = true){
 
-		if (!include_headers && !mappings.changes_made)
+		if (!include_headers && !mappings.changes_made){
+			mappings.changes_made = false;
 			return mappings.mapped_fields;
+		}
 
-		const lines_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
+		let index_shift = 1;
+		if(include_headers)
+			index_shift++;
 
-		return mappings.mapped_fields = lines_elements_containers.reduce((mapped_fields, line_elements_container) => {
+		const line_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
+
+		return mappings.mapped_fields = line_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
 			const mappings_path = mappings.get_mappings_path({
 				line_elements_container: line_elements_container,
@@ -462,7 +468,7 @@ const mappings = {
 
 			if (
 				!skip_empty ||
-				mappings_path[mappings_path.length-1] !== "0"
+				mappings_path[mappings_path.length-index_shift] !== "0"
 			)
 				mapped_fields.push(mappings_path);
 

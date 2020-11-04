@@ -8,7 +8,6 @@
 
 
 const data_model = require('./data_model.js');
-const mappings = require('./mappings.js');
 
 const upload_plan_converter = {
 
@@ -40,7 +39,7 @@ const upload_plan_converter = {
 	upload_plan_to_mappings_tree(upload_plan, base_table_name_extracted = false){
 
 		if (base_table_name_extracted === false) {
-			mappings.base_table_name = upload_plan['baseTableName'];
+			data_model.base_table_name = upload_plan['baseTableName'];
 
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
 		} else if (typeof upload_plan['uploadTable'] !== "undefined")
@@ -58,19 +57,19 @@ const upload_plan_converter = {
 	},
 
 	get_upload_plan: () =>
-		upload_plan_converter.mappings_tree_to_upload_plan(mappings.get_mappings_tree(true)),
+		upload_plan_converter.mappings_tree_to_upload_plan(upload_plan_converter.get_mappings_tree(true)),
 
 	/*
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
-	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used. Else, result of mappings.get_mappings_tree() would be used
+	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used
 	* @return {string} Upload plan as a JSON string
 	* */
 	mappings_tree_to_upload_plan(mappings_tree){
 
 		const upload_plan = {};
 
-		upload_plan['baseTableName'] = mappings.base_table_name;
+		upload_plan['baseTableName'] = data_model.base_table_name;
 
 
 		function handle_table(table_data, table_name, wrap_it = true){
@@ -80,7 +79,7 @@ const upload_plan_converter = {
 				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
 					const new_tree_key = data_model.get_name_from_tree_rank_name(tree_key);
-					let name = Object.keys(tree_rank_data['name'])[0];
+					let name = tree_rank_data['name'];
 
 					if (typeof name === 'object')  // handle static records
 						({static: name} = name);
@@ -168,7 +167,7 @@ const upload_plan_converter = {
 		}
 
 
-		upload_plan['uploadable'] = handle_table(mappings_tree, mappings.base_table_name);
+		upload_plan['uploadable'] = handle_table(mappings_tree, data_model.base_table_name);
 
 		return JSON.stringify(upload_plan, null, "\t");
 
