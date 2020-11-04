@@ -262,13 +262,31 @@ const custom_select_element = {
 
 	resize_elements(lists){
 		new Promise((resolve)=>{
+			resolve();
+
 			for (const list of lists) {
 				const list_input = list.getElementsByClassName('custom_select_input')[0];
-				const list_options = list.getElementsByClassName('custom_select_options')[0];
-				if (typeof list_input !== "undefined" && typeof list_options !== "undefined")
-					list.style.setProperty('--base_width', list_options.offsetWidth + 'px');
+
+				if (typeof list_input === "undefined")
+					continue;
+
+				const list_value = custom_select_element.get_list_value(list);
+				let width = cache.get('custom_select_width',list_value);
+
+				if(width===false){
+					const list_options = list.getElementsByClassName('custom_select_options')[0];
+					if(typeof list_options === "undefined")
+						continue;
+
+					width = list_options.offsetWidth;
+				}
+
+				list.style.setProperty('--base_width',  width+ 'px');
+
+				cache.set('custom_select_width',list_value,width,{
+					bucket_type: 'session_storage',
+				})
 			}
-			resolve();
 		});
 	},
 

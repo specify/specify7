@@ -105,7 +105,7 @@ const html_generator = {
 			hidden_fields: 'Hidden Fields',
 		};
 
-		const field_groups = Object.fromEntries(Object.entries(field_group_labels).map(([field_group_label,]) =>
+		const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
 			[field_group_label, []]
 		));
 

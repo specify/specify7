@@ -2,6 +2,7 @@
 
 let auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
 let data_model = require('./data_model.js');
+let cache = require('./cache.js');
 
 /*
 *
@@ -61,6 +62,12 @@ const auto_mapper = {
 	* */
 	map(raw_headers, base_table){
 
+		const payload = JSON.stringify([raw_headers,base_table]);
+
+		const cached_data = cache.get('automapper',payload);
+		if(cached_data)
+			return cached_data;
+
 		if(!auto_mapper.mapped_definitions_were_converted)
 			auto_mapper.auto_mapper_definitions_to_lower_case();
 
@@ -107,7 +114,11 @@ const auto_mapper = {
 
 		}
 
-		return Object.entries(this.results);
+		const result = Object.entries(this.results);
+
+		cache.set('automapper',payload,result);
+
+		return result;
 
 	},
 
@@ -339,7 +350,7 @@ const auto_mapper = {
 		}
 
 
-		const relationships = Object.entries(table_data['fields']).filter(([_, {is_hidden, is_relationship}]) =>
+		const relationships = Object.entries(table_data['fields']).filter(([, {is_hidden, is_relationship}]) =>
 			!is_hidden && is_relationship
 		);
 

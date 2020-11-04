@@ -46,9 +46,9 @@ const mappings = {
 	* */
 	set_table(table_name, headers_to_shadow_define=[]){
 
-		this.container.classList.remove('loaded');
-
 		new Promise((resolve) => {
+
+			this.container.classList.remove('loaded');
 
 			this.title__table_name.innerText = data_model.tables[table_name]['table_friendly_name'];
 
@@ -110,11 +110,11 @@ const mappings = {
 
 			resolve();
 
-		}).then(() => {
 			this.container.classList.add('loaded');
 			this.container.classList.add('table_selected');
 
 			custom_select_element.onload(mappings.list__mappings);
+
 		});
 
 	},
@@ -746,6 +746,8 @@ const mappings = {
 	update_all_lines(mapping_path_filter = null)	{
 
 		new Promise((resolve) => {
+			resolve();
+
 			const lines = dom_helper.get_lines(mappings.list__mappings, true);
 
 			//update the mapping view too if it is not hidden
@@ -764,8 +766,6 @@ const mappings = {
 				for (const line of lines)
 					mappings.update_line(line, filter);
 
-			resolve();
-
 		});
 
 	},
@@ -773,6 +773,9 @@ const mappings = {
 	update_line(line_elements_container, filter_mapping_path = null){
 
 		new Promise((resolve) => {
+
+			resolve();
+
 			const mapping_path = mappings.get_mappings_path({
 				line_elements_container: line_elements_container,
 			});
@@ -834,8 +837,6 @@ const mappings = {
 
 
 			}
-
-			resolve();
 
 		});
 
