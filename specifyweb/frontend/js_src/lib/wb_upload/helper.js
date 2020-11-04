@@ -82,8 +82,10 @@ const helper = {
 		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path=>mapping_path.join());
 
 		const duplicate_indexes = [];
-		let index = 0;
+		let index = -1;
 		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path)=>{
+
+			index++;
 
 			if(string_mapping_path==='')
 				return dictionary_of_mappings;
@@ -93,7 +95,6 @@ const helper = {
 			else
 				duplicate_indexes.push(index);
 
-			index++;
 			return dictionary_of_mappings;
 
 		},{});

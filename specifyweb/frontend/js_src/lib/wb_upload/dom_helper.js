@@ -18,15 +18,19 @@ const dom_helper = {
 		const cache_name = 'lines_' + return_line_elements.toString();
 
 		if(use_cache === undefined){  // flush cache
-			cache.set('dom',cache_name,false);
-			cache.set('dom','lines_' + (!return_line_elements).toString(),false);
+			cache.set('dom',cache_name,false, {
+				bucket_type: 'session_storage',
+			});
+			cache.set('dom','lines_' + (!return_line_elements).toString(),false, {
+				bucket_type: 'session_storage',
+			});
 			return;
 		}
 
 		if(use_cache){
 			const lines = cache.get('dom', cache_name);
 			if(lines)
-				return lines;
+				return [...lines];
 		}
 
 		// const lines = Object.values(container.children).reduce((lines,line)=>{
@@ -35,7 +39,7 @@ const dom_helper = {
 		// 	return lines;
 		// },[]);
 
-		const lines = container.children;
+		const lines = Object.values(container.children);
 		let result;
 
 		if(return_line_elements)
@@ -44,10 +48,10 @@ const dom_helper = {
 			result = lines;
 
 		cache.set('dom',cache_name,result,{
-			'storage_type': 'session_storage',
+			bucket_type: 'session_storage',
 		});
 
-		return result;
+		return [...result];
 
 	},
 

@@ -232,7 +232,7 @@ const custom_select_element = {
 					list.classList.remove('custom_select_open');
 
 			//recalculate width of each object
-			custom_select_element.resize_elements(lists);
+			//custom_select_element.resize_elements(lists);
 
 			if (current_list !== null) {
 
@@ -261,12 +261,15 @@ const custom_select_element = {
 	},
 
 	resize_elements(lists){
-		for (const list of lists) {
-			const list_input = list.getElementsByClassName('custom_select_input')[0];
-			const list_options = list.getElementsByClassName('custom_select_options')[0];
-			if (typeof list_input !== "undefined" && typeof list_options !== "undefined")
-				list.style.setProperty('--base_width', list_options.offsetWidth + 'px');
-		}
+		new Promise((resolve)=>{
+			for (const list of lists) {
+				const list_input = list.getElementsByClassName('custom_select_input')[0];
+				const list_options = list.getElementsByClassName('custom_select_options')[0];
+				if (typeof list_input !== "undefined" && typeof list_options !== "undefined")
+					list.style.setProperty('--base_width', list_options.offsetWidth + 'px');
+			}
+			resolve();
+		});
 	},
 
 

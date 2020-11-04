@@ -28,7 +28,7 @@ const mappings = {
 			return false;
 
 		Object.values(array_of_mappings).map(header_data =>
-			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'])
+			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'], false)
 		);
 
 		this.changes_made = true;
@@ -182,28 +182,36 @@ const mappings = {
 
 	// FUNCTIONS
 
-	add_new_mapping_line(position = -1, mappings_path = [], header_data){
+	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
-		//before adding new header, check if it already present
-		const {header_name} = header_data;
-		const header_index = Object.keys(this.headers).indexOf(header_name);
-		let new_mapping_line = lines[header_index];
+		let new_mapping_line;
 
-		//find position for new header
-		if (typeof new_mapping_line === "undefined") {
-
+		if(blind_add_back){
 			new_mapping_line = document.createElement('div');
+			mappings.list__mappings.appendChild(new_mapping_line);
+		}
+		else {
+			//before adding new header, check if it is already present
+			const {header_name} = header_data;
+			const header_index = Object.keys(this.headers).indexOf(header_name);
+			new_mapping_line = lines[header_index];
 
-			if (position < -1)
-				position = lines.length + 1 + position;
+			//find position for new header
+			if (typeof new_mapping_line === "undefined") {
 
-			if (position >= lines.length)
-				mappings.list__mappings.appendChild(new_mapping_line);
-			else
-				mappings.list__mappings.insertBefore(new_mapping_line, lines[position]);
+				new_mapping_line = document.createElement('div');
 
+				if (position < -1)
+					position = lines.length + 1 + position;
+
+				if (position >= lines.length)
+					mappings.list__mappings.appendChild(new_mapping_line);
+				else
+					mappings.list__mappings.insertBefore(new_mapping_line, lines[position]);
+
+			}
 		}
 
 		const line_data = mappings.get_mapping_line_data_from_mappings_path({
@@ -441,7 +449,7 @@ const mappings = {
 
 	},
 
-	get_all_mapped_fields(include_headers = false){
+	get_array_of_mappings(include_headers = false, skip_empty = true){
 
 		if (!include_headers && !mappings.changes_made)
 			return mappings.mapped_fields;
@@ -457,7 +465,13 @@ const mappings = {
 				include_headers: include_headers
 			});
 
-			if (mappings_path.length > unmapped_path_length || mappings_path[0] !== "0")
+			if (
+				!skip_empty ||
+				(
+					mappings_path.length > unmapped_path_length &&
+					mappings_path[0] !== "0"
+				)
+			)
 				mapped_fields.push(mappings_path);
 
 			return mapped_fields;
@@ -470,7 +484,7 @@ const mappings = {
 			return mappings.mappings_tree;
 
 		return mappings.mappings_tree = tree_helpers.array_of_mappings_to_mappings_tree(
-			mappings.get_all_mapped_fields(include_headers),
+			mappings.get_array_of_mappings(include_headers),
 			include_headers
 		);
 	},
@@ -502,6 +516,10 @@ const mappings = {
 			if (exclude_unmapped && path[path.length - 1] === "0")
 				path = [];
 
+			else if(path.length === 0)
+				path = ["0"];
+
+
 			if (exclude_non_relationship_values) {
 				const is_relationship = custom_select_element.element_is_relationship(element);
 
@@ -514,6 +532,7 @@ const mappings = {
 				const header_name = dom_helper.get_line_header(line);
 				return [...path, header_name];
 			}
+
 			return path;
 		};
 
@@ -732,12 +751,12 @@ const mappings = {
 
 	//HELPERS
 
-	update_all_lines(mapping_path_filter = null){
+	update_all_lines(mapping_path_filter = null)	{
 
 		new Promise((resolve) => {
 			const lines = dom_helper.get_lines(mappings.list__mappings, true);
 
-			//don't update the mapping view if it is hidden
+			//update the mapping view too if it is not hidden
 			if (!mappings.hide_mapping_view)
 				lines.push(mappings.mapping_view);
 
@@ -751,7 +770,7 @@ const mappings = {
 
 			for (const filter of filters)
 				for (const line of lines)
-					mappings.update_line(line, mapping_path_filter);
+					mappings.update_line(line, filter);
 
 			resolve();
 
@@ -766,6 +785,9 @@ const mappings = {
 				line_elements_container: line_elements_container,
 			});
 			const select_elements = dom_helper.get_line_elements(line_elements_container);
+
+			if(select_elements.length === 0)
+				return resolve();
 
 			const update_mapped_fields = (select_element, mapped_fields) => {
 				custom_select_element.enable_disabled_options(select_element);
@@ -783,10 +805,8 @@ const mappings = {
 			else {
 
 				const intersection_point = helper.find_array_divergence_point(mapping_path, filter_mapping_path);
-				if (intersection_point === -1) {
-					resolve();
-					return;
-				}
+				if (intersection_point === -1)
+					return resolve();
 
 				const mapped_fields = mappings.get_mapped_fields(filter_mapping_path);
 				const target_select_element = select_elements[intersection_point];
@@ -907,7 +927,7 @@ const mappings = {
 
 	deduplicate_mappings(){
 
-		const array_of_mappings = mappings.get_all_mapped_fields();
+		const array_of_mappings = mappings.get_array_of_mappings(false, false);
 		const duplicate_mapping_indexes = helper.find_duplicate_mappings(array_of_mappings);
 		const lines = dom_helper.get_lines(mappings.list__mappings, true);
 
