@@ -1,51 +1,42 @@
-<div id="wbplanview_loading_screen">
-    Loading...
-</div>
+<div id="wbplanview_header">
 
-<div id="wbplanview_content">
-
-    <div id="wbplanview_header">
-
-        <div id="wbplanview_table_header">
-            <span id="title__table_name"></span>
-                <button id="button__change_table" class="visible_when_table_selected">Change table</button>
-                <button id="button__toggle_mapping_view" class="visible_when_table_selected">Toggle Mapping View</button>
-            </span>
-        </div>
-
-        <div id="wbplanview_mapping_header">
-            <button id="button__validate_upload_plan" class="visible_when_table_selected">Validate</button>
-            <button id="button__save_upload_plan" class="visible_when_table_selected">Save</button>
-            <button id="button__discard_changes">Cancel</button>
-        </div>
-
+    <div id="wbplanview_table_header">
+        <span id="title__table_name"></span>
+        <button id="button__change_table" class="visible_when_table_selected">Change table</button>
+        <button id="button__toggle_mapping_view" class="visible_when_table_selected">Toggle Mapping View</button>
     </div>
 
-    <div id="wbplanview_container">
+    <div id="wbplanview_mapping_header">
+        <button id="button__validate_upload_plan" class="visible_when_table_selected">Validate</button>
+        <button id="button__save_upload_plan" class="visible_when_table_selected">Save</button>
+        <button id="button__discard_changes">Cancel</button>
+    </div>
 
-        <div id="list__tables"></div>
+</div>
 
-        <div id="mapping_content">
+<div id="wbplanview_container">
 
-            <div id="mapping_view_parent">
-                <div id="mapping_view_container">
-                    <div id="mapping_view"></div>
-                </div>
-                <button id="wbplanview_mapping_view_map_button">Map</button>
+    <div id="list__tables"></div>
+
+    <div id="mapping_content">
+
+        <div id="mapping_view_parent">
+            <div id="mapping_view_container">
+                <div id="mapping_view"></div>
             </div>
+            <button id="wbplanview_mapping_view_map_button">Map</button>
+        </div>
 
-            <div id="list__mappings"></div>
+        <div id="list__mappings"></div>
 
-            <div id="mappings_control_panel">
+        <div id="mappings_control_panel">
 
-                <button id="add_mapping" title="Add new mapping"><img src="../../../static/img/add.svg" alt="Map"></button>
+            <button id="add_mapping" title="Add new mapping"><img src="../../../static/img/add.svg" alt="Map"></button>
 
-                <label>
-                    <input type="checkbox" id="checkbox__toggle_hidden_fields">
-                    Reveal hidden fields
-                </label>
-
-            </div>
+            <label>
+                <input type="checkbox" id="checkbox__toggle_hidden_fields">
+                Reveal hidden fields
+            </label>
 
         </div>
 

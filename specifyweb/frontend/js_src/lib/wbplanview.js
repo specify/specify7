@@ -68,9 +68,8 @@ const PlanView = Backbone.View.extend({
                         const constructor_done_promise = mappings_main.constructor(this.save_plan.bind(this));
 
                         constructor_done_promise.then(mappings=>{
-                            this.mappings = mappings;
-                            this.mappings.set_headers(headers, PlanView.upload_plan);
-                        })
+                            mappings.set_headers(headers, PlanView.upload_plan);
+                        });
 
                     });
             });

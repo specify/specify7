@@ -14,7 +14,7 @@
     display: grid;
     grid-template-rows: auto auto 1fr auto auto;
     grid-gap: 1rem;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 130px); /* TODO: replace with a permanent solution */
 }
 
 #screen__mapping:not(.table_selected) {
@@ -38,7 +38,6 @@
 }
 
 #wbplanview_container,
-#wbplanview_content,
 #mapping_content {
     display: contents;
 }
@@ -206,6 +205,7 @@
     flex-wrap: wrap;
     row-gap: 0.6rem;
     padding-left: 0.5rem;
+    height: 2rem;
 }
 
 
@@ -233,11 +233,10 @@
     display: grid;
     grid-template-areas:
 		"header next_arrow"
-		"options next_arrow";
+		"options options";
     grid-template-columns: auto calc(4 * var(--white_space));
 	grid-template-rows: auto 1fr;
     width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
-    position: relative;
     height: 100%;
 }
 
@@ -308,12 +307,11 @@
     max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
     overflow-y: scroll;
     background-color: var(--background1);
-    position: absolute;
-    top: calc(calc(4 * var(--white_space)) - var(--border_size));
     z-index: 2;
     width: auto;
 	min-width: max-content;
     cursor: pointer;
+    height: fit-content;
 }
 
 .custom_select[data-type="closed_list"] .custom_select_options {

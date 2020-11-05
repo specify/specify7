@@ -21,6 +21,8 @@ const main = {
 			// FINDING ELEMENTS
 			mappings.container = document.getElementById('screen__mapping');
 
+			const loaded = main.loading_screen();
+
 			// header
 			mappings.wbplanview_header = document.getElementById('wbplanview_header');
 			mappings.title__table_name = document.getElementById('title__table_name');
@@ -91,8 +93,8 @@ const main = {
 			// CONFIG
 
 			const done_callback = ()=> {
-				mappings.container.classList.add('loaded');
 				this.constructor_has_run = true;
+				loaded();
 				resolve(mappings);
 			};
 
@@ -107,7 +109,8 @@ const main = {
 
 			if (this.constructor_has_run)
 				done_callback();
-		});
+
+		})
 
 	},
 
@@ -167,6 +170,7 @@ const main = {
 		});
 
 		main.save_plan = save_plan_function;
+		mappings.loading_screen = main.loading_screen;
 
 	},
 
@@ -205,6 +209,25 @@ const main = {
 
 
 		return validation_results;
+
+	},
+
+	loading_screen(){
+
+		mappings.container.classList.remove('loaded');
+
+		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+			title: 'Loading',
+			modal: true,
+			open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+			close: function() {$(this).remove();}
+		});
+		$('.progress-bar', dialog).progressbar({value: false});
+
+		return ()=>{
+			mappings.container.classList.add('loaded');
+			dialog.dialog('close');
+		}
 
 	},
 

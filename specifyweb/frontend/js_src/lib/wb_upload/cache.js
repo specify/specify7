@@ -5,8 +5,8 @@ const cache = {
 
 	buckets: {},
 	cache_prefix: 'specify7_wbplanview_',
-	local_storage_bucket_soft_limit: 200,
-	session_storage_bucket_soft_limit: 500,
+	local_storage_bucket_soft_limit: 500,
+	session_storage_bucket_soft_limit: 2000,
 	trim_aggresivnes: 0.2,  // between 0 and 1
 	event_listener_is_initialized: false,
 
@@ -124,18 +124,19 @@ const cache = {
 		console.log('Trimming caches with usage under ' + usage_to_trim);
 
 		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);
+		const new_records = {};
 		for(const [cache_index, cache_usage] of Object.entries(cache_usages)){
-
-			if(cache_usage >= usage_to_trim)
-				continue;
 
 			const cache_key = cache_keys[cache_index];
 
-			cache.buckets[bucket_name]['records'][cache_key] = undefined;
+			if(cache_usage >= usage_to_trim)
+				new_records[cache_key] = cache.buckets[bucket_name]['records'][cache_key];
 
-			console.log('Trimming cache from bucket ' + bucket_name + ' under key ' + cache_key);
+			else
+				console.log('Trimming cache from bucket ' + bucket_name + ' under key ' + cache_key);
 
 		}
+		cache.buckets[bucket_name]['records'] = new_records;
 
 		return true;
 

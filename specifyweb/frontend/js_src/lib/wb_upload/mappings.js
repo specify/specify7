@@ -48,7 +48,7 @@ const mappings = {
 
 		new Promise((resolve) => {
 
-			this.container.classList.remove('loaded');
+			const loaded = mappings.loading_screen();
 
 			this.title__table_name.innerText = data_model.tables[table_name]['table_friendly_name'];
 
@@ -110,10 +110,9 @@ const mappings = {
 
 			resolve();
 
-			this.container.classList.add('loaded');
 			this.container.classList.add('table_selected');
 
-			custom_select_element.onload(mappings.list__mappings);
+			loaded();
 
 		});
 
@@ -186,6 +185,16 @@ const mappings = {
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
+		const line_data = mappings.get_mapping_line_data_from_mappings_path({
+			mappings_path: mappings_path,
+			use_cached: true,
+		});
+
+		const mapping_line_data = {
+			line_data: line_data,
+			header_data: header_data,
+		};
+
 		let new_mapping_line;
 
 		if(blind_add_back){
@@ -213,16 +222,6 @@ const mappings = {
 
 			}
 		}
-
-		const line_data = mappings.get_mapping_line_data_from_mappings_path({
-			mappings_path: mappings_path,
-			use_cached: true,
-		});
-
-		const mapping_line_data = {
-			line_data: line_data,
-			header_data: header_data,
-		};
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
 
@@ -650,9 +649,6 @@ const mappings = {
 				use_cached: true
 			})[0];
 			new_line_element.outerHTML = html_generator.mapping_element(mapping_details, custom_select_type, true);
-			custom_select_element.resize_elements(
-				[line_elements_container.children[line_elements_container.children.length - 1]]
-			);
 		}
 
 		//update fields that match certain mappings path's
