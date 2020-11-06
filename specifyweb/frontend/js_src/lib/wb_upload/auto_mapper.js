@@ -132,8 +132,8 @@ const auto_mapper = {
 		}
 
 		if(!this.allow_multiple_mappings)
-			for(const [header_name, mapping_paths] of Object.entries(this.result))
-				this.result[header_name] = mapping_paths[0];
+			for(const [header_name, mapping_paths] of Object.entries(this.results))
+				this.results[header_name] = mapping_paths[0];
 
 		const result = Object.entries(this.results);
 

@@ -73,7 +73,8 @@
 }
 
 #list__tables .custom_select_options {
-	max-height: none;
+	max-height: unset;
+    height: 100%;
 }
 
 #list__tables .custom_select_header_icon {

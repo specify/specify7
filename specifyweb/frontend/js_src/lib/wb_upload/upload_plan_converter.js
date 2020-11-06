@@ -151,7 +151,7 @@ const upload_plan_converter = {
 						}
 
 					} else
-						table_plan['wbcols'][field_name] = Object.keys(field_data)[0];
+						table_plan['wbcols'][field_name] = field_data;
 				}
 
 

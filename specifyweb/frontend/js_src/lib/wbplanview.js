@@ -22,7 +22,8 @@ const PlanView = Backbone.View.extend({
         'click #button__save_upload_plan': 'save_plan',
         'click #button__validate_upload_plan': 'validate_plan',
         'click #button__discard_changes': 'go_back',
-        'change #checkbox__use_mapping_as_a_template', 'change_mapping_type',
+        'change #checkbox__use_mapping_as_a_template': 'change_mapping_type',
+        'click #button__use_template': 'show_templates',
     },
 
     initialize({wb}) {
@@ -70,12 +71,19 @@ const PlanView = Backbone.View.extend({
                         const sorted = mappings.sortBy( mapping => mapping.get('viewOrder'));
                         const headers = _.invoke(sorted, 'get', 'caption');
 
-                        PlanView.mappings = mappings;
+                        this.headers = headers;
 
                         const constructor_done_promise = mappings_main.constructor(this.save_plan.bind(this));
 
                         constructor_done_promise.then(mappings=>{
+                            this.mappings = mappings;
                             mappings.set_headers(headers, PlanView.upload_plan);
+                            this.mapping_is_a_template = (
+                                typeof PlanView.upload_plan !== "undefined" &&
+                                typeof PlanView.upload_plan['isTemplate'] !== "undefined" &&
+                                PlanView.upload_plan['isTemplate'] === true
+                            );
+                            document.getElementById('checkbox__use_mapping_as_a_template').checked = this.mapping_is_a_template;
                         });
 
                     });
@@ -94,16 +102,6 @@ const PlanView = Backbone.View.extend({
 
     validate_plan: () => mappings_main.validate(),
 
-    get_datasets(){
-        const wbs = new schema.models.Workbench.LazyCollection({
-            filters: { specifyuser: userInfo.id, orderby: 'name' }
-        });
-        wbs.fetch({ limit: 5000 })
-            .done(function() {
-                new WbsDialog({ wbs: wbs, readOnly: userInfo.isReadOnly }).render();
-            });
-    },
-
     go_back(event,commit_changes=false){
         this.wbtemplatePromise.done(wbtemplate => {
 
@@ -117,7 +115,87 @@ const PlanView = Backbone.View.extend({
     },
 
     change_mapping_type(event){
-        this.mapping_is_a_template = event.target.value;
+        this.mapping_is_a_template = event.target.checked;
+    },
+
+    show_templates(){
+
+        return new Promise((resolve)=>{
+            const wbs = new schema.models.Workbench.LazyCollection({
+                filters: { specifyuser: userInfo.id, orderby: 'name' }
+            });
+            wbs.fetch({ limit: 5000 }).done(function() {
+                resolve(wbs.models);
+            });
+        }).then(wbs=>{
+
+            const wbts = wbs.map(wb=>wb.rget('workbenchtemplate'));
+            Promise.all(wbts).then(wbts=>{
+
+                const templates = {};
+
+                for(const wbt of wbts) {
+                    let upload_plan;
+                    try {
+                        upload_plan = JSON.parse(wbt.get('remarks'))
+                    }
+                    catch(e){
+                        continue;
+                    }
+
+                    if (
+                        typeof upload_plan === "object" &&
+                        upload_plan !== null &&
+                        typeof upload_plan['isTemplate'] === "boolean" &&
+                        upload_plan['isTemplate'] === true
+                    )
+                        templates[wbt.get('id')] = {
+                            dataset_name: wbt.get('name'),
+                            upload_plan: upload_plan,
+                        };
+                }
+
+                const links = Object.entries(templates).map(([dataset_id,{dataset_name}])=>
+                    `<a href="#`+dataset_name+`" data-id="`+dataset_id+`">`+dataset_name+`</a>`
+                );
+
+                const dialog = $('<div></div>').dialog({
+                    title: "Templates",
+                    maxHeight: 400,
+                    modal: true,
+                    close: function() { $(this).remove(); },
+                    buttons: [
+                        { text: 'Cancel', click: function() { $(this).dialog('close'); } }
+                    ]
+                });
+
+                dialog[0].innerHTML = links.join('<br>');
+
+                dialog[0].addEventListener('click',(event)=>{
+
+                    const el = event.target;
+
+                    if(el.tagName === 'A'){
+                        event.preventDefault();
+
+                        const id = el.getAttribute('data-id');
+
+                        const template_data = templates[id];
+
+                        if(typeof template_data !== "undefined") {
+                            this.mappings.reset_table();
+                            this.mappings.set_headers(this.headers, template_data['upload_plan']);
+                        }
+
+                        dialog.dialog('close');
+                    }
+
+                });
+
+            });
+
+        });
+
     },
 
 });
