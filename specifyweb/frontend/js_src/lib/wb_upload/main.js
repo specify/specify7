@@ -5,6 +5,7 @@ const mappings = require('./mappings.js');
 const data_model = require('./data_model.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
 const custom_select_element = require('./custom_select_element.js');
+const cache = require('./cache.js');
 
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
@@ -55,6 +56,9 @@ const main = {
 
 			mappings.button__toggle_mapping_view.addEventListener('click', () => {
 				mappings.hide_mapping_view = !mappings.container.classList.contains('hide_mapping_view');
+				cache.set('ui','hide_mapping_view',mappings.hide_mapping_view, {
+					overwrite: true,
+				});
 				if (mappings.hide_mapping_view)
 					mappings.container.classList.add('hide_mapping_view');
 				else {
@@ -84,13 +88,28 @@ const main = {
 			// });
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
-				if (mappings.container.classList.contains('hide_hidden_fields'))
+
+				const hide_hidden_fields = !mappings.container.classList.contains('hide_hidden_fields');
+
+				cache.set('ui','hide_hidden_fields',hide_hidden_fields, {
+					overwrite: true,
+				});
+
+				if (!hide_hidden_fields)
 					mappings.container.classList.remove('hide_hidden_fields');
 				else
 					mappings.container.classList.add('hide_hidden_fields');
 			});
 
 			// CONFIG
+
+			if(cache.get('ui','hide_hidden_fields'))
+				mappings.container.classList.add('hide_hidden_fields');
+			else
+				mappings.toggle_hidden_fields.checked = true;
+
+			if(cache.get('ui','hide_mapping_view'))
+				mappings.container.classList.add('hide_mapping_view');
 
 			const done_callback = ()=> {
 				this.constructor_has_run = true;

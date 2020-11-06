@@ -478,7 +478,9 @@ const data_model = {
 		callbacks['commit_instance_data'](internal_payload, callback_payload);
 
 		if(cache_name !== false)
-			cache.set(cache_name, json_payload, data);
+			cache.set(cache_name, json_payload, data, {
+				bucket_type: 'session_storage'
+			});
 
 		return data;
 

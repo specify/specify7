@@ -9,6 +9,7 @@ const template = require('./templates/wbplanview.html');
 const navigation = require('./navigation.js');
 const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
+const cache = require('./wb_upload/cache.js');
 
 
 const PlanView = Backbone.View.extend({
@@ -29,7 +30,8 @@ const PlanView = Backbone.View.extend({
 
         this.el.innerHTML = template();
         this.el.setAttribute('id','screen__mapping');
-        this.el.setAttribute('class','hide_hidden_fields');  //TODO: respect user's preference here
+        if(cache.get('ui','hide_hidden_fields'))
+            this.el.setAttribute('class','hide_hidden_fields');
 
         _.defer(() => this._render());
         return this;

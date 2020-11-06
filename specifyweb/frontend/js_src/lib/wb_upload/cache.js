@@ -5,9 +5,9 @@ const cache = {
 
 	buckets: {},
 	cache_prefix: 'specify7_wbplanview_',
-	local_storage_bucket_soft_limit: 500,
-	session_storage_bucket_soft_limit: 2000,
-	trim_aggresivnes: 0.2,  // between 0 and 1
+	local_storage_bucket_soft_limit: 100,
+	session_storage_bucket_soft_limit: 100,
+	trim_aggresivnes: 0.5,  // between 0 and 1
 	event_listener_is_initialized: false,
 
 	initialize(){
