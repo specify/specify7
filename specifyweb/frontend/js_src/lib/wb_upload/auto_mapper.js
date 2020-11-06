@@ -60,13 +60,27 @@ const auto_mapper = {
 	* 	OR
 	* 	[Accession, Accession Agents, #1, Agent, Agent Type]
 	* */
-	map(raw_headers, base_table){
+	map(payload){
 
-		const payload = JSON.stringify([raw_headers,base_table]);
+		const {
+			headers: raw_headers,
+			base_table,
+			path = [],
+			path_offset = 0,
+			allow_multiple_mappings = false,
+			use_cache = true,
+			commit_to_cache = true,
+			check_for_existing_mappings = false,
+		} = payload;
 
-		const cached_data = cache.get('automapper',payload);
-		if(cached_data)
-			return cached_data;
+
+		const cache_name = JSON.stringify(payload);
+
+		if(use_cache && commit_to_cache){
+			const cached_data = cache.get('automapper',cache_name);
+			if(cached_data)
+				return cached_data;
+		}
 
 		if(!auto_mapper.mapped_definitions_were_converted)
 			auto_mapper.auto_mapper_definitions_to_lower_case();
@@ -89,10 +103,13 @@ const auto_mapper = {
 
 		this.searched_tables = [];
 		this.results = {};
+		this.allow_multiple_mappings = allow_multiple_mappings;
+		this.check_for_existing_mappings = check_for_existing_mappings;
+		this.path_offset = path.length - path_offset;
 		this.find_mappings_queue = {
 			0: {}
 		};
-		this.find_mappings_queue[0][base_table] = [];  // add the base table to `find_mappings_queue`
+		this.find_mappings_queue[0][base_table] = path;  // add the base table to `find_mappings_queue`
 
 		let find_mappings_queue;
 
@@ -114,9 +131,14 @@ const auto_mapper = {
 
 		}
 
+		if(!this.allow_multiple_mappings)
+			for(const [header_name, mapping_paths] of Object.entries(this.result))
+				this.result[header_name] = mapping_paths[0];
+
 		const result = Object.entries(this.results);
 
-		cache.set('automapper',payload,result);
+		if(commit_to_cache)
+			cache.set('automapper',cache_name,result);
 
 		return result;
 
@@ -277,7 +299,15 @@ const auto_mapper = {
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();
 
 		if (index && typeof ranks_data !== "undefined") {
-			for (const rank_name of Object.keys(ranks_data)) {
+
+			let ranks = Object.keys(ranks_data);
+			const push_rank_to_path = path.length<=0 || !data_model.value_is_tree_rank(path[path.length-1]);
+
+			if(!push_rank_to_path) {
+				ranks = [data_model.get_name_from_tree_rank_name(path[path.length-1])];
+			}
+
+			for (const rank_name of ranks) {
 
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = data_model.tree_symbol + rank_name;
@@ -305,7 +335,14 @@ const auto_mapper = {
 								striped_rank_name + ' ' + field_name === final_name
 							)
 						) {
-							auto_mapper.make_mapping(path, [final_rank_name, field_name], header_name);
+
+							let new_path_parts;
+							if(push_rank_to_path)
+								new_path_parts = [final_rank_name, field_name];
+							else
+								new_path_parts = [field_name];
+
+							auto_mapper.make_mapping(path, new_path_parts, header_name);
 							return true;  // don't search for further mappings for this field since we can only
 							// map a single header to the same field
 						}
@@ -395,24 +432,34 @@ const auto_mapper = {
 		let local_path = [...path, ...new_path_parts];
 
 		// check if this path is already mapped
-		let i = 0;
 		while (true) {
 
 			// go over mapped headers to see if this path was already mapped
-			let path_already_mapped = Object.values(this.results).some(mapping_path =>
-				JSON.stringify(local_path) === JSON.stringify(mapping_path)
-			);
+			let path_already_mapped =
+				(
+					!this.allow_multiple_mappings &&
+					Object.values(this.results).some(mapping_paths =>
+						mapping_paths.some(mapping_path =>
+							JSON.stringify(local_path) === JSON.stringify(mapping_path)
+						)
+					)
+				) ||
+				(
+					this.check_for_existing_mappings &&
+					auto_mapper.get_mapped_fields(local_path) !== false
+				);
 
 			if (!path_already_mapped)
 				break;
 
-			i++;
-
+			let index = local_path.length;
 			let path_was_modified = Object.entries(local_path).reverse().some(([local_path_index, local_path_part]) => {
 
-				path_was_modified = data_model.value_is_reference_item(local_path_part);
+				path_was_modified = index>auto_mapper.path_offset && data_model.value_is_reference_item(local_path_part);
 				if (path_was_modified)
 					local_path[local_path_index] = data_model.format_reference_item(data_model.get_index_from_reference_item_name(local_path_part) + 1);
+
+				index--;
 
 				return path_was_modified;
 
@@ -444,11 +491,15 @@ const auto_mapper = {
 
 
 		// remove header from unmapped headers
-		this.unmapped_headers[header_name] = false;
+		if(!this.allow_multiple_mappings)
+			this.unmapped_headers[header_name] = false;
 
-		this.results[header_name] = local_path;
+		if(typeof this.results[header_name] === "undefined")
+			this.results[header_name] = [];
 
-		return true;  // return whether the field got mapped or was mapped previously
+		this.results[header_name].push(local_path);
+
+		return !this.allow_multiple_mappings;  // return whether the field got mapped or was mapped previously
 
 	},
 };

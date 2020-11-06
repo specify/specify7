@@ -12,7 +12,7 @@ const custom_select_element = {
 
 
 	// generators
-	new_select_html(select_data, custom_select_type, use_cached=false){
+	new_select_html(select_data, custom_select_type, use_cached = false){
 
 		const {
 			select_type = 'simple',
@@ -25,14 +25,14 @@ const custom_select_element = {
 
 		//making a copy of payload with all options enabled
 		const select_data_copy = JSON.parse(JSON.stringify(select_data));
-		for(const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
-			for(const option_name of Object.keys(group_data['select_options_data']))
+		for (const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
+			for (const option_name of Object.keys(group_data['select_options_data']))
 				select_data_copy['select_groups_data'][group_name]['select_options_data'][option_name]['is_enabled'] = false;
-		const cache_key = JSON.stringify([custom_select_type,select_data_copy]);
+		const cache_key = JSON.stringify([custom_select_type, select_data_copy]);
 
-		if(cache_key && use_cached) {
+		if (cache_key && use_cached) {
 			const data = cache.get(custom_select_element.cache_bucket_name, cache_key);
-			if(data)
+			if (data)
 				return data;
 		}
 
@@ -61,7 +61,7 @@ const custom_select_element = {
 						break outer_loop;
 					}
 
-		if (custom_select_type==='opened_list') {
+		if (custom_select_type === 'opened_list') {
 			header = `
 				<span class="custom_select_header">
 					<span class="custom_select_header_icon">
@@ -84,7 +84,7 @@ const custom_select_element = {
 							<span class="custom_select_input_label">` + default_label + `</span>
 						</span>`;
 
-			if(custom_select_type==='closed_list' && select_type !== 'to_many')
+			if (custom_select_type === 'closed_list' && select_type !== 'to_many')
 				first_row = custom_select_element.new_select_option_html({
 					option_name: '',
 					option_value: '0',
@@ -96,10 +96,17 @@ const custom_select_element = {
 
 		}
 
-		if(custom_select_type!=='preview_list')
+		if (custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list')
 			groups_html = select_groups_data.map(
-					select_group_data => custom_select_element.new_select_group_html(select_group_data)
-				).join('');
+				select_group_data => custom_select_element.new_select_group_html(select_group_data)
+			).join('');
+
+		let custom_select_options = '';
+		if(first_row !== '' || groups_html !== '')
+			custom_select_options = `<span class="custom_select_options">` +
+				first_row +
+				groups_html + `
+			</span>`;
 
 
 		const result = `<span
@@ -111,22 +118,27 @@ const custom_select_element = {
 				data-previous_value="0"
 				data-table="` + select_table + `"
 				data-mapping_type="` + select_type + `"
-				data-type="`+custom_select_type+`">
+				data-type="` + custom_select_type + `">
 			` + header + `
 			` + preview + `
-			<span class="custom_select_options">
-				` + first_row
-				  + groups_html
-				+ `
-			</span>
+			` + custom_select_options + `
 		</span>`;
 
-		if(cache_key)
-			cache.set(custom_select_element.cache_bucket_name,cache_key,result);
+		if (cache_key)
+			cache.set(custom_select_element.cache_bucket_name, cache_key, result);
 
 		return result;
 
 	},
+
+	suggested_mappings: (select_options_data) =>
+		`<span class="custom_select_suggestions">` +
+		custom_select_element.new_select_group_html({
+			select_group_name: 'suggested_mappings',
+			select_group_label: 'Suggested mappings:',
+			select_options_data: select_options_data,
+		}) +
+		`</span>`,
 
 	new_select_group_html(select_group_data){
 
@@ -194,7 +206,7 @@ const custom_select_element = {
 
 
 	// loading
-	set_event_listeners(container, change_callback){
+	set_event_listeners(container, change_callback, suggestions_callback){
 		container.addEventListener('click', e => {
 
 			const el = e.target;
@@ -203,33 +215,35 @@ const custom_select_element = {
 			if (el.closest('.custom_select_input') !== null) {
 				const select_container = el.closest('.custom_select');
 				if (select_container.classList.contains('custom_select_open'))
-					select_container.classList.remove('custom_select_open');
+					custom_select_element.close_list(select_container);
 				else {
 					select_container.classList.add('custom_select_open');
 
 					// scroll the list down to selected option
-					const selected_options = custom_select_element.get_selected_options(select_container);
-					if(selected_options.length !== 0){
-						const selected_option = selected_options[0];
+					const selected_option = custom_select_element.get_selected_options(select_container)[0];
+
+					if (typeof selected_option !== "undefined") {
 						const options_container = select_container.getElementsByClassName('custom_select_options')[0];
 
-						if(  // scroll down if
+						if (  // scroll down if
 							options_container.scrollTop === 0 && // the list is not already scrolled
 							options_container.offsetHeight < selected_option.offsetTop + selected_option.offsetHeight // and selected item is not visible
 						)
 							options_container.scrollTop = selected_option.offsetTop - selected_option.offsetHeight;
 
 					}
+
+					suggestions_callback(select_container, selected_option);
 				}
 			}
 
 			//close opened lists
 			const lists = container.getElementsByClassName('custom_select');
-			const current_list = el.closest('.custom_select');
+			const current_list = el.closest('.custom_select:not([data-type="suggestion_list"])');
 
 			for (const list of lists)
 				if (list !== current_list)  //dont close current list
-					list.classList.remove('custom_select_open');
+					custom_select_element.close_list(list);
 
 			//recalculate width of each object
 			//custom_select_element.resize_elements(lists);
@@ -241,7 +255,7 @@ const custom_select_element = {
 				if (custom_select_option !== null) {
 
 					const change_payload = custom_select_element.change_selected_option(current_list, custom_select_option);
-					current_list.classList.remove('custom_select_open');
+					custom_select_element.close_list(current_list);
 
 					if (typeof change_payload === "object")
 						change_callback(change_payload);
@@ -253,15 +267,38 @@ const custom_select_element = {
 		});
 	},
 
+	close_list: (target_list) => {
+		target_list.classList.remove('custom_select_open');
+		const custom_select_suggestions = target_list.getElementsByClassName('custom_select_suggestions');
+		for(const custom_select_suggestion of custom_select_suggestions)
+			custom_select_suggestion.remove();
+	},
+
 	// helpers
 	change_selected_option(target_list, target_option){
 
 		//if target_option is option's name, find option element
-		if(typeof target_option === 'string'){
+		if (typeof target_option === 'string') {
 			target_option = custom_select_element.find_option_by_name(target_list, target_option);
-			if(target_option===null)
+			if (target_option === null)
 				return;
 		}
+
+		const custom_select_option_value = custom_select_element.get_option_value(target_option);
+
+		const group_element = target_option.parentElement;
+		if(group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group')==='suggested_mappings')
+			return {
+				changed_list: target_list,
+				selected_option: target_option,
+				new_value: custom_select_option_value,
+				list_type: 'suggested_mapping',
+				previous_value: '',
+				previous_previous_value: '',
+				is_relationship: '',
+				custom_select_type: '',
+				list_table_name: '',
+			};
 
 		//ignore selected and disabled elements
 		if (target_option.classList.contains('custom_select_option_selected') || target_option.classList.contains('custom_select_option_disabled')) {
@@ -274,7 +311,6 @@ const custom_select_element = {
 			selected_line.classList.remove('custom_select_option_selected');
 
 		//extract data about new option
-		const custom_select_option_value = custom_select_element.get_option_value(target_option);
 		const custom_select_option_label_element = target_option.getElementsByClassName('custom_select_option_label')[0];
 		const custom_select_option_label = custom_select_option_label_element.textContent;
 
@@ -298,7 +334,9 @@ const custom_select_element = {
 
 
 		//update custom_select_input
-		const custom_select_inputs = target_list.getElementsByClassName('custom_select_input');
+		const custom_select_inputs = Object.values(target_list.children).filter(element=>
+			element.classList.contains('custom_select_input')
+		);
 
 		if (custom_select_inputs.length !== 0) {
 
@@ -367,16 +405,16 @@ const custom_select_element = {
 	toggle_option(list, option_name, action){
 
 		//don't do anything if seeking for the default option
-		if(option_name === '0')
+		if (option_name === '0')
 			return;
 
 		const options = Object.values(list.getElementsByClassName('custom_select_option'));
-		const option = options.filter(option=>
-			option.getAttribute('data-value')===option_name
+		const option = options.filter(option =>
+			option.getAttribute('data-value') === option_name
 		)[0];
 
 		//don't do anything if can't find the requested option
-		if(typeof option === "undefined")
+		if (typeof option === "undefined")
 			return;
 
 		if (action === 'enable')
@@ -391,7 +429,7 @@ const custom_select_element = {
 
 	// getters
 	find_option_by_name(list, option_name){
-		return list.querySelector('.custom_select_option[data-value="'+option_name+'"]');
+		return list.querySelector('.custom_select_option[data-value="' + option_name + '"]');
 	},
 
 	get_selected_options: list =>
@@ -402,7 +440,7 @@ const custom_select_element = {
 		const options = custom_select_element.get_selected_options(list);
 
 		for (const option of options)
-			if(option.classList.contains('custom_select_option_selected'))
+			if (option.classList.contains('custom_select_option_selected'))
 				return !option.classList.contains('custom_select_option_disabled');
 
 		return true;

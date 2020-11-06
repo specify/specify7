@@ -12,6 +12,8 @@ const upload_plan_converter = require('./upload_plan_converter.js');
 
 const mappings = {
 
+	max_suggestions_count: 3,
+
 
 	/*
 	* Implements array of mappings
@@ -94,7 +96,10 @@ const mappings = {
 			}
 
 			if (mappings.need_to_run_automapper) {
-				const mappings_object = auto_mapper.map(Object.keys(this.headers), data_model.base_table_name);
+				const mappings_object = auto_mapper.map({
+					headers: Object.keys(this.headers),
+					base_table: data_model.base_table_name
+				});
 				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) => {
 					return {
 						mapping_path: mapping_path,
@@ -577,6 +582,17 @@ const mappings = {
 
 		if (list_type === 'list_of_tables')
 			return mappings.set_table(new_value);
+		else if(list_type === 'suggested_mapping'){
+
+			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
+				mappings_path: new_value.split(data_model.path_join_symbol),
+			});
+
+			line_elements_container.innerHTML = html_generator.mapping_path(mapping_line_data);
+
+			return;
+
+		}
 
 		if (list_type === "to_many") {
 
@@ -632,7 +648,7 @@ const mappings = {
 
 
 		//add block to the right if there aren't any and selected field is a relationship
-		if (dom_helper.has_next_sibling(changed_list) && is_relationship) {
+		if (!dom_helper.has_next_sibling(changed_list) && is_relationship) {
 			mappings.changes_made = true;
 
 			const new_line_element = document.createElement('span');
@@ -940,6 +956,89 @@ const mappings = {
 			custom_select_element.change_selected_option(last_custom_select, '0');
 
 		}
+
+	},
+
+	show_automapper_suggestions(select_element, custom_select_option){
+
+		new Promise((resolve)=>{
+
+			//don't show suggestions if picklist has non null value
+			if(
+				typeof custom_select_option !== "undefined" &&
+				custom_select_element.get_option_value(custom_select_option) !== "0"
+			)
+				return resolve();
+
+			const line_elements_container = select_element.parentElement;
+
+			const mapping_path = mappings.get_mappings_path({
+				line_elements_container: line_elements_container,
+				mapping_path_filter: select_element,
+				include_headers: true,
+			});
+
+			const header = mapping_path.pop();
+			mapping_path.pop();
+
+			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
+				mappings_path:mapping_path,
+				iterate: false,
+			});
+
+			let path_offset = 0;
+			const list_mapping_type = custom_select_element.get_list_mapping_type(select_element);
+			if(list_mapping_type === 'to_many'){
+				mapping_path.push('#1');
+				path_offset = 1;
+			}
+
+			const table_name = mapping_line_data[mapping_line_data.length-1].table_name;
+
+			let automapper_results = auto_mapper.map({
+				headers: [header],
+				base_table: table_name,
+				path: mapping_path,
+				path_offset: path_offset,
+				allow_multiple_mappings: true,
+				commit_to_cache: false,
+				check_for_existing_mappings: true,
+			});
+
+			if(automapper_results.length===0)
+				return resolve();
+
+			automapper_results = automapper_results[0][1];
+
+			if(automapper_results.length > mappings.max_suggestions_count)
+				automapper_results = automapper_results.slice(0,3);
+
+			const select_options_data = automapper_results.map(automapper_result=>{
+
+				const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
+					mappings_path: automapper_result,
+					use_cached: true,
+				}).slice(mapping_path.length-path_offset);
+				const mapping_path_html = html_generator.mapping_path(
+					mapping_line_data,
+					'suggestion_list',
+					false,//TODO: enable cache here and fix resulting bugs
+				);
+
+				return {
+					option_name: mapping_path_html,
+					option_value: automapper_result.join(data_model.path_join_symbol),
+				}
+			});
+
+			const suggested_mappings_html = custom_select_element.suggested_mappings(select_options_data);
+			const span = document.createElement('span');
+			select_element.insertBefore(span, select_element.children[0]);
+			span.outerHTML = suggested_mappings_html;
+
+			resolve();
+
+		}).then();
 
 	},
 

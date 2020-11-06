@@ -56,8 +56,11 @@ const upload_plan_converter = {
 
 	},
 
-	get_upload_plan: () =>
-		upload_plan_converter.mappings_tree_to_upload_plan(upload_plan_converter.get_mappings_tree(true)),
+	get_upload_plan: (mapping_is_a_template = false) =>
+		upload_plan_converter.mappings_tree_to_upload_plan(
+			upload_plan_converter.get_mappings_tree(true),
+			mapping_is_a_template
+		),
 
 	/*
 	* Converts mappings tree to upload plan
@@ -65,11 +68,12 @@ const upload_plan_converter = {
 	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used
 	* @return {string} Upload plan as a JSON string
 	* */
-	mappings_tree_to_upload_plan(mappings_tree){
+	mappings_tree_to_upload_plan(mappings_tree, mapping_is_a_template = false){
 
 		const upload_plan = {};
 
 		upload_plan['baseTableName'] = data_model.base_table_name;
+		upload_plan['isTemplate'] = mapping_is_a_template;
 
 
 		function handle_table(table_data, table_name, wrap_it = true){

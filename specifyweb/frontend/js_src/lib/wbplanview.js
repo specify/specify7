@@ -10,6 +10,8 @@ const navigation = require('./navigation.js');
 const mappings_main = require('./wb_upload/main.js');
 const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
 const cache = require('./wb_upload/cache.js');
+const schema = require('./schema.js');
+const userInfo = require('./userinfo.js');
 
 
 const PlanView = Backbone.View.extend({
@@ -20,12 +22,14 @@ const PlanView = Backbone.View.extend({
         'click #button__save_upload_plan': 'save_plan',
         'click #button__validate_upload_plan': 'validate_plan',
         'click #button__discard_changes': 'go_back',
+        'change #checkbox__use_mapping_as_a_template', 'change_mapping_type',
     },
 
     initialize({wb}) {
         this.wb = wb;
         this.wbtemplatePromise = this.wb.rget('workbenchtemplate');
     },
+
     render() {
 
         this.el.innerHTML = template();
@@ -37,6 +41,7 @@ const PlanView = Backbone.View.extend({
         return this;
 
     },
+
     _render() {
         this.wbtemplatePromise
             .done(wbtemplate => {
@@ -76,6 +81,7 @@ const PlanView = Backbone.View.extend({
                     });
             });
     },
+
     save_plan(event, ignore_validation=false) {
 
         if(ignore_validation || typeof mappings_main.validate() === "boolean"){
@@ -85,18 +91,35 @@ const PlanView = Backbone.View.extend({
         }
 
     },
+
     validate_plan: () => mappings_main.validate(),
+
+    get_datasets(){
+        const wbs = new schema.models.Workbench.LazyCollection({
+            filters: { specifyuser: userInfo.id, orderby: 'name' }
+        });
+        wbs.fetch({ limit: 5000 })
+            .done(function() {
+                new WbsDialog({ wbs: wbs, readOnly: userInfo.isReadOnly }).render();
+            });
+    },
+
     go_back(event,commit_changes=false){
         this.wbtemplatePromise.done(wbtemplate => {
 
             if(commit_changes)
-                wbtemplate.set('remarks', upload_plan_converter.get_upload_plan());
+                wbtemplate.set('remarks', upload_plan_converter.get_upload_plan(this.mapping_is_a_template));
 
             wbtemplate.save().done(() => {
                 navigation.go(`/workbench/${this.wb.id}/`);
             });
         });
-    }
+    },
+
+    change_mapping_type(event){
+        this.mapping_is_a_template = event.target.value;
+    },
+
 });
 
 module.exports = PlanView;

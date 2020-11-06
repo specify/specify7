@@ -14,6 +14,7 @@ const data_model = {
 
 	reference_symbol: '#',
 	tree_symbol: '$',
+		path_join_symbol: '_',
 	new_header_id: 1,
 
 	ranks_queue: {},

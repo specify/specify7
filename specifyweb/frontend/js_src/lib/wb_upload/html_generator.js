@@ -10,16 +10,6 @@ const custom_select_element = require('./custom_select_element.js');
 * */
 const html_generator = {
 
-	/*
-	* Generates HTML for table (for table selection screen)
-	* @param {string} table_name - Official name of the table (from data model)
-	* @param {string} table_friendly_name - Human-friendly table name (from schema_localization or helper.get_friendly_name())
-	* @return {string} HTML for table
-	* */
-	table(table_name, table_friendly_name){
-		return '<a class="wbplanview_table" href="#' + table_name + '" data-table_name="' + table_name + '">' + table_friendly_name + '</a>';
-	},
-
 	tables(list_of_tables){
 
 		const fields_data = Object.fromEntries(Object.entries(list_of_tables).map(([table_name, table_label])=>

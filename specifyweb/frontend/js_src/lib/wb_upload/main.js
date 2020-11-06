@@ -6,6 +6,7 @@ const data_model = require('./data_model.js');
 const upload_plan_converter = require('./upload_plan_converter.js');
 const custom_select_element = require('./custom_select_element.js');
 const cache = require('./cache.js');
+const auto_mapper = require('./auto_mapper.js');
 
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
@@ -124,7 +125,11 @@ const main = {
 				mappings.list__tables.innerHTML = data_model.html_tables;
 
 
-			custom_select_element.set_event_listeners(mappings.container, mappings.custom_select_change_event);
+			custom_select_element.set_event_listeners(
+				mappings.container,
+				mappings.custom_select_change_event,
+				mappings.show_automapper_suggestions
+			);
 
 			if (this.constructor_has_run)
 				done_callback();
@@ -189,6 +194,7 @@ const main = {
 		});
 
 		main.save_plan = save_plan_function;
+		auto_mapper.get_mapped_fields = mappings.get_mapped_fields.bind(mappings);
 		mappings.loading_screen = main.loading_screen;
 
 	},
