@@ -270,22 +270,9 @@ const WBView = Backbone.View.extend({
         });
         $('.progress-bar', dialog).progressbar({value: false});
 
-        //automatically trim all strings
-        let data = Object.entries(this.data).reduce((rows,[row_key,row_data])=>{
-
-            rows[row_key] = row_data.map(cell_value=> {
-                if(typeof cell_value === "string")
-                    return cell_value.trim();
-                else
-                    return cell_value;
-            });
-
-            return rows;
-        },{});
-
         //send data
         return Q($.ajax('/api/workbench/rows/' + this.wb.id + '/', {
-            data: JSON.stringify(data),
+            data: JSON.stringify(this.data),
             error: this.checkDeletedFail.bind(this),
             type: "PUT"
         })).then(data => {

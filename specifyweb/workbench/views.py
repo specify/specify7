@@ -104,7 +104,12 @@ def group_rows(rows):
             current_row = list(row)
 
 def save(wb_id, data):
+    logger.info(f"saving dataset {wb_id}")
     wb_id = int(wb_id)
+
+    wb = Workbench.objects.select_for_update().get(id=wb_id)
+    assert wb.lockedbyusername is None, "dataset is locked"
+
     cursor = connection.cursor()
 
     logger.debug("truncating wb %d", wb_id)
@@ -172,6 +177,12 @@ def save(wb_id, data):
         for wbtmi, celldata in zip(wbtmis, row[2:])
         if celldata is not None
     ])
+
+    logger.debug("clearing validation results")
+    cursor.execute("""
+    update workbenchrow set biogeomancerresults = null
+    where workbenchid = %s
+    """, [wb_id])
 
 @login_maybe_required
 @apply_access_control
