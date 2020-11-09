@@ -1,10 +1,6 @@
 import re
-import os
-import errno
 import json
 import logging
-import subprocess
-from glob import glob
 from uuid import uuid4
 from typing import Sequence, Tuple
 
@@ -20,8 +16,6 @@ from specifyweb.specify import models
 Workbench = getattr(models, 'Workbench')
 Workbenchrow = getattr(models, 'Workbenchrow')
 Workbenchtemplatemappingitem = getattr(models, 'Workbenchtemplatemappingitem')
-
-from .uploader_classpath import CLASSPATH
 
 logger = logging.getLogger(__name__)
 
@@ -179,10 +173,6 @@ def save(wb_id, data):
         if celldata is not None
     ])
 
-def shellquote(s):
-    # this can be replaced with shlex.quote in Python 3.3
-    return "'" + s.replace("'", "'\\''") + "'"
-
 @login_maybe_required
 @apply_access_control
 @require_POST
@@ -198,7 +188,7 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
 
         taskid = str(uuid4())
         async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
-        wb.lockedbyusername = taskid
+        wb.lockedbyusername = taskid + ";" + "validating" if no_commit else "uploading"
         wb.save()
 
     return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
@@ -227,8 +217,12 @@ def upload_status(request, wb_id: int) -> http.HttpResponse:
     if wb.lockedbyusername is None:
         return http.HttpResponse(json.dumps(None), content_type='application/json')
 
-    result = tasks.upload.AsyncResult(wb.lockedbyusername)
-    return http.HttpResponse(json.dumps([result.state, result.info]), content_type='application/json')
+    if wb.lockedbyusername == "uploaded":
+        return http.HttpResponse(json.dumps(["uploaded", None, None]), content_type='application/json')
+
+    task_id, op = wb.lockedbyusername.split(';')
+    result = tasks.upload.AsyncResult(task_id)
+    return http.HttpResponse(json.dumps([op, result.state, result.info]), content_type='application/json')
 
 @login_maybe_required
 @apply_access_control
@@ -242,5 +236,8 @@ def upload_abort(request, wb_id) -> http.HttpResponse:
     if wb.lockedbyusername is None:
         return http.HttpResponse('not running', content_type='text/plain')
 
-    tasks.upload.AsyncResult(wb.lockedbyusername).revoke(terminate=True)
+    task_id, op = wb.lockedbyusername.split(';')
+    tasks.upload.AsyncResult(task_id).revoke(terminate=True)
+
+    Workbench.objects.filter(id=wb_id).update(lockedbyusername=None)
     return http.HttpResponse('ok', content_type='text/plain')

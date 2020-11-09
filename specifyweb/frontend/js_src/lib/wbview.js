@@ -550,12 +550,12 @@ const WBView = Backbone.View.extend({
 
                 if (status == null) {
                     stopRefresh();
+                    $('.status td', dialog).text('finished');
                     dialog.dialog('option', 'buttons',
                                   [{text: 'Close', click: function() { $(this).dialog('close'); }}]);
                 } else {
-                    const [state, meta] = status;
-
-
+                    const [operation, state, meta] = status;
+                    $('.operation td', dialog).text(operation);
                     $('.status td', dialog).text(state);
                     if (state === 'PROGRESS') {
                         $('.rows', dialog).show();
