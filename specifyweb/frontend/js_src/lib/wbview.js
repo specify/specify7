@@ -43,6 +43,7 @@ const WBView = Backbone.View.extend({
         this.highlightsOn = false;
         this.column_indexes = [];
         this.cells_to_highlight = {};
+        this.validation_results_object = [];
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -74,16 +75,55 @@ const WBView = Backbone.View.extend({
 
         this.column_indexes = column_indexes;
 
+        //initialize Handsontable
+        const onChanged = this.spreadSheetChanged.bind(this);
+        const renderer = this.renderCell.bind(this);
+
+        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
+            height: this.calcHeight(),
+            data: this.data,
+            cells: () => ({renderer: renderer}),
+            cell: this.validation_results_array,
+            colHeaders: colHeaders,
+            columns: columns,
+            minSpareRows: 0,
+            comments: true,
+            rowHeaders: true,
+            manualColumnResize: true,
+            outsideClickDeselects: false,
+            columnSorting: true,
+            sortIndicator: true,
+            search: {
+                searchResultClass: 'wb-search-match-cell',
+            },
+            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
+            stretchH: 'all',
+            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
+            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
+            afterSelection: (r, c) => this.currentPos = [r,c],
+            afterChange: (change, source) => source === 'loadData' || onChanged(),
+        });
+
+        $(window).resize(this.resize.bind(this));
+
+        this.getUploadResults();
+    },
+    getUploadResults() {
+        Q(this.wb.rget('workbenchrows'))
+            .then(rows =>
+                  rows.fetch({limit: 0})
+                  .then(() => rows.map(row => [row.id, row.get('biogeomancerresults')])))
+            .done(results => this.parseUploadResults(results));
+    },
+    parseUploadResults(uploadResults) {
         //parse validation results
 
-        const inverted_column_indexes = Object.entries(column_indexes).reduce((inverted_column_indexes,[column_index, column_name])=>{
+        const inverted_column_indexes = Object.entries(this.column_indexes).reduce((inverted_column_indexes,[column_index, column_name])=>{
             inverted_column_indexes[column_name] = parseInt(column_index);
             return inverted_column_indexes;
         },{});
 
-        this.validation_results_object = Object.entries(this.data).reduce((validation_results,[row_key,row_data])=>{
-
-            row_key = parseInt(row_key);
+        this.validation_results_object = uploadResults.reduce((validation_results, row_data, row_key)=>{
 
             let validation_results_raw = null;
             try {
@@ -143,10 +183,10 @@ const WBView = Backbone.View.extend({
                     'row': row_key,
                     'col': cell_key,
                     'cell_type': (typeof cell_data === "object") ? 'invalid_cells' : 'new_cells',
-                }
+                };
 
                 if (data['cell_type']==='invalid_cells')
-                    data['comment'] = {value: cell_data.join('<br>')}
+                    data['comment'] = {value: cell_data.join('<br>')};
 
                 navigation_cells_count[data['cell_type']]++;
 
@@ -166,37 +206,7 @@ const WBView = Backbone.View.extend({
                 navigation_total_element.innerText = navigation_cells_count[navigation_type];
         }
 
-
-        //initialize Handsontable
-        const onChanged = this.spreadSheetChanged.bind(this);
-        const renderer = this.renderCell.bind(this);
-
-        this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
-            height: this.calcHeight(),
-            data: this.data,
-            cells: () => ({renderer: renderer}),
-            cell: this.validation_results_array,
-            colHeaders: colHeaders,
-            columns: columns,
-            minSpareRows: 0,
-            comments: true,
-            rowHeaders: true,
-            manualColumnResize: true,
-            outsideClickDeselects: false,
-            columnSorting: true,
-            sortIndicator: true,
-            search: {
-                searchResultClass: 'wb-search-match-cell',
-            },
-            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
-            stretchH: 'all',
-            afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
-            afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
-            afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: (change, source) => source === 'loadData' || onChanged(),
-        });
-
-        $(window).resize(this.resize.bind(this));
+        this.hot.render();
     },
     renderCell(instance, td, row, col, prop, value, cellProperties) {
 
@@ -260,6 +270,9 @@ const WBView = Backbone.View.extend({
         this.save().done();
     },
     save: function() {
+        // clear validation
+        this.validation_results_object = [];
+        this.hot.render();
 
         //show saving progress bar
         var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
@@ -385,6 +398,7 @@ const WBView = Backbone.View.extend({
                     $('.status td', dialog).text('finished');
                     dialog.dialog('option', 'buttons',
                                   [{text: 'Close', click: function() { $(this).dialog('close'); }}]);
+                    this.getUploadResults();
                 } else {
                     const [operation, state, meta] = status;
                     $('.operation td', dialog).text(operation);
