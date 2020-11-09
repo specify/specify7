@@ -43,7 +43,7 @@ def load(wb_id: int) -> Sequence[Tuple]:
         # but the following is slower so only use in that case.
         return load_gt_61_cols(wb_id)
 
-    select_fields = ["r.workbenchrowid", "r.biogeomancerresults"]
+    select_fields = ["r.workbenchrowid"]
     for wbtmi in wbtmis:
         select_fields.append("ifnull(cell%d.celldata, '')" % wbtmi.vieworder)
     from_clause = ["workbenchrow r"]
@@ -76,7 +76,7 @@ def load_gt_61_cols(wb_id):
     wbtm = cursor.fetchone()[0]
 
     sql = """
-    select r.workbenchrowid, r.biogeomancerresults, ifnull(celldata, '')
+    select r.workbenchrowid, ifnull(celldata, '')
     from workbenchrow r
     join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
     left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
@@ -98,7 +98,7 @@ def group_rows(rows):
             break
 
         if row[0] == current_row[0]:
-            current_row.append(row[2])
+            current_row.append(row[1])
         else:
             yield current_row
             current_row = list(row)
@@ -130,7 +130,7 @@ def save(wb_id, data):
     """, [wb_id])
 
     wbtmis = [r[0] for r in cursor.fetchall()]
-    assert len(wbtmis) + 2 == len(data[0]), (wbtmis, data[0])
+    assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
 
     logger.debug("clearing row numbers")
     cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
@@ -174,7 +174,7 @@ def save(wb_id, data):
     """, [
         (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
         for i, row in enumerate(data)
-        for wbtmi, celldata in zip(wbtmis, row[2:])
+        for wbtmi, celldata in zip(wbtmis, row[1:])
         if celldata is not None
     ])
 
@@ -203,19 +203,6 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
         wb.save()
 
     return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
-
-@login_maybe_required
-@require_GET
-def upload_log(request, upload_id):
-    assert upload_id.startswith(settings.DATABASE_NAME)
-    fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
-    try:
-        return http.HttpResponse(open(fname, "r", encoding='utf-8'), content_type='text/plain')
-    except IOError as e:
-        if e.errno == errno.ENOENT:
-            raise http.Http404()
-        else:
-            raise
 
 # @login_maybe_required
 @require_GET

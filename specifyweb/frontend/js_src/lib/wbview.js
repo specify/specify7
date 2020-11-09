@@ -49,8 +49,8 @@ const WBView = Backbone.View.extend({
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
                   .then(mappings => _.sortBy(mappings.models, mapping => mapping.get('viewOrder')));
 
-        const colHeaders = mappingsPromise.then(mappings => ["upload result"].concat(_.invoke(mappings, 'get', 'caption')));
-        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+2})));
+        const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
+        const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
 
         this.$el.append(template());
         new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
@@ -60,8 +60,7 @@ const WBView = Backbone.View.extend({
         if (this.uploadStatus) this.openUploadProgress();
         return this;
     },
-    setupHOT (colHeaders, columns) {
-
+    setupHOT(colHeaders, columns) {
         if (this.data.length < 1)
             this.data.push(Array(columns.length + 1).fill(null));
 
@@ -71,7 +70,6 @@ const WBView = Backbone.View.extend({
         });
 
         let column_indexes = colHeaders;
-        column_indexes.shift();  // remove validation results column
 
         this.column_indexes = column_indexes;
 

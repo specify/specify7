@@ -49,7 +49,7 @@ def do_upload_wb(collection, wb, no_commit: bool, progress: Optional[Progress]=N
 
     logger.debug('row captions: %s', captions)
 
-    rows = [dict(zip(captions, t[2:])) for t in tuples]
+    rows = [dict(zip(captions, t[1:])) for t in tuples]
     upload_plan = get_wb_upload_plan(collection, wb)
 
     no_commit = True
