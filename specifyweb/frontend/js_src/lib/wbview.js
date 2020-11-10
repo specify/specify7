@@ -87,7 +87,7 @@ const WBView = Backbone.View.extend({
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
             afterSelection: (r, c) => this.currentPos = [r,c],
-            afterChange: (change, source) => source === 'loadData' || onChanged(),
+            afterChange: (change, source) => source === 'loadData' || onChanged(change),
         });
 
         $(window).resize(this.resize.bind(this));
@@ -124,31 +124,12 @@ const WBView = Backbone.View.extend({
                 return;
             }
 
-            const add_error_message = (column_name, issue) => {
-                const col = headerToCol[column_name];
-                this.initCellInfo(row, col);
-                const cellInfo = this.cellInfo[row*cols + col];
-
-                const ucfirst_issue = issue[0].toUpperCase() + issue.slice(1);
-                cellInfo.issues.push(ucfirst_issue);
-            };
-
-            result.tableIssues.forEach(table_issue => table_issue.columns.forEach(column_name => {
-                add_error_message(column_name, table_issue.issue);
-            }));
-
-            result.cellIssues.forEach(cell_issue => {
-                add_error_message(cell_issue.column, cell_issue.issue);
-            });
-
-            result.newRows.forEach(table => table.columns.forEach(column_name => {
-                const col = headerToCol[column_name];
-                this.initCellInfo(row, col);
-                const cellInfo = this.cellInfo[row*cols + col];
-                cellInfo.isNew = true;
-            }));
+            this.parseRowValidationResult(row, result);
         });
 
+        this.updateCellInfos();
+    },
+    updateCellInfos() {
         const cellCounts = {
             new_cells: this.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
             invalid_cells: this.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
@@ -162,6 +143,41 @@ const WBView = Backbone.View.extend({
         });
 
         this.hot.render();
+    },
+    parseRowValidationResult(row, result) {
+        const cols = this.hot.countCols();
+        const headerToCol = {};
+        for (let i = 0; i < cols; i++) {
+            headerToCol[this.hot.getColHeader(i)] = i;
+        }
+
+        for (let i = 0; i < cols; i++) {
+            delete this.cellInfo[row*cols + i];
+        }
+
+        const add_error_message = (column_name, issue) => {
+            const col = headerToCol[column_name];
+            this.initCellInfo(row, col);
+            const cellInfo = this.cellInfo[row*cols + col];
+
+            const ucfirst_issue = issue[0].toUpperCase() + issue.slice(1);
+            cellInfo.issues.push(ucfirst_issue);
+        };
+
+        result.tableIssues.forEach(table_issue => table_issue.columns.forEach(column_name => {
+            add_error_message(column_name, table_issue.issue);
+        }));
+
+        result.cellIssues.forEach(cell_issue => {
+            add_error_message(cell_issue.column, cell_issue.issue);
+        });
+
+        result.newRows.forEach(table => table.columns.forEach(column_name => {
+            const col = headerToCol[column_name];
+            this.initCellInfo(row, col);
+            const cellInfo = this.cellInfo[row*cols + col];
+            cellInfo.isNew = true;
+        }));
     },
     defineCell(cols, row, col, prop) {
         let cell_data;
@@ -212,11 +228,24 @@ const WBView = Backbone.View.extend({
             this.data[i + index] = Array(this.hot.countCols() + 1).fill(null);
         }
     },
-    spreadSheetChanged: function() {
+    spreadSheetChanged(change) {
         this.$('.wb-upload, .wb-validate').prop('disabled', true);
         this.$('.wb-upload, .wb-match').prop('disabled', true);
         this.$('.wb-save').prop('disabled', false);
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
+
+        change && change.forEach(([row]) => {
+            const rowData = this.hot.getDataAtRow(row);
+            const data = Object.fromEntries(rowData.map((value, i) => [this.hot.getColHeader(i), value]));
+            const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.wb.id}/`, data);
+            req.done(result => this.gotRowValidationResult(row, req, result));
+        });
+    },
+    gotRowValidationResult(row, req, result) {
+        if (req === this.rowValidationRequests[row]) {
+            this.parseRowValidationResult(row, result);
+            this.updateCellInfos();
+        }
     },
     resize: function() {
         this.hot && this.hot.updateSettings({height: this.calcHeight()});
