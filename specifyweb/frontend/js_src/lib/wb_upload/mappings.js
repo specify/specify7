@@ -526,7 +526,9 @@ const mappings = {
 
 
 			if (exclude_non_relationship_values) {
-				const is_relationship = custom_select_element.element_is_relationship(element);
+				const is_relationship =
+					typeof element === "undefined" ||
+					custom_select_element.element_is_relationship(element);
 
 				if (!is_relationship)
 					path.pop();
@@ -558,7 +560,7 @@ const mappings = {
 
 		}
 
-		return return_path(mappings_path);
+		return return_path(mappings_path, elements[elements.length-1]);
 
 	},
 
@@ -882,6 +884,8 @@ const mappings = {
 
 		//select the current line
 		line.classList.add('wbplanview_mappings_line_focused');
+
+		//remove line attributes
 		line.classList.remove('wbplanview_mappings_line_uncomplete');
 		line.classList.remove('wbplanview_mappings_line_automapped');
 
