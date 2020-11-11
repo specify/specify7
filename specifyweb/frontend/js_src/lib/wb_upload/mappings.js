@@ -46,7 +46,7 @@ const mappings = {
 	* 					OR
 	* 				   {string} event - name of the table to set
 	* */
-	set_table(table_name, headers_to_shadow_define=[]){
+	set_table(table_name, headers_to_shadow_define = []){
 
 		new Promise((resolve) => {
 
@@ -82,7 +82,7 @@ const mappings = {
 						},
 					};
 
-					if(headers_to_shadow_define.indexOf(header) !== -1)
+					if (headers_to_shadow_define.indexOf(header) !== -1)
 						mapping_line_data['line_data'] = [];
 					else
 						mapping_line_data['line_attributes'] = ['wbplanview_mappings_line_uncomplete'];
@@ -147,9 +147,9 @@ const mappings = {
 
 			mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(upload_plan);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
-			const defined_headers = array_of_mappings.filter(({header_data: {mapping_type}})=>
-				mapping_type==="existing_header"
-			).map(({header_data: {header_name}})=>
+			const defined_headers = array_of_mappings.filter(({header_data: {mapping_type}}) =>
+				mapping_type === "existing_header"
+			).map(({header_data: {header_name}}) =>
 				header_name
 			);
 
@@ -188,7 +188,7 @@ const mappings = {
 
 	// FUNCTIONS
 
-	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false, line_attributes=[]){
+	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false, line_attributes = []){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
@@ -205,11 +205,10 @@ const mappings = {
 
 		let new_mapping_line;
 
-		if(blind_add_back){
+		if (blind_add_back) {
 			new_mapping_line = document.createElement('div');
 			mappings.list__mappings.appendChild(new_mapping_line);
-		}
-		else {
+		} else {
 			//before adding a header, check if it is already present
 			const {header_name} = header_data;
 			const header_index = Object.keys(this.headers).indexOf(header_name);
@@ -455,13 +454,13 @@ const mappings = {
 
 	get_array_of_mappings(include_headers = false, skip_empty = true){
 
-		if (!include_headers && !mappings.changes_made){
+		if (!include_headers && !mappings.changes_made) {
 			mappings.changes_made = false;
 			return mappings.mapped_fields;
 		}
 
 		let index_shift = 1;
-		if(include_headers)
+		if (include_headers)
 			index_shift++;
 
 		const line_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
@@ -475,7 +474,7 @@ const mappings = {
 
 			if (
 				!skip_empty ||
-				mappings_path[mappings_path.length-index_shift] !== "0"
+				mappings_path[mappings_path.length - index_shift] !== "0"
 			)
 				mapped_fields.push(mappings_path);
 
@@ -521,7 +520,7 @@ const mappings = {
 			if (exclude_unmapped && path[path.length - 1] === "0")
 				path = [];
 
-			else if(path.length === 0)
+			else if (path.length === 0)
 				path = ["0"];
 
 
@@ -560,7 +559,7 @@ const mappings = {
 
 		}
 
-		return return_path(mappings_path, elements[elements.length-1]);
+		return return_path(mappings_path, elements[elements.length - 1]);
 
 	},
 
@@ -587,7 +586,7 @@ const mappings = {
 
 		if (list_type === 'list_of_tables')
 			return mappings.set_table(new_value);
-		else if(list_type === 'suggested_mapping'){
+		else if (list_type === 'suggested_mapping') {
 
 			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
 				mappings_path: new_value.split(data_model.path_join_symbol),
@@ -635,7 +634,7 @@ const mappings = {
 				list_type === 'simple' || //if the list is not a `tree` and not a `to_many`
 				new_value === '0'; // or if list's value is unset;
 			if (remove_block_to_the_right && dom_helper.remove_elements_to_the_right(changed_list))
-					mappings.changes_made = true;
+				mappings.changes_made = true;
 
 			previous_value_is_relationship =
 				list_type !== 'simple' ||
@@ -766,7 +765,7 @@ const mappings = {
 
 	//HELPERS
 
-	update_all_lines(mapping_path_filter = null)	{
+	update_all_lines(mapping_path_filter = null){
 
 		new Promise((resolve) => {
 			resolve();
@@ -804,7 +803,7 @@ const mappings = {
 			});
 			const select_elements = dom_helper.get_line_elements(line_elements_container);
 
-			if(select_elements.length === 0)
+			if (select_elements.length === 0)
 				return resolve();
 
 			const update_mapped_fields = (select_element, mapped_fields) => {
@@ -873,7 +872,7 @@ const mappings = {
 		const selected_lines = lines.filter(mapping_line =>
 			mapping_line.classList.contains('wbplanview_mappings_line_focused')
 		);
-		if(selected_lines.length === 0 && selected_lines[0]===line)
+		if (selected_lines.length === 0 && selected_lines[0] === line)
 			return;
 
 		//deselect all lines
@@ -923,11 +922,10 @@ const mappings = {
 
 	format_validation_results(validation_results){
 
-		return 'The following fields should be mapped before you are able to upload the dataset:<br>' +
-			'<div class="list_of_mappings">' +
-			(
-				validation_results.map(field_path =>
-					'<div class="wbplanview_mappings_line_elements">' +
+		return `The following fields should be mapped before you are able to upload the dataset:<br>
+			<div class="list_of_mappings">${
+			validation_results.map(field_path =>
+				`<div class="wbplanview_mappings_line_elements">${
 					html_generator.mapping_path(
 						mappings.get_mapping_line_data_from_mappings_path({
 							mappings_path: field_path,
@@ -936,14 +934,14 @@ const mappings = {
 						}),
 						'preview_list',
 						true
-					) +
-					'</div>'
-				).join('')
-			) +
-			'</div>' +
-			'<br>Are you sure you want to save the mapping anyway?';
+					)}
+					</div>`
+			).join('')}
+			</div>
+			<br>Are you sure you want to save the mapping anyway?`;
 
-	},
+	}
+	,
 
 	deduplicate_mappings(){
 
@@ -970,10 +968,10 @@ const mappings = {
 
 	show_automapper_suggestions(select_element, custom_select_option){
 
-		new Promise((resolve)=>{
+		new Promise((resolve) => {
 
 			//don't show suggestions if picklist has non null value
-			if(
+			if (
 				typeof custom_select_option !== "undefined" &&
 				custom_select_element.get_option_value(custom_select_option) !== "0"
 			)
@@ -991,18 +989,18 @@ const mappings = {
 			mapping_path.pop();
 
 			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
-				mappings_path:mapping_path,
+				mappings_path: mapping_path,
 				iterate: false,
 			});
 
 			let path_offset = 0;
 			const list_mapping_type = custom_select_element.get_list_mapping_type(select_element);
-			if(list_mapping_type === 'to_many'){
+			if (list_mapping_type === 'to_many') {
 				mapping_path.push('#1');
 				path_offset = 1;
 			}
 
-			const table_name = mapping_line_data[mapping_line_data.length-1].table_name;
+			const table_name = mapping_line_data[mapping_line_data.length - 1].table_name;
 
 			let automapper_results = auto_mapper.map({
 				headers: [header],
@@ -1014,20 +1012,20 @@ const mappings = {
 				check_for_existing_mappings: true,
 			});
 
-			if(automapper_results.length===0)
+			if (automapper_results.length === 0)
 				return resolve();
 
 			automapper_results = automapper_results[0][1];
 
-			if(automapper_results.length > mappings.max_suggestions_count)
-				automapper_results = automapper_results.slice(0,3);
+			if (automapper_results.length > mappings.max_suggestions_count)
+				automapper_results = automapper_results.slice(0, 3);
 
-			const select_options_data = automapper_results.map(automapper_result=>{
+			const select_options_data = automapper_results.map(automapper_result => {
 
 				const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({
 					mappings_path: automapper_result,
 					use_cached: true,
-				}).slice(mapping_path.length-path_offset);
+				}).slice(mapping_path.length - path_offset);
 				const mapping_path_html = html_generator.mapping_path(
 					mapping_line_data,
 					'suggestion_list',
@@ -1037,7 +1035,7 @@ const mappings = {
 				return {
 					option_name: mapping_path_html,
 					option_value: automapper_result.join(data_model.path_join_symbol),
-				}
+				};
 			});
 
 			const suggested_mappings_html = custom_select_element.suggested_mappings(select_options_data);
