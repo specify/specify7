@@ -121,24 +121,6 @@
 
 
 /* MAPPING GENERAL */
-#add_mapping {
-    padding: 0.3rem !important;
-    border: none;
-    height: 1.6rem;
-    cursor: pointer;
-    background: var(--b2);
-    margin-right: 1rem;
-}
-
-#add_mapping img {
-    width: 1rem;
-    height: 1rem;
-}
-
-#add_mapping:hover {
-    background: var(--b3);
-}
-
 #list__mappings {
     display: grid;
     grid-template-columns: 2.2rem max-content auto;
@@ -211,11 +193,10 @@
 
 .wbplanview_mappings_line_elements {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    row-gap: 0.6rem;
-    padding-left: 0.5rem;
-    height: 2rem;
+	align-items: center;
+	flex-wrap: wrap;
+	row-gap: 0.6rem;
+	padding-left: 0.5rem;
 }
 
 
@@ -247,7 +228,7 @@
     grid-template-columns: auto calc(4 * var(--white_space));
 	grid-template-rows: auto 1fr;
     width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
-    height: 100%;
+    height: calc(4 * var(--white_space));
     position: relative;
 }
 
