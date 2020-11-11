@@ -50,7 +50,8 @@ const html_generator = {
 			header_data: {
 				mapping_type,
 				header_name
-			}
+			},
+			line_attributes = [],
 		} = mappings_line_data;
 
 		let header_html;
@@ -59,7 +60,7 @@ const html_generator = {
 		else
 			header_html = header_name;
 
-		return `<div class="wbplanview_mappings_line">
+		return `<div class="wbplanview_mappings_line `+line_attributes.join(' ')+`">
 					<div class="wbplanview_mappings_line_controls">
 						<button class="wbplanview_mappings_line_delete" title="Clear mapping"><img src="../../../static/img/discard.svg" alt="Clear mapping"></button>
 					</div>

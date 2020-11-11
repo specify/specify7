@@ -24,13 +24,13 @@ const mappings = {
 	* 								  									 {string} static_value - Value of a static field if mapping type is `static_value`
 	* 									 @param {array} mapping_path - Mapping path array
 	* */
-	implement_array_of_mappings(array_of_mappings){
+	implement_array_of_mappings(array_of_mappings, line_attributes){
 
 		if (array_of_mappings.length === 0)
 			return false;
 
 		Object.values(array_of_mappings).map(header_data =>
-			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'], false)
+			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'], false, line_attributes)
 		);
 
 		this.changes_made = true;
@@ -84,6 +84,8 @@ const mappings = {
 
 					if(headers_to_shadow_define.indexOf(header) !== -1)
 						mapping_line_data['line_data'] = [];
+					else
+						mapping_line_data['line_attributes'] = ['wbplanview_mappings_line_uncomplete'];
 
 					const mapping_line_html = html_generator.mapping_line(mapping_line_data, true);
 
@@ -110,7 +112,7 @@ const mappings = {
 					};
 				});
 				this.need_to_run_auto_mapper = false;
-				mappings.implement_array_of_mappings(array_of_mappings);
+				mappings.implement_array_of_mappings(array_of_mappings, ['wbplanview_mappings_line_automapped']);
 			}
 
 			resolve();
@@ -186,7 +188,7 @@ const mappings = {
 
 	// FUNCTIONS
 
-	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false){
+	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false, line_attributes=[]){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
@@ -198,6 +200,7 @@ const mappings = {
 		const mapping_line_data = {
 			line_data: line_data,
 			header_data: header_data,
+			line_attributes: line_attributes,
 		};
 
 		let new_mapping_line;
@@ -207,12 +210,12 @@ const mappings = {
 			mappings.list__mappings.appendChild(new_mapping_line);
 		}
 		else {
-			//before adding new header, check if it is already present
+			//before adding a header, check if it is already present
 			const {header_name} = header_data;
 			const header_index = Object.keys(this.headers).indexOf(header_name);
 			new_mapping_line = lines[header_index];
 
-			//find position for new header
+			//find position for the new header
 			if (typeof new_mapping_line === "undefined") {
 
 				new_mapping_line = document.createElement('div');
@@ -879,6 +882,8 @@ const mappings = {
 
 		//select the current line
 		line.classList.add('wbplanview_mappings_line_focused');
+		line.classList.remove('wbplanview_mappings_line_uncomplete');
+		line.classList.remove('wbplanview_mappings_line_automapped');
 
 
 		//don't update the mapping view if it is hidden
