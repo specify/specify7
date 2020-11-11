@@ -738,10 +738,13 @@ const WBView = Backbone.View.extend({
         const search_query = search_query_element.value;
 
         const searchPlugin = this.hot.getPlugin('search');
-        this.validation_results_sorted['search_results'] = searchPlugin.query(search_query);
+        this.validation_results_sorted['search_results'] = {
+            search_query: search_query,
+            results: searchPlugin.query(search_query)
+        };
         this.hot.render();
 
-        navigation_total_element.innerText = this.validation_results_sorted['search_results'].length;
+        navigation_total_element.innerText = this.validation_results_sorted['search_results']['results'].length;
         navigation_position_element.innerText = 0;
 
         if(!this.navigateCells({target:navigation_button[0]},true))
@@ -755,8 +758,15 @@ const WBView = Backbone.View.extend({
         const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
         const replacement_value = replacement_value_element.value;
 
-        this.hot.setDataAtCell(this.validation_results_sorted['search_results'].map(cell=>
-            [cell['row'], cell['col'], replacement_value]
+        this.hot.setDataAtCell(this.validation_results_sorted['search_results']['results'].map(cell=>
+            [
+                cell['row'],
+                cell['col'],
+                cell['data'].replaceAll(
+                    this.validation_results_sorted['search_results']['search_query'],
+                    replacement_value
+                )
+            ]
         ));
 
     },
