@@ -114,7 +114,7 @@ const PlanView = Backbone.View.extend({
         });
     },
 
-    change_mapping_type(event){
+    change_mapping_type: function(event){
         this.mapping_is_a_template = event.target.checked;
     },
 
