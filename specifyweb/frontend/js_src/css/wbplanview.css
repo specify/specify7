@@ -257,6 +257,12 @@
     visibility: hidden;
 }
 
+.custom_select[data-type="opened_list"]:after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .custom_select_suggestions {
 	position: absolute;
 	bottom: 2rem;
