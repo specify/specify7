@@ -38,7 +38,9 @@ jobs:
         run: sed -i 's/name="origFilename" type="java.lang.String"/name="origFilename" type="text"/' ./Specify6/config/specify_datamodel.xml
 
       - name: Install ubuntu dependencies
-        run: sudo apt-get install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
+        run: |
+          sudo apt update
+          sudo apt install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
