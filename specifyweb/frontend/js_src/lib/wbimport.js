@@ -81,7 +81,7 @@ function doImport(template, file, workbenchName, header, encoding) {
     return parseQ.then(
         rows => header ? rows.slice(1) : rows
     ).then(
-        rows => rows.map(row => [null, null].concat(row))
+        rows => rows.map(row => [null].concat(row))
     ).then(
         rows => Q(workbench.save()).then(() => rows)
     ).then(
