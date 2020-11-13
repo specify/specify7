@@ -111,15 +111,9 @@ const mappings = {
 					headers: data_model.headers,
 					base_table: data_model.base_table_name
 				});
-				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) => {
-					return {
-						mapping_path: mapping_path,
-						header_data: {
-							mapping_type: 'existing_header',
-							header_name: header_name,
-						}
-					};
-				});
+				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) =>
+					[...mapping_path, 'existing_header', header_name]
+				);
 				this.need_to_run_auto_mapper = false;
 				mappings.implement_array_of_mappings(array_of_mappings, ['wbplanview_mappings_line_automapped']);
 			}
@@ -706,24 +700,9 @@ const mappings = {
 			new_line_element.outerHTML = html_generator.mapping_element(mapping_details, custom_select_type, true);
 		}
 
-		//update fields that match certain mappings path's
-		mappings_path.pop();
-		const paths_to_update = [
-			mappings_path,
-		];
-
-		if (is_relationship)
-			paths_to_update.push([...mappings_path, new_value]);
-
-		if (list_type === "to_many" && new_value === 'add')
-			paths_to_update.push([...mappings_path, previous_previous_value]);
-
-		else if (previous_value_is_relationship)
-			paths_to_update.push([...mappings_path, previous_value]);
-
 		mappings.deduplicate_mappings();
+		mappings.update_all_lines(mappings_path.pop());
 
-		mappings.update_all_lines(paths_to_update);
 	},
 
 	clear_line(wbplanview_mappings_line_delete){
@@ -812,9 +791,7 @@ const mappings = {
 				lines.push(mappings.mapping_view);
 
 			let filters;
-			if (mapping_path_filter !== null && typeof mapping_path_filter[0] === "string")
-				filters = [mapping_path_filter];
-			else if (mapping_path_filter !== null && typeof mapping_path_filter[0] !== "undefined" && mapping_path_filter[0].constructor === Array)
+			if (mapping_path_filter !== null && typeof mapping_path_filter[0] !== "undefined" && mapping_path_filter[0].constructor === Array)
 				filters = mapping_path_filter;
 			else
 				filters = [mapping_path_filter];
@@ -847,11 +824,42 @@ const mappings = {
 					custom_select_element.toggle_option(select_element, mapped_field, 'disable');
 			};
 
+			const update_to_many = (target_select_element, mapped_fields)=>{
+
+				if (custom_select_element.get_list_mapping_type(target_select_element) !== 'to_many')
+					return;
+
+				const options = target_select_element.getElementsByClassName('custom_select_option');
+				const option_values = Object.values(options).map(option => custom_select_element.get_option_value(option));
+				let max_value = mappings.get_max_to_many_value(option_values)+1;
+				const max_mapped_value = mappings.get_max_to_many_value(Object.keys(mapped_fields));
+
+				for(; max_mapped_value >= max_value; max_value++) {
+
+					const new_option_name = data_model.format_reference_item(max_value);
+					const list_table = custom_select_element.get_list_table_name(target_select_element);
+
+					const option_data = {
+						option_name: new_option_name,
+						option_value: new_option_name,
+						is_enabled: true,
+						is_relationship: true,
+						is_default: false,
+						table_name: list_table,
+					};
+
+					custom_select_element.add_option(target_select_element, -2, option_data, false);
+
+				}
+
+			};
+
 			if (filter_mapping_path === null)
 				for (const [position, select_element] of select_elements.entries()) {
 					const local_mapping_path = mapping_path.slice(0, position);
 					const mapped_fields = mappings.get_mapped_fields(local_mapping_path);
 					update_mapped_fields(select_element, mapped_fields);
+					update_to_many(select_element,mapped_fields);
 				}
 
 			else {
@@ -860,36 +868,14 @@ const mappings = {
 				if (intersection_point === -1)
 					return resolve();
 
-				const mapped_fields = mappings.get_mapped_fields(filter_mapping_path);
-				const target_select_element = select_elements[intersection_point];
-				update_mapped_fields(target_select_element, mapped_fields);
+				for(let index=intersection_point; index<mapping_path.length; index++){
 
-				if (custom_select_element.get_list_mapping_type(target_select_element) === 'to_many') {
-					const options = target_select_element.getElementsByClassName('custom_select_option');
-					const option_values = Object.values(options).map(option => custom_select_element.get_option_value(option));
-					let max_value = mappings.get_max_to_many_value(option_values);
-					const max_mapped_value = mappings.get_max_to_many_value(Object.keys(mapped_fields));
+					const local_mapping_path = mapping_path.slice(0,index);
+					const mapped_fields = mappings.get_mapped_fields(local_mapping_path);
+					const target_select_element = select_elements[index];
+					update_mapped_fields(target_select_element, mapped_fields);
+					update_to_many(target_select_element,mapped_fields);
 
-					max_value++;
-					while (max_mapped_value >= max_value) {
-
-						const new_option_name = data_model.format_reference_item(max_value);
-						const list_table = custom_select_element.get_list_table_name(target_select_element);
-
-						const option_data = {
-							option_name: new_option_name,
-							option_value: new_option_name,
-							is_enabled: true,
-							is_relationship: true,
-							is_default: false,
-							table_name: list_table,
-						};
-
-						custom_select_element.add_option(target_select_element, -2, option_data, false);
-
-						max_value++;
-
-					}
 				}
 
 

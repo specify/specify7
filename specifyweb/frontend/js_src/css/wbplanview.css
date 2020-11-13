@@ -72,6 +72,7 @@
 
 #list__tables .custom_select {
 	grid-template-columns: auto 0;
+    height: 100%;
 }
 
 #list__tables .custom_select_options {

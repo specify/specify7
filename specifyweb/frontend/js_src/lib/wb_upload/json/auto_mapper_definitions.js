@@ -98,7 +98,27 @@ module.exports = {
 					'elev',
 					'depth'
 				]
-			}
+			},
+			latitude1: {
+				contains: [
+					'latitude 1'
+				]
+			},
+			latitude2: {
+				contains: [
+					'latitude 2'
+				]
+			},
+			longitude1: {
+				contains: [
+					'longitude 1'
+				]
+			},
+			longitude2: {
+				contains: [
+					'longitude 2'
+				]
+			},
 		},
 		CollectionObject:  {
 			fieldNumber:  {

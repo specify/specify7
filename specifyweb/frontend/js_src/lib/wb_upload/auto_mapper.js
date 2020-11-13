@@ -374,6 +374,7 @@ const auto_mapper = {
 				if (
 					field_name === header_name.toLowerCase() ||
 					field_name === stripped_name ||
+					field_name === final_name ||
 					friendly_name === final_name ||
 					(  // find cases like `Collection Object Remarks`
 						table_friendly_name + ' ' + friendly_name === stripped_name ||
