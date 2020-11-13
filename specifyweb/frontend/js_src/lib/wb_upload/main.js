@@ -38,16 +38,17 @@ const main = {
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
-			// mappings.add_mapping = document.getElementById('add_mapping');
+			const add_new_column = document.getElementById('add_new_column');
+			const add_new_static_column = document.getElementById('add_new_static_column');
 			mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 			mappings.hide_hidden_fields = true;
 			mappings.hide_mapping_view = false;
-			mappings.headers = {};
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
 			mappings.cached_mappings_line_data = {};
 			mappings.lines = [];
+			data_model.headers = {};
 			data_model.base_table_name = undefined;
 			upload_plan_converter.get_mappings_tree = mappings.get_mappings_tree.bind(mappings);
 
@@ -84,9 +85,27 @@ const main = {
 
 			mappings.mapping_view_map_button.addEventListener('click', mappings.mapping_view_map_button_callback);
 
-			// mappings.add_mapping.addEventListener('click', () => {
-			// 	mappings.add_new_mapping_line();
-			// });
+			add_new_column.addEventListener('click', () => {
+				mappings.add_new_mapping_line({
+					header_data: {
+						header_name: '',
+						mapping_type: 'new_column'
+					},
+					blind_add_back: true,
+					scroll_down: true,
+				});
+			});
+
+			add_new_static_column.addEventListener('click', () => {
+				mappings.add_new_mapping_line({
+					header_data: {
+						header_name: '',
+						mapping_type: 'new_static_column'
+					},
+					blind_add_back: true,
+					scroll_down: true,
+				});
+			});
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
 

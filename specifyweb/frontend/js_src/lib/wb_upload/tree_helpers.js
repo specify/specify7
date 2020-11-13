@@ -6,6 +6,7 @@
 *
 * */
 
+
 const tree_helpers = {
 
 	/*
@@ -172,6 +173,23 @@ const tree_helpers = {
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
+	new_mappings_tree_to_array_of_mappings: (mappings_tree, path = []) =>
+		Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node])=>{
+
+			if(typeof tree_node !== "object")
+				result.push([...path, tree_node_name, tree_node]);
+			else
+				result.push(
+					...tree_helpers.new_mappings_tree_to_array_of_mappings(
+						mappings_tree[tree_node_name],
+						[...path, tree_node_name]
+					)
+				);
+
+			return result;
+
+		}, []),
+
 	mappings_tree_to_array_of_mappings(mappings_tree, result = [], path = []){
 
 		return Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node]) => {
@@ -186,10 +204,10 @@ const tree_helpers = {
 				if (this.raw_headers.indexOf(tree_node) !== -1)
 					mapping_type = 'existing_header';
 				else if (tree_node_name === 'static') {
-					mapping_type = 'new_static_header';
+					mapping_type = 'new_static_column';
 					local_path.pop();
 				} else
-					mapping_type = 'new_header';
+					mapping_type = 'new_column';
 
 				result.push({
 					mapping_path: local_path,

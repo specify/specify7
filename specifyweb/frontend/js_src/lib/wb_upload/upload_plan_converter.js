@@ -12,8 +12,8 @@ const data_model = require('./data_model.js');
 const upload_plan_converter = {
 
 	upload_plan_processing_functions: {
-		wbcols: ([key, value]) => [key, value],
-		static: ([key, value]) => [key, {static: value}],
+		wbcols: ([key, value]) => [key, (data_model['headers'].indexOf(value) !== -1 ? {existing_header: value} : {new_column: value})],
+		static: ([key, value]) => [key, {new_static_column: value}],
 		toOne: ([key, value]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
 		toMany: ([key, original_mappings]) => {
 			let i = 1;
@@ -75,6 +75,27 @@ const upload_plan_converter = {
 		upload_plan['baseTableName'] = data_model.base_table_name;
 		upload_plan['isTemplate'] = mapping_is_a_template;
 
+		function handle_header(data){
+
+			if(typeof data === "string")
+				return data;
+
+			const [mapping_type, header_name] = Object.entries(data)[0];
+
+			if(mapping_type !== "new_static_column" && mapping_type !== "static")
+				return header_name;
+
+			let static_value = header_name;
+			if (static_value === 'true')
+				static_value = true;
+			else if (static_value === 'false')
+				static_value = false;
+			else if (!isNaN(static_value))
+				static_value = parseInt(static_value);
+			return {static: static_value};
+
+		}
+
 
 		function handle_table(table_data, table_name, wrap_it = true){
 
@@ -84,11 +105,7 @@ const upload_plan_converter = {
 
 					const new_tree_key = data_model.get_name_from_tree_rank_name(tree_key);
 					let name = tree_rank_data['name'];
-
-					if (typeof name === 'object')  // handle static records
-						({static: name} = name);
-
-					return [new_tree_key, name];
+					return [new_tree_key, handle_header(name)];
 
 				}));
 
@@ -119,19 +136,7 @@ const upload_plan_converter = {
 				} else if (data_model.value_is_tree_rank(field_name))
 					table_plan = handle_table(table_data, table_name, false);
 
-				else if (typeof field_data === "object" && typeof field_data['static'] === "string") {
-					let value = field_data['static'];
-
-					if (value === 'true')
-						value = true;
-					else if (value === 'false')
-						value = false;
-					else if (!isNaN(value))
-						value = parseInt(value);
-
-					table_plan['static'][field_name] = value;
-
-				} else if (typeof data_model.tables[table_name]['fields'][field_name] !== "undefined") {
+				else if (typeof data_model.tables[table_name]['fields'][field_name] !== "undefined") {
 
 					const field = data_model.tables[table_name]['fields'][field_name];
 
@@ -151,7 +156,7 @@ const upload_plan_converter = {
 						}
 
 					} else
-						table_plan['wbcols'][field_name] = field_data;
+						table_plan['wbcols'][field_name] = handle_header(field_data);
 				}
 
 

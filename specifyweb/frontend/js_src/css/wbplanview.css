@@ -236,6 +236,10 @@
 	grid-template-columns: auto calc(4 * var(--white_space));
 }
 
+#mapping_view .custom_select {
+	height: 100%;
+}
+
 .custom_select:after {
     content: '\2192';
     font-size: calc(2 * var(--white_space));

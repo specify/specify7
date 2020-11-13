@@ -32,17 +32,21 @@ const dom_helper = {
 
 	},
 
-	get_line_elements(line_elements_container){
-		return Object.values(line_elements_container.children);
+	get_line_elements: line_elements_container =>
+		Object.values(line_elements_container.children),
+
+	get_line_header_element: line =>
+		line.getElementsByClassName('wbplanview_mappings_line_header')[0],
+
+	get_line_header_name: wbplanview_mappings_line_header => {
+		if(wbplanview_mappings_line_header.children.length === 0)
+			return wbplanview_mappings_line_header.innerText;
+		else  // get textarea's value (for static fields)
+			return wbplanview_mappings_line_header.children[0].value;
 	},
 
-	get_line_header(line){
-
-		const wbplanview_mappings_line_header = line.getElementsByClassName('wbplanview_mappings_line_header')[0];
-
-		return wbplanview_mappings_line_header.innerText;
-
-	},
+	get_line_mapping_type: wbplanview_mappings_line_header =>
+		wbplanview_mappings_line_header.getAttribute('data-mapping_type'),
 
 
 	// MISC

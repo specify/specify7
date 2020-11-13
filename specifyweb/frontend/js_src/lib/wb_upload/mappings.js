@@ -30,7 +30,11 @@ const mappings = {
 			return false;
 
 		Object.values(array_of_mappings).map(header_data =>
-			mappings.add_new_mapping_line(-1, header_data['mapping_path'], header_data['header_data'], false, line_attributes)
+			mappings.add_new_mapping_line({
+				mappings_path: header_data['mapping_path'],
+				header_data: header_data['header_data'],
+				line_attributes: line_attributes
+			})
 		);
 
 		this.changes_made = true;
@@ -72,7 +76,7 @@ const mappings = {
 				mappings.need_to_define_lines = false;
 
 				const result_lines = [];
-				for (const header of Object.keys(this.headers)) {
+				for (const header of Object.keys(data_model.headers)) {
 
 					const mapping_line_data = {
 						line_data: base_table_fields,
@@ -99,7 +103,7 @@ const mappings = {
 
 			if (mappings.need_to_run_automapper) {
 				const mappings_object = auto_mapper.map({
-					headers: Object.keys(this.headers),
+					headers: Object.keys(data_model.headers),
 					base_table: data_model.base_table_name
 				});
 				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) => {
@@ -138,7 +142,7 @@ const mappings = {
 
 
 		tree_helpers.raw_headers = headers;
-		this.headers = Object.fromEntries(headers.map(header_name => [header_name, false]));
+		data_model.headers = Object.fromEntries(headers.map(header_name => [header_name, false]));
 
 		if (upload_plan !== false) {
 
@@ -147,11 +151,13 @@ const mappings = {
 
 			mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(upload_plan);
 			const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
-			const defined_headers = array_of_mappings.filter(({header_data: {mapping_type}}) =>
-				mapping_type === "existing_header"
-			).map(({header_data: {header_name}}) =>
-				header_name
-			);
+
+			const defined_headers = [];
+			for(const mapping_path of array_of_mappings){
+				const [mapping_type, header_name] = helper.deconstruct_mapping_path(mappings_path, true).slice(-2);
+				if(mapping_type === 'existing_header')
+					defined_headers.push(header_name);
+			}
 
 			mappings.set_table(base_table_name, defined_headers);
 			mappings.implement_array_of_mappings(array_of_mappings);
@@ -159,6 +165,7 @@ const mappings = {
 			mappings.need_to_define_lines = true;
 
 		mappings.need_to_run_automapper = headers_defined && upload_plan === false;
+		mappings.new_column_index = 0;
 
 	},
 
@@ -188,7 +195,16 @@ const mappings = {
 
 	// FUNCTIONS
 
-	add_new_mapping_line(position = -1, mappings_path = [], header_data, blind_add_back = false, line_attributes = []){
+	add_new_mapping_line(payload){
+
+		const {
+			position = -1,
+			mappings_path = [],
+			header_data,
+			blind_add_back = false,
+			line_attributes = [],
+			scroll_down = false
+		} = payload;
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
@@ -196,6 +212,11 @@ const mappings = {
 			mappings_path: mappings_path,
 			use_cached: true,
 		});
+
+		if(header_data['mapping_type'] === 'new_column' && header_data['header_name']==='') {
+			mappings.new_column_index++;
+			header_data['header_name'] = `New Column ${mappings.new_column_index}`;
+		}
 
 		const mapping_line_data = {
 			line_data: line_data,
@@ -211,7 +232,7 @@ const mappings = {
 		} else {
 			//before adding a header, check if it is already present
 			const {header_name} = header_data;
-			const header_index = Object.keys(this.headers).indexOf(header_name);
+			const header_index = Object.keys(data_model.headers).indexOf(header_name);
 			new_mapping_line = lines[header_index];
 
 			//find position for the new header
@@ -219,16 +240,23 @@ const mappings = {
 
 				new_mapping_line = document.createElement('div');
 
+				let final_position = position;
 				if (position < -1)
-					position = lines.length + 1 + position;
+					final_position = lines.length + 1 + position;
 
-				if (position >= lines.length)
+				if (final_position >= lines.length)
 					mappings.list__mappings.appendChild(new_mapping_line);
 				else
-					mappings.list__mappings.insertBefore(new_mapping_line, lines[position]);
+					mappings.list__mappings.insertBefore(new_mapping_line, lines[final_position]);
 
 			}
 		}
+
+		if(// scroll down if told to and new line is not visible
+			scroll_down &&
+			mappings.list__mappings.offsetHeight < new_mapping_line.offsetTop + new_mapping_line.offsetHeight
+		)
+				mappings.list__mappings.scrollTop = new_mapping_line.offsetTop - new_mapping_line.offsetHeight;
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
 
@@ -461,7 +489,7 @@ const mappings = {
 
 		let index_shift = 1;
 		if (include_headers)
-			index_shift++;
+			index_shift+=2;
 
 		const line_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
 
@@ -535,8 +563,10 @@ const mappings = {
 
 			if (include_headers) {
 				const line = line_elements_container.parentElement;
-				const header_name = dom_helper.get_line_header(line);
-				return [...path, header_name];
+				const line_header_element = dom_helper.get_line_header_element(line);
+				const header_name = dom_helper.get_line_header_name(line_header_element);
+				const mapping_type = dom_helper.get_line_mapping_type(line_header_element);
+				return [...path, mapping_type, header_name];
 			}
 
 			return path;
@@ -986,6 +1016,11 @@ const mappings = {
 			});
 
 			const header = mapping_path.pop();
+			const header_type = mapping_path.pop();
+
+			if(header_type !== 'existing_header')
+				return resolve();
+
 			mapping_path.pop();
 
 			const mapping_line_data = mappings.get_mapping_line_data_from_mappings_path({

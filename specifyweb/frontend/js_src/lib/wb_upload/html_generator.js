@@ -64,7 +64,7 @@ const html_generator = {
 					<div class="wbplanview_mappings_line_controls">
 						<button class="wbplanview_mappings_line_delete" title="Clear mapping"><img src="../../../static/img/discard.svg" alt="Clear mapping"></button>
 					</div>
-					<div class="wbplanview_mappings_line_header">`+header_html+`</div>
+					<div class="wbplanview_mappings_line_header" data-mapping_type="${mapping_type}">`+header_html+`</div>
 					<div class="wbplanview_mappings_line_elements">
 						` + html_generator.mapping_path(line_data, 'closed_list', use_cached) + `
 					</div>

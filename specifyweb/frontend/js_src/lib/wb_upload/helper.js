@@ -65,13 +65,16 @@ const helper = {
 	deconstruct_mapping_path(mapping_path, has_header=false, detect_unmapped=true){
 
 		let header;
-		if(has_header)
+		let mapping_type;
+		if(has_header){
 			header = mapping_path.pop();
+			mapping_type = mapping_path.pop();
+		}
 
 		if(detect_unmapped && mapping_path[mapping_path.length-1]==="0")
 			mapping_path = [];
 
-		return [mapping_path, header];
+		return [mapping_path, mapping_type, header];
 
 	},
 
