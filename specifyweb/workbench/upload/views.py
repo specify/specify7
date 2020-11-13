@@ -32,6 +32,7 @@ class UploadForm(forms.Form):
 @login_maybe_required
 @apply_access_control
 def upload(request) -> Any:
+    collection = request.specify_collection
     if request.method == 'POST':
         form = UploadForm(request.POST)
         if form.is_valid():
@@ -40,7 +41,7 @@ def upload(request) -> Any:
             reader = csv.DictReader(io.StringIO(form.cleaned_data['csv_data']))
 
             no_commit = not form.cleaned_data['commit']
-            result = do_upload_csv(request.specify_collection, reader, parse_plan(request.specify_collection, plan), no_commit)
+            result = do_upload_csv(request.specify_collection, reader, parse_plan(collection, plan).apply_scoping(collection), no_commit)
 
             return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
     else:

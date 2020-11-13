@@ -74,13 +74,12 @@ class ParsingTests(UploadTestsBase):
 
     def test_nonreadonly_picklist(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -112,13 +111,12 @@ class ParsingTests(UploadTestsBase):
 
     def test_picklist_size_overflow(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -138,13 +136,12 @@ class ParsingTests(UploadTestsBase):
 
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '123'},
             {'catno': '234'},
@@ -158,13 +155,12 @@ class ParsingTests(UploadTestsBase):
 
     def test_required_field(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
-            static={'collectionmemberid': self.collection.id, 'collection_id': self.collection.id},
+            static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '', 'habitat': 'River'},
@@ -178,7 +174,6 @@ class ParsingTests(UploadTestsBase):
 
     def test_readonly_picklist(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Agent',
             wbcols={
                 'title': 'title',
@@ -187,7 +182,7 @@ class ParsingTests(UploadTestsBase):
             static={'agenttype': 1},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'title': "Mr.", 'lastname': 'Doe'},
             {'title': "Dr.", 'lastname': 'Zoidberg'},
@@ -268,7 +263,6 @@ class ParsingTests(UploadTestsBase):
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
-            isOneToOne = False,
             name='Agent',
             wbcols={
                 'agenttype': 'agenttype',
@@ -277,7 +271,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        )
+        ).apply_scoping(self.collection)
         data = [
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},

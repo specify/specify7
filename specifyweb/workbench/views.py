@@ -1,10 +1,6 @@
 import re
-import os
-import errno
 import json
 import logging
-import subprocess
-from glob import glob
 from uuid import uuid4
 from typing import Sequence, Tuple
 
@@ -20,8 +16,6 @@ from specifyweb.specify import models
 Workbench = getattr(models, 'Workbench')
 Workbenchrow = getattr(models, 'Workbenchrow')
 Workbenchtemplatemappingitem = getattr(models, 'Workbenchtemplatemappingitem')
-
-from .uploader_classpath import CLASSPATH
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +43,7 @@ def load(wb_id: int) -> Sequence[Tuple]:
         # but the following is slower so only use in that case.
         return load_gt_61_cols(wb_id)
 
-    select_fields = ["r.workbenchrowid", "r.biogeomancerresults"]
+    select_fields = ["r.workbenchrowid"]
     for wbtmi in wbtmis:
         select_fields.append("ifnull(cell%d.celldata, '')" % wbtmi.vieworder)
     from_clause = ["workbenchrow r"]
@@ -82,7 +76,7 @@ def load_gt_61_cols(wb_id):
     wbtm = cursor.fetchone()[0]
 
     sql = """
-    select r.workbenchrowid, r.biogeomancerresults, ifnull(celldata, '')
+    select r.workbenchrowid, ifnull(celldata, '')
     from workbenchrow r
     join workbenchtemplatemappingitem mi on mi.workbenchtemplateid = %s
     left outer join workbenchdataitem i on i.workbenchrowid = r.workbenchrowid
@@ -104,13 +98,18 @@ def group_rows(rows):
             break
 
         if row[0] == current_row[0]:
-            current_row.append(row[2])
+            current_row.append(row[1])
         else:
             yield current_row
             current_row = list(row)
 
 def save(wb_id, data):
+    logger.info(f"saving dataset {wb_id}")
     wb_id = int(wb_id)
+
+    wb = Workbench.objects.select_for_update().get(id=wb_id)
+    assert wb.lockedbyusername is None, "dataset is locked"
+
     cursor = connection.cursor()
 
     logger.debug("truncating wb %d", wb_id)
@@ -131,7 +130,7 @@ def save(wb_id, data):
     """, [wb_id])
 
     wbtmis = [r[0] for r in cursor.fetchall()]
-    assert len(wbtmis) + 2 == len(data[0]), (wbtmis, data[0])
+    assert len(wbtmis) + 1 == len(data[0]), (wbtmis, data[0])
 
     logger.debug("clearing row numbers")
     cursor.execute("update workbenchrow set rownumber = null where workbenchid = %s",
@@ -175,43 +174,68 @@ def save(wb_id, data):
     """, [
         (celldata, wbtmi, new_row_id[i] if row[0] is None else row[0])
         for i, row in enumerate(data)
-        for wbtmi, celldata in zip(wbtmis, row[2:])
+        for wbtmi, celldata in zip(wbtmis, row[1:])
         if celldata is not None
     ])
 
-def shellquote(s):
-    # this can be replaced with shlex.quote in Python 3.3
-    return "'" + s.replace("'", "'\\''") + "'"
+    logger.debug("clearing validation results")
+    cursor.execute("""
+    update workbenchrow set biogeomancerresults = null
+    where workbenchid = %s
+    """, [wb_id])
 
 @login_maybe_required
 @apply_access_control
 @require_POST
 def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
-    from .upload.upload import do_upload_wb
+    from .tasks import upload
     wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
 
-    result = do_upload_wb(request.specify_collection, wb, no_commit)
+    with transaction.atomic():
+        wb = Workbench.objects.select_for_update().get(id=wb_id)
+        assert wb.lockedbyusername is None
 
-    return http.HttpResponse(json.dumps([r.to_json() for r in result], indent=2), content_type='application/json')
+        taskid = str(uuid4())
+        async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
+        wb.lockedbyusername = taskid + ";" + "validating" if no_commit else "uploading"
+        wb.save()
+
+    return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
+
+# @login_maybe_required
+@require_GET
+def upload_status(request, wb_id: int) -> http.HttpResponse:
+    from . import tasks
+    wb = get_object_or_404(Workbench, id=wb_id)
+    # if (wb.specifyuser != request.specify_user):
+    #     return http.HttpResponseForbidden()
+
+    if wb.lockedbyusername is None:
+        return http.HttpResponse(json.dumps(None), content_type='application/json')
+
+    if wb.lockedbyusername == "uploaded":
+        return http.HttpResponse(json.dumps(["uploaded", None, None]), content_type='application/json')
+
+    task_id, op = wb.lockedbyusername.split(';')
+    result = tasks.upload.AsyncResult(task_id)
+    return http.HttpResponse(json.dumps([op, result.state, result.info]), content_type='application/json')
 
 @login_maybe_required
-@require_GET
-def upload_log(request, upload_id):
-    assert upload_id.startswith(settings.DATABASE_NAME)
-    fname = os.path.join(settings.WB_UPLOAD_LOG_DIR, upload_id)
-    try:
-        return http.HttpResponse(open(fname, "r", encoding='utf-8'), content_type='text/plain')
-    except IOError as e:
-        if e.errno == errno.ENOENT:
-            raise http.Http404()
-        else:
-            raise
+@apply_access_control
+@require_POST
+def upload_abort(request, wb_id) -> http.HttpResponse:
+    from . import tasks
+    wb = get_object_or_404(Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
 
-@login_maybe_required
-@require_GET
-def upload_status(request: http.HttpRequest, wb_id: int) -> http.HttpResponse:
-    status = list(Workbenchrow.objects.filter(workbench_id=wb_id).values_list('id', 'biogeomancerresults'))
-    return http.HttpResponse(toJson(status), content_type='application/json')
+    if wb.lockedbyusername is None:
+        return http.HttpResponse('not running', content_type='text/plain')
 
+    task_id, op = wb.lockedbyusername.split(';')
+    tasks.upload.AsyncResult(task_id).revoke(terminate=True)
+
+    Workbench.objects.filter(id=wb_id).update(lockedbyusername=None)
+    return http.HttpResponse('ok', content_type='text/plain')

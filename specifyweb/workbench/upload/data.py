@@ -141,6 +141,31 @@ class FailedBusinessRule(NamedTuple):
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
 
+class NoMatch(NamedTuple):
+    info: ReportInfo
+
+    def get_id(self) -> Optional[int]:
+        return None
+
+    def is_failure(self) -> bool:
+        return True
+
+    def validation_info(self) -> RowValidation:
+        return RowValidation(
+            cellIssues=[],
+            newRows=[],
+            picklistAdditions=[],
+            tableIssues=[
+                TableIssue(
+                    tableName=self.info.tableName,
+                    columns=self.info.columns,
+                    issue="No matching record for must-match table."
+        )])
+
+    def to_json(self):
+        return { self.__class__.__name__: self._asdict() }
+
+
 class ParseFailures(NamedTuple):
     failures: List[CellIssue]
 
@@ -162,7 +187,7 @@ class ParseFailures(NamedTuple):
         return { self.__class__.__name__: self._asdict() }
 
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
+    record_result: Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
     toOne: Dict[str, Any]
     toMany: Dict[str, Any]
 
@@ -206,24 +231,36 @@ class UploadResult(NamedTuple):
         }}
 
 class Uploadable(Protocol):
-    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
+    def apply_scoping(self, collection) -> "ScopedUploadable":
         ...
 
     def to_json(self) -> Dict:
         ...
 
+    def unparse(self) -> Dict:
+        ...
+
+class ScopedUploadable(Protocol):
+    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
+        ...
+
+
+class BoundUploadable(Protocol):
     def is_one_to_one(self) -> bool:
         ...
 
-class BoundUploadable(Protocol):
+    def must_match(self) -> bool:
+        ...
+
     def filter_on(self, path: str) -> FilterPack:
         ...
 
-    def upload_row(self) -> UploadResult:
+    def match_row(self) -> UploadResult:
+        ...
+
+    def process_row(self) -> UploadResult:
         ...
 
     def force_upload_row(self) -> UploadResult:
         ...
 
-    def is_one_to_one(self) -> bool:
-        ...

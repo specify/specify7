@@ -8,7 +8,7 @@ from decimal import Decimal
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
 from ..data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
-from ..upload_table import UploadTable, to_many_filters_and_excludes, BoundUploadTable
+from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from ..upload import do_upload_csv
 
@@ -23,11 +23,11 @@ class UploadTests(UploadTestsBase):
 59583,Gastropoda,Siphonarioidea,Siphonariidae,Williamia,,krebsii,,"(Mörch, 1877)",,,Colin,,Redfern,00/09/2014,Bahamas,01 FEB 1977,01 FEB 1977,,,Dry,720,"BS1 fig. 763A, BS2 fig. 896A",CR,21/09/2014,26° 00' N,,77° 24' W,,Point,CR99,,Colin,,Redfern,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
-        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
-        self.assertEqual(filters, [{
+        filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
+        self.assertEqual([{
             'collectors__agent__agenttype': 1,
             'collectors__agent__firstname': 'Colin',
             'collectors__agent__lastname': 'Redfern',
@@ -36,7 +36,7 @@ class UploadTests(UploadTestsBase):
             'collectors__agent__division_id': self.division.id,
             'collectors__division_id': self.division.id,
             'collectors__isprimary': True,
-            'collectors__ordernumber': 0}])
+            'collectors__ordernumber': 0}], filters)
 
         self.assertEqual(
             excludes,
@@ -48,11 +48,11 @@ class UploadTests(UploadTestsBase):
 1378,Gastropoda,Rissooidea,Rissoinidae,Rissoina,,delicatissima,,"Raines, 2002",,B. Raines,,B.,,Raines,Nov 2003,00/11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,00/04/1998,,,,2,0,0,Dry; shell,Dry,,,In sand at base of cliffs,10,20,0,,,Paratype,512,," PARATYPES.  In pouch no. 1, paratypes 4 & 5.  Raines, B.K. 2002.  La Conchiglia 34 ( no. 304) : 16 (holotype LACM 2934, Fig. 9).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,109° 19' 45' W,,Point,,JSG,23/12/2014,0,Marine,0,B. Raines and M. Taylor,,B.,,Raines,,M.,,Taylor,,,,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], UploadTable)
+        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
         uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row)
         assert isinstance(uploadable, BoundUploadTable)
-        filters, excludes = to_many_filters_and_excludes(uploadable.toMany)
-        self.assertEqual(filters, [
+        filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
+        self.assertEqual([
             {'collectors__agent__agenttype': 1,
              'collectors__agent__firstname': 'B.',
              'collectors__agent__lastname': 'Raines',
@@ -70,7 +70,7 @@ class UploadTests(UploadTestsBase):
              'collectors__agent__division_id': self.division.id,
              'collectors__division_id': self.division.id,
              'collectors__isprimary': False,
-             'collectors__ordernumber': 1}])
+             'collectors__ordernumber': 1}], filters)
 
         self.assertEqual(excludes, [])
 
@@ -216,17 +216,15 @@ class UploadTests(UploadTestsBase):
 '''))
         tree_record = TreeRecord(
             name = 'Geography',
-            treedefname = 'Geographytreedef',
-            treedefid = self.geographytreedef.id,
             ranks = {
                 'Continent': 'Continent/Ocean',
                 'Country': 'Country',
                 'State': 'State/Prov/Pref',
                 'County': 'Region',
             }
-        )
+        ).apply_scoping(self.collection)
         row = next(reader)
-        to_upload, matched = tree_record.bind(self.collection, row).match()
+        to_upload, matched = tree_record.bind(self.collection, row)._match()
 
         self.assertEqual(to_upload, [
             TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co."),
@@ -274,11 +272,11 @@ class UploadTests(UploadTestsBase):
         # )
 
         self.assertEqual(
-            tree_record.bind(self.collection, row).match(),
+            tree_record.bind(self.collection, row)._match(),
             TreeMatchResult([TreeDefItemWithValue(get_table('Geographytreedefitem').objects.get(name="County"), "Hendry Co.")], [state.id])
         )
 
-        upload_result = tree_record.bind(self.collection, row).upload_row()
+        upload_result = tree_record.bind(self.collection, row).process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
 
         uploaded = get_table('Geography').objects.get(id=upload_result.get_id())
@@ -286,8 +284,8 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        self.assertEqual(tree_record.bind(self.collection, row).match(), ([], [uploaded.id]))
-        upload_result = tree_record.bind(self.collection, row).upload_row()
+        self.assertEqual(tree_record.bind(self.collection, row)._match(), ([], [uploaded.id]))
+        upload_result = tree_record.bind(self.collection, row).process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region'])
         self.assertEqual(upload_result, UploadResult(Matched(id=uploaded.id,info=expected_info), {}, {}))
 

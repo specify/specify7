@@ -38,9 +38,4 @@ class UploadTestsBase(ApiTests):
         self.discipline.taxontreedef = self.taxontreedef
         self.discipline.save()
 
-        self.example_plan = example_plan.with_scoping(
-            collectionid=self.collection.id,
-            disciplineid=self.discipline.id,
-            divisionid=self.division.id,
-            taxontreedefid=self.taxontreedef.id,
-            geographytreedefid=self.geographytreedef.id)
+        self.example_plan = example_plan.with_scoping(self.collection)
