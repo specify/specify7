@@ -6,16 +6,9 @@
 *
 * */
 
+const data_model = require('./data_model.js');
 
 const tree_helpers = {
-
-	/*
-	* Constructor that get's necessary variables from `mappings`
-	* @param {array} raw_headers - array of headers
-	* */
-	constructor(raw_headers){
-		this.raw_headers = raw_headers;
-	},
 
 	/*
 	* Returns cross-section of full_mappings_tree and node_mappings_tree
@@ -173,14 +166,14 @@ const tree_helpers = {
 	* 	Accession, Accession Agents, #1, Agent, Last Name
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
-	new_mappings_tree_to_array_of_mappings: (mappings_tree, path = []) =>
+	mappings_tree_to_array_of_mappings: (mappings_tree, path = []) =>
 		Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node])=>{
 
 			if(typeof tree_node !== "object")
 				result.push([...path, tree_node_name, tree_node]);
 			else
 				result.push(
-					...tree_helpers.new_mappings_tree_to_array_of_mappings(
+					...tree_helpers.mappings_tree_to_array_of_mappings(
 						mappings_tree[tree_node_name],
 						[...path, tree_node_name]
 					)
@@ -189,42 +182,6 @@ const tree_helpers = {
 			return result;
 
 		}, []),
-
-	mappings_tree_to_array_of_mappings(mappings_tree, result = [], path = []){
-
-		return Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node]) => {
-
-			const local_path = path.slice();
-			local_path.push(tree_node_name);
-
-			if (typeof tree_node !== 'object') {
-
-				let mapping_type;
-
-				if (this.raw_headers.indexOf(tree_node) !== -1)
-					mapping_type = 'existing_header';
-				else if (tree_node_name === 'static') {
-					mapping_type = 'new_static_column';
-					local_path.pop();
-				} else
-					mapping_type = 'new_column';
-
-				result.push({
-					mapping_path: local_path,
-					header_data: {
-						mapping_type: mapping_type,
-						header_name: tree_node,
-					}
-				});
-
-			} else
-				tree_helpers.mappings_tree_to_array_of_mappings(tree_node, result, local_path);
-
-			return result;
-
-		}, result);
-
-	},
 
 
 };

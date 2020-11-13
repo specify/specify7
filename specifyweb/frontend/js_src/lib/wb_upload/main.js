@@ -48,7 +48,7 @@ const main = {
 			mappings.need_to_run_auto_mapper = true;
 			mappings.cached_mappings_line_data = {};
 			mappings.lines = [];
-			data_model.headers = {};
+			data_model.headers = [];
 			data_model.base_table_name = undefined;
 			upload_plan_converter.get_mappings_tree = mappings.get_mappings_tree.bind(mappings);
 

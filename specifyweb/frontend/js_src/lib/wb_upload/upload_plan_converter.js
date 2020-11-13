@@ -12,8 +12,14 @@ const data_model = require('./data_model.js');
 const upload_plan_converter = {
 
 	upload_plan_processing_functions: {
-		wbcols: ([key, value]) => [key, (data_model['headers'].indexOf(value) !== -1 ? {existing_header: value} : {new_column: value})],
-		static: ([key, value]) => [key, {new_static_column: value}],
+		wbcols: ([key, value]) => [key, {
+			[
+				data_model['headers'].indexOf(value) !== -1 ?
+					'existing_header' :
+					'new_column'
+				]: value
+		}],
+		static: ([key, value]) => ([key, {new_static_column: value}]),
 		toOne: ([key, value]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
 		toMany: ([key, original_mappings]) => {
 			let i = 1;
@@ -40,9 +46,10 @@ const upload_plan_converter = {
 
 		if (base_table_name_extracted === false) {
 			data_model.base_table_name = upload_plan['baseTableName'];
-
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
-		} else if (typeof upload_plan['uploadTable'] !== "undefined")
+		}
+
+		else if (typeof upload_plan['uploadTable'] !== "undefined")
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadTable'], true);
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
@@ -51,7 +58,8 @@ const upload_plan_converter = {
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-			[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])], []
+				[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
+			[]
 		));
 
 	},
@@ -77,22 +85,12 @@ const upload_plan_converter = {
 
 		function handle_header(data){
 
-			if(typeof data === "string")
+			if (typeof data === "string")
 				return data;
 
 			const [mapping_type, header_name] = Object.entries(data)[0];
 
-			if(mapping_type !== "new_static_column" && mapping_type !== "static")
-				return header_name;
-
-			let static_value = header_name;
-			if (static_value === 'true')
-				static_value = true;
-			else if (static_value === 'false')
-				static_value = false;
-			else if (!isNaN(static_value))
-				static_value = parseInt(static_value);
-			return {static: static_value};
+			return header_name;
 
 		}
 
@@ -133,7 +131,8 @@ const upload_plan_converter = {
 
 					table_plan.push(handle_table(field_data, table_name, false));
 
-				} else if (data_model.value_is_tree_rank(field_name))
+				}
+				else if (data_model.value_is_tree_rank(field_name))
 					table_plan = handle_table(table_data, table_name, false);
 
 				else if (typeof data_model.tables[table_name]['fields'][field_name] !== "undefined") {
@@ -155,8 +154,13 @@ const upload_plan_converter = {
 								table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
 						}
 
-					} else
-						table_plan['wbcols'][field_name] = handle_header(field_data);
+					}
+					else
+						table_plan[
+							Object.entries(field_data)[0][0] === 'new_static_column' ?
+								'static' :
+								'wbcols'
+							][field_name] = handle_header(field_data);
 				}
 
 

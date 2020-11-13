@@ -372,7 +372,7 @@ const data_model = {
 		let next_table_name = '';
 		let next_parent_table_name = '';
 
-		if(next_parent_table_name.length === 0 ){
+		if(typeof next_path_elements_name === "string"){
 			next_path_elements_name = [next_path_elements_name];
 			next_path_elements = [next_path_elements];
 		}

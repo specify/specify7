@@ -29,13 +29,18 @@ const mappings = {
 		if (array_of_mappings.length === 0)
 			return false;
 
-		Object.values(array_of_mappings).map(header_data =>
+		Object.values(array_of_mappings).map(mappings_path => {
+			const [parsed_mappings_path, mapping_type, header_name] = helper.deconstruct_mapping_path(mappings_path, true);
+			const header_data = {
+				mapping_type: mapping_type,
+				header_name: header_name,
+			}
 			mappings.add_new_mapping_line({
-				mappings_path: header_data['mapping_path'],
-				header_data: header_data['header_data'],
+				mappings_path: parsed_mappings_path,
+				header_data: header_data,
 				line_attributes: line_attributes
 			})
-		);
+		});
 
 		this.changes_made = true;
 		mappings.update_all_lines();
@@ -76,7 +81,7 @@ const mappings = {
 				mappings.need_to_define_lines = false;
 
 				const result_lines = [];
-				for (const header of Object.keys(data_model.headers)) {
+				for (const header of data_model.headers) {
 
 					const mapping_line_data = {
 						line_data: base_table_fields,
@@ -103,7 +108,7 @@ const mappings = {
 
 			if (mappings.need_to_run_automapper) {
 				const mappings_object = auto_mapper.map({
-					headers: Object.keys(data_model.headers),
+					headers: data_model.headers,
 					base_table: data_model.base_table_name
 				});
 				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) => {
@@ -142,7 +147,7 @@ const mappings = {
 
 
 		tree_helpers.raw_headers = headers;
-		data_model.headers = Object.fromEntries(headers.map(header_name => [header_name, false]));
+		data_model.headers = headers;
 
 		if (upload_plan !== false) {
 
@@ -154,7 +159,7 @@ const mappings = {
 
 			const defined_headers = [];
 			for(const mapping_path of array_of_mappings){
-				const [mapping_type, header_name] = helper.deconstruct_mapping_path(mappings_path, true).slice(-2);
+				const [mapping_type, header_name] = helper.deconstruct_mapping_path(mapping_path, true).slice(-2);
 				if(mapping_type === 'existing_header')
 					defined_headers.push(header_name);
 			}
@@ -232,7 +237,7 @@ const mappings = {
 		} else {
 			//before adding a header, check if it is already present
 			const {header_name} = header_data;
-			const header_index = Object.keys(data_model.headers).indexOf(header_name);
+			const header_index = data_model.headers.indexOf(header_name);
 			new_mapping_line = lines[header_index];
 
 			//find position for the new header

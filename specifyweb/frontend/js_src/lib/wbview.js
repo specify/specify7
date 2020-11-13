@@ -164,6 +164,9 @@ const WBView = Backbone.View.extend({
             cellInfo.issues.push(ucfirst_issue);
         };
 
+        if(result === null)
+            return;
+
         result.tableIssues.forEach(table_issue => table_issue.columns.forEach(column_name => {
             add_error_message(column_name, table_issue.issue);
         }));
