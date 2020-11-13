@@ -75,3 +75,12 @@ jobs:
 
       - name: Run test suite
         run: ./ve/bin/python manage.py test -k
+
+      - name: Install nodejs
+        run: sudo apt-get install -y nodejs npm
+
+      - name: Build frontend
+        run: make frontend
+
+      - name: Run JS test suite
+        run: cd specifyweb/frontend/js_src && npm test

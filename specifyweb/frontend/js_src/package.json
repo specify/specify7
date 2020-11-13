@@ -37,12 +37,13 @@
     "css-loader": "~0.23.1",
     "file-loader": "~0.8.5",
     "loader-utils": "~0.2.12",
+    "qunit": "^2.11.2",
     "style-loader": "~0.13.0",
     "url-loader": "~0.5.7",
     "webpack": "~1.12.9"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "qunit lib/tests/testmain.js"
   },
   "author": "KU Biodiversity Institute",
   "license": "GPL-2.0"
