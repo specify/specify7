@@ -24,7 +24,7 @@ const mappings = {
 	* 								  									 {string} static_value - Value of a static field if mapping type is `static_value`
 	* 									 @param {array} mapping_path - Mapping path array
 	* */
-	implement_array_of_mappings(array_of_mappings, line_attributes){
+	implement_array_of_mappings(array_of_mappings){
 
 		if (array_of_mappings.length === 0)
 			return false;
@@ -37,8 +37,7 @@ const mappings = {
 			}
 			mappings.add_new_mapping_line({
 				mappings_path: parsed_mappings_path,
-				header_data: header_data,
-				line_attributes: line_attributes
+				header_data: header_data
 			})
 		});
 
@@ -93,8 +92,6 @@ const mappings = {
 
 					if (headers_to_shadow_define.indexOf(header) !== -1)
 						mapping_line_data['line_data'] = [];
-					else
-						mapping_line_data['line_attributes'] = ['wbplanview_mappings_line_uncomplete'];
 
 					const mapping_line_html = html_generator.mapping_line(mapping_line_data, true);
 
@@ -115,7 +112,7 @@ const mappings = {
 					[...mapping_path, 'existing_header', header_name]
 				);
 				this.need_to_run_auto_mapper = false;
-				mappings.implement_array_of_mappings(array_of_mappings, ['wbplanview_mappings_line_automapped']);
+				mappings.implement_array_of_mappings(array_of_mappings);
 			}
 
 			resolve();
@@ -904,11 +901,6 @@ const mappings = {
 
 		//select the current line
 		line.classList.add('wbplanview_mappings_line_focused');
-
-		//remove line attributes
-		line.classList.remove('wbplanview_mappings_line_uncomplete');
-		line.classList.remove('wbplanview_mappings_line_automapped');
-
 
 		//don't update the mapping view if it is hidden
 		if (mappings.hide_mapping_view)

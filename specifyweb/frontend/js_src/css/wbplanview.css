@@ -157,14 +157,6 @@
     background: var(--b2);
 }
 
-.wbplanview_mappings_line_uncomplete > .wbplanview_mappings_line_elements {
-    background: var(--line_uncompele);
-}
-
-.wbplanview_mappings_line_automapped > .wbplanview_mappings_line_elements {
-    background: var(--line_automapped)
-}
-
 
 /* MAPPINGS LINE CONTROLS */
 .wbplanview_mappings_line_controls button {
