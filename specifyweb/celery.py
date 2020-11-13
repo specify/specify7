@@ -6,7 +6,7 @@ from celery.utils.log import get_task_logger
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'specifyweb.settings')
 
-app = Celery('proj')
+app = Celery('specify7')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
