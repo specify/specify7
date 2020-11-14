@@ -12,6 +12,17 @@
     --line_uncompele: #cfc;
     --line_automapped: #fcf;
 
+    /* CUSTOM SELECT (and others too) */
+    --white_space: 0.5rem;
+    --text1: #000;
+    --text2: #666;
+    --background1: #fff;
+    --background2: #fdb;
+    --accent: #f73;
+    --lines_to_display: 10;
+    --border_size: 1px;
+    --base_width: auto;
+
     width: 100%;
     display: grid;
     grid-template-rows: auto auto 1fr auto auto;
@@ -28,8 +39,12 @@
 }
 
 #screen__mapping.loaded #wbplanview_loading_screen,
-#screen__mapping:not(.loaded) #wbplanview_content {
+#screen__mapping:not(.loaded) #wbplanview_content{
     display: none;
+}
+
+.hidden {
+    display: none !important;
 }
 
 #screen__mapping:not(.table_selected) #title__table_name,
@@ -63,40 +78,18 @@
     display: flex;
     align-items: center;
 }
-
-
-/* List of tables */
 #list__tables {
 	overflow: hidden;
 }
 
-#list__tables .custom_select {
-	grid-template-columns: auto 0;
-    height: 100%;
-}
-
-#list__tables .custom_select_options {
-	max-height: unset;
-    height: 100%;
-}
-
-#list__tables .custom_select_header_icon {
-	display: none;
-}
-
-#list__tables .custom_select_table_label {
-	font-size: 1rem;
-}
-
 /* MAPPING VIEW */
 #mapping_view_parent {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-y: scroll;
-}
-
-#mapping_view_container {
-    display: contents;
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+	height: calc(calc(4 * var(--white_space)) * calc(1 + var(--lines_to_display)));
+    column-gap: calc(4 * var(--white_space));
 }
 
 #mapping_view {
@@ -109,12 +102,12 @@
 }
 
 #wbplanview_mapping_view_map_button {
-	font-size: 1rem;
+	font-size: calc(2 * var(--white_space));
 }
 
 #wbplanview_mapping_view_map_button:after {
 	content: '\2192';
-	font-size: 2rem;
+	font-size: calc(4 * var(--white_space));
 	display: flex;
 	align-items: center;
 	color: #0f0;
@@ -129,13 +122,11 @@
     overflow-x: hidden;
 }
 
-.list_of_mappings {
-	margin: 1rem;
-}
-
-.list_of_mappings > *{
-    padding-bottom: 1rem;
-	border-bottom: 1px solid var(--border);
+#validation_results {
+	display: flex;
+	flex-direction: column;
+	row-gap: var(--white_space);
+	overflow-y: scroll;
 }
 
 
@@ -146,7 +137,7 @@
 
 .wbplanview_mappings_line > * {
     border-bottom: 1px solid var(--border);
-    padding: 0.5rem 0;
+    padding: var(--white_space) 0;
 }
 
 .wbplanview_mappings_line > *:not(:last-child) {
@@ -155,6 +146,14 @@
 
 .wbplanview_mappings_line_focused > .wbplanview_mappings_line_elements {
     background: var(--b2);
+}
+
+#validation_results .wbplanview_mappings_line_elements {
+	padding: 0;
+}
+
+#validation_results .wbplanview_mappings_line_elements:not(:last-child) {
+	border-bottom: 1px solid var(--border);
 }
 
 
@@ -173,8 +172,8 @@
 }
 
 .wbplanview_mappings_line_controls button img {
-    width: 1rem;
-    height: 1rem;
+    width: calc(2 * var(--white_space));
+    height: calc(2 * var(--white_space));
 }
 
 
@@ -189,7 +188,7 @@
 	align-items: center;
 	flex-wrap: wrap;
 	row-gap: 0.6rem;
-	padding-left: 0.5rem;
+	padding-left: var(--white_space);
 }
 
 
@@ -198,21 +197,12 @@
 }
 
 .mapping_arrow {
-    width: 1rem;
+    width: calc(2 * var(--white_space));
 }
 
 
 /* CUSTOM SELECT ELEMENT */
 .custom_select {
-    --white_space: 0.5rem;
-    --text1: #000;
-    --text2: #666;
-    --background1: #fff;
-    --background2: #fdb;
-    --accent: #f73;
-    --lines_to_display: 10;
-    --border_size: 1px;
-    --base_width: auto;
     color: var(--text1);
     display: grid;
     grid-template-areas:
@@ -225,12 +215,27 @@
     position: relative;
 }
 
-.custom_select[data-type="suggestion_list"] {
-	grid-template-columns: auto calc(4 * var(--white_space));
+#list__tables .custom_select {
+	grid-template-columns: auto 0;
+    height: 100%;
 }
 
 #mapping_view .custom_select {
 	height: 100%;
+}
+
+#validation_results .custom_select {
+	height: unset;
+	margin-bottom: 0.4rem;
+}
+
+#mapping_view .custom_select:last-of-type {
+    display: flex;
+	flex-direction: column;
+}
+
+.custom_select[data-type="suggestion_list"] {
+	grid-template-columns: auto calc(4 * var(--white_space));
 }
 
 .custom_select:after {
@@ -241,19 +246,23 @@
     grid-area: next_arrow;
 }
 
-.custom_select:last-of-type:after {
-    visibility: hidden;
-}
-
 .custom_select[data-type="opened_list"]:after {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.custom_select:last-of-type:after {
+    visibility: hidden;
+}
+
+#mapping_view .custom_select:last-of-type:after {
+	display: none;
+}
+
 .custom_select_suggestions {
 	position: absolute;
-	bottom: 2rem;
+	bottom: calc(4 * var(--white_space));
 }
 
 .custom_select[data-type="closed_list"] .custom_select_options,
@@ -279,7 +288,16 @@
 .custom_select_header {
     padding: calc(var(--white_space) * 2);
     display: flex;
-    gap: var(--white_space);
+    row-gap: var(--white_space);
+    column-gap: var(--white_space);
+}
+
+#list__tables .custom_select_header_icon {
+	display: none;
+}
+
+#list__tables .custom_select_table_label {
+	font-size: calc(2 * var(--white_space));
 }
 
 .custom_select_input {
@@ -288,8 +306,8 @@
     cursor: pointer;
 }
 
-.custom_select[data-type="preview_list"] .custom_select_input_label,
-.custom_select[data-type="suggestion_list"] .custom_select_input_label {
+.custom_select[data-type="preview_list"] .custom_select_input,
+.custom_select[data-type="suggestion_list"] .custom_select_input {
 	cursor: initial;
 }
 
@@ -336,6 +354,11 @@
     visibility: hidden;
     max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
 	border-top: 0;
+}
+
+#list__tables .custom_select_options {
+	max-height: unset;
+	height: unset;
 }
 
 .custom_select_open .custom_select_options,

@@ -178,7 +178,10 @@ const data_model = {
 								return table_ranks;
 
 							const rank_name = rank.get('name');
-							table_ranks[rank_name] = rank.get('isenforced');
+
+							//TODO: add complex logic for figuring out if rank is required or not
+							table_ranks[rank_name] = false;
+							// table_ranks[rank_name] = rank.get('isenforced');
 
 							return table_ranks;
 
@@ -222,7 +225,7 @@ const data_model = {
 	* @param {object} mapping_tree - Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 	* @returns {array} Returns array of mapping paths (array).
 	* */
-	show_required_missing_ranks(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
+	show_required_missing_fields(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
 
 		const table_data = data_model.tables[table_name];
 
@@ -232,7 +235,7 @@ const data_model = {
 		if (data_model.value_is_reference_item(list_of_mapped_fields[0])) {
 			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
-				data_model.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
+				data_model.show_required_missing_fields(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			}
 			return results;
 		}
@@ -251,7 +254,7 @@ const data_model = {
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model.show_required_missing_ranks(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
+						data_model.show_required_missing_fields(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -296,7 +299,7 @@ const data_model = {
 				}
 
 				if(is_mapped)
-					data_model.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
+					data_model.show_required_missing_fields(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
 			}
@@ -504,8 +507,8 @@ const data_model = {
 	get_name_from_tree_rank_name: value =>
 		value.substr(data_model.tree_symbol.length),
 
-	get_max_to_many_value(values){
-		return values.reduce((max, value) => {
+	get_max_to_many_value: values =>
+		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
 			if (!data_model.value_is_reference_item(value))
@@ -518,8 +521,7 @@ const data_model = {
 
 			return max;
 
-		}, 0);
-	},
+		}, 0),
 
 	format_reference_item: rank_name =>
 		data_model.reference_symbol + rank_name,

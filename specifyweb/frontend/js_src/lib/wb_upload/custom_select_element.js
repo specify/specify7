@@ -211,19 +211,30 @@ const custom_select_element = {
 
 			const el = e.target;
 
+			//close opened lists
+			const lists = container.getElementsByClassName('custom_select');
+			const current_list = el.closest('.custom_select:not([data-type="preview_list"]):not([data-type="suggestion_list"])');
+
+			for (const list of lists)
+				if (list !== current_list)  //dont close current list
+					custom_select_element.close_list(list);
+
+			if(current_list === null)
+				return;
+
+
 			//toggle list options
 			if (el.closest('.custom_select_input') !== null) {
-				const select_container = el.closest('.custom_select');
-				if (select_container.classList.contains('custom_select_open'))
-					custom_select_element.close_list(select_container);
+				if (current_list.classList.contains('custom_select_open'))
+					custom_select_element.close_list(current_list);
 				else {
-					select_container.classList.add('custom_select_open');
+					current_list.classList.add('custom_select_open');
 
 					// scroll the list down to selected option
-					const selected_option = custom_select_element.get_selected_options(select_container)[0];
+					const selected_option = custom_select_element.get_selected_options(current_list)[0];
 
 					if (typeof selected_option !== "undefined") {
-						const options_container = select_container.getElementsByClassName('custom_select_options')[0];
+						const options_container = current_list.getElementsByClassName('custom_select_options')[0];
 
 						if (  // scroll down if
 							options_container.scrollTop === 0 && // the list is not already scrolled
@@ -233,34 +244,19 @@ const custom_select_element = {
 
 					}
 
-					suggestions_callback(select_container, selected_option);
+					suggestions_callback(current_list, selected_option);
 				}
 			}
 
-			//close opened lists
-			const lists = container.getElementsByClassName('custom_select');
-			const current_list = el.closest('.custom_select:not([data-type="suggestion_list"])');
+			//check if option was changed
+			const custom_select_option = el.closest('.custom_select_option');
+			if (custom_select_option !== null) {
 
-			for (const list of lists)
-				if (list !== current_list)  //dont close current list
-					custom_select_element.close_list(list);
+				const change_payload = custom_select_element.change_selected_option(current_list, custom_select_option);
+				custom_select_element.close_list(current_list);
 
-			//recalculate width of each object
-			//custom_select_element.resize_elements(lists);
-
-			if (current_list !== null) {
-
-				//check if option was changed
-				const custom_select_option = el.closest('.custom_select_option');
-				if (custom_select_option !== null) {
-
-					const change_payload = custom_select_element.change_selected_option(current_list, custom_select_option);
-					custom_select_element.close_list(current_list);
-
-					if (typeof change_payload === "object")
-						change_callback(change_payload);
-
-				}
+				if (typeof change_payload === "object")
+					change_callback(change_payload);
 
 			}
 

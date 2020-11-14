@@ -35,6 +35,7 @@ const main = {
 			mappings.list__tables = document.getElementById('list__tables');
 			mappings.mapping_view = document.getElementById('mapping_view');
 			mappings.mapping_view_map_button = document.getElementById('wbplanview_mapping_view_map_button');
+			mappings.validation_results = document.getElementById('validation_results');
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
@@ -223,13 +224,14 @@ const main = {
 	* */
 	validate(){
 
-		const validation_results = data_model.show_required_missing_ranks(data_model.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
+		const formatted_validation_results = mappings.format_validation_results(validation_results);
 
-		if (validation_results.length === 0)
+		if (formatted_validation_results === ``)
 			return true;
 
 		const div = document.createElement('div');
-		div.innerHTML = mappings.format_validation_results(validation_results);
+		div.innerHTML = formatted_validation_results;
 
 		let dialog = $(div).dialog({
 			modal: true,
@@ -238,7 +240,7 @@ const main = {
 				$(this).remove();
 				dialog = null;
 			},
-			width: document.documentElement.clientWidth * 0.8,
+			width: 500,
 			buttons: [
 				{
 					text: 'Return to mapping headers', click: function(){
