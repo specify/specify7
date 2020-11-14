@@ -701,6 +701,7 @@ const mappings = {
 		mappings.deduplicate_mappings();
 		mappings_path.pop()
 		mappings.update_all_lines(mappings_path);
+		mappings.update_mapping_view(line_elements_container.parentElement);
 
 	},
 
@@ -884,7 +885,7 @@ const mappings = {
 		const selected_lines = lines.filter(mapping_line =>
 			mapping_line.classList.contains('wbplanview_mappings_line_focused')
 		);
-		if (selected_lines.length === 0 && selected_lines[0] === line)
+		if (selected_lines.length === 1 && selected_lines[0] === line)
 			return;
 
 		//deselect all lines
