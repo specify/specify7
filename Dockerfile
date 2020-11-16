@@ -57,7 +57,7 @@ COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
 RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
-RUN ve/bin/pip install --no-cache-dir gunicorn
+RUN ve/bin/pip install --no-cache-dir gunicorn redis
 
 COPY --chown=specify:specify . /opt/specify7
 COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
@@ -77,7 +77,6 @@ RUN date > specifyweb/frontend/static/build_date.txt
 FROM common AS run
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
-        openjdk-11-jre-headless \
         rsync \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -103,6 +102,9 @@ RUN echo \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
+        "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
+        "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
+        "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         > local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
