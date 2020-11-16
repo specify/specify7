@@ -115,18 +115,8 @@ RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
 
 WORKDIR /opt/specify7
 
-RUN echo \
-        "#!/bin/bash" \
-        "\nset -e" \
-        "\necho Updating static files in /volumes/static-files/" \
-        "\nrsync -a --delete specifyweb/frontend/static/ /volumes/static-files/frontend-static" \
-        "\ncd /opt/specify7" \
-        "\nve/bin/python manage.py migrate notifications" \
-        "\nexec \"\$@\"" \
-        > docker-entrypoint.sh
-RUN chmod a+x docker-entrypoint.sh
 ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 
 EXPOSE 8000
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
-CMD ve/bin/gunicorn -w 3 -b 0.0.0.0:8000 specifyweb_wsgi
+CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "specifyweb_wsgi"]
