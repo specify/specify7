@@ -88,35 +88,41 @@ const auto_mapper = {
 
 		}));
 
-		this.searched_tables = [];
 		this.results = {};
 		this.allow_multiple_mappings = allow_multiple_mappings;
 		this.check_for_existing_mappings = check_for_existing_mappings;
 		this.path_offset = path.length - path_offset;
-		this.find_mappings_queue = {
-			0: {}
+
+
+		const find_mappings_driver = (mode) => {
+
+			this.find_mappings_queue = {
+				0: {}
+			};
+			this.find_mappings_queue[0][base_table] = path;  // add base table to `find_mappings_queue`
+			this.searched_tables = [];
+
+			let find_mappings_queue;
+			while (true) {
+
+				find_mappings_queue = this.find_mappings_queue;
+				this.find_mappings_queue = {};
+
+				const queue_data = Object.values(find_mappings_queue);
+
+				for (const mappings_data of queue_data)
+					for (const [table_name, path] of Object.entries(mappings_data))
+						auto_mapper.find_mappings(table_name, path, scope, mode);
+
+				if (queue_data.length === 0)
+					break;
+
+			}
 		};
-		this.find_mappings_queue[0][base_table] = path;  // add the base table to `find_mappings_queue`
 
-		let find_mappings_queue;
+		find_mappings_driver('defined_shortcuts');
+		find_mappings_driver('synonyms_and_matches');
 
-		auto_mapper.find_mappings_in_defined_shortcuts(base_table, scope);
-
-		while (true) {
-
-			find_mappings_queue = this.find_mappings_queue;
-			this.find_mappings_queue = {};
-
-			const queue_data = Object.values(find_mappings_queue);
-
-			for (const mappings_data of queue_data)
-				for (const [table_name, path] of Object.entries(mappings_data))
-					auto_mapper.find_mappings(table_name, path, scope);
-
-			if (queue_data.length === 0)
-				break;
-
-		}
 
 		if (!this.allow_multiple_mappings)
 			for (const [header_name, mapping_paths] of Object.entries(this.results))
@@ -131,131 +137,90 @@ const auto_mapper = {
 
 	},
 
-	find_mappings_in_defined_shortcuts(table_name, scope, previous_table_name = '', path = []){
+	find_mappings_in_definitions(payload){
 
-		if (path.length > auto_mapper.depth)  // don't go beyond the depth limit
+		const {
+			path,
+			table_name,
+			field_name,
+			scope,
+			mode,
+			is_tree_rank = false
+		} = payload;
+
+		let definitions_source;
+		if(mode==='defined_shortcuts')
+			definitions_source = 'shortcuts';
+		else if(mode==='synonyms_and_matches')
+			definitions_source = 'synonyms';
+
+		if (typeof auto_mapper_definitions[definitions_source][table_name] === "undefined")
 			return;
 
-		const table_data = data_model.tables[table_name];
-
-		// handle trees
-		if (data_model.table_is_tree(table_name)) {
-
-			const keys = Object.keys(data_model.ranks[table_name]);
-			const last_path_element = path.slice(-1)[0];
-			const last_path_element_is_a_rank = data_model.value_is_tree_rank(last_path_element);
-
-			if (!last_path_element_is_a_rank)
-				return keys.reduce((results, rank_name) => {
-					const is_rank_required = data_model.ranks[table_name][rank_name];
-					const complimented_rank_name = data_model.tree_symbol + rank_name;
-					const local_path = [...path, complimented_rank_name];
-
-					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						auto_mapper.find_mappings_in_defined_shortcuts(table_name, scope, previous_table_name, local_path, results);
-					else if (is_rank_required)
-						results.push(local_path);
-
-					return results;
-
-				}, results);
-		}
-
-		// handle regular fields and relationships
-		for (const [field_name, field_data] of Object.entries(table_data['fields'])) {
-
-			const local_path = [...path, field_name];
-
-			const is_mapped = list_of_mapped_fields.indexOf(field_name) !== -1;
-
-
-			if (field_data['is_relationship']) {
-
-				if (previous_table_name !== '') {
-
-					let previous_relationship_name = local_path.slice(-2)[0];
-					if (
-						data_model.value_is_reference_item(previous_relationship_name) ||
-						data_model.value_is_tree_rank(previous_relationship_name)
-					)
-						previous_relationship_name = local_path.slice(-3)[0];
-
-					const parent_relationship_data = data_model.tables[previous_table_name]['fields'][previous_relationship_name];
-
-					if (
-						(  // disable circular relationships
-							field_data['foreign_name'] === previous_relationship_name &&
-							field_data['table_name'] === previous_table_name
-						) ||
-						(  // skip -to-many inside of -to-many
-							parent_relationship_data['type'].indexOf('-to-many') !== -1 &&
-							field_data['type'].indexOf('-to-many') !== -1
-						)
-					)
-						continue;
-
-				}
-
-				if (is_mapped)
-					auto_mapper.find_mappings_in_defined_shortcuts(field_data['table_name'], scope, table_name, local_path, results);
-				else if (field_data['is_required'])
-					results.push(local_path);
-			}
-
-			else if (!is_mapped && field_data['is_required'])
-				results.push(local_path);
-
-
-		}
-
-	},
-
-	find_mappings_in_definitions(path, table_name, field_name, scope, is_tree_rank = false){
-
-		if (
-			typeof auto_mapper_definitions['synonyms'][table_name] !== "undefined" &&
-			typeof auto_mapper_definitions['synonyms'][table_name][field_name] !== "undefined" &&
-			auto_mapper_definitions['synonyms'][table_name][field_name]['scope'] === scope
-		) {
-
-			const field_comparisons = auto_mapper_definitions['synonyms'][table_name][field_name]['headers'];
+		const handle_comparison = (comparisons, get_new_path_part) => {
 
 			// compile regex strings
-			if (typeof field_comparisons['regex'] !== "undefined")
-				for (const [regex_index, regex_string] of Object.entries(field_comparisons['regex']))
-					field_comparisons['regex'][regex_index] = new RegExp(regex_string);
+			if (typeof comparisons['regex'] !== "undefined")
+				for (const [regex_index, regex_string] of Object.entries(comparisons['regex']))
+					if(typeof regex_string === "string")
+						comparisons['regex'][regex_index] = new RegExp(regex_string);
 
 			for (const [header_key, header] of Object.entries(this.unmapped_headers)) {// loop over headers
 
-				if (header !== false) {
+				if (header === false)
+					continue;
 
-					const lowercase_header_key = header_key.toLowerCase();
+				const lowercase_header_key = header_key.toLowerCase();
 
-					let matched = false;
+				let matched = false;
 
-					auto_mapper.comparisons.some(([comparison_key, comparison_function]) => {  // loop over defined comparisons
+				auto_mapper.comparisons.some(([comparison_key, comparison_function]) => {  // loop over defined comparisons
 
-						if (typeof field_comparisons[comparison_key] !== "undefined")
-							Object.values(field_comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
-								if (comparison_function(lowercase_header_key, comparison_value)) {
+					if (typeof comparisons[comparison_key] !== "undefined")
+						Object.values(comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
+							if (comparison_function(lowercase_header_key, comparison_value))
+								return matched = auto_mapper.make_mapping(path, get_new_path_part(), header_key);
+						});
 
-									let new_path_parts;
-									if (is_tree_rank)
-										new_path_parts = [data_model.tree_symbol + field_name[0].toUpperCase() + field_name.substr(1), 'name'];
-									else
-										new_path_parts = [field_name];
+					return matched;
 
-									return matched = auto_mapper.make_mapping(path, new_path_parts, header_key);
+				});
 
-								}
-							});
-
-						return matched;
-
-					});
-
-				}
 			}
+
+		};
+
+		if(mode === 'defined_shortcuts')
+			for(const shortcut_data of auto_mapper_definitions[definitions_source][table_name]){
+
+				if(shortcut_data['scope'] !== scope)
+					continue;
+
+				const comparisons = shortcut_data['headers'];
+				const get_new_path_part = ()=>
+					shortcut_data['mapping_path'];
+				handle_comparison(comparisons,get_new_path_part);
+
+			}
+
+
+		else if(mode === 'synonyms_and_matches'){
+
+			if(
+				typeof auto_mapper_definitions[definitions_source][table_name][field_name] === "undefined" ||
+				auto_mapper_definitions[definitions_source][table_name][field_name]['scope'] !== scope
+			)
+				return;
+
+			const comparisons = auto_mapper_definitions[definitions_source][table_name][field_name]['headers'];
+			const get_new_path_part = ()=>{
+				if (is_tree_rank)
+					return [data_model.tree_symbol + field_name[0].toUpperCase() + field_name.substr(1), 'name'];
+				else
+					return [field_name];
+
+			}
+			handle_comparison(comparisons, get_new_path_part);
 		}
 
 	},
@@ -266,10 +231,13 @@ const auto_mapper = {
 	* @param {string} table_name - Official name of the base table from data model
 	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
 	* */
-	find_mappings(table_name, path = [], scope){
+	find_mappings(table_name, path = [], scope, mode){
 
 		if (
-			this.searched_tables.indexOf(table_name) !== -1 ||  // don't iterate over the same table again
+			(  // don't iterate over the same table again
+				mode === 'synonyms_and_matches' &&
+				this.searched_tables.indexOf(table_name) !== -1
+			) ||
 			path.length > auto_mapper.depth  // don't go beyond the depth limit
 		)
 			return;
@@ -289,16 +257,25 @@ const auto_mapper = {
 			let ranks = Object.keys(ranks_data);
 			const push_rank_to_path = path.length <= 0 || !data_model.value_is_tree_rank(path[path.length - 1]);
 
-			if (!push_rank_to_path) {
+			if (!push_rank_to_path)
 				ranks = [data_model.get_name_from_tree_rank_name(path[path.length - 1])];
-			}
 
 			for (const rank_name of ranks) {
 
 				const striped_rank_name = rank_name.toLowerCase();
 				const final_rank_name = data_model.tree_symbol + rank_name;
 
-				auto_mapper.find_mappings_in_definitions(path, table_name, striped_rank_name, scope, true);
+				auto_mapper.find_mappings_in_definitions({
+					path: path,
+					table_name: table_name,
+					field_name: striped_rank_name,
+					scope: scope,
+					mode: mode,
+					is_tree_rank: true
+				});
+
+				if(mode !== 'synonyms_and_matches')
+					continue;
 
 				for (const [field_name, field_data] of fields) {
 
@@ -344,8 +321,16 @@ const auto_mapper = {
 		for (const [field_name, field_data] of fields) {
 
 			// search in definitions
-			auto_mapper.find_mappings_in_definitions(path, table_name, field_name, scope);
+			auto_mapper.find_mappings_in_definitions({
+				path: path,
+				table_name: table_name,
+				field_name: field_name,
+				scope: scope,
+				mode: mode,
+			});
 
+			if(mode !== 'synonyms_and_matches')
+				continue;
 
 			// compare each field's schema name and friendly schema name to headers
 			const friendly_name = field_data['friendly_name'].toLowerCase();

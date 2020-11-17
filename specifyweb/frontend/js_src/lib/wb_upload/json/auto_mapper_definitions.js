@@ -5,25 +5,25 @@
 
 //	SCHEMA: {
 //		shortcuts: {
-//			[table_name] (case insensitive): {
-//				mapping_path: []
+//			<table_name> (case insensitive): [
+//				mapping_path: [<mapping_path>],
 //				headers: {
-//					[option]: {
-//						[value]
+//					<option>: {
+//						'<value>' (case insensitive)
 //					}
-//				}
-//				scope (string, case sensitive)
-//			}
+//				},
+//				scope: '<scope>'
+//			]
 //		}
 //		synonyms: {
-//			[table_name] (case insensitive): {
-//				[field_name] (case insensitive): {
+//			<table_name> (case insensitive): {
+//				<field_name> (case insensitive): {
 //					headers: {
-//						[option]: {
-//							[value]
+//						<option>: {
+//							'<value>' (case insensitive)
 //						}
-//					}
-//					scope (string, case sensitive)
+//					},
+//					scope: '<scope>'
 //				}
 //			}
 //		}
