@@ -127,6 +127,7 @@
 	flex-direction: column;
 	row-gap: var(--white_space);
 	overflow-y: scroll;
+    max-width: 30vw;
 }
 
 
@@ -368,6 +369,11 @@
 
 .custom_select[data-type="opened_list"] .custom_select_options {
     position: initial;
+    height: auto;
+}
+
+.custom_select:last-of-type .custom_select_options {
+    height: 100%;
 }
 
 .custom_select_group {

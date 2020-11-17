@@ -198,7 +198,7 @@ const main = {
 
 			required_fields_to_be_made_optional: {
 				'agent': ['agenttype'],
-				'determination': ['current'],
+				'determination': ['iscurrent'],
 				'loadpreparation': ['isresolved'],
 				'locality': ['srclatlongunit'],
 			},
