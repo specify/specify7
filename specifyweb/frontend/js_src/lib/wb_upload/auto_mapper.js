@@ -113,7 +113,7 @@ const auto_mapper = {
 
 		let find_mappings_queue;
 
-		// auto_mapper.find_mappings_in_defined_shortcuts(base_table);
+		auto_mapper.find_mappings_in_defined_shortcuts(base_table);
 
 		while (true) {
 
@@ -220,8 +220,6 @@ const auto_mapper = {
 
 
 		}
-
-		return;
 
 	},
 

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
 // Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
@@ -6,26 +6,35 @@
 //	SCHEMA:
 //	shortcuts (object):
 //		[base_table_name] (object, case insensitive):
-//			[field_name] (object, case insensitive):
-//				[option] (array, case insensitive):
-//					[value] (string, case sensitive)
+//			[field_name] (object, case sensitive):
+//				mapping_path (array, case insensitive);
+//				headers (object, case insensitive):
+//					[option] (array, case insensitive):
+//						[value] (string, case sensitive)
+//				scope (string, case sensitive)
 //	synonyms (object):
 //		[table_name] (object, case insensitive):
 //			[field_name] (object, case insensitive):
-//				[option] (array, case insensitive):
-//					[value] (string, case sensitive)
+//				headers (object, case insensitive):
+//					[option] (array, case insensitive):
+//						[value] (string, case sensitive)
+//				scope (string, case sensitive)
 //
 // 	Available options:
 // 		regex - Regex string (header.match(regex))
 // 		string - Equals string (header===string)
 // 		contains - Contains string (header.indexOf(string)!==-1)
+//
+//	Available scopes:
+//		automapper - only used by automapper
+//		suggestion - only used by suggestion boxes
 
 
 module.exports = {
 	shortcuts: {
 		CollectionObject: [
 			{
-				mapping_path: ['cataloger','lastName'],
+				mapping_path: ['cataloger', 'lastName'],
 				headers: {
 					contains: [
 						'cataloged by',
@@ -33,134 +42,188 @@ module.exports = {
 						'cataloger',
 					]
 				},
+				scope: 'automapper',
 			},
 			{
-				mapping_path: ['collectingEvent','locality','geography','country','name'],
+				mapping_path: ['collectingEvent', 'locality', 'geography', 'country', 'name'],
 				headers: {
 					string: [
 						'country',
 					]
-				}
+				},
+				scope: 'suggestion',
 			}
 		],
 		Determination: [
 			{
-				mapping_path: ['determiner','lastname'],
+				mapping_path: ['determiner', 'lastname'],
 				headers: {
 					contains: [
 						'determiner',
 					]
-				}
+				},
+				scope: 'suggestion',
 			}
 		],
 	},
 	synonyms: {
-		CollectingEvent:  {
+		CollectingEvent: {
 			verbatimDate: {
-				contains: [
-					'date verbatim'
-				]
+				headers: {
+					contains: [
+						'date verbatim'
+					]
+				},
+				scope: 'automapper',
 			},
-			startDate:  {
-				contains:  [
-					'date',
-					'start',
-					'collected',
-				]
+			startDate: {
+				headers: {
+					contains: [
+						'date',
+						'start',
+						'collected',
+					]
+				},
+				scope: 'suggestion',
 			},
-			endDate:  {
-				contains:  [
-					'end'
-				]
+			endDate: {
+				headers: {
+					contains: [
+						'end'
+					]
+				},
+				scope: 'suggestion',
 			},
 			method: {
-				contains: [
-					'method'
-				]
+				headers: {
+					contains: [
+						'method'
+					]
+				},
+				scope: 'automapper',
 			}
 		},
-		Accession:  {
-			accessionnumber:  {
-				contains:  [
-					'accession'
-				]
+		Accession: {
+			accessionnumber: {
+				headers: {
+					contains: [
+						'accession'
+					]
+				},
+				scope: 'automapper',
 			}
 		},
-		Locality:  {
-			maxElevation:  {
-				contains: [
-					'max elev',
-					'max depth'
-				],
+		Locality: {
+			maxElevation: {
+				headers: {
+					contains: [
+						'max elev',
+						'max depth'
+					],
+				},
+				scope: 'automapper',
 			},
-			minElevation:  {
-				contains:  [
-					'elev',
-					'depth'
-				]
+			minElevation: {
+				headers: {
+					contains: [
+						'elev',
+						'depth'
+					]
+				},
+				scope: 'automapper',
 			},
 			latitude1: {
-				contains: [
-					'latitude 1'
-				]
+				headers: {
+					contains: [
+						'latitude 1'
+					]
+				},
+				scope: 'automapper',
 			},
 			latitude2: {
-				contains: [
-					'latitude 2'
-				]
+				headers: {
+					contains: [
+						'latitude 2'
+					]
+				},
+				scope: 'automapper',
 			},
 			longitude1: {
-				contains: [
-					'longitude 1'
-				]
+				headers: {
+					contains: [
+						'longitude 1'
+					]
+				},
+				scope: 'automapper',
 			},
 			longitude2: {
-				contains: [
-					'longitude 2'
-				]
+				headers: {
+					contains: [
+						'longitude 2'
+					]
+				},
+				scope: 'automapper',
 			},
 		},
-		CollectionObject:  {
-			fieldNumber:  {
-				contains: [
-					'field no',
-					'field num'
-				]
+		CollectionObject: {
+			fieldNumber: {
+				headers: {
+					contains: [
+						'field no',
+						'field num'
+					]
+				},
+				scope: 'automapper',
 			},
-			catalogedDate:  {
-				contains:  [
-					'cataloged date',
-					'catalogued date'
-				]
+			catalogedDate: {
+				headers: {
+					contains: [
+						'cataloged date',
+						'catalogued date'
+					]
+				},
+				scope: 'automapper',
 			},
-			catalogNumber:  {
-				regex:  [
-					'^catalog(ue)?\\s*(no|num).*',
-					'^cat(ue)?\\s*(no|num).*'],
-				string:  [
-					'number',
-					'num',
-					'bmsm no.'
-				]
+			catalogNumber: {
+				headers: {
+					regex: [
+						'^catalog(ue)?\\s*(no|num).*',
+						'^cat(ue)?\\s*(no|num).*'],
+					string: [
+						'number',
+						'num',
+						'bmsm no.'
+					]
+				},
+				scope: 'automapper',
 			}
 		},
 		Geography: {
 			state: {
-				contains: [
-					'state',
-				]
+				headers: {
+					contains: [
+						'state',
+					]
+				},
+				scope: 'suggestion',
 			},
 			continent: {
-				contains: [
-					'continent',
-				]
+				headers: {
+					contains: [
+						'continent',
+					]
+				},
+				scope: 'suggestion',
 			}
 		},
 		PrepType: {
 			name: {
-				contains: [
-					'prep '
-				]
+				headers: {
+					contains: [
+						'prep '
+					]
+				},
+				scope: 'automapper',
 			}
 		}
 	},
