@@ -372,7 +372,7 @@
     height: auto;
 }
 
-.custom_select:last-of-type .custom_select_options {
+.custom_select[data-type="opened_list"]:last-of-type .custom_select_options {
     height: 100%;
 }
 
