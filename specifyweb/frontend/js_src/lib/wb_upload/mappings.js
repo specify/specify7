@@ -76,7 +76,8 @@ const mappings = {
 			if (mappings.need_to_run_automapper) {
 				const mappings_object = auto_mapper.map({
 					headers: data_model.headers,
-					base_table: data_model.base_table_name
+					base_table: data_model.base_table_name,
+					scope: 'automapper',
 				});
 				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) =>
 					[...mapping_path, 'existing_header', header_name]
@@ -1030,6 +1031,7 @@ const mappings = {
 				allow_multiple_mappings: true,
 				commit_to_cache: false,
 				check_for_existing_mappings: true,
+				scope: 'suggestion',
 			});
 
 			if (automapper_results.length === 0)

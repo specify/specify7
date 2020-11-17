@@ -3,22 +3,31 @@
 // This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
 // Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 
-//	SCHEMA:
-//	shortcuts (object):
-//		[base_table_name] (object, case insensitive):
-//			[field_name] (object, case sensitive):
-//				mapping_path (array, case insensitive);
-//				headers (object, case insensitive):
-//					[option] (array, case insensitive):
-//						[value] (string, case sensitive)
+//	SCHEMA: {
+//		shortcuts: {
+//			[table_name] (case insensitive): {
+//				mapping_path: []
+//				headers: {
+//					[option]: {
+//						[value]
+//					}
+//				}
 //				scope (string, case sensitive)
-//	synonyms (object):
-//		[table_name] (object, case insensitive):
-//			[field_name] (object, case insensitive):
-//				headers (object, case insensitive):
-//					[option] (array, case insensitive):
-//						[value] (string, case sensitive)
-//				scope (string, case sensitive)
+//			}
+//		}
+//		synonyms: {
+//			[table_name] (case insensitive): {
+//				[field_name] (case insensitive): {
+//					headers: {
+//						[option]: {
+//							[value]
+//						}
+//					}
+//					scope (string, case sensitive)
+//				}
+//			}
+//		}
+//	}
 //
 // 	Available options:
 // 		regex - Regex string (header.match(regex))
@@ -28,6 +37,11 @@
 //	Available scopes:
 //		automapper - only used by automapper
 //		suggestion - only used by suggestion boxes
+//
+//	Shortcuts have higher priority than synonyms.
+//	Shortcuts should be used when certain mapping path is desired
+//	Synonyms should be used when field_name of table_name should be mapped
+//	Shortcuts and Synonyms are valid only if header matched and there is a path to table_name from base_table_name
 
 
 module.exports = {
