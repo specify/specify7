@@ -99,8 +99,6 @@ def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: 
 do_upload_csv = do_upload
 
 def validate_row(collection, upload_plan: ScopedUploadable, row: Row) -> UploadResult:
-    cursor = connection.cursor()
-    cursor.execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
     with savepoint():
         bind_result = upload_plan.bind(collection, row)
         result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
