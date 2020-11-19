@@ -7,6 +7,7 @@ from jsonschema import validate # type: ignore
 from typing import List, Dict, Union, Callable, Optional, Sized
 
 from django.db import connection, transaction
+from django.db.utils import OperationalError
 
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
@@ -99,10 +100,21 @@ def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: 
 do_upload_csv = do_upload
 
 def validate_row(collection, upload_plan: ScopedUploadable, row: Row) -> UploadResult:
-    with savepoint():
-        bind_result = upload_plan.bind(collection, row)
-        result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
-        raise Rollback()
+    retries = 3
+    while True:
+        try:
+            with savepoint():
+                bind_result = upload_plan.bind(collection, row)
+                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                raise Rollback()
+            break
+
+        except OperationalError as e:
+            if e.args[0] == 1213 and retries > 0: #: (1213, 'Deadlock found when trying to get lock; try restarting transaction')
+                retries -= 1
+            else:
+                raise
+
     return result
 
 def fixup_trees():
