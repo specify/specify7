@@ -224,6 +224,9 @@
 
 #mapping_view .custom_select {
 	height: 100%;
+	grid-template-areas:
+		"header next_arrow"
+		"options next_arrow";
 }
 
 #validation_results .custom_select {

@@ -98,35 +98,9 @@ const auto_mapper = {
 		this.path_offset = path.length - path_offset;
 		this.base_table_name = base_table;
 
-
-		const find_mappings_driver = (mode) => {
-
-			this.find_mappings_queue = {
-				0: {}
-			};
-			this.find_mappings_queue[0][base_table] = path;  // add base table to `find_mappings_queue`
-			this.searched_tables = [];
-
-			let find_mappings_queue;
-			while (true) {
-
-				find_mappings_queue = this.find_mappings_queue;
-				this.find_mappings_queue = {};
-
-				const queue_data = Object.values(find_mappings_queue);
-
-				for (const mappings_data of queue_data)
-					for (const [table_name, path] of Object.entries(mappings_data))
-						auto_mapper.find_mappings(table_name, path, scope, mode);
-
-				if (queue_data.length === 0)
-					break;
-
-			}
-		};
-
-		find_mappings_driver('shortcuts_and_table_synonyms');
-		find_mappings_driver('synonyms_and_matches');
+		//  do 2 passes over the schema
+		this.find_mappings_driver('shortcuts_and_table_synonyms', path, scope);
+		this.find_mappings_driver('synonyms_and_matches', path, scope);
 
 
 		if (!this.allow_multiple_mappings)
@@ -139,6 +113,44 @@ const auto_mapper = {
 			cache.set('automapper', cache_name, result);
 
 		return result;
+
+	},
+
+	//makes sure that `find_mappings` runs over the schema in correct order
+	find_mappings_driver(mode, path, scope) {
+
+		/*
+			this.find_mappings_queue: {
+				<mapping_path_length>: {  // used to enforce higher priority for closer mappings
+					<table_name>: {
+						path: [<mapping_path>],
+						parent_table_name: '<parent_table_name>',
+					}
+				}
+			}
+		*/
+
+		this.find_mappings_queue = {
+			0: {
+				[this.base_table_name]: {
+					path: path,
+					parent_table_name: '',
+				}
+			}
+		};
+		this.searched_tables = [];
+
+		let queue_data;
+		do {
+
+			queue_data = Object.values(this.find_mappings_queue);
+			this.find_mappings_queue = {};
+
+			for (const mappings_data of queue_data)  // go though each level of the queue in order
+				for (const [table_name, {path, parent_table_name=''}] of Object.entries(mappings_data))
+					auto_mapper.find_mappings(table_name, path, scope, mode, parent_table_name);
+
+		} while(queue_data.length !== 0)
 
 	},
 
@@ -278,7 +290,7 @@ const auto_mapper = {
 	* @param {string} table_name - Official name of the base table from data model
 	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
 	* */
-	find_mappings(table_name, path = [], scope, mode){
+	find_mappings(table_name, path = [], scope, mode, parent_table_name = ''){
 
 		if (
 			(  // don't iterate over the same table again when in `synonyms_and_matches` mode
@@ -476,16 +488,40 @@ const auto_mapper = {
 			if (typeof this.find_mappings_queue[new_depth_level] === "undefined")
 				this.find_mappings_queue[new_depth_level] = {};
 
+			const {foreign_name} = relationship_data;
+
+			let current_mapping_path_part = path[path.length-1];
+			if(data_model.value_is_reference_item(current_mapping_path_part) || data_model.value_is_tree_rank(current_mapping_path_part))
+				current_mapping_path_part = path[path.length-2];
+
 			if (
 				typeof this.find_mappings_queue[new_depth_level][relationship_data['table_name']] !== "undefined" ||
-				(
+				(  // don't iterate over the same table again
 					mode === 'synonyms_and_matches' &&
 					this.searched_tables.indexOf(relationship_data['table_name']) !== -1
+				) ||
+				(  // skip circular relationships
+					mode !== 'synonyms_and_matches' &&
+					(
+						parent_table_name !== '' &&
+						relationship_data['table_name'] === parent_table_name &&
+						typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
+						data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === relationship_key
+					) ||
+					(
+						table_name === parent_table_name &&
+						typeof current_mapping_path_part !== "undefined" &&
+						data_model.tables[table_name]['fields'][relationship_key]['foreign_name'] === current_mapping_path_part
+					)
 				)
+				//TODO: skip -to-many inside of -to-many
 			)
-				continue;  // don't iterate over the same table again when in `synonyms_and_matches` mode
+				continue;
 
-			this.find_mappings_queue[new_depth_level][relationship_data['table_name']] = local_path;
+			this.find_mappings_queue[new_depth_level][relationship_data['table_name']] = {
+				path: local_path,
+				parent_table_name: table_name,
+			};
 
 		}
 

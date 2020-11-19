@@ -309,9 +309,16 @@ const mappings = {
 				if (typeof next_path_element_name == "undefined")
 					return undefined;
 
+				let next_real_path_element_name;
+				if(data_model.value_is_tree_rank(next_path_element_name) || data_model.value_is_reference_item(next_path_element_name))
+					next_real_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position-1];
+				else
+					next_real_path_element_name = next_path_element_name;
+
 				return {
-					next_path_elements_name: next_path_element_name,
-					next_path_elements: data_model.tables[table_name]['fields'][next_path_element_name]
+					next_path_element_name: next_path_element_name,
+					next_path_element: data_model.tables[table_name]['fields'][next_path_element_name],
+					next_real_path_element_name: next_real_path_element_name,
 				};
 
 			},
@@ -400,22 +407,28 @@ const mappings = {
 					const {
 						is_relationship,
 						type: relationship_type,
-						is_hidden, is_required,
+						is_hidden,
+						is_required,
 						foreign_name,
 						friendly_name,
-						table_name
+						table_name: field_table_name
 					} = field_data;
 
 					if (
+						is_relationship &&
 						(  // skip circular relationships
-							is_relationship &&
 							table_name === parent_table_name &&
 							typeof foreign_name !== "undefined" &&
 							typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
 							data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === field_name
 						) ||
-						(  // skip -to-many inside of -to-many
-							is_relationship &&
+						(
+							field_table_name === parent_table_name &&
+							data_model.tables[table_name]['fields'][field_name]['foreign_name'] === internal_payload.current_mapping_path_part
+						) ||
+						(  // skip -to-many inside of -to-many  //TODO: remove this once upload plan is ready
+							typeof relationship_type !== "undefined" &&
+							typeof parent_relationship_type !== "undefined" &&
 							relationship_type.indexOf('-to-many') !== -1 &&
 							parent_relationship_type.indexOf('-to-many') !== -1
 						)
@@ -437,7 +450,7 @@ const mappings = {
 						is_hidden: is_hidden,
 						is_default: is_default,
 						is_relationship: is_relationship,
-						table_name: table_name,
+						table_name: field_table_name,
 					};
 
 

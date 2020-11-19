@@ -369,43 +369,39 @@ const data_model = {
 			return callbacks['get_final_data'](internal_payload);
 
 		let {
-			next_path_elements_name,
-			next_path_elements,
+			next_path_element_name,
+			next_path_element,
+			next_real_path_element_name,
 		} = next_path_elements_data;
 
 		let next_table_name = '';
 		let next_parent_table_name = '';
 
-		if (typeof next_path_elements_name === "string") {
-			next_path_elements_name = [next_path_elements_name];
-			next_path_elements = [next_path_elements];
+		if (
+			data_model.value_is_reference_item(next_path_element_name) ||
+			data_model.value_is_tree_rank(next_path_element_name)
+		) {
+			next_table_name = table_name;
+			next_parent_table_name = parent_table_name;
+		}
+		else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
+			next_table_name = next_path_element['table_name'];
+			next_parent_table_name = table_name;
 		}
 
+
 		const schema_navigator_results = [];
-		for (const next_path_element_name of next_path_elements_name) {
 
-			const next_path_element = next_path_elements.pop();
-
-			if (
-				data_model.value_is_reference_item(next_path_element_name) ||
-				data_model.value_is_tree_rank(next_path_element_name)
-			) {
-				next_table_name = table_name;
-				next_parent_table_name = parent_table_name;
-			}
-			else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
-				next_table_name = next_path_element['table_name'];
-				next_parent_table_name = table_name;
-			}
-
-			if (next_table_name !== '')
-				schema_navigator_results.push(data_model.navigator(
+		if (next_table_name !== '')
+			schema_navigator_results.push(
+				data_model.navigator(
 					{
 						callbacks: callbacks,
 						recursive_payload: {
 							table_name: next_table_name,
 							parent_table_name: next_parent_table_name,
-							parent_table_relationship_name: next_path_element_name,
+							parent_path_element_name: next_path_element_name,
+							parent_table_relationship_name: next_real_path_element_name,
 						},
 						internal_payload: internal_payload,
 						config: {
@@ -414,7 +410,6 @@ const data_model = {
 						},
 					}
 				));
-		}
 
 		if (schema_navigator_results.length === 0)
 			return callbacks['get_final_data'](internal_payload);
@@ -432,6 +427,7 @@ const data_model = {
 			internal_payload,
 			parent_table_name = '',
 			parent_table_relationship_name = '',
+			parent_path_element_name = '',
 			use_cache = false,
 			cache_name = false,
 			callbacks,
@@ -461,11 +457,11 @@ const data_model = {
 			) ? data_model.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
 		const children_are_to_many_elements =
 			data_model.relationship_is_to_many(parent_relationship_type);
-		!data_model.value_is_reference_item(parent_table_relationship_name);
+		!data_model.value_is_reference_item(parent_path_element_name);
 
 		const children_are_ranks =
 			data_model.table_is_tree(table_name) &&
-			!data_model.value_is_tree_rank(parent_table_relationship_name);
+			!data_model.value_is_tree_rank(parent_path_element_name);
 
 		callback_payload.parent_relationship_type = parent_relationship_type;
 		callback_payload.parent_table_name = parent_table_name;
