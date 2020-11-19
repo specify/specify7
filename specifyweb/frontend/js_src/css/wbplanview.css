@@ -1,33 +1,33 @@
 /* ROOT */
 #screen__mapping {
-    --b1: #fff;
-    --b2: #ddd;
-    --b3: #bbb;
-    --b4: #999;
-    --t1: #000;
-    --t2: #222;
-    --t3: #444;
-    --t4: #666;
-    --border: #ccc;
-    --line_uncompele: #cfc;
-    --line_automapped: #fcf;
+	--b1: #fff;
+	--b2: #ddd;
+	--b3: #bbb;
+	--b4: #999;
+	--t1: #000;
+	--t2: #222;
+	--t3: #444;
+	--t4: #666;
+	--border: #ccc;
+	--line_uncompele: #cfc;
+	--line_automapped: #fcf;
 
-    /* CUSTOM SELECT (and others too) */
-    --white_space: 0.5rem;
-    --text1: #000;
-    --text2: #666;
-    --background1: #fff;
-    --background2: #fdb;
-    --accent: #f73;
-    --lines_to_display: 10;
-    --border_size: 1px;
-    --base_width: auto;
+	/* CUSTOM SELECT (and others too) */
+	--white_space: 0.5rem;
+	--text1: #000;
+	--text2: #666;
+	--background1: #fff;
+	--background2: #fdb;
+	--accent: #f73;
+	--lines_to_display: 10;
+	--border_size: 1px;
+	--base_width: auto;
 
-    width: 100%;
-    display: grid;
-    grid-template-rows: auto auto 1fr auto auto;
-    grid-gap: 1rem;
-    height: calc(100vh - 130px); /* TODO: replace with a permanent solution */
+	width: 100%;
+	display: grid;
+	grid-template-rows: auto auto 1fr auto;
+	grid-gap: 1rem;
+	height: calc(100vh - 130px); /* TODO: replace with a permanent solution */
 }
 
 #screen__mapping:not(.table_selected) {
@@ -35,49 +35,50 @@
 }
 
 #screen__mapping.hide_mapping_view {
-    grid-template-rows: auto 1fr auto auto;
+	grid-template-rows: auto 1fr auto auto;
 }
 
 #screen__mapping.loaded #wbplanview_loading_screen,
-#screen__mapping:not(.loaded) #wbplanview_content{
-    display: none;
+#screen__mapping:not(.loaded) #wbplanview_content {
+	display: none;
 }
 
 .hidden {
-    display: none !important;
+	display: none !important;
 }
 
 #screen__mapping:not(.table_selected) #title__table_name,
 #screen__mapping:not(.table_selected) .visible_when_table_selected,
 #screen__mapping:not(.table_selected) #mapping_content,
 #screen__mapping.table_selected #list__tables {
-    display: none;
+	display: none;
 }
 
 #wbplanview_container,
 #mapping_content {
-    display: contents;
+	display: contents;
 }
 
 
 /* HEADER */
 #wbplanview_header {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 #wbplanview_mapping_header {
-    display: flex;
+	display: flex;
 }
 
 #title__table_name {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 #mappings_control_panel {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
+
 #list__tables {
 	overflow: hidden;
 }
@@ -89,16 +90,16 @@
 	overflow-x: auto;
 	overflow-y: hidden;
 	height: calc(calc(4 * var(--white_space)) * calc(1 + var(--lines_to_display)));
-    column-gap: calc(4 * var(--white_space));
+	column-gap: calc(4 * var(--white_space));
 }
 
 #mapping_view {
-    display: flex;
-    flex-wrap: nowrap;
+	display: flex;
+	flex-wrap: nowrap;
 }
 
 #screen__mapping.hide_mapping_view #mapping_view_parent {
-    display: none;
+	display: none;
 }
 
 #wbplanview_mapping_view_map_button {
@@ -116,10 +117,10 @@
 
 /* MAPPING GENERAL */
 #list__mappings {
-    display: grid;
-    grid-template-columns: 2.2rem max-content auto;
-    grid-auto-rows: max-content;
-    overflow-x: hidden;
+	display: grid;
+	grid-template-columns: 2.2rem max-content auto;
+	grid-auto-rows: max-content;
+	overflow-x: hidden;
 }
 
 #validation_results {
@@ -127,26 +128,26 @@
 	flex-direction: column;
 	row-gap: var(--white_space);
 	overflow-y: scroll;
-    max-width: 30vw;
+	max-width: 30vw;
 }
 
 
 /* MAPPINGS LINE */
 .wbplanview_mappings_line {
-    display: contents;
+	display: contents;
 }
 
 .wbplanview_mappings_line > * {
-    border-bottom: 1px solid var(--border);
-    padding: var(--white_space) 0;
+	border-bottom: 1px solid var(--border);
+	padding: var(--white_space) 0;
 }
 
 .wbplanview_mappings_line > *:not(:last-child) {
-    padding-right: 0.6rem;
+	padding-right: 0.6rem;
 }
 
 .wbplanview_mappings_line_focused > .wbplanview_mappings_line_elements {
-    background: var(--b2);
+	background: var(--b2);
 }
 
 #validation_results .wbplanview_mappings_line_elements {
@@ -160,32 +161,32 @@
 
 /* MAPPINGS LINE CONTROLS */
 .wbplanview_mappings_line_controls button {
-    border: none;
-    background: var(--b2);
-    cursor: pointer;
-    padding: 0.3rem;
-    height: 100%;
-    width: 100%;
+	border: none;
+	background: var(--b2);
+	cursor: pointer;
+	padding: 0.3rem;
+	height: 100%;
+	width: 100%;
 }
 
 .wbplanview_mappings_line_controls button:hover {
-    background: var(--b3);
+	background: var(--b3);
 }
 
 .wbplanview_mappings_line_controls button img {
-    width: calc(2 * var(--white_space));
-    height: calc(2 * var(--white_space));
+	width: calc(2 * var(--white_space));
+	height: calc(2 * var(--white_space));
 }
 
 
 /* MAPPINGS LINE ELEMENTS */
 .wbplanview_mappings_line_header {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .wbplanview_mappings_line_elements {
-    display: flex;
+	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
 	row-gap: 0.6rem;
@@ -194,31 +195,31 @@
 
 
 .hide_hidden_fields [data-field_group="hidden_fields"] {
-    display: none;
+	display: none;
 }
 
 .mapping_arrow {
-    width: calc(2 * var(--white_space));
+	width: calc(2 * var(--white_space));
 }
 
 
 /* CUSTOM SELECT ELEMENT */
 .custom_select {
-    color: var(--text1);
-    display: grid;
-    grid-template-areas:
+	color: var(--text1);
+	display: grid;
+	grid-template-areas:
 		"header next_arrow"
 		"options options";
-    grid-template-columns: auto calc(4 * var(--white_space));
+	grid-template-columns: auto calc(4 * var(--white_space));
 	grid-template-rows: auto 1fr;
-    width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
-    height: calc(4 * var(--white_space));
-    position: relative;
+	width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
+	height: calc(4 * var(--white_space));
+	position: relative;
 }
 
 #list__tables .custom_select {
 	grid-template-columns: auto 0;
-    height: 100%;
+	height: 100%;
 }
 
 #mapping_view .custom_select {
@@ -231,7 +232,7 @@
 }
 
 #mapping_view .custom_select:last-of-type {
-    display: flex;
+	display: flex;
 	flex-direction: column;
 }
 
@@ -240,21 +241,21 @@
 }
 
 .custom_select:after {
-    content: '\2192';
-    font-size: calc(2 * var(--white_space));
-    line-height: calc(4 * var(--white_space));
+	content: '\2192';
+	font-size: calc(2 * var(--white_space));
+	line-height: calc(4 * var(--white_space));
 	text-align: center;
-    grid-area: next_arrow;
+	grid-area: next_arrow;
 }
 
 .custom_select[data-type="opened_list"]:after {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .custom_select:last-of-type:after {
-    visibility: hidden;
+	visibility: hidden;
 }
 
 #mapping_view .custom_select:last-of-type:after {
@@ -267,8 +268,8 @@
 }
 
 .custom_select[data-type="closed_list"] .custom_select_options,
-.custom_select[data-type="closed_list"] .custom_select_suggestions{
-    box-shadow: 0 0 calc(0.5 * var(--white_space)) calc(0.5 * var(--white_space)) var(--border);
+.custom_select[data-type="closed_list"] .custom_select_suggestions {
+	box-shadow: 0 0 calc(0.5 * var(--white_space)) calc(0.5 * var(--white_space)) var(--border);
 }
 
 .custom_select[data-type="closed_list"] .custom_select_options {
@@ -281,16 +282,16 @@
 
 .custom_select_header,
 .custom_select_input {
-    grid-area: header;
-    border: var(--border_size) solid var(--accent);
-    background-color: var(--background1);
+	grid-area: header;
+	border: var(--border_size) solid var(--accent);
+	background-color: var(--background1);
 }
 
 .custom_select_header {
-    padding: calc(var(--white_space) * 2);
-    display: flex;
-    row-gap: var(--white_space);
-    column-gap: var(--white_space);
+	padding: calc(var(--white_space) * 2);
+	display: flex;
+	row-gap: var(--white_space);
+	column-gap: var(--white_space);
 }
 
 #list__tables .custom_select_header_icon {
@@ -302,9 +303,9 @@
 }
 
 .custom_select_input {
-    --base_width: auto;
-    width: calc(calc(var(--base_width) - calc(2 * var(--white_space))) - 2px);
-    cursor: pointer;
+	--base_width: auto;
+	width: calc(calc(var(--base_width) - calc(2 * var(--white_space))) - 2px);
+	cursor: pointer;
 }
 
 .custom_select[data-type="preview_list"] .custom_select_input,
@@ -318,42 +319,42 @@
 
 .custom_select_input,
 .custom_select_option {
-    display: grid;
-    grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
-    grid-column-gap: var(--white_space);
-    padding: var(--white_space);
-    min-height: calc(2 * var(--white_space));
+	display: grid;
+	grid-template-columns: calc(var(--white_space) * 2) 1fr minmax(calc(var(--white_space) * 1.6), auto);
+	grid-column-gap: var(--white_space);
+	padding: var(--white_space);
+	min-height: calc(2 * var(--white_space));
 }
 
 .custom_select[data-type="preview_list"] .custom_select_input,
 .custom_select[data-type="suggestion_list"] .custom_select_input {
-    display: flex;
+	display: flex;
 }
 
 .custom_select:not([data-type="preview_list"]):not([data-type="suggestion_list"]) > .custom_select_input:after {
-    content: '\25BC';
-    float: right;
+	content: '\25BC';
+	float: right;
 }
 
 .custom_select_input:hover:after {
-    color: var(--text2);
+	color: var(--text2);
 }
 
 .custom_select_options, .custom_select_suggestions {
-    border: var(--border_size) solid var(--accent);
-    background-color: var(--background1);
-    z-index: 2;
-    width: auto;
+	border: var(--border_size) solid var(--accent);
+	background-color: var(--background1);
+	z-index: 2;
+	width: auto;
 	min-width: max-content;
-    cursor: pointer;
-    height: -moz-fit-content;
-    height: fit-content;
+	cursor: pointer;
+	height: -moz-fit-content;
+	height: fit-content;
 }
 
 .custom_select_options {
-    overflow-y: scroll;
-    visibility: hidden;
-    max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
+	overflow-y: scroll;
+	visibility: hidden;
+	max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
 	border-top: 0;
 }
 
@@ -364,74 +365,74 @@
 
 .custom_select_open .custom_select_options,
 .custom_select[data-type="opened_list"] .custom_select_options {
-    visibility: visible;
+	visibility: visible;
 }
 
 .custom_select[data-type="opened_list"] .custom_select_options {
-    position: initial;
-    height: auto;
+	position: initial;
+	height: auto;
 }
 
 .custom_select[data-type="opened_list"]:last-of-type .custom_select_options {
-    height: 100%;
+	height: 100%;
 }
 
 .custom_select_group {
-    background-color: var(--background1);
-    display: flex;
-    flex-direction: column;
+	background-color: var(--background1);
+	display: flex;
+	flex-direction: column;
 }
 
 .custom_select_group[data-group="optional_fields"] {
-    --background1: #fff;
-    --background2: #fdb;
-    --accent: #f73;
+	--background1: #fff;
+	--background2: #fdb;
+	--accent: #f73;
 }
 
 .custom_select_group[data-group="required_fields"] {
-    --background1: #dff;
-    --background2: #cff;
-    --accent: #3ef;
+	--background1: #dff;
+	--background2: #cff;
+	--accent: #3ef;
 }
 
 .custom_select_group[data-group="hidden_fields"] {
-    --background1: #ccc;
-    --background2: #aaa;
-    --accent: #666;
+	--background1: #ccc;
+	--background2: #aaa;
+	--accent: #666;
 }
 
 .custom_select_group[data-group="suggested_mappings"] {
-    --background1: #dfd;
-    --background2: #bfc;
-    --accent: #9f9;
+	--background1: #dfd;
+	--background2: #bfc;
+	--accent: #9f9;
 }
 
 .hide_hidden_fields .custom_select_group[data-group="hidden_fields"] {
-    visibility: hidden;
-    height: 0;
-    overflow: hidden;
+	visibility: hidden;
+	height: 0;
+	overflow: hidden;
 }
 
 .custom_select_group_label {
-    background-color: var(--background2);
-    padding: calc(0.5 * var(--white_space));
-    color: var(--text2);
-    cursor: initial;
+	background-color: var(--background2);
+	padding: calc(0.5 * var(--white_space));
+	color: var(--text2);
+	cursor: initial;
 }
 
 .custom_select[data-mapping_type="to_many"] .custom_select_options .custom_select_group_label,
 .custom_select[data-mapping_type="list_of_tables"] .custom_select_group_label {
-    display: none;
+	display: none;
 }
 
 .custom_select_option {
-    padding: var(--white_space);
-    padding-left: calc(var(--white_space) * 2);
+	padding: var(--white_space);
+	padding-left: calc(var(--white_space) * 2);
 }
 
 .custom_select_option:hover,
 .custom_select_option:focus {
-    background-color: var(--background2);
+	background-color: var(--background2);
 }
 
 .custom_select_suggestions .custom_select_option {
@@ -439,22 +440,22 @@
 }
 
 .custom_select_suggestions .custom_select_option_icon {
-    display: none;
+	display: none;
 }
 
 .custom_select_option_selected:not(.custom_select_option_relationship) .custom_select_option_icon:after,
 .custom_select_option_disabled .custom_select_option_icon:after,
 .custom_select[data_value_is_relationship="false"] > .custom_select_input .custom_select_input_icon:after {
-    content: '\2713';
-    display: flex;
-    justify-content: center;
-    color: #4f2;
+	content: '\2713';
+	display: flex;
+	justify-content: center;
+	color: #4f2;
 }
 
 .custom_select[data_value_is_relationship="false"][data-value="0"] > .custom_select_input .custom_select_input_icon:after {
-    content: '\20E0';
-    color: #f24;
-    margin-top: -0.1rem;
+	content: '\20E0';
+	color: #f24;
+	margin-top: -0.1rem;
 }
 
 .custom_select[data_value_is_relationship="false"][data-value="0"] > .custom_select_input .custom_select_input_label {
@@ -463,18 +464,18 @@
 
 .custom_select_option_disabled,
 .custom_select_option_selected {
-    cursor: initial;
+	cursor: initial;
 }
 
 .custom_select_option_disabled {
-    color: var(--text2);
-    background-color: var(--background1) !important;
+	color: var(--text2);
+	background-color: var(--background1) !important;
 }
 
 .custom_select_option_selected {
-    background-color: var(--accent) !important;
+	background-color: var(--accent) !important;
 }
 
 .custom_select_option_relationship:after {
-    content: '\25B6';
+	content: '\25B6';
 }

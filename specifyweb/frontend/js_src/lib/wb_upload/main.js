@@ -59,7 +59,7 @@ const main = {
 
 			mappings.button__toggle_mapping_view.addEventListener('click', () => {
 				mappings.hide_mapping_view = !mappings.container.classList.contains('hide_mapping_view');
-				cache.set('ui','hide_mapping_view',mappings.hide_mapping_view, {
+				cache.set('ui', 'hide_mapping_view', mappings.hide_mapping_view, {
 					overwrite: true,
 				});
 				if (mappings.hide_mapping_view)
@@ -112,7 +112,7 @@ const main = {
 
 				const hide_hidden_fields = !mappings.container.classList.contains('hide_hidden_fields');
 
-				cache.set('ui','hide_hidden_fields',hide_hidden_fields, {
+				cache.set('ui', 'hide_hidden_fields', hide_hidden_fields, {
 					overwrite: true,
 				});
 
@@ -124,15 +124,15 @@ const main = {
 
 			// CONFIG
 
-			if(cache.get('ui','hide_hidden_fields'))
+			if (cache.get('ui', 'hide_hidden_fields'))
 				mappings.container.classList.add('hide_hidden_fields');
 			else
 				mappings.toggle_hidden_fields.checked = true;
 
-			if(cache.get('ui','hide_mapping_view'))
+			if (cache.get('ui', 'hide_mapping_view'))
 				mappings.container.classList.add('hide_mapping_view');
 
-			const done_callback = ()=> {
+			const done_callback = () => {
 				this.constructor_has_run = true;
 				loaded();
 				resolve(mappings);
@@ -154,7 +154,7 @@ const main = {
 			if (this.constructor_has_run)
 				done_callback();
 
-		})
+		});
 
 	},
 
@@ -203,7 +203,7 @@ const main = {
 				'locality': ['srclatlongunit'],
 			},
 
-		}
+		};
 
 		// fetch data model
 		data_model.fetch_tables(() => {
@@ -244,7 +244,7 @@ const main = {
 			buttons: [
 				{
 					text: 'Return to mapping headers', click: function(){
-						$(this).dialog('close')
+						$(this).dialog('close');
 					},
 				},
 				{
@@ -265,15 +265,19 @@ const main = {
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
 			title: 'Loading',
 			modal: true,
-			open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-			close: function() {$(this).remove();}
+			open: function(evt, ui){
+				$('.ui-dialog-titlebar-close', ui.dialog).hide();
+			},
+			close: function(){
+				$(this).remove();
+			}
 		});
 		$('.progress-bar', dialog).progressbar({value: false});
 
-		return ()=>{
+		return () => {
 			mappings.container.classList.add('loaded');
 			dialog.dialog('close');
-		}
+		};
 
 	},
 

@@ -13,19 +13,19 @@ const dom_helper = {
 
 	// FIELDS
 
-	get_lines(container, return_line_elements=false){
+	get_lines(container, return_line_elements = false){
 
 		const lines = Object.values(container.children);
 
-		if(return_line_elements)
-			return lines.map(line=>dom_helper.get_line_elements_container(line));
+		if (return_line_elements)
+			return lines.map(line => dom_helper.get_line_elements_container(line));
 		else
 			return lines;
 
 	},
 
 	get_line_elements_container(element){
-		if(element.tagName==='DIV')
+		if (element.tagName === 'DIV')
 			return element.getElementsByClassName('wbplanview_mappings_line_elements')[0];
 		else
 			return element.parentElement;
@@ -39,7 +39,7 @@ const dom_helper = {
 		line.getElementsByClassName('wbplanview_mappings_line_header')[0],
 
 	get_line_header_name: wbplanview_mappings_line_header => {
-		if(wbplanview_mappings_line_header.children.length === 0)
+		if (wbplanview_mappings_line_header.children.length === 0)
 			return wbplanview_mappings_line_header.innerText;
 		else  // get textarea's value (for static fields)
 			return wbplanview_mappings_line_header.children[0].value;

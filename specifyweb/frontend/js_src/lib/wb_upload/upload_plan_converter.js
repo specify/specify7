@@ -88,9 +88,7 @@ const upload_plan_converter = {
 			if (typeof data === "string")
 				return data;
 
-			const [mapping_type, header_name] = Object.entries(data)[0];
-
-			return header_name;
+			return Object.values(data)[0];
 
 		}
 

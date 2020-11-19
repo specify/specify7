@@ -285,8 +285,6 @@ const mappings = {
 		};
 
 		const callbacks = {
-			get_base_table: () =>
-				data_model.base_table_name,
 
 			iterate: internal_payload =>
 				(
@@ -470,12 +468,13 @@ const mappings = {
 				internal_payload.mapping_line_data,
 		};
 
-		return data_model.schema_navigator({
+		return data_model.navigator({
 			callbacks: callbacks,
 			internal_payload: internal_payload,
 			config: {
 				use_cache: use_cached,
 				cache_name: 'mapping_line_data',
+				base_table_name: data_model.base_table_name,
 			}
 		});
 
@@ -503,7 +502,7 @@ const mappings = {
 
 			const is_finished = mappings_path[mappings_path.length - index_shift] !== "0";
 
-			if(!is_finished && !skip_empty)
+			if (!is_finished && !skip_empty)
 				mappings_path.pop();
 
 			if (is_finished || !skip_empty)
@@ -512,7 +511,7 @@ const mappings = {
 			return mapped_fields;
 		}, []);
 
-		if(skip_empty)
+		if (skip_empty)
 			return results;
 		else // make results distinct
 			return Array.from(new Set(results.map(JSON.stringify))).map(JSON.parse);
@@ -700,9 +699,11 @@ const mappings = {
 		}
 
 		mappings.deduplicate_mappings();
-		mappings_path.pop()
+		mappings_path.pop();
 		mappings.update_all_lines(mappings_path);
-		mappings.update_mapping_view(line_elements_container.parentElement);
+
+		if (custom_select_type === 'closed_list')
+			mappings.update_mapping_view(line_elements_container.parentElement);
 
 	},
 
@@ -869,7 +870,7 @@ const mappings = {
 				const intersection_point = helper.find_array_divergence_point(mapping_path, filter_mapping_path);
 				if (intersection_point !== -1)
 					for (let index = intersection_point; index < mapping_path.length; index++)
-						update_element(select_elements[index], mapping_path, index)
+						update_element(select_elements[index], mapping_path, index);
 
 
 			}

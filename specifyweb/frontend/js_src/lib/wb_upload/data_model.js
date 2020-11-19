@@ -14,7 +14,7 @@ const data_model = {
 
 	reference_symbol: '#',
 	tree_symbol: '$',
-		path_join_symbol: '_',
+	path_join_symbol: '_',
 	new_header_id: 1,
 
 	ranks_queue: {},
@@ -25,11 +25,11 @@ const data_model = {
 	* */
 	fetch_tables(done_callback){
 
-		if(typeof localStorage !== "undefined"){
-			data_model.tables = cache.get('data_model','tables');
-			data_model.html_tables = cache.get('data_model','html_tables');
-			data_model.ranks = cache.get('data_model','ranks');
-			if(data_model.tables && data_model.html_tables && data_model.ranks)
+		if (typeof localStorage !== "undefined") {
+			data_model.tables = cache.get('data_model', 'tables');
+			data_model.html_tables = cache.get('data_model', 'html_tables');
+			data_model.ranks = cache.get('data_model', 'ranks');
+			if (data_model.tables && data_model.html_tables && data_model.ranks)
 				return done_callback();
 			else
 				data_model.ranks = {};
@@ -66,14 +66,14 @@ const data_model = {
 				let is_hidden = field.isHidden() === 1;
 
 				// required fields should not be hidden // unless they are present in this list
-				if (data_model.view_payload.required_fields_to_hide.indexOf(field_name) !== -1){
+				if (data_model.view_payload.required_fields_to_hide.indexOf(field_name) !== -1) {
 					is_required = false;
 					is_hidden = true;
 				}
 				else if (is_hidden && is_required)
 					is_hidden = false;
 
-				if(
+				if (
 					typeof data_model.view_payload.required_fields_to_be_made_optional[table_name] !== "undefined" &&
 					data_model.view_payload.required_fields_to_be_made_optional[table_name].includes(field_name)
 				)
@@ -95,7 +95,7 @@ const data_model = {
 					const relationship_type = field['type'];
 					const table_name = field['relatedModelName'].toLowerCase();
 
-					if (field_name === 'definition'){
+					if (field_name === 'definition') {
 						has_relationship_with_definition = true;
 						continue;
 					}
@@ -126,7 +126,7 @@ const data_model = {
 			));
 
 
-			if(!data_model.view_payload.table_keywords_to_exclude.some(table_keyword_to_exclude=>table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
+			if (!data_model.view_payload.table_keywords_to_exclude.some(table_keyword_to_exclude => table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
 				table_previews[table_name] = table_friendly_name;
 
 			tables[table_name] = {
@@ -148,8 +148,8 @@ const data_model = {
 					delete data_model.tables[table_name]['fields'][relationship_name];
 
 		data_model.html_tables = html_generator.tables(table_previews);
-		cache.set('data_model','html_tables', data_model.html_tables);
-		cache.set('data_model','tables', data_model.tables);
+		cache.set('data_model', 'html_tables', data_model.html_tables);
+		cache.set('data_model', 'tables', data_model.tables);
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
 			done_callback();  // so there is no need to wait for ranks to finish fetching
@@ -195,11 +195,11 @@ const data_model = {
 							);
 
 						//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-						this.tables[table_name]['fields'] = {'name':this.tables[table_name]['fields']['name']};
+						this.tables[table_name]['fields'] = {'name': this.tables[table_name]['fields']['name']};
 
 						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback();
-							cache.set('data_model','ranks', data_model.ranks);
+							cache.set('data_model', 'ranks', data_model.ranks);
 						}
 
 					});
@@ -273,7 +273,7 @@ const data_model = {
 
 			if (field_data['is_relationship']) {
 
-				if(previous_table_name !== ''){
+				if (previous_table_name !== '') {
 
 					let previous_relationship_name = local_path.slice(-2)[0];
 					if (
@@ -298,7 +298,7 @@ const data_model = {
 
 				}
 
-				if(is_mapped)
+				if (is_mapped)
 					data_model.show_required_missing_fields(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
@@ -318,17 +318,18 @@ const data_model = {
 		return typeof data_model.ranks[table_name] !== "undefined";
 	},
 
-	schema_navigator(payload){
+	navigator(payload){
 
 		let {
 			callbacks,
-			recursive_payload=undefined,
-			internal_payload={},
-			config : {
+			recursive_payload = undefined,
+			internal_payload = {},
+			config: {
 				use_cache = false,
 				cache_name,
+				base_table_name,
 			}
-		} = payload
+		} = payload;
 
 
 		let table_name = '';
@@ -336,7 +337,7 @@ const data_model = {
 		let parent_table_relationship_name = '';
 
 		if (typeof recursive_payload === "undefined")
-			table_name = callbacks['get_base_table'](internal_payload);
+			table_name = base_table_name;
 		else
 			({
 				table_name,
@@ -346,13 +347,13 @@ const data_model = {
 
 		const callback_payload = {
 			table_name: table_name,
-		}
+		};
 
 
 		if (callbacks.iterate(internal_payload))
-			data_model.schema_navigator_instance({
+			data_model.navigator_instance({
 				table_name: table_name,
-				internal_payload : internal_payload,
+				internal_payload: internal_payload,
 				parent_table_name: parent_table_name,
 				parent_table_relationship_name: parent_table_relationship_name,
 				use_cache: use_cache,
@@ -364,7 +365,7 @@ const data_model = {
 
 		const next_path_elements_data = callbacks['get_next_path_element'](internal_payload, callback_payload);
 
-		if(typeof next_path_elements_data === "undefined")
+		if (typeof next_path_elements_data === "undefined")
 			return callbacks['get_final_data'](internal_payload);
 
 		let {
@@ -375,13 +376,13 @@ const data_model = {
 		let next_table_name = '';
 		let next_parent_table_name = '';
 
-		if(typeof next_path_elements_name === "string"){
+		if (typeof next_path_elements_name === "string") {
 			next_path_elements_name = [next_path_elements_name];
 			next_path_elements = [next_path_elements];
 		}
 
 		const schema_navigator_results = [];
-		for(const next_path_element_name of next_path_elements_name){
+		for (const next_path_element_name of next_path_elements_name) {
 
 			const next_path_element = next_path_elements.pop();
 
@@ -391,13 +392,14 @@ const data_model = {
 			) {
 				next_table_name = table_name;
 				next_parent_table_name = parent_table_name;
-			} else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
+			}
+			else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
 				next_table_name = next_path_element['table_name'];
 				next_parent_table_name = table_name;
 			}
 
 			if (next_table_name !== '')
-				schema_navigator_results.push(data_model.schema_navigator(
+				schema_navigator_results.push(data_model.navigator(
 					{
 						callbacks: callbacks,
 						recursive_payload: {
@@ -414,16 +416,16 @@ const data_model = {
 				));
 		}
 
-		if(schema_navigator_results.length === 0)
+		if (schema_navigator_results.length === 0)
 			return callbacks['get_final_data'](internal_payload);
-		if(schema_navigator_results.length===1)
+		if (schema_navigator_results.length === 1)
 			return schema_navigator_results[0];
 		else
 			return schema_navigator_results;
 
 	},
 
-	schema_navigator_instance(payload){
+	navigator_instance(payload){
 
 		const {
 			table_name,
@@ -439,13 +441,12 @@ const data_model = {
 
 		let json_payload;
 
-		if(cache_name !== false)
+		if (cache_name !== false)
 			json_payload = JSON.stringify(payload);
 
-		if (use_cache){
-
+		if (use_cache) {
 			const cached_data = cache.get(cache_name, json_payload);
-			if(cached_data){
+			if (cached_data) {
 				callback_payload.data = cached_data;
 				return callbacks['commit_instance_data'](internal_payload, callback_payload);
 			}
@@ -459,8 +460,8 @@ const data_model = {
 				typeof data_model.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
 			) ? data_model.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
 		const children_are_to_many_elements =
-			data_model.relationship_is_to_many(parent_relationship_type)
-			!data_model.value_is_reference_item(parent_table_relationship_name);
+			data_model.relationship_is_to_many(parent_relationship_type);
+		!data_model.value_is_reference_item(parent_table_relationship_name);
 
 		const children_are_ranks =
 			data_model.table_is_tree(table_name) &&
@@ -470,9 +471,9 @@ const data_model = {
 		callback_payload.parent_table_name = parent_table_name;
 
 		if (children_are_to_many_elements)
-			callbacks['handle_to_many_children'](internal_payload, callback_payload)
+			callbacks['handle_to_many_children'](internal_payload, callback_payload);
 		else if (children_are_ranks)
-			callbacks['handle_tree_ranks'](internal_payload, callback_payload)
+			callbacks['handle_tree_ranks'](internal_payload, callback_payload);
 		else
 			callbacks['handle_simple_fields'](internal_payload, callback_payload);
 
@@ -481,7 +482,7 @@ const data_model = {
 		callback_payload.data = data;
 		callbacks['commit_instance_data'](internal_payload, callback_payload);
 
-		if(cache_name !== false)
+		if (cache_name !== false)
 			cache.set(cache_name, json_payload, data, {
 				bucket_type: 'session_storage'
 			});

@@ -6,8 +6,6 @@
 *
 * */
 
-const data_model = require('./data_model.js');
-
 const tree_helpers = {
 
 	/*
@@ -167,9 +165,9 @@ const tree_helpers = {
 	* 	Accession, Accession Agents, #1, Remarks
 	* */
 	mappings_tree_to_array_of_mappings: (mappings_tree, path = []) =>
-		Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node])=>{
+		Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node]) => {
 
-			if(typeof tree_node !== "object")
+			if (typeof tree_node !== "object")
 				result.push([...path, tree_node_name, tree_node]);
 			else
 				result.push(

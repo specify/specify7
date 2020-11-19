@@ -72,7 +72,8 @@ const custom_select_element = {
 					</span>
 				</span>`;
 
-		} else {
+		}
+		else {
 
 			if (default_label !== 0)
 				default_icon = custom_select_element.icon(is_relationship, true, table_name);
@@ -102,7 +103,7 @@ const custom_select_element = {
 			).join('');
 
 		let custom_select_options = '';
-		if(first_row !== '' || groups_html !== '')
+		if (first_row !== '' || groups_html !== '')
 			custom_select_options = `<span class="custom_select_options">` +
 				first_row +
 				groups_html + `
@@ -200,7 +201,8 @@ const custom_select_element = {
 			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
 			const color = 'hsl(' + color_hue + ', 100%, 50%)';
 			return `<span style="color:${color}">${table_sub_name.toUpperCase()}</span>`;
-		} else
+		}
+		else
 			return '';
 	},
 
@@ -219,7 +221,7 @@ const custom_select_element = {
 				if (list !== current_list)  //dont close current list
 					custom_select_element.close_list(list);
 
-			if(current_list === null)
+			if (current_list === null)
 				return;
 
 
@@ -266,7 +268,7 @@ const custom_select_element = {
 	close_list: (target_list) => {
 		target_list.classList.remove('custom_select_open');
 		const custom_select_suggestions = target_list.getElementsByClassName('custom_select_suggestions');
-		for(const custom_select_suggestion of custom_select_suggestions)
+		for (const custom_select_suggestion of custom_select_suggestions)
 			custom_select_suggestion.remove();
 	},
 
@@ -283,7 +285,7 @@ const custom_select_element = {
 		const custom_select_option_value = custom_select_element.get_option_value(target_option);
 
 		const group_element = target_option.parentElement;
-		if(group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group')==='suggested_mappings')
+		if (group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group') === 'suggested_mappings')
 			return {
 				changed_list: target_list,
 				selected_option: target_option,
@@ -330,7 +332,7 @@ const custom_select_element = {
 
 
 		//update custom_select_input
-		const custom_select_inputs = Object.values(target_list.children).filter(element=>
+		const custom_select_inputs = Object.values(target_list.children).filter(element =>
 			element.classList.contains('custom_select_input')
 		);
 

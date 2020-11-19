@@ -58,22 +58,22 @@ const helper = {
 
 		}
 
-		return search_length-1;
+		return search_length - 1;
 
 	},
 
-	deconstruct_mapping_path(mapping_path, has_header=false, detect_unmapped=true){
+	deconstruct_mapping_path(mapping_path, has_header = false, detect_unmapped = true){
 
 		mapping_path = [...mapping_path];
 
 		let header;
 		let mapping_type;
-		if(has_header){
+		if (has_header) {
 			header = mapping_path.pop();
 			mapping_type = mapping_path.pop();
 		}
 
-		if(detect_unmapped && mapping_path[mapping_path.length-1]==="0")
+		if (detect_unmapped && mapping_path[mapping_path.length - 1] === "0")
 			mapping_path = [];
 
 		return [mapping_path, mapping_type, header];
@@ -83,26 +83,26 @@ const helper = {
 	//array_of_mappings with headers
 	find_duplicate_mappings(array_of_mappings){
 
-		const filtered_array_of_mappings = array_of_mappings.map(mapping_path=>helper.deconstruct_mapping_path(mapping_path)[0]);
-		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path=>mapping_path.join());
+		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path)[0]);
+		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());
 
 		const duplicate_indexes = [];
 		let index = -1;
-		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path)=>{
+		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path) => {
 
 			index++;
 
-			if(string_mapping_path==='')
+			if (string_mapping_path === '')
 				return dictionary_of_mappings;
 
-			if(typeof dictionary_of_mappings[string_mapping_path] === "undefined")
+			if (typeof dictionary_of_mappings[string_mapping_path] === "undefined")
 				dictionary_of_mappings[string_mapping_path] = 1;
 			else
 				duplicate_indexes.push(index);
 
 			return dictionary_of_mappings;
 
-		},{});
+		}, {});
 
 		return duplicate_indexes;
 
