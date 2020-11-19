@@ -310,8 +310,8 @@ const mappings = {
 					return undefined;
 
 				let next_real_path_element_name;
-				if(data_model.value_is_tree_rank(next_path_element_name) || data_model.value_is_reference_item(next_path_element_name))
-					next_real_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position-1];
+				if (data_model.value_is_tree_rank(next_path_element_name) || data_model.value_is_reference_item(next_path_element_name))
+					next_real_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position - 1];
 				else
 					next_real_path_element_name = next_path_element_name;
 
@@ -417,14 +417,17 @@ const mappings = {
 					if (
 						is_relationship &&
 						(  // skip circular relationships
-							table_name === parent_table_name &&
-							typeof foreign_name !== "undefined" &&
-							typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
-							data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === field_name
-						) ||
-						(
 							field_table_name === parent_table_name &&
-							data_model.tables[table_name]['fields'][field_name]['foreign_name'] === internal_payload.current_mapping_path_part
+							(
+								(
+									typeof foreign_name !== "undefined" &&
+									typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
+									data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === field_name
+								) ||
+								(
+									data_model.tables[table_name]['fields'][field_name]['foreign_name'] === internal_payload.current_mapping_path_part
+								)
+							)
 						) ||
 						(  // skip -to-many inside of -to-many  //TODO: remove this once upload plan is ready
 							typeof relationship_type !== "undefined" &&

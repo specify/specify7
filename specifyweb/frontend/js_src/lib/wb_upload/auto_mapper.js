@@ -117,26 +117,28 @@ const auto_mapper = {
 	},
 
 	//makes sure that `find_mappings` runs over the schema in correct order
-	find_mappings_driver(mode, path, scope) {
+	find_mappings_driver(mode, path, scope){
 
 		/*
 			this.find_mappings_queue: {
-				<mapping_path_length>: {  // used to enforce higher priority for closer mappings
-					<table_name>: {
+				<mapping_path_length>: [  // used to enforce higher priority for closer mappings
+					{
+						table_name: <table_name>,
 						path: [<mapping_path>],
 						parent_table_name: '<parent_table_name>',
 					}
-				}
+				]
 			}
 		*/
 
 		this.find_mappings_queue = {
-			0: {
-				[this.base_table_name]: {
+			0: [
+				{
+					table_name: this.base_table_name,
 					path: path,
 					parent_table_name: '',
 				}
-			}
+			]
 		};
 		this.searched_tables = [];
 
@@ -147,10 +149,10 @@ const auto_mapper = {
 			this.find_mappings_queue = {};
 
 			for (const mappings_data of queue_data)  // go though each level of the queue in order
-				for (const [table_name, {path, parent_table_name=''}] of Object.entries(mappings_data))
-					auto_mapper.find_mappings(table_name, path, scope, mode, parent_table_name);
+				for (const payload of mappings_data)
+					auto_mapper.find_mappings(payload, scope, mode);
 
-		} while(queue_data.length !== 0)
+		} while (queue_data.length !== 0);
 
 	},
 
@@ -290,7 +292,14 @@ const auto_mapper = {
 	* @param {string} table_name - Official name of the base table from data model
 	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
 	* */
-	find_mappings(table_name, path = [], scope, mode, parent_table_name = ''){
+	find_mappings(payload, scope, mode){
+
+		const {
+			table_name,
+			path = [],
+			parent_table_name = '',
+			parent_relationship_type,
+		} = payload;
 
 		if (
 			(  // don't iterate over the same table again when in `synonyms_and_matches` mode
@@ -371,8 +380,9 @@ const auto_mapper = {
 								new_path_parts = [field_name];
 
 							auto_mapper.make_mapping(path, new_path_parts, header_name);
-							return true;  // don't search for further mappings for this field since we can only
-							// map a single header to the same field
+
+							// don't search for further mappings for this field if we can only map a single header to this field
+							return !this.allow_multiple_mappings;
 						}
 
 					});
@@ -486,42 +496,57 @@ const auto_mapper = {
 				continue;
 
 			if (typeof this.find_mappings_queue[new_depth_level] === "undefined")
-				this.find_mappings_queue[new_depth_level] = {};
+				this.find_mappings_queue[new_depth_level] = [];
 
 			const {foreign_name} = relationship_data;
 
-			let current_mapping_path_part = path[path.length-1];
-			if(data_model.value_is_reference_item(current_mapping_path_part) || data_model.value_is_tree_rank(current_mapping_path_part))
-				current_mapping_path_part = path[path.length-2];
+			let current_mapping_path_part = path[path.length - 1];
+			if (data_model.value_is_reference_item(current_mapping_path_part) || data_model.value_is_tree_rank(current_mapping_path_part))
+				current_mapping_path_part = path[path.length - 2];
 
 			if (
-				typeof this.find_mappings_queue[new_depth_level][relationship_data['table_name']] !== "undefined" ||
-				(  // don't iterate over the same table again
+				(  // don't iterate over the same tables again
 					mode === 'synonyms_and_matches' &&
-					this.searched_tables.indexOf(relationship_data['table_name']) !== -1
+					(
+						this.searched_tables.indexOf(relationship_data['table_name']) !== -1 ||
+						this.find_mappings_queue[new_depth_level].map(({table_name})=>
+							table_name
+						).some(table_name=>
+							table_name===relationship_data['table_name']
+						)
+					)
 				) ||
 				(  // skip circular relationships
 					mode !== 'synonyms_and_matches' &&
-					(
-						parent_table_name !== '' &&
+					(  // skip circular relationships
 						relationship_data['table_name'] === parent_table_name &&
-						typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
-						data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === relationship_key
-					) ||
-					(
-						table_name === parent_table_name &&
-						typeof current_mapping_path_part !== "undefined" &&
-						data_model.tables[table_name]['fields'][relationship_key]['foreign_name'] === current_mapping_path_part
+						(
+							(
+								typeof foreign_name !== "undefined" &&
+								typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
+								data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === relationship_key
+							) ||
+							(
+								data_model.tables[table_name]['fields'][relationship_key]['foreign_name'] === current_mapping_path_part
+							)
+						)
 					)
+				) ||
+				(  // skip -to-many inside of -to-many  //TODO: remove this once upload plan is ready
+					typeof relationship_data['type'] !== "undefined" &&
+					typeof parent_relationship_type !== "undefined" &&
+					relationship_data['type'].indexOf('-to-many') !== -1 &&
+					parent_relationship_type.indexOf('-to-many') !== -1
 				)
-				//TODO: skip -to-many inside of -to-many
 			)
 				continue;
 
-			this.find_mappings_queue[new_depth_level][relationship_data['table_name']] = {
+			this.find_mappings_queue[new_depth_level].push({
+				table_name: relationship_data['table_name'],
 				path: local_path,
 				parent_table_name: table_name,
-			};
+				parent_relationship_type: relationship_data['type'],
+			});
 
 		}
 

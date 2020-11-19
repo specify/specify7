@@ -335,6 +335,7 @@ const data_model = {
 		let table_name = '';
 		let parent_table_name = '';
 		let parent_table_relationship_name = '';
+		let parent_path_element_name = '';
 
 		if (typeof recursive_payload === "undefined")
 			table_name = base_table_name;
@@ -343,6 +344,7 @@ const data_model = {
 				table_name,
 				parent_table_name,
 				parent_table_relationship_name,
+				parent_path_element_name,
 			} = recursive_payload);
 
 		const callback_payload = {
@@ -356,6 +358,7 @@ const data_model = {
 				internal_payload: internal_payload,
 				parent_table_name: parent_table_name,
 				parent_table_relationship_name: parent_table_relationship_name,
+				parent_path_element_name: parent_path_element_name,
 				use_cache: use_cache,
 				cache_name: cache_name,
 				callbacks: callbacks,
@@ -400,8 +403,8 @@ const data_model = {
 						recursive_payload: {
 							table_name: next_table_name,
 							parent_table_name: next_parent_table_name,
-							parent_path_element_name: next_path_element_name,
 							parent_table_relationship_name: next_real_path_element_name,
+							parent_path_element_name: next_path_element_name,
 						},
 						internal_payload: internal_payload,
 						config: {
@@ -456,8 +459,8 @@ const data_model = {
 				typeof data_model.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
 			) ? data_model.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
 		const children_are_to_many_elements =
-			data_model.relationship_is_to_many(parent_relationship_type);
-		!data_model.value_is_reference_item(parent_path_element_name);
+			data_model.relationship_is_to_many(parent_relationship_type) &&
+			!data_model.value_is_reference_item(parent_path_element_name);
 
 		const children_are_ranks =
 			data_model.table_is_tree(table_name) &&

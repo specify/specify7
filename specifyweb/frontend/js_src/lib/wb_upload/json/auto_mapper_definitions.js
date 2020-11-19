@@ -72,7 +72,7 @@ module.exports = {
 				scope: 'automapper',
 			},
 			{
-				preceding_mapping_path: ['collectingevent', 'collectors'],
+				preceding_mapping_path: ['collectingevent', 'collectors', 'agent'],
 				synonym: 'collector',
 				scope: 'automapper',
 			}
