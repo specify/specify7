@@ -119,7 +119,10 @@ const cache = {
 		}, 0);
 		const cache_items_count = cache_usages.length;
 		const average_usage = total_usage / cache_items_count;
-		const usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
+		let usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
+
+		if(usage_to_trim === 0)
+			usage_to_trim = 1;
 
 		console.log('Trimming caches with usage under ' + usage_to_trim);
 

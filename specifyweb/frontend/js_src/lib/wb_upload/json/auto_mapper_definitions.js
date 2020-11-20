@@ -61,6 +61,7 @@
 //	Shortcuts and Synonyms are valid only if header matched and there is a path to table_name from base_table_name
 //	Table Synonyms are to be used when a table has a different name in a particular context
 //	Also, since automapper runs through each table only once, table synonyms can be used as a way bypass that limitation
+//	Besides that, even though Synonyms are normally checked in the second pass, if a table has Table Synonyms, it's Synonyms would also be checked in the first pass
 
 
 module.exports = {
@@ -75,6 +76,11 @@ module.exports = {
 				preceding_mapping_path: ['collectingevent', 'collectors', 'agent'],
 				synonym: 'collector',
 				scope: 'automapper',
+			},
+			{
+				preceding_mapping_path: ['collectionobject', 'cataloger'],
+				synonym: 'cataloger',
+				scope: 'automapper',
 			}
 		],
 	},
@@ -86,7 +92,6 @@ module.exports = {
 					contains: [
 						'cataloged by',
 						'catalogued by',
-						'cataloger',
 					]
 				},
 				scope: 'automapper',
@@ -114,6 +119,16 @@ module.exports = {
 		],
 	},
 	synonyms: {
+		Agent: {
+			middleInitial: {
+				headers: {
+					contains: [
+						'middle'
+					]
+				},
+				scope: 'automapper',
+			}
+		},
 		CollectingEvent: {
 			verbatimDate: {
 				headers: {
@@ -155,6 +170,9 @@ module.exports = {
 				headers: {
 					contains: [
 						'accession'
+					],
+					string: [
+						'acc #'
 					]
 				},
 				scope: 'automapper',
@@ -211,6 +229,32 @@ module.exports = {
 				},
 				scope: 'automapper',
 			},
+			localityname: {
+				header: {
+					string: [
+						'localitynum',
+					],
+				},
+				scope: 'automapper',
+			},
+			namedplace: {
+				header: {
+					contains: [
+						'named place',
+					],
+				},
+				scope: 'automapper',
+			},
+		},
+		Gift: {
+			receivedComments: {
+				header: {
+					contains: [
+						'comments',
+					]
+				},
+				scope: 'suggestion',
+			}
 		},
 		CollectionObject: {
 			fieldNumber: {
@@ -227,20 +271,35 @@ module.exports = {
 					contains: [
 						'cataloged date',
 						'catalogued date'
+					],
+					string: [
+						'cat date',
 					]
 				},
 				scope: 'automapper',
 			},
 			catalogNumber: {
 				headers: {
-					regex: [
-						'^catalog(ue)?\\s*(no|num).*',
-						'^cat(ue)?\\s*(no|num).*'],
 					string: [
 						'number',
 						'num',
-						'bmsm no.'
-					]
+					],
+					contains: [
+						'specimen num',
+						'specimen no',
+						'specimen #',
+						'cat num',
+						'cat no',
+						'cat #',
+						'catno',
+						'catalog num',
+						'catalog no',
+						'catalog #',
+						'catalogue num',
+						'catalogue no',
+						'catalogue #',
+						'bmsm no',
+					],
 				},
 				scope: 'automapper',
 			}
@@ -263,11 +322,22 @@ module.exports = {
 				scope: 'suggestion',
 			}
 		},
+		Determination: {
+			determinedDate: {
+				headers: {
+					contains: [
+						'date'
+					],
+				},
+				scope: 'suggestion',
+			}
+		},
 		PrepType: {
 			name: {
 				headers: {
 					contains: [
-						'prep '
+						'prep ',
+						'preparation'
 					]
 				},
 				scope: 'automapper',
