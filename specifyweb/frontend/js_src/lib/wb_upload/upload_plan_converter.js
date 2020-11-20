@@ -45,7 +45,7 @@ const upload_plan_converter = {
 	upload_plan_to_mappings_tree(upload_plan, base_table_name_extracted = false){
 
 		if (base_table_name_extracted === false) {
-			data_model.base_table_name = upload_plan['baseTableName'];
+			data_model.base_table_name = upload_plan['baseTableName'].toLowerCase();
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
 		}
 
