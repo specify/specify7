@@ -546,7 +546,7 @@ const custom_select_element = {
 	* @return {boolean} whether selected value in a list is a relationships
 	* */
 	element_is_relationship:
-			/* DOMElement */ element =>  // the list to check
+	/* DOMElement */ element =>  // the list to check
 		element.getAttribute('data_value_is_relationship') === 'true',
 
 
@@ -557,7 +557,7 @@ const custom_select_element = {
 	* @return {array} - array of selected options
 	* */
 	get_selected_options:
-			/* DOMElement */ list =>  // the list to search in
+	/* DOMElement */ list =>  // the list to search in
 		list.getElementsByClassName('custom_select_option_selected'),
 
 	/*
@@ -584,7 +584,7 @@ const custom_select_element = {
 	* @return the value of the option
 	* */
 	get_option_value:
-			/* DOMElement */ option_element => // the option element
+	/* DOMElement */ option_element => // the option element
 		option_element.getAttribute('data-value'),
 
 	/*
@@ -592,7 +592,7 @@ const custom_select_element = {
 	* @return the value of the list
 	* */
 	get_list_value:
-			/* DOMElement */ list_element =>  // the list to check
+	/* DOMElement */ list_element =>  // the list to check
 		list_element.getAttribute('data-value'),
 
 	/*
@@ -600,7 +600,7 @@ const custom_select_element = {
 	* @return the table a list represents
 	* */
 	get_list_table_name:
-			/* DOMElement */list_element =>  // the list to check
+	/* DOMElement */list_element =>  // the list to check
 		list_element.getAttribute('data-table'),
 
 	/*
@@ -608,7 +608,7 @@ const custom_select_element = {
 	* @return the mapping type of a list
 	* */
 	get_list_mapping_type:
-			/* DOMElement */list_element =>  // the list to check
+	/* DOMElement */list_element =>  // the list to check
 		list_element.getAttribute('data-mapping_type'),
 
 };

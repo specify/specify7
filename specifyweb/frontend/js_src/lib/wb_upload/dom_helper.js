@@ -48,7 +48,7 @@ const dom_helper = {
 	* @return {array} list of line_elements_container children
 	* */
 	get_line_elements:
-			/* DOMElement */ line_elements_container =>  // an elements whose children would be returned
+	/* DOMElement */ line_elements_container =>  // an elements whose children would be returned
 		Object.values(line_elements_container.children),
 
 	/*
@@ -56,7 +56,7 @@ const dom_helper = {
 	* @return {DOMElement} header element
 	* */
 	get_line_header_element:
-			/* DOMElement */ line =>  // the line element
+	/* DOMElement */ line =>  // the line element
 		line.getElementsByClassName('wbplanview_mappings_line_header')[0],
 
 	/*
@@ -64,7 +64,7 @@ const dom_helper = {
 	* @return header name (for headers) or textarea value (for static headers)
 	* */
 	get_line_header_name:
-			/* DOMElement */ wbplanview_mappings_line_header => {  // header element
+	/* DOMElement */ wbplanview_mappings_line_header => {  // header element
 		if (wbplanview_mappings_line_header.children.length === 0)
 			return wbplanview_mappings_line_header.innerText;
 		else  // get textarea's value (for static fields)
@@ -76,7 +76,7 @@ const dom_helper = {
 	* @return the mapping type for a line
 	* */
 	get_line_mapping_type:
-			/* DOMElement */ wbplanview_mappings_line_header =>  // header element
+	/* DOMElement */ wbplanview_mappings_line_header =>  // header element
 		wbplanview_mappings_line_header.getAttribute('data-mapping_type'),
 
 
@@ -87,7 +87,7 @@ const dom_helper = {
 	* @return {boolean} whether the next element sibling exists
 	* */
 	has_next_sibling:
-			/* DOMElement */ element =>  // an element to test
+	/* DOMElement */ element =>  // an element to test
 		element.nextElementSibling !== null,
 
 	/*

@@ -26,10 +26,10 @@ const upload_plan_converter = {
 			return [
 				key,
 				Object.fromEntries(Object.values(original_mappings).map(mapping =>
-					[
-						data_model.format_reference_item(i++),
-						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
-					]
+																			[
+																				data_model.format_reference_item(i++),
+																				upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
+																			]
 				))
 			];
 		},
@@ -55,12 +55,12 @@ const upload_plan_converter = {
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
 			return Object.fromEntries(Object.entries(upload_plan['treeRecord']['ranks']).map(([rank_name, rank_data]) =>
-				[data_model.tree_symbol + rank_name, {name: rank_data}]
+																								 [data_model.tree_symbol + rank_name, {name: rank_data}]
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-				[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
-			[]
+																		 [...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
+																	 []
 		));
 
 	},

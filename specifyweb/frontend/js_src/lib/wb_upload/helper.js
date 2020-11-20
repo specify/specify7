@@ -164,7 +164,7 @@ const helper = {
 	* */
 	find_duplicate_mappings(
 		/* array */ array_of_mappings,  // array of mappings as returned by mappings.get_array_of_mappings()
-		/* boolean */ has_headers=false  // whether array of mappings contain mapping types and header names / static column values
+		/* boolean */ has_headers = false  // whether array of mappings contain mapping types and header names / static column values
 	){
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);

@@ -168,6 +168,15 @@ module.exports = {
 					]
 				},
 				scope: 'automapper',
+			},
+			stationfieldnumber: {
+				headers: {
+					contains: [
+						'coll event #',
+						'collecting event #'
+					]
+				},
+				scope: 'automapper',
 			}
 		},
 		Accession: {

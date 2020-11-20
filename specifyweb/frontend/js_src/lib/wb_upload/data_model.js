@@ -125,7 +125,7 @@ const data_model = {
 			}
 
 			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
-				[field_name, fields[field_name]]
+																						 [field_name, fields[field_name]]
 			));
 
 
@@ -411,16 +411,16 @@ const data_model = {
 
 		if (callbacks.iterate(internal_payload))
 			data_model.navigator_instance({
-				table_name: table_name,
-				internal_payload: internal_payload,
-				parent_table_name: parent_table_name,
-				parent_table_relationship_name: parent_table_relationship_name,
-				parent_path_element_name: parent_path_element_name,
-				use_cache: use_cache,
-				cache_name: cache_name,
-				callbacks: callbacks,
-				callback_payload: callback_payload,
-			});
+											  table_name: table_name,
+											  internal_payload: internal_payload,
+											  parent_table_name: parent_table_name,
+											  parent_table_relationship_name: parent_table_relationship_name,
+											  parent_path_element_name: parent_path_element_name,
+											  use_cache: use_cache,
+											  cache_name: cache_name,
+											  callbacks: callbacks,
+											  callback_payload: callback_payload,
+										  });
 
 
 		const next_path_elements_data = callbacks['get_next_path_element'](internal_payload, callback_payload);
@@ -557,7 +557,7 @@ const data_model = {
 	* @return {boolean} whether relationship is a -to-many
 	* */
 	relationship_is_to_many:
-			/* string */ relationship_type =>  // relationship_type
+	/* string */ relationship_type =>  // relationship_type
 		relationship_type.indexOf('-to-many') !== -1,
 
 	/*
@@ -565,7 +565,7 @@ const data_model = {
 	* @return {boolean} whether a value is a -to-many reference item
 	* */
 	value_is_reference_item:
-			/* string */ value =>  // the value to use
+	/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol,
 
@@ -574,7 +574,7 @@ const data_model = {
 	* @return {boolean} whether a value is a tree rank
 	* */
 	value_is_tree_rank:
-			/* string */ value =>  // the value to use
+	/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.tree_symbol.length) === data_model.tree_symbol,
 
@@ -584,7 +584,7 @@ const data_model = {
 	* @return {boolean} index
 	* */
 	get_index_from_reference_item_name:
-			/* string */ value =>  // the value to use
+	/* string */ value =>  // the value to use
 		parseInt(value.substr(data_model.reference_symbol.length)),
 
 	/*
@@ -593,7 +593,7 @@ const data_model = {
 	* @return {boolean} tree rank name
 	* */
 	get_name_from_tree_rank_name:
-			/* string */ value =>  // the value to use
+	/* string */ value =>  // the value to use
 		value.substr(data_model.tree_symbol.length),
 
 	/*
@@ -601,7 +601,7 @@ const data_model = {
 	* @return {int} max index. Returns 0 if there aren't any
 	* */
 	get_max_to_many_value:
-			/* array */ values =>  // list of reference item values
+	/* array */ values =>  // list of reference item values
 		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
@@ -623,7 +623,7 @@ const data_model = {
 	* @return {int} a complete reference item from an index
 	* */
 	format_reference_item:
-			/* int */ index =>  // the index to use
+	/* int */ index =>  // the index to use
 		data_model.reference_symbol + index,
 
 	/*
@@ -632,7 +632,7 @@ const data_model = {
 	* @return {int} a complete tree rank name
 	* */
 	format_tree_rank:
-			/* string */rank_name =>  // tree rank name to use
+	/* string */rank_name =>  // tree rank name to use
 		data_model.tree_symbol + rank_name,
 
 };

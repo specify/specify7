@@ -15,10 +15,10 @@ const auto_mapper = {
 	regex_2: /\s+/g,  // used to replace any white space characters with white space
 	depth: 8,  // how deep to go into the schema
 	comparisons: Object.entries({  // the definitions for the comparison functions
-		regex: (header, regex) => header.match(regex),
-		string: (header, string) => header === string,
-		contains: (header, string) => header.indexOf(string) !== -1
-	}),
+									regex: (header, regex) => header.match(regex),
+									string: (header, string) => header === string,
+									contains: (header, string) => header.indexOf(string) !== -1
+								}),
 	mapped_definitions_were_converted: false,  // indicates whether convert_automapper_definitions() was run. If not, would run convert_automapper_definitions() the next time map() is called
 
 	/*
@@ -30,7 +30,7 @@ const auto_mapper = {
 
 		const keys_to_lower_case = (object, levels = 1) => Object.fromEntries(
 			Object.entries(object).map(([key, value]) =>
-				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
+										   [key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
 			)
 		);
 
@@ -357,8 +357,8 @@ const auto_mapper = {
 		const table_data = data_model.tables[table_name];
 		const ranks_data = data_model.ranks[table_name];
 		const fields = Object.entries(table_data['fields']).filter(([, field_data]) =>
-			!field_data['is_hidden'] &&
-			!field_data['is_relationship']
+																	   !field_data['is_hidden'] &&
+																	   !field_data['is_relationship']
 		);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();
 		const table_synonyms = auto_mapper.find_table_synonyms(table_name, path, mode, scope);
@@ -382,13 +382,13 @@ const auto_mapper = {
 				const final_rank_name = data_model.tree_symbol + rank_name;
 
 				auto_mapper.find_mappings_in_definitions({
-					path: path,
-					table_name: table_name,
-					field_name: striped_rank_name,
-					scope: scope,
-					mode: mode,
-					is_tree_rank: true
-				});
+															 path: path,
+															 table_name: table_name,
+															 field_name: striped_rank_name,
+															 scope: scope,
+															 mode: mode,
+															 is_tree_rank: true
+														 });
 
 				if (mode !== 'synonyms_and_matches')
 					continue;
@@ -482,8 +482,8 @@ const auto_mapper = {
 				if (
 					!matches &&
 					table_synonyms.some(table_synonym =>
-						stripped_name.startsWith(table_synonym) ||
-						final_name.startsWith(table_synonym)
+											stripped_name.startsWith(table_synonym) ||
+											final_name.startsWith(table_synonym)
 					)
 				) {
 					outer_loop:
@@ -533,7 +533,7 @@ const auto_mapper = {
 
 
 		const relationships = Object.entries(table_data['fields']).filter(([, {is_hidden, is_relationship}]) =>
-			!is_hidden && is_relationship
+																			  !is_hidden && is_relationship
 		);
 
 
@@ -564,9 +564,9 @@ const auto_mapper = {
 					(
 						this.searched_tables.indexOf(relationship_data['table_name']) !== -1 ||
 						this.find_mappings_queue[new_depth_level].map(({table_name}) =>
-							table_name
+																		  table_name
 						).some(table_name =>
-							table_name === relationship_data['table_name']
+								   table_name === relationship_data['table_name']
 						)
 					)
 				) ||
@@ -596,11 +596,11 @@ const auto_mapper = {
 				continue;
 
 			this.find_mappings_queue[new_depth_level].push({
-				table_name: relationship_data['table_name'],
-				path: local_path,
-				parent_table_name: table_name,
-				parent_relationship_type: relationship_data['type'],
-			});
+															   table_name: relationship_data['table_name'],
+															   path: local_path,
+															   parent_table_name: table_name,
+															   parent_relationship_type: relationship_data['type'],
+														   });
 
 		}
 
@@ -644,9 +644,9 @@ const auto_mapper = {
 				(
 					!this.allow_multiple_mappings &&
 					Object.values(this.results).some(mapping_paths =>
-						mapping_paths.some(mapping_path =>
-							JSON.stringify(local_path) === JSON.stringify(mapping_path)
-						)
+														 mapping_paths.some(mapping_path =>
+																				JSON.stringify(local_path) === JSON.stringify(mapping_path)
+														 )
 					)
 				) ||
 				(
