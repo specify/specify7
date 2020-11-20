@@ -15,10 +15,11 @@ const main = {
 
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
-	* @param {function} save_plan_function - the function to call to save changes to the upload plan
 	* @return {Promise} a promise that resolves to a mappings object
 	* */
-	constructor(save_plan_function){
+	constructor(
+		/* function */ save_plan_function  // the function to call to save changes to the upload plan
+	){
 
 		return new Promise((resolve) => {
 
@@ -162,10 +163,11 @@ const main = {
 
 	/*
 	* Constructor that needs to be run only once (fetches data model, initializes other modules
-	* @param {function} done_callback - the callback to call for when the constructor is finished
-	* @param {function} save_plan_function - the function to call to save changes to the upload plan
 	* */
-	constructor_first_run(done_callback, save_plan_function){
+	constructor_first_run(
+		/* function */ done_callback,  // the callback to call for when the constructor is finished
+		/* function */ save_plan_function  // the function to call to save changes to the upload plan
+	){
 
 		data_model.view_payload = {
 

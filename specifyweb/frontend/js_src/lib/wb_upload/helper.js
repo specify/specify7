@@ -10,10 +10,11 @@ const helper = {
 	/*
 	* Get a friendly name from the field. (Converts Camel Case to human readable name and fixes some errors)
 	* This method is only called if schema localization does not have a friendly name for this field
-	* @param {string} name - Original field name
 	* @return {string} Human friendly field name
 	* */
-	get_friendly_name(name){
+	get_friendly_name(
+		/* string */ name  // Original field name
+	){
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -30,8 +31,6 @@ const helper = {
 
 	/*
 	* Finds the point at which the source array begins to have values different from the ones in the search array
-	* @param {array} source - the source array to use in the comparison
-	* @param {array} search - the search array to use in the comparison
 	* @return {int} divergence point
 	* 				Returns 0 if search array is empty
 	* 				Returns -1 if source array is empty or source array is smaller than the search array
@@ -50,7 +49,10 @@ const helper = {
 	* 	returns 3
 	*
 	* */
-	find_array_divergence_point(source, search){
+	find_array_divergence_point(
+		/* array */ source,  // the source array to use in the comparison
+		/* array */ search  // the search array to use in the comparison
+	){
 
 		//source : Accession > Accession Agents > #1 > Agent > First Name
 		//search : []
@@ -86,9 +88,6 @@ const helper = {
 
 	/*
 	* Extract mapping type and header name / static column value from a mapping path
-	* @param {array} mapping_path - combined mapping path
-	* @param {bool} has_header - whether a mapping_path has mapping type and header name / static column value in it
-	* @param {detect_unmapped} - whether detect that a mapping path is incomplete
 	* @return [mapping_path, mapping_type, header]. If mapping path is incomplete and detect_unmapped is true mapping_path is []
 	* Example:
 	* 	if
@@ -119,7 +118,11 @@ const helper = {
 	* 	]
 	*
 	* */
-	deconstruct_mapping_path(mapping_path, has_header = false, detect_unmapped = true){
+	deconstruct_mapping_path(
+		/* array */ mapping_path,  // combined mapping path
+		/* boolean */ has_header = false,  // whether a mapping_path has mapping type and header name / static column value in it
+		/* boolean */ detect_unmapped = true  // whether detect that a mapping path is incomplete
+	){
 
 		mapping_path = [...mapping_path];
 
@@ -139,7 +142,6 @@ const helper = {
 
 	/*
 	* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned)
-	* @param {array} array_of_mappings - array of mappings as returned by mappings.get_array_of_mappings()
 	* @return {array} array of duplicate indexes
 	* Example:
 	* 	if
@@ -160,7 +162,10 @@ const helper = {
 	* 		has_headers is False
 	* 	then return [2,3]
 	* */
-	find_duplicate_mappings(array_of_mappings, has_headers=false){
+	find_duplicate_mappings(
+		/* array */ array_of_mappings,  // array of mappings as returned by mappings.get_array_of_mappings()
+		/* boolean */ has_headers=false  // whether array of mappings contain mapping types and header names / static column values
+	){
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
 		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());

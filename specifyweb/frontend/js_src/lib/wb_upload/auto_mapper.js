@@ -42,7 +42,6 @@ const auto_mapper = {
 
 	/*
 	* Method that would be used by external classes to match headers to possible mappings
-	* @param {object} payload - described in the function definition
 	* @return {array} Returns mappings result in format:
 	* 					If payload.allow_multiple_mappings:
 	* 						[
@@ -60,18 +59,20 @@ const auto_mapper = {
 	* 	OR
 	* 	[Accession, Accession Agents, #1, Agent, Agent Type]
 	* */
-	map(payload){
+	map(
+		/* object */ payload  // described in the function definition
+	){
 
 		const {
-			headers: raw_headers,  // {array} array of strings that represent headers
-			base_table,  // {string} base table name
-			path = [],  // {array} starting mapping path
-			path_offset = 0,  // {int} offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
-			allow_multiple_mappings = false,  // whether to allow multiple mappings.
-			use_cache = true,  // whether to use cached values
-			commit_to_cache = true,  // whether to commit result to cache for future references
-			check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-			scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+			/* array */ headers: raw_headers,  // array of strings that represent headers
+			/* string */ base_table,  // base table name
+			/* array */ path = [],  // starting mapping path
+			/* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
+			/* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings.
+			/* boolean */ use_cache = true,  // whether to use cached values
+			/* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
+			/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
+			/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
 		} = payload;
 
 
@@ -128,11 +129,12 @@ const auto_mapper = {
 
 	/*
 	* Makes sure that `find_mappings` runs over the schema in correct order since mappings with a shorter mapping path are given higher priority
-	* @param {string} mode - 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-	* @param {array} path - initial mapping path
-	* @param {string} scope - scope to use for definitions. More info in json/auto_mapper_definitions.js
 	* */
-	find_mappings_driver(mode, path, scope){
+	find_mappings_driver(
+		/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+		/* array */ path,  // initial mapping path
+		/* string */ scope  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+	){
 
 		/*
 			this.find_mappings_queue: {
@@ -173,11 +175,12 @@ const auto_mapper = {
 
 	/*
 	* Compares definitions to unmapped headers and makes a mapping if matched
-	* @param {array} path - initial mapping path
-	* @param {object} scope - structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
-	* @param {function} get_new_path_part - function that returns the next path part to use in a new mapping (on success)
 	* */
-	handle_definition_comparison(path, comparisons, get_new_path_part) {
+	handle_definition_comparison(
+		/* array */ path,  // initial mapping path
+		/* object */ comparisons,  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
+		/* function */ get_new_path_part  // function that returns the next path part to use in a new mapping (on success)
+	){
 
 		// compile regex strings
 		if (typeof comparisons['regex'] !== "undefined")
@@ -213,17 +216,18 @@ const auto_mapper = {
 	/*
 	* Goes over `shortcuts` and `synonyms` in json/auto_mapper_definitions.js and tries to find matches
 	* Calls handle_definition_comparison to make each individual comparison
-	* @param {object} payload - described in the function definition
 	* */
-	find_mappings_in_definitions(payload){
+	find_mappings_in_definitions(
+		/* object */ payload  // described in the function definition
+	){
 
 		const {
-			path,  // {array} current mapping path
-			table_name,  // {string} the table to search in
-			field_name,  // {string} the field to search in
-			scope,  // {string} scope to use for definitions. More info in json/auto_mapper_definitions.js
-			mode,  // {string} 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-			is_tree_rank = false  // {bool} whether to format field_name as a tree rank name
+			/* array */ path,  // current mapping path
+			/* string */ table_name,  // the table to search in
+			/* string */ field_name,  // the field to search in
+			/* string */ scope,  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+			/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+			/* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
 		} = payload;
 
 		let definitions_source;
@@ -273,12 +277,13 @@ const auto_mapper = {
 
 	/*
 	* Searches for `table_synonym` that matches the current table and the current mapping path
-	* @param {string} table_name - the table to search for
-	* @param {array} path - current mapping path
-	* @param {string} mode - 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-	* @param {string} scope - scope to use for definitions. More info in json/auto_mapper_definitions.js
 	* */
-	find_table_synonyms(table_name, path, mode, scope){
+	find_table_synonyms(
+		/* string */ table_name,  // the table to search for
+		/* array */ path,  // current mapping path
+		/* string */ mode, // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+		/* string */ scope  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+	){
 
 		const table_synonyms = [];
 		if (
@@ -323,20 +328,22 @@ const auto_mapper = {
 	/*
 	* Used internally to loop though each field of a particular table and try to match them to unmapped headers
 	* This method iterates over the same table only once if in `synonyms_and_matches` mode. More info in json/auto_mapper_definitions.js
-	* @param {object} path - described in function definition
-	* @param {array} path -
 	* */
-	find_mappings(payload, scope, mode){
+	find_mappings(
+		/* object */ payload, // described in function definition
+		/* string */ scope,  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+		/* string */ mode  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+	){
 
 		const {
-			table_name,  // {string} name of current table
-			path = [],  // {array} current mapping path
-			parent_table_name = '',  // {string} parent table name. Empty if current table is a base table. Used to prevent circular relationships
-			parent_relationship_type, // {string} relationship type between parent table and current table. Empty if current table is a base table. Used to prevent mapping -to-many that are inside of -to-many (only while upload plan doesn't support such relationships)
+			/* string */ table_name,  // name of current table
+			/* array */ path = [],  // current mapping path
+			/* string */ parent_table_name = '',  // parent table name. Empty if current table is a base table. Used to prevent circular relationships
+			/* string */ parent_relationship_type, // relationship type between parent table and current table. Empty if current table is a base table. Used to prevent mapping -to-many that are inside of -to-many (only while upload plan doesn't support such relationships)
 		} = payload;
 
 
-		if(mode === 'synonyms_and_matches'){
+		if (mode === 'synonyms_and_matches') {
 			if (
 				this.searched_tables.indexOf(table_name) !== -1 ||  // don't iterate over the same table again when in `synonyms_and_matches` mode
 				path.length > auto_mapper.depth  // don't go beyond the depth limit
@@ -556,10 +563,10 @@ const auto_mapper = {
 					mode === 'synonyms_and_matches' &&
 					(
 						this.searched_tables.indexOf(relationship_data['table_name']) !== -1 ||
-						this.find_mappings_queue[new_depth_level].map(({table_name})=>
+						this.find_mappings_queue[new_depth_level].map(({table_name}) =>
 							table_name
-						).some(table_name=>
-							table_name===relationship_data['table_name']
+						).some(table_name =>
+							table_name === relationship_data['table_name']
 						)
 					)
 				) ||
@@ -602,14 +609,15 @@ const auto_mapper = {
 	/*
 	* Used to check if the table's field is already mapped and if not, makes a new mapping
 	* Also, handles -to-many relationships by creating new objects
-	* @param {array} path - Mapping path from base table to this table. Should be an empty array if this is base table
-	* @param {array} new_path_parts - Elements that should be pushed into `path`
-	* @param {string} header_name - The name of the header that should be mapped
-	* @param {mixed} to_many_reference_number - if of type {int} - implants that to_many_reference_number into the mapping path into the first reference item starting from the right
-	* 										    if of type {bool} and is false - don't do anything
-	* @return {bool} Returns false if we can map another mapping to this header. Most of the time means that the mapping was not made (Mapping fails if field is inside of a -to-one relationship or direct child of base table and is already mapped). Can also depend on this.allow_multiple_mappings
+	* @return {boolean} Returns false if we can map another mapping to this header. Most of the time means that the mapping was not made (Mapping fails if field is inside of a -to-one relationship or direct child of base table and is already mapped). Can also depend on this.allow_multiple_mappings
 	* */
-	make_mapping(path, new_path_parts, header_name, to_many_reference_number = false){
+	make_mapping(
+		/* array */ path, // Mapping path from base table to this table. Should be an empty array if this is base table
+		/* array */ new_path_parts, // Elements that should be pushed into `path`
+		/* string */ header_name,  // The name of the header that should be mapped
+		/* mixed */ to_many_reference_number = false // if of type {int} - implants that to_many_reference_number into the mapping path into the first reference item starting from the right
+		//															  if of type {boolean} and is False - don't do anything
+	){
 
 		let local_path = [...path, ...new_path_parts];
 
@@ -677,7 +685,7 @@ const auto_mapper = {
 		this.results[header_name].push(local_path);
 
 
-		const path_contains_to_many_references = path.some(path_part=>data_model.value_is_reference_item(path_part));
+		const path_contains_to_many_references = path.some(path_part => data_model.value_is_reference_item(path_part));
 
 		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 

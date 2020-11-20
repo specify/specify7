@@ -41,10 +41,11 @@ const cache = {
 
 	/*
 	* Tries to fetch a bucket from localStorage
-	* @return {mixed} - {bool} False if bucket does not exist.
-	* 				  - {object} bucket content if bucket exists
 	* */
-	fetch_bucket(bucket_name){
+	fetch_bucket(
+		/* mixed */ bucket_name  // {boolean} False if bucket does not exist.
+		//								   {object} bucket content if bucket exists
+	){
 
 		const full_bucket_name = cache.cache_prefix + bucket_name;
 
@@ -58,12 +59,13 @@ const cache = {
 
 	/*
 	* Get value of cache_name in the bucket_name
-	* @param {string} bucket_name - the name of the bucket
-	* @param {string} cache_name - the name of the cache
-	* @returns {mixed} - {bool} False on error
+	* @returns {mixed} - {boolean} False on error
 	* 					 {mixed} value stored under cache_name on success
 	* */
-	get(bucket_name, cache_name){
+	get(
+		/* string */ bucket_name,  // the name of the bucket
+		/* string */ cache_name  // the name of the cache
+	){
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
@@ -89,12 +91,13 @@ const cache = {
 
 	/*
 	* Set's cache_value as cache value under cache_name in bucket_name
-	* @param {string} bucket_name - the name of the bucket
-	* @param {string} cache_name - the name of the cache
-	* @param {string} cache_value - the value of the cache. Can be any object that can be converted to json
-	* @param {object} config - configuration for cache. Described inside of method definition
 	* */
-	set(bucket_name, cache_name, cache_value, config = {}){
+	set(
+		/* string */ bucket_name,  // the name of the bucket
+		/* string */ cache_name,  // the name of the cache
+		/* string */ cache_value,  // the value of the cache. Can be any object that can be converted to json
+		/* object */ config = {}  // configuration for cache. Described inside of method definition
+	){
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
@@ -127,9 +130,10 @@ const cache = {
 	* Trims buckets that go beyond the size limit
 	* Runs every time you set a new cache value
 	* This method is needed to prevent memory leaks and stay under browser memory limit - ~5MB for Google Chrome ;(
-	* @param {string} bucket_name - the bucket to trim
 	* */
-	trim_bucket(bucket_name){
+	trim_bucket(
+		/* string */ bucket_name  // the bucket to trim
+	){
 
 		// don't trim cache if the number of records in this bucket is smaller than soft limits
 		if (
@@ -154,7 +158,7 @@ const cache = {
 		//trim all caches with usage equal to or smaller than usage_to_trim
 		let usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
 
-		if(usage_to_trim === 0)
+		if (usage_to_trim === 0)
 			usage_to_trim = 1;
 
 		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);

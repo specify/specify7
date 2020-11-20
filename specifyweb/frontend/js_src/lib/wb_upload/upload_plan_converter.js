@@ -38,11 +38,12 @@ const upload_plan_converter = {
 	/*
 	* Converts upload plan to internal tree structure
 	* Inverse of mappings_tree_to_upload_plan
-	* @param {object} upload_plan - Upload plan
-	* @param {bool} [base_table_name_extracted=false] - Used by recursion to store intermediate results
 	* @return {object} Returns mapping tree
 	* */
-	upload_plan_to_mappings_tree(upload_plan, base_table_name_extracted = false){
+	upload_plan_to_mappings_tree(
+		/* object */ upload_plan,  // upload plan
+		/* boolean */ base_table_name_extracted = false  // used by recursion to store intermediate results
+	){
 
 		if (base_table_name_extracted === false) {
 			data_model.base_table_name = upload_plan['baseTableName'].toLowerCase();
@@ -66,10 +67,11 @@ const upload_plan_converter = {
 
 	/*
 	* Get upload plan
-	* @param {bool} mapping_is_a_template - whether this upload plan can be used as a template in the future
 	* @return {string} Upload plan as a JSON string
 	* */
-	get_upload_plan: (mapping_is_a_template = false) =>
+	get_upload_plan: (
+		/* boolean */ mapping_is_a_template = false  // whether this upload plan can be used as a template in the future
+	) =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
 			upload_plan_converter.get_mappings_tree(true),
 			mapping_is_a_template
@@ -78,11 +80,12 @@ const upload_plan_converter = {
 	/*
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
-	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used
-	* @param {bool} mapping_is_a_template - whether this upload plan can be used as a template in the future
 	* @return {string} Upload plan as a JSON string
 	* */
-	mappings_tree_to_upload_plan(mappings_tree, mapping_is_a_template = false){
+	mappings_tree_to_upload_plan(
+		/* mixed */ mappings_tree,  // mappings tree that is going to be used
+		/* boolean */ mapping_is_a_template = false  // whether this upload plan can be used as a template in the future
+	){
 
 		const upload_plan = {};
 

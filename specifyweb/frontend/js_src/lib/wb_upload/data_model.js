@@ -23,9 +23,10 @@ const data_model = {
 
 	/*
 	* Fetches data model.
-	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_tables(done_callback){
+	fetch_tables(
+		/* function */ done_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	){
 
 		if (typeof localStorage !== "undefined") {
 			data_model.tables = cache.get('data_model', 'tables');
@@ -160,10 +161,11 @@ const data_model = {
 
 	/*
 	* Fetches ranks for a particular table
-	* @param {string} table_name - Official table name (from data model)
-	* @param {function} all_ranks_fetched_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_ranks(table_name, all_ranks_fetched_callback){
+	fetch_ranks(
+		/* string */ table_name,  // Official table name (from data model)
+		/* function */ all_ranks_fetched_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	){
 
 		this.ranks_queue[table_name] = true;
 
@@ -223,11 +225,15 @@ const data_model = {
 
 	/*
 	* Iterates over the mapping_tree to find required fields that are missing
-	* @param {string} table_name - Official name of the current base table (from data model)
-	* @param {object} mapping_tree - Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 	* @returns {array} Returns array of mapping paths (array).
 	* */
-	show_required_missing_fields(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
+	show_required_missing_fields(
+		/* string */ table_name,  // Official name of the current base table (from data model)
+		/* object */ mapping_tree = false,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
+		/* string */ previous_table_name = '',  // used internally in recursion. Previous table name
+		/* array */ path = [],  // used internally in recursion. Current mapping path
+		/* array */results = []  // used internally in recursion. Saves results
+	){
 
 		const table_data = data_model.tables[table_name];
 
@@ -318,26 +324,28 @@ const data_model = {
 
 	/*
 	* Returns whether a table has tree ranks
-	* @param {string} table_name - the name of the table to check
-	* @return {bool} whether a table has tree ranks
+	* @return {boolean} whether a table has tree ranks
 	* */
-	table_is_tree(table_name){
+	table_is_tree(
+		/* string */ table_name  // the name of the table to check
+	){
 		return typeof data_model.ranks[table_name] !== "undefined";
 	},
 
 	/*
 	* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that
-	* @param {object} payload - described in the method definition
 	* @return {mixed} returns the value returned by callbacks['get_final_data'](internal_payload)
 	* */
-	navigator(payload){
+	navigator(
+		/* object */ payload // described in the method definition
+	){
 
 		let {
 			callbacks,  // {object} described below
 			recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
 			internal_payload = {}, // {object} payload that is shared between the callback functions only and is not modified by the navigator
 			config: {
-				use_cache = false, // {bool} whether to use cached values
+				use_cache = false, // {boolean} whether to use cached values
 				cache_name, // {string} the name of the cache bucket to use
 				base_table_name, // {string} the name of the base table to use
 			}
@@ -349,7 +357,7 @@ const data_model = {
 		*
 		* callbacks: {
 		* 	iterate (internal_payload):
-		* 		should return {bool} specifying whether to run data_model.navigator_instance() for a particular mapping path part
+		* 		should return {boolean} specifying whether to run data_model.navigator_instance() for a particular mapping path part
 		*
 		* 	get_next_path_element (internal_payload, callback_payload):
 		* 		should return undefined if there is no next path element.
@@ -474,9 +482,10 @@ const data_model = {
 
 	/*
 	* Called by navigator if callback.iterate returned true
-	* @param {object} payload - described in the method definition
 	* */
-	navigator_instance(payload){
+	navigator_instance(
+		/* object */ payload  // described in the method definition
+	){
 
 		const {
 			table_name,  // {string} the name of the current table
@@ -484,8 +493,8 @@ const data_model = {
 			parent_table_name = '',  // {string} parent table name
 			parent_table_relationship_name = '',  // {string} next_real_path_element_name as returned by callbacks.get_next_path_element
 			parent_path_element_name = '', // {string} next_path_element_name as returned by callbacks.get_next_path_element
-			use_cache = false,  // {bool} whether to use cache
-			cache_name = false,  // {bool} the name of the cache bucket to use
+			use_cache = false,  // {boolean} whether to use cache
+			cache_name = false,  // {boolean} the name of the cache bucket to use
 			callbacks,  // {object} callbacks (described in navigator)
 			callback_payload, // {object} callbacks payload (described in navigator)
 		} = payload;
@@ -545,54 +554,54 @@ const data_model = {
 
 	/*
 	* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many)
-	* @param {string} relationship_type
-	* @return {bool} whether relationship is a -to-many
+	* @return {boolean} whether relationship is a -to-many
 	* */
-	relationship_is_to_many: relationship_type =>
+	relationship_is_to_many:
+			/* string */ relationship_type =>  // relationship_type
 		relationship_type.indexOf('-to-many') !== -1,
 
 	/*
 	* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...)
-	* @param {string} value
-	* @return {bool} whether a value is a -to-many reference item
+	* @return {boolean} whether a value is a -to-many reference item
 	* */
-	value_is_reference_item: value =>
+	value_is_reference_item:
+			/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol,
 
 	/*
 	* Returns whether a value is a tree rank name (e.x $Kingdom, $Order)
-	* @param {string} value
-	* @return {bool} whether a value is a tree rank
+	* @return {boolean} whether a value is a tree rank
 	* */
-	value_is_tree_rank: value =>
+	value_is_tree_rank:
+			/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.tree_symbol.length) === data_model.tree_symbol,
 
 	/*
 	* Returns index from a complete reference item value (e.x #1 => 1)
 	* Opposite of format_reference_item
-	* @param {string} value
-	* @return {bool} index
+	* @return {boolean} index
 	* */
-	get_index_from_reference_item_name: value =>
+	get_index_from_reference_item_name:
+			/* string */ value =>  // the value to use
 		parseInt(value.substr(data_model.reference_symbol.length)),
 
 	/*
 	* Returns tree rank name from a complete tree rank name (e.x $Kingdom => Kingdom)
 	* Opposite of format_tree_rank
-	* @param {string} value
-	* @return {bool} tree rank name
+	* @return {boolean} tree rank name
 	* */
-	get_name_from_tree_rank_name: value =>
+	get_name_from_tree_rank_name:
+			/* string */ value =>  // the value to use
 		value.substr(data_model.tree_symbol.length),
 
 	/*
 	* Returns the max index in the list of reference item values
-	* @param {array} list of reference item values
 	* @return {int} max index. Returns 0 if there aren't any
 	* */
-	get_max_to_many_value: values =>
+	get_max_to_many_value:
+			/* array */ values =>  // list of reference item values
 		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
@@ -611,19 +620,19 @@ const data_model = {
 	/*
 	* Returns a complete reference item from an index (e.x 1 => #1)
 	* Opposite of get_index_from_reference_item_name
-	* @param {int} index - the index to use
 	* @return {int} a complete reference item from an index
 	* */
-	format_reference_item: index =>
+	format_reference_item:
+			/* int */ index =>  // the index to use
 		data_model.reference_symbol + index,
 
 	/*
 	* Returns a complete tree rank name from a tree rank name (e.x Kingdom => $Kingdom)
 	* Opposite of get_name_from_tree_rank_name
-	* @param {string} rank_name - tree rank name to use
 	* @return {int} a complete tree rank name
 	* */
-	format_tree_rank: rank_name =>
+	format_tree_rank:
+			/* string */rank_name =>  // tree rank name to use
 		data_model.tree_symbol + rank_name,
 
 };
