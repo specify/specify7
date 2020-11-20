@@ -227,7 +227,7 @@ const main = {
 		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
 
-		if (formatted_validation_results === ``)
+		if (formatted_validation_results === false)
 			return true;
 
 		const div = document.createElement('div');

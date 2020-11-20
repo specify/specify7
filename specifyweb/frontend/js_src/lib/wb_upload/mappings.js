@@ -951,7 +951,7 @@ const mappings = {
 		if (validation_results.length === 0) {
 			this.validation_results.classList.add('hidden');
 			this.validation_results.innerHTML = ``;
-			return;
+			return false;
 		}
 
 		this.validation_results.classList.remove('hidden');

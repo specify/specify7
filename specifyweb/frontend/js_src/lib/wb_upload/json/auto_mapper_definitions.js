@@ -230,7 +230,7 @@ module.exports = {
 				scope: 'automapper',
 			},
 			localityname: {
-				header: {
+				headers: {
 					string: [
 						'localitynum',
 					],
@@ -238,7 +238,7 @@ module.exports = {
 				scope: 'automapper',
 			},
 			namedplace: {
-				header: {
+				headers: {
 					contains: [
 						'named place',
 					],
@@ -248,7 +248,7 @@ module.exports = {
 		},
 		Gift: {
 			receivedComments: {
-				header: {
+				headers: {
 					contains: [
 						'comments',
 					]
