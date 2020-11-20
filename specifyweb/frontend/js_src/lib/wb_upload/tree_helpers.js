@@ -95,7 +95,48 @@ const tree_helpers = {
 		}, target);
 	},
 
-	array_to_tree(array, has_headers = false, tree = {}){
+	/*
+	* Converts an array to tree
+	* @param {array} array - array to be converted
+	* @param {bool} has_headers - whether an array has headers in it
+	* @return {object} resulting tree
+	* Example:
+	* 	if
+	* 		array is ['accession', 'accession agents', '#1, 'agent', 'first name']
+	* 		has_headers is False
+	* 	then result is {
+	* 		'accession': {
+	* 			'accession_agents': {
+	* 				'#1': {
+	* 					'agent': {
+	* 						'first_name': {
+	*
+	* 						},
+	* 					}
+	* 				}
+	* 			}
+	* 		}
+	* 	}
+	*
+	* 	if
+	* 		array is ['accession', 'accession agents', '#1, 'agent', 'first name', 'existing_header', 'Agent 1 First Name']
+	* 		has_headers is True
+	* 	then result is {
+	* 		'accession': {
+	* 			'accession_agents': {
+	* 				'#1': {
+	* 					'agent': {
+	* 						'first_name': {
+	* 							'existing_header': 'Agent 1 First Name',
+	* 						},
+	* 					}
+	* 				}
+	* 			}
+	* 		}
+	* 	}
+	*
+	* */
+	array_to_tree(array, has_headers = false){
 
 		if (array.length === 0)
 			return {};
@@ -105,9 +146,7 @@ const tree_helpers = {
 		if (has_headers && array.length === 0)
 			return node;
 
-		tree[node] = tree_helpers.array_to_tree(array, has_headers);
-
-		return tree;
+		return {[node]: tree_helpers.array_to_tree(array, has_headers)};
 
 	},
 
@@ -115,7 +154,7 @@ const tree_helpers = {
 	* Converts array of arrays of strings into a complete tree
 	* The inverse of mappings_tree_to_array_of_mappings
 	* @param {array} array - Array of array of strings (a.k.a branches of the tree) that are going to be merged into a tree
-	* @param {object} [tree={}] - Used only to save intermediate result in the recursion
+	* @param {bool} include_headers - Whether array_of_mappings includes mapping types and header names / static column values
 	* @return {object} Final tree
 	* For example if array is:
 	* 	Accession, Accession Agents, #1, Agent, First Name

@@ -12,15 +12,14 @@ const upload_plan_converter = require('./upload_plan_converter.js');
 
 const mappings = {
 
-	max_suggestions_count: 3,
+	max_suggestions_count: 3, // the maximum number of suggestions to show in the suggestions box
 
 
 	// SETTERS
 
 	/* Select table
-	* @param {mixed} - {Object} event - event object. Only event.target property is used
-	* 					OR
-	* 				   {string} event - name of the table to set
+	* @param {string} table_name - the name of the table to set
+	* @param {list} headers_to_shadow_define - a list of headers that would be fully defined at a later pointer
 	* */
 	set_table(table_name, headers_to_shadow_define = []){
 
@@ -43,8 +42,7 @@ const mappings = {
 			});
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(base_table_fields, true);
 
-			//TODO: uncomment this before production
-			//navigation.addUnloadProtect(this, "This mapping has not been saved.");
+			navigation.addUnloadProtect(this, "This mapping has not been saved.");
 
 			if (mappings.need_to_define_lines) {
 				mappings.need_to_define_lines = false;
@@ -97,7 +95,7 @@ const mappings = {
 	},
 
 	/*
-	* Updates the list of headers
+	* Sets a lit of headers
 	* @param {array} [headers=[]] - List of headers as strings
 	* @param {object} [upload_plan=false] - Upload plan as an object or {bool} false for none
 	* @param {bool} [headers_defined=true] - Whether CSV file had headers in the first line
@@ -152,8 +150,7 @@ const mappings = {
 
 		data_model.base_table_name = undefined;
 
-		//TODO: uncomment this before production
-		//navigation.removeUnloadProtect(this);
+		navigation.removeUnloadProtect(this);
 
 		mappings.need_to_define_lines = true;
 		mappings.need_to_run_auto_mapper = true;
@@ -165,12 +162,7 @@ const mappings = {
 
 	/*
 	* Implements array of mappings
-	* @param {array} array_of_mappings - Array of arrays of mappings like [mapping_type,header_name,mapping_path] where
-	* 									 @param {string} mapping_type - existing_header / new_header / new_static_header
-	* 									 @param {mixed} header_element - {DOMElement} header_element - <input type="radio"> if mapping type is `existing_header`
-	* 								  									 {string} header_name - Name of the header if mapping type is `new_header`
-	* 								  									 {string} static_value - Value of a static field if mapping type is `static_value`
-	* 									 @param {array} mapping_path - Mapping path array
+	* @param {array} array_of_mappings - array of mapping_path's (with mapping types and header names / static column values)
 	* */
 	implement_array_of_mappings(array_of_mappings){
 
@@ -194,15 +186,19 @@ const mappings = {
 
 	},
 
+	/*
+	* Adds new mapping line
+	* @param {object} payload - object structure in the method description
+	* */
 	add_new_mapping_line(payload){
 
 		const {
-			position = -1,
-			mappings_path = [],
-			header_data,
-			blind_add_back = false,
-			line_attributes = [],
-			scroll_down = false
+			position = -1, // {int} position of the new line. If negative, start from the back
+			mappings_path = [], // {array} mapping path to use for the new mapping line
+			header_data, // {object} {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
+			blind_add_back = false, // {bool} whether to add to the back without checking if the header already exists
+			line_attributes = [], // {array} array of classes to append to each line's classname
+			scroll_down = false // {bool} whether to scroll the list of mapping lines down to make the newly created line visible on the screen
 		} = payload;
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
@@ -267,13 +263,18 @@ const mappings = {
 
 	// GETTERS
 
+	/*
+	* Returns mapping line data from mappings path
+	* @param {object} payload - described in the method definition
+	* @return {array} list of mapping element data objects
+	* */
 	get_mapping_line_data_from_mappings_path(payload){
 
 		const {
-			mappings_path = [],
-			iterate = true,
-			use_cached = false,
-			generate_last_relationship_data = true,
+			mappings_path = [],  // {array} the mapping path
+			iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
+			use_cached = false, // {bool} whether to use cache if exists
+			generate_last_relationship_data = true, // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
 		} = payload;
 
 		const internal_payload = {
@@ -432,8 +433,8 @@ const mappings = {
 						(  // skip -to-many inside of -to-many  //TODO: remove this once upload plan is ready
 							typeof relationship_type !== "undefined" &&
 							typeof parent_relationship_type !== "undefined" &&
-							relationship_type.indexOf('-to-many') !== -1 &&
-							parent_relationship_type.indexOf('-to-many') !== -1
+							data_model.relationship_is_to_many(relationship_type) &&
+							data_model.relationship_is_to_many(parent_relationship_type)
 						)
 					)
 						continue;
@@ -496,6 +497,12 @@ const mappings = {
 
 	},
 
+	/*
+	* Returns array of mapping_paths
+	* @param {bool} include_headers - whether each mapping path should also have mapping type and header name at the end
+	* @param {bool} skip_empty - whether to skip incomplete mapping paths
+	* @return {array} array of mappings paths
+	* */
 	get_array_of_mappings(include_headers = false, skip_empty = true){
 
 		if (!include_headers && !mappings.changes_made) {
@@ -534,6 +541,12 @@ const mappings = {
 
 	},
 
+	/*
+	* Returns a mappings tree
+	* @param {bool} include_headers - whether the last tree nodes of each branch should be mapping type and header name
+	* @param {bool} whether to include incomplete tree nodes
+	* @return {object} mappings tree
+	* */
 	get_mappings_tree(include_headers = false, skip_empty = true){
 		if (!include_headers && !mappings.changes_made)
 			return mappings.mappings_tree;
@@ -544,6 +557,12 @@ const mappings = {
 		);
 	},
 
+	/*
+	* Get a mappings tree branch given a particular starting mappings path
+	* @param {array} mappings_path_filter - a mappings path that would be used as a filter
+	* @param {bool} skip_empty - whether to skip incomplete mappings
+	* @return {object} mappings tree starting from a given a particular starting mappings path
+	* */
 	get_mapped_fields(mappings_path_filter, skip_empty = true){
 		return tree_helpers.traverse_tree(
 			mappings.get_mappings_tree(false, skip_empty),
@@ -551,14 +570,21 @@ const mappings = {
 		);
 	},
 
+	/*
+	* Returns a mappings path for a particular line elements container
+	* @param payload - described in the method definition
+	* @return {array} mappings path
+	* */
 	get_mappings_path(payload){
 
 		const {
-			line_elements_container,
-			mapping_path_filter = [],
-			include_headers = false,
-			exclude_unmapped = false,
-			exclude_non_relationship_values = false,
+			line_elements_container,  // {DOMElement} line elements container
+			mapping_path_filter = [], // {mixed}
+										// if is {array} mappings path and mappings path of this line does begin with mappings_path_filter, get_mappings_path would return ["0"]
+										// if is {DOMElement}, then stops when reaches a given element in a line_elements_container
+			include_headers = false,  // whether to include mapping type and header_name / static column value in the result
+			exclude_unmapped = false, // whether to replace incomplete mappings paths with ["0"]
+			exclude_non_relationship_values = false, // whether to exclude simple fields from the resulting path
 		} = payload;
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
@@ -619,16 +645,20 @@ const mappings = {
 
 	//CHANGE CALLBACKS
 
+	/*
+	* Handles a change to the select element value
+	* @param {object} custom_select_change_payload - described in the method definition
+	* */
 	custom_select_change_event(custom_select_change_payload){
 
 		const {
-			changed_list,
-			selected_option,
-			new_value,
-			is_relationship,
-			list_type,
-			custom_select_type,
-			list_table_name,
+			changed_list,  // the list that was changed
+			selected_option, // the option that was changed
+			new_value,  // the new value of the list
+			is_relationship, // whether new value is a relationship
+			list_type, // the type of the changed list
+			custom_select_type, // the type of the custom select element
+			list_table_name, // the name of the table the list belongs too
 		} = custom_select_change_payload;
 
 		const line_elements_container = changed_list.parentElement;
@@ -723,6 +753,10 @@ const mappings = {
 
 	},
 
+	/*
+	* Unmap a particular header
+	* @param {DOMElement} wbplanview_mappings_line_delete - the `Delete` button that belongs to a particular line
+	* */
 	clear_line(wbplanview_mappings_line_delete){
 
 		const line = wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line');
@@ -744,6 +778,9 @@ const mappings = {
 
 	},
 
+	/*
+	* The callback for when the `Map` button on the mapping view is pressed
+	* */
 	mapping_view_map_button_callback(){
 
 		//find selected line
@@ -798,6 +835,10 @@ const mappings = {
 
 	//HELPERS
 
+	/*
+	* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements on all lines
+	* @param {array} mapping_path_filter - updates elements in the line only if their relative mappings path begins with mapping_path_filter
+	* */
 	update_all_lines(mapping_path_filter = null){
 
 		new Promise((resolve) => {
@@ -823,6 +864,11 @@ const mappings = {
 
 	},
 
+	/*
+	* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements in the current line
+	* @param {DOMElement} line_elements_container - the line elements container whose elements would be updated
+	* @param {array} filter_mapping_path - updates elements in the line only if their relative mappings path begins with mapping_path_filter
+	* */
 	update_line(line_elements_container, filter_mapping_path = null){
 
 		new Promise((resolve) => {
@@ -895,6 +941,10 @@ const mappings = {
 
 	},
 
+	/*
+	* Adds a focus outline to a given line
+	* @param {DOMElement} line - the line to be focused
+	* */
 	focus_line(line){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
@@ -923,6 +973,10 @@ const mappings = {
 
 	},
 
+	/*
+	* Update the mapping view with the mapping path from a given line
+	* @param {DOMElement} line - the line to be used as a source for mapping path
+	* */
 	update_mapping_view(line = false){
 
 		if (!line)
@@ -946,6 +1000,10 @@ const mappings = {
 
 	},
 
+	/*
+	* Formats validation results
+	* @param {array} validation_results - list of mapping paths that are missing
+	* */
 	format_validation_results(validation_results){
 
 		if (validation_results.length === 0) {
@@ -976,10 +1034,13 @@ const mappings = {
 
 	},
 
+	/*
+	* Unmap headers that have a duplicate mappings path
+	* */
 	deduplicate_mappings(){
 
 		const array_of_mappings = mappings.get_array_of_mappings(false, false);
-		const duplicate_mapping_indexes = helper.find_duplicate_mappings(array_of_mappings);
+		const duplicate_mapping_indexes = helper.find_duplicate_mappings(array_of_mappings, false);
 		const lines = dom_helper.get_lines(mappings.list__mappings, true);
 
 		let index = -1;
@@ -999,6 +1060,12 @@ const mappings = {
 
 	},
 
+	/*
+	* Show automapper suggestion on top of an opened `closed_list`
+	* The automapper suggestions are shown only if the current box doesn't have a value selected
+	* @param {DOMElement} select_element - target list
+	* @param {DOMElement} custom_select_option - the option that is currently selected
+	* */
 	show_automapper_suggestions(select_element, custom_select_option){
 
 		new Promise((resolve) => {
@@ -1077,7 +1144,7 @@ const mappings = {
 				};
 			});
 
-			const suggested_mappings_html = custom_select_element.suggested_mappings(select_options_data);
+			const suggested_mappings_html = custom_select_element.get_suggested_mappings_element_html(select_options_data);
 			const span = document.createElement('span');
 			select_element.insertBefore(span, select_element.children[0]);
 			span.outerHTML = suggested_mappings_html;

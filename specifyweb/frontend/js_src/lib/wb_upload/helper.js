@@ -28,6 +28,28 @@ const helper = {
 		return name;
 	},
 
+	/*
+	* Finds the point at which the source array begins to have values different from the ones in the search array
+	* @param {array} source - the source array to use in the comparison
+	* @param {array} search - the search array to use in the comparison
+	* @return {int} divergence point
+	* 				Returns 0 if search array is empty
+	* 				Returns -1 if source array is empty or source array is smaller than the search array
+	* Examples:
+	* 	If:
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is []
+	* 	returns 0
+	* 	If:
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is ['Accession','Accession Agents',]
+	* 	returns 2
+	* 	If
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is ['Accession','Accession Agents','#1']
+	* 	returns 3
+	*
+	* */
 	find_array_divergence_point(source, search){
 
 		//source : Accession > Accession Agents > #1 > Agent > First Name
@@ -62,6 +84,41 @@ const helper = {
 
 	},
 
+	/*
+	* Extract mapping type and header name / static column value from a mapping path
+	* @param {array} mapping_path - combined mapping path
+	* @param {bool} has_header - whether a mapping_path has mapping type and header name / static column value in it
+	* @param {detect_unmapped} - whether detect that a mapping path is incomplete
+	* @return [mapping_path, mapping_type, header]. If mapping path is incomplete and detect_unmapped is true mapping_path is []
+	* Example:
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name','existing_header','Agent 1 First Name']
+	* 		has_header is True
+	* 		detect_unmapped is True
+	* 	then return [
+	* 		['Accession','Accession Agents','#1','Agent','First Name'],
+	* 		'existing_header',
+	* 		'Agent 1 First Name'
+	* 	]
+	*
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','0','existing_header','Agent 1 First Name']
+	* 		has_header is True
+	* 		detect_unmapped is True
+	* 	then return [
+	* 		[],
+	* 		'existing_header',
+	* 		'Agent 1 First Name'
+	* 	]
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name']
+	* 		has_header is False
+	* 		detect_unmapped is False
+	* 	then return [
+	* 		['Accession','Accession Agents','#1','Agent','First Name'],
+	* 	]
+	*
+	* */
 	deconstruct_mapping_path(mapping_path, has_header = false, detect_unmapped = true){
 
 		mapping_path = [...mapping_path];
@@ -80,10 +137,32 @@ const helper = {
 
 	},
 
-	//array_of_mappings with headers
-	find_duplicate_mappings(array_of_mappings){
+	/*
+	* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned)
+	* @param {array} array_of_mappings - array of mappings as returned by mappings.get_array_of_mappings()
+	* @return {array} array of duplicate indexes
+	* Example:
+	* 	if
+	* 		array_of_mappings is [
+	* 			['Accession','Accession Number','existing header,'Accession #;],
+	* 			['Catalog Number','existing header','cat num'],
+	* 			['Accession','Accession Number'],
+	* 		]
+	* 		has_headers is True
+	* 	then return [2]
+	* 	if
+	* 		array_of_mappings is [
+	* 			['Start Date'],
+	* 			['End Date'],
+	* 			['Start Date'],
+	* 			['Start Date'],
+	* 		]
+	* 		has_headers is False
+	* 	then return [2,3]
+	* */
+	find_duplicate_mappings(array_of_mappings, has_headers=false){
 
-		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path)[0]);
+		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
 		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());
 
 		const duplicate_indexes = [];

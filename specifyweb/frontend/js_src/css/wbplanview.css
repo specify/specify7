@@ -27,7 +27,7 @@
 	display: grid;
 	grid-template-rows: auto auto 1fr auto;
 	grid-gap: 1rem;
-	height: calc(100vh - 130px); /* TODO: replace with a permanent solution */
+	height: calc(100vh - 150px); /* TODO: replace with a permanent solution */
 }
 
 #screen__mapping:not(.table_selected) {

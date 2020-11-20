@@ -3,13 +3,16 @@
 
 const cache = {
 
-	buckets: {},
-	cache_prefix: 'specify7_wbplanview_',
-	local_storage_bucket_soft_limit: 100,
-	session_storage_bucket_soft_limit: 100,
-	trim_aggresivnes: 0.5,  // between 0 and 1
-	event_listener_is_initialized: false,
+	buckets: {}, // the data structure that would store all of the buckets
+	cache_prefix: 'specify7_wbplanview_',  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
+	local_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
+	session_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
+	trim_aggresivnes: 0.5,  // between 0 and 1 - decides the minimum passing cache usage
+	event_listener_is_initialized: false,  // indicates whether initialize() was run. If not, runs it on the next call to get() or set()
 
+	/*
+	* Set's an event listener that runs commit_to_storage before page unload
+	* */
 	initialize(){
 
 		window.onbeforeunload = cache.commit_to_storage;
@@ -17,6 +20,9 @@ const cache = {
 
 	},
 
+	/*
+	* Commits persistent cache buckets to localStorage
+	* */
 	commit_to_storage(){
 
 		if (typeof localStorage === "undefined")
@@ -33,7 +39,12 @@ const cache = {
 
 	},
 
-	initialize_bucket(bucket_name){
+	/*
+	* Tries to fetch a bucket from localStorage
+	* @return {mixed} - {bool} False if bucket does not exist.
+	* 				  - {object} bucket content if bucket exists
+	* */
+	fetch_bucket(bucket_name){
 
 		const full_bucket_name = cache.cache_prefix + bucket_name;
 
@@ -45,6 +56,13 @@ const cache = {
 
 	},
 
+	/*
+	* Get value of cache_name in the bucket_name
+	* @param {string} bucket_name - the name of the bucket
+	* @param {string} cache_name - the name of the cache
+	* @returns {mixed} - {bool} False on error
+	* 					 {mixed} value stored under cache_name on success
+	* */
 	get(bucket_name, cache_name){
 
 		if (!cache.event_listener_is_initialized)
@@ -53,7 +71,7 @@ const cache = {
 		if (
 			(
 				typeof cache.buckets[bucket_name] === "undefined" &&
-				!cache.initialize_bucket(bucket_name)
+				!cache.fetch_bucket(bucket_name)
 			) ||
 			typeof cache.buckets[bucket_name]['records'][cache_name] === "undefined"
 		)
@@ -69,14 +87,21 @@ const cache = {
 
 	},
 
+	/*
+	* Set's cache_value as cache value under cache_name in bucket_name
+	* @param {string} bucket_name - the name of the bucket
+	* @param {string} cache_name - the name of the cache
+	* @param {string} cache_value - the value of the cache. Can be any object that can be converted to json
+	* @param {object} config - configuration for cache. Described inside of method definition
+	* */
 	set(bucket_name, cache_name, cache_value, config = {}){
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
 
 		const {
-			bucket_type = 'local_storage',
-			overwrite = false,
+			bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
+			overwrite = false,  // whether to overwrite the cache value if it is already present
 		} = config;
 
 		if (typeof cache.buckets[bucket_name] === "undefined") {
@@ -98,9 +123,15 @@ const cache = {
 
 	},
 
+	/*
+	* Trims buckets that go beyond the size limit
+	* Runs every time you set a new cache value
+	* This method is needed to prevent memory leaks and stay under browser memory limit - ~5MB for Google Chrome ;(
+	* @param {string} bucket_name - the bucket to trim
+	* */
 	trim_bucket(bucket_name){
 
-		// don't trim cache if smaller than soft limits
+		// don't trim cache if the number of records in this bucket is smaller than soft limits
 		if (
 			(
 				cache.buckets[bucket_name]['type'] === 'local_storage' &&
@@ -119,12 +150,12 @@ const cache = {
 		}, 0);
 		const cache_items_count = cache_usages.length;
 		const average_usage = total_usage / cache_items_count;
+
+		//trim all caches with usage equal to or smaller than usage_to_trim
 		let usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
 
 		if(usage_to_trim === 0)
 			usage_to_trim = 1;
-
-		console.log('Trimming caches with usage under ' + usage_to_trim);
 
 		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);
 		const new_records = {};
@@ -134,9 +165,6 @@ const cache = {
 
 			if (cache_usage >= usage_to_trim)
 				new_records[cache_key] = cache.buckets[bucket_name]['records'][cache_key];
-
-			else
-				console.log('Trimming cache from bucket ' + bucket_name + ' under key ' + cache_key);
 
 		}
 		cache.buckets[bucket_name]['records'] = new_records;

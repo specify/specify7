@@ -73,6 +73,11 @@ module.exports = {
 				scope: 'automapper',
 			},
 			{
+				preceding_mapping_path: ['determinations', 'determiner'],
+				synonym: 'who id',
+				scope: 'automapper',
+			},
+			{
 				preceding_mapping_path: ['collectingevent', 'collectors', 'agent'],
 				synonym: 'collector',
 				scope: 'automapper',

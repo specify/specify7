@@ -64,6 +64,11 @@ const upload_plan_converter = {
 
 	},
 
+	/*
+	* Get upload plan
+	* @param {bool} mapping_is_a_template - whether this upload plan can be used as a template in the future
+	* @return {string} Upload plan as a JSON string
+	* */
 	get_upload_plan: (mapping_is_a_template = false) =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
 			upload_plan_converter.get_mappings_tree(true),
@@ -74,6 +79,7 @@ const upload_plan_converter = {
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
 	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used
+	* @param {bool} mapping_is_a_template - whether this upload plan can be used as a template in the future
 	* @return {string} Upload plan as a JSON string
 	* */
 	mappings_tree_to_upload_plan(mappings_tree, mapping_is_a_template = false){

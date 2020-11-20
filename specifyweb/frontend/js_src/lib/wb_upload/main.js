@@ -15,6 +15,8 @@ const main = {
 
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
+	* @param {function} save_plan_function - the function to call to save changes to the upload plan
+	* @return {Promise} a promise that resolves to a mappings object
 	* */
 	constructor(save_plan_function){
 
@@ -158,7 +160,11 @@ const main = {
 
 	},
 
-	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
+	/*
+	* Constructor that needs to be run only once (fetches data model, initializes other modules
+	* @param {function} done_callback - the callback to call for when the constructor is finished
+	* @param {function} save_plan_function - the function to call to save changes to the upload plan
+	* */
 	constructor_first_run(done_callback, save_plan_function){
 
 		data_model.view_payload = {
@@ -221,6 +227,7 @@ const main = {
 
 	/*
 	* Validates the current mapping and shows error messages if needed
+	* @return {mixed} - true if everything is fine or {string} formatted validation error message
 	* */
 	validate(){
 
@@ -258,6 +265,10 @@ const main = {
 
 	},
 
+	/*
+	* Shows a loading screen a returns a callback that removes the loading screen
+	* @return {function} callback that removes a loading screen
+	* */
 	loading_screen(){
 
 		mappings.container.classList.remove('loaded');
