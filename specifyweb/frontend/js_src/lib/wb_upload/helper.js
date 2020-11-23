@@ -10,10 +10,11 @@ const helper = {
 	/*
 	* Get a friendly name from the field. (Converts Camel Case to human readable name and fixes some errors)
 	* This method is only called if schema localization does not have a friendly name for this field
-	* @param {string} name - Original field name
 	* @return {string} Human friendly field name
 	* */
-	get_friendly_name(name){
+	get_friendly_name(
+		/* string */ name  // Original field name
+	){
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -28,7 +29,30 @@ const helper = {
 		return name;
 	},
 
-	find_array_divergence_point(source, search){
+	/*
+	* Finds the point at which the source array begins to have values different from the ones in the search array
+	* @return {int} divergence point
+	* 				Returns 0 if search array is empty
+	* 				Returns -1 if source array is empty or source array is smaller than the search array
+	* Examples:
+	* 	If:
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is []
+	* 	returns 0
+	* 	If:
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is ['Accession','Accession Agents',]
+	* 	returns 2
+	* 	If
+	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
+	* 		search is ['Accession','Accession Agents','#1']
+	* 	returns 3
+	*
+	* */
+	find_array_divergence_point(
+		/* array */ source,  // the source array to use in the comparison
+		/* array */ search  // the search array to use in the comparison
+	){
 
 		//source : Accession > Accession Agents > #1 > Agent > First Name
 		//search : []
@@ -58,51 +82,111 @@ const helper = {
 
 		}
 
-		return search_length-1;
+		return search_length - 1;
 
 	},
 
-	deconstruct_mapping_path(mapping_path, has_header=false, detect_unmapped=true){
+	/*
+	* Extract mapping type and header name / static column value from a mapping path
+	* @return [mapping_path, mapping_type, header]. If mapping path is incomplete and detect_unmapped is true mapping_path is []
+	* Example:
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name','existing_header','Agent 1 First Name']
+	* 		has_header is True
+	* 		detect_unmapped is True
+	* 	then return [
+	* 		['Accession','Accession Agents','#1','Agent','First Name'],
+	* 		'existing_header',
+	* 		'Agent 1 First Name'
+	* 	]
+	*
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','0','existing_header','Agent 1 First Name']
+	* 		has_header is True
+	* 		detect_unmapped is True
+	* 	then return [
+	* 		[],
+	* 		'existing_header',
+	* 		'Agent 1 First Name'
+	* 	]
+	* 	if
+	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name']
+	* 		has_header is False
+	* 		detect_unmapped is False
+	* 	then return [
+	* 		['Accession','Accession Agents','#1','Agent','First Name'],
+	* 	]
+	*
+	* */
+	deconstruct_mapping_path(
+		/* array */ mapping_path,  // combined mapping path
+		/* boolean */ has_header = false,  // whether a mapping_path has mapping type and header name / static column value in it
+		/* boolean */ detect_unmapped = true  // whether detect that a mapping path is incomplete
+	){
 
 		mapping_path = [...mapping_path];
 
 		let header;
 		let mapping_type;
-		if(has_header){
+		if (has_header) {
 			header = mapping_path.pop();
 			mapping_type = mapping_path.pop();
 		}
 
-		if(detect_unmapped && mapping_path[mapping_path.length-1]==="0")
+		if (detect_unmapped && mapping_path[mapping_path.length - 1] === "0")
 			mapping_path = [];
 
 		return [mapping_path, mapping_type, header];
 
 	},
 
-	//array_of_mappings with headers
-	find_duplicate_mappings(array_of_mappings){
+	/*
+	* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned)
+	* @return {array} array of duplicate indexes
+	* Example:
+	* 	if
+	* 		array_of_mappings is [
+	* 			['Accession','Accession Number','existing header,'Accession #;],
+	* 			['Catalog Number','existing header','cat num'],
+	* 			['Accession','Accession Number'],
+	* 		]
+	* 		has_headers is True
+	* 	then return [2]
+	* 	if
+	* 		array_of_mappings is [
+	* 			['Start Date'],
+	* 			['End Date'],
+	* 			['Start Date'],
+	* 			['Start Date'],
+	* 		]
+	* 		has_headers is False
+	* 	then return [2,3]
+	* */
+	find_duplicate_mappings(
+		/* array */ array_of_mappings,  // array of mappings as returned by mappings.get_array_of_mappings()
+		/* boolean */ has_headers = false  // whether array of mappings contain mapping types and header names / static column values
+	){
 
-		const filtered_array_of_mappings = array_of_mappings.map(mapping_path=>helper.deconstruct_mapping_path(mapping_path)[0]);
-		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path=>mapping_path.join());
+		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
+		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());
 
 		const duplicate_indexes = [];
 		let index = -1;
-		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path)=>{
+		string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path) => {
 
 			index++;
 
-			if(string_mapping_path==='')
+			if (string_mapping_path === '')
 				return dictionary_of_mappings;
 
-			if(typeof dictionary_of_mappings[string_mapping_path] === "undefined")
+			if (typeof dictionary_of_mappings[string_mapping_path] === "undefined")
 				dictionary_of_mappings[string_mapping_path] = 1;
 			else
 				duplicate_indexes.push(index);
 
 			return dictionary_of_mappings;
 
-		},{});
+		}, {});
 
 		return duplicate_indexes;
 

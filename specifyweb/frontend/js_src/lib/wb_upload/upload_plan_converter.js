@@ -26,10 +26,10 @@ const upload_plan_converter = {
 			return [
 				key,
 				Object.fromEntries(Object.values(original_mappings).map(mapping =>
-					[
-						data_model.format_reference_item(i++),
-						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
-					]
+																			[
+																				data_model.format_reference_item(i++),
+																				upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
+																			]
 				))
 			];
 		},
@@ -38,14 +38,15 @@ const upload_plan_converter = {
 	/*
 	* Converts upload plan to internal tree structure
 	* Inverse of mappings_tree_to_upload_plan
-	* @param {object} upload_plan - Upload plan
-	* @param {bool} [base_table_name_extracted=false] - Used by recursion to store intermediate results
 	* @return {object} Returns mapping tree
 	* */
-	upload_plan_to_mappings_tree(upload_plan, base_table_name_extracted = false){
+	upload_plan_to_mappings_tree(
+		/* object */ upload_plan,  // upload plan
+		/* boolean */ base_table_name_extracted = false  // used by recursion to store intermediate results
+	){
 
 		if (base_table_name_extracted === false) {
-			data_model.base_table_name = upload_plan['baseTableName'];
+			data_model.base_table_name = upload_plan['baseTableName'].toLowerCase();
 			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan['uploadable'], true);
 		}
 
@@ -54,17 +55,23 @@ const upload_plan_converter = {
 
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
 			return Object.fromEntries(Object.entries(upload_plan['treeRecord']['ranks']).map(([rank_name, rank_data]) =>
-				[data_model.tree_symbol + rank_name, {name: rank_data}]
+																								 [data_model.tree_symbol + rank_name, {name: rank_data}]
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-				[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
-			[]
+																		 [...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
+																	 []
 		));
 
 	},
 
-	get_upload_plan: (mapping_is_a_template = false) =>
+	/*
+	* Get upload plan
+	* @return {string} Upload plan as a JSON string
+	* */
+	get_upload_plan: (
+		/* boolean */ mapping_is_a_template = false  // whether this upload plan can be used as a template in the future
+	) =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
 			upload_plan_converter.get_mappings_tree(true),
 			mapping_is_a_template
@@ -73,10 +80,12 @@ const upload_plan_converter = {
 	/*
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
-	* @param {mixed} [mappings_tree=''] - Mappings tree that is going to be used
 	* @return {string} Upload plan as a JSON string
 	* */
-	mappings_tree_to_upload_plan(mappings_tree, mapping_is_a_template = false){
+	mappings_tree_to_upload_plan(
+		/* mixed */ mappings_tree,  // mappings tree that is going to be used
+		/* boolean */ mapping_is_a_template = false  // whether this upload plan can be used as a template in the future
+	){
 
 		const upload_plan = {};
 
@@ -88,9 +97,7 @@ const upload_plan_converter = {
 			if (typeof data === "string")
 				return data;
 
-			const [mapping_type, header_name] = Object.entries(data)[0];
-
-			return header_name;
+			return Object.values(data)[0];
 
 		}
 

@@ -15,8 +15,11 @@ const main = {
 
 	/*
 	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
+	* @return {Promise} a promise that resolves to a mappings object
 	* */
-	constructor(save_plan_function){
+	constructor(
+		/* function */ save_plan_function  // the function to call to save changes to the upload plan
+	){
 
 		return new Promise((resolve) => {
 
@@ -35,6 +38,7 @@ const main = {
 			mappings.list__tables = document.getElementById('list__tables');
 			mappings.mapping_view = document.getElementById('mapping_view');
 			mappings.mapping_view_map_button = document.getElementById('wbplanview_mapping_view_map_button');
+			mappings.validation_results = document.getElementById('validation_results');
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
@@ -58,7 +62,7 @@ const main = {
 
 			mappings.button__toggle_mapping_view.addEventListener('click', () => {
 				mappings.hide_mapping_view = !mappings.container.classList.contains('hide_mapping_view');
-				cache.set('ui','hide_mapping_view',mappings.hide_mapping_view, {
+				cache.set('ui', 'hide_mapping_view', mappings.hide_mapping_view, {
 					overwrite: true,
 				});
 				if (mappings.hide_mapping_view)
@@ -87,31 +91,31 @@ const main = {
 
 			add_new_column.addEventListener('click', () => {
 				mappings.add_new_mapping_line({
-					header_data: {
-						header_name: '',
-						mapping_type: 'new_column'
-					},
-					blind_add_back: true,
-					scroll_down: true,
-				});
+												  header_data: {
+													  header_name: '',
+													  mapping_type: 'new_column'
+												  },
+												  blind_add_back: true,
+												  scroll_down: true,
+											  });
 			});
 
 			add_new_static_column.addEventListener('click', () => {
 				mappings.add_new_mapping_line({
-					header_data: {
-						header_name: '',
-						mapping_type: 'new_static_column'
-					},
-					blind_add_back: true,
-					scroll_down: true,
-				});
+												  header_data: {
+													  header_name: '',
+													  mapping_type: 'new_static_column'
+												  },
+												  blind_add_back: true,
+												  scroll_down: true,
+											  });
 			});
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
 
 				const hide_hidden_fields = !mappings.container.classList.contains('hide_hidden_fields');
 
-				cache.set('ui','hide_hidden_fields',hide_hidden_fields, {
+				cache.set('ui', 'hide_hidden_fields', hide_hidden_fields, {
 					overwrite: true,
 				});
 
@@ -123,15 +127,15 @@ const main = {
 
 			// CONFIG
 
-			if(cache.get('ui','hide_hidden_fields'))
+			if (cache.get('ui', 'hide_hidden_fields'))
 				mappings.container.classList.add('hide_hidden_fields');
 			else
 				mappings.toggle_hidden_fields.checked = true;
 
-			if(cache.get('ui','hide_mapping_view'))
+			if (cache.get('ui', 'hide_mapping_view'))
 				mappings.container.classList.add('hide_mapping_view');
 
-			const done_callback = ()=> {
+			const done_callback = () => {
 				this.constructor_has_run = true;
 				loaded();
 				resolve(mappings);
@@ -153,12 +157,17 @@ const main = {
 			if (this.constructor_has_run)
 				done_callback();
 
-		})
+		});
 
 	},
 
-	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run(done_callback, save_plan_function){
+	/*
+	* Constructor that needs to be run only once (fetches data model, initializes other modules
+	* */
+	constructor_first_run(
+		/* function */ done_callback,  // the callback to call for when the constructor is finished
+		/* function */ save_plan_function  // the function to call to save changes to the upload plan
+	){
 
 		data_model.view_payload = {
 
@@ -197,12 +206,12 @@ const main = {
 
 			required_fields_to_be_made_optional: {
 				'agent': ['agenttype'],
-				'determination': ['current'],
+				'determination': ['iscurrent'],
 				'loadpreparation': ['isresolved'],
 				'locality': ['srclatlongunit'],
 			},
 
-		}
+		};
 
 		// fetch data model
 		data_model.fetch_tables(() => {
@@ -220,58 +229,69 @@ const main = {
 
 	/*
 	* Validates the current mapping and shows error messages if needed
+	* @return {mixed} - true if everything is fine or {string} formatted validation error message
 	* */
 	validate(){
 
-		const validation_results = data_model.show_required_missing_ranks(data_model.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
+		const formatted_validation_results = mappings.format_validation_results(validation_results);
 
-		if (validation_results.length === 0)
+		if (formatted_validation_results === false)
 			return true;
 
 		const div = document.createElement('div');
-		div.innerHTML = mappings.format_validation_results(validation_results);
+		div.innerHTML = formatted_validation_results;
 
 		let dialog = $(div).dialog({
-			modal: true,
-			title: 'Unmapped required fields detected',
-			close: function(){
-				$(this).remove();
-				dialog = null;
-			},
-			width: document.documentElement.clientWidth * 0.8,
-			buttons: [
-				{
-					text: 'Return to mapping headers', click: function(){
-						$(this).dialog('close')
-					},
-				},
-				{
-					text: 'Save unfinished mapping', click: () => main.save_plan(undefined, true)
-				}
-			]
-		});
+									   modal: true,
+									   title: 'Unmapped required fields detected',
+									   close: function(){
+										   $(this).remove();
+										   dialog = null;
+									   },
+									   width: 500,
+									   buttons: [
+										   {
+											   text: 'Return to mapping headers', click: function(){
+												   $(this).dialog('close');
+											   },
+										   },
+										   {
+											   text: 'Save unfinished mapping',
+											   click: () => main.save_plan(undefined, true)
+										   }
+									   ]
+								   });
 
 
 		return validation_results;
 
 	},
 
+	/*
+	* Shows a loading screen a returns a callback that removes the loading screen
+	* @return {function} callback that removes a loading screen
+	* */
 	loading_screen(){
 
 		mappings.container.classList.remove('loaded');
 
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-			title: 'Loading',
-			modal: true,
-			open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-			close: function() {$(this).remove();}
-		});
+																				   title: 'Loading',
+																				   modal: true,
+																				   open: function(evt, ui){
+																					   $('.ui-dialog-titlebar-close', ui.dialog).hide();
+																				   },
+																				   close: function(){
+																					   $(this).remove();
+																				   }
+																			   });
 		$('.progress-bar', dialog).progressbar({value: false});
 
-		return ()=>{
+		return () => {
 			mappings.container.classList.add('loaded');
 			dialog.dialog('close');
-		}
+		};
 
 	},
 

@@ -12,24 +12,27 @@ const cache = require('./cache.js');
 * */
 const data_model = {
 
-	reference_symbol: '#',
-	tree_symbol: '$',
-		path_join_symbol: '_',
-	new_header_id: 1,
+	// each of this can be modified to a single symbol or several symbols
+	reference_symbol: '#',  // prefix for -to-many indexes (used behind the scenes & is shown to the user)
+	tree_symbol: '$',  // prefix for tree ranks (used behind the scenes)
+	path_join_symbol: '_', // a symbol to use to join multiple mapping path elements together when need to represent mapping path as a string
 
-	ranks_queue: {},
+	new_header_id: 1,  // the index that would be shown in the header name the next time the user presses a `Add new column` button
+
+	ranks_queue: {},  // the queue of ranks that still need to be fetched
 
 	/*
 	* Fetches data model.
-	* @param {function} done_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_tables(done_callback){
+	fetch_tables(
+		/* function */ done_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	){
 
-		if(typeof localStorage !== "undefined"){
-			data_model.tables = cache.get('data_model','tables');
-			data_model.html_tables = cache.get('data_model','html_tables');
-			data_model.ranks = cache.get('data_model','ranks');
-			if(data_model.tables && data_model.html_tables && data_model.ranks)
+		if (typeof localStorage !== "undefined") {
+			data_model.tables = cache.get('data_model', 'tables');
+			data_model.html_tables = cache.get('data_model', 'html_tables');
+			data_model.ranks = cache.get('data_model', 'ranks');
+			if (data_model.tables && data_model.html_tables && data_model.ranks)
 				return done_callback();
 			else
 				data_model.ranks = {};
@@ -66,14 +69,14 @@ const data_model = {
 				let is_hidden = field.isHidden() === 1;
 
 				// required fields should not be hidden // unless they are present in this list
-				if (data_model.view_payload.required_fields_to_hide.indexOf(field_name) !== -1){
+				if (data_model.view_payload.required_fields_to_hide.indexOf(field_name) !== -1) {
 					is_required = false;
 					is_hidden = true;
 				}
 				else if (is_hidden && is_required)
 					is_hidden = false;
 
-				if(
+				if (
 					typeof data_model.view_payload.required_fields_to_be_made_optional[table_name] !== "undefined" &&
 					data_model.view_payload.required_fields_to_be_made_optional[table_name].includes(field_name)
 				)
@@ -95,7 +98,7 @@ const data_model = {
 					const relationship_type = field['type'];
 					const table_name = field['relatedModelName'].toLowerCase();
 
-					if (field_name === 'definition'){
+					if (field_name === 'definition') {
 						has_relationship_with_definition = true;
 						continue;
 					}
@@ -122,11 +125,11 @@ const data_model = {
 			}
 
 			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
-				[field_name, fields[field_name]]
+																						 [field_name, fields[field_name]]
 			));
 
 
-			if(!data_model.view_payload.table_keywords_to_exclude.some(table_keyword_to_exclude=>table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
+			if (!data_model.view_payload.table_keywords_to_exclude.some(table_keyword_to_exclude => table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
 				table_previews[table_name] = table_friendly_name;
 
 			tables[table_name] = {
@@ -148,8 +151,8 @@ const data_model = {
 					delete data_model.tables[table_name]['fields'][relationship_name];
 
 		data_model.html_tables = html_generator.tables(table_previews);
-		cache.set('data_model','html_tables', data_model.html_tables);
-		cache.set('data_model','tables', data_model.tables);
+		cache.set('data_model', 'html_tables', data_model.html_tables);
+		cache.set('data_model', 'tables', data_model.tables);
 
 		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
 			done_callback();  // so there is no need to wait for ranks to finish fetching
@@ -158,10 +161,11 @@ const data_model = {
 
 	/*
 	* Fetches ranks for a particular table
-	* @param {string} table_name - Official table name (from data model)
-	* @param {function} all_ranks_fetched_callback - Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
 	* */
-	fetch_ranks(table_name, all_ranks_fetched_callback){
+	fetch_ranks(
+		/* string */ table_name,  // Official table name (from data model)
+		/* function */ all_ranks_fetched_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	){
 
 		this.ranks_queue[table_name] = true;
 
@@ -178,7 +182,10 @@ const data_model = {
 								return table_ranks;
 
 							const rank_name = rank.get('name');
-							table_ranks[rank_name] = rank.get('isenforced');
+
+							//TODO: add complex logic for figuring out if rank is required or not
+							table_ranks[rank_name] = false;
+							// table_ranks[rank_name] = rank.get('isenforced');
 
 							return table_ranks;
 
@@ -192,11 +199,11 @@ const data_model = {
 							);
 
 						//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-						this.tables[table_name]['fields'] = {'name':this.tables[table_name]['fields']['name']};
+						this.tables[table_name]['fields'] = {'name': this.tables[table_name]['fields']['name']};
 
 						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback();
-							cache.set('data_model','ranks', data_model.ranks);
+							cache.set('data_model', 'ranks', data_model.ranks);
 						}
 
 					});
@@ -218,11 +225,15 @@ const data_model = {
 
 	/*
 	* Iterates over the mapping_tree to find required fields that are missing
-	* @param {string} table_name - Official name of the current base table (from data model)
-	* @param {object} mapping_tree - Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 	* @returns {array} Returns array of mapping paths (array).
 	* */
-	show_required_missing_ranks(table_name, mapping_tree = false, previous_table_name = '', path = [], results = []){
+	show_required_missing_fields(
+		/* string */ table_name,  // Official name of the current base table (from data model)
+		/* object */ mapping_tree = false,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
+		/* string */ previous_table_name = '',  // used internally in recursion. Previous table name
+		/* array */ path = [],  // used internally in recursion. Current mapping path
+		/* array */results = []  // used internally in recursion. Saves results
+	){
 
 		const table_data = data_model.tables[table_name];
 
@@ -232,7 +243,7 @@ const data_model = {
 		if (data_model.value_is_reference_item(list_of_mapped_fields[0])) {
 			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
-				data_model.show_required_missing_ranks(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
+				data_model.show_required_missing_fields(table_name, mapping_tree[mapped_field_name], previous_table_name, local_path, results);
 			}
 			return results;
 		}
@@ -251,7 +262,7 @@ const data_model = {
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model.show_required_missing_ranks(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
+						data_model.show_required_missing_fields(table_name, mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -270,7 +281,7 @@ const data_model = {
 
 			if (field_data['is_relationship']) {
 
-				if(previous_table_name !== ''){
+				if (previous_table_name !== '') {
 
 					let previous_relationship_name = local_path.slice(-2)[0];
 					if (
@@ -287,16 +298,16 @@ const data_model = {
 							field_data['table_name'] === previous_table_name
 						) ||
 						(  // skip -to-many inside of -to-many
-							parent_relationship_data['type'].indexOf('-to-many') !== -1 &&
-							field_data['type'].indexOf('-to-many') !== -1
+							data_model.relationship_is_to_many(parent_relationship_data['type']) &&
+							data_model.relationship_is_to_many(field_data['type'])
 						)
 					)
 						continue;
 
 				}
 
-				if(is_mapped)
-					data_model.show_required_missing_ranks(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
+				if (is_mapped)
+					data_model.show_required_missing_fields(field_data['table_name'], mapping_tree[field_name], table_name, local_path, results);
 				else if (field_data['is_required'])
 					results.push(local_path);
 			}
@@ -311,96 +322,146 @@ const data_model = {
 
 	},
 
-	table_is_tree(table_name){
+	/*
+	* Returns whether a table has tree ranks
+	* @return {boolean} whether a table has tree ranks
+	* */
+	table_is_tree(
+		/* string */ table_name  // the name of the table to check
+	){
 		return typeof data_model.ranks[table_name] !== "undefined";
 	},
 
-	schema_navigator(payload){
+	/*
+	* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that
+	* @return {mixed} returns the value returned by callbacks['get_final_data'](internal_payload)
+	* */
+	navigator(
+		/* object */ payload // described in the method definition
+	){
 
 		let {
-			callbacks,
-			recursive_payload=undefined,
-			internal_payload={},
-			config : {
-				use_cache = false,
-				cache_name,
+			callbacks,  // {object} described below
+			recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
+			internal_payload = {}, // {object} payload that is shared between the callback functions only and is not modified by the navigator
+			config: {
+				use_cache = false, // {boolean} whether to use cached values
+				cache_name, // {string} the name of the cache bucket to use
+				base_table_name, // {string} the name of the base table to use
 			}
-		} = payload
+		} = payload;
+
+		/*
+		*
+		* Callbacks can be modified depending on the need to make navigator very versatile
+		*
+		* callbacks: {
+		* 	iterate (internal_payload):
+		* 		should return {boolean} specifying whether to run data_model.navigator_instance() for a particular mapping path part
+		*
+		* 	get_next_path_element (internal_payload, callback_payload):
+		* 		should return undefined if there is no next path element.
+		* 		else, should return an {object}: {
+		*	 		next_path_element_name, // {string} - the name of the next path element
+		*			next_path_element,  // if the next path element is not a field nor a relationship, {undefined}. Else, {object} the information about a field from data_model.tables
+		*			next_real_path_element_name,  // If next_path_element_name is not a field nor a relationships, {string} current path element name. Else next_path_element_name
+		* 		}
+		*
+		*	get_final_data (internal_payload):
+		* 		formats internal_payload and returns it. Would be used as a return value for the navigator
+		*
+		*	commit_instance_data (internal_payload, callback_payload):
+		* 		commits callback_payload.data to internal_payload and returns committed data
+		*
+		*	navigator_instance_pre (internal_payload, callback_payload):
+		* 		called inside of navigator_instance before it calls callbacks for tree ranks / reference items / simple fields
+		*
+		* 	handle_to_many_children (internal_payload, callback_payload):
+		* 		handles to_many children
+		*
+		* 	handle_tree_ranks (internal_payload, callback_payload):
+		* 		handles tree ranks children
+		*
+		* 	handle_simple_fields (internal_payload, callback_payload):
+		* 		handles fields and relationships
+		* }
+		*
+		* */
 
 
 		let table_name = '';
 		let parent_table_name = '';
 		let parent_table_relationship_name = '';
+		let parent_path_element_name = '';
 
 		if (typeof recursive_payload === "undefined")
-			table_name = callbacks['get_base_table'](internal_payload);
+			table_name = base_table_name;
 		else
 			({
 				table_name,
 				parent_table_name,
 				parent_table_relationship_name,
+				parent_path_element_name,
 			} = recursive_payload);
 
-		const callback_payload = {
+		const callback_payload = {  // an object that is shared between navigator, navigator_instance and some callbacks
 			table_name: table_name,
-		}
+		};
 
 
 		if (callbacks.iterate(internal_payload))
-			data_model.schema_navigator_instance({
-				table_name: table_name,
-				internal_payload : internal_payload,
-				parent_table_name: parent_table_name,
-				parent_table_relationship_name: parent_table_relationship_name,
-				use_cache: use_cache,
-				cache_name: cache_name,
-				callbacks: callbacks,
-				callback_payload: callback_payload,
-			});
+			data_model.navigator_instance({
+											  table_name: table_name,
+											  internal_payload: internal_payload,
+											  parent_table_name: parent_table_name,
+											  parent_table_relationship_name: parent_table_relationship_name,
+											  parent_path_element_name: parent_path_element_name,
+											  use_cache: use_cache,
+											  cache_name: cache_name,
+											  callbacks: callbacks,
+											  callback_payload: callback_payload,
+										  });
 
 
 		const next_path_elements_data = callbacks['get_next_path_element'](internal_payload, callback_payload);
 
-		if(typeof next_path_elements_data === "undefined")
+		if (typeof next_path_elements_data === "undefined")
 			return callbacks['get_final_data'](internal_payload);
 
 		let {
-			next_path_elements_name,
-			next_path_elements,
+			next_path_element_name,
+			next_path_element,
+			next_real_path_element_name,
 		} = next_path_elements_data;
 
 		let next_table_name = '';
 		let next_parent_table_name = '';
 
-		if(typeof next_path_elements_name === "string"){
-			next_path_elements_name = [next_path_elements_name];
-			next_path_elements = [next_path_elements];
+		if (
+			data_model.value_is_reference_item(next_path_element_name) ||
+			data_model.value_is_tree_rank(next_path_element_name)
+		) {
+			next_table_name = table_name;
+			next_parent_table_name = parent_table_name;
+		}
+		else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
+			next_table_name = next_path_element['table_name'];
+			next_parent_table_name = table_name;
 		}
 
+
 		const schema_navigator_results = [];
-		for(const next_path_element_name of next_path_elements_name){
 
-			const next_path_element = next_path_elements.pop();
-
-			if (
-				data_model.value_is_reference_item(next_path_element_name) ||
-				data_model.value_is_tree_rank(next_path_element_name)
-			) {
-				next_table_name = table_name;
-				next_parent_table_name = parent_table_name;
-			} else if (typeof next_path_element !== "undefined" && next_path_element['is_relationship']) {
-				next_table_name = next_path_element['table_name'];
-				next_parent_table_name = table_name;
-			}
-
-			if (next_table_name !== '')
-				schema_navigator_results.push(data_model.schema_navigator(
+		if (next_table_name !== '')
+			schema_navigator_results.push(
+				data_model.navigator(
 					{
 						callbacks: callbacks,
 						recursive_payload: {
 							table_name: next_table_name,
 							parent_table_name: next_parent_table_name,
-							parent_table_relationship_name: next_path_element_name,
+							parent_table_relationship_name: next_real_path_element_name,
+							parent_path_element_name: next_path_element_name,
 						},
 						internal_payload: internal_payload,
 						config: {
@@ -409,40 +470,44 @@ const data_model = {
 						},
 					}
 				));
-		}
 
-		if(schema_navigator_results.length === 0)
+		if (schema_navigator_results.length === 0)
 			return callbacks['get_final_data'](internal_payload);
-		if(schema_navigator_results.length===1)
+		if (schema_navigator_results.length === 1)
 			return schema_navigator_results[0];
 		else
 			return schema_navigator_results;
 
 	},
 
-	schema_navigator_instance(payload){
+	/*
+	* Called by navigator if callback.iterate returned true
+	* */
+	navigator_instance(
+		/* object */ payload  // described in the method definition
+	){
 
 		const {
-			table_name,
-			internal_payload,
-			parent_table_name = '',
-			parent_table_relationship_name = '',
-			use_cache = false,
-			cache_name = false,
-			callbacks,
-			callback_payload,
+			table_name,  // {string} the name of the current table
+			internal_payload, // {object} internal payload (described in navigator)
+			parent_table_name = '',  // {string} parent table name
+			parent_table_relationship_name = '',  // {string} next_real_path_element_name as returned by callbacks.get_next_path_element
+			parent_path_element_name = '', // {string} next_path_element_name as returned by callbacks.get_next_path_element
+			use_cache = false,  // {boolean} whether to use cache
+			cache_name = false,  // {boolean} the name of the cache bucket to use
+			callbacks,  // {object} callbacks (described in navigator)
+			callback_payload, // {object} callbacks payload (described in navigator)
 		} = payload;
 
 
 		let json_payload;
 
-		if(cache_name !== false)
+		if (cache_name !== false)
 			json_payload = JSON.stringify(payload);
 
-		if (use_cache){
-
+		if (use_cache) {
 			const cached_data = cache.get(cache_name, json_payload);
-			if(cached_data){
+			if (cached_data) {
 				callback_payload.data = cached_data;
 				return callbacks['commit_instance_data'](internal_payload, callback_payload);
 			}
@@ -456,20 +521,20 @@ const data_model = {
 				typeof data_model.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
 			) ? data_model.tables[parent_table_name]['fields'][parent_table_relationship_name]['type'] : '';
 		const children_are_to_many_elements =
-			data_model.relationship_is_to_many(parent_relationship_type)
-			!data_model.value_is_reference_item(parent_table_relationship_name);
+			data_model.relationship_is_to_many(parent_relationship_type) &&
+			!data_model.value_is_reference_item(parent_path_element_name);
 
 		const children_are_ranks =
 			data_model.table_is_tree(table_name) &&
-			!data_model.value_is_tree_rank(parent_table_relationship_name);
+			!data_model.value_is_tree_rank(parent_path_element_name);
 
 		callback_payload.parent_relationship_type = parent_relationship_type;
 		callback_payload.parent_table_name = parent_table_name;
 
 		if (children_are_to_many_elements)
-			callbacks['handle_to_many_children'](internal_payload, callback_payload)
+			callbacks['handle_to_many_children'](internal_payload, callback_payload);
 		else if (children_are_ranks)
-			callbacks['handle_tree_ranks'](internal_payload, callback_payload)
+			callbacks['handle_tree_ranks'](internal_payload, callback_payload);
 		else
 			callbacks['handle_simple_fields'](internal_payload, callback_payload);
 
@@ -478,7 +543,7 @@ const data_model = {
 		callback_payload.data = data;
 		callbacks['commit_instance_data'](internal_payload, callback_payload);
 
-		if(cache_name !== false)
+		if (cache_name !== false)
 			cache.set(cache_name, json_payload, data, {
 				bucket_type: 'session_storage'
 			});
@@ -487,25 +552,57 @@ const data_model = {
 
 	},
 
-	relationship_is_to_many: relationship_type =>
+	/*
+	* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many)
+	* @return {boolean} whether relationship is a -to-many
+	* */
+	relationship_is_to_many:
+	/* string */ relationship_type =>  // relationship_type
 		relationship_type.indexOf('-to-many') !== -1,
 
-	value_is_reference_item: value =>
+	/*
+	* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...)
+	* @return {boolean} whether a value is a -to-many reference item
+	* */
+	value_is_reference_item:
+	/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol,
 
-	value_is_tree_rank: value =>
+	/*
+	* Returns whether a value is a tree rank name (e.x $Kingdom, $Order)
+	* @return {boolean} whether a value is a tree rank
+	* */
+	value_is_tree_rank:
+	/* string */ value =>  // the value to use
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.tree_symbol.length) === data_model.tree_symbol,
 
-	get_index_from_reference_item_name: value =>
+	/*
+	* Returns index from a complete reference item value (e.x #1 => 1)
+	* Opposite of format_reference_item
+	* @return {boolean} index
+	* */
+	get_index_from_reference_item_name:
+	/* string */ value =>  // the value to use
 		parseInt(value.substr(data_model.reference_symbol.length)),
 
-	get_name_from_tree_rank_name: value =>
+	/*
+	* Returns tree rank name from a complete tree rank name (e.x $Kingdom => Kingdom)
+	* Opposite of format_tree_rank
+	* @return {boolean} tree rank name
+	* */
+	get_name_from_tree_rank_name:
+	/* string */ value =>  // the value to use
 		value.substr(data_model.tree_symbol.length),
 
-	get_max_to_many_value(values){
-		return values.reduce((max, value) => {
+	/*
+	* Returns the max index in the list of reference item values
+	* @return {int} max index. Returns 0 if there aren't any
+	* */
+	get_max_to_many_value:
+	/* array */ values =>  // list of reference item values
+		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
 			if (!data_model.value_is_reference_item(value))
@@ -518,13 +615,24 @@ const data_model = {
 
 			return max;
 
-		}, 0);
-	},
+		}, 0),
 
-	format_reference_item: rank_name =>
-		data_model.reference_symbol + rank_name,
+	/*
+	* Returns a complete reference item from an index (e.x 1 => #1)
+	* Opposite of get_index_from_reference_item_name
+	* @return {int} a complete reference item from an index
+	* */
+	format_reference_item:
+	/* int */ index =>  // the index to use
+		data_model.reference_symbol + index,
 
-	format_tree_rank: rank_name =>
+	/*
+	* Returns a complete tree rank name from a tree rank name (e.x Kingdom => $Kingdom)
+	* Opposite of get_name_from_tree_rank_name
+	* @return {int} a complete tree rank name
+	* */
+	format_tree_rank:
+	/* string */rank_name =>  // tree rank name to use
 		data_model.tree_symbol + rank_name,
 
 };
