@@ -53,7 +53,6 @@ def do_upload_wb(collection, wb, no_commit: bool, progress: Optional[Progress]=N
     rows = [dict(zip(captions, t[1:])) for t in tuples]
     upload_plan = get_wb_upload_plan(collection, wb)
 
-    no_commit = True
     results = do_upload(collection, rows, upload_plan, no_commit, progress)
 
     for t, r in zip(tuples, results):
@@ -80,19 +79,24 @@ def get_wb_upload_plan(collection, wb) -> ScopedUploadable:
 def do_upload(collection, rows: Rows, upload_plan: ScopedUploadable, no_commit: bool=False, progress: Optional[Progress]=None) -> List[UploadResult]:
     total = len(rows) if isinstance(rows, Sized) else None
     with savepoint():
+        logger.info("started main upload transaction")
         results: List[UploadResult] = []
         for row in rows:
             with savepoint():
+                logger.debug("started row transaction")
                 bind_result = upload_plan.bind(collection, row)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
                 if result.contains_failure():
+                    logger.debug("rolling back row")
                     raise Rollback()
+                logger.info(f"finished row {len(results)}")
         fixup_trees()
 
         if no_commit:
+            logger.info("rolling back main upload transaction due to no_commit")
             raise Rollback()
 
     return results

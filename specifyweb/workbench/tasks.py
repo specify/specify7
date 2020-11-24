@@ -40,5 +40,6 @@ def upload(self, collection_id: int, wb_id: int, no_commit: bool) -> None:
 
         do_upload_wb(collection, wb, no_commit, progress)
 
-        wb.lockedbyusername = None if no_commit else "uploaded"
+        wb.lockedbyusername = None
+        wb.srcfilepath = None if no_commit else "uploaded"
         wb.save()

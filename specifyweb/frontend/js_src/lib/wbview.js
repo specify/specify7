@@ -23,7 +23,7 @@ const WBView = Backbone.View.extend({
     multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'upload',
-        'click .wb-validate': 'validate',
+        'click .wb-validate': 'upload',
         'click .wb-plan': 'openPlan',
         'click .wb-show-plan': 'showPlan',
         'click .wb-delete': 'delete',
@@ -297,49 +297,8 @@ const WBView = Backbone.View.extend({
         this.$('.wb-save').prop('disabled', true);
         navigation.removeUnloadProtect(this);
     },
-    uploadClicked() {
-        const emptyRows = this.data.map(
-            row => _.all(row.slice(1), cell => cell == null || cell.trim() === "")
-        ).reduce((rows, isEmpty, index) => isEmpty ? rows.concat(index) : rows, []);
-
-        if (emptyRows.length > 0) {
-            const removeRows = () => {
-                emptyRows.reverse(); // remove rows from the end so the indices don't change.
-                emptyRows.forEach(row => this.hot.alter('remove_row', row));
-                this.save().done(() => this.upload());
-            };
-
-            $('<div>The dataset contains empty rows which should be removed before uploading.</div>')
-                .dialog({
-                    title: `Remove ${emptyRows.length} empty row${emptyRows.length > 1 ? 's' : ''}?`,
-                    modal: true,
-                    buttons: {
-                        Remove() { $(this).dialog('close'); removeRows(); },
-                        Cancel() { $(this).dialog('close'); }
-                    }
-                });
-        } else {
-            this.upload();
-        }
-    },
-    upload: function() {
-        const begin = () => {
-            $.post(`/api/workbench/upload/${this.wb.id}/`).fail(jqxhr => {
-                this.checkDeletedFail(jqxhr);
-                // this.closeUploadProgress();
-            });
-            // this.openUploadProgress();
-        };
-        $('<div>Once the upload process begins, it cannot be aborted.</div>').dialog({
-            title: "Proceed with upload?",
-            modal: true,
-            buttons: [
-                {text: 'Proceed', click: function() { $(this).dialog('close'); begin(); }},
-                {text: 'Cancel', click: function() { $(this).dialog('close'); }}
-            ]
-        });
-    },
-    validate: function() {
+    upload(evt) {
+        const mode = $(evt.currentTarget).is('.wb-upload') ? "upload" : "validate";
         const openPlan = () => this.openPlan();
         this.wb.rget('workbenchtemplate.remarks').done(plan => {
             if (plan == null || plan.trim() === "") {
@@ -352,7 +311,7 @@ const WBView = Backbone.View.extend({
                     }
                 });
             } else {
-                $.post(`/api/workbench/validate/${this.wb.id}/`).fail(jqxhr => {
+                $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
                     this.checkDeletedFail(jqxhr);
                 }).done(() => {
                     this.openUploadProgress();

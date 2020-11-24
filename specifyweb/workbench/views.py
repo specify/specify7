@@ -199,7 +199,7 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
 
         taskid = str(uuid4())
         async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
-        wb.lockedbyusername = taskid + ";" + "validating" if no_commit else "uploading"
+        wb.lockedbyusername = taskid + ";" + ("validating" if no_commit else "uploading")
         wb.save()
 
     return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')
@@ -215,11 +215,11 @@ def upload_status(request, wb_id: int) -> http.HttpResponse:
     if wb.lockedbyusername is None:
         return http.HttpResponse(json.dumps(None), content_type='application/json')
 
-    if wb.lockedbyusername == "uploaded":
-        return http.HttpResponse(json.dumps(["uploaded", None, None]), content_type='application/json')
-
     task_id, op = wb.lockedbyusername.split(';')
     result = tasks.upload.AsyncResult(task_id)
+    if result.state == "FAILURE":
+            return http.HttpResponse(json.dumps([op, result.state, str(result.info)]), content_type='application/json')
+
     return http.HttpResponse(json.dumps([op, result.state, result.info]), content_type='application/json')
 
 @login_maybe_required
