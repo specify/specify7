@@ -18,7 +18,14 @@
 //					scope: '<scope>'
 //				}
 //			]
-//		}
+//		},
+//		dont_match: {
+//			<table_name> (case insensitive): {
+//				<field_name> (case insensitive): {
+//					scope: '<scope>'
+//				}
+//			}
+//		},
 //		shortcuts: {
 //			<table_name> (case insensitive): [
 //				{
@@ -31,7 +38,7 @@
 //					scope: '<scope>'
 //				}
 //			]
-//		}
+//		},
 //		synonyms: {
 //			<table_name> (case insensitive): {
 //				<field_name> (case insensitive): {
@@ -62,6 +69,7 @@
 //	Table Synonyms are to be used when a table has a different name in a particular context
 //	Also, since automapper runs through each table only once, table synonyms can be used as a way bypass that limitation
 //	Besides that, even though Synonyms are normally checked in the second pass, if a table has Table Synonyms, it's Synonyms would also be checked in the first pass
+//  On top of all of that, there also is a `dont_match` dictionary that designates certain fields in particular tables as ineligible for automatic matching
 
 
 module.exports = {
@@ -88,6 +96,16 @@ module.exports = {
 				scope: 'automapper',
 			}
 		],
+	},
+	dont_match: {
+		Address: {
+			country: {
+				scope: 'automapper',
+			},
+			state: {
+				scope: 'automapper',
+			}
+		}
 	},
 	shortcuts: {
 		CollectionObject: [
@@ -325,7 +343,7 @@ module.exports = {
 						'state',
 					]
 				},
-				scope: 'suggestion',
+				scope: 'automapper',
 			},
 			continent: {
 				headers: {
@@ -333,7 +351,7 @@ module.exports = {
 						'continent',
 					]
 				},
-				scope: 'suggestion',
+				scope: 'automapper',
 			}
 		},
 		Determination: {
