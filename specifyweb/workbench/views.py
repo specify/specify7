@@ -13,6 +13,8 @@ from specifyweb.specify.api import toJson, get_object_or_404, create_obj, obj_to
 from specifyweb.specify.views import login_maybe_required, apply_access_control
 from specifyweb.specify import models
 
+from . import tasks
+
 Workbench = getattr(models, 'Workbench')
 Workbenchrow = getattr(models, 'Workbenchrow')
 Workbenchtemplatemappingitem = getattr(models, 'Workbenchtemplatemappingitem')
@@ -188,7 +190,6 @@ def save(wb_id, data):
 @apply_access_control
 @require_POST
 def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
-    from .tasks import upload
     wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
@@ -198,7 +199,7 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
         assert wb.lockedbyusername is None
 
         taskid = str(uuid4())
-        async_result = upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
+        async_result = tasks.upload.apply_async([request.specify_collection.id, wb.id, no_commit], task_id=taskid)
         wb.lockedbyusername = taskid + ";" + ("validating" if no_commit else "uploading")
         wb.save()
 
@@ -207,7 +208,6 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
 # @login_maybe_required
 @require_GET
 def upload_status(request, wb_id: int) -> http.HttpResponse:
-    from . import tasks
     wb = get_object_or_404(Workbench, id=wb_id)
     # if (wb.specifyuser != request.specify_user):
     #     return http.HttpResponseForbidden()
@@ -241,8 +241,7 @@ def upload_results(request, wb_id: int) -> http.HttpResponse:
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload_abort(request, wb_id) -> http.HttpResponse:
-    from . import tasks
+def upload_abort(request, wb_id: int) -> http.HttpResponse:
     wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
@@ -255,3 +254,22 @@ def upload_abort(request, wb_id) -> http.HttpResponse:
 
     Workbench.objects.filter(id=wb_id).update(lockedbyusername=None)
     return http.HttpResponse('ok', content_type='text/plain')
+
+@login_maybe_required
+@apply_access_control
+@require_POST
+def unupload(request, wb_id: int) -> http.HttpResponse:
+    wb = get_object_or_404(Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
+
+    with transaction.atomic():
+        wb = Workbench.objects.select_for_update().get(id=wb_id)
+        assert wb.lockedbyusername is None
+
+        taskid = str(uuid4())
+        async_result = tasks.unupload.apply_async([wb.id], task_id=taskid)
+        wb.lockedbyusername = taskid + ";unuploading"
+        wb.save()
+
+    return http.HttpResponse(json.dumps(async_result.id, indent=2), content_type='application/json')

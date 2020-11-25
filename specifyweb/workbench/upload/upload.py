@@ -12,9 +12,8 @@ from django.db.utils import OperationalError
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
-from ..views import load
 from .uploadable import ScopedUploadable, Row
-from .upload_result import UploadResult, ParseFailures, json_to_UploadResult
+from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan
 
 Rows = Union[List[Row], csv.DictReader]
@@ -33,8 +32,28 @@ def savepoint():
     except Rollback:
         pass
 
+def unupload_wb(wb, progress: Optional[Progress]=None) -> None:
+    with transaction.atomic():
+        for row in wb.workbenchrows.order_by('-rownumber'):
+            upload_result = json_to_UploadResult(json.loads(row.biogeomancerresults))
+            unupload_record(upload_result)
+
+def unupload_record(upload_result: UploadResult) -> None:
+    if isinstance(upload_result.record_result, Uploaded):
+        for toMany in upload_result.toMany.values():
+            for record in toMany:
+                unupload_record(record)
+
+        model = getattr(models, upload_result.record_result.info.tableName.capitalize())
+        model.objects.get(id=upload_result.get_id()).delete()
+        # handle picklist additions
+
+    for record in upload_result.toOne.values():
+        unupload_record(record)
 
 def do_upload_wb(collection, wb, no_commit: bool, progress: Optional[Progress]=None) -> List[UploadResult]:
+    from ..views import load
+
     cursor = connection.cursor()
     cursor.execute(
         "update workbenchrow set bioGeomancerResults = null where workbenchid = %s",

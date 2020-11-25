@@ -12,6 +12,7 @@ const schema = require('./schema.js');
 const app = require('./specifyapp.js');
 const WBName = require('./wbname.js');
 const navigation = require('./navigation.js');
+const WBUploadedView = require('./wbuploadedview.js');
 
 const template = require('./templates/wbview.html');
 const statusTemplate = require('./templates/wbuploadstatus.html');
@@ -19,8 +20,6 @@ const statusTemplate = require('./templates/wbuploadstatus.html');
 const WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
-    matchWithValidate: false,
-    multiMatchSetting: 'skip',
     events: {
         'click .wb-upload': 'upload',
         'click .wb-validate': 'upload',
@@ -537,9 +536,10 @@ module.exports = function loadWorkbench(id) {
         () => Q.all([
             Q($.get(`/api/workbench/rows/${id}/`)),
             Q($.get(`/api/workbench/upload_status/${id}/`)),
-        ])).spread(function(data, uploadStatus) {
+        ])).spread((data, uploadStatus) => {
+            const uploaded = wb.get('srcfilepath') === "uploaded";
             app.setTitle("WorkBench: " + wb.get('name'));
-            app.setCurrentView(new WBView({
+            app.setCurrentView(new (uploaded ? WBUploadedView : WBView)({
                 wb: wb,
                 data: data,
                 uploadStatus: uploadStatus
