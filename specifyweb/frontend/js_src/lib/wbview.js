@@ -26,6 +26,16 @@ const template = require('./templates/wbview.html');
 const wb_upload_helper = require('./wb_upload/external_helper.js');
 const latlongutils = require('./latlongutils.js');
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+/* This code is needed to properly load the images in the Leaflet CSS */
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 const WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
@@ -44,7 +54,8 @@ const WBView = Backbone.View.extend({
         'click .wb-show-toolbelt': 'toggleToolbelt',
         'click .wb-geolocate': 'showGeoLocate',
         'click .wb-show-upload-view':'displayUploadedView',
-        'click .wb-unupload':'unupload'
+        'click .wb-unupload':'unupload',
+        'click .wb-leafletmap': 'showLeafletMap',
     },
     initialize({dataset, showStatusDialog}) {
         this.dataset = dataset;
@@ -594,8 +605,6 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
-<<<<<<< HEAD
-=======
     navigateCells: function(e,match_current_cell=false){
         const button = e.target;
         const direction = button.getAttribute('data-navigation_direction');
@@ -743,7 +752,7 @@ const WBView = Backbone.View.extend({
 
         this.hot.setDataAtCell(changes);
 
-    }
+    },
     find_locality_columns(){
         this.wb.rget('workbenchtemplate').done(wbtemplate => {
 
@@ -767,40 +776,8 @@ const WBView = Backbone.View.extend({
                 );
         });
     },
-    showGeoLocate: function(){
-
-        // const locality_points = [];
-        //
-        // for(const locality_mapping of this.locality_columns){
-        //
-        //     for(const row of this.data){
-        //
-        //         if(
-        //             column_indexes['latitude1'] === 0 ||
-        //             column_indexes['longitude1'] === 0 ||
-        //             row[column_indexes['latitude1']] === '' ||
-        //             row[column_indexes['longitude1']] === ''
-        //         )
-        //             continue;
-        //
-        //         let point_data = row[column_indexes['latitude1']] + '|' + row[column_indexes['longitude1']];
-        //
-        //         if(
-        //             typeof column_indexes['localityname'] !== "undefined" &&
-        //             column_indexes['localityname'] !== 0
-        //         )
-        //             point_data += '|' + column_indexes['localityname'] ;
-        //
-        //         locality_points.push(point_data);
-        //
-        //     }
-        //
-        // }
-        //
-        // const locality_points_string = locality_points.join(':');
-
-
-        const locality_points_string = this.locality_columns.reduce((locality_points, column_indexes)=>{
+    getLocalityPoints: function(){
+        return this.locality_columns.reduce((locality_points, column_indexes)=>{
 
             for(const row of this.data){
 
@@ -812,16 +789,16 @@ const WBView = Backbone.View.extend({
                 )
                     continue;
 
-                let point_data =
-                    latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0] +
-                    '|' +
-                    latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0];
+                let point_data = {
+                    latitude1: latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0],
+                    longitude1: latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0]
+                };
 
                 if(
                     typeof column_indexes['localityname'] !== "undefined" &&
                     column_indexes['localityname'] !== 0
                 )
-                    point_data += '|' + column_indexes['localityname'];
+                    point_data[localityname] = row[column_indexes['localityname']];
 
                 locality_points.push(point_data);
 
@@ -829,7 +806,22 @@ const WBView = Backbone.View.extend({
 
             return locality_points;
 
-        },[]).join(':');
+        },[]);
+    },
+    showGeoLocate: function(){
+
+        const locality_points_string = this.getLocalityPoints().map(point_data_dict=>{
+
+            const {latitude1, longitude1, localityname=''} = point_data_dict;
+
+            const point_data_list = [latitude1, longitude1];
+
+            if(localityname !== '')
+                point_data_list.push(localityname);
+
+            return point_data_list.join('|')
+
+        }).join(':');
 
         $(`
             <div>
@@ -848,7 +840,43 @@ const WBView = Backbone.View.extend({
             close: function() { $(this).remove(); },
         });
     },
->>>>>>> bafe39e2... Adds GeoLocate to workbench
+    showLeafletMap: function(){
+
+        $(`<div id="leaflet_map"></div>`
+        ).dialog({
+            modal: true,
+            width: 900,
+            height: 400,
+            title: "Leaflet map",
+            close: function() { $(this).remove(); },
+        });
+
+        const locality_points = this.getLocalityPoints();
+
+        const map = L.map('leaflet_map');
+
+        let defaultCenter = [0, 0];
+        let defaultZoom = 1;
+        if(locality_points.length>0){
+            defaultCenter = [locality_points[0]['latitude1'],locality_points[0]['longitude1']];
+            defaultZoom = 5;
+        }
+        const basemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+        });
+
+        map.setView(defaultCenter, defaultZoom);
+        basemap.addTo(map);
+
+        let index = 1;
+        locality_points.map(point_data_dict=>{
+            const {latitude1, longitude1, localityname='#'+index} = point_data_dict;
+            const marker = L.marker([latitude1,longitude1]).addTo(map);
+            marker.bindPopup(localityname);
+            index++;
+        });
+
+    },
 });
 
 module.exports = function loadDataset(id, showStatusDialog = false) {
