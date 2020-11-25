@@ -23,6 +23,9 @@ const icons = require('./icons.js');
 
 const template = require('./templates/wbview.html');
 
+const wb_upload_helper = require('./wb_upload/external_helper.js');
+const latlongutils = require('./latlongutils.js');
+
 const WBView = Backbone.View.extend({
     __name__: "WbForm",
     className: "wbs-form",
@@ -35,6 +38,11 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-toggle-highlights': 'toggleHighlights',
+        'click .wb-cell_navigation': 'navigateCells',
+        'click .wb-search-button': 'searchCells',
+        'click .wb-replace-button': 'replaceCells',
+        'click .wb-show-toolbelt': 'toggleToolbelt',
+        'click .wb-geolocate': 'showGeoLocate',
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload'
     },
@@ -78,6 +86,8 @@ const WBView = Backbone.View.extend({
 
         //initialize Handsontable
 
+        this.colHeaders = colHeaders;
+        this.find_locality_columns();
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
             height: this.calcHeight(),
             data: this.data,
@@ -584,6 +594,261 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
+<<<<<<< HEAD
+=======
+    navigateCells: function(e,match_current_cell=false){
+        const button = e.target;
+        const direction = button.getAttribute('data-navigation_direction');
+        const button_parent = button.parentElement;
+        const type = button_parent.getAttribute('data-navigation_type');
+
+        const number_of_columns = this.hot.countCols();
+
+        const selected_cell = this.hot.getSelectedLast();
+
+        let current_position = 0;
+        if(typeof selected_cell !== "undefined") {
+            const [row, col] = selected_cell;
+            current_position = row * number_of_columns + col;
+        }
+
+        const cellIsType = (info) => {
+            switch(type) {
+            case 'invalid_cells':
+                return info.issues.length > 0;
+            case 'new_cells':
+                return info.isNew;
+            case 'search_results':
+                return info.matchesSearch;
+            default:
+                return false;
+            }
+        };
+
+        let new_position = current_position;
+        let found = false;
+        for (;
+             new_position >= 0 && new_position < this.cellInfo.length;
+             new_position += direction === 'next' ? 1 : -1)
+        {
+            if (new_position === current_position && !match_current_cell) continue;
+
+            const info = this.cellInfo[new_position];
+            if (typeof info === "undefined") continue;
+            found = cellIsType(info);
+            if (found) break;
+        }
+
+        if (found) {
+            const row = Math.floor(new_position / number_of_columns);
+            const col = new_position - row * number_of_columns;
+            this.hot.selectCell(row, col, row, col);
+
+            const cell_relative_position = this.cellInfo.reduce((count, info, i) => count + (cellIsType(info) && i <= new_position ? 1 : 0), 0);
+            const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
+            current_position_element.innerText = cell_relative_position;
+        }
+    },
+    searchCells: function(e){
+        const cols = this.hot.countCols();
+        const button = e.target;
+        const container = button.parentElement;
+        const navigation_position_element = container.getElementsByClassName('wb-navigation_position')[0];
+        const navigation_total_element = container.getElementsByClassName('wb-navigation_total')[0];
+        const search_query_element = container.getElementsByClassName('wb-search_query')[0];
+        const navigation_button = container.getElementsByClassName('wb-cell_navigation');
+        const search_query = search_query_element.value;
+
+        const searchPlugin = this.hot.getPlugin('search');
+        const results = searchPlugin.query(search_query);
+        this.search_query = search_query;
+
+        this.cellInfo.forEach(cellInfo => {cellInfo.matchesSearch = false;});
+        results.forEach(({row, col}) => {
+            this.initCellInfo(row, col);
+            this.cellInfo[row*cols + col].matchesSearch = true;
+        });
+        this.hot.render();
+
+        navigation_total_element.innerText = results.length;
+        navigation_position_element.innerText = 0;
+
+        if(!this.navigateCells({target:navigation_button[0]},true))
+            this.navigateCells({target:navigation_button[1]},true);
+
+    },
+    replaceCells: function(e){
+        const cols = this.hot.countCols();
+        const button = e.target;
+        const container = button.parentElement;
+        const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
+        const replacement_value = replacement_value_element.value;
+
+        const cellUpdates = [];
+        this.cellInfo.forEach((info, i) => {
+            if (info.matchesSearch) {
+                const row = Math.floor(i / cols);
+                const col = i - row * cols;
+                const cellValue = this.hot.getDataAtCell(row, col);
+                cellUpdates.push([row, col, cellValue.split(this.search_query).join(replacement_value)]);
+            }
+        });
+
+        this.hot.setDataAtCell(cellUpdates);
+    },
+    toggleToolbelt: function(e){
+        const button = e.target;
+        const container = button.closest('.wb-header');
+        const toolbelt = container.getElementsByClassName('wb-toolbelt')[0];
+        if(toolbelt.style.display === 'none')
+            toolbelt.style.display = '';
+        else
+            toolbelt.style.display = 'none';
+    },
+    fillDownCells: function({start_row,end_row,col}){
+
+        // const find_numeric_offset = (cell_value)=>{
+        //     let i = cell_value.length-1;
+        //
+        //     while(i>=0 && !isNaN(cell_value[i]))
+        //         i--;
+        //
+        //     return i+1;
+        // }
+
+        const first_cell = this.hot.getDataAtCell(start_row,col);
+
+        if(isNaN(first_cell))
+            return;
+
+        // const first_cell_numeric_offset = find_numeric_offset(first_cell);
+        // const alphanum_part = first_cell.substr(0,first_cell_numeric_offset);
+        // const numeric_part_str = first_cell.substr(first_cell_numeric_offset);
+        // const numeric_part = parseInt(numeric_part_str);
+        const numeric_part = parseInt(first_cell);
+
+        const changes = [];
+        const number_of_rows = end_row - start_row;
+        for(let i=0;i<=number_of_rows;i++)
+            changes.push([
+                start_row+i,
+                col,
+                (numeric_part+i).toString().padStart(first_cell.length,'0')
+                // alphanum_part + (
+                //     isNaN(numeric_part) ?
+                //         '' :
+                //         (numeric_part+i).toString().padStart(numeric_part_str.length,'0')
+                // )
+            ]);
+
+        this.hot.setDataAtCell(changes);
+
+    }
+    find_locality_columns(){
+        this.wb.rget('workbenchtemplate').done(wbtemplate => {
+
+            const upload_plan_string = wbtemplate.get('remarks');
+            const locality_columns = wb_upload_helper.find_locality_columns(upload_plan_string);
+
+            this.locality_columns = locality_columns.map(locality_mapping =>
+                Object.fromEntries(
+                    Object.entries(locality_mapping).map(([column_name,header_name])=>
+                        [column_name, this.colHeaders.indexOf(header_name)+1]
+                    )
+                )
+            );
+
+            //  disable the `GEOLocate` button if there aren't any localities mapped
+            if(this.locality_columns.length === 0)
+                Object.values(
+                    document.getElementsByClassName('.wb-geolocate')
+                ).map(geolocate_button =>
+                    geolocate_button.disabled = true
+                );
+        });
+    },
+    showGeoLocate: function(){
+
+        // const locality_points = [];
+        //
+        // for(const locality_mapping of this.locality_columns){
+        //
+        //     for(const row of this.data){
+        //
+        //         if(
+        //             column_indexes['latitude1'] === 0 ||
+        //             column_indexes['longitude1'] === 0 ||
+        //             row[column_indexes['latitude1']] === '' ||
+        //             row[column_indexes['longitude1']] === ''
+        //         )
+        //             continue;
+        //
+        //         let point_data = row[column_indexes['latitude1']] + '|' + row[column_indexes['longitude1']];
+        //
+        //         if(
+        //             typeof column_indexes['localityname'] !== "undefined" &&
+        //             column_indexes['localityname'] !== 0
+        //         )
+        //             point_data += '|' + column_indexes['localityname'] ;
+        //
+        //         locality_points.push(point_data);
+        //
+        //     }
+        //
+        // }
+        //
+        // const locality_points_string = locality_points.join(':');
+
+
+        const locality_points_string = this.locality_columns.reduce((locality_points, column_indexes)=>{
+
+            for(const row of this.data){
+
+                if(
+                    column_indexes['latitude1'] === 0 ||
+                    column_indexes['longitude1'] === 0 ||
+                    row[column_indexes['latitude1']] === '' ||
+                    row[column_indexes['longitude1']] === ''
+                )
+                    continue;
+
+                let point_data =
+                    latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0] +
+                    '|' +
+                    latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0];
+
+                if(
+                    typeof column_indexes['localityname'] !== "undefined" &&
+                    column_indexes['localityname'] !== 0
+                )
+                    point_data += '|' + column_indexes['localityname'];
+
+                locality_points.push(point_data);
+
+            }
+
+            return locality_points;
+
+        },[]).join(':');
+
+        $(`
+            <div>
+                <iframe
+                    style="
+                        width: 100%;
+                        height: 100%;
+                        border: none;"
+                    src="https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&points=${locality_points_string}"></iframe>
+            </div>`
+        ).dialog({
+            modal: true,
+            width: 900,
+            height: 400,
+            title: "GEOLocate",
+            close: function() { $(this).remove(); },
+        });
+    },
+>>>>>>> bafe39e2... Adds GeoLocate to workbench
 });
 
 module.exports = function loadDataset(id, showStatusDialog = false) {

@@ -28,7 +28,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "underscore": "~1.8.3",
-    "xlsx": "~0.16.8"
+    "xlsx": "~0.16.8",
+    "leaflet": "^1.7.1"
   },
   "devDependencies": {
     "@babel/core": "~7.12.9",
