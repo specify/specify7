@@ -409,7 +409,7 @@ const data_model = {
 		};
 
 
-		if (callbacks.iterate(internal_payload))
+		if (callbacks['iterate'](internal_payload))
 			data_model.navigator_instance({
 											  table_name: table_name,
 											  internal_payload: internal_payload,
@@ -633,7 +633,7 @@ const data_model = {
 	* */
 	format_tree_rank:
 	/* string */rank_name =>  // tree rank name to use
-		data_model.tree_symbol + rank_name,
+		data_model.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase(),
 
 };
 

@@ -310,10 +310,14 @@ const mappings = {
 				internal_payload.mappings_path_position++;
 
 				const {table_name} = callback_payload;
-				const next_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position];
+				let next_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position];
 
 				if (typeof next_path_element_name == "undefined")
 					return undefined;
+
+				const rank_name_ucfirst = next_path_element_name[0].toUpperCase() + next_path_element_name.slice(1).toLowerCase();
+				if(data_model.table_is_tree(table_name) && typeof data_model.ranks[table_name][rank_name_ucfirst] !== "undefined")
+					next_path_element_name = internal_payload.mappings_path[internal_payload.mappings_path_position] = data_model.tree_symbol + rank_name_ucfirst;
 
 				let next_real_path_element_name;
 				if (data_model.value_is_tree_rank(next_path_element_name) || data_model.value_is_reference_item(next_path_element_name))
@@ -329,13 +333,26 @@ const mappings = {
 
 			},
 
-			navigator_instance_pre(internal_payload){
+			navigator_instance_pre(internal_payload, callback_payload){
+
+				const {table_name} = callback_payload;
 
 				internal_payload.mapping_element_type = 'simple';
 
 				const local_mappings_path = internal_payload.mappings_path.slice(0, internal_payload.mappings_path_position + 1);
+
 				internal_payload.next_mapping_path_element = internal_payload.mappings_path[internal_payload.mappings_path_position + 1];
-				internal_payload.default_value = (typeof internal_payload.next_mapping_path_element !== "undefined" ? internal_payload.next_mapping_path_element : "0");
+
+				if(typeof internal_payload.next_mapping_path_element === "undefined")
+					internal_payload.default_value = "0";
+				else {
+					const rank_name_ucfirst = internal_payload.next_mapping_path_element[0].toUpperCase() + internal_payload.next_mapping_path_element.slice(1).toLowerCase();
+					if(data_model.table_is_tree(table_name) && typeof data_model.ranks[table_name][rank_name_ucfirst] !== "undefined")
+						internal_payload.next_mapping_path_element = internal_payload.mappings_path[internal_payload.mappings_path_position] = data_model.tree_symbol + rank_name_ucfirst;
+
+					internal_payload.default_value = internal_payload.next_mapping_path_element;
+
+				}
 
 				internal_payload.current_mapping_path_part = internal_payload.mappings_path[internal_payload.mappings_path_position];
 				internal_payload.result_fields = {};
@@ -1152,7 +1169,7 @@ const mappings = {
 				const mapping_path_html = html_generator.mapping_path(
 					mapping_line_data,
 					'suggestion_list',
-					false,//TODO: enable cache here and fix resulting bugs
+					false,
 				);
 
 				return {

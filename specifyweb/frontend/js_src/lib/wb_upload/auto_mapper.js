@@ -201,8 +201,10 @@ const auto_mapper = {
 
 				if (typeof comparisons[comparison_key] !== "undefined")
 					Object.values(comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
-						if (comparison_function(lowercase_header_key, comparison_value))
-							return matched = auto_mapper.make_mapping(path, get_new_path_part(), header_key);
+						if (comparison_function(lowercase_header_key, comparison_value)) {
+							const new_mapping_path_part = get_new_path_part().map(path_part=>path_part.toLowerCase());
+							return matched = auto_mapper.make_mapping(path, new_mapping_path_part, header_key);
+						}
 					});
 
 				return matched;
