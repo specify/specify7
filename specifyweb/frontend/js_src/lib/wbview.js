@@ -95,10 +95,7 @@ const WBView = Backbone.View.extend({
         this.getUploadResults();
     },
     getUploadResults() {
-        Q(this.wb.rget('workbenchrows'))
-            .then(rows =>
-                  rows.fetch({limit: 0})
-                  .then(() => rows.map(row => [row.id, row.get('biogeomancerresults')])))
+        Q($.get(`/api/workbench/upload_results/${this.wb.id}/`))
             .done(results => this.parseUploadResults(results));
     },
     initCellInfo(row, col) {
@@ -115,15 +112,7 @@ const WBView = Backbone.View.extend({
         }
 
         this.cellInfo = [];
-        uploadResults.forEach(([rowId, resultJSON], row) => {
-            let result;
-
-            try {
-                result = JSON.parse(resultJSON);
-            } catch (e) {
-                return;
-            }
-
+        uploadResults.forEach((result, row) => {
             this.parseRowValidationResult(row, result);
         });
 

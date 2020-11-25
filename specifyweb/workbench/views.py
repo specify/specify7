@@ -224,6 +224,22 @@ def upload_status(request, wb_id: int) -> http.HttpResponse:
 
 @login_maybe_required
 @apply_access_control
+@require_GET
+def upload_results(request, wb_id: int) -> http.HttpResponse:
+    from .upload.upload_result import json_to_UploadResult
+
+    wb = get_object_or_404(Workbench, id=wb_id)
+    if (wb.specifyuser != request.specify_user):
+        return http.HttpResponseForbidden()
+
+    results = [
+        json_to_UploadResult(json.loads(result)).validation_info().to_json() if result else None
+        for result in wb.workbenchrows.order_by('rownumber').values_list('biogeomancerresults', flat=True)
+    ]
+    return http.HttpResponse(json.dumps(results), content_type='application/json')
+
+@login_maybe_required
+@apply_access_control
 @require_POST
 def upload_abort(request, wb_id) -> http.HttpResponse:
     from . import tasks
