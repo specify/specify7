@@ -8,10 +8,8 @@ from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from .parsing import parse_many, ParseResult, ParseFailure
-from .data import (
-    FilterPack, Exclude, UploadResult, Row, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord,
-    Uploadable, ScopedUploadable, BoundUploadable,
-    FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures)
+from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable
+from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, CellIssue, ParseFailures
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 
 logger = logging.getLogger(__name__)

@@ -7,7 +7,7 @@ from specifyweb.specify import models
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord
-from .data import Uploadable
+from .uploadable import Uploadable
 
 schema = {
     'title': 'Specify 7 Workbench Upload Plan',

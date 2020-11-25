@@ -3,7 +3,7 @@ from typing import Dict, Any, Union, Callable
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 
-from .data import Uploadable, ScopedUploadable
+from .uploadable import Uploadable, ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord

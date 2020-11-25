@@ -1,20 +1,6 @@
 from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
-from typing_extensions import Protocol
 
 from .validation_schema import CellIssue, TableIssue, NewRow, RowValidation, NewPicklistItem
-
-Row = Dict[str, str]
-Filter = Dict[str, Any]
-
-class Exclude(NamedTuple):
-    lookup: str
-    table: str
-    filter: Filter
-
-
-class FilterPack(NamedTuple):
-    filters: List[Filter]
-    excludes: List[Exclude]
 
 class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
@@ -320,38 +306,3 @@ def json_to_record_result(json: Dict) -> RecordResult:
             return json_to_ParseFailures(json)
         assert False, f"record_result is unknown type: {record_type}"
     assert False, f"record_result contains no data: {json}"
-
-class Uploadable(Protocol):
-    def apply_scoping(self, collection) -> "ScopedUploadable":
-        ...
-
-    def to_json(self) -> Dict:
-        ...
-
-    def unparse(self) -> Dict:
-        ...
-
-class ScopedUploadable(Protocol):
-    def bind(self, collection, row: Row) -> Union["BoundUploadable", ParseFailures]:
-        ...
-
-
-class BoundUploadable(Protocol):
-    def is_one_to_one(self) -> bool:
-        ...
-
-    def must_match(self) -> bool:
-        ...
-
-    def filter_on(self, path: str) -> FilterPack:
-        ...
-
-    def match_row(self) -> UploadResult:
-        ...
-
-    def process_row(self) -> UploadResult:
-        ...
-
-    def force_upload_row(self) -> UploadResult:
-        ...
-

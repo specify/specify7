@@ -3,7 +3,7 @@ import csv
 from jsonschema import validate # type: ignore
 
 from .base import UploadTestsBase, get_table
-from ..data import Uploaded, ParseFailures, CellIssue, FailedBusinessRule
+from ..upload_result import Uploaded, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv
 from ..parsing import parse_coord
 from ..upload_table import UploadTable

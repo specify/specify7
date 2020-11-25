@@ -2,7 +2,8 @@ import logging
 
 from typing import Dict, Any, NamedTuple, List, Union
 
-from .data import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, CellIssue, ParseFailures
+from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable
+from .upload_result import CellIssue, ParseFailures
 from .parsing import parse_many, ParseResult
 
 logger = logging.getLogger(__name__)

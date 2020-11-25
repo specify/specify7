@@ -4,7 +4,7 @@ from hypothesis.strategies import text
 import json
 import unittest
 
-from ..data import *
+from ..upload_result import *
 
 class UploadResultsTests(unittest.TestCase):
     @given(uploaded=infer)

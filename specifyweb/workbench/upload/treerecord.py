@@ -12,7 +12,8 @@ from django.db import connection # type: ignore
 from specifyweb.specify import models
 from specifyweb.specify.tree_extras import parent_joins, definition_joins
 
-from .data import Row, FilterPack, UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
+from .uploadable import Row, FilterPack
+from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ReportInfo
 from .parsing import parse_string
 
 logger = logging.getLogger(__name__)

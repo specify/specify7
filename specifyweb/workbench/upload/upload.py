@@ -13,7 +13,8 @@ from specifyweb.specify import models
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
 
 from ..views import load
-from .data import UploadResult, ScopedUploadable, Row,  ParseFailures
+from .uploadable import ScopedUploadable, Row
+from .upload_result import UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan
 
 Rows = Union[List[Row], csv.DictReader]

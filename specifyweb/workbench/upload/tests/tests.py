@@ -7,7 +7,8 @@ from decimal import Decimal
 
 from specifyweb.specify.tree_extras import validate_tree_numbering
 
-from ..data import Uploaded, UploadResult, Matched, Exclude, FailedBusinessRule, ReportInfo
+from ..uploadable import Exclude
+from ..upload_result import Uploaded, UploadResult, Matched, FailedBusinessRule, ReportInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..treerecord import TreeRecord, TreeDefItemWithValue, TreeMatchResult
 from ..upload import do_upload_csv

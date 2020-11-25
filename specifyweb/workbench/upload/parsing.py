@@ -12,7 +12,7 @@ from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
 
-from .data import Filter, Row
+from .uploadable import Filter, Row
 from .validation_schema import CellIssue
 
 logger = logging.getLogger(__name__)
