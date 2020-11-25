@@ -42,6 +42,7 @@ class UploadResultsTests(unittest.TestCase):
         j = json.dumps(parseFailures.to_json())
         self.assertEqual(parseFailures, json_to_ParseFailures(json.loads(j)))
 
+    @settings(suppress_health_check=[HealthCheck.too_slow])
     @given(record_result=infer, toOne=infer, toMany=infer)
     def testUploadResult(self, record_result: RecordResult, toOne: Dict[str, RecordResult], toMany: Dict[str, List[RecordResult]]):
         uploadResult = UploadResult(

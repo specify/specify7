@@ -53,6 +53,9 @@ jobs:
           python -m venv ve
           ve/bin/pip install -r requirements.txt
 
+      - name: Install testing python dependencies
+        run: ve/bin/pip install -r requirements-testing.txt
+
       - name: Create settings file
         run: |
           echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
