@@ -102,13 +102,13 @@ const custom_select_element = {
 
 			if (custom_select_type === 'closed_list' && select_type !== 'to_many')
 				first_row = custom_select_element.get_select_option_html({
-																			 option_name: '',
-																			 option_value: '0',
-																			 is_enabled: true,
-																			 is_relationship: false,
-																			 is_default: default_label === 0,
-																			 table_name: ''
-																		 });
+					option_name: '',
+					option_value: '0',
+					is_enabled: true,
+					is_relationship: false,
+					is_default: default_label === 0,
+					table_name: ''
+				});
 
 		}
 
@@ -156,10 +156,10 @@ const custom_select_element = {
 	) =>
 		`<span class="custom_select_suggestions">` +
 		custom_select_element.get_select_group_html({
-														select_group_name: 'suggested_mappings',
-														select_group_label: 'Suggested mappings:',
-														select_options_data: select_options_data,
-													}) +
+			select_group_name: 'suggested_mappings',
+			select_group_label: 'Suggested mappings:',
+			select_options_data: select_options_data,
+		}) +
 		`</span>`,
 
 	/*
@@ -407,7 +407,7 @@ const custom_select_element = {
 
 		//update custom_select_input
 		const custom_select_inputs = Object.values(target_list.children).filter(element =>
-																					element.classList.contains('custom_select_input')
+			element.classList.contains('custom_select_input')
 		);
 
 		if (custom_select_inputs.length !== 0) {
@@ -538,7 +538,7 @@ const custom_select_element = {
 		/* string */ option_name // the value of the option to search for
 	) =>
 		Object.values(list.getElementsByClassName('custom_select_option')).filter(option =>
-																					  custom_select_element.get_option_value(option) === option_name
+			custom_select_element.get_option_value(option) === option_name
 		)[0],
 
 	/*

@@ -19,14 +19,14 @@ const html_generator = {
 	){
 
 		const fields_data = Object.fromEntries(Object.entries(list_of_tables).map(([table_name, table_label]) =>
-																					  [
-																						  table_name,
-																						  {
-																							  field_friendly_name: table_label,
-																							  table_name: table_name,
-																							  is_relationship: true
-																						  }
-																					  ]
+			[
+				table_name,
+				{
+					field_friendly_name: table_label,
+					table_name: table_name,
+					is_relationship: true
+				}
+			]
 		));
 
 		const mapping_details = {
@@ -46,7 +46,7 @@ const html_generator = {
 	* */
 	mapping_view(
 		/* array */ mappings_view_data,  // mapping path data. See html_generator.mapping_path() for data structure
-		/* boolean */ use_cached  // whether to use a cached version of the mapping view
+		/* boolean */ use_cached = false  // whether to use a cached version of the mapping view
 	){
 		return html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached);
 	},
@@ -101,11 +101,11 @@ const html_generator = {
 		/* boolean */ use_cached = false  // whether to use cached value for this mapping path
 	) =>
 		mappings_line_data.map(mapping_details =>
-								   html_generator.mapping_element(
-									   mapping_details,
-									   custom_select_type,
-									   use_cached,
-								   )
+			html_generator.mapping_element(
+				mapping_details,
+				custom_select_type,
+				use_cached,
+			)
 		).join(''),
 
 	/*
@@ -133,7 +133,7 @@ const html_generator = {
 		};
 
 		const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
-																						[field_group_label, []]
+			[field_group_label, []]
 		));
 
 		for (const [field_name, field_data] of Object.entries(fields_data)) {
@@ -170,10 +170,10 @@ const html_generator = {
 		for (const [group_name, group_fields] of Object.entries(field_groups))
 			if (group_fields.length !== 0)
 				table_fields.push({
-									  select_group_name: group_name,
-									  select_group_label: field_group_labels[group_name],
-									  select_options_data: group_fields
-								  });
+					select_group_name: group_name,
+					select_group_label: field_group_labels[group_name],
+					select_options_data: group_fields
+				});
 
 		const select_data = {
 			select_type: mapping_element_type,

@@ -15,10 +15,10 @@ const auto_mapper = {
 	regex_2: /\s+/g,  // used to replace any white space characters with white space
 	depth: 8,  // how deep to go into the schema
 	comparisons: Object.entries({  // the definitions for the comparison functions
-									regex: (header, regex) => header.match(regex),
-									string: (header, string) => header === string,
-									contains: (header, string) => header.indexOf(string) !== -1
-								}),
+		regex: (header, regex) => header.match(regex),
+		string: (header, string) => header === string,
+		contains: (header, string) => header.indexOf(string) !== -1
+	}),
 	mapped_definitions_were_converted: false,  // indicates whether convert_automapper_definitions() was run. If not, would run convert_automapper_definitions() the next time map() is called
 
 	/*
@@ -30,7 +30,7 @@ const auto_mapper = {
 
 		const keys_to_lower_case = (object, levels = 1) => Object.fromEntries(
 			Object.entries(object).map(([key, value]) =>
-										   [key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
+				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
 			)
 		);
 
@@ -39,7 +39,7 @@ const auto_mapper = {
 			['dont_match', 2],
 			['shortcuts', 1],
 			['synonyms', 2],
-		].map(([structure_name, depth])=>
+		].map(([structure_name, depth]) =>
 			auto_mapper_definitions[structure_name] = keys_to_lower_case(auto_mapper_definitions[structure_name], depth)
 		);
 
@@ -207,7 +207,12 @@ const auto_mapper = {
 				if (typeof comparisons[comparison_key] !== "undefined")
 					Object.values(comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
 						if (comparison_function(lowercase_header_key, comparison_value)) {
-							const new_mapping_path_part = get_new_path_part().map(path_part=>path_part.toLowerCase());
+							const new_mapping_path_part = get_new_path_part().map(path_part => {
+								if (data_model.value_is_tree_rank(path_part))
+									return path_part;
+								else
+									return path_part.toLowerCase();
+							});
 							return matched = auto_mapper.make_mapping(path, new_mapping_path_part, header_key);
 						}
 					});
@@ -238,7 +243,7 @@ const auto_mapper = {
 
 		let definitions_source;
 		if (mode === 'shortcuts_and_table_synonyms') {
-			if(field_name !== '')
+			if (field_name !== '')
 				return;
 			definitions_source = 'shortcuts';
 		}
@@ -274,7 +279,7 @@ const auto_mapper = {
 			const comparisons = auto_mapper_definitions[definitions_source][table_name][field_name]['headers'];
 			const get_new_path_part = () => {
 				if (is_tree_rank)
-					return [data_model.tree_symbol + field_name[0].toUpperCase() + field_name.substr(1), 'name'];
+					return [data_model.format_tree_rank(field_name), 'name'];
 				else
 					return [field_name];
 
@@ -364,8 +369,8 @@ const auto_mapper = {
 		const table_data = data_model.tables[table_name];
 		const ranks_data = data_model.ranks[table_name];
 		const fields = Object.entries(table_data['fields']).filter(([, field_data]) =>
-																	   !field_data['is_hidden'] &&
-																	   !field_data['is_relationship']
+			!field_data['is_hidden'] &&
+			!field_data['is_relationship']
 		);
 		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();
 
@@ -378,19 +383,19 @@ const auto_mapper = {
 				ranks = [data_model.get_name_from_tree_rank_name(path[path.length - 1])];
 
 			const find_mappings_in_definitions_payload = {
-				 path: path,
-				 table_name: table_name,
-				 field_name: '',
-				 mode: mode,
-				 is_tree_rank: true
-			 };
+				path: path,
+				table_name: table_name,
+				field_name: '',
+				mode: mode,
+				is_tree_rank: true
+			};
 
 			auto_mapper.find_mappings_in_definitions(find_mappings_in_definitions_payload);
 
 			for (const rank_name of ranks) {
 
 				const striped_rank_name = rank_name.toLowerCase();
-				const final_rank_name = data_model.tree_symbol + rank_name;
+				const final_rank_name = data_model.format_tree_rank(rank_name);
 
 				find_mappings_in_definitions_payload.field_name = striped_rank_name;
 
@@ -497,8 +502,8 @@ const auto_mapper = {
 				if (
 					!matches &&
 					table_synonyms.some(table_synonym =>
-											stripped_name.startsWith(table_synonym) ||
-											final_name.startsWith(table_synonym)
+						stripped_name.startsWith(table_synonym) ||
+						final_name.startsWith(table_synonym)
 					)
 				) {
 					outer_loop:
@@ -548,7 +553,7 @@ const auto_mapper = {
 
 
 		const relationships = Object.entries(table_data['fields']).filter(([, {is_hidden, is_relationship}]) =>
-																			  !is_hidden && is_relationship
+			!is_hidden && is_relationship
 		);
 
 
@@ -579,9 +584,9 @@ const auto_mapper = {
 					(
 						this.searched_tables.indexOf(relationship_data['table_name']) !== -1 ||
 						this.find_mappings_queue[new_depth_level].map(({table_name}) =>
-																		  table_name
+							table_name
 						).some(table_name =>
-								   table_name === relationship_data['table_name']
+							table_name === relationship_data['table_name']
 						)
 					)
 				) ||
@@ -611,11 +616,11 @@ const auto_mapper = {
 				continue;
 
 			this.find_mappings_queue[new_depth_level].push({
-															   table_name: relationship_data['table_name'],
-															   path: local_path,
-															   parent_table_name: table_name,
-															   parent_relationship_type: relationship_data['type'],
-														   });
+				table_name: relationship_data['table_name'],
+				path: local_path,
+				parent_table_name: table_name,
+				parent_relationship_type: relationship_data['type'],
+			});
 
 		}
 
@@ -630,18 +635,18 @@ const auto_mapper = {
 		/* array */ path, // Mapping path from base table to this table. Should be an empty array if this is base table
 		/* array */ new_path_parts, // Elements that should be pushed into `path`
 		/* string */ header_name,  // The name of the header that should be mapped
-		/* string */ table_name='',  // Current table name (used to identify `don't map` conditions)
+		/* string */ table_name = '',  // Current table name (used to identify `don't map` conditions)
 		/* mixed */ to_many_reference_number = false // if of type {int} - implants that to_many_reference_number into the mapping path into the first reference item starting from the right
 		//														if of type {boolean} and is False - don't do anything
 	){
 
 		let local_path = [...path, ...new_path_parts];
 
-		if(
+		if (
 			table_name !== '' &&
 			typeof auto_mapper_definitions['dont_match'][table_name] !== "undefined" &&
-			typeof auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length-1]] !== "undefined" &&
-			auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length-1]]['scope'] === this.scope
+			typeof auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length - 1]] !== "undefined" &&
+			auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length - 1]]['scope'] === this.scope
 		)
 			return true;
 
@@ -668,9 +673,9 @@ const auto_mapper = {
 				(
 					!this.allow_multiple_mappings &&
 					Object.values(this.results).some(mapping_paths =>
-														 mapping_paths.some(mapping_path =>
-																				JSON.stringify(local_path) === JSON.stringify(mapping_path)
-														 )
+						mapping_paths.some(mapping_path =>
+							JSON.stringify(local_path) === JSON.stringify(mapping_path)
+						)
 					)
 				) ||
 				(
