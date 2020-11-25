@@ -21,11 +21,23 @@ class ReportInfo(NamedTuple):
     tableName: str
     columns: List[str]
 
+    def to_json(self) -> Dict:
+        return self._asdict()
+
+def json_to_ReportInfo(json: Dict) -> ReportInfo:
+    return ReportInfo(**json)
+
 class PicklistAddition(NamedTuple):
     name: str # Name of the picklist receiving the new item
     value: str # The value of the new item
     caption: str # The dataset column caption generating the addition
     id: int # The new picklistitem id
+
+    def to_json(self) -> Dict:
+        return self._asdict()
+
+def json_to_PicklistAddition(json: Dict) -> PicklistAddition:
+    return PicklistAddition(**json)
 
 class Uploaded(NamedTuple):
     id: int
@@ -55,8 +67,20 @@ class Uploaded(NamedTuple):
             ) for a in self.picklistAdditions]
         )
 
-    def to_json(self):
-        return { 'Uploaded': self._asdict() }
+    def to_json(self) -> Dict:
+        return { 'Uploaded': dict(
+            id=self.id,
+            info=self.info.to_json(),
+            picklistAdditions=[a.to_json() for a in self.picklistAdditions]
+        )}
+
+def json_to_Uploaded(json: Dict) -> Uploaded:
+    uploaded = json['Uploaded']
+    return Uploaded(
+        id=uploaded['id'],
+        info=json_to_ReportInfo(uploaded['info']),
+        picklistAdditions=[json_to_PicklistAddition(i) for i in uploaded['picklistAdditions']]
+    )
 
 
 class Matched(NamedTuple):
@@ -72,8 +96,18 @@ class Matched(NamedTuple):
     def validation_info(self) -> RowValidation:
         return RowValidation([], [], [], [])
 
-    def to_json(self):
-        return { 'Matched': self._asdict() }
+    def to_json(self) -> Dict:
+        return { 'Matched':  dict(
+            id=self.id,
+            info=self.info.to_json()
+        )}
+
+def json_to_Matched(json: Dict) -> Matched:
+    matched = json['Matched']
+    return Matched(
+        id=matched['id'],
+        info=json_to_ReportInfo(matched['info'])
+    )
 
 
 class MatchedMultiple(NamedTuple):
@@ -99,7 +133,17 @@ class MatchedMultiple(NamedTuple):
         )])
 
     def to_json(self):
-        return { 'MatchedMultiple': self._asdict() }
+        return { 'MatchedMultiple': dict(
+            ids=self.ids,
+            info=self.info.to_json()
+        )}
+
+def json_to_MatchedMultiple(json: Dict) -> MatchedMultiple:
+    matchedMultiple = json['MatchedMultiple']
+    return MatchedMultiple(
+        ids=matchedMultiple['ids'],
+        info=json_to_ReportInfo(matchedMultiple['info'])
+    )
 
 class NullRecord(NamedTuple):
     info: ReportInfo
@@ -114,7 +158,11 @@ class NullRecord(NamedTuple):
         return RowValidation([], [], [], [])
 
     def to_json(self):
-        return { 'NullRecord': self._asdict() }
+        return { 'NullRecord': dict(info=self.info.to_json()) }
+
+def json_to_NullRecord(json: Dict) -> NullRecord:
+    nullRecord = json['NullRecord']
+    return NullRecord(info=json_to_ReportInfo(nullRecord['info']))
 
 class FailedBusinessRule(NamedTuple):
     message: str
@@ -139,7 +187,14 @@ class FailedBusinessRule(NamedTuple):
         )])
 
     def to_json(self):
-        return { self.__class__.__name__: self._asdict() }
+        return { self.__class__.__name__: dict(message=self.message, info=self.info.to_json()) }
+
+def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
+    r = json['FailedBusinessRule']
+    return FailedBusinessRule(
+        message=r['message'],
+        info=json_to_ReportInfo(r['info'])
+    )
 
 class NoMatch(NamedTuple):
     info: ReportInfo
@@ -163,8 +218,11 @@ class NoMatch(NamedTuple):
         )])
 
     def to_json(self):
-        return { self.__class__.__name__: self._asdict() }
+        return { self.__class__.__name__: dict(info=self.info.to_json()) }
 
+def json_to_NoMatch(json: Dict) -> NoMatch:
+    r = json['NoMatch']
+    return NoMatch(info=json_to_ReportInfo(r['info']))
 
 class ParseFailures(NamedTuple):
     failures: List[CellIssue]
@@ -186,10 +244,17 @@ class ParseFailures(NamedTuple):
     def to_json(self):
         return { self.__class__.__name__: self._asdict() }
 
+def json_to_ParseFailures(json: Dict) -> ParseFailures:
+    r = json['ParseFailures']
+    return ParseFailures(failures=[CellIssue(*i) for i in r['failures']])
+
+RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
+
+
 class UploadResult(NamedTuple):
-    record_result: Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures]
+    record_result: RecordResult
     toOne: Dict[str, Any]
-    toMany: Dict[str, Any]
+    toMany: Dict[str, List[Any]]
 
     def get_id(self) -> Optional[int]:
         return self.record_result.get_id()
@@ -229,6 +294,32 @@ class UploadResult(NamedTuple):
             'toOne': {k: v.to_json() for k,v in self.toOne.items()},
             'toMany': {k: [v.to_json() for v in vs] for k,vs in self.toMany.items()},
         }}
+
+def json_to_UploadResult(json: Dict) -> UploadResult:
+    return UploadResult(
+        record_result=json_to_record_result(json['UploadResult']['record_result']),
+        toOne={k: json_to_UploadResult(v) for k,v in json['UploadResult']['toOne'].items()},
+        toMany={k: [json_to_UploadResult(v) for v in vs] for k,vs in json['UploadResult']['toMany'].items()}
+    )
+
+def json_to_record_result(json: Dict) -> RecordResult:
+    for record_type in json:
+        if record_type == "Uploaded":
+            return json_to_Uploaded(json)
+        elif record_type == "NoMatch":
+            return json_to_NoMatch(json)
+        elif record_type == "Matched":
+            return json_to_Matched(json)
+        elif record_type == "MatchedMultiple":
+            return json_to_MatchedMultiple(json)
+        elif record_type == "NullRecord":
+            return json_to_NullRecord(json)
+        elif record_type == "FailedBusinessRule":
+            return json_to_FailedBusinessRule(json)
+        elif record_type == "ParseFailures":
+            return json_to_ParseFailures(json)
+        assert False, f"record_result is unknown type: {record_type}"
+    assert False, f"record_result contains no data: {json}"
 
 class Uploadable(Protocol):
     def apply_scoping(self, collection) -> "ScopedUploadable":
