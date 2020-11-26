@@ -1152,7 +1152,8 @@ const mappings = {
 
 			let automapper_results = auto_mapper.map({
 				headers: [header],
-				base_table: table_name,
+				base_table: data_model.base_table_name,
+				starting_table: table_name,
 				path: mapping_path,
 				path_offset: path_offset,
 				allow_multiple_mappings: true,

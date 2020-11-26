@@ -3,6 +3,7 @@
 let auto_mapper_definitions = require('./json/auto_mapper_definitions.js');
 let data_model = require('./data_model.js');
 let cache = require('./cache.js');
+let helper = require('./helper.js');
 
 /*
 *
@@ -13,7 +14,7 @@ const auto_mapper = {
 
 	regex_1: /[^a-z\s]+/g,  // used to remove not letter characters
 	regex_2: /\s+/g,  // used to replace any white space characters with white space
-	depth: 8,  // how deep to go into the schema
+	depth: 6,  // how deep to go into the schema
 	comparisons: Object.entries({  // the definitions for the comparison functions
 		regex: (header, regex) => header.match(regex),
 		string: (header, string) => header === string,
@@ -71,6 +72,7 @@ const auto_mapper = {
 		const {
 			/* array */ headers: raw_headers,  // array of strings that represent headers
 			/* string */ base_table,  // base table name
+			/* string */ starting_table = base_table,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
 			/* array */ path = [],  // starting mapping path
 			/* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
 			/* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings.
@@ -79,6 +81,10 @@ const auto_mapper = {
 			/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
 			/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
 		} = payload;
+
+
+		if (raw_headers.length === 0)
+			return {};
 
 
 		const cache_name = JSON.stringify(payload);
@@ -92,19 +98,18 @@ const auto_mapper = {
 		if (!auto_mapper.mapped_definitions_were_converted)
 			auto_mapper.convert_automapper_definitions();
 
-		if (raw_headers.length === 0)
-			return {};
-
 		// strip extra characters to increase mapping success
 		this.unmapped_headers = Object.fromEntries(raw_headers.map(original_name => {
 
-			let stripped_name = original_name.toLowerCase();
-			stripped_name = stripped_name.replace(this.regex_1, '');
-			stripped_name = stripped_name.replace(this.regex_2, ' ');
-			stripped_name = stripped_name.trim();
+			const lowercase_name = original_name.toLowerCase().replace(this.regex_2, ' ').trim();
+			const stripped_name = lowercase_name.replace(this.regex_1, '');
 			const final_name = stripped_name.split(' ').join('');
 
-			return [original_name, [stripped_name, final_name]];
+			return [original_name, {
+				lowercase_header_name: lowercase_name,
+				stripped_header_name: stripped_name,
+				final_header_name: final_name
+			}];
 
 		}));
 
@@ -113,11 +118,13 @@ const auto_mapper = {
 		this.allow_multiple_mappings = allow_multiple_mappings;
 		this.check_for_existing_mappings = check_for_existing_mappings;
 		this.path_offset = path.length - path_offset;
-		this.base_table_name = base_table;
+		this.base_table = base_table;
+		this.starting_table = starting_table;
+		this.starting_path = path;
 
 		//  do 2 passes over the schema
-		this.find_mappings_driver('shortcuts_and_table_synonyms', path);
-		this.find_mappings_driver('synonyms_and_matches', path);
+		this.find_mappings_driver('shortcuts_and_table_synonyms');
+		this.find_mappings_driver('synonyms_and_matches');
 
 
 		if (!this.allow_multiple_mappings)
@@ -138,7 +145,6 @@ const auto_mapper = {
 	* */
 	find_mappings_driver(
 		/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-		/* array */ path  // initial mapping path
 	){
 
 		/*
@@ -153,26 +159,37 @@ const auto_mapper = {
 			}
 		*/
 
-		this.find_mappings_queue = {
-			0: [
+		this.find_mappings_queue = [
+			[
 				{
-					table_name: this.base_table_name,
-					path: path,
+					table_name: this.base_table,
+					path: [],
 					parent_table_name: '',
 				}
 			]
-		};
+		];
 		this.searched_tables = [];
+
+		if(mode === 'synonyms_and_matches') {
+			this.find_mappings_queue[0][0]['table_name'] = this.starting_table;
+			this.find_mappings_queue[0][0]['path'] = auto_mapper.starting_path;
+		}
 
 		let queue_data;
 		do {
 
-			queue_data = Object.values(this.find_mappings_queue);
-			this.find_mappings_queue = {};
+			queue_data = Object.entries(this.find_mappings_queue);
+			this.find_mappings_queue = [];
 
-			for (const mappings_data of queue_data)  // go though each level of the queue in order
+			for (const [level,mappings_data] of queue_data)  // go though each level of the queue in order
 				for (const payload of mappings_data)
-					auto_mapper.find_mappings(payload, mode);
+					if(
+						mode !== 'shortcuts_and_table_synonyms' ||
+						level === "0" ||
+						typeof auto_mapper.starting_path[level-1] === "undefined" ||
+						helper.find_array_divergence_point(payload['path'],auto_mapper.starting_path.slice(0,level)) !== -1
+					)
+						auto_mapper.find_mappings(payload, mode);
 
 		} while (queue_data.length !== 0);
 
@@ -193,33 +210,30 @@ const auto_mapper = {
 				if (typeof regex_string === "string")
 					comparisons['regex'][regex_index] = new RegExp(regex_string);
 
-		for (const [header_key, header] of Object.entries(this.unmapped_headers)) {// loop over headers
+		for (const [header_key, {lowercase_header_name}] of Object.entries(this.unmapped_headers)) {// loop over headers
 
-			if (header === false)
+			if (typeof lowercase_header_name === "undefined")
 				continue;
 
-			const lowercase_header_key = header_key.toLowerCase();
+			auto_mapper.comparisons.some(([comparison_key, comparison_function]) => // loop over defined comparisons
 
-			let matched = false;
+				typeof comparisons[comparison_key] !== "undefined" &&
+				Object.values(comparisons[comparison_key]).some(comparison_value =>  // loop over each value of a comparison
 
-			auto_mapper.comparisons.some(([comparison_key, comparison_function]) => {  // loop over defined comparisons
+					comparison_function(lowercase_header_name, comparison_value) &&
+					auto_mapper.make_mapping(
+						path,
+						get_new_path_part().map(path_part => {
 
-				if (typeof comparisons[comparison_key] !== "undefined")
-					Object.values(comparisons[comparison_key]).some(comparison_value => {  // loop over each value of a comparison
-						if (comparison_function(lowercase_header_key, comparison_value)) {
-							const new_mapping_path_part = get_new_path_part().map(path_part => {
-								if (data_model.value_is_tree_rank(path_part))
-									return path_part;
-								else
-									return path_part.toLowerCase();
-							});
-							return matched = auto_mapper.make_mapping(path, new_mapping_path_part, header_key);
-						}
-					});
+							if (!data_model.value_is_tree_rank(path_part))
+								path_part = path_part.toLowerCase();
+							return path_part;
 
-				return matched;
-
-			});
+						}),
+						header_key
+					)
+				)
+			);
 
 		}
 
@@ -250,15 +264,20 @@ const auto_mapper = {
 		else if (mode === 'synonyms_and_matches')
 			definitions_source = 'synonyms';
 
-		if (typeof auto_mapper_definitions[definitions_source][table_name] === "undefined")
+		const table_definition_data = auto_mapper_definitions[definitions_source][table_name];
+
+		if (typeof table_definition_data === "undefined")
 			return;
 
 
-		if (mode === 'shortcuts_and_table_synonyms')
-			for (const shortcut_data of auto_mapper_definitions[definitions_source][table_name]) {
+		if (mode === 'shortcuts_and_table_synonyms') {
 
-				if (shortcut_data['scope'] !== auto_mapper.scope)
-					continue;
+			const definition_data = table_definition_data[auto_mapper.scope];
+
+			if (typeof definitions_source === "undefined")
+				return;
+
+			for (const shortcut_data of definition_data) {
 
 				const comparisons = shortcut_data['headers'];
 				const get_new_path_part = () =>
@@ -266,17 +285,18 @@ const auto_mapper = {
 				auto_mapper.handle_definition_comparison(path, comparisons, get_new_path_part);
 
 			}
+		}
 
 
 		else if (mode === 'synonyms_and_matches') {
 
 			if (
-				typeof auto_mapper_definitions[definitions_source][table_name][field_name] === "undefined" ||
-				auto_mapper_definitions[definitions_source][table_name][field_name]['scope'] !== auto_mapper.scope
+				typeof table_definition_data[field_name] === "undefined" ||
+				typeof table_definition_data[field_name][auto_mapper.scope] === "undefined"
 			)
 				return;
 
-			const comparisons = auto_mapper_definitions[definitions_source][table_name][field_name]['headers'];
+			const comparisons = table_definition_data[field_name][auto_mapper.scope]['headers'];
 			const get_new_path_part = () => {
 				if (is_tree_rank)
 					return [data_model.format_tree_rank(field_name), 'name'];
@@ -298,44 +318,59 @@ const auto_mapper = {
 		/* string */ mode, // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
 	){
 
-		const table_synonyms = [];
+		const table_synonyms = auto_mapper_definitions['table_synonyms'][table_name];
+
 		if (
-			mode === 'shortcuts_and_table_synonyms' &&
-			typeof auto_mapper_definitions['table_synonyms'][table_name] !== "undefined"
-		) {
+			mode !== 'shortcuts_and_table_synonyms' ||
+			typeof table_synonyms === "undefined"
+		)
+			return [];
 
-			//filter out -to-many references from the path for matching
-			const filtered_path = path.reduce((filtered_path, path_part) => {
+		//filter out -to-many references from the path for matching
+		const filtered_path = path.reduce((filtered_path, path_part) => {
 
-				if (!data_model.value_is_reference_item(path_part))
-					filtered_path.push(path_part);
+			if (!data_model.value_is_reference_item(path_part))
+				filtered_path.push(path_part);
 
-				return filtered_path;
+			return filtered_path;
 
-			}, []);
+		}, []);
 
-			const filtered_path_string = filtered_path.join('_');
-			const filtered_path_with_base_table = [auto_mapper.base_table_name, ...filtered_path];
-			const filtered_path_with_base_table_string = filtered_path_with_base_table.join('_');
+		const filtered_path_string = filtered_path.join(data_model.path_join_symbol);
+		const filtered_path_with_base_table_string = [
+			auto_mapper.base_table,
+			...filtered_path
+		].join(data_model.path_join_symbol);
 
-			for (const table_synonym of auto_mapper_definitions['table_synonyms'][table_name]) {
+		return table_synonyms.reduce((table_synonyms, table_synonym) => {
 
-				if (table_synonym['scope'] !== auto_mapper.scope)
-					continue;
+			const mapping_path_string = table_synonym['mapping_path_filter'].join(data_model.path_join_symbol);
 
-				const mapping_path_string = table_synonym['preceding_mapping_path'].join('_');
+			if (
+				filtered_path_string.endsWith(mapping_path_string) ||
+				filtered_path_with_base_table_string === mapping_path_string
+			)
+				table_synonyms.push(...table_synonym['synonyms']);
 
-				if (
-					filtered_path_string.endsWith(mapping_path_string) ||
-					filtered_path_with_base_table_string === mapping_path_string
-				)
-					table_synonyms.push(table_synonym['synonym']);
+			return table_synonyms;
 
-			}
-		}
+		}, []);
 
-		return table_synonyms;
+	},
 
+	find_formatted_header_field_synonyms(
+		/* string */ table_name,  // the table to search in
+		/* string */ field_name,  // the field to search in
+	){
+		if (
+			typeof auto_mapper_definitions['synonyms'][table_name] === "undefined" ||
+			typeof auto_mapper_definitions['synonyms'][table_name][field_name] === "undefined" ||
+			typeof auto_mapper_definitions['synonyms'][table_name][field_name][auto_mapper.scope] === "undefined" ||
+			typeof auto_mapper_definitions['synonyms'][table_name][field_name][auto_mapper.scope]['headers']['formatted_header_field_synonym'] === "undefined"
+		)
+			return [];
+
+		return auto_mapper_definitions['synonyms'][table_name][field_name][auto_mapper.scope]['headers']['formatted_header_field_synonym'];
 	},
 
 	/*
@@ -408,21 +443,19 @@ const auto_mapper = {
 
 					const friendly_name = field_data['friendly_name'].toLowerCase();
 
-					Object.entries(this.unmapped_headers).some(([header_name, header_data]) => {
+					Object.entries(this.unmapped_headers).some(([header_name, {stripped_header_name, final_header_name}]) => {
 
-						if (header_data === false)//skip mapped headers
+						if (typeof stripped_header_name === "undefined")//skip mapped headers
 							return false;
-
-						let [stripped_name, final_name] = header_data;
 
 						if (
 							(  // find cases like `Phylum` and remap them to `Phylum > Name`
 								friendly_name === 'name' &&
-								striped_rank_name === stripped_name
+								striped_rank_name === stripped_header_name
 							) ||
 							(  // find cases like `Kingdom Author`
-								striped_rank_name + ' ' + friendly_name === stripped_name ||
-								striped_rank_name + ' ' + field_name === final_name
+								striped_rank_name + ' ' + friendly_name === stripped_header_name ||
+								striped_rank_name + ' ' + field_name === final_header_name
 							)
 						) {
 
@@ -458,6 +491,8 @@ const auto_mapper = {
 			mode: mode,
 		};
 
+		auto_mapper.find_mappings_in_definitions(find_mappings_in_definitions_payload);
+
 		for (const [field_name, field_data] of fields) {
 
 			// search in definitions
@@ -467,8 +502,7 @@ const auto_mapper = {
 			if (mode !== 'synonyms_and_matches') {
 				if (table_synonyms.length === 0)
 					continue;
-				else {
-					//run though synonyms if table has table_synonyms
+				else {  // run though synonyms and matches if table has table_synonyms even if not in `synonyms_and_matches` mode
 					find_mappings_in_definitions_payload['mode'] = 'synonyms_and_matches';
 					auto_mapper.find_mappings_in_definitions(find_mappings_in_definitions_payload);
 					find_mappings_in_definitions_payload['mode'] = mode;
@@ -476,78 +510,61 @@ const auto_mapper = {
 			}
 
 
-			// compare each field's schema name and friendly schema name to headers
 			const friendly_name = field_data['friendly_name'].toLowerCase();
+			const field_names = [
+				...auto_mapper.find_formatted_header_field_synonyms(table_name, field_name),
+				friendly_name,
+				field_name
+			];
 
-			for (const [header_name, header_data] of Object.entries(this.unmapped_headers)) {
+			let to_many_reference_number;
+			Object.entries(this.unmapped_headers).some(([header_name, {lowercase_header_name, stripped_header_name, final_header_name}]) =>
 
-				const lowercase_header_name = header_name.toLowerCase();
+				// skip mapped headers
+				typeof lowercase_header_name !== "undefined" &&
 
-				if (header_data === false)  // skip mapped headers
-					continue;
+				!(to_many_reference_number = false) &&
+				(
+					// compare each field's schema name and friendly schema name to headers
+					field_names.some(field_name =>
+						[lowercase_header_name, stripped_header_name, final_header_name].indexOf(field_name) !== -1
+					) ||
 
-				let [stripped_name, final_name] = header_data;
+					table_names.some(table_synonym =>  // loop through table names and table synonyms
 
-				let matches =
-					field_name === lowercase_header_name ||
-					field_name === stripped_name ||
-					field_name === final_name ||
-					friendly_name === lowercase_header_name ||
-					friendly_name === stripped_name ||
-					friendly_name === final_name;
+						field_names.some(field_synonym =>  // loop through field names and field synonyms
 
-				// find cases like `Collection Object Remarks`
-				let to_many_reference_number = false;
+							`${field_synonym} ${table_synonym}` === lowercase_header_name ||
 
-				if (
-					!matches &&
-					table_synonyms.some(table_synonym =>
-						stripped_name.startsWith(table_synonym) ||
-						final_name.startsWith(table_synonym)
+							stripped_header_name.startsWith(table_synonym) &&
+							(
+								`${table_synonym} ${field_synonym}` === lowercase_header_name ||
+								[  // try extracting -to-many reference number
+									new RegExp(`${table_synonym} (\\d+) ${field_synonym}`),
+									new RegExp(`${table_synonym} ${field_synonym} (\\d+)`),
+								].some(regular_expression => {
+
+									const match = lowercase_header_name.match(regular_expression);
+
+									if (match === null || typeof match[1] === "undefined")
+										return false;
+
+									to_many_reference_number = parseInt(match[1]);
+									return true;
+
+								})
+							)
+						)
 					)
-				) {
-					outer_loop:
-						for (const table_synonym of table_names) {
-
-							const regular_expressions = [
-								new RegExp(table_synonym + ' (\\d+) ' + friendly_name),
-								new RegExp(table_synonym + ' ' + friendly_name + ' (\\d+)')
-							];
-
-							for (const regular_expression of regular_expressions) {
-
-								const match = lowercase_header_name.match(regular_expression);
-
-								if (match === null || match[1] === "undefined")
-									continue;
-
-								to_many_reference_number = parseInt(match[1]);
-
-								matches = true;
-								break outer_loop;
-
-							}
-
-							if (
-								table_synonym + ' ' + friendly_name === stripped_name ||
-								table_synonym + ' ' + field_name === final_name
-							) {
-								matches = true;
-								break;
-							}
-
-						}
-
-				}
-
-				//if can't map any more fields to this path, continue to the next field
-				if (
-					matches &&
-					auto_mapper.make_mapping(path, [field_name], header_name, table_name, to_many_reference_number)
+				) &&
+				auto_mapper.make_mapping(
+					path,
+					[field_name],
+					header_name,
+					table_name,
+					to_many_reference_number
 				)
-					break;
-
-			}
+			);
 
 		}
 
@@ -636,19 +653,26 @@ const auto_mapper = {
 		/* array */ new_path_parts, // Elements that should be pushed into `path`
 		/* string */ header_name,  // The name of the header that should be mapped
 		/* string */ table_name = '',  // Current table name (used to identify `don't map` conditions)
-		/* mixed */ to_many_reference_number = false // if of type {int} - implants that to_many_reference_number into the mapping path into the first reference item starting from the right
+		/* mixed */ to_many_reference_number = false // if of type {int} - implants given to_many_reference_number into the mapping path into the first reference item starting from the right
 		//														if of type {boolean} and is False - don't do anything
 	){
 
 		let local_path = [...path, ...new_path_parts];
+		const last_path_part = local_path[local_path.length - 1];
 
 		if (
-			table_name !== '' &&
-			typeof auto_mapper_definitions['dont_match'][table_name] !== "undefined" &&
-			typeof auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length - 1]] !== "undefined" &&
-			auto_mapper_definitions['dont_match'][table_name][local_path[local_path.length - 1]]['scope'] === this.scope
+			(  // if this fields is designated as unmappable in the current source
+				table_name !== '' &&
+				typeof auto_mapper_definitions['dont_match'][table_name] !== "undefined" &&
+				typeof auto_mapper_definitions['dont_match'][table_name][last_path_part] !== "undefined" &&
+				auto_mapper_definitions['dont_match'][table_name][last_path_part].indexOf(this.scope) !== -1
+			) ||
+			(  // if a starting path was given and proposed mapping is outside of the path
+				auto_mapper.starting_path.length !== 0 &&
+				helper.find_array_divergence_point(local_path,auto_mapper.starting_path.slice(0,local_path.length)) === -1
+			)
 		)
-			return true;
+			return false;
 
 		//if precise -to-many index was found, insert it into the path
 		if (to_many_reference_number !== false)
@@ -716,7 +740,7 @@ const auto_mapper = {
 
 		const path_contains_to_many_references = path.some(path_part => data_model.value_is_reference_item(path_part));
 
-		return !path_contains_to_many_references || !this.allow_multiple_mappings;
+		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 
 	},
 };
