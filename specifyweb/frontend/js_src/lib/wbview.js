@@ -767,50 +767,92 @@ const WBView = Backbone.View.extend({
                 )
             );
 
-            //  disable the `GEOLocate` button if there aren't any localities mapped
-            if(this.locality_columns.length === 0)
-                Object.values(
-                    document.getElementsByClassName('.wb-geolocate')
-                ).map(geolocate_button =>
-                    geolocate_button.disabled = true
-                );
+            if(this.locality_columns.length === 0) {
+                document.getElementsByClassName('wb-geolocate')[0].disabled = true;
+                document.getElementsByClassName('wb-leafletmap')[0].disabled = true;
+            }
         });
     },
-    getLocalityPoints: function(){
-        return this.locality_columns.reduce((locality_points, column_indexes)=>{
+    getLocalityCoordinate: function(row, column_indexes){
 
-            for(const row of this.data){
+        if(
+            column_indexes['latitude1'] === 0 ||
+            column_indexes['longitude1'] === 0 ||
+            typeof column_indexes['latitude1'] === undefined ||
+            typeof column_indexes['longitude1'] === undefined ||
+            row[column_indexes['latitude1']] === '' ||
+            row[column_indexes['longitude1']] === ''
+        )
+            return false;
 
-                if(
-                    column_indexes['latitude1'] === 0 ||
-                    column_indexes['longitude1'] === 0 ||
-                    row[column_indexes['latitude1']] === '' ||
-                    row[column_indexes['longitude1']] === ''
-                )
-                    continue;
+        let point_data;
+        try {
+            point_data = {
+                latitude1: latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0],
+                longitude1: latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0]
+            };
+        }
+        catch(e){
+            return false;
+        }
 
-                let point_data = {
-                    latitude1: latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0],
-                    longitude1: latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0]
-                };
+        if(
+            typeof column_indexes['localityname'] !== "undefined" &&
+            column_indexes['localityname'] !== 0
+        )
+            point_data['localityname'] = row[column_indexes['localityname']];
 
-                if(
-                    typeof column_indexes['localityname'] !== "undefined" &&
-                    column_indexes['localityname'] !== 0
-                )
-                    point_data[localityname] = row[column_indexes['localityname']];
+        return point_data;
 
-                locality_points.push(point_data);
-
-            }
-
-            return locality_points;
-
-        },[]);
     },
     showGeoLocate: function(){
 
-        const locality_points_string = this.getLocalityPoints().map(point_data_dict=>{
+        if(this.locality_columns.length === 0)
+            return;
+
+        const selected_cell = this.hot.getSelectedLast();
+
+        if(typeof selected_cell === "undefined")
+            return;
+
+        let [selected_row, selected_column] = selected_cell;
+        let locality_columns;
+
+        if(this.locality_columns.length > 1){
+            // if there are multiple localities present in a row, check which group this field belongs too
+            const locality_columns_to_search_for = ['localityname','latitude1','longitude1','latlongtype', 'latlongaccuracy'];
+            if(!this.locality_columns.some(local_locality_columns=>
+                Object.fromEntries(local_locality_columns).some((field_name,column_index)=>{
+                    if(
+                        locality_columns_to_search_for.indexOf(field_name) !== -1 &&
+                        column_index === selected_column
+                    )
+                        return locality_columns = local_locality_columns;
+                })
+            ))
+                return;  // if can not determine the group the column belongs too
+        }
+        else
+            locality_columns = this.locality_columns[0];
+
+        let query_string;
+
+        if(
+            typeof locality_columns['country'] !== "undefined" &&
+            typeof locality_columns['state'] !== "undefined" &&
+            typeof locality_columns['county'] !== "undefined"
+        ){
+            const row = this.data[selected_row];
+            query_string = `country=${row[locality_columns['country']]}&state=${row[locality_columns['state']]}county=${row[locality_columns['county']]}`;
+            if(typeof row[locality_columns['localityname']] !== "undefined")
+                query_string += `&locality=${row[locality_columns['localityname']]}`;
+        }
+        else {
+
+            const point_data_dict = this.getLocalityCoordinate(this.data[selected_row]);
+
+            if(!point_data_dict)
+                return;
 
             const {latitude1, longitude1, localityname=''} = point_data_dict;
 
@@ -819,9 +861,9 @@ const WBView = Backbone.View.extend({
             if(localityname !== '')
                 point_data_list.push(localityname);
 
-            return point_data_list.join('|')
+            query_string = point_data_list.join('|');
 
-        }).join(':');
+        }
 
         $(`
             <div>
@@ -830,7 +872,7 @@ const WBView = Backbone.View.extend({
                         width: 100%;
                         height: 100%;
                         border: none;"
-                    src="https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&points=${locality_points_string}"></iframe>
+                    src="https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&points=${query_string}"></iframe>
             </div>`
         ).dialog({
             modal: true,
@@ -851,7 +893,17 @@ const WBView = Backbone.View.extend({
             close: function() { $(this).remove(); },
         });
 
-        const locality_points = this.getLocalityPoints();
+        const locality_points = this.locality_columns.reduce((locality_points, column_indexes)=>{
+
+            for(const row of this.data) {
+                const locality_coordinate = this.getLocalityCoordinate(row,column_indexes);
+                if(locality_coordinate)
+                    locality_points.push(locality_coordinate);
+            }
+
+            return locality_points;
+
+        },[]);
 
         const map = L.map('leaflet_map');
 
