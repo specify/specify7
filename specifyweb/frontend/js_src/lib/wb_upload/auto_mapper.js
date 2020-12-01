@@ -454,8 +454,8 @@ const auto_mapper = {
 								striped_rank_name === stripped_header_name
 							) ||
 							(  // find cases like `Kingdom Author`
-								striped_rank_name + ' ' + friendly_name === stripped_header_name ||
-								striped_rank_name + ' ' + field_name === final_header_name
+								`${striped_rank_name} ${friendly_name}` === stripped_header_name ||
+								`${striped_rank_name} ${field_name}` === final_header_name
 							)
 						) {
 

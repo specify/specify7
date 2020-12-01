@@ -80,13 +80,13 @@ const html_generator = {
 		else
 			header_html = header_name;
 
-		return `<div class="wbplanview_mappings_line ` + line_attributes.join(' ') + `">
+		return `<div class="wbplanview_mappings_line ${line_attributes.join(' ')}">
 					<div class="wbplanview_mappings_line_controls">
 						<button class="wbplanview_mappings_line_delete" title="Clear mapping"><img src="../../../static/img/discard.svg" alt="Clear mapping"></button>
 					</div>
-					<div class="wbplanview_mappings_line_header" data-mapping_type="${mapping_type}">` + header_html + `</div>
+					<div class="wbplanview_mappings_line_header" data-mapping_type="${mapping_type}">${header_html}</div>
 					<div class="wbplanview_mappings_line_elements">
-						` + html_generator.mapping_path(line_data, 'closed_list', use_cached) + `
+						${html_generator.mapping_path(line_data, 'closed_list', use_cached)}
 					</div>
 				</div>`;
 	},
@@ -194,7 +194,7 @@ const html_generator = {
 	static_header(
 		/* string */ default_value = ''  // the default value of a textarea
 	){
-		return `<textarea>` + default_value + `</textarea>`;
+		return `<textarea>${default_value}</textarea>`;
 	},
 
 };

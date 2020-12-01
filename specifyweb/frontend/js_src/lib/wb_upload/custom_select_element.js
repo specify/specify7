@@ -80,10 +80,10 @@ const custom_select_element = {
 			header = `
 				<span class="custom_select_header">
 					<span class="custom_select_header_icon">
-						` + custom_select_element.get_icon_html(true, true, select_table) + `
+						${custom_select_element.get_icon_html(true, true, select_table)}
 					</span>
 					<span class="custom_select_table_label">
-						` + select_label + `
+						${select_label}
 					</span>
 				</span>`;
 
@@ -96,8 +96,8 @@ const custom_select_element = {
 			is_relationship_text = is_relationship.toString();
 
 			preview = `<span class="custom_select_input" tabindex="0">
-							<span class="custom_select_input_icon">` + default_icon + `</span>
-							<span class="custom_select_input_label">` + default_label + `</span>
+							<span class="custom_select_input_icon">${default_icon}</span>
+							<span class="custom_select_input_label">${default_label}</span>
 						</span>`;
 
 			if (custom_select_type === 'closed_list' && select_type !== 'to_many')
@@ -119,25 +119,25 @@ const custom_select_element = {
 
 		let custom_select_options = '';
 		if (first_row !== '' || groups_html !== '')
-			custom_select_options = `<span class="custom_select_options">` +
-				first_row +
-				groups_html + `
+			custom_select_options = `<span class="custom_select_options">
+				${first_row}
+				${groups_html}
 			</span>`;
 
 
 		const result = `<span
 				class="custom_select"
-				title="` + select_label + `"
-				data-name="` + select_name + `"
-				data_value_is_relationship="` + is_relationship_text + `"
-				data-value="` + default_name + `"
+				title="${select_label}"
+				data-name="${select_name}"
+				data_value_is_relationship="${is_relationship_text}"
+				data-value="${default_name}"
 				data-previous_value="0"
-				data-table="` + select_table + `"
-				data-mapping_type="` + select_type + `"
-				data-type="` + custom_select_type + `">
-			` + header + `
-			` + preview + `
-			` + custom_select_options + `
+				data-table="${select_table}"
+				data-mapping_type="${select_type}"
+				data-type="${custom_select_type}">
+			${header}
+			${preview}
+			${custom_select_options}
 		</span>`;
 
 		if (cache_key)
@@ -154,13 +154,13 @@ const custom_select_element = {
 	get_suggested_mappings_element_html: (
 		/* object */ select_options_data  // list of options. See custom_select_html.get_select_option_html() for option data structure
 	) =>
-		`<span class="custom_select_suggestions">` +
-		custom_select_element.get_select_group_html({
-			select_group_name: 'suggested_mappings',
-			select_group_label: 'Suggested mappings:',
-			select_options_data: select_options_data,
-		}) +
-		`</span>`,
+		`<span class="custom_select_suggestions">
+			${custom_select_element.get_select_group_html({
+				select_group_name: 'suggested_mappings',
+				select_group_label: 'Suggested mappings:',
+				select_options_data: select_options_data,
+			})}
+		</span>`,
 
 	/*
 	* Generates HTML for a group of options
@@ -178,9 +178,9 @@ const custom_select_element = {
 
 		return `<span
 					class="custom_select_group"
-					data-group="` + select_group_name + `">
-			<span class="custom_select_group_label">` + select_group_label + `</span>
-			` + (select_options_data.map(select_option_data => custom_select_element.get_select_option_html(select_option_data)).join('')) + `
+					data-group="${select_group_name}">
+			<span class="custom_select_group_label">${select_group_label}</span>
+			${select_options_data.map(select_option_data => custom_select_element.get_select_option_html(select_option_data)).join('')}
 		</span>`;
 
 	},
@@ -215,12 +215,12 @@ const custom_select_element = {
 
 
 		return `<span
-					class="` + (classes.join(' ')) + `"
-					data-value="` + option_value + `"
-					data-table_name="` + table_name + `"
+					class="${classes.join(' ')}"
+					data-value="${option_value}"
+					data-table_name="${table_name}"
 					tabindex="0">
-			<span class="custom_select_option_icon">` + custom_select_element.get_icon_html(is_relationship, is_default, table_name) + `</span>
-			<span class="custom_select_option_label">` + option_name + `</span>
+			<span class="custom_select_option_icon">${custom_select_element.get_icon_html(is_relationship, is_default, table_name)}</span>
+			<span class="custom_select_option_label">${option_name}</span>
 		</span>`;
 	},
 
@@ -240,7 +240,7 @@ const custom_select_element = {
 
 			const table_sub_name = table_name.substr(0, 2);
 			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
-			const color = 'hsl(' + color_hue + ', 100%, 50%)';
+			const color = `hsl(${color_hue}, 100%, 50%)`;
 			return `<span style="color:${color}">${table_sub_name.toUpperCase()}</span>`;
 		}
 		else
