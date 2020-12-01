@@ -145,7 +145,7 @@ module.exports = {
 		CollectionObject: {
 			automapper: [
 				{
-					mapping_path: ['cataloger'],
+					mapping_path: ['cataloger', 'lastname'],
 					headers: {
 						contains: [
 							'cataloged by',
@@ -167,16 +167,6 @@ module.exports = {
 			]
 		},
 		Determination: {
-			automapper: [
-				{
-					mapping_path: ['determiner'],
-					headers: {
-						contains: [
-							'determiner',
-						]
-					},
-				}
-			],
 			suggestion: [
 				{
 					mapping_path: ['determiner', 'lastname'],

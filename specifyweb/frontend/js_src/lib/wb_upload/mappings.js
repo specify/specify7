@@ -698,8 +698,10 @@ const mappings = {
 
 		const line_elements_container = changed_list.parentElement;
 
-		if (list_type === 'list_of_tables')
+		if (list_type === 'list_of_tables'){
+			custom_select_element.unselect_option(selected_option);
 			return mappings.set_table(new_value);
+		}
 		else if (list_type === 'suggested_mapping') {
 
 			const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({

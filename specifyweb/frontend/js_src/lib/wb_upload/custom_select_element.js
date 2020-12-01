@@ -502,6 +502,11 @@ const custom_select_element = {
 
 	},
 
+
+	unselect_option:
+		/* DOMElement */ option =>  // the option to be unselected
+		option.classList.remove('custom_select_option_selected'),
+
 	/*
 	* Enables or disables an option in a list
 	* */

@@ -174,6 +174,9 @@ const main = {
 			// all required fields are not hidden, except for these, which are made not required
 			required_fields_to_hide: [
 				'timestampcreated',
+				'timestampmodified',
+				'createdbyagent',
+				'modifiedbyagent',
 				'collectionmemberid',
 				'rankid',
 				'defintion',
@@ -181,6 +184,7 @@ const main = {
 				'ordernumber',
 				'isprimary',
 				'isaccepted',
+				'isloanable',
 				'treedef',
 			],
 			tables_to_hide: [

@@ -274,7 +274,7 @@ const auto_mapper = {
 
 			const definition_data = table_definition_data[auto_mapper.scope];
 
-			if (typeof definitions_source === "undefined")
+			if (typeof definition_data === "undefined")
 				return;
 
 			for (const shortcut_data of definition_data) {
