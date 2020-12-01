@@ -192,18 +192,14 @@ const mappings = {
 	/*
 	* Adds new mapping line
 	* */
-	add_new_mapping_line(
-		/* object */ payload  // object structure in the method description
-	){
-
-		const {
-			/* int */ position = -1, // position of the new line. If negative, start from the back
-			/* array */ mapping_path = [], // mapping path to use for the new mapping line
-			/* object */ header_data, // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
-			/* boolean */ blind_add_back = false, // whether to add to the back without checking if the header already exists
-			/* array */ line_attributes = [], // array of classes to append to each line's classname
-			/* boolean */ scroll_down = false // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
-		} = payload;
+	add_new_mapping_line({
+		/* int */ position = -1, // position of the new line. If negative, start from the back
+		/* array */ mapping_path = [], // mapping path to use for the new mapping line
+		/* object */ header_data, // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
+		/* boolean */ blind_add_back = false, // whether to add to the back without checking if the header already exists
+		/* array */ line_attributes = [], // array of classes to append to each line's classname
+		/* boolean */ scroll_down = false // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
+	}){
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
@@ -271,16 +267,12 @@ const mappings = {
 	* Returns a mapping line data from mapping path
 	* @return {array} list of mapping element data objects
 	* */
-	get_mapping_line_data_from_mapping_path(
-		/* object*/ payload  // described in the method definition
-	){
-
-		const {
-			mapping_path = [],  // {array} the mapping path
-			iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
-			use_cached = false, // {bool} whether to use cache if exists
-			generate_last_relationship_data = true, // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
-		} = payload;
+	get_mapping_line_data_from_mapping_path({
+		mapping_path = [],  // {array} the mapping path
+		iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
+		use_cached = false, // {bool} whether to use cache if exists
+		generate_last_relationship_data = true, // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
+	}){
 
 		const internal_payload = {
 			mapping_path: mapping_path,
@@ -302,14 +294,13 @@ const mappings = {
 					internal_payload.mapping_path_position + 1 !== internal_payload.mapping_path.length
 				),
 
-			get_next_path_element(internal_payload, callback_payload){
+			get_next_path_element(internal_payload, {table_name}){
 
 				if (internal_payload.mapping_path_position === -2)
 					internal_payload.mapping_path_position = internal_payload.mapping_path.length - 1;
 
 				internal_payload.mapping_path_position++;
 
-				const {table_name} = callback_payload;
 				let next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position];
 
 				if (typeof next_path_element_name == "undefined")
@@ -333,9 +324,7 @@ const mappings = {
 
 			},
 
-			navigator_instance_pre(internal_payload, callback_payload){
-
-				const {table_name} = callback_payload;
+			navigator_instance_pre(internal_payload, {table_name}){
 
 				internal_payload.mapping_element_type = 'simple';
 
@@ -359,9 +348,7 @@ const mappings = {
 				internal_payload.mapped_fields = Object.keys(mappings.get_mapped_fields(local_mapping_path));
 			},
 
-			handle_to_many_children(internal_payload, callback_payload){
-
-				const {table_name} = callback_payload;
+			handle_to_many_children(internal_payload, {table_name}){
 
 				internal_payload.mapping_element_type = 'to_many';
 
@@ -395,9 +382,7 @@ const mappings = {
 
 			},
 
-			handle_tree_ranks(internal_payload, callback_payload){
-
-				const {table_name} = callback_payload;
+			handle_tree_ranks(internal_payload, {table_name}){
 
 				internal_payload.mapping_element_type = 'tree';
 
@@ -417,25 +402,27 @@ const mappings = {
 
 			},
 
-			handle_simple_fields(internal_payload, callback_payload){
-
-				const {
+			handle_simple_fields(
+				internal_payload,
+				{
 					table_name,
 					parent_table_name,
 					parent_relationship_type,
-				} = callback_payload;
+				}
+			){
 
-				for (const [field_name, field_data] of Object.entries(data_model.tables[table_name]['fields'])) {
-
-					const {
-						is_relationship,
-						type: relationship_type,
-						is_hidden,
-						is_required,
-						foreign_name,
-						friendly_name,
-						table_name: field_table_name
-					} = field_data;
+				for (
+					const [
+						field_name, {
+							is_relationship,
+							type: relationship_type,
+							is_hidden,
+							is_required,
+							foreign_name,
+							friendly_name,
+							table_name: field_table_name
+						}
+					] of Object.entries(data_model.tables[table_name]['fields'])) {
 
 					if (
 						is_relationship &&
@@ -484,10 +471,7 @@ const mappings = {
 
 			},
 
-			get_instance_data(internal_payload, callback_payload){
-
-				const {table_name} = callback_payload;
-
+			get_instance_data(internal_payload, {table_name}){
 				return {
 					mapping_element_type: internal_payload.mapping_element_type,
 					name: internal_payload.current_mapping_path_part,
@@ -495,7 +479,6 @@ const mappings = {
 					table_name: table_name,
 					fields_data: internal_payload.result_fields,
 				};
-
 			},
 
 			commit_instance_data(internal_payload, callback_payload){
@@ -599,18 +582,14 @@ const mappings = {
 	* Returns a mapping path for a particular line elements container
 	* @return {array} mapping path
 	* */
-	get_mapping_path(
-		/* object */ payload  // described in the method definition
-	){
-
-		const {
-			line_elements_container,  // {DOMElement} line elements container
-			mapping_path_filter = [], // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
-			//									 if is {DOMElement}, then stops when reaches a given element in a line_elements_container
-			include_headers = false,  // whether to include mapping type and header_name / static column value in the result
-			exclude_unmapped = false, // whether to replace incomplete mapping paths with ["0"]
-			exclude_non_relationship_values = false, // whether to exclude simple fields from the resulting path
-		} = payload;
+	get_mapping_path({
+		line_elements_container,  // {DOMElement} line elements container
+		mapping_path_filter = [], // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
+		//									 if is {DOMElement}, then stops when reaches a given element in a line_elements_container
+		include_headers = false,  // whether to include mapping type and header_name / static column value in the result
+		exclude_unmapped = false, // whether to replace incomplete mapping paths with ["0"]
+		exclude_non_relationship_values = false, // whether to exclude simple fields from the resulting path
+	}){
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
@@ -682,19 +661,15 @@ const mappings = {
 	/*
 	* Handles a change to the select element value
 	* */
-	custom_select_change_event(
-		/* object */ custom_select_change_payload  // described in the method definition
-	){
-
-		const {
-			/* DOMElement */ changed_list,  // the list that was changed
-			/* DOMElement */ selected_option, // the option that was changed
-			/* string */ new_value,  // the new value of the list
-			/* boolean */ is_relationship, // whether new value is a relationship
-			/* string */ list_type, // the type of the changed list
-			/* string */ custom_select_type, // the type of the custom select element
-			/* string */ list_table_name, // the name of the table the list belongs too
-		} = custom_select_change_payload;
+	custom_select_change_event({
+		/* DOMElement */ changed_list,  // the list that was changed
+		/* DOMElement */ selected_option, // the option that was changed
+		/* string */ new_value,  // the new value of the list
+		/* boolean */ is_relationship, // whether new value is a relationship
+		/* string */ list_type, // the type of the changed list
+		/* string */ custom_select_type, // the type of the custom select element
+		/* string */ list_table_name, // the name of the table the list belongs too
+	}){
 
 		const line_elements_container = changed_list.parentElement;
 

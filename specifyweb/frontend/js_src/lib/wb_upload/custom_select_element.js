@@ -18,7 +18,13 @@ const custom_select_element = {
 	* @return {string} HTML for a custom select element
 	* */
 	get_element_html(
-		/* object */ select_data,  // custom select element parameters. Described in the method definition
+		{
+			/* string */ select_type = 'simple',  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
+			/* string */ select_name = '',  // the name of the element. used when constructing a mapping path. NOTE: the first element of the line does not have a name as its name is inherited from the base table
+			/* string */ select_label = '',  // the label to sue for the element
+			/* string */ select_table = '', // the name of the table that was used
+			/* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+		},
 		/* string */ custom_select_type, // the type of the select element
 		// 										  		  Available types:
 		// 													- opened_list - used in the mapping view - list without an `input` box but with always opened list of options and a table name on top
@@ -28,15 +34,6 @@ const custom_select_element = {
 		//
 		/* boolean */ use_cached = false  // whether to use a cached custom select element HTML assuming it matches the parameters
 	){
-
-		const {
-			/* string */ select_type = 'simple',  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
-			/* string */ select_name = '',  // the name of the element. used when constructing a mapping path. NOTE: the first element of the line does not have a name as its name is inherited from the base table
-			/* string */ select_label = '',  // the label to sue for the element
-			/* string */ select_table = '', // the name of the table that was used
-			/* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
-		} = select_data;
-
 
 		//making a copy of payload with all options enabled
 		const select_data_copy = JSON.parse(JSON.stringify(select_data));
@@ -166,15 +163,11 @@ const custom_select_element = {
 	* Generates HTML for a group of options
 	* @return {string} HTML for a group of options
 	* */
-	get_select_group_html(
-		/* object */ select_group_data  // information about the group. See more in the method definition
-	){
-
-		const {
+	get_select_group_html({
 			/* string */ select_group_name,  // group name (used in css and js)
 			/* string */ select_group_label,  // group label (shown to the user)
 			/* array */ select_options_data  // list of options data. See custom_select_element.get_select_option_html() for the data structure
-		} = select_group_data;
+	}){
 
 		return `<span
 					class="custom_select_group"
@@ -189,18 +182,14 @@ const custom_select_element = {
 	* Generates HTML for a single option line
 	* @return {string} HTML for a single option line
 	* */
-	get_select_option_html(
-		/* object */ select_option_data // information about the option. See method definition for more information
-	){
-
-		const {
-			/* string */ option_name,  // the name of the option. Would be used as a label (visible to the user)
-			/* string */ option_value, // the value of the option. Would be used to construct a mapping path
-			/* boolean */ is_enabled = true, // True if option can be selected. False if option can not be selected because it was already selected
-			/* boolean */ is_relationship = false, // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
-			/* boolean */ is_default = false, // whether the option is currently selected
-			/* string */ table_name = ''  // the name of the table this option represents
-		} = select_option_data;
+	get_select_option_html({
+		/* string */ option_name,  // the name of the option. Would be used as a label (visible to the user)
+		/* string */ option_value, // the value of the option. Would be used to construct a mapping path
+		/* boolean */ is_enabled = true, // True if option can be selected. False if option can not be selected because it was already selected
+		/* boolean */ is_relationship = false, // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
+		/* boolean */ is_default = false, // whether the option is currently selected
+		/* string */ table_name = ''  // the name of the table this option represents
+	}){
 
 		const classes = ['custom_select_option'];
 

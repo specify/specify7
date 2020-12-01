@@ -56,23 +56,16 @@ const html_generator = {
 	* @return {string} HTML for a mapping line
 	* */
 	mapping_line(
-		/* object */ mappings_line_data,  // described in the method definition
-		/* boolean */ use_cached  // whether to use a cached version of the mapping line
-	){
-		/*
-		* mappings_line_data {array}:
-		* 	mapping_element_type: 'simple'||'to_many'||'tree'
-		*
-		* */
-
-		const {
+		{
 			line_data,  // {array} mapping path data. See html_generator.mapping_path() for data structure
 			header_data: {
 				mapping_type,  // {string} type of the header ('existing_header'/'new_column'/'new_static_column')
 				header_name  // {string} if mapping_type is 'new_static_column' - the value of a static filed. Else, the name of the header
 			},
 			line_attributes = [],  // {array} list of classes to be appended to this line
-		} = mappings_line_data;
+		},
+		/* boolean */ use_cached  // whether to use a cached version of the mapping line
+	){
 
 		let header_html;
 		if (mapping_type === 'new_static_column')
@@ -113,18 +106,16 @@ const html_generator = {
 	* @returns HTML for a new mapping element
 	* */
 	mapping_element(
-		/* object */ mapping_details,  // described in the method definition
-		/* string */ custom_select_type = 'closed_list', // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
-		/* boolean */ use_cached = false  // whether to use cached value for this mapping element
-	){
-
-		const {
+		{
 			/* string */ name,  // the name of this mapping element
 			/* string */ friendly_name,  // the friendly name for this mapping element
 			/* object */ fields_data,  // fields data. See more info later in this method
 			/* string */ table_name = '',  // the name of the table this mapping element belongs too
 			/* string */ mapping_element_type = 'simple'  // the type of this mapping element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
-		} = mapping_details;
+		},
+		/* string */ custom_select_type = 'closed_list', // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
+		/* boolean */ use_cached = false  // whether to use cached value for this mapping element
+	){
 
 		const field_group_labels = {
 			required_fields: 'Required Fields',
@@ -136,15 +127,16 @@ const html_generator = {
 			[field_group_label, []]
 		));
 
-		for (const [field_name, field_data] of Object.entries(fields_data)) {
-
-			const {
-				field_friendly_name,  // {string} field label
-				is_enabled = true, // {bool} whether field is enabled (not mapped yet)
-				is_default = false, // {bool} whether field is selected by default
-				table_name = '', // {string} table name for this option
-				is_relationship = false // {bool} whether this field is relationship, tree rank or reference item
-			} = field_data;
+		for (const [
+				field_name,
+				{
+					field_friendly_name,  // {string} field label
+					is_enabled = true, // {bool} whether field is enabled (not mapped yet)
+					is_default = false, // {bool} whether field is selected by default
+					table_name = '', // {string} table name for this option
+					is_relationship = false // {bool} whether this field is relationship, tree rank or reference item
+				}
+			] of Object.entries(fields_data)) {
 
 			const field_data_formatted = {
 				option_name: field_friendly_name,

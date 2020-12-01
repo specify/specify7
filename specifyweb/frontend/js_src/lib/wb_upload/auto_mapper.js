@@ -65,22 +65,18 @@ const auto_mapper = {
 	* 	OR
 	* 	[Accession, Accession Agents, #1, Agent, Agent Type]
 	* */
-	map(
-		/* object */ payload  // described in the function definition
-	){
-
-		const {
-			/* array */ headers: raw_headers,  // array of strings that represent headers
-			/* string */ base_table,  // base table name
-			/* string */ starting_table = base_table,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
-			/* array */ path = [],  // starting mapping path
-			/* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
-			/* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings.
-			/* boolean */ use_cache = true,  // whether to use cached values
-			/* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
-			/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-			/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
-		} = payload;
+	map({
+		/* array */ headers: raw_headers,  // array of strings that represent headers
+		/* string */ base_table,  // base table name
+		/* string */ starting_table = base_table,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
+		/* array */ path = [],  // starting mapping path
+		/* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
+		/* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings.
+		/* boolean */ use_cache = true,  // whether to use cached values
+		/* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
+		/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
+		/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+	}){
 
 
 		if (raw_headers.length === 0)
@@ -243,17 +239,13 @@ const auto_mapper = {
 	* Goes over `shortcuts` and `synonyms` in json/auto_mapper_definitions.js and tries to find matches
 	* Calls handle_definition_comparison to make each individual comparison
 	* */
-	find_mappings_in_definitions(
-		/* object */ payload  // described in the function definition
-	){
-
-		const {
-			/* array */ path,  // current mapping path
-			/* string */ table_name,  // the table to search in
-			/* string */ field_name,  // the field to search in
-			/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-			/* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
-		} = payload;
+	find_mappings_in_definitions({
+		/* array */ path,  // current mapping path
+		/* string */ table_name,  // the table to search in
+		/* string */ field_name,  // the field to search in
+		/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+		/* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
+	}){
 
 		let definitions_source;
 		if (mode === 'shortcuts_and_table_synonyms') {
@@ -378,16 +370,14 @@ const auto_mapper = {
 	* This method iterates over the same table only once if in `synonyms_and_matches` mode. More info in json/auto_mapper_definitions.js
 	* */
 	find_mappings(
-		/* object */ payload, // described in function definition
-		/* string */ mode  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-	){
-
-		const {
+		{
 			/* string */ table_name,  // name of current table
 			/* array */ path = [],  // current mapping path
 			/* string */ parent_table_name = '',  // parent table name. Empty if current table is a base table. Used to prevent circular relationships
 			/* string */ parent_relationship_type, // relationship type between parent table and current table. Empty if current table is a base table. Used to prevent mapping -to-many that are inside of -to-many (only while upload plan doesn't support such relationships)
-		} = payload;
+		},
+		/* string */ mode  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+	){
 
 
 		if (mode === 'synonyms_and_matches') {

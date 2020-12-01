@@ -96,16 +96,14 @@ const cache = {
 		/* string */ bucket_name,  // the name of the bucket
 		/* string */ cache_name,  // the name of the cache
 		/* string */ cache_value,  // the value of the cache. Can be any object that can be converted to json
-		/* object */ config = {}  // configuration for cache. Described inside of method definition
+		{
+			bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
+			overwrite = false,  // whether to overwrite the cache value if it is already present
+		}
 	){
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
-
-		const {
-			bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
-			overwrite = false,  // whether to overwrite the cache value if it is already present
-		} = config;
 
 		if (typeof cache.buckets[bucket_name] === "undefined") {
 			cache.buckets[bucket_name] = {

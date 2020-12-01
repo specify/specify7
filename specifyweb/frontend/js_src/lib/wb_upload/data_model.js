@@ -336,20 +336,17 @@ const data_model = {
 	* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that
 	* @return {mixed} returns the value returned by callbacks['get_final_data'](internal_payload)
 	* */
-	navigator(
-		/* object */ payload // described in the method definition
-	){
+	navigator({
+		callbacks,  // {object} described below
+		recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
+		internal_payload = {}, // {object} payload that is shared between the callback functions only and is not modified by the navigator
+		config: {
+			use_cache = false, // {boolean} whether to use cached values
+			cache_name, // {string} the name of the cache bucket to use
+			base_table_name, // {string} the name of the base table to use
+		}
+	}){
 
-		let {
-			callbacks,  // {object} described below
-			recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
-			internal_payload = {}, // {object} payload that is shared between the callback functions only and is not modified by the navigator
-			config: {
-				use_cache = false, // {boolean} whether to use cached values
-				cache_name, // {string} the name of the cache bucket to use
-				base_table_name, // {string} the name of the base table to use
-			}
-		} = payload;
 
 		/*
 		*
@@ -483,21 +480,17 @@ const data_model = {
 	/*
 	* Called by navigator if callback.iterate returned true
 	* */
-	navigator_instance(
-		/* object */ payload  // described in the method definition
-	){
-
-		const {
-			table_name,  // {string} the name of the current table
-			internal_payload, // {object} internal payload (described in navigator)
-			parent_table_name = '',  // {string} parent table name
-			parent_table_relationship_name = '',  // {string} next_real_path_element_name as returned by callbacks.get_next_path_element
-			parent_path_element_name = '', // {string} next_path_element_name as returned by callbacks.get_next_path_element
-			use_cache = false,  // {boolean} whether to use cache
-			cache_name = false,  // {boolean} the name of the cache bucket to use
-			callbacks,  // {object} callbacks (described in navigator)
-			callback_payload, // {object} callbacks payload (described in navigator)
-		} = payload;
+	navigator_instance({
+		table_name,  // {string} the name of the current table
+		internal_payload, // {object} internal payload (described in navigator)
+		parent_table_name = '',  // {string} parent table name
+		parent_table_relationship_name = '',  // {string} next_real_path_element_name as returned by callbacks.get_next_path_element
+		parent_path_element_name = '', // {string} next_path_element_name as returned by callbacks.get_next_path_element
+		use_cache = false,  // {boolean} whether to use cache
+		cache_name = false,  // {boolean} the name of the cache bucket to use
+		callbacks,  // {object} callbacks (described in navigator)
+		callback_payload, // {object} callbacks payload (described in navigator)
+	}){
 
 
 		let json_payload;
