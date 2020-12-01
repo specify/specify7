@@ -762,7 +762,7 @@ const WBView = Backbone.View.extend({
             this.locality_columns = locality_columns.map(locality_mapping =>
                 Object.fromEntries(
                     Object.entries(locality_mapping).map(([column_name,header_name])=>
-                        [column_name, this.colHeaders.indexOf(header_name)+1]
+                        [column_name, this.colHeaders.indexOf(header_name)]
                     )
                 )
             );
@@ -773,34 +773,56 @@ const WBView = Backbone.View.extend({
             }
         });
     },
-    getLocalityCoordinate: function(row, column_indexes){
+    getLocalityCoordinate: function(row, column_indexes, accept_polygons=false){
+
+        const cell_is_valid = (column_name)=>
+            typeof column_indexes[column_name] !== "undefined" &&
+            column_indexes[column_name] !== -1 &&
+            row[column_indexes[column_name]] !== null;
+
+        const format_coordinate = (column_name)=>
+            row[column_indexes[column_name]]===0 || row[column_indexes[column_name]] === '0' ?
+                0:
+                latlongutils.parse(row[column_indexes[column_name]]).toDegs()._components[0];
 
         if(
-            column_indexes['latitude1'] === 0 ||
-            column_indexes['longitude1'] === 0 ||
-            typeof column_indexes['latitude1'] === undefined ||
-            typeof column_indexes['longitude1'] === undefined ||
-            row[column_indexes['latitude1']] === '' ||
-            row[column_indexes['longitude1']] === ''
+            !cell_is_valid('latitude1') ||
+            !cell_is_valid('longitude1')
         )
             return false;
 
-        let point_data;
+        const point_data = {};
         try {
-            point_data = {
-                latitude1: latlongutils.parse(row[column_indexes['latitude1']]).toDegs()._components[0],
-                longitude1: latlongutils.parse(row[column_indexes['longitude1']]).toDegs()._components[0]
-            };
+
+            point_data['latitude1'] = format_coordinate('latitude1');
+            point_data['longitude1'] = format_coordinate('longitude1');
+
+            if(
+                accept_polygons &&
+                cell_is_valid('latitude2') &&
+                cell_is_valid('longitude2') &&
+                (
+                    !cell_is_valid('latlongtype') ||
+                    row[column_indexes['latlongtype']].toLowerCase() !== 'point'
+                )
+            ) {
+                point_data['latitude2'] = format_coordinate('latitude2');
+                point_data['longitude2'] = format_coordinate('longitude2');
+                point_data['latlongtype'] = (
+                    cell_is_valid('latlongtype') &&
+                    row[column_indexes['latlongtype']].toLowerCase() === 'line'
+                ) ? 'Line' : 'Rectangle';
+            }
         }
         catch(e){
             return false;
         }
 
-        if(
-            typeof column_indexes['localityname'] !== "undefined" &&
-            column_indexes['localityname'] !== 0
-        )
+        if(cell_is_valid('localityname'))
             point_data['localityname'] = row[column_indexes['localityname']];
+
+        if(cell_is_valid('latlongaccuracy'))
+            point_data['latlongaccuracy'] = row[column_indexes['latlongaccuracy']];
 
         return point_data;
 
@@ -839,17 +861,30 @@ const WBView = Backbone.View.extend({
 
         if(
             typeof locality_columns['country'] !== "undefined" &&
-            typeof locality_columns['state'] !== "undefined" &&
-            typeof locality_columns['county'] !== "undefined"
+            typeof locality_columns['state'] !== "undefined"
         ){
-            const row = this.data[selected_row];
-            query_string = `country=${row[locality_columns['country']]}&state=${row[locality_columns['state']]}county=${row[locality_columns['county']]}`;
-            if(typeof row[locality_columns['localityname']] !== "undefined")
-                query_string += `&locality=${row[locality_columns['localityname']]}`;
+
+            const data = Object.fromEntries(['country','state','county','localityname'].map(column_name=>
+                [
+                    column_name,
+                    typeof locality_columns[column_name] === "undefined" ?
+                        undefined:
+                        encodeURIComponent(this.hot.getDataAtCell(selected_row,locality_columns[column_name]))
+                ]
+            ));
+
+            query_string = `country=${data['country']}&state=${data['state']}`;
+
+            if(typeof data['county'] !== "undefined")
+                query_string += `&county=${data['county']}`;
+
+            if(typeof data['localityname'] !== "undefined")
+                query_string += `&locality=${data['localityname']}`;
+
         }
         else {
 
-            const point_data_dict = this.getLocalityCoordinate(this.data[selected_row]);
+            const point_data_dict = this.getLocalityCoordinate(this.hot.getDataAtRow(selected_row), locality_columns);
 
             if(!point_data_dict)
                 return;
@@ -861,26 +896,46 @@ const WBView = Backbone.View.extend({
             if(localityname !== '')
                 point_data_list.push(localityname);
 
-            query_string = point_data_list.join('|');
+            query_string = `points=${point_data_list.join('|')}`;
 
         }
 
-        $(`
+        const dialog = $(`
             <div>
                 <iframe
                     style="
                         width: 100%;
                         height: 100%;
                         border: none;"
-                    src="https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&points=${query_string}"></iframe>
+                    src="https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${query_string}"></iframe>
             </div>`
         ).dialog({
             modal: true,
-            width: 900,
-            height: 400,
+            width: 980,
+            height: 700,
+            resizable: false,
             title: "GEOLocate",
             close: function() { $(this).remove(); },
         });
+
+        const handle_geolocate_result = (event)=>{
+
+            const data_columns = event.data.split('|');
+            if (data_columns.length !== 4)
+                return;
+
+            Object.entries(
+                ['latitude1','longitude1','latlongaccuracy']
+            ).map(([index,column])=>{
+                if(typeof locality_columns[column] !== "undefined")
+                    this.hot.setDataAtCell(selected_row,locality_columns[column],data_columns[index]);
+            });
+
+            dialog.dialog('close');
+            window.removeEventListener("message", handle_geolocate_result, false);
+        };
+
+        window.addEventListener("message", handle_geolocate_result, false);
     },
     showLeafletMap: function(){
 
@@ -888,15 +943,15 @@ const WBView = Backbone.View.extend({
         ).dialog({
             modal: true,
             width: 900,
-            height: 400,
+            height: 600,
             title: "Leaflet map",
             close: function() { $(this).remove(); },
         });
 
         const locality_points = this.locality_columns.reduce((locality_points, column_indexes)=>{
 
-            for(const row of this.data) {
-                const locality_coordinate = this.getLocalityCoordinate(row,column_indexes);
+            for(const row of this.hot.getData()) {
+                const locality_coordinate = this.getLocalityCoordinate(row,column_indexes,true);
                 if(locality_coordinate)
                     locality_points.push(locality_coordinate);
             }
@@ -922,9 +977,56 @@ const WBView = Backbone.View.extend({
 
         let index = 1;
         locality_points.map(point_data_dict=>{
-            const {latitude1, longitude1, localityname='#'+index} = point_data_dict;
-            const marker = L.marker([latitude1,longitude1]).addTo(map);
-            marker.bindPopup(localityname);
+
+            const {
+                latitude1,
+                longitude1,
+                localityname='#'+index,
+                latitude2 = false,
+                longitude2 = false,
+                latlongtype = false,
+                latlongaccuracy = false
+            } = point_data_dict;
+
+            let vector;
+
+            if(latitude2===false || longitude2 === false){
+
+                // a point
+                if(latlongaccuracy === false || latlongaccuracy === "0")
+                    vector = L.marker([latitude1,longitude1]);
+
+                // a circle
+                else
+                    vector = L.circle([latitude1, longitude1], {
+                        radius: latlongaccuracy
+                    });
+
+            }
+
+            // a line
+            else if(latlongtype === 'Line')
+                vector = new L.Polyline([
+                    [latitude1, longitude1],
+                    [latitude2, longitude2]
+                ], {
+                    weight: 3,
+                    opacity: 0.5,
+                    smoothFactor: 1
+                });
+
+            // a polygon
+            else
+                vector = L.polygon([
+                    [latitude1, longitude1],
+                    [latitude2, longitude1],
+                    [latitude2, longitude2],
+                    [latitude1, longitude2]
+                ])
+
+
+            vector.addTo(map);
+            vector.bindPopup(localityname);
             index++;
         });
 

@@ -79,7 +79,12 @@ const upload_plan_converter = {
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-				[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
+			[
+				...results,
+				...Object.entries(plan_node_data).map(
+					upload_plan_converter.upload_plan_processing_functions[plan_node_name]
+				)
+			],
 			[]
 		));
 
