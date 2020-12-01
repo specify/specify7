@@ -30,6 +30,7 @@ module.exports =  function() {
         '1 01 W': [-1, 1, 1, latlongutils.Long],
         '0 01 S': [-1, 0, 1, latlongutils.Lat],
         '0 01 W': [-1, 0, 1, latlongutils.Long],
+        '0': [1, 0, latlongutils.Coord],
         '': null,
         ' ': null,
         'foobar': null,
@@ -54,6 +55,7 @@ module.exports =  function() {
     _.each({
         '28° 19\' 0.121" N': [1, 28.3167002778],
         '115° 34\' 59.872" W': [-1, 115.5832977778],
+        '0': [1, 0],
     }, function(value, key) {
         QUnit.test(key, function() {
             var result = latlongutils.parse(key).toDegs();
