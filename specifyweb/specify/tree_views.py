@@ -267,7 +267,7 @@ def move(request, tree, id):
     old_stamp = node.timestampmodified
     node.save()
     node = get_object_or_404(tree, id=id)
-    if getattr(node, 'timestampmodified') > old_stamp:
+    if old_stamp is None or (node.timestampmodified > old_stamp):
         tree_extras.mutation_log(TREE_MOVE, node, request.specify_user_agent, node.parent,
                                  [{'field_name': 'parentid','old_value': old_parentid, 'new_value': target.id},
                                   {'field_name': 'fullname','old_value': old_fullname, 'new_value': node.fullname}])
