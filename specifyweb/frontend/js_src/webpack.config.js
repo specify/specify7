@@ -2,16 +2,42 @@ var webpack = require("webpack");
 
 module.exports = {
     module: {
-        loaders: [
-            { test: /\.(png)|(gif)|(jpg)$/, loader: "url-loader?limit=100000" },
-            { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.html$/, loader: "./underscore-template-loader.js" },
+        rules: [
             {
-                test: /\.js$/,
+                test: /\.(png)|(gif)|(jpg)$/,
+                use: [{
+                    loader: "url-loader",
+                    options: {
+                        limit: 100000
+                    }
+                }]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    "style-loader",
+                    "css-loader"
+                ]
+            },
+            {
+                test: /\.html$/,
+                use: "underscore-template-loader"
+            },
+            {
+                test: /\.[tj]sx?$/,
                 exclude: /(node_modules)|(bower_components)/,
-                loader: 'babel-loader',
-                query: { presets: ['es2015'] }
-            }
+                use: [{
+                    loader: "babel-loader",
+                    options: {
+                        presets: [[
+                            '@babel/preset-env',
+                            {
+                                targets: "defaults"
+                            }
+                        ]]
+                    }
+                }]
+            },
         ]
     },
     plugins: [
@@ -25,8 +51,8 @@ module.exports = {
         choosecollection: "./lib/choosecollection.js",
     },
     output: {
-        path: "../static/js/",
+        path: __dirname + "/../static/js/",
         publicPath: "/static/js/",
         filename: "[name].bundle.js"
-    }
+    },
 };
