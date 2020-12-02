@@ -13,9 +13,9 @@ const app = require('./specifyapp.js');
 const WBName = require('./wbname.js');
 const navigation = require('./navigation.js');
 const WBUploadedView = require('./wbuploadedview.js');
+const WBStatus = require('./wbstatus.js');
 
 const template = require('./templates/wbview.html');
-const statusTemplate = require('./templates/wbstatus.html');
 
 const WBView = Backbone.View.extend({
     __name__: "WbForm",
@@ -34,10 +34,10 @@ const WBView = Backbone.View.extend({
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
     },
-    initialize({wb, data, status}) {
+    initialize({wb, data, initialStatus}) {
         this.wb = wb;
         this.data = data;
-        this.status = status;
+        this.initialStatus = initialStatus;
         this.highlightsOn = false;
         this.cellInfo = [];
         this.rowValidationRequests = {};
@@ -55,7 +55,7 @@ const WBView = Backbone.View.extend({
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
 
-        if (this.status) this.openStatus();
+        if (this.initialStatus) this.openStatus();
         return this;
     },
     setupHOT(colHeaders, columns) {
@@ -307,40 +307,11 @@ const WBView = Backbone.View.extend({
             }
         });
     },
-    closeStatus() {
-        this.StatusDialog.dialog('close');
-    },
     openStatus() {
-        this.stopStatusRefresh = false;
-        const stopRefresh = () => this.stopStatusRefresh = true;
-        const refreshTime = 2000;
-
-        const dialog = this.StatusDialog = $("<div>").append(statusTemplate(null)).dialog({
-            modal: true,
-            title: "Workbench Status",
-            open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-            close: function() { $(this).remove(); stopRefresh(); },
-            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.wb.id}/`); }}]
+        new WBStatus({wb: this.wb, status: this.initialStatus}).render().on('done', () => {
+            this.initialStatus = null;
+            this.getResults();
         });
-
-        const refresh = () => $.get(`/api/workbench/status/${this.wb.id}/`).done(
-            status => {
-                if (this.stopStatusRefresh) {
-                    return;
-                } else {
-                    window.setTimeout(refresh, refreshTime);
-                }
-
-                if (status == null) {
-                    stopRefresh();
-                    dialog.dialog('close');
-                    this.getResults();
-                } else {
-                    dialog.empty().append(statusTemplate({status: status}));
-                }
-            });
-
-        window.setTimeout(refresh, refreshTime);
     },
     showHighlights: function() {
         this.highlightsOn = true;
@@ -532,7 +503,7 @@ module.exports = function loadWorkbench(id) {
             app.setCurrentView(new (uploaded ? WBUploadedView : WBView)({
                 wb: wb,
                 data: data,
-                status: status
+                initialStatus: status
             }));
         }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };
