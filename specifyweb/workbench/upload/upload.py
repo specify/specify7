@@ -33,10 +33,17 @@ def savepoint():
         pass
 
 def unupload_wb(wb, progress: Optional[Progress]=None) -> None:
+    total = wb.workbenchrows.count()
+    current = 0
     with transaction.atomic():
         for row in wb.workbenchrows.order_by('-rownumber'):
             upload_result = json_to_UploadResult(json.loads(row.biogeomancerresults))
             unupload_record(upload_result)
+
+            current += 1
+            if progress is not None:
+                progress(current, total)
+
 
 def unupload_record(upload_result: UploadResult) -> None:
     if isinstance(upload_result.record_result, Uploaded):

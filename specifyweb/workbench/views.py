@@ -216,7 +216,12 @@ def status(request, wb_id: int) -> http.HttpResponse:
         return http.HttpResponse(json.dumps(None), content_type='application/json')
 
     task_id, op = wb.lockedbyusername.split(';')
-    result = tasks.upload.AsyncResult(task_id)
+    task = {
+        'uploading': tasks.upload,
+        'validating': tasks.upload,
+        'unuploading': tasks.unupload,
+    }[op]
+    result = task.AsyncResult(task_id)
     if result.state == "FAILURE":
             return http.HttpResponse(json.dumps([op, result.state, str(result.info)]), content_type='application/json')
 
