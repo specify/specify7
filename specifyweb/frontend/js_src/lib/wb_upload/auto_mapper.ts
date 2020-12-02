@@ -1,9 +1,18 @@
 "use strict";
 
-let auto_mapper_definitions = require('./json/auto_mapper_definitions.ts');
-let data_model = require('./data_model.ts');
-let cache = require('./cache.ts');
-let helper = require('./helper.ts');
+export {};
+
+/// <reference path="./json/auto_mapper_definitions.ts" />
+const auto_mapper_definitions = require('./json/auto_mapper_definitions.ts');
+
+/// <reference path="./data_model.ts" />
+const data_model = require('./data_model.ts');
+
+/// <reference path="./cache.ts" />
+const cache = require('./cache.ts');
+
+/// <reference path="./helper.ts" />
+const helper = require('./helper.ts');
 
 /*
 *
@@ -16,9 +25,9 @@ const auto_mapper = {
 	regex_2: /\s+/g,  // used to replace any white space characters with white space
 	depth: 6,  // how deep to go into the schema
 	comparisons: Object.entries({  // the definitions for the comparison functions
-		regex: (header, regex) => header.match(regex),
-		string: (header, string) => header === string,
-		contains: (header, string) => header.indexOf(string) !== -1
+		regex: (header: string, regex: RegExp) => header.match(regex),
+		string: (header: string, string: string) => header === string,
+		contains: (header: string, string: string) => header.indexOf(string) !== -1
 	}),
 	mapped_definitions_were_converted: false,  // indicates whether convert_automapper_definitions() was run. If not, would run convert_automapper_definitions() the next time map() is called
 

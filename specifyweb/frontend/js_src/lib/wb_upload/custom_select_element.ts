@@ -1,5 +1,6 @@
 "use strict";
 
+export {};
 
 const cache = require('./cache.ts');
 

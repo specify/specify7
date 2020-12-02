@@ -1,5 +1,7 @@
 "use strict";
 
+export {};
+
 /*
 *
 * Helper class for converting from upload plan to internal structure and vice versa

@@ -1,7 +1,11 @@
 "use strict";
 
+export {};
+
 const $ = require('jquery');
 const mappings = require('./mappings.ts');
+
+/// <reference path="./data_model.ts" />
 const data_model = require('./data_model.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
 const custom_select_element = require('./custom_select_element.ts');

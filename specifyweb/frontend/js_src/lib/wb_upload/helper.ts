@@ -1,5 +1,7 @@
 "use strict";
 
+export {};
+
 /*
 *
 * Collection of various helper methods used during the mapping process

@@ -1,5 +1,7 @@
 "use strict";
 
+export {};
+
 /*
 *
 * Various helper methods for finding DOM elements and interacting with them

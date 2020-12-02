@@ -1,8 +1,7 @@
 "use strict";
 
+export {};
 
-// @ts-ignore
-// @ts-ignore
 const cache = {
 
 	buckets: {}, // the data structure that would store all of the buckets

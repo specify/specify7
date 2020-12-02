@@ -1,5 +1,7 @@
 "use strict";
 
+export {};
+
 const schema = require('../schema.js');
 const domain = require('../domain.js');
 const helper = require('./helper.ts');
@@ -477,7 +479,7 @@ const data_model = {
 		let json_payload;
 
 		if (cache_name !== false)
-			json_payload = JSON.stringify(payload);
+			json_payload = JSON.stringify(arguments[0]);
 
 		if (use_cache) {
 			const cached_data = cache.get(cache_name, json_payload);
