@@ -302,15 +302,19 @@ const WBView = Backbone.View.extend({
                 $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
                     this.checkDeletedFail(jqxhr);
                 }).done(() => {
-                    this.openStatus();
+                    this.openStatus(mode);
                 });
             }
         });
     },
-    openStatus() {
+    openStatus(mode) {
         new WBStatus({wb: this.wb, status: this.initialStatus}).render().on('done', () => {
-            this.initialStatus = null;
-            this.getResults();
+            if (mode === "upload") {
+                this.trigger('refresh');
+            } else {
+                this.initialStatus = null;
+                this.getResults();
+            }
         });
     },
     showHighlights: function() {
@@ -485,25 +489,36 @@ const WBView = Backbone.View.extend({
 });
 
 module.exports = function loadWorkbench(id) {
-    var dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-        title: 'Loading',
-        modal: true,
-        open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-        close: function() {$(this).remove();}
-    });
-    $('.progress-bar', dialog).progressbar({value: false});
-    var wb = new schema.models.Workbench.Resource({id: id});
-    Q(wb.fetch().fail(app.handleError)).then(
-        () => Q.all([
-            Q($.get(`/api/workbench/rows/${id}/`)),
-            Q($.get(`/api/workbench/status/${id}/`)),
-        ])).spread((data, status) => {
-            const uploaded = wb.get('srcfilepath') === "uploaded";
+    const wb = new schema.models.Workbench.Resource({id: id});
+    Q.all([wb.fetch().fail(app.handleError), $.get(`/api/workbench/status/${id}/`)])
+        .spread((__, status) => {
             app.setTitle("WorkBench: " + wb.get('name'));
-            app.setCurrentView(new (uploaded ? WBUploadedView : WBView)({
-                wb: wb,
-                data: data,
-                initialStatus: status
-            }));
-        }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
+
+            if (wb.get('srcfilepath') === "uploaded") {
+                const view = new WBUploadedView({
+                    wb: wb,
+                    initialStatus: status
+                }).on('refresh', () => loadWorkbench(id));
+
+                app.setCurrentView(view);
+
+            } else {
+                const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+                    title: 'Loading',
+                    modal: true,
+                    open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                    close() {$(this).remove();}
+                });
+                $('.progress-bar', dialog).progressbar({value: false});
+
+                Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
+                    const view = new WBView({
+                        wb: wb,
+                        data: data,
+                        initialStatus: status
+                    }).on('refresh', () => loadWorkbench(id));
+                    app.setCurrentView(view);
+                });
+            }
+        });
 };
