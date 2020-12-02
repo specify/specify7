@@ -207,7 +207,7 @@ def upload(request, wb_id, no_commit: bool) -> http.HttpResponse:
 
 # @login_maybe_required
 @require_GET
-def upload_status(request, wb_id: int) -> http.HttpResponse:
+def status(request, wb_id: int) -> http.HttpResponse:
     wb = get_object_or_404(Workbench, id=wb_id)
     # if (wb.specifyuser != request.specify_user):
     #     return http.HttpResponseForbidden()
@@ -225,7 +225,7 @@ def upload_status(request, wb_id: int) -> http.HttpResponse:
 @login_maybe_required
 @apply_access_control
 @require_GET
-def upload_results(request, wb_id: int) -> http.HttpResponse:
+def results(request, wb_id: int) -> http.HttpResponse:
     from .upload.upload_result import json_to_UploadResult
 
     wb = get_object_or_404(Workbench, id=wb_id)
@@ -241,8 +241,7 @@ def upload_results(request, wb_id: int) -> http.HttpResponse:
 @login_maybe_required
 @apply_access_control
 @require_POST
-def upload_abort(request, wb_id: int) -> http.HttpResponse:
-    wb = get_object_or_404(Workbench, id=wb_id)
+def abort(request, wb_id: int) -> http.HttpResponse:
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
 

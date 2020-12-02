@@ -15,7 +15,7 @@ const navigation = require('./navigation.js');
 const WBUploadedView = require('./wbuploadedview.js');
 
 const template = require('./templates/wbview.html');
-const statusTemplate = require('./templates/wbuploadstatus.html');
+const statusTemplate = require('./templates/wbstatus.html');
 
 const WBView = Backbone.View.extend({
     __name__: "WbForm",
@@ -34,10 +34,10 @@ const WBView = Backbone.View.extend({
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
     },
-    initialize({wb, data, uploadStatus}) {
+    initialize({wb, data, status}) {
         this.wb = wb;
         this.data = data;
-        this.uploadStatus = uploadStatus;
+        this.status = status;
         this.highlightsOn = false;
         this.cellInfo = [];
         this.rowValidationRequests = {};
@@ -55,7 +55,7 @@ const WBView = Backbone.View.extend({
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
 
-        if (this.uploadStatus) this.openUploadProgress();
+        if (this.status) this.openStatus();
         return this;
     },
     setupHOT(colHeaders, columns) {
@@ -91,11 +91,11 @@ const WBView = Backbone.View.extend({
 
         $(window).resize(this.resize.bind(this));
 
-        this.getUploadResults();
+        this.getResults();
     },
-    getUploadResults() {
-        Q($.get(`/api/workbench/upload_results/${this.wb.id}/`))
-            .done(results => this.parseUploadResults(results));
+    getResults() {
+        Q($.get(`/api/workbench/results/${this.wb.id}/`))
+            .done(results => this.parseResults(results));
     },
     initCellInfo(row, col) {
         const cols = this.hot.countCols();
@@ -103,7 +103,7 @@ const WBView = Backbone.View.extend({
             this.cellInfo[row*cols + col] = {isNew: false, issues: [], matchesSearch: false};
         }
     },
-    parseUploadResults(uploadResults) {
+    parseResults(results) {
         const cols = this.hot.countCols();
         const headerToCol = {};
         for (let i = 0; i < cols; i++) {
@@ -111,7 +111,7 @@ const WBView = Backbone.View.extend({
         }
 
         this.cellInfo = [];
-        uploadResults.forEach((result, row) => {
+        results.forEach((result, row) => {
             this.parseRowValidationResult(row, result);
         });
 
@@ -302,30 +302,30 @@ const WBView = Backbone.View.extend({
                 $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
                     this.checkDeletedFail(jqxhr);
                 }).done(() => {
-                    this.openUploadProgress();
+                    this.openStatus();
                 });
             }
         });
     },
-    closeUploadProgress() {
-        this.uploadProgressDialog.dialog('close');
+    closeStatus() {
+        this.StatusDialog.dialog('close');
     },
-    openUploadProgress() {
-        this.stopUploadProgressRefresh = false;
-        const stopRefresh = () => this.stopUploadProgressRefresh = true;
+    openStatus() {
+        this.stopStatusRefresh = false;
+        const stopRefresh = () => this.stopStatusRefresh = true;
         const refreshTime = 2000;
 
-        const dialog = this.uploadProgressDialog = $(statusTemplate()).dialog({
+        const dialog = this.StatusDialog = $("<div>").append(statusTemplate(null)).dialog({
             modal: true,
+            title: "Workbench Status",
             open: function(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
             close: function() { $(this).remove(); stopRefresh(); },
-            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/upload_abort/${this.wb.id}/`); }}]
+            buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.wb.id}/`); }}]
         });
-        $('.status td', dialog).text('...');
 
-        const refresh = () => $.get(`/api/workbench/upload_status/${this.wb.id}/`).done(
+        const refresh = () => $.get(`/api/workbench/status/${this.wb.id}/`).done(
             status => {
-                if (this.stopUploadProgressRefresh) {
+                if (this.stopStatusRefresh) {
                     return;
                 } else {
                     window.setTimeout(refresh, refreshTime);
@@ -333,20 +333,10 @@ const WBView = Backbone.View.extend({
 
                 if (status == null) {
                     stopRefresh();
-                    $('.status td', dialog).text('finished');
-                    dialog.dialog('option', 'buttons',
-                                  [{text: 'Close', click: function() { $(this).dialog('close'); }}]);
-                    this.getUploadResults();
+                    dialog.dialog('close');
+                    this.getResults();
                 } else {
-                    const [operation, state, meta] = status;
-                    $('.operation td', dialog).text(operation);
-                    $('.status td', dialog).text(state);
-                    if (state === 'PROGRESS') {
-                        $('.rows', dialog).show();
-                        $('.rows td', dialog).text(`${meta.current} / ${this.hot.countRows()}`);
-                    } else {
-                        $('.rows', dialog).hide();
-                    }
+                    dialog.empty().append(statusTemplate({status: status}));
                 }
             });
 
@@ -535,14 +525,14 @@ module.exports = function loadWorkbench(id) {
     Q(wb.fetch().fail(app.handleError)).then(
         () => Q.all([
             Q($.get(`/api/workbench/rows/${id}/`)),
-            Q($.get(`/api/workbench/upload_status/${id}/`)),
-        ])).spread((data, uploadStatus) => {
+            Q($.get(`/api/workbench/status/${id}/`)),
+        ])).spread((data, status) => {
             const uploaded = wb.get('srcfilepath') === "uploaded";
             app.setTitle("WorkBench: " + wb.get('name'));
             app.setCurrentView(new (uploaded ? WBUploadedView : WBView)({
                 wb: wb,
                 data: data,
-                uploadStatus: uploadStatus
+                status: status
             }));
         }).catch(jqxhr => jqxhr.errorHandled || (() => {throw jqxhr;})()).done();
 };

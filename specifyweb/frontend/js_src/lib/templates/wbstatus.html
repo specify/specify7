@@ -1,0 +1,12 @@
+
+
+<% if (status) { %>
+  <% const [operation, state, meta] = status; %>
+  <table>
+    <tr class="operation"><th>Operation</th><td><%- operation %></td></tr>
+    <tr class="status"><th>Status</th><td><%- state %></td></tr>
+    <tr class="rows"><th>Rows analyzed</th><td><%- JSON.stringify(meta) %></td></tr>
+  </table>
+<% } else { %>
+<p>...</p>
+<% } %>
