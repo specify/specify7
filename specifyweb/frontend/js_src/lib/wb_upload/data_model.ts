@@ -2,9 +2,9 @@
 
 const schema = require('../schema.js');
 const domain = require('../domain.js');
-const helper = require('./helper.js');
-const html_generator = require('./html_generator.js');
-const cache = require('./cache.js');
+const helper = require('./helper.ts');
+const html_generator = require('./html_generator.ts');
+const cache = require('./cache.ts');
 
 
 /*
@@ -21,12 +21,10 @@ const data_model = {
 
 	ranks_queue: {},  // the queue of ranks that still need to be fetched
 
-	/*
-	* Fetches data model.
-	* */
+	/* Fetches the data model */
 	fetch_tables(
-		/* function */ done_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
-	){
+		done_callback: ()=>void  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	):void {
 
 		if (typeof localStorage !== "undefined") {
 			data_model.tables = cache.get('data_model', 'tables');
@@ -154,25 +152,23 @@ const data_model = {
 		cache.set('data_model', 'html_tables', data_model.html_tables);
 		cache.set('data_model', 'tables', data_model.tables);
 
-		if (Object.keys(this.ranks_queue).length === 0)  // there aren't any trees
+		if (Object.keys(data_model.ranks_queue).length === 0)  // there aren't any trees
 			done_callback();  // so there is no need to wait for ranks to finish fetching
 
 	},
 
-	/*
-	* Fetches ranks for a particular table
-	* */
+	/* Fetches ranks for a particular table */
 	fetch_ranks(
-		/* string */ table_name,  // Official table name (from data model)
-		/* function */ all_ranks_fetched_callback  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
-	){
+		table_name: string,  // Official table name (from the data model)
+		all_ranks_fetched_callback: ()=>void  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
+	):void {
 
-		this.ranks_queue[table_name] = true;
+		data_model.ranks_queue[table_name] = true;
 
 		domain.getTreeDef(table_name).done(tree_definition => {
 			tree_definition.rget('treedefitems').done(
 				treeDefItems => {
-					treeDefItems.fetch({limit: 0}).done(() => {
+					treeDefItems.fetch(<RequestInfo> {limit: 0}).done(() => {
 
 						data_model.ranks[table_name] = Object.values(treeDefItems['models']).reduce((table_ranks, rank) => {
 
@@ -191,15 +187,15 @@ const data_model = {
 
 						}, {});
 
-						this.ranks_queue[table_name] = false;
+						data_model.ranks_queue[table_name] = false;
 
 						let still_waiting_for_ranks_to_fetch =
-							Object.values(this.ranks_queue).find(
+							Object.values(data_model.ranks_queue).find(
 								is_waiting_for_rank_to_fetch => is_waiting_for_rank_to_fetch
 							);
 
 						//TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-						this.tables[table_name]['fields'] = {'name': this.tables[table_name]['fields']['name']};
+						data_model.tables[table_name]['fields'] = {'name': data_model.tables[table_name]['fields']['name']};
 
 						if (!still_waiting_for_ranks_to_fetch) {  // the queue is empty and all ranks where fetched
 							all_ranks_fetched_callback();
@@ -213,27 +209,21 @@ const data_model = {
 
 	},
 
-	/*
-	* Returns a list of hierarchy tables
-	* @result {array} list of hierarchy tables
-	* */
-	get_list_of_hierarchy_tables(){
-		return schema.orgHierarchy.filter(
+	/* Returns a list of hierarchy tables */
+	get_list_of_hierarchy_tables:
+	():string[] /* list of hierarchy tables */ =>
+		schema.orgHierarchy.filter(
 			table_name => table_name !== 'collectionobject'
-		);
-	},
+		),
 
-	/*
-	* Iterates over the mapping_tree to find required fields that are missing
-	* @returns {array} Returns array of mapping paths (array).
-	* */
+	/* Iterates over the mapping_tree to find required fields that are missing */
 	show_required_missing_fields(
-		/* string */ table_name,  // Official name of the current base table (from data model)
-		/* object */ mapping_tree = false,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
-		/* string */ previous_table_name = '',  // used internally in recursion. Previous table name
-		/* array */ path = [],  // used internally in recursion. Current mapping path
-		/* array */results = []  // used internally in recursion. Saves results
-	){
+		table_name: string,  // Official name of the current base table (from data model)
+		mapping_tree: object|boolean = false,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
+		previous_table_name: string = '',  // used internally in recursion. Previous table name
+		path: string[] = [],  // used internally in recursion. Current mapping path
+		results: string[][] = []  // used internally in recursion. Saves results
+	): string[][] /* array of mapping paths (array) */ {
 
 		const table_data = data_model.tables[table_name];
 
@@ -322,20 +312,13 @@ const data_model = {
 
 	},
 
-	/*
-	* Returns whether a table has tree ranks
-	* @return {boolean} whether a table has tree ranks
-	* */
-	table_is_tree(
-		/* string */ table_name  // the name of the table to check
-	){
-		return typeof data_model.ranks[table_name] !== "undefined";
-	},
+	/* Returns whether a table has tree ranks */
+	table_is_tree: (
+		/* string */ table_name
+	):boolean /* whether a table has tree ranks */  =>  // the name of the table to check
+		typeof data_model.ranks[table_name] !== "undefined",
 
-	/*
-	* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that
-	* @return {mixed} returns the value returned by callbacks['get_final_data'](internal_payload)
-	* */
+	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 	navigator({
 		callbacks,  // {object} described below
 		recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
@@ -345,7 +328,7 @@ const data_model = {
 			cache_name, // {string} the name of the cache bucket to use
 			base_table_name, // {string} the name of the base table to use
 		}
-	}){
+	}):any /* returns the value returned by callbacks['get_final_data'](internal_payload) */ {
 
 
 		/*
@@ -477,9 +460,7 @@ const data_model = {
 
 	},
 
-	/*
-	* Called by navigator if callback.iterate returned true
-	* */
+	/* Called by navigator if callback.iterate returned true */
 	navigator_instance({
 		table_name,  // {string} the name of the current table
 		internal_payload, // {object} internal payload (described in navigator)
@@ -490,7 +471,7 @@ const data_model = {
 		cache_name = false,  // {boolean} the name of the cache bucket to use
 		callbacks,  // {object} callbacks (described in navigator)
 		callback_payload, // {object} callbacks payload (described in navigator)
-	}){
+	}):any /* the value returned by callbacks['get_instance_data'](internal_payload, callback_payload) */ {
 
 
 		let json_payload;
@@ -545,56 +526,48 @@ const data_model = {
 
 	},
 
-	/*
-	* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many)
-	* @return {boolean} whether relationship is a -to-many
-	* */
-	relationship_is_to_many:
-	/* string */ relationship_type =>  // relationship_type
+	/* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many) */
+	relationship_is_to_many: (
+		relationship_type:string  // relationship_type
+	):boolean /* whether relationship is a -to-many */ =>
 		relationship_type.indexOf('-to-many') !== -1,
 
-	/*
-	* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...)
-	* @return {boolean} whether a value is a -to-many reference item
-	* */
-	value_is_reference_item:
-	/* string */ value =>  // the value to use
+	/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
+	value_is_reference_item: (
+		value:string  // the value to use
+	):boolean /* whether a value is a -to-many reference item */ =>
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol,
 
-	/*
-	* Returns whether a value is a tree rank name (e.x $Kingdom, $Order)
-	* @return {boolean} whether a value is a tree rank
-	* */
-	value_is_tree_rank:
-	/* string */ value =>  // the value to use
+	/* Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
+	value_is_tree_rank: (
+		value:string  // the value to use
+	):boolean /* whether a value is a tree rank */ =>
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.tree_symbol.length) === data_model.tree_symbol,
 
 	/*
 	* Returns index from a complete reference item value (e.x #1 => 1)
 	* Opposite of format_reference_item
-	* @return {boolean} index
 	* */
-	get_index_from_reference_item_name:
-	/* string */ value =>  // the value to use
+	get_index_from_reference_item_name: (
+		value:string  // the value to use
+	):boolean /* index */ =>
 		parseInt(value.substr(data_model.reference_symbol.length)),
 
 	/*
 	* Returns tree rank name from a complete tree rank name (e.x $Kingdom => Kingdom)
 	* Opposite of format_tree_rank
-	* @return {boolean} tree rank name
 	* */
-	get_name_from_tree_rank_name:
-	/* string */ value =>  // the value to use
+	get_name_from_tree_rank_name: (
+		value:string   // the value to use
+	):boolean /*tree rank name*/ =>
 		value.substr(data_model.tree_symbol.length),
 
-	/*
-	* Returns the max index in the list of reference item values
-	* @return {int} max index. Returns 0 if there aren't any
-	* */
-	get_max_to_many_value:
-	/* array */ values =>  // list of reference item values
+	/* Returns the max index in the list of reference item values */
+	get_max_to_many_value: (
+		values:string[]  // list of reference item values
+	):int /* max index. Returns 0 if there aren't any */ =>
 		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
@@ -613,19 +586,19 @@ const data_model = {
 	/*
 	* Returns a complete reference item from an index (e.x 1 => #1)
 	* Opposite of get_index_from_reference_item_name
-	* @return {int} a complete reference item from an index
 	* */
-	format_reference_item:
-	/* int */ index =>  // the index to use
+	format_reference_item: (
+		index:number  // the index to use
+	):number /* a complete reference item from an index */ =>
 		data_model.reference_symbol + index,
 
 	/*
 	* Returns a complete tree rank name from a tree rank name (e.x Kingdom => $Kingdom)
 	* Opposite of get_name_from_tree_rank_name
-	* @return {int} a complete tree rank name
 	* */
-	format_tree_rank:
-	/* string */rank_name =>  // tree rank name to use
+	format_tree_rank: (
+		rank_name:string  // tree rank name to use
+	):number /* a complete tree rank name */ =>
 		data_model.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase(),
 
 };
