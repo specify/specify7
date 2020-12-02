@@ -247,6 +247,7 @@ def results(request, wb_id: int) -> http.HttpResponse:
 @apply_access_control
 @require_POST
 def abort(request, wb_id: int) -> http.HttpResponse:
+    wb = get_object_or_404(Workbench, id=wb_id)
     if (wb.specifyuser != request.specify_user):
         return http.HttpResponseForbidden()
 
