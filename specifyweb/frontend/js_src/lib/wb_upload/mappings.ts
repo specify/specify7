@@ -1,7 +1,5 @@
 "use strict";
 
-export {};
-
 const tree_helpers = require('./tree_helpers.ts');
 const dom_helper = require('./dom_helper.ts');
 const helper = require('./helper.ts');

@@ -1,7 +1,5 @@
 "use strict";
 
-export {};
-
 /// <reference path="./json/auto_mapper_definitions.ts" />
 const auto_mapper_definitions = require('./json/auto_mapper_definitions.ts');
 

@@ -1,7 +1,5 @@
 "use strict";
 
-export {};
-
 const $ = require('jquery');
 const mappings = require('./mappings.ts');
 

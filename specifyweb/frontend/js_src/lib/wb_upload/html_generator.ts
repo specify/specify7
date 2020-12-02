@@ -1,8 +1,5 @@
 "use strict";
 
-export {};
-
-
 const custom_select_element = require('./custom_select_element.ts');
 
 interface mapping_line_parameters {

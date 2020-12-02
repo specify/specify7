@@ -1,7 +1,5 @@
 "use strict";
 
-export {};
-
 const cache = require('./cache.ts');
 
 interface get_element_html_parameters {

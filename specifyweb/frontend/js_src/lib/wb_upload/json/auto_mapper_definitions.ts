@@ -1,7 +1,5 @@
 'use strict';
 
-export {};
-
 // This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
 // Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 

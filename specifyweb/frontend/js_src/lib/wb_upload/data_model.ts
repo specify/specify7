@@ -1,7 +1,5 @@
 "use strict";
 
-export {};
-
 const schema = require('../schema.js');
 const domain = require('../domain.js');
 const helper = require('./helper.ts');
