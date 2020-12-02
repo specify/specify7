@@ -18,11 +18,11 @@ const auto_mapper = require('./auto_mapper.ts');
 const main = {
 
 	constructor_has_run: false,
-	save_plan: (event:object, ignore_validation:boolean)=>{},
+	save_plan: (event:object|undefined, ignore_validation:boolean)=>{},
 
 	/* Constructor that finds needed elements, and makes sure to call constructor_first_run once */
 	constructor: (
-		save_plan_function:(event:object, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
+		save_plan_function:(event:object|undefined, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
 	):Promise<object> /* a promise that resolves to a mappings object */ =>
 		new Promise((resolve) => {
 
@@ -45,8 +45,8 @@ const main = {
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
-			const add_new_column = document.getElementById('add_new_column');
-			const add_new_static_column = document.getElementById('add_new_static_column');
+			const add_new_column = <HTMLElement>document.getElementById('add_new_column');
+			const add_new_static_column = <HTMLElement>document.getElementById('add_new_static_column');
 			mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 			mappings.hide_hidden_fields = true;
@@ -165,7 +165,7 @@ const main = {
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
 	constructor_first_run(
 		done_callback: ()=>void,  // the callback to call for when the constructor is finished
-		save_plan_function:(event:object, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
+		save_plan_function:(event:object|undefined, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
 	):void {
 
 		data_model.view_payload = {

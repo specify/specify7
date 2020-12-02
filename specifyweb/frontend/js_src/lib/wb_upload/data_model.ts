@@ -9,6 +9,29 @@ const html_generator = require('./html_generator.ts');
 const cache = require('./cache.ts');
 
 
+interface navigator_parameters {
+	readonly callbacks:object,
+	readonly recursive_payload?:object|undefined
+	readonly internal_payload?:object
+	readonly config: {
+		readonly use_cache?:boolean
+		readonly cache_name:string
+		readonly base_table_name:string
+	}
+}
+
+interface navigator_instance_parameters {
+	readonly table_name:string,
+	readonly internal_payload:object,
+	readonly parent_table_name?:string,
+	readonly parent_table_relationship_name?:string,
+	readonly parent_path_element_name?:string,
+	readonly use_cache?:boolean
+	readonly cache_name?:string|false
+	readonly callbacks:object
+	readonly callback_payload:object
+}
+
 /*
 * Fetches data model with tree ranks and converts them to convenient format
 * */
@@ -21,6 +44,9 @@ const data_model = {
 
 	new_header_id: 1,  // the index that would be shown in the header name the next time the user presses a `Add new column` button
 
+	tables: {},
+	html_tables: {},
+	ranks: {},
 	ranks_queue: {},  // the queue of ranks that still need to be fetched
 
 	/* Fetches the data model */
@@ -212,8 +238,7 @@ const data_model = {
 	},
 
 	/* Returns a list of hierarchy tables */
-	get_list_of_hierarchy_tables:
-	():string[] /* list of hierarchy tables */ =>
+	get_list_of_hierarchy_tables: ():string[] /* list of hierarchy tables */ =>
 		schema.orgHierarchy.filter(
 			table_name => table_name !== 'collectionobject'
 		),
@@ -330,7 +355,7 @@ const data_model = {
 			cache_name, // {string} the name of the cache bucket to use
 			base_table_name, // {string} the name of the base table to use
 		}
-	}):any /* returns the value returned by callbacks['get_final_data'](internal_payload) */ {
+	}:navigator_parameters):any /* returns the value returned by callbacks['get_final_data'](internal_payload) */ {
 
 
 		/*
@@ -473,7 +498,7 @@ const data_model = {
 		cache_name = false,  // {boolean} the name of the cache bucket to use
 		callbacks,  // {object} callbacks (described in navigator)
 		callback_payload, // {object} callbacks payload (described in navigator)
-	}):any /* the value returned by callbacks['get_instance_data'](internal_payload, callback_payload) */ {
+	}:navigator_instance_parameters):any /* the value returned by callbacks['get_instance_data'](internal_payload, callback_payload) */ {
 
 
 		let json_payload;
@@ -554,7 +579,7 @@ const data_model = {
 	* */
 	get_index_from_reference_item_name: (
 		value:string  // the value to use
-	):boolean /* index */ =>
+	):number /* index */ =>
 		parseInt(value.substr(data_model.reference_symbol.length)),
 
 	/*
@@ -563,13 +588,13 @@ const data_model = {
 	* */
 	get_name_from_tree_rank_name: (
 		value:string   // the value to use
-	):boolean /*tree rank name*/ =>
+	):string /*tree rank name*/ =>
 		value.substr(data_model.tree_symbol.length),
 
 	/* Returns the max index in the list of reference item values */
 	get_max_to_many_value: (
 		values:string[]  // list of reference item values
-	):int /* max index. Returns 0 if there aren't any */ =>
+	):number /* max index. Returns 0 if there aren't any */ =>
 		values.reduce((max, value) => {
 
 			//skip `add` values and other possible NaN cases
@@ -591,7 +616,7 @@ const data_model = {
 	* */
 	format_reference_item: (
 		index:number  // the index to use
-	):number /* a complete reference item from an index */ =>
+	):string /* a complete reference item from an index */ =>
 		data_model.reference_symbol + index,
 
 	/*
@@ -600,7 +625,7 @@ const data_model = {
 	* */
 	format_tree_rank: (
 		rank_name:string  // tree rank name to use
-	):number /* a complete tree rank name */ =>
+	):string /* a complete tree rank name */ =>
 		data_model.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase(),
 
 };

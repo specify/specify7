@@ -14,6 +14,57 @@ const cache = require('./cache.ts');
 /// <reference path="./helper.ts" />
 const helper = require('./helper.ts');
 
+interface map_parameters {
+	readonly headers: string[],
+	readonly base_table: string,
+	readonly starting_table?: string,
+	readonly path: string[],
+	readonly path_offset?: number,
+	readonly allow_multiple_mappings?: boolean,
+	readonly use_cache?: boolean,
+	readonly commit_to_cache?: boolean,
+	readonly check_for_existing_mappings?: boolean,
+	readonly scope?: string,
+}
+
+interface find_mappings_in_definitions_parameters {
+	readonly path: string[],
+	readonly table_name: string,
+	readonly field_name: string,
+	readonly mode: string,
+	readonly is_tree_rank?: boolean,
+}
+
+interface find_mappings_parameters {
+	readonly table_name:string,
+	readonly path?:string[],
+	readonly parent_table_name?:string,
+	readonly parent_relationship_type:string,
+}
+
+interface table_synonyms {
+	readonly mapping_path_filter:string[],
+	readonly synonyms:string[]
+}
+
+interface field_data {
+	readonly friendly_name:string,
+	readonly is_hidden:boolean,
+	readonly is_required:boolean,
+	readonly is_relationship:boolean,
+	readonly table_name:string,
+	readonly type:'one-to-one'|'many-to-many'|'one-to-many'|'many-to-one',
+	readonly foreign_name: string
+}
+
+interface find_mappings_queue {
+	[key:number]:find_mappings_queue_level,
+}
+
+interface find_mappings_queue_level {
+	[header_name:string]:find_mappings_parameters
+}
+
 /*
 *
 * Auto mapper than takes data model and header names and returns possible mappings
@@ -39,6 +90,9 @@ const auto_mapper = {
 	base_table: '',
 	starting_table: '',
 	starting_path: [],
+	unmapped_headers: {},
+	searched_tables: [''],
+	find_mappings_queue: {},
 	get_mapped_fields: (local_path:string[])=>true,
 
 	/* Method that converts all table names and field names in definitions to lower case */
@@ -46,11 +100,11 @@ const auto_mapper = {
 
 		auto_mapper.mapped_definitions_were_converted = true;
 
-		const keys_to_lower_case = (object: object, levels:number = 1) => Object.fromEntries(
+		const keys_to_lower_case = (object: object, levels:number = 1):object => (Object.fromEntries(
 			Object.entries(object).map(([key, value]) =>
 				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
 			)
-		);
+		));
 
 		[
 			['table_synonyms', 1],
@@ -75,7 +129,7 @@ const auto_mapper = {
 		/* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
 		/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
 		/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
-	}):object /* Returns mappings result in format: */
+	}:map_parameters ):object /* Returns mappings result in format: */
 	/* 	If payload.allow_multiple_mappings:
 	* 		[
 	* 			header_name,
@@ -92,7 +146,6 @@ const auto_mapper = {
 	* 	OR
 	* 	[Accession, Accession Agents, #1, Agent, Agent Type]
 	* */ {
-
 
 		if (raw_headers.length === 0)
 			return {};
@@ -207,7 +260,7 @@ const auto_mapper = {
 	/* Compares definitions to unmapped headers and makes a mapping if matched */
 	handle_definition_comparison(
 		path: string[],  // initial mapping path
-		comparisons: object,  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
+		comparisons: { [key:string]:string[]|RegExp[] },  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
 		get_new_path_part: ()=>string[]  // function that returns the next path part to use in a new mapping (on success)
 	):void {
 
@@ -215,7 +268,7 @@ const auto_mapper = {
 		if (typeof comparisons['regex'] !== "undefined")
 			for (const [regex_index, regex_string] of Object.entries(comparisons['regex']))
 				if (typeof regex_string === "string")
-					comparisons['regex'][regex_index] = new RegExp(regex_string);
+					comparisons['regex'][parseInt(regex_index)] = new RegExp(regex_string);
 
 		for (const [header_key, {lowercase_header_name}] of <any[]> Object.entries(auto_mapper.unmapped_headers)) {// loop over headers
 
@@ -256,7 +309,7 @@ const auto_mapper = {
 		/* string */ field_name,  // the field to search in
 		/* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
 		/* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
-	}):void {
+	}:find_mappings_in_definitions_parameters):void {
 
 		let definitions_source;
 		if (mode === 'shortcuts_and_table_synonyms') {
@@ -264,7 +317,7 @@ const auto_mapper = {
 				return;
 			definitions_source = 'shortcuts';
 		}
-		else if (mode === 'synonyms_and_matches')
+		else
 			definitions_source = 'synonyms';
 
 		const table_definition_data = auto_mapper_definitions[definitions_source][table_name];
@@ -328,7 +381,7 @@ const auto_mapper = {
 			return [];
 
 		//filter out -to-many references from the path for matching
-		const filtered_path = path.reduce((filtered_path, path_part) => {
+		const filtered_path = path.reduce((filtered_path:string[], path_part:string) => {
 
 			if (!data_model.value_is_reference_item(path_part))
 				filtered_path.push(path_part);
@@ -343,7 +396,7 @@ const auto_mapper = {
 			...filtered_path
 		].join(data_model.path_join_symbol);
 
-		return table_synonyms.reduce((table_synonyms, table_synonym) => {
+		return table_synonyms.reduce((table_synonyms:string[], table_synonym:table_synonyms) => {
 
 			const mapping_path_string = table_synonym['mapping_path_filter'].join(data_model.path_join_symbol);
 
@@ -384,7 +437,7 @@ const auto_mapper = {
 			/* array */ path = [],  // current mapping path
 			/* string */ parent_table_name = '',  // parent table name. Empty if current table is a base table. Used to prevent circular relationships
 			/* string */ parent_relationship_type, // relationship type between parent table and current table. Empty if current table is a base table. Used to prevent mapping -to-many that are inside of -to-many (only while upload plan doesn't support such relationships)
-		},
+		}:find_mappings_parameters,
 		mode: string  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
 	):void {
 
@@ -406,7 +459,7 @@ const auto_mapper = {
 			!field_data['is_hidden'] &&
 			!field_data['is_relationship']
 		);
-		const table_friendly_name = table_data['table_friendly_name'].toLowerCase();
+		const table_friendly_name = <string>table_data['table_friendly_name'].toLowerCase();
 
 		if (typeof ranks_data !== "undefined") {
 
@@ -438,7 +491,7 @@ const auto_mapper = {
 				if (mode !== 'synonyms_and_matches')
 					continue;
 
-				for (const [field_name, field_data] of fields) {
+				for (const [field_name, field_data] of <any[]> fields) {
 
 					const friendly_name = field_data['friendly_name'].toLowerCase();
 
@@ -477,7 +530,7 @@ const auto_mapper = {
 		}
 
 		const table_synonyms = auto_mapper.find_table_synonyms(table_name, path, mode);
-		let table_names;
+		let table_names: string[];
 		if (table_synonyms.length === 0)
 			table_names = [table_name, table_friendly_name];
 		else
@@ -509,7 +562,7 @@ const auto_mapper = {
 			}
 
 
-			const friendly_name = field_data['friendly_name'].toLowerCase();
+			const friendly_name = (<field_data>field_data)['friendly_name'].toLowerCase();
 			const field_names = [
 				...auto_mapper.find_formatted_header_field_synonyms(table_name, field_name),
 				friendly_name,
@@ -655,7 +708,7 @@ const auto_mapper = {
 		//													if of type {boolean} and is False - don't do anything
 	):boolean /* false if we can map another mapping to this header. Most of the time means that the mapping was not made (Mapping fails if field is inside of a -to-one relationship or direct child of base table and is already mapped). Can also depend on this.allow_multiple_mappings */ {
 
-		let local_path = [...path, ...new_path_parts];
+		let local_path:string[] = [...path, ...new_path_parts];
 		const last_path_part = local_path[local_path.length - 1];
 
 		if (
@@ -695,14 +748,14 @@ const auto_mapper = {
 				(
 					!auto_mapper.allow_multiple_mappings &&
 					Object.values(<object>auto_mapper.results).some(mapping_paths =>
-						mapping_paths.some(mapping_path =>
+						(<string[]>mapping_paths).some(mapping_path =>
 							JSON.stringify(local_path) === JSON.stringify(mapping_path)
 						)
 					)
 				) ||
 				(
 					auto_mapper.check_for_existing_mappings &&
-					auto_mapper.get_mapped_fields(local_path) !== false
+					auto_mapper.get_mapped_fields(local_path)
 				);
 
 			if (!path_already_mapped)
@@ -713,7 +766,7 @@ const auto_mapper = {
 
 				path_was_modified = index > auto_mapper.path_offset && data_model.value_is_reference_item(local_path_part);
 				if (path_was_modified)
-					local_path[local_path_index] = data_model.format_reference_item(data_model.get_index_from_reference_item_name(local_path_part) + 1);
+					local_path[parseInt(local_path_index)] = data_model.format_reference_item(data_model.get_index_from_reference_item_name(local_path_part) + 1);
 
 				index--;
 

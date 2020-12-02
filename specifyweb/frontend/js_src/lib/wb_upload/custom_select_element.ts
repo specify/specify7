@@ -4,6 +4,29 @@ export {};
 
 const cache = require('./cache.ts');
 
+interface get_element_html_parameters {
+    readonly select_type?:string,
+    readonly select_name?:string,
+    readonly select_label?:string,
+    readonly select_table?:string,
+    readonly select_groups_data?:get_select_group_html_parameters[],
+}
+
+interface get_select_group_html_parameters {
+    readonly select_group_name:string,
+    readonly select_group_label:string,
+    readonly select_options_data:get_select_option_html_parameters[]
+}
+
+interface get_select_option_html_parameters {
+   readonly option_name:string,
+   readonly option_value:string,
+   readonly is_enabled?:boolean,
+   readonly is_relationship?:boolean,
+   readonly is_default?:boolean,
+   readonly table_name?:string,
+}
+
 const custom_select_element = {
 
     // TODO: set proper table icons URL
@@ -22,7 +45,7 @@ const custom_select_element = {
             /* string */ select_label = '',  // the label to sue for the element
             /* string */ select_table = '', // the name of the table that was used
             /* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
-        },
+        }:get_element_html_parameters,
         custom_select_type: string, // the type of the select element
         // 							   Available types:
         // 								- opened_list - used in the mapping view - list without an `input` box but with always opened list of options and a table name on top
@@ -45,7 +68,7 @@ const custom_select_element = {
                 return data;
         }
 
-        let default_name = 0;
+        let default_name = '0';
         let header = '';
         let preview = '';
         let first_row = '';
@@ -53,7 +76,7 @@ const custom_select_element = {
         let groups_html = '';
 
         //find if there is any value checked
-        let default_label = 0;
+        let default_label = '0';
         let default_icon = '';
         let is_relationship = false;
         let table_name = '';
@@ -64,8 +87,8 @@ const custom_select_element = {
                         ({
                             option_name: default_label,
                             option_value: default_name,
-                            is_relationship,
-                            table_name
+                            is_relationship: is_relationship,
+                            table_name: table_name
                         } = select_field_data);
                         break outer_loop;
                     }
@@ -83,7 +106,7 @@ const custom_select_element = {
 
         } else {
 
-            if (default_label !== 0)
+            if (default_label !== '0')
                 default_icon = custom_select_element.get_icon_html(is_relationship, true, table_name);
 
             is_relationship_text = is_relationship.toString();
@@ -99,7 +122,7 @@ const custom_select_element = {
                     option_value: '0',
                     is_enabled: true,
                     is_relationship: false,
-                    is_default: default_label === 0,
+                    is_default: default_label === '0',
                     table_name: ''
                 });
 
@@ -142,7 +165,7 @@ const custom_select_element = {
 
     /* Generates HTML for a suggestion box */
     get_suggested_mappings_element_html: (
-        select_options_data: object  // list of options. See custom_select_html.get_select_option_html() for option data structure
+        select_options_data: get_select_option_html_parameters[]  // list of options. See custom_select_html.get_select_option_html() for option data structure
     ): string /* HTML for a suggestion box */ =>
         `<span class="custom_select_suggestions">
 			${custom_select_element.get_select_group_html({
@@ -157,7 +180,7 @@ const custom_select_element = {
                               /* string */ select_group_name,  // group name (used in css and js)
                               /* string */ select_group_label,  // group label (shown to the user)
                               /* array */ select_options_data  // list of options data. See custom_select_element.get_select_option_html() for the data structure
-                          }): string /* HTML for a group of options */ {
+                          }:get_select_group_html_parameters): string /* HTML for a group of options */ {
 
         return `<span
 					class="custom_select_group"
@@ -176,7 +199,7 @@ const custom_select_element = {
                                /* boolean */ is_relationship = false, // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
                                /* boolean */ is_default = false, // whether the option is currently selected
                                /* string */ table_name = ''  // the name of the table this option represents
-                           }): string /* HTML for a single option line */ {
+                           }:get_select_option_html_parameters): string /* HTML for a single option line */ {
 
         const classes = ['custom_select_option'];
 
@@ -331,10 +354,10 @@ const custom_select_element = {
         }
         target_option = <HTMLElement>target_option;
 
-        const custom_select_option_value = custom_select_element.get_option_value(target_option);
+        const custom_select_option_value = <string>custom_select_element.get_option_value(target_option);
 
         const group_element = target_option.parentElement;
-        if (group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group') === 'suggested_mappings')
+        if (group_element!==null && group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group') === 'suggested_mappings')
             return {
                 changed_list: target_list,
                 selected_option: target_option,
@@ -359,13 +382,13 @@ const custom_select_element = {
 
         //extract data about new option
         const custom_select_option_label_element: Element = target_option.getElementsByClassName('custom_select_option_label')[0];
-        const custom_select_option_label = custom_select_option_label_element.textContent;
+        const custom_select_option_label = <string>custom_select_option_label_element.textContent;
 
-        let previous_list_value = custom_select_element.get_list_value(target_list);
+        let previous_list_value = <string>custom_select_element.get_list_value(target_list);
         const previous_previous_value = target_list.getAttribute('data-previous_value');
 
         //don't change values if new value is 'add'
-        const list_type = custom_select_element.get_list_mapping_type(target_list);
+        const list_type = <string>custom_select_element.get_list_mapping_type(target_list);
 
         //don't do anything if value wasn't changed
         if (custom_select_option_value === previous_list_value)
@@ -388,7 +411,7 @@ const custom_select_element = {
         if (custom_select_inputs.length !== 0) {
 
             const custom_select_input = custom_select_inputs[0];
-            const table_name = target_option.getAttribute('data-table_name');
+            const table_name = <string>target_option.getAttribute('data-table_name');
 
             const custom_select_input_icon: Element = custom_select_input.getElementsByClassName('custom_select_input_icon')[0];
             custom_select_input_icon.innerHTML = custom_select_element.get_icon_html(is_relationship, true, table_name);
@@ -545,25 +568,25 @@ const custom_select_element = {
     /* Returns the value of the option */
     get_option_value: (
         option_element: HTMLElement // the option element
-    ):string /* the value of the option */ =>
+    ):string|null /* the value of the option */ =>
         option_element.getAttribute('data-value'),
 
     /* Returns the value of the list */
     get_list_value: (
         list_element: HTMLElement  // the list to check
-    ):string /* the value of the list */ =>
+    ):string|null /* the value of the list */ =>
         list_element.getAttribute('data-value'),
 
     /* Returns the table a list represents */
     get_list_table_name: (
         list_element: HTMLElement  // the list to check
-    ):string /* the table a list represents */ =>
+    ):string|null /* the table a list represents */ =>
         list_element.getAttribute('data-table'),
 
     /* Returns the mapping type of a list */
     get_list_mapping_type: (
         list_element: HTMLElement  // the list to check
-    ):string /* the mapping type of a list */ =>
+    ):string|null /* the mapping type of a list */ =>
         list_element.getAttribute('data-mapping_type'),
 
 };

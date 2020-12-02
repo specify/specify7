@@ -8,14 +8,18 @@ export {};
 *
 * */
 
+interface mapping_tree {
+    [key:string]:mapping_tree|string
+}
+
 const tree_helpers = {
 
     /* Returns cross-section of full_mappings_tree and node_mappings_tree */
 
     traverse_tree(
-        full_mappings_tree: object,  // full tree with various branches
-        node_mappings_tree: object  // a tree several levels deep with only a single branch
-    ): object|false  // a cross-section of two trees
+        full_mappings_tree: mapping_tree,  // full tree with various branches
+        node_mappings_tree: mapping_tree|string  // a tree several levels deep with only a single branch
+    ): string | mapping_tree | undefined | false // a cross-section of two trees
     /*
     * Example:
     * if full_mappings_tree is like this:
@@ -32,7 +36,7 @@ const tree_helpers = {
     * And node_mappings_tree is like this:
     * 	Accession
     * 		Accession Agents
-    * 			#1
+    * 			#2
     * This function will return the following object:
     * 	Agent
     * 		Agent Type
@@ -45,26 +49,26 @@ const tree_helpers = {
 
         let target_key = '';
         if (typeof node_mappings_tree === "string")
-            target_key = node_mappings_tree;
+            return full_mappings_tree[target_key];
         else {
-            target_key = Object.keys(node_mappings_tree).shift();
+            target_key = <string>Object.keys(node_mappings_tree).shift();
 
-            if (typeof target_key === "undefined")
+            if (target_key === '')
                 return full_mappings_tree;
         }
 
-        if (typeof full_mappings_tree[target_key] === "undefined")
+        if (typeof full_mappings_tree[target_key] !== "object")
             return false;
 
-        return tree_helpers.traverse_tree(full_mappings_tree[target_key], node_mappings_tree[target_key]);
+        return tree_helpers.traverse_tree(<mapping_tree>full_mappings_tree[target_key], node_mappings_tree[target_key]);
 
     },
 
     /* Merges objects recursively (by reference only, does not create a copy of the tree) */
     deep_merge_object: (
-        target: object,  // tree that is used as a basis
+        target: any,  // tree that is used as a basis
         source: object  // tree that is used as a source
-    ) => /*:object*/ /* Merged tree */
+    ):object /* Merged tree */ =>
         /*
         * For example, if target is:
         * 	Accession
@@ -86,16 +90,18 @@ const tree_helpers = {
         * 			#2
         * 				Agent
         * */
-        Object.entries(source).reduce((target, [source_property, source_value]) => {
+        typeof source === "object" ?
+            Object.entries(source).reduce((target, [source_property, source_value]) => {
 
-            if (typeof target[source_property] === "undefined")
-                target[source_property] = source_value;
-            else
-                target[source_property] = tree_helpers.deep_merge_object(target[source_property], source_value);
+                if (typeof target[source_property] === "undefined")
+                    target[source_property] = source_value;
+                else if(typeof target === "object")
+                    target[source_property] = tree_helpers.deep_merge_object(target[source_property], source_value);
 
-            return target;
+                return target;
 
-        }, target),
+            }, target) :
+            target,
 
     /* Converts an array to tree */
     array_to_tree(
@@ -191,9 +197,9 @@ const tree_helpers = {
     * The inverse of array_of_mappings_to_mappings_tree
     * */
     mappings_tree_to_array_of_mappings: (
-        mappings_tree: object,  //  mappings tree
+        mappings_tree: mapping_tree,  //  mappings tree
         path: any[] = []  // used in recursion to store intermediate path
-    ) => /*:array[][] */ /* array of arrays of string */
+    ):string[][] /* array of arrays of string */ =>
         /*
         * For example, if mappings_tree is:
         * 	Accession
@@ -208,14 +214,14 @@ const tree_helpers = {
         * 	Accession, Accession Agents, #1, Agent, Last Name
         * 	Accession, Accession Agents, #1, Remarks
         * */
-        Object.entries(mappings_tree).reduce((result, [tree_node_name, tree_node]) => {
+        Object.entries(mappings_tree).reduce((result:string[][], [tree_node_name, tree_node]) => {
 
             if (typeof tree_node !== "object")
                 result.push([...path, tree_node_name, tree_node]);
             else
                 result.push(
                     ...tree_helpers.mappings_tree_to_array_of_mappings(
-                        mappings_tree[tree_node_name],
+                        tree_node,
                         [...path, tree_node_name]
                     )
                 );

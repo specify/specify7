@@ -55,7 +55,7 @@ const helper = {
     * */ {
 
         if (source === null || search === null)
-            return null;
+            return -1;
 
         const source_length = source.length;
         const search_length = search.length;
@@ -66,7 +66,7 @@ const helper = {
         if (source_length === 0 || source_length < search_length)
             return -1;
 
-        for (const [index, source_value] of Object.entries(source)) {
+        for (const [index, source_value] of <any[]> Object.entries(source)) {
 
             const search_value = search[index];
 
@@ -165,23 +165,23 @@ const helper = {
         const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
         const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());
 
-        const duplicate_indexes = [];
+        const duplicate_indexes: number[] = [];
         let index = -1;
-        string_array_of_mappings.reduce((dictionary_of_mappings, string_mapping_path) => {
+        string_array_of_mappings.reduce((dictionary_of_mappings:string[], string_mapping_path:string) => {
 
             index++;
 
             if (string_mapping_path === '')
                 return dictionary_of_mappings;
 
-            if (typeof dictionary_of_mappings[string_mapping_path] === "undefined")
-                dictionary_of_mappings[string_mapping_path] = 1;
+            if (dictionary_of_mappings.indexOf(string_mapping_path)===-1)
+                dictionary_of_mappings.push(string_mapping_path);
             else
                 duplicate_indexes.push(index);
 
             return dictionary_of_mappings;
 
-        }, {});
+        }, []);
 
         return duplicate_indexes;
 

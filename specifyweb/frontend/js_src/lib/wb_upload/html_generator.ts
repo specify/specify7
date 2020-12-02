@@ -5,6 +5,22 @@ export {};
 
 const custom_select_element = require('./custom_select_element.ts');
 
+interface mapping_line_parameters {
+    readonly line_data:mapping_element_parameters[],
+    readonly header_data: {
+        readonly mapping_type:string,
+        readonly header_name:string,
+    },
+    readonly line_attributes?:string[]
+}
+
+interface mapping_element_parameters {
+    readonly name:string,
+    readonly friendly_name:string,
+    readonly fields_data:object[]
+    readonly table_name?:string
+    readonly mapping_element_type?:string
+}
 
 /*
 *
@@ -29,7 +45,7 @@ const html_generator = {
             ]
         ));
 
-        const mapping_details = {
+        const mapping_details:mapping_element_parameters = {
             name: 'list_of_base_tables',
             friendly_name: 'Select a base table:',
             fields_data: fields_data,
@@ -42,7 +58,7 @@ const html_generator = {
 
     /* Generates HTML for a mapping view */
     mapping_view: (
-        mappings_view_data: object[],  // mapping path data. See html_generator.mapping_path() for data structure
+        mappings_view_data: mapping_element_parameters[],  // mapping path data. See html_generator.mapping_path() for data structure
         use_cached: boolean = false  // whether to use a cached version of the mapping view
     ):string /* HTML for a mapping view */  =>
         html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached),
@@ -56,7 +72,7 @@ const html_generator = {
                 header_name  // {string} if mapping_type is 'new_static_column' - the value of a static filed. Else, the name of the header
             },
             line_attributes = [],  // {array} list of classes to be appended to this line
-        },
+        }:mapping_line_parameters,
         use_cached: boolean  // whether to use a cached version of the mapping line
     ):string /* HTML for a mapping line */ =>
         `<div class="wbplanview_mappings_line ${line_attributes.join(' ')}">
@@ -73,9 +89,9 @@ const html_generator = {
 
     /* Generates HTML for a given mapping path data */
     mapping_path: (
-        /* array */ mappings_line_data,  // list of mapping_element data. See html_generator.mapping_element() for data structure.
-        /* string */ custom_select_type = 'closed_list',  // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
-        /* boolean */ use_cached = false  // whether to use cached value for this mapping path
+        mappings_line_data:mapping_element_parameters[],  // list of mapping_element data. See html_generator.mapping_element() for data structure.
+        custom_select_type:string = 'closed_list',  // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
+        use_cached:boolean = false  // whether to use cached value for this mapping path
     ):string /* HTML for a given mapping path data */ =>
         mappings_line_data.map(mapping_details =>
             html_generator.mapping_element(
@@ -93,12 +109,12 @@ const html_generator = {
             /* object */ fields_data,  // fields data. See more info later in this method
             /* string */ table_name = '',  // the name of the table this mapping element belongs too
             /* string */ mapping_element_type = 'simple'  // the type of this mapping element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
-        },
+        }:mapping_element_parameters,
         custom_select_type: string = 'closed_list', // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
         use_cached: boolean = false  // whether to use cached value for this mapping element
     ):string /* HTML for a new mapping element */ {
 
-        const field_group_labels = {
+        const field_group_labels:{[key:string]:string} = {
             required_fields: 'Required Fields',
             optional_fields: 'Optional Fields',
             hidden_fields: 'Hidden Fields',

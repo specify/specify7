@@ -9,7 +9,7 @@ const html_generator = require('./html_generator.ts');
 const navigation = require('../navigation.js');
 
 /// <reference path="./data_model.ts" />
-//const data_model = require('./data_model.ts');
+const data_model = require('./data_model.ts');
 const auto_mapper = require('./auto_mapper.ts');
 const custom_select_element = require('./custom_select_element.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
@@ -483,15 +483,13 @@ const mappings = {
 
 			},
 
-			get_instance_data(internal_payload, {table_name}){
-				return {
-					mapping_element_type: internal_payload.mapping_element_type,
-					name: internal_payload.current_mapping_path_part,
-					friendly_name: data_model.tables[table_name]['table_friendly_name'],
-					table_name: table_name,
-					fields_data: internal_payload.result_fields,
-				};
-			},
+			get_instance_data: (internal_payload, {table_name})=>({
+				mapping_element_type: internal_payload.mapping_element_type,
+				name: internal_payload.current_mapping_path_part,
+				friendly_name: data_model.tables[table_name]['table_friendly_name'],
+				table_name: table_name,
+				fields_data: internal_payload.result_fields,
+			}),
 
 			commit_instance_data(internal_payload, callback_payload){
 				internal_payload.mapping_line_data.push(callback_payload.data);

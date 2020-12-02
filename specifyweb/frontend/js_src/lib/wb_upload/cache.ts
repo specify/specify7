@@ -2,6 +2,11 @@
 
 export {};
 
+interface set_parameters {
+	readonly bucket_type?:string,
+	readonly overwrite?:boolean,
+}
+
 const cache = {
 
 	buckets: {}, // the data structure that would store all of the buckets
@@ -93,11 +98,9 @@ const cache = {
 		cache_name: string,  // the name of the cache
 		cache_value: any,  // the value of the cache. Can be any object that can be converted to json
 		{
-			//@ts-ignore
 			/* string */ bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
-			//@ts-ignore
 			/* boolean */ overwrite = false,  // whether to overwrite the cache value if it is already present
-		}: object = {}
+		}:set_parameters = {}
 	):void {
 
 		if (!cache.event_listener_is_initialized)
@@ -145,8 +148,8 @@ const cache = {
 			return false;
 
 		const cache_usages = Object.values(cache.buckets[bucket_name]['records']).map(({use_count}) => use_count);
-		const total_usage = cache_usages.reduce((total_usage, usage) => {
-			return total_usage + usage;
+		const total_usage = cache_usages.reduce((total_usage:number, usage:any) => {
+			return total_usage + parseInt(usage);
 		}, 0);
 		const cache_items_count = cache_usages.length;
 		const average_usage = total_usage / cache_items_count;
