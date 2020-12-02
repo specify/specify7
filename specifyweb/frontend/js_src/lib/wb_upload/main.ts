@@ -1,27 +1,26 @@
 "use strict";
 
 const $ = require('jquery');
-const mappings = require('./mappings.js');
-const data_model = require('./data_model.js');
-const upload_plan_converter = require('./upload_plan_converter.js');
-const custom_select_element = require('./custom_select_element.js');
-const cache = require('./cache.js');
-const auto_mapper = require('./auto_mapper.js');
+const mappings = require('./mappings.ts');
+const data_model = require('./data_model.ts');
+const upload_plan_converter = require('./upload_plan_converter.ts');
+const custom_select_element = require('./custom_select_element.ts');
+const cache = require('./cache.ts');
+const auto_mapper = require('./auto_mapper.ts');
 
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
 const main = {
 
-	/*
-	* Constructor that finds needed elements, and makes sure to call constructor_first_run once
-	* @return {Promise} a promise that resolves to a mappings object
-	* */
-	constructor(
-		/* function */ save_plan_function  // the function to call to save changes to the upload plan
-	){
+	constructor_has_run: false,
+	save_plan: (event:object, ignore_validation:boolean)=>{},
 
-		return new Promise((resolve) => {
+	/* Constructor that finds needed elements, and makes sure to call constructor_first_run once */
+	constructor: (
+		save_plan_function:(event:object, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
+	):Promise<object> /* a promise that resolves to a mappings object */ =>
+		new Promise((resolve) => {
 
 			// FINDING ELEMENTS
 			mappings.container = document.getElementById('screen__mapping');
@@ -73,7 +72,7 @@ const main = {
 				}
 			});
 
-			mappings.list__mappings.addEventListener('click', event => {
+			mappings.list__mappings.addEventListener('click', (event: { target: any }) => {
 
 				const el = event.target;
 
@@ -136,13 +135,13 @@ const main = {
 				mappings.container.classList.add('hide_mapping_view');
 
 			const done_callback = () => {
-				this.constructor_has_run = true;
+				main.constructor_has_run = true;
 				loaded();
 				resolve(mappings);
 			};
 
 
-			if (!this.constructor_has_run)
+			if (!main.constructor_has_run)
 				main.constructor_first_run(done_callback, save_plan_function);
 			else
 				mappings.list__tables.innerHTML = data_model.html_tables;
@@ -154,20 +153,16 @@ const main = {
 				mappings.show_automapper_suggestions
 			);
 
-			if (this.constructor_has_run)
+			if (main.constructor_has_run)
 				done_callback();
 
-		});
+		}),
 
-	},
-
-	/*
-	* Constructor that needs to be run only once (fetches data model, initializes other modules
-	* */
+	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
 	constructor_first_run(
-		/* function */ done_callback,  // the callback to call for when the constructor is finished
-		/* function */ save_plan_function  // the function to call to save changes to the upload plan
-	){
+		done_callback: ()=>void,  // the callback to call for when the constructor is finished
+		save_plan_function:(event:object, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
+	):void {
 
 		data_model.view_payload = {
 
@@ -231,11 +226,8 @@ const main = {
 
 	},
 
-	/*
-	* Validates the current mapping and shows error messages if needed
-	* @return {mixed} - true if everything is fine or {string} formatted validation error message
-	* */
-	validate(){
+	/* Validates the current mapping and shows error messages if needed */
+	validate(): boolean|string /* true if everything is fine or {string} formatted validation error message */ {
 
 		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
@@ -272,18 +264,15 @@ const main = {
 
 	},
 
-	/*
-	* Shows a loading screen a returns a callback that removes the loading screen
-	* @return {function} callback that removes a loading screen
-	* */
-	loading_screen(){
+	/* Shows a loading screen a returns a callback that removes the loading screen */
+	loading_screen(): ()=>void /* callback that removes a loading screen */ {
 
 		mappings.container.classList.remove('loaded');
 
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
 			title: 'Loading',
 			modal: true,
-			open: function(evt, ui){
+			open: function(evt: any, ui: { dialog: any; }){
 				$('.ui-dialog-titlebar-close', ui.dialog).hide();
 			},
 			close: function(){

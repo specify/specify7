@@ -7,16 +7,16 @@ const _ = require('underscore');
 const Backbone = require('./backbone.js');
 const template = require('./templates/wbplanview.html');
 const navigation = require('./navigation.js');
-const mappings_main = require('./wb_upload/main.js');
-const upload_plan_converter = require('./wb_upload/upload_plan_converter.js');
-const cache = require('./wb_upload/cache.js');
+const mappings_main = require('./wb_upload/main.ts');
+const upload_plan_converter = require('./wb_upload/upload_plan_converter.ts');
+const cache = require('./wb_upload/cache.ts');
 const schema = require('./schema.js');
 const userInfo = require('./userinfo.js');
 
 
 const PlanView = Backbone.View.extend({
 
-    
+
     __name__: "PlanView",
     events: {
         'click #button__save_upload_plan': 'save_plan',
