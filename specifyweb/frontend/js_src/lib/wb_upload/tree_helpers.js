@@ -81,11 +81,11 @@ const tree_helpers = {
 	* 			#2
 	* 				Agent
 	* */
-	deep_merge_object(
+	deep_merge_object: (
 		/* object */ target,  // tree that is used as a basis
 		/* object */ source  // tree that is used as a source
-	){
-		return Object.entries(source).reduce((target, [source_property, source_value]) => {
+	) =>
+		Object.entries(source).reduce((target, [source_property, source_value]) => {
 
 			if (typeof target[source_property] === "undefined")
 				target[source_property] = source_value;
@@ -94,8 +94,7 @@ const tree_helpers = {
 
 			return target;
 
-		}, target);
-	},
+		}, target),
 
 	/*
 	* Converts an array to tree

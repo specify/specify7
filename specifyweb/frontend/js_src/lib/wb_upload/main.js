@@ -91,24 +91,24 @@ const main = {
 
 			add_new_column.addEventListener('click', () => {
 				mappings.add_new_mapping_line({
-												  header_data: {
-													  header_name: '',
-													  mapping_type: 'new_column'
-												  },
-												  blind_add_back: true,
-												  scroll_down: true,
-											  });
+					header_data: {
+						header_name: '',
+						mapping_type: 'new_column'
+					},
+					blind_add_back: true,
+					scroll_down: true,
+				});
 			});
 
 			add_new_static_column.addEventListener('click', () => {
 				mappings.add_new_mapping_line({
-												  header_data: {
-													  header_name: '',
-													  mapping_type: 'new_static_column'
-												  },
-												  blind_add_back: true,
-												  scroll_down: true,
-											  });
+					header_data: {
+						header_name: '',
+						mapping_type: 'new_static_column'
+					},
+					blind_add_back: true,
+					scroll_down: true,
+				});
 			});
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
@@ -174,6 +174,9 @@ const main = {
 			// all required fields are not hidden, except for these, which are made not required
 			required_fields_to_hide: [
 				'timestampcreated',
+				'timestampmodified',
+				'createdbyagent',
+				'modifiedbyagent',
 				'collectionmemberid',
 				'rankid',
 				'defintion',
@@ -181,6 +184,7 @@ const main = {
 				'ordernumber',
 				'isprimary',
 				'isaccepted',
+				'isloanable',
 				'treedef',
 			],
 			tables_to_hide: [
@@ -243,25 +247,25 @@ const main = {
 		div.innerHTML = formatted_validation_results;
 
 		let dialog = $(div).dialog({
-									   modal: true,
-									   title: 'Unmapped required fields detected',
-									   close: function(){
-										   $(this).remove();
-										   dialog = null;
-									   },
-									   width: 500,
-									   buttons: [
-										   {
-											   text: 'Return to mapping headers', click: function(){
-												   $(this).dialog('close');
-											   },
-										   },
-										   {
-											   text: 'Save unfinished mapping',
-											   click: () => main.save_plan(undefined, true)
-										   }
-									   ]
-								   });
+			modal: true,
+			title: 'Unmapped required fields detected',
+			close: function(){
+				$(this).remove();
+				dialog = null;
+			},
+			width: 500,
+			buttons: [
+				{
+					text: 'Return to mapping headers', click: function(){
+						$(this).dialog('close');
+					},
+				},
+				{
+					text: 'Save unfinished mapping',
+					click: () => main.save_plan(undefined, true)
+				}
+			]
+		});
 
 
 		return validation_results;
@@ -277,15 +281,15 @@ const main = {
 		mappings.container.classList.remove('loaded');
 
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-																				   title: 'Loading',
-																				   modal: true,
-																				   open: function(evt, ui){
-																					   $('.ui-dialog-titlebar-close', ui.dialog).hide();
-																				   },
-																				   close: function(){
-																					   $(this).remove();
-																				   }
-																			   });
+			title: 'Loading',
+			modal: true,
+			open: function(evt, ui){
+				$('.ui-dialog-titlebar-close', ui.dialog).hide();
+			},
+			close: function(){
+				$(this).remove();
+			}
+		});
 		$('.progress-bar', dialog).progressbar({value: false});
 
 		return () => {
