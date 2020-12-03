@@ -95,7 +95,7 @@
 //
 
 
-module.exports = {
+const auto_mapper_definitions = {
 	table_synonyms: {
 		Agent: [
 			{
@@ -466,3 +466,5 @@ module.exports = {
 		}
 	},
 };
+
+module.exports = auto_mapper_definitions;
