@@ -82,7 +82,44 @@ const WBView = Backbone.View.extend({
             search: {
                 searchResultClass: 'wb-search-match-cell',
             },
-            contextMenu: ['row_above', 'row_below', 'remove_row', '---------', 'undo', 'redo'],
+            contextMenu: {
+                items: {
+                    'row_above': 'row_above',
+                    'row_below': 'row_below',
+                    'remove_row': 'remove_row',
+                    'separator_1': '---------',
+                    'fill_down_with_increment': {
+                        name: 'Fill down with increment',
+                        disabled: function(){
+                            const selections = this.getSelected();
+
+                            return (
+                                    typeof selections === "undefined" ||
+                                    selections.every(selection=>
+                                        selection[0]===selection[2]
+                                    )
+                                );
+                        },
+                        callback: (_, selections) =>
+                            selections.map(selection=>{
+
+                                const start_column = selection.start.col;
+                                const end_column = selection.end.col;
+
+                                // if selection spans over several columns, run fill down for each individually
+                                for(let current_column=start_column; current_column<=end_column; current_column++)
+                                    this.fillDownCells({
+                                        start_row: selection.start.row,
+                                        end_row: selection.end.row,
+                                        col: current_column,
+                                    });
+                            }) && this.hot.deselectCell()
+                    },
+                    'separator_2': '---------',
+                    'undo': 'undo',
+                    'redo': 'redo',
+                }
+            },
             stretchH: 'all',
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
@@ -573,6 +610,38 @@ const WBView = Backbone.View.extend({
             toolbelt.style.display = '';
         else
             toolbelt.style.display = 'none';
+    },
+    fillDownCells: function({start_row,end_row,col}){
+
+        const find_numeric_offset = (cell_value)=>{
+            let i = cell_value.length-1;
+
+            while(i>=0 && !isNaN(cell_value[i]))
+                i--;
+
+            return i+1;
+        }
+
+        const first_cell = this.hot.getDataAtCell(start_row,col);
+        const first_cell_numeric_offset = find_numeric_offset(first_cell);
+        const alphanum_part = first_cell.substr(0,first_cell_numeric_offset);
+        const numeric_part_str = first_cell.substr(first_cell_numeric_offset);
+        const numeric_part = parseInt(numeric_part_str);
+
+        const changes = [];
+        const number_of_rows = end_row - start_row;
+        for(let i=0;i<=number_of_rows;i++)
+            changes.push([
+                start_row+i,
+                col,
+                alphanum_part + (
+                    isNaN(numeric_part) ?
+                        '' :
+                        (numeric_part+i).toString().padStart(numeric_part_str.length,'0')
+                )]);
+
+        this.hot.setDataAtCell(changes);
+
     }
 });
 
