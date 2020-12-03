@@ -976,6 +976,10 @@ const WBView = Backbone.View.extend({
         basemap.addTo(map);
 
         let index = 1;
+
+        const create_a_point = (latitude1,longitude1) =>
+            L.marker([latitude1,longitude1]);
+
         locality_points.map(point_data_dict=>{
 
             const {
@@ -988,45 +992,51 @@ const WBView = Backbone.View.extend({
                 latlongaccuracy = false
             } = point_data_dict;
 
-            let vector;
+            let vectors = [];
 
             if(latitude2===false || longitude2 === false){
 
                 // a point
                 if(latlongaccuracy === false || latlongaccuracy === "0")
-                    vector = L.marker([latitude1,longitude1]);
+                    vectors.push(create_a_point(latitude1,longitude1));
 
                 // a circle
                 else
-                    vector = L.circle([latitude1, longitude1], {
+                    vectors.push(L.circle([latitude1, longitude1], {
                         radius: latlongaccuracy
-                    });
+                    }));
 
             }
 
-            // a line
-            else if(latlongtype === 'Line')
-                vector = new L.Polyline([
-                    [latitude1, longitude1],
-                    [latitude2, longitude2]
-                ], {
-                    weight: 3,
-                    opacity: 0.5,
-                    smoothFactor: 1
-                });
 
-            // a polygon
             else
-                vector = L.polygon([
-                    [latitude1, longitude1],
-                    [latitude2, longitude1],
-                    [latitude2, longitude2],
-                    [latitude1, longitude2]
-                ])
+                vectors.push(
+                    latlongtype === 'Line' ?
+                        // a line
+                        new L.Polyline([
+                            [latitude1, longitude1],
+                            [latitude2, longitude2]
+                        ], {
+                            weight: 3,
+                            opacity: 0.5,
+                            smoothFactor: 1
+                        }) :
+                        // a polygon
+                        L.polygon([
+                            [latitude1, longitude1],
+                            [latitude2, longitude1],
+                            [latitude2, longitude2],
+                            [latitude1, longitude2]
+                        ]),
+                    create_a_point(latitude1, longitude1),
+                    create_a_point(latitude2, longitude2),
+                );
 
+            vectors.map(vector=>{
+                vector.addTo(map);
+                vector.bindPopup(localityname);
+            });
 
-            vector.addTo(map);
-            vector.bindPopup(localityname);
             index++;
         });
 
