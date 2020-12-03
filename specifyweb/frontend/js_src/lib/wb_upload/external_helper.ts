@@ -7,20 +7,19 @@
 * */
 
 
-const upload_plan_converter = require('./upload_plan_converter.js');
-const tree_helpers = require('./tree_helpers.js');
-const helper = require('./helper.js');
-const data_model = require('./data_model.js');
+const upload_plan_converter = require('./upload_plan_converter.ts');
+const tree_helpers = require('./tree_helpers.ts');
+const helper = require('./helper.ts');
+const data_model = require('./data_model.ts');
 
 const external_helper = {
 
 	/*
 	* Get set of column names that map to locality table
-	* @return {array} list of objects of type {locality_name,latitude,longitude}
 	* */
 	find_locality_columns(
-		/* string */ upload_plan  // upload plan as a string
-	){
+		upload_plan:string  // upload plan as a string
+	):{[key:string]:string}[] /* dictionary of type field_name>header_name */ {
 
 		let upload_plan_object;
 		try {
@@ -34,13 +33,13 @@ const external_helper = {
 
 
 		const mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(upload_plan_object)
-		const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree).map((combined_mappings_path)=>
+		const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree).map((combined_mappings_path: string[])=>
 			helper.deconstruct_mapping_path(combined_mappings_path, true)
-		).filter(([_,mapping_type,__])=>  // TODO: add support for static fields
+		).filter(([_,mapping_type,__]:string[])=>  // TODO: add support for static fields
 			mapping_type !== 'new_static_column'
 		);
 		const target_locality_fields = ['localityname','latitude1','longitude1','latitude2','longitude2','latlongtype', 'latlongaccuracy'];
-		const filtered_array_of_mappings = array_of_mappings.reduce((result,[mapping_path,_,header_name])=>{
+		const filtered_array_of_mappings = array_of_mappings.reduce((result:[string[],string][],[mapping_path,_,header_name]:[string[],string,string])=>{
 
 			if(target_locality_fields.indexOf(mapping_path[mapping_path.length-1])!==-1)
 				result.push([mapping_path, header_name]);
@@ -49,7 +48,7 @@ const external_helper = {
 
 		},[]);
 
-		const locality_objects = {};
+		const locality_objects:{[key:string]:{[key:string]:string}} = {};
 
 		for(const [mapping_path,header_name] of filtered_array_of_mappings){
 
@@ -65,7 +64,7 @@ const external_helper = {
 
 
 		//finding geography tree mappings
-		const geography_mapping_paths_to_search_for = [];
+		const geography_mapping_paths_to_search_for:[string,string,string][] = [];
 		const geography_ranks_to_search_for = ['country', 'state', 'county'];
 		Object.keys(locality_objects).map(base_mappings_path_string=>{
 
@@ -90,7 +89,7 @@ const external_helper = {
 
 		});
 
-		array_of_mappings.map(([mapping_path,_,header_name])=>
+		array_of_mappings.map(([mapping_path,_,header_name]:[string[],string,string])=>
 			geography_mapping_paths_to_search_for.some(([base_mappings_path_string, rank_name, search_mapping_path])=>{
 				if(mapping_path.join(data_model.path_join_symbol) === search_mapping_path){
 					locality_objects[base_mappings_path_string][rank_name] = header_name;

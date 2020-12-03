@@ -23,11 +23,11 @@ const icons = require('./icons.js');
 
 const template = require('./templates/wbview.html');
 
-const wb_upload_helper = require('./wb_upload/external_helper.js');
+const wb_upload_helper = require('./wb_upload/external_helper.ts');
 const latlongutils = require('./latlongutils.js');
 
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+const L = require('leaflet');
+require('leaflet/dist/leaflet.css');
 /* This code is needed to properly load the images in the Leaflet CSS */
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
