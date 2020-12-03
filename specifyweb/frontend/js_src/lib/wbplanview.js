@@ -29,6 +29,7 @@ const PlanView = Backbone.View.extend({
     initialize({wb}) {
         this.wb = wb;
         this.wbtemplatePromise = this.wb.rget('workbenchtemplate');
+        this.mapping_is_a_template = wb.get('ownerPermissionLevel')===1;
     },
 
     render() {
@@ -78,11 +79,6 @@ const PlanView = Backbone.View.extend({
                         constructor_done_promise.then(mappings=>{
                             this.mappings = mappings;
                             mappings.set_headers(headers, PlanView.upload_plan);
-                            this.mapping_is_a_template = (
-                                typeof PlanView.upload_plan !== "undefined" &&
-                                typeof PlanView.upload_plan['isTemplate'] !== "undefined" &&
-                                PlanView.upload_plan['isTemplate'] === true
-                            );
                             document.getElementById('checkbox__use_mapping_as_a_template').checked = this.mapping_is_a_template;
                         });
 
@@ -92,26 +88,26 @@ const PlanView = Backbone.View.extend({
 
     save_plan(event, ignore_validation=false) {
 
-        if(ignore_validation || typeof mappings_main.validate() === "boolean"){
-            this.go_back(event,true);
-            if(typeof event !== "undefined")
-                event.currentTarget.setAttribute('disabled', 'disabled');
-        }
+        if(!ignore_validation && typeof mappings_main.validate() !== "boolean")
+            return;
+
+        this.wb.set('ownerPermissionLevel',this.mapping_is_a_template?1:0);
+        this.wbtemplatePromise.done(wbtemplate=>
+            wbtemplate.set('remarks', upload_plan_converter.get_upload_plan())
+        );
+        this.wb.save();
+        this.go_back();
+
+        if(typeof event !== "undefined")
+            event.currentTarget.setAttribute('disabled', 'disabled');
 
     },
 
     validate_plan: () => mappings_main.validate(),
 
-    go_back(event,commit_changes=false){
-        this.wbtemplatePromise.done(wbtemplate => {
-
-            if(commit_changes)
-                wbtemplate.set('remarks', upload_plan_converter.get_upload_plan(this.mapping_is_a_template));
-
-            wbtemplate.save().done(() => {
-                navigation.go(`/workbench/${this.wb.id}/`);
-            });
-        });
+    go_back(){
+        navigation.removeUnloadProtect(this.mappings);
+        navigation.go(`/workbench/${this.wb.id}/`);
     },
 
     change_mapping_type: function(event){
@@ -122,7 +118,7 @@ const PlanView = Backbone.View.extend({
 
         return new Promise((resolve)=>{
             const wbs = new schema.models.Workbench.LazyCollection({
-                filters: { specifyuser: userInfo.id, orderby: 'name' }
+                filters: { orderby: 'name', ownerpermissionlevel:1 }
             });
             wbs.fetch({ limit: 5000 }).done(function() {
                 resolve(wbs.models);
@@ -145,9 +141,7 @@ const PlanView = Backbone.View.extend({
 
                     if (
                         typeof upload_plan === "object" &&
-                        upload_plan !== null &&
-                        typeof upload_plan['isTemplate'] === "boolean" &&
-                        upload_plan['isTemplate'] === true
+                        upload_plan !== null
                     )
                         templates[wbt.get('id')] = {
                             dataset_name: wbt.get('name'),

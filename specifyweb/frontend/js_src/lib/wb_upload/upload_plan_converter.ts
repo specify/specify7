@@ -83,12 +83,9 @@ const upload_plan_converter = {
 	},
 
 	/* Get upload plan */
-	get_upload_plan: (
-		mapping_is_a_template :boolean = false  // whether this upload plan can be used as a template in the future
-	) :string /* Upload plan as a JSON string */ =>
+	get_upload_plan: () :string /* Upload plan as a JSON string */ =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
-			upload_plan_converter.get_mappings_tree(true),
-			mapping_is_a_template
+			upload_plan_converter.get_mappings_tree(true)
 		),
 
 	/*
@@ -96,13 +93,11 @@ const upload_plan_converter = {
 	* Inverse of upload_plan_to_mappings_tree
 	* */
 	mappings_tree_to_upload_plan(
-		mappings_tree :object,  // mappings tree that is going to be used
-		mapping_is_a_template :boolean = false  // whether this upload plan can be used as a template in the future
+		mappings_tree :object  // mappings tree that is going to be used
 	) :string /* Upload plan as a JSON string */ {
 
 		const upload_plan = {
-			baseTableName: data_model.base_table_name,
-			isTemplate: mapping_is_a_template
+			baseTableName: data_model.base_table_name
 		};
 
 		function handle_header(data :string | object) {
