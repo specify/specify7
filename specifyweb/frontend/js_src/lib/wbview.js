@@ -613,20 +613,25 @@ const WBView = Backbone.View.extend({
     },
     fillDownCells: function({start_row,end_row,col}){
 
-        const find_numeric_offset = (cell_value)=>{
-            let i = cell_value.length-1;
-
-            while(i>=0 && !isNaN(cell_value[i]))
-                i--;
-
-            return i+1;
-        }
+        // const find_numeric_offset = (cell_value)=>{
+        //     let i = cell_value.length-1;
+        //
+        //     while(i>=0 && !isNaN(cell_value[i]))
+        //         i--;
+        //
+        //     return i+1;
+        // }
 
         const first_cell = this.hot.getDataAtCell(start_row,col);
-        const first_cell_numeric_offset = find_numeric_offset(first_cell);
-        const alphanum_part = first_cell.substr(0,first_cell_numeric_offset);
-        const numeric_part_str = first_cell.substr(first_cell_numeric_offset);
-        const numeric_part = parseInt(numeric_part_str);
+
+        if(isNaN(first_cell))
+            return;
+
+        // const first_cell_numeric_offset = find_numeric_offset(first_cell);
+        // const alphanum_part = first_cell.substr(0,first_cell_numeric_offset);
+        // const numeric_part_str = first_cell.substr(first_cell_numeric_offset);
+        // const numeric_part = parseInt(numeric_part_str);
+        const numeric_part = parseInt(first_cell);
 
         const changes = [];
         const number_of_rows = end_row - start_row;
@@ -634,11 +639,13 @@ const WBView = Backbone.View.extend({
             changes.push([
                 start_row+i,
                 col,
-                alphanum_part + (
-                    isNaN(numeric_part) ?
-                        '' :
-                        (numeric_part+i).toString().padStart(numeric_part_str.length,'0')
-                )]);
+                (numeric_part+i).toString().padStart(first_cell.length,'0')
+                // alphanum_part + (
+                //     isNaN(numeric_part) ?
+                //         '' :
+                //         (numeric_part+i).toString().padStart(numeric_part_str.length,'0')
+                // )
+            ]);
 
         this.hot.setDataAtCell(changes);
 
