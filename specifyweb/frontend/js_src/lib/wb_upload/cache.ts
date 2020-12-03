@@ -1,13 +1,13 @@
 "use strict";
 
 interface set_parameters {
-	readonly bucket_type?:string,
-	readonly overwrite?:boolean,
+	readonly bucket_type? :string,
+	readonly overwrite? :boolean,
 }
 
 const cache = {
 
-	buckets: {}, // the data structure that would store all of the buckets
+	buckets: {},  // the data structure that would store all of the buckets
 	cache_prefix: 'specify7_wbplanview_',  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
 	local_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
 	session_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
@@ -15,7 +15,7 @@ const cache = {
 	event_listener_is_initialized: false,  // indicates whether initialize() was run. If not, runs it on the next call to get() or set()
 
 	/* Set's an event listener that runs commit_to_storage before page unload */
-	initialize():void {
+	initialize() :void {
 
 		window.onbeforeunload = cache.commit_to_storage;
 		cache.event_listener_is_initialized = true;
@@ -23,12 +23,12 @@ const cache = {
 	},
 
 	/* Commits persistent cache buckets to localStorage */
-	commit_to_storage():void {
+	commit_to_storage() :void {
 
 		if (typeof localStorage === "undefined")
 			return;
 
-		for (const [bucket_name, bucket_data] of Object.entries(<object> cache.buckets))
+		for (const [bucket_name, bucket_data] of Object.entries(<object>cache.buckets))
 			if (
 				bucket_data['type'] === 'local_storage' &&
 				Object.keys(bucket_data['records']).length !== 0
@@ -41,10 +41,10 @@ const cache = {
 
 	/* Tries to fetch a bucket from localStorage */
 	fetch_bucket(
-		bucket_name: string  // the name of the bucket to fetch
-	):object|boolean
+		bucket_name :string  // the name of the bucket to fetch
+	) :object | boolean
 	/*
-	* {boolean} False if bucket does not exist.
+	* {boolean} False if bucket does not exist
 	* {object} bucket content if bucket exists
 	* */ {
 
@@ -60,9 +60,9 @@ const cache = {
 
 	/* Get value of cache_name in the bucket_name */
 	get(
-		bucket_name: string,  // the name of the bucket
-		cache_name: string  // the name of the cache
-	):any
+		bucket_name :string,  // the name of the bucket
+		cache_name :string  // the name of the cache
+	) :any
 	/*
 	 * {boolean} False on error
 	 * {mixed} value stored under cache_name on success
@@ -92,14 +92,14 @@ const cache = {
 
 	/* Set's cache_value as cache value under cache_name in bucket_name */
 	set(
-		bucket_name: string,  // the name of the bucket
-		cache_name: string,  // the name of the cache
-		cache_value: any,  // the value of the cache. Can be any object that can be converted to json
+		bucket_name :string,  // the name of the bucket
+		cache_name :string,  // the name of the cache
+		cache_value :any,  // the value of the cache. Can be any object that can be converted to json
 		{
 			/* string */ bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
 			/* boolean */ overwrite = false,  // whether to overwrite the cache value if it is already present
-		}:set_parameters = {}
-	):void {
+		} :set_parameters = {}
+	) :void {
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
@@ -129,8 +129,8 @@ const cache = {
 	* This method is needed to prevent memory leaks and stay under browser memory limit - ~5MB for Google Chrome ;(
 	* */
 	trim_bucket(
-		bucket_name: string  // the bucket to trim
-	):boolean {
+		bucket_name :string  // the bucket to trim
+	) :boolean {
 
 		// don't trim cache if the number of records in this bucket is smaller than soft limits
 		if (
@@ -146,20 +146,20 @@ const cache = {
 			return false;
 
 		const cache_usages = Object.values(cache.buckets[bucket_name]['records']).map(({use_count}) => use_count);
-		const total_usage = cache_usages.reduce((total_usage:number, usage:any) => {
+		const total_usage = cache_usages.reduce((total_usage :number, usage :any) => {
 			return total_usage + parseInt(usage);
 		}, 0);
 		const cache_items_count = cache_usages.length;
 		const average_usage = total_usage / cache_items_count;
 
-		//trim all caches with usage equal to or smaller than usage_to_trim
+		// trim all caches with usage equal to or smaller than usage_to_trim
 		let usage_to_trim = Math.round(average_usage * cache.trim_aggresivnes);
 
 		if (usage_to_trim === 0)
 			usage_to_trim = 1;
 
 		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);
-		const new_records:{ [index:string] : {message: object} } = {};
+		const new_records :{[index :string] :{message :object}} = {};
 		for (const [cache_index, cache_usage] of Object.entries(cache_usages)) {
 
 			const cache_key = cache_keys[parseInt(cache_index)];
@@ -175,7 +175,7 @@ const cache = {
 	},
 
 	/* Cleans app all of the buckets */
-	wipe_all():void {
+	wipe_all() :void {
 
 		cache.buckets = {};
 		localStorage.clear();

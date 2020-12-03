@@ -1,7 +1,7 @@
 "use strict";
 
 interface upload_plan {
-	[key:string]: string|boolean|upload_plan,
+	[key :string] :string | boolean | upload_plan,
 }
 
 
@@ -16,19 +16,19 @@ const data_model = require('./data_model.ts');
 
 const upload_plan_converter = {
 
-	get_mappings_tree: (include_headers?:boolean,skip_empty?:boolean):object =>({}),
+	get_mappings_tree: (include_headers? :boolean, skip_empty? :boolean) :object => ({}),
 
 	upload_plan_processing_functions: {
-		wbcols: ([key, value]:[key:string,value:string]) => [key, {
+		wbcols: ([key, value] :[key :string, value :string]) => [key, {
 			[
 				data_model['headers'].indexOf(value) !== -1 ?
 					'existing_header' :
 					'new_column'
 				]: value
 		}],
-		static: ([key, value]:[key:string,value:string]) => ([key, {new_static_column: value}]),
-		toOne: ([key, value]:[key:string,value:object]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
-		toMany: ([key, original_mappings]:[key:string,value:object]) => {
+		static: ([key, value] :[key :string, value :string]) => ([key, {new_static_column: value}]),
+		toOne: ([key, value] :[key :string, value :object]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
+		toMany: ([key, original_mappings] :[key :string, value :object]) => {
 			let i = 1;
 			return [
 				key,
@@ -47,18 +47,17 @@ const upload_plan_converter = {
 	* Inverse of mappings_tree_to_upload_plan
 	* */
 	upload_plan_to_mappings_tree(
-		upload_plan:upload_plan,  // upload plan
-		base_table_name_extracted:boolean = false  // used by recursion to store intermediate results
-	):object /* mapping tree */ {
+		upload_plan :upload_plan,  // upload plan
+		base_table_name_extracted :boolean = false  // used by recursion to store intermediate results
+	) :object /* mapping tree */ {
 
 		if (!base_table_name_extracted) {
 
-			if(typeof upload_plan['baseTableName'] === "undefined")
+			if (typeof upload_plan['baseTableName'] === "undefined")
 				throw "Upload plan should contain `baseTableName` as a root node";
 			data_model.base_table_name = (<string>upload_plan['baseTableName']).toLowerCase();
 			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan>upload_plan['uploadable'], true);
 		}
-
 		else if (typeof upload_plan['uploadTable'] !== "undefined")
 			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan>upload_plan['uploadTable'], true);
 
@@ -85,7 +84,7 @@ const upload_plan_converter = {
 
 	/* Get upload plan */
 	get_upload_plan: (
-		mapping_is_a_template:boolean = false  // whether this upload plan can be used as a template in the future
+		mapping_is_a_template :boolean = false  // whether this upload plan can be used as a template in the future
 	) :string /* Upload plan as a JSON string */ =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
 			upload_plan_converter.get_mappings_tree(true),
@@ -97,16 +96,16 @@ const upload_plan_converter = {
 	* Inverse of upload_plan_to_mappings_tree
 	* */
 	mappings_tree_to_upload_plan(
-		mappings_tree:object,  // mappings tree that is going to be used
-		mapping_is_a_template:boolean = false  // whether this upload plan can be used as a template in the future
-	):string /* Upload plan as a JSON string */ {
+		mappings_tree :object,  // mappings tree that is going to be used
+		mapping_is_a_template :boolean = false  // whether this upload plan can be used as a template in the future
+	) :string /* Upload plan as a JSON string */ {
 
 		const upload_plan = {
 			baseTableName: data_model.base_table_name,
 			isTemplate: mapping_is_a_template
 		};
 
-		function handle_header(data: string|object){
+		function handle_header(data :string | object) {
 
 			if (typeof data === "string")
 				return data;
@@ -116,7 +115,7 @@ const upload_plan_converter = {
 		}
 
 
-		function handle_table(table_data:object, table_name:string, wrap_it = true){
+		function handle_table(table_data :object, table_name :string, wrap_it = true) {
 
 			if (typeof data_model.ranks[table_name] !== "undefined") {
 
@@ -131,7 +130,7 @@ const upload_plan_converter = {
 				return {treeRecord: {ranks: final_tree}};
 			}
 
-			let table_plan:{wbcols:object,static:object,toOne:object,toMany?:object} = {
+			let table_plan :{wbcols :object, static :object, toOne :object, toMany? :object} = {
 				wbcols: {},
 				static: {},
 				toOne: {},

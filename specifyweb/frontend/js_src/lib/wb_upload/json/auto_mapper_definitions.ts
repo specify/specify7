@@ -95,7 +95,7 @@
 //
 
 
-const auto_mapper_definitions =  {
+const auto_mapper_definitions = {
 	table_synonyms: {
 		Agent: [
 			{

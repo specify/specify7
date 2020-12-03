@@ -16,12 +16,13 @@ const auto_mapper = require('./auto_mapper.ts');
 const main = {
 
 	constructor_has_run: false,
-	save_plan: (event:object|undefined, ignore_validation:boolean)=>{},
+	save_plan: (event :object | undefined, ignore_validation :boolean) => {
+	},
 
 	/* Constructor that finds needed elements, and makes sure to call constructor_first_run once */
 	constructor: (
-		save_plan_function:(event:object|undefined, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
-	):Promise<object> /* a promise that resolves to a mappings object */ =>
+		save_plan_function :(event :object | undefined, ignore_validation :boolean) => void  // the function to call to save changes to the upload plan
+	) :Promise<object> /* a promise that resolves to a mappings object */ =>
 		new Promise((resolve) => {
 
 			// FINDING ELEMENTS
@@ -74,7 +75,7 @@ const main = {
 				}
 			});
 
-			mappings.list__mappings.addEventListener('click', (event: { target: any }) => {
+			mappings.list__mappings.addEventListener('click', (event :{target :any}) => {
 
 				const el = event.target;
 
@@ -162,9 +163,9 @@ const main = {
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
 	constructor_first_run(
-		done_callback: ()=>void,  // the callback to call for when the constructor is finished
-		save_plan_function:(event:object|undefined, ignore_validation:boolean)=>void  // the function to call to save changes to the upload plan
-	):void {
+		done_callback :() => void,  // the callback to call for when the constructor is finished
+		save_plan_function :(event :object | undefined, ignore_validation :boolean) => void  // the function to call to save changes to the upload plan
+	) :void {
 
 		data_model.view_payload = {
 
@@ -229,7 +230,7 @@ const main = {
 	},
 
 	/* Validates the current mapping and shows error messages if needed */
-	validate(): boolean|string /* true if everything is fine or {string} formatted validation error message */ {
+	validate() :boolean | string /* true if everything is fine or {string} formatted validation error message */ {
 
 		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
@@ -243,14 +244,14 @@ const main = {
 		let dialog = $(div).dialog({
 			modal: true,
 			title: 'Unmapped required fields detected',
-			close: function(){
+			close: function () :void {
 				$(this).remove();
 				dialog = null;
 			},
 			width: 500,
 			buttons: [
 				{
-					text: 'Return to mapping headers', click: function(){
+					text: 'Return to mapping headers', click: function () :void {
 						$(this).dialog('close');
 					},
 				},
@@ -267,17 +268,17 @@ const main = {
 	},
 
 	/* Shows a loading screen a returns a callback that removes the loading screen */
-	loading_screen(): ()=>void /* callback that removes a loading screen */ {
+	loading_screen() :() => void /* callback that removes a loading screen */ {
 
 		mappings.container.classList.remove('loaded');
 
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
 			title: 'Loading',
 			modal: true,
-			open: function(evt: any, ui: { dialog: any; }){
+			open: function (evt :any, ui :{dialog :any;}) :void {
 				$('.ui-dialog-titlebar-close', ui.dialog).hide();
 			},
-			close: function(){
+			close: function () :void {
 				$(this).remove();
 			}
 		});
