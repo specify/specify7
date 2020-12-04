@@ -1,0 +1,25 @@
+.lifemapper_source_icon {
+	background: none;
+	border: none;
+	padding: 0.1rem;
+	border-radius: 100px;
+	cursor: pointer;
+}
+
+.lifemapper_source_icon_not_found {
+	opacity: 0.5;
+	cursor: initial;
+	outline: none;
+}
+
+.lifemapper_source_icon_issues_detected {
+	background: #f55;
+}
+
+.lifemapper_source_icon img {
+	margin: 0;
+}
+
+.lifemapper_source_issues_list li {
+	list-style: disc;
+}
