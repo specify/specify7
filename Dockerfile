@@ -23,15 +23,16 @@ FROM common AS build-common
 RUN apt-get update && apt-get -y install --no-install-recommends \
         build-essential \
         ca-certificates \
+        curl \
         git
 
 #####################################################################
 
 FROM build-common AS build-frontend
 
-RUN apt-get -y install --no-install-recommends \
-        nodejs \
-        npm
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
+
+RUN apt-get update && apt-get -y install --no-install-recommends nodejs
 
 USER specify
 
