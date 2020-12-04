@@ -21,7 +21,12 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                use: "underscore-template-loader"
+                use: [{
+                    loader: "underscore-template-loader",
+                    query: {
+                        engine: 'underscore',
+                    }
+                }]
             },
             {
                 test: /\.[tj]sx?$/,
