@@ -222,7 +222,7 @@ const data_model = {
 		table_name :string,  // Official name of the current base table (from data model)
 		mapping_tree :object | boolean = false,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
 		previous_table_name :string = '',  // used internally in recursion. Previous table name
-		path :string[] = [],  // used internally in recursion. Current mapping path
+		path :mapping_path = [],  // used internally in recursion. Current mapping path
 		results :string[][] = []  // used internally in recursion. Saves results
 	) :string[][] /* array of mapping paths (array) */ {
 

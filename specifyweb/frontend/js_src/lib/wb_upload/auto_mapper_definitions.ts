@@ -240,7 +240,7 @@ const definitions:auto_mapper_definitions_interface = {
 				automapper: {
 					headers: {
 						regex: [
-							'^(coll(ect(ing)?)?) (ev(ent)?|(#|n(o|um(er)?)?)|ev(ent)? (#|n(o|um(er)?)?))',
+							/^(coll(ect(ing)?)?) (ev(ent)?|(#|n(o|um(er)?)?)|ev(ent)? (#|n(o|um(er)?)?))/,
 						],
 					},
 				}
@@ -251,7 +251,7 @@ const definitions:auto_mapper_definitions_interface = {
 				automapper: {
 					headers: {
 						regex: [
-							'acc(ession)? (#|n(o|um(er)?)?)',
+							/acc(ession)? (#|n(o|um(er)?)?)/,
 						],
 						string: [
 							'accession'
@@ -376,7 +376,7 @@ const definitions:auto_mapper_definitions_interface = {
 				automapper: {
 					headers: {
 						regex: [
-							'specimen|cat(alog(ue)?)? ?(#|n(o|um(er)?)?)',
+							/specimen|cat(alog(ue)?)? ?(#|n(o|um(er)?)?)/,
 						],
 						contains: [
 							'bmsm no',

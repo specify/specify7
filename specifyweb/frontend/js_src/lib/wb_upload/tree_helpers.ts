@@ -7,7 +7,6 @@
 const tree_helpers = {
 
 	/* Returns cross-section of full_mappings_tree and node_mappings_tree */
-
 	traverse_tree(
 		full_mappings_tree :mapping_tree,  // full tree with various branches
 		node_mappings_tree :mapping_tree | string  // a tree several levels deep with only a single branch
@@ -191,7 +190,7 @@ const tree_helpers = {
 	mappings_tree_to_array_of_mappings: (
 		mappings_tree :mapping_tree,  // mappings tree
 		path :any[] = []  // used in recursion to store intermediate path
-	) :string[][] /* array of arrays of string */ =>
+	) :mapping_path[] /* array of arrays of string */ =>
 		/*
 		* For example, if mappings_tree is:
 		* 	Accession
@@ -206,7 +205,7 @@ const tree_helpers = {
 		* 	Accession, Accession Agents, #1, Agent, Last Name
 		* 	Accession, Accession Agents, #1, Remarks
 		* */
-		Object.entries(mappings_tree).reduce((result :string[][], [tree_node_name, tree_node]) => {
+		Object.entries(mappings_tree).reduce((result :mapping_path[], [tree_node_name, tree_node]) => {
 
 			if (typeof tree_node !== "object")
 				result.push([...path, tree_node_name, tree_node]);

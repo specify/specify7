@@ -36,6 +36,7 @@ const mappings = {
 	mappings_tree: {},
 	lines: [],
 	mapped_fields: [],
+	auto_mapper: new auto_mapper(),
 
 
 	// SETTERS
@@ -43,7 +44,7 @@ const mappings = {
 	/* Select table */
 	set_table: (
 		table_name :string,  // the name of the table to set
-		headers_to_shadow_define :string[] = []  // a list of headers that would be fully defined at a later pointer
+		headers_to_shadow_define :list_of_headers = []  // a list of headers that would be fully defined at a later pointer
 	) =>
 		new Promise((resolve) => {
 
@@ -94,13 +95,13 @@ const mappings = {
 			}
 
 			if (mappings.need_to_run_auto_mapper) {
-				const mappings_object = auto_mapper.map({
+				const mappings_object:automapper_results = mappings.auto_mapper.map({
 					headers: data_model.headers,
 					base_table: data_model.base_table_name,
 					scope: 'automapper',
 				});
-				const array_of_mappings = mappings_object.map(([header_name, mapping_path]) =>
-					[...mapping_path, 'existing_header', header_name]
+				const array_of_mappings = Object.entries(mappings_object).map(([header_name, mapping_path]) =>
+					[...mapping_path[0], 'existing_header', header_name]
 				);
 				mappings.need_to_run_auto_mapper = false;
 				mappings.implement_array_of_mappings(array_of_mappings);
@@ -116,8 +117,8 @@ const mappings = {
 
 	/* Sets a lit of headers */
 	set_headers(
-		headers :string[] = [],  // list of headers as strings
-		upload_plan :{baseTableName} | boolean = false,  // upload plan as an object or {bool} false for none
+		headers :list_of_headers = [],  // list of headers as strings
+		upload_plan :{baseTableName:string} | boolean = false,  // upload plan as an object or {bool} false for none
 		headers_defined :boolean = true  // whether CSV file had headers in the first line
 	) :void {
 
@@ -179,7 +180,7 @@ const mappings = {
 
 	/* Implements array of mappings */
 	implement_array_of_mappings(
-		array_of_mappings :string[]  // array of mapping_path's (with mapping types and header names / static column values)
+		array_of_mappings :mapping_path[]  // array of mapping_path's (with mapping types and header names / static column values)
 	) :void {
 
 		if (array_of_mappings.length === 0)
@@ -512,7 +513,7 @@ const mappings = {
 	get_array_of_mappings(
 		include_headers :boolean = false,  // whether each mapping path should also have mapping type and header name at the end
 		skip_empty :boolean = true  // whether to skip incomplete mapping paths
-	) :string[][] /* array of mapping paths */ {
+	) :mapping_path[] /* array of mapping paths */ {
 
 		if (!include_headers && !mappings.changes_made) {
 			mappings.changes_made = false;
@@ -566,7 +567,7 @@ const mappings = {
 
 	/* Get a mappings tree branch given a particular starting mapping path */
 	get_mapped_fields: (
-		mapping_path_filter :string[],  // a mapping path that would be used as a filter
+		mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 		skip_empty :boolean = true  // whether to skip incomplete mappings
 	) /*:object*/ /* mappings tree starting from a given a particular starting mapping path */ =>
 		tree_helpers.traverse_tree(
@@ -582,7 +583,7 @@ const mappings = {
 						 include_headers = false,  // whether to include mapping type and header_name / static column value in the result
 						 exclude_unmapped = false,  // whether to replace incomplete mapping paths with ["0"]
 						 exclude_non_relationship_values = false,  // whether to exclude simple fields from the resulting path
-					 }) :string[] /* mapping path */ {
+					 }) :mapping_path {
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
@@ -838,7 +839,7 @@ const mappings = {
 
 	/* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements on all lines */
 	update_all_lines: (
-		mapping_path_filter :string[][] | string[] | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
+		mapping_path_filter :mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
 		new Promise((resolve) => {
 			resolve();
@@ -864,7 +865,7 @@ const mappings = {
 	/* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements in the current line */
 	update_line: (
 		line_elements_container :HTMLElement,  // the line elements container whose elements would be updated
-		filter_mapping_path :string[] | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
+		filter_mapping_path :mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
 		new Promise((resolve) => {
 
@@ -1094,7 +1095,7 @@ const mappings = {
 				path_offset = 1;
 			}
 
-			let automapper_results = auto_mapper.map({
+			let automapper_results = mappings.auto_mapper.map({
 				headers: [header],
 				base_table: data_model.base_table_name,
 				starting_table: mapping_line_data[mapping_line_data.length - 1]['table_name'],

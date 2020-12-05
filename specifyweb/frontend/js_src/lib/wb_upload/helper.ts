@@ -3,6 +3,8 @@
 * Collection of various helper methods used during the mapping process
 *
 * */
+const data_model = require('./data_model.ts');
+
 const helper = {
 
 	/*
@@ -80,10 +82,10 @@ const helper = {
 
 	/* Extract mapping type and header name / static column value from a mapping path */
 	deconstruct_mapping_path(
-		mapping_path :string[],  // combined mapping path
+		mapping_path :mapping_path,  // combined mapping path
 		has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
 		detect_unmapped :boolean = true  // whether detect that a mapping path is incomplete
-	) :any[]  // [mapping_path, mapping_type, header]
+	) :deconstructed_mapping_path  // [mapping_path, mapping_type, header]
 	/*
 	* If mapping path is incomplete and detect_unmapped is true mapping_path is []
 	* Example:
@@ -118,23 +120,23 @@ const helper = {
 
 		mapping_path = [...mapping_path];
 
-		let header;
-		let mapping_type;
+		let header='';
+		let mapping_type='';
 		if (has_header) {
-			header = mapping_path.pop();
-			mapping_type = mapping_path.pop();
+			header = mapping_path.pop() || '';
+			mapping_type = mapping_path.pop() || '';
 		}
 
 		if (detect_unmapped && mapping_path[mapping_path.length - 1] === "0")
 			mapping_path = [];
 
-		return [mapping_path, mapping_type, header];
+		return <[string[], ("existing_header" | "new_column" | "new_static_column"), string]>[mapping_path, mapping_type, header];
 
 	},
 
 	/* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
 	find_duplicate_mappings(
-		array_of_mappings :string[][],  // array of mappings as returned by mappings.get_array_of_mappings()
+		array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
 		has_headers :boolean = false  // whether array of mappings contain mapping types and header names / static column values
 	) :number[]  // array of duplicate indexes
 	/*
@@ -159,7 +161,7 @@ const helper = {
 	* */ {
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
-		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join());
+		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model.path_join_symbol));
 
 		const duplicate_indexes :number[] = [];
 		let index = -1;
