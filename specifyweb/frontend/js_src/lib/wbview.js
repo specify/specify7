@@ -1005,9 +1005,12 @@ const WBView = Backbone.View.extend({
 
                 // a circle
                 else
-                    vectors.push(L.circle([latitude1, longitude1], {
-                        radius: latlongaccuracy
-                    }));
+                    vectors.push(
+                        L.circle([latitude1, longitude1], {
+                            radius: latlongaccuracy
+                        }),
+                        create_a_point(latitude1, longitude1)
+                    );
 
             }
 
@@ -1032,7 +1035,7 @@ const WBView = Backbone.View.extend({
                             [latitude1, longitude2]
                         ]),
                     create_a_point(latitude1, longitude1),
-                    create_a_point(latitude2, longitude2),
+                    create_a_point(latitude2, longitude2)
                 );
 
 
