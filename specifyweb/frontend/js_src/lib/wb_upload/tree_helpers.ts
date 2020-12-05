@@ -1,5 +1,3 @@
-"use strict";
-
 /*
 *
 * Various helper methods for working with trees
@@ -227,4 +225,4 @@ const tree_helpers = {
 
 };
 
-module.exports = tree_helpers;
+export = tree_helpers;

@@ -1,5 +1,3 @@
-"use strict";
-
 /*
 *
 * Various helper methods for finding DOM elements and interacting with them
@@ -85,4 +83,4 @@ const dom_helper = {
 
 };
 
-module.exports = dom_helper;
+export = dom_helper;

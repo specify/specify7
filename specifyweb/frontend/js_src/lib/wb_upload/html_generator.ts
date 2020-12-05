@@ -1,5 +1,3 @@
-"use strict";
-
 const custom_select_element = require('./custom_select_element.ts');
 
 /*
@@ -166,4 +164,4 @@ const html_generator = {
 
 };
 
-module.exports = html_generator;
+export = html_generator;

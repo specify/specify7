@@ -1,11 +1,8 @@
-"use strict";
-
 /*
 *
 * Helper class for converting from upload plan to internal structure and vice versa
 *
 * */
-
 
 const data_model = require('./data_model.ts');
 
@@ -198,4 +195,4 @@ const upload_plan_converter = {
 
 };
 
-module.exports = upload_plan_converter;
+export = upload_plan_converter;

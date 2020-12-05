@@ -1,5 +1,3 @@
-"use strict";
-
 /*
 *
 * Collection of various helper methods used during the mapping process
@@ -187,4 +185,4 @@ const helper = {
 
 };
 
-module.exports = helper;
+export = helper;

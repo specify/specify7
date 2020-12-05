@@ -1,5 +1,3 @@
-"use strict";
-
 const cache = require('./cache.ts');
 
 const custom_select_element = {
@@ -572,4 +570,4 @@ const custom_select_element = {
 
 };
 
-module.exports = custom_select_element;
+export = custom_select_element;

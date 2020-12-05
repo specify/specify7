@@ -1,5 +1,3 @@
-"use strict";
-
 const cache = {
 
 	buckets: {},  // the data structure that would store all of the buckets
@@ -179,4 +177,4 @@ const cache = {
 
 };
 
-module.exports = cache;
+export = cache;

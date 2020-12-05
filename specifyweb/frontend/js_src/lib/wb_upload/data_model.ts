@@ -1,7 +1,6 @@
-"use strict";
-
 const schema = require('../schema.js');
 const domain = require('../domain.js');
+
 const helper = require('./helper.ts');
 const html_generator = require('./html_generator.ts');
 const cache = require('./cache.ts');
@@ -604,4 +603,4 @@ const data_model = {
 
 };
 
-module.exports = data_model;
+export = data_model;

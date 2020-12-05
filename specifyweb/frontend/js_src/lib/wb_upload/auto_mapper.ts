@@ -1,15 +1,6 @@
-"use strict";
-
-/// <reference path="./json/auto_mapper_definitions.ts" />
-const auto_mapper_definitions = require('./json/auto_mapper_definitions.ts');
-
-/// <reference path="./data_model.ts" />
+const auto_mapper_definitions = require('./auto_mapper_definitions.ts');
 const data_model = require('./data_model.ts');
-
-/// <reference path="./cache.ts" />
 const cache = require('./cache.ts');
-
-/// <reference path="./helper.ts" />
 const helper = require('./helper.ts');
 
 
@@ -722,4 +713,4 @@ const auto_mapper = {
 	},
 };
 
-module.exports = auto_mapper;
+export = auto_mapper;
