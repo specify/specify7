@@ -1,20 +1,47 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist/",
-    "strict": true,
-    "target": "es2015",
-    "jsx": "react",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "allowJs": true,
-    "noEmit": true,
-    "lib": [
-      "es6",
-      "dom"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "sourceMap": true
-  }
+	"compilerOptions": {
+
+		/* Basic Options */
+		"outDir": "./dist/",
+		"target": "es2015",
+		"jsx": "react",
+		"module": "CommonJS",
+		"isolatedModules": true,
+		"sourceMap": true,
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"lib": [
+			"es6",
+			"dom",
+			"es2016",
+			"es2017",
+			"es2018",
+			"es2019",
+			"es2020",
+		],
+
+		/* Strict Type-Checking Options */
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+
+		/* Additional Checks */
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": false,
+		"noFallthroughCasesInSwitch": true,
+
+		/* Module Resolution Options */
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+
+		/* Experimental Options */
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+	}
 }

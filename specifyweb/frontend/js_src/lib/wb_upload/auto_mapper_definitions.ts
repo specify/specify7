@@ -1,5 +1,3 @@
-'use strict';
-
 // This file contains information to help auto-map imported XLSX and CSV files to the Specify 6 data model
 // Originally Based on https://github.com/specify/specify6/blob/master/config/datamodel_automappings.xml
 
@@ -94,8 +92,7 @@
 //
 //
 
-
-const auto_mapper_definitions = {
+const definitions:auto_mapper_definitions_interface = {
 	table_synonyms: {
 		Agent: [
 			{
@@ -467,4 +464,30 @@ const auto_mapper_definitions = {
 	},
 };
 
-module.exports = auto_mapper_definitions;
+
+/* Method that converts all table names and field names in definitions to lower case */
+const definitions_to_lowercase = (definitions:auto_mapper_definitions_interface) :auto_mapper_definitions_interface => {
+
+	const keys_to_lower_case = (object :object, levels :number = 1) :object => (Object.fromEntries(
+		Object.entries(object).map(([key, value]) =>
+			[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
+		)
+	));
+
+	const structure_depth:[structure_name:auto_mapper_definition_branches, depth:number][] = [
+		['table_synonyms', 1],
+		['dont_match', 2],
+		['shortcuts', 1],
+		['synonyms', 2],
+	];
+
+	structure_depth.map(([structure_name, depth]) =>
+		// @ts-ignore
+		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], <number>depth)
+	);
+
+	return definitions;
+
+};
+
+export = definitions_to_lowercase(definitions);
