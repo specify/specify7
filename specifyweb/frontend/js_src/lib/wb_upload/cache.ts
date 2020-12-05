@@ -1,10 +1,5 @@
 "use strict";
 
-interface set_parameters {
-	readonly bucket_type? :string,
-	readonly overwrite? :boolean,
-}
-
 const cache = {
 
 	buckets: {},  // the data structure that would store all of the buckets

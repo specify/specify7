@@ -1,10 +1,5 @@
 "use strict";
 
-interface upload_plan {
-	[key :string] :string | boolean | upload_plan,
-}
-
-
 /*
 *
 * Helper class for converting from upload plan to internal structure and vice versa

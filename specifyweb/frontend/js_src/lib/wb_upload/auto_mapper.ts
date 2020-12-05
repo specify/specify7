@@ -12,56 +12,6 @@ const cache = require('./cache.ts');
 /// <reference path="./helper.ts" />
 const helper = require('./helper.ts');
 
-interface map_parameters {
-	readonly headers :string[],
-	readonly base_table :string,
-	readonly starting_table? :string,
-	readonly path :string[],
-	readonly path_offset? :number,
-	readonly allow_multiple_mappings? :boolean,
-	readonly use_cache? :boolean,
-	readonly commit_to_cache? :boolean,
-	readonly check_for_existing_mappings? :boolean,
-	readonly scope? :string,
-}
-
-interface find_mappings_in_definitions_parameters {
-	readonly path :string[],
-	readonly table_name :string,
-	readonly field_name :string,
-	readonly mode :string,
-	readonly is_tree_rank? :boolean,
-}
-
-interface find_mappings_parameters {
-	readonly table_name :string,
-	readonly path? :string[],
-	readonly parent_table_name? :string,
-	readonly parent_relationship_type :string,
-}
-
-interface table_synonyms {
-	readonly mapping_path_filter :string[],
-	readonly synonyms :string[]
-}
-
-interface field_data {
-	readonly friendly_name :string,
-	readonly is_hidden :boolean,
-	readonly is_required :boolean,
-	readonly is_relationship :boolean,
-	readonly table_name :string,
-	readonly type :'one-to-one' | 'many-to-many' | 'one-to-many' | 'many-to-one',
-	readonly foreign_name :string
-}
-
-interface find_mappings_queue {
-	[key :number] :find_mappings_queue_level,
-}
-
-interface find_mappings_queue_level {
-	[header_name :string] :find_mappings_parameters
-}
 
 /*
 *
@@ -70,7 +20,7 @@ interface find_mappings_queue_level {
 * */
 const auto_mapper = {
 
-	regex_1: /[^a-z\s]+/g,  // used to remove not letter characters
+	regex_1: /[^a-z\s]+/g,  // used to remove non letter characters
 	regex_2: /\s+/g,  // used to replace any white space characters with white space
 	depth: 6,  // how deep to go into the schema
 	comparisons: Object.entries({  // the definitions for the comparison functions
@@ -78,8 +28,6 @@ const auto_mapper = {
 		string: (header :string, string :string) => header === string,
 		contains: (header :string, string :string) => header.indexOf(string) !== -1
 	}),
-	mapped_definitions_were_converted: false,  // indicates whether convert_automapper_definitions() was run. If not, would run convert_automapper_definitions() the next time map() is called
-
 	results: {},
 	scope: '',
 	allow_multiple_mappings: false,
@@ -92,28 +40,6 @@ const auto_mapper = {
 	searched_tables: [''],
 	find_mappings_queue: {},
 	get_mapped_fields: (local_path :string[]) => true,
-
-	/* Method that converts all table names and field names in definitions to lower case */
-	convert_automapper_definitions() :void {
-
-		auto_mapper.mapped_definitions_were_converted = true;
-
-		const keys_to_lower_case = (object :object, levels :number = 1) :object => (Object.fromEntries(
-			Object.entries(object).map(([key, value]) =>
-				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
-			)
-		));
-
-		[
-			['table_synonyms', 1],
-			['dont_match', 2],
-			['shortcuts', 1],
-			['synonyms', 2],
-		].map(([structure_name, depth]) =>
-			auto_mapper_definitions[structure_name] = keys_to_lower_case(auto_mapper_definitions[structure_name], <number>depth)
-		);
-
-	},
 
 	/* Method that would be used by external classes to match headers to possible mappings */
 	map({
@@ -156,9 +82,6 @@ const auto_mapper = {
 			if (cached_data)
 				return cached_data;
 		}
-
-		if (!auto_mapper.mapped_definitions_were_converted)
-			auto_mapper.convert_automapper_definitions();
 
 		// strip extra characters to increase mapping success
 		auto_mapper.unmapped_headers = Object.fromEntries(raw_headers.map(original_name => {

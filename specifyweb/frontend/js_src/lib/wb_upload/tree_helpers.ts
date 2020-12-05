@@ -6,10 +6,6 @@
 *
 * */
 
-interface mapping_tree {
-	[key :string] :mapping_tree | string
-}
-
 const tree_helpers = {
 
 	/* Returns cross-section of full_mappings_tree and node_mappings_tree */
