@@ -18,7 +18,6 @@ const mappings = {
 
 	loading_screen: () => () => {
 	},
-	need_to_run_automapper: false,
 	new_column_index: 0,
 	container: HTMLElement,
 	title__table_name: null,
@@ -97,7 +96,7 @@ const mappings = {
 
 			}
 
-			if (mappings.need_to_run_automapper) {
+			if (mappings.need_to_run_auto_mapper) {
 				const mappings_object = auto_mapper.map({
 					headers: data_model.headers,
 					base_table: data_model.base_table_name,
@@ -132,6 +131,9 @@ const mappings = {
 		tree_helpers.raw_headers = headers;
 		data_model.headers = headers;
 
+		mappings.need_to_run_auto_mapper = headers_defined && upload_plan === false;
+		mappings.new_column_index = 0;
+
 		if (typeof upload_plan === "object" && typeof upload_plan['baseTableName'] !== "undefined") {
 
 			const {baseTableName: base_table_name} = upload_plan;
@@ -152,8 +154,6 @@ const mappings = {
 		else
 			mappings.need_to_define_lines = true;
 
-		mappings.need_to_run_automapper = headers_defined && upload_plan === false;
-		mappings.new_column_index = 0;
 
 	},
 
@@ -668,7 +668,7 @@ const mappings = {
 		const line_elements_container = changed_list.parentElement;
 
 		if (list_type === 'list_of_tables') {
-			custom_select_element.unselect_option(selected_option);
+			custom_select_element.unselect_option(changed_list,selected_option);
 			mappings.set_table(new_value);
 			return;
 		}

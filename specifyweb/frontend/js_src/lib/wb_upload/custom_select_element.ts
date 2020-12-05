@@ -495,9 +495,13 @@ const custom_select_element = {
 
 
 	unselect_option: (
+		list :HTMLSpanElement,  // the list that houses the option
 		option :HTMLSpanElement  // the option to be unselected
-	) :void =>
-		option.classList.remove('custom_select_option_selected'),
+	) :void => {
+		option.classList.remove('custom_select_option_selected');
+		list.setAttribute('data-previous_value',<string>list.getAttribute('data-value'));
+		list.setAttribute('data-value','0');
+	},
 
 	/* Enables or disables an option in a list */
 	toggle_option(
