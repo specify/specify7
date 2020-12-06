@@ -23,14 +23,12 @@ const html_generator = {
 			]
 		));
 
-		const mapping_details :mapping_element_parameters = {
+		return html_generator.mapping_element({
 			name: 'list_of_base_tables',
 			friendly_name: 'Select a base table:',
 			fields_data: fields_data,
 			mapping_element_type: 'list_of_tables',
-		};
-
-		return html_generator.mapping_element(mapping_details, 'opened_list');
+		}, 'opened_list');
 
 	},
 
@@ -99,7 +97,7 @@ const html_generator = {
 		};
 
 		const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
-			[field_group_label, []]
+			[field_group_label, <custom_select_element_option[]>[]]
 		));
 
 		for (const [
@@ -115,7 +113,7 @@ const html_generator = {
 			}
 		] of Object.entries(<object>fields_data)) {
 
-			const field_data_formatted = {
+			const field_data_formatted :custom_select_element_option = {
 				option_name: field_friendly_name,
 				option_value: field_name,
 				is_enabled: is_enabled,

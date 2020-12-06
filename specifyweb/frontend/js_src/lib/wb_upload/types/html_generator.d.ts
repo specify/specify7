@@ -10,7 +10,7 @@ interface mapping_line_parameters {
 interface mapping_element_parameters {
 	readonly name :string,
 	readonly friendly_name :string,
-	readonly fields_data :object[]
+	readonly fields_data :object
 	readonly table_name? :string
 	readonly mapping_element_type? :string
 }
