@@ -6,11 +6,11 @@
 
 const data_model = require('./data_model.ts');
 
-const upload_plan_converter = {
+class upload_plan_converter {
 
-	get_mappings_tree: (include_headers? :boolean, skip_empty? :boolean) :object => ({}),
+	public static get_mappings_tree :(include_headers? :boolean, skip_empty? :boolean) => mapping_tree;
 
-	upload_plan_processing_functions: {
+	private static readonly upload_plan_processing_functions = {
 		wbcols: ([key, value] :[key :string, value :string]) => [key, {
 			[
 				data_model['headers'].indexOf(value) !== -1 ?
@@ -19,7 +19,7 @@ const upload_plan_converter = {
 				]: value
 		}],
 		static: ([key, value] :[key :string, value :string]) => ([key, {new_static_column: value}]),
-		toOne: ([key, value] :[key :string, value :object]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
+		toOne: ([key, value] :[key :string, value :upload_plan]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
 		toMany: ([key, original_mappings] :[key :string, value :object]) => {
 			let i = 1;
 			return [
@@ -32,14 +32,14 @@ const upload_plan_converter = {
 				))
 			];
 		},
-	},
+	};
 
 	/*
 	* Converts upload plan to internal tree structure
 	* Inverse of mappings_tree_to_upload_plan
 	* */
-	upload_plan_to_mappings_tree(
-		upload_plan :upload_plan,  // upload plan
+	public static upload_plan_to_mappings_tree(
+		upload_plan :upload_plan | upload_plan_node,  // upload plan
 		base_table_name_extracted :boolean = false  // used by recursion to store intermediate results
 	) :object /* mapping tree */ {
 
@@ -48,12 +48,14 @@ const upload_plan_converter = {
 			if (typeof upload_plan['baseTableName'] === "undefined")
 				throw "Upload plan should contain `baseTableName` as a root node";
 			data_model.base_table_name = (<string>upload_plan['baseTableName']).toLowerCase();
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan>upload_plan['uploadable'], true);
+			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan['uploadable'], true);
 		}
-		else if (typeof upload_plan['uploadTable'] !== "undefined")
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan>upload_plan['uploadTable'], true);
+		else if (typeof (<upload_plan_node>upload_plan)['uploadTable'] !== "undefined")
+			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>(<upload_plan_node>upload_plan)['uploadTable'], true);
 
+		// TODO: make this function recognize multiple tree rank fields, once upload plan supports that
 		else if (typeof upload_plan['treeRecord'] !== "undefined")
+			//@ts-ignore
 			return Object.fromEntries(Object.entries(<upload_plan>(<upload_plan>upload_plan['treeRecord'])['ranks']).map(([rank_name, rank_data]) =>
 				[
 					data_model.tree_symbol + rank_name,
@@ -68,29 +70,32 @@ const upload_plan_converter = {
 			));
 
 		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-				[...results, ...Object.entries(plan_node_data).map(upload_plan_converter.upload_plan_processing_functions[plan_node_name])],
+				//@ts-ignore
+				[
+					...results,
+					...Object.entries(plan_node_data).map(
+						//@ts-ignore
+						upload_plan_converter.upload_plan_processing_functions[plan_node_name]
+					)
+				],
 			[]
 		));
 
-	},
+	};
 
 	/* Get upload plan */
-	get_upload_plan: () :string /* Upload plan as a JSON string */ =>
+	public static readonly get_upload_plan = () :string /* Upload plan as a JSON string */ =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
 			upload_plan_converter.get_mappings_tree(true)
-		),
+		);
 
 	/*
 	* Converts mappings tree to upload plan
 	* Inverse of upload_plan_to_mappings_tree
 	* */
-	mappings_tree_to_upload_plan(
+	public static mappings_tree_to_upload_plan(
 		mappings_tree :object  // mappings tree that is going to be used
 	) :string /* Upload plan as a JSON string */ {
-
-		const upload_plan = {
-			baseTableName: data_model.base_table_name
-		};
 
 		function handle_header(data :string | object) {
 
@@ -117,7 +122,7 @@ const upload_plan_converter = {
 				return {treeRecord: {ranks: final_tree}};
 			}
 
-			let table_plan :{wbcols :object, static :object, toOne :object, toMany? :object} = {
+			let table_plan :{wbcols :upload_plan_node, static :upload_plan_node, toOne :upload_plan_node, toMany? :upload_plan_node} = {
 				wbcols: {},
 				static: {},
 				toOne: {},
@@ -133,16 +138,22 @@ const upload_plan_converter = {
 				if (data_model.value_is_reference_item(field_name)) {
 					if (!is_to_many) {
 						is_to_many = true;
+						//@ts-ignore
 						table_plan = [];
 					}
 
+					//@ts-ignore
 					table_plan.push(handle_table(field_data, table_name, false));
 
 				}
 				else if (data_model.value_is_tree_rank(field_name))
+					//@ts-ignore
 					table_plan = handle_table(table_data, table_name, false);
 
-				else if (typeof data_model.tables[table_name]['fields'][field_name] !== "undefined") {
+				else if (
+					typeof data_model.tables[table_name]['fields'][field_name] !== "undefined" &&
+					typeof table_plan !== "undefined"
+				) {
 
 					const field = data_model.tables[table_name]['fields'][field_name];
 
@@ -150,14 +161,14 @@ const upload_plan_converter = {
 						const mapping_table = field['table_name'];
 						const is_to_one = field['type'] === 'one-to-one' || field['type'] === 'many-to-one';
 
-						if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")
+						if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")  // @ts-ignore
 							table_plan['toOne'][field_name] = handle_table(field_data, mapping_table);
 
 						else {
 							if (typeof table_plan['toMany'] === "undefined")
 								table_plan['toMany'] = {};
 
-							if (typeof table_plan['toMany'][field_name] === "undefined")
+							if (typeof table_plan['toMany'][field_name] === "undefined")  // @ts-ignore
 								table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
 						}
 
@@ -186,13 +197,13 @@ const upload_plan_converter = {
 
 		}
 
+		return JSON.stringify({
+			baseTableName: data_model.base_table_name,
+			uploadable: handle_table(mappings_tree, data_model.base_table_name)
+		}, null, "\t");
 
-		upload_plan['uploadable'] = handle_table(mappings_tree, data_model.base_table_name);
+	};
 
-		return JSON.stringify(upload_plan, null, "\t");
-
-	},
-
-};
+}
 
 export = upload_plan_converter;
