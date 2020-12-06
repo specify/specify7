@@ -1,1 +1,1 @@
-type deconstructed_mapping_path = [mapping_path,mapping_type,string]
+type deconstructed_mapping_path = [mapping_path, mapping_type, string]

@@ -5,15 +5,15 @@
 * */
 const data_model = require('./data_model.ts');
 
-const helper = {
+class helper {
 
 	/*
 	* Get a friendly name from the field. (Converts Camel Case to human readable name and fixes some errors)
 	* This method is only called if schema localization does not have a friendly name for this field
 	* */
-	get_friendly_name: (
+	public static readonly get_friendly_name = (
 		name :string  // Original field name
-	) :string /* Human friendly field name */ => {
+	):string /* Human friendly field name */ => {
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -26,10 +26,10 @@ const helper = {
 		name = name.replace('Dna', 'DNA');
 
 		return name;
-	},
+	};
 
 	/* Finds the point at which the source array begins to have values different from the ones in the search array */
-	find_array_divergence_point(
+	public static find_array_divergence_point(
 		source :any[],  // the source array to use in the comparison
 		search :any[]  // the search array to use in the comparison
 	) :number  // divergence point
@@ -78,10 +78,10 @@ const helper = {
 
 		return search_length - 1;
 
-	},
+	};
 
 	/* Extract mapping type and header name / static column value from a mapping path */
-	deconstruct_mapping_path(
+	public static deconstruct_mapping_path(
 		mapping_path :mapping_path,  // combined mapping path
 		has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
 		detect_unmapped :boolean = true  // whether detect that a mapping path is incomplete
@@ -120,8 +120,8 @@ const helper = {
 
 		mapping_path = [...mapping_path];
 
-		let header='';
-		let mapping_type='';
+		let header = '';
+		let mapping_type = '';
 		if (has_header) {
 			header = mapping_path.pop() || '';
 			mapping_type = mapping_path.pop() || '';
@@ -132,10 +132,10 @@ const helper = {
 
 		return <[string[], ("existing_header" | "new_column" | "new_static_column"), string]>[mapping_path, mapping_type, header];
 
-	},
+	};
 
 	/* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
-	find_duplicate_mappings(
+	public static find_duplicate_mappings(
 		array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
 		has_headers :boolean = false  // whether array of mappings contain mapping types and header names / static column values
 	) :number[]  // array of duplicate indexes
@@ -183,8 +183,8 @@ const helper = {
 
 		return duplicate_indexes;
 
-	},
+	};
 
-};
+}
 
 export = helper;
