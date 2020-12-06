@@ -3,6 +3,7 @@ const $ = require('jquery');
 const mappings = require('./mappings.ts');
 const data_model_fetcher = require('./data_model_fetcher.ts');
 const data_model_storage = require('./data_model_storage.ts');
+const data_model_helper = require('./data_model_helper.ts');
 const data_model_navigator = require('./data_model_navigator.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
 const custom_select_element = require('./custom_select_element.ts');
@@ -229,13 +230,14 @@ class main {
 
 		auto_mapper.get_mapped_fields = mappings.get_mapped_fields.bind(mappings);
 		mappings.loading_screen = main.loading_screen;
+		data_model_navigator.get_mapped_fields = mappings.get_mapped_fields;
 
 	};
 
 	/* Validates the current mapping and shows error messages if needed */
 	public static validate() :boolean | string  /* true if everything is fine or {string} formatted validation error message */ {
 
-		const validation_results = data_model_navigator.show_required_missing_fields(data_model_storage.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model_helper.show_required_missing_fields(data_model_storage.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
 
 		if (formatted_validation_results === false)

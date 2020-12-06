@@ -7,9 +7,9 @@ class data_model_storage {
 
 	public static new_header_id :number = 1;  // the index that would be shown in the header name the next time the user presses a `Add new column` button
 
-	public static tables :data_model_tables;
-	public static html_tables :string;
-	public static ranks :data_model_ranks;
+	public static tables :data_model_tables = {};
+	public static html_tables :string = '';
+	public static ranks :data_model_ranks = {};
 	public static ranks_queue :{};  // the queue of ranks that still need to be fetched
 
 }

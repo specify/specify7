@@ -11,7 +11,7 @@ class data_model_helper {
 		filter__is_relationship :boolean | -1 = -1,  // whether fields are relationships
 		filter__is_hidden :boolean | -1 = -1  // whether field is hidden
 	) :[field_name :string, field_data :data_model_field][] =>
-		Object.entries(data_model_storage.tables[table_name].fields).filter(([, {is_relationship, is_hidden}]) =>
+		Object.entries(data_model_storage.tables[table_name].fields as data_model_fields).filter(([, {is_relationship, is_hidden}]) =>
 			(
 				filter__is_relationship === -1 || is_relationship === filter__is_relationship
 			) &&
@@ -115,6 +115,107 @@ class data_model_helper {
 		rank_name :string  // tree rank name to use
 	) :string /* a complete tree rank name */ =>
 		data_model_storage.tree_symbol + rank_name[0].toUpperCase() + rank_name.slice(1).toLowerCase();
+
+
+	/* Iterates over the mappings_tree to find required fields that are missing */
+	public static show_required_missing_fields(
+		table_name :string,  // Official name of the current base table (from data model)
+		mappings_tree :mappings_tree | undefined = undefined,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
+		previous_table_name :string = '',  // used internally in recursion. Previous table name
+		path :mapping_path = [],  // used internally in recursion. Current mapping path
+		results :string[][] = []  // used internally in recursion. Saves results
+	) :string[][] /* array of mapping paths (array) */ {
+
+		const table_data = data_model_storage.tables[table_name] as data_model_table;
+
+		if (typeof mappings_tree === "undefined")
+			return results;
+
+		const list_of_mapped_fields = Object.keys(mappings_tree);
+
+		// handle -to-many references
+		if (data_model_helper.value_is_reference_item(list_of_mapped_fields[0])) {
+			for (const mapped_field_name of list_of_mapped_fields) {
+				const local_path = [...path, mapped_field_name];
+				if (typeof mappings_tree[mapped_field_name] !== "undefined" && typeof mappings_tree[mapped_field_name] !== "string")
+					data_model_helper.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[mapped_field_name], previous_table_name, local_path, results);
+			}
+			return results;
+		}
+
+		// handle trees
+		else if (typeof data_model_storage.ranks[table_name] !== "undefined") {
+
+			const keys = Object.keys(data_model_storage.ranks[table_name]);
+			const last_path_element = path.slice(-1)[0];
+			const last_path_element_is_a_rank = data_model_helper.value_is_tree_rank(last_path_element);
+
+			if (!last_path_element_is_a_rank)
+				return keys.reduce((results, rank_name) => {
+					const is_rank_required = data_model_storage.ranks[table_name][rank_name];
+					const complimented_rank_name = data_model_storage.tree_symbol + rank_name;
+					const local_path = [...path, complimented_rank_name];
+
+					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
+						data_model_helper.show_required_missing_fields(table_name, mappings_tree[complimented_rank_name] as mappings_tree, previous_table_name, local_path, results);
+					else if (is_rank_required)
+						results.push(local_path);
+
+					return results;
+
+				}, results);
+		}
+
+		// handle regular fields and relationships
+		for (const [field_name, field_data] of Object.entries(table_data.fields)) {
+
+			const local_path = [...path, field_name];
+
+			const is_mapped = list_of_mapped_fields.indexOf(field_name) !== -1;
+
+
+			if (field_data.is_relationship) {
+
+
+				if (previous_table_name !== '') {
+
+					let previous_relationship_name = local_path.slice(-2)[0];
+					if (
+						data_model_helper.value_is_reference_item(previous_relationship_name) ||
+						data_model_helper.value_is_tree_rank(previous_relationship_name)
+					)
+						previous_relationship_name = local_path.slice(-3)[0];
+
+					const parent_relationship_data = data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
+
+					if (
+						(  // disable circular relationships
+							field_data.foreign_name === previous_relationship_name &&
+							field_data.table_name === previous_table_name
+						) ||
+						(  // skip -to-many inside of -to-many
+							data_model_helper.relationship_is_to_many(parent_relationship_data.type) &&
+							data_model_helper.relationship_is_to_many(field_data.type)
+						)
+					)
+						continue;
+
+				}
+
+				if (is_mapped)
+					data_model_helper.show_required_missing_fields(field_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
+				else if (field_data.is_required)
+					results.push(local_path);
+			}
+			else if (!is_mapped && field_data.is_required)
+				results.push(local_path);
+
+
+		}
+
+		return results;
+
+	};
 
 }
 

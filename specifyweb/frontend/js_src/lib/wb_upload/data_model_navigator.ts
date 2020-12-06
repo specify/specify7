@@ -5,6 +5,7 @@ const data_model_storage = require('./data_model_storage.ts');
 
 class data_model_navigator {
 
+	public static get_mapped_fields: (mapping_path_filter :mapping_path, skip_empty? :boolean)=>mappings_tree;
 
 	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 	public static navigator({
@@ -219,7 +220,7 @@ class data_model_navigator {
 				if (typeof next_path_element_name == "undefined")
 					return undefined;
 
-				const formatted_tree_rank_name = data_model_helper.format_tree_rank(internal_payload.next_mapping_path_element);
+				const formatted_tree_rank_name = data_model_helper.format_tree_rank(next_path_element_name);
 				const tree_rank_name = data_model_helper.get_name_from_tree_rank_name(formatted_tree_rank_name);
 				if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== "undefined")
 					next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position] = formatted_tree_rank_name;
@@ -260,7 +261,7 @@ class data_model_navigator {
 
 				internal_payload.current_mapping_path_part = internal_payload.mapping_path[internal_payload.mapping_path_position];
 				internal_payload.result_fields = {};
-				internal_payload.mapped_fields = Object.keys(mappings.get_mapped_fields(local_mapping_path));
+				internal_payload.mapped_fields = Object.keys(data_model_navigator.get_mapped_fields(local_mapping_path));
 			},
 
 			handle_to_many_children(internal_payload, {table_name}) :void {
@@ -411,107 +412,6 @@ class data_model_navigator {
 				base_table_name: data_model_storage.base_table_name,
 			}
 		});
-
-	};
-
-
-	/* Iterates over the mappings_tree to find required fields that are missing */
-	public static show_required_missing_fields(
-		table_name :string,  // Official name of the current base table (from data model)
-		mappings_tree :mappings_tree | undefined = undefined,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
-		previous_table_name :string = '',  // used internally in recursion. Previous table name
-		path :mapping_path = [],  // used internally in recursion. Current mapping path
-		results :string[][] = []  // used internally in recursion. Saves results
-	) :string[][] /* array of mapping paths (array) */ {
-
-		const table_data = data_model_storage.tables[table_name];
-
-		if (typeof mappings_tree === "undefined")
-			return results;
-
-		const list_of_mapped_fields = Object.keys(mappings_tree);
-
-		// handle -to-many references
-		if (data_model_helper.value_is_reference_item(list_of_mapped_fields[0])) {
-			for (const mapped_field_name of list_of_mapped_fields) {
-				const local_path = [...path, mapped_field_name];
-				if (typeof mappings_tree[mapped_field_name] !== "undefined" && typeof mappings_tree[mapped_field_name] !== "string")
-					data_model_navigator.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[mapped_field_name], previous_table_name, local_path, results);
-			}
-			return results;
-		}
-
-		// handle trees
-		else if (typeof data_model_storage.ranks[table_name] !== "undefined") {
-
-			const keys = Object.keys(data_model_storage.ranks[table_name]);
-			const last_path_element = path.slice(-1)[0];
-			const last_path_element_is_a_rank = data_model_helper.value_is_tree_rank(last_path_element);
-
-			if (!last_path_element_is_a_rank)
-				return keys.reduce((results, rank_name) => {
-					const is_rank_required = data_model_storage.ranks[table_name][rank_name];
-					const complimented_rank_name = data_model_storage.tree_symbol + rank_name;
-					const local_path = [...path, complimented_rank_name];
-
-					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model_navigator.show_required_missing_fields(table_name, mappings_tree[complimented_rank_name] as mappings_tree, previous_table_name, local_path, results);
-					else if (is_rank_required)
-						results.push(local_path);
-
-					return results;
-
-				}, results);
-		}
-
-		// handle regular fields and relationships
-		for (const [field_name, field_data] of Object.entries(table_data.fields)) {
-
-			const local_path = [...path, field_name];
-
-			const is_mapped = list_of_mapped_fields.indexOf(field_name) !== -1;
-
-
-			if (field_data.is_relationship) {
-
-
-				if (previous_table_name !== '') {
-
-					let previous_relationship_name = local_path.slice(-2)[0];
-					if (
-						data_model_helper.value_is_reference_item(previous_relationship_name) ||
-						data_model_helper.value_is_tree_rank(previous_relationship_name)
-					)
-						previous_relationship_name = local_path.slice(-3)[0];
-
-					const parent_relationship_data = data_model_storage.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
-
-					if (
-						(  // disable circular relationships
-							field_data.foreign_name === previous_relationship_name &&
-							field_data.table_name === previous_table_name
-						) ||
-						(  // skip -to-many inside of -to-many
-							data_model_helper.relationship_is_to_many(parent_relationship_data.type) &&
-							data_model_helper.relationship_is_to_many(field_data.type)
-						)
-					)
-						continue;
-
-				}
-
-				if (is_mapped)
-					data_model_helper.show_required_missing_fields(field_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
-				else if (field_data.is_required)
-					results.push(local_path);
-			}
-			else if (!is_mapped && field_data.is_required)
-				results.push(local_path);
-
-
-		}
-
-		return results;
 
 	};
 

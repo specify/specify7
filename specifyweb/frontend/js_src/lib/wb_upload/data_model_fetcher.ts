@@ -164,6 +164,11 @@ class data_model_fetcher {
 
 			const ranks :data_model_ranks = Object.fromEntries(resolved);
 
+			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
+			resolved.map(([table_name]) =>
+				tables[table_name].fields = {'name':tables[table_name].fields['name']}
+			);
+
 			cache.set('data_model_fetcher', 'ranks', ranks);
 			done_callback(tables as data_model_tables, html_tables, ranks);  // so there is no need to wait for ranks to finish fetching
 		});
@@ -174,40 +179,34 @@ class data_model_fetcher {
 	private static readonly fetch_ranks = (
 		table_name :string,  // Official table name (from the data model)
 	) :Promise<table_ranks_inline> =>
-		new Promise((resolve) => {
-			(domain as domain).getTreeDef(table_name).done(tree_definition => {
+		new Promise((resolve) =>
+			(domain as domain).getTreeDef(table_name).done(tree_definition =>
 				tree_definition.rget('treedefitems').done(
-					treeDefItems => {
-						treeDefItems.fetch({limit: 0}).done(() => {
+					treeDefItems =>
+						treeDefItems.fetch({limit: 0}).done(() =>
+							resolve([
+								table_name,
+								Object.values(treeDefItems.models).reduce((table_ranks, rank) => {
 
-							const table_ranks = Object.values(treeDefItems.models).reduce((table_ranks, rank) => {
+									const rank_id = rank.get('id');
 
-								const rank_id = rank.get('id');
+									if (rank_id === 1)
+										return table_ranks;
 
-								if (rank_id === 1)
+									const rank_name = rank.get('name');
+
+									// TODO: add complex logic for figuring out if rank is required or not
+									table_ranks[rank_name] = false;
+									// table_ranks[rank_name] = rank.get('isenforced');
+
 									return table_ranks;
 
-								const rank_name = rank.get('name');
-
-								// TODO: add complex logic for figuring out if rank is required or not
-								table_ranks[rank_name] = false;
-								// table_ranks[rank_name] = rank.get('isenforced');
-
-								return table_ranks;
-
-							}, <table_ranks_writable>{});
-
-
-							// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-
-
-							resolve([table_name, table_ranks]);
-
-						});
-					}
-				);
-			});
-		});
+								}, <table_ranks_writable>{})
+							])
+						)
+				)
+			)
+		);
 
 	/* Returns a list of hierarchy tables */
 	public static readonly get_list_of_hierarchy_tables = () :string[] /* list of hierarchy tables */ =>
