@@ -1,8 +1,9 @@
 const $ = require('jquery');
 
 const mappings = require('./mappings.ts');
-const fetch_data_model = require('./fetch_data_model.ts');
-const data_model = require('./data_model.ts');
+const data_model_fetcher = require('./data_model_fetcher.ts');
+const data_model_storage = require('./data_model_storage.ts');
+const data_model_navigator = require('./data_model_navigator.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
 const custom_select_element = require('./custom_select_element.ts');
 const cache = require('./cache.ts');
@@ -54,8 +55,8 @@ class main {
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
 			mappings.lines = [];
-			data_model.headers = [];
-			data_model.base_table_name = undefined;
+			data_model_storage.headers = [];
+			data_model_storage.base_table_name = undefined;
 			upload_plan_converter.get_mappings_tree = mappings.get_mappings_tree.bind(mappings);
 
 
@@ -147,7 +148,7 @@ class main {
 			if (!main.constructor_has_run)
 				main.constructor_first_run(done_callback);
 			else
-				mappings.list__tables.innerHTML = data_model.html_tables;
+				mappings.list__tables.innerHTML = data_model_storage.html_tables;
 
 
 			custom_select_element.set_event_listeners(
@@ -167,7 +168,7 @@ class main {
 		done_callback :() => void,  // the callback to call for when the constructor is finished
 	) :void {
 
-		fetch_data_model.fetch(
+		data_model_fetcher.fetch(
 			{
 
 				// all required fields are not hidden, except for these, which are made not required
@@ -192,7 +193,7 @@ class main {
 					'geographytreedef',
 					'geologictimeperiodtreedef',
 					'treedef',
-					...fetch_data_model.get_list_of_hierarchy_tables()
+					...data_model_fetcher.get_list_of_hierarchy_tables()
 				],
 
 				// forbid setting any of the tables that have these keywords as base tables
@@ -217,9 +218,9 @@ class main {
 			},
 			(tables :data_model_tables, html_tables :string, ranks :data_model_ranks) => {
 
-				data_model.tables = tables;
-				data_model.html_tables = html_tables;
-				data_model.ranks = ranks;
+				data_model_storage.tables = tables;
+				data_model_storage.html_tables = html_tables;
+				data_model_storage.ranks = ranks;
 
 				mappings.list__tables.innerHTML = html_tables;
 				done_callback();
@@ -234,7 +235,7 @@ class main {
 	/* Validates the current mapping and shows error messages if needed */
 	public static validate() :boolean | string  /* true if everything is fine or {string} formatted validation error message */ {
 
-		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
+		const validation_results = data_model_navigator.show_required_missing_fields(data_model_storage.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
 
 		if (formatted_validation_results === false)

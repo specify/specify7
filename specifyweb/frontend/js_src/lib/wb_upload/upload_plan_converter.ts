@@ -4,7 +4,8 @@
 *
 * */
 
-const data_model = require('./data_model.ts');
+const data_model_storage = require('./data_model_storage.ts');
+const data_model_helper = require('./data_model_helper.ts');
 
 class upload_plan_converter {
 
@@ -13,7 +14,7 @@ class upload_plan_converter {
 	private static readonly upload_plan_processing_functions = {
 		wbcols: ([key, value] :[key :string, value :string]) => [key, {
 			[
-				data_model.headers.indexOf(value) !== -1 ?
+				data_model_storage.headers.indexOf(value) !== -1 ?
 					'existing_header' :
 					'new_column'
 				]: value
@@ -26,7 +27,7 @@ class upload_plan_converter {
 				key,
 				Object.fromEntries(Object.values(original_mappings).map(mapping =>
 					[
-						data_model.format_reference_item(i++),
+						data_model_helper.format_reference_item(i++),
 						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true)
 					]
 				))
@@ -47,7 +48,7 @@ class upload_plan_converter {
 
 			if (typeof upload_plan.baseTableName === "undefined")
 				throw new Error("Upload plan should contain `baseTableName` as a root node");
-			data_model.base_table_name = (upload_plan.baseTableName as string).toLowerCase();
+			data_model_storage.base_table_name = (upload_plan.baseTableName as string).toLowerCase();
 			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan.uploadable, true);
 		}
 		else if (typeof (upload_plan as upload_plan_node).uploadTable !== "undefined")
@@ -58,7 +59,7 @@ class upload_plan_converter {
 			//@ts-ignore
 			return Object.fromEntries(Object.entries((upload_plan.treeRecord as upload_plan).ranks as upload_plan).map(([rank_name, rank_data]) =>
 				[
-					data_model.tree_symbol + rank_name,
+					data_model_storage.tree_symbol + rank_name,
 					Object.fromEntries(
 						[
 							upload_plan_converter.upload_plan_processing_functions.wbcols(
@@ -109,11 +110,11 @@ class upload_plan_converter {
 
 		function handle_table(table_data :object, table_name :string, wrap_it = true) {
 
-			if (typeof data_model.ranks[table_name] !== "undefined") {
+			if (typeof data_model_storage.ranks[table_name] !== "undefined") {
 
 				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
-					const new_tree_key = data_model.get_name_from_tree_rank_name(tree_key);
+					const new_tree_key = data_model_helper.get_name_from_tree_rank_name(tree_key);
 					let name = tree_rank_data.name;
 					return [new_tree_key, handle_header(name)];
 
@@ -135,7 +136,7 @@ class upload_plan_converter {
 
 			table_plan = Object.entries(table_data).reduce((table_plan, [field_name, field_data]) => {
 
-				if (data_model.value_is_reference_item(field_name)) {
+				if (data_model_helper.value_is_reference_item(field_name)) {
 					if (!is_to_many) {
 						is_to_many = true;
 						//@ts-ignore
@@ -146,16 +147,16 @@ class upload_plan_converter {
 					table_plan.push(handle_table(field_data, table_name, false));
 
 				}
-				else if (data_model.value_is_tree_rank(field_name))
+				else if (data_model_helper.value_is_tree_rank(field_name))
 					//@ts-ignore
 					table_plan = handle_table(table_data, table_name, false);
 
 				else if (
-					typeof data_model.tables[table_name].fields[field_name] !== "undefined" &&
+					typeof data_model_storage.tables[table_name].fields[field_name] !== "undefined" &&
 					typeof table_plan !== "undefined"
 				) {
 
-					const field = data_model.tables[table_name].fields[field_name];
+					const field = data_model_storage.tables[table_name].fields[field_name];
 
 					if (field.is_relationship) {
 						const mapping_table = field.table_name;
@@ -190,7 +191,7 @@ class upload_plan_converter {
 			if (Array.isArray(table_plan) || !wrap_it)
 				return table_plan;
 
-			if (data_model.value_is_reference_item(Object.keys(table_data).shift()))
+			if (data_model_helper.value_is_reference_item(Object.keys(table_data).shift()))
 				return table_plan;
 
 			return {uploadTable: table_plan};
@@ -198,8 +199,8 @@ class upload_plan_converter {
 		}
 
 		return JSON.stringify({
-			baseTableName: data_model.base_table_name,
-			uploadable: handle_table(mappings_tree, data_model.base_table_name)
+			baseTableName: data_model_storage.base_table_name,
+			uploadable: handle_table(mappings_tree, data_model_storage.base_table_name)
 		}, null, "\t");
 
 	};

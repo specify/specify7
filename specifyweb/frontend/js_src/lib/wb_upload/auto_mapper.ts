@@ -1,5 +1,6 @@
 const auto_mapper_definitions = require('./auto_mapper_definitions.ts');
-const data_model = require('./data_model.ts');
+const data_model_storage = require('./data_model_storage.ts');
+const data_model_helper = require('./data_model_helper.ts');
 const cache = require('./cache.ts');
 const helper = require('./helper.ts');
 
@@ -161,7 +162,7 @@ class auto_mapper {
 					comparison_function(lowercase_header_name, comparison_value) &&
 					this.make_mapping(path, get_new_path_part().map(path_part => {
 
-						if (!data_model.value_is_tree_rank(path_part))
+						if (!data_model_helper.value_is_tree_rank(path_part))
 							path_part = path_part.toLowerCase();
 						return path_part;
 
@@ -228,7 +229,7 @@ class auto_mapper {
 			const comparisons = table_definition_data[field_name][this.scope].headers;
 			const get_new_path_part = () => {
 				if (is_tree_rank)
-					return [data_model.format_tree_rank(field_name), 'name'];
+					return [data_model_helper.format_tree_rank(field_name), 'name'];
 				else
 					return [field_name];
 
@@ -256,22 +257,22 @@ class auto_mapper {
 		// filter out -to-many references from the path for matching
 		const filtered_path = path.reduce((filtered_path :mapping_path, path_part :string) => {
 
-			if (!data_model.value_is_reference_item(path_part))
+			if (!data_model_helper.value_is_reference_item(path_part))
 				filtered_path.push(path_part);
 
 			return filtered_path;
 
 		}, []);
 
-		const filtered_path_string = filtered_path.join(data_model.path_join_symbol);
+		const filtered_path_string = filtered_path.join(data_model_storage.path_join_symbol);
 		const filtered_path_with_base_table_string = [
 			this.base_table,
 			...filtered_path
-		].join(data_model.path_join_symbol);
+		].join(data_model_storage.path_join_symbol);
 
 		return table_synonyms.reduce((table_synonyms :string[], table_synonym :table_synonym_definition) => {
 
-			const mapping_path_string = table_synonym.mapping_path_filter.join(data_model.path_join_symbol);
+			const mapping_path_string = table_synonym.mapping_path_filter.join(data_model_storage.path_join_symbol);
 
 			if (
 				filtered_path_string.endsWith(mapping_path_string) ||
@@ -326,18 +327,18 @@ class auto_mapper {
 		}
 
 
-		const table_data = data_model.tables[table_name];
-		const ranks_data = data_model.ranks[table_name];
-		const fields = data_model.get_table_non_relationship_fields(table_name, false);
+		const table_data = data_model_storage.tables[table_name];
+		const ranks_data = data_model_storage.ranks[table_name];
+		const fields = data_model_helper.get_table_non_relationship_fields(table_name, false);
 		const table_friendly_name = table_data.table_friendly_name.toLowerCase();
 
 		if (typeof ranks_data !== "undefined") {
 
 			let ranks = Object.keys(ranks_data);
-			const push_rank_to_path = path.length <= 0 || !data_model.value_is_tree_rank(path[path.length - 1]);
+			const push_rank_to_path = path.length <= 0 || !data_model_helper.value_is_tree_rank(path[path.length - 1]);
 
 			if (!push_rank_to_path)
-				ranks = [data_model.get_name_from_tree_rank_name(path[path.length - 1])];
+				ranks = [data_model_helper.get_name_from_tree_rank_name(path[path.length - 1])];
 
 			const find_mappings_in_definitions_payload = {
 				path: path,
@@ -352,7 +353,7 @@ class auto_mapper {
 			for (const rank_name of ranks) {
 
 				const striped_rank_name = rank_name.toLowerCase();
-				const final_rank_name = data_model.format_tree_rank(rank_name);
+				const final_rank_name = data_model_helper.format_tree_rank(rank_name);
 
 				find_mappings_in_definitions_payload.field_name = striped_rank_name;
 
@@ -492,15 +493,15 @@ class auto_mapper {
 		}
 
 
-		const relationships = data_model.get_table_relationships(table_name, false);
+		const relationships = data_model_helper.get_table_relationships(table_name, false);
 
 
 		for (const [relationship_key, relationship_data] of relationships) {
 
 			const local_path = [...path, relationship_key];
 
-			if (data_model.relationship_is_to_many(relationship_data.type))
-				local_path.push(data_model.format_reference_item(1));
+			if (data_model_helper.relationship_is_to_many(relationship_data.type))
+				local_path.push(data_model_helper.format_reference_item(1));
 
 			const new_depth_level = local_path.length;
 
@@ -513,7 +514,7 @@ class auto_mapper {
 			const {foreign_name} = relationship_data;
 
 			let current_mapping_path_part = path[path.length - 1];
-			if (data_model.value_is_reference_item(current_mapping_path_part) || data_model.value_is_tree_rank(current_mapping_path_part))
+			if (data_model_helper.value_is_reference_item(current_mapping_path_part) || data_model_helper.value_is_tree_rank(current_mapping_path_part))
 				current_mapping_path_part = path[path.length - 2];
 
 			if (
@@ -535,18 +536,18 @@ class auto_mapper {
 						(
 							(
 								typeof foreign_name !== "undefined" &&
-								typeof data_model.tables[parent_table_name].fields[foreign_name] !== "undefined" &&
-								data_model.tables[parent_table_name].fields[foreign_name].foreign_name === relationship_key
+								typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== "undefined" &&
+								data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === relationship_key
 							) ||
 							(
-								data_model.tables[table_name].fields[relationship_key].foreign_name === current_mapping_path_part
+								data_model_storage.tables[table_name].fields[relationship_key].foreign_name === current_mapping_path_part
 							)
 						)
 					)
 				) ||
 				(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-					data_model.relationship_is_to_many(relationship_data.type) &&
-					data_model.relationship_is_to_many(parent_relationship_type)
+					data_model_helper.relationship_is_to_many(relationship_data.type) &&
+					data_model_helper.relationship_is_to_many(parent_relationship_type)
 				)
 			)
 				continue;
@@ -596,8 +597,8 @@ class auto_mapper {
 		if (to_many_reference_number !== false)
 			local_path = local_path.reverse().reduce((modified_local_path :mapping_path, local_path_part) => {
 
-				if (data_model.value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
-					local_path_part = data_model.format_reference_item(to_many_reference_number);
+				if (data_model_helper.value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
+					local_path_part = data_model_helper.format_reference_item(to_many_reference_number);
 					to_many_reference_number = false;
 				}
 
@@ -631,9 +632,9 @@ class auto_mapper {
 			let index = local_path.length;
 			let path_was_modified = Object.entries(local_path).reverse().some(([local_path_index, local_path_part]) => {
 
-				path_was_modified = index > this.path_offset && data_model.value_is_reference_item(local_path_part);
+				path_was_modified = index > this.path_offset && data_model_helper.value_is_reference_item(local_path_part);
 				if (path_was_modified)
-					local_path[parseInt(local_path_index)] = data_model.format_reference_item(data_model.get_index_from_reference_item_name(local_path_part) + 1);
+					local_path[parseInt(local_path_index)] = data_model_helper.format_reference_item(data_model_helper.get_index_from_reference_item_name(local_path_part) + 1);
 
 				index--;
 
@@ -656,7 +657,7 @@ class auto_mapper {
 		this.results[header_name].push(local_path);
 
 
-		const path_contains_to_many_references = path.some(path_part => data_model.value_is_reference_item(path_part));
+		const path_contains_to_many_references = path.some(path_part => data_model_helper.value_is_reference_item(path_part));
 
 		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 

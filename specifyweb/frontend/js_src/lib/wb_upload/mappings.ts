@@ -2,7 +2,9 @@ const tree_helpers = require('./tree_helpers.ts');
 const dom_helper = require('./dom_helper.ts');
 const helper = require('./helper.ts');
 const html_generator = require('./html_generator.ts');
-const data_model = require('./data_model.ts');
+const data_model_helper = require('./data_model_helper.ts');
+const data_model_storage = require('./data_model_storage.ts');
+const data_model_navigator = require('./data_model_navigator.ts');
 const auto_mapper = require('./auto_mapper.ts');
 const custom_select_element = require('./custom_select_element.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
@@ -47,16 +49,16 @@ class mappings {
 
 			const loaded = mappings.loading_screen();
 
-			mappings.title__table_name.innerText = data_model.tables[table_name].table_friendly_name;
+			mappings.title__table_name.innerText = data_model_storage.tables[table_name].table_friendly_name;
 
-			data_model.base_table_name = table_name;
+			data_model_storage.base_table_name = table_name;
 
 			mappings.mappings_tree = {};
 			mappings.changes_made = true;
 			mappings.validation_results.innerHTML = '';
 			mappings.validation_results.classList.add('hidden');
 
-			const base_table_fields = mappings.get_mapping_line_data_from_mapping_path({
+			const base_table_fields = data_model_navigator.get_mapping_line_data_from_mapping_path({
 				mapping_path: [],
 				use_cached: true,
 			});
@@ -68,7 +70,7 @@ class mappings {
 				mappings.need_to_define_lines = false;
 
 				const result_lines = [];
-				for (const header of data_model.headers) {
+				for (const header of data_model_storage.headers) {
 
 					const mapping_line_data = {
 						line_data: base_table_fields,
@@ -93,8 +95,8 @@ class mappings {
 
 			if (mappings.need_to_run_auto_mapper) {
 				const mappings_object :automapper_results = mappings.auto_mapper.map({
-					headers: data_model.headers,
-					base_table: data_model.base_table_name,
+					headers: data_model_storage.headers,
+					base_table: data_model_storage.base_table_name,
 					scope: 'automapper',
 				});
 				const array_of_mappings = Object.entries(mappings_object).map(([header_name, mapping_path]) =>
@@ -123,7 +125,7 @@ class mappings {
 
 
 		tree_helpers.raw_headers = headers;
-		data_model.headers = headers;
+		data_model_storage.headers = headers;
 
 		mappings.need_to_run_auto_mapper = headers_defined && upload_plan === false;
 		mappings.new_column_index = 0;
@@ -155,7 +157,7 @@ class mappings {
 	/* Resets the currently mapped fields and presents the option to chose base table again */
 	public static reset_table() :void {
 
-		if (typeof data_model.base_table_name === "undefined")
+		if (typeof data_model_storage.base_table_name === "undefined")
 			return;
 
 		mappings.container.classList.remove('table_selected');
@@ -163,7 +165,7 @@ class mappings {
 
 		mappings.list__mappings.innerHTML = '';
 
-		data_model.base_table_name = undefined;
+		data_model_storage.base_table_name = undefined;
 
 		navigation.removeUnloadProtect(mappings);
 
@@ -214,7 +216,7 @@ class mappings {
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
-		const line_data = mappings.get_mapping_line_data_from_mapping_path({
+		const line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
 			mapping_path: mapping_path,
 			use_cached: true,
 		});
@@ -239,7 +241,7 @@ class mappings {
 		else {
 			// before adding a header, check if it is already present
 			const {header_name} = header_data;
-			const header_index = data_model.headers.indexOf(header_name);
+			const header_index = data_model_storage.headers.indexOf(header_name);
 			new_mapping_line = lines[header_index];
 
 			// find position for the new header
@@ -274,239 +276,6 @@ class mappings {
 
 
 	// GETTERS
-
-	/* Returns a mapping line data from mapping path */
-	private static get_mapping_line_data_from_mapping_path({
-															   mapping_path = [],
-															   iterate = true,
-															   use_cached = false,
-															   generate_last_relationship_data = true,
-														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] {
-
-		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
-			mapping_path: mapping_path,
-			generate_last_relationship_data: generate_last_relationship_data,
-			mapping_path_position: -1,
-			iterate: iterate,
-			mapping_line_data: [],
-		};
-
-		const callbacks :navigator_callbacks = {
-
-			iterate: (internal_payload) =>
-				(
-					internal_payload.iterate ||
-					internal_payload.mapping_path.length === 0 ||
-					internal_payload.mapping_path_position + 1 === internal_payload.mapping_path.length
-				) && (
-					internal_payload.generate_last_relationship_data ||
-					internal_payload.mapping_path_position + 1 !== internal_payload.mapping_path.length
-				),
-
-			get_next_path_element(internal_payload, {table_name}) {
-
-				if (internal_payload.mapping_path_position === -2)
-					internal_payload.mapping_path_position = internal_payload.mapping_path.length - 1;
-
-				internal_payload.mapping_path_position++;
-
-				let next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position];
-
-				if (typeof next_path_element_name == "undefined")
-					return undefined;
-
-				const rank_name_ucfirst = next_path_element_name[0].toUpperCase() + next_path_element_name.slice(1).toLowerCase();
-				if (data_model.table_is_tree(table_name) && typeof data_model.ranks[table_name][rank_name_ucfirst] !== "undefined")
-					next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position] = data_model.tree_symbol + rank_name_ucfirst;
-
-				let next_real_path_element_name;
-				if (data_model.value_is_tree_rank(next_path_element_name) || data_model.value_is_reference_item(next_path_element_name))
-					next_real_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position - 1];
-				else
-					next_real_path_element_name = next_path_element_name;
-
-				return {
-					next_path_element_name: next_path_element_name,
-					next_path_element: data_model.tables[table_name].fields[next_path_element_name],
-					next_real_path_element_name: next_real_path_element_name,
-				};
-
-			},
-
-			navigator_instance_pre(internal_payload, {table_name}) :void {
-
-				internal_payload.mapping_element_type = 'simple';
-
-				const local_mapping_path = internal_payload.mapping_path.slice(0, internal_payload.mapping_path_position + 1);
-
-				internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position + 1];
-
-				if (typeof internal_payload.next_mapping_path_element === "undefined")
-					internal_payload.default_value = "0";
-				else {
-					const rank_name_ucfirst = internal_payload.next_mapping_path_element[0].toUpperCase() + internal_payload.next_mapping_path_element.slice(1).toLowerCase();
-					if (data_model.table_is_tree(table_name) && typeof data_model.ranks[table_name][rank_name_ucfirst] !== "undefined")
-						internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position] = data_model.tree_symbol + rank_name_ucfirst;
-
-					internal_payload.default_value = internal_payload.next_mapping_path_element;
-
-				}
-
-				internal_payload.current_mapping_path_part = internal_payload.mapping_path[internal_payload.mapping_path_position];
-				internal_payload.result_fields = {};
-				internal_payload.mapped_fields = Object.keys(mappings.get_mapped_fields(local_mapping_path));
-			},
-
-			handle_to_many_children(internal_payload, {table_name}) :void {
-
-				internal_payload.mapping_element_type = 'to_many';
-
-				if (typeof internal_payload.next_mapping_path_element !== "undefined")
-					internal_payload.mapped_fields.push(internal_payload.next_mapping_path_element);
-
-				const max_mapped_element_number = data_model.get_max_to_many_value(internal_payload.mapped_fields);
-
-				for (let i = 1; i <= max_mapped_element_number; i++) {
-					const mapped_object_name = data_model.format_reference_item(i);
-
-					internal_payload.result_fields[mapped_object_name] = {
-						field_friendly_name: mapped_object_name,
-						is_enabled: true,
-						is_required: false,
-						is_hidden: false,
-						is_relationship: true,
-						is_default: mapped_object_name === internal_payload.default_value,
-						table_name: table_name,
-					};
-				}
-				internal_payload.result_fields.add = {
-					field_friendly_name: 'Add',
-					is_enabled: true,
-					is_required: false,
-					is_hidden: false,
-					is_relationship: true,
-					is_default: false,
-					table_name: table_name,
-				};
-
-			},
-
-			handle_tree_ranks(internal_payload, {table_name}) :void {
-
-				internal_payload.mapping_element_type = 'tree';
-
-				const table_ranks = data_model.ranks[table_name];
-				for (const [rank_name, is_required] of Object.entries(table_ranks)) {
-					const formatted_rank_name = data_model.format_tree_rank(rank_name);
-					internal_payload.result_fields[formatted_rank_name] = {
-						field_friendly_name: rank_name,
-						is_enabled: true,
-						is_required: is_required,
-						is_hidden: false,
-						is_relationship: true,
-						is_default: formatted_rank_name === internal_payload.default_value,
-						table_name: table_name,
-					};
-				}
-
-			},
-
-			handle_simple_fields(
-				internal_payload,
-				{
-					table_name,
-					parent_table_name,
-					parent_relationship_type,
-				}
-			) :void {
-
-				for (
-					const [
-						field_name, {
-							is_relationship,
-							type: relationship_type,
-							is_hidden,
-							is_required,
-							foreign_name,
-							friendly_name,
-							table_name: field_table_name
-						}
-					] of Object.entries(data_model.tables[table_name].fields as data_model_fields_writable)) {
-
-					if (
-						is_relationship &&
-						(  // skip circular relationships
-							field_table_name === parent_table_name &&
-							(
-								(
-									typeof foreign_name !== "undefined" &&
-									typeof parent_table_name !== "undefined" &&
-									typeof data_model.tables[parent_table_name].fields[foreign_name] !== "undefined" &&
-									data_model.tables[parent_table_name].fields[foreign_name].foreign_name === field_name
-								) ||
-								(
-									data_model.tables[table_name].fields[field_name].foreign_name === internal_payload.current_mapping_path_part
-								)
-							)
-						) ||
-						(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-							data_model.relationship_is_to_many(relationship_type) &&
-							data_model.relationship_is_to_many(parent_relationship_type)
-						)
-					)
-						continue;
-
-
-					const is_enabled =  // disable field
-						internal_payload.mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
-						is_relationship;  // or is a relationship
-
-
-					const is_default = field_name === internal_payload.default_value;
-
-					internal_payload.result_fields[field_name] = {
-						field_friendly_name: friendly_name,
-						is_enabled: is_enabled,
-						is_required: is_required,
-						is_hidden: is_hidden,
-						is_default: is_default,
-						is_relationship: is_relationship,
-						table_name: field_table_name,
-					};
-
-
-				}
-
-			},
-
-			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
-				mapping_element_type: internal_payload.mapping_element_type,
-				name: internal_payload.current_mapping_path_part,
-				friendly_name: data_model.tables[table_name].table_friendly_name,
-				table_name: table_name,
-				fields_data: internal_payload.result_fields,
-			}),
-
-			commit_instance_data(internal_payload, callback_payload :navigator_callback_payload) {
-				internal_payload.mapping_line_data.push(callback_payload.data);
-				return callback_payload.data;
-			},
-
-			get_final_data: (internal_payload) =>
-				internal_payload.mapping_line_data,
-		};
-
-		return data_model.navigator({
-			callbacks: callbacks,
-			internal_payload: internal_payload,
-			config: {
-				use_cache: use_cached,
-				cache_name: 'mapping_line_data',
-				base_table_name: data_model.base_table_name,
-			}
-		});
-
-	};
 
 	/* Returns array of mapping_paths */
 	private static get_array_of_mappings(
@@ -674,8 +443,8 @@ class mappings {
 		}
 		else if (list_type === 'suggested_mapping') {
 
-			const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({
-				mapping_path: new_value.split(data_model.path_join_symbol),
+			const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
+				mapping_path: new_value.split(data_model_storage.path_join_symbol),
 			});
 
 			line_elements_container.innerHTML = html_generator.mapping_path(mapping_line_data);
@@ -697,11 +466,11 @@ class mappings {
 
 				if (previous_element.classList.contains('custom_select_option')) {
 					const last_index_string = custom_select_element.get_option_value(selected_option.previousElementSibling);
-					last_index = data_model.get_index_from_reference_item_name(last_index_string);
+					last_index = data_model_helper.get_index_from_reference_item_name(last_index_string);
 				}
 
 				const new_index = last_index + 1;
-				const new_option_name = data_model.format_reference_item(new_index);
+				const new_option_name = data_model_helper.format_reference_item(new_index);
 
 				const option_data = {
 					option_name: new_option_name,
@@ -747,7 +516,7 @@ class mappings {
 			if (last_element_is_not_relationship)
 				trimmed_mapping_path.pop();
 
-			const mapping_details = mappings.get_mapping_line_data_from_mapping_path({
+			const mapping_details = data_model_navigator.get_mapping_line_data_from_mapping_path({
 				mapping_path: trimmed_mapping_path,
 				iterate: false,
 				use_cached: true
@@ -774,7 +543,7 @@ class mappings {
 
 		const line = <HTMLElement>wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line');
 
-		const base_table_fields = mappings.get_mapping_line_data_from_mapping_path({
+		const base_table_fields = data_model_navigator.get_mapping_line_data_from_mapping_path({
 			mapping_path: [],
 			use_cached: true,
 		});
@@ -824,7 +593,7 @@ class mappings {
 		if (is_mapped)
 			mapping_path.pop();
 
-		const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({
+		const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
 			mapping_path: mapping_path,
 			use_cached: true,
 		});
@@ -903,12 +672,12 @@ class mappings {
 
 					const options = target_select_element.getElementsByClassName('custom_select_option');
 					const option_values = Object.values(options).map(option => custom_select_element.get_option_value(<HTMLElement>option));
-					let max_value = data_model.get_max_to_many_value(option_values) + 1;
-					const max_mapped_value = data_model.get_max_to_many_value(mapped_fields);
+					let max_value = data_model_helper.get_max_to_many_value(option_values) + 1;
+					const max_mapped_value = data_model_helper.get_max_to_many_value(mapped_fields);
 
 					for (; max_mapped_value >= max_value; max_value++) {
 
-						const new_option_name = data_model.format_reference_item(max_value);
+						const new_option_name = data_model_helper.format_reference_item(max_value);
 						const list_table = custom_select_element.get_list_table_name(target_select_element);
 
 						const option_data = {
@@ -999,7 +768,7 @@ class mappings {
 
 		// if line is mapped, update the mapping view
 		if (mapping_path[mapping_path.length - 1] !== "0") {
-			const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({
+			const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
 				mapping_path: mapping_path,
 			});
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data, use_cached);
@@ -1025,7 +794,7 @@ class mappings {
 				`<div class="wbplanview_mappings_line_elements">
 					${
 					html_generator.mapping_path(
-						mappings.get_mapping_line_data_from_mapping_path({
+						data_model_navigator.get_mapping_line_data_from_mapping_path({
 							mapping_path: field_path,
 							use_cached: true,
 							generate_last_relationship_data: false,
@@ -1100,7 +869,7 @@ class mappings {
 
 			mapping_path.pop();
 
-			const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({
+			const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
 				mapping_path: mapping_path,
 				iterate: false,
 			});
@@ -1114,7 +883,7 @@ class mappings {
 
 			const all_automapper_results = Object.entries(mappings.auto_mapper.map({
 				headers: [header],
-				base_table: data_model.base_table_name,
+				base_table: data_model_storage.base_table_name,
 				starting_table: mapping_line_data[mapping_line_data.length - 1].table_name,
 				path: mapping_path,
 				path_offset: path_offset,
@@ -1134,7 +903,7 @@ class mappings {
 
 			const select_options_data = automapper_results.map(automapper_result => {
 
-				const mapping_line_data = mappings.get_mapping_line_data_from_mapping_path({
+				const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
 					mapping_path: automapper_result,
 					use_cached: true,
 				}).slice(mapping_path.length - path_offset);
@@ -1146,7 +915,7 @@ class mappings {
 
 				return {
 					option_name: mapping_path_html,
-					option_value: automapper_result.join(data_model.path_join_symbol),
+					option_value: automapper_result.join(data_model_storage.path_join_symbol),
 				};
 			});
 

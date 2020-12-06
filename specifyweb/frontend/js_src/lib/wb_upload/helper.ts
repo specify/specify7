@@ -3,7 +3,7 @@
 * Collection of various helper methods used during the mapping process
 *
 * */
-const data_model = require('./data_model.ts');
+const data_model_storage = require('./data_model_storage.ts');
 
 class helper {
 
@@ -92,7 +92,7 @@ class helper {
 	) :duplicate_mappings {
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
-		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model.path_join_symbol));
+		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model_storage.path_join_symbol));
 
 		const duplicate_indexes :number[] = [];
 		let index = -1;

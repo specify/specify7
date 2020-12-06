@@ -10,7 +10,7 @@ const cache = require('./cache.ts');
 * Fetches data model with tree ranks
 * */
 
-class fetch_data_model {
+class data_model_fetcher {
 
 	/* Fetches the data model */
 	public static fetch(
@@ -19,9 +19,9 @@ class fetch_data_model {
 	) :void {
 
 		if (typeof localStorage !== "undefined") {
-			const tables = cache.get('fetch_data_model', 'tables');
-			const html_tables = cache.get('fetch_data_model', 'html_tables');
-			const ranks = cache.get('fetch_data_model', 'ranks');
+			const tables = cache.get('data_model_fetcher', 'tables');
+			const html_tables = cache.get('data_model_fetcher', 'html_tables');
+			const ranks = cache.get('data_model_fetcher', 'ranks');
 
 			if (tables && html_tables && ranks)
 				return done_callback(tables, html_tables, ranks);
@@ -133,7 +133,7 @@ class fetch_data_model {
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				fetch_ranks_queue.push(fetch_data_model.fetch_ranks(table_name));
+				fetch_ranks_queue.push(data_model_fetcher.fetch_ranks(table_name));
 
 			return tables;
 
@@ -156,15 +156,15 @@ class fetch_data_model {
 
 
 		const html_tables = html_generator.tables(table_previews);
-		cache.set('fetch_data_model', 'html_tables', html_tables);
-		cache.set('fetch_data_model', 'tables', tables);
+		cache.set('data_model_fetcher', 'html_tables', html_tables);
+		cache.set('data_model_fetcher', 'tables', tables);
 
 
 		Promise.all(fetch_ranks_queue).then(resolved => {
 
 			const ranks :data_model_ranks = Object.fromEntries(resolved);
 
-			cache.set('fetch_data_model', 'ranks', ranks);
+			cache.set('data_model_fetcher', 'ranks', ranks);
 			done_callback(tables as data_model_tables, html_tables, ranks);  // so there is no need to wait for ranks to finish fetching
 		});
 
@@ -218,4 +218,4 @@ class fetch_data_model {
 		);
 }
 
-export = fetch_data_model;
+export = data_model_fetcher;
