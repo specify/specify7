@@ -8,12 +8,12 @@ const data_model = require('./data_model.ts');
 
 class upload_plan_converter {
 
-	public static get_mappings_tree :(include_headers? :boolean, skip_empty? :boolean) => mapping_tree;
+	public static get_mappings_tree :(include_headers? :boolean, skip_empty? :boolean) => mappings_tree;
 
 	private static readonly upload_plan_processing_functions = {
 		wbcols: ([key, value] :[key :string, value :string]) => [key, {
 			[
-				data_model['headers'].indexOf(value) !== -1 ?
+				data_model.headers.indexOf(value) !== -1 ?
 					'existing_header' :
 					'new_column'
 				]: value
@@ -41,22 +41,22 @@ class upload_plan_converter {
 	public static upload_plan_to_mappings_tree(
 		upload_plan :upload_plan | upload_plan_node,  // upload plan
 		base_table_name_extracted :boolean = false  // used by recursion to store intermediate results
-	) :object /* mapping tree */ {
+	) :mappings_tree {
 
 		if (!base_table_name_extracted) {
 
-			if (typeof upload_plan['baseTableName'] === "undefined")
+			if (typeof upload_plan.baseTableName === "undefined")
 				throw "Upload plan should contain `baseTableName` as a root node";
-			data_model.base_table_name = (<string>upload_plan['baseTableName']).toLowerCase();
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan['uploadable'], true);
+			data_model.base_table_name = (<string>upload_plan.baseTableName).toLowerCase();
+			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan.uploadable, true);
 		}
-		else if (typeof (<upload_plan_node>upload_plan)['uploadTable'] !== "undefined")
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>(<upload_plan_node>upload_plan)['uploadTable'], true);
+		else if (typeof (<upload_plan_node>upload_plan).uploadTable !== "undefined")
+			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>(<upload_plan_node>upload_plan).uploadTable, true);
 
 		// TODO: make this function recognize multiple tree rank fields, once upload plan supports that
-		else if (typeof upload_plan['treeRecord'] !== "undefined")
+		else if (typeof upload_plan.treeRecord !== "undefined")
 			//@ts-ignore
-			return Object.fromEntries(Object.entries(<upload_plan>(<upload_plan>upload_plan['treeRecord'])['ranks']).map(([rank_name, rank_data]) =>
+			return Object.fromEntries(Object.entries(<upload_plan>(<upload_plan>upload_plan.treeRecord).ranks).map(([rank_name, rank_data]) =>
 				[
 					data_model.tree_symbol + rank_name,
 					Object.fromEntries(
@@ -114,7 +114,7 @@ class upload_plan_converter {
 				const final_tree = Object.fromEntries(Object.entries(table_data).map(([tree_key, tree_rank_data]) => {
 
 					const new_tree_key = data_model.get_name_from_tree_rank_name(tree_key);
-					let name = tree_rank_data['name'];
+					let name = tree_rank_data.name;
 					return [new_tree_key, handle_header(name)];
 
 				}));
@@ -129,7 +129,7 @@ class upload_plan_converter {
 			};
 
 			if (wrap_it)
-				table_plan['toMany'] = {};
+				table_plan.toMany = {};
 
 			let is_to_many = false;
 
@@ -151,25 +151,25 @@ class upload_plan_converter {
 					table_plan = handle_table(table_data, table_name, false);
 
 				else if (
-					typeof data_model.tables[table_name]['fields'][field_name] !== "undefined" &&
+					typeof data_model.tables[table_name].fields[field_name] !== "undefined" &&
 					typeof table_plan !== "undefined"
 				) {
 
-					const field = data_model.tables[table_name]['fields'][field_name];
+					const field = data_model.tables[table_name].fields[field_name];
 
-					if (field['is_relationship']) {
-						const mapping_table = field['table_name'];
-						const is_to_one = field['type'] === 'one-to-one' || field['type'] === 'many-to-one';
+					if (field.is_relationship) {
+						const mapping_table = field.table_name;
+						const is_to_one = field.type === 'one-to-one' || field.type === 'many-to-one';
 
-						if (is_to_one && typeof table_plan['toOne'][field_name] === "undefined")  // @ts-ignore
-							table_plan['toOne'][field_name] = handle_table(field_data, mapping_table);
+						if (is_to_one && typeof table_plan.toOne[field_name] === "undefined")  // @ts-ignore
+							table_plan.toOne[field_name] = handle_table(field_data, mapping_table);
 
 						else {
-							if (typeof table_plan['toMany'] === "undefined")
-								table_plan['toMany'] = {};
+							if (typeof table_plan.toMany === "undefined")
+								table_plan.toMany = {};
 
-							if (typeof table_plan['toMany'][field_name] === "undefined")  // @ts-ignore
-								table_plan['toMany'][field_name] = handle_table(field_data, mapping_table);
+							if (typeof table_plan.toMany[field_name] === "undefined")  // @ts-ignore
+								table_plan.toMany[field_name] = handle_table(field_data, mapping_table);
 						}
 
 					}

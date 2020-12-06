@@ -75,7 +75,7 @@ class main {
 				}
 			});
 
-			mappings.list__mappings.addEventListener('click', (event :{target :any}) => {
+			mappings.list__mappings.addEventListener('click', (event :{target :HTMLElement}) => {
 
 				const el = event.target;
 

@@ -1,11 +1,11 @@
 interface navigator_parameters {
-	readonly callbacks :navigator_callbacks,
-	readonly recursive_payload? :navigator_recursive_payload | undefined
-	readonly internal_payload? :object
+	readonly callbacks :navigator_callbacks,  // Callbacks can be modified depending on the need to make navigator very versatile
+	readonly recursive_payload? :navigator_recursive_payload | undefined  // {object|undefined} used internally to make navigator call itself multiple times
+	readonly internal_payload? :object  // payload that is shared between the callback functions only and is not modified by the navigator
 	readonly config :{
-		readonly use_cache? :boolean
-		readonly cache_name :string
-		readonly base_table_name? :string
+		readonly use_cache? :boolean  // whether to use cached values
+		readonly cache_name :string  // the name of the cache bucket to use
+		readonly base_table_name? :string  // the name of the base table to use
 	}
 }
 
@@ -45,13 +45,13 @@ interface navigator_recursive_payload {
 }
 
 interface navigator_instance_parameters {
-	readonly table_name :string,
-	readonly internal_payload :object,
-	readonly parent_table_name? :string,
-	readonly parent_table_relationship_name? :string,
-	readonly parent_path_element_name? :string,
-	readonly use_cache? :boolean
-	readonly cache_name? :string | false
-	readonly callbacks :navigator_callbacks
-	readonly callback_payload :navigator_callback_payload
+	readonly table_name :string,  // the name of the current table
+	readonly internal_payload :object,  // internal payload (described in navigator)
+	readonly parent_table_name? :string,  // parent table name
+	readonly parent_table_relationship_name? :string,  // next_real_path_element_name as returned by callbacks.get_next_path_element
+	readonly parent_path_element_name? :string,  // next_path_element_name as returned by callbacks.get_next_path_element
+	readonly use_cache? :boolean  // whether to use cache
+	readonly cache_name? :string | false  // the name of the cache bucket to use
+	readonly callbacks :navigator_callbacks  // callbacks (described in navigator)
+	readonly callback_payload :navigator_callback_payload  // callbacks payload (described in navigator)
 }

@@ -24,7 +24,7 @@ class data_model {
 		filter__is_relationship :boolean | -1 = -1,  // whether fields are relationships
 		filter__is_hidden :boolean | -1 = -1  // whether field is hidden
 	) :[field_name :string, field_data :data_model_field | data_model_relationship][] =>
-		Object.entries(data_model.tables[table_name]['fields']).filter(([, {is_relationship, is_hidden}]) =>
+		Object.entries(data_model.tables[table_name].fields).filter(([, {is_relationship, is_hidden}]) =>
 			(
 				filter__is_relationship === -1 || is_relationship === filter__is_relationship
 			) &&
@@ -47,10 +47,10 @@ class data_model {
 	) :[relationship_name :string, relationship_data :data_model_relationship][] =>
 		<[relationship_name :string, relationship_data :data_model_relationship][]>data_model.get_table_fields(table_name, true, filter__is_hidden);
 
-	/* Iterates over the mapping_tree to find required fields that are missing */
+	/* Iterates over the mappings_tree to find required fields that are missing */
 	public static show_required_missing_fields(
 		table_name :string,  // Official name of the current base table (from data model)
-		mapping_tree :mapping_tree | undefined = undefined,  // Result of running mappings.get_mapping_tree() - an object with information about currently mapped fields
+		mappings_tree :mappings_tree | undefined = undefined,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
 		previous_table_name :string = '',  // used internally in recursion. Previous table name
 		path :mapping_path = [],  // used internally in recursion. Current mapping path
 		results :string[][] = []  // used internally in recursion. Saves results
@@ -58,17 +58,17 @@ class data_model {
 
 		const table_data = data_model.tables[table_name];
 
-		if (typeof mapping_tree === "undefined")
+		if (typeof mappings_tree === "undefined")
 			return results;
 
-		const list_of_mapped_fields = Object.keys(mapping_tree);
+		const list_of_mapped_fields = Object.keys(mappings_tree);
 
 		// handle -to-many references
 		if (data_model.value_is_reference_item(list_of_mapped_fields[0])) {
 			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
-				if (typeof mapping_tree[mapped_field_name] !== "undefined" && typeof mapping_tree[mapped_field_name] !== "string")
-					data_model.show_required_missing_fields(table_name, <mapping_tree>mapping_tree[mapped_field_name], previous_table_name, local_path, results);
+				if (typeof mappings_tree[mapped_field_name] !== "undefined" && typeof mappings_tree[mapped_field_name] !== "string")
+					data_model.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[mapped_field_name], previous_table_name, local_path, results);
 			}
 			return results;
 		}
@@ -87,7 +87,7 @@ class data_model {
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model.show_required_missing_fields(table_name, <mapping_tree>mapping_tree[complimented_rank_name], previous_table_name, local_path, results);
+						data_model.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[complimented_rank_name], previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -97,14 +97,14 @@ class data_model {
 		}
 
 		// handle regular fields and relationships
-		for (const [field_name, field_data] of Object.entries(table_data['fields'])) {
+		for (const [field_name, field_data] of Object.entries(table_data.fields)) {
 
 			const local_path = [...path, field_name];
 
 			const is_mapped = list_of_mapped_fields.indexOf(field_name) !== -1;
 
 
-			if (field_data['is_relationship']) {
+			if (field_data.is_relationship) {
 
 				const relationship_data = <data_model_relationship>field_data;
 
@@ -117,16 +117,16 @@ class data_model {
 					)
 						previous_relationship_name = local_path.slice(-3)[0];
 
-					const parent_relationship_data = <data_model_relationship>data_model.tables[previous_table_name]['fields'][previous_relationship_name];
+					const parent_relationship_data = <data_model_relationship>data_model.tables[previous_table_name].fields[previous_relationship_name];
 
 					if (
 						(  // disable circular relationships
-							field_data['foreign_name'] === previous_relationship_name &&
-							field_data['table_name'] === previous_table_name
+							field_data.foreign_name === previous_relationship_name &&
+							field_data.table_name === previous_table_name
 						) ||
 						(  // skip -to-many inside of -to-many
-							data_model.relationship_is_to_many(parent_relationship_data['type']) &&
-							data_model.relationship_is_to_many(relationship_data['type'])
+							data_model.relationship_is_to_many(parent_relationship_data.type) &&
+							data_model.relationship_is_to_many(relationship_data.type)
 						)
 					)
 						continue;
@@ -134,11 +134,11 @@ class data_model {
 				}
 
 				if (is_mapped)
-					data_model.show_required_missing_fields(relationship_data['table_name'], <mapping_tree>mapping_tree[field_name], table_name, local_path, results);
-				else if (field_data['is_required'])
+					data_model.show_required_missing_fields(relationship_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
+				else if (field_data.is_required)
 					results.push(local_path);
 			}
-			else if (!is_mapped && field_data['is_required'])
+			else if (!is_mapped && field_data.is_required)
 				results.push(local_path);
 
 
@@ -156,15 +156,15 @@ class data_model {
 
 	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 	public static navigator({
-								callbacks,  // Callbacks can be modified depending on the need to make navigator very versatile
-								recursive_payload = undefined,  // {object|undefined} used internally to make navigator call itself multiple times
-								internal_payload = {},  // {object} payload that is shared between the callback functions only and is not modified by the navigator
+								callbacks,
+								recursive_payload = undefined,
+								internal_payload = {},
 								config: {
-									use_cache = false,  // {boolean} whether to use cached values
-									cache_name,  // {string} the name of the cache bucket to use
-									base_table_name,  // {string} the name of the base table to use
+									use_cache = false,
+									cache_name,
+									base_table_name,
 								}
-							} :navigator_parameters) :any /* returns the value returned by callbacks['get_final_data'](internal_payload) */ {
+							} :navigator_parameters) :any /* returns the value returned by callbacks.get_final_data(internal_payload) */ {
 
 		let table_name = '';
 		let parent_table_name = '';
@@ -252,7 +252,7 @@ class data_model {
 				));
 
 		if (schema_navigator_results.length === 0)
-			return callbacks['get_final_data'](internal_payload);
+			return callbacks.get_final_data(internal_payload);
 		if (schema_navigator_results.length === 1)
 			return schema_navigator_results[0];
 		else
@@ -262,16 +262,16 @@ class data_model {
 
 	/* Called by navigator if callback.iterate returned true */
 	public static navigator_instance({
-										 table_name,  // {string} the name of the current table
-										 internal_payload,  // {object} internal payload (described in navigator)
-										 parent_table_name = '',  // {string} parent table name
-										 parent_table_relationship_name = '',  // {string} next_real_path_element_name as returned by callbacks.get_next_path_element
-										 parent_path_element_name = '',  // {string} next_path_element_name as returned by callbacks.get_next_path_element
-										 use_cache = false,  // {boolean} whether to use cache
-										 cache_name = false,  // {boolean} the name of the cache bucket to use
-										 callbacks,  // {object} callbacks (described in navigator)
-										 callback_payload,  // {object} callbacks payload (described in navigator)
-									 } :navigator_instance_parameters) :any /* the value returned by callbacks['get_instance_data'](internal_payload, callback_payload) */ {
+										 table_name,
+										 internal_payload,
+										 parent_table_name = '',
+										 parent_table_relationship_name = '',
+										 parent_path_element_name = '',
+										 use_cache = false,
+										 cache_name = false,
+										 callbacks,
+										 callback_payload,
+									 } :navigator_instance_parameters) :any /* the value returned by callbacks.get_instance_data(internal_payload, callback_payload) */ {
 
 
 		let json_payload;
@@ -287,13 +287,13 @@ class data_model {
 			}
 		}
 
-		callbacks['navigator_instance_pre'](internal_payload, callback_payload);
+		callbacks.navigator_instance_pre(internal_payload, callback_payload);
 
 		const parent_relationship_type =
 			(
 				typeof data_model.tables[parent_table_name] !== "undefined" &&
-				typeof data_model.tables[parent_table_name]['fields'][parent_table_relationship_name] !== "undefined"
-			) ? (<data_model_relationship>data_model.tables[parent_table_name]['fields'][parent_table_relationship_name])['type'] : '';
+				typeof data_model.tables[parent_table_name].fields[parent_table_relationship_name] !== "undefined"
+			) ? (<data_model_relationship>data_model.tables[parent_table_name].fields[parent_table_relationship_name]).type : '';
 		const children_are_to_many_elements =
 			parent_relationship_type !== '' &&
 			data_model.relationship_is_to_many(parent_relationship_type) &&
@@ -353,7 +353,7 @@ class data_model {
 	* */
 	public static readonly get_index_from_reference_item_name = (
 		value :string  // the value to use
-	) :number /* index */ =>
+	) :number =>
 		parseInt(value.substr(data_model.reference_symbol.length));
 
 	/*

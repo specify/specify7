@@ -32,25 +32,7 @@ class helper {
 	public static find_array_divergence_point(
 		source :any[],  // the source array to use in the comparison
 		search :any[]  // the search array to use in the comparison
-	) :number  // divergence point
-	/*
-	* Returns 0 if search array is empty
-	* Returns -1 if source array is empty or source array is smaller than the search array
-	* Examples:
-	* 	If:
-	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
-	* 		search is []
-	* 	returns 0
-	* 	If:
-	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
-	* 		search is ['Accession','Accession Agents',]
-	* 	returns 2
-	* 	If
-	* 		source is ['Accession','Accession Agents','#1','Agent','First Name'] and
-	* 		search is ['Accession','Accession Agents','#1']
-	* 	returns 3
-	*
-	* */ {
+	) :divergence_point {
 
 		if (source === null || search === null)
 			return -1;
@@ -85,38 +67,7 @@ class helper {
 		mapping_path :mapping_path,  // combined mapping path
 		has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
 		detect_unmapped :boolean = true  // whether detect that a mapping path is incomplete
-	) :deconstructed_mapping_path  // [mapping_path, mapping_type, header]
-	/*
-	* If mapping path is incomplete and detect_unmapped is true mapping_path is []
-	* Example:
-	* 	if
-	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name','existing_header','Agent 1 First Name']
-	* 		has_header is True
-	* 		detect_unmapped is True
-	* 	then return [
-	* 		['Accession','Accession Agents','#1','Agent','First Name'],
-	* 		'existing_header',
-	* 		'Agent 1 First Name'
-	* 	]
-	*
-	* 	if
-	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','0','existing_header','Agent 1 First Name']
-	* 		has_header is True
-	* 		detect_unmapped is True
-	* 	then return [
-	* 		[],
-	* 		'existing_header',
-	* 		'Agent 1 First Name'
-	* 	]
-	* 	if
-	* 		mapping_path is ['Accession','Accession Agents','#1','Agent','First Name']
-	* 		has_header is False
-	* 		detect_unmapped is False
-	* 	then return [
-	* 		['Accession','Accession Agents','#1','Agent','First Name'],
-	* 	]
-	*
-	* */ {
+	) :deconstructed_mapping_path{
 
 		mapping_path = [...mapping_path];
 
@@ -138,27 +89,7 @@ class helper {
 	public static find_duplicate_mappings(
 		array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
 		has_headers :boolean = false  // whether array of mappings contain mapping types and header names / static column values
-	) :number[]  // array of duplicate indexes
-	/*
-	* Example:
-	* 	if
-	* 		array_of_mappings is [
-	* 			['Accession','Accession Number','existing header,'Accession #;],
-	* 			['Catalog Number','existing header','cat num'],
-	* 			['Accession','Accession Number'],
-	* 		]
-	* 		has_headers is True
-	* 	then return [2]
-	* 	if
-	* 		array_of_mappings is [
-	* 			['Start Date'],
-	* 			['End Date'],
-	* 			['Start Date'],
-	* 			['Start Date'],
-	* 		]
-	* 		has_headers is False
-	* 	then return [2,3]
-	* */ {
+	) :duplicate_mappings {
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);
 		const string_array_of_mappings = filtered_array_of_mappings.map(mapping_path => mapping_path.join(data_model.path_join_symbol));

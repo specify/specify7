@@ -78,19 +78,19 @@ class fetch_data_model {
 					friendly_name: friendly_name,
 					is_hidden: is_hidden,
 					is_required: is_required,
-					is_relationship: field['isRelationship'],
+					is_relationship: field.isRelationship,
 				};
 
-				if (field_data['is_relationship']) {
+				if (field_data.is_relationship) {
 
 					const relationship = <schema_model_table_relationship>field;
 
-					let foreign_name = relationship['otherSideName'];
+					let foreign_name = relationship.otherSideName;
 					if (typeof foreign_name !== "undefined")
 						foreign_name = foreign_name.toLowerCase();
 
-					const relationship_type = relationship['type'];
-					const table_name = relationship['relatedModelName'].toLowerCase();
+					const relationship_type = relationship.type;
+					const table_name = relationship.relatedModelName.toLowerCase();
 
 					if (field_name === 'definition') {
 						has_relationship_with_definition = true;
@@ -103,7 +103,7 @@ class fetch_data_model {
 					}
 
 					if (
-						relationship['readOnly'] ||
+						relationship.readOnly ||
 						fetching_parameters.tables_to_hide.indexOf(table_name) !== -1
 					)
 						continue;
@@ -144,13 +144,13 @@ class fetch_data_model {
 		Object.entries(tables).map(([table_name, table_data]) =>
 			(
 				<[relationship_name :string, relationship_data :data_model_relationship][]>
-					Object.entries(table_data['fields']).filter(([, {is_relationship}]) =>
+					Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
 						is_relationship
 					)
 			).filter(([, {table_name: relationship_table_name}]) =>
 				typeof tables[relationship_table_name] === "undefined"
 			).map(([relationship_name,]) => {
-				delete tables[table_name]['fields'][relationship_name];
+				delete tables[table_name].fields[relationship_name];
 			})
 		);
 

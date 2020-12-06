@@ -13,18 +13,13 @@ class custom_select_element {
 	/* Generates HTML for a custom select element */
 	public static get_element_html(
 		{
-			/* string */ select_type = 'simple',  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
-			/* string */ select_name = '',  // the name of the element. used when constructing a mapping path. NOTE: the first element of the line does not have a name as its name is inherited from the base table
-			/* string */ select_label = '',  // the label to sue for the element
-			/* string */ select_table = '',  // the name of the table that was used
-			/* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+			select_type = 'simple',
+			select_name = '',
+			select_label = '',
+			select_table = '',
+			select_groups_data = []
 		} :custom_select_element_parameters,
-		custom_select_type :string,  // the type of the select element
-		// 							   Available types:
-		// 								- opened_list - used in the mapping view - list without an `input` box but with always opened list of options and a table name on top
-		// 								- closed_list - used on mapping line - list with an `input` box and a list of options that can be opened
-		// 								- preview_list - used in the mapping validation results - list with an `input` box but with no list of options
-		// 								- suggestion_list - used on the suggestion lines - list with an `input` box but with no list of options
+		custom_select_type :custom_select_type,
 		use_cached :boolean = false  // whether to use a cached custom select element HTML assuming it matches the parameters
 	) :string /* HTML for a custom select element */ {
 
@@ -35,9 +30,6 @@ class custom_select_element {
 				select_data_copy.select_groups_data[group_index].select_options_data[parseInt(option_name)].is_enabled = false
 			)
 		);
-		// for (const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
-		// 	for (const option_name of Object.keys(group_data['select_options_data']))
-		// 		select_data_copy['select_groups_data'][group_name]['select_options_data'][option_name]['is_enabled'] = false;
 		const cache_key = JSON.stringify([custom_select_type, select_data_copy]);
 
 		if (cache_key && use_cached) {
@@ -60,7 +52,7 @@ class custom_select_element {
 		let table_name = '';
 		outer_loop:
 			for (const select_group_data of select_groups_data)
-				for (const select_field_data of select_group_data['select_options_data'])
+				for (const select_field_data of select_group_data.select_options_data)
 					if (select_field_data.is_default) {
 						default_label = select_field_data.option_name;
 						default_name = select_field_data.option_value;
@@ -142,7 +134,7 @@ class custom_select_element {
 
 	/* Generates HTML for a suggestion box */
 	public static readonly get_suggested_mappings_element_html = (
-		select_options_data :custom_select_element_option[]  // list of options. See custom_select_html.get_select_option_html() for option data structure
+		select_options_data :custom_select_element_option[]
 	) :string /* HTML for a suggestion box */ =>
 		`<span class="custom_select_suggestions">
 			${custom_select_element.get_select_group_html({
@@ -154,9 +146,9 @@ class custom_select_element {
 
 	/* Generates HTML for a group of options */
 	public static get_select_group_html({
-							  /* string */ select_group_name,  // group name (used in css and js)
-							  /* string */ select_group_label,  // group label (shown to the user)
-							  /* array */ select_options_data  // list of options data. See custom_select_element.get_select_option_html() for the data structure
+							  select_group_name,
+							  select_group_label,
+							  select_options_data
 						  } :custom_select_element_options_group) :string /* HTML for a group of options */ {
 
 		return `<span
@@ -170,12 +162,12 @@ class custom_select_element {
 
 	/* Generates HTML for a single option line */
 	public static get_select_option_html({
-							   /* string */ option_name,  // the name of the option. Would be used as a label (visible to the user)
-							   /* string */ option_value,  // the value of the option. Would be used to construct a mapping path
-							   /* boolean */ is_enabled = true,  // True if option can be selected. False if option can not be selected because it was already selected
-							   /* boolean */ is_relationship = false,  // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
-							   /* boolean */ is_default = false,  // whether the option is currently selected
-							   /* string */ table_name = ''  // the name of the table this option represents
+							   option_name,
+							   option_value,
+							   is_enabled = true,
+							   is_relationship = false,
+							   is_default = false,
+							   table_name = ''
 						   } :custom_select_element_option) :string /* HTML for a single option line */ {
 
 		const classes = ['custom_select_option'];
@@ -230,7 +222,7 @@ class custom_select_element {
 	* */
 	public static set_event_listeners(
 		container :HTMLDivElement,  // the container that is going to house all of the custom select elements
-		change_callback :(payload :object) => void,  // the function that would receive the change_payload returned by custom_select_element.change_selected_option() whenever there was an option value change
+		change_callback :(payload :custom_select_element_change_payload) => void,  // the function that would receive the change_payload returned by custom_select_element.change_selected_option() whenever there was an option value change
 		suggestions_callback :(select_element :HTMLElement, custom_select_option :HTMLElement) => void  // the function that would receive {DOMElement} current_list and {DOMElement} selected_option whenever a list is opened
 	) :void {
 		container.addEventListener('click', e => {
@@ -238,10 +230,10 @@ class custom_select_element {
 			const el = <HTMLElement>e.target;
 
 			// close opened lists
-			const lists :HTMLCollectionOf<Element> = container.getElementsByClassName('custom_select');
+			const lists = Object.values(<HTMLCollectionOf<HTMLElement>> container.getElementsByClassName('custom_select'));
 			const current_list = <HTMLElement>el.closest('.custom_select:not([data-type="preview_list"]):not([data-type="suggestion_list"])');
 
-			for (const list of lists as any)
+			for (const list of lists)
 				if (list !== current_list)  // dont close current list
 					custom_select_element.close_list(list);
 
@@ -295,35 +287,7 @@ class custom_select_element {
 	public static change_selected_option(
 		target_list :HTMLSpanElement,  // the list that houses target_option
 		target_option :HTMLSpanElement | String  // {HTMLSpanElement} the option or {string} the name of the option that was clicked
-	) :Object | undefined
-	/*
-	* if value not changed or option not found or option is disabled:
-	* 	return undefined
-	* else if clicked on suggested mapping line:
-	* 	return {
-	*       changed_list: target_list,
-	*       selected_option: target_option,
-	*       new_value: custom_select_option_value,
-	*       list_type: 'suggested_mapping',
-	*       previous_value: '',
-	*       previous_previous_value: '',
-	*       is_relationship: '',
-	*       custom_select_type: '',
-	*       list_table_name: '',
-	*	}
-	* else:
-	* 	{
-	*       changed_list: target_list,
-	*       selected_option: target_option,
-	*       new_value: custom_select_option_value,
-	*       previous_value: previous_list_value,
-	*       previous_previous_value: previous_previous_value,
-	*       is_relationship: is_relationship,
-	*       list_type: list_type,
-	*       custom_select_type: custom_select_type,
-	*       list_table_name: list_table_name,
-	*	}
-	* */ {
+	) :custom_select_element_change_payload | undefined {
 
 		// if target_option is option's name, find option element
 		if (typeof target_option === 'string') {
@@ -344,7 +308,7 @@ class custom_select_element {
 				list_type: 'suggested_mapping',
 				previous_value: '',
 				previous_previous_value: '',
-				is_relationship: '',
+				is_relationship: false,
 				custom_select_type: '',
 				list_table_name: '',
 			};
@@ -364,7 +328,7 @@ class custom_select_element {
 		const custom_select_option_label = <string>custom_select_option_label_element.textContent;
 
 		let previous_list_value = <string>custom_select_element.get_list_value(target_list);
-		const previous_previous_value = target_list.getAttribute('data-previous_value');
+		const previous_previous_value = <string>target_list.getAttribute('data-previous_value');
 
 		// don't change values if new value is 'add'
 		const list_type = <string>custom_select_element.get_list_mapping_type(target_list);
@@ -401,8 +365,8 @@ class custom_select_element {
 		}
 
 
-		const custom_select_type = target_list.getAttribute('data-type');
-		const list_table_name = custom_select_element.get_list_table_name(target_list);
+		const custom_select_type = <string>target_list.getAttribute('data-type');
+		const list_table_name = <string>custom_select_element.get_list_table_name(target_list);
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
@@ -422,8 +386,8 @@ class custom_select_element {
 		target_list :HTMLSpanElement  // a list to close
 	) :void => {
 		target_list.classList.remove('custom_select_open');
-		const custom_select_suggestions :HTMLCollectionOf<Element> = target_list.getElementsByClassName('custom_select_suggestions');
-		for (const custom_select_suggestion of custom_select_suggestions as any)
+		const custom_select_suggestions = Object.values(<HTMLCollectionOf<Element>>target_list.getElementsByClassName('custom_select_suggestions'));
+		for (const custom_select_suggestion of custom_select_suggestions)
 			custom_select_suggestion.remove();
 	};
 
@@ -434,7 +398,7 @@ class custom_select_element {
 	public static add_option(
 		list :HTMLSpanElement,  // the list that the option would be added to
 		position :number,  // the position to add element at. If negative, starts from the back
-		option_data :{option_name :any; option_value :any; is_enabled? :boolean; is_relationship? :boolean; is_default? :boolean; table_name? :string;},  // option data. See custom_select_element.get_select_option_html() for data structure
+		option_data :custom_select_element_option,  // option data. See custom_select_element.get_select_option_html() for data structure
 		selected :boolean = false  // whether to trigger a custom_select_element.change_selected_option() event
 	) :void {
 

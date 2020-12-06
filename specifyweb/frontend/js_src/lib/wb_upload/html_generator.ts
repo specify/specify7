@@ -9,7 +9,7 @@ class html_generator {
 
 	/* Generates HTML for a list of tables */
 	public static tables(
-		list_of_tables :object  // a dictionary like table_name==>table_friendly_name
+		list_of_tables :string[]  // a dictionary like table_name==>table_friendly_name
 	) :string /* HTML for a list of tables */ {
 
 		const fields_data = Object.fromEntries(Object.entries(list_of_tables).map(([table_name, table_label]) =>
@@ -42,12 +42,12 @@ class html_generator {
 	/* Generates HTML for a mapping line */
 	public static readonly mapping_line = (
 		{
-			line_data,  // {array} mapping path data. See html_generator.mapping_path() for data structure
+			line_data,
 			header_data: {
-				mapping_type,  // {string} type of the header ('existing_header'/'new_column'/'new_static_column')
-				header_name  // {string} if mapping_type is 'new_static_column' - the value of a static filed. Else, the name of the header
+				mapping_type,
+				header_name
 			},
-			line_attributes = [],  // {array} list of classes to be appended to this line
+			line_attributes = [],
 		} :mapping_line_parameters,
 		use_cached :boolean  // whether to use a cached version of the mapping line
 	) :string /* HTML for a mapping line */ =>
@@ -66,7 +66,7 @@ class html_generator {
 	/* Generates HTML for a given mapping path data */
 	public static readonly mapping_path = (
 		mappings_line_data :mapping_element_parameters[],  // list of mapping_element data. See html_generator.mapping_element() for data structure
-		custom_select_type :string = 'closed_list',  // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
+		custom_select_type :custom_select_type = 'closed_list',
 		use_cached :boolean = false  // whether to use cached value for this mapping path
 	) :string /* HTML for a given mapping path data */ =>
 		mappings_line_data.map(mapping_details =>
@@ -80,13 +80,13 @@ class html_generator {
 	/* Generates HTML for a new mapping element */
 	public static mapping_element(
 		{
-			/* string */ name,  // the name of this mapping element
-			/* string */ friendly_name,  // the friendly name for this mapping element
-			/* object */ fields_data,  // fields data. See more info later in this method
-			/* string */ table_name = '',  // the name of the table this mapping element belongs too
-			/* string */ mapping_element_type = 'simple'  // the type of this mapping element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
+			name,
+			friendly_name,
+			fields_data,
+			table_name = '',
+			mapping_element_type = 'simple'
 		} :mapping_element_parameters,
-		custom_select_type :string = 'closed_list',  // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
+		custom_select_type :custom_select_type = 'closed_list',
 		use_cached :boolean = false  // whether to use cached value for this mapping element
 	) :string /* HTML for a new mapping element */ {
 
@@ -103,15 +103,15 @@ class html_generator {
 		for (const [
 			field_name,
 			{
-				field_friendly_name,  // {string} field label
-				is_enabled = true,  // {bool} whether field is enabled (not mapped yet)
-				is_default = false,  // {bool} whether field is selected by default
-				table_name = '',  // {string} table name for this option
-				is_relationship = false,  // {bool} whether this field is relationship, tree rank or reference item
-				is_required = false,  // {bool} whether this field is required
-				is_hidden = false  // {bool} whether this field is hidden
+				field_friendly_name,  // field label
+				is_enabled = true,  // whether field is enabled (not mapped yet)
+				is_default = false,  // whether field is selected by default
+				table_name = '',  // table name for this option
+				is_relationship = false,  // whether this field is relationship, tree rank or reference item
+				is_required = false,  // whether this field is required
+				is_hidden = false  // whether this field is hidden
 			}
-		] of Object.entries(<object>fields_data)) {
+		] of Object.entries(fields_data)) {
 
 			const field_data_formatted :custom_select_element_option = {
 				option_name: field_friendly_name,
@@ -134,7 +134,7 @@ class html_generator {
 
 
 		const table_fields = [];
-		for (const [group_name, group_fields] of Object.entries(<object>field_groups))
+		for (const [group_name, group_fields] of Object.entries(field_groups))
 			if (group_fields.length !== 0)
 				table_fields.push({
 					select_group_name: group_name,
@@ -156,7 +156,7 @@ class html_generator {
 
 	/* Return HTML for a textarea with a given value for a new static header */
 	public static readonly static_header = (
-		/* string */ default_value = ''  // the default value of a textarea
+		default_value:string = ''  // the default value of a textarea
 	) :string /* HTML for a textarea with a given value for a new static header */ =>
 		`<textarea>${default_value}</textarea>`;
 

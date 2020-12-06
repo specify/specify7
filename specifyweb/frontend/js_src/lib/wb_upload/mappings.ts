@@ -31,7 +31,7 @@ class mappings {
 	private static need_to_define_lines :boolean = true;
 	private static changes_made :boolean = true;
 	private static need_to_run_auto_mapper :boolean = true;
-	private static mappings_tree :mapping_tree;
+	private static mappings_tree :mappings_tree;
 	private static mapped_fields :mapping_path[] = [];
 	private static auto_mapper = new auto_mapper();
 
@@ -41,13 +41,13 @@ class mappings {
 	/* Select table */
 	public static readonly set_table = (
 		table_name :string,  // the name of the table to set
-		headers_to_shadow_define :list_of_headers = []  // a list of headers that would be fully defined at a later pointer
+		headers_to_shadow_define :list_of_headers = []  // a list of headers that would be fully defined at a later point
 	) =>
-		new Promise((resolve) => {
+		Promise.resolve('').then(()=>{
 
 			const loaded = mappings.loading_screen();
 
-			mappings.title__table_name.innerText = data_model.tables[table_name]['table_friendly_name'];
+			mappings.title__table_name.innerText = data_model.tables[table_name].table_friendly_name;
 
 			data_model.base_table_name = table_name;
 
@@ -79,7 +79,7 @@ class mappings {
 					};
 
 					if (headers_to_shadow_define.indexOf(header) !== -1)
-						mapping_line_data['line_data'] = [];
+						mapping_line_data.line_data = [];
 
 					const mapping_line_html = html_generator.mapping_line(mapping_line_data, true);
 
@@ -104,18 +104,17 @@ class mappings {
 				mappings.implement_array_of_mappings(array_of_mappings);
 			}
 
-			resolve();
 
 			mappings.container.classList.add('table_selected');
 
 			loaded();
 
-		}) && false;
+		});
 
 	/* Sets a lit of headers */
 	public static set_headers(
-		headers :list_of_headers = [],  // list of headers as strings
-		upload_plan :{baseTableName :string} | boolean = false,  // upload plan as an object or {bool} false for none
+		headers :list_of_headers = [],
+		upload_plan :upload_plan | false = false,  // upload plan as an object or {bool} false for none
 		headers_defined :boolean = true  // whether CSV file had headers in the first line
 	) :void {
 
@@ -129,7 +128,7 @@ class mappings {
 		mappings.need_to_run_auto_mapper = headers_defined && upload_plan === false;
 		mappings.new_column_index = 0;
 
-		if (typeof upload_plan === "object" && typeof upload_plan['baseTableName'] !== "undefined") {
+		if (typeof upload_plan === "object" && typeof upload_plan.baseTableName !== "undefined") {
 
 			const {baseTableName: base_table_name} = upload_plan;
 
@@ -143,8 +142,9 @@ class mappings {
 					defined_headers.push(header_name);
 			}
 
-			mappings.set_table(base_table_name, defined_headers);
-			mappings.implement_array_of_mappings(array_of_mappings);
+			mappings.set_table(base_table_name, defined_headers).then(()=>
+				mappings.implement_array_of_mappings(array_of_mappings)
+			);
 		}
 		else
 			mappings.need_to_define_lines = true;
@@ -191,7 +191,8 @@ class mappings {
 			};
 			mappings.add_new_mapping_line({
 				mapping_path: parsed_mapping_path,
-				header_data: header_data
+				header_data: header_data,
+				update_all_lines: false,
 			});
 		});
 
@@ -202,12 +203,13 @@ class mappings {
 
 	/* Adds new mapping line */
 	private static add_new_mapping_line({
-											/* int */ position = -1,  // position of the new line. If negative, start from the back
-											/* array */ mapping_path = [],  // mapping path to use for the new mapping line
-											/* object */ header_data,  // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
-											/* boolean */ blind_add_back = false,  // whether to add to the back without checking if the header already exists
-											/* array */ line_attributes = [],  // array of classes to append to each line's classname
-											/* boolean */ scroll_down = false  // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
+											position = -1,
+											mapping_path = [],
+											header_data,
+											blind_add_back = false,
+											line_attributes = [],
+											scroll_down = false,
+											update_all_lines = true
 										} :add_new_mapping_line_parameters) :void {
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
@@ -217,9 +219,9 @@ class mappings {
 			use_cached: true,
 		});
 
-		if (header_data['mapping_type'] === 'new_column' && header_data['header_name'] === '') {
+		if (header_data.mapping_type === 'new_column' && header_data.header_name === '') {
 			mappings.new_column_index++;
-			header_data['header_name'] = `New Column ${mappings.new_column_index}`;
+			header_data.header_name = `New Column ${mappings.new_column_index}`;
 		}
 
 		const mapping_line_data = {
@@ -265,7 +267,8 @@ class mappings {
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
 
-		mappings.update_all_lines(mapping_path);
+		if(update_all_lines)
+			mappings.update_all_lines(mapping_path);
 
 	};
 
@@ -274,11 +277,11 @@ class mappings {
 
 	/* Returns a mapping line data from mapping path */
 	private static get_mapping_line_data_from_mapping_path({
-															   mapping_path = [],  // {array} the mapping path
-															   iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
-															   use_cached = false,  // {bool} whether to use cache if exists
-															   generate_last_relationship_data = true,  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
-														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] /* list of mapping element data objects */ {
+															   mapping_path = [],
+															   iterate = true,
+															   use_cached = false,
+															   generate_last_relationship_data = true,
+														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] {
 
 		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
 			mapping_path: mapping_path,
@@ -324,7 +327,7 @@ class mappings {
 
 				return {
 					next_path_element_name: next_path_element_name,
-					next_path_element: data_model.tables[table_name]['fields'][next_path_element_name],
+					next_path_element: data_model.tables[table_name].fields[next_path_element_name],
 					next_real_path_element_name: next_real_path_element_name,
 				};
 
@@ -376,7 +379,7 @@ class mappings {
 						table_name: table_name,
 					};
 				}
-				internal_payload.result_fields['add'] = {
+				internal_payload.result_fields.add = {
 					field_friendly_name: 'Add',
 					is_enabled: true,
 					is_required: false,
@@ -428,7 +431,7 @@ class mappings {
 							friendly_name,
 							table_name: field_table_name
 						}
-					] of <any[]>Object.entries(data_model.tables[table_name]['fields'])) {
+					] of Object.entries(<data_model_fields_writable> data_model.tables[table_name].fields)) {
 
 					if (
 						is_relationship &&
@@ -438,11 +441,11 @@ class mappings {
 								(
 									typeof foreign_name !== "undefined" &&
 									typeof parent_table_name !== "undefined" &&
-									typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
-									data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === field_name
+									typeof data_model.tables[parent_table_name].fields[foreign_name] !== "undefined" &&
+									data_model.tables[parent_table_name].fields[foreign_name].foreign_name === field_name
 								) ||
 								(
-									data_model.tables[table_name]['fields'][field_name]['foreign_name'] === internal_payload.current_mapping_path_part
+									data_model.tables[table_name].fields[field_name].foreign_name === internal_payload.current_mapping_path_part
 								)
 							)
 						) ||
@@ -481,7 +484,7 @@ class mappings {
 			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
 				mapping_element_type: internal_payload.mapping_element_type,
 				name: internal_payload.current_mapping_path_part,
-				friendly_name: data_model.tables[table_name]['table_friendly_name'],
+				friendly_name: data_model.tables[table_name].table_friendly_name,
 				table_name: table_name,
 				fields_data: internal_payload.result_fields,
 			}),
@@ -553,7 +556,7 @@ class mappings {
 	public static get_mappings_tree(
 		include_headers :boolean = false,  // whether the last tree nodes of each branch should be mapping type and header name
 		skip_empty :boolean = true  // whether to include incomplete tree nodes
-	) :mapping_tree /* mappings tree */ {
+	) :mappings_tree /* mappings tree */ {
 		if (!include_headers && !mappings.changes_made)
 			return mappings.mappings_tree;
 
@@ -567,7 +570,7 @@ class mappings {
 	public static readonly get_mapped_fields = (
 		mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 		skip_empty :boolean = true  // whether to skip incomplete mappings
-	) /*:object*/ /* mappings tree starting from a given a particular starting mapping path */ =>
+	):mappings_tree =>
 		tree_helpers.traverse_tree(
 			mappings.get_mappings_tree(false, skip_empty),
 			tree_helpers.array_to_tree([...mapping_path_filter]),
@@ -575,12 +578,11 @@ class mappings {
 
 	/* Returns a mapping path for a particular line elements container */
 	private static get_mapping_path({
-										line_elements_container,  // {DOMElement} line elements container
-										mapping_path_filter = [],  // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
-										//									 if is {DOMElement}, then stops when reaches a given element in a line_elements_container
-										include_headers = false,  // whether to include mapping type and header_name / static column value in the result
-										exclude_unmapped = false,  // whether to replace incomplete mapping paths with ["0"]
-										exclude_non_relationship_values = false,  // whether to exclude simple fields from the resulting path
+										line_elements_container,
+										mapping_path_filter = [],
+										include_headers = false,
+										exclude_unmapped = false,
+										exclude_non_relationship_values = false,
 									} :get_mapping_path_parameters) :mapping_path {
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
@@ -653,14 +655,14 @@ class mappings {
 
 	/* Handles a change to the select element value */
 	public static custom_select_change_event({
-												 /* DOMElement */ changed_list,  // the list that was changed
-												 /* DOMElement */ selected_option,  // the option that was changed
-												 /* string */ new_value,  // the new value of the list
-												 /* boolean */ is_relationship,  // whether new value is a relationship
-												 /* string */ list_type,  // the type of the changed list
-												 /* string */ custom_select_type,  // the type of the custom select element
-												 /* string */ list_table_name,  // the name of the table the list belongs too
-											 } :custom_select_change_event_parameters) :void {
+												 changed_list,
+												 selected_option,
+												 new_value,
+												 is_relationship,
+												 list_type,
+												 custom_select_type,
+												 list_table_name,
+											 } :custom_select_element_change_payload) :void {
 
 		const line_elements_container = changed_list.parentElement;
 
@@ -851,7 +853,6 @@ class mappings {
 		mapping_path_filter :mapping_path[] | mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
 		new Promise((resolve) => {
-			resolve();
 
 			const lines = dom_helper.get_lines(mappings.list__mappings, true);
 
@@ -870,24 +871,22 @@ class mappings {
 			else
 				filters = [mapping_path_filter];
 
-			for (let filter of filters)
-				for (const line of lines) {
-					if (typeof filter === "undefined")
-						filter = null;
-					//@ts-ignore
-					mappings.update_line(line, filter);
-				}
+
+			Promise.all(Object.values(filters).map(filter=>
+				Object.values(lines).map(line=>  //@ts-ignore
+					mappings.update_line(line, filter)
+			))).then(()=>
+				resolve('')
+			);
 
 		});
 
 	/* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements in the current line */
 	private static readonly update_line = (
 		line_elements_container :HTMLElement,  // the line elements container whose elements would be updated
-		filter_mapping_path :mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
+		filter_mapping_path :mapping_path | null = null  // if is not null, updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
 		new Promise((resolve) => {
-
-			resolve();
 
 			const mapping_path = mappings.get_mapping_path({
 				line_elements_container: line_elements_container,
@@ -946,8 +945,9 @@ class mappings {
 					for (let index = intersection_point; index < mapping_path.length; index++)
 						update_element(select_elements[index], mapping_path, index);
 
-
 			}
+
+			resolve('');
 
 		});
 
@@ -984,7 +984,7 @@ class mappings {
 
 	/* Update the mapping view with the mapping path from a given line */
 	public static readonly update_mapping_view = (
-		line :HTMLElement | boolean = false,  // the line to be used as a source for mapping path
+		line :HTMLElement | false = false,  // the line to be used as a source for mapping path
 		use_cached :boolean = false  // whether to use a cached version of the mapping view
 	) :void => {
 
@@ -1081,7 +1081,7 @@ class mappings {
 				typeof custom_select_option !== "undefined" &&
 				custom_select_element.get_option_value(custom_select_option) !== "0"
 			)
-				return resolve();
+				return resolve('');
 
 			const line_elements_container = select_element.parentElement;
 
@@ -1098,7 +1098,7 @@ class mappings {
 			const header_type = mapping_path.pop();
 
 			if (header_type !== 'existing_header')
-				return resolve();
+				return resolve('');
 
 			mapping_path.pop();
 
@@ -1117,7 +1117,7 @@ class mappings {
 			const all_automapper_results = Object.entries(<automapper_results>mappings.auto_mapper.map({
 				headers: [header],
 				base_table: data_model.base_table_name,
-				starting_table: mapping_line_data[mapping_line_data.length - 1]['table_name'],
+				starting_table: mapping_line_data[mapping_line_data.length - 1].table_name,
 				path: mapping_path,
 				path_offset: path_offset,
 				allow_multiple_mappings: true,
@@ -1127,7 +1127,7 @@ class mappings {
 			}));
 
 			if (all_automapper_results.length === 0)
-				return resolve();
+				return resolve('');
 
 			let automapper_results = all_automapper_results[0][1];
 
@@ -1157,7 +1157,7 @@ class mappings {
 			select_element.insertBefore(span, select_element.children[0]);
 			span.outerHTML = suggested_mappings_html;
 
-			resolve();
+			resolve('');
 
 		}).then();
 

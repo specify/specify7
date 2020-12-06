@@ -21,10 +21,10 @@ class cache {
 		if (typeof localStorage === "undefined")
 			return;
 
-		for (const [bucket_name, bucket_data] of Object.entries(<object>cache.buckets))
+		for (const [bucket_name, bucket_data] of Object.entries(cache.buckets))
 			if (
-				bucket_data['type'] === 'local_storage' &&
-				Object.keys(bucket_data['records']).length !== 0
+				bucket_data.type === 'local_storage' &&
+				Object.keys(bucket_data.records).length !== 0
 			) {
 				const full_bucket_name = cache.cache_prefix + bucket_name;
 				localStorage.setItem(full_bucket_name, JSON.stringify(bucket_data));
@@ -35,7 +35,7 @@ class cache {
 	/* Tries to fetch a bucket from localStorage */
 	private static fetch_bucket(
 		bucket_name :string  // the name of the bucket to fetch
-	) :object | boolean
+	) :bucket_data | false
 	/*
 	* {boolean} False if bucket does not exist
 	* {object} bucket content if bucket exists
@@ -69,15 +69,15 @@ class cache {
 				typeof cache.buckets[bucket_name] === "undefined" &&
 				!cache.fetch_bucket(bucket_name)
 			) ||
-			typeof cache.buckets[bucket_name]['records'][cache_name] === "undefined"
+			typeof cache.buckets[bucket_name].records[cache_name] === "undefined"
 		)
 			return false;
 
 		else {
 
-			cache.buckets[bucket_name]['records'][cache_name]['use_count']++;
+			cache.buckets[bucket_name].records[cache_name].use_count++;
 
-			return cache.buckets[bucket_name]['records'][cache_name]['value'];
+			return cache.buckets[bucket_name].records[cache_name].value;
 
 		}
 
@@ -89,8 +89,8 @@ class cache {
 		cache_name :string,  // the name of the cache
 		cache_value :any,  // the value of the cache. Can be any object that can be converted to json
 		{
-			/* bucket_type */ bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
-			/* boolean */ overwrite = false,  // whether to overwrite the cache value if it is already present
+			bucket_type = 'local_storage',
+			overwrite = false,
 		} :set_parameters = {}
 	) :void {
 
@@ -104,10 +104,10 @@ class cache {
 			};
 		}
 
-		if (!overwrite && typeof cache.buckets[bucket_name]['records'][cache_name] !== "undefined")
+		if (!overwrite && typeof cache.buckets[bucket_name].records[cache_name] !== "undefined")
 			return;
 
-		cache.buckets[bucket_name]['records'][cache_name] = {
+		cache.buckets[bucket_name].records[cache_name] = {
 			value: cache_value,
 			use_count: 0,
 		};
@@ -128,17 +128,17 @@ class cache {
 		// don't trim cache if the number of records in this bucket is smaller than soft limits
 		if (
 			(
-				cache.buckets[bucket_name]['type'] === 'local_storage' &&
-				Object.keys(cache.buckets[bucket_name]['records']).length < cache.local_storage_bucket_soft_limit
+				cache.buckets[bucket_name].type === 'local_storage' &&
+				Object.keys(cache.buckets[bucket_name].records).length < cache.local_storage_bucket_soft_limit
 			) ||
 			(
-				cache.buckets[bucket_name]['type'] === 'session_storage' &&
-				Object.keys(cache.buckets[bucket_name]['records']).length < cache.session_storage_bucket_soft_limit
+				cache.buckets[bucket_name].type === 'session_storage' &&
+				Object.keys(cache.buckets[bucket_name].records).length < cache.session_storage_bucket_soft_limit
 			)
 		)
 			return false;
 
-		const cache_usages = Object.values(cache.buckets[bucket_name]['records']).map(({use_count}) => use_count);
+		const cache_usages = Object.values(cache.buckets[bucket_name].records).map(({use_count}) => use_count);
 		const total_usage = cache_usages.reduce((total_usage :number, usage :any) => {
 			return total_usage + parseInt(usage);
 		}, 0);
@@ -151,17 +151,17 @@ class cache {
 		if (usage_to_trim === 0)
 			usage_to_trim = 1;
 
-		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);
+		const cache_keys = Object.keys(cache.buckets[bucket_name].records);
 		const new_records :bucket_records = {};
 		for (const [cache_index, cache_usage] of Object.entries(cache_usages)) {
 
 			const cache_key = cache_keys[parseInt(cache_index)];
 
 			if (cache_usage >= usage_to_trim)
-				new_records[cache_key] = cache.buckets[bucket_name]['records'][cache_key];
+				new_records[cache_key] = cache.buckets[bucket_name].records[cache_key];
 
 		}
-		cache.buckets[bucket_name]['records'] = new_records;
+		cache.buckets[bucket_name].records = new_records;
 
 		return true;
 

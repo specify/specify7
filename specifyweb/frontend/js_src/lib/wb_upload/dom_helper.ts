@@ -50,7 +50,7 @@ class dom_helper {
 	) :string /* header name (for headers) or textarea value (for static headers) */ => (
 		wbplanview_mappings_line_header.children.length === 0 ?
 			wbplanview_mappings_line_header.innerText :
-			(<HTMLTextAreaElement>wbplanview_mappings_line_header.children[0])['value']);  // get textarea's value (for static fields)
+			(<HTMLTextAreaElement>wbplanview_mappings_line_header.children[0]).value);  // get textarea's value (for static fields)
 
 	/* Get the mapping type for a line (`existing_header`/`new_column`/`new_static_column`) */
 	public static readonly get_line_mapping_type = (
