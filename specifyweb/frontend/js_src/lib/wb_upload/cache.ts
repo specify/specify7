@@ -1,22 +1,22 @@
-const cache = {
+class cache {
 
-	buckets: {},  // the data structure that would store all of the buckets
-	cache_prefix: 'specify7_wbplanview_',  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
-	local_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
-	session_storage_bucket_soft_limit: 100,  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
-	trim_aggresivnes: 0.5,  // between 0 and 1 - decides the minimum passing cache usage
-	event_listener_is_initialized: false,  // indicates whether initialize() was run. If not, runs it on the next call to get() or set()
+	private static buckets :buckets;  // the data structure that would store all of the buckets
+	private static readonly cache_prefix :string = 'specify7_wbplanview_';  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
+	private static readonly local_storage_bucket_soft_limit :number = 100;  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
+	private static readonly session_storage_bucket_soft_limit :number = 100;  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
+	private static readonly trim_aggresivnes :number = 0.5;  // between 0 and 1 - decides the minimum passing cache usage
+	private static event_listener_is_initialized :boolean = false;  // indicates whether initialize() was run. If not, runs it on the next call to get() or set()
 
 	/* Set's an event listener that runs commit_to_storage before page unload */
-	initialize() :void {
+	private static initialize() :void {
 
 		window.onbeforeunload = cache.commit_to_storage;
 		cache.event_listener_is_initialized = true;
 
-	},
+	};
 
 	/* Commits persistent cache buckets to localStorage */
-	commit_to_storage() :void {
+	private static commit_to_storage() :void {
 
 		if (typeof localStorage === "undefined")
 			return;
@@ -30,10 +30,10 @@ const cache = {
 				localStorage.setItem(full_bucket_name, JSON.stringify(bucket_data));
 			}
 
-	},
+	};
 
 	/* Tries to fetch a bucket from localStorage */
-	fetch_bucket(
+	private static fetch_bucket(
 		bucket_name :string  // the name of the bucket to fetch
 	) :object | boolean
 	/*
@@ -49,10 +49,10 @@ const cache = {
 
 		return cache.buckets[bucket_name] = JSON.parse(local_storage_data);
 
-	},
+	};
 
 	/* Get value of cache_name in the bucket_name */
-	get(
+	public static get(
 		bucket_name :string,  // the name of the bucket
 		cache_name :string  // the name of the cache
 	) :any
@@ -81,15 +81,15 @@ const cache = {
 
 		}
 
-	},
+	};
 
 	/* Set's cache_value as cache value under cache_name in bucket_name */
-	set(
+	public static set(
 		bucket_name :string,  // the name of the bucket
 		cache_name :string,  // the name of the cache
 		cache_value :any,  // the value of the cache. Can be any object that can be converted to json
 		{
-			/* string */ bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
+			/* bucket_type */ bucket_type = 'local_storage',  // which storage type to use. If local_storage - use persistent storage. If session_storage - data does not persist beyond the page reload
 			/* boolean */ overwrite = false,  // whether to overwrite the cache value if it is already present
 		} :set_parameters = {}
 	) :void {
@@ -114,14 +114,14 @@ const cache = {
 
 		cache.trim_bucket(bucket_name);
 
-	},
+	};
 
 	/*
 	* Trims buckets that go beyond the size limit
 	* Runs every time you set a new cache value
 	* This method is needed to prevent memory leaks and stay under browser memory limit - ~5MB for Google Chrome ;(
 	* */
-	trim_bucket(
+	private static trim_bucket(
 		bucket_name :string  // the bucket to trim
 	) :boolean {
 
@@ -152,7 +152,7 @@ const cache = {
 			usage_to_trim = 1;
 
 		const cache_keys = Object.keys(cache.buckets[bucket_name]['records']);
-		const new_records :{[index :string] :{message :object}} = {};
+		const new_records :bucket_records = {};
 		for (const [cache_index, cache_usage] of Object.entries(cache_usages)) {
 
 			const cache_key = cache_keys[parseInt(cache_index)];
@@ -165,16 +165,16 @@ const cache = {
 
 		return true;
 
-	},
+	};
 
 	/* Cleans app all of the buckets */
-	wipe_all() :void {
+	public static wipe_all() :void {
 
 		cache.buckets = {};
 		localStorage.clear();
 
-	}
+	};
 
-};
+}
 
 export = cache;
