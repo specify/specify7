@@ -1,24 +1,24 @@
 const cache = require('./cache.ts');
 
-const custom_select_element = {
+class custom_select_element {
 
 	// TODO: set proper table icons URL
-	table_icons_base_path: '',
-	table_icons_extension: '',
-	cache_bucket_name: 'select_elements',  // the name of the cache bucket to use
+	// private static readonly table_icons_base_path:string = '';
+	// private static readonly table_icons_extension:string = '';
+	private static readonly cache_bucket_name:string = 'select_elements';  // the name of the cache bucket to use
 
 
 	// GENERATORS
 
 	/* Generates HTML for a custom select element */
-	get_element_html(
+	public static get_element_html(
 		{
 			/* string */ select_type = 'simple',  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
 			/* string */ select_name = '',  // the name of the element. used when constructing a mapping path. NOTE: the first element of the line does not have a name as its name is inherited from the base table
 			/* string */ select_label = '',  // the label to sue for the element
 			/* string */ select_table = '',  // the name of the table that was used
 			/* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
-		} :custom_select_element,
+		} :custom_select_element_parameters,
 		custom_select_type :string,  // the type of the select element
 		// 							   Available types:
 		// 								- opened_list - used in the mapping view - list without an `input` box but with always opened list of options and a table name on top
@@ -29,7 +29,7 @@ const custom_select_element = {
 	) :string /* HTML for a custom select element */ {
 
 		// making a copy of payload with all options enabled
-		const select_data_copy :custom_select_element = JSON.parse(JSON.stringify(arguments[0]));
+		const select_data_copy :custom_select_element_parameters = JSON.parse(JSON.stringify(arguments[0]));
 		select_data_copy.select_groups_data.map(({select_options_data}, group_index) =>
 			Object.keys(select_options_data).map(option_name =>
 				select_data_copy.select_groups_data[group_index].select_options_data[parseInt(option_name)].is_enabled = false
@@ -138,10 +138,10 @@ const custom_select_element = {
 
 		return result;
 
-	},
+	};
 
 	/* Generates HTML for a suggestion box */
-	get_suggested_mappings_element_html: (
+	public static readonly get_suggested_mappings_element_html = (
 		select_options_data :custom_select_element_option[]  // list of options. See custom_select_html.get_select_option_html() for option data structure
 	) :string /* HTML for a suggestion box */ =>
 		`<span class="custom_select_suggestions">
@@ -150,10 +150,10 @@ const custom_select_element = {
 			select_group_label: 'Suggested mappings:',
 			select_options_data: select_options_data,
 		})}
-		</span>`,
+		</span>`;
 
 	/* Generates HTML for a group of options */
-	get_select_group_html({
+	public static get_select_group_html({
 							  /* string */ select_group_name,  // group name (used in css and js)
 							  /* string */ select_group_label,  // group label (shown to the user)
 							  /* array */ select_options_data  // list of options data. See custom_select_element.get_select_option_html() for the data structure
@@ -166,10 +166,10 @@ const custom_select_element = {
 			${select_options_data.map(select_option_data => custom_select_element.get_select_option_html(select_option_data)).join('')}
 		</span>`;
 
-	},
+	};
 
 	/* Generates HTML for a single option line */
-	get_select_option_html({
+	public static get_select_option_html({
 							   /* string */ option_name,  // the name of the option. Would be used as a label (visible to the user)
 							   /* string */ option_value,  // the value of the option. Would be used to construct a mapping path
 							   /* boolean */ is_enabled = true,  // True if option can be selected. False if option can not be selected because it was already selected
@@ -198,10 +198,10 @@ const custom_select_element = {
 			<span class="custom_select_option_icon">${custom_select_element.get_icon_html(is_relationship, is_default, table_name)}</span>
 			<span class="custom_select_option_label">${option_name}</span>
 		</span>`;
-	},
+	};
 
 	/* Generates HTML for a table icon */
-	get_icon_html(
+	public static get_icon_html(
 		is_relationship :boolean,  // False only if icon is going to be used next to an option label and option is not a relationship
 		//@ts-ignore
 		is_default :boolean,  // True only if is_relationship is False and current option is a selected field
@@ -219,7 +219,7 @@ const custom_select_element = {
 		}
 		else
 			return '';
-	},
+	};
 
 
 	// EVENT LISTENERS
@@ -228,7 +228,7 @@ const custom_select_element = {
 	* Sets event listeners for the container
 	* Responsible for closing open lists on focus loss, opening lists when input is clicked and triggering custom_select_option.change_selected_option()
 	* */
-	set_event_listeners(
+	public static set_event_listeners(
 		container :HTMLDivElement,  // the container that is going to house all of the custom select elements
 		change_callback :(payload :object) => void,  // the function that would receive the change_payload returned by custom_select_element.change_selected_option() whenever there was an option value change
 		suggestions_callback :(select_element :HTMLElement, custom_select_option :HTMLElement) => void  // the function that would receive {DOMElement} current_list and {DOMElement} selected_option whenever a list is opened
@@ -287,12 +287,12 @@ const custom_select_element = {
 			}
 
 		});
-	},
+	};
 
 	/*
 	* Callback for when list's option was clicked
 	* */
-	change_selected_option(
+	public static change_selected_option(
 		target_list :HTMLSpanElement,  // the list that houses target_option
 		target_option :HTMLSpanElement | String  // {HTMLSpanElement} the option or {string} the name of the option that was clicked
 	) :Object | undefined
@@ -415,23 +415,23 @@ const custom_select_element = {
 			list_table_name: list_table_name,
 		};
 
-	},
+	};
 
 	/* Closes a list and removes its suggestion boxes */
-	close_list: (
+	public static readonly close_list = (
 		target_list :HTMLSpanElement  // a list to close
 	) :void => {
 		target_list.classList.remove('custom_select_open');
 		const custom_select_suggestions :HTMLCollectionOf<Element> = target_list.getElementsByClassName('custom_select_suggestions');
 		for (const custom_select_suggestion of custom_select_suggestions as any)
 			custom_select_suggestion.remove();
-	},
+	};
 
 
 	// HELPERS
 
 	/* Adds a new option to an existing list at a specified position */
-	add_option(
+	public static add_option(
 		list :HTMLSpanElement,  // the list that the option would be added to
 		position :number,  // the position to add element at. If negative, starts from the back
 		option_data :{option_name :any; option_value :any; is_enabled? :boolean; is_relationship? :boolean; is_default? :boolean; table_name? :string;},  // option data. See custom_select_element.get_select_option_html() for data structure
@@ -458,10 +458,10 @@ const custom_select_element = {
 		if (selected)
 			custom_select_element.change_selected_option(list, <HTMLSpanElement>options[position]);
 
-	},
+	};
 
 	/* Enables all options in a list */
-	enable_disabled_options(
+	public static enable_disabled_options(
 		list :HTMLSpanElement  // the list that houses the options
 	) :void {
 
@@ -470,20 +470,20 @@ const custom_select_element = {
 		for (const option of Object.values(options))
 			option.classList.remove('custom_select_option_disabled');
 
-	},
+	};
 
 
-	unselect_option: (
+	public static readonly unselect_option = (
 		list :HTMLSpanElement,  // the list that houses the option
 		option :HTMLSpanElement  // the option to be unselected
 	) :void => {
 		option.classList.remove('custom_select_option_selected');
 		list.setAttribute('data-previous_value', <string>list.getAttribute('data-value'));
 		list.setAttribute('data-value', '0');
-	},
+	};
 
 	/* Enables or disables an option in a list */
-	toggle_option(
+	public static toggle_option(
 		list :HTMLSpanElement,  // the list that houses the option
 		option_name :string,  // the name of hte option that would be modified
 		action :string  // 'enable'/'disable' - the action to perform on the option
@@ -506,34 +506,34 @@ const custom_select_element = {
 		else if (action === 'disable' && !option.classList.contains('custom_select_option_relationship'))
 			option.classList.add('custom_select_option_disabled');
 
-	},
+	};
 
 	/* Find an option with a specified value */
-	find_option_by_name: (
+	public static readonly find_option_by_name = (
 		list :HTMLSpanElement,  // the list to search in
 		option_name :string  // the value of the option to search for
 	) :HTMLSpanElement =>
 		<HTMLSpanElement>Object.values(list.getElementsByClassName('custom_select_option')).filter(option =>
 			custom_select_element.get_option_value(<HTMLElement>option) === option_name
-		)[0],
+		)[0];
 
 	/* Returns whether selected value in a list is a relationships */
-	element_is_relationship: (
+	public static readonly element_is_relationship = (
 		element :HTMLElement  // the list to check
 	) :boolean /* whether selected value in a list is a relationships */ =>
-		element.getAttribute('data_value_is_relationship') === 'true',
+		element.getAttribute('data_value_is_relationship') === 'true';
 
 
 	// GETTERS
 
 	/* Get all selected options in a list */
-	get_selected_options: (
+	public static readonly get_selected_options = (
 		list :HTMLSpanElement  // the list to search in
 	) :HTMLCollectionOf<HTMLElement> /* array of selected options */ =>
-		<HTMLCollectionOf<HTMLElement>>list.getElementsByClassName('custom_select_option_selected'),
+		<HTMLCollectionOf<HTMLElement>>list.getElementsByClassName('custom_select_option_selected');
 
 	/* Returns whether selection option is enabled */
-	is_selected_option_enabled: (
+	public static readonly is_selected_option_enabled = (
 		list :HTMLElement  // the list to search in
 	) :boolean /* True if no option is selected or selected option is not disabled */ => {
 
@@ -546,32 +546,32 @@ const custom_select_element = {
 		else
 			return !option.classList.contains('custom_select_option_disabled');
 
-	},
+	};
 
 	/* Returns the value of the option */
-	get_option_value: (
+	public static readonly get_option_value = (
 		option_element :HTMLElement  // the option element
 	) :string | null /* the value of the option */ =>
-		option_element.getAttribute('data-value'),
+		option_element.getAttribute('data-value');
 
 	/* Returns the value of the list */
-	get_list_value: (
+	public static readonly get_list_value = (
 		list_element :HTMLElement  // the list to check
 	) :string | null /* the value of the list */ =>
-		list_element.getAttribute('data-value'),
+		list_element.getAttribute('data-value');
 
 	/* Returns the table a list represents */
-	get_list_table_name: (
+	public static readonly get_list_table_name = (
 		list_element :HTMLElement  // the list to check
 	) :string | null /* the table a list represents */ =>
-		list_element.getAttribute('data-table'),
+		list_element.getAttribute('data-table');
 
 	/* Returns the mapping type of a list */
-	get_list_mapping_type: (
+	public static readonly get_list_mapping_type = (
 		list_element :HTMLElement  // the list to check
 	) :string | null /* the mapping type of a list */ =>
-		list_element.getAttribute('data-mapping_type'),
+		list_element.getAttribute('data-mapping_type');
 
-};
+}
 
 export = custom_select_element;

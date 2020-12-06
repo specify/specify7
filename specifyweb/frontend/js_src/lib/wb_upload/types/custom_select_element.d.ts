@@ -1,4 +1,4 @@
-interface custom_select_element {
+interface custom_select_element_parameters {
 	readonly select_type? :string,
 	readonly select_name? :string,
 	readonly select_label? :string,

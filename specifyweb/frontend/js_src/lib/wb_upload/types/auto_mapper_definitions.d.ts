@@ -52,7 +52,7 @@ interface synonym_options extends shortcut_options {
 }
 
 interface synonym_headers {
-	readonly headers: synonym_options
+	readonly headers :synonym_options
 }
 
 type field_synonym = {
@@ -73,7 +73,7 @@ interface auto_mapper_definitions_interface {
 	readonly table_synonyms :table_synonyms,
 	readonly dont_match :dont_match,
 	readonly shortcuts :shortcuts,
-	readonly synonyms: synonyms,
+	readonly synonyms :synonyms,
 }
 
-type auto_mapper_definition_branches = Readonly<'table_synonyms'|'dont_match'|'shortcuts'|'synonyms'>;
+type auto_mapper_definition_branches = Readonly<'table_synonyms' | 'dont_match' | 'shortcuts' | 'synonyms'>;

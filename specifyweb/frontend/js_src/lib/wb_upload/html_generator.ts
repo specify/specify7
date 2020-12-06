@@ -5,10 +5,10 @@ const custom_select_element = require('./custom_select_element.ts');
 * Generate HTML for various control elements created during mapping process
 *
 * */
-const html_generator = {
+class html_generator {
 
 	/* Generates HTML for a list of tables */
-	tables(
+	public static tables(
 		list_of_tables :object  // a dictionary like table_name==>table_friendly_name
 	) :string /* HTML for a list of tables */ {
 
@@ -30,17 +30,17 @@ const html_generator = {
 			mapping_element_type: 'list_of_tables',
 		}, 'opened_list');
 
-	},
+	};
 
 	/* Generates HTML for a mapping view */
-	mapping_view: (
+	public static readonly mapping_view = (
 		mappings_view_data :mapping_element_parameters[],  // mapping path data. See html_generator.mapping_path() for data structure
 		use_cached :boolean = false  // whether to use a cached version of the mapping view
 	) :string /* HTML for a mapping view */ =>
-		html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached),
+		html_generator.mapping_path(mappings_view_data, 'opened_list', use_cached);
 
 	/* Generates HTML for a mapping line */
-	mapping_line: (
+	public static readonly mapping_line = (
 		{
 			line_data,  // {array} mapping path data. See html_generator.mapping_path() for data structure
 			header_data: {
@@ -61,10 +61,10 @@ const html_generator = {
 					<div class="wbplanview_mappings_line_elements">
 						${html_generator.mapping_path(line_data, 'closed_list', use_cached)}
 					</div>
-				</div>`,
+				</div>`;
 
 	/* Generates HTML for a given mapping path data */
-	mapping_path: (
+	public static readonly mapping_path = (
 		mappings_line_data :mapping_element_parameters[],  // list of mapping_element data. See html_generator.mapping_element() for data structure
 		custom_select_type :string = 'closed_list',  // the type of the custom select elements to use. See custom_select_element.get_element_html for more info
 		use_cached :boolean = false  // whether to use cached value for this mapping path
@@ -75,10 +75,10 @@ const html_generator = {
 				custom_select_type,
 				use_cached,
 			)
-		).join(''),
+		).join('');
 
 	/* Generates HTML for a new mapping element */
-	mapping_element(
+	public static mapping_element(
 		{
 			/* string */ name,  // the name of this mapping element
 			/* string */ friendly_name,  // the friendly name for this mapping element
@@ -152,14 +152,14 @@ const html_generator = {
 
 		return custom_select_element.get_element_html(select_data, custom_select_type, use_cached);
 
-	},
+	};
 
 	/* Return HTML for a textarea with a given value for a new static header */
-	static_header: (
+	public static readonly static_header = (
 		/* string */ default_value = ''  // the default value of a textarea
 	) :string /* HTML for a textarea with a given value for a new static header */ =>
-		`<textarea>${default_value}</textarea>`,
+		`<textarea>${default_value}</textarea>`;
 
-};
+}
 
 export = html_generator;

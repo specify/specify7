@@ -74,7 +74,7 @@ const PlanView = Backbone.View.extend({
 
                         this.headers = headers;
 
-                        const constructor_done_promise = mappings_main.constructor(this.save_plan.bind(this));
+                        const constructor_done_promise = mappings_main.initialize(this.save_plan.bind(this));
 
                         constructor_done_promise.then(mappings=>{
                             this.mappings = mappings;
