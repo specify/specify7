@@ -11,23 +11,23 @@ const helper = require('./helper.ts');
 * */
 class auto_mapper {
 
-	private results:automapper_results = {};
-	private scope:automapper_scope = 'automapper';
-	private allow_multiple_mappings:boolean =  false;
-	private check_for_existing_mappings:boolean =  false;
-	private path_offset:number =  0;
-	private base_table:string =  '';
-	private starting_table:string =  '';
-	private starting_path:mapping_path =  [];
-	private headers_to_map:headers_to_map =  {};
-	private searched_tables:string[] =  [''];
-	private find_mappings_queue:find_mappings_queue =  [];
+	private results :automapper_results = {};
+	private scope :automapper_scope = 'automapper';
+	private allow_multiple_mappings :boolean = false;
+	private check_for_existing_mappings :boolean = false;
+	private path_offset :number = 0;
+	private base_table :string = '';
+	private starting_table :string = '';
+	private starting_path :mapping_path = [];
+	private headers_to_map :headers_to_map = {};
+	private searched_tables :string[] = [''];
+	private find_mappings_queue :find_mappings_queue = [];
 
-	public static get_mapped_fields: (local_path :mapping_path) => true;
+	public static get_mapped_fields :(local_path :mapping_path) => true;
 
-	private regex_1:RegExp = /[^a-z\s]+/g;  // used to remove non letter characters
-	private regex_2:RegExp = /\s+/g;  // used to replace any white space characters with white space
-	private depth:number = 6;  // how deep to go into the schema
+	private regex_1 :RegExp = /[^a-z\s]+/g;  // used to remove non letter characters
+	private regex_2 :RegExp = /\s+/g;  // used to replace any white space characters with white space
+	private depth :number = 6;  // how deep to go into the schema
 	private comparisons = {  // the definitions for the comparison functions
 		regex: (header :string, regex :RegExp) => header.match(regex),
 		string: (header :string, string :string) => header === string,
@@ -37,17 +37,17 @@ class auto_mapper {
 
 	/* Method that would be used by external classes to match headers to possible mappings */
 	public map({
-			/* array */ headers: raw_headers,  // array of strings that represent headers
-			/* string */ base_table,  // base table name
-			/* string */ starting_table = base_table,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
-			/* array */ path = [],  // starting mapping path
-			/* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
-			/* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings
-			/* boolean */ use_cache = true,  // whether to use cached values
-			/* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
-			/* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
-			/* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
-		} :map_parameters) :automapper_results /* Returns mappings result in format: */
+				   /* array */ headers: raw_headers,  // array of strings that represent headers
+				   /* string */ base_table,  // base table name
+				   /* string */ starting_table = base_table,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
+				   /* array */ path = [],  // starting mapping path
+				   /* int */ path_offset = 0,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
+				   /* boolean */ allow_multiple_mappings = false,  // whether to allow multiple mappings
+				   /* boolean */ use_cache = true,  // whether to use cached values
+				   /* boolean */ commit_to_cache = true,  // whether to commit result to cache for future references
+				   /* boolean */ check_for_existing_mappings = false,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)
+				   /* string */ scope = 'automapper',  // scope to use for definitions. More info in json/auto_mapper_definitions.js
+			   } :map_parameters) :automapper_results /* Returns mappings result in format: */
 	/* 	If payload.allow_multiple_mappings:
 	* 		[
 	* 			header_name,
@@ -180,7 +180,7 @@ class auto_mapper {
 		comparisons :{[key :string] :string[] | RegExp[]},  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
 		get_new_path_part :() => mapping_path  // function that returns the next path part to use in a new mapping (on success)
 	) =>
-		this.get_unmapped_headers().map(([header_key,{lowercase_header_name}])=>
+		this.get_unmapped_headers().map(([header_key, {lowercase_header_name}]) =>
 			Object.entries(this.comparisons).filter(([comparison_key]) =>  // loop over defined comparisons
 				typeof comparisons[comparison_key] !== "undefined"
 			).some(([comparison_key, comparison_function]) =>
@@ -198,8 +198,8 @@ class auto_mapper {
 			));
 
 	private get_unmapped_headers = () =>
-		Object.entries(this.headers_to_map).filter(([_, {is_mapped}])=>  // loop over unmapped headers
-				!is_mapped
+		Object.entries(this.headers_to_map).filter(([, {is_mapped}]) =>  // loop over unmapped headers
+			!is_mapped
 		);
 
 	/*
@@ -207,12 +207,12 @@ class auto_mapper {
 	* Calls handle_definition_comparison to make each individual comparison
 	* */
 	private find_mappings_in_definitions({
-									 /* array */ path,  // current mapping path
-									 /* string */ table_name,  // the table to search in
-									 /* string */ field_name,  // the field to search in
-									 /* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
-									 /* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
-								 } :find_mappings_in_definitions_parameters) :void {
+											 /* array */ path,  // current mapping path
+											 /* string */ table_name,  // the table to search in
+											 /* string */ field_name,  // the field to search in
+											 /* string */ mode,  // 'shortcuts_and_table_synonyms' or 'synonyms_and_matches'. More info in json/auto_mapper_definitions.js
+											 /* boolean */ is_tree_rank = false  // whether to format field_name as a tree rank name
+										 } :find_mappings_in_definitions_parameters) :void {
 
 		let definitions_source;
 		if (mode === 'shortcuts_and_table_synonyms') {
@@ -356,10 +356,7 @@ class auto_mapper {
 
 		const table_data = data_model.tables[table_name];
 		const ranks_data = data_model.ranks[table_name];
-		const fields = Object.entries(table_data['fields']).filter(([, field_data]) =>
-			!field_data['is_hidden'] &&
-			!field_data['is_relationship']
-		);
+		const fields = data_model.get_table_non_relationship_fields(table_name, false);
 		const table_friendly_name = <string>table_data['table_friendly_name'].toLowerCase();
 
 		if (typeof ranks_data !== "undefined") {
@@ -523,9 +520,7 @@ class auto_mapper {
 		}
 
 
-		const relationships = Object.entries(<any[]>table_data['fields']).filter(([, {is_hidden, is_relationship}]) =>
-			!is_hidden && is_relationship
-		);
+		const relationships = data_model.get_table_relationships(table_name, false);
 
 
 		for (const [relationship_key, relationship_data] of relationships) {
@@ -629,7 +624,7 @@ class auto_mapper {
 
 		// if precise -to-many index was found, insert it into the path
 		if (to_many_reference_number !== false)
-			local_path = local_path.reverse().reduce((modified_local_path:mapping_path, local_path_part) => {
+			local_path = local_path.reverse().reduce((modified_local_path :mapping_path, local_path_part) => {
 
 				if (data_model.value_is_reference_item(local_path_part) && to_many_reference_number !== false) {
 					local_path_part = data_model.format_reference_item(to_many_reference_number);

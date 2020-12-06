@@ -12,18 +12,18 @@ interface map_parameters {
 }
 
 interface automapper_results {
-	[header_name:string]:mapping_path[],
+	[header_name :string] :mapping_path[],
 }
 
 interface header_information {
-	is_mapped:boolean,
-	readonly lowercase_header_name: string,
-	readonly stripped_header_name: string,
-	readonly final_header_name: string
+	is_mapped :boolean,
+	readonly lowercase_header_name :string,
+	readonly stripped_header_name :string,
+	readonly final_header_name :string
 }
 
 interface headers_to_map {
-	readonly [original_header_name:string]:header_information
+	readonly [original_header_name :string] :header_information
 }
 
 // type compassion_types = 'regex'|'string'|'contains'
@@ -44,7 +44,7 @@ interface find_mappings_parameters {
 	readonly table_name :string,
 	readonly path? :mapping_path,
 	readonly parent_table_name? :string,
-	readonly parent_relationship_type? :undefined|relationship_type,
+	readonly parent_relationship_type? :undefined | relationship_type,
 }
 
 interface field_data {
