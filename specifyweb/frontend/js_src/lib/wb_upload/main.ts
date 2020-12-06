@@ -1,6 +1,7 @@
 const $ = require('jquery');
 
 const mappings = require('./mappings.ts');
+const fetch_data_model = require('./fetch_data_model');
 const data_model = require('./data_model.ts');
 const upload_plan_converter = require('./upload_plan_converter.ts');
 const custom_select_element = require('./custom_select_element.ts');
@@ -10,17 +11,20 @@ const auto_mapper = require('./auto_mapper.ts');
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
-const main = {
+class main {
 
-	constructor_has_run: false,
-	save_plan: (event :object | undefined, ignore_validation :boolean) => {
-	},
+	private static constructor_has_run :boolean = false;
+	private static save_plan :(event :object | undefined, ignore_validation :boolean) => void;
 
-	/* Constructor that finds needed elements, and makes sure to call constructor_first_run once */
-	constructor: (
+	/* Constructor that finds the needed elements, and makes sure to call constructor_first_run once */
+	public static initialize(
 		save_plan_function :(event :object | undefined, ignore_validation :boolean) => void  // the function to call to save changes to the upload plan
-	) :Promise<object> /* a promise that resolves to a mappings object */ =>
-		new Promise((resolve) => {
+	) :Promise<object> /* a promise that resolves to a mappings object */ {
+
+		main.save_plan = save_plan_function;
+
+		return new Promise((resolve) => {
+
 
 			// FINDING ELEMENTS
 			mappings.container = document.getElementById('screen__mapping');
@@ -49,7 +53,6 @@ const main = {
 			mappings.hide_mapping_view = false;
 			mappings.need_to_define_lines = true;
 			mappings.need_to_run_auto_mapper = true;
-			mappings.cached_mappings_line_data = {};
 			mappings.lines = [];
 			data_model.headers = [];
 			data_model.base_table_name = undefined;
@@ -142,7 +145,7 @@ const main = {
 
 
 			if (!main.constructor_has_run)
-				main.constructor_first_run(done_callback, save_plan_function);
+				main.constructor_first_run(done_callback);
 			else
 				mappings.list__tables.innerHTML = data_model.html_tables;
 
@@ -156,78 +159,80 @@ const main = {
 			if (main.constructor_has_run)
 				done_callback();
 
-		}),
+		});
+	};
 
 	/* Constructor that needs to be run only once (fetches data model, initializes other modules */
-	constructor_first_run(
+	private static constructor_first_run(
 		done_callback :() => void,  // the callback to call for when the constructor is finished
-		save_plan_function :(event :object | undefined, ignore_validation :boolean) => void  // the function to call to save changes to the upload plan
 	) :void {
 
-		data_model.view_payload = {
+		fetch_data_model.fetch(
+			{
 
-			// all required fields are not hidden, except for these, which are made not required
-			required_fields_to_hide: [
-				'timestampcreated',
-				'timestampmodified',
-				'createdbyagent',
-				'modifiedbyagent',
-				'collectionmemberid',
-				'rankid',
-				'defintion',
-				'definitionitem',
-				'ordernumber',
-				'isprimary',
-				'isaccepted',
-				'isloanable',
-				'treedef',
-			],
-			tables_to_hide: [
-				'definition',
-				'definitionitem',
-				'geographytreedef',
-				'geologictimeperiodtreedef',
-				'treedef',
-				...data_model.get_list_of_hierarchy_tables()
-			],
+				// all required fields are not hidden, except for these, which are made not required
+				required_fields_to_hide: [
+					'timestampcreated',
+					'timestampmodified',
+					'createdbyagent',
+					'modifiedbyagent',
+					'collectionmemberid',
+					'rankid',
+					'defintion',
+					'definitionitem',
+					'ordernumber',
+					'isprimary',
+					'isaccepted',
+					'isloanable',
+					'treedef',
+				],
+				tables_to_hide: [
+					'definition',
+					'definitionitem',
+					'geographytreedef',
+					'geologictimeperiodtreedef',
+					'treedef',
+					...fetch_data_model.get_list_of_hierarchy_tables()
+				],
 
-			// forbid setting any of the tables that have these keywords as base tables
-			table_keywords_to_exclude: [
-				'Authorization',
-				'Variant',
-				'Attribute',
-				'Property',
-				'Item',
-				'Definition',
-				'Pnt',
-				'Type',
-			],
+				// forbid setting any of the tables that have these keywords as base tables
+				table_keywords_to_exclude: [
+					'Authorization',
+					'Variant',
+					'Attribute',
+					'Property',
+					'Item',
+					'Definition',
+					'Pnt',
+					'Type',
+				],
 
-			required_fields_to_be_made_optional: {
-				'agent': ['agenttype'],
-				'determination': ['iscurrent'],
-				'loadpreparation': ['isresolved'],
-				'locality': ['srclatlongunit'],
+				required_fields_to_be_made_optional: {
+					'agent': ['agenttype'],
+					'determination': ['iscurrent'],
+					'loadpreparation': ['isresolved'],
+					'locality': ['srclatlongunit'],
+				},
+
 			},
+			(tables :data_model_tables, html_tables :string, ranks :data_model_ranks) => {
 
-		};
+				data_model.tables = tables;
+				data_model.html_tables = html_tables;
+				data_model.ranks = ranks;
 
-		// fetch data model
-		data_model.fetch_tables(() => {
+				mappings.list__tables.innerHTML = html_tables;
+				done_callback();
+			}
+		);
 
-			mappings.list__tables.innerHTML = data_model.html_tables;
-			done_callback();
-
-		});
-
-		main.save_plan = save_plan_function;
 		auto_mapper.get_mapped_fields = mappings.get_mapped_fields.bind(mappings);
 		mappings.loading_screen = main.loading_screen;
 
-	},
+	};
 
 	/* Validates the current mapping and shows error messages if needed */
-	validate() :boolean | string /* true if everything is fine or {string} formatted validation error message */ {
+	public static validate() :boolean | string  /* true if everything is fine or {string} formatted validation error message */ {
 
 		const validation_results = data_model.show_required_missing_fields(data_model.base_table_name, mappings.get_mappings_tree());
 		const formatted_validation_results = mappings.format_validation_results(validation_results);
@@ -238,12 +243,11 @@ const main = {
 		const div = document.createElement('div');
 		div.innerHTML = formatted_validation_results;
 
-		let dialog = $(div).dialog({
+		$(div).dialog({
 			modal: true,
 			title: 'Unmapped required fields detected',
 			close: function () :void {
 				$(this).remove();
-				dialog = null;
 			},
 			width: 500,
 			buttons: [
@@ -262,17 +266,18 @@ const main = {
 
 		return validation_results;
 
-	},
+	};
 
 	/* Shows a loading screen a returns a callback that removes the loading screen */
-	loading_screen() :() => void /* callback that removes a loading screen */ {
+	public static loading_screen() :() => void /* callback that removes a loading screen */ {
 
 		mappings.container.classList.remove('loaded');
 
 		const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
 			title: 'Loading',
 			modal: true,
-			open: function (evt :any, ui :{dialog :any;}) :void {
+			// @ts-ignore
+			open: function (event :any, ui :{dialog :any;}) :void {
 				$('.ui-dialog-titlebar-close', ui.dialog).hide();
 			},
 			close: function () :void {
@@ -286,8 +291,8 @@ const main = {
 			dialog.dialog('close');
 		};
 
-	},
+	};
 
-};
+}
 
 export = main;
