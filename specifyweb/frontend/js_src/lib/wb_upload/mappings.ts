@@ -9,40 +9,37 @@ const upload_plan_converter = require('./upload_plan_converter.ts');
 const navigation = require('../navigation.js');
 
 
-const mappings = {
+class mappings {
 
-	max_suggestions_count: 3,  // the maximum number of suggestions to show in the suggestions box
+	private static readonly max_suggestions_count :number = 3;  // the maximum number of suggestions to show in the suggestions box
 
-	loading_screen: () => () => {
-	},
-	new_column_index: 0,
-	container: HTMLElement,
-	title__table_name: null,
-	wbplanview_header: HTMLElement,
-	button__change_table: HTMLElement,
-	button__toggle_mapping_view: HTMLElement,
-	list__tables: HTMLElement,
-	mapping_view: HTMLElement,
-	mapping_view_map_button: HTMLElement,
-	validation_results: HTMLElement,
-	list__mappings: HTMLElement,
-	toggle_hidden_fields: HTMLElement,
-	hide_hidden_fields: true,
-	hide_mapping_view: false,
-	need_to_define_lines: true,
-	changes_made: true,
-	need_to_run_auto_mapper: true,
-	cached_mappings_line_data: {},
-	mappings_tree: {},
-	lines: [],
-	mapped_fields: [],
-	auto_mapper: new auto_mapper(),
+	public static loading_screen :() => () => void;
+	private static new_column_index :number = 0;
+	public static container :HTMLElement;
+	public static title__table_name :HTMLElement;
+	public static wbplanview_header :HTMLElement;
+	public static button__change_table :HTMLElement;
+	public static button__toggle_mapping_view :HTMLElement;
+	public static list__tables :HTMLElement;
+	public static mapping_view :HTMLElement;
+	public static mapping_view_map_button :HTMLElement;
+	public static validation_results :HTMLElement;
+	public static list__mappings :HTMLElement;
+	public static toggle_hidden_fields :HTMLElement;
+	public static hide_hidden_fields :boolean = true;
+	public static hide_mapping_view :boolean = false;
+	private static need_to_define_lines :boolean = true;
+	private static changes_made :boolean = true;
+	private static need_to_run_auto_mapper :boolean = true;
+	private static mappings_tree :mapping_tree;
+	private static mapped_fields :mapping_path[] = [];
+	private static auto_mapper = new auto_mapper();
 
 
 	// SETTERS
 
 	/* Select table */
-	set_table: (
+	public static readonly set_table = (
 		table_name :string,  // the name of the table to set
 		headers_to_shadow_define :list_of_headers = []  // a list of headers that would be fully defined at a later pointer
 	) =>
@@ -54,7 +51,7 @@ const mappings = {
 
 			data_model.base_table_name = table_name;
 
-			mappings.tree = {};
+			mappings.mappings_tree = {};
 			mappings.changes_made = true;
 			mappings.validation_results.innerHTML = '';
 			mappings.validation_results.classList.add('hidden');
@@ -95,7 +92,7 @@ const mappings = {
 			}
 
 			if (mappings.need_to_run_auto_mapper) {
-				const mappings_object:automapper_results = mappings.auto_mapper.map({
+				const mappings_object :automapper_results = mappings.auto_mapper.map({
 					headers: data_model.headers,
 					base_table: data_model.base_table_name,
 					scope: 'automapper',
@@ -113,12 +110,12 @@ const mappings = {
 
 			loaded();
 
-		}) && false,
+		}) && false;
 
 	/* Sets a lit of headers */
-	set_headers(
+	public static set_headers(
 		headers :list_of_headers = [],  // list of headers as strings
-		upload_plan :{baseTableName:string} | boolean = false,  // upload plan as an object or {bool} false for none
+		upload_plan :{baseTableName :string} | boolean = false,  // upload plan as an object or {bool} false for none
 		headers_defined :boolean = true  // whether CSV file had headers in the first line
 	) :void {
 
@@ -153,10 +150,10 @@ const mappings = {
 			mappings.need_to_define_lines = true;
 
 
-	},
+	};
 
 	/* Resets the currently mapped fields and presents the option to chose base table again */
-	reset_table() :void {
+	public static reset_table() :void {
 
 		if (typeof data_model.base_table_name === "undefined")
 			return;
@@ -173,13 +170,13 @@ const mappings = {
 		mappings.need_to_define_lines = true;
 		mappings.need_to_run_auto_mapper = true;
 
-	},
+	};
 
 
 	// FUNCTIONS
 
 	/* Implements array of mappings */
-	implement_array_of_mappings(
+	private static implement_array_of_mappings(
 		array_of_mappings :mapping_path[]  // array of mapping_path's (with mapping types and header names / static column values)
 	) :void {
 
@@ -201,17 +198,17 @@ const mappings = {
 		mappings.changes_made = true;
 		mappings.update_all_lines();
 
-	},
+	};
 
 	/* Adds new mapping line */
-	add_new_mapping_line({
-							 /* int */ position = -1,  // position of the new line. If negative, start from the back
-							 /* array */ mapping_path = [],  // mapping path to use for the new mapping line
-							 /* object */ header_data,  // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
-							 /* boolean */ blind_add_back = false,  // whether to add to the back without checking if the header already exists
-							 /* array */ line_attributes = [],  // array of classes to append to each line's classname
-							 /* boolean */ scroll_down = false  // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
-						 }) :void {
+	private static add_new_mapping_line({
+											/* int */ position = -1,  // position of the new line. If negative, start from the back
+											/* array */ mapping_path = [],  // mapping path to use for the new mapping line
+											/* object */ header_data,  // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
+											/* boolean */ blind_add_back = false,  // whether to add to the back without checking if the header already exists
+											/* array */ line_attributes = [],  // array of classes to append to each line's classname
+											/* boolean */ scroll_down = false  // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
+										} :add_new_mapping_line_parameters) :void {
 
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
@@ -270,20 +267,20 @@ const mappings = {
 
 		mappings.update_all_lines(mapping_path);
 
-	},
+	};
 
 
 	// GETTERS
 
 	/* Returns a mapping line data from mapping path */
-	get_mapping_line_data_from_mapping_path({
-												mapping_path = [],  // {array} the mapping path
-												iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
-												use_cached = false,  // {bool} whether to use cache if exists
-												generate_last_relationship_data = true,  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
-											}) :object[] /* list of mapping element data objects */ {
+	private static get_mapping_line_data_from_mapping_path({
+															   mapping_path = [],  // {array} the mapping path
+															   iterate = true,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
+															   use_cached = false,  // {bool} whether to use cache if exists
+															   generate_last_relationship_data = true,  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
+														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] /* list of mapping element data objects */ {
 
-		const internal_payload = {
+		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
 			mapping_path: mapping_path,
 			generate_last_relationship_data: generate_last_relationship_data,
 			mapping_path_position: -1,
@@ -291,9 +288,9 @@ const mappings = {
 			mapping_line_data: [],
 		};
 
-		const callbacks = {
+		const callbacks :navigator_callbacks = {
 
-			iterate: (internal_payload) :boolean =>
+			iterate: (internal_payload) =>
 				(
 					internal_payload.iterate ||
 					internal_payload.mapping_path.length === 0 ||
@@ -303,7 +300,7 @@ const mappings = {
 					internal_payload.mapping_path_position + 1 !== internal_payload.mapping_path.length
 				),
 
-			get_next_path_element(internal_payload, {table_name}) :{next_path_element_name :string, next_path_element :object, next_real_path_element_name :string} {
+			get_next_path_element(internal_payload, {table_name}) {
 
 				if (internal_payload.mapping_path_position === -2)
 					internal_payload.mapping_path_position = internal_payload.mapping_path.length - 1;
@@ -440,6 +437,7 @@ const mappings = {
 							(
 								(
 									typeof foreign_name !== "undefined" &&
+									typeof parent_table_name !== "undefined" &&
 									typeof data_model.tables[parent_table_name]['fields'][foreign_name] !== "undefined" &&
 									data_model.tables[parent_table_name]['fields'][foreign_name]['foreign_name'] === field_name
 								) ||
@@ -480,7 +478,7 @@ const mappings = {
 
 			},
 
-			get_instance_data: (internal_payload, {table_name}) => ({
+			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
 				mapping_element_type: internal_payload.mapping_element_type,
 				name: internal_payload.current_mapping_path_part,
 				friendly_name: data_model.tables[table_name]['table_friendly_name'],
@@ -488,7 +486,7 @@ const mappings = {
 				fields_data: internal_payload.result_fields,
 			}),
 
-			commit_instance_data(internal_payload, callback_payload) {
+			commit_instance_data(internal_payload, callback_payload :navigator_callback_payload) {
 				internal_payload.mapping_line_data.push(callback_payload.data);
 				return callback_payload.data;
 			},
@@ -507,10 +505,10 @@ const mappings = {
 			}
 		});
 
-	},
+	};
 
 	/* Returns array of mapping_paths */
-	get_array_of_mappings(
+	private static get_array_of_mappings(
 		include_headers :boolean = false,  // whether each mapping path should also have mapping type and header name at the end
 		skip_empty :boolean = true  // whether to skip incomplete mapping paths
 	) :mapping_path[] /* array of mapping paths */ {
@@ -524,7 +522,7 @@ const mappings = {
 		if (include_headers)
 			index_shift += 2;
 
-		const line_elements_containers = dom_helper.get_lines(mappings.list__mappings, true);
+		const line_elements_containers = <HTMLElement[]>dom_helper.get_lines(mappings.list__mappings, true);
 
 		const results = mappings.mapped_fields = line_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
@@ -542,20 +540,20 @@ const mappings = {
 				mapped_fields.push(mapping_path);
 
 			return mapped_fields;
-		}, []);
+		}, <mapping_path[]>[]);
 
 		if (skip_empty)
 			return results;
 		else  // @ts-ignore
 			return Array.from(new Set(results.map(JSON.stringify))).map(JSON.parse);  // make results distinct
 
-	},
+	};
 
 	/* Returns a mappings tree */
-	get_mappings_tree(
+	public static get_mappings_tree(
 		include_headers :boolean = false,  // whether the last tree nodes of each branch should be mapping type and header name
 		skip_empty :boolean = true  // whether to include incomplete tree nodes
-	) :object /* mappings tree */ {
+	) :mapping_tree /* mappings tree */ {
 		if (!include_headers && !mappings.changes_made)
 			return mappings.mappings_tree;
 
@@ -563,34 +561,34 @@ const mappings = {
 			mappings.get_array_of_mappings(include_headers, skip_empty),
 			include_headers
 		);
-	},
+	};
 
 	/* Get a mappings tree branch given a particular starting mapping path */
-	get_mapped_fields: (
+	public static readonly get_mapped_fields = (
 		mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 		skip_empty :boolean = true  // whether to skip incomplete mappings
 	) /*:object*/ /* mappings tree starting from a given a particular starting mapping path */ =>
 		tree_helpers.traverse_tree(
 			mappings.get_mappings_tree(false, skip_empty),
 			tree_helpers.array_to_tree([...mapping_path_filter]),
-		),
+		);
 
 	/* Returns a mapping path for a particular line elements container */
-	get_mapping_path({
-						 line_elements_container,  // {DOMElement} line elements container
-						 mapping_path_filter = [],  // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
-						 //									 if is {DOMElement}, then stops when reaches a given element in a line_elements_container
-						 include_headers = false,  // whether to include mapping type and header_name / static column value in the result
-						 exclude_unmapped = false,  // whether to replace incomplete mapping paths with ["0"]
-						 exclude_non_relationship_values = false,  // whether to exclude simple fields from the resulting path
-					 }) :mapping_path {
+	private static get_mapping_path({
+										line_elements_container,  // {DOMElement} line elements container
+										mapping_path_filter = [],  // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
+										//									 if is {DOMElement}, then stops when reaches a given element in a line_elements_container
+										include_headers = false,  // whether to include mapping type and header_name / static column value in the result
+										exclude_unmapped = false,  // whether to replace incomplete mapping paths with ["0"]
+										exclude_non_relationship_values = false,  // whether to exclude simple fields from the resulting path
+									} :get_mapping_path_parameters) :mapping_path {
 
 		const elements = dom_helper.get_line_elements(line_elements_container);
 
 		const mapping_path = [];
 		let position = 0;
 
-		const return_path = (path, element) => {
+		const return_path = (path :mapping_path, element :HTMLElement) => {
 
 			if (exclude_unmapped && path[path.length - 1] === "0")
 				path = [];
@@ -627,6 +625,7 @@ const mappings = {
 				mapping_path.push(result_name);
 
 			if (
+				Array.isArray(mapping_path_filter) &&
 				typeof mapping_path_filter[position] === "string" &&
 				result_name !== mapping_path_filter[position]
 			)
@@ -647,26 +646,29 @@ const mappings = {
 
 		return return_path(mapping_path, elements[elements.length - 1]);
 
-	},
+	};
 
 
 	// CHANGE CALLBACKS
 
 	/* Handles a change to the select element value */
-	custom_select_change_event({
-								   /* DOMElement */ changed_list,  // the list that was changed
-								   /* DOMElement */ selected_option,  // the option that was changed
-								   /* string */ new_value,  // the new value of the list
-								   /* boolean */ is_relationship,  // whether new value is a relationship
-								   /* string */ list_type,  // the type of the changed list
-								   /* string */ custom_select_type,  // the type of the custom select element
-								   /* string */ list_table_name,  // the name of the table the list belongs too
-							   }) :void {
+	public static custom_select_change_event({
+												 /* DOMElement */ changed_list,  // the list that was changed
+												 /* DOMElement */ selected_option,  // the option that was changed
+												 /* string */ new_value,  // the new value of the list
+												 /* boolean */ is_relationship,  // whether new value is a relationship
+												 /* string */ list_type,  // the type of the changed list
+												 /* string */ custom_select_type,  // the type of the custom select element
+												 /* string */ list_table_name,  // the name of the table the list belongs too
+											 } :custom_select_change_event_parameters) :void {
 
 		const line_elements_container = changed_list.parentElement;
 
+		if (line_elements_container === null)
+			throw new Error(`Couldn't fine a parent list for a suggestions box`);
+
 		if (list_type === 'list_of_tables') {
-			custom_select_element.unselect_option(changed_list,selected_option);
+			custom_select_element.unselect_option(changed_list, selected_option);
 			mappings.set_table(new_value);
 			return;
 		}
@@ -689,6 +691,10 @@ const mappings = {
 
 				const previous_element = selected_option.previousElementSibling;
 				let last_index = 0;
+
+				if (previous_element === null)
+					throw new Error(`Couldn't fine a previous sibling for selected option`);
+
 				if (previous_element.classList.contains('custom_select_option')) {
 					const last_index_string = custom_select_element.get_option_value(selected_option.previousElementSibling);
 					last_index = data_model.get_index_from_reference_item_name(last_index_string);
@@ -753,13 +759,16 @@ const mappings = {
 		mapping_path.pop();
 		mappings.update_all_lines(mapping_path);
 
-		if (custom_select_type === 'closed_list')
+		if (
+			custom_select_type === 'closed_list' &&
+			line_elements_container.parentElement !== null
+		)
 			mappings.update_mapping_view(line_elements_container.parentElement);
 
-	},
+	};
 
 	/* Unmap a particular header */
-	clear_line(
+	public static clear_line(
 		wbplanview_mappings_line_delete :HTMLElement  // the `Delete` button that belongs to a particular line
 	) :void {
 
@@ -780,10 +789,10 @@ const mappings = {
 		mappings.changes_made = true;
 		mappings.update_all_lines(mapping_path);
 
-	},
+	};
 
 	/* The callback for when the `Map` button on the mapping view is pressed */
-	mapping_view_map_button_callback() :void {
+	public static mapping_view_map_button_callback() :void {
 
 		// find selected line
 		const lines = dom_helper.get_lines(mappings.list__mappings);
@@ -832,14 +841,14 @@ const mappings = {
 
 		mappings.update_all_lines([mapping_path, previous_mapping_path]);
 
-	},
+	};
 
 
 	// HELPERS
 
 	/* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements on all lines */
-	update_all_lines: (
-		mapping_path_filter :mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
+	private static readonly update_all_lines = (
+		mapping_path_filter :mapping_path[] | mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
 		new Promise((resolve) => {
 			resolve();
@@ -851,19 +860,28 @@ const mappings = {
 				lines.push(mappings.mapping_view);
 
 			let filters;
-			if (mapping_path_filter !== null && typeof mapping_path_filter[0] !== "undefined" && mapping_path_filter[0].constructor === Array)
+			if (
+				mapping_path_filter !== null &&
+				Array.isArray(mapping_path_filter) &&
+				typeof mapping_path_filter[0] !== "undefined" &&
+				Array.isArray(mapping_path_filter[0])
+			)
 				filters = mapping_path_filter;
 			else
 				filters = [mapping_path_filter];
 
-			for (const filter of filters)
-				for (const line of lines)
+			for (let filter of filters)
+				for (const line of lines) {
+					if (typeof filter === "undefined")
+						filter = null;
+					//@ts-ignore
 					mappings.update_line(line, filter);
+				}
 
-		}) && false,
+		});
 
 	/* Enables or disables the options and adds or removes -to-many extra -to-many reference items in all matching elements in the current line */
-	update_line: (
+	private static readonly update_line = (
 		line_elements_container :HTMLElement,  // the line elements container whose elements would be updated
 		filter_mapping_path :mapping_path | null = null  // updates elements in the line only if their relative mapping path begins with mapping_path_filter
 	) =>
@@ -879,8 +897,7 @@ const mappings = {
 			if (select_elements.length === 0)
 				return;
 
-			const update_element = (target_select_element, mapping_path, position) => {
-
+			const update_element = (target_select_element :HTMLElement, mapping_path :mapping_path, position :number) => {
 
 				const local_mapping_path = mapping_path.slice(0, position);
 				const mapped_fields = Object.keys(mappings.get_mapped_fields(local_mapping_path, false));
@@ -932,14 +949,14 @@ const mappings = {
 
 			}
 
-		}) && false,
+		});
 
 	/* Adds a focus outline to a given line */
-	focus_line(
+	public static focus_line(
 		line :HTMLElement  // the line to be focused
 	) :void {
 
-		const lines = dom_helper.get_lines(mappings.list__mappings);
+		const lines = <HTMLElement[]>dom_helper.get_lines(mappings.list__mappings);
 
 		// don't do anything if selected line is already focused
 		const selected_lines = lines.filter(mapping_line =>
@@ -963,18 +980,18 @@ const mappings = {
 
 		mappings.update_mapping_view(line);
 
-	},
+	};
 
 	/* Update the mapping view with the mapping path from a given line */
-	update_mapping_view: (
+	public static readonly update_mapping_view = (
 		line :HTMLElement | boolean = false,  // the line to be used as a source for mapping path
 		use_cached :boolean = false  // whether to use a cached version of the mapping view
 	) :void => {
 
 		if (typeof line === "boolean")
-			line = <HTMLElement>dom_helper.get_lines(mappings.list__mappings).filter(mapping_line => mapping_line.classList.contains('wbplanview_mappings_line_focused'))[0];
+			line = dom_helper.get_lines(mappings.list__mappings).filter((mapping_line :HTMLElement) => mapping_line.classList.contains('wbplanview_mappings_line_focused'))[0];
 
-		let mapping_path = [];
+		let mapping_path :mapping_path = [];
 		if (typeof line !== "undefined") {  // get mapping path
 			const line_elements_container = dom_helper.get_line_elements_container(line);
 			mapping_path = mappings.get_mapping_path({
@@ -990,10 +1007,10 @@ const mappings = {
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data, use_cached);
 		}
 
-	},
+	};
 
 	/* Formats validation results */
-	format_validation_results(
+	public static format_validation_results(
 		validation_results :string[][]  // list of mapping paths that are missing
 	) :boolean | string /* validation result message */ {
 
@@ -1023,10 +1040,10 @@ const mappings = {
 
 		return `Some required fields were not mapped yet. Do you want to continue editing or save changes and quit editing`;
 
-	},
+	};
 
 	/* Unmap headers that have a duplicate mapping path */
-	deduplicate_mappings() :void {
+	private static deduplicate_mappings() :void {
 
 		const array_of_mappings = mappings.get_array_of_mappings(false, false);
 		const duplicate_mapping_indexes = helper.find_duplicate_mappings(array_of_mappings, false);
@@ -1047,16 +1064,16 @@ const mappings = {
 
 		}
 
-	},
+	};
 
 	/*
 	* Show automapper suggestion on top of an opened `closed_list`
 	* The automapper suggestions are shown only if the current box doesn't have a value selected
 	* */
-	show_automapper_suggestions: (
+	public static readonly show_automapper_suggestions = (
 		select_element :HTMLElement,  // target list
 		custom_select_option :HTMLElement  // the option that is currently selected
-	) /*:Promise(void) */ =>
+	) =>
 		new Promise((resolve) => {
 
 			// don't show suggestions if picklist has non null value
@@ -1068,9 +1085,11 @@ const mappings = {
 
 			const line_elements_container = select_element.parentElement;
 
+			if (line_elements_container === null)
+				throw new Error(`Can't find a parent of this picklist`);
+
 			const mapping_path = mappings.get_mapping_path({
 				line_elements_container: line_elements_container,
-				// @ts-ignore
 				mapping_path_filter: select_element,
 				include_headers: true,
 			});
@@ -1095,7 +1114,7 @@ const mappings = {
 				path_offset = 1;
 			}
 
-			let automapper_results = mappings.auto_mapper.map({
+			const all_automapper_results = Object.entries(<automapper_results>mappings.auto_mapper.map({
 				headers: [header],
 				base_table: data_model.base_table_name,
 				starting_table: mapping_line_data[mapping_line_data.length - 1]['table_name'],
@@ -1105,12 +1124,12 @@ const mappings = {
 				commit_to_cache: false,
 				check_for_existing_mappings: true,
 				scope: 'suggestion',
-			});
+			}));
 
-			if (automapper_results.length === 0)
+			if (all_automapper_results.length === 0)
 				return resolve();
 
-			automapper_results = automapper_results[0][1];
+			let automapper_results = all_automapper_results[0][1];
 
 			if (automapper_results.length > mappings.max_suggestions_count)
 				automapper_results = automapper_results.slice(0, 3);
@@ -1140,8 +1159,8 @@ const mappings = {
 
 			resolve();
 
-		}).then(),
+		}).then();
 
-};
+}
 
 export = mappings;
