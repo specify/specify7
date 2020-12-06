@@ -18,7 +18,7 @@ const custom_select_element = {
 			/* string */ select_label = '',  // the label to sue for the element
 			/* string */ select_table = '',  // the name of the table that was used
 			/* array */ select_groups_data = []  // list of option group objects. See custom_select_element.get_select_group_html() for more info
-		} :get_element_html_parameters,
+		} :custom_select_element,
 		custom_select_type :string,  // the type of the select element
 		// 							   Available types:
 		// 								- opened_list - used in the mapping view - list without an `input` box but with always opened list of options and a table name on top
@@ -29,10 +29,15 @@ const custom_select_element = {
 	) :string /* HTML for a custom select element */ {
 
 		// making a copy of payload with all options enabled
-		const select_data_copy = JSON.parse(JSON.stringify(arguments[0]));
-		for (const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
-			for (const option_name of Object.keys(group_data['select_options_data']))
-				select_data_copy['select_groups_data'][group_name]['select_options_data'][option_name]['is_enabled'] = false;
+		const select_data_copy :custom_select_element = JSON.parse(JSON.stringify(arguments[0]));
+		select_data_copy.select_groups_data.map(({select_options_data}, group_index) =>
+			Object.keys(select_options_data).map(option_name =>
+				select_data_copy.select_groups_data[group_index].select_options_data[parseInt(option_name)].is_enabled = false
+			)
+		);
+		// for (const [group_name, group_data] of Object.entries(select_data_copy['select_groups_data']))
+		// 	for (const option_name of Object.keys(group_data['select_options_data']))
+		// 		select_data_copy['select_groups_data'][group_name]['select_options_data'][option_name]['is_enabled'] = false;
 		const cache_key = JSON.stringify([custom_select_type, select_data_copy]);
 
 		if (cache_key && use_cached) {
@@ -57,12 +62,10 @@ const custom_select_element = {
 			for (const select_group_data of select_groups_data)
 				for (const select_field_data of select_group_data['select_options_data'])
 					if (select_field_data.is_default) {
-						({
-							option_name: default_label,
-							option_value: default_name,
-							is_relationship: is_relationship,
-							table_name: table_name
-						} = select_field_data);
+						default_label = select_field_data.option_name;
+						default_name = select_field_data.option_value;
+						is_relationship = select_field_data.is_relationship || false;
+						table_name = select_field_data.table_name || '';
 						break outer_loop;
 					}
 
@@ -139,7 +142,7 @@ const custom_select_element = {
 
 	/* Generates HTML for a suggestion box */
 	get_suggested_mappings_element_html: (
-		select_options_data :get_select_option_html_parameters[]  // list of options. See custom_select_html.get_select_option_html() for option data structure
+		select_options_data :custom_select_element_option[]  // list of options. See custom_select_html.get_select_option_html() for option data structure
 	) :string /* HTML for a suggestion box */ =>
 		`<span class="custom_select_suggestions">
 			${custom_select_element.get_select_group_html({
@@ -154,7 +157,7 @@ const custom_select_element = {
 							  /* string */ select_group_name,  // group name (used in css and js)
 							  /* string */ select_group_label,  // group label (shown to the user)
 							  /* array */ select_options_data  // list of options data. See custom_select_element.get_select_option_html() for the data structure
-						  } :get_select_group_html_parameters) :string /* HTML for a group of options */ {
+						  } :custom_select_element_options_group) :string /* HTML for a group of options */ {
 
 		return `<span
 					class="custom_select_group"
@@ -173,7 +176,7 @@ const custom_select_element = {
 							   /* boolean */ is_relationship = false,  // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
 							   /* boolean */ is_default = false,  // whether the option is currently selected
 							   /* string */ table_name = ''  // the name of the table this option represents
-						   } :get_select_option_html_parameters) :string /* HTML for a single option line */ {
+						   } :custom_select_element_option) :string /* HTML for a single option line */ {
 
 		const classes = ['custom_select_option'];
 
@@ -200,6 +203,7 @@ const custom_select_element = {
 	/* Generates HTML for a table icon */
 	get_icon_html(
 		is_relationship :boolean,  // False only if icon is going to be used next to an option label and option is not a relationship
+		//@ts-ignore
 		is_default :boolean,  // True only if is_relationship is False and current option is a selected field
 		table_name :string  // The name of the table to generate icon for
 	) :string /* HTML for a table icon */ {
@@ -474,8 +478,8 @@ const custom_select_element = {
 		option :HTMLSpanElement  // the option to be unselected
 	) :void => {
 		option.classList.remove('custom_select_option_selected');
-		list.setAttribute('data-previous_value',<string>list.getAttribute('data-value'));
-		list.setAttribute('data-value','0');
+		list.setAttribute('data-previous_value', <string>list.getAttribute('data-value'));
+		list.setAttribute('data-value', '0');
 	},
 
 	/* Enables or disables an option in a list */
