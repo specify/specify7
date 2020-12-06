@@ -5,7 +5,7 @@ class custom_select_element {
 	// TODO: set proper table icons URL
 	// private static readonly table_icons_base_path:string = '';
 	// private static readonly table_icons_extension:string = '';
-	private static readonly cache_bucket_name:string = 'select_elements';  // the name of the cache bucket to use
+	private static readonly cache_bucket_name :string = 'select_elements';  // the name of the cache bucket to use
 
 
 	// GENERATORS
@@ -146,10 +146,10 @@ class custom_select_element {
 
 	/* Generates HTML for a group of options */
 	public static get_select_group_html({
-							  select_group_name,
-							  select_group_label,
-							  select_options_data
-						  } :custom_select_element_options_group) :string /* HTML for a group of options */ {
+											select_group_name,
+											select_group_label,
+											select_options_data
+										} :custom_select_element_options_group) :string /* HTML for a group of options */ {
 
 		return `<span
 					class="custom_select_group"
@@ -162,13 +162,13 @@ class custom_select_element {
 
 	/* Generates HTML for a single option line */
 	public static get_select_option_html({
-							   option_name,
-							   option_value,
-							   is_enabled = true,
-							   is_relationship = false,
-							   is_default = false,
-							   table_name = ''
-						   } :custom_select_element_option) :string /* HTML for a single option line */ {
+											 option_name,
+											 option_value,
+											 is_enabled = true,
+											 is_relationship = false,
+											 is_default = false,
+											 table_name = ''
+										 } :custom_select_element_option) :string /* HTML for a single option line */ {
 
 		const classes = ['custom_select_option'];
 
@@ -227,11 +227,14 @@ class custom_select_element {
 	) :void {
 		container.addEventListener('click', e => {
 
-			const el = <HTMLElement>e.target;
+			if (e.target === null)
+				return;
+
+			const el = e.target as HTMLElement;
 
 			// close opened lists
-			const lists = Object.values(<HTMLCollectionOf<HTMLElement>> container.getElementsByClassName('custom_select'));
-			const current_list = <HTMLElement>el.closest('.custom_select:not([data-type="preview_list"]):not([data-type="suggestion_list"])');
+			const lists = Object.values(container.getElementsByClassName('custom_select')) as HTMLElement[];
+			const current_list = el.closest('.custom_select:not([data-type="preview_list"]):not([data-type="suggestion_list"])') as HTMLSpanElement;
 
 			for (const list of lists)
 				if (list !== current_list)  // dont close current list
@@ -267,10 +270,10 @@ class custom_select_element {
 			}
 
 			// check if option was changed
-			const custom_select_option = el.closest('.custom_select_option');
+			const custom_select_option = el.closest('.custom_select_option') as HTMLElement;
 			if (custom_select_option !== null) {
 
-				const change_payload = custom_select_element.change_selected_option(current_list, <HTMLElement>custom_select_option);
+				const change_payload = custom_select_element.change_selected_option(current_list, custom_select_option);
 				custom_select_element.close_list(current_list);
 
 				if (typeof change_payload === "object")
@@ -297,7 +300,7 @@ class custom_select_element {
 		}
 		target_option = <HTMLElement>target_option;
 
-		const custom_select_option_value = <string>custom_select_element.get_option_value(target_option);
+		const custom_select_option_value = custom_select_element.get_option_value(target_option) as string;
 
 		const group_element = target_option.parentElement;
 		if (group_element !== null && group_element.classList.contains('custom_select_group') && group_element.getAttribute('data-group') === 'suggested_mappings')
@@ -320,18 +323,18 @@ class custom_select_element {
 		}
 
 		// unselect all options
-		for (const selected_line of Object.values(<HTMLCollectionOf<Element>>target_list.getElementsByClassName('custom_select_option_selected')))
+		for (const selected_line of Object.values(target_list.getElementsByClassName('custom_select_option_selected')))
 			selected_line.classList.remove('custom_select_option_selected');
 
 		// extract data about new option
 		const custom_select_option_label_element :Element = target_option.getElementsByClassName('custom_select_option_label')[0];
-		const custom_select_option_label = <string>custom_select_option_label_element.textContent;
+		const custom_select_option_label = custom_select_option_label_element.textContent as string;
 
-		let previous_list_value = <string>custom_select_element.get_list_value(target_list);
-		const previous_previous_value = <string>target_list.getAttribute('data-previous_value');
+		let previous_list_value = custom_select_element.get_list_value(target_list) as string;
+		const previous_previous_value = target_list.getAttribute('data-previous_value') as string;
 
 		// don't change values if new value is 'add'
-		const list_type = <string>custom_select_element.get_list_mapping_type(target_list);
+		const list_type = custom_select_element.get_list_mapping_type(target_list) as string;
 
 		// don't do anything if value wasn't changed
 		if (custom_select_option_value === previous_list_value)
@@ -354,19 +357,19 @@ class custom_select_element {
 		if (custom_select_inputs.length !== 0) {
 
 			const custom_select_input = custom_select_inputs[0];
-			const table_name = <string>target_option.getAttribute('data-table_name');
+			const table_name = target_option.getAttribute('data-table_name') as string;
 
 			const custom_select_input_icon :Element = custom_select_input.getElementsByClassName('custom_select_input_icon')[0];
 			custom_select_input_icon.innerHTML = custom_select_element.get_icon_html(is_relationship, true, table_name);
 
-			const custom_select_input_label :HTMLElement = <HTMLElement>custom_select_input.getElementsByClassName('custom_select_input_label')[0];
+			const custom_select_input_label = custom_select_input.getElementsByClassName('custom_select_input_label')[0] as HTMLElement;
 			custom_select_input_label.innerText = custom_select_option_label;
 
 		}
 
 
-		const custom_select_type = <string>target_list.getAttribute('data-type');
-		const list_table_name = <string>custom_select_element.get_list_table_name(target_list);
+		const custom_select_type = target_list.getAttribute('data-type') as string;
+		const list_table_name = custom_select_element.get_list_table_name(target_list) as string;
 		return {
 			changed_list: target_list,
 			selected_option: target_option,
@@ -386,7 +389,7 @@ class custom_select_element {
 		target_list :HTMLSpanElement  // a list to close
 	) :void => {
 		target_list.classList.remove('custom_select_open');
-		const custom_select_suggestions = Object.values(<HTMLCollectionOf<Element>>target_list.getElementsByClassName('custom_select_suggestions'));
+		const custom_select_suggestions = Object.values(target_list.getElementsByClassName('custom_select_suggestions'));
 		for (const custom_select_suggestion of custom_select_suggestions)
 			custom_select_suggestion.remove();
 	};
@@ -420,7 +423,7 @@ class custom_select_element {
 		new_option_line.outerHTML = new_option_line_html;
 
 		if (selected)
-			custom_select_element.change_selected_option(list, <HTMLSpanElement>options[position]);
+			custom_select_element.change_selected_option(list, options[position] as HTMLElement);
 
 	};
 
@@ -429,7 +432,7 @@ class custom_select_element {
 		list :HTMLSpanElement  // the list that houses the options
 	) :void {
 
-		const options = <HTMLCollectionOf<Element>>list.getElementsByClassName('custom_select_option');
+		const options = list.getElementsByClassName('custom_select_option');
 
 		for (const option of Object.values(options))
 			option.classList.remove('custom_select_option_disabled');
@@ -477,8 +480,8 @@ class custom_select_element {
 		list :HTMLSpanElement,  // the list to search in
 		option_name :string  // the value of the option to search for
 	) :HTMLSpanElement =>
-		<HTMLSpanElement>Object.values(list.getElementsByClassName('custom_select_option')).filter(option =>
-			custom_select_element.get_option_value(<HTMLElement>option) === option_name
+		(Object.values(list.getElementsByClassName('custom_select_option')) as HTMLElement[]).filter(option =>
+			custom_select_element.get_option_value(option) === option_name
 		)[0];
 
 	/* Returns whether selected value in a list is a relationships */
@@ -493,8 +496,8 @@ class custom_select_element {
 	/* Get all selected options in a list */
 	public static readonly get_selected_options = (
 		list :HTMLSpanElement  // the list to search in
-	) :HTMLCollectionOf<HTMLElement> /* array of selected options */ =>
-		<HTMLCollectionOf<HTMLElement>>list.getElementsByClassName('custom_select_option_selected');
+	) :HTMLElement[] /* array of selected options */ =>
+		Object.values(list.getElementsByClassName('custom_select_option_selected')) as HTMLElement[];
 
 	/* Returns whether selection option is enabled */
 	public static readonly is_selected_option_enabled = (
@@ -502,7 +505,6 @@ class custom_select_element {
 	) :boolean /* True if no option is selected or selected option is not disabled */ => {
 
 		const option = custom_select_element.get_selected_options(list)[0];
-
 
 		if (typeof option === "undefined")
 			return true;

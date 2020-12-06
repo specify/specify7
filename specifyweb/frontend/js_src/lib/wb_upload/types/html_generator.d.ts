@@ -1,15 +1,15 @@
 interface html_generator_field_data {
-	field_friendly_name: string,
-	is_enabled?: boolean,
-	is_required?: boolean,
-	is_hidden?: boolean,
-	is_default?: boolean,
-	is_relationship?: boolean,
-	table_name?: string,
+	readonly field_friendly_name :string,
+	readonly is_enabled? :boolean,
+	readonly is_required? :boolean,
+	readonly is_hidden? :boolean,
+	readonly is_default? :boolean,
+	readonly is_relationship? :boolean,
+	readonly table_name? :string,
 }
 
 interface html_generator_fields_data {
-	[field_name:string]:html_generator_field_data
+	readonly [field_name :string] :html_generator_field_data
 }
 
 interface mapping_element_parameters {

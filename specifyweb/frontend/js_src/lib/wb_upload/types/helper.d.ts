@@ -1,4 +1,4 @@
-type deconstructed_mapping_path = [mapping_path:mapping_path, mapping_type:mapping_type, header_name:string]
+type deconstructed_mapping_path = [mapping_path :mapping_path, mapping_type :mapping_type, header_name :string]
 /*
 * If mapping path is incomplete and detect_unmapped is true mapping_path is []
 * Example:

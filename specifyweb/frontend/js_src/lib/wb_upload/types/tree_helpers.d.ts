@@ -7,8 +7,9 @@ interface mappings_tree {
 }
 
 interface flat_tree {
-	[key:string]:flat_tree|string
+	[key :string] :flat_tree | string
 }
+
 /*
 * Example:
 * 	if

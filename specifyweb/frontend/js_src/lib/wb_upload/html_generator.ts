@@ -97,7 +97,7 @@ class html_generator {
 		};
 
 		const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
-			[field_group_label, <custom_select_element_option[]>[]]
+			[field_group_label, [] as custom_select_element_option[]]
 		));
 
 		for (const [
@@ -156,7 +156,7 @@ class html_generator {
 
 	/* Return HTML for a textarea with a given value for a new static header */
 	public static readonly static_header = (
-		default_value:string = ''  // the default value of a textarea
+		default_value :string = ''  // the default value of a textarea
 	) :string /* HTML for a textarea with a given value for a new static header */ =>
 		`<textarea>${default_value}</textarea>`;
 

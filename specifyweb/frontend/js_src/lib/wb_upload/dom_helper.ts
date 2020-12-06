@@ -13,14 +13,14 @@ class dom_helper {
 	public static get_lines(
 		container :HTMLElement,  // a container for all of the lines
 		return_line_elements :boolean = false  // whether to return line elements or line element container elements
-	) :Element[] /* list of line elements or line element container elements depending on return_line_elements*/ {
+	) :HTMLElement[] /* list of line elements or line element container elements depending on return_line_elements*/ {
 
 		const lines = Object.values(container.children);
 
 		if (return_line_elements)
-			return lines.map(line => dom_helper.get_line_elements_container(<HTMLElement>line));
+			return lines.map(line => dom_helper.get_line_elements_container(line as HTMLElement));
 		else
-			return lines;
+			return lines as HTMLElement[];
 
 	};
 
@@ -28,21 +28,21 @@ class dom_helper {
 	public static readonly get_line_elements_container = (
 		element :HTMLElement  // either a line element or a custom select element
 	) :HTMLElement /* line elements container */ => (
-		element.tagName === 'DIV' ?
-			<HTMLElement>element.getElementsByClassName('wbplanview_mappings_line_elements')[0] :
-			<HTMLElement>element.parentElement);
+		(element.tagName === 'DIV' ?
+			element.getElementsByClassName('wbplanview_mappings_line_elements')[0] :
+			element.parentElement)) as HTMLElement;
 
 	/* Get children of line elements container */
 	public static readonly get_line_elements = (
 		line_elements_container :HTMLElement  // an elements whose children would be returned
 	) :HTMLElement[] /* list of line_elements_container children */ => (
-		<HTMLElement[]>Object.values(line_elements_container.children));
+		Object.values(line_elements_container.children)) as HTMLElement[];
 
 	/* Get header element from the line element */
 	public static readonly get_line_header_element = (
 		line :HTMLElement  // the line element
 	) :HTMLElement /* header element */ => (
-		<HTMLElement>line.getElementsByClassName('wbplanview_mappings_line_header')[0]);
+		line.getElementsByClassName('wbplanview_mappings_line_header')[0]) as HTMLElement;
 
 	/* Get header name (for headers) or textarea value (for static headers) */
 	public static readonly get_line_header_name = (
@@ -50,13 +50,13 @@ class dom_helper {
 	) :string /* header name (for headers) or textarea value (for static headers) */ => (
 		wbplanview_mappings_line_header.children.length === 0 ?
 			wbplanview_mappings_line_header.innerText :
-			(<HTMLTextAreaElement>wbplanview_mappings_line_header.children[0]).value);  // get textarea's value (for static fields)
+			(wbplanview_mappings_line_header.children[0] as HTMLTextAreaElement).value);  // get textarea's value (for static fields)
 
 	/* Get the mapping type for a line (`existing_header`/`new_column`/`new_static_column`) */
 	public static readonly get_line_mapping_type = (
 		wbplanview_mappings_line_header :HTMLElement  // header element
-	) :string /* the mapping type for a line */ => (
-		<string>wbplanview_mappings_line_header.getAttribute('data-mapping_type'));
+	) :string | null /* the mapping type for a line */ => (
+		wbplanview_mappings_line_header.getAttribute('data-mapping_type'));
 
 
 	// MISC

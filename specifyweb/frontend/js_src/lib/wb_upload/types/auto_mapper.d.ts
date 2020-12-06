@@ -15,6 +15,7 @@ interface map_parameters {
 
 interface automapper_results {
 	[header_name :string] :mapping_path[],
+
 	/*
 	* Returns mappings result in format:
 	* If payload.allow_multiple_mappings:
@@ -47,7 +48,7 @@ interface headers_to_map {
 }
 
 interface auto_mapper_definition_comparisons {  // structure with defined comparisons. See `headers` object in json/auto_mapper_definitions.js
-	[key :string] :string[] | RegExp[]
+	readonly [key :string] :string[] | RegExp[]
 }
 
 interface find_mappings_in_definitions_parameters {

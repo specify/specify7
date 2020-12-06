@@ -4,9 +4,9 @@
 //  - closed_list - used on mapping line - list with an `input` box and a list of options that can be opened
 //  - preview_list - used in the mapping validation results - list with an `input` box but with no list of options
 //  - suggestion_list - used on the suggestion lines - list with an `input` box but with no list of options
-type custom_select_type = 'opened_list'|'closed_list'|'preview_list'|'suggestion_list'
+type custom_select_type = 'opened_list' | 'closed_list' | 'preview_list' | 'suggestion_list'
 
-type select_element_type = 'simple'|'to_many'|'tree'  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
+type select_element_type = 'simple' | 'to_many' | 'tree'  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
 
 type default_value = '0'
 
@@ -34,15 +34,15 @@ interface custom_select_element_option {
 }
 
 interface custom_select_element_change_payload {
-	changed_list: HTMLSpanElement,  // the list that was changed
-	selected_option: HTMLSpanElement,  // the option that was changed
-	new_value: string,  // the new value of the list
-	list_type: string,  // the type of the changed list
-	previous_value: string|default_value,  // previous value of this select_element
-	previous_previous_value: string|default_value,  // previous previous value of this select_element
-	is_relationship: boolean,  // whether new value is a relationship
-	custom_select_type: string,  // the type of the custom select element
-	list_table_name: string,  // the name of the table the list belongs too
+	readonly changed_list :HTMLSpanElement,  // the list that was changed
+	readonly selected_option :HTMLSpanElement,  // the option that was changed
+	readonly new_value :string,  // the new value of the list
+	readonly list_type :string,  // the type of the changed list
+	readonly previous_value :string | default_value,  // previous value of this select_element
+	readonly previous_previous_value :string | default_value,  // previous previous value of this select_element
+	readonly is_relationship :boolean,  // whether new value is a relationship
+	readonly custom_select_type :string,  // the type of the custom select element
+	readonly list_table_name :string,  // the name of the table the list belongs too
 	/*
 	* if value not changed or option not found or option is disabled:
 	* 	return undefined

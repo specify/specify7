@@ -30,7 +30,7 @@ class fetch_data_model {
 		const table_previews :{[table_name :string] :string} = {};
 		const fetch_ranks_queue :Promise<table_ranks_inline>[] = [];
 
-		const tables = (<schema_model_table_data[]>Object.values(schema.models)).reduce((tables, table_data) => {
+		const tables = (Object.values(schema.models) as schema_model_table_data[]).reduce((tables, table_data) => {
 
 
 			// @ts-ignore
@@ -74,7 +74,8 @@ class fetch_data_model {
 				)
 					is_required = false;
 
-				let field_data :data_model_field_writable | data_model_relationship_writable = {
+				//@ts-ignore
+				let field_data :data_model_field_writable = {
 					friendly_name: friendly_name,
 					is_hidden: is_hidden,
 					is_required: is_required,
@@ -108,7 +109,6 @@ class fetch_data_model {
 					)
 						continue;
 
-					field_data = <data_model_relationship>field_data;
 					field_data.table_name = table_name;
 					field_data.type = relationship_type;
 					field_data.foreign_name = foreign_name;
@@ -129,7 +129,7 @@ class fetch_data_model {
 
 			tables[table_name] = {
 				table_friendly_name: table_friendly_name,
-				fields: <{[field_name :string] :data_model_field | data_model_relationship}>ordered_fields,
+				fields: <{[field_name :string] :data_model_non_relationship | data_model_relationship}>ordered_fields,
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
@@ -137,7 +137,7 @@ class fetch_data_model {
 
 			return tables;
 
-		}, <data_model_tables_writable>{});
+		}, {} as data_model_tables_writable);
 
 
 		// remove relationships to system tables
@@ -165,7 +165,7 @@ class fetch_data_model {
 			const ranks :data_model_ranks = Object.fromEntries(resolved);
 
 			cache.set('fetch_data_model', 'ranks', ranks);
-			done_callback(<data_model_tables>tables, html_tables, ranks);  // so there is no need to wait for ranks to finish fetching
+			done_callback(tables as data_model_tables, html_tables, ranks);  // so there is no need to wait for ranks to finish fetching
 		});
 
 	};
@@ -175,7 +175,7 @@ class fetch_data_model {
 		table_name :string,  // Official table name (from the data model)
 	) :Promise<table_ranks_inline> =>
 		new Promise((resolve) => {
-			(<domain>domain).getTreeDef(table_name).done(tree_definition => {
+			(domain as domain).getTreeDef(table_name).done(tree_definition => {
 				tree_definition.rget('treedefitems').done(
 					treeDefItems => {
 						treeDefItems.fetch({limit: 0}).done(() => {

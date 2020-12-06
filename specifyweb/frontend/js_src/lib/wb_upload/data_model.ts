@@ -23,7 +23,7 @@ class data_model {
 		table_name :string,  // the name of the table to fetch the fields for
 		filter__is_relationship :boolean | -1 = -1,  // whether fields are relationships
 		filter__is_hidden :boolean | -1 = -1  // whether field is hidden
-	) :[field_name :string, field_data :data_model_field | data_model_relationship][] =>
+	) :[field_name :string, field_data :data_model_field][] =>
 		Object.entries(data_model.tables[table_name].fields).filter(([, {is_relationship, is_hidden}]) =>
 			(
 				filter__is_relationship === -1 || is_relationship === filter__is_relationship
@@ -37,15 +37,15 @@ class data_model {
 	public static readonly get_table_non_relationship_fields = (
 		table_name :string,  // the name of the table to fetch the fields for
 		filter__is_hidden :boolean | -1 = -1  // whether field is hidden
-	) :[relationship_name :string, relationship_data :data_model_field][] =>
-		<[relationship_name :string, relationship_data :data_model_field][]>data_model.get_table_fields(table_name, false, filter__is_hidden);
+	) =>
+		data_model.get_table_fields(table_name, false, filter__is_hidden) as [relationship_name :string, relationship_data :data_model_non_relationship][];
 
 	/* fetch relationships for a table */
 	public static readonly get_table_relationships = (
 		table_name :string,   // the name of the table to fetch relationships fields for,
 		filter__is_hidden :boolean | -1 = -1  // whether field is hidden
-	) :[relationship_name :string, relationship_data :data_model_relationship][] =>
-		<[relationship_name :string, relationship_data :data_model_relationship][]>data_model.get_table_fields(table_name, true, filter__is_hidden);
+	) =>
+		data_model.get_table_fields(table_name, true, filter__is_hidden) as [relationship_name :string, relationship_data :data_model_relationship][];
 
 	/* Iterates over the mappings_tree to find required fields that are missing */
 	public static show_required_missing_fields(
@@ -87,7 +87,7 @@ class data_model {
 					const local_path = [...path, complimented_rank_name];
 
 					if (list_of_mapped_fields.indexOf(complimented_rank_name) !== -1)
-						data_model.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[complimented_rank_name], previous_table_name, local_path, results);
+						data_model.show_required_missing_fields(table_name, mappings_tree[complimented_rank_name] as mappings_tree, previous_table_name, local_path, results);
 					else if (is_rank_required)
 						results.push(local_path);
 
@@ -106,7 +106,6 @@ class data_model {
 
 			if (field_data.is_relationship) {
 
-				const relationship_data = <data_model_relationship>field_data;
 
 				if (previous_table_name !== '') {
 
@@ -117,7 +116,7 @@ class data_model {
 					)
 						previous_relationship_name = local_path.slice(-3)[0];
 
-					const parent_relationship_data = <data_model_relationship>data_model.tables[previous_table_name].fields[previous_relationship_name];
+					const parent_relationship_data = data_model.tables[previous_table_name].fields[previous_relationship_name] as data_model_relationship;
 
 					if (
 						(  // disable circular relationships
@@ -126,7 +125,7 @@ class data_model {
 						) ||
 						(  // skip -to-many inside of -to-many
 							data_model.relationship_is_to_many(parent_relationship_data.type) &&
-							data_model.relationship_is_to_many(relationship_data.type)
+							data_model.relationship_is_to_many(field_data.type)
 						)
 					)
 						continue;
@@ -134,7 +133,7 @@ class data_model {
 				}
 
 				if (is_mapped)
-					data_model.show_required_missing_fields(relationship_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
+					data_model.show_required_missing_fields(field_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
 				else if (field_data.is_required)
 					results.push(local_path);
 			}
@@ -293,9 +292,8 @@ class data_model {
 			(
 				typeof data_model.tables[parent_table_name] !== "undefined" &&
 				typeof data_model.tables[parent_table_name].fields[parent_table_relationship_name] !== "undefined"
-			) ? (<data_model_relationship>data_model.tables[parent_table_name].fields[parent_table_relationship_name]).type : '';
+			) ? (data_model.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship).type : '';
 		const children_are_to_many_elements =
-			parent_relationship_type !== '' &&
 			data_model.relationship_is_to_many(parent_relationship_type) &&
 			!data_model.value_is_reference_item(parent_path_element_name);
 
@@ -329,13 +327,14 @@ class data_model {
 
 	/* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many) */
 	public static readonly relationship_is_to_many = (
-		relationship_type :relationship_type
+		relationship_type :relationship_type | undefined | ''
 	) :boolean /* whether relationship is a -to-many */ =>
+		typeof relationship_type !== "undefined" &&
 		relationship_type.indexOf('-to-many') !== -1;
 
 	/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
 	public static readonly value_is_reference_item = (
-		value :string  // the value to use
+		value :string | undefined  // the value to use
 	) :boolean /* whether a value is a -to-many reference item */ =>
 		typeof value !== "undefined" &&
 		value.substr(0, data_model.reference_symbol.length) === data_model.reference_symbol;

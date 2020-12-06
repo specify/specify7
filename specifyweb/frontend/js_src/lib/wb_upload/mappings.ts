@@ -43,7 +43,7 @@ class mappings {
 		table_name :string,  // the name of the table to set
 		headers_to_shadow_define :list_of_headers = []  // a list of headers that would be fully defined at a later point
 	) =>
-		Promise.resolve('').then(()=>{
+		Promise.resolve('').then(() => {
 
 			const loaded = mappings.loading_screen();
 
@@ -142,7 +142,7 @@ class mappings {
 					defined_headers.push(header_name);
 			}
 
-			mappings.set_table(base_table_name, defined_headers).then(()=>
+			mappings.set_table(base_table_name, defined_headers).then(() =>
 				mappings.implement_array_of_mappings(array_of_mappings)
 			);
 		}
@@ -267,7 +267,7 @@ class mappings {
 
 		new_mapping_line.outerHTML = html_generator.mapping_line(mapping_line_data, true);
 
-		if(update_all_lines)
+		if (update_all_lines)
 			mappings.update_all_lines(mapping_path);
 
 	};
@@ -431,7 +431,7 @@ class mappings {
 							friendly_name,
 							table_name: field_table_name
 						}
-					] of Object.entries(<data_model_fields_writable> data_model.tables[table_name].fields)) {
+					] of Object.entries(data_model.tables[table_name].fields as data_model_fields_writable)) {
 
 					if (
 						is_relationship &&
@@ -450,8 +450,6 @@ class mappings {
 							)
 						) ||
 						(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-							typeof relationship_type !== "undefined" &&
-							typeof parent_relationship_type !== "undefined" &&
 							data_model.relationship_is_to_many(relationship_type) &&
 							data_model.relationship_is_to_many(parent_relationship_type)
 						)
@@ -525,7 +523,7 @@ class mappings {
 		if (include_headers)
 			index_shift += 2;
 
-		const line_elements_containers = <HTMLElement[]>dom_helper.get_lines(mappings.list__mappings, true);
+		const line_elements_containers = dom_helper.get_lines(mappings.list__mappings, true) as HTMLElement[];
 
 		const results = mappings.mapped_fields = line_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
@@ -543,7 +541,7 @@ class mappings {
 				mapped_fields.push(mapping_path);
 
 			return mapped_fields;
-		}, <mapping_path[]>[]);
+		}, [] as mapping_path[]);
 
 		if (skip_empty)
 			return results;
@@ -570,7 +568,7 @@ class mappings {
 	public static readonly get_mapped_fields = (
 		mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
 		skip_empty :boolean = true  // whether to skip incomplete mappings
-	):mappings_tree =>
+	) :mappings_tree =>
 		tree_helpers.traverse_tree(
 			mappings.get_mappings_tree(false, skip_empty),
 			tree_helpers.array_to_tree([...mapping_path_filter]),
@@ -815,7 +813,7 @@ class mappings {
 		// don't map the last node if it is already mapped
 		// e.g convert `Accession > Accession Number` to `Accession`  if `Accession Number` is a field and is mapped
 		const is_mapped = !custom_select_element.is_selected_option_enabled(
-			<HTMLElement>mappings.mapping_view.childNodes[mappings.mapping_view.childNodes.length - 1]
+			mappings.mapping_view.childNodes[mappings.mapping_view.childNodes.length - 1] as HTMLElement
 		);
 
 		// implement the mapping path on the selected field
@@ -854,7 +852,7 @@ class mappings {
 	) =>
 		new Promise((resolve) => {
 
-			const lines = dom_helper.get_lines(mappings.list__mappings, true);
+			const lines = dom_helper.get_lines(mappings.list__mappings, true) as HTMLElement[];
 
 			// update the mapping view too if it is not hidden
 			if (!mappings.hide_mapping_view)
@@ -872,10 +870,10 @@ class mappings {
 				filters = [mapping_path_filter];
 
 
-			Promise.all(Object.values(filters).map(filter=>
-				Object.values(lines).map(line=>  //@ts-ignore
+			Promise.all(Object.values(filters).map(filter =>
+				Object.values(lines).map(line =>
 					mappings.update_line(line, filter)
-			))).then(()=>
+				))).then(() =>
 				resolve('')
 			);
 
@@ -956,7 +954,7 @@ class mappings {
 		line :HTMLElement  // the line to be focused
 	) :void {
 
-		const lines = <HTMLElement[]>dom_helper.get_lines(mappings.list__mappings);
+		const lines = dom_helper.get_lines(mappings.list__mappings) as HTMLElement[];
 
 		// don't do anything if selected line is already focused
 		const selected_lines = lines.filter(mapping_line =>
@@ -1114,7 +1112,7 @@ class mappings {
 				path_offset = 1;
 			}
 
-			const all_automapper_results = Object.entries(<automapper_results>mappings.auto_mapper.map({
+			const all_automapper_results = Object.entries(mappings.auto_mapper.map({
 				headers: [header],
 				base_table: data_model.base_table_name,
 				starting_table: mapping_line_data[mapping_line_data.length - 1].table_name,
@@ -1124,7 +1122,7 @@ class mappings {
 				commit_to_cache: false,
 				check_for_existing_mappings: true,
 				scope: 'suggestion',
-			}));
+			}) as automapper_results);
 
 			if (all_automapper_results.length === 0)
 				return resolve('');

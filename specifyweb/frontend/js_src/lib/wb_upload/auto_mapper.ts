@@ -150,11 +150,11 @@ class auto_mapper {
 	private handle_definition_comparison = (
 		path :mapping_path,  // initial mapping path
 		comparisons :auto_mapper_definition_comparisons,
-		get_new_path_part : () => mapping_path  // function that returns the next path part to use in a new mapping (on success)
+		get_new_path_part :() => mapping_path  // function that returns the next path part to use in a new mapping (on success)
 	) =>
 		this.get_unmapped_headers().map(([header_key, {lowercase_header_name}]) =>
 			Object.entries(this.comparisons).filter(([comparison_key]) =>  // loop over defined comparisons
-				typeof comparisons[comparison_key] !== "undefined"
+				comparison_key in comparisons
 			).some(([comparison_key, comparison_function]) =>
 				Object.values(comparisons[comparison_key]).some(comparison_value =>  // loop over each value of a comparison
 
@@ -241,7 +241,7 @@ class auto_mapper {
 	/* Searches for `table_synonym` that matches the current table and the current mapping path */
 	private find_table_synonyms(
 		table_name :string,  // the table to search for
-		path :ReadonlyArray<string>,  // current mapping path
+		path :string[],  // current mapping path
 		mode :auto_mapper_mode,
 	) :string[] /* table synonyms */ {
 
@@ -329,7 +329,7 @@ class auto_mapper {
 		const table_data = data_model.tables[table_name];
 		const ranks_data = data_model.ranks[table_name];
 		const fields = data_model.get_table_non_relationship_fields(table_name, false);
-		const table_friendly_name = <string>table_data.table_friendly_name.toLowerCase();
+		const table_friendly_name = table_data.table_friendly_name.toLowerCase();
 
 		if (typeof ranks_data !== "undefined") {
 
@@ -432,7 +432,7 @@ class auto_mapper {
 			}
 
 
-			const friendly_name = (<data_model_field>field_data).friendly_name.toLowerCase();
+			const friendly_name = field_data.friendly_name.toLowerCase();
 			const field_names = [
 				...this.find_formatted_header_field_synonyms(table_name, field_name),
 				friendly_name,
@@ -545,8 +545,6 @@ class auto_mapper {
 					)
 				) ||
 				(  // skip -to-many inside of -to-many  // TODO: remove this once upload plan is ready
-					typeof relationship_data.type !== "undefined" &&
-					typeof parent_relationship_type !== "undefined" &&
 					data_model.relationship_is_to_many(relationship_data.type) &&
 					data_model.relationship_is_to_many(parent_relationship_type)
 				)

@@ -13,7 +13,7 @@ class helper {
 	* */
 	public static readonly get_friendly_name = (
 		name :string  // Original field name
-	):string /* Human friendly field name */ => {
+	) :string /* Human friendly field name */ => {
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
 		name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -29,9 +29,9 @@ class helper {
 	};
 
 	/* Finds the point at which the source array begins to have values different from the ones in the search array */
-	public static find_array_divergence_point(
-		source :any[],  // the source array to use in the comparison
-		search :any[]  // the search array to use in the comparison
+	public static find_array_divergence_point<T>(
+		source :T[],  // the source array to use in the comparison
+		search :T[]  // the search array to use in the comparison
 	) :divergence_point {
 
 		if (source === null || search === null)
@@ -46,9 +46,9 @@ class helper {
 		if (source_length === 0 || source_length < search_length)
 			return -1;
 
-		for (const [index, source_value] of <any[]>Object.entries(source)) {
+		for (const [index, source_value] of Object.entries(source)) {
 
-			const search_value = search[index];
+			const search_value = search[parseInt(index)];
 
 			if (typeof search_value === "undefined")
 				return parseInt(index);
@@ -67,7 +67,7 @@ class helper {
 		mapping_path :mapping_path,  // combined mapping path
 		has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
 		detect_unmapped :boolean = true  // whether detect that a mapping path is incomplete
-	) :deconstructed_mapping_path{
+	) :deconstructed_mapping_path {
 
 		mapping_path = [...mapping_path];
 
@@ -81,7 +81,7 @@ class helper {
 		if (detect_unmapped && mapping_path[mapping_path.length - 1] === "0")
 			mapping_path = [];
 
-		return <[string[], ("existing_header" | "new_column" | "new_static_column"), string]>[mapping_path, mapping_type, header];
+		return [mapping_path, mapping_type as mapping_type, header];
 
 	};
 

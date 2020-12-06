@@ -46,17 +46,17 @@ class upload_plan_converter {
 		if (!base_table_name_extracted) {
 
 			if (typeof upload_plan.baseTableName === "undefined")
-				throw "Upload plan should contain `baseTableName` as a root node";
-			data_model.base_table_name = (<string>upload_plan.baseTableName).toLowerCase();
+				throw new Error("Upload plan should contain `baseTableName` as a root node");
+			data_model.base_table_name = (upload_plan.baseTableName as string).toLowerCase();
 			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan.uploadable, true);
 		}
-		else if (typeof (<upload_plan_node>upload_plan).uploadTable !== "undefined")
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>(<upload_plan_node>upload_plan).uploadTable, true);
+		else if (typeof (upload_plan as upload_plan_node).uploadTable !== "undefined")
+			return upload_plan_converter.upload_plan_to_mappings_tree((upload_plan as upload_plan_node).uploadTable as upload_plan_node, true);
 
 		// TODO: make this function recognize multiple tree rank fields, once upload plan supports that
 		else if (typeof upload_plan.treeRecord !== "undefined")
 			//@ts-ignore
-			return Object.fromEntries(Object.entries(<upload_plan>(<upload_plan>upload_plan.treeRecord).ranks).map(([rank_name, rank_data]) =>
+			return Object.fromEntries(Object.entries((upload_plan.treeRecord as upload_plan).ranks as upload_plan).map(([rank_name, rank_data]) =>
 				[
 					data_model.tree_symbol + rank_name,
 					Object.fromEntries(

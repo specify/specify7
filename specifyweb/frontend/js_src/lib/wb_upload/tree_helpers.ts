@@ -19,9 +19,9 @@ class tree_helpers {
 		if (typeof node_mappings_tree === "string")
 			return full_mappings_tree[target_key];
 		else {
-			target_key = <string>Object.keys(node_mappings_tree).shift();
+			target_key = Object.keys(node_mappings_tree).shift() as string;
 
-			if (target_key === '')
+			if (typeof target_key === "undefined" || target_key === '')
 				return full_mappings_tree;
 		}
 
@@ -93,7 +93,7 @@ class tree_helpers {
 
 		const tree = {};
 
-		array_of_mappings.map(mapping_path=>
+		array_of_mappings.map(mapping_path =>
 			tree_helpers.deep_merge_object(tree, tree_helpers.array_to_tree(mapping_path, include_headers))
 		);
 

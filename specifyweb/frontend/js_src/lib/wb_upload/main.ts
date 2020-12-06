@@ -45,8 +45,8 @@ class main {
 			mappings.list__mappings = document.getElementById('list__mappings');
 
 			// control elements
-			const add_new_column = <HTMLElement>document.getElementById('add_new_column');
-			const add_new_static_column = <HTMLElement>document.getElementById('add_new_static_column');
+			const add_new_column = document.getElementById('add_new_column') as HTMLElement;
+			const add_new_static_column = document.getElementById('add_new_static_column') as HTMLElement;
 			mappings.toggle_hidden_fields = document.getElementById('checkbox__toggle_hidden_fields');
 
 			mappings.hide_hidden_fields = true;
@@ -277,7 +277,7 @@ class main {
 			title: 'Loading',
 			modal: true,
 			// @ts-ignore
-			open: function (event :any, ui :{dialog :any;}) :void {
+			open: function (event :any, ui :{dialog :object}) :void {
 				$('.ui-dialog-titlebar-close', ui.dialog).hide();
 			},
 			close: function () :void {
