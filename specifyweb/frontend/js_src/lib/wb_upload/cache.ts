@@ -1,6 +1,6 @@
 class cache {
 
-	private static buckets :buckets;  // the data structure that would store all of the buckets
+	private static buckets :buckets = {};  // the data structure that would store all of the buckets
 	private static readonly cache_prefix :string = 'specify7_wbplanview_';  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
 	private static readonly local_storage_bucket_soft_limit :number = 100;  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket
 	private static readonly session_storage_bucket_soft_limit :number = 100;  // start trimming a bucket if there are more than local_storage_bucket_soft_limit records in a bucket

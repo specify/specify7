@@ -142,15 +142,14 @@ class fetch_data_model {
 
 		// remove relationships to system tables
 		Object.entries(tables).map(([table_name, table_data]) =>
-			Object.keys(
-				(
-					<[relationship_name :string, relationship_data :data_model_relationship][]>
-						Object.entries(table_data['fields']).filter(([, {is_relationship}]) =>
-							is_relationship
-						)
-				).filter(([, {table_name: relationship_table_name}]) =>
-					typeof tables[relationship_table_name] === "undefined"
-				)).map(relationship_name => {
+			(
+				<[relationship_name :string, relationship_data :data_model_relationship][]>
+					Object.entries(table_data['fields']).filter(([, {is_relationship}]) =>
+						is_relationship
+					)
+			).filter(([, {table_name: relationship_table_name}]) =>
+				typeof tables[relationship_table_name] === "undefined"
+			).map(([relationship_name,]) => {
 				delete tables[table_name]['fields'][relationship_name];
 			})
 		);
