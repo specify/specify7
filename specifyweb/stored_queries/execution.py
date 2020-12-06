@@ -118,6 +118,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     tableid = spquery['contexttableid']
 
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
+    message_type = 'query-export-to-csv-complete'
 
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
@@ -127,9 +128,10 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, add_header=True, strip_id=False)
+            message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
-        'type': 'query-export-complete',
+        'type': message_type,
         'file': filename,
     }))
 

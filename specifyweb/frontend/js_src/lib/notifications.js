@@ -69,8 +69,13 @@ const renderMessage = {
         $('a', rendered).attr('href', 'data:application/json:' + JSON.stringify(message.toJSON()));
         return rendered;
     },
-    'query-export-complete': message => {
+    'query-export-to-csv-complete': message => {
         const rendered = $('<p>Query export to CSV completed. <a download>Download.</a></p>');
+        $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
+        return rendered;
+    },
+    'query-export-to-kml-complete': message => {
+        const rendered = $('<p>Query export to KML completed. <a download>Download.</a></p>');
         $('a', rendered).attr('href',  '/static/depository/' + message.get('file'));
         return rendered;
     },
