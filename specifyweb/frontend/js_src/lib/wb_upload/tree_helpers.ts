@@ -4,10 +4,10 @@
 *
 * */
 
-const tree_helpers = {
+class tree_helpers {
 
 	/* Returns cross-section of full_mappings_tree and node_mappings_tree */
-	traverse_tree(
+	public static traverse_tree(
 		full_mappings_tree :mapping_tree,  // full tree with various branches
 		node_mappings_tree :mapping_tree | string  // a tree several levels deep with only a single branch
 	) :string | mapping_tree | undefined | false  // a cross-section of two trees
@@ -53,10 +53,10 @@ const tree_helpers = {
 
 		return tree_helpers.traverse_tree(<mapping_tree>full_mappings_tree[target_key], node_mappings_tree[target_key]);
 
-	},
+	};
 
 	/* Merges objects recursively (by reference only, does not create a copy of the tree) */
-	deep_merge_object: (
+	public static readonly deep_merge_object = (
 		target :any,  // tree that is used as a basis
 		source :object  // tree that is used as a source
 	) :object /* Merged tree */ =>
@@ -92,10 +92,10 @@ const tree_helpers = {
 				return target;
 
 			}, target) :
-			target,
+			target;
 
 	/* Converts an array to tree */
-	array_to_tree(
+	public static array_to_tree(
 		array :any[],  // array to be converted
 		has_headers :boolean = false  // whether an array has headers in it
 	) :object  // resulting tree
@@ -146,13 +146,13 @@ const tree_helpers = {
 
 		return {[node]: tree_helpers.array_to_tree(array, has_headers)};
 
-	},
+	};
 
 	/*
 	* Converts array of arrays of strings into a complete tree
 	* The inverse of mappings_tree_to_array_of_mappings
 	* */
-	array_of_mappings_to_mappings_tree(
+	public static array_of_mappings_to_mappings_tree(
 		array_of_mappings :any[],  // array of array of strings (a.k.a branches of the tree) that are going to be merged into a tree
 		include_headers :boolean  // whether array_of_mappings includes mapping types and header names / static column values
 	) :object  // Final tree
@@ -180,14 +180,14 @@ const tree_helpers = {
 
 		return tree;
 
-	},
+	};
 
 
 	/*
 	* Converts mappings tree to array of mappings
 	* The inverse of array_of_mappings_to_mappings_tree
 	* */
-	mappings_tree_to_array_of_mappings: (
+	public static readonly mappings_tree_to_array_of_mappings = (
 		mappings_tree :mapping_tree,  // mappings tree
 		path :any[] = []  // used in recursion to store intermediate path
 	) :mapping_path[] /* array of arrays of string */ =>
@@ -219,9 +219,9 @@ const tree_helpers = {
 
 			return result;
 
-		}, []),
+		}, []);
 
 
-};
+}
 
 export = tree_helpers;
