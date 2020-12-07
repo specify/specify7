@@ -56,6 +56,7 @@ const WBView = Backbone.View.extend({
         'click .wb-show-upload-view':'displayUploadedView',
         'click .wb-unupload':'unupload',
         'click .wb-leafletmap': 'showLeafletMap',
+        'click .wb-convert-coordinates': 'showCoordinateConversion',
     },
     initialize({dataset, showStatusDialog}) {
         this.dataset = dataset;
@@ -749,10 +750,10 @@ const WBView = Backbone.View.extend({
                 )
             );
 
-            if(this.locality_columns.length === 0) {
-                document.getElementsByClassName('wb-geolocate')[0].disabled = true;
-                document.getElementsByClassName('wb-leafletmap')[0].disabled = true;
-            }
+            if(this.locality_columns.length === 0)
+                ['wb-geolocate','wb-leafletmap','wb-convert-coordinates'].map(class_name=>
+                    document.getElementsByClassName(class_name)[0].disabled = true
+                );
         });
     },
     getLocalityCoordinate: function(row, column_indexes, accept_polygons=false){
@@ -762,10 +763,12 @@ const WBView = Backbone.View.extend({
             column_indexes[column_name] !== -1 &&
             row[column_indexes[column_name]] !== null;
 
-        const format_coordinate = (column_name)=>
-            row[column_indexes[column_name]]===0 || row[column_indexes[column_name]] === '0' ?
-                0:
-                latlongutils.parse(row[column_indexes[column_name]]).toDegs()._components[0];
+        const format_coordinate = (column_name)=>{
+            if(row[column_indexes[column_name]]===0 || row[column_indexes[column_name]] === '0')
+                return 0;
+            const coordinate = latlongutils.parse(row[column_indexes[column_name]]).toDegs();
+            return coordinate._components[0]*coordinate._sign;
+        }
 
         if(
             !cell_is_valid('latitude1') ||
@@ -920,8 +923,7 @@ const WBView = Backbone.View.extend({
     },
     showLeafletMap: function(){
 
-        $(`<div id="leaflet_map"></div>`
-        ).dialog({
+        $(`<div id="leaflet_map"></div>`).dialog({
             width: 900,
             height: 600,
             title: "Leaflet map",
@@ -1036,6 +1038,146 @@ const WBView = Backbone.View.extend({
             index++;
         });
 
+    },
+    showCoordinateConversion(){
+
+        const column_handlers = {
+            'latitude1': 'Lat',
+            'longitude1': 'Long',
+            'latitude2': 'Lat',
+            'longitude2': 'Long',
+        };
+
+        const columns_to_search_for = Object.keys(column_handlers);
+
+		const coordinate_columns = this.locality_columns.reduce((coordinate_columns, column_indexes) =>
+			[
+			    ...coordinate_columns,
+                ...Object.entries(column_indexes).filter(([column_name]) =>
+				    columns_to_search_for.indexOf(column_name) !== -1
+			    )
+            ],
+			[]
+		);
+
+        if(coordinate_columns.length === 0)
+        	return;
+
+		const options = [
+			{
+				option_name: 'DD.DDDD (32.7619)',
+				conversion_function_name: 'toDegs',
+                show_cardinal_direction: false,
+			},
+			{
+				option_name: 'DD MMMM (32. 45.714)',
+				conversion_function_name: 'toDegsMins',
+                show_cardinal_direction: false,
+			},
+			{
+				option_name: 'DD MM SS.SS (32 45 42.84)',
+				conversion_function_name: 'toDegsMinsSecs',
+                show_cardinal_direction: false,
+			},
+			{
+				option_name: 'DD.DDDD N/S/E/W (32.7619 N)',
+				conversion_function_name: 'toDegs',
+                show_cardinal_direction: true,
+			},
+			{
+				option_name: 'DD MM.MM N/S/E/W (32 45.714 N)',
+				conversion_function_name: 'toDegsMins',
+                show_cardinal_direction: true,
+			},
+			{
+				option_name: 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+				conversion_function_name: 'toDegsMinsSecs',
+                show_cardinal_direction: true,
+			},
+		];
+
+		const close_dialog = ()=>{
+			dialog.off('change',handle_option_change);
+			dialog.dialog('close');
+		};
+
+        const dialog = $(
+        	`<ul class="latlongformatoptions">
+				${Object.values(options).map(({option_name},option_index)=>
+					`<li>
+						<label>
+							<input type="radio" name="latlongformat" value="${option_index}">
+							${option_name}
+						</label>
+					</li>`
+				).join('')}
+				<li>
+					<br>
+					<label>
+						<input type="checkbox" name="includesymbols">
+						Include Symbols
+					</label>
+				</li>
+			</ul>`
+        ).dialog({
+            title: "Coordinate format converter",
+            close: close_dialog,
+        	buttons: [
+			   {text: 'Close', click: close_dialog }
+			]
+        });
+
+        const handle_option_change = ()=>{
+
+        	const include_symbols_checkbox = dialog.find('input[name="includesymbols"]');
+        	const include_symbols = include_symbols_checkbox.is(':checked');
+
+        	const selected_option = dialog.find('input[type="radio"]:checked');
+        	if(selected_option.length===0)
+        		return;
+
+			const option_value = selected_option.attr('value');
+			if(typeof options[option_value] === "undefined")
+				return;
+
+			const {conversion_function_name, show_cardinal_direction} = options[option_value];
+			const include_symbols_function = include_symbols ?
+				coordinate => coordinate :
+				coordinate => coordinate.replace(/[^\w\s\-.]/gm,'');
+			const last_char = value => value[value.length-1];
+			const remove_last_char = value => value.slice(0,-1);
+			const ends_with = (value,charset) => charset.indexOf(last_char(value)) !== -1;
+            const strip_cardinal_directions = final_value =>
+                show_cardinal_direction ?  // need to do some magic here as a workaround to latlong parsing bugs
+                    final_value :
+                    ends_with(final_value,'SW') ?
+                        '-'+remove_last_char(final_value):
+                        ends_with(final_value,'NE') ?
+                            remove_last_char(final_value):
+                            final_value;
+
+			this.hot.setDataAtCell(
+				coordinate_columns.map(([column_name,column_index])=>
+					this.hot.getDataAtCol(column_index).map((cell_value,row_index)=>
+						[latlongutils[column_handlers[column_name]].parse(cell_value), row_index]
+					).filter(([coordinate])=>
+						coordinate!==null
+					).map(([coordinate,row_index])=>
+						[
+							row_index,
+							column_index,
+                            include_symbols_function(
+                                strip_cardinal_directions(
+                                    coordinate[conversion_function_name]().format()
+                                )
+                            ).trim()
+						]
+					)
+				).flat()
+			);
+
+		};
+        dialog.on('change',handle_option_change);
     },
 });
 
