@@ -814,7 +814,10 @@ const WBView = Backbone.View.extend({
     },
     showGeoLocate: function(){
 
-        if(this.locality_columns.length === 0)
+        if(
+            this.locality_columns.length === 0 ||
+            $('#geolocate_window').length!==0  // don't allow to open more than one window
+        )
             return;
 
         const selected_cell = this.hot.getSelectedLast();
@@ -886,7 +889,7 @@ const WBView = Backbone.View.extend({
         }
 
         const dialog = $(`
-            <div>
+            <div id="geolocate_window">
                 <iframe
                     style="
                         width: 100%;
@@ -922,6 +925,9 @@ const WBView = Backbone.View.extend({
         window.addEventListener("message", handle_geolocate_result, false);
     },
     showLeafletMap: function(){
+
+        if($('#leaflet_map').length!==0)
+            return;
 
         $(`<div id="leaflet_map"></div>`).dialog({
             width: 900,
@@ -1040,6 +1046,9 @@ const WBView = Backbone.View.extend({
 
     },
     showCoordinateConversion(){
+
+        if($('.latlongformatoptions').length!==0)
+            return;
 
         const column_handlers = {
             'latitude1': 'Lat',
