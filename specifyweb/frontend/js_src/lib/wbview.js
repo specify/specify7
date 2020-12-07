@@ -820,10 +820,7 @@ const WBView = Backbone.View.extend({
         )
             return;
 
-        const selected_cell = this.hot.getSelectedLast();
-
-        if(typeof selected_cell === "undefined")
-            return;
+        const selected_cell = this.hot.getSelectedLast() || [0,0];
 
         let [selected_row, selected_column] = selected_cell;
         let locality_columns;
@@ -1107,7 +1104,7 @@ const WBView = Backbone.View.extend({
 
 		const close_dialog = ()=>{
 			dialog.off('change',handle_option_change);
-			dialog.dialog('close');
+			dialog.remove();
 		};
 
         const dialog = $(
