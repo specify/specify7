@@ -205,11 +205,11 @@ module.exports = Backbone.View.extend({
 	showCOCount: (dialog, request_url) =>
 		$.get(request_url)
 			.done(response => (
-				response.length === 0 ?
+				response.count === 0 ?
 					'' :
 					dialog.append(`<br>Number of occurrences of similar taxa records:
 					<ul class="lifemapper_source_issues_list">
-						${response.map(({scientificName, count, url}) =>
+						${response['records'].map(({scientificName, count, url}) =>
 							`<li>
 								<a href="_blank" href="${url}">${scientificName}</a>
 								(reported ${count} times)
