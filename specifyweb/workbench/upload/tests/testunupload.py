@@ -2,6 +2,7 @@ from .base import UploadTestsBase, get_table
 from ..upload_result import Uploaded, ParseFailures, CellIssue, FailedBusinessRule
 from ..upload import do_upload, do_upload_csv, unupload_record
 from ..upload_table import UploadTable
+from ..treerecord import TreeRecord
 
 
 class UnUploadTests(UploadTestsBase):
@@ -37,6 +38,8 @@ class UnUploadTests(UploadTestsBase):
         habitat.picklistitems.create(title='Marsh', value='marsh')
 
     def test_unupload_picklist(self) -> None:
+        # data copied from the testparsing.test_nonreadonly_picklist test
+
         plan = UploadTable(
             name='Collectionobject',
             wbcols={'catalognumber': 'catno', 'text1': 'habitat'},
@@ -54,25 +57,48 @@ class UnUploadTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan)
 
-        for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
-            r = results[i].record_result
-            assert isinstance(r, Uploaded)
-            self.assertEqual(v, get_table('Collectionobject').objects.get(id=r.get_id()).text1)
-
         self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "There are now three items in the picklist.")
-
-        for i, v in enumerate('River Lake None None None None'.split()):
-            r = results[i].record_result
-            assert isinstance(r, Uploaded)
-            if v == 'None':
-                self.assertEqual([], r.picklistAdditions)
-            else:
-                self.assertEqual(['habitat'], [a.caption for a in r.picklistAdditions])
-                self.assertEqual([v], [get_table('Picklistitem').objects.get(id=a.id).value for a in r.picklistAdditions])
 
         for result in reversed(results):
             unupload_record(result)
 
         self.assertEqual(1, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "The picklist is back to one item after unuploading.")
+
+    def test_unupload_tree(self) -> None:
+        plan = TreeRecord(
+            name = 'Geography',
+            ranks = {
+                'Continent': 'Continent/Ocean',
+                'Country': 'Country',
+                'State': 'State/Prov/Pref',
+                'County': 'Co',
+            }
+        ).apply_scoping(self.collection)
+
+        data = [
+            { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Douglass'},
+            { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Missouri', 'Co': 'Greene'},
+            { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Missouri', 'Co': 'Christian'},
+            { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Johnson'},
+        ]
+
+        results = do_upload(self.collection, data, plan)
+
+        self.assertEqual({
+            (0, "Uploaded"),
+            (100, "North America"),
+            (200, "United States"),
+            (300, "Kansas"),
+            (300, "Missouri"),
+            (400, "Douglass"),
+            (400, "Greene"),
+            (400, "Christian"),
+            (400, "Johnson"),
+        }, set((record.rankid, record.name) for record in get_table('Geography').objects.all()))
+
+        for result in reversed(results):
+            unupload_record(result)
+
+        self.assertEqual(set(), set((record.rankid, record.name) for record in get_table('Geography').objects.all()))

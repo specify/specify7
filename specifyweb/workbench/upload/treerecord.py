@@ -84,7 +84,13 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(NoMatch(info), {}, {})
 
         model = getattr(models, self.name)
-        parent_id = matched[0] if matched else None
+
+        if not matched:
+            parent_id = None
+            parent_result = {}
+        else:
+            parent_id = matched[0]
+            parent_result = {'parent': UploadResult(Matched(parent_id, info), {}, {})}
 
         for treedefitem, value in reversed(to_upload):
             obj = model(
@@ -96,8 +102,10 @@ class BoundTreeRecord(NamedTuple):
             )
             obj.save(skip_tree_extras=True)
             parent_id = obj.id
+            result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
+            parent_result = {'parent': result}
 
-        return UploadResult(Uploaded(obj.id, info, []), {}, {})
+        return result
 
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
