@@ -15,6 +15,8 @@ module.exports = Backbone.View.extend({
 		`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}`,
 	format_occurrence_count_request: (data_aggregator_name, occurrence_scientific_name) =>
 		`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`,
+	format_occurrence_map_request: occurrence_scientific_name =>
+		`http://notyeti-192.lifemapper.org/api/v1/map/lm/${encodeURIComponent(occurrence_scientific_name)}`,
 	data_sources: {
 		'GBIF Records': {
 			source_name: 'gbif',
@@ -27,6 +29,10 @@ module.exports = Backbone.View.extend({
 		'MorphoSource Records': {
 			source_name: 'morphosource',
 			source_label: 'MorphoSource',
+		},
+		'Lifemapper Map': {
+			source_name: 'lifemapper',
+			source_label: 'LifeMapper',
 		},
 	},
 	response_handlers: {
@@ -51,7 +57,7 @@ module.exports = Backbone.View.extend({
 	render(){
 
 		// const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
-		const guid = this.model.get('guid');
+		const guid = this.model.get('guid');  // TODO: uncomment this
 
 		$.get(this.format_occurrence_data_request(guid))
 			.done(response =>
@@ -71,7 +77,7 @@ module.exports = Backbone.View.extend({
 				})
 			);
 	},
-	showSourceIcon(data_source_info, response, has_multiple_records){
+	showSourceIcon(data_source_info, response, has_multiple_records=false){
 
 		const {
 			source_name,
@@ -79,10 +85,20 @@ module.exports = Backbone.View.extend({
 		} = data_source_info;
 
 		const {
-			list_of_issues,
-			occurrence_name,
-			occurrence_view_link
+			list_of_issues=[],
+			occurrence_name='',
+			occurrence_view_link=''
 		} = response;
+
+		if(source_name==='gbif' && occurrence_name!=='')
+			this.showSourceIcon(
+				this.data_sources['Lifemapper Map'],
+				{
+					// occurrence_name:'Phlox longifolia Nutt.',
+					occurrence_name:occurrence_name,  // TODO: uncomment this
+					occurrence_view_link:''
+				}
+			);
 
 		if (has_multiple_records)
 			list_of_issues.push('HAS_MULTIPLE_RECORDS');
@@ -100,7 +116,7 @@ module.exports = Backbone.View.extend({
 			if (list_of_issues.length !== 0)
 				link.addClass('lifemapper_source_icon_issues_detected');
 
-			link.click(() => this.showSourceResponse(
+			link.on('click',() => this.showSourceResponse(
 				data_source_info,
 				{
 					list_of_issues,
@@ -124,27 +140,42 @@ module.exports = Backbone.View.extend({
 		}
 	){
 
-		const dialog = $(`<div>${this.formatIssues(source_name, list_of_issues)}</div>`).dialog({
-			title: `Record was indexed by ${source_label}`,
-			close: function(){
-				$(this).remove();
-			},
-			width: 600,
-			buttons: [
-				{
-					text: `Close`,
-					click(){
-						$(this).dialog('close');
-					},
+		let window_content='';
+		let title;
+		const buttons = [
+			{
+				text: `Close`,
+				click(){
+					$(this).remove();
 				},
+			}
+		];
+
+		if(source_name==='lifemapper')
+			title = `${source_label} map`;
+		else {
+			title = `Record was indexed by ${source_label}`;
+			window_content = this.formatIssues(source_name, list_of_issues);
+			buttons.push(
 				{
 					text: `View occurrence at ${source_label}`,
 					click: () => window.open(occurrence_view_link, '_blank')
 				}
-			]
+			);
+		}
+
+		const dialog = $(`<div>${window_content}</div>`).dialog({
+			title: title,
+			close: function(){
+				$(this).remove();
+			},
+			width: 600,
+			buttons: buttons
 		});
 
-		if (occurrence_name !== '')
+		if(source_name==='lifemapper')
+			this.showCOMap(dialog,this.format_occurrence_map_request(occurrence_name));
+		else if (occurrence_name !== '')
 			this.showCOCount(dialog, this.format_occurrence_count_request(source_name, occurrence_name));
 
 	},
@@ -161,6 +192,16 @@ module.exports = Backbone.View.extend({
 					}</li>`
 				).join('')
 			}</ul><br>`,
+	showCOMap: (dialog, request_url)=>{
+		const show_result = result => dialog.append(result);
+		$.get(request_url)
+			.done(response => {
+				if(response.count===0)
+					show_result('No map was found for this occurence');
+				else
+					show_result(`<iframe style="width:100%;height:100%" src="${response['records'][0]['map_url']}"></iframe>`);
+			});
+	},
 	showCOCount: (dialog, request_url) =>
 		$.get(request_url)
 			.done(response => (
