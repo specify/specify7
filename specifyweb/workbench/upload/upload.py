@@ -53,7 +53,9 @@ def unupload_record(upload_result: UploadResult) -> None:
 
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
         model.objects.get(id=upload_result.get_id()).delete()
-        # handle picklist additions
+
+        for addition in upload_result.record_result.picklistAdditions:
+            getattr(models, 'Picklistitem').objects.get(id=addition.id).delete()
 
     for record in upload_result.toOne.values():
         unupload_record(record)
