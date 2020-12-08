@@ -169,6 +169,12 @@ def parse_latlong(field, value: str) -> Union[ParseResult, ParseFailure]:
         return ParseFailure('bad latitude or longitude value: {}'.format(value))
 
     coord, unit = parsed
+    if field.name.startswith('lat') and abs(coord) >= 90:
+        return ParseFailure(f'latitude absolute value must be less than 90 degrees: {value}')
+
+    if field.name.startswith('long') and abs(coord) >= 180:
+        return ParseFailure(f'longitude absolute value must be less than 180 degrees: {value}')
+
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
     return ParseResult(
         text_filter,
