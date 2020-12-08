@@ -38,7 +38,8 @@ def unupload_wb(wb, progress: Optional[Progress]=None) -> None:
     with transaction.atomic():
         for row in wb.workbenchrows.order_by('-rownumber'):
             upload_result = json_to_UploadResult(json.loads(row.biogeomancerresults))
-            unupload_record(upload_result)
+            if not upload_result.contains_failure():
+                unupload_record(upload_result)
 
             current += 1
             if progress is not None:
