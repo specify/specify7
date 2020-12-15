@@ -4,6 +4,16 @@ const $ = require('jquery');
 const Backbone = require('./backbone.js');
 require('../css/lifemapperinfo.css');
 
+const L = require('leaflet');
+require('leaflet/dist/leaflet.css');
+/* This code is needed to properly load the images in the Leaflet CSS */
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 module.exports = Backbone.View.extend({
 	__name__: "LifemapperInfo",
 	initialize(){
@@ -12,11 +22,11 @@ module.exports = Backbone.View.extend({
 	},
 
 	format_occurrence_data_request: (occurrence_guid) =>
-		`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}`,
+		`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}?count_only=0`,
 	format_occurrence_count_request: (data_aggregator_name, occurrence_scientific_name) =>
 		`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`,
 	format_occurrence_map_request: occurrence_scientific_name =>
-		`http://notyeti-192.lifemapper.org/api/v1/map/lm/${encodeURIComponent(occurrence_scientific_name)}`,
+		`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`,
 	data_sources: {
 		'GBIF Records': {
 			source_name: 'gbif',
@@ -32,7 +42,7 @@ module.exports = Backbone.View.extend({
 		},
 		'Lifemapper Map': {
 			source_name: 'lifemapper',
-			source_label: 'LifeMapper',
+			source_label: 'Lifemapper',
 		},
 	},
 	response_handlers: {
@@ -56,8 +66,8 @@ module.exports = Backbone.View.extend({
 
 	render(){
 
-		// const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
-		const guid = this.model.get('guid');  // TODO: uncomment this
+		const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
+		// const guid = this.model.get('guid');  // TODO: uncomment this
 
 		$.get(this.format_occurrence_data_request(guid))
 			.done(response =>
@@ -68,7 +78,7 @@ module.exports = Backbone.View.extend({
 
 					let parsed_response;
 
-					if (typeof records[0] === "undefined")
+					if (typeof records === "undefined" || typeof records[0] === "undefined")
 						parsed_response = false;
 					else
 						parsed_response = this.response_handlers[key](records[0]);
@@ -94,8 +104,8 @@ module.exports = Backbone.View.extend({
 			this.showSourceIcon(
 				this.data_sources['Lifemapper Map'],
 				{
-					// occurrence_name:'Phlox longifolia Nutt.',
-					occurrence_name:occurrence_name,  // TODO: uncomment this
+					occurrence_name:'Phlox longifolia Nutt.',
+					// occurrence_name:occurrence_name,  // TODO: uncomment this
 					occurrence_view_link:''
 				}
 			);
@@ -196,10 +206,68 @@ module.exports = Backbone.View.extend({
 		const show_result = result => dialog.append(result);
 		$.get(request_url)
 			.done(response => {
-				if(response.count===0)
+
+				if(response.count===0) {
 					show_result('No map was found for this occurence');
-				else
-					show_result(`<iframe style="width:100%;height:100%" src="${response['records'][0]['map_url']}"></iframe>`);
+					return;
+				}
+
+				dialog.dialog('option','width',900);
+				dialog.dialog('option','height',500);
+				show_result(`<div id="lifemapper_leaflet_map" style="height:100%"></div>`);
+
+				const map_url = `${response['records'][0]['map']['endpoint']}/${response['records'][0]['map']['mapName']}?`;
+				const map_id = response['records'][0]['map']['mapName'].replace(/\D/g,'');
+				const layer_id = response['records'][0]['map']['layerName'].replace(/\D/g,'');
+				const layer_variations = [
+					{
+						name: () => `bmng`,
+						label: 'Map Only',
+						transparent: false,
+					},
+					{
+						name: (_, layer_id) => `prj_${layer_id}`,
+						label: 'Projection',
+						transparent: true,
+					},
+					{
+						name: (map_id) => `occ_${map_id}`,
+						label: 'Occurrence Points',
+						transparent: true,
+					}
+				];
+				const layers_dict = layer_variations.map(({transparent, name: layer_name_function, label: layer_label})=>
+					({
+						transparent: transparent,
+						layer_label: layer_label,
+						tile_layer: L.tileLayer.wms(map_url, {
+							layers: layer_name_function(map_id, layer_id),
+							service: 'wms',
+							version: '1.0',
+							height: '400',
+							format: 'image/png',
+							request: 'getmap',
+							srs: 'epsg:4326',
+							width: '800',
+							transparent: transparent,
+						})
+					})
+				);
+				const format_layers_dict = (layers_dict)=>Object.fromEntries(
+					layers_dict.map(({_,layer_label,tile_layer})=>
+						[layer_label,tile_layer]
+					)
+				);
+				const all_layers = format_layers_dict(layers_dict);
+				const overlay_layers = format_layers_dict(layers_dict.filter(({transparent})=>transparent));
+
+				const map = L.map('lifemapper_leaflet_map', {
+					crs: L.CRS.EPSG4326,
+					layers: Object.values(all_layers),
+				}).setView([0,0],0);
+
+				L.control.layers({}, overlay_layers).addTo(map);
+
 			});
 	},
 	showCOCount: (dialog, request_url) =>
