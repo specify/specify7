@@ -150,6 +150,11 @@ module.exports = Backbone.View.extend({
 		}
 	){
 
+		const salted_source_name = `lifemapper_${source_name}`;
+
+		if(document.getElementById(salted_source_name) !== null)
+			return;
+
 		let window_content='';
 		let title;
 		const buttons = [
@@ -174,7 +179,7 @@ module.exports = Backbone.View.extend({
 			);
 		}
 
-		const dialog = $(`<div>${window_content}</div>`).dialog({
+		const dialog = $(`<div id="${salted_source_name}">${window_content}</div>`).dialog({
 			title: title,
 			close: function(){
 				$(this).remove();
@@ -264,7 +269,7 @@ module.exports = Backbone.View.extend({
 				const map = L.map('lifemapper_leaflet_map', {
 					crs: L.CRS.EPSG4326,
 					layers: Object.values(all_layers),
-				}).setView([0,0],0);
+				}).setView([0,0],1);
 
 				L.control.layers({}, overlay_layers).addTo(map);
 
