@@ -75,6 +75,9 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
+    if field.type == "java.lang.Boolean":
+        return parse_boolean(fieldname, value)
+
     if is_latlong(table, field):
         return parse_latlong(field, value)
 
@@ -82,6 +85,16 @@ def parse_value(collection, tablename: str, fieldname: str, value: str, caption:
         return parse_date(table, fieldname, value)
 
     return filter_and_upload({fieldname: value})
+
+def parse_boolean(fieldname: str, value: str) -> Union[ParseResult, ParseFailure]:
+    if value.lower() in ["yes", "true"]:
+        result = True
+    elif value.lower() in ["no", "false"]:
+        result = False
+    else:
+        return ParseFailure(f"value {value} not resolvable to True or False")
+
+    return filter_and_upload({fieldname: result})
 
 def parse_with_picklist(collection, picklist_name: str, fieldname: str, value: str, caption: str) -> Union[ParseResult, ParseFailure, None]:
     picklist = getattr(models, 'Picklist').objects.get(name=picklist_name, collection=collection)
