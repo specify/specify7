@@ -34,9 +34,10 @@ const WBView = Backbone.View.extend({
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
     },
-    initialize({wb, data, initialStatus}) {
+    initialize({wb, data, initialStatus, plan}) {
         this.wb = wb;
         this.data = data;
+        this.plan = plan;
         this.initialStatus = initialStatus;
         this.highlightsOn = false;
         this.cellInfo = [];
@@ -262,12 +263,14 @@ const WBView = Backbone.View.extend({
         this.$('.wb-save').prop('disabled', false);
         navigation.addUnloadProtect(this, "The workbench has not been saved.");
 
-        change && change.forEach(([row]) => {
-            const rowData = this.hot.getDataAtRow(row);
-            const data = Object.fromEntries(rowData.map((value, i) => [this.hot.getColHeader(i), value]));
-            const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.wb.id}/`, data);
-            req.done(result => this.gotRowValidationResult(row, req, result));
-        });
+        if (this.plan && change) {
+            change.forEach(([row]) => {
+                const rowData = this.hot.getDataAtRow(row);
+                const data = Object.fromEntries(rowData.map((value, i) => [this.hot.getColHeader(i), value]));
+                const req = this.rowValidationRequests[row] = $.post(`/api/workbench/validate_row/${this.wb.id}/`, data);
+                req.done(result => this.gotRowValidationResult(row, req, result));
+            });
+        }
     },
     gotRowValidationResult(row, req, result) {
         if (req === this.rowValidationRequests[row]) {
@@ -325,24 +328,22 @@ const WBView = Backbone.View.extend({
     upload(evt) {
         const mode = $(evt.currentTarget).is('.wb-upload') ? "upload" : "validate";
         const openPlan = () => this.openPlan();
-        this.wb.rget('workbenchtemplate.remarks').done(plan => {
-            if (plan == null || plan.trim() === "") {
-                $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
-                    title: "No Plan is defined.",
-                    modal: true,
-                    buttons: {
-                        'Create': openPlan,
-                        'Cancel': function() { $(this).dialog('close'); }
-                    }
-                });
-            } else {
-                $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
-                    this.checkDeletedFail(jqxhr);
-                }).done(() => {
-                    this.openStatus(mode);
-                });
-            }
-        });
+        if (!this.plan) {
+            $('<div>No plan has been defined for this dataset. Create one now?</div>').dialog({
+                title: "No Plan is defined.",
+                modal: true,
+                buttons: {
+                    'Create': openPlan,
+                    'Cancel': function() { $(this).dialog('close'); }
+                }
+            });
+        } else {
+            $.post(`/api/workbench/${mode}/${this.wb.id}/`).fail(jqxhr => {
+                this.checkDeletedFail(jqxhr);
+            }).done(() => {
+                this.openStatus(mode);
+            });
+        }
     },
     openStatus(mode) {
         new WBStatus({wb: this.wb, status: this.initialStatus}).render().on('done', () => {
@@ -566,9 +567,11 @@ const WBView = Backbone.View.extend({
 
 module.exports = function loadWorkbench(id) {
     const wb = new schema.models.Workbench.Resource({id: id});
-    Q.all([wb.fetch().fail(app.handleError), $.get(`/api/workbench/status/${id}/`)])
-        .spread((__, status) => {
+    Q.all([wb.fetch().fail(app.handleError), $.get(`/api/workbench/status/${id}/`), wb.rget('workbenchtemplate')])
+        .spread((__, status, template) => {
             app.setTitle("WorkBench: " + wb.get('name'));
+            let plan = template.get('remarks');
+            plan = plan == null ? "" : plan.trim();
 
             if (wb.get('srcfilepath') === "uploaded") {
                 const view = new WBUploadedView({
@@ -591,6 +594,7 @@ module.exports = function loadWorkbench(id) {
                     const view = new WBView({
                         wb: wb,
                         data: data,
+                        plan: plan,
                         initialStatus: status
                     }).on('refresh', () => loadWorkbench(id));
                     app.setCurrentView(view);
