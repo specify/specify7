@@ -34,16 +34,22 @@ module.exports = {
                 use: [{
                     loader: "babel-loader",
                     options: {
-                        presets: [[
-                            '@babel/preset-env',
-                            {
-                                targets: "defaults"
-                            }
-                        ]]
+                        presets: [
+                            ['@babel/preset-react'],
+                            [
+                                '@babel/preset-env',
+                                {
+                                    targets: "defaults"
+                                }
+                            ]
+                        ]
                     }
                 }]
             },
         ]
+    },
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx']
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
