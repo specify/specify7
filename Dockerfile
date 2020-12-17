@@ -60,9 +60,12 @@ WORKDIR /opt/specify7
 RUN python3.6 -m venv ve && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn redis
 
-COPY --chown=specify:specify . /opt/specify7
 COPY --from=build-frontend /home/specify/frontend/static/js specifyweb/frontend/static/js
-
+COPY --chown=specify:specify specifyweb /opt/specify7/specifyweb
+COPY --chown=specify:specify manage.py /opt/specify7/
+COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
+COPY --chown=specify:specify Makefile /opt/specify7/
+COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
 
 ARG BUILD_VERSION
 ARG GIT_SHA
@@ -86,10 +89,8 @@ RUN mkdir -p /volumes/static-files/depository && chown -R specify.specify /volum
 USER specify
 COPY --from=build-backend /opt/specify7 /opt/specify7
 
-WORKDIR /home/specify
-RUN mkdir wb_upload_logs
-
-WORKDIR /opt/specify7/specifyweb/settings
+WORKDIR /opt/specify7
+RUN cp -r specifyweb/settings .
 
 RUN echo \
         "import os" \
@@ -106,15 +107,15 @@ RUN echo \
         "\nCELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)" \
         "\nCELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)" \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
-        > local_specify_settings.py
+        > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
-        > debug.py
+        > settings/debug.py
 
 RUN echo "import os \nSECRET_KEY = os.environ['SECRET_KEY']\n" \
-        > secret_key.py
+        > settings/secret_key.py
 
-WORKDIR /opt/specify7
+ENV DJANGO_SETTINGS_MODULE='settings'
 
 ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 

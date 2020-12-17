@@ -1,0 +1,116 @@
+version: '3.7'
+services:
+
+  mariadb:
+    image: mariadb
+    volumes:
+      - "database:/var/lib/mysql"
+      - "./seed-database:/docker-entrypoint-initdb.d"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=specify
+      - MYSQL_USER=master
+      - MYSQL_PASSWORD=master
+
+  specify7:
+    build:
+      context: ./.
+    command: ve/bin/python manage.py runserver 0.0.0.0:8000
+    init: true
+    volumes:
+      - "specify6:/opt/Specify:ro"
+      - "static-files:/volumes/static-files"
+      - "./specifyweb:/opt/specify7/specifyweb:ro"
+    environment:
+      - DATABASE_HOST=mariadb
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=specify
+      - MASTER_NAME=master
+      - MASTER_PASSWORD=master
+      - SECRET_KEY=change this to some unique random string
+      # - ASSET_SERVER_URL=http://asset-server:8080/web_asset_store.xml
+      # - ASSET_SERVER_KEY=your asset server access key
+      - REPORT_RUNNER_HOST=report-runner
+      - REPORT_RUNNER_PORT=8080
+      - CELERY_BROKER_URL=redis://redis/0
+      - CELERY_RESULT_BACKEND=redis://redis/1
+      - LOG_LEVEL=WARNING
+      - SP7_DEBUG=true
+
+  webpack:
+    build:
+      context: ./.
+      target: build-frontend
+    command: make watch
+    init: true
+    volumes:
+      - "webpack-output:/home/specify/frontend/static/js"
+      - "./specifyweb/frontend/js_src/lib:/home/specify/frontend/js_src/lib:ro"
+      - "./specifyweb/frontend/js_src/css:/home/specify/frontend/js_src/css:ro"
+
+  specify7-worker:
+    build:
+      context: ./.
+    command: ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q specify
+    init: true
+    volumes:
+      - "specify6:/opt/Specify:ro"
+      - "static-files:/volumes/static-files"
+      - "./specifyweb:/opt/specify7/specifyweb"
+    environment:
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+      - DATABASE_HOST=mariadb
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=specify
+      - MASTER_NAME=master
+      - MASTER_PASSWORD=master
+      - SECRET_KEY=change this to some unique random string
+      # - ASSET_SERVER_URL=http://asset-server:8080/web_asset_store.xml
+      # - ASSET_SERVER_KEY=your asset server access key
+      - REPORT_RUNNER_HOST=report-runner
+      - REPORT_RUNNER_PORT=8080
+      - CELERY_BROKER_URL=redis://redis/0
+      - CELERY_RESULT_BACKEND=redis://redis/1
+      - LOG_LEVEL=WARNING
+      - SP7_DEBUG=true
+      
+  redis:
+    image: redis
+
+  # asset-server:
+  #   image: specifyconsortium/specify-asset-service
+  #   init: true
+  #   volumes:
+  #     - "attachments:/home/specify/attachments"
+  #   environment:
+  #     - SERVER_NAME=localhost
+  #     - SERVER_PORT=80
+  #     - ATTACHMENT_KEY=your asset server access key
+  #     - DEBUG_MODE=false
+
+  specify6:
+    image: specifyconsortium/specify6-service:6.8.00
+    volumes:
+      - "specify6:/volumes/Specify"
+
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "static-files:/volumes/static-files:ro"
+      - "specify6:/volumes/specify6:ro"
+      - "webpack-output:/volumes/webpack-output:ro"
+
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+
+  report-runner:
+    image: specifyconsortium/report-runner
+
+volumes:
+  attachments: # the asset-servers attachment files
+  database: # the data directory for maniadb
+  specify6: # provides Specify 6 files to Specify 7 and the web server
+  static-files: # provides Specify 7 static files to the web server
+  webpack-output: 
