@@ -39,9 +39,6 @@ const userInfo             = require('./userinfo.js');
                             control.addClass('specify-print-on-save');
                         }
                     }
-                    if (fieldName && fieldName.toLowerCase() === 'isonloan') {
-                        control.addClass('specify-is-on-loan');
-                    }
                     doingFormTable && control.addClass('specify-field-in-table');
                 }
                 return td;
