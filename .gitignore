@@ -10,6 +10,7 @@ specifyweb/virtenv
 *.swp
 venv/
 .DS_Store
+seed-database
 
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
