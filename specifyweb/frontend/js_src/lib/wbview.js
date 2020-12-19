@@ -950,7 +950,6 @@ const WBView = Backbone.View.extend({
 
         },[]);
 
-        const map = L.map('leaflet_map');
 
         let defaultCenter = [0, 0];
         let defaultZoom = 1;
@@ -958,18 +957,62 @@ const WBView = Backbone.View.extend({
             defaultCenter = [locality_points[0]['latitude1'],locality_points[0]['longitude1']];
             defaultZoom = 5;
         }
-		const basemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-		});
 
-        map.setView(defaultCenter, defaultZoom);
-        basemap.addTo(map);
+        const maps = {
+            base_maps: {
+                'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+                'ESRI: World_Street_Map': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community',
+                }),
+                'ESRI: World_Topo_Map': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
+                }),
+                'ESRI: WorldImagery': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                }),
+                'GeoportailFrance orthos': L.tileLayer('https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}', {
+                    attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+                    bounds: [[-75, -180], [81, 180]],
+                    minZoom: 2,
+                    maxZoom: 19,
+                    apikey: 'choisirgeoportail',
+                    format: 'image/jpeg',
+                    style: 'normal'
+                }),
+                'USGS USImagery': L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 20,
+                    attribution: 'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>'
+                }),
+            },
+            overlays: {
+                'ESRI: Reference/World_Boundaries_and_Places': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community',
+                }),
+                'ESRI: Reference/World_Boundaries_and_Places_Alternate': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community',
+                }),
+                'ESRI: Canvas/World_Dark_Gray_Reference': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community\n',
+                }),
+                'ESRI: Reference/World_Reference_Overlay': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Sources: Esri, Garmin, USGS, NPS',
+                }),
+            }
+        };
+
+        const map = L.map('leaflet_map',{
+            layers: [Object.values(maps['base_maps'])[0]],
+        }).setView(defaultCenter, defaultZoom);
 
         let index = 1;
 
         const create_a_point = (latitude1,longitude1) =>
             L.marker([latitude1,longitude1]);
+
+        const polygon_boundaries = [];
 
         locality_points.map(point_data_dict=>{
 
@@ -1027,20 +1070,32 @@ const WBView = Backbone.View.extend({
                 );
 
 
+            let is_first_vector = true;
             vectors.map(vector=>{
-                vector.addTo(map);
+
+                if(is_first_vector){
+                    vector.addTo(map);
+                    is_first_vector = false;
+                }
+                else
+                    polygon_boundaries.push(vector);
+
                 vector.on('click',()=>{
                     const selected_column =
                         typeof this.hot.getSelectedLast() === "undefined" ?
                             0 :
                             this.hot.getSelectedLast()[1];
-                    this.hot.selectCell(row_number,selected_column);  // select first cell to scroll the view
+                    this.hot.selectCell(row_number,selected_column);  // select the first cell to scroll the view
                     this.hot.selectRows(row_number);  // select an entire row
                 });
+
             });
 
             index++;
         });
+
+        maps.overlays['Polygon boundaries'] = L.layerGroup(polygon_boundaries);
+        L.control.layers(maps.base_maps,maps.overlays).addTo(map);
 
     },
     showCoordinateConversion(){
