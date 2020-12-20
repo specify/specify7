@@ -23,3 +23,7 @@
 .lifemapper_source_issues_list li {
 	list-style: disc;
 }
+
+#lifemapper_leaflet_map {
+	height: 100%;
+}

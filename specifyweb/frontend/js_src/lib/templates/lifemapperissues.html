@@ -1,0 +1,14 @@
+<% if(list_of_issues.length===0){ %>
+    Record was indexed successfully and no data quality issues were reported
+<% } else { %>
+    <h2>The following data quality issues were reported: </h2>
+    <ul class="lifemapper_source_issues_list">
+        <% list_of_issues.map(issue => { %>
+            <li style="list-style: disc"><%=
+                issueDefinitions[source_name][issue] ||
+                issueDefinitions['common'][issue] ||
+                issue
+            %></li>
+        <% }) %>
+    </ul><br>
+<% } %>

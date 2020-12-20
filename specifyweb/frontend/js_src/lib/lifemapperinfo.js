@@ -4,15 +4,11 @@ const $ = require('jquery');
 const Backbone = require('./backbone.js');
 require('../css/lifemapperinfo.css');
 
-const L = require('leaflet');
-require('leaflet/dist/leaflet.css');
-/* This code is needed to properly load the images in the Leaflet CSS */
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
+const Leaflet = require('./leaflet.js');
+
+const lifemapperdatasourceicon = require('./templates/lifemapperdatasourceicon.html');
+const lifemapperissues = require('./templates/lifemapperissues.html');
+const lifemapperoccurencecount = require('./templates/lifemapperoccurencecount.html');
 
 module.exports = Backbone.View.extend({
 	__name__: "LifemapperInfo",
@@ -21,73 +17,30 @@ module.exports = Backbone.View.extend({
 		this.model = arguments[0].model;
 	},
 
-	format_occurrence_data_request: (occurrence_guid) =>
-		`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}?count_only=0`,
-	format_occurrence_count_request: (data_aggregator_name, occurrence_scientific_name) =>
-		`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`,
-	format_occurrence_map_request: occurrence_scientific_name =>
-		`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`,
-	data_sources: {
-		'GBIF Records': {
-			source_name: 'gbif',
-			source_label: 'GBIF',
-		},
-		'iDigBio Records': {
-			source_name: 'idigbio',
-			source_label: 'iDigBio',
-		},
-		'MorphoSource Records': {
-			source_name: 'morphosource',
-			source_label: 'MorphoSource',
-		},
-		'Lifemapper Map': {
-			source_name: 'lifemapper',
-			source_label: 'Lifemapper',
-		},
-	},
-	response_handlers: {
-		'GBIF Records': (occurrence) => ({
-			list_of_issues: occurrence.issues,
-			occurrence_name: occurrence.scientificName,
-			occurrence_view_link: `https://www.gbif.org/occurrence/${occurrence.key}`,
-		}),
-		'iDigBio Records': (occurrence) => ({
-			list_of_issues: occurrence.indexTerms.flags,
-			occurrence_name: '',
-			occurrence_view_link: `https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
-		}),
-		'MorphoSource Records': (occurrence) => ({
-			list_of_issues: [],
-			occurrence_name: '',
-			occurrence_view_link: occurrence['specimen.url'],
-		}),
-	},
-	count_handlers: {},
-
 	render(){
 
 		const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
 		// const guid = this.model.get('guid');  // TODO: uncomment this
 
-		$.get(this.format_occurrence_data_request(guid))
+		$.get(format_occurrence_data_request(guid))
 			.done(response =>
 				Object.entries(response).filter(([key]) =>
-					typeof this.data_sources[key] !== "undefined"
+					typeof data_sources[key] !== "undefined"
 				).map(([key, {count, records}]) => {
-					const data_source_info = this.data_sources[key];
+					const data_source_info = data_sources[key];
 
 					let parsed_response;
 
 					if (typeof records === "undefined" || typeof records[0] === "undefined")
 						parsed_response = false;
 					else
-						parsed_response = this.response_handlers[key](records[0]);
+						parsed_response = response_handlers[key](records[0]);
 
 					this.showSourceIcon(data_source_info, parsed_response, count > 1);
 				})
 			);
 	},
-	showSourceIcon(data_source_info, response, has_multiple_records=false){
+	showSourceIcon(data_source_info, response, has_multiple_records = false){
 
 		const {
 			source_name,
@@ -95,29 +48,28 @@ module.exports = Backbone.View.extend({
 		} = data_source_info;
 
 		const {
-			list_of_issues=[],
-			occurrence_name='',
-			occurrence_view_link=''
+			list_of_issues = [],
+			occurrence_name = '',
+			occurrence_view_link = ''
 		} = response;
 
-		if(source_name==='gbif' && occurrence_name!=='')
+		if (source_name === 'gbif' && occurrence_name !== '')
 			this.showSourceIcon(
-				this.data_sources['Lifemapper Map'],
+				data_sources['Lifemapper Map'],
 				{
-					occurrence_name:'Phlox longifolia Nutt.',
-					// occurrence_name:occurrence_name,  // TODO: uncomment this
-					occurrence_view_link:''
+					occurrence_name: 'Phlox longifolia Nutt.',
+					// occurrence_name: occurrence_name,  // TODO: uncomment this
+					occurrence_view_link: ''
 				}
 			);
 
 		if (has_multiple_records)
 			list_of_issues.push('HAS_MULTIPLE_RECORDS');
 
-		const link = $(
-			`<button class="lifemapper_source_icon">
-				<img src="/static/img/${source_name}.png" alt="${source_label}">
-			</button>`
-		);
+		const link = $(lifemapperdatasourceicon({
+			source_name: source_name,
+			source_label: source_label,
+		}));
 
 		if (response === false)
 			link.addClass('lifemapper_source_icon_not_found');
@@ -126,7 +78,7 @@ module.exports = Backbone.View.extend({
 			if (list_of_issues.length !== 0)
 				link.addClass('lifemapper_source_icon_issues_detected');
 
-			link.on('click',() => this.showSourceResponse(
+			link.on('click', () => this.showSourceResponse(
 				data_source_info,
 				{
 					list_of_issues,
@@ -152,10 +104,10 @@ module.exports = Backbone.View.extend({
 
 		const salted_source_name = `lifemapper_${source_name}`;
 
-		if(document.getElementById(salted_source_name) !== null)
+		if (document.getElementById(salted_source_name) !== null)
 			return;
 
-		let window_content='';
+		let window_content = '';
 		let title;
 		const buttons = [
 			{
@@ -166,11 +118,15 @@ module.exports = Backbone.View.extend({
 			}
 		];
 
-		if(source_name==='lifemapper')
+		if (source_name === 'lifemapper')
 			title = `${source_label} map`;
 		else {
 			title = `Record was indexed by ${source_label}`;
-			window_content = this.formatIssues(source_name, list_of_issues);
+			window_content = lifemapperissues({
+				source_name:source_name,
+				list_of_issues:list_of_issues,
+				issueDefinitions: issueDefinitions
+			});
 			buttons.push(
 				{
 					text: `View occurrence at ${source_label}`,
@@ -188,107 +144,71 @@ module.exports = Backbone.View.extend({
 			buttons: buttons
 		});
 
-		if(source_name==='lifemapper')
-			this.showCOMap(dialog,this.format_occurrence_map_request(occurrence_name));
+		if (source_name === 'lifemapper')
+			this.showCOMap(dialog, format_occurrence_map_request(occurrence_name));
 		else if (occurrence_name !== '')
-			this.showCOCount(dialog, this.format_occurrence_count_request(source_name, occurrence_name));
+			this.showCOCount(dialog, format_occurrence_count_request(source_name, occurrence_name));
 
 	},
-	formatIssues: (source_name, list_of_issues) =>
-		list_of_issues.length === 0 ?
-			'Record was indexed successfully and no data quality issues were reported' :
-			`<h2>The following data quality issues were reported: </h2>
-			<ul class="lifemapper_source_issues_list">${
-				list_of_issues.map(issue =>
-					`<li style="list-style: disc">${
-						issueDefinitions[source_name][issue] ||
-						issueDefinitions['common'][issue] ||
-						issue
-					}</li>`
-				).join('')
-			}</ul><br>`,
-	showCOMap: (dialog, request_url)=>{
-		const show_result = result => dialog.append(result);
-		$.get(request_url)
-			.done(response => {
+	showCOMap(dialog, request_url){
+		$.get(request_url).done(response => {
 
-				if(response.count===0) {
-					show_result('No map was found for this occurence');
-					return;
-				}
+			let map;
 
-				dialog.dialog('option','width',900);
-				dialog.dialog('option','height',500);
-				show_result(`<div id="lifemapper_leaflet_map" style="height:100%"></div>`);
+			this.model.rget('collectingevent.locality').done(locality=>
+				Leaflet.getMarkersFromLocalityResource(locality).then(markers=>
+					markers.map(marker=>marker.addTo(map))
+				)
+			);
 
-				const map_url = `${response['records'][0]['map']['endpoint']}/${response['records'][0]['map']['mapName']}?`;
-				const map_id = response['records'][0]['map']['mapName'].replace(/\D/g,'');
-				const layer_id = response['records'][0]['map']['layerName'].replace(/\D/g,'');
-				const layer_variations = [
-					{
-						name: () => `bmng`,
-						label: 'Map Only',
-						transparent: false,
-					},
-					{
-						name: (_, layer_id) => `prj_${layer_id}`,
-						label: 'Projection',
-						transparent: true,
-					},
-					{
-						name: (map_id) => `occ_${map_id}`,
-						label: 'Occurrence Points',
-						transparent: true,
-					}
-				];
-				const layers_dict = layer_variations.map(({transparent, name: layer_name_function, label: layer_label})=>
+			if (response.count === 0) {
+				dialog.append('No map was found for this occurrence');
+				return;
+			}
+
+			dialog.dialog('option', 'width', 900);
+			dialog.dialog('option', 'height', 500);
+			dialog.append(`<div id="lifemapper_leaflet_map"></div>`);
+
+			const {endpoint, mapName, layerName} = response.records[0].map;
+
+			const map_url = `${endpoint}/${mapName}?`;
+			const map_id = mapName.replace(/\D/g, '');
+			const layer_id = layerName.replace(/\D/g, '');
+			map = Leaflet.showCOMap(
+				lifemapper_layer_variations.map(({
+					transparent,
+					name: layer_name_function,
+					label: layer_label
+				}) =>
 					({
 						transparent: transparent,
 						layer_label: layer_label,
-						tile_layer: L.tileLayer.wms(map_url, {
-							layers: layer_name_function(map_id, layer_id),
-							service: 'wms',
-							version: '1.0',
-							height: '400',
-							format: 'image/png',
-							request: 'getmap',
-							srs: 'epsg:4326',
-							width: '800',
-							transparent: transparent,
-						})
+						tile_layer: {
+							map_url: map_url,
+							options: {
+								layers: layer_name_function(map_id, layer_id),
+								service: 'wms',
+								version: '1.0',
+								height: '400',
+								format: 'image/png',
+								request: 'getmap',
+								srs: 'epsg:4326',
+								width: '800',
+								transparent: transparent,
+							}
+						},
 					})
-				);
-				const format_layers_dict = (layers_dict)=>Object.fromEntries(
-					layers_dict.map(({_,layer_label,tile_layer})=>
-						[layer_label,tile_layer]
-					)
-				);
-				const all_layers = format_layers_dict(layers_dict);
-				const overlay_layers = format_layers_dict(layers_dict.filter(({transparent})=>transparent));
-
-				const map = L.map('lifemapper_leaflet_map', {
-					crs: L.CRS.EPSG4326,
-					layers: Object.values(all_layers),
-				}).setView([0,0],1);
-
-				L.control.layers({}, overlay_layers).addTo(map);
-
-			});
+				)
+			);
+		})
 	},
 	showCOCount: (dialog, request_url) =>
 		$.get(request_url)
 			.done(response => (
 				response.count === 0 ?
 					'' :
-					dialog.append(`<br>Number of occurrences of similar taxa records:
-					<ul class="lifemapper_source_issues_list">
-						${response['records'].map(({scientificName, count, url}) =>
-							`<li>
-								<a href="_blank" href="${url}">${scientificName}</a>
-								(reported ${count} times)
-							</li>`
-					)}
-					</ul>`)
+					dialog.append(lifemapperoccurencecount(response))
 			)),
 });
 
@@ -434,3 +354,66 @@ const issueDefinitions = {
 		"taxon_match_failed": "Unable to match a taxon in GBIF Backbone Taxonomy. Inverse of gbif_taxon_corrected flag."
 	},
 };
+
+
+const format_occurrence_data_request = (occurrence_guid) =>
+	`http://notyeti-192.lifemapper.org/api/v1/occ/${occurrence_guid}?count_only=0`;
+const format_occurrence_count_request = (data_aggregator_name, occurrence_scientific_name) =>
+	`http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`;
+const format_occurrence_map_request = occurrence_scientific_name =>
+	`http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`;
+
+const data_sources = {
+	'GBIF Records': {
+		source_name: 'gbif',
+		source_label: 'GBIF',
+	},
+	'iDigBio Records': {
+		source_name: 'idigbio',
+		source_label: 'iDigBio',
+	},
+	'MorphoSource Records': {
+		source_name: 'morphosource',
+		source_label: 'MorphoSource',
+	},
+	'Lifemapper Map': {
+		source_name: 'lifemapper',
+		source_label: 'Lifemapper',
+	},
+};
+
+const response_handlers = {
+	'GBIF Records': (occurrence) => ({
+		list_of_issues: occurrence.issues,
+		occurrence_name: occurrence.scientificName,
+		occurrence_view_link: `https://www.gbif.org/occurrence/${occurrence.key}`,
+	}),
+	'iDigBio Records': (occurrence) => ({
+		list_of_issues: occurrence.indexTerms.flags,
+		occurrence_name: '',
+		occurrence_view_link: `https://www.idigbio.org/portal/records/${occurrence['uuid']}`,
+	}),
+	'MorphoSource Records': (occurrence) => ({
+		list_of_issues: [],
+		occurrence_name: '',
+		occurrence_view_link: occurrence['specimen.url'],
+	}),
+};
+
+const lifemapper_layer_variations = [
+	{
+		name: () => `bmng`,
+		label: 'Map Only',
+		transparent: false,
+	},
+	{
+		name: (_, layer_id) => `prj_${layer_id}`,
+		label: 'Projection',
+		transparent: true,
+	},
+	{
+		name: (map_id) => `occ_${map_id}`,
+		label: 'Occurrence Points',
+		transparent: true,
+	}
+];

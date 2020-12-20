@@ -1,0 +1,9 @@
+<br>Number of occurrences of similar taxa records:
+<ul class="lifemapper_source_issues_list">
+    <% records.map(({scientificName, occurrence_count, url}) => { %>
+        <li>
+            <a target="_blank" href="<%=url%>"><%=scientificName%></a>
+            (reported <%=occurrence_count%> times)
+        </li>
+    <% }) %>
+</ul>
