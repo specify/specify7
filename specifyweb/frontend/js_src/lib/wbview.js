@@ -14,6 +14,7 @@ const WBName = require('./wbname.js');
 const navigation = require('./navigation.js');
 const WBUploadedView = require('./wbuploadedview.js');
 const WBStatus = require('./wbstatus.js');
+const WBUtils = require('./wbutils.js');
 
 const template = require('./templates/wbview.html');
 
@@ -29,6 +30,7 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-toggle-highlights': 'toggleHighlights',
+
         'click .wb-cell_navigation': 'navigateCells',
         'click .wb-search-button': 'searchCells',
         'click .wb-replace-button': 'replaceCells',
@@ -40,9 +42,8 @@ const WBView = Backbone.View.extend({
         this.plan = plan;
         this.initialStatus = initialStatus;
         this.highlightsOn = false;
-        this.cellInfo = [];
         this.rowValidationRequests = {};
-        this.search_query = null;
+        this.wbutils = {};
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -127,6 +128,14 @@ const WBView = Backbone.View.extend({
             afterChange: (change, source) => source === 'loadData' || onChanged(change),
         });
 
+        this.wbutils = new WBUtils({
+            hot: this.hot,
+            wb: this.wb,
+            colHeaders: colHeaders
+        });
+
+        this.wbutils.findLocalityColumns();
+
         $(window).resize(this.resize.bind(this));
 
         this.getResults();
@@ -135,12 +144,6 @@ const WBView = Backbone.View.extend({
         Q($.get(`/api/workbench/results/${this.wb.id}/`))
             .done(results => this.parseResults(results));
     },
-    initCellInfo(row, col) {
-        const cols = this.hot.countCols();
-        if(typeof this.cellInfo[row*cols + col] === "undefined") {
-            this.cellInfo[row*cols + col] = {isNew: false, issues: [], matchesSearch: false};
-        }
-    },
     parseResults(results) {
         const cols = this.hot.countCols();
         const headerToCol = {};
@@ -148,7 +151,7 @@ const WBView = Backbone.View.extend({
             headerToCol[this.hot.getColHeader(i)] = i;
         }
 
-        this.cellInfo = [];
+        this.wbutils.cellInfo = [];
         results.forEach((result, row) => {
             this.parseRowValidationResult(row, result);
         });
@@ -157,9 +160,9 @@ const WBView = Backbone.View.extend({
     },
     updateCellInfos() {
         const cellCounts = {
-            new_cells: this.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
-            invalid_cells: this.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
-            search_results: this.cellInfo.reduce((count, info) => count + (info.matchesSearch ? 1 : 0), 0),
+            new_cells: this.wbutils.cellInfo.reduce((count, info) => count + (info.isNew ? 1 : 0), 0),
+            invalid_cells: this.wbutils.cellInfo.reduce((count, info) => count + (info.issues.length ? 1 : 0), 0),
+            search_results: this.wbutils.cellInfo.reduce((count, info) => count + (info.matchesSearch ? 1 : 0), 0),
         };
 
         //update navigation information
@@ -178,13 +181,13 @@ const WBView = Backbone.View.extend({
         }
 
         for (let i = 0; i < cols; i++) {
-            delete this.cellInfo[row*cols + i];
+            delete this.wbutils.cellInfo[row*cols + i];
         }
 
         const add_error_message = (column_name, issue) => {
             const col = headerToCol[column_name];
-            this.initCellInfo(row, col);
-            const cellInfo = this.cellInfo[row*cols + col];
+            this.wbutils.initCellInfo(row, col);
+            const cellInfo = this.wbutils.cellInfo[row*cols + col];
 
             const ucfirst_issue = issue[0].toUpperCase() + issue.slice(1);
             cellInfo.issues.push(ucfirst_issue);
@@ -203,15 +206,15 @@ const WBView = Backbone.View.extend({
 
         result.newRows.forEach(table => table.columns.forEach(column_name => {
             const col = headerToCol[column_name];
-            this.initCellInfo(row, col);
-            const cellInfo = this.cellInfo[row*cols + col];
+            this.wbutils.initCellInfo(row, col);
+            const cellInfo = this.wbutils.cellInfo[row*cols + col];
             cellInfo.isNew = true;
         }));
     },
     defineCell(cols, row, col, prop) {
         let cell_data;
         try {
-            cell_data = this.cellInfo[row*cols + col];
+            cell_data = this.wbutils.cellInfo[row*cols + col];
         } catch (e) {
         };
 
@@ -290,7 +293,7 @@ const WBView = Backbone.View.extend({
     },
     save: function() {
         // clear validation
-        this.cellInfo = [];
+        this.wbutils.cellInfo = [];
         this.hot.render();
 
         //show saving progress bar
@@ -415,154 +418,11 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
-    navigateCells: function(e,match_current_cell=false){
-        const button = e.target;
-        const direction = button.getAttribute('data-navigation_direction');
-        const button_parent = button.parentElement;
-        const type = button_parent.getAttribute('data-navigation_type');
 
-        const number_of_columns = this.hot.countCols();
-
-        const selected_cell = this.hot.getSelectedLast();
-
-        let current_position = 0;
-        if(typeof selected_cell !== "undefined") {
-            const [row, col] = selected_cell;
-            current_position = row * number_of_columns + col;
-        }
-
-        const cellIsType = (info) => {
-            switch(type) {
-            case 'invalid_cells':
-                return info.issues.length > 0;
-            case 'new_cells':
-                return info.isNew;
-            case 'search_results':
-                return info.matchesSearch;
-            default:
-                return false;
-            }
-        };
-
-        let new_position = current_position;
-        let found = false;
-        for (;
-             new_position >= 0 && new_position < this.cellInfo.length;
-             new_position += direction === 'next' ? 1 : -1)
-        {
-            if (new_position === current_position && !match_current_cell) continue;
-
-            const info = this.cellInfo[new_position];
-            if (typeof info === "undefined") continue;
-            found = cellIsType(info);
-            if (found) break;
-        }
-
-        if (found) {
-            const row = Math.floor(new_position / number_of_columns);
-            const col = new_position - row * number_of_columns;
-            this.hot.selectCell(row, col, row, col);
-
-            const cell_relative_position = this.cellInfo.reduce((count, info, i) => count + (cellIsType(info) && i <= new_position ? 1 : 0), 0);
-            const current_position_element = button_parent.getElementsByClassName('wb-navigation_position')[0];
-            current_position_element.innerText = cell_relative_position;
-        }
-    },
-    searchCells: function(e){
-        const cols = this.hot.countCols();
-        const button = e.target;
-        const container = button.parentElement;
-        const navigation_position_element = container.getElementsByClassName('wb-navigation_position')[0];
-        const navigation_total_element = container.getElementsByClassName('wb-navigation_total')[0];
-        const search_query_element = container.getElementsByClassName('wb-search_query')[0];
-        const navigation_button = container.getElementsByClassName('wb-cell_navigation');
-        const search_query = search_query_element.value;
-
-        const searchPlugin = this.hot.getPlugin('search');
-        const results = searchPlugin.query(search_query);
-        this.search_query = search_query;
-
-        this.cellInfo.forEach(cellInfo => {cellInfo.matchesSearch = false;});
-        results.forEach(({row, col}) => {
-            this.initCellInfo(row, col);
-            this.cellInfo[row*cols + col].matchesSearch = true;
-        });
-        this.hot.render();
-
-        navigation_total_element.innerText = results.length;
-        navigation_position_element.innerText = 0;
-
-        if(!this.navigateCells({target:navigation_button[0]},true))
-            this.navigateCells({target:navigation_button[1]},true);
-
-    },
-    replaceCells: function(e){
-        const cols = this.hot.countCols();
-        const button = e.target;
-        const container = button.parentElement;
-        const replacement_value_element = container.getElementsByClassName('wb-replace_value')[0];
-        const replacement_value = replacement_value_element.value;
-
-        const cellUpdates = [];
-        this.cellInfo.forEach((info, i) => {
-            if (info.matchesSearch) {
-                const row = Math.floor(i / cols);
-                const col = i - row * cols;
-                const cellValue = this.hot.getDataAtCell(row, col);
-                cellUpdates.push([row, col, cellValue.split(this.search_query).join(replacement_value)]);
-            }
-        });
-
-        this.hot.setDataAtCell(cellUpdates);
-    },
-    toggleToolbelt: function(e){
-        const button = e.target;
-        const container = button.closest('.wb-header');
-        const toolbelt = container.getElementsByClassName('wb-toolbelt')[0];
-        if(toolbelt.style.display === 'none')
-            toolbelt.style.display = '';
-        else
-            toolbelt.style.display = 'none';
-    },
-    fillDownCells: function({start_row,end_row,col}){
-
-        // const find_numeric_offset = (cell_value)=>{
-        //     let i = cell_value.length-1;
-        //
-        //     while(i>=0 && !isNaN(cell_value[i]))
-        //         i--;
-        //
-        //     return i+1;
-        // }
-
-        const first_cell = this.hot.getDataAtCell(start_row,col);
-
-        if(isNaN(first_cell))
-            return;
-
-        // const first_cell_numeric_offset = find_numeric_offset(first_cell);
-        // const alphanum_part = first_cell.substr(0,first_cell_numeric_offset);
-        // const numeric_part_str = first_cell.substr(first_cell_numeric_offset);
-        // const numeric_part = parseInt(numeric_part_str);
-        const numeric_part = parseInt(first_cell);
-
-        const changes = [];
-        const number_of_rows = end_row - start_row;
-        for(let i=0;i<=number_of_rows;i++)
-            changes.push([
-                start_row+i,
-                col,
-                (numeric_part+i).toString().padStart(first_cell.length,'0')
-                // alphanum_part + (
-                //     isNaN(numeric_part) ?
-                //         '' :
-                //         (numeric_part+i).toString().padStart(numeric_part_str.length,'0')
-                // )
-            ]);
-
-        this.hot.setDataAtCell(changes);
-
-    }
+    navigateCells: function(e){this.wbutils.navigateCells(e)},
+    searchCells: function(e){this.wbutils.searchCells(e)},
+    replaceCells: function(e){this.wbutils.replaceCells(e)},
+    toggleToolbelt: function(e){this.wbutils.toggleToolbelt(e)},
 });
 
 module.exports = function loadWorkbench(id) {
