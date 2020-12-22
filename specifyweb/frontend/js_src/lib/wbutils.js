@@ -70,7 +70,8 @@ module.exports = Backbone.View.extend({
       newPosition >= 0 && newPosition < this.cellInfo.length;
       newPosition += direction === 'next' ? 1 : -1
     ) {
-      if (newPosition === currentPosition && !matchCurrentCell) continue;
+      if (newPosition === currentPosition && !matchCurrentCell)
+        continue;
 
       const info = this.cellInfo[newPosition];
       if (typeof info === 'undefined') continue;
@@ -83,10 +84,14 @@ module.exports = Backbone.View.extend({
       const col = newPosition - row * numberOfColumns;
       this.wbview.hot.selectCell(row, col, row, col);
 
-      const cellRelativePosition = this.cellInfo.reduce((count, info, i) => count + (
-        cellIsType(info) && i <= newPosition ? 1 : 0
-      ), 0);
-      const currentPositionElement = buttonParent.getElementsByClassName('wb-navigation-position')[0];
+      const cellRelativePosition = this.cellInfo.reduce((count, info, i) =>
+        count + (
+          cellIsType(info) && i <= newPosition ? 1 : 0
+        ),
+        0
+      );
+      const currentPositionElement =
+        buttonParent.getElementsByClassName('wb-navigation-position')[0];
       currentPositionElement.innerText = cellRelativePosition;
     }
   },
@@ -94,10 +99,14 @@ module.exports = Backbone.View.extend({
     const cols = this.wbview.hot.countCols();
     const button = e.target;
     const container = button.parentElement;
-    const navigationPositionElement = container.getElementsByClassName('wb-navigation-position')[0];
-    const navigationTotalElement = container.getElementsByClassName('wb-navigation-total')[0];
-    const searchQueryElement = container.getElementsByClassName('wb-searchQuery')[0];
-    const navigationButton = container.getElementsByClassName('wb-cell-navigation');
+    const navigationPositionElement =
+      container.getElementsByClassName('wb-navigation-position')[0];
+    const navigationTotalElement =
+      container.getElementsByClassName('wb-navigation-total')[0];
+    const searchQueryElement =
+      container.getElementsByClassName('wb-searchQuery')[0];
+    const navigationButton =
+      container.getElementsByClassName('wb-cell-navigation');
     const searchQuery = searchQueryElement.value;
 
     const searchPlugin = this.wbview.hot.getPlugin('search');
@@ -124,7 +133,8 @@ module.exports = Backbone.View.extend({
     const cols = this.wbview.hot.countCols();
     const button = e.target;
     const container = button.parentElement;
-    const replacementValueElement = container.getElementsByClassName('wb-replace-value')[0];
+    const replacementValueElement =
+      container.getElementsByClassName('wb-replace-value')[0];
     const replacementValue = replacementValueElement.value;
 
     const cellUpdates = [];
@@ -133,7 +143,11 @@ module.exports = Backbone.View.extend({
         const row = Math.floor(i / cols);
         const col = i - row * cols;
         const cellValue = this.wbview.hot.getDataAtCell(row, col);
-        cellUpdates.push([row, col, cellValue.split(this.searchQuery).join(replacementValue)]);
+        cellUpdates.push([
+          row,
+          col,
+          cellValue.split(this.searchQuery).join(replacementValue)
+        ]);
       }
     });
 
@@ -196,7 +210,9 @@ module.exports = Backbone.View.extend({
         ) ?? false,
       callback: (_, selections) =>
         selections.forEach(selection =>
-          [...Array(selection.end.col + 1 - selection.start.col).keys()].forEach(index =>
+          [...Array(
+            selection.end.col + 1 - selection.start.col
+          ).keys()].forEach(index =>
             handlerFunction.bind(this)({
               startRow: selection.start.row,
               endRow: selection.end.row,
@@ -210,7 +226,8 @@ module.exports = Backbone.View.extend({
     this.wb.rget('workbenchtemplate').done(wbtemplate => {
 
       const uploadPlanString = wbtemplate.get('remarks');
-      const localityColumns = this.wbutils.findLocalityColumns(uploadPlanString);
+      const localityColumns =
+        this.wbutils.findLocalityColumns(uploadPlanString);
 
       this.localityColumns = localityColumns.map(localityMapping =>
         Object.fromEntries(
@@ -221,12 +238,21 @@ module.exports = Backbone.View.extend({
       );
 
       if (this.localityColumns.length === 0)
-        ['wb-geolocate', 'wb-leafletmap', 'wb-convert-coordinates'].map(className =>
-          document.getElementsByClassName(className)[0].disabled = true,
-        );
+        [
+          'wb-geolocate',
+          'wb-leafletmap',
+          'wb-convert-coordinates'
+        ].map(className => (
+          document.getElementsByClassName(className)[0].disabled = true
+        ));
     });
   },
-  getGeoLocateQueryURL(currentLocalityColumns, selectedRow, getDataAtCell, getDataAtRow) {
+  getGeoLocateQueryURL(
+    currentLocalityColumns,
+    selectedRow,
+    getDataAtCell,
+    getDataAtRow
+  ) {
 
     if (currentLocalityColumns === false)
       return;
@@ -238,12 +264,22 @@ module.exports = Backbone.View.extend({
       typeof currentLocalityColumns.state !== 'undefined'
     ) {
 
-      const data = Object.fromEntries(['country', 'state', 'county', 'localityname'].map(columnName =>
+      const data = Object.fromEntries([
+        'country',
+        'state',
+        'county',
+        'localityname'
+      ].map(columnName =>
         [
           columnName,
           typeof currentLocalityColumns[columnName] === 'undefined' ?
             undefined :
-            encodeURIComponent(getDataAtCell(selectedRow, currentLocalityColumns[columnName])),
+            encodeURIComponent(
+              getDataAtCell(
+                selectedRow,
+                currentLocalityColumns[columnName]
+              )
+            ),
         ],
       ));
 
@@ -258,7 +294,10 @@ module.exports = Backbone.View.extend({
     }
     else {
 
-      const pointDataDict = Leaflet.getLocalityCoordinate(getDataAtRow(selectedRow), currentLocalityColumns);
+      const pointDataDict = Leaflet.getLocalityCoordinate(
+        getDataAtRow(selectedRow),
+        currentLocalityColumns
+      );
 
       if (!pointDataDict)
         return;
@@ -274,7 +313,11 @@ module.exports = Backbone.View.extend({
 
     }
 
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${queryString}`;
+    return (
+      `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&${
+        queryString
+      }`
+    );
 
   },
   showGeoLocate() {
@@ -440,7 +483,8 @@ module.exports = Backbone.View.extend({
           typeof this.hot.getSelectedLast() === 'undefined' ?
             0 :
             this.hot.getSelectedLast()[1];
-        this.hot.selectCell(rowNumber, selectedColumn);  // select the first cell to scroll the view
+        // select the first cell to scroll the view
+        this.hot.selectCell(rowNumber, selectedColumn);
         this.hot.selectRows(rowNumber);  // select an entire row
       },
     });
@@ -460,7 +504,10 @@ module.exports = Backbone.View.extend({
 
     const columnsToSearchFor = Object.keys(columnHandlers);
 
-    const coordinateColumns = this.localityColumns.reduce((coordinateColumns, columnIndexes) =>
+    const coordinateColumns = this.localityColumns.reduce((
+      coordinateColumns,
+      columnIndexes
+      ) =>
         [
           ...coordinateColumns,
           ...Object.entries(columnIndexes).filter(([columnName]) =>
@@ -516,7 +563,11 @@ module.exports = Backbone.View.extend({
         ${Object.values(options).map(({optionName}, optionIndex) =>
         `<li>
             <label>
-              <input type="radio" name="latlongformat" value="${optionIndex}">
+              <input
+                type="radio"
+                name="latlongformat"
+                value="${optionIndex}"
+              >
               ${optionName}
             </label>
           </li>`,
@@ -539,7 +590,9 @@ module.exports = Backbone.View.extend({
 
     const handleOptionChange = () => {
 
-      const includeSymbolsCheckbox = dialog.find('input[name="includesymbols"]');
+      const includeSymbolsCheckbox = dialog.find(
+        'input[name="includesymbols"]'
+      );
       const includeSymbols = includeSymbolsCheckbox.is(':checked');
 
       const selectedOption = dialog.find('input[type="radio"]:checked');
@@ -559,7 +612,8 @@ module.exports = Backbone.View.extend({
         coordinate => coordinate.replace(/[^\w\s\-.]/gm, '');
       const lastChar = value => value[value.length - 1];
       const removeLastChar = value => value.slice(0, -1);
-      const endsWith = (value, charset) => charset.indexOf(lastChar(value)) !== -1;
+      const endsWith = (value, charset) =>
+        charset.indexOf(lastChar(value)) !== -1;
       const stripCardinalDirections = finalValue =>
         showCardinalDirection ?
           finalValue :
@@ -572,7 +626,10 @@ module.exports = Backbone.View.extend({
       this.hot.setDataAtCell(
         coordinateColumns.map(([columnName, columnIndex]) =>
           this.hot.getDataAtCol(columnIndex).map((cellValue, rowIndex) =>
-            [latlongutils[columnHandlers[columnName]].parse(cellValue), rowIndex],
+            [
+              latlongutils[columnHandlers[columnName]].parse(cellValue),
+              rowIndex
+            ],
           ).filter(([coordinate]) =>
             coordinate !== null,
           ).map(([coordinate, rowIndex]) =>

@@ -214,7 +214,7 @@ module.exports = Backbone.View.extend({
                                 height: '400',
                                 format: 'image/png',
                                 request: 'getmap',
-                                srs: 'epsg:4326',
+                                srs: 'epsg:3857',
                                 width: '800',
                                 transparent: transparent,
                             }
@@ -389,8 +389,6 @@ const format_occurrence_count_request = (data_aggregator_name, occurrence_scient
     `http://notyeti-192.lifemapper.org/api/v1/name/${data_aggregator_name}/${encodeURIComponent(occurrence_scientific_name)}?count_only=1`;
 const format_occurrence_map_request = occurrence_scientific_name =>
     `http://notyeti-192.lifemapper.org/api/v1/map/lm/?namestr=${encodeURIComponent(occurrence_scientific_name)}&layers=prj,occ,bmng`;
-const format_similar_co_request = occurrence_scientific_name =>
-    `/api/specify/collectionobject/?determinations__iscurrent=true&determinations__preferredtaxon__fullname=${encodeURIComponent(occurrence_scientific_name)}`;
 
 const data_sources = {
     'GBIF Records': {
@@ -430,11 +428,6 @@ const response_handlers = {
 };
 
 const lifemapper_layer_variations = [
-    {
-        name: () => `bmng`,
-        label: 'Map Only',
-        transparent: false,
-    },
     {
         name: (_, layer_id) => `prj_${layer_id}`,
         label: 'Projection',

@@ -363,13 +363,22 @@ const Leaflet = {
 
     showCOMap(list_of_layers_raw){
 
-        const list_of_layers = list_of_layers_raw.map(({transparent, layer_label, tile_layer: {map_url, options}}) =>
-            ({
-                transparent: transparent,
-                layer_label: layer_label,
-                tile_layer: L.tileLayer.wms(map_url, options)
-            })
-        );
+        const list_of_layers = [
+            ...co_map_tile_servers.map(({transparent, layer_label})=>
+                ({
+                    transparent: transparent,
+                    layer_label: layer_label,
+                    tile_layer: leaflet_tile_servers[(transparent?'overlays':'base_maps')][layer_label]
+                })
+            ),
+            ...list_of_layers_raw.map(({transparent, layer_label, tile_layer: {map_url, options}}) =>
+                ({
+                    transparent: transparent,
+                    layer_label: layer_label,
+                    tile_layer: L.tileLayer.wms(map_url, options)
+                })
+            )
+        ];
 
         const format_layers_dict = (list_of_layers) => Object.fromEntries(
             list_of_layers.map(({_, layer_label, tile_layer}) =>
@@ -381,7 +390,6 @@ const Leaflet = {
         const overlay_layers = format_layers_dict(list_of_layers.filter(({transparent}) => transparent));
 
         const map = L.map('lifemapper_leaflet-map', {
-            crs: L.CRS.EPSG4326,
             layers: all_layers,
         }).setView([0, 0], 1);
 
@@ -393,6 +401,7 @@ const Leaflet = {
     },
 
 };
+
 
 
 const leaflet_tile_servers = {
@@ -525,6 +534,18 @@ const leaflet_tile_servers = {
         }),
     }
 };
+
+const co_map_tile_servers = [
+    {
+        transparent: false,
+        layer_label: 'ESRI: WorldImagery',
+    },
+    {
+        transparent: true,
+        layer_label: 'ESRI: Canvas/World_Dark_Gray_Reference',
+    }
+];
+
 const locality_fields_to_get = ['localityname', 'latitude1', 'longitude1', 'latitude2', 'longitude2', 'latlongtype', 'latlongaccuracy'];
 
 module.exports = Leaflet;
