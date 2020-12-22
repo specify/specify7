@@ -35,6 +35,9 @@ const WBView = Backbone.View.extend({
         'click .wb-search-button': 'searchCells',
         'click .wb-replace-button': 'replaceCells',
         'click .wb-show-toolbelt': 'toggleToolbelt',
+
+        'click .wb-unupload': 'unupload',
+        'click .wb-upload-view': 'viewUploadResults',
     },
     initialize({wb, data, initialStatus, plan}) {
         this.wb = wb;
@@ -44,6 +47,12 @@ const WBView = Backbone.View.extend({
         this.highlightsOn = false;
         this.rowValidationRequests = {};
         this.wbutils = {};
+        this.wbuploadedview = {};
+        this.uploaded = this.wb.get('srcfilepath') === "uploaded";
+        this.uploadResults = {
+            tables: {},
+            picklists: {}
+        };
     },
     render() {
         const mappingsPromise = Q(this.wb.rget('workbenchtemplate.workbenchtemplatemappingitems'))
@@ -52,7 +61,9 @@ const WBView = Backbone.View.extend({
         const colHeaders = mappingsPromise.then(mappings => _.invoke(mappings, 'get', 'caption'));
         const columns = mappingsPromise.then(mappings => _.map(mappings, (m, i) => ({data: i+1})));
 
-        this.$el.append(template());
+        this.$el.append(template({
+            is_uploaded: this.uploaded
+        }));
         new WBName({wb: this.wb, el: this.$('.wb-name')}).render();
 
         Q.all([colHeaders, columns]).spread(this.setupHOT.bind(this)).done();
@@ -122,6 +133,7 @@ const WBView = Backbone.View.extend({
                 }
             },
             stretchH: 'all',
+            readOnly: this.uploaded,
             afterCreateRow: (index, amount) => { this.fixCreatedRows(index, amount); onChanged(); },
             afterRemoveRow: () => { if (this.hot.countRows() === 0) { this.hot.alter('insert_row', 0); } onChanged();},
             afterSelection: (r, c) => this.currentPos = [r,c],
@@ -133,8 +145,6 @@ const WBView = Backbone.View.extend({
             wb: this.wb,
             colHeaders: colHeaders
         });
-
-        this.wbutils.findLocalityColumns();
 
         $(window).resize(this.resize.bind(this));
 
@@ -171,6 +181,13 @@ const WBView = Backbone.View.extend({
             navigation_total_element.innerText = cellCounts[navigation_type];
         });
 
+        if(this.uploaded)
+            this.wbuploadedview = new WBUploadedView({
+                wb: this.wb,
+                hot: this.hot,
+                uploadResults: this.uploadResults
+            }).render();
+
         this.hot.render();
     },
     parseRowValidationResult(row, result) {
@@ -204,12 +221,44 @@ const WBView = Backbone.View.extend({
             add_error_message(cell_issue.column, cell_issue.issue);
         });
 
-        result.newRows.forEach(table => table.columns.forEach(column_name => {
-            const col = headerToCol[column_name];
-            this.wbutils.initCellInfo(row, col);
-            const cellInfo = this.wbutils.cellInfo[row*cols + col];
-            cellInfo.isNew = true;
-        }));
+        result.newRows.forEach(({id, columns, tableName: table_name}) => {
+
+            const upload_result_data = {
+                record_id: id,
+                row_index: row,
+                columns: {},
+            };
+
+            columns.forEach(column_name => {
+
+                const col = headerToCol[column_name];
+                this.wbutils.initCellInfo(row, col);
+                const cellInfo = this.wbutils.cellInfo[row*cols + col];
+                cellInfo.isNew = true;
+
+                if(this.uploaded)
+                    upload_result_data.columns[col] = this.data[row][col+1];
+            });
+
+            if(this.uploaded){
+                if(typeof this.uploadResults.tables[table_name] === "undefined")
+                    this.uploadResults.tables[table_name] = [];
+                this.uploadResults.tables[table_name].push(upload_result_data);
+            }
+        });
+
+        if(this.uploaded)
+            result.picklistAdditions.forEach(({name: picklist_name, value, column: column_name/*, id*/})=>{
+                if(typeof this.uploadResults.picklists[picklist_name] === "undefined")
+                    this.uploadResults.picklists[picklist_name] = [];
+                this.uploadResults.picklists[picklist_name].push({
+                    picklist_value: value,
+                    row_index: row,
+                    column_index: headerToCol[column_name],
+                    //column_name: column_name
+                });
+            });
+
     },
     defineCell(cols, row, col, prop) {
         let cell_data;
@@ -419,10 +468,13 @@ const WBView = Backbone.View.extend({
         a.click();
     },
 
-    navigateCells: function(e){this.wbutils.navigateCells(e)},
-    searchCells: function(e){this.wbutils.searchCells(e)},
-    replaceCells: function(e){this.wbutils.replaceCells(e)},
-    toggleToolbelt: function(e){this.wbutils.toggleToolbelt(e)},
+    navigateCells(e){this.wbutils.navigateCells(e); },
+    searchCells(e){this.wbutils.searchCells(e); },
+    replaceCells(e){this.wbutils.replaceCells(e); },
+    toggleToolbelt(e){this.wbutils.toggleToolbelt(e); },
+
+    unupload(){this.wbuploadedview.unupload(); },
+    viewUploadResults(){this.wbuploadedview.viewUploadResults(); },
 });
 
 module.exports = function loadWorkbench(id) {
@@ -433,32 +485,23 @@ module.exports = function loadWorkbench(id) {
             let plan = template.get('remarks');
             plan = plan == null ? "" : plan.trim();
 
-            if (wb.get('srcfilepath') === "uploaded") {
-                const view = new WBUploadedView({
+            const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
+                title: 'Loading',
+                modal: true,
+                open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
+                close() {$(this).remove();}
+            });
+            $('.progress-bar', dialog).progressbar({value: false});
+
+            Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
+                const view = new WBView({
                     wb: wb,
+                    data: data,
+                    plan: plan,
                     initialStatus: status
                 }).on('refresh', () => loadWorkbench(id));
-
                 app.setCurrentView(view);
+            });
 
-            } else {
-                const dialog = $('<div><div class="progress-bar"></div></div>').dialog({
-                    title: 'Loading',
-                    modal: true,
-                    open(evt, ui) { $('.ui-dialog-titlebar-close', ui.dialog).hide(); },
-                    close() {$(this).remove();}
-                });
-                $('.progress-bar', dialog).progressbar({value: false});
-
-                Q($.get(`/api/workbench/rows/${id}/`)).done(data => {
-                    const view = new WBView({
-                        wb: wb,
-                        data: data,
-                        plan: plan,
-                        initialStatus: status
-                    }).on('refresh', () => loadWorkbench(id));
-                    app.setCurrentView(view);
-                });
-            }
         });
 };

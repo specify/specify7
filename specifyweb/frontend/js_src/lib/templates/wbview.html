@@ -4,15 +4,22 @@
     </div>
     <div class="wb-controls">
 
-      <button class="wb-plan">Plan</button>
-      <button class="wb-show-plan">Show Plan</button>
-      <button class="wb-save" disabled="disabled">Save</button>
-      <button class="wb-validate">Validate</button>
-      <button class="wb-upload">Upload</button>
+      <% if(is_uploaded){ %>
+        <button class="wb-unupload">Un-Upload</button>
+        <button class="wb-upload-view">View</button>
+      <% } else { %>
+        <button class="wb-plan">Plan</button>
+        <button class="wb-show-plan">Show Plan</button>
+        <button class="wb-save" disabled="disabled">Save</button>
+        <button class="wb-validate">Validate</button>
+        <button class="wb-upload">Upload</button>
+      <% } %>
+
       <button class="wb-export">Export</button>
       <button class="wb-delete">Delete</button>
       <button class="wb-show-toolbelt">Tool Kit</button>
       <!-- <button class="wb-setting">Settings</button> -->
+
     </div>
   </div>
   <div class="wb-toolbelt" style="display:none">
@@ -20,8 +27,10 @@
     <span class="wb-search_replace">
       <input type="text" class="wb-search_query" placeholder="Search Query" title="Search is not case sensitive">
       <button class="wb-search-button">Search</button>
-      <input type="text" class="wb-replace_value" placeholder="Replacement value" title="Replacement value">
-      <button class="wb-replace-button">Replace</button>
+      <% if(!is_uploaded){ %>
+        <input type="text" class="wb-replace_value" placeholder="Replacement value" title="Replacement value">
+        <button class="wb-replace-button">Replace</button>
+      <% }%>
 
       <span data-navigation_type="search_results">
         <button class="wb-cell_navigation" data-navigation_direction="previous">&lt;&lt;</button>

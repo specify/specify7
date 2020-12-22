@@ -1,15 +1,71 @@
-<div class="wb-header">
-  <div class="wb-primary-row">
-    <div class="wb-name">
-    </div>
-    was uploaded.
-    <div class="wb-controls">
-      <!-- <button class="wb-export">Export</button> -->
-      <!-- <button class="wb-delete">Delete</button> -->
-      <button class="wb-unupload">Un-Upload</button>
-    </div>
-  </div>
+<div class="wb-upload-results">
+    <% const uploaded_rows = Object.entries(uploadedRows);
+    const uploaded_picklist_items = Object.entries(uploadedPicklistItems);
+    if(uploaded_rows.length === 0 && uploaded_picklist_items.length === 0){ %>
+        No new records were uploaded
+    <% }
+    uploaded_rows.map(([table_name,{table_label,column_names,table_icon,get_record_view_url,rows}])=>{ %>
+        <div class="wb-upload-results-table wb-upload-results-table-collapsed">
+            <div class="wb-upload-results-header">
+                <div class="wb-upload-results-table-name">
+                    <img class="wb-upload-results-table-icon" src="<%= table_icon %>" alt="<%- table_name %>">
+                    <div class="wb-upload-results-table-label"><%- table_label %></div>
+                    <div class="wb-upload-results-table-rows-count">(<%= rows.length %>)</div>
+                </div>
+                <div class="wb-upload-results-controls">
+                    <button class="wb-upload-results-to-recordset">Record Set</button>
+                    <button class="wb-upload-results-to-dataset">Data Set</button>
+                </div>
+            </div>
+            <div class="wb-upload-results-rows-container">
+                <table class="wb-upload-results-rows">
+                    <thead>
+                        <tr>
+                            <th>View Record</th>
+                            <% column_names.map(column_name=>{ %>
+                                <th><%- column_name %></th>
+                            <% }); %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% rows.map(({record_id, row_index, columns})=>{ %>
+                            <tr>
+                                <td><a target="_blank" href="<%= get_record_view_url(record_id) %>"><%= record_id %></a></td>
+                                <% columns.map(({column_index, cell_value})=>{ %>
+                                    <td class="wb-upload-results-cell" data-row_index="<%= row_index %>" data-column_index="<%= column_index %>"><%- cell_value %></td>
+                                <% }); %>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <% });
+
+    uploaded_picklist_items.map(([picklist_name,{picklist_label, items}])=>{ %>
+        <div class="wb-upload-results-table wb-upload-results-table-collapsed">
+            <div class="wb-upload-results-header">
+                <div class="wb-upload-results-table-name">
+                    <div class="wb-upload-results-table-label"><%- table_label %></div>
+                    <div class="wb-upload-results-table-rows-count">(<%= items.length %>)</div>
+                </div>
+            </div>
+            <div class="wb-upload-results-rows-container">
+                <table class="wb-upload-results-rows">
+                    <thead>
+                        <tr>
+                            <th>Picklist value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% items.map(({row_index, column_index, value})=>{ %>
+                            <tr>
+                               <td class="wb-upload-results-cell" data-row_index="<%= row_index %>" data-column_index="<%= column_index %>"><%- value%></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <% });%>
 </div>
-<h2>Results:</h2>
-<ol class="wb-upload-results">
-</ol>

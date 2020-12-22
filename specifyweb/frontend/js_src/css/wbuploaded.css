@@ -1,0 +1,95 @@
+.wb-upload-results {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1rem;
+	padding-top: 0.5rem;
+}
+
+.wb-upload-results td {
+	cursor: pointer;
+}
+
+.wb-upload-results th {
+	text-align: center;
+}
+
+.wb-upload-results-table button {
+	cursor: pointer;
+}
+
+.wb-upload-results-table-collapsed .wb-upload-results-rows-container {
+	display: none;
+}
+
+.wb-upload-results-header {
+	display: flex;
+	justify-content: space-between;
+	background: #fff;
+	cursor: pointer;
+}
+
+.wb-upload-results-header > * {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem;
+}
+
+.wb-upload-results-table-name {
+	display: flex;
+	column-gap: 0.5rem;
+	align-items: center;
+}
+
+.wb-upload-results-table .wb-upload-results-table-name:before {
+	content: '\25BC';
+}
+
+.wb-upload-results-table.wb-upload-results-table-collapsed .wb-upload-results-table-name:before {
+	content: '\25B2';
+}
+
+.wb-upload-results-table:hover .wb-upload-results-table-name:before {
+	color: #555;
+}
+
+img.wb-upload-results-table-icon {
+	height: 1rem;
+}
+
+.wb-upload-results-rows-container {
+	width: 100%;
+	overflow-y: hidden;
+	border: 3px solid #fff;
+	border-top: none;
+	box-sizing: border-box;
+}
+
+.wb-upload-results-rows {
+	width: auto;
+	min-width: 100%;
+	overflow: auto;
+}
+
+.wb-upload-results-rows thead tr {
+	background: #ccc;
+}
+
+.wb-upload-results-rows tr {
+	border-bottom: 1px solid #fff;
+}
+
+.wb-upload-results-rows td:first-child {
+	text-align: center;
+}
+
+.wb-upload-results-rows td:not(last-child) {
+	border-left: 1px solid #fff;
+}
+
+.wb-upload-results-rows a {
+	color: #00f;
+}
+
+.wb-upload-results-rows a:hover {
+	color: #66f;
+}
