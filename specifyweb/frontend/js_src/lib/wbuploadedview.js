@@ -15,20 +15,21 @@ module.exports = Backbone.View.extend({
         'click .wb-unupload': 'unupload',
         'click .wb-upload-view': 'viewUploadResults',
     },
-    initialize({wb, hot, uploadResults}) {
+    initialize({wb, hot, uploadResults, openStatus}) {
         this.wb = wb;
         this.hot = hot;
         this.uploadResultsParsed = false;
         this.uploadedRows = {};
         this.uploadedPicklistItems = {};
         this.uploadResults = uploadResults;
+        this.openStatus = openStatus;
     },
     render() {
         return this;
     },
     unupload() {
         $.post(`/api/workbench/unupload/${this.wb.id}/`);
-        this.openStatus();
+        this.openStatus('upload');
     },
     parseUploadResults(){
         const headers = this.hot.getColHeader();

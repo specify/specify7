@@ -57,7 +57,10 @@ module.exports = Backbone.View.extend({
     },
     initializeProgressBar(){
         const {total:max, current:value} = this.status[2];
-        this.$el.find('.wb-status-progress-bar').progressbar({
+        const progress_bar = this.$el.find('.wb-status-progress-bar');
+
+        if(progress_bar.length !== 0)
+            progress_bar.progressbar({
             value: value,
             max: max
         });

@@ -185,7 +185,8 @@ const WBView = Backbone.View.extend({
             this.wbuploadedview = new WBUploadedView({
                 wb: this.wb,
                 hot: this.hot,
-                uploadResults: this.uploadResults
+                uploadResults: this.uploadResults,
+                openStatus: this.openStatus.bind(this)
             }).render();
 
         this.hot.render();
