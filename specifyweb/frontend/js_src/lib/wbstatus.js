@@ -27,6 +27,9 @@ module.exports = Backbone.View.extend({
             buttons: [{text: 'Abort', click: () => { $.post(`/api/workbench/abort/${this.wb.id}/`); }}]
         });
 
+        if(this.status)
+            this.initializeProgressBar();
+
         window.setTimeout(() => this.refresh(), refreshTime);
 
         return this;
@@ -48,7 +51,15 @@ module.exports = Backbone.View.extend({
                     this.$el.dialog('close');
                 } else {
                     this.$el.empty().append(statusTemplate({status: status}));
+                    this.initializeProgressBar();
                 }
             });
+    },
+    initializeProgressBar(){
+        const {total:max, current:value} = this.status[2];
+        this.$el.find('.wb-status-progress-bar').progressbar({
+            value: value,
+            max: max
+        });
     }
 });
