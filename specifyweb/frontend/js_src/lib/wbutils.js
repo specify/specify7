@@ -4,6 +4,10 @@ module.exports = Backbone.View.extend({
     __name__: "WbUtils",
     className: "wbs-utils",
     events: {
+    	'click .wb-cell_navigation': 'navigateCells',
+        'click .wb-search-button': 'searchCells',
+        'click .wb-replace-button': 'replaceCells',
+        'click .wb-show-toolbelt': 'toggleToolbelt',
     },
     initialize({hot, wb, colHeaders}) {
         this.hot = hot;

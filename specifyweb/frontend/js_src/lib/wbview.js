@@ -30,14 +30,6 @@ const WBView = Backbone.View.extend({
         'click .wb-save': 'saveClicked',
         'click .wb-export': 'export',
         'click .wb-toggle-highlights': 'toggleHighlights',
-
-        'click .wb-cell_navigation': 'navigateCells',
-        'click .wb-search-button': 'searchCells',
-        'click .wb-replace-button': 'replaceCells',
-        'click .wb-show-toolbelt': 'toggleToolbelt',
-
-        'click .wb-unupload': 'unupload',
-        'click .wb-upload-view': 'viewUploadResults',
     },
     initialize({wb, data, initialStatus, plan}) {
         this.wb = wb;
@@ -143,7 +135,8 @@ const WBView = Backbone.View.extend({
         this.wbutils = new WBUtils({
             hot: this.hot,
             wb: this.wb,
-            colHeaders: colHeaders
+            colHeaders: colHeaders,
+            el: this.$el
         });
 
         $(window).resize(this.resize.bind(this));
@@ -182,11 +175,12 @@ const WBView = Backbone.View.extend({
         });
 
         if(this.uploaded)
-            this.wbuploadedview = new WBUploadedView({
+            new WBUploadedView({
                 wb: this.wb,
                 hot: this.hot,
                 uploadResults: this.uploadResults,
-                openStatus: this.openStatus.bind(this)
+                openStatus: this.openStatus.bind(this),
+                el: this.$el
             }).render();
 
         this.hot.render();
@@ -425,7 +419,7 @@ const WBView = Backbone.View.extend({
             this.$('.wb-toggle-highlights').text('Hide');
         }
     },
-    delete: function(e) {
+    delete: function() {
         let dialog;
         const doDelete = () => {
             dialog.dialog('close');
@@ -455,7 +449,7 @@ const WBView = Backbone.View.extend({
             }
         });
     },
-    export: function(e) {
+    export: function() {
         const data = Papa.unparse({
             fields: this.hot.getColHeader(),
             data: this.data.map(row => row.slice(1))
@@ -468,14 +462,6 @@ const WBView = Backbone.View.extend({
         a.setAttribute('download', filename);
         a.click();
     },
-
-    navigateCells(e){this.wbutils.navigateCells(e); },
-    searchCells(e){this.wbutils.searchCells(e); },
-    replaceCells(e){this.wbutils.replaceCells(e); },
-    toggleToolbelt(e){this.wbutils.toggleToolbelt(e); },
-
-    unupload(){this.wbuploadedview.unupload(); },
-    viewUploadResults(){this.wbuploadedview.viewUploadResults(); },
 });
 
 module.exports = function loadWorkbench(id) {
