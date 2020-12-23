@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "backbone": "~0.9.10",
-    "baconjs": "~0.7.83",
     "d3": "~3.5.12",
     "handsontable": "^2.0.0",
     "humanize-duration": "~3.5.0",
