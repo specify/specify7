@@ -26,7 +26,7 @@ type PreviewCSVState = {type:'PreviewCSVState', preview: string[][], file: File,
 
 type PreviewXLSState = {type:'PreviewXLSState', preview: string[][], file: File, datasetName: string, hasHeader: boolean}
 
-type LoadingFileState = {type: 'LoadingFileState'}
+type LoadingFileState = {type: 'LoadingFileState', file: File, datasetName: string}
 
 type WbImportState = FileTypeState | ChooseCSVFileState | ChooseXLSFileState | PreviewCSVState | PreviewXLSState | LoadingFileState;
 
@@ -227,12 +227,12 @@ export default class WbImport extends Component<{}, WbImportState> {
             case 'DoImportAction':
                 switch (this.state.type) {
                     case 'PreviewCSVState':
-                        setState({type: 'LoadingFileState'});
+                        setState({type: 'LoadingFileState', file: this.state.file, datasetName: this.state.datasetName});
                         this.doImportCSV(this.state.file, this.state.datasetName, this.state.hasHeader, this.state.encoding);
                         break;
 
                     case 'PreviewXLSState':
-                        setState({type: 'LoadingFileState'});
+                        setState({type: 'LoadingFileState', file: this.state.file, datasetName: this.state.datasetName});
                         this.doImportXLS(this.state.file, this.state.datasetName, this.state.hasHeader);
                         break;
                 }
@@ -294,7 +294,12 @@ export default class WbImport extends Component<{}, WbImportState> {
                 break;
 
             case 'LoadingFileState':
-                ui = <p>Loading...</p>;
+                ui = (<>
+                    <h3>Processing...</h3>
+                    <p>The data from {this.state.file.name} is being imported into the Workbench as
+                      dataset {this.state.datasetName}. Do not close this page until the process is complete.
+                    </p>
+                    </>);
                 break;
 
             default:
