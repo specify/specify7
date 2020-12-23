@@ -3,6 +3,13 @@ import React, {Component} from 'react';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 
+const $ = require('jquery');
+const Q = require('q');
+
+const schema = require('../schema.js');
+const navigation = require('../navigation.js');
+const uniquifyWorkbenchName = require('../wbuniquifyname.js');
+const userInfo = require('../userinfo.js');
 const encodings = require('../encodings.js');
 
 const PREVIEW_SIZE = 10;
@@ -45,7 +52,7 @@ type Action = FileTypeAction | EncodingAction | FileSelectedAction | GotPreviewA
 type HandleAction = (action: Action) => void;
 
 
-export default class WbImport extends Component<{doImport: (name: string, header: string[], data: string[][]) => void}, WbImportState> {
+export default class WbImport extends Component<{}, WbImportState> {
     constructor(props: any) {
         super(props);
         this.state = {type: 'FileTypeState'};
@@ -70,7 +77,7 @@ export default class WbImport extends Component<{doImport: (name: string, header
 	        encoding: encoding,
 	        complete: ({data}) => {
                     const {rows, header} = extractHeader(data, hasHeader);
-                    this.props.doImport(name, header, rows);
+                    this.createDataset(name, header, rows);
                 }
             });
 
@@ -81,11 +88,50 @@ export default class WbImport extends Component<{doImport: (name: string, header
         const doIt = () =>
             loadXLS(file, false, (data: string[][]) => {
                 const {rows, header} = extractHeader(data, hasHeader);
-                this.props.doImport(name, header, rows);
+                this.createDataset(name, header, rows);
             });
 
         setTimeout(doIt, 0);
     }
+
+    createDataset(name: string, header: string[], data: string[][]) {
+        uniquifyWorkbenchName(name)
+            .done(
+                (name: string) => {
+                    const template = new schema.models.WorkbenchTemplate.Resource({
+                        specifyuser: userInfo.resource_uri,
+                        workbenchtemplatemappingitems: header.map(
+                            (column, i) => new schema.models.WorkbenchTemplateMappingItem.Resource({
+                                caption: column,
+                                fieldname: column,
+                                vieworder: i,
+                                origimportcolumnindex: i
+                            })
+                        )
+                    });
+                    template.set('name', name);
+
+                    const workbench = new schema.models.Workbench.Resource({
+                        name: name,
+                        workbenchtemplate: template,
+                        specifyuser: userInfo.resource_uri,
+                        srcfilepath: ""
+                    });
+
+                    const emptyRow: (string|null)[] = [null];
+
+                    Q(workbench.save())
+                        .then(
+                            () => Q($.ajax('/api/workbench/rows/' + workbench.id + '/', {
+                                data: JSON.stringify(data.map(row => emptyRow.concat(row))),
+                                type: "PUT"
+                            }))
+                        ).done(() => {
+                            navigation.go('/workbench/' + workbench.id + '/');
+                        });
+                });
+    }
+
 
 
     update(action: Action) {
