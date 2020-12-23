@@ -202,7 +202,7 @@ class custom_select_element {
 		if(table_icon_src === '/images/unknown.png'){
 			const table_sub_name = table_name.substr(0, 2);
 			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
-			const color = `hsl(${color_hue}, 100%, 50%)`;
+			const color = `hsl(${color_hue}, 70%, 50%)`;
 			return `<span style="background-color:${color};" class="custom_select_option_icon_undefined">${table_sub_name.toUpperCase()}</span>`;
 		}
 		else
