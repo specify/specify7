@@ -1,10 +1,8 @@
 const cache = require('./cache.ts');
+const icons = require('../icons.js');
 
 class custom_select_element {
 
-	// TODO: set proper table icons URL
-	// private static readonly table_icons_base_path:string = '';
-	// private static readonly table_icons_extension:string = '';
 	private static readonly cache_bucket_name :string = 'select_elements';  // the name of the cache bucket to use
 
 
@@ -199,18 +197,18 @@ class custom_select_element {
 		is_default :boolean,  // True only if is_relationship is False and current option is a selected field
 		table_name :string  // The name of the table to generate icon for
 	) :string /* HTML for a table icon */ {
-		if (is_relationship && table_name !== '') {
-			// TODO: enable table icons once ready
-			// `<img src="${custom_select_element.table_icons_base_path + table_name + custom_select_element.table_icons_extension}" alt="${table_name}">`
+		if (!is_relationship || table_name === '')
+			return '';
 
-
+		const table_icon_src = icons.getIcon(table_name);
+		if(table_icon_src === '/images/unknown.png'){
 			const table_sub_name = table_name.substr(0, 2);
 			const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
 			const color = `hsl(${color_hue}, 100%, 50%)`;
-			return `<span style="color:${color}">${table_sub_name.toUpperCase()}</span>`;
+			return `<span style="background-color:${color};" class="custom_select_option_icon_undefined">${table_sub_name.toUpperCase()}</span>`;
 		}
 		else
-			return '';
+			return `<span style="background-image: url('${table_icon_src}')"></span>`;
 	};
 
 

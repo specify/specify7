@@ -485,3 +485,19 @@
 .custom_select_option_relationship:after {
 	content: '\25B6';
 }
+
+.custom_select_option_icon span {
+	width: 100%;
+	height: 100%;
+	display: block;
+	background-size: contain;
+}
+
+.custom_select_option_icon_undefined {
+	color: var(--background1);
+	border-radius: 3px;
+	justify-content: center;
+	display: flex !important;
+	align-items: center;
+	overflow: hidden;
+}
