@@ -192,7 +192,10 @@ module.exports = Backbone.View.extend({
             dialog.dialog('option', 'height', 500);
             dialog.append(`<div id="lifemapper_leaflet_map"></div>`);
 
-            const {endpoint, mapName, layerName} = response.records[0].map;
+            // const {endpoint, mapName, layerName} = response.records[0].map;
+            const {endpoint} = response.records[0].map;
+            const mapName = 'data_300456';
+            const layerName = 'proj_717933';
 
             const map_url = `${endpoint}/${mapName}?`;
             const map_id = mapName.replace(/\D/g, '');
