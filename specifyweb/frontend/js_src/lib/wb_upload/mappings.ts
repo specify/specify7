@@ -639,10 +639,13 @@ class mappings {
 				filters = [mapping_path_filter];
 
 
-			Promise.all(Object.values(filters).map(filter =>
-				Object.values(lines).map(line =>
-					mappings.update_line(line, filter)
-				))).then(() =>
+			Promise.all(
+				Object.values(filters).map(filter =>
+					Object.values(lines).map(line =>
+						mappings.update_line(line, filter)
+					)
+				)
+			).then(() =>
 				resolve('')
 			);
 

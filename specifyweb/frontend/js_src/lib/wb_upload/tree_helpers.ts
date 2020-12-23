@@ -93,7 +93,7 @@ class tree_helpers {
 
 		const tree = {};
 
-		array_of_mappings.map(mapping_path =>
+		array_of_mappings.forEach(mapping_path =>
 			tree_helpers.deep_merge_object(tree, tree_helpers.array_to_tree(mapping_path, include_headers))
 		);
 

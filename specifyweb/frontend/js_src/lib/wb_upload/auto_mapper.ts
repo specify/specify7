@@ -153,20 +153,22 @@ class auto_mapper {
 		comparisons :auto_mapper_definition_comparisons,
 		get_new_path_part :() => mapping_path  // function that returns the next path part to use in a new mapping (on success)
 	) =>
-		this.get_unmapped_headers().map(([header_key, {lowercase_header_name}]) =>
+		this.get_unmapped_headers().forEach(([header_key, {lowercase_header_name}]) =>
 			Object.entries(this.comparisons).filter(([comparison_key]) =>  // loop over defined comparisons
 				comparison_key in comparisons
 			).some(([comparison_key, comparison_function]) =>
 				Object.values(comparisons[comparison_key]).some(comparison_value =>  // loop over each value of a comparison
 
 					comparison_function(lowercase_header_name, comparison_value) &&
-					this.make_mapping(path, get_new_path_part().map(path_part => {
-
-						if (!data_model_helper.value_is_tree_rank(path_part))
-							path_part = path_part.toLowerCase();
-						return path_part;
-
-					}), header_key)
+					this.make_mapping(
+						path,
+						get_new_path_part().map(path_part => {
+							if (!data_model_helper.value_is_tree_rank(path_part))
+								path_part = path_part.toLowerCase();
+							return path_part;
+						}),
+						header_key
+					)
 				)
 			));
 
@@ -657,7 +659,7 @@ class auto_mapper {
 		this.results[header_name].push(local_path);
 
 
-		const path_contains_to_many_references = path.some(path_part => data_model_helper.value_is_reference_item(path_part));
+		const path_contains_to_many_references = path.some(data_model_helper.value_is_reference_item);
 
 		return !path_contains_to_many_references && !this.allow_multiple_mappings;
 

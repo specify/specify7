@@ -141,7 +141,7 @@ class data_model_fetcher {
 
 
 		// remove relationships to system tables
-		Object.entries(tables).map(([table_name, table_data]) =>
+		Object.entries(tables).forEach(([table_name, table_data]) =>
 			(
 				<[relationship_name :string, relationship_data :data_model_relationship][]>
 					Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
@@ -149,7 +149,7 @@ class data_model_fetcher {
 					)
 			).filter(([, {table_name: relationship_table_name}]) =>
 				typeof tables[relationship_table_name] === "undefined"
-			).map(([relationship_name,]) => {
+			).forEach(([relationship_name,]) => {
 				delete tables[table_name].fields[relationship_name];
 			})
 		);
@@ -165,7 +165,7 @@ class data_model_fetcher {
 			const ranks :data_model_ranks = Object.fromEntries(resolved);
 
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
-			resolved.map(([table_name]) =>
+			resolved.forEach(([table_name]) =>
 				tables[table_name].fields = {'name':tables[table_name].fields['name']}
 			);
 

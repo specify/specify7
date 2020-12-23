@@ -23,8 +23,8 @@ class custom_select_element {
 
 		// making a copy of payload with all options enabled
 		const select_data_copy :custom_select_element_parameters = JSON.parse(JSON.stringify(arguments[0]));
-		select_data_copy.select_groups_data.map(({select_options_data}, group_index) =>
-			Object.keys(select_options_data).map(option_name =>
+		select_data_copy.select_groups_data.forEach(({select_options_data}, group_index) =>
+			Object.keys(select_options_data).forEach(option_name =>
 				select_data_copy.select_groups_data[group_index].select_options_data[parseInt(option_name)].is_enabled = false
 			)
 		);
@@ -96,9 +96,7 @@ class custom_select_element {
 		}
 
 		if (custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list')
-			groups_html = select_groups_data.map(
-				select_group_data => custom_select_element.get_select_group_html(select_group_data)
-			).join('');
+			groups_html = select_groups_data.map(custom_select_element.get_select_group_html).join('');
 
 		let custom_select_options = '';
 		if (first_row !== '' || groups_html !== '')

@@ -480,7 +480,7 @@ const definitions_to_lowercase = (definitions :auto_mapper_definitions_interface
 		['shortcuts', 1],
 		['synonyms', 2],
 	];
-	structure_depth.map(([structure_name, depth]) =>
+	structure_depth.forEach(([structure_name, depth]) =>
 		//@ts-ignore
 		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth)
 	);
