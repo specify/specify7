@@ -93,27 +93,33 @@ class main {
 
 			mappings.mapping_view_map_button.addEventListener('click', mappings.mapping_view_map_button_callback);
 
-			add_new_column.addEventListener('click', () => {
-				mappings.add_new_mapping_line({
-					header_data: {
-						header_name: '',
-						mapping_type: 'new_column'
-					},
-					blind_add_back: true,
-					scroll_down: true,
-				});
-			});
+			add_new_column.addEventListener('click',
+				mappings.add_new_mapping_line.bind(
+					mappings,
+					{
+						header_data: {
+							header_name: '',
+							mapping_type: 'new_column'
+						},
+						blind_add_back: true,
+						scroll_down: true,
+					}
+				)
+			);
 
-			add_new_static_column.addEventListener('click', () => {
-				mappings.add_new_mapping_line({
-					header_data: {
-						header_name: '',
-						mapping_type: 'new_static_column'
-					},
-					blind_add_back: true,
-					scroll_down: true,
-				});
-			});
+			add_new_static_column.addEventListener('click',
+				mappings.add_new_mapping_line.bind(
+					mappings,
+					{
+						header_data: {
+							header_name: '',
+							mapping_type: 'new_static_column'
+						},
+						blind_add_back: true,
+						scroll_down: true,
+					}
+				)
+			);
 
 			mappings.toggle_hidden_fields.addEventListener('change', () => {
 
@@ -210,10 +216,10 @@ class main {
 				],
 
 				required_fields_to_be_made_optional: {
-					'agent': ['agenttype'],
-					'determination': ['iscurrent'],
-					'loadpreparation': ['isresolved'],
-					'locality': ['srclatlongunit'],
+					agent: ['agenttype'],
+					determination: ['iscurrent'],
+					loadpreparation: ['isresolved'],
+					locality: ['srclatlongunit'],
 				},
 
 			},
@@ -261,7 +267,7 @@ class main {
 				},
 				{
 					text: 'Save unfinished mapping',
-					click: () => main.save_plan(undefined, true)
+					click: main.save_plan.bind(main,undefined, true)
 				}
 			]
 		});

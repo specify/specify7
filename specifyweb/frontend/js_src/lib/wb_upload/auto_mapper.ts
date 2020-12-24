@@ -343,10 +343,10 @@ class auto_mapper {
 				ranks = [data_model_helper.get_name_from_tree_rank_name(path[path.length - 1])];
 
 			const find_mappings_in_definitions_payload = {
-				path: path,
-				table_name: table_name,
+				path,
+				table_name,
 				field_name: '',
-				mode: mode,
+				mode,
 				is_tree_rank: true
 			};
 
@@ -410,10 +410,10 @@ class auto_mapper {
 			table_names = table_synonyms;
 
 		const find_mappings_in_definitions_payload = {
-			path: path,
-			table_name: table_name,
+			path,
+			table_name,
 			field_name: '',
-			mode: mode,
+			mode,
 		};
 
 		this.find_mappings_in_definitions(find_mappings_in_definitions_payload);

@@ -139,9 +139,10 @@ class cache {
 			return false;
 
 		const cache_usages = Object.values(cache.buckets[bucket_name].records).map(({use_count}) => use_count);
-		const total_usage = cache_usages.reduce((total_usage :number, usage :any) => {
-			return total_usage + parseInt(usage);
-		}, 0);
+		const total_usage = cache_usages.reduce((total_usage :number, usage :any) =>
+			total_usage + parseInt(usage),
+			0
+		);
 		const cache_items_count = cache_usages.length;
 		const average_usage = total_usage / cache_items_count;
 

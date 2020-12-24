@@ -144,8 +144,8 @@ class mappings {
 					defined_headers.push(header_name);
 			}
 
-			mappings.set_table(base_table_name, defined_headers).then(() =>
-				mappings.implement_array_of_mappings(array_of_mappings)
+			mappings.set_table(base_table_name, defined_headers).then(
+				mappings.implement_array_of_mappings.bind(mappings,array_of_mappings)
 			);
 		}
 		else
@@ -188,12 +188,12 @@ class mappings {
 		Object.values(array_of_mappings).map(mapping_path => {
 			const [parsed_mapping_path, mapping_type, header_name] = helper.deconstruct_mapping_path(mapping_path, true);
 			const header_data = {
-				mapping_type: mapping_type,
-				header_name: header_name,
+				mapping_type,
+				header_name,
 			};
 			mappings.add_new_mapping_line({
 				mapping_path: parsed_mapping_path,
-				header_data: header_data,
+				header_data,
 				update_all_lines: false,
 			});
 		});
@@ -217,7 +217,7 @@ class mappings {
 		const lines = dom_helper.get_lines(mappings.list__mappings);
 
 		const line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
-			mapping_path: mapping_path,
+			mapping_path,
 			use_cached: true,
 		});
 
@@ -227,9 +227,9 @@ class mappings {
 		}
 
 		const mapping_line_data = {
-			line_data: line_data,
-			header_data: header_data,
-			line_attributes: line_attributes,
+			line_data,
+			header_data,
+			line_attributes,
 		};
 
 		let new_mapping_line;
@@ -297,8 +297,8 @@ class mappings {
 		const results = mappings.mapped_fields = line_elements_containers.reduce((mapped_fields, line_elements_container) => {
 
 			const mapping_path = mappings.get_mapping_path({
-				line_elements_container: line_elements_container,
-				include_headers: include_headers
+				line_elements_container,
+				include_headers
 			});
 
 			const is_finished = mapping_path[mapping_path.length - index_shift] !== "0";
@@ -499,7 +499,7 @@ class mappings {
 		}
 
 		const mapping_path = mappings.get_mapping_path({
-			line_elements_container: line_elements_container,
+			line_elements_container,
 			mapping_path_filter: changed_list,
 		});
 
@@ -550,7 +550,7 @@ class mappings {
 
 		const line_elements_container = dom_helper.get_line_elements_container(line);
 		const mapping_path = mappings.get_mapping_path({
-			line_elements_container: line_elements_container,
+			line_elements_container,
 			exclude_unmapped: true,
 		});
 		line_elements_container.innerHTML = html_generator.mapping_path(base_table_fields, 'closed_list', true);
@@ -594,7 +594,7 @@ class mappings {
 			mapping_path.pop();
 
 		const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
-			mapping_path: mapping_path,
+			mapping_path,
 			use_cached: true,
 		});
 		const select_line_elements_container = dom_helper.get_line_elements_container(selected_line);
@@ -645,9 +645,7 @@ class mappings {
 						mappings.update_line(line, filter)
 					)
 				)
-			).then(() =>
-				resolve('')
-			);
+			).then(resolve.bind(null,''));
 
 		});
 
@@ -659,7 +657,7 @@ class mappings {
 		new Promise((resolve) => {
 
 			const mapping_path = mappings.get_mapping_path({
-				line_elements_container: line_elements_container,
+				line_elements_container,
 			});
 			const select_elements = dom_helper.get_line_elements(line_elements_container);
 
@@ -765,14 +763,14 @@ class mappings {
 		if (typeof line !== "undefined") {  // get mapping path
 			const line_elements_container = dom_helper.get_line_elements_container(line);
 			mapping_path = mappings.get_mapping_path({
-				line_elements_container: line_elements_container,
+				line_elements_container,
 			});
 		}
 
 		// if line is mapped, update the mapping view
 		if (mapping_path[mapping_path.length - 1] !== "0") {
 			const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
-				mapping_path: mapping_path,
+				mapping_path,
 			});
 			mappings.mapping_view.innerHTML = html_generator.mapping_view(mapping_line_data, use_cached);
 		}
@@ -859,7 +857,7 @@ class mappings {
 				throw new Error(`Can't find a parent of this picklist`);
 
 			const mapping_path = mappings.get_mapping_path({
-				line_elements_container: line_elements_container,
+				line_elements_container,
 				mapping_path_filter: select_element,
 				include_headers: true,
 			});
@@ -873,7 +871,7 @@ class mappings {
 			mapping_path.pop();
 
 			const mapping_line_data = data_model_navigator.get_mapping_line_data_from_mapping_path({
-				mapping_path: mapping_path,
+				mapping_path,
 				iterate: false,
 			});
 
@@ -889,7 +887,7 @@ class mappings {
 				base_table: data_model_storage.base_table_name,
 				starting_table: mapping_line_data[mapping_line_data.length - 1].table_name,
 				path: mapping_path,
-				path_offset: path_offset,
+				path_offset,
 				allow_multiple_mappings: true,
 				commit_to_cache: false,
 				check_for_existing_mappings: true,

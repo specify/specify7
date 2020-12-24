@@ -136,7 +136,7 @@ class custom_select_element {
 			${custom_select_element.get_select_group_html({
 			select_group_name: 'suggested_mappings',
 			select_group_label: 'Suggested mappings:',
-			select_options_data: select_options_data,
+			select_options_data,
 		})}
 		</span>`;
 
@@ -151,7 +151,7 @@ class custom_select_element {
 					class="custom_select_group"
 					data-group="${select_group_name}">
 			<span class="custom_select_group_label">${select_group_label}</span>
-			${select_options_data.map(select_option_data => custom_select_element.get_select_option_html(select_option_data)).join('')}
+			${select_options_data.map(custom_select_element.get_select_option_html).join('')}
 		</span>`;
 
 	};
@@ -371,11 +371,11 @@ class custom_select_element {
 			selected_option: target_option,
 			new_value: custom_select_option_value,
 			previous_value: previous_list_value,
-			previous_previous_value: previous_previous_value,
-			is_relationship: is_relationship,
-			list_type: list_type,
-			custom_select_type: custom_select_type,
-			list_table_name: list_table_name,
+			previous_previous_value,
+			is_relationship,
+			list_type,
+			custom_select_type,
+			list_table_name,
 		};
 
 	};

@@ -38,21 +38,21 @@ class data_model_navigator {
 			} = recursive_payload);
 
 		const callback_payload = {  // an object that is shared between navigator, navigator_instance and some callbacks
-			table_name: table_name,
+			table_name,
 		};
 
 
 		if (callbacks.iterate(internal_payload))
 			data_model_navigator.navigator_instance({
-				table_name: table_name,
-				internal_payload: internal_payload,
-				parent_table_name: parent_table_name,
-				parent_table_relationship_name: parent_table_relationship_name,
-				parent_path_element_name: parent_path_element_name,
-				use_cache: use_cache,
-				cache_name: cache_name,
-				callbacks: callbacks,
-				callback_payload: callback_payload,
+				table_name,
+				internal_payload,
+				parent_table_name,
+				parent_table_relationship_name,
+				parent_path_element_name,
+				use_cache,
+				cache_name,
+				callbacks,
+				callback_payload,
 			});
 
 
@@ -89,17 +89,17 @@ class data_model_navigator {
 			schema_navigator_results.push(
 				data_model_navigator.navigator(
 					{
-						callbacks: callbacks,
+						callbacks,
 						recursive_payload: {
 							table_name: next_table_name,
 							parent_table_name: next_parent_table_name,
 							parent_table_relationship_name: next_real_path_element_name,
 							parent_path_element_name: next_path_element_name,
 						},
-						internal_payload: internal_payload,
+						internal_payload,
 						config: {
-							use_cache: use_cache,
-							cache_name: cache_name,
+							use_cache,
+							cache_name,
 						},
 					}
 				));
@@ -189,10 +189,10 @@ class data_model_navigator {
 														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] {
 
 		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
-			mapping_path: mapping_path,
-			generate_last_relationship_data: generate_last_relationship_data,
+			mapping_path,
+			generate_last_relationship_data,
 			mapping_path_position: -1,
-			iterate: iterate,
+			iterate,
 			mapping_line_data: [],
 		};
 
@@ -232,9 +232,9 @@ class data_model_navigator {
 					next_real_path_element_name = next_path_element_name;
 
 				return {
-					next_path_element_name: next_path_element_name,
+					next_path_element_name,
 					next_path_element: data_model_storage.tables[table_name].fields[next_path_element_name],
-					next_real_path_element_name: next_real_path_element_name,
+					next_real_path_element_name,
 				};
 
 			},
@@ -283,7 +283,7 @@ class data_model_navigator {
 						is_hidden: false,
 						is_relationship: true,
 						is_default: mapped_object_name === internal_payload.default_value,
-						table_name: table_name,
+						table_name,
 					};
 				}
 				internal_payload.result_fields.add = {
@@ -293,7 +293,7 @@ class data_model_navigator {
 					is_hidden: false,
 					is_relationship: true,
 					is_default: false,
-					table_name: table_name,
+					table_name,
 				};
 
 			},
@@ -308,11 +308,11 @@ class data_model_navigator {
 					internal_payload.result_fields[formatted_rank_name] = {
 						field_friendly_name: rank_name,
 						is_enabled: true,
-						is_required: is_required,
+						is_required,
 						is_hidden: false,
 						is_relationship: true,
 						is_default: formatted_rank_name === internal_payload.default_value,
-						table_name: table_name,
+						table_name,
 					};
 				}
 
@@ -373,11 +373,11 @@ class data_model_navigator {
 
 					internal_payload.result_fields[field_name] = {
 						field_friendly_name: friendly_name,
-						is_enabled: is_enabled,
-						is_required: is_required,
-						is_hidden: is_hidden,
-						is_default: is_default,
-						is_relationship: is_relationship,
+						is_enabled,
+						is_required,
+						is_hidden,
+						is_default,
+						is_relationship,
 						table_name: field_table_name,
 					};
 
@@ -390,7 +390,7 @@ class data_model_navigator {
 				mapping_element_type: internal_payload.mapping_element_type,
 				name: internal_payload.current_mapping_path_part,
 				friendly_name: data_model_storage.tables[table_name].table_friendly_name,
-				table_name: table_name,
+				table_name,
 				fields_data: internal_payload.result_fields,
 			}),
 
@@ -404,8 +404,8 @@ class data_model_navigator {
 		};
 
 		return data_model_navigator.navigator({
-			callbacks: callbacks,
-			internal_payload: internal_payload,
+			callbacks,
+			internal_payload,
 			config: {
 				use_cache: use_cached,
 				cache_name: 'mapping_line_data',

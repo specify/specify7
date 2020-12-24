@@ -17,7 +17,7 @@ class html_generator {
 				table_name,
 				{
 					field_friendly_name: table_label,
-					table_name: table_name,
+					table_name,
 					is_relationship: true
 				}
 			]
@@ -26,7 +26,7 @@ class html_generator {
 		return html_generator.mapping_element({
 			name: 'list_of_base_tables',
 			friendly_name: 'Select a base table:',
-			fields_data: fields_data,
+			fields_data,
 			mapping_element_type: 'list_of_tables',
 		}, 'opened_list');
 
@@ -116,10 +116,10 @@ class html_generator {
 			const field_data_formatted :custom_select_element_option = {
 				option_name: field_friendly_name,
 				option_value: field_name,
-				is_enabled: is_enabled,
-				is_relationship: is_relationship,
-				is_default: is_default,
-				table_name: table_name,
+				is_enabled,
+				is_relationship,
+				is_default,
+				table_name,
 			};
 
 			let field_category = 'optional_fields';

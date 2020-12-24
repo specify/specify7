@@ -76,9 +76,9 @@ class data_model_fetcher {
 
 				//@ts-ignore
 				let field_data :data_model_field_writable = {
-					friendly_name: friendly_name,
-					is_hidden: is_hidden,
-					is_required: is_required,
+					friendly_name,
+					is_hidden,
+					is_required,
 					is_relationship: field.isRelationship,
 				};
 
@@ -128,7 +128,7 @@ class data_model_fetcher {
 				table_previews[table_name] = table_friendly_name;
 
 			tables[table_name] = {
-				table_friendly_name: table_friendly_name,
+				table_friendly_name,
 				fields: <{[field_name :string] :data_model_non_relationship | data_model_relationship}>ordered_fields,
 			};
 
@@ -166,7 +166,9 @@ class data_model_fetcher {
 
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
 			resolved.forEach(([table_name]) =>
-				tables[table_name].fields = {'name':tables[table_name].fields['name']}
+				tables[table_name].fields = {
+					name: tables[table_name].fields['name']
+				}
 			);
 
 			cache.set('data_model_fetcher', 'ranks', ranks);
