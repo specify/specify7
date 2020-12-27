@@ -3,7 +3,10 @@
 * Collection of various helper methods used during the mapping process
 *
 * */
-const data_model_storage = require('./data_model_storage.ts');
+
+"use strict";
+
+const data_model_storage = require('./data_model_storage.tsx');
 
 class helper {
 

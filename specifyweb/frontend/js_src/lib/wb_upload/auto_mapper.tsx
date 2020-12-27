@@ -1,15 +1,17 @@
-const auto_mapper_definitions = require('./auto_mapper_definitions.ts');
-const data_model_storage = require('./data_model_storage.ts');
-const data_model_helper = require('./data_model_helper.ts');
-const cache = require('./cache.ts');
-const helper = require('./helper.ts');
-
-
 /*
 *
 * Auto mapper than takes data model and header names and returns possible mappings
 *
 * */
+
+"use strict";
+
+const auto_mapper_definitions = require('./auto_mapper_definitions.tsx');
+const data_model_storage = require('./data_model_storage.tsx');
+const data_model_helper = require('./data_model_helper.tsx');
+const cache = require('./cache.tsx');
+const helper = require('./helper.tsx');
+
 class auto_mapper {
 
 	private results :automapper_results = {};

@@ -1,13 +1,15 @@
-const tree_helpers = require('./tree_helpers.ts');
-const dom_helper = require('./dom_helper.ts');
-const helper = require('./helper.ts');
-const html_generator = require('./html_generator.ts');
-const data_model_helper = require('./data_model_helper.ts');
-const data_model_storage = require('./data_model_storage.ts');
-const data_model_navigator = require('./data_model_navigator.ts');
-const auto_mapper = require('./auto_mapper.ts');
-const custom_select_element = require('./custom_select_element.ts');
-const upload_plan_converter = require('./upload_plan_converter.ts');
+"use strict";
+
+const tree_helpers = require('./tree_helpers.tsx');
+const dom_helper = require('./dom_helper.tsx');
+const helper = require('./helper.tsx');
+const html_generator = require('./html_generator.tsx');
+const data_model_helper = require('./data_model_helper.tsx');
+const data_model_storage = require('./data_model_storage.tsx');
+const data_model_navigator = require('./data_model_navigator.tsx');
+const auto_mapper = require('./auto_mapper.tsx');
+const custom_select_element = require('./custom_select_element.tsx');
+const upload_plan_converter = require('./upload_plan_converter.tsx');
 const navigation = require('../navigation.js');
 
 

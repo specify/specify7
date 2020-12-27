@@ -4,6 +4,8 @@
 *
 * */
 
+"use strict";
+
 class dom_helper {
 
 

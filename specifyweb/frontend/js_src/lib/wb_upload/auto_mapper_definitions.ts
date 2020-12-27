@@ -92,6 +92,8 @@
 //
 //
 
+"use strict";
+
 const definitions :auto_mapper_definitions_interface = {
 	table_synonyms: {
 		Agent: [

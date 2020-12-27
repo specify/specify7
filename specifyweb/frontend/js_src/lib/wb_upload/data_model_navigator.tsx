@@ -1,6 +1,8 @@
-const cache = require('./cache.ts');
-const data_model_helper = require('./data_model_helper.ts');
-const data_model_storage = require('./data_model_storage.ts');
+"use strict";
+
+const cache = require('./cache.tsx');
+const data_model_helper = require('./data_model_helper.tsx');
+const data_model_storage = require('./data_model_storage.tsx');
 
 
 class data_model_navigator {

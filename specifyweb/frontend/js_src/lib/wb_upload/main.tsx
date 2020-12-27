@@ -1,18 +1,21 @@
-const $ = require('jquery');
-
-const mappings = require('./mappings.ts');
-const data_model_fetcher = require('./data_model_fetcher.ts');
-const data_model_storage = require('./data_model_storage.ts');
-const data_model_helper = require('./data_model_helper.ts');
-const data_model_navigator = require('./data_model_navigator.ts');
-const upload_plan_converter = require('./upload_plan_converter.ts');
-const custom_select_element = require('./custom_select_element.ts');
-const cache = require('./cache.ts');
-const auto_mapper = require('./auto_mapper.ts');
-
 /*
 * Parent class for `mappings`. Defines elements and manages it's constructors
 * */
+
+"use strict";
+
+const $ = require('jquery');
+
+const mappings = require('./mappings.tsx');
+const data_model_fetcher = require('./data_model_fetcher.tsx');
+const data_model_storage = require('./data_model_storage.tsx');
+const data_model_helper = require('./data_model_helper.tsx');
+const data_model_navigator = require('./data_model_navigator.tsx');
+const upload_plan_converter = require('./upload_plan_converter.tsx');
+const custom_select_element = require('./custom_select_element.tsx');
+const cache = require('./cache.tsx');
+const auto_mapper = require('./auto_mapper.tsx');
+
 class main {
 
 	private static constructor_has_run :boolean = false;

@@ -1,8 +1,11 @@
-const data_model_storage = require('./data_model_storage.ts');
-
 /*
-* Fetches data model with tree ranks and converts them to convenient format
+* Helper methods for working with data model
 * */
+
+"use strict";
+
+const data_model_storage = require('./data_model_storage.tsx');
+
 class data_model_helper {
 
 	/* fetch fields for a table */

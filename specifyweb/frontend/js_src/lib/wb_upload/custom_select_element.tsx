@@ -1,4 +1,6 @@
-const cache = require('./cache.ts');
+"use strict";
+
+const cache = require('./cache.tsx');
 const icons = require('../icons.js');
 
 class custom_select_element {

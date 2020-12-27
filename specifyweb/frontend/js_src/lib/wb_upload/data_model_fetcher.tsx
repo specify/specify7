@@ -1,14 +1,15 @@
-const schema = require('../schema.js');
-const domain = require('../domain.js');
-
-const html_generator = require('./html_generator.ts');
-const helper = require('./helper.ts');
-const cache = require('./cache.ts');
-
-
 /*
 * Fetches data model with tree ranks
 * */
+
+"use strict";
+
+const schema = require('../schema.js');
+const domain = require('../domain.js');
+
+const html_generator = require('./html_generator.tsx');
+const helper = require('./helper.tsx');
+const cache = require('./cache.tsx');
 
 class data_model_fetcher {
 

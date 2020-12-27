@@ -1,3 +1,5 @@
+"use strict";
+
 class data_model_storage {
 
 	// each of this can be modified to a single symbol or several symbols

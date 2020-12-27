@@ -1,10 +1,13 @@
-const custom_select_element = require('./custom_select_element.ts');
-
 /*
 *
 * Generate HTML for various control elements created during mapping process
 *
 * */
+
+"use strict";
+
+const custom_select_element = require('./custom_select_element.tsx');
+
 class html_generator {
 
 	/* Generates HTML for a list of tables */

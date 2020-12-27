@@ -4,8 +4,10 @@
 *
 * */
 
-const data_model_storage = require('./data_model_storage.ts');
-const data_model_helper = require('./data_model_helper.ts');
+"use strict";
+
+const data_model_storage = require('./data_model_storage.tsx');
+const data_model_helper = require('./data_model_helper.tsx');
 
 class upload_plan_converter {
 

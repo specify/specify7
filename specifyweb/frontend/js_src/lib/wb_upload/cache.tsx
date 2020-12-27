@@ -1,3 +1,5 @@
+"use strict";
+
 class cache {
 
 	private static buckets :buckets = {};  // the data structure that would store all of the buckets
