@@ -1,4 +1,6 @@
-const ContextCreator = require('./ContextCreator.tsx');
+"use strict";
+
+const ContextCreatorWithStates = require('./ContextCreatorWithReducer.tsx');
 const {assertExhaustive} = require('./StateManagement');
 
 type SetBaseTableAction = {
@@ -11,8 +13,8 @@ const {
 	Provider:CountProvider,
 	useState:useBaseTableState,
 	useDispatch:useBaseTableDispatch
-} = ContextCreator(
-	(state, action:BaseTableActions)=>{
+} = ContextCreatorWithStates(
+	(_:object, action:BaseTableActions)=>{
 		switch (action.type) {
 			case 'Set':
 				return {
