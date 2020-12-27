@@ -69,12 +69,8 @@ class main {
 				cache.set('ui', 'hide_mapping_view', mappings.hide_mapping_view, {
 					overwrite: true,
 				});
-				if (mappings.hide_mapping_view)
-					mappings.container.classList.add('hide_mapping_view');
-				else {
-					mappings.container.classList.remove('hide_mapping_view');
+				if (mappings.container.classList.toggle('hide_mapping_view', mappings.hide_mapping_view))
 					mappings.update_mapping_view();
-				}
 			});
 
 			mappings.list__mappings.addEventListener('click', (event :{target :HTMLElement}) => {
@@ -129,10 +125,7 @@ class main {
 					overwrite: true,
 				});
 
-				if (!hide_hidden_fields)
-					mappings.container.classList.remove('hide_hidden_fields');
-				else
-					mappings.container.classList.add('hide_hidden_fields');
+				mappings.container.classList.toggle('hide_hidden_fields', hide_hidden_fields);
 			});
 
 			// CONFIG

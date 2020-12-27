@@ -782,13 +782,11 @@ class mappings {
 		validation_results :string[][]  // list of mapping paths that are missing
 	) :boolean | string /* validation result message */ {
 
-		if (validation_results.length === 0) {
-			mappings.validation_results.classList.add('hidden');
+		if (mappings.validation_results.classList.toggle('hidden',validation_results.length === 0)) {
 			mappings.validation_results.innerHTML = ``;
 			return false;
 		}
 
-		mappings.validation_results.classList.remove('hidden');
 		mappings.validation_results.innerHTML = `
 			<span>The following fields should be mapped before you are able to upload the dataset:</span>${
 			validation_results.map(field_path =>
