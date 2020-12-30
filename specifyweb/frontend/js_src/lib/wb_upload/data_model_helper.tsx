@@ -141,7 +141,7 @@ class data_model_helper {
 			for (const mapped_field_name of list_of_mapped_fields) {
 				const local_path = [...path, mapped_field_name];
 				if (typeof mappings_tree[mapped_field_name] !== "undefined" && typeof mappings_tree[mapped_field_name] !== "string")
-					data_model_helper.show_required_missing_fields(table_name, <mappings_tree>mappings_tree[mapped_field_name], previous_table_name, local_path, results);
+					data_model_helper.show_required_missing_fields(table_name, mappings_tree[mapped_field_name] as mappings_tree, previous_table_name, local_path, results);
 			}
 			return results;
 		}
@@ -206,7 +206,7 @@ class data_model_helper {
 				}
 
 				if (is_mapped)
-					data_model_helper.show_required_missing_fields(field_data.table_name, <mappings_tree>mappings_tree[field_name], table_name, local_path, results);
+					data_model_helper.show_required_missing_fields(field_data.table_name, mappings_tree[field_name] as mappings_tree, table_name, local_path, results);
 				else if (field_data.is_required)
 					results.push(local_path);
 			}

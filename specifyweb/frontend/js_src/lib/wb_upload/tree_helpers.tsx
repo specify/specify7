@@ -30,7 +30,7 @@ class tree_helpers {
 		if (typeof full_mappings_tree[target_key] !== "object")
 			return false;
 
-		return tree_helpers.traverse_tree(<mappings_tree>full_mappings_tree[target_key], node_mappings_tree[target_key]);
+		return tree_helpers.traverse_tree(full_mappings_tree[target_key] as mappings_tree, node_mappings_tree[target_key]);
 
 	};
 

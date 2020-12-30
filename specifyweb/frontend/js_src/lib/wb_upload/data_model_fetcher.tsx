@@ -85,7 +85,7 @@ class data_model_fetcher {
 
 				if (field_data.is_relationship) {
 
-					const relationship = <schema_model_table_relationship>field;
+					const relationship = field as schema_model_table_relationship;
 
 					let foreign_name = relationship.otherSideName;
 					if (typeof foreign_name !== "undefined")
@@ -130,7 +130,7 @@ class data_model_fetcher {
 
 			tables[table_name] = {
 				table_friendly_name,
-				fields: <{[field_name :string] :data_model_non_relationship | data_model_relationship}>ordered_fields,
+				fields: ordered_fields,
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
@@ -144,10 +144,9 @@ class data_model_fetcher {
 		// remove relationships to system tables
 		Object.entries(tables).forEach(([table_name, table_data]) =>
 			(
-				<[relationship_name :string, relationship_data :data_model_relationship][]>
-					Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
-						is_relationship
-					)
+				Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
+					is_relationship
+				) as [field_name:string, relationship_data:data_model_relationship][]
 			).filter(([, {table_name: relationship_table_name}]) =>
 				typeof tables[relationship_table_name] === "undefined"
 			).forEach(([relationship_name,]) => {
@@ -204,7 +203,7 @@ class data_model_fetcher {
 
 									return table_ranks;
 
-								}, <table_ranks_writable>{})
+								}, {} as table_ranks_writable)
 							])
 						)
 				)

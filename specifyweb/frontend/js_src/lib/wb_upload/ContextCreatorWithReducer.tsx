@@ -56,8 +56,11 @@ interface action {
 }
 type reducer = (state :object, action :action) => void;
 
-function Provider(StateContext:Context, DispatchContext:Context, reducer:reducer, default_value:object, {children}) {
-	const [state, dispatch] = React.useReducer(reducer, default_value);
+function Provider<A extends {} | null>(StateContext:React.Context<A>, DispatchContext:React.Context<A>, reducer:reducer, default_value:object, {children}) {
+	const [state, dispatch]:[
+		state:any,
+		dispatch:A
+	] = React.useReducer(reducer, default_value);
 	return (
 		<StateContext.Provider value={state}>
 			<DispatchContext.Provider value={dispatch}>
@@ -67,23 +70,23 @@ function Provider(StateContext:Context, DispatchContext:Context, reducer:reducer
 	);
 }
 
-function useState(StateContext:Context) {
+function useState<A extends {} | null>(StateContext:React.Context<A>) {
 	const context = React.useContext(StateContext);
 	if (typeof context === "undefined")
 		throw new Error('`useState` must be used within a `Provider`');
 	return context;
 }
 
-function useDispatch(DispatchContext:Context) {
+function useDispatch<A extends {} | null>(DispatchContext:React.Context<A>) {
 	const context = React.useContext(DispatchContext);
 	if (typeof context === "undefined")
 		throw new Error('`useDispatch` must be used within a `Provider`');
 	return context;
 }
 
-export = function(reducer:reducer, default_value:object={}){
-	const StateContext = React.createContext();
-	const DispatchContext = React.createContext();
+export = function<A extends {} | null>(reducer:reducer, default_value:object={}){
+	const StateContext = React.createContext<A | undefined>(undefined);
+	const DispatchContext = React.createContext<A | undefined>(undefined);
 
 	return {
 		Provider: Provider.bind(null,StateContext,DispatchContext,reducer,default_value),

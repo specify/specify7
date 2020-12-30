@@ -273,7 +273,7 @@ class main {
 
 	};
 
-	/* Shows a loading screen a returns a callback that removes the loading screen */
+	/* Shows a loading screen and returns a callback that removes the loading screen */
 	public static loading_screen() :() => void /* callback that removes a loading screen */ {
 
 		mappings.container.classList.remove('loaded');

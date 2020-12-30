@@ -543,7 +543,7 @@ class mappings {
 		wbplanview_mappings_line_delete :HTMLElement  // the `Delete` button that belongs to a particular line
 	) :void {
 
-		const line = <HTMLElement>wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line');
+		const line = wbplanview_mappings_line_delete.closest('.wbplanview_mappings_line') as HTMLElement;
 
 		const base_table_fields = data_model_navigator.get_mapping_line_data_from_mapping_path({
 			mapping_path: [],
@@ -674,7 +674,7 @@ class mappings {
 				if (custom_select_element.get_list_mapping_type(target_select_element) === 'to_many') {
 
 					const options = target_select_element.getElementsByClassName('custom_select_option');
-					const option_values = Object.values(options).map(option => custom_select_element.get_option_value(<HTMLElement>option));
+					const option_values = Object.values(options).map(option => custom_select_element.get_option_value(option as HTMLElement));
 					let max_value = data_model_helper.get_max_to_many_value(option_values) + 1;
 					const max_mapped_value = data_model_helper.get_max_to_many_value(mapped_fields);
 

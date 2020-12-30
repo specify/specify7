@@ -51,7 +51,7 @@ class upload_plan_converter {
 			if (typeof upload_plan.baseTableName === "undefined")
 				throw new Error("Upload plan should contain `baseTableName` as a root node");
 			data_model_storage.base_table_name = (upload_plan.baseTableName as string).toLowerCase();
-			return upload_plan_converter.upload_plan_to_mappings_tree(<upload_plan_node>upload_plan.uploadable, true);
+			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan.uploadable as upload_plan_node, true);
 		}
 		else if (typeof (upload_plan as upload_plan_node).uploadTable !== "undefined")
 			return upload_plan_converter.upload_plan_to_mappings_tree((upload_plan as upload_plan_node).uploadTable as upload_plan_node, true);

@@ -253,7 +253,7 @@ class custom_select_element {
 					const selected_option = custom_select_element.get_selected_options(current_list)[0];
 
 					if (typeof selected_option !== "undefined") {
-						const options_container = <HTMLElement>current_list.getElementsByClassName('custom_select_options')[0];
+						const options_container = current_list.getElementsByClassName('custom_select_options')[0] as HTMLElement;
 
 						if (  // scroll down if
 							options_container.scrollTop === 0 &&  // the list is not already scrolled
@@ -296,7 +296,7 @@ class custom_select_element {
 			if (target_option === null)
 				return;
 		}
-		target_option = <HTMLElement>target_option;
+		target_option = target_option as HTMLElement;
 
 		const custom_select_option_value = custom_select_element.get_option_value(target_option) as string;
 
@@ -406,7 +406,7 @@ class custom_select_element {
 		const new_option_line_html = custom_select_element.get_select_option_html(option_data);
 		let new_option_line = document.createElement('span');
 
-		const option_container = <HTMLElement>list.getElementsByClassName('custom_select_options')[0].getElementsByClassName('custom_select_group')[0];
+		const option_container = list.getElementsByClassName('custom_select_options')[0].getElementsByClassName('custom_select_group')[0] as HTMLElement;
 
 		const options = option_container.children;
 
@@ -443,7 +443,7 @@ class custom_select_element {
 		option :HTMLSpanElement  // the option to be unselected
 	) :void => {
 		option.classList.remove('custom_select_option_selected');
-		list.setAttribute('data-previous_value', <string>list.getAttribute('data-value'));
+		list.setAttribute('data-previous_value', list.getAttribute('data-value') as string);
 		list.setAttribute('data-value', '0');
 	};
 
