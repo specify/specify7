@@ -6,31 +6,33 @@
 //  - suggestion_list - used on the suggestion lines - list with an `input` box but with no list of options
 type custom_select_type = 'opened_list' | 'closed_list' | 'preview_list' | 'suggestion_list'
 
-type select_element_type = 'simple' | 'to_many' | 'tree'  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
+type custom_select_subtype = 'simple' | 'to_many' | 'tree'  // the type of select element. Can be either `simple` (for fields and relationships), `to_many` (for reference items) or `tree` (for tree ranks)
 
 type default_value = '0'
 
-interface custom_select_element_parameters {
-	readonly select_type? :select_element_type,
-	readonly select_name? :string,  // the name of the element. used when constructing a mapping path. NOTE: the first element of the line does not have a name as its name is inherited from the base table
-	readonly select_label? :string,  // the label to sue for the element
-	readonly select_table? :string,  // the name of the table that was used
-	readonly select_groups_data :custom_select_element_options_group[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+interface CustomSelectElementIconProps {
+	is_relationship :boolean,  // False only if icon is going to be used next to an option label and option is not a relationship
+	table_name :string  // The name of the table to generate icon for
 }
 
-interface custom_select_element_options_group {
-	readonly select_group_name :string,  // group name (used in css and js)
-	readonly select_group_label :string,  // group label (shown to the user)
-	readonly select_options_data :custom_select_element_option[]  // list of options data. See custom_select_element.get_select_option_html() for the data structure
-}
-
-interface custom_select_element_option {
-	readonly option_name :string,  // the name of the option. Would be used as a label (visible to the user)
-	readonly option_value :string,  // the value of the option. Would be used to construct a mapping path
+interface CustomSelectElementOptionProps {
+	readonly option_name? :string,  // the name of the option. Would be used as a label (visible to the user)
 	is_enabled? :boolean,  // True if option can be selected. False if option can not be selected because it was already selected
 	readonly is_relationship? :boolean,  // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
 	readonly is_default? :boolean,  // whether the option is currently selected
 	readonly table_name? :string,  // the name of the table this option represents
+}
+
+interface CustomSelectElementOptionGroupProps {
+	readonly select_group_label :string,  // group label (shown to the user)
+	readonly select_options_data :CustomSelectElementOptionProps[]  // list of options data. See custom_select_element.get_select_option_html() for the data structure
+}
+
+interface CustomSelectElementProps {
+	readonly select_label? :string,  // the label to sue for the element
+	readonly select_groups_data :CustomSelectElementOptionGroupProps[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+	readonly custom_select_type: custom_select_type,
+	readonly custom_select_subtype: custom_select_subtype,
 }
 
 interface custom_select_element_change_payload {

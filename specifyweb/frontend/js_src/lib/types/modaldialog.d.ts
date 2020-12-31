@@ -1,0 +1,6 @@
+//Modal Dialog
+interface ModalDialogProps {
+	readonly onLoadCallback?: (dialog:JQuery<HTMLElement>)=>void,
+	readonly children?: react_elements
+	readonly properties?: {[key:string]:any},
+}

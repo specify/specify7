@@ -1,3 +1,10 @@
+type automapper_scope = Readonly<'automapper' | 'suggestion'>;
+type mapping_path = string[];
+type list_of_headers = string[];
+type mapping_type = Readonly<'existing_header' | 'new_column' | 'new_static_column'>;
+type relationship_type = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
+
+
 interface header_data {
 	readonly mapping_type :mapping_type,
 	header_name :string
@@ -28,4 +35,17 @@ interface get_mapping_path_parameters {
 	readonly include_headers? :boolean  // whether to include mapping type and header_name / static column value in the result
 	readonly exclude_unmapped? :boolean,  // whether to replace incomplete mapping paths with ["0"]
 	readonly exclude_non_relationship_values? :boolean,  // whether to exclude simple fields from the resulting path
+}
+
+
+interface MappingLine {
+	readonly type: mapping_type,
+	readonly name: string,
+	readonly mapping_path: mapping_path,
+}
+
+
+interface get_lines_from_upload_plan {
+	readonly base_table_name: string,
+	readonly lines:MappingLine[],
 }
