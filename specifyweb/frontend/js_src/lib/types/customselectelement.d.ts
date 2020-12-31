@@ -31,8 +31,8 @@ interface CustomSelectElementOptionGroupProps {
 interface CustomSelectElementProps {
 	readonly select_label? :string,  // the label to sue for the element
 	readonly select_groups_data :CustomSelectElementOptionGroupProps[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
-	readonly custom_select_type: custom_select_type,
-	readonly custom_select_subtype: custom_select_subtype,
+	readonly custom_select_type :custom_select_type,
+	readonly custom_select_subtype :custom_select_subtype,
 }
 
 interface custom_select_element_change_payload {

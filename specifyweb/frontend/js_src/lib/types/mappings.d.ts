@@ -39,13 +39,13 @@ interface get_mapping_path_parameters {
 
 
 interface MappingLine {
-	readonly type: mapping_type,
-	readonly name: string,
-	readonly mapping_path: mapping_path,
+	readonly type :mapping_type,
+	readonly name :string,
+	readonly mapping_path :mapping_path,
 }
 
 
 interface get_lines_from_upload_plan {
-	readonly base_table_name: string,
-	readonly lines:MappingLine[],
+	readonly base_table_name :string,
+	readonly lines :MappingLine[],
 }
