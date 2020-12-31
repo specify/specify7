@@ -92,7 +92,7 @@
 //
 //
 
-"use strict";
+'use strict';
 
 const definitions :auto_mapper_definitions_interface = {
 	table_synonyms: {
@@ -101,7 +101,7 @@ const definitions :auto_mapper_definitions_interface = {
 				mapping_path_filter: ['determinations', 'determiner'],
 				synonyms: [
 					'determiner',
-					'who id'
+					'who id',
 				],
 			},
 			{
@@ -115,30 +115,30 @@ const definitions :auto_mapper_definitions_interface = {
 				synonyms: [
 					'cataloger',
 				],
-			}
+			},
 		],
 		Determination: [
 			{
 				mapping_path_filter: ['collectionobject', 'determinations'],
 				synonyms: [
-					'id'
-				]
+					'id',
+				],
 			},
 		],
 		CollectingEvent: [
 			{
 				mapping_path_filter: [],
 				synonyms: [
-					'collected'
-				]
-			}
+					'collected',
+				],
+			},
 		],
 	},
 	dont_match: {
 		Address: {
 			country: ['automapper'],
 			state: ['automapper'],
-		}
+		},
 	},
 	shortcuts: {
 		CollectionObject: {
@@ -149,9 +149,9 @@ const definitions :auto_mapper_definitions_interface = {
 						contains: [
 							'cataloged by',
 							'catalogued by',
-						]
+						],
 					},
-				}
+				},
 			],
 			suggestion: [
 				{
@@ -160,10 +160,10 @@ const definitions :auto_mapper_definitions_interface = {
 						contains: [
 							'cataloged by',
 							'catalogued by',
-						]
+						],
 					},
 				},
-			]
+			],
 		},
 		Determination: {
 			suggestion: [
@@ -172,10 +172,10 @@ const definitions :auto_mapper_definitions_interface = {
 					headers: {
 						contains: [
 							'determiner',
-						]
+						],
 					},
-				}
-			]
+				},
+			],
 		},
 	},
 	synonyms: {
@@ -184,18 +184,18 @@ const definitions :auto_mapper_definitions_interface = {
 				suggestion: {
 					headers: {
 						contains: [
-							'middle'
-						]
+							'middle',
+						],
 					},
 				},
 				automapper: {
 					headers: {
 						formatted_header_field_synonym: [
-							'middle'
-						]
+							'middle',
+						],
 					},
-				}
-			}
+				},
+			},
 		},
 		CollectingEvent: {
 			verbatimDate: {
@@ -204,9 +204,9 @@ const definitions :auto_mapper_definitions_interface = {
 						contains: [
 							'date verbatim',
 							'date collected verbatim',
-						]
+						],
 					},
-				}
+				},
 			},
 			startDate: {
 				suggestion: {
@@ -215,7 +215,7 @@ const definitions :auto_mapper_definitions_interface = {
 							'date',
 							'start',
 							'collected',
-						]
+						],
 					},
 				},
 			},
@@ -225,7 +225,7 @@ const definitions :auto_mapper_definitions_interface = {
 						contains: [
 							'end',
 							'date',
-						]
+						],
 					},
 				},
 			},
@@ -233,10 +233,10 @@ const definitions :auto_mapper_definitions_interface = {
 				automapper: {
 					headers: {
 						contains: [
-							'method'
-						]
+							'method',
+						],
 					},
-				}
+				},
 			},
 			stationfieldnumber: {
 				automapper: {
@@ -245,8 +245,8 @@ const definitions :auto_mapper_definitions_interface = {
 							/^(coll(ect(ing)?)?) (ev(ent)?|(#|n(o|um(er)?)?)|ev(ent)? (#|n(o|um(er)?)?))/,
 						],
 					},
-				}
-			}
+				},
+			},
 		},
 		Accession: {
 			accessionnumber: {
@@ -256,11 +256,11 @@ const definitions :auto_mapper_definitions_interface = {
 							/acc(ession)? (#|n(o|um(er)?)?)/,
 						],
 						string: [
-							'accession'
+							'accession',
 						],
 					},
-				}
-			}
+				},
+			},
 		},
 		Locality: {
 			maxElevation: {
@@ -268,56 +268,56 @@ const definitions :auto_mapper_definitions_interface = {
 					headers: {
 						contains: [
 							'max elev',
-							'max depth'
+							'max depth',
 						],
 					},
-				}
+				},
 			},
 			minElevation: {
 				automapper: {
 					headers: {
 						contains: [
 							'elev',
-							'depth'
-						]
+							'depth',
+						],
 					},
-				}
+				},
 			},
 			latitude1: {
 				automapper: {
 					headers: {
 						contains: [
-							'latitude 1'
-						]
+							'latitude 1',
+						],
 					},
-				}
+				},
 			},
 			latitude2: {
 				automapper: {
 					headers: {
 						contains: [
-							'latitude 2'
-						]
+							'latitude 2',
+						],
 					},
-				}
+				},
 			},
 			longitude1: {
 				automapper: {
 					headers: {
 						contains: [
-							'longitude 1'
-						]
+							'longitude 1',
+						],
 					},
-				}
+				},
 			},
 			longitude2: {
 				automapper: {
 					headers: {
 						contains: [
-							'longitude 2'
-						]
+							'longitude 2',
+						],
 					},
-				}
+				},
 			},
 			localityname: {
 				automapper: {
@@ -326,7 +326,7 @@ const definitions :auto_mapper_definitions_interface = {
 							'localitynum',
 						],
 					},
-				}
+				},
 			},
 			namedplace: {
 				automapper: {
@@ -335,7 +335,7 @@ const definitions :auto_mapper_definitions_interface = {
 							'named place',
 						],
 					},
-				}
+				},
 			},
 		},
 		Gift: {
@@ -344,10 +344,10 @@ const definitions :auto_mapper_definitions_interface = {
 					headers: {
 						contains: [
 							'comments',
-						]
+						],
 					},
-				}
-			}
+				},
+			},
 		},
 		CollectionObject: {
 			fieldNumber: {
@@ -356,23 +356,23 @@ const definitions :auto_mapper_definitions_interface = {
 						contains: [
 							'field #',
 							'field no',
-							'field num'
-						]
+							'field num',
+						],
 					},
-				}
+				},
 			},
 			catalogedDate: {
 				automapper: {
 					headers: {
 						contains: [
 							'cataloged date',
-							'catalogued date'
+							'catalogued date',
 						],
 						string: [
 							'cat date',
-						]
+						],
 					},
-				}
+				},
 			},
 			catalogNumber: {
 				automapper: {
@@ -392,10 +392,10 @@ const definitions :auto_mapper_definitions_interface = {
 							'no',
 							'num',
 							'number',
-						]
-					}
-				}
-			}
+						],
+					},
+				},
+			},
 		},
 		Geography: {
 			state: {
@@ -403,52 +403,52 @@ const definitions :auto_mapper_definitions_interface = {
 					headers: {
 						contains: [
 							'state',
-						]
+						],
 					},
-				}
+				},
 			},
 			continent: {
 				automapper: {
 					headers: {
 						contains: [
 							'continent',
-						]
+						],
 					},
-				}
-			}
+				},
+			},
 		},
 		Determination: {
 			determinedDate: {
 				suggestion: {
 					headers: {
 						contains: [
-							'date'
+							'date',
 						],
 					},
 				},
 				automapper: {
 					headers: {
 						formatted_header_field_synonym: [
-							'date'
-						]
-					}
-				}
+							'date',
+						],
+					},
+				},
 			},
 			typeStatusName: {
 				suggestion: {
 					headers: {
 						contains: [
-							'status'
+							'status',
 						],
 					},
 				},
 				automapper: {
 					headers: {
 						formatted_header_field_synonym: [
-							'status'
-						]
-					}
-				}
+							'status',
+						],
+					},
+				},
 			},
 		},
 		PrepType: {
@@ -457,12 +457,12 @@ const definitions :auto_mapper_definitions_interface = {
 					headers: {
 						contains: [
 							'prep ',
-							'preparation'
-						]
+							'preparation',
+						],
 					},
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 };
 
@@ -470,11 +470,13 @@ const definitions :auto_mapper_definitions_interface = {
 /* Method that converts all table names and field names in definitions to lower case */
 const definitions_to_lowercase = (definitions :auto_mapper_definitions_interface) :auto_mapper_definitions_interface => {
 
-	const keys_to_lower_case = (object :object, levels :number = 1) :object => (Object.fromEntries(
-		Object.entries(object).map(([key, value]) =>
-			[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value]
+	const keys_to_lower_case = (object :object, levels :number = 1) :object => (
+		Object.fromEntries(
+			Object.entries(object).map(([key, value]) =>
+				[key.toLowerCase(), levels > 1 ? keys_to_lower_case(value, levels - 1) : value],
+			),
 		)
-	));
+	);
 
 	const structure_depth :[structure_name :auto_mapper_definition_branches, depth :number][] = [
 		['table_synonyms', 1],
@@ -484,11 +486,11 @@ const definitions_to_lowercase = (definitions :auto_mapper_definitions_interface
 	];
 	structure_depth.forEach(([structure_name, depth]) =>
 		//@ts-ignore
-		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth)
+		definitions[structure_name] = keys_to_lower_case(definitions[structure_name], depth),
 	);
 
 	return definitions;
 
 };
 
-export = definitions_to_lowercase(definitions);
+export default definitions_to_lowercase(definitions);
