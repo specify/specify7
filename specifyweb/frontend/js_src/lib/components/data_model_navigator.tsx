@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const cache = require('./cache.tsx');
 const data_model_helper = require('./data_model_helper.tsx');
@@ -7,37 +7,39 @@ const data_model_storage = require('./data_model_storage.tsx');
 
 class data_model_navigator {
 
-	public static get_mapped_fields: (mapping_path_filter :mapping_path, skip_empty? :boolean)=>mappings_tree;
+	public static get_mapped_fields :(mapping_path_filter :mapping_path, skip_empty? :boolean) => mappings_tree;
 
 	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 	public static navigator({
-								callbacks,
-								recursive_payload = undefined,
-								internal_payload = {},
-								config: {
-									use_cache = false,
-									cache_name,
-									base_table_name,
-								}
-							} :navigator_parameters) :any /* returns the value returned by callbacks.get_final_data(internal_payload) */ {
+		callbacks,
+		recursive_payload = undefined,
+		internal_payload = {},
+		config: {
+			use_cache = false,
+			cache_name,
+			base_table_name,
+		},
+	} :navigator_parameters) :any /* returns the value returned by callbacks.get_final_data(internal_payload) */ {
 
 		let table_name = '';
 		let parent_table_name = '';
 		let parent_table_relationship_name = '';
 		let parent_path_element_name = '';
 
-		if (typeof recursive_payload === "undefined") {
-			if (typeof base_table_name === "undefined")
-				throw new Error("Base table needs to be specified for navigator to be able to loop though schema");
+		if (typeof recursive_payload === 'undefined') {
+			if (typeof base_table_name === 'undefined')
+				throw new Error('Base table needs to be specified for navigator to be able to loop though schema');
 			table_name = base_table_name;
 		}
 		else
-			({
-				table_name,
-				parent_table_name,
-				parent_table_relationship_name,
-				parent_path_element_name,
-			} = recursive_payload);
+			(
+				{
+					table_name,
+					parent_table_name,
+					parent_table_relationship_name,
+					parent_path_element_name,
+				} = recursive_payload
+			);
 
 		const callback_payload = {  // an object that is shared between navigator, navigator_instance and some callbacks
 			table_name,
@@ -60,7 +62,7 @@ class data_model_navigator {
 
 		const next_path_elements_data = callbacks.get_next_path_element(internal_payload, callback_payload);
 
-		if (typeof next_path_elements_data === "undefined")
+		if (typeof next_path_elements_data === 'undefined')
 			return callbacks.get_final_data(internal_payload);
 
 		let {
@@ -79,7 +81,7 @@ class data_model_navigator {
 			next_table_name = table_name;
 			next_parent_table_name = parent_table_name;
 		}
-		else if (typeof next_path_element !== "undefined" && next_path_element.is_relationship) {
+		else if (typeof next_path_element !== 'undefined' && next_path_element.is_relationship) {
 			next_table_name = next_path_element.table_name;
 			next_parent_table_name = table_name;
 		}
@@ -103,7 +105,7 @@ class data_model_navigator {
 							use_cache,
 							cache_name,
 						},
-					}
+					},
 				));
 
 		if (schema_navigator_results.length === 0)
@@ -117,16 +119,16 @@ class data_model_navigator {
 
 	/* Called by navigator if callback.iterate returned true */
 	private static navigator_instance({
-										 table_name,
-										 internal_payload,
-										 parent_table_name = '',
-										 parent_table_relationship_name = '',
-										 parent_path_element_name = '',
-										 use_cache = false,
-										 cache_name = false,
-										 callbacks,
-										 callback_payload,
-									 } :navigator_instance_parameters) :any /* the value returned by callbacks.get_instance_data(internal_payload, callback_payload) */ {
+		table_name,
+		internal_payload,
+		parent_table_name = '',
+		parent_table_relationship_name = '',
+		parent_path_element_name = '',
+		use_cache = false,
+		cache_name = false,
+		callbacks,
+		callback_payload,
+	} :navigator_instance_parameters) :any /* the value returned by callbacks.get_instance_data(internal_payload, callback_payload) */ {
 
 
 		let json_payload;
@@ -146,9 +148,11 @@ class data_model_navigator {
 
 		const parent_relationship_type =
 			(
-				typeof data_model_storage.tables[parent_table_name] !== "undefined" &&
-				typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] !== "undefined"
-			) ? (data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship).type : '';
+				typeof data_model_storage.tables[parent_table_name] !== 'undefined' &&
+				typeof data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] !== 'undefined'
+			) ? (
+				data_model_storage.tables[parent_table_name].fields[parent_table_relationship_name] as data_model_relationship
+			).type : '';
 		const children_are_to_many_elements =
 			data_model_helper.relationship_is_to_many(parent_relationship_type) &&
 			!data_model_helper.value_is_reference_item(parent_path_element_name);
@@ -174,7 +178,7 @@ class data_model_navigator {
 
 		if (cache_name !== false)
 			cache.set(cache_name, json_payload, data, {
-				bucket_type: 'session_storage'
+				bucket_type: 'session_storage',
 			});
 
 		return data;
@@ -184,11 +188,11 @@ class data_model_navigator {
 
 	/* Returns a mapping line data from mapping path */
 	public static get_mapping_line_data_from_mapping_path({
-															   mapping_path = [],
-															   iterate = true,
-															   use_cached = false,
-															   generate_last_relationship_data = true,
-														   } :get_mapping_line_data_from_mapping_path_parameters) :mapping_element_parameters[] {
+		mapping_path = [],
+		iterate = true,
+		use_cached = false,
+		generate_last_relationship_data = true,
+	} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
 		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
 			mapping_path,
@@ -219,12 +223,12 @@ class data_model_navigator {
 
 				let next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position];
 
-				if (typeof next_path_element_name == "undefined")
+				if (typeof next_path_element_name == 'undefined')
 					return undefined;
 
 				const formatted_tree_rank_name = data_model_helper.format_tree_rank(next_path_element_name);
 				const tree_rank_name = data_model_helper.get_name_from_tree_rank_name(formatted_tree_rank_name);
-				if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== "undefined")
+				if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
 					next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position] = formatted_tree_rank_name;
 
 				let next_real_path_element_name;
@@ -249,12 +253,12 @@ class data_model_navigator {
 
 				internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position + 1];
 
-				if (typeof internal_payload.next_mapping_path_element === "undefined")
-					internal_payload.default_value = "0";
+				if (typeof internal_payload.next_mapping_path_element === 'undefined')
+					internal_payload.default_value = '0';
 				else {
 					const formatted_tree_rank_name = data_model_helper.format_tree_rank(internal_payload.next_mapping_path_element);
 					const tree_rank_name = data_model_helper.get_name_from_tree_rank_name(formatted_tree_rank_name);
-					if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== "undefined")
+					if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
 						internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position] = formatted_tree_rank_name;
 
 					internal_payload.default_value = internal_payload.next_mapping_path_element;
@@ -270,7 +274,7 @@ class data_model_navigator {
 
 				internal_payload.mapping_element_type = 'to_many';
 
-				if (typeof internal_payload.next_mapping_path_element !== "undefined")
+				if (typeof internal_payload.next_mapping_path_element !== 'undefined')
 					internal_payload.mapped_fields.push(internal_payload.next_mapping_path_element);
 
 				const max_mapped_element_number = data_model_helper.get_max_to_many_value(internal_payload.mapped_fields);
@@ -326,7 +330,7 @@ class data_model_navigator {
 					table_name,
 					parent_table_name,
 					parent_relationship_type,
-				}
+				},
 			) :void {
 
 				for (
@@ -348,9 +352,9 @@ class data_model_navigator {
 							field_table_name === parent_table_name &&
 							(
 								(
-									typeof foreign_name !== "undefined" &&
-									typeof parent_table_name !== "undefined" &&
-									typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== "undefined" &&
+									typeof foreign_name !== 'undefined' &&
+									typeof parent_table_name !== 'undefined' &&
+									typeof data_model_storage.tables[parent_table_name].fields[foreign_name] !== 'undefined' &&
 									data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === field_name
 								) ||
 								(
@@ -388,13 +392,15 @@ class data_model_navigator {
 
 			},
 
-			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
-				mapping_element_type: internal_payload.mapping_element_type,
-				name: internal_payload.current_mapping_path_part,
-				friendly_name: data_model_storage.tables[table_name].table_friendly_name,
-				table_name,
-				fields_data: internal_payload.result_fields,
-			}),
+			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => (
+				{
+					mapping_element_type: internal_payload.mapping_element_type,
+					name: internal_payload.current_mapping_path_part,
+					friendly_name: data_model_storage.tables[table_name].table_friendly_name,
+					table_name,
+					fields_data: internal_payload.result_fields,
+				}
+			),
 
 			commit_instance_data(internal_payload, callback_payload :navigator_callback_payload) {
 				internal_payload.mapping_line_data.push(callback_payload.data);
@@ -412,7 +418,7 @@ class data_model_navigator {
 				use_cache: use_cached,
 				cache_name: 'mapping_line_data',
 				base_table_name: data_model_storage.base_table_name,
-			}
+			},
 		});
 
 	};

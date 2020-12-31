@@ -4,7 +4,7 @@
 *
 * */
 
-"use strict";
+'use strict';
 
 const data_model_storage = require('./data_model_storage.tsx');
 
@@ -15,7 +15,7 @@ class helper {
 	* This method is only called if schema localization does not have a friendly name for this field
 	* */
 	public static readonly get_friendly_name = (
-		name :string  // Original field name
+		name :string,  // Original field name
 	) :string /* Human friendly field name */ => {
 		name = name.replace(/[A-Z]/g, letter => ` ${letter}`);
 		name = name.trim();
@@ -34,7 +34,7 @@ class helper {
 	/* Finds the point at which the source array begins to have values different from the ones in the search array */
 	public static find_array_divergence_point<T>(
 		source :T[],  // the source array to use in the comparison
-		search :T[]  // the search array to use in the comparison
+		search :T[],  // the search array to use in the comparison
 	) :divergence_point {
 
 		if (source === null || search === null)
@@ -53,7 +53,7 @@ class helper {
 
 			const search_value = search[parseInt(index)];
 
-			if (typeof search_value === "undefined")
+			if (typeof search_value === 'undefined')
 				return parseInt(index);
 
 			if (source_value !== search_value)
@@ -69,7 +69,7 @@ class helper {
 	public static deconstruct_mapping_path(
 		mapping_path :mapping_path,  // combined mapping path
 		has_header :boolean = false,  // whether a mapping_path has mapping type and header name / static column value in it
-		detect_unmapped :boolean = true  // whether detect that a mapping path is incomplete
+		detect_unmapped :boolean = true,  // whether detect that a mapping path is incomplete
 	) :deconstructed_mapping_path {
 
 		mapping_path = [...mapping_path];
@@ -81,7 +81,7 @@ class helper {
 			mapping_type = mapping_path.pop() || '';
 		}
 
-		if (detect_unmapped && mapping_path[mapping_path.length - 1] === "0")
+		if (detect_unmapped && mapping_path[mapping_path.length - 1] === '0')
 			mapping_path = [];
 
 		return [mapping_path, mapping_type as mapping_type, header];
@@ -91,7 +91,7 @@ class helper {
 	/* Takes array of mappings with headers and returns the indexes of the duplicate headers (if three lines have the same mapping, the indexes of the second and the third lines are returned) */
 	public static find_duplicate_mappings(
 		array_of_mappings :mapping_path[],  // array of mappings as returned by mappings.get_array_of_mappings()
-		has_headers :boolean = false  // whether array of mappings contain mapping types and header names / static column values
+		has_headers :boolean = false,  // whether array of mappings contain mapping types and header names / static column values
 	) :duplicate_mappings {
 
 		const filtered_array_of_mappings = array_of_mappings.map(mapping_path => helper.deconstruct_mapping_path(mapping_path, has_headers)[0]);

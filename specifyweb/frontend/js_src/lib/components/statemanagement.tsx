@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-function assertExhaustive(x: never): never {
-    throw new Error("Non-exhaustive switch. Unhandled case:" + x);
+function assertExhaustive(x :never) :never {
+	throw new Error('Non-exhaustive switch. Unhandled case:' + x);
 }
 
 export {
-    assertExhaustive
+	assertExhaustive,
 };

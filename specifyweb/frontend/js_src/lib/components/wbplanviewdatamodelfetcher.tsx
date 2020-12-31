@@ -2,36 +2,122 @@
 * Fetches data model with tree ranks
 * */
 
-"use strict";
+'use strict';
 
-const schema = require('../schema.js');
-const domain = require('../domain.js');
+import schema from '../schema';
+import domain from '../domain';
 
-const html_generator = require('./html_generator.tsx');
-const helper = require('./helper.tsx');
-const cache = require('./cache.tsx');
+import helper from './helper';
+import cache from './cache';
 
-class data_model_fetcher {
+const fetching_parameters :fetching_parameters = {
 
-	/* Fetches the data model */
-	public static fetch(
-		fetching_parameters :fetching_parameters,
-		done_callback :(tables :data_model_tables, html_tables :string, ranks :data_model_ranks) => void  // Function that is called once data model is fetched. HTML list of tables and raw list of tables is passed as parameters
-	) :void {
+	// all required fields are not hidden, except for these, which are made not required
+	required_fields_to_hide: [
+		'timestampcreated',
+		'timestampmodified',
+		'createdbyagent',
+		'modifiedbyagent',
+		'collectionmemberid',
+		'rankid',
+		'defintion',
+		'definitionitem',
+		'ordernumber',
+		'isprimary',
+		'isaccepted',
+		'isloanable',
+		'treedef',
+	],
+	tables_to_hide: [
+		'definition',
+		'definitionitem',
+		'geographytreedef',
+		'geologictimeperiodtreedef',
+		'treedef',
+		...schema.orgHierarchy.filter(table_name =>
+			table_name !== 'collectionobject',
+		),
+	],
 
-		if (typeof localStorage !== "undefined") {
+	// forbid setting any of the tables that have these keywords as base tables
+	table_keywords_to_exclude: [
+		'Authorization',
+		'Variant',
+		'Attribute',
+		'Property',
+		'Item',
+		'Definition',
+		'Pnt',
+		'Type',
+	],
+
+	required_fields_to_be_made_optional: {
+		agent: ['agenttype'],
+		determination: ['iscurrent'],
+		loadpreparation: ['isresolved'],
+		locality: ['srclatlongunit'],
+	},
+
+};
+
+/* Fetches ranks for a particular table */
+const fetch_ranks = (
+	table_name :string,  // Official table name (from the data model)
+) :Promise<table_ranks_inline> =>
+	new Promise(resolve =>
+		(
+			domain as domain
+		).getTreeDef(table_name).done(tree_definition =>
+			tree_definition.rget('treedefitems').done(
+				treeDefItems =>
+					treeDefItems.fetch({limit: 0}).done(() =>
+						resolve([
+							table_name,
+							Object.values(treeDefItems.models).reduce((table_ranks, rank) => {
+
+								const rank_id = rank.get('id');
+
+								if (rank_id === 1)
+									return table_ranks;
+
+								const rank_name = rank.get('name');
+
+								// TODO: add complex logic for figuring out if rank is required or not
+								table_ranks[rank_name] = false;
+								// table_ranks[rank_name] = rank.get('isenforced');
+
+								return table_ranks;
+
+							}, {} as table_ranks_writable),
+						]),
+					),
+			),
+		),
+	);
+
+/* Fetches the data model */
+export default () :Promise<data_model_fetcher_return> =>
+	new Promise(resolve => {
+
+		if (typeof localStorage !== 'undefined') {
 			const tables = cache.get('data_model_fetcher', 'tables');
-			const html_tables = cache.get('data_model_fetcher', 'html_tables');
+			const list_of_base_tables = cache.get('data_model_fetcher', 'list_of_base_tables');
 			const ranks = cache.get('data_model_fetcher', 'ranks');
 
-			if (tables && html_tables && ranks)
-				return done_callback(tables, html_tables, ranks);
+			if (tables && list_of_base_tables && ranks)
+				return resolve({
+					tables,
+					list_of_base_tables,
+					ranks,
+				} as data_model_fetcher_return);
 		}
 
-		const table_previews :{[table_name :string] :string} = {};
+		const list_of_base_tables :data_model_list_of_tables = {};
 		const fetch_ranks_queue :Promise<table_ranks_inline>[] = [];
 
-		const tables = (Object.values(schema.models) as schema_model_table_data[]).reduce((tables, table_data) => {
+		const tables = Object.values((
+			schema as unknown as schema
+		).models).reduce((tables, table_data) => {
 
 
 			// @ts-ignore
@@ -53,7 +139,7 @@ class data_model_fetcher {
 				let field_name = field.name;
 				let friendly_name = field.getLocalizedName();
 
-				if (typeof friendly_name === "undefined")
+				if (typeof friendly_name === 'undefined')
 					friendly_name = helper.get_friendly_name(field_name);
 
 				field_name = field_name.toLowerCase();
@@ -70,7 +156,7 @@ class data_model_fetcher {
 					is_hidden = false;
 
 				if (
-					typeof fetching_parameters.required_fields_to_be_made_optional[table_name] !== "undefined" &&
+					typeof fetching_parameters.required_fields_to_be_made_optional[table_name] !== 'undefined' &&
 					fetching_parameters.required_fields_to_be_made_optional[table_name].includes(field_name)
 				)
 					is_required = false;
@@ -88,7 +174,7 @@ class data_model_fetcher {
 					const relationship = field as schema_model_table_relationship;
 
 					let foreign_name = relationship.otherSideName;
-					if (typeof foreign_name !== "undefined")
+					if (typeof foreign_name !== 'undefined')
 						foreign_name = foreign_name.toLowerCase();
 
 					const relationship_type = relationship.type;
@@ -121,12 +207,12 @@ class data_model_fetcher {
 			}
 
 			const ordered_fields = Object.fromEntries(Object.keys(fields).sort().map(field_name =>
-				[field_name, fields[field_name]]
+				[field_name, fields[field_name]],
 			));
 
 
 			if (!fetching_parameters.table_keywords_to_exclude.some(table_keyword_to_exclude => table_friendly_name.indexOf(table_keyword_to_exclude) !== -1))
-				table_previews[table_name] = table_friendly_name;
+				list_of_base_tables[table_name] = table_friendly_name;
 
 			tables[table_name] = {
 				table_friendly_name,
@@ -134,7 +220,7 @@ class data_model_fetcher {
 			};
 
 			if (has_relationship_with_definition && has_relationship_with_definition_item)
-				fetch_ranks_queue.push(data_model_fetcher.fetch_ranks(table_name));
+				fetch_ranks_queue.push(fetch_ranks(table_name));
 
 			return tables;
 
@@ -145,18 +231,17 @@ class data_model_fetcher {
 		Object.entries(tables).forEach(([table_name, table_data]) =>
 			(
 				Object.entries(table_data.fields).filter(([, {is_relationship}]) =>
-					is_relationship
-				) as [field_name:string, relationship_data:data_model_relationship][]
+					is_relationship,
+				) as [field_name :string, relationship_data :data_model_relationship][]
 			).filter(([, {table_name: relationship_table_name}]) =>
-				typeof tables[relationship_table_name] === "undefined"
-			).forEach(([relationship_name,]) => {
+				typeof tables[relationship_table_name] === 'undefined',
+			).forEach(([relationship_name]) => {
 				delete tables[table_name].fields[relationship_name];
-			})
+			}),
 		);
 
 
-		const html_tables = html_generator.tables(table_previews);
-		cache.set('data_model_fetcher', 'html_tables', html_tables);
+		cache.set('data_model_fetcher', 'list_of_base_tables', list_of_base_tables);
 		cache.set('data_model_fetcher', 'tables', tables);
 
 
@@ -167,56 +252,16 @@ class data_model_fetcher {
 			// TODO: remove this to enable all fields for trees (once upload plan starts supporting that)
 			resolved.forEach(([table_name]) =>
 				tables[table_name].fields = {
-					name: tables[table_name].fields['name']
-				}
+					name: tables[table_name].fields['name'],
+				},
 			);
 
 			cache.set('data_model_fetcher', 'ranks', ranks);
-			done_callback(tables as data_model_tables, html_tables, ranks);  // so there is no need to wait for ranks to finish fetching
+			resolve({
+				tables: tables as data_model_tables,
+				list_of_base_tables,
+				ranks,
+			});
 		});
 
-	};
-
-	/* Fetches ranks for a particular table */
-	private static readonly fetch_ranks = (
-		table_name :string,  // Official table name (from the data model)
-	) :Promise<table_ranks_inline> =>
-		new Promise((resolve) =>
-			(domain as domain).getTreeDef(table_name).done(tree_definition =>
-				tree_definition.rget('treedefitems').done(
-					treeDefItems =>
-						treeDefItems.fetch({limit: 0}).done(() =>
-							resolve([
-								table_name,
-								Object.values(treeDefItems.models).reduce((table_ranks, rank) => {
-
-									const rank_id = rank.get('id');
-
-									if (rank_id === 1)
-										return table_ranks;
-
-									const rank_name = rank.get('name');
-
-									// TODO: add complex logic for figuring out if rank is required or not
-									table_ranks[rank_name] = false;
-									// table_ranks[rank_name] = rank.get('isenforced');
-
-									return table_ranks;
-
-								}, {} as table_ranks_writable)
-							])
-						)
-				)
-			)
-		);
-
-	/* Returns a list of hierarchy tables */
-	public static readonly get_list_of_hierarchy_tables = () :string[] /* list of hierarchy tables */ =>
-		schema.orgHierarchy.filter(
-			(
-				table_name :string
-			) => table_name !== 'collectionobject'
-		);
-}
-
-export = data_model_fetcher;
+	});

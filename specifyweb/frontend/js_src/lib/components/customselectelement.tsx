@@ -1,19 +1,25 @@
-"use strict";
+'use strict';
 
-import icons from '../icons'
+import icons from '../icons';
 import React from 'react';
 
 const Icon = React.memo(({
 	is_relationship,
-	table_name
-}:CustomSelectElementIconProps)=>{
+	table_name,
+} :CustomSelectElementIconProps) => {
 	if (!is_relationship || table_name === '')
 		return null;
 
 	const table_icon_src = icons.getIcon(table_name);
-	if(table_icon_src === '/images/unknown.png'){
+	if (table_icon_src === '/images/unknown.png') {
 		const table_sub_name = table_name.substr(0, 2);
-		const color_hue = ((table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)) - ('a'.charCodeAt(0) * 2)) * 7.2;
+		const color_hue = (
+			(
+				table_sub_name[0].charCodeAt(0) + table_sub_name[1].charCodeAt(0)
+			) - (
+			'a'.charCodeAt(0) * 2
+			)
+		) * 7.2;
 		const color = `hsl(${color_hue}, 70%, 50%)`;
 		return <span
 			style={{backgroundColor: color}}
@@ -23,17 +29,17 @@ const Icon = React.memo(({
 		</span>;
 	}
 	else
-		return <span style={{backgroundImage: `url('${table_icon_src}')`}} />;
+		return <span style={{backgroundImage: `url('${table_icon_src}')`}}/>;
 });
 
 /* Generates a single option line */
 const Option = React.memo(({
-	option_name='',
+	option_name = '',
 	is_enabled = true,
 	is_relationship = false,
 	is_default = false,
-	table_name = ''
-} :CustomSelectElementOptionProps)=>{
+	table_name = '',
+} :CustomSelectElementOptionProps) => {
 
 	const classes = ['custom_select_option'];
 
@@ -49,22 +55,22 @@ const Option = React.memo(({
 
 	return <span className={classes.join(' ')} tabIndex={0}>
 		<span className="custom_select_option_icon">
-			<Icon is_relationship={is_relationship} table_name={table_name} />
+			<Icon is_relationship={is_relationship} table_name={table_name}/>
 		</span>
 		<span className="custom_select_option_label">{option_name}</span>
 	</span>;
-})
+});
 
 /* Generates a group of options */
 const OptionGroup = ({
-										select_group_label,
-										select_options_data
-									} :CustomSelectElementOptionGroupProps)=>
+	select_group_label,
+	select_options_data,
+} :CustomSelectElementOptionGroupProps) =>
 	<span className="custom_select_group">
 		<span className="custom_select_group_label">${select_group_label}</span>
-		${select_options_data.map(selection_option_data=>
-			<Option {...selection_option_data} />
-		)}
+		${select_options_data.map(selection_option_data =>
+		<Option {...selection_option_data} />,
+	)}
 	</span>;
 
 /* Generates a custom select element */
@@ -95,7 +101,7 @@ export function CustomSelectElement(
 	if (custom_select_type === 'opened_list')
 		header = <span className="custom_select_header">
 			<span className="custom_select_header_icon">
-				<Icon is_relationship={true} table_name={table_name} />
+				<Icon is_relationship={true} table_name={table_name}/>
 			</span>
 			<span className="custom_select_table_label">
 				{select_label}
@@ -104,24 +110,30 @@ export function CustomSelectElement(
 	else {
 
 		let default_icon = default_label !== '0' &&
-			<Icon is_relationship={true} table_name={table_name} />;
+			<Icon is_relationship={true} table_name={table_name}/>;
 
 		preview = <span className="custom_select_input" tabIndex={0}>
 			<span className="custom_select_input_icon">{default_icon}</span>
 			<span className="custom_select_input_label">{default_label}</span>
 		</span>;
 
-		first_row = (custom_select_type === 'closed_list' && custom_select_subtype !== 'to_many') &&
-			<Option is_default={default_label==='0'} />;
+		first_row = (
+			custom_select_type === 'closed_list' && custom_select_subtype !== 'to_many'
+			) &&
+			<Option is_default={default_label === '0'}/>;
 
 	}
 
-	const groups = (custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list') &&
-		select_groups_data.map(select_group_data=>
-			<OptionGroup {...select_group_data} />
+	const groups = (
+		custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list'
+		) &&
+		select_groups_data.map(select_group_data =>
+			<OptionGroup {...select_group_data} />,
 		);
 
-	const custom_select_options = (first_row !== null || groups !== null) &&
+	const custom_select_options = (
+		first_row !== null || groups !== null
+		) &&
 		<span className="custom_select_options">
 			{first_row}
 			{groups}
@@ -129,8 +141,8 @@ export function CustomSelectElement(
 
 
 	return <span
-			className="custom_select"
-			title="{select_label}">
+		className="custom_select"
+		title="{select_label}">
 		{header}
 		{preview}
 		{custom_select_options}
@@ -140,7 +152,7 @@ export function CustomSelectElement(
 
 /* Generates a suggestion box */
 export const SuggestionBox = (
-	select_options_data :CustomSelectElementOptionProps[]
+	select_options_data :CustomSelectElementOptionProps[],
 ) =>
 	<span className="custom_select_suggestions">
 		<OptionGroup
@@ -159,7 +171,7 @@ export const SuggestionBox = (
 export function set_event_listeners(
 	container :HTMLDivElement,  // the container that is going to house all of the custom select elements
 	change_callback :(payload :custom_select_element_change_payload) => void,  // the function that would receive the change_payload returned by change_selected_option() whenever there was an option value change
-	suggestions_callback :(select_element :HTMLElement, custom_select_option :HTMLElement) => void  // the function that would receive {DOMElement} current_list and {DOMElement} selected_option whenever a list is opened
+	suggestions_callback :(select_element :HTMLElement, custom_select_option :HTMLElement) => void,  // the function that would receive {DOMElement} current_list and {DOMElement} selected_option whenever a list is opened
 ) :void {
 	container.addEventListener('click', e => {
 
@@ -190,7 +202,7 @@ export function set_event_listeners(
 				// scroll the list down to selected option
 				const selected_option = get_selected_options(current_list)[0];
 
-				if (typeof selected_option !== "undefined") {
+				if (typeof selected_option !== 'undefined') {
 					const options_container = current_list.getElementsByClassName('custom_select_options')[0] as HTMLElement;
 
 					if (  // scroll down if
@@ -212,7 +224,7 @@ export function set_event_listeners(
 			const change_payload = change_selected_option(current_list, custom_select_option);
 			close_list(current_list);
 
-			if (typeof change_payload === "object")
+			if (typeof change_payload === 'object')
 				change_callback(change_payload);
 
 		}
@@ -225,7 +237,7 @@ export function set_event_listeners(
 * */
 export function change_selected_option(
 	target_list :HTMLSpanElement,  // the list that houses target_option
-	target_option :HTMLSpanElement | String  // {HTMLSpanElement} the option or {string} the name of the option that was clicked
+	target_option :HTMLSpanElement | String,  // {HTMLSpanElement} the option or {string} the name of the option that was clicked
 ) :custom_select_element_change_payload | undefined {
 
 	// if target_option is option's name, find option element
@@ -287,7 +299,7 @@ export function change_selected_option(
 
 	// update custom_select_input
 	const custom_select_inputs = Object.values(target_list.children).filter(element =>
-		element.classList.contains('custom_select_input')
+		element.classList.contains('custom_select_input'),
 	);
 
 	if (custom_select_inputs.length !== 0) {

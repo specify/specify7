@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-import React from "react";
+import React from 'react';
 import $ from 'jquery';
 
 export const ModalDialog = (props :ModalDialogProps) => {
@@ -14,12 +14,12 @@ export const ModalDialog = (props :ModalDialogProps) => {
 				{
 					text: 'Cancel', click: function () {
 						$(this).remove();
-					}
-				}
+					},
+				},
 			],
-			...props.properties
+			...props.properties,
 		});
-		if (typeof props.onLoadCallback !== "undefined")
+		if (typeof props.onLoadCallback !== 'undefined')
 			props.onLoadCallback(dialog);
 
 		return () => {
@@ -27,9 +27,11 @@ export const ModalDialog = (props :ModalDialogProps) => {
 		};
 	});
 
-	return (<div ref={dialog_ref}>
-		{props.children}
-	</div>);
+	return (
+		<div ref={dialog_ref}>
+			{props.children}
+		</div>
+	);
 };
 
 //Loading Screen
@@ -41,7 +43,7 @@ export const LoadingScreen = () =>
 		onLoadCallback={LoadingScreen_onLoadCallback}
 		properties={{
 			title: 'Loading',
-			buttons: []
+			buttons: [],
 		}}
 	>
 		<div className="progress-bar"/>
