@@ -10,16 +10,17 @@ class data_model_navigator {
 	public static get_mapped_fields :(mapping_path_filter :mapping_path, skip_empty? :boolean) => mappings_tree;
 
 	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
-	public static navigator({
+	public static navigator<RETURN_STRUCTURE, INTERNAL_STATE, INTERNAL_PROPS>({
 		callbacks,
 		recursive_payload = undefined,
-		internal_payload = {},
+		internal_state,
+		internal_props,
 		config: {
 			use_cache = false,
 			cache_name,
 			base_table_name,
 		},
-	} :navigator_parameters) :any /* returns the value returned by callbacks.get_final_data(internal_payload) */ {
+	} :navigator_parameters<RETURN_STRUCTURE, INTERNAL_STATE, INTERNAL_PROPS>) :RETURN_STRUCTURE[] /* returns the value returned by callbacks.get_final_data(internal_payload) */ {
 
 		let table_name = '';
 		let parent_table_name = '';
@@ -46,10 +47,11 @@ class data_model_navigator {
 		};
 
 
-		if (callbacks.iterate(internal_payload))
-			data_model_navigator.navigator_instance({
+		if (callbacks.iterate(internal_state, internal_props))
+			data_model_navigator.navigator_instance<RETURN_STRUCTURE, INTERNAL_STATE, INTERNAL_PROPS>({
 				table_name,
-				internal_payload,
+				internal_state,
+				internal_props,
 				parent_table_name,
 				parent_table_relationship_name,
 				parent_path_element_name,
@@ -60,10 +62,10 @@ class data_model_navigator {
 			});
 
 
-		const next_path_elements_data = callbacks.get_next_path_element(internal_payload, callback_payload);
+		const next_path_elements_data = callbacks.get_next_path_element(internal_state, internal_props, callback_payload);
 
 		if (typeof next_path_elements_data === 'undefined')
-			return callbacks.get_final_data(internal_payload);
+			return callbacks.get_final_data(internal_state, internal_props);
 
 		let {
 			next_path_element_name,
@@ -87,11 +89,10 @@ class data_model_navigator {
 		}
 
 
-		const schema_navigator_results = [];
+		let schema_navigator_results:RETURN_STRUCTURE[] = [];
 
 		if (next_table_name !== '')
-			schema_navigator_results.push(
-				data_model_navigator.navigator(
+			schema_navigator_results = data_model_navigator.navigator(
 					{
 						callbacks,
 						recursive_payload: {
@@ -100,27 +101,27 @@ class data_model_navigator {
 							parent_table_relationship_name: next_real_path_element_name,
 							parent_path_element_name: next_path_element_name,
 						},
-						internal_payload,
+						internal_state,
+						internal_props,
 						config: {
 							use_cache,
 							cache_name,
 						},
 					},
-				));
+				);
 
 		if (schema_navigator_results.length === 0)
-			return callbacks.get_final_data(internal_payload);
-		if (schema_navigator_results.length === 1)
-			return schema_navigator_results[0];
+			return callbacks.get_final_data(internal_state, internal_props);
 		else
 			return schema_navigator_results;
 
 	};
 
 	/* Called by navigator if callback.iterate returned true */
-	private static navigator_instance({
+	private static navigator_instance<RETURN_STRUCTURE, INTERNAL_STATE, INTERNAL_PROPS>({
 		table_name,
-		internal_payload,
+		internal_state,
+		internal_props,
 		parent_table_name = '',
 		parent_table_relationship_name = '',
 		parent_path_element_name = '',
@@ -128,7 +129,7 @@ class data_model_navigator {
 		cache_name = false,
 		callbacks,
 		callback_payload,
-	} :navigator_instance_parameters) :any /* the value returned by callbacks.get_instance_data(internal_payload, callback_payload) */ {
+	} :navigator_instance_parameters<RETURN_STRUCTURE, INTERNAL_STATE, INTERNAL_PROPS>) :any /* the value returned by callbacks.get_instance_data(internal_payload, callback_payload) */ {
 
 
 		let json_payload;
@@ -140,11 +141,15 @@ class data_model_navigator {
 			const cached_data = cache.get(cache_name, json_payload);
 			if (cached_data) {
 				callback_payload.data = cached_data;
-				return callbacks.commit_instance_data(internal_payload, callback_payload);
+				return callbacks.commit_instance_data(internal_state, internal_props, callback_payload);
 			}
 		}
 
-		callbacks.navigator_instance_pre(internal_payload, callback_payload);
+		if(callbacks.should_custom_select_element_be_open(internal_state, internal_props, callback_payload)){
+
+		}
+
+		callbacks.navigator_instance_pre(internal_state, internal_props, callback_payload);
 
 		const parent_relationship_type =
 			(
@@ -165,16 +170,16 @@ class data_model_navigator {
 		callback_payload.parent_table_name = parent_table_name;
 
 		if (children_are_to_many_elements)
-			callbacks.handle_to_many_children(internal_payload, callback_payload);
+			callbacks.handle_to_many_children(internal_state, internal_props, callback_payload);
 		else if (children_are_ranks)
-			callbacks.handle_tree_ranks(internal_payload, callback_payload);
+			callbacks.handle_tree_ranks(internal_state, internal_props, callback_payload);
 		else
-			callbacks.handle_simple_fields(internal_payload, callback_payload);
+			callbacks.handle_simple_fields(internal_state, internal_props, callback_payload);
 
 
-		const data = callbacks.get_instance_data(internal_payload, callback_payload);
+		const data = callbacks.get_instance_data(internal_state, internal_props, callback_payload);
 		callback_payload.data = data;
-		callbacks.commit_instance_data(internal_payload, callback_payload);
+		callbacks.commit_instance_data(internal_state, internal_props, callback_payload);
 
 		if (cache_name !== false)
 			cache.set(cache_name, json_payload, data, {
@@ -189,41 +194,48 @@ class data_model_navigator {
 	/* Returns a mapping line data from mapping path */
 	public static get_mapping_line_data_from_mapping_path({
 		mapping_path = [],
+		open_path_element_index,
 		iterate = true,
 		use_cached = false,
 		generate_last_relationship_data = true,
 		custom_select_type,
 	} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
-		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
-			mapping_path,
-			generate_last_relationship_data,
+		const initial_internal_state :get_mapping_line_data_from_mapping_path_internal_state = {
 			mapping_path_position: -1,
-			iterate,
 			mapping_line_data: [],
 			custom_select_type,
+			mapped_fields: [],
+			result_fields: {},
 		};
 
-		const callbacks :navigator_callbacks = {
+		const internal_props :get_mapping_line_data_from_mapping_path_internal_props = {
+			mapping_path,
+			generate_last_relationship_data,
+			iterate,
+			open_path_element_index,
+		};
 
-			iterate: (internal_payload) =>
+		const callbacks :navigator_callbacks<MappingElementProps, get_mapping_line_data_from_mapping_path_internal_state, get_mapping_line_data_from_mapping_path_internal_props> = {
+
+			iterate: (internal_state, internal_props) =>
 				(
-					internal_payload.iterate ||
-					internal_payload.mapping_path.length === 0 ||
-					internal_payload.mapping_path_position + 1 === internal_payload.mapping_path.length
+					internal_props.iterate ||
+					internal_props.mapping_path.length === 0 ||
+					internal_state.mapping_path_position + 1 === internal_props.mapping_path.length
 				) && (
-					internal_payload.generate_last_relationship_data ||
-					internal_payload.mapping_path_position + 1 !== internal_payload.mapping_path.length
+					internal_props.generate_last_relationship_data ||
+					internal_state.mapping_path_position + 1 !== internal_props.mapping_path.length
 				),
 
-			get_next_path_element(internal_payload, {table_name}) {
+			get_next_path_element(internal_state, internal_props, {table_name}) {
 
-				if (internal_payload.mapping_path_position === -2)
-					internal_payload.mapping_path_position = internal_payload.mapping_path.length - 1;
+				if (internal_state.mapping_path_position === -2)
+					internal_state.mapping_path_position = internal_props.mapping_path.length - 1;
 
-				internal_payload.mapping_path_position++;
+				internal_state.mapping_path_position++;
 
-				let next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position];
+				let next_path_element_name = internal_props.mapping_path[internal_state.mapping_path_position];
 
 				if (typeof next_path_element_name == 'undefined')
 					return undefined;
@@ -231,11 +243,11 @@ class data_model_navigator {
 				const formatted_tree_rank_name = data_model_helper.format_tree_rank(next_path_element_name);
 				const tree_rank_name = data_model_helper.get_name_from_tree_rank_name(formatted_tree_rank_name);
 				if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
-					next_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position] = formatted_tree_rank_name;
+					next_path_element_name = internal_props.mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
 
 				let next_real_path_element_name;
 				if (data_model_helper.value_is_tree_rank(next_path_element_name) || data_model_helper.value_is_reference_item(next_path_element_name))
-					next_real_path_element_name = internal_payload.mapping_path[internal_payload.mapping_path_position - 1];
+					next_real_path_element_name = internal_props.mapping_path[internal_state.mapping_path_position - 1];
 				else
 					next_real_path_element_name = next_path_element_name;
 
@@ -247,54 +259,59 @@ class data_model_navigator {
 
 			},
 
-			navigator_instance_pre(internal_payload, {table_name}) :void {
+			should_custom_select_element_be_open: (internal_state, internal_props) =>
+				internal_state.is_open =
+					internal_props.open_path_element_index === internal_state.mapping_path_position ||
+					['opened_list','suggestion_list'].indexOf(internal_state.custom_select_type) !== -1,
 
-				internal_payload.custom_select_subtype = 'simple';
+			navigator_instance_pre(internal_state, internal_props, {table_name}) {
 
-				const local_mapping_path = internal_payload.mapping_path.slice(0, internal_payload.mapping_path_position + 1);
+				internal_state.custom_select_subtype = 'simple';
 
-				internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position + 1];
+				const local_mapping_path = internal_props.mapping_path.slice(0, internal_state.mapping_path_position + 1);
 
-				if (typeof internal_payload.next_mapping_path_element === 'undefined')
-					internal_payload.default_value = '0';
+				internal_state.next_mapping_path_element = internal_props.mapping_path[internal_state.mapping_path_position + 1];
+
+				if (typeof internal_state.next_mapping_path_element === 'undefined')
+					internal_state.default_value = '0';
 				else {
-					const formatted_tree_rank_name = data_model_helper.format_tree_rank(internal_payload.next_mapping_path_element);
+					const formatted_tree_rank_name = data_model_helper.format_tree_rank(internal_state.next_mapping_path_element);
 					const tree_rank_name = data_model_helper.get_name_from_tree_rank_name(formatted_tree_rank_name);
 					if (data_model_helper.table_is_tree(table_name) && typeof data_model_storage.ranks[table_name][tree_rank_name] !== 'undefined')
-						internal_payload.next_mapping_path_element = internal_payload.mapping_path[internal_payload.mapping_path_position] = formatted_tree_rank_name;
+						internal_state.next_mapping_path_element = internal_props.mapping_path[internal_state.mapping_path_position] = formatted_tree_rank_name;
 
-					internal_payload.default_value = internal_payload.next_mapping_path_element;
+					internal_state.default_value = internal_state.next_mapping_path_element;
 
 				}
 
-				internal_payload.current_mapping_path_part = internal_payload.mapping_path[internal_payload.mapping_path_position];
-				internal_payload.result_fields = {};
-				internal_payload.mapped_fields = Object.keys(data_model_navigator.get_mapped_fields(local_mapping_path));
+				internal_state.current_mapping_path_part = internal_props.mapping_path[internal_state.mapping_path_position];
+				internal_state.result_fields = {};
+				internal_state.mapped_fields = Object.keys(data_model_navigator.get_mapped_fields(local_mapping_path));
 			},
 
-			handle_to_many_children(internal_payload, {table_name}) :void {
+			handle_to_many_children(internal_state, _, {table_name}) {
 
-				internal_payload.mapping_element_subtype = 'to_many';
+				internal_state.custom_select_subtype = 'to_many';
 
-				if (typeof internal_payload.next_mapping_path_element !== 'undefined')
-					internal_payload.mapped_fields.push(internal_payload.next_mapping_path_element);
+				if (typeof internal_state.next_mapping_path_element !== 'undefined')
+					internal_state.mapped_fields.push(internal_state.next_mapping_path_element);
 
-				const max_mapped_element_number = data_model_helper.get_max_to_many_value(internal_payload.mapped_fields);
+				const max_mapped_element_number = data_model_helper.get_max_to_many_value(internal_state.mapped_fields);
 
 				for (let i = 1; i <= max_mapped_element_number; i++) {
 					const mapped_object_name = data_model_helper.format_reference_item(i);
 
-					internal_payload.result_fields[mapped_object_name] = {
+					internal_state.result_fields[mapped_object_name] = {
 						field_friendly_name: mapped_object_name,
 						is_enabled: true,
 						is_required: false,
 						is_hidden: false,
 						is_relationship: true,
-						is_default: mapped_object_name === internal_payload.default_value,
+						is_default: mapped_object_name === internal_state.default_value,
 						table_name,
 					};
 				}
-				internal_payload.result_fields.add = {
+				internal_state.result_fields.add = {
 					field_friendly_name: 'Add',
 					is_enabled: true,
 					is_required: false,
@@ -306,20 +323,20 @@ class data_model_navigator {
 
 			},
 
-			handle_tree_ranks(internal_payload, {table_name}) :void {
+			handle_tree_ranks(internal_state, _, {table_name}) {
 
-				internal_payload.mapping_element_subtype = 'tree';
+				internal_state.custom_select_subtype = 'tree';
 
-				const table_ranks = data_model_storage.ranks[table_name];
+				const table_ranks = data_model_storage.ranks[table_name] as table_ranks;
 				for (const [rank_name, is_required] of Object.entries(table_ranks)) {
 					const formatted_rank_name = data_model_helper.format_tree_rank(rank_name);
-					internal_payload.result_fields[formatted_rank_name] = {
+					internal_state.result_fields[formatted_rank_name] = {
 						field_friendly_name: rank_name,
 						is_enabled: true,
 						is_required,
 						is_hidden: false,
 						is_relationship: true,
-						is_default: formatted_rank_name === internal_payload.default_value,
+						is_default: formatted_rank_name === internal_state.default_value,
 						table_name,
 					};
 				}
@@ -327,13 +344,14 @@ class data_model_navigator {
 			},
 
 			handle_simple_fields(
-				internal_payload,
+				internal_state,
+				_,
 				{
 					table_name,
 					parent_table_name,
 					parent_relationship_type,
 				},
-			) :void {
+			) {
 
 				for (
 					const [
@@ -360,7 +378,7 @@ class data_model_navigator {
 									data_model_storage.tables[parent_table_name].fields[foreign_name].foreign_name === field_name
 								) ||
 								(
-									data_model_storage.tables[table_name].fields[field_name].foreign_name === internal_payload.current_mapping_path_part
+									data_model_storage.tables[table_name].fields[field_name].foreign_name === internal_state.current_mapping_path_part
 								)
 							)
 						) ||
@@ -373,13 +391,13 @@ class data_model_navigator {
 
 
 					const is_enabled =  // disable field
-						internal_payload.mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
+						internal_state.mapped_fields.indexOf(field_name) === -1 ||  // if it is mapped
 						is_relationship;  // or is a relationship
 
 
-					const is_default = field_name === internal_payload.default_value;
+					const is_default = field_name === internal_state.default_value;
 
-					internal_payload.result_fields[field_name] = {
+					internal_state.result_fields[field_name] = {
 						field_friendly_name: friendly_name,
 						is_enabled,
 						is_required,
@@ -394,17 +412,18 @@ class data_model_navigator {
 
 			},
 
-			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
-				custom_select_type: internal_payload.custom_select_type,
-				custom_select_subtype: internal_payload.mapping_element_subtype,
-				name: internal_payload.current_mapping_path_part,
+			get_instance_data: (internal_state, _, {table_name} :navigator_callback_payload) => ({
+				custom_select_type: internal_state.custom_select_type,
+				custom_select_subtype: internal_state.custom_select_subtype,
+				name: internal_state.current_mapping_path_part,
 				friendly_name: data_model_storage.tables[table_name].table_friendly_name,
 				table_name,
-				fields_data: internal_payload.result_fields,
+				fields_data: internal_state.result_fields,
+				is_open: internal_state.is_open
 			}),
 
-			commit_instance_data(internal_payload, callback_payload :navigator_callback_payload) {
-				internal_payload.mapping_line_data.push(callback_payload.data);
+			commit_instance_data(internal_state, _, callback_payload :navigator_callback_payload) {
+				internal_state.mapping_line_data.push(callback_payload.data);
 				return callback_payload.data;
 			},
 
@@ -414,7 +433,8 @@ class data_model_navigator {
 
 		return data_model_navigator.navigator({
 			callbacks,
-			internal_payload,
+			initial_internal_state,
+			internal_props,
 			config: {
 				use_cache: use_cached,
 				cache_name: 'mapping_line_data',
