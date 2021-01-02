@@ -21,7 +21,6 @@ export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
 		if (this.state.has_error)
 			return <ModalDialog properties={{
 				title: 'Unexpected Error',
-				width: 'auto',
 				buttons: [
 					{
 						text: 'Reload', click: function () {

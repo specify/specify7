@@ -9,6 +9,7 @@ export const ModalDialog = (props :ModalDialogProps) => {
 	React.useEffect(() => {
 		const dialog = $(dialog_ref).dialog({
 			modal: true,
+			width: 'auto',
 			close: () => dialog.remove(),
 			buttons: [
 				{
