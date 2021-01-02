@@ -4,6 +4,7 @@ import navigation from './navigation';
 
 const Backbone = require('backbone');
 const ReactDOM = require('react-dom');
+const navigation = require('../navigation.js');
 const WBPlanView = require('./components/wbplanview.tsx');
 
 module.exports = Backbone.View.extend({
@@ -14,6 +15,7 @@ module.exports = Backbone.View.extend({
         this.mappingIsTemplated = this.wb.get('ownerPermissionLevel')===1;
     },
     render(){
+        navigation.addUnloadProtect(this, 'This mapping has not been saved.');
         ReactDOM.render(<WBPlanView
             wb={this.wb}
             wbtemplatePromise={this.wbtemplatePromise}
@@ -28,5 +30,6 @@ module.exports = Backbone.View.extend({
     remove(){
         ReactDOM.unmountComponentAtNode(this.el);
         Backbone.View.prototype.remove.call(this);
+        navigation.addUnloadProtect(this, 'This mapping has not been saved.');
     }
 });

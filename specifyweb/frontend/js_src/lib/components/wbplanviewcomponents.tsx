@@ -56,7 +56,7 @@ export const MappingLine = ({
 	</div>;
 
 /* Generates a mapping path */
-const MappingPath = ({
+export const MappingPath = ({
 	mappings_line_data,
 } :MappingPathProps) =>
 	<>

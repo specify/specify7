@@ -5,6 +5,35 @@ type mapping_type = Readonly<'existing_header' | 'new_column' | 'new_static_colu
 type relationship_type = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
 
 
+interface WBPlanViewMapperBaseProps {
+	readonly mapping_is_templated :boolean,
+	readonly show_hidden_fields :boolean,
+	readonly show_mapping_view :boolean,
+	readonly base_table_name :string,
+	readonly new_header_id :number,  // the index that would be shown in the header name the next time the user presses `New Column`
+	readonly lines :MappingLine[],
+	readonly mapping_view :mapping_path,
+	readonly validation_results :mapping_path[],
+}
+
+interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps, Omit<data_model_fetcher_return, 'list_of_base_tables'> {
+	readonly mapper_dispatch: (action:MappingActions)=>void,
+}
+
+interface MappingsControlPanelProps {
+	show_hidden_fields: boolean,
+}
+
+interface FormatValidationResultsProps {
+	validation_results: WBPlanViewMapperProps['validation_results']
+}
+
+interface MappingViewProps {
+	mapping_path: mapping_path
+}
+
+
+
 interface header_data {
 	readonly mapping_type :mapping_type,
 	header_name :string
@@ -26,6 +55,7 @@ interface get_mapping_line_data_from_mapping_path_internal_payload {
 	readonly mapping_path_position :number,
 	readonly iterate :boolean,
 	readonly mapping_line_data :[],
+	readonly custom_select_type:custom_select_type,
 }
 
 interface get_mapping_path_parameters {
@@ -42,6 +72,7 @@ interface MappingLine {
 	readonly type :mapping_type,
 	readonly name :string,
 	readonly mapping_path :mapping_path,
+	readonly is_focused? : boolean,
 }
 
 

@@ -11,29 +11,53 @@ type custom_select_subtype = 'simple' | 'to_many' | 'tree'  // the type of selec
 type default_value = '0'
 
 interface CustomSelectElementIconProps {
-	is_relationship :boolean,  // False only if icon is going to be used next to an option label and option is not a relationship
-	table_name :string  // The name of the table to generate icon for
+	is_relationship? :boolean,  // False only if icon is going to be used next to an option label and option is not a relationship
+	table_name? :string  // The name of the table to generate icon for
 }
 
 interface CustomSelectElementOptionProps {
 	readonly option_name? :string,  // the name of the option. Would be used as a label (visible to the user)
-	is_enabled? :boolean,  // True if option can be selected. False if option can not be selected because it was already selected
+	readonly is_enabled? :boolean,  // True if option can be selected. False if option can not be selected because it was already selected
 	readonly is_relationship? :boolean,  // whether the option is a relationship (False for fields, true for relationships, tree ranks and reference items)
 	readonly is_default? :boolean,  // whether the option is currently selected
 	readonly table_name? :string,  // the name of the table this option represents
+	readonly handleClick? :handleChange,
 }
+
+type handleChange = (new_value:string)=>void;
 
 interface CustomSelectElementOptionGroupProps {
 	readonly select_group_label :string,  // group label (shown to the user)
 	readonly select_options_data :CustomSelectElementOptionProps[]  // list of options data. See custom_select_element.get_select_option_html() for the data structure
+	readonly handleClick? :handleChange,
 }
 
-interface CustomSelectElementProps {
-	readonly select_label? :string,  // the label to sue for the element
-	readonly select_groups_data :CustomSelectElementOptionGroupProps[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+interface CustomSelectElementPropsBase {
+	readonly select_label? :string,  // the label to use for the element
 	readonly custom_select_type :custom_select_type,
-	readonly custom_select_subtype :custom_select_subtype,
+	readonly custom_select_subtype? :custom_select_subtype,
+	readonly default_option?: undefined|CustomSelectElementOptionProps,
+	readonly is_open: boolean,
+
+	readonly handleOpen?: ()=>void,
+	readonly handleClose?: ()=>void,
+	readonly custom_select_option_groups?: CustomSelectElementOptionGroupProps[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+	readonly handleChange?: handleChange
 }
+
+interface CustomSelectElementPropsClosed extends CustomSelectElementPropsBase {
+	readonly handleOpen: ()=>void,
+	readonly is_open: false,
+}
+
+interface CustomSelectElementPropsOpen extends CustomSelectElementPropsBase {
+	readonly custom_select_option_groups: CustomSelectElementOptionGroupProps[],  // list of option group objects. See custom_select_element.get_select_group_html() for more info
+	readonly handleChange: (new_value:string)=>void
+	readonly handleClose: ()=>void,
+	readonly is_open: true
+}
+
+type CustomSelectElementProps = CustomSelectElementPropsClosed | CustomSelectElementPropsOpen;
 
 interface custom_select_element_change_payload {
 	readonly changed_list :HTMLSpanElement,  // the list that was changed

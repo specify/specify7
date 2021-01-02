@@ -192,6 +192,7 @@ class data_model_navigator {
 		iterate = true,
 		use_cached = false,
 		generate_last_relationship_data = true,
+		custom_select_type,
 	} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
 		const internal_payload :get_mapping_line_data_from_mapping_path_internal_payload = {
@@ -200,6 +201,7 @@ class data_model_navigator {
 			mapping_path_position: -1,
 			iterate,
 			mapping_line_data: [],
+			custom_select_type,
 		};
 
 		const callbacks :navigator_callbacks = {
@@ -247,7 +249,7 @@ class data_model_navigator {
 
 			navigator_instance_pre(internal_payload, {table_name}) :void {
 
-				internal_payload.mapping_element_type = 'simple';
+				internal_payload.custom_select_subtype = 'simple';
 
 				const local_mapping_path = internal_payload.mapping_path.slice(0, internal_payload.mapping_path_position + 1);
 
@@ -272,7 +274,7 @@ class data_model_navigator {
 
 			handle_to_many_children(internal_payload, {table_name}) :void {
 
-				internal_payload.mapping_element_type = 'to_many';
+				internal_payload.mapping_element_subtype = 'to_many';
 
 				if (typeof internal_payload.next_mapping_path_element !== 'undefined')
 					internal_payload.mapped_fields.push(internal_payload.next_mapping_path_element);
@@ -306,7 +308,7 @@ class data_model_navigator {
 
 			handle_tree_ranks(internal_payload, {table_name}) :void {
 
-				internal_payload.mapping_element_type = 'tree';
+				internal_payload.mapping_element_subtype = 'tree';
 
 				const table_ranks = data_model_storage.ranks[table_name];
 				for (const [rank_name, is_required] of Object.entries(table_ranks)) {
@@ -392,15 +394,14 @@ class data_model_navigator {
 
 			},
 
-			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => (
-				{
-					mapping_element_type: internal_payload.mapping_element_type,
-					name: internal_payload.current_mapping_path_part,
-					friendly_name: data_model_storage.tables[table_name].table_friendly_name,
-					table_name,
-					fields_data: internal_payload.result_fields,
-				}
-			),
+			get_instance_data: (internal_payload, {table_name} :navigator_callback_payload) => ({
+				custom_select_type: internal_payload.custom_select_type,
+				custom_select_subtype: internal_payload.mapping_element_subtype,
+				name: internal_payload.current_mapping_path_part,
+				friendly_name: data_model_storage.tables[table_name].table_friendly_name,
+				table_name,
+				fields_data: internal_payload.result_fields,
+			}),
 
 			commit_instance_data(internal_payload, callback_payload :navigator_callback_payload) {
 				internal_payload.mapping_line_data.push(callback_payload.data);

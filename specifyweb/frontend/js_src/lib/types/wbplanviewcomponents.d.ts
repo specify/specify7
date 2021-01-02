@@ -1,5 +1,5 @@
 interface ListOfBaseTablesProps {
-	list_of_tables :string[]  // a dictionary like table_name==>table_friendly_name
+	list_of_tables: data_model_list_of_tables
 }
 
 interface html_generator_field_data {

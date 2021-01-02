@@ -22,64 +22,37 @@ interface upload_plan_template {
 
 
 //states
-interface BaseProperties {
-	readonly headers :string[],
-	readonly upload_plan :falsy_upload_plan,
-	readonly schema :data_model_fetcher_return,
+
+interface LoadTemplateSelectionState extends State<'LoadTemplateSelectionState'>{
 }
 
-interface BaseStateProperties extends BaseProperties {
+type LoadingStates = LoadTemplateSelectionState
+
+interface LoadingState extends State<'LoadingState'> {
+	readonly loading_state? :LoadingStates,
+	readonly dispatch? :WBPlanViewActions,
 }
 
-interface InitialLoadingState extends State<'InitialLoadingState'> {
-	readonly headers :string[],
-	readonly upload_plan :falsy_upload_plan,
-	readonly schema :data_model_fetcher_return,
+interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
 }
 
-interface LoadingState extends BaseStateProperties, State<'LoadingState'> {
-	readonly dispatch :WBPlanViewActions,
-}
-
-interface BaseTableSelectionState extends BaseStateProperties, State<'BaseTableSelectionState'> {
-}
-
-interface TemplateSelectionState extends BaseStateProperties, State<'TemplateSelectionState'> {
+interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 	readonly templates :upload_plan_template[],
 }
 
-interface MappingState extends BaseStateProperties, State<'MappingState'> {
-	readonly mapping_is_templated :boolean,
-	readonly show_hidden_fields :boolean,
-	readonly show_mapping_view :boolean,
-	readonly base_table_name :string,
-	readonly lines :MappingLine[],
-	readonly mapping_view :mapping_path,
-	readonly validation_results :mapping_path[],
+interface MappingState extends State<'MappingState'>, WBPlanViewMapperBaseProps {
 }
 
 type WBPlanViewStates =
-	InitialLoadingState
-	| BaseTableSelectionState
+	BaseTableSelectionState
 	| LoadingState
 	| TemplateSelectionState
 	| MappingState;
 
 
 //actions
-interface HeadersLoadedAction extends Action<'HeadersLoadedAction'> {
-	readonly headers :string[],
+interface OpenBaseTableSelectionAction extends Action<'OpenBaseTableSelectionAction'> {
 }
-
-interface UploadPlanLoadedAction extends Action<'UploadPlanLoadedAction'> {
-	readonly upload_plan :falsy_upload_plan,
-}
-
-interface SchemaLoadedAction extends Action<'SchemaLoadedAction'> {
-	readonly schema :data_model_fetcher_return,
-}
-
-type InitialLoadingAction = HeadersLoadedAction | UploadPlanLoadedAction | SchemaLoadedAction;
 
 interface SelectTableAction extends Action<'SelectTableAction'> {
 	readonly table_name :string,
@@ -88,24 +61,29 @@ interface SelectTableAction extends Action<'SelectTableAction'> {
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
 }
 
-type BaseTableSelectionActions = SelectTableAction | UseTemplateAction;
-
-interface LoadTemplateSelectionAction extends Action<'LoadTemplateSelectionAction'> {
-}
+type BaseTableSelectionActions =
+	OpenBaseTableSelectionAction
+	| SelectTableAction
+	| UseTemplateAction;
 
 interface CancelTemplateSelectionAction extends Action<'CancelTemplateSelectionAction'> {
 }
 
-type TemplateSelectionActions = LoadTemplateSelectionAction | CancelTemplateSelectionAction;
+interface TemplatesLoadedAction extends Action<'TemplatesLoadedAction'> {
+	readonly templates :upload_plan_template[],
+}
+
+type TemplateSelectionActions =
+	TemplatesLoadedAction
+	| CancelTemplateSelectionAction;
+
+interface CancelMappingAction extends Action<'CancelMappingAction'> {
+}
 
 interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
-	readonly upload_plan :upload_plan,
 }
 
 interface SavePlanAction extends Action<'SavePlanAction'> {
-}
-
-interface TableChangeAction extends Action<'TableChangeAction'> {
 }
 
 interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
@@ -114,7 +92,7 @@ interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
 interface ToggleMappingIsTemplatedAction extends Action<'ToggleMappingIsTemplatedAction'> {
 }
 
-interface ClearMappingAction extends Action<'ClearMappingAction'> {
+interface ResetMappingsAction extends Action<'ResetMappingsAction'> {
 }
 
 interface ValidationAction extends Action<'ValidationAction'> {
@@ -123,25 +101,30 @@ interface ValidationAction extends Action<'ValidationAction'> {
 interface SaveAction extends Action<'SaveAction'> {
 }
 
+interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
+	line_index :number,
+}
+
+interface UpdateValidationResultsAction extends Action<'UpdateValidationResultsAction'> {
+	validation_results :WBPlanViewMapperBaseProps['validation_results']
+}
+
 type MappingActions =
 	OpenMappingScreenAction
 	| SavePlanAction
-	| TableChangeAction
 	| ToggleMappingViewAction
 	| ToggleMappingIsTemplatedAction
-	| ClearMappingAction
+	| ResetMappingsAction
 	| ValidationAction
-	| SaveAction;
-
-interface CancelMappingAction extends Action<'CancelMappingAction'> {
-}
+	| SaveAction
+	| ClearMappingLineAction
+	| UpdateValidationResultsAction;
 
 type WBPlanViewActions =
-	InitialLoadingAction
-	| BaseTableSelectionActions
+	BaseTableSelectionActions
 	| TemplateSelectionActions
-	| MappingActions
-	| CancelMappingAction;
+	| CancelMappingAction
+	| MappingActions;
 
 
 //header
@@ -167,10 +150,15 @@ interface WBPlanViewHeaderPropsNonMapping extends WBPlanViewHeaderBaseProps {
 	readonly handleUseTemplate :() => void,
 }
 
-type WBPlanViewHeaderProps = WBPlanViewHeaderPropsNonMapping | WBPlanViewHeaderPropsMapping;
+type WBPlanViewHeaderProps =
+	WBPlanViewHeaderPropsNonMapping
+	| WBPlanViewHeaderPropsMapping;
 
 
-interface WBPlanViewProps {
+interface WBPlanViewProps extends publicWBPlanViewProps {
+}
+
+interface publicWBPlanViewProps {
 	readonly wb :specify_resource,
 	readonly wbtemplatePromise :jquery_promise<specify_resource>,
 	readonly mappingIsTemplated :boolean,
@@ -178,13 +166,6 @@ interface WBPlanViewProps {
 }
 
 //render wrappers
-type react_element = JSX.Element;
-type react_elements = react_element | react_element[];
-
-interface RenderWrapperProps {
-	children :react_elements
-}
-
 interface HeaderWrapperProps {
 	children :react_elements,
 	header :react_element,

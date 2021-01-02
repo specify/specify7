@@ -61,4 +61,5 @@ interface get_mapping_line_data_from_mapping_path_parameters {
 	readonly iterate? :boolean,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
 	readonly use_cached? :boolean,  // {bool} whether to use cache if exists
 	readonly generate_last_relationship_data? :boolean  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
+	readonly custom_select_type: custom_select_type,
 }

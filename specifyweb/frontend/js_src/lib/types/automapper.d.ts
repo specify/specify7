@@ -4,7 +4,7 @@ interface automapper_constructor_parameters {
 	readonly headers :list_of_headers,  // array of strings that represent headers
 	readonly base_table :string,  // base table name
 	readonly starting_table? :string,  // starting table name (if starting mapping_path provided, starting table would be different from base table)
-	readonly path :mapping_path,  // starting mapping path
+	readonly path? :mapping_path,  // starting mapping path
 	readonly path_offset? :number,  // offset on a starting path. Used when the last element of mapping path is a reference index. E.x, if #1 is taken, it would try to change the index to #2
 	readonly allow_multiple_mappings? :boolean,  // whether to allow multiple mappings
 	readonly check_for_existing_mappings? :boolean,  // whether to check if the field is already mapped (outside of automapper, in the mapping tree)

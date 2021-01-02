@@ -9,9 +9,19 @@ import cache from './cache';
 import schema from '../schema';
 import fetch_data_model from './wbplanviewdatamodelfetcher';
 import {assertExhaustive} from './statemanagement';
-import mappings from './mappings';
+import WBPlanViewMapper, {get_lines_from_upload_plan, get_lines_from_headers} from './wbplanviewmapper';
 import {ErrorBoundary} from './errorboundary';
 import {ModalDialog, LoadingScreen} from './modaldialog';
+import data_model_helper from './data_model_helper';
+import data_model_storage from './data_model_storage';
+import createContext from './contextcreator';
+import automapper from './automapper';
+import {ListOfBaseTables} from './wbplanviewcomponents';
+
+let schema_fetched_promise = fetch_data_model();
+
+const [useHeaders, HeadersProvider] = createContext<string[]>('headers');
+const [useUploadPlan, UploadPlanProvider] = createContext<falsy_upload_plan>('upload_plan');
 
 
 const WBPlanViewHeaderLeftMappingElements = (props :WBPlanViewHeaderPropsMapping) => <>
@@ -54,352 +64,293 @@ const WBPlanViewHeader = React.memo((props :WBPlanViewHeaderProps) => <div id="w
 		previous_props.state_type === new_props.state_type,
 );
 
+function upload_plan_string_to_object(upload_plan_string :string) :falsy_upload_plan {
+	let upload_plan;
 
-const initialWBPlanViewState :InitialLoadingState = {
-	type: 'InitialLoadingState',
-	headers: undefined!,
-	upload_plan: undefined!,
-	schema: undefined!,
-};
+	try {
+		upload_plan = JSON.parse(upload_plan_string);
+	} catch (exception) {
 
-const RenderWrapper = (props :RenderWrapperProps) =>
-	<React.StrictMode>
-		<ErrorBoundary>
-			{props.children}
-		</ErrorBoundary>
-	</React.StrictMode>;
+		if (!(
+			exception instanceof SyntaxError
+		))//only catch JSON parse errors
+			throw exception;
+
+		upload_plan = false;
+
+	}
+
+	if (typeof upload_plan !== 'object' || upload_plan === null || typeof upload_plan['baseTableName'] === 'undefined')
+		return false;
+	else
+		return upload_plan;
+}
+
+const getInitialWBPlanViewState = (upload_plan:falsy_upload_plan):WBPlanViewStates => {
+	if (upload_plan === false) {
+		return {
+			type: 'LoadingState',
+			dispatch: {
+				type: 'OpenBaseTableSelectionAction'
+			}
+		};
+	}
+	else
+		return{
+			type: 'LoadingState',
+			dispatch: {
+				type: 'OpenMappingScreenAction'
+			}
+		};
+}
 
 const HeaderWrapper = (props :HeaderWrapperProps) =>
-	<RenderWrapper>
+	<>
 		{props.header}
 		<div id="wbplanview_container">
 			{props.children}
 		</div>
-	</RenderWrapper>;
+	</>;
 
-export default function WBPlanView(props :WBPlanViewProps) {
+function go_back(props :WBPlanViewProps) {
+	navigation.go(`/workbench/${props.wb.id}/`);
+	props.handleUnload();
+}
 
-	const reference = React.useRef({});
-	const [state, setState] = React.useState<WBPlanViewStates>(initialWBPlanViewState);
+function save_plan(props :WBPlanViewProps, ignore_validation = false) {
+	if (!ignore_validation && typeof validate() !== 'boolean')
+		return;
 
-	function go_back() {
-		navigation.removeUnloadProtect(reference);
-		navigation.go(`/workbench/${props.wb.id}/`);
-		props.handleUnload();
-	}
+	props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
+	props.wbtemplatePromise.done(wbtemplate =>
+		wbtemplate.set('remarks', upload_plan_converter.get_upload_plan()),
+	);
+	props.wb.save();
+	go_back(props);
+}
 
-	/* Validates the current mapping and shows error messages if needed */
-	function validate() :boolean | string  /* true if everything is fine or {string} formatted validation error message */ {
+/* Validates the current mapping and shows error messages if needed */
+function validate() {
 
-		return true;
+	if (state.type !== 'MappingState')
+		throw new Error('Validation can only be done from the Mapper State');
 
-		/*const validation_results = data_model_helper.show_required_missing_fields(data_model_storage.base_table_name, mappings.get_mappings_tree());
-		const formatted_validation_results = mappings.format_validation_results(validation_results);
+	mapper_dispatch({
+		type: 'UpdateValidationResultsAction',
+		validation_results: data_model_helper.show_required_missing_fields(
+			state.base_table_name,
+			WBPlanViewMapper.get_mappings_tree(),
+		),
+	});
 
-		if (formatted_validation_results === false)
-			return true;
+}
 
-		const div = document.createElement('div');
-		div.innerHTML = formatted_validation_results;
+const validate = (show_mapping_view:boolean, validation_results:WBPlanViewMapperBaseProps['validation_results'])=>({
+	validation_results: validation_results,
+	show_mapping_view:  // Show mapping view panel if there were validation errors
+		show_mapping_view ||
+		Object.values(validation_results).length !== 0,
+});
 
-		$(div).dialog({
-			modal: true,
-			title: 'Unmapped required fields detected',
-			close: function () :void {
-				$(this).remove();
-			},
-			width: 500,
-			buttons: [
-				{
-					text: 'Return to mapping headers', click: function () :void {
-						$(this).dialog('close');
-					},
-				},
-				{
-					text: 'Save unfinished mapping',
-					click: main.save_plan.bind(main,undefined, true)
-				}
-			]
-		});
+const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanViewActions):WBPlanViewStates => {
 
-
-		return validation_results;*/
-
-	};
-
-	function save_plan(ignore_validation = false) {
-		if (!ignore_validation && typeof validate() !== 'boolean')
-			return;
-
-		props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
-		props.wbtemplatePromise.done(wbtemplate =>
-			wbtemplate.set('remarks', upload_plan_converter.get_upload_plan()),
-		);
-		props.wb.save();
-		go_back();
-	}
-
-	function upload_plan_string_to_object(upload_plan_string :string) :falsy_upload_plan {
-		let upload_plan;
-
-		try {
-			upload_plan = JSON.parse(upload_plan_string);
-		} catch (exception) {
-
-			if (!(
-				exception instanceof SyntaxError
-			))//only catch JSON parse errors
-				throw exception;
-
-			upload_plan = false;
-
-		}
-
-		if (typeof upload_plan !== 'object' || upload_plan === null || typeof upload_plan['baseTableName'] === 'undefined')
-			return false;
+	const headers = useHeaders();
+	const upload_plan = useUploadPlan();
+	const mapping_state = ():MappingState=>{
+		if(state.type !== 'MappingState')
+			throw new Error(`${action.type} can only be dispatched from 'MappingState'`);
 		else
-			return upload_plan;
-	}
-
-	const dispatch = (action :WBPlanViewActions) => {
-		const mapping_state = state as MappingState;
-		const base_state :BaseProperties = {
-			upload_plan: state.upload_plan,
-			headers: state.headers,
-			schema: state.schema,
-		};
-		switch (action.type) {
-
-			//InitialLoadingState
-			case 'HeadersLoadedAction':
-				setState({
-					...state,
-					headers: action.headers,
-				});
-				break;
-			case 'UploadPlanLoadedAction':
-				setState({
-					...state,
-					upload_plan: action.upload_plan,
-				});
-				break;
-			case 'SchemaLoadedAction':
-				setState({
-					...state,
-					schema: action.schema,
-				});
-				break;
-
-			//BaseTableSelectionState
-			case 'SelectTableAction':
-				setState({
-					...state,
-					type: 'MappingState',
-					mapping_is_templated: props.mappingIsTemplated,
-					show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
-					show_mapping_view: cache.get('ui', 'show_mapping_view'),
-					base_table_name: action.table_name,
-					lines: mappings.get_lines_from_headers(state.headers),
-					mapping_view: [],
-					validation_results: [],
-				});
-				break;
-			case 'UseTemplateAction':
-				setState({
-					type: 'LoadingState',
-					...base_state,
-					dispatch: {
-						type: 'LoadTemplateSelectionAction',
-					},
-				});
-				break;
-
-			//TemplateSelectionState
-			case 'LoadTemplateSelectionAction':
-				Promise.resolve('').then(() => {
-					const wbs = new (
-						schema as any
-					).models.Workbench.LazyCollection({
-						filters: {orderby: 'name', ownerpermissionlevel: 1},
-					});
-					wbs.fetch({limit: 5000}).done((wbs :any) =>
-						Promise.all(
-							wbs.models.map((wb :any) =>
-								wb.rget('workbenchtemplate'),
-							),
-						).then((wbts :any) => {
-
-							const templates :upload_plan_template[] = [];
-
-							for (const wbt of wbts) {
-								let upload_plan;
-								try {
-									upload_plan = JSON.parse(wbt.get('remarks') as string);
-								} catch (e) {
-									continue;
-								}
-
-								if (
-									typeof upload_plan === 'object' &&
-									upload_plan !== null
-								)
-									templates.push({
-										dataset_name: wbt.get('name') as string,
-										upload_plan: upload_plan,
-									});
-							}
-
-							setState({
-								...base_state,
-								type: 'TemplateSelectionState',
-								templates: templates,
-							});
-						}),
-					);
-				});
-				break;
-			case 'CancelTemplateSelectionAction':
-				setState({
-					...base_state,
-					type: 'BaseTableSelectionState',
-				});
-				break;
-
-			//MappingState
-			case 'OpenMappingScreenAction':
-				const {
-					base_table_name,
-					lines,
-				} = mappings.get_lines_from_upload_plan(
-					state.headers,
-					mappings.get_lines_from_headers(state.headers),
-					action.upload_plan,
-				);
-				setState({
-					...state,
-					type: 'MappingState',
-					mapping_is_templated: props.mappingIsTemplated,
-					show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
-					show_mapping_view: cache.get('ui', 'show_mapping_view'),
-					mapping_view: [],
-					validation_results: [],
-					base_table_name,
-					lines,
-				});
-				break;
-
-			case 'SavePlanAction':
-				save_plan();
-				break;
-
-			case 'ToggleMappingViewAction':
-				setState({
-					...mapping_state,
-					show_mapping_view: !mapping_state.show_mapping_view,
-				});
-				break;
-
-			case 'ToggleMappingIsTemplatedAction':
-				setState({
-					...mapping_state,
-					mapping_is_templated: !mapping_state.mapping_is_templated,
-				});
-				break;
-
-			case 'ValidationAction':
-				//TODO: validate
-				break;
-
-			case 'SaveAction':
-				//TODO: save and exit
-				break;
-
-			case 'TableChangeAction':
-				setState({
-					...base_state,
-					type: 'BaseTableSelectionState',
-				});
-				break;
-
-			case 'ClearMappingAction':
-				setState({
-					...mapping_state,
-					lines: [],
-					validation_results: [],
-				});
-				break;
-
-			//common
-			case 'CancelMappingAction':
-				go_back();
-				break;
-
-			default:
-				assertExhaustive(action);
-		}
-
-		if (
-			state.type === 'InitialLoadingState' &&
-			typeof state.upload_plan !== 'undefined' &&
-			typeof state.headers !== 'undefined' &&
-			typeof state.schema !== 'undefined'
-		) {
-
-			if (state.upload_plan === false) {
-				setState({
-					...state,
-					type: 'BaseTableSelectionState',
-				});
-			}
-			else
-				dispatch({
-					type: 'OpenMappingScreenAction',
-					upload_plan: state.upload_plan,
-				});
-		}
+			return state;
 	};
+
+	switch (action.type) {
+
+		//BaseTableSelectionState
+		case 'OpenBaseTableSelectionAction':
+			return {
+				type: 'BaseTableSelectionState'
+			}
+
+		case 'SelectTableAction':
+			return {
+				...state,
+				type: 'MappingState',
+				mapping_is_templated: props.mappingIsTemplated,
+				show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
+				show_mapping_view: cache.get('ui', 'show_mapping_view'),
+				base_table_name: action.table_name,
+				lines: get_lines_from_headers(headers),
+				mapping_view: [],
+				validation_results: [],
+				new_header_id: 0,
+			};
+		case 'UseTemplateAction':
+			return {
+				type: 'LoadingState',
+				loading_state: {
+					type: 'LoadTemplateSelectionState',
+				},
+			};
+
+		//TemplateSelectionState
+		case 'TemplatesLoadedAction':
+			return {
+				type: 'TemplateSelectionState',
+				templates: action.templates,
+			}
+		case 'CancelTemplateSelectionAction':
+			return {
+				type: 'BaseTableSelectionState',
+			};
+
+		//common
+		case 'CancelMappingAction':
+			go_back();
+			break;
+
+		//mapping state
+		case 'OpenMappingScreenAction':
+			const {
+				base_table_name,
+				lines,
+			} = get_lines_from_upload_plan(
+				headers,
+				upload_plan,
+			);
+			return {
+				...state,
+				type: 'MappingState',
+				mapping_is_templated: props.mappingIsTemplated,
+				show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
+				show_mapping_view: cache.get('ui', 'show_mapping_view'),
+				mapping_view: [],
+				validation_results: [],
+				new_header_id: 0,
+				base_table_name,
+				lines,
+			};
+
+		case 'SavePlanAction':
+			save_plan();
+
+		case 'ToggleMappingViewAction':
+			return {
+				...mapping_state(),
+				show_mapping_view: !mapping_state().show_mapping_view,
+			};
+
+		case 'ToggleMappingIsTemplatedAction':
+			return {
+				...mapping_state(),
+				mapping_is_templated: !mapping_state().mapping_is_templated,
+			};
+
+		case 'ValidationAction':
+			//TODO: validate
+
+		case 'SaveAction':
+			//TODO: save and exit
+
+		case 'ResetMappingsAction':
+			return {
+				...mapping_state(),
+				lines: [],
+				validation_results: [],
+			};
+
+		case 'ClearMappingLineAction':
+			return {
+				...mapping_state(),
+				lines: [
+					...mapping_state().lines.slice(0, action.line_index),
+					...mapping_state().lines.slice(action.line_index + 1),
+				],
+			};
+
+		case 'UpdateValidationResultsAction':
+			return {
+				...mapping_state(),
+
+			};
+
+		default:
+			assertExhaustive(action);
+	}
+};
+
+function WBPlanView(props :WBPlanViewProps) {
+
+	const headers = useHeaders();
+	const upload_plan = useUploadPlan();
+
+	const [state, dispatch] = React.useReducer(reducer.bind(null,props), upload_plan, getInitialWBPlanViewState);
+	const mapper_dispatch = (action :MappingActions)=>
+		dispatch(action);
 
 	switch (state.type) {
-		case 'InitialLoadingState':
-			if (
-				typeof state.upload_plan === 'undefined' ||
-				typeof state.headers === 'undefined'
-			)
-				props.wbtemplatePromise.done(wbtemplate => {
-					dispatch({
-						type: 'UploadPlanLoadedAction',
-						upload_plan: upload_plan_string_to_object(wbtemplate.get('remarks')),
-					});
-
-					wbtemplate.rget('workbenchtemplatemappingitems').done(mappings => {
-						const sorted = mappings.sortBy((mapping :{get :(arg0 :string) => any;}) => mapping.get('viewOrder'));
-						const headers = _.invoke(sorted, 'get', 'caption');
-
-						dispatch({
-							type: 'HeadersLoadedAction',
-							headers,
-						});
-
-					});
-				});
-			if (typeof state.schema === 'undefined')
-				fetch_data_model().then(schema =>
-					dispatch({
-						type: 'SchemaLoadedAction',
-						schema: schema,
-					}),
-				);
-			return <RenderWrapper>
-				<LoadingScreen/>
-			</RenderWrapper>;
 		case 'LoadingState':
-			Promise.resolve('').then(() =>
-				dispatch(state.dispatch),
-			);
-			return <RenderWrapper>
-				<LoadingScreen/>
-			</RenderWrapper>;
-		case 'BaseTableSelectionState': /* TODO: finish this */
+			if(typeof state.loading_state !== "undefined")
+				Promise.resolve('').then(() =>{
+					switch(state.loading_state!.type){
+						case 'LoadTemplateSelectionState':
+							Promise.resolve('').then(() => {
+								const wbs = new (
+									schema as any
+								).models.Workbench.LazyCollection({
+									filters: {orderby: 'name', ownerpermissionlevel: 1},
+								});
+								wbs.fetch({limit: 5000}).done((wbs :any) =>
+									Promise.all(
+										wbs.models.map((wb :any) =>
+											wb.rget('workbenchtemplate'),
+										),
+									).then((wbts :any) => {
+
+										const templates :upload_plan_template[] = [];
+
+										for (const wbt of wbts) {
+											let upload_plan;
+											try {
+												upload_plan = JSON.parse(wbt.get('remarks') as string);
+											} catch (e) {
+												continue;
+											}
+
+											if (
+												typeof upload_plan === 'object' &&
+												upload_plan !== null
+											)
+												templates.push({
+													dataset_name: wbt.get('name') as string,
+													upload_plan: upload_plan,
+												});
+										}
+
+										dispatch({
+											type: 'TemplatesLoadedAction',
+											templates: templates,
+										});
+									}),
+								);
+							});
+							break;
+						default:
+							assertExhaustive(state.loading_state as never);//TODO: remove this
+					}
+				});
+			if (typeof state.dispatch !== "undefined")
+				dispatch(state.dispatch);
+			return <LoadingScreen/>;
+		case 'BaseTableSelectionState':
+			// const mappings_object :automapper_results = (new automapper({
+			// 	headers: state.headers,
+			// 	base_table: state.base_table_name,
+			// 	scope: 'automapper',
+			// })).map();
+			// const array_of_mappings = Object.entries(mappings_object).map(([header_name, mapping_path]) =>
+			// 	[...mapping_path[0], 'existing_header', header_name],
+			// );
+			// wbplanviewmapper.implement_array_of_mappings(array_of_mappings);
 			return <HeaderWrapper
 				header={
 					<WBPlanViewHeader
@@ -409,106 +360,140 @@ export default function WBPlanView(props :WBPlanViewProps) {
 						handleUseTemplate={() => dispatch({type: 'UseTemplateAction'})}
 					/>
 				}>
-				<h1>Qwerty</h1>
+				<ListOfBaseTables list_of_tables={data_model_storage.list_of_base_tables}/>
 			</HeaderWrapper>;
 		case 'TemplateSelectionState':
-			return <RenderWrapper>
-				<ModalDialog properties={{title: 'Select Template'}}>
-					<>
+			return <ModalDialog properties={{title: 'Select Template'}}>{
+
+				state.templates.map(template => (
 						{
-							state.templates.map(template => (
-									{
-										...template,
-										upload_plan: upload_plan_string_to_object(template.upload_plan),
-									}
-								),
-							).filter(({upload_plan}) =>
-								upload_plan !== false,
-							).map(({dataset_name, upload_plan}) =>
-								<a
-									key={dataset_name}
-									href={`#${dataset_name}`}
-									onClick={() => dispatch({
-										type: 'OpenMappingScreenAction',
-										//@ts-ignore
-										upload_plan,
-									})}>{dataset_name}</a>,
-							)
+							...template,
+							upload_plan: upload_plan_string_to_object(template.upload_plan),
 						}
-					</>
-				</ModalDialog>
-			</RenderWrapper>;
+					),
+				).filter(({upload_plan}) =>
+					upload_plan !== false,
+				).map(({dataset_name, upload_plan}) =>
+					<a
+						key={dataset_name}
+						href={`#${dataset_name}`}
+						onClick={() => mapper_dispatch({
+							type: 'OpenMappingScreenAction',
+							//@ts-ignore
+							upload_plan,
+						})}>{dataset_name}</a>,
+				)
+
+			}</ModalDialog>;
 		case 'MappingState':
 			return <HeaderWrapper
 				header={
 					<WBPlanViewHeader
-						title={state.base_table_name}
+						title={data_model_storage.tables[state.base_table_name].table_friendly_name}
 						state_type={state.type}
 						handleCancel={() => dispatch({type: 'CancelMappingAction'})}
-						handleTableChange={() => dispatch({type: 'TableChangeAction'})}
-						handleToggleMappingView={() => dispatch({type: 'ToggleMappingViewAction'})}
-						handleToggleMappingIsTemplated={() => dispatch({type: 'ToggleMappingIsTemplatedAction'})}
-						handleClearMapping={() => dispatch({type: 'ClearMappingAction'})}
-						handleValidation={() => dispatch({type: 'ValidationAction'})}
-						handleSave={() => dispatch({type: 'SaveAction'})}
+						handleTableChange={() => dispatch({type: 'OpenBaseTableSelectionAction'})}
+						handleToggleMappingView={() => mapper_dispatch({type: 'ToggleMappingViewAction'})}
+						handleToggleMappingIsTemplated={() => mapper_dispatch({type: 'ToggleMappingIsTemplatedAction'})}
+						handleClearMapping={() => mapper_dispatch({type: 'ResetMappingsAction'})}
+						handleValidation={() => mapper_dispatch({type: 'ValidationAction'})}
+						handleSave={() => mapper_dispatch({type: 'SaveAction'})}
 						mapping_is_templated={state.mapping_is_templated}
 					/>
 				}>
-				<div id="mapping_view_parent">
-					<div id="mapping_view_container">
-						<div id="validation_results"/>
-						<div id="mapping_view"/>
-						<button>Map</button>
-					</div>
-				</div>
-
-				<div id="list__mappings"/>
-
-				<div id="mappings_control_panel">
-
-					<button>Add new column</button>
-					<button>Add new static column</button>
-
-					<label>
-						<input type="checkbox"/>
-						Reveal hidden fields
-					</label>
-
-				</div>
+				<WBPlanViewMapper
+					mapping_is_templated={state.mapping_is_templated}
+					show_hidden_fields={state.show_hidden_fields}
+					show_mapping_view={state.show_mapping_view}
+					base_table_name={state.base_table_name}
+					new_header_id={state.new_header_id}
+					lines={state.lines}
+					mapping_view={state.mapping_view}
+					validation_results={state.validation_results}
+					mapper_dispatch={mapper_dispatch}
+				/>
 			</HeaderWrapper>;
 		default:
 			return assertExhaustive(state);
 	}
 }
 
+export default function(props:publicWBPlanViewProps){
+
+	const [schema_loaded,setSchemaLoaded] = React.useState<boolean>(false);
+	const [upload_plan,setUploadPlan] = React.useState<falsy_upload_plan>();
+	const [headers,setHeaders] = React.useState<string[]>();
+
+	if(typeof data_model_storage.tables === "undefined")
+		schema_fetched_promise.then(schema=>{
+			data_model_storage.tables = schema.tables;
+			data_model_storage.list_of_base_tables = schema.list_of_base_tables;
+			data_model_storage.ranks = schema.ranks;
+			setSchemaLoaded(true);
+		});
+
+	props.wbtemplatePromise.done(wbtemplate => {
+		setUploadPlan(upload_plan_string_to_object(wbtemplate.get('remarks')));
+		wbtemplate.rget('workbenchtemplatemappingitems').done(mappings =>
+			setHeaders(
+				_.invoke(
+					mappings.sortBy((mapping :{get :(arg0 :string) => any;}) =>
+						mapping.get('viewOrder')
+					),
+					'get',
+					'caption'
+				)
+			)
+		);
+	});
+
+	return <React.StrictMode>
+		<ErrorBoundary>{
+			(
+				typeof upload_plan === "undefined" ||
+				typeof headers === "undefined" ||
+				!schema_loaded
+			) &&
+			<LoadingScreen/> ||
+			<HeadersProvider value={headers}>
+				<UploadPlanProvider value={upload_plan}>
+					<WBPlanView
+						{...props}
+					/>
+				</UploadPlanProvider>
+			</HeadersProvider>
+		}</ErrorBoundary>
+	</React.StrictMode>;
+}
+
 /*
 
 add_new_column.addEventListener('click',
-				mappings.add_new_mapping_line.bind(
-					mappings,
-					{
-						header_data: {
-							header_name: '',
-							mapping_type: 'new_column'
-						},
-						blind_add_back: true,
-						scroll_down: true,
-					}
-				)
-			);
+	mappings.add_new_mapping_line.bind(
+		mappings,
+		{
+			header_data: {
+				header_name: '',
+				mapping_type: 'new_column'
+			},
+			blind_add_back: true,
+			scroll_down: true,
+		}
+	)
+);
 
-			add_new_static_column.addEventListener('click',
-				mappings.add_new_mapping_line.bind(
-					mappings,
-					{
-						header_data: {
-							header_name: '',
-							mapping_type: 'new_static_column'
-						},
-						blind_add_back: true,
-						scroll_down: true,
-					}
-				)
-			);
+add_new_static_column.addEventListener('click',
+	mappings.add_new_mapping_line.bind(
+		mappings,
+		{
+			header_data: {
+				header_name: '',
+				mapping_type: 'new_static_column'
+			},
+			blind_add_back: true,
+			scroll_down: true,
+		}
+	)
+);
 
 * */

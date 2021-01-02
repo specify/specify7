@@ -74,11 +74,11 @@ interface fetching_parameters {
 }
 
 interface data_model_list_of_tables {
-	[table_name :string] :string
+	readonly [table_name :string] :string  // a dictionary like table_name==>table_friendly_name
 }
 
 type data_model_fetcher_return = {
-	tables :data_model_tables,
-	list_of_base_tables :data_model_list_of_tables,
-	ranks :data_model_ranks,
+	readonly tables :data_model_tables,
+	readonly list_of_base_tables :data_model_list_of_tables,
+	readonly ranks :data_model_ranks,
 }

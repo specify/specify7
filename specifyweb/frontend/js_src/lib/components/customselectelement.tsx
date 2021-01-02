@@ -4,8 +4,8 @@ import icons from '../icons';
 import React from 'react';
 
 const Icon = React.memo(({
-	is_relationship,
-	table_name,
+	is_relationship=false,
+	table_name='',
 } :CustomSelectElementIconProps) => {
 	if (!is_relationship || table_name === '')
 		return null;
@@ -39,6 +39,7 @@ const Option = React.memo(({
 	is_relationship = false,
 	is_default = false,
 	table_name = '',
+	handleClick
 } :CustomSelectElementOptionProps) => {
 
 	const classes = ['custom_select_option'];
@@ -52,8 +53,19 @@ const Option = React.memo(({
 	if (is_default)
 		classes.push('custom_select_option_selected');
 
+	handleClick = (
+		typeof handleClick !== "undefined" &&
+		is_enabled &&
+		is_default
+	) ?
+		(()=>handleClick!(option_name)) :
+		undefined
 
-	return <span className={classes.join(' ')} tabIndex={0}>
+	return <span
+		className={classes.join(' ')}
+		tabIndex={0}
+		handleClick=handleClick
+	>
 		<span className="custom_select_option_icon">
 			<Icon is_relationship={is_relationship} table_name={table_name}/>
 		</span>
@@ -73,27 +85,33 @@ const OptionGroup = ({
 	)}
 	</span>;
 
+function handleOptionClick(handleChange:handleChange){
+
+}
+
 /* Generates a custom select element */
 export function CustomSelectElement(
 	{
-		custom_select_type: custom_select_type,
+		custom_select_type,
 		custom_select_subtype = 'simple',
+		custom_select_option_groups,
 		select_label = '',
-		select_groups_data = [],
+		default_option = {
+			option_name: '0',
+			table_name: '',
+		},
+		is_open,
+		handleChange,
+		handleOpen,
+		handleClose,
 	} :CustomSelectElementProps,
 ) {
 
-	// find if there is any value checked
-	let default_label = '0';
-	let table_name = '';
-	outer_loop:
-		for (const select_group_data of select_groups_data)
-			for (const select_field_data of select_group_data.select_options_data)
-				if (select_field_data.is_default) {
-					default_label = select_field_data.option_name || '';
-					table_name = select_field_data.table_name || '';
-					break outer_loop;
-				}
+	const option_is_clickable = custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list';
+
+	const handleClick = option_is_clickable ?
+		handleOptionClick.bind(handleChange) :
+		undefined
 
 	let header = null;
 	let preview = null;
@@ -101,7 +119,7 @@ export function CustomSelectElement(
 	if (custom_select_type === 'opened_list')
 		header = <span className="custom_select_header">
 			<span className="custom_select_header_icon">
-				<Icon is_relationship={true} table_name={table_name}/>
+				<Icon is_relationship={true} table_name={default_option.table_name}/>
 			</span>
 			<span className="custom_select_table_label">
 				{select_label}
@@ -109,26 +127,34 @@ export function CustomSelectElement(
 		</span>;
 	else {
 
-		let default_icon = default_label !== '0' &&
-			<Icon is_relationship={true} table_name={table_name}/>;
+		let default_icon = default_option.option_name !== '0' &&
+			<Icon is_relationship={true} table_name={default_option.table_name}/>;
 
-		preview = <span className="custom_select_input" tabIndex={0}>
+		preview = <span className="custom_select_input" tabIndex={0} onClick={
+			option_is_clickable ?
+				is_open ?
+					handleClose :
+					handleOpen :
+				undefined
+		}>
 			<span className="custom_select_input_icon">{default_icon}</span>
-			<span className="custom_select_input_label">{default_label}</span>
+			<span className="custom_select_input_label">{default_option.option_name}</span>
 		</span>;
 
-		first_row = (
-			custom_select_type === 'closed_list' && custom_select_subtype !== 'to_many'
-			) &&
-			<Option is_default={default_label === '0'}/>;
+		first_row = is_open && custom_select_subtype!=='tree' &&
+			<Option
+				handleClick={handleClick}
+				is_default={default_option.option_name === '0'}
+			/>;
 
 	}
 
-	const groups = (
-		custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list'
-		) &&
-		select_groups_data.map(select_group_data =>
-			<OptionGroup {...select_group_data} />,
+	const groups = option_is_clickable &&
+		custom_select_option_groups.map(select_group_data =>
+			<OptionGroup
+				handleClick={handleClick}
+				{...select_group_data}
+			/>,
 		);
 
 	const custom_select_options = (
@@ -168,7 +194,7 @@ export const SuggestionBox = (
 * Sets event listeners for the container
 * Responsible for closing open lists on focus loss, opening lists when input is clicked and triggering custom_select_option.change_selected_option()
 * */
-export function set_event_listeners(
+function set_event_listeners(
 	container :HTMLDivElement,  // the container that is going to house all of the custom select elements
 	change_callback :(payload :custom_select_element_change_payload) => void,  // the function that would receive the change_payload returned by change_selected_option() whenever there was an option value change
 	suggestions_callback :(select_element :HTMLElement, custom_select_option :HTMLElement) => void,  // the function that would receive {DOMElement} current_list and {DOMElement} selected_option whenever a list is opened
@@ -230,12 +256,12 @@ export function set_event_listeners(
 		}
 
 	});
-};
+}
 
 /*
 * Callback for when list's option was clicked
 * */
-export function change_selected_option(
+function change_selected_option(
 	target_list :HTMLSpanElement,  // the list that houses target_option
 	target_option :HTMLSpanElement | String,  // {HTMLSpanElement} the option or {string} the name of the option that was clicked
 ) :custom_select_element_change_payload | undefined {
