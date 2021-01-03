@@ -49,7 +49,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.js', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/)
