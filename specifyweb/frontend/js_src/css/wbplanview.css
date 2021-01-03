@@ -1,5 +1,5 @@
 /* ROOT */
-#screen__mapping {
+#wbplanview {
 	--b1: #fff;
 	--b2: #ddd;
 	--b3: #bbb;
@@ -24,41 +24,11 @@
 	--base_width: auto;
 
 	width: 100%;
-	display: grid;
-	grid-template-rows: auto auto 1fr auto;
-	grid-gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	row-gap: 1rem;
 	height: calc(100vh - 150px); /* TODO: replace with a permanent solution */
 }
-
-#screen__mapping:not(.table_selected) {
-	grid-template-rows: auto 1fr;
-}
-
-#screen__mapping.hide_mapping_view {
-	grid-template-rows: auto 1fr auto auto;
-}
-
-#screen__mapping.loaded #wbplanview_loading_screen,
-#screen__mapping:not(.loaded) #wbplanview_content {
-	display: none;
-}
-
-.hidden {
-	display: none !important;
-}
-
-#screen__mapping:not(.table_selected) #title__table_name,
-#screen__mapping:not(.table_selected) .visible_when_table_selected,
-#screen__mapping:not(.table_selected) #mapping_content,
-#screen__mapping.table_selected #list__tables {
-	display: none;
-}
-
-#wbplanview_container,
-#mapping_content {
-	display: contents;
-}
-
 
 /* HEADER */
 #wbplanview_header {
@@ -66,30 +36,27 @@
 	justify-content: space-between;
 }
 
-#wbplanview_mapping_header {
-	display: flex;
+
+#wbplanview_container {
+	flex: 1;
+	overflow: hidden;
 }
 
+/* TODO: review classes and IDs used in TSX files */
+
+/**/
 #title__table_name {
 	font-weight: bold;
 }
-
+/**/
 #mappings_control_panel {
 	display: flex;
 	align-items: center;
 }
 
-#list__tables {
-	overflow: hidden;
-}
-
 /* MAPPING VIEW */
 #mapping_view_parent {
 	overflow-x: auto;
-}
-
-#screen__mapping.hide_mapping_view #mapping_view_parent {
-	display: none;
 }
 
 #mapping_view_container {
@@ -197,10 +164,6 @@
 }
 
 
-.hide_hidden_fields [data-field_group="hidden_fields"] {
-	display: none;
-}
-
 .mapping_arrow {
 	width: calc(2 * var(--white_space));
 }
@@ -211,25 +174,24 @@
 	color: var(--text1);
 	display: grid;
 	grid-template-areas:
-		"header next_arrow"
-		"options options";
-	grid-template-columns: auto calc(4 * var(--white_space));
+		"header"
+		"options";
+	grid-template-columns: 1fr;
 	grid-template-rows: auto 1fr;
 	width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
 	height: calc(4 * var(--white_space));
 	position: relative;
 }
 
-#list__tables .custom_select {
-	grid-template-columns: auto 0;
+#wbplanview_container.BaseTableSelectionState .custom_select {
 	height: 100%;
 }
 
 #mapping_view .custom_select {
 	height: 100%;
 	grid-template-areas:
-		"header next_arrow"
-		"options next_arrow";
+		"header"
+		"options";
 }
 
 #validation_results .custom_select {
@@ -246,26 +208,18 @@
 	grid-template-columns: auto calc(4 * var(--white_space));
 }
 
-.custom_select:after {
+/*.custom_select:after {
 	content: '\2192';
 	font-size: calc(2 * var(--white_space));
 	line-height: calc(4 * var(--white_space));
 	text-align: center;
 	grid-area: next_arrow;
-}
+}*/
 
 .custom_select[data-type="opened_list"]:after {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-.custom_select:last-of-type:after {
-	visibility: hidden;
-}
-
-#mapping_view .custom_select:last-of-type:after {
-	display: none;
 }
 
 .custom_select_suggestions {
@@ -298,14 +252,6 @@
 	display: flex;
 	row-gap: var(--white_space);
 	column-gap: var(--white_space);
-}
-
-#list__tables .custom_select_header_icon {
-	display: none;
-}
-
-#list__tables .custom_select_table_label {
-	font-size: calc(2 * var(--white_space));
 }
 
 .custom_select_input {
@@ -359,12 +305,14 @@
 
 .custom_select_options {
 	overflow-y: scroll;
-	visibility: hidden;
 	max-height: calc(calc(4 * var(--white_space)) * var(--lines_to_display));
+}
+
+.custom_select_options:not(:first-child){
 	border-top: 0;
 }
 
-#list__tables .custom_select_options {
+#wbplanview_container.BaseTableSelectionState .custom_select_options {
 	max-height: unset;
 	height: unset;
 }
@@ -414,7 +362,6 @@
 }
 
 .hide_hidden_fields .custom_select_group[data-group="hidden_fields"] {
-	visibility: hidden;
 	height: 0;
 	overflow: hidden;
 }
@@ -424,11 +371,6 @@
 	padding: calc(0.5 * var(--white_space));
 	color: var(--text2);
 	cursor: initial;
-}
-
-.custom_select[data-mapping_type="to_many"] .custom_select_options .custom_select_group_label,
-.custom_select[data-mapping_type="list_of_tables"] .custom_select_group_label {
-	display: none;
 }
 
 .custom_select_option {
@@ -443,10 +385,6 @@
 
 .custom_select_suggestions .custom_select_option {
 	display: inline;
-}
-
-.custom_select_suggestions .custom_select_option_icon {
-	display: none;
 }
 
 .custom_select_option_selected:not(.custom_select_option_relationship) .custom_select_option_icon:after,
