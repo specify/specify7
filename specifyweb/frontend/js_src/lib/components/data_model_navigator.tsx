@@ -1,13 +1,11 @@
 'use strict';
 
-const cache = require('./cache.tsx');
-const data_model_helper = require('./data_model_helper.tsx');
-const data_model_storage = require('./data_model_storage.tsx');
+const cache = require('./cache.tsx').default;
+const data_model_helper = require('./data_model_helper.tsx').default;
+const data_model_storage = require('./data_model_storage.tsx').default;
 
 
-class data_model_navigator {
-
-	public static get_mapped_fields :(mapping_path_filter :mapping_path, skip_empty? :boolean) => mappings_tree;
+export default class data_model_navigator {
 
 	/* Navigates though the schema according to a specified mapping path and calls certain callbacks while doing that */
 	public static navigator<RETURN_STRUCTURE>({
@@ -185,6 +183,7 @@ class data_model_navigator {
 
 	/* Returns a mapping line data from mapping path */
 	public static get_mapping_line_data_from_mapping_path({
+		base_table_name,
 		mapping_path = [],
 		open_path_element_index,
 		iterate = true,
@@ -193,6 +192,9 @@ class data_model_navigator {
 		custom_select_type,
 		handleChange = ()=>{},
 		handleOpen = ()=>{},
+		handleClose = ()=>{},
+		get_mapped_fields,
+		automapper_suggestions,
 	} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
 
 		const internal_state :get_mapping_line_data_from_mapping_path_internal_state = {
@@ -274,7 +276,7 @@ class data_model_navigator {
 
 				internal_state.current_mapping_path_part = mapping_path[internal_state.mapping_path_position];
 				internal_state.result_fields = {};
-				internal_state.mapped_fields = Object.keys(data_model_navigator.get_mapped_fields(local_mapping_path));
+				internal_state.mapped_fields = Object.keys(get_mapped_fields(local_mapping_path));
 			},
 
 			handle_to_many_children({table_name}) {
@@ -409,6 +411,8 @@ class data_model_navigator {
 						...base_structure,
 						fields_data: internal_state.result_fields,
 						handleChange: handleChange.bind(null,internal_state.mapping_path_position),
+						handleClose: handleClose.bind(null,internal_state.mapping_path_position),
+						automapper_suggestions,
 						is_open: true,
 					};
 				else
@@ -420,9 +424,9 @@ class data_model_navigator {
 
 			},
 
-			commit_instance_data(callback_payload) {
-				internal_state.mapping_line_data.push(callback_payload.data);
-				return callback_payload.data;
+			commit_instance_data({data}) {
+				internal_state.mapping_line_data.push(data);
+				return data;
 			},
 
 			get_final_data: () =>
@@ -434,12 +438,10 @@ class data_model_navigator {
 			config: {
 				use_cache: use_cached,
 				cache_name: 'mapping_line_data',
-				base_table_name: data_model_storage.base_table_name,
+				base_table_name: base_table_name,
 			},
 		});
 
 	};
 
 }
-
-export = data_model_navigator;

@@ -1,6 +1,7 @@
 'use strict';
 
-class data_model_storage {
+
+export default class data_model_storage {
 
 	// each of this can be modified to a single symbol or several symbols
 	public static readonly reference_symbol :string = '#';  // prefix for -to-many indexes (used behind the scenes & is shown to the user)
@@ -12,5 +13,3 @@ class data_model_storage {
 	public static ranks: data_model_ranks;
 
 }
-
-export = data_model_storage;

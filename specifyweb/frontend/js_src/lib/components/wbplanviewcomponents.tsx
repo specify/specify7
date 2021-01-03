@@ -7,7 +7,7 @@
 'use strict';
 
 import React from 'react';
-import {CustomSelectElement} from './customselectelement';
+import {CustomSelectElement, SuggestionBox} from './customselectelement';
 
 /* Generates a list of tables */
 export const ListOfBaseTables = React.memo(({
@@ -17,7 +17,7 @@ export const ListOfBaseTables = React.memo(({
 		<MappingElement
 			is_open={true}
 			handleChange={handleChange}
-			select_label='Select a base table:'
+			select_label=''
 			fields_data={
 				Object.fromEntries(
 					Object.entries(list_of_tables).map(([table_name, table_label]) => (
@@ -62,11 +62,14 @@ export const MappingLine = ({
 
 /* Generates a mapping path */
 export const MappingPath = ({
-	mappings_line_data,
-} :MappingPathProps) =>
+	mappings_line_data
+}:MappingPathProps) =>
 	<>
 		{mappings_line_data.map((mapping_details, index) =>
-			<MappingElement key={index} {...mapping_details} />,
+			<>
+				<MappingElement key={index} {...mapping_details} />
+				{index+1 !== mappings_line_data.length && <MappingElementDivider />}
+			</>,
 		)}
 	</>;
 
@@ -75,6 +78,9 @@ const field_group_labels :{[key :string] :string} = {
 	optional_fields: 'Optional Fields',
 	hidden_fields: 'Hidden Fields',
 };
+
+const MappingElementDivider = ()=>
+	<span className="wbplanview_mappings_line_divider" />
 
 /* Generates a new mapping element */
 function MappingElement(
@@ -88,6 +94,12 @@ function MappingElement(
 		[field_group_label, {} as CustomSelectElementOptions],
 	));
 
+	const default_option = {
+		option_name: '',
+		option_label: '',
+		table_name: '',
+	}
+
 	Object.entries(props.fields_data).forEach(([
 		field_name,
 		{
@@ -99,19 +111,30 @@ function MappingElement(
 			is_required = false,  // whether this field is required
 			is_hidden = false,  // whether this field is hidden
 		}
-	]) =>
-		field_groups[
-			is_hidden && 'hidden_fields' ||
+	])=>{
+
+		if(is_default){
+
+			if(default_option.option_name !== '')
+				throw new Error('Multiple default options can not be present in the same list');
+
+			default_option.option_name = field_name;
+			default_option.option_label = field_friendly_name;
+			default_option.table_name = table_name;
+		}
+
+		const filed_group = is_hidden && 'hidden_fields' ||
 			is_required && 'required_fields' ||
-			'optional_fields'
-		][field_name] = {
+			'optional_fields';
+
+		field_groups[filed_group][field_name] = {
 			option_label: field_friendly_name,
 			is_enabled,
 			is_relationship,
 			is_default,
 			table_name,
 		}
-	);
+	});
 
 	const table_fields = [];
 	for (const [group_name, group_fields] of Object.entries(field_groups))
@@ -125,6 +148,20 @@ function MappingElement(
 	return <CustomSelectElement
 		{...props}
 		custom_select_option_groups={table_fields}
+		default_option={default_option}
+		automapper_suggestions={
+			props.automapper_suggestions &&
+				<SuggestionBox
+					select_options_data={{
+						option_label:
+							<>{
+								props.automapper_suggestions.map(automapper_suggestion=>
+									<MappingPath mappings_line_data={automapper_suggestion} />
+								)
+							}</>
+					}}
+				/>
+		}
 	/>;
 
 }

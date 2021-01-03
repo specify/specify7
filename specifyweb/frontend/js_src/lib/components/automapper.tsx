@@ -6,14 +6,14 @@
 
 'use strict';
 
-import AutoMapperDefinitions from './automapperdefinitions.js';
-import data_model_storage from './data_model_storage';
-import data_model_helper from './data_model_helper';
-import cache from './cache';
-import helper from './helper';
-import {assertExhaustive} from './statemanagement.js';
+const AutoMapperDefinitions = require('./automapperdefinitions').default;
+const data_model_storage = require('./data_model_storage').default;
+const data_model_helper = require('./data_model_helper').default;
+const cache = require('./cache').default;
+const helper = require('./helper').default;
+const {assertExhaustive} = require('./statemanagement');
 
-class automapper {
+export default class automapper {
 
 	private readonly results :automapper_results = {};
 	private readonly scope :automapper_scope = 'automapper';
@@ -23,12 +23,11 @@ class automapper {
 	private readonly base_table :string = '';
 	private readonly starting_table :string = '';
 	private readonly starting_path :mapping_path = [];
+	private readonly get_mapped_fields? :get_mapped_fields_bind;
 
 	private headers_to_map :headers_to_map = {};
 	private searched_tables :string[] = [];
 	private find_mappings_queue :find_mappings_queue = [];
-
-	public static get_mapped_fields :(local_path :mapping_path) => true;
 
 	private static readonly regex_replace_whitespace :RegExp = /\s+/g;  // used to replace any white space characters with white space
 	private static readonly regex_remove_non_az :RegExp = /[^a-z\s]+/g;  // used to remove non letter characters
@@ -104,8 +103,9 @@ class automapper {
 		path = [],
 		path_offset = 0,
 		allow_multiple_mappings = false,
-		check_for_existing_mappings = false,
 		scope = 'automapper',
+		check_for_existing_mappings = false,
+		get_mapped_fields
 	} :automapper_constructor_parameters) {
 		// strip extra characters to increase mapping success
 		this.headers_to_map = Object.fromEntries(raw_headers.map(original_name => {
@@ -131,6 +131,7 @@ class automapper {
 		this.base_table = base_table;
 		this.starting_table = starting_table;
 		this.starting_path = path;
+		this.get_mapped_fields = get_mapped_fields;
 	};
 
 
@@ -689,7 +690,8 @@ class automapper {
 				) ||
 				(
 					this.check_for_existing_mappings &&
-					automapper.get_mapped_fields(local_path)
+					typeof this.get_mapped_fields === "function" &&
+					this.get_mapped_fields(local_path)
 				);
 
 			if (!path_already_mapped)
@@ -732,5 +734,3 @@ class automapper {
 
 	};
 }
-
-export = automapper;

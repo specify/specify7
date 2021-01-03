@@ -3,7 +3,7 @@
 import React from 'react';
 import {ModalDialog} from './modaldialog';
 
-export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
+export default class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
 	state :ErrorBoundaryState = {
 		has_error: false,
 	};

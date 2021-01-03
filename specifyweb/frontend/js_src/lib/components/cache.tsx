@@ -1,6 +1,6 @@
 "use strict";
 
-class cache {
+export default class cache {
 
 	private static buckets :buckets = {};  // the data structure that would store all of the buckets
 	private static readonly cache_prefix :string = 'specify7_wbplanview_';  // the prefix that would be given to all bucket_names when they are committed to localStorage. Used to avoid collisions
@@ -179,5 +179,3 @@ class cache {
 	};
 
 }
-
-export = cache;

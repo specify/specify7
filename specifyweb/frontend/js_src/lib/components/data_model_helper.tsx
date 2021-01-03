@@ -4,9 +4,9 @@
 
 'use strict';
 
-const data_model_storage = require('./data_model_storage.tsx');
+const data_model_storage = require('./data_model_storage.tsx').default;
 
-class data_model_helper {
+export default class data_model_helper {
 
 	/* fetch fields for a table */
 	private static readonly get_table_fields = (
@@ -224,5 +224,3 @@ class data_model_helper {
 	};
 
 }
-
-export = data_model_helper;

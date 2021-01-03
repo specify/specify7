@@ -9,96 +9,121 @@
 const data_model_storage = require('./data_model_storage.tsx');
 const data_model_helper = require('./data_model_helper.tsx');
 
+
 class upload_plan_converter {
-
-	public static get_mappings_tree :(include_headers? :boolean, skip_empty? :boolean) => mappings_tree;
-
-	private static readonly upload_plan_processing_functions = {
-		wbcols: ([key, value] :[key :string, value :string]) => [key, {
-			[
-				data_model_storage.headers.indexOf(value) !== -1 ?
-					'existing_header' :
-					'new_column'
-				]: value,
-		}],
-		static: ([key, value] :[key :string, value :string]) => (
-			[key, {new_static_column: value}]
-		),
-		toOne: ([key, value] :[key :string, value :upload_plan]) => [key, upload_plan_converter.upload_plan_to_mappings_tree(value, true)],
-		toMany: ([key, original_mappings] :[key :string, value :object]) => {
-			let i = 1;
-			return [
-				key,
-				Object.fromEntries(Object.values(original_mappings).map(mapping =>
-					[
-						data_model_helper.format_reference_item(i++),
-						upload_plan_converter.upload_plan_to_mappings_tree(mapping, true),
-					],
-				)),
-			];
-		},
-	};
 
 	/*
 	* Converts upload plan to internal tree structure
 	* Inverse of mappings_tree_to_upload_plan
 	* */
 	public static upload_plan_to_mappings_tree(
+		headers: string[],
 		upload_plan :upload_plan | upload_plan_node,  // upload plan
 		base_table_name_extracted :boolean = false,  // used by recursion to store intermediate results
-	) :mappings_tree {
+	){
 
-		if (!base_table_name_extracted) {
+		let base_table_name:string='';
 
-			if (typeof upload_plan.baseTableName === 'undefined')
-				throw new Error('Upload plan should contain `baseTableName` as a root node');
-			data_model_storage.base_table_name = (
-				upload_plan.baseTableName as string
-			).toLowerCase();
-			return upload_plan_converter.upload_plan_to_mappings_tree(upload_plan.uploadable as upload_plan_node, true);
-		}
-		else if (typeof (
-			upload_plan as upload_plan_node
-		).uploadTable !== 'undefined')
-			return upload_plan_converter.upload_plan_to_mappings_tree((
-				upload_plan as upload_plan_node
-			).uploadTable as upload_plan_node, true);
-
-		// TODO: make this function recognize multiple tree rank fields, once upload plan supports that
-		else if (typeof upload_plan.treeRecord !== 'undefined')
-			return Object.fromEntries(
-				Object.entries((upload_plan.treeRecord as any).map(([rank_name, /*rank_data*/]:any) =>
+		const upload_plan_processing_functions:upload_plan_processing_functions = {
+			wbcols: ([key, value] :[key :string, value :string]) => [
+				key,
+				{
 					[
-						data_model_storage.tree_symbol + rank_name,
-						Object.fromEntries(
-							[
-								upload_plan_converter.upload_plan_processing_functions.wbcols(
-									['name', rank_name],
-								),
-							],
+						headers.indexOf(value) !== -1 ?
+							'existing_header' :
+							'new_column'
+					]: value,
+				}
+			],
+			static: ([key, value] :[key :string, value :string]) => [
+				key, {new_static_column: value}
+			],
+			toOne: ([key, value] :[key :string, value :upload_plan]) => [key, upload_plan_to_mappings_tree(value, true)],
+			toMany: ([key, original_mappings] :[key :string, value :object]) => {
+				let i = 1;
+				return [
+					key,
+					Object.fromEntries(Object.values(original_mappings).map(mapping =>
+						[
+							data_model_helper.format_reference_item(i++),
+							upload_plan_to_mappings_tree(
+								mapping,
+								true
+							),
+						],
+					)),
+				];
+			},
+		};
+
+		function upload_plan_to_mappings_tree(
+			upload_plan :upload_plan | upload_plan_node,  // upload plan
+			base_table_name_extracted :boolean = false,  // used by recursion to store intermediate results
+		) :mappings_tree {
+
+			if (!base_table_name_extracted) {
+
+				if (typeof upload_plan.baseTableName === 'undefined')
+					throw new Error('Upload plan should contain `baseTableName` as a root node');
+				base_table_name = upload_plan.baseTableName as string;
+				return upload_plan_to_mappings_tree(upload_plan.uploadable as upload_plan_node, true);
+			}
+			else if (typeof (
+				upload_plan as upload_plan_node
+			).uploadTable !== 'undefined')
+				return upload_plan_to_mappings_tree((
+					upload_plan as upload_plan_node
+				).uploadTable as upload_plan_node, true);
+
+			// TODO: make this function recognize multiple tree rank fields, once upload plan supports that
+			else if (typeof upload_plan.treeRecord !== 'undefined')
+				return Object.fromEntries(
+					Object.entries(((upload_plan.treeRecord as any).ranks as any)).map(([rank_name, /*rank_data*/]:any) =>
+						[
+							data_model_storage.tree_symbol + rank_name,
+							Object.fromEntries(
+								[
+									upload_plan_processing_functions.wbcols(
+										['name', rank_name],
+									),
+								],
+							),
+						],
+					)
+				);
+
+			return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
+					//@ts-ignore
+					[
+						...results,
+						...Object.entries(plan_node_data).map(
+							//@ts-ignore
+							upload_plan_processing_functions[plan_node_name],
 						),
 					],
-				)
+				[],
 			));
 
-		return Object.fromEntries(Object.entries(upload_plan).reduce((results, [plan_node_name, plan_node_data]) =>
-				//@ts-ignore
-				[
-					...results,
-					...Object.entries(plan_node_data).map(
-						//@ts-ignore
-						upload_plan_converter.upload_plan_processing_functions[plan_node_name],
-					),
-				],
-			[],
-		));
+		}
 
+		return {
+			base_table_name: base_table_name,
+			mappings_tree: upload_plan_to_mappings_tree(
+				upload_plan,
+				base_table_name_extracted,
+			)
+		}
 	};
 
+
 	/* Get upload plan */
-	public static readonly get_upload_plan = () :string /* Upload plan as a JSON string */ =>
+	public static readonly get_upload_plan = (
+		base_table_name: string,
+		get_mappings_tree:get_mappings_tree_bind
+	) :string /* Upload plan as a JSON string */ =>
 		upload_plan_converter.mappings_tree_to_upload_plan(
-			upload_plan_converter.get_mappings_tree(true),
+			base_table_name,
+			get_mappings_tree(true),
 		);
 
 	/*
@@ -106,6 +131,7 @@ class upload_plan_converter {
 	* Inverse of upload_plan_to_mappings_tree
 	* */
 	public static mappings_tree_to_upload_plan(
+		base_table_name: string,
 		mappings_tree :object,  // mappings tree that is going to be used
 	) :string /* Upload plan as a JSON string */ {
 
@@ -210,8 +236,8 @@ class upload_plan_converter {
 		}
 
 		return JSON.stringify({
-			baseTableName: data_model_storage.base_table_name,
-			uploadable: handle_table(mappings_tree, data_model_storage.base_table_name),
+			baseTableName: base_table_name,
+			uploadable: handle_table(mappings_tree, base_table_name),
 		}, null, '\t');
 
 	};

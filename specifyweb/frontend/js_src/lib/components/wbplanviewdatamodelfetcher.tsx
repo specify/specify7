@@ -112,7 +112,7 @@ export default () :Promise<data_model_fetcher_return> =>
 				} as data_model_fetcher_return);
 		}
 
-		const list_of_base_tables :data_model_list_of_tables = {};
+		const list_of_base_tables :data_model_list_of_tables_writable = {};
 		const fetch_ranks_queue :Promise<table_ranks_inline>[] = [];
 
 		const tables = Object.values((
