@@ -5,62 +5,14 @@ type mapping_type = Readonly<'existing_header' | 'new_column' | 'new_static_colu
 type relationship_type = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
 
 interface select_element_position {
-	readonly line: number|'mapping_view',
+	readonly line: number,
 	readonly index: number,
 }
 
-interface WBPlanViewMapperBaseProps {
-	readonly mapping_is_templated :boolean,
-	readonly show_hidden_fields :boolean,
-	readonly show_mapping_view :boolean,
-	readonly base_table_name :string,
-	readonly new_header_id :number,  // the index that would be shown in the header name the next time the user presses `New Column`
-	readonly lines :MappingLine[],
-	readonly open_select_element? : select_element_position,
-	readonly focused_line? : number,
-	readonly mapping_view :mapping_path,
-	readonly validation_results :mapping_path[],
+interface select_element_onchange_position {
+	readonly line: number|'mapping_view',
+	readonly index: number,
 }
-
-interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
-	readonly mapper_dispatch: (action:MappingActions)=>void,
-	readonly handleSave: ()=>void,
-	readonly handleFocus: (line_index:number)=>void,
-	readonly handleMappingViewMap: ()=>void,
-	readonly handleMappingViewChange: ()=>void,
-	readonly handleAddNewHeader: ()=>void,
-	readonly handleAddNewStaticHeader: ()=>void,
-	readonly handleToggleHiddenFields: ()=>void,
-}
-
-interface MappingsControlPanelProps {
-	show_hidden_fields: boolean,
-}
-
-interface FormatValidationResultsProps {
-	validation_results: WBPlanViewMapperProps['validation_results'],
-	handleSave: ()=>void
-}
-
-interface MappingViewProps {
-	mapping_path: mapping_path,
-	map_button_is_enabled:boolean,
-	handleMapButtonClick: ()=>void
-	handleMappingViewChange: handleCustomSelectElementChange,
-	opened_list?: number
-}
-
-
-
-interface get_mapping_path_parameters {
-	readonly line_elements_container :HTMLElement,  // line elements container
-	readonly mapping_path_filter? :HTMLElement | mapping_path,  // {mixed} if is {array} mapping path and mapping path of this line does begin with mapping_path_filter, get_mapping_path would return ["0"]
-	//													  if is {HTMLElement}, then stops when reaches a given element in a line_elements_container
-	readonly include_headers? :boolean  // whether to include mapping type and header_name / static column value in the result
-	readonly exclude_unmapped? :boolean,  // whether to replace incomplete mapping paths with ["0"]
-	readonly exclude_non_relationship_values? :boolean,  // whether to exclude simple fields from the resulting path
-}
-
 
 interface MappingLine {
 	readonly type :mapping_type,
@@ -69,6 +21,101 @@ interface MappingLine {
 	readonly is_focused? : boolean,
 }
 
+interface WBPlanViewMapperBaseProps {
+	readonly mapping_is_templated :boolean,
+	readonly show_hidden_fields :boolean,
+	readonly show_mapping_view :boolean,
+	readonly base_table_name :string,
+	readonly new_header_id :number,  // the index that would be shown in the header name the next time the user presses `New Column`
+	readonly mapping_view :mapping_path,
+	readonly validation_results :mapping_path[],
+	readonly lines :MappingLine[],
+	readonly open_select_element? : select_element_position,
+	readonly focused_line? : number,
+	readonly automapper_suggestions? : MappingElementProps[][]
+}
+
+interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
+	readonly mapper_dispatch: (action:MappingActions)=>void,
+	readonly handleSave: ()=>void,
+	readonly handleFocus: (line_index:number)=>void,
+	readonly handleMappingViewMap: ()=>void,
+	readonly handleAddNewHeader: ()=>void,
+	readonly handleAddNewStaticHeader: ()=>void,
+	readonly handleToggleHiddenFields: ()=>void,
+	readonly handleOpen: handleMappingOpen
+	readonly handleClose: handleMappingOpen
+	readonly handleChange: handleMappingChange,
+}
+
+interface MappingsControlPanelProps {
+	readonly show_hidden_fields: boolean,
+	readonly onChange: ()=>void,
+}
+
+interface FormatValidationResultsProps {
+	readonly base_table_name: string,
+	readonly validation_results: WBPlanViewMapperProps['validation_results'],
+	readonly handleSave: ()=>void
+	readonly get_mapped_fields: get_mapped_fields_bind,
+}
+
+interface MappingViewProps {
+	readonly base_table_name : string,
+	readonly mapping_path: mapping_path,
+	readonly map_button_is_enabled:boolean,
+	readonly handleMapButtonClick: ()=>void
+	readonly handleMappingViewChange: handleMappingLineChange,
+	readonly get_mapped_fields: get_mapped_fields_bind,
+	readonly automapper_suggestions?:MappingElementProps[][],
+}
+
+interface mutate_mapping_path_parameters extends Omit<ChangeSelectElementValueAction,'type'> {
+	readonly lines: MappingLine[],
+	readonly mapping_view: mapping_path,
+}
+
+type get_mapped_fields = (
+	lines: MappingLine[],
+	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
+	skip_empty? :boolean,  // whether to skip incomplete mappings
+)=>mappings_tree;
+
+type get_mapped_fields_bind = (
+	mapping_path_filter :mapping_path,  // a mapping path that would be used as a filter
+	skip_empty? :boolean,  // whether to skip incomplete mappings
+)=>mappings_tree;
+
+type get_mappings_tree = (
+	lines: MappingLine[],
+	include_headers? :boolean, // whether the last tree nodes of each branch should be mapping type and header name
+	skip_empty? :boolean,  // whether to include incomplete tree nodes
+)=>mappings_tree;
+
+type get_mappings_tree_bind = (
+	include_headers? :boolean, // whether the last tree nodes of each branch should be mapping type and header name
+	skip_empty? :boolean,  // whether to include incomplete tree nodes
+)=>mappings_tree;
+
+interface get_lines_from_headers_with_automapper_params {
+	headers? :list_of_headers,
+	run_automapper:true,
+	base_table_name:string,
+}
+
+interface get_lines_from_headers_without_automapper_params {
+	headers? :list_of_headers,
+	run_automapper:false,
+	base_table_name?:string,
+}
+
+type get_lines_from_headers_params = get_lines_from_headers_with_automapper_params | get_lines_from_headers_without_automapper_params;
+
+interface get_automapper_suggestions_parameters extends select_element_position {
+	readonly lines: MappingLine[],
+	readonly base_table_name: string,
+	readonly get_mapped_fields: get_mapped_fields_bind,
+}
 
 interface get_lines_from_upload_plan {
 	readonly base_table_name :string,

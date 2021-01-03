@@ -1,6 +1,6 @@
 interface ListOfBaseTablesProps {
 	list_of_tables: data_model_list_of_tables
-	handleChange: handleChange,
+	handleChange: handleElementChange,
 }
 
 interface html_generator_field_data {
@@ -22,14 +22,15 @@ interface MappingLineProps {
 }
 
 interface MappingPathProps {
-	mappings_line_data :MappingElementProps[]
+	mappings_line_data: MappingElementProps[],
 }
 
 interface html_generator_fields_data extends Dictionary<html_generator_field_data>{
 }
 
-interface MappingElementPropsOpen extends Omit<CustomSelectElementPropsOpen, 'custom_select_option_groups'>  {
-	readonly fields_data :html_generator_fields_data
+interface MappingElementPropsOpen extends Omit<Omit<CustomSelectElementPropsOpenBase, 'default_value'>, 'automapper_suggestions'>  {
+	readonly fields_data :html_generator_fields_data,
+	readonly automapper_suggestions?: MappingElementProps[][],
 }
 
 type MappingElementProps = MappingElementPropsOpen | CustomSelectElementPropsClosed;

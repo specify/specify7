@@ -58,14 +58,18 @@ interface navigator_instance_parameters<RETURN_STRUCTURE> {
 }
 
 interface get_mapping_line_data_from_mapping_path_parameters {
+	readonly base_table_name: string,
 	readonly mapping_path? :mapping_path,  // the mapping path
 	readonly open_path_element_index? :number  // index of custom select element that should be open
 	readonly iterate? :boolean,  // {bool} if False, returns data only for the last element of the mapping path only, Else returns data for each mapping path part
 	readonly use_cached? :boolean,  // {bool} whether to use cache if exists
 	readonly generate_last_relationship_data? :boolean  // {bool} whether to generate data for the last element of the mapping path if the last element is a relationship
 	readonly custom_select_type :custom_select_type,
-	readonly handleChange? : handleCustomSelectElementChange
-	readonly handleOpen? : handleCustomSelectElementOpen
+	readonly handleChange? : handleMappingLineChange
+	readonly handleOpen? : handleMappingLineOpen
+	readonly handleClose? : handleMappingLineOpen
+	readonly get_mapped_fields: get_mapped_fields_bind,
+	readonly automapper_suggestions?: MappingElementProps[][]
 }
 
 interface get_mapping_line_data_from_mapping_path_internal_state {

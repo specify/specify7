@@ -41,6 +41,7 @@ interface TemplateSelectionState extends State<'TemplateSelectionState'> {
 }
 
 interface MappingState extends State<'MappingState'>, WBPlanViewMapperBaseProps {
+	readonly automapper_suggestions_promise?:Promise<MappingElementProps[][]>,
 }
 
 type WBPlanViewStates =
@@ -110,9 +111,6 @@ interface FocusLineAction extends Action<'FocusLineAction'> {
 interface MappingViewMapAction extends Action<'MappingViewMapAction'>{
 }
 
-interface MappingViewChangeAction extends Action<'MappingViewChangeAction'>{
-}
-
 interface AddNewHeaderAction extends Action<'AddNewHeaderAction'>{
 }
 
@@ -120,6 +118,20 @@ interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'>{
 }
 
 interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'>{
+}
+
+interface OpenSelectElementAction extends Action<'OpenSelectElementAction'>, select_element_position {
+}
+
+interface CloseSelectElementAction extends Action<'CloseSelectElementAction'>, select_element_position {
+}
+
+interface ChangeSelectElementValueAction extends Action<'ChangeSelectElementValueAction'>, select_element_onchange_position {
+	readonly value: string,
+}
+
+interface AutomapperSuggestionsLoadedAction extends Action<'AutomapperSuggestionsLoadedAction'> {
+	readonly automapper_suggestions: MappingElementProps[][],
 }
 
 type MappingActions =
@@ -132,10 +144,13 @@ type MappingActions =
 	| ClearMappingLineAction
 	| FocusLineAction
 	| MappingViewMapAction
-	| MappingViewChangeAction
 	| AddNewHeaderAction
 	| AddNewStaticHeaderAction
-	| ToggleHiddenFieldsAction;
+	| ToggleHiddenFieldsAction
+	| OpenSelectElementAction
+	| CloseSelectElementAction
+	| ChangeSelectElementValueAction
+	| AutomapperSuggestionsLoadedAction;
 
 type WBPlanViewActions =
 	BaseTableSelectionActions
@@ -173,6 +188,8 @@ type WBPlanViewHeaderProps =
 
 
 interface WBPlanViewProps extends publicWBPlanViewProps {
+	readonly upload_plan: falsy_upload_plan,
+	readonly headers: string[],
 }
 
 interface publicWBPlanViewProps {
@@ -186,4 +203,5 @@ interface publicWBPlanViewProps {
 interface HeaderWrapperProps {
 	readonly children :react_elements,
 	readonly header :react_element,
+	readonly state_name :WBPlanViewStates['type']
 }
