@@ -138,7 +138,7 @@ class automapper {
 	public map({
 		use_cache = true,
 		commit_to_cache = true,
-	} :automapper_map_parameters) :automapper_results {
+	} :automapper_map_parameters ={}) :automapper_results {
 
 		if (Object.keys(this.headers_to_map).length === 0)
 			return {};

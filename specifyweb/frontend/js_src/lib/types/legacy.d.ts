@@ -39,8 +39,7 @@ interface domain_tree_definition_item {
 	readonly rget :(field_name :string) => Promise<domain_tree_definition_item>,
 }
 
-interface domain_request {
-	readonly [field_name :string] :any,
+interface domain_request extends Dictionary<any> {
 }
 
 type specify_request = (param :domain_request) => jquery_promise<void>;

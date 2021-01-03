@@ -4,6 +4,10 @@ type list_of_headers = string[];
 type mapping_type = Readonly<'existing_header' | 'new_column' | 'new_static_column'>;
 type relationship_type = Readonly<'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many'>;
 
+interface select_element_position {
+	readonly line: number|'mapping_view',
+	readonly index: number,
+}
 
 interface WBPlanViewMapperBaseProps {
 	readonly mapping_is_templated :boolean,
@@ -12,12 +16,21 @@ interface WBPlanViewMapperBaseProps {
 	readonly base_table_name :string,
 	readonly new_header_id :number,  // the index that would be shown in the header name the next time the user presses `New Column`
 	readonly lines :MappingLine[],
+	readonly open_select_element? : select_element_position,
+	readonly focused_line? : number,
 	readonly mapping_view :mapping_path,
 	readonly validation_results :mapping_path[],
 }
 
-interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps, Omit<data_model_fetcher_return, 'list_of_base_tables'> {
+interface WBPlanViewMapperProps extends WBPlanViewMapperBaseProps {
 	readonly mapper_dispatch: (action:MappingActions)=>void,
+	readonly handleSave: ()=>void,
+	readonly handleFocus: (line_index:number)=>void,
+	readonly handleMappingViewMap: ()=>void,
+	readonly handleMappingViewChange: ()=>void,
+	readonly handleAddNewHeader: ()=>void,
+	readonly handleAddNewStaticHeader: ()=>void,
+	readonly handleToggleHiddenFields: ()=>void,
 }
 
 interface MappingsControlPanelProps {
@@ -25,38 +38,19 @@ interface MappingsControlPanelProps {
 }
 
 interface FormatValidationResultsProps {
-	validation_results: WBPlanViewMapperProps['validation_results']
+	validation_results: WBPlanViewMapperProps['validation_results'],
+	handleSave: ()=>void
 }
 
 interface MappingViewProps {
-	mapping_path: mapping_path
+	mapping_path: mapping_path,
+	map_button_is_enabled:boolean,
+	handleMapButtonClick: ()=>void
+	handleMappingViewChange: handleCustomSelectElementChange,
+	opened_list?: number
 }
 
 
-
-interface header_data {
-	readonly mapping_type :mapping_type,
-	header_name :string
-}
-
-interface add_new_mapping_line_parameters {
-	readonly position? :number,  // position of the new line. If negative, start from the back
-	readonly mapping_path? :mapping_path,  // mapping path to use for the new mapping line
-	readonly header_data :header_data,  // {'mapping_type':<mapping_type>,{'header_name'}:<header_name>} where mapping_type is `existing_header`/`new_column`/`new_static_column` and header_name is the value of the static column or the name of the header
-	readonly blind_add_back? :boolean,  // whether to add to the back without checking if the header already exists
-	readonly line_attributes? :string[],  // array of classes to append to each line's classname
-	readonly scroll_down? :boolean  // whether to scroll the list of mapping lines down to make the newly created line visible on the screen
-	readonly update_all_lines? :boolean  // whether to update all lines
-}
-
-interface get_mapping_line_data_from_mapping_path_internal_payload {
-	readonly mapping_path :mapping_path,
-	readonly generate_last_relationship_data :boolean,
-	readonly mapping_path_position :number,
-	readonly iterate :boolean,
-	readonly mapping_line_data :[],
-	readonly custom_select_type:custom_select_type,
-}
 
 interface get_mapping_path_parameters {
 	readonly line_elements_container :HTMLElement,  // line elements container

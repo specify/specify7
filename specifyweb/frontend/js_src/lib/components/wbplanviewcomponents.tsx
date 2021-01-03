@@ -12,20 +12,25 @@ import {CustomSelectElement} from './customselectelement';
 /* Generates a list of tables */
 export const ListOfBaseTables = React.memo(({
 		list_of_tables,
+		handleChange,
 	} :ListOfBaseTablesProps) =>
 		<MappingElement
+			is_open={true}
+			handleChange={handleChange}
 			select_label='Select a base table:'
 			fields_data={
-				Object.fromEntries(Object.entries(list_of_tables).map(([table_name, table_label]) =>
-					[
-						table_name,
-						{
-							field_friendly_name: table_label,
+				Object.fromEntries(
+					Object.entries(list_of_tables).map(([table_name, table_label]) => (
+						[
 							table_name,
-							is_relationship: true,
-						},
-					],
-				))
+							{
+								field_friendly_name: table_label,
+								table_name,
+								is_relationship: true,
+							}
+						]
+					))
+				)
 			}
 			custom_select_type='opened_list'
 			custom_select_subtype='simple'
@@ -35,13 +40,13 @@ export const ListOfBaseTables = React.memo(({
 /* Generates a mapping line */
 export const MappingLine = ({
 	line_data,
-	header_data: {
-		mapping_type,
-		header_name,
-	},
-	line_attributes = [],
+	mapping_type,
+	header_name,
+	is_focused,
+	handleFocus,
 } :MappingLineProps) =>
-	<div className={`wbplanview_mappings_line ${line_attributes.join(' ')}`}>
+	<div className={`wbplanview_mappings_line ${is_focused ? 'wbplanview_mappings_line_focused' : ''}`}
+		 onClick={handleFocus}>
 		<div className="wbplanview_mappings_line_controls">
 			<button className="wbplanview_mappings_line_delete" title="Clear mapping">
 				<img src="../../../static/img/discard.svg" alt="Clear mapping"/>
@@ -76,30 +81,36 @@ function MappingElement(
 	props :MappingElementProps,
 ) {
 
+	if (!props.is_open)
+		return <CustomSelectElement {...props} />;
+
 	const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
-		[field_group_label, [] as CustomSelectElementOptionProps[]],
+		[field_group_label, {} as CustomSelectElementOptions],
 	));
 
-	Object.values(props.fields_data).forEach(({
-			field_friendly_name,  // field label
+	Object.entries(props.fields_data).forEach(([
+		field_name,
+		{
+		field_friendly_name,  // field label
 			is_enabled = true,  // whether field is enabled (not mapped yet)
 			is_default = false,  // whether field is selected by default
 			table_name = '',  // table name for this option
 			is_relationship = false,  // whether this field is relationship, tree rank or reference item
 			is_required = false,  // whether this field is required
 			is_hidden = false,  // whether this field is hidden
-		}) =>
-			field_groups[
+		}
+	]) =>
+		field_groups[
 			is_hidden && 'hidden_fields' ||
 			is_required && 'required_fields' ||
 			'optional_fields'
-				].push({
-				option_name: field_friendly_name,
-				is_enabled,
-				is_relationship,
-				is_default,
-				table_name,
-			}),
+		][field_name] = {
+			option_label: field_friendly_name,
+			is_enabled,
+			is_relationship,
+			is_default,
+			table_name,
+		}
 	);
 
 	const table_fields = [];
@@ -113,7 +124,7 @@ function MappingElement(
 
 	return <CustomSelectElement
 		{...props}
-		select_groups_data={table_fields}
+		custom_select_option_groups={table_fields}
 	/>;
 
 }

@@ -34,7 +34,7 @@ const Icon = React.memo(({
 
 /* Generates a single option line */
 const Option = React.memo(({
-	option_name = '',
+	option_label,
 	is_enabled = true,
 	is_relationship = false,
 	is_default = false,
@@ -53,23 +53,15 @@ const Option = React.memo(({
 	if (is_default)
 		classes.push('custom_select_option_selected');
 
-	handleClick = (
-		typeof handleClick !== "undefined" &&
-		is_enabled &&
-		is_default
-	) ?
-		(()=>handleClick!(option_name)) :
-		undefined
-
 	return <span
 		className={classes.join(' ')}
 		tabIndex={0}
-		handleClick=handleClick
+		onClick={handleClick}
 	>
 		<span className="custom_select_option_icon">
 			<Icon is_relationship={is_relationship} table_name={table_name}/>
 		</span>
-		<span className="custom_select_option_label">{option_name}</span>
+		<span className="custom_select_option_label">{option_label}</span>
 	</span>;
 });
 
@@ -80,14 +72,13 @@ const OptionGroup = ({
 } :CustomSelectElementOptionGroupProps) =>
 	<span className="custom_select_group">
 		<span className="custom_select_group_label">${select_group_label}</span>
-		${select_options_data.map(selection_option_data =>
-		<Option {...selection_option_data} />,
-	)}
+		${Object.entries(select_options_data).map(([option_name, selection_option_data]) => {
+			let {handleClick, ...partial_selection_option_data} = selection_option_data;
+			if(typeof handleClick !== "undefined")
+				handleClick = handleClick.bind(null,option_name);
+			return <Option handleClick={handleClick} {...partial_selection_option_data} />
+		})}
 	</span>;
-
-function handleOptionClick(handleChange:handleChange){
-
-}
 
 /* Generates a custom select element */
 export function CustomSelectElement(
@@ -97,7 +88,7 @@ export function CustomSelectElement(
 		custom_select_option_groups,
 		select_label = '',
 		default_option = {
-			option_name: '0',
+			option_label: '0',
 			table_name: '',
 		},
 		is_open,
@@ -110,7 +101,7 @@ export function CustomSelectElement(
 	const option_is_clickable = custom_select_type !== 'preview_list' && custom_select_type !== 'suggestion_list';
 
 	const handleClick = option_is_clickable ?
-		handleOptionClick.bind(handleChange) :
+		handleChange :
 		undefined
 
 	let header = null;
@@ -127,7 +118,7 @@ export function CustomSelectElement(
 		</span>;
 	else {
 
-		let default_icon = default_option.option_name !== '0' &&
+		let default_icon = default_option.option_label !== '0' &&
 			<Icon is_relationship={true} table_name={default_option.table_name}/>;
 
 		preview = <span className="custom_select_input" tabIndex={0} onClick={
@@ -138,19 +129,23 @@ export function CustomSelectElement(
 				undefined
 		}>
 			<span className="custom_select_input_icon">{default_icon}</span>
-			<span className="custom_select_input_label">{default_option.option_name}</span>
+			<span className="custom_select_input_label">{default_option.option_label}</span>
 		</span>;
 
 		first_row = is_open && custom_select_subtype!=='tree' &&
 			<Option
-				handleClick={handleClick}
-				is_default={default_option.option_name === '0'}
+				handleClick={
+					typeof handleClick === "undefined" ?
+						undefined :
+						handleClick.bind(null,'0')
+				}
+				is_default={default_option.option_label === '0'}
 			/>;
 
 	}
 
-	const groups = option_is_clickable &&
-		custom_select_option_groups.map(select_group_data =>
+	const groups = is_open && option_is_clickable &&
+		custom_select_option_groups!.map(select_group_data =>
 			<OptionGroup
 				handleClick={handleClick}
 				{...select_group_data}
@@ -178,7 +173,7 @@ export function CustomSelectElement(
 
 /* Generates a suggestion box */
 export const SuggestionBox = (
-	select_options_data :CustomSelectElementOptionProps[],
+	select_options_data :CustomSelectElementOptions,
 ) =>
 	<span className="custom_select_suggestions">
 		<OptionGroup

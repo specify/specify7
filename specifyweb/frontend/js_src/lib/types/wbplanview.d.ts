@@ -84,6 +84,7 @@ interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
 }
 
 interface SavePlanAction extends Action<'SavePlanAction'> {
+	readonly ignore_validation?:boolean
 }
 
 interface ToggleMappingViewAction extends Action<'ToggleMappingViewAction'> {
@@ -98,15 +99,27 @@ interface ResetMappingsAction extends Action<'ResetMappingsAction'> {
 interface ValidationAction extends Action<'ValidationAction'> {
 }
 
-interface SaveAction extends Action<'SaveAction'> {
-}
-
 interface ClearMappingLineAction extends Action<'ClearMappingLineAction'> {
-	line_index :number,
+	readonly line_index :number,
 }
 
-interface UpdateValidationResultsAction extends Action<'UpdateValidationResultsAction'> {
-	validation_results :WBPlanViewMapperBaseProps['validation_results']
+interface FocusLineAction extends Action<'FocusLineAction'> {
+	readonly line_index :number,
+}
+
+interface MappingViewMapAction extends Action<'MappingViewMapAction'>{
+}
+
+interface MappingViewChangeAction extends Action<'MappingViewChangeAction'>{
+}
+
+interface AddNewHeaderAction extends Action<'AddNewHeaderAction'>{
+}
+
+interface AddNewStaticHeaderAction extends Action<'AddNewStaticHeaderAction'>{
+}
+
+interface ToggleHiddenFieldsAction extends Action<'ToggleHiddenFieldsAction'>{
 }
 
 type MappingActions =
@@ -116,9 +129,13 @@ type MappingActions =
 	| ToggleMappingIsTemplatedAction
 	| ResetMappingsAction
 	| ValidationAction
-	| SaveAction
 	| ClearMappingLineAction
-	| UpdateValidationResultsAction;
+	| FocusLineAction
+	| MappingViewMapAction
+	| MappingViewChangeAction
+	| AddNewHeaderAction
+	| AddNewStaticHeaderAction
+	| ToggleHiddenFieldsAction;
 
 type WBPlanViewActions =
 	BaseTableSelectionActions
@@ -167,6 +184,6 @@ interface publicWBPlanViewProps {
 
 //render wrappers
 interface HeaderWrapperProps {
-	children :react_elements,
-	header :react_element,
+	readonly children :react_elements,
+	readonly header :react_element,
 }

@@ -1,6 +1,7 @@
 type comparison_types = 'regex' | 'string' | 'contains'
 
 // common
+
 interface options {
 	readonly regex? :RegExp[],
 	readonly string? :string[],
@@ -15,18 +16,14 @@ interface table_synonym_definition {
 }
 
 
-type table_synonyms = {
-	readonly [table_name :string] :table_synonym_definition[]
-}
+type table_synonyms = Dictionary<table_synonym_definition[]>
 
 
 // dont_match
-interface dont_match_instances {
-	readonly [field_name :string] :automapper_scope[]
+interface dont_match_instances extends Dictionary<automapper_scope[]> {
 }
 
-interface dont_match {
-	readonly [table_name :string] :dont_match_instances
+interface dont_match extends Dictionary<dont_match_instances>{
 }
 
 
@@ -43,8 +40,7 @@ type shortcut = {
 	readonly [scope_name in automapper_scope]? :shortcut_definition[]
 }
 
-interface shortcuts {
-	readonly [table_name :string] :shortcut
+interface shortcuts extends Dictionary<shortcut>{
 }
 
 
@@ -61,12 +57,10 @@ type field_synonym = {
 	readonly [scope_name in automapper_scope]? :synonym_headers;
 };
 
-interface synonym {
-	readonly [field_name :string] :field_synonym
+interface synonym extends Dictionary<field_synonym>{
 }
 
-interface synonyms {
-	readonly [table_name :string] :synonym
+interface synonyms extends Dictionary<synonym>{
 }
 
 

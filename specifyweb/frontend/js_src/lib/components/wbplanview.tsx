@@ -9,13 +9,17 @@ import cache from './cache';
 import schema from '../schema';
 import fetch_data_model from './wbplanviewdatamodelfetcher';
 import {assertExhaustive} from './statemanagement';
-import WBPlanViewMapper, {get_lines_from_upload_plan, get_lines_from_headers} from './wbplanviewmapper';
+import WBPlanViewMapper, {
+	get_lines_from_upload_plan,
+	get_lines_from_headers,
+	mapping_path_is_complete,
+	get_mappings_tree,
+} from './wbplanviewmapper';
 import {ErrorBoundary} from './errorboundary';
 import {ModalDialog, LoadingScreen} from './modaldialog';
 import data_model_helper from './data_model_helper';
 import data_model_storage from './data_model_storage';
 import createContext from './contextcreator';
-import automapper from './automapper';
 import {ListOfBaseTables} from './wbplanviewcomponents';
 
 let schema_fetched_promise = fetch_data_model();
@@ -112,45 +116,46 @@ const HeaderWrapper = (props :HeaderWrapperProps) =>
 		</div>
 	</>;
 
-function go_back(props :WBPlanViewProps) {
+function go_back(props :WBPlanViewProps):LoadingState {
 	navigation.go(`/workbench/${props.wb.id}/`);
 	props.handleUnload();
+	return {
+		type: 'LoadingState',
+	}
 }
 
-function save_plan(props :WBPlanViewProps, ignore_validation = false) {
-	if (!ignore_validation && typeof validate() !== 'boolean')
-		return;
+function save_plan(props :WBPlanViewProps, state:MappingState, ignore_validation = false) {
+	const validation_results_state = validate(state);
+	if (!ignore_validation && validation_results_state.validation_results.length !== 0)
+		return validation_results_state;
 
 	props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
 	props.wbtemplatePromise.done(wbtemplate =>
 		wbtemplate.set('remarks', upload_plan_converter.get_upload_plan()),
 	);
 	props.wb.save();
-	go_back(props);
+	return go_back(props);
 }
 
 /* Validates the current mapping and shows error messages if needed */
-function validate() {
+function validate(state:MappingState):MappingState {
 
 	if (state.type !== 'MappingState')
 		throw new Error('Validation can only be done from the Mapper State');
 
-	mapper_dispatch({
-		type: 'UpdateValidationResultsAction',
+	return {
+		...state,
+		type: 'MappingState',
+		show_mapping_view:  // Show mapping view panel if there were validation errors
+			state.show_mapping_view ||
+			Object.values(state.validation_results).length !== 0,
 		validation_results: data_model_helper.show_required_missing_fields(
 			state.base_table_name,
-			WBPlanViewMapper.get_mappings_tree(),
+			get_mappings_tree(state.lines),
 		),
-	});
+	};
 
 }
-
-const validate = (show_mapping_view:boolean, validation_results:WBPlanViewMapperBaseProps['validation_results'])=>({
-	validation_results: validation_results,
-	show_mapping_view:  // Show mapping view panel if there were validation errors
-		show_mapping_view ||
-		Object.values(validation_results).length !== 0,
-});
 
 const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanViewActions):WBPlanViewStates => {
 
@@ -179,10 +184,10 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
 				show_mapping_view: cache.get('ui', 'show_mapping_view'),
 				base_table_name: action.table_name,
-				lines: get_lines_from_headers(headers),
+				lines: get_lines_from_headers(headers,true),
 				mapping_view: [],
 				validation_results: [],
-				new_header_id: 0,
+				new_header_id: 1,
 			};
 		case 'UseTemplateAction':
 			return {
@@ -205,11 +210,13 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 
 		//common
 		case 'CancelMappingAction':
-			go_back();
-			break;
+			return go_back(props);
 
 		//mapping state
 		case 'OpenMappingScreenAction':
+			if(upload_plan === false)
+				throw new Error('Upload plan is not defined');
+
 			const {
 				base_table_name,
 				lines,
@@ -225,13 +232,13 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				show_mapping_view: cache.get('ui', 'show_mapping_view'),
 				mapping_view: [],
 				validation_results: [],
-				new_header_id: 0,
+				new_header_id: 1,
 				base_table_name,
 				lines,
 			};
 
 		case 'SavePlanAction':
-			save_plan();
+			return save_plan(props, mapping_state(),typeof action.ignore_validation !== "undefined");
 
 		case 'ToggleMappingViewAction':
 			return {
@@ -246,10 +253,7 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 			};
 
 		case 'ValidationAction':
-			//TODO: validate
-
-		case 'SaveAction':
-			//TODO: save and exit
+			return validate(mapping_state());
 
 		case 'ResetMappingsAction':
 			return {
@@ -267,11 +271,77 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				],
 			};
 
-		case 'UpdateValidationResultsAction':
+		case 'FocusLineAction':
+
+			if(action.line_index > mapping_state().lines.length)
+				throw new Error('Tried to focus a line that doesn\'t exist');
+
+			const focused_line_mapping_path = mapping_state().lines[action.line_index].mapping_path;
 			return {
 				...mapping_state(),
+				focused_line: action.line_index,
+				mapping_view: mapping_path_is_complete(focused_line_mapping_path) ?
+					focused_line_mapping_path :
+					mapping_state().mapping_view,
+			}
 
+		case 'MappingViewMapAction':
+			const mapping_view_mapping_path = mapping_state().mapping_view;
+			const focused_line = mapping_state().focused_line;
+			if(
+				!mapping_path_is_complete(mapping_view_mapping_path) ||
+				typeof focused_line === "undefined" ||
+				focused_line! >= mapping_state().lines.length
+			)
+				return state;
+
+			return {
+				...mapping_state(),
+				lines: [
+					...mapping_state().lines.slice(0,focused_line),
+					{
+						...mapping_state().lines[focused_line],
+						mapping_path: mapping_view_mapping_path,
+					},
+					...mapping_state().lines.slice(focused_line+1),
+				]
 			};
+
+		case 'MappingViewChangeAction':
+			//TODO: finish this
+
+		case 'AddNewHeaderAction':
+			return {
+				...mapping_state(),
+				new_header_id: mapping_state().new_header_id+1,
+				lines: [
+					...mapping_state().lines,
+					{
+						name: `New Header ${mapping_state().new_header_id}`,
+						type: 'new_column',
+						mapping_path: [],
+					}
+				]
+			}
+
+		case 'AddNewStaticHeaderAction':
+			return {
+				...mapping_state(),
+				lines: [
+					...mapping_state().lines,
+					{
+						name: ``,
+						type: 'new_static_column',
+						mapping_path: [],
+					}
+				]
+			}
+
+		case 'ToggleHiddenFieldsAction':
+			return {
+				...mapping_state(),
+				show_hidden_fields: !mapping_state().show_hidden_fields,
+			}
 
 		default:
 			assertExhaustive(action);
@@ -280,10 +350,9 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 
 function WBPlanView(props :WBPlanViewProps) {
 
-	const headers = useHeaders();
 	const upload_plan = useUploadPlan();
 
-	const [state, dispatch] = React.useReducer(reducer.bind(null,props), upload_plan, getInitialWBPlanViewState);
+	const [state, dispatch]:[WBPlanViewStates,(action:WBPlanViewActions)=>void] = React.useReducer(reducer.bind(null,props), upload_plan, getInitialWBPlanViewState);
 	const mapper_dispatch = (action :MappingActions)=>
 		dispatch(action);
 
@@ -342,15 +411,6 @@ function WBPlanView(props :WBPlanViewProps) {
 				dispatch(state.dispatch);
 			return <LoadingScreen/>;
 		case 'BaseTableSelectionState':
-			// const mappings_object :automapper_results = (new automapper({
-			// 	headers: state.headers,
-			// 	base_table: state.base_table_name,
-			// 	scope: 'automapper',
-			// })).map();
-			// const array_of_mappings = Object.entries(mappings_object).map(([header_name, mapping_path]) =>
-			// 	[...mapping_path[0], 'existing_header', header_name],
-			// );
-			// wbplanviewmapper.implement_array_of_mappings(array_of_mappings);
 			return <HeaderWrapper
 				header={
 					<WBPlanViewHeader
@@ -360,7 +420,10 @@ function WBPlanView(props :WBPlanViewProps) {
 						handleUseTemplate={() => dispatch({type: 'UseTemplateAction'})}
 					/>
 				}>
-				<ListOfBaseTables list_of_tables={data_model_storage.list_of_base_tables}/>
+				<ListOfBaseTables
+					list_of_tables={data_model_storage.list_of_base_tables}
+					handleChange={((table_name: string) => dispatch({type:'SelectTableAction', table_name:table_name}))}
+				/>
 			</HeaderWrapper>;
 		case 'TemplateSelectionState':
 			return <ModalDialog properties={{title: 'Select Template'}}>{
@@ -397,7 +460,7 @@ function WBPlanView(props :WBPlanViewProps) {
 						handleToggleMappingIsTemplated={() => mapper_dispatch({type: 'ToggleMappingIsTemplatedAction'})}
 						handleClearMapping={() => mapper_dispatch({type: 'ResetMappingsAction'})}
 						handleValidation={() => mapper_dispatch({type: 'ValidationAction'})}
-						handleSave={() => mapper_dispatch({type: 'SaveAction'})}
+						handleSave={() => mapper_dispatch({type: 'SavePlanAction'})}
 						mapping_is_templated={state.mapping_is_templated}
 					/>
 				}>
@@ -411,6 +474,13 @@ function WBPlanView(props :WBPlanViewProps) {
 					mapping_view={state.mapping_view}
 					validation_results={state.validation_results}
 					mapper_dispatch={mapper_dispatch}
+					handleSave={()=>mapper_dispatch({type:'SavePlanAction', ignore_validation:true})}
+					handleFocus={(line_index:number)=>mapper_dispatch({type:'FocusLineAction', line_index:line_index})}
+					handleMappingViewMap={()=>mapper_dispatch({type:'MappingViewMapAction'})}
+					handleMappingViewChange={()=>mapper_dispatch({type:'MappingViewChangeAction'})}
+					handleAddNewHeader={()=>mapper_dispatch({type:'AddNewHeaderAction'})}
+					handleAddNewStaticHeader={()=>mapper_dispatch({type:'AddNewStaticHeaderAction'})}
+					handleToggleHiddenFields={()=>mapper_dispatch({type:'ToggleHiddenFieldsAction'})}
 				/>
 			</HeaderWrapper>;
 		default:
@@ -465,35 +535,3 @@ export default function(props:publicWBPlanViewProps){
 		}</ErrorBoundary>
 	</React.StrictMode>;
 }
-
-/*
-
-add_new_column.addEventListener('click',
-	mappings.add_new_mapping_line.bind(
-		mappings,
-		{
-			header_data: {
-				header_name: '',
-				mapping_type: 'new_column'
-			},
-			blind_add_back: true,
-			scroll_down: true,
-		}
-	)
-);
-
-add_new_static_column.addEventListener('click',
-	mappings.add_new_mapping_line.bind(
-		mappings,
-		{
-			header_data: {
-				header_name: '',
-				mapping_type: 'new_static_column'
-			},
-			blind_add_back: true,
-			scroll_down: true,
-		}
-	)
-);
-
-* */

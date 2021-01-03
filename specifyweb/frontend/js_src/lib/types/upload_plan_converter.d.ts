@@ -1,5 +1,4 @@
-interface upload_plan_node {
-	[key :string] :string | boolean | upload_plan_node,
+interface upload_plan_node extends Dictionary<string | boolean | upload_plan_node>{
 }
 
 interface upload_plan {

@@ -48,14 +48,14 @@ class data_model_helper {
 
 	/* Returns whether relationship is a -to-many (e.x. one-to-many or many-to-many) */
 	public static readonly relationship_is_to_many = (
-		relationship_type :relationship_type | undefined | '',
+		relationship_type? :relationship_type | '',
 	) :boolean /* whether relationship is a -to-many */ =>
 		typeof relationship_type !== 'undefined' &&
 		relationship_type.indexOf('-to-many') !== -1;
 
 	/* Returns whether a value is a -to-many reference item (e.x #1, #2, etc...) */
 	public static readonly value_is_reference_item = (
-		value :string | undefined,  // the value to use
+		value? :string,  // the value to use
 	) :boolean /* whether a value is a -to-many reference item */ =>
 		typeof value !== 'undefined' &&
 		value.substr(0, data_model_storage.reference_symbol.length) === data_model_storage.reference_symbol;
@@ -126,7 +126,7 @@ class data_model_helper {
 	/* Iterates over the mappings_tree to find required fields that are missing */
 	public static show_required_missing_fields(
 		table_name :string,  // Official name of the current base table (from data model)
-		mappings_tree :mappings_tree | undefined = undefined,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
+		mappings_tree? :mappings_tree,  // Result of running mappings.get_mappings_tree() - an object with information about currently mapped fields
 		previous_table_name :string = '',  // used internally in recursion. Previous table name
 		path :mapping_path = [],  // used internally in recursion. Current mapping path
 		results :string[][] = [],  // used internally in recursion. Saves results

@@ -27,8 +27,7 @@ interface data_model_non_relationship extends Readonly<data_model_non_relationsh
 interface data_model_relationship extends Readonly<data_model_relationship_writable> {
 }
 
-interface data_model_fields_writable {
-	[field_name :string] :data_model_field_writable
+interface data_model_fields_writable extends Dictionary<data_model_field_writable>{
 }
 
 interface data_model_fields extends Readonly<data_model_fields_writable> {
@@ -42,8 +41,7 @@ interface data_model_table_writable {
 interface data_model_table extends Readonly<data_model_table_writable> {
 }
 
-interface data_model_tables_writable {
-	[table_name :string] :data_model_table_writable,
+interface data_model_tables_writable extends Dictionary<data_model_table_writable>{
 }
 
 interface data_model_tables {
@@ -52,8 +50,7 @@ interface data_model_tables {
 
 type table_ranks_inline = [table_name :string, table_ranks :table_ranks];
 
-interface table_ranks_writable {
-	[rank_name :string] :boolean  // whether rank is required
+interface table_ranks_writable extends Dictionary<boolean>{  // whether rank is required
 }
 
 interface table_ranks extends Readonly<table_ranks_writable> {
@@ -73,8 +70,7 @@ interface fetching_parameters {
 	readonly required_fields_to_be_made_optional :{[table_name :string] :string[]}
 }
 
-interface data_model_list_of_tables {
-	readonly [table_name :string] :string  // a dictionary like table_name==>table_friendly_name
+interface data_model_list_of_tables extends Dictionary<string>{  // a dictionary like table_name==>table_friendly_name
 }
 
 type data_model_fetcher_return = {
