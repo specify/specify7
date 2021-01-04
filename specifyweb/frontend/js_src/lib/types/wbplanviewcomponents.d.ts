@@ -22,15 +22,19 @@ interface MappingLineProps {
 }
 
 interface MappingPathProps {
-	mappings_line_data: MappingElementProps[],
+	readonly mappings_line_data: MappingElementProps[],
 }
 
 interface html_generator_fields_data extends Dictionary<html_generator_field_data>{
 }
 
-interface MappingElementPropsOpen extends Omit<Omit<CustomSelectElementPropsOpenBase, 'default_value'>, 'automapper_suggestions'>  {
+interface MappingElementPropsOpen extends Omit<CustomSelectElementPropsOpenBase, 'default_value'|'automapper_suggestions'>  {
 	readonly fields_data :html_generator_fields_data,
 	readonly automapper_suggestions?: MappingElementProps[][],
 }
 
-type MappingElementProps = MappingElementPropsOpen | CustomSelectElementPropsClosed;
+interface MappingElementPropsClosed extends Omit<CustomSelectElementPropsClosed, 'default_value'|'field_names'> {
+	readonly fields_data :html_generator_fields_data,
+}
+
+type MappingElementProps = MappingElementPropsOpen | MappingElementPropsClosed;

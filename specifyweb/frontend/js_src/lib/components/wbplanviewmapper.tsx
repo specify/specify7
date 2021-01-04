@@ -73,10 +73,10 @@ export function get_lines_from_headers({
 
 	return lines.map(line=>{
 		const {name:header_name} = line;
-		const automapper_mapping_path = automapper_results[header_name][0];
-		if(typeof automapper_mapping_path !== "undefined")
+		const automapper_mapping_paths = automapper_results[header_name];
+		if(typeof automapper_mapping_paths !== "undefined")
 			return {
-				mapping_path: automapper_mapping_path,
+				mapping_path: automapper_mapping_paths[0],
 				type: 'existing_header',
 				name: header_name,
 			}
@@ -127,7 +127,7 @@ const get_array_of_mappings = (
 	).map(({mapping_path, name, type})=>
 		include_headers ?
 			[...mapping_path,type,name] :
-			mapping_path
+			[...mapping_path]
 	);
 
 /* Returns a mappings tree */
@@ -268,13 +268,14 @@ const MappingView = React.memo((props:MappingViewProps)=>
 			/>
 		</div>
 		<button
+			id="wbplanview_mapping_view_map_button"
 			disabled={!props.map_button_is_enabled}
 			onClick={
 				props.map_button_is_enabled ?
 					props.handleMapButtonClick :
 					undefined
 			}
-		>Map</button>
+		>Map&#8594;</button>
 	</>
 );
 
@@ -305,7 +306,6 @@ export function mutate_mapping_path({
 //TODO: scroll list down when adding new column / new static column
 
 export default function(props:WBPlanViewMapperProps) {
-
 	const get_mapped_fields_bind = get_mapped_fields.bind(null,props.lines);
 
 	return <>

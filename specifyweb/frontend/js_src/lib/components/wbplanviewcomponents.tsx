@@ -62,14 +62,14 @@ export const MappingLine = ({
 
 /* Generates a mapping path */
 export const MappingPath = ({
-	mappings_line_data
+	mappings_line_data,
 }:MappingPathProps) =>
 	<>
 		{mappings_line_data.map((mapping_details, index) =>
-			<>
-				<MappingElement key={index} {...mapping_details} />
+			<React.Fragment key={index}>
+				<MappingElement {...mapping_details} />
 				{index+1 !== mappings_line_data.length && <MappingElementDivider />}
-			</>,
+			</React.Fragment>,
 		)}
 	</>;
 
@@ -80,25 +80,20 @@ const field_group_labels :{[key :string] :string} = {
 };
 
 const MappingElementDivider = ()=>
-	<span className="wbplanview_mappings_line_divider" />
+	<span className="wbplanview_mappings_line_divider">&#x2192;</span>
 
 /* Generates a new mapping element */
 function MappingElement(
 	props :MappingElementProps,
 ) {
 
-	if (!props.is_open)
-		return <CustomSelectElement {...props} />;
-
 	const field_groups = Object.fromEntries(Object.keys(field_group_labels).map((field_group_label) =>
 		[field_group_label, {} as CustomSelectElementOptions],
 	));
 
-	const default_option = {
-		option_name: '',
-		option_label: '',
-		table_name: '',
-	}
+	let default_option:CustomSelectElementDefaultOptionProps|undefined;
+
+	const field_names:string[] = [];
 
 	Object.entries(props.fields_data).forEach(([
 		field_name,
@@ -115,26 +110,48 @@ function MappingElement(
 
 		if(is_default){
 
-			if(default_option.option_name !== '')
+			if(default_option)
 				throw new Error('Multiple default options can not be present in the same list');
 
-			default_option.option_name = field_name;
-			default_option.option_label = field_friendly_name;
-			default_option.table_name = table_name;
+			default_option = {
+				option_name: field_name,
+				option_label: field_friendly_name,
+				table_name,
+				is_relationship
+			};
 		}
 
-		const filed_group = is_hidden && 'hidden_fields' ||
-			is_required && 'required_fields' ||
-			'optional_fields';
+		if(!props.is_open)
+			field_names.push(field_friendly_name);
+		else {
+			const filed_group = is_hidden && 'hidden_fields' ||
+				is_required && 'required_fields' ||
+				'optional_fields';
 
-		field_groups[filed_group][field_name] = {
-			option_label: field_friendly_name,
-			is_enabled,
-			is_relationship,
-			is_default,
-			table_name,
+			field_groups[filed_group][field_name] = {
+				option_label: field_friendly_name,
+				is_enabled,
+				is_relationship,
+				is_default,
+				table_name,
+			}
 		}
 	});
+
+	if(!default_option)
+		default_option = {
+			option_name: '0',
+			option_label: '0',
+			table_name: '',
+			is_relationship: false,
+		}
+
+	if (!props.is_open)
+		return <CustomSelectElement
+			default_option={default_option}
+			{...props}
+			field_names={field_names}
+		/>;
 
 	const table_fields = [];
 	for (const [group_name, group_fields] of Object.entries(field_groups))

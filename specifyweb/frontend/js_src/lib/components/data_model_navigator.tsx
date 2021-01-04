@@ -135,9 +135,10 @@ export default class data_model_navigator {
 			}
 		}
 
-		if(callbacks.should_custom_select_element_be_open(callback_payload)){
-
-		}
+		// if(callbacks.should_custom_select_element_be_open(callback_payload)){
+		//
+		// }
+		callbacks.should_custom_select_element_be_open(callback_payload);
 
 		callbacks.navigator_instance_pre(callback_payload);
 
@@ -184,7 +185,7 @@ export default class data_model_navigator {
 	/* Returns a mapping line data from mapping path */
 	public static get_mapping_line_data_from_mapping_path({
 		base_table_name,
-		mapping_path = [],
+		mapping_path = ["0"],
 		open_path_element_index,
 		iterate = true,
 		use_cached = false,
@@ -196,6 +197,11 @@ export default class data_model_navigator {
 		get_mapped_fields,
 		automapper_suggestions,
 	} :get_mapping_line_data_from_mapping_path_parameters) :MappingElementProps[] {
+
+		use_cached=false;
+
+		if(mapping_path.length === 0)
+			throw new Error('Mapping Path is invalid');
 
 		const internal_state :get_mapping_line_data_from_mapping_path_internal_state = {
 			mapping_path_position: -1,
@@ -403,13 +409,13 @@ export default class data_model_navigator {
 					custom_select_type: internal_state.custom_select_type,
 					custom_select_subtype: internal_state.custom_select_subtype,
 					select_label: data_model_storage.tables[table_name].table_friendly_name,
+					fields_data: internal_state.result_fields,
 					table_name,
 				};
 
 				if(internal_state.is_open === true)
 					return {
 						...base_structure,
-						fields_data: internal_state.result_fields,
 						handleChange: handleChange.bind(null,internal_state.mapping_path_position),
 						handleClose: handleClose.bind(null,internal_state.mapping_path_position),
 						automapper_suggestions,

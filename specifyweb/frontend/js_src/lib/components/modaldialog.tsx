@@ -61,6 +61,7 @@ export const LoadingScreen = () =>
 		properties={{
 			title: 'Loading',
 			buttons: [],
+			close: undefined
 		}}
 	>
 		<div className="progress-bar"/>

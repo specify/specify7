@@ -45,6 +45,9 @@ export default class automapper {
 					if (typeof this.results[action.header_name] === 'undefined')
 						this.results[action.header_name] = [];
 
+					if(action.mapping_path.length === 0)
+						throw new Error('Invalid mapping path suggested by automapper');
+
 					this.results[action.header_name].push(action.mapping_path);
 					break;
 				default:

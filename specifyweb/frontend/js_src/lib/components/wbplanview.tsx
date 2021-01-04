@@ -43,6 +43,7 @@ const WBPlanViewHeaderRightMappingElements = (props :WBPlanViewHeaderPropsMappin
 	<button onClick={props.handleClearMapping}>Clear Mappings</button>
 	<button onClick={props.handleValidation}>Validate</button>
 	<button onClick={props.handleSave}>Save</button>
+	<button onClick={props.handleCancel}>Cancel</button>
 </>;
 const WBPlanViewHeaderRightNonMappingElements = (props :WBPlanViewHeaderPropsNonMapping) =>
 	<>
@@ -158,6 +159,8 @@ function validate(state:MappingState):MappingState {
 
 const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanViewActions):WBPlanViewStates => {
 
+	// console.log(props,state,action);
+
 	const mapping_state = ():MappingState=>{
 		if(state.type !== 'MappingState')
 			throw new Error(`${action.type} can only be dispatched from 'MappingState'`);
@@ -181,7 +184,7 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				show_mapping_view: cache.get('ui', 'show_mapping_view'),
 				base_table_name: action.table_name,
 				new_header_id: 1,
-				mapping_view: [],
+				mapping_view: ["0"],
 				validation_results: [],
 				lines: get_lines_from_headers({
 					headers:props.headers,
@@ -224,18 +227,22 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				props.headers,
 				props.upload_plan,
 			);
-			return {
+			const new_state:MappingState = {
 				...state,
 				type: 'MappingState',
 				mapping_is_templated: props.mappingIsTemplated,
 				show_hidden_fields: cache.get('ui', 'show_hidden_fields'),
 				show_mapping_view: cache.get('ui', 'show_mapping_view'),
-				mapping_view: [],
+				mapping_view: ["0"],
 				validation_results: [],
 				new_header_id: 1,
 				base_table_name,
 				lines,
 			};
+
+			if(new_state.lines.some(({mapping_path})=>mapping_path.length===0))
+				throw new Error('Mapping Path is invalid');
+			return new_state;
 
 		case 'SavePlanAction':
 			return save_plan(props, mapping_state(),typeof action.ignore_validation !== "undefined");
@@ -316,7 +323,7 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 					{
 						name: `New Header ${mapping_state().new_header_id}`,
 						type: 'new_column',
-						mapping_path: [],
+						mapping_path: ["0"],
 					}
 				]
 			}
@@ -327,9 +334,9 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 				lines: [
 					...mapping_state().lines,
 					{
-						name: ``,
+						name: '',
 						type: 'new_static_column',
-						mapping_path: [],
+						mapping_path: ["0"],
 					}
 				]
 			}
@@ -406,7 +413,16 @@ const reducer = (props :WBPlanViewProps, state:WBPlanViewStates, action :WBPlanV
 
 function WBPlanView(props :WBPlanViewProps) {
 
-	const [state, dispatch]:[WBPlanViewStates,(action:WBPlanViewActions)=>void] = React.useReducer(reducer.bind(null,props), props.upload_plan, getInitialWBPlanViewState);
+	const reducer_with_props = React.useCallback(
+		/*(state:WBPlanViewStates, action :WBPlanViewActions)=>{
+			const new_state = reducer.bind(null,props)(state,action);
+			console.log(new_state);
+			return new_state;
+		},*/
+		(state:WBPlanViewStates, action :WBPlanViewActions)=>reducer(props,state,action),
+		[props]
+	);
+	const [state, dispatch]:[WBPlanViewStates,(action:WBPlanViewActions)=>void] = React.useReducer(reducer_with_props, props.upload_plan, getInitialWBPlanViewState);
 	const mapper_dispatch = (action :MappingActions)=>
 		dispatch(action);
 
