@@ -13,6 +13,41 @@ const cache = require('./cache').default;
 const helper = require('./helper').default;
 const {assertExhaustive} = require('./statemanagement');
 
+/*
+import AutoMapperDefinitions from './automapperdefinitions';
+import data_model_storage from './data_model_storage';
+import data_model_helper from './data_model_helper';
+import cache from './cache';
+import helper from './helper';
+import {generate_mutable_reducer} from './statemanagement';
+
+		results: generate_mutable_reducer<automapper_results_actions>()({
+			'add': ({header_name,mapping_path})=>{
+				if (typeof this.results[header_name] === 'undefined')
+					this.results[header_name] = [];
+
+				if(mapping_path.length === 0)
+					throw new Error('Invalid mapping path suggested by automapper');
+
+				this.results[header_name].push(mapping_path);
+			}
+		}),
+		headers_to_map: generate_mutable_reducer<automapper_headers_to_map_actions>()({
+			'mapped': ({header_name})=>{
+				if (!this.allow_multiple_mappings)
+					this.headers_to_map[header_name].is_mapped = true;
+			}
+		}),
+		searched_tables: generate_mutable_reducer<automapper_searched_tables_actions>()({
+			'add': (action)=>{
+				this.searched_tables.push(action.table_name);
+			},
+			'reset': ()=>{
+				this.searched_tables = [];
+			}
+		}),
+* */
+
 export default class automapper {
 
 	private readonly results :automapper_results = {};

@@ -57,6 +57,8 @@ interface OpenBaseTableSelectionAction extends Action<'OpenBaseTableSelectionAct
 
 interface SelectTableAction extends Action<'SelectTableAction'> {
 	readonly table_name :string,
+	readonly mappingIsTemplated: boolean,
+	readonly headers: string[]
 }
 
 interface UseTemplateAction extends Action<'UseTemplateAction'> {
@@ -78,13 +80,16 @@ type TemplateSelectionActions =
 	TemplatesLoadedAction
 	| CancelTemplateSelectionAction;
 
-interface CancelMappingAction extends Action<'CancelMappingAction'> {
+interface CancelMappingAction extends Action<'CancelMappingAction'>,partialWBPlanViewProps {
 }
 
 interface OpenMappingScreenAction extends Action<'OpenMappingScreenAction'> {
+	readonly mappingIsTemplated: boolean,
+	readonly headers: string[],
+	readonly upload_plan: falsy_upload_plan,
 }
 
-interface SavePlanAction extends Action<'SavePlanAction'> {
+interface SavePlanAction extends Action<'SavePlanAction'>, publicWBPlanViewProps{
 	readonly ignore_validation?:boolean
 }
 
@@ -192,11 +197,14 @@ interface WBPlanViewProps extends publicWBPlanViewProps {
 	readonly headers: string[],
 }
 
-interface publicWBPlanViewProps {
+interface partialWBPlanViewProps {
 	readonly wb :specify_resource,
+	readonly handleUnload :() => void,
+}
+
+interface publicWBPlanViewProps extends partialWBPlanViewProps {
 	readonly wbtemplatePromise :jquery_promise<specify_resource>,
 	readonly mappingIsTemplated :boolean,
-	readonly handleUnload :() => void,
 }
 
 //render wrappers

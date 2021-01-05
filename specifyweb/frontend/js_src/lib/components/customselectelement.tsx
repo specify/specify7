@@ -6,13 +6,14 @@ import React from 'react';
 const Icon = React.memo(({
 	is_relationship = false,
 	is_default = false,
+	is_enabled = true,
 	table_name = '',
 	option_label = '0'
 } :CustomSelectElementIconProps) => {
 
 	if(option_label==='0')
 		return <span className="custom_select_option_icon_undefined">&#8416;</span>
-	if(!is_relationship && is_default)
+	if(!is_relationship && (is_default || !is_enabled))
 		return <span className="custom_select_option_icon_selected">&#10003;</span>
 	else if(!is_relationship || table_name === '')
 		return null;
@@ -69,6 +70,7 @@ const Option = React.memo(({
 				option_label={option_label}
 				is_relationship={is_relationship}
 				is_default={is_default}
+				is_enabled={is_enabled}
 				table_name={table_name}
 			/>
 		</span>

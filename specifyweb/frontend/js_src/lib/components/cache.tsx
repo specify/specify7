@@ -86,15 +86,15 @@ export default class cache {
 	};
 
 	/* Set's cache_value as cache value under cache_name in bucket_name */
-	public static set(
+	public static set<T>(
 		bucket_name :string,  // the name of the bucket
 		cache_name :string,  // the name of the cache
-		cache_value :any,  // the value of the cache. Can be any object that can be converted to json
+		cache_value :T,  // the value of the cache. Can be any object that can be converted to json
 		{
 			bucket_type = 'local_storage',
 			overwrite = false,
 		} :set_parameters = {}
-	) :void {
+	) :T|false {
 
 		if (!cache.event_listener_is_initialized)
 			cache.initialize();
@@ -107,7 +107,7 @@ export default class cache {
 		}
 
 		if (!overwrite && typeof cache.buckets[bucket_name].records[cache_name] !== "undefined")
-			return;
+			return false;
 
 		cache.buckets[bucket_name].records[cache_name] = {
 			value: cache_value,
@@ -115,6 +115,8 @@ export default class cache {
 		};
 
 		cache.trim_bucket(bucket_name);
+
+		return cache_value;
 
 	};
 

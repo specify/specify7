@@ -275,7 +275,10 @@ const MappingView = React.memo((props:MappingViewProps)=>
 					props.handleMapButtonClick :
 					undefined
 			}
-		>Map&#8594;</button>
+		>
+			Map
+			<span className="wbplanview_mapping_view_map_button_arrow">&#8594;</span>
+		</button>
 	</>
 );
 

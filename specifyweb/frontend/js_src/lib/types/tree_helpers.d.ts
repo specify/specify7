@@ -1,6 +1,4 @@
-type mappings_tree_header = {
-	[key in mapping_type] :string;
-};
+type mappings_tree_header = Record<mapping_type,string>
 
 interface mappings_tree extends Dictionary<mappings_tree | string | mappings_tree_header>{
 }

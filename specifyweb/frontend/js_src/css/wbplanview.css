@@ -27,6 +27,8 @@
 	height: calc(100vh - 150px); /* TODO: replace with a permanent solution */
 }
 
+/* TODO: replace IDs with classes? */
+
 /* HEADER */
 #wbplanview_header {
 	display: flex;
@@ -78,9 +80,15 @@
 }
 
 #wbplanview_mapping_view_map_button {
-	font-size: calc(4 * var(--white_space));
+	font-size: calc(2 * var(--white_space));
 	display: flex;
+	flex-direction: column;
 	align-items: center;
+	justify-content: center;
+}
+
+.wbplanview_mapping_view_map_button_arrow {
+	color: #4f2;
 }
 
 

@@ -24,10 +24,10 @@ interface CustomSelectElementIconProps {
 	readonly is_default? :boolean,  // whether the option is currently selected
 	readonly table_name? :string,  // the name of the table this option represents
 	readonly option_label? :string|react_element,  // the name of the option. Would be used as a label (visible to the user)
+	readonly is_enabled? :boolean,  // True if option can be selected. False if option can not be selected because it was already selected
 }
 
 interface CustomSelectElementOptionProps extends CustomSelectElementIconProps{
-	readonly is_enabled? :boolean,  // True if option can be selected. False if option can not be selected because it was already selected
 	readonly handleClick? :handleOptionChange,
 }
 
