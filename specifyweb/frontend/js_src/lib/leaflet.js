@@ -13,6 +13,41 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+//create a "full screen" button
+L.Control.FullScreen = L.Control.extend({
+    onAdd: map => {
+        const img = L.DomUtil.create('img');
+        img.style.cursor = 'pointer';
+
+        L.DomEvent
+            .on(img, 'click', L.DomEvent.stopPropagation)
+            .on(img, 'click', L.DomEvent.preventDefault)
+            .on(img, 'click', ()=>toggleFullScreen(map));
+
+        img.src = '/static/img/full_screen.png';
+        img.style.width = '50px';
+
+        return img;
+    },
+
+    onRemove: map => {
+        L.DomEvent
+            .off(img, 'click', L.DomEvent.stopPropagation)
+            .off(img, 'click', L.DomEvent.preventDefault)
+            .off(img, 'click', ()=>toggleFullScreen(map));
+    }
+});
+
+function toggleFullScreen(map){
+    const dialog = $(map._container.closest('.ui-dialog-content'));
+    const [width, height] = dialog[0].parentElement.style.top === '0px' ?
+        [900, 600] :
+        [window.innerWidth, window.innerHeight];
+    dialog.dialog('option','width', width);
+    dialog.dialog('option','height', height);
+    map.invalidateSize();
+}
+
 
 const Leaflet = {
 
@@ -159,7 +194,7 @@ const Leaflet = {
     }){
 
         if (typeof leaflet_map_container === "undefined")
-            leaflet_map_container = $(`<div id="leaflet_map"></div>`);
+            leaflet_map_container = $(`<div></div>`);
 
         leaflet_map_container.dialog({
             width: 900,
@@ -201,6 +236,11 @@ const Leaflet = {
             'Polygon boundaries',
             true
         );
+
+        //add button that toggles full-screen
+        L.control.fullScreen = opts =>
+            new L.Control.FullScreen(opts);
+        L.control.fullScreen({ position: 'bottomleft' }).addTo(map);
 
         return map;
 
