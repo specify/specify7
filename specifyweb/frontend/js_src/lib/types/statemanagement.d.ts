@@ -1,41 +1,12 @@
-interface generate_dispatch<
-	STATE extends State<string>,
-	ACTION extends Action<string>
-> {
-	<NEW_STATE extends State<string>>(obj :generate_reducer_dictionary<STATE, ACTION, NEW_STATE>):
-		(state:STATE, key :ACTION) => NEW_STATE
-}
-
-
 type generate_reducer_dictionary<
-	STATE extends State<string>,
+	STATE,
 	ACTION extends Action<string>,
-	NEW_STATE extends State<string>,
-> = Record<
-	ACTION['type'],
-	(state:STATE, key:ACTION) => NEW_STATE
->
-
-interface generate_reducer<
-	STATE extends State<string>,
-	ACTION extends Action<string>
-> {
-	<NEW_STATE extends State<string>>(obj :generate_reducer_dictionary<STATE, ACTION, NEW_STATE>):
-		(state:STATE, key :ACTION) => void
+> = {
+	[action_type in ACTION['type']] :(state:STATE, action :Extract<ACTION,Action<action_type>>) => STATE
 }
 
-
-type generate_mutable_reducer_dictionary<
+type generate_dispatch_dictionary<
 	ACTION extends Action<string>,
-> = Record<
-	ACTION['type'],
-	(key:ACTION) => void
-	// (key:Action<ACTION['type']>) => void
->
-
-interface generate_mutable_reducer<
-	ACTION extends Action<string>
-> {
-	(obj :generate_mutable_reducer_dictionary<ACTION>):
-		(key :ACTION) => void
+> = {
+	[action_type in ACTION['type']] :(action :Extract<ACTION,Action<action_type>>) => void
 }

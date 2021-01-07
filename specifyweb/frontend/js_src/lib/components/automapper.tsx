@@ -6,47 +6,12 @@
 
 'use strict';
 
-const AutoMapperDefinitions = require('./automapperdefinitions').default;
-const data_model_storage = require('./data_model_storage').default;
-const data_model_helper = require('./data_model_helper').default;
-const cache = require('./cache').default;
-const helper = require('./helper').default;
-const {assertExhaustive} = require('./statemanagement');
-
-/*
 import AutoMapperDefinitions from './automapperdefinitions';
 import data_model_storage from './data_model_storage';
 import data_model_helper from './data_model_helper';
 import cache from './cache';
 import helper from './helper';
-import {generate_mutable_reducer} from './statemanagement';
-
-		results: generate_mutable_reducer<automapper_results_actions>()({
-			'add': ({header_name,mapping_path})=>{
-				if (typeof this.results[header_name] === 'undefined')
-					this.results[header_name] = [];
-
-				if(mapping_path.length === 0)
-					throw new Error('Invalid mapping path suggested by automapper');
-
-				this.results[header_name].push(mapping_path);
-			}
-		}),
-		headers_to_map: generate_mutable_reducer<automapper_headers_to_map_actions>()({
-			'mapped': ({header_name})=>{
-				if (!this.allow_multiple_mappings)
-					this.headers_to_map[header_name].is_mapped = true;
-			}
-		}),
-		searched_tables: generate_mutable_reducer<automapper_searched_tables_actions>()({
-			'add': (action)=>{
-				this.searched_tables.push(action.table_name);
-			},
-			'reset': ()=>{
-				this.searched_tables = [];
-			}
-		}),
-* */
+import {generate_dispatch} from './statemanagement';
 
 export default class automapper {
 
@@ -74,64 +39,48 @@ export default class automapper {
 	};
 
 	private dispatch :automapper_props_dispatch = {
-		results: action => {
-			switch (action.type) {
-				case 'add':
-					if (typeof this.results[action.header_name] === 'undefined')
-						this.results[action.header_name] = [];
+		results: generate_dispatch<automapper_results_actions>({
+			'add': ({header_name,mapping_path})=>{
+				if (typeof this.results[header_name] === 'undefined')
+					this.results[header_name] = [];
 
-					if(action.mapping_path.length === 0)
-						throw new Error('Invalid mapping path suggested by automapper');
+				if(mapping_path.length === 0)
+					throw new Error('Invalid mapping path suggested by automapper');
 
-					this.results[action.header_name].push(action.mapping_path);
-					break;
-				default:
-					assertExhaustive(action as never);  // TS freaks out here cause there is only one `case` statement
+				this.results[header_name].push(mapping_path);
 			}
-		},
-		headers_to_map: action => {
-			switch (action.type) {
-				case 'mapped':
-					if (!this.allow_multiple_mappings)
-						this.headers_to_map[action.header_name].is_mapped = true;
-					break;
-				default:
-					assertExhaustive(action as never);
+		}),
+		headers_to_map: generate_dispatch<automapper_headers_to_map_actions>({
+			'mapped': ({header_name})=>{
+				if (!this.allow_multiple_mappings)
+					this.headers_to_map[header_name].is_mapped = true;
 			}
-		},
-		searched_tables: action => {
-			switch (action.type) {
-				case 'add':
-					this.searched_tables.push(action.table_name);
-					break;
-				case 'reset':
-					this.searched_tables = [];
-					break;
-				default:
-					assertExhaustive(action);
+		}),
+		searched_tables: generate_dispatch<automapper_searched_tables_actions>({
+			'add': ({table_name})=>{
+				this.searched_tables.push(table_name);
+			},
+			'reset': ()=>{
+				this.searched_tables = [];
 			}
-		},
-		find_mappings_queue: action => {
-			switch (action.type) {
-				case 'reset':
-					if (typeof action.initial_value === 'undefined')
-						this.find_mappings_queue = [];
-					else
-						this.find_mappings_queue = [[
-							action.initial_value,
-						]];
-					break;
-				case 'initialize_level':
-					if (typeof this.find_mappings_queue[action.level] === 'undefined')
-						this.find_mappings_queue[action.level] = [];
-					break;
-				case 'enqueue':
-					this.find_mappings_queue[action.level].push(action.value);
-					break;
-				default:
-					assertExhaustive(action);
+		}),
+		find_mappings_queue: generate_dispatch<automapper_find_mappings_queue_actions>({
+			'reset': ({initial_value})=>{
+				if (typeof initial_value === 'undefined')
+					this.find_mappings_queue = [];
+				else
+					this.find_mappings_queue = [[
+						initial_value,
+					]];
+			},
+			'initialize_level': ({level})=>{
+				if (typeof this.find_mappings_queue[level] === 'undefined')
+					this.find_mappings_queue[level] = [];
+			},
+			'enqueue': ({level,value})=>{
+				this.find_mappings_queue[level].push(value);
 			}
-		},
+		}),
 	};
 
 	constructor({

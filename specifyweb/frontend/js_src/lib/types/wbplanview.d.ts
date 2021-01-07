@@ -23,14 +23,18 @@ interface upload_plan_template {
 
 //states
 
-interface LoadTemplateSelectionState extends State<'LoadTemplateSelectionState'>{
+interface LoadingStateBase <T extends string> extends State<T> {
+	dispatch_action?:(action:WBPlanViewActions)=>void,
+}
+
+interface LoadTemplateSelectionState extends LoadingStateBase<'LoadTemplateSelectionState'>{
 }
 
 type LoadingStates = LoadTemplateSelectionState
 
 interface LoadingState extends State<'LoadingState'> {
 	readonly loading_state? :LoadingStates,
-	readonly dispatch? :WBPlanViewActions,
+	readonly dispatch_action? :WBPlanViewActions,
 }
 
 interface BaseTableSelectionState extends State<'BaseTableSelectionState'> {
@@ -49,6 +53,11 @@ type WBPlanViewStates =
 	| LoadingState
 	| TemplateSelectionState
 	| MappingState;
+
+type WBPlanViewStatesWithParams = WBPlanViewStates & {
+	readonly dispatch :(action:WBPlanViewActions)=>void,
+	readonly props :WBPlanViewProps
+}
 
 
 //actions
