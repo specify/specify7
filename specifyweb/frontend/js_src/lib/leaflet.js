@@ -242,13 +242,16 @@ const Leaflet = {
             true
         );
 
-        //add button that toggles full-screen
-        L.control.fullScreen = opts =>
-            new L.Control.FullScreen(opts);
-        L.control.fullScreen({ position: 'bottomleft' }).addTo(map);
+        this.addFullScreenButton(map);
 
         return map;
 
+    },
+
+    addFullScreenButton(map){
+        L.control.fullScreen = opts =>
+            new L.Control.FullScreen(opts);
+        L.control.fullScreen({ position: 'topleft' }).addTo(map);
     },
 
     addMarkersToMap(map, control_layers, markers, layer_name, enable=false){
@@ -395,6 +398,8 @@ const Leaflet = {
 
         const layer_group = L.control.layers({}, overlay_layers);
         layer_group.addTo(map);
+
+        this.addFullScreenButton(map);
 
         return [map, layer_group];
 

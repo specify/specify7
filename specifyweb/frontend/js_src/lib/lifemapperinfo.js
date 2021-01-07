@@ -20,8 +20,8 @@ module.exports = Backbone.View.extend({
 
     render(){
 
-        const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
-        // const guid = this.model.get('guid');  // TODO: uncomment this
+        // const guid = 'fa7dd78f-8c91-49f5-b01c-f61b3d30caee';
+        const guid = this.model.get('guid');  // TODO: uncomment this
 
         $.get(format_occurrence_data_request(guid))
             .done(response =>
@@ -58,8 +58,8 @@ module.exports = Backbone.View.extend({
             this.showSourceIcon(
                 data_sources['Lifemapper Map'],
                 {
-                    occurrence_name: 'Phlox longifolia Nutt.',
-                    // occurrence_name: occurrence_name,  // TODO: uncomment this
+                    // occurrence_name: 'Phlox longifolia Nutt.',
+                    occurrence_name: occurrence_name,  // TODO: uncomment this
                     occurrence_view_link: ''
                 }
             );
@@ -146,8 +146,8 @@ module.exports = Backbone.View.extend({
         });
 
         if (source_name === 'lifemapper')
-            this.showCOMap(dialog, "Acipenser");
-        // this.showCOMap(dialog, occurrence_name);  // TODO: uncomment this
+            // this.showCOMap(dialog, "Medinilla speciosa Blume");
+            this.showCOMap(dialog, occurrence_name);  // TODO: uncomment this
         else if (occurrence_name !== '')
             this.showCOCount(dialog, source_name, occurrence_name);
 
@@ -158,7 +158,8 @@ module.exports = Backbone.View.extend({
             const similar_collection_objects = new schema.models.CollectionObject.LazyCollection({
                 filters: {
                     determinations__iscurrent: true,
-                    determinations__preferredtaxon__fullname: occurrence_name
+                    // determinations__preferredtaxon__fullname: "Acipenser"
+                    determinations__preferredtaxon__fullname: occurrence_name // TODO: uncomment this
                 }
             });
             similar_collection_objects.fetch({
