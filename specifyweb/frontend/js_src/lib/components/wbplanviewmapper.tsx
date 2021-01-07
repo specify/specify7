@@ -6,7 +6,7 @@ import {MappingLine, MappingPath} from './wbplanviewcomponents';
 import data_model_helper from './data_model_helper';
 import data_model_navigator from './data_model_navigator';
 import automapper from './automapper';
-import upload_plan_converter from './upload_plan_converter';
+import {upload_plan_to_mappings_tree} from './upload_plan_converter';
 import React from 'react';
 
 const max_suggestions_count :number = 3;  // the maximum number of suggestions to show in the suggestions box
@@ -88,14 +88,14 @@ export function get_lines_from_headers({
 
 export function get_lines_from_upload_plan(
 	headers :list_of_headers = [],
-	upload_plan :upload_plan,
+	upload_plan :upload_plan_structure,
 ) :get_lines_from_upload_plan {
 
 	const lines = get_lines_from_headers({
 		headers,
 		run_automapper:false
 	});
-	const mappings_tree = upload_plan_converter.upload_plan_to_mappings_tree(headers, upload_plan);
+	const {base_table_name, mappings_tree} = upload_plan_to_mappings_tree(headers, upload_plan);
 	const array_of_mappings = tree_helpers.mappings_tree_to_array_of_mappings(mappings_tree);
 	array_of_mappings.forEach(full_mapping_path => {
 		const [mapping_path, mapping_type, header_name] = helper.deconstruct_mapping_path(full_mapping_path, true);
@@ -109,7 +109,7 @@ export function get_lines_from_upload_plan(
 	});
 
 	return {
-		base_table_name: upload_plan.baseTableName,
+		base_table_name: base_table_name,
 		lines,
 	};
 

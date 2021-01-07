@@ -4,7 +4,7 @@ import React from 'react';
 import '../../css/wbplanview.css';
 import _ from 'underscore';
 import navigation from '../navigation';
-import upload_plan_converter from './upload_plan_converter';
+import {mappings_tree_to_upload_plan} from './upload_plan_converter';
 import cache from './cache';
 import schema from '../schema';
 import fetch_data_model from './wbplanviewdatamodelfetcher';
@@ -132,7 +132,7 @@ function save_plan(props :publicWBPlanViewProps, state:MappingState, ignore_vali
 
 	props.wb.set('ownerPermissionLevel', props.mappingIsTemplated ? 1 : 0);
 	props.wbtemplatePromise.done(wbtemplate =>
-		wbtemplate.set('remarks', upload_plan_converter.get_upload_plan(state.base_table_name, get_mappings_tree.bind(null,state.lines))),
+		wbtemplate.set('remarks', mappings_tree_to_upload_plan(state.base_table_name, get_mappings_tree.bind(null,state.lines))),
 	);
 	props.wb.save();
 	return go_back(props);
