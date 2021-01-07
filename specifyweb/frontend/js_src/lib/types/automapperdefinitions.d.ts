@@ -36,7 +36,7 @@ interface shortcut_definition {
 	readonly headers :shortcut_options
 }
 
-type shortcut = Readonly<Record<automapper_scope, shortcut_definition>>
+type shortcut = Readonly<Partial<Record<automapper_scope, shortcut_definition[]>>>
 
 interface shortcuts extends Dictionary<shortcut>{
 }
@@ -51,7 +51,7 @@ interface synonym_headers {
 	readonly headers :synonym_options
 }
 
-type field_synonym = Readonly<Record<automapper_scope,synonym_headers>>
+type field_synonym = Readonly<Partial<Record<automapper_scope,synonym_headers>>>
 
 interface synonym extends Dictionary<field_synonym>{
 }
