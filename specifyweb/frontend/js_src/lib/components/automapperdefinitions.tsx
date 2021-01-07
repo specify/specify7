@@ -468,7 +468,7 @@ const definitions :auto_mapper_definitions_interface = {
 
 
 /* Method that converts all table names and field names in definitions to lower case */
-const definitions_to_lowercase = (definitions :auto_mapper_definitions_interface) :auto_mapper_definitions_interface => {
+function definitions_to_lowercase(definitions :auto_mapper_definitions_interface) :auto_mapper_definitions_interface {
 
 	const keys_to_lower_case = (object :object, levels :number = 1) :object => (
 		Object.fromEntries(
@@ -491,6 +491,6 @@ const definitions_to_lowercase = (definitions :auto_mapper_definitions_interface
 
 	return definitions;
 
-};
+}
 
 export default definitions_to_lowercase(definitions);

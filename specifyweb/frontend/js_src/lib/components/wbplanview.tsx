@@ -90,7 +90,7 @@ function upload_plan_string_to_object(upload_plan_string :string) :falsy_upload_
 		return upload_plan;
 }
 
-const getInitialWBPlanViewState = (props:OpenMappingScreenAction):WBPlanViewStates => {
+function getInitialWBPlanViewState(props:OpenMappingScreenAction):WBPlanViewStates {
 	if (props.upload_plan === false) {
 		return {
 			type: 'LoadingState',
@@ -158,7 +158,7 @@ function validate(state:MappingState):MappingState {
 
 }
 
-const reducer = (state:WBPlanViewStates, action :WBPlanViewActions):WBPlanViewStates => {
+function reducer(state:WBPlanViewStates, action :WBPlanViewActions):WBPlanViewStates {
 
 	// console.log(props,state,action);
 
