@@ -18,13 +18,17 @@
 	--accent: #f73;
 	--lines_to_display: 10;
 	--border_size: 1px;
-	--base_width: auto;
+	/*--base_width: auto;*/
 
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	row-gap: 1rem;
 	height: calc(100vh - 150px); /* TODO: replace with a permanent solution */
+}
+
+.wbplanview_event_listener {
+	display: contents;
 }
 
 /* TODO: replace IDs with classes? */
@@ -94,6 +98,7 @@
 
 /* MAPPING GENERAL */
 #list__mappings {
+	flex: 1;
 	display: grid;
 	grid-template-columns: 2.2rem max-content auto;
 	grid-auto-rows: max-content;
@@ -119,8 +124,8 @@
 	padding: var(--white_space) 0;
 }
 
-.wbplanview_mappings_line > *:not(:last-child) {
-	padding-right: 0.6rem;
+.wbplanview_mappings_line > *:not(:first-child) {
+	padding-left: 0.6rem;
 }
 
 .wbplanview_mappings_line_focused > .wbplanview_mappings_line_elements {
@@ -187,8 +192,7 @@
 		"options";
 	grid-template-columns: 1fr;
 	grid-template-rows: auto 1fr;
-	width: calc(var(--base_width) + calc(4 * var(--white_space)) - var(--border_size));
-	height: calc(4 * var(--white_space));
+	height: calc(4 * var(--white_space) + 2px);
 	position: relative;
 }
 
@@ -224,16 +228,16 @@
 	bottom: calc(4 * var(--white_space));
 }
 
-.custom_select[data-type="closed_list"] .custom_select_options,
-.custom_select[data-type="closed_list"] .custom_select_suggestions {
+.custom_select_closed_list .custom_select_options,
+.custom_select_closed_list .custom_select_suggestions {
 	box-shadow: 0 0 calc(0.5 * var(--white_space)) calc(0.5 * var(--white_space)) var(--border);
 }
 
-.custom_select[data-type="closed_list"] .custom_select_options {
+.custom_select_closed_list .custom_select_options {
 	clip-path: inset(0 calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) calc(-1 * var(--white_space)));
 }
 
-.custom_select[data-type="closed_list"] .custom_select_suggestions {
+.custom_select_closed_list .custom_select_suggestions {
 	clip-path: inset(calc(-1 * var(--white_space)) calc(-1 * var(--white_space)) 0 calc(-1 * var(--white_space)));
 }
 
@@ -252,14 +256,23 @@
 }
 
 .custom_select_input {
-	--base_width: auto;
-	width: calc(calc(var(--base_width) - calc(2 * var(--white_space))) - 2px);
 	cursor: pointer;
 }
 
 .custom_select[data-type="preview_list"] .custom_select_input,
 .custom_select[data-type="suggestion_list"] .custom_select_input {
 	cursor: initial;
+}
+
+.custom_select_element_shadow_list {
+	list-style: none;
+	margin: calc(var(--white_space) * -2) calc(var(--white_space) * 6.6) 0 0;
+	visibility: hidden;
+}
+
+.custom_select_element_shadow_list li {
+	line-height: 0;
+	padding: 0;
 }
 
 .custom_select_group[data-group="suggested_mappings"] .custom_select_option_label {
@@ -348,11 +361,6 @@
 	--accent: #9f9;
 }
 
-.hide_hidden_fields .custom_select_group[data-group="hidden_fields"] {
-	height: 0;
-	overflow: hidden;
-}
-
 .custom_select_group_label {
 	background-color: var(--background2);
 	padding: calc(0.5 * var(--white_space));
@@ -417,4 +425,5 @@
 	height: 100%;
 	display: block;
 	background-size: contain;
+	background-repeat: no-repeat;
 }
